@@ -6,12 +6,31 @@
  */
 package com.intuit.developer;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.util.id.GUID;
 
+import com.intuit.developer.adaptors.QBXmlAdaptor;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
 public class QBWebConnectorSvcSkeleton {
 
+	protected QBSession currentSession = null;
+	
+	private static Map<String, QBSession> sessions = new HashMap<String, QBSession>();
+
+	
 	public AuthenticateResponse authenticate(Authenticate authenticate) {
 
 		AuthenticateResponse response = new AuthenticateResponse();
@@ -22,29 +41,86 @@ public class QBWebConnectorSvcSkeleton {
 		PicsLogger.log( "Authenticating user: " + authenticate.getStrUserName() );
 		
 		String sessionId = null;
-		
+
+		boolean finished = false;
 		try {
-			sessionId = QBWebConnectorWorker.authenticate(authenticate.getStrUserName(), authenticate.getStrPassword());
-			response.getAuthenticateResult().addString(sessionId);
+			
+			if( authenticate.getStrUserName() == null || authenticate.getStrUserName() == null ) {
+				return null;
+			}
+			
+			AppPropertyDAO appPropsDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+
+			String maxSessionsString = appPropsDao.find("PICSQBLOADER.maxSessions").getValue();
+			String sessionTimeoutString = appPropsDao.find("PICSQBLOADER.sessionTimeout").getValue();
+			String qbPassword = appPropsDao.find("PICSQBLOADER.password").getValue();
+			
+			int maxSessions = Integer.parseInt(maxSessionsString);
+			long sessionTimeout = Long.parseLong(sessionTimeoutString);
+			
+			if( maxSessions != -1 ) {
+				if( sessions.size() >= maxSessions ) {
+					for( Iterator<String> iterator = sessions.keySet().iterator(); iterator.hasNext();) {
+						String key = iterator.next();
+						QBSession session = sessions.get(key);
+						
+						if( sessionTimeout != -1 && ! session.isProcessingSomething() && System.currentTimeMillis() - session.getLastRequest().getTime() > sessionTimeout ) {
+							iterator.remove();
+						}
+					}
+					if( sessions.size() >= maxSessions ) {
+						throw new Exception( "too many sessions" );
+					}
+				}
+			}
+			
+			if( authenticate.getStrUserName().equals("PICSQBLOADER") && authenticate.getStrPassword().equals( qbPassword ) ) {
+				QBSession session = new QBSession();
+				session.setSessionId( GUID.asString() );
+				session.setLastRequest( new Date() );
+				
+				sessions.put(session.getSessionId(), session);
+				sessionId = session.getSessionId();
+				PicsLogger.log( "login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId ); 
+
+				session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
+				currentSession = session;
+
+				if( ! shouldWeRunThisStep() ) {
+					moveToNextStep();
+				}
+				
+				if( session.getCurrentStep().equals(QBIntegrationWorkFlow.Finished)) {
+					finished = true;
+				}
+				
+			}
+			
+			if( sessionId == null ) {
+				throw new Exception( "unable to login" );
+			}
+
 		}
 		catch( Exception e ) {
 			response.getAuthenticateResult().addString("NOSESSION");
-		}
-		
-		
-
-		if (false) { 
 			PicsLogger.log( "invalid credentials supplied for " + authenticate.getStrUserName() );
 			response.getAuthenticateResult().addString("nvu");
-		} else if (false) { 
+		}
+		
+		response.getAuthenticateResult().addString(sessionId);
+
+		
+		
+		
+		if( finished ) { 
 			PicsLogger.log( "login valid, but there is no work to do for " + authenticate.getStrUserName() );
 			response.getAuthenticateResult().addString("none");
 		} else if (false) { 
 			String companyName = "theSpecificCompany";
-			PicsLogger.log( "login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId + ", using company: " + companyName );
+			PicsLogger.log( "using company: " + companyName );
 			response.getAuthenticateResult().addString(companyName);
 		} else if (true) { 
-			PicsLogger.log( "login valid for user:"  + authenticate.getStrUserName() + ", sessionId: " + sessionId + ", using default company" );
+			PicsLogger.log( "using default company" );
 			response.getAuthenticateResult().addString("");
 		}
 
@@ -70,16 +146,14 @@ public class QBWebConnectorSvcSkeleton {
 
 		if( start( getLastError.getTicket() )) {
 
-			if (true) { 
+			if( currentSession.getLastError() == null ) {
 				PicsLogger.log( getLastError.getTicket() + ": instructing QBWC to do a noop");
 				response.setGetLastErrorResult("Noop");
-			} else if (false) { // we actually have an error message
-				String error = "There was some error";
+			} else { // we actually have an error message
+				String error = currentSession.getLastError();
 				PicsLogger.log( getLastError.getTicket() + ": error: " + error);
 				response.setGetLastErrorResult(error);
-			} else if (false) { // we want QBWC to enter interactive mode
-				PicsLogger.log( getLastError.getTicket() + ": trying to enter interactive mode" );
-				response.setGetLastErrorResult("Interactive mode");
+				currentSession.setLastError(null);
 			}
 		}
 		
@@ -91,6 +165,8 @@ public class QBWebConnectorSvcSkeleton {
 		SendRequestXMLResponse response = new SendRequestXMLResponse();
 
 		if( start( sendRequestXML.getTicket() )) {
+
+			PicsLogger.log( sendRequestXML.getTicket() + ": performing request side of step: " + currentSession.getCurrentStep().name());
 			
 			// This contains important information about the client's QB
 			// installation, and will only be present on the first call
@@ -99,21 +175,36 @@ public class QBWebConnectorSvcSkeleton {
 			if (!true) { // validate the session
 	
 			} else {
-				if (true) { // there isn't any work to do
-					PicsLogger.log( sendRequestXML.getTicket() + ": sendRequestXml() has no more work to do");
-					response.setSendRequestXMLResult("");
-				} else { // there is work to do
-					
-					String qbXml = "someQbXmlString";
-					PicsLogger.log( sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);
-					response.setSendRequestXMLResult(qbXml);
+				
+				String qbXml = null;
+				
+				try {
+					if ( shouldWeRunThisStep() ) {
+						
+						QBXmlAdaptor currentAdaptor = currentSession.getCurrentStep().getAdaptorInstance();
+						
+						qbXml = currentAdaptor.getQbXml(currentSession);
+
+					}
 				}
+				catch( Exception e ) {
+					e.printStackTrace();
+				}
+
+				PicsLogger.log( sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);
+				response.setSendRequestXMLResult(qbXml);
 			}
 		}
 		
 		stop();
 		return response;
 	}
+
+	private ContractorAccountDAO getContractorDao() {
+		ContractorAccountDAO contractorDao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		return contractorDao;
+	}
+
 
 	public ConnectionErrorResponse connectionError(
 			ConnectionError connectionError) {
@@ -151,15 +242,15 @@ public class QBWebConnectorSvcSkeleton {
 		CloseConnectionResponse response = new CloseConnectionResponse();
 
 		if( start( closeConnection.getTicket() )) {
-		
+
+			sessions.remove( currentSession.getSessionId() );
+
 			String result = "Success";
-			
-			PicsLogger.log( closeConnection.getTicket() + ": QB Connection closing with response:" + result);
-			
 			response.setCloseConnectionResult(result);
-			
+			PicsLogger.log( closeConnection.getTicket() + ": QB Connection closing with response:" + result);
 		}
 
+		currentSession = null;
 		stop();
 		return response;
 	}
@@ -171,26 +262,40 @@ public class QBWebConnectorSvcSkeleton {
 
 		if( start( receiveResponseXML.getTicket() )) {
 		
-			PicsLogger.log( receiveResponseXML.getTicket() + ": received responseXML" );
+			PicsLogger.log( receiveResponseXML.getTicket() + ": received responseXML at step: " + currentSession.getCurrentStep().name() );
 			PicsLogger.log( receiveResponseXML.getTicket() + ":\t response: " + receiveResponseXML.getResponse() );
 			PicsLogger.log( receiveResponseXML.getTicket() + ":\t message: " + receiveResponseXML.getMessage() );
 			PicsLogger.log( receiveResponseXML.getTicket() + ":\t hrResult: " + receiveResponseXML.getHresult() );
 			
+			int percentDone = 0;
+
+			QBXmlAdaptor currentAdaptor = currentSession.getCurrentStep().getAdaptorInstance(); 
+
 			
-			if (true) {
-				PicsLogger.log( receiveResponseXML.getTicket() + ": telling client that we're done." );
-				response.setReceiveResponseXMLResult(100);
-			} else if (false) {
-				int percent = 10;
-				PicsLogger.log( receiveResponseXML.getTicket() + ": telling client that we're " + percent + "% done." );
-				response.setReceiveResponseXMLResult(percent);
-			} else if (false) { // we have some error
-				// set last error
-				// setLastError()
-	
-				PicsLogger.log( receiveResponseXML.getTicket() + ": telling client there was an error" );
-				response.setReceiveResponseXMLResult(-1);
+			try {
+				currentAdaptor.parseQbXml(currentSession, receiveResponseXML.getResponse());
 			}
+			catch( Exception e ) {
+				e.printStackTrace();
+				currentAdaptor.setProceed(false);
+			}
+
+			
+			if( ! currentAdaptor.isRepeat() ) {
+				moveToNextStep();
+			}
+			
+			if( currentAdaptor.isProceed() ) {
+				percentDone = (int) ( (float) ( 100 * ( currentSession.getCurrentStep().ordinal() + 1)  ) / ( (float) ( QBIntegrationWorkFlow.values().length ) ) );
+			}
+			else {
+				percentDone = 100;
+			}
+
+			response.setReceiveResponseXMLResult(percentDone);
+
+//			PicsLogger.log( receiveResponseXML.getTicket() + ": telling client there was an error" );
+//			response.setReceiveResponseXMLResult(-1);
 		}
 		stop();
 		return response;
@@ -199,11 +304,46 @@ public class QBWebConnectorSvcSkeleton {
 	
 	private boolean start( String ticketId ) {
 		PicsLogger.start("QBWebConnector" );
+
+		currentSession = sessions.get(ticketId);
+		
+		if( currentSession != null ) {
+			currentSession.setProcessingSomething(true);
+		}
+		
 		return true;
 	}
 	
 	private void stop() {
+
+		if( currentSession != null ) {
+			currentSession.setProcessingSomething(false);
+			currentSession.setLastRequest(new Date());
+		}
+		
 		PicsLogger.stop();
 	}
+
+	private boolean shouldWeRunThisStep() {
+		AppPropertyDAO appPropsDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+		
+		AppProperty find = appPropsDao.find("PICSQBLOADER.doStep." + currentSession.getCurrentStep() );
+		
+		if( find == null || find.getValue() == null ) 
+			return false;
+		
+		return find.getValue().equals("Y");
+	}
+	
+	private void moveToNextStep() {
+		
+		do {
+			currentSession.setCurrentStep(currentSession.getCurrentStep().incrementStep() );	
+		} while ( ! shouldWeRunThisStep() && currentSession.getCurrentStep() != QBIntegrationWorkFlow.Finished );
+		
+	}
+
+	
+	
 	
 }

@@ -1,0 +1,192 @@
+package com.intuit.developer.adaptors;
+
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
+import com.intuit.developer.QBSession;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.quickbooks.qbxml.CustomerAdd;
+import com.picsauditing.quickbooks.qbxml.CustomerAddRqType;
+import com.picsauditing.quickbooks.qbxml.CustomerAddRsType;
+import com.picsauditing.quickbooks.qbxml.CustomerRet;
+import com.picsauditing.quickbooks.qbxml.ObjectFactory;
+import com.picsauditing.quickbooks.qbxml.QBXML;
+import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
+import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+
+public class InsertContractors extends CustomerAdaptor {
+	
+	@Override
+	public String getQbXml( QBSession currentSession) throws Exception {
+	
+		
+		//first time, load up the inserts
+		if( currentSession.getToInsert() == null ) {
+			currentSession.setToInsert(new Vector<ContractorAccount>());
+			List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and a.qbListID is null and a.mustPay = 'Yes'");
+			currentSession.getToInsert().addAll(contractors);
+		}
+
+		//no work to do
+		if( currentSession.getToInsert().size() == 0 ) {
+			return super.getQbXml(currentSession);  
+		}
+		
+		
+		int threshold = 10;
+		
+		currentSession.setCurrentBatch(new HashMap<String, String>());
+		
+		Writer writer = makeWriter();	
+		
+		ObjectFactory factory = new ObjectFactory();		
+		QBXML xml = factory.createQBXML();
+		
+		QBXMLMsgsRq request = factory.createQBXMLMsgsRq();
+		request.setOnError("continueOnError");
+		
+
+		
+		int x = 0;
+		for( ContractorAccount contractor : currentSession.getToInsert() ) {
+			
+			if( contractor != null ) {
+			
+				if( ++x == threshold ) {
+					break;
+				}
+
+				
+				CustomerAddRqType customerAddRequest = factory.createCustomerAddRqType();
+				customerAddRequest.setRequestID("insert_customer_" + contractor.getId());
+
+				request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(
+						customerAddRequest);
+
+				
+				CustomerAdd customer = factory.createCustomerAdd();
+				customerAddRequest.setCustomerAdd(customer);
+
+				
+				customer.setName(contractor.getIdString());
+				customer.setIsActive(new Boolean(contractor.isActiveB()).toString());
+				
+				customer.setCompanyName(contractor.getName());
+				
+				customer.setContact(contractor.getContact());
+				customer.setFirstName(getFirstName(contractor.getContact()));
+				customer.setLastName( getLastName( contractor.getContact() ) );
+				
+				customer.setBillAddress(factory.createBillAddress());
+				customer.getBillAddress().setAddr1(contractor.getName());
+				customer.getBillAddress().setAddr2(contractor.getContact());
+				customer.getBillAddress().setAddr3(contractor.getAddress());
+				customer.getBillAddress().setCity(contractor.getCity());
+				customer.getBillAddress().setState(contractor.getState());
+				customer.getBillAddress().setPostalCode(contractor.getZip());
+				customer.getBillAddress().setCountry(contractor.getCountryCode());
+				
+				customer.setPhone(contractor.getPhone());
+				customer.setAltPhone(contractor.getPhone2());
+				customer.setFax(contractor.getFax());
+				customer.setEmail(contractor.getEmail());
+
+				customer.setAltContact(contractor.getBillingContact());
+				customer.setAltPhone(contractor.getBillingPhone());
+				
+				
+				customer.setTermsRef(factory.createTermsRef());
+				customer.getTermsRef().setFullName("Net 30");
+				
+				customer.setAccountNumber(contractor.getIdString());
+				
+				currentSession.getCurrentBatch().put(customerAddRequest.getRequestID(), contractor.getIdString() );
+			}
+		}
+		
+		xml.setQBXMLMsgsRq(request);
+		
+		Marshaller m = makeMarshaller();
+		
+		m.marshal(xml, writer);
+		return writer.toString();
+		
+	}
+	
+	
+	@Override
+	public Object parseQbXml( QBSession currentSession, String qbXml ) throws Exception {
+
+		Unmarshaller unmarshaller = jc.createUnmarshaller();
+		
+		StringReader stringReader = new StringReader(qbXml);
+		
+		QBXML xml = (QBXML) unmarshaller.unmarshal(stringReader);
+		
+		QBXMLMsgsRs msgsRs = xml.getQBXMLMsgsRs();
+		
+		List<Object> hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs = msgsRs.getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
+		
+		for( Object result : hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs ) {
+			
+			CustomerAddRsType thisQueryResponse = (CustomerAddRsType) result;
+			
+			CustomerRet customer = thisQueryResponse.getCustomerRet();
+
+			int conId = new Integer( currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID())).intValue();
+			ContractorAccount connected = getContractorDao().find(conId);
+			
+			if( customer != null ) {
+			
+				try {
+					String accountNumber = customer.getAccountNumber();
+					int accountId = Integer.parseInt(accountNumber);
+					
+					if( accountId != 0 ) {
+						connected.setQbListID(customer.getListID());
+						connected.setQbSync(false);
+					}
+				}
+				catch( Exception e ) {
+				}
+			}
+			else {
+				StringBuilder errorMessage = new StringBuilder("Problem inserting contractor\t");
+				
+				errorMessage.append( thisQueryResponse.getRequestID());
+				errorMessage.append("\t");
+				errorMessage.append( currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID()));
+				errorMessage.append("\t");
+				errorMessage.append( thisQueryResponse.getStatusMessage() );
+				errorMessage.append("\t");
+				errorMessage.append( thisQueryResponse.getStatusSeverity() );
+				errorMessage.append("\t");
+				errorMessage.append( thisQueryResponse.getStatusCode() );
+				
+				currentSession.getErrors().add(errorMessage.toString());
+				
+				connected.setQbListID(null);
+				connected.setQbSync(true);
+			}
+
+			getContractorDao().save(connected);
+			
+			currentSession.getToInsert().remove(connected);
+		}
+		
+		if( currentSession.getToInsert().size() > 0 ) {
+			setRepeat(true);
+		}
+
+		return null;
+	}
+
+}
