@@ -33,12 +33,14 @@
 	<li><a class="edit" href="?button=add&rule.name=EmailSender">EmailSender</a></li>
 	<li><a class="edit" href="?button=add&rule.name=Flag.calculate">Flag.calculate</a></li>
 	<li><a class="edit" href="?button=add&rule.name=LoggerConfig.execute">LoggerConfig.execute</a></li>
+	<li><a class="edit" href="?button=add&rule.name=QBWebConnector">QBWebConnector</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ReportUserPermissionMatrix">ReportUserPermissionMatrix</a></li>
 	<li><a class="edit" href="?button=add&rule.name=User.Permissions">User.Permissions</a></li>
 	<li><a class="edit" href="?button=add&rule.name=SelectSQL">SelectSQL</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits">BuildAudits</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits|AuditOperators">BuildAudits|AuditOperators</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits|AuditCategories">BuildAudits|AuditCategories</a></li>
+	
 
 	<!-- End of System Logging Options -->
 </ol>
