@@ -17,9 +17,7 @@
 	<tr>
 		<td></td>
 		<td colspan="2">Contractor Name</td>
-		<s:if test="permissions.operator">
-			<td>Flag</td>
-		</s:if>
+		<td>Flag</td>
 		<td>Risk Level</td>
 		<s:iterator value="operatorAccount.audits">
 			<s:if test="canSee && minRiskLevel > 0">
@@ -104,12 +102,10 @@
 			<td colspan="2"><nobr><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>">
 				<s:property value="[0].get('name')"/></a></nobr>
 			</td>
-			<s:if test="permissions.operator">
-				<td class="center">
-					<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" title="Click to view Flag Color details">
-					<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
-				</td>
-			</s:if>
+			<td class="center">
+				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" title="Click to view Flag Color details">
+				<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
+			</td>
 			<td class="center">
 				<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))" />
 			</td>
