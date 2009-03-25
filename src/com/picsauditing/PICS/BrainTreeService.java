@@ -104,6 +104,17 @@ public class BrainTreeService {
 	public static class CreditCard {
 		protected String cardNumber = null;
 		protected String expirationDate = null;
+		
+		public CreditCard() {}
+		
+		public CreditCard(String cardNumber) {
+			this.cardNumber = cardNumber;
+		}
+		
+		public CreditCard(String cardNumber, String expirationDate) {
+			this.cardNumber = cardNumber;
+			this.expirationDate = expirationDate;
+		}
 
 		public String getCardType() {
 			// TODO make this more complete
