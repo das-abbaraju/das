@@ -53,6 +53,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 					return "deleted";
 				}
 			}
+			if(button.equalsIgnoreCase("updateAllAudits")) {
+				auditTypeDao.updateAllAudits(id);
+				return "saved";
+			}
+			if(button.equalsIgnoreCase("updateAllAuditsCategories")) {
+				auditTypeDao.updateAllCategories(auditType.getId(), id);
+				return "saved";
+			}
 		}
 
 		if ("Add New".equals(button)) {

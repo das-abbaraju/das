@@ -51,6 +51,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private boolean manuallyAdded;
 	private String auditFor;
 	private String statusDescription;
+	private Date lastRecalculation;
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
@@ -412,6 +413,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setAuditFor(String auditFor) {
 		this.auditFor = auditFor;
+	}
+
+	public Date getLastRecalculation() {
+		return lastRecalculation;
+	}
+
+	public void setLastRecalculation(Date lastRecalculation) {
+		this.lastRecalculation = lastRecalculation;
 	}
 
 	@Transient

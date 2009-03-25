@@ -39,10 +39,11 @@
 	</fieldset>
 	<fieldset class="form submit">
 		<div class="buttons">
-			<button class="positive" name="button" type="submit" value="save">Save</button>
+			<input type="submit" class="picsbutton positive" name="button" value="save"/>
 				<s:if test="category.subCategories.size == 0">
-					<button name="button" class="negative" type="submit" value="delete">Delete</button>
+					<input type="submit" class="picsbutton negative" name="button" value="delete"/>
 				</s:if>
+			<input type="submit" class="picsbutton" name="button" value="updateAllAuditsCategories"/>	
 		</div>
 	</fieldset>
 </s:form>
