@@ -62,6 +62,10 @@ public class AuditCriteriaAnswer {
 					resultColor = FlagColor.getWorseColor(resultColor, criteria.getFlagColor());
 				}
 			}
+			else if ( criteria.getAuditQuestion().getQuestionType().equals("NULLSAREBAD") ) {
+				resultColor = FlagColor.getWorseColor(resultColor, criteria.getFlagColor());	
+			}
+
 		}
 		return resultColor;
 	}
