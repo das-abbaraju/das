@@ -95,7 +95,8 @@
 				</fieldset>
 			</s:form>
 		</s:if> <s:if test="permissions.admin">
-			<h3 style="margin-top: 450px">Past Invoices</h3>
+			<div class="clear"></div>
+			<h3 style="margin-top: 50px">Past Invoices</h3>
 			<table class="report">
 				<thead>
 					<tr>
