@@ -184,6 +184,9 @@ public class AuditCriteriaAnswerBuilder {
 								if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 ) {
 									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
 								}
+								else if ( thisMap.values().iterator().next().getAuditQuestion().getQuestionType().equals("NULLSAREBAD") ) {
+									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+								}
 							}
 							
 						} else if( question.getParentQuestion() != null ) {
@@ -194,6 +197,9 @@ public class AuditCriteriaAnswerBuilder {
 								if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 ) {
 									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
 								}
+								else if ( thisMap.values().iterator().next().getAuditQuestion().getQuestionType().equals("NULLSAREBAD") ) {
+									auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+								}
 							}
 	
 						} else {
@@ -201,6 +207,9 @@ public class AuditCriteriaAnswerBuilder {
 							AuditData data = answerMap.get(question.getId());
 							if( data != null && data.getAnswer() != null && data.getAnswer().length() > 0 )
 								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+							else if ( thisMap.values().iterator().next().getAuditQuestion().getQuestionType().equals("NULLSAREBAD") ) {
+								auditCriteriaAnswers.add(new AuditCriteriaAnswer( data, thisMap));
+							}
 						}
 					}
 				}
