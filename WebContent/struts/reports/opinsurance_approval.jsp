@@ -5,35 +5,31 @@
 <s:include value="reportHeader.jsp" />
 
 <SCRIPT type="text/javascript">
-	function setAllChecked( elm ) {
-		var boxes = document.getElementsByClassName('massCheckable');
-		
-		for( var i = 0; i < boxes.length; i++  ) {
-			var box = boxes[i];
-			box.checked = elm.checked;
-		}
-		return false;
-	}
-	
-	function saveRows( formName ) {
-	
-		var pars = $(formName).serialize();
-		
-		var myAjax = new Ajax.Updater('', 'ReportInsuranceApprovalSave.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onException: function(request, exception) {
-				alert(exception);
-			},
-			onSuccess: function(transport) {
-				clickSearch('form1');
-			}
+	function setAllChecked(elm) {
+		$$('.massCheckable').each( function(ele) {
+			ele.checked = elm.checked;
 		});
-		
 		return false;
 	}
 
+	function saveRows(formName) {
+
+		var pars = $(formName).serialize();
+
+		var myAjax = new Ajax.Updater('', 'ReportInsuranceApprovalSave.action',
+				{
+					method :'post',
+					parameters :pars,
+					onException : function(request, exception) {
+						alert(exception);
+					},
+					onSuccess : function(transport) {
+						clickSearch('form1');
+					}
+				});
+
+		return false;
+	}
 </SCRIPT>
 </head>
 <body>
