@@ -298,6 +298,7 @@ public class AuditPercentCalculator {
 						percentOshaComplete(osha, data);
 					}
 				}
+				updatePercentageCompleted(data);
 			}
 		}
 	}
