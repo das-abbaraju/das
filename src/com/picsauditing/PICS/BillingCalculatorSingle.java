@@ -75,7 +75,7 @@ public class BillingCalculatorSingle {
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
