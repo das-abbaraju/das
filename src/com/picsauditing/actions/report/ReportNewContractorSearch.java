@@ -61,13 +61,15 @@ public class ReportNewContractorSearch extends ReportAccount {
 						+ ") ";
 			sql.addWhere(whereQuery);
 		}
-
+		
+		sql.addJoin("JOIN invoice_fee fee on fee.id = c.membershipLevelID");
 		sql.addField("a.contact");
 		sql.addField("a.city");
 		sql.addField("a.state");
 		sql.addField("a.phone");
 		sql.addField("a.phone2");
 		sql.addWhere("a.active = 'Y'");
+		sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
 	}
 	
 	@Override
