@@ -70,11 +70,11 @@
 			</div>
 			<br clear="all">
 			<div class="buttons">
-				<input type="submit" class="picsbutton positive" name="button" value="save"/>
+				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 				<s:if test="auditType.id > 0 && auditType.categories.size == 0">
-					<input type="submit" class="picsbutton negative" name="button" value="delete"/>
+					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
 				</s:if>
-				<input type="submit" class="picsbutton" name="button" value="updateAllAudits"/>
+				<input type="submit" class="picsbutton" name="button" value="UpdateAllAudits"/>
 			</div>
 		</s:form>
 		</td>
