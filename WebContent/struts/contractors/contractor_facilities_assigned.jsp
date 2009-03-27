@@ -32,16 +32,16 @@
 	<tbody>
 		<s:iterator value="currentOperators">
 			<tr>
-				<td><s:url id="flagUrl" action="ContractorFlag">
+				<td><s:if test="contractor.activeB"><s:url id="flagUrl" action="ContractorFlag">
 					<s:param name="id" value="%{contractor.id}" />
 					<s:param name="opID" value="%{operatorAccount.id}" />
-				</s:url> <s:a href="%{flagUrl}">
+				</s:url></s:if><s:a href="%{flagUrl}">
 					<s:property value="flag.flagColor.smallIcon" escape="false" />
 				</s:a></td>
-				<td><s:url id="opUrl" action="ContractorFlag">
+				<td><s:if test="contractor.activeB"><s:url id="opUrl" action="ContractorFlag">
 					<s:param name="id" value="%{contractor.id}" />
 					<s:param name="opID" value="%{operatorAccount.id}" />
-				</s:url> <s:a href="%{opUrl}">
+				</s:url></s:if><s:a href="%{opUrl}">
 					<s:property value="operatorAccount.name" />
 				</s:a></td>
 				<td><s:property value="flag.waitingOn.name()" /></td>

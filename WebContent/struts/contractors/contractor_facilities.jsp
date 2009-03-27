@@ -83,6 +83,12 @@
 <s:include value="conHeader.jsp"></s:include>
 </s:else>
 
+<s:if test="permissions.contractor && !contractor.activeB">
+	<div class="buttons" style="float: left;">
+		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next</a>
+	</div>
+</s:if>
+
 <table width="100%">
 <tr>
 	<td style="width: 45%; vertical-align: top;">
@@ -123,10 +129,5 @@
 </table>
 
 <br clear="all" />
-<s:if test="permissions.contractor && !contractor.activeB">
-	<div class="buttons" style="float: right;">
-		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next</a>
-	</div>
-</s:if>
 </body>
 </html>
