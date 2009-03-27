@@ -181,14 +181,16 @@ public class ReportFlagCriteria extends ReportAccount {
 			}
 		}
 
-		sql.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + operatorID);
-		sql.addField("flags.flag");
-		sql.addField("lower(flags.flag) AS lflag");
-		if (!sql.hasJoin("generalcontractors gc"))
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
-		sql.addField("gc.workStatus");
-		sql.addWhere("gc.genID = " + operatorID);
-
+		if(!permissions.isOperator()) {
+			sql.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + operatorID);
+			sql.addField("flags.flag");
+			sql.addField("lower(flags.flag) AS lflag");
+			if (!sql.hasJoin("generalcontractors gc"))
+				sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+			sql.addField("gc.workStatus");
+			sql.addWhere("gc.genID = " + operatorID);
+		}
+		
 		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("a.name");
 	}
