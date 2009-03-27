@@ -26,6 +26,9 @@ public class ArchivedAccounts extends ReportAccount {
 		sql.addWhere("1 " + qb.toString());
 		
 		getFilter().setShowVisible(false);
+		if(permissions.isAdmin())
+			getFilter().setShowCcOnFile(true);
+		
 	}
 	
 	@Override
