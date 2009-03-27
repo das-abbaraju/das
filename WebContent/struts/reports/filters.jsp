@@ -88,6 +88,11 @@
 			cssClass="forms" name="filter.waitingOn" /></div>
 	</s:if>
 
+	<s:if test="filter.showCcOnFile">
+		<div class="filterOption"><s:select list="#{'1':'Yes','0':'No'}" headerKey="2" headerValue="- ccOnFile -"
+			cssClass="forms" name="filter.ccOnFile" /></div>
+	</s:if>
+
 	<s:if test="filter.showAuditType">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_auditTypeID'); return false;">Audit

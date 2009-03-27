@@ -267,7 +267,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " 
 				+ "WHERE ct.tagID = "+  f.getOperatorTagName() +")";
 			sql.addWhere(query);
-		}	
+		}
+		
+		if (f.getCcOnFile() < 2)
+			report.addFilter(new SelectFilterInteger("ccOnFile", "c.ccOnFile = '?'", f.getCcOnFile()));
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

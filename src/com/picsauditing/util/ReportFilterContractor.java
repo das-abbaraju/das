@@ -47,6 +47,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showRegistrationDate = true;
 	protected boolean showConWithPendingAudits = false;
 	protected boolean showOpertorTagName = false;
+	protected boolean showCcOnFile = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -70,6 +71,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date registrationDate2;
 	protected boolean pendingPqfAnnualUpdate = false;
 	protected int operatorTagName;
+	protected int ccOnFile = 2; 
 	
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
@@ -217,6 +219,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowOpertorTagName(boolean showOpertorTagName) {
 		this.showOpertorTagName = showOpertorTagName;
+	}
+
+	public boolean isShowCcOnFile() {
+		return showCcOnFile;
+	}
+
+	public void setShowCcOnFile(boolean showCcOnFile) {
+		this.showCcOnFile = showCcOnFile;
 	}
 
 	public String getPerformedBy() {
@@ -471,6 +481,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setOperatorTagName(int operatorTagName) {
 		this.operatorTagName = operatorTagName;
+	}
+
+	public int getCcOnFile() {
+		return ccOnFile;
+	}
+
+	public void setCcOnFile(int ccOnFile) {
+		this.ccOnFile = ccOnFile;
 	}
 
 }
