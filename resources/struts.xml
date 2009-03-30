@@ -416,7 +416,20 @@
 
 		<action name="ReportEmrRates"
 			class="com.picsauditing.actions.report.ReportEmrRates">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportEmrRates</param>
 			<result>struts/reports/report_emr.jsp</result>
+		</action>
+
+		<action name="ReportEmrRatesAjax"
+			class="com.picsauditing.actions.report.ReportEmrRates">
+			<result>struts/reports/report_emr_data.jsp</result>
+		</action>
+
+		<action name="ReportEmrRatesCSV"
+			class="com.picsauditing.actions.report.ReportEmrRates">
+			<param name="download">true</param>
+			<result>struts/reports/report_emr_csv.jsp</result>
 		</action>
 
 		<action name="ReportFatalities"
