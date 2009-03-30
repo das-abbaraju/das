@@ -262,15 +262,13 @@ public class QBWebConnectorSvcSkeleton {
 
 				try {
 					EmailQueue email = new EmailQueue();
-					email.setToAddresses("tester@picsauditing.com");
-					email.setFromAddress("tester@picsauditing.com");
+					email.setToAddresses("errors@picsauditing.com");
 					email.setPriority(30);
 					email.setSubject("QBWebConnector Errors");
 					email.setBody(body.toString());
 					email.setCreationDate(new Date());
 					
-					SendMail sender = new SendMail();
-					sender.send(email);
+					EmailSender.send(email);
 					
 				} catch (Exception notMuchWeCanDoButLogIt) {
 					System.out.println("**********************************");
