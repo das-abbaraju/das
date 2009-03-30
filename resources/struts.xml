@@ -462,7 +462,20 @@
 
 		<action name="ReportIncidenceRate"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportIncidenceRate</param>
 			<result>/struts/reports/report_incidenceRates.jsp</result>
+		</action>
+
+		<action name="ReportIncidenceRateAjax"
+			class="com.picsauditing.actions.report.ReportIncidenceRate">
+			<result>/struts/reports/report_incidenceRates_data.jsp</result>
+		</action>
+
+		<action name="ReportIncidenceRateCSV"
+			class="com.picsauditing.actions.report.ReportIncidenceRate">
+			<param name="download">true</param>
+			<result>/struts/reports/report_incidenceRates_csv.jsp</result>
 		</action>
 
 		<action name="ContractorAssigned"
