@@ -270,7 +270,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 		
 		if (f.getCcOnFile() < 2)
-			report.addFilter(new SelectFilterInteger("ccOnFile", "c.ccOnFile = '?'", f.getCcOnFile()));
+			sql.addWhere("c.ccOnFile = "+ f.getCcOnFile());
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
