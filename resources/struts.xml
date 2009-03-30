@@ -434,7 +434,20 @@
 
 		<action name="ReportFatalities"
 			class="com.picsauditing.actions.report.ReportFatalities">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportFatalities</param>
 			<result>/struts/reports/report_fatalities.jsp</result>
+		</action>
+
+		<action name="ReportFatalitiesAjax"
+			class="com.picsauditing.actions.report.ReportFatalities">
+			<result>/struts/reports/report_fatalities_data.jsp</result>
+		</action>
+
+		<action name="ReportFatalitiesCSV"
+			class="com.picsauditing.actions.report.ReportFatalities">
+			<param name="download">true</param>
+			<result>/struts/reports/report_fatalities_csv.jsp</result>
 		</action>
 
 		<action name="ReportContractorLicenses"

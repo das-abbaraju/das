@@ -10,7 +10,7 @@
 <s:include value="filters.jsp" />
 
 <div id="report_data">
-<s:include value="report_emr_data.jsp"></s:include>
+	<s:include value="report_emr_data.jsp"></s:include>
 </div>
 
 </body>
