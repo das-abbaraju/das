@@ -6,6 +6,8 @@
  */
 package com.intuit.developer;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +23,9 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.SendMail;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -243,6 +248,44 @@ public class QBWebConnectorSvcSkeleton {
 
 		if( start( closeConnection.getTicket() )) {
 
+			if( currentSession.getErrors() != null && currentSession.getErrors().size() > 0 ) {
+
+				StringBuffer body = new StringBuffer();
+
+				body.append("QBWebConnector Errors:");
+				body.append("\n\n");
+
+				for( String error: currentSession.getErrors() ) {
+					body.append(error);
+					body.append("\n");
+				}
+
+				try {
+					EmailQueue email = new EmailQueue();
+					email.setToAddresses("tester@picsauditing.com");
+					email.setFromAddress("tester@picsauditing.com");
+					email.setPriority(30);
+					email.setSubject("QBWebConnector Errors");
+					email.setBody(body.toString());
+					email.setCreationDate(new Date());
+					
+					SendMail sender = new SendMail();
+					sender.send(email);
+					
+				} catch (Exception notMuchWeCanDoButLogIt) {
+					System.out.println("**********************************");
+					System.out.println("Error Running QBWebConnector AND unable to send email");
+					
+					System.out.println(body.toString());
+					
+					
+					System.out.println("**********************************");
+	
+					System.out.println(notMuchWeCanDoButLogIt);
+					notMuchWeCanDoButLogIt.printStackTrace();
+				}	
+			}
+			
 			sessions.remove( currentSession.getSessionId() );
 
 			String result = "Success";

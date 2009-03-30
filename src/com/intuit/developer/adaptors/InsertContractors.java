@@ -31,7 +31,7 @@ public class InsertContractors extends CustomerAdaptor {
 		//first time, load up the inserts
 		if( currentSession.getToInsert() == null ) {
 			currentSession.setToInsert(new Vector<ContractorAccount>());
-			List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and a.qbListID is null and a.mustPay = 'Yes'");
+			List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and ( a.qbListID is null or a.qbListID != 'NOLOAD' ) ");
 			currentSession.getToInsert().addAll(contractors);
 		}
 
@@ -79,28 +79,28 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setName(contractor.getIdString());
 				customer.setIsActive(new Boolean(contractor.isActiveB()).toString());
 				
-				customer.setCompanyName(contractor.getName());
+				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41 ));
 				
-				customer.setContact(contractor.getContact());
-				customer.setFirstName(getFirstName(contractor.getContact()));
-				customer.setLastName( getLastName( contractor.getContact() ) );
+				customer.setContact(nullSafeSubString( contractor.getContact(), 0, 41 ) );
+
+				customer.setFirstName(nullSafeSubString(getFirstName(contractor.getContact()),0, 25 ));
+				customer.setLastName( nullSafeSubString(getLastName( contractor.getContact() ), 0, 25)  );
 				
 				customer.setBillAddress(factory.createBillAddress());
-				customer.getBillAddress().setAddr1(contractor.getName());
-				customer.getBillAddress().setAddr2(contractor.getContact());
-				customer.getBillAddress().setAddr3(contractor.getAddress());
+				customer.getBillAddress().setAddr1(nullSafeSubString(contractor.getName(), 0, 41 ));
+				customer.getBillAddress().setAddr2(nullSafeSubString( contractor.getContact(), 0, 41 ));
+				customer.getBillAddress().setAddr3( nullSafeSubString(contractor.getAddress(), 0, 41) );
 				customer.getBillAddress().setCity(contractor.getCity());
 				customer.getBillAddress().setState(contractor.getState());
 				customer.getBillAddress().setPostalCode(contractor.getZip());
 				customer.getBillAddress().setCountry(contractor.getCountryCode());
 				
-				customer.setPhone(contractor.getPhone());
-				customer.setAltPhone(contractor.getPhone2());
+				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(contractor.getFax());
 				customer.setEmail(contractor.getEmail());
 
-				customer.setAltContact(contractor.getBillingContact());
-				customer.setAltPhone(contractor.getBillingPhone());
+				customer.setAltContact(nullSafeSubString( contractor.getBillingContact(), 0, 41) );
+				customer.setAltPhone(nullSafePhoneFormat(contractor.getBillingPhone()));
 				
 				
 				customer.setTermsRef(factory.createTermsRef());
@@ -188,5 +188,5 @@ public class InsertContractors extends CustomerAdaptor {
 
 		return null;
 	}
-
+	
 }

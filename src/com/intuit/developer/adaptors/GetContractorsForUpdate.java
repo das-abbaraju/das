@@ -22,7 +22,7 @@ public class GetContractorsForUpdate extends CustomerAdaptor {
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 		
-		List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbListID is not null and a.qbSync = true and a.mustPay = 'Yes'");
+		List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbListID is not null and a.qbListID != 'NOLOAD' and a.qbSync = true");
 		
 		if( contractors.size() > 0 ) {
 			currentSession.getPossibleUpdates().addAll(contractors);
