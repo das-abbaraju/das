@@ -33,9 +33,12 @@ public class NoteDAOTest extends TestCase {
 		note.setSummary("Junit Testing the notes entity");
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
+		note.setViewableBy(note.getAccount());
+
 		noteDAO.save(note);
 		assertTrue(note.getId() > 0);
 		assertTrue(note.getStatus().equals(NoteStatus.Closed));
+
 		noteDAO.remove(note.getId());
 		assertNull(noteDAO.find(note.getId()));
 	}
