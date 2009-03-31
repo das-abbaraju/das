@@ -1,6 +1,9 @@
 package com.picsauditing.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -24,8 +27,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class ContractorOperatorDAOTest {
 	@Autowired
 	ContractorOperatorDAO contractorOperatorDao;
-	@Autowired
-	ContractorAccountDAO contractorDao;
 
 	@Test
 	public void testSave() {
@@ -35,11 +36,14 @@ public class ContractorOperatorDAOTest {
 			contractorOperator.setForceFlag(FlagColor.Amber);
 			contractorOperatorDao.save(contractorOperator);
 			contractorOperator = contractorOperatorDao.find(588, 16);
-			assertEquals(FlagColor.Amber, contractorOperator.getForceFlag());
+			assertEquals("contractorOperator's flag should be amber", FlagColor.Amber, contractorOperator.getForceFlag());
 			contractorOperator.setForceFlag(FlagColor.valueOf(color));
-			contractorOperatorDao.save(contractorOperator);
-			contractorOperatorDao.remove(contractorOperator);
 			
+			contractorOperator = contractorOperatorDao.save(contractorOperator);
+			assertNotNull("after a save the contractorOperator should exist", contractorOperatorDao.find(contractorOperator.getId()));
+			
+			contractorOperatorDao.remove(contractorOperator);
+			assertNull(contractorOperatorDao.find(contractorOperator.getId()));			
 		}
 	}
 
@@ -52,10 +56,12 @@ public class ContractorOperatorDAOTest {
 		co.getContractorAccount().setId(3); // Ancon Marine
 		co.setCreationDate(new Date());
 		co.setWorkStatus("P");
-		co = contractorOperatorDao.save(co);
 		
-		contractorOperatorDao.remove(co);
-		co = null;
+		contractorOperatorDao.save(co);
+		assertTrue("the contractor should exist after a save", co.getId() > 0);
+		
+		contractorOperatorDao.remove(co.getId());
+		assertNull("the contractor should not exist after a remove", contractorOperatorDao.find(co.getId()));
 	}
 	
 
