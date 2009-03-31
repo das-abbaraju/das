@@ -17,7 +17,9 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -34,123 +36,122 @@ public class BillingCalculatorSingleTest extends TestCase {
 	@Test
 	public void testCalculate() throws Exception {
 		
-		BillingCalculatorSingle calculator = new BillingCalculatorSingle();
-		
 		ContractorAccount contractor = EntityFactory.makeContractor();
 
-		InvoiceFee fee = calculator.calculateAnnualFee(contractor);
-		assertNull("fee should be null if there are no operators for a given contractor", fee);
+		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("there should be no fee if the contractor has no operators", lookup(InvoiceFee.FREE), lookup(fee));
 		
-		List<OperatorAccount> ops = makeOperators(40);
-
-		for( OperatorAccount o : ops ) {
+		/***************************************************************************/
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setDoContractorsPay("No");
+		EntityFactory.addContractorOperator(contractor, operator);
+		
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("there should be no fee if there is only one operator with DoContractorsPay == 'No'",  lookup(InvoiceFee.FREE), lookup(fee));
+		
+		/***************************************************************************/
+		
+		operator.setDoContractorsPay("Yes");
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor); 
+		assertEquals("contractor should have the PQF Only fee", lookup(InvoiceFee.PQFONLY), lookup(fee));
+		
+		/***************************************************************************/
+		
+		EntityFactory.makeAuditOperator(AuditType.DESKTOP, operator);
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be at tier 1", lookup(InvoiceFee.FACILITIES1), lookup(fee));
+		
+		/***************************************************************************/
+		
+		operator.getAudits().clear();
+		
+		operator.setDoContractorsPay("Multiple");
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor has only one operator with DoContractorsPay == 'Multiple', should not have to pay", lookup(InvoiceFee.FREE), lookup(fee));
+		
+		/***************************************************************************/
+		
+		operator = EntityFactory.makeOperator();
+		operator.setDoContractorsPay("No");
+		EntityFactory.addContractorOperator(contractor, operator);
+		
+		assertEquals("contractor should still be free", lookup(InvoiceFee.FREE), lookup(fee));
+		
+		/***************************************************************************/
+		
+		operator.setDoContractorsPay("Yes");
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be at the PQF Only fee since there are no audits", lookup(InvoiceFee.PQFONLY), lookup(fee));
+		
+		/***************************************************************************/
+		
+		EntityFactory.makeAuditOperator(AuditType.DESKTOP, operator);
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be at 2-4 operators price since there is at least one audit now", lookup(InvoiceFee.FACILITIES2), lookup(fee));
+		
+		/***************************************************************************/
+		
+		List<OperatorAccount> ops = makeOperators(2);
+		for (OperatorAccount o : ops) {
 			EntityFactory.addContractorOperator(contractor, o);
 		}
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNull("none of the operators had a doContractorsPay value which would result in a bill...should be null result", fee);
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should still be in the 2-4 operators price", lookup(InvoiceFee.FACILITIES2), lookup(fee));
 		
-		ops.get(0).setDoContractorsPay("Multiple");
-
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNull("one operator had a doContractorsPay with multiple...should be null result", fee);
+		/***************************************************************************/
 		
-		ops.get(1).setDoContractorsPay("Multiple");
+		operator = EntityFactory.makeOperator();
+		EntityFactory.addContractorOperator(contractor, operator);
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be in the 5-8 operators range", lookup(InvoiceFee.FACILITIES5), lookup(fee));
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("two operators had a doContractorsPay with multiple...should not be null result", fee);
+		/***************************************************************************/
 		
-		
-		int i = 0;
-		for( OperatorAccount op : ops ) {
-			op.setDoContractorsPay( i++ % 2 == 0 ? "Yes" : "No" );
+		ops = makeOperators(4);
+		for (OperatorAccount o : ops) {
+			EntityFactory.addContractorOperator(contractor, o);
 		}
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the base fee because nobody is configured to require an Active Status", 99, lookup( fee ));
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be in the 9-12 range", lookup(InvoiceFee.FACILITIES9), lookup(fee));
 		
-		List<AuditOperator> aops = new Vector<AuditOperator>();
+		/***************************************************************************/
 		
-		for( OperatorAccount op : ops ) {
-			op.setDoContractorsPay( "Yes" );
-			
-			AuditOperator aop = EntityFactory.makeAuditOperator(1, op);
-			aop.setRequiredAuditStatus( AuditStatus.Submitted );
-			aops.add( aop );	
+		ops = makeOperators(5);
+		for (OperatorAccount o : ops) {
+			EntityFactory.addContractorOperator(contractor, o);
 		}
-
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the base fee because nobody is configured to require an Active Status", 99, lookup( fee ));
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be in the 13-19 range", lookup(InvoiceFee.FACILITIES13), lookup(fee));
 		
-
+		/***************************************************************************/
 		
-		aops.get(1).setRequiredAuditStatus(AuditStatus.Active);
+		ops = makeOperators(8);
+		for (OperatorAccount o : ops) {
+			EntityFactory.addContractorOperator(contractor, o);
+		}
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the first tier because there is 1 auditoperator with a requiredauditstatus = active", 399, lookup( fee ));
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor should be in the 20+ range", lookup(InvoiceFee.FACILITIES20), lookup(fee));
 		
-
-		aops.get(2).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(3).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(4).setRequiredAuditStatus(AuditStatus.Active);
+		/***************************************************************************/
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the second tier because there are 2-4 auditoperators with a requiredauditstatus = active", 699, lookup( fee ));
+		for (ContractorOperator o : contractor.getOperators()) {
+			o.getOperatorAccount().getAudits().clear();
+		}
 		
-		aops.get(5).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(6).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(7).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(8).setRequiredAuditStatus(AuditStatus.Active);
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor has no audits - should be at the PQF Only Range", lookup(InvoiceFee.PQFONLY), lookup(fee));
 		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the third tier because there are 5-8 auditoperators with a requiredauditstatus = active", 999, lookup( fee ));
+		/***************************************************************************/
 		
+		contractor.getOperators().clear();
 		
-		aops.get(9).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(10).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(11).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(12).setRequiredAuditStatus(AuditStatus.Active);
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the fourth tier because there are 9-12 auditoperators with a requiredauditstatus = active", 1299, lookup( fee ));
-		
-		
-		aops.get(13).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(14).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(15).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(16).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(17).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(18).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(19).setRequiredAuditStatus(AuditStatus.Active);
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the fifth tier because there are 13-19 auditoperators with a requiredauditstatus = active", 1699, lookup( fee ));
-		
-		aops.get(20).setRequiredAuditStatus(AuditStatus.Active);
-		
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should be the sixth tier because there are 20+ auditoperators with a requiredauditstatus = active", 1999, lookup( fee ));
-		
-		aops.get(21).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(22).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(23).setRequiredAuditStatus(AuditStatus.Active);
-		aops.get(24).setRequiredAuditStatus(AuditStatus.Active);
-		
-		
-		fee = calculator.calculateAnnualFee(contractor);
-		assertNotNull("multiple operators with doContractorsPay = yes, result should not be null", fee);
-		assertEquals("Should still be the sixth tier because there are at least 6 auditoperators with a requiredauditstatus = active", 1999, lookup( fee ));
-		
+		fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+		assertEquals("contractor has no operators - should be FREE", lookup(InvoiceFee.FREE), lookup(fee));
 		
 	}
 	
@@ -159,7 +160,10 @@ public class BillingCalculatorSingleTest extends TestCase {
 		return connected.getAmount();
 	}
 	
-	
+	private int lookup(int feeID) {
+		InvoiceFee connected = feeDao.find(feeID);
+		return connected.getAmount();
+	}
 
 	private List<OperatorAccount> makeOperators(int x) {
 		List<OperatorAccount> ops = new Vector<OperatorAccount>();
