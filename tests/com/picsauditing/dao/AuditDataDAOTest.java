@@ -41,23 +41,27 @@ public class AuditDataDAOTest {
 
 	@Test
 	public void testSaveAndRemove() {
-		// remove any old data before starting the test
-
-		ArrayList<Integer> questions = new ArrayList<Integer>();
-		questions.add(48);
-		AnswerMap existingData = auditdataDAO.findAnswers(3259, questions);
+		int questionID = 48;
+		int auditID = 3259;
+		int auditorID = 744;
 		
-		auditdataDAO.remove(existingData.get(48).getId());
+		// remove any old data before starting the test
+		ArrayList<Integer> questions = new ArrayList<Integer>();
+		questions.add(questionID);
+		AnswerMap existingData = auditdataDAO.findAnswers(auditID, questions);
+		
+		if (existingData.get(questionID) != null)
+			auditdataDAO.remove(existingData.get(questionID).getId());
 
 		// Create a new AuditData object and save it
 		AuditData auditdata = new AuditData();
 		auditdata.setAudit(new ContractorAudit());
-		auditdata.getAudit().setId(3259);
+		auditdata.getAudit().setId(auditID);
 		auditdata.setQuestion(new AuditQuestion());
-		auditdata.getQuestion().setId(48);
+		auditdata.getQuestion().setId(questionID);
 		auditdata.setAnswer("junit testing");
 		auditdata.setAuditor(new User());
-		auditdata.getAuditor().setId(744);
+		auditdata.getAuditor().setId(auditorID);
 		auditdata.setComment("junit");
 		auditdata.setDateVerified(new Date());
 		auditdata.setWasChanged(YesNo.No);
@@ -65,9 +69,9 @@ public class AuditDataDAOTest {
 		assertEquals("junit testing", auditdata.getAnswer());
 
 		List<Integer> questionid = new LinkedList<Integer>();
-		questionid.add(48);
-		AnswerMap testFindAnswers = auditdataDAO.findAnswers(3259, questionid);
-		assertEquals("junit testing", testFindAnswers.get(48).getAnswer());
+		questionid.add(questionID);
+		AnswerMap testFindAnswers = auditdataDAO.findAnswers(auditID, questionid);
+		assertEquals("junit testing", testFindAnswers.get(questionID).getAnswer());
 		auditdataDAO.remove(auditdata.getId());
 		AuditData auditdata1 = auditdataDAO.find(auditdata.getId());
 		assertNull(auditdata1);
