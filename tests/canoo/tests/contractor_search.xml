@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	<target name="test">
+		<webtest name="Contractor Search">
+			&config;
+			<steps>
+				<invoke  description="Try to search without login"
+				      url="ContractorSearch.action?filter.accountName=Ancon Marine"/>
+				<verifyInputId
+				      description="Looks for the title of the Login page"
+				      text="PICS - Login" />
+
+				&login;
+				&body_verify;
+				
+				
+
+			</steps>
+		</webtest>
+	</target>
+</project>
