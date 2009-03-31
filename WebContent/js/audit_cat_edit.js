@@ -36,21 +36,28 @@ function saveComment(divId, elm) {
 	var	questionid = $(divId + '_questionID').value;
 	var	parentid = $(divId + '_parentAnswerID').value;
 	var	allowMultiple = $(divId + '_multiple').value;
+	
+	var divName = 'node_'+parentid+'_'+questionid;
 	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
 	
-	if (answerid > 0) 
+	if (answerid > 0) {
 		pars += '&auditData.id='+answerid;
-	
-
-	pars += '&auditData.question.id=' + questionid;
-	if (parentid > 0)
-		pars += '&auditData.parentAnswer.id=' + parentid;
+		if (allowMultiple == 'true')
+			divName = 'node_'+answerid+'_'+questionid;
+	} else {
+		if (allowMultiple == 'true') {
+			// This is adding a new tuple, we may just want to call addTuple(questionid)
+			return;
+		}
+		pars += '&auditData.question.id=' + questionid;
+		if (parentid > 0)
+			pars += '&auditData.parentAnswer.id=' + parentid;
+	}
 
 	pars += '&auditData.comment=' + escape(elm.value);
 	
-	var divName = 'node_'+parentid+'_'+questionid;
 	startThinking({div:'thinking_' + divId, message: "Saving Comment"});
-	var myAjax = new Ajax.Updater('', 'AuditDataSaveAjax.action', 
+	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
 	{
 		method: 'post', 
 		parameters: pars,
@@ -62,7 +69,7 @@ function saveComment(divId, elm) {
 			if (transport.status == 200)
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
 			else
-				alert("Failed to save answer" + transport.statusText + transport.responseText);
+				alert("Failed to save comment" + transport.statusText + transport.responseText);
 		}
 	});
 	return true;

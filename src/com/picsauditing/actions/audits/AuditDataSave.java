@@ -86,6 +86,7 @@ public class AuditDataSave extends AuditActionSupport {
 					// if answer is being set, then
 					// we are not currently verifying
 					if (auditData.getAnswer() == null 
+							|| newCopy.getAnswer() == null 
 							|| !newCopy.getAnswer().equals(auditData.getAnswer())) {
 
 						if(!checkAnswerFormat(auditData, newCopy)) {

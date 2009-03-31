@@ -183,7 +183,7 @@
 	<s:if test="#q.showComment || mode == 'Verify'">
 		<br/>
 		<label>Comments:</label>
-		<s:textfield value="%{#a.comment}" size="30"
+		<s:textfield name="answer%{#divID}" value="%{#a.comment}" size="30"
 			onchange="saveComment('%{#divID}', this);"/>
 	</s:if>
 </div>
