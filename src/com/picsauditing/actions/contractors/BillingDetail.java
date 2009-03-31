@@ -90,31 +90,36 @@ public class BillingDetail extends ContractorActionSupport {
 		// and when the actual membership expires
 		if ("Upgrade".equals(contractor.getBillingStatus())) {
 			if (contractor.getNewMembershipLevel() != null && contractor.getMembershipLevel() != null) {
-				double upgradeAmount = 0;
+				int upgradeAmount = 0;
 				String description = "";
 
 				if (contractor.getMembershipLevel().getAmount() == 0) {
+					// Free Membership Level
 					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
 					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
-
+					
 				} else if (DateBean.getDateDifference(contractor.getPaymentExpires()) < 0) {
+					// Their membership has already expired so we need to do a full renewal amount
 					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
 					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
+					
 				} else {
-					double daysUntilExpiration = DateBean.getDateDifference(contractor.getPaymentExpires());
+					// Actual prorated Upgrade
+					Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor.getLastUpgradeDate();
+					double daysUntilExpiration = DateBean.getDateDifference(upgradeDate, contractor.getPaymentExpires());
 					double upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount()
 							- contractor.getMembershipLevel().getAmount();
 
 					double proratedCalc = (double) (upgradeAmountDifference / 365);
-					upgradeAmount = Math.round((daysUntilExpiration * proratedCalc));
+					upgradeAmount = (int)Math.round(daysUntilExpiration * proratedCalc);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
-							+ (int) upgradeAmount;
+							+ upgradeAmount;
 				}
 
 				InvoiceItem invoiceItem = new InvoiceItem();
 				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
-				invoiceItem.setAmount((int) upgradeAmount);
+				invoiceItem.setAmount(upgradeAmount);
 				invoiceItem.setDescription(description);
 				invoiceItems.add(invoiceItem);
 			}
