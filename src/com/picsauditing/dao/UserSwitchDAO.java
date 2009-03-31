@@ -20,6 +20,12 @@ public class UserSwitchDAO extends PicsDAO {
 		}
 		return o;
 	}
+	
+	public void remove(UserSwitch row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
 
 	public void remove(int id) {
 		UserSwitch row = find(id);
