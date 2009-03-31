@@ -15,13 +15,14 @@
 		<ant antfile="audit_definitions.xml"/>
 		<ant antfile="admin_insurance.xml"/>
 		<ant antfile="admin_reports.xml"/>
+		<ant antfile="contractor_search.xml"/>
 		
 		<ant antfile="operator.xml"/>
 		<ant antfile="contractor_registration.xml"/>
 	</target>
 	
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="operator.xml"/>
+		<ant antfile="contractor_search.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
