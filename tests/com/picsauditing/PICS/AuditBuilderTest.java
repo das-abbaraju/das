@@ -18,11 +18,11 @@ public class AuditBuilderTest extends TestCase {
 
 	@Test
 	public void build() {
-		 try {
-		 builder.buildAudits(1784);
-		 } catch (Exception e) {
-		 fail(e.getMessage());
-		 }
+		try {
+			builder.buildAudits(1784);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 }
