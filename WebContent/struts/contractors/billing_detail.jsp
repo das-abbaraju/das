@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 
+<script src="js/prototype.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script src="js/notes.js" type="text/javascript"></script>
 
@@ -24,7 +25,7 @@
 						</s:else></li>
 			<li><label title="The Date the Account was Created.">Registration Date:</label> <s:date
 				name="contractor.creationDate" format="MMM d, yyyy" /></li>
-			<li><label title="The Date the Activation Fee was Paid.">Activation Date:</label> <s:date
+			<li><label title="The Date the Activation/Reactivation Fee was Paid.">Activation Date:</label> <s:date
 				name="contractor.membershipDate" format="MMM d, yyyy" /></li>
 			<li><label>Will be Renewed:</label> <s:if test="contractor.renew == true">
 							Yes
