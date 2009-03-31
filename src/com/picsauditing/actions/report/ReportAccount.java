@@ -77,8 +77,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	// TODO make this method final
 	public String execute() throws Exception {
-	//	if (!forceLogin())
-	//		return LOGIN;
+		if (!forceLogin())
+			return LOGIN;
 
 		// Figure out if this is mailmerge call or not
 		// This is not very robust, we should refactor this eventually
