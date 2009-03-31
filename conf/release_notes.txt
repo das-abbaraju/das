@@ -1,0 +1,13 @@
+###
+Release Notes for the PICS Web Project
+###
+
+Last Release Date: 2009-03-27
+
+#####################################
+# Next Release - Target 2009-03-31
+- TBD
+
+#####################################
+# Release 2009-03-27
+- 
