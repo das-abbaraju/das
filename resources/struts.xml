@@ -556,7 +556,10 @@
 			<result>struts/reports/audit_update.jsp</result>
 		</action>
 
-
+		<action name="ReportLifetimeMembership"
+			class="com.picsauditing.actions.report.ReportLifetimeMembership">
+			<result>struts/reports/lifetime_membership.jsp</result>
+		</action>
 
 
 		<!-- Audits View/Edit/Verify/Copy -->
