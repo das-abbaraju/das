@@ -110,7 +110,7 @@ public class BillingDetail extends ContractorActionSupport {
 					double upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount()
 							- contractor.getMembershipLevel().getAmount();
 
-					double proratedCalc = (double) (upgradeAmountDifference / 365);
+					double proratedCalc = upgradeAmountDifference / 365;
 					upgradeAmount = (int)Math.round(daysUntilExpiration * proratedCalc);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
@@ -165,7 +165,8 @@ public class BillingDetail extends ContractorActionSupport {
 			for (InvoiceItem item : invoiceItems) {
 				item.setInvoice(invoice);
 				item.setAuditColumns(getUser());
-				if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+				if (item.getInvoiceFee().getFeeClass().equals("Membership") 
+						&& item.getAmount() == item.getInvoiceFee().getAmount())
 					invoiceIncludesMembership = true;
 			}
 			invoiceDAO.save(invoice);
