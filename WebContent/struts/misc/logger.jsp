@@ -30,6 +30,7 @@
 	<li><a class="edit" href="?button=add&rule.name=CC_Hash_Errors">CC_Hash_Errors</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ContractorCron">ContractorCron</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ContractorFlagAction">ContractorFlagAction</a></li>
+	<li><a class="edit" href="?button=add&rule.name=cron_ebix">cron_ebix</a></li>
 	<li><a class="edit" href="?button=add&rule.name=EmailSender">EmailSender</a></li>
 	<li><a class="edit" href="?button=add&rule.name=Flag.calculate">Flag.calculate</a></li>
 	<li><a class="edit" href="?button=add&rule.name=LoggerConfig.execute">LoggerConfig.execute</a></li>

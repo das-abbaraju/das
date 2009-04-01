@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
@@ -86,6 +87,15 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 
+			try {
+				startTask("\nRunning Huntsman EBIX Support...");
+				processEbixData();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+
+			
 			try {
 				startTask("\nSending emails to contractors for expired Certificates...");
 				sendEmailExpiredCertificates();
@@ -154,13 +164,6 @@ and expiresDate < NOW();
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		
-		/*try {
-			startTask("\nRunning Huntsman EBIX Support...");
-			processEbixData();
-		} catch (Throwable t) {
-			handleException(t);
-		}*/
 
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
@@ -256,17 +259,27 @@ and expiresDate < NOW();
 	}
 	
 	public void processEbixData() throws Exception {
+		
+		PicsLogger.start("cron_ebix");
+		
 		String server = appPropDao.find("huntsmansync.ftp.server").getValue();
 		String username = appPropDao.find("huntsmansync.ftp.user").getValue();
 		String password = appPropDao.find("huntsmansync.ftp.password").getValue();
 		String folder = appPropDao.find("huntsmansync.ftp.folder").getValue();
 
+		PicsLogger.log("Server: " + server);
+		PicsLogger.log("username: " + username);
+		PicsLogger.log("folder: " + folder);
+		
 		// there may be other files in that folder. we can use this to filter
 		// down to the ones we want.
 		// String pattern =
 		// appPropDao.find("huntsmansync.ftp.filePattern").getValue();
 
 		FTPClient ftp = new FTPClient();
+
+		PicsLogger.log("logging in to server...");
+		
 		ftp.connect(server);
 		ftp.login(username, password);
 
@@ -278,6 +291,8 @@ and expiresDate < NOW();
 
 			for (FTPFile ftpFile : files) {
 
+				PicsLogger.log("Processing file: " + ftpFile.getName() );
+				
 				BufferedReader reader = null;
 
 				InputStream retrieveFileStream = ftp.retrieveFileStream(ftpFile.getName());
@@ -295,37 +310,63 @@ and expiresDate < NOW();
 							String[] data = line.split(",");
 
 							if (data.length == 2) {
+								
 								// contractor id
 								Integer contractorId = Integer.parseInt(data[0]);
 
+								PicsLogger.log("Processing data: " + data[0] + "/" + data[1] );
+								
 								// the other field. comes in as a Y/N.
-								YesNo yn;
+								AuditStatus status = AuditStatus.Pending;
 								if (data[1].equals("Y"))
-									yn = YesNo.Yes;
-								else
-									yn = YesNo.No;
+									status = AuditStatus.Active;
 
-								System.out.println(contractorId + " " + yn);
+								try {
+								
+									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
+									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = 31 and contractorAccount.id = " + conAccount.getId(), "");
+									
+									if( audits == null || audits.size() == 0 ) {
+										PicsLogger.log("WARNING: Ebix record found for contractor " + conAccount.getId() + " but no Ebix Compliance audit was found");
+										continue;
+									}
+									
+									for( ContractorAudit audit : audits ) {
+										if( status != audit.getAuditStatus() ) {
+											PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor " + conAccount.getId() + " to " + status.name());
+											audit.setAuditStatus( status );
+											contractorAuditDAO.save(audit);
 
-								ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
-								//conAccount.setEbixStatus(yn);
-								contractorAccountDAO.save(conAccount);
+										
+											conAccount.setNeedsRecalculation(true);
+											contractorAccountDAO.save(conAccount);
+										}
+										else {
+											PicsLogger.log("No change for Ebix audit " + audit.getId() + " for contractor " + conAccount.getId() + ", " + status.name());
+										}
+									}
+									
+								}
+								catch( Exception e ) {
+									PicsLogger.log("ERROR: Error Processing Ebix for contractor " + data[0]);
+									e.printStackTrace();
+								}
 
 							} else {
-								// maybe append this to a report that gets
-								// emailed
-								report.append("Bad Data Found : " + data);
+								PicsLogger.log("Bad Data Found : " + data);
 							}
 						}
 					}
-				} else {
-					// maybe append this to a report that gets emailed
-					report.append("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
+				} 
+				else {
+					PicsLogger.log("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
 				}
 			}
 		}
 
 		ftp.logout();
 		ftp.disconnect();
+		
+		PicsLogger.stop();
 	}
 }
