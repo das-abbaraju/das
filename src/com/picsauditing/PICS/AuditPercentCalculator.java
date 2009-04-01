@@ -108,12 +108,18 @@ public class AuditPercentCalculator {
 						// This question isn't part of a tuple
 						isRequired = "Yes".equals(question.getIsRequired());
 						if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null && question.getDependsOnAnswer() != null) {
+							if(question.getDependsOnAnswer().equals("NULL")) {
+								AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+								if (otherAnswer == null)
+									isRequired = true;
+							} else {
 							// This question is dependent on another question's answer
 							// Use the parentAnswer, so we get answers in the same tuple as this one
 							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
 							if (otherAnswer != null 
 									&& question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
 								isRequired = true;
+							}
 						}
 						if (isRequired)
 							requiredCount++;
