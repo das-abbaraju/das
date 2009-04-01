@@ -13,7 +13,7 @@ import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
 
 
-public class MapMappedContractors extends CustomerAdaptor {
+public class MapUnMappedContractors extends CustomerAdaptor {
 
 	
 	@Override
