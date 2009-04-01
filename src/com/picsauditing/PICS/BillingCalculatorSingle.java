@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -8,6 +9,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -55,7 +57,8 @@ public class BillingCalculatorSingle {
 	}
 
 	static private boolean isAudited(ContractorAccount contractor) {
-		// We have at least one paying operator, let's see if they need to be audited
+		// We have at least one paying operator, let's see if they need to be
+		// audited
 
 		for (ContractorOperator contractorOperator : contractor.getOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
@@ -96,5 +99,29 @@ public class BillingCalculatorSingle {
 		if (billable >= 2)
 			return InvoiceFee.FACILITIES2;
 		return InvoiceFee.FACILITIES1;
+	}
+
+	public ContractorAccount calculateCurrentBalance(ContractorAccount contractor, boolean invoiceIncludesMembership,
+			boolean invoiceIncludesFullMembership, int addYear) {
+		int balance = 0;
+		for (Invoice invoice2 : contractor.getInvoices()) {
+			if (!invoice2.isPaid()) {
+				balance += invoice2.getTotalAmount();
+			}
+		}
+		contractor.setBalance(balance);
+
+		if (invoiceIncludesMembership) {
+			if (invoiceIncludesFullMembership && contractor.isActiveB()) {
+				if (contractor.getPaymentExpires() != null) {
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(contractor.getPaymentExpires());
+					cal.add(Calendar.YEAR, addYear);
+					contractor.setPaymentExpires(cal.getTime());
+				}
+				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
+			}
+		}
+		return contractor;
 	}
 }
