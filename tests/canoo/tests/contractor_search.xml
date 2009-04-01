@@ -9,11 +9,11 @@
 			<steps>
 				<invoke  description="Try to search without login"
 				      url="ContractorSearch.action?filter.accountName=Ancon Marine"/>
-				<verifyInputId
+				<verifyTitle
 				      description="Looks for the title of the Login page"
 				      text="PICS - Login" />
 
-				&login;
+				<property name="error_expected" value="false"/>
 				&body_verify;
 				
 				
