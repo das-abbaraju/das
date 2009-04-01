@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
@@ -137,7 +138,43 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						// TODO: handle exception
 					}
 				}
+				if(button.startsWith("Cancel Invoice")) {
+					boolean invoiceIncludesMembership = false;
+					boolean invoiceIncludesFullMembership = false;
+					Iterator<InvoiceItem> inIterator = invoice.getItems().iterator();
 
+					while (inIterator.hasNext()) {
+						InvoiceItem invoiceItem = inIterator.next();
+						//if (invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
+						//	invoiceIncludesMembership = true;
+						//	invoiceIncludesFullMembership = (invoiceItem.getAmount() == invoiceItem.getInvoiceFee().getAmount());
+						//}
+						inIterator.remove();
+						invoiceItemDAO.remove(invoiceItem);
+					}
+
+					invoice.setTotalAmount(0);
+					invoice.setPaid(true);
+					invoice.setPaidDate(new Date());
+					invoice.setAuditColumns(permissions);
+					//invoice.setQbSync(true);
+					invoice.setNotes("Cancelled Invoice");
+
+					invoiceDAO.save(invoice);
+
+					BillingCalculatorSingle billingCalculatorSingle = new BillingCalculatorSingle();
+					contractor = billingCalculatorSingle.calculateCurrentBalance(contractor, invoiceIncludesMembership, invoiceIncludesFullMembership, -1);
+					contractor.setAuditColumns(permissions);
+					conAccountDAO.save(contractor);
+
+					Note note = new Note();
+					note.setAccount(invoice.getAccount());
+					note.setAuditColumns(this.getUser());
+					note.setSummary("Cancelled Invoice");
+					note.setNoteCategory(NoteCategory.Billing);
+					note.setViewableById(Account.PicsID);
+					noteDAO.save(note);
+				}
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}

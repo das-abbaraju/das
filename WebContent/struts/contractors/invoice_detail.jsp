@@ -180,9 +180,11 @@ h1 {
 									<input type="submit" class="picsbutton positive" name="button" maxlength="50"
 										value="Collect Check for $<s:property value=" invoice.totalAmount" />">
 								</s:else>
+								<input type="submit" class="picsbutton" name="button" value="Cancel Invoice"/>
 							</s:if> <s:elseif test="invoice.totalAmount < 0 || invoice.totalAmount == 0">
 								<input type="submit" class="picsbutton positive" name="button" value="Mark Paid">
-							</s:elseif></td>
+							</s:elseif>
+							</td>
 						</pics:permission>
 					</s:else>
 				</tr>
