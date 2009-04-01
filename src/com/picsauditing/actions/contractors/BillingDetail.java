@@ -162,19 +162,22 @@ public class BillingDetail extends ContractorActionSupport {
 			contractor.getInvoices().add(invoice);
 
 			boolean invoiceIncludesMembership = false;
+			boolean invoiceIncludesFullMembership = false;
 			for (InvoiceItem item : invoiceItems) {
 				item.setInvoice(invoice);
 				item.setAuditColumns(getUser());
-				if (item.getInvoiceFee().getFeeClass().equals("Membership") 
-						&& item.getAmount() == item.getInvoiceFee().getAmount())
+				if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
 					invoiceIncludesMembership = true;
+					invoiceIncludesFullMembership = (item.getAmount() == item.getInvoiceFee().getAmount());
+				}
+						
 			}
 			invoiceDAO.save(invoice);
 
 			int conBalance = contractor.getBalance();
 			contractor.setBalance(conBalance + invoiceTotal);
 			if (invoiceIncludesMembership) {
-				if (contractor.isActiveB()) {
+				if (invoiceIncludesFullMembership && contractor.isActiveB()) {
 					// Bump the paymentExpires one year
 					if (contractor.getPaymentExpires() == null) {
 						// This should never happen...but just in case
