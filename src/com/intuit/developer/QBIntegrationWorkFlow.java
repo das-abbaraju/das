@@ -1,6 +1,6 @@
 package com.intuit.developer;	
 
-import com.intuit.developer.adaptors.DumpUnMappedContractors;
+import com.intuit.developer.adaptors.MapMappedContractors;
 import com.intuit.developer.adaptors.DumpUnMappedInvoices;
 import com.intuit.developer.adaptors.Finished;
 import com.intuit.developer.adaptors.GetContractorsForUpdate;
@@ -15,7 +15,7 @@ import com.intuit.developer.adaptors.UpdateInvoices;
 import com.intuit.developer.adaptors.UpdatePayments;
 
 public enum QBIntegrationWorkFlow {
-	DumpUnMappedContractors(DumpUnMappedContractors.class),
+	DumpUnMappedContractors(MapMappedContractors.class),
 	RemoveDeletedContractors(QBXmlAdaptor.class),
 	GetContractorsForUpdate(GetContractorsForUpdate.class),
 	UpdateContractors(UpdateContractors.class),

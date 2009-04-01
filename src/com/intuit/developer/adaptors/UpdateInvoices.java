@@ -204,7 +204,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 						if( invoiceJPA.getQbPaymentListID() == null ) {
 							currentSession.getPaymentsToInsert().add(invoiceJPA);
 						}
-						else {
+						else if( ! invoiceJPA.getQbPaymentListID().startsWith("NOLOAD") ){
 							currentSession.getPossiblePaymentUpdates().add(invoiceJPA);
 						}
 					}

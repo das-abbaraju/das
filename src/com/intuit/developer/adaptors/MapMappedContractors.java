@@ -1,7 +1,5 @@
 package com.intuit.developer.adaptors;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Map;
 
@@ -13,10 +11,9 @@ import com.picsauditing.quickbooks.qbxml.CustomerQueryRqType;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.util.log.PicsLogger;
 
 
-public class DumpUnMappedContractors extends CustomerAdaptor {
+public class MapMappedContractors extends CustomerAdaptor {
 
 	
 	@Override
@@ -55,36 +52,35 @@ public class DumpUnMappedContractors extends CustomerAdaptor {
 
 		Map<String, Map<String,Object>> parsedResponses = parseCustomerQueryResponse(qbXml);
 
-		FileWriter fw = null;
 		
-		try {
-		
-			File outputFile = new File("contractors.out"); 
+		for( String listId : parsedResponses.keySet() ) {
+			Map<String, Object> dataForThisListId = parsedResponses.get(listId);
 			
-			if( outputFile.isFile() ) {
-				outputFile.delete();
-			}
-			
-			fw = new FileWriter( outputFile);
+			ContractorAccount contractor = ( ContractorAccount) dataForThisListId.get("contractor");
 
-		
-			for( String listId : parsedResponses.keySet() ) {
-				Map<String, Object> dataForThisListId = parsedResponses.get(listId);
-				
-				ContractorAccount contractor = ( ContractorAccount) dataForThisListId.get("contractor");
-				
-				if( contractor != null && contractor.getId() != 0 ) {
-					
-					fw.write("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + ";\n");
+			if( contractor != null && contractor.getId() != 0 ) {
+
+				try {
+					ContractorAccount contractor2 = getContractorDao().find(contractor.getId());
+					if( contractor != null ) {
+						
+						if( contractor2.getQbListID() == null || contractor2.getQbListID().length() == 0 ) {
+							contractor2.setQbListID(listId);
+							getContractorDao().save(contractor2);
+						} 
+						else {
+							currentSession.getErrors().add("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + ";");
+						}
+					}
 				}
+				catch( Exception e ) {
+					currentSession.getErrors().add("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + ";");
+				}
+				
 			}
-	
-			fw.write(qbXml);
-			return null;
 		}
-		finally {
-			if( fw != null ) fw.close();
-		}
+
+		return null;
 	}
 
 }

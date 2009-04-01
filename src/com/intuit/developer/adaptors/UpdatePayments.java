@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import java.io.StringReader;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -156,7 +157,6 @@ public class UpdatePayments extends CustomerAdaptor {
 			ReceivePaymentRet receivePaymentRet = thisQueryResponse.getReceivePaymentRet();
 
 			int invoiceId = new Integer( currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID())).intValue();
-			Invoice connected = getInvoiceDao().find(invoiceId);
 			
 			currentSession.getToUpdate().remove(new Integer( invoiceId) .toString());
 			
@@ -174,11 +174,10 @@ public class UpdatePayments extends CustomerAdaptor {
 				errorMessage.append( thisQueryResponse.getStatusCode() );
 				
 				currentSession.getErrors().add(errorMessage.toString());
-				
-				connected.setQbPaymentListID(null);
 			}
 
 		}
+		
 		
 		if( currentSession.getToUpdate().size() > 0 ) {
 			setRepeat(true);

@@ -31,7 +31,7 @@ public class InsertContractors extends CustomerAdaptor {
 		//first time, load up the inserts
 		if( currentSession.getToInsert() == null ) {
 			currentSession.setToInsert(new Vector<ContractorAccount>());
-			List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and ( a.qbListID is null or a.qbListID != 'NOLOAD' ) ");
+			List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and ( a.qbListID is null or a.qbListID not like 'NOLOAD%' ) ");
 			currentSession.getToInsert().addAll(contractors);
 		}
 
