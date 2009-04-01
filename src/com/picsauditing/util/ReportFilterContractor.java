@@ -48,6 +48,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showConWithPendingAudits = false;
 	protected boolean showOpertorTagName = false;
 	protected boolean showCcOnFile = false;
+	protected boolean showInvoiceDueDate = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -72,6 +73,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean pendingPqfAnnualUpdate = false;
 	protected int operatorTagName;
 	protected int ccOnFile = 2; 
+	protected Date invoiceDueDate1;
+	protected Date invoiceDueDate2;
 	
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
@@ -227,6 +230,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowCcOnFile(boolean showCcOnFile) {
 		this.showCcOnFile = showCcOnFile;
+	}
+
+	public boolean isShowInvoiceDueDate() {
+		return showInvoiceDueDate;
+	}
+
+	public void setShowInvoiceDueDate(boolean showInvoiceDueDate) {
+		this.showInvoiceDueDate = showInvoiceDueDate;
 	}
 
 	public String getPerformedBy() {
@@ -491,4 +502,19 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.ccOnFile = ccOnFile;
 	}
 
+	public Date getInvoiceDueDate1() {
+		return invoiceDueDate1;
+	}
+
+	public void setInvoiceDueDate1(Date invoiceDueDate1) {
+		this.invoiceDueDate1 = invoiceDueDate1;
+	}
+
+	public Date getInvoiceDueDate2() {
+		return invoiceDueDate2;
+	}
+
+	public void setInvoiceDueDate2(Date invoiceDueDate2) {
+		this.invoiceDueDate2 = invoiceDueDate2;
+	}
 }

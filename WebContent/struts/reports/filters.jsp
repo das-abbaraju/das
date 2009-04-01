@@ -465,6 +465,26 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showInvoiceDueDate">
+		<div class="filterOption"><a href="#" onclick="showTextBox('form1_invoiceDueDate'); return false;">Invoice Due Date</a> 
+			<span id="form1_invoiceDueDate_query">= ALL</span><br /> 
+			<span id="form1_invoiceDueDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			id="form1_invoiceDueDate1" name="filter.invoiceDueDate1" />
+			<a id="anchor_invoiceDueDate1" name="anchor_invoiceDueDate1"
+			onclick="cal2.select($('form1_invoiceDueDate1'),'anchor_invoiceDueDate1','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			To:<s:textfield cssClass="forms" size="8" 
+			id="form1_invoiceDueDate2" name="filter.invoiceDueDate2" />
+			<a id="anchor_invoiceDueDate2" name="anchor_invoiceDueDate2"
+			onclick="cal2.select($('form1_invoiceDueDate2'),'anchor_invoiceDueDate2','M/d/yy'); return false;">
+			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+			<script
+			type="text/javascript">textQuery('form1_invoiceDueDate');</script> <br />
+			<a class="clearLink" href="#"
+			onclick="clearTextField('form1_invoiceDueDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showConWithPendingAudits">
 		<br clear="all" />
 		<div class="filterOption">
