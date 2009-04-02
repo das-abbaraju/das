@@ -17,6 +17,11 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
+				<td bgcolor="#F8F8F8" class="blueHome2"><strong>09/01/08</strong> <strong
+					class="articleTitle">PICS EHS/VPP Resident Expert</strong><br>
+				Dennis Truitt joins PICS with more than 20 years of experience managing health and safety in the highly-regulated petrochemical industry, including the VPP program. Prior to joining PICS, Dennis was the Refinery Safety Manager for the Valero Wilmington Refinery.</td>
+			</tr>
+			<tr>
 				<td class="blueHome2"><strong>09/01/08</strong> <strong
 					class="articleTitle">Square D / Schneider Electric joins PICS</strong><br>
 				Square D  is a market-leading global brand of Schneider Electric for NEMA type electrical distribution and industrial control products, systems and services.  Schneider Electric, headquartered in Paris, France, is a global electrical industry leader with sales of approximately $23.7 billion (U.S.) in 2007.</td>
@@ -313,9 +318,7 @@
 					class="articleTitle">BIC Magazine Article<br>
 				</strong> BIC Magazine publishes an article on PICS services, and how PICS
 				has proved cost savings up to $90,000 per year. BIC Magazine is the
-				leading publication of the industrial construction industry. <a
-					href="samples/BIC Article.pdf" target="_blank" class="homeNews">May
-				2006, page 99</a>.</td>
+				leading publication of the industrial construction industry.</td>
 			</tr>
 		</table>
 		</td>
