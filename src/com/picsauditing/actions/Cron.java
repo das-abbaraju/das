@@ -26,6 +26,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -324,7 +325,7 @@ and expiresDate < NOW();
 								try {
 								
 									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
-									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = 31 and contractorAccount.id = " + conAccount.getId(), "");
+									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = " + AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = " + conAccount.getId(), "");
 									
 									if( audits == null || audits.size() == 0 ) {
 										PicsLogger.log("WARNING: Ebix record found for contractor " + conAccount.getId() + " but no Ebix Compliance audit was found");

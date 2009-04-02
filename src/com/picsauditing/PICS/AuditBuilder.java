@@ -203,7 +203,14 @@ public class AuditBuilder {
 					}
 					if (insertNow) {
 						System.out.println("Adding: " + auditType.getId() + auditType.getAuditName());
-						currentAudits.add(cAuditDAO.addPending(auditType, contractor));
+						ContractorAudit pendingToInsert = cAuditDAO.addPending(auditType, contractor);
+						currentAudits.add(pendingToInsert);
+						
+						if( auditType.getId() == AuditType.HUNTSMAN_EBIX) {
+							pendingToInsert.setAuditStatus(AuditStatus.Active);
+							cAuditDAO.save(pendingToInsert);
+						}
+						
 					} else
 						System.out.println("Skipping: " + auditType.getId() + auditType.getAuditName());
 				}
