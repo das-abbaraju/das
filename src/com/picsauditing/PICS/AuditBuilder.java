@@ -206,10 +206,6 @@ public class AuditBuilder {
 						ContractorAudit pendingToInsert = cAuditDAO.addPending(auditType, contractor);
 						currentAudits.add(pendingToInsert);
 						
-						if( auditType.getId() == AuditType.HUNTSMAN_EBIX) {
-							pendingToInsert.setAuditStatus(AuditStatus.Active);
-							cAuditDAO.save(pendingToInsert);
-						}
 						
 					} else
 						System.out.println("Skipping: " + auditType.getId() + auditType.getAuditName());
