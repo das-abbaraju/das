@@ -78,7 +78,7 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 				
 				if( targetObject != null && targetObject.getId() != 0 ) {
 					
-					fw.write("update invoices set qbListID = '" + dataForThisListId.get("TxnID") + "' where id = " + targetObject.getId() + ";\n");
+					fw.write("update invoice set qbListID = '" + dataForThisListId.get("TxnID") + "' where id = " + targetObject.getId() + ";\n");
 					
 				}
 			}
