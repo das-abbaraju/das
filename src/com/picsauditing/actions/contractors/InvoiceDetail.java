@@ -135,14 +135,12 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						if (!Strings.isEmpty(email.getCcAddresses()))
 							note += " and cc'd " + email.getCcAddresses();
 						addNote(note);
-						
+
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
 				}
-				if(button.startsWith("Cancel Invoice")) {
-					boolean invoiceIncludesFullMembership = BillingCalculatorSingle.isContainsFullMembership(invoice.getItems());
-					
+				if (button.startsWith("Cancel Invoice")) {
 					Iterator<InvoiceItem> inIterator = invoice.getItems().iterator();
 					while (inIterator.hasNext()) {
 						InvoiceItem invoiceItem = inIterator.next();
@@ -154,20 +152,14 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					invoice.setPaid(true);
 					invoice.setPaidDate(new Date());
 					invoice.setAuditColumns(permissions);
-					//invoice.setQbSync(true);
+					// invoice.setQbSync(true);
 					invoice.setNotes("Cancelled Invoice");
 
 					invoiceDAO.save(invoice);
 
 					contractor.syncBalance();
-					
-					if (invoiceIncludesFullMembership && contractor.isActiveB()) {
-						// Revert the paymentExpires back one year
-						contractor.setPaymentExpires(DateBean.addMonths(contractor.getPaymentExpires(), -12));
-					}
-					// TODO figure out how to roll this back too
-					// contractor.setMembershipLevel(contractor.getNewMembershipLevel());
 
+					contractor.syncContractorMembership();
 					contractor.setAuditColumns(permissions);
 					conAccountDAO.save(contractor);
 

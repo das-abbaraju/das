@@ -79,7 +79,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
 	protected Map<OperatorAccount, ContractorOperatorFlag> flags = new HashMap<OperatorAccount, ContractorOperatorFlag>();
 	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
-	
+
 	// Transient helper methods
 	protected Map<OshaType, Map<String, OshaAudit>> oshas = null;
 	protected Map<String, AuditData> emrs = null;
@@ -109,7 +109,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setOperators(List<ContractorOperator> operators) {
 		this.operators = operators;
 	}
-	
+
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.REMOVE, CascadeType.MERGE })
 	public List<ContractorTag> getOperatorTags() {
 		return operatorTags;
@@ -253,8 +253,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
-	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
-	 * contractors
+	 * Determines if this contractor must pay or not. It allows for PICS to
+	 * grant "free" lifetime accounts to certain contractors
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	public String getMustPay() {
@@ -360,11 +360,12 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee. This should
-	 * NEVER be null.
+	 * The date the lastPayment expires and the contractor is due to pay another
+	 * "period's" membership fee. This should NEVER be null.
 	 * 
-	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE (paymentExpires = '0000-00-00' or
-	 * paymentExpires is null) AND contractor_info.id = accounts.id;
+	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE
+	 * (paymentExpires = '0000-00-00' or paymentExpires is null) AND
+	 * contractor_info.id = accounts.id;
 	 * 
 	 * @return
 	 */
@@ -379,7 +380,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Used to determine if we need to calculate the flagColor, audits and billing
+	 * Used to determine if we need to calculate the flagColor, audits and
+	 * billing
 	 * 
 	 * @return
 	 */
@@ -441,7 +443,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	/*
-	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of applicable osha data (verified or not)
+	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of
+	 * applicable osha data (verified or not)
 	 */
 	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
@@ -539,7 +542,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 3) {
 				for (AuditCatData auditCatData : audit.getCategories()) {
-					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT
+					if (auditCatData.getCategory().getId() == AuditCategory.EMR
 							&& auditCatData.getPercentCompleted() == 100) {
 						// Store the EMR rates into a map for later use
 						for (AuditData answer : audit.getData())
@@ -579,7 +582,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The last day someone added a facility to this contractor. This is used to prorate upgrade amounts
+	 * The last day someone added a facility to this contractor. This is used to
+	 * prorate upgrade amounts
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -598,7 +603,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
-	
+
 	/**
 	 * Set the balance equal to the sum of all unpaid invoices
 	 */
@@ -654,16 +659,23 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The following are states of Billing Status: Membership Canceled Contractor is not active and membership is not
-	 * set to renew:<br /><br>
+	 * The following are states of Billing Status: Membership Canceled
+	 * Contractor is not active and membership is not set to renew:<br />
+	 * <br>
 	 * <b>Current</b> means the contractor doesn't owe anything right now<br>
-	 * <b>Activation</b> means the contractor is not active and has never been active<br>
-	 * <b>Reactivation</b> means the contractor was active, but is no longer active anymore<br>
+	 * <b>Activation</b> means the contractor is not active and has never been
+	 * active<br>
+	 * <b>Reactivation</b> means the contractor was active, but is no longer
+	 * active anymore<br>
 	 * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
-	 * <b>Do not renew</b> means the contractor has asked not to renew their account<br>
-	 * <b>Membership Canceled</b> means the contractor closed their account and doesn't want to renew<br>
-	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration Date is past.<br>
-	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is in the next 30 Days<br>
+	 * <b>Do not renew</b> means the contractor has asked not to renew their
+	 * account<br>
+	 * <b>Membership Canceled</b> means the contractor closed their account and
+	 * doesn't want to renew<br>
+	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration
+	 * Date is past.<br>
+	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
+	 * in the next 30 Days<br>
 	 * 
 	 * @return A String of the current Billing Status
 	 */
@@ -702,5 +714,36 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return "Renewal";
 
 		return "Current";
+	}
+
+	@Transient
+	public void syncContractorMembership() {
+		boolean foundCurrentMembership = false;
+		boolean foundMembershipDate = false;
+		for (Invoice invoice : getSortedInvoices()) {
+			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+				for (InvoiceItem invoiceItem : invoice.getItems()) {
+					if (!invoiceItem.isRefunded()) {
+						if (!foundCurrentMembership && invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
+							paymentExpires = invoiceItem.getPaymentExpires();
+							membershipLevel = invoiceItem.getInvoiceFee();
+							foundCurrentMembership = true;
+						}
+						if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
+							membershipDate = invoiceItem.getPaymentExpires();
+							foundMembershipDate = true;
+						}
+					}
+				}
+				if (foundCurrentMembership && foundMembershipDate)
+					return;
+			}
+		}
+		if (!foundCurrentMembership) {
+			paymentExpires = creationDate;
+			membershipLevel = new InvoiceFee(InvoiceFee.FREE);
+		}
+		if (!foundMembershipDate)
+			membershipDate = null;
 	}
 }
