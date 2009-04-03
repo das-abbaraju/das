@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import java.io.StringReader;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +140,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 					lineItem.setItemRef( factory.createItemRef() );
 					lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
 					
-					lineItem.setAmount(new Integer(item.getAmount()).toString() + ".00");
+					lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 					invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
 				}

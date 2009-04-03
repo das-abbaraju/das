@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import java.io.StringReader;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +76,7 @@ public class InsertPayments extends CustomerAdaptor {
 				payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(invoiceJPA.getPaidDate()));
 				
 				//payment.setRefNumber(invoiceJPA.getCheckNumber());  they're not using this field in quickbooks anymore
-				payment.setTotalAmount(new Integer(invoiceJPA.getTotalAmount()).toString() + ".00");
+				payment.setTotalAmount(invoiceJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 				
 				payment.setPaymentMethodRef(new PaymentMethodRef());
 				
@@ -98,9 +99,9 @@ public class InsertPayments extends CustomerAdaptor {
 				application.getTxnLineDetail().add(createTxnLineDetail);
 				
 				createTxnLineDetail.setTxnLineID(invoiceJPA.getQbListID());
-				createTxnLineDetail.setAmount(new Integer(invoiceJPA.getTotalAmount()).toString() + ".00");
+				createTxnLineDetail.setAmount(invoiceJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 				
-				application.setPaymentAmount(new Integer(invoiceJPA.getTotalAmount()).toString() + ".00");
+				application.setPaymentAmount(invoiceJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 				
 				currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(invoiceJPA.getId()).toString());
 			}

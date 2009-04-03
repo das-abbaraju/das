@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import java.io.StringReader;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -131,7 +132,7 @@ public class InsertInvoices extends CustomerAdaptor {
 					lineItem.setClassRef(factory.createClassRef());
 					lineItem.getClassRef().setFullName("Contractors");
 
-					lineItem.setAmount(new Integer(item.getAmount()).toString() + ".00");
+					lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 					invoice.getInvoiceLineAddOrInvoiceLineGroupAdd().add(lineItem);
 				}
