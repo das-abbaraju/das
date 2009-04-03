@@ -490,4 +490,10 @@ outerLoop:
 	public static void main(String[] args) {
 		System.out.println(parseDateTime("3/10/08 6:56 AM PDT"));
 	}
+	
+	public static boolean isBeforeAWeek(Date startDate) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_YEAR, -5);
+		return calendar.getTime().before(startDate);
+	}
 }

@@ -133,7 +133,17 @@ h1 {
 							USD</td>
 						</s:if>
 						<s:else>
-							<td style="border-left: 0"><s:property value="description" /></td>
+							<td style="border-left: 0"><s:property value="description" />
+							<s:if test="refunded"> Refunded </s:if>
+							<pics:permission perm="Billing" type="Edit">
+								<s:if test="invoice.paid && amount > 0 && !refunded">
+									<s:if test="@com.picsauditing.PICS.DateBean@isBeforeAWeek(invoice.paidDate)">
+										<s:hidden name="refundFeeId" value="%{id}"/>
+										<input type="submit" class="picsbutton negative" name="button" value="Refund"/>	
+									</s:if>
+								</s:if>
+							</pics:permission>
+							</td>
 							<td class="right">$<s:property value="amount" /> USD</td>
 						</s:else>
 					</tr>
@@ -179,7 +189,7 @@ h1 {
 								<s:if test="invoice.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
 										<input type="submit" class="picsbutton positive" name="button"
-											value="Charge Credit Card for $<s:property value=" invoice.totalAmount" />">
+											value="Charge Credit Card for $ <s:property value="invoice.totalAmount"/>"/>
 									</s:if>
 									<s:else>
 										No Credit Card on File
@@ -188,9 +198,9 @@ h1 {
 								<s:else>
 									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
 									<input type="submit" class="picsbutton positive" name="button" maxlength="50"
-										value="Collect Check for $<s:property value=" invoice.totalAmount" />">
+										value="Collect Check for $ <s:property value=" invoice.totalAmount" />"/>
 								</s:else>
-								<input type="submit" class="picsbutton" name="button" value="Cancel Invoice"/>
+								<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice"/>
 							</s:if> <s:elseif test="invoice.totalAmount < 0 || invoice.totalAmount == 0">
 								<input type="submit" class="picsbutton positive" name="button" value="Mark Paid">
 							</s:elseif>

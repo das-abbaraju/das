@@ -12,7 +12,6 @@ import java.util.List;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -50,6 +49,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	private ContractorAccountDAO conAccountDAO;
 
 	private int newFeeId;
+	private int refundFeeId;
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Invoice invoice;
@@ -158,8 +158,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 					invoiceDAO.save(invoice);
 
-					conAccountDAO.save(contractor);
-
 					Note note = new Note();
 					note.setAccount(invoice.getAccount());
 					note.setAuditColumns(this.getUser());
@@ -168,10 +166,28 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					note.setViewableById(Account.PicsID);
 					noteDAO.save(note);
 				}
+				
+				if (button.startsWith("Refund")) {
+					if(refundFeeId == 0) {
+						addActionError("Line item not found");
+						return SUCCESS;
+					}
+					InvoiceItem invoiceItem = invoiceItemDAO.find(refundFeeId);
+					if(invoiceItem != null) {
+						invoiceItem.setRefunded(true);						
+						invoiceItem.setAuditColumns(permissions);
+						invoiceItemDAO.save(invoiceItem);
+
+						Note note = new Note();
+						note.setAccount(invoice.getAccount());
+						note.setAuditColumns(this.getUser());
+						note.setSummary("Refunded Invoice");
+						note.setNoteCategory(NoteCategory.Billing);
+						note.setViewableById(Account.PicsID);
+						noteDAO.save(note);
+					}
+				}
 			}
-			contractor.syncBalance();
-			conAccountDAO.save(contractor);
-			
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}
 
@@ -179,7 +195,9 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		invoiceDAO.save(invoice);
 
 		contractor.syncBalance();
+		contractor.setAuditColumns(permissions);
 		conAccountDAO.save(contractor);
+
 		return SUCCESS;
 	}
 
@@ -363,6 +381,14 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 	public boolean isShowHeader() {
 		return true;
+	}
+
+	public int getRefundFeeId() {
+		return refundFeeId;
+	}
+
+	public void setRefundFeeId(int refundFeeId) {
+		this.refundFeeId = refundFeeId;
 	}
 
 }
