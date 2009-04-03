@@ -609,11 +609,40 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 */
 	@Transient
 	public void syncBalance() {
+		boolean foundCurrentMembership = false;
+		boolean foundMembershipDate = false;
+
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
 			if (!invoice.isPaid())
 				balance = balance.add(invoice.getTotalAmount());
 		}
+		
+		for (Invoice invoice : getSortedInvoices()) {
+			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+				for (InvoiceItem invoiceItem : invoice.getItems()) {
+					if (!invoiceItem.isRefunded()) {
+						if (!foundCurrentMembership && invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
+							paymentExpires = invoiceItem.getPaymentExpires();
+							membershipLevel = invoiceItem.getInvoiceFee();
+							foundCurrentMembership = true;
+						}
+						if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
+							membershipDate = invoice.getCreationDate();
+							foundMembershipDate = true;
+						}
+					}
+				}
+				if (foundCurrentMembership && foundMembershipDate)
+					return;
+			}
+		}
+		if (!foundCurrentMembership) {
+			paymentExpires = creationDate;
+			membershipLevel = new InvoiceFee(InvoiceFee.FREE);
+		}
+		if (!foundMembershipDate)
+			membershipDate = null;
 	}
 
 	@ManyToOne
@@ -715,36 +744,5 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return "Renewal";
 
 		return "Current";
-	}
-
-	@Transient
-	public void syncContractorMembership() {
-		boolean foundCurrentMembership = false;
-		boolean foundMembershipDate = false;
-		for (Invoice invoice : getSortedInvoices()) {
-			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
-				for (InvoiceItem invoiceItem : invoice.getItems()) {
-					if (!invoiceItem.isRefunded()) {
-						if (!foundCurrentMembership && invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
-							paymentExpires = invoiceItem.getPaymentExpires();
-							membershipLevel = invoiceItem.getInvoiceFee();
-							foundCurrentMembership = true;
-						}
-						if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
-							membershipDate = invoiceItem.getPaymentExpires();
-							foundMembershipDate = true;
-						}
-					}
-				}
-				if (foundCurrentMembership && foundMembershipDate)
-					return;
-			}
-		}
-		if (!foundCurrentMembership) {
-			paymentExpires = creationDate;
-			membershipLevel = new InvoiceFee(InvoiceFee.FREE);
-		}
-		if (!foundMembershipDate)
-			membershipDate = null;
 	}
 }
