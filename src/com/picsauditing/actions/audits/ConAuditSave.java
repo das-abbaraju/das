@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -69,7 +70,10 @@ public class ConAuditSave extends AuditActionSupport {
 				}
 			}
 		}
-		contractorAuditDAO.save(conAudit);
+		conAudit = contractorAuditDAO.save(conAudit);
+		ContractorAccount contractorAccount = conAudit.getContractorAccount();
+		contractor.setNeedsRecalculation(true);
+		accountDao.save(contractorAccount);
 
 		return SUCCESS;
 	}

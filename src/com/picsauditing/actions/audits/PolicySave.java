@@ -8,6 +8,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 /**
@@ -77,6 +78,10 @@ public class PolicySave extends AuditActionSupport {
 					"AuditCat.action?auditID=" + conAudit.getId() + "&catDataID="
 							+ catDataDao.findByAudit(conAudit, permissions).get(0).getId());
 		}
+
+		ContractorAccount contractorAccount = conAudit.getContractorAccount();
+		contractor.setNeedsRecalculation(true);
+		accountDao.save(contractorAccount);
 
 		return SUCCESS;
 	}
