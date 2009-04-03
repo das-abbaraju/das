@@ -38,6 +38,10 @@ public class EntityFactory {
 		return operator;
 	}
 	
+	/**
+	 * Create an active, Medium Risk Level ContractorAccount named Contractor Unit Test
+	 * @return
+	 */
 	static public ContractorAccount makeContractor() {
 		ContractorAccount contractor = new ContractorAccount();
 		contractor.setActive('Y');

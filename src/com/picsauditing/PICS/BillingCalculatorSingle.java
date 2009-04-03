@@ -108,41 +108,59 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Create a list of fees that this contractor should be charge for
+	 * Create a list of fees that this contractor should be charge for. The following contractor fields are used:
+	 * <ul>
+	 * <li>membershipDate</li>
+	 * <li>newMembershipLevel</li>
+	 * <li>membershipLevel</li>
+	 * <li>billingStatus</li>
+	 * <li>lastUpgradeDate</li>
+	 * <li>paymentExpires</li>
+	 * </ul>
+	 * 
 	 * @param contractor
 	 * @return
 	 */
 	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
-		// TODO add in the activation fee if the date is ever missing
-		if (contractor.getMembershipDate() == null) {
-			InvoiceFee fee = new InvoiceFee(InvoiceFee.ACTIVATION);
-			items.add(new InvoiceItem(fee));
 
+		if (contractor.getBillingStatus().equals("Not Calculated"))
+			return items;
+		
+		if (contractor.getBillingStatus().equals("Current"))
+			return items;
+
+		if (contractor.getMembershipDate() == null) {
+			// This contractor has never paid their activation fee, make them now
+			// This applies regardless if this is a new reg or renewal
+			InvoiceFee fee = new InvoiceFee(InvoiceFee.ACTIVATION);
+			// Activate effective today
+			items.add(new InvoiceItem(fee, new Date()));
 		}
 
 		// For Activation Fee and New Membership
 		if ("Activation".equals(contractor.getBillingStatus())) {
-			if (contractor.getNewMembershipLevel().getId() != InvoiceFee.FREE
-					&& contractor.getMembershipLevel().getId() == InvoiceFee.FREE) {
-				items.add(new InvoiceItem(contractor.getNewMembershipLevel()));
-			}
+			// Payment expires 12 months from today
+			Date paymentExpires = DateBean.addMonths(new Date(), 12);
+			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
 
 		// For Reactivation Fee and Reactivating Membership
 		if ("Reactivation".equals(contractor.getBillingStatus())) {
 			InvoiceFee fee = new InvoiceFee(InvoiceFee.REACTIVATION);
+			// Reactivate effective today
+			items.add(new InvoiceItem(fee, new Date()));
 
-			if (contractor.getNewMembershipLevel() != null)
-				items.add(new InvoiceItem(contractor.getNewMembershipLevel()));
-
-			items.add(new InvoiceItem(fee));
+			// Payment expires 12 months from today
+			Date paymentExpires = DateBean.addMonths(new Date(), 12);
+			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
 
 		// For Renewals
 		if (contractor.getBillingStatus().startsWith("Renew")) {
-			if (contractor.getMembershipLevel() != null)
-				items.add(new InvoiceItem(contractor.getMembershipLevel()));
+			// We could eventually customize the 12 months to support monthly/quarterly billing cycles
+			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
+			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
 
 		// For Upgrades
@@ -169,7 +187,8 @@ public class BillingCalculatorSingle {
 							.getLastUpgradeDate();
 					double daysUntilExpiration = DateBean
 							.getDateDifference(upgradeDate, contractor.getPaymentExpires());
-					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(contractor.getMembershipLevel().getAmount());
+					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(
+							contractor.getMembershipLevel().getAmount());
 
 					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365));
 					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference);
@@ -182,6 +201,7 @@ public class BillingCalculatorSingle {
 				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
 				invoiceItem.setAmount(upgradeAmount.round(new MathContext(0, RoundingMode.HALF_UP)));
 				invoiceItem.setDescription(description);
+				invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
 				items.add(invoiceItem);
 			}
 		}
@@ -215,5 +235,5 @@ public class BillingCalculatorSingle {
 				return (item.getAmount() == item.getInvoiceFee().getAmount());
 		return false;
 	}
-	
+
 }

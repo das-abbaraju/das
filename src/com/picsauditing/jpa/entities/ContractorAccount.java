@@ -253,8 +253,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
-	 * Determines if this contractor must pay or not. It allows for PICS to
-	 * grant "free" lifetime accounts to certain contractors
+	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
+	 * contractors. Yes or No
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	public String getMustPay() {
@@ -676,6 +676,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * Date is past.<br>
 	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
 	 * in the next 30 Days<br>
+	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * 
 	 * @return A String of the current Billing Status
 	 */
@@ -687,7 +688,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (newMembershipLevel == null)
 			return "Not Calculated";
 
-		if (newMembershipLevel.getId() == InvoiceFee.FREE)
+		if (newMembershipLevel.isFree())
 			return "Current";
 
 		if (!isActiveB()) {

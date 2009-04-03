@@ -30,6 +30,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
@@ -42,11 +44,13 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
+	static protected User system = new User(User.SYSTEM);
 	protected OperatorAccountDAO operatorDAO = null;
 	protected AppPropertyDAO appPropDao = null;
 	protected AuditBuilder auditBuilder = null;
 	protected ContractorAuditDAO contractorAuditDAO = null;
 	protected ContractorAccountDAO contractorAccountDAO = null;
+	protected NoteDAO noteDAO = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 
 	protected long startTime = 0L;
@@ -55,13 +59,15 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	public Cron(OperatorAccountDAO ops, AppPropertyDAO appProps, AuditBuilder ab,
-			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO, AuditPercentCalculator auditPercentCalculator) {
+			ContractorAuditDAO contractorAuditDAO, ContractorAccountDAO contractorAccountDAO,
+			AuditPercentCalculator auditPercentCalculator, NoteDAO noteDAO) {
 		this.operatorDAO = ops;
 		this.appPropDao = appProps;
 		this.auditBuilder = ab;
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
+		this.noteDAO = noteDAO;
 	}
 
 	public String execute() throws Exception {
@@ -82,7 +88,7 @@ public class Cron extends PicsActionSupport {
 				// TODO - Move this to the db.picsauditing.com cron bash script
 				/*
 				 * OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions,certificates,contractor_info,"
-				+ "forms,generalContractors,loginLog,users;
+				 * + "forms,generalContractors,loginLog,users;
 				 */
 			} catch (Throwable t) {
 				handleException(t);
@@ -96,7 +102,6 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 
-			
 			try {
 				startTask("\nSending emails to contractors for expired Certificates...");
 				sendEmailExpiredCertificates();
@@ -109,22 +114,19 @@ public class Cron extends PicsActionSupport {
 				startTask("\nExpiring Audits...");
 				// TODO do mass update statements rather than query for loop update
 				/*
-				 update contractor_audit set auditStatus = 'Expired'
-where auditStatus IN ('Submitted','Exempt','Active')
-and auditTypeID = 11
-and expiresDate < NOW();
-
-
-update contractor_audit set auditStatus = 'Pending', closedDate = null, completedDate = null, expiresDate = null
-where auditStatus IN ('Submitted','Exempt','Active')
-and auditTypeID = 1
-and expiresDate < NOW();
+				 * update contractor_audit set auditStatus = 'Expired' where auditStatus IN
+				 * ('Submitted','Exempt','Active') and auditTypeID = 11 and expiresDate < NOW();
+				 * 
+				 * 
+				 * update contractor_audit set auditStatus = 'Pending', closedDate = null, completedDate = null,
+				 * expiresDate = null where auditStatus IN ('Submitted','Exempt','Active') and auditTypeID = 1 and
+				 * expiresDate < NOW();
 				 */
 				String where = "expiresDate < NOW() AND auditStatus IN ('Submitted','Exempt','Active')";
 				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
 				for (ContractorAudit cAudit : conList) {
 					if (cAudit.getAuditType().isPqf())
-						cAudit.changeStatus(AuditStatus.Pending, new User(User.SYSTEM));
+						cAudit.changeStatus(AuditStatus.Pending, system);
 					else
 						cAudit.setAuditStatus(AuditStatus.Expired);
 					contractorAuditDAO.save(cAudit);
@@ -133,18 +135,19 @@ and expiresDate < NOW();
 			} catch (Throwable t) {
 				handleException(t);
 			}
-			
+
 			try {
 				startTask("\nRecalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
-//					Long startTime = System.currentTimeMillis();
+					// Long startTime = System.currentTimeMillis();
 					auditPercentCalculator.percentCalculateComplete(cAudit, true);
-//					System.out.println("categories : " + new Long(System.currentTimeMillis() - startTime).toString());
+					// System.out.println("categories : " + new Long(System.currentTimeMillis() -
+					// startTime).toString());
 					cAudit.setLastRecalculation(new Date());
-					cAudit.setAuditColumns(new User(User.SYSTEM));
+					cAudit.setAuditColumns(system);
 					contractorAuditDAO.save(cAudit);
-//					System.out.println("total : " + new Long(System.currentTimeMillis() - startTime).toString());
+					// System.out.println("total : " + new Long(System.currentTimeMillis() - startTime).toString());
 				}
 				endTask();
 			} catch (Throwable t) {
@@ -155,11 +158,22 @@ and expiresDate < NOW();
 		try {
 			startTask("\nInactivating Accounts via Billing Status...");
 			String where = "a.active = 'Y' AND a.renew = 0 AND paymentExpires < NOW()";
-			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where); 
-			for (ContractorAccount conAcct : conAcctList) {
-				conAcct.setActive('N');
-				conAcct.setPaymentExpires(null);
-				contractorAccountDAO.save(conAcct);
+			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
+			for (ContractorAccount contractor : conAcctList) {
+				contractor.setActive('N');
+				// Leave the PaymentExpires in the past
+				// conAcct.setPaymentExpires(null);
+				contractor.syncBalance();
+				contractor.setAuditColumns(system);
+				contractorAccountDAO.save(contractor);
+				
+				Note note = new Note(contractor, system,
+						"Automatically inactivating account based on expired membership");
+				note.setCanContractorView(true);
+				note.setPriority(LowMedHigh.High);
+				note.setAuditColumns(system);
+				note.setViewableById(Account.PicsID);
+				noteDAO.save(note);
 			}
 			endTask();
 		} catch (Throwable t) {
@@ -202,7 +216,7 @@ and expiresDate < NOW();
 			toAddress = prop.getValue();
 		} catch (NoResultException notFound) {
 		}
-			
+
 		if (toAddress == null || toAddress.length() == 0) {
 			toAddress = "admin@picsauditing.com";
 		}
@@ -247,22 +261,21 @@ and expiresDate < NOW();
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-			
+
 			Note note = new Note();
 			note.setAccount(policy);
-			note.setAuditColumns(new User(User.SYSTEM));
-			note.setSummary("Sent Policy Expiration Email to "
-					+ emailBuilder.getSentTo());
+			note.setAuditColumns(system);
+			note.setSummary("Sent Policy Expiration Email to " + emailBuilder.getSentTo());
 			note.setNoteCategory(NoteCategory.Insurance);
 			note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
 		}
 	}
-	
+
 	public void processEbixData() throws Exception {
-		
+
 		PicsLogger.start("cron_ebix");
-		
+
 		String server = appPropDao.find("huntsmansync.ftp.server").getValue();
 		String username = appPropDao.find("huntsmansync.ftp.user").getValue();
 		String password = appPropDao.find("huntsmansync.ftp.password").getValue();
@@ -271,7 +284,7 @@ and expiresDate < NOW();
 		PicsLogger.log("Server: " + server);
 		PicsLogger.log("username: " + username);
 		PicsLogger.log("folder: " + folder);
-		
+
 		// there may be other files in that folder. we can use this to filter
 		// down to the ones we want.
 		// String pattern =
@@ -280,7 +293,7 @@ and expiresDate < NOW();
 		FTPClient ftp = new FTPClient();
 
 		PicsLogger.log("logging in to server...");
-		
+
 		ftp.connect(server);
 		ftp.login(username, password);
 
@@ -292,8 +305,8 @@ and expiresDate < NOW();
 
 			for (FTPFile ftpFile : files) {
 
-				PicsLogger.log("Processing file: " + ftpFile.getName() );
-				
+				PicsLogger.log("Processing file: " + ftpFile.getName());
+
 				BufferedReader reader = null;
 
 				InputStream retrieveFileStream = ftp.retrieveFileStream(ftpFile.getName());
@@ -311,44 +324,46 @@ and expiresDate < NOW();
 							String[] data = line.split(",");
 
 							if (data.length == 2) {
-								
+
 								// contractor id
 								Integer contractorId = Integer.parseInt(data[0]);
 
-								PicsLogger.log("Processing data: " + data[0] + "/" + data[1] );
-								
+								PicsLogger.log("Processing data: " + data[0] + "/" + data[1]);
+
 								// the other field. comes in as a Y/N.
 								AuditStatus status = AuditStatus.Pending;
 								if (data[1].equals("Y"))
 									status = AuditStatus.Active;
 
 								try {
-								
+
 									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
-									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = " + AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = " + conAccount.getId(), "");
-									
-									if( audits == null || audits.size() == 0 ) {
-										PicsLogger.log("WARNING: Ebix record found for contractor " + conAccount.getId() + " but no Ebix Compliance audit was found");
+									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = "
+											+ AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
+											+ conAccount.getId(), "");
+
+									if (audits == null || audits.size() == 0) {
+										PicsLogger.log("WARNING: Ebix record found for contractor "
+												+ conAccount.getId() + " but no Ebix Compliance audit was found");
 										continue;
 									}
-									
-									for( ContractorAudit audit : audits ) {
-										if( status != audit.getAuditStatus() ) {
-											PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor " + conAccount.getId() + " to " + status.name());
-											audit.setAuditStatus( status );
+
+									for (ContractorAudit audit : audits) {
+										if (status != audit.getAuditStatus()) {
+											PicsLogger.log("Setting Ebix audit " + audit.getId() + " for contractor "
+													+ conAccount.getId() + " to " + status.name());
+											audit.setAuditStatus(status);
 											contractorAuditDAO.save(audit);
 
-										
 											conAccount.setNeedsRecalculation(true);
 											contractorAccountDAO.save(conAccount);
-										}
-										else {
-											PicsLogger.log("No change for Ebix audit " + audit.getId() + " for contractor " + conAccount.getId() + ", " + status.name());
+										} else {
+											PicsLogger.log("No change for Ebix audit " + audit.getId()
+													+ " for contractor " + conAccount.getId() + ", " + status.name());
 										}
 									}
-									
-								}
-								catch( Exception e ) {
+
+								} catch (Exception e) {
 									PicsLogger.log("ERROR: Error Processing Ebix for contractor " + data[0]);
 									e.printStackTrace();
 								}
@@ -358,8 +373,7 @@ and expiresDate < NOW();
 							}
 						}
 					}
-				} 
-				else {
+				} else {
 					PicsLogger.log("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
 				}
 			}
@@ -367,7 +381,7 @@ and expiresDate < NOW();
 
 		ftp.logout();
 		ftp.disconnect();
-		
+
 		PicsLogger.stop();
 	}
 }

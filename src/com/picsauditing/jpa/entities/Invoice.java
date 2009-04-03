@@ -31,7 +31,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private Account account;
 	private Date dueDate;
 	private boolean paid;
-	private BigDecimal totalAmount;
+	private BigDecimal totalAmount = BigDecimal.ZERO;
 	private Date paidDate;
 	private PaymentMethod paymentMethod;
 	private String checkNumber;

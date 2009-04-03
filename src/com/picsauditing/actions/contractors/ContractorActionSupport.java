@@ -117,8 +117,11 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	/**
-	 * Build a Menu (List<MenuComponent>) with the following:<br> * PQF<br> *
-	 * Annual Update<br> * InsureGuard<br> * Audits<br>
+	 * Build a Menu (List<MenuComponent>) with the following:<br> *
+	 * PQF<br> *
+	 * Annual Update<br> *
+	 * InsureGuard<br> *
+	 * Audits<br>
 	 * 
 	 * @return
 	 */
@@ -157,7 +160,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 
-					subMenu.addChild(linkText, "AuditCat.action?auditID=" + audit.getId() + "&catDataID=" + audit.getCategories().get(0).getId(), audit.getId(), audit.getAuditStatus().toString());
+					subMenu.addChild(linkText, "AuditCat.action?auditID=" + audit.getId() + "&catDataID="
+							+ audit.getCategories().get(0).getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
 		}
@@ -202,9 +206,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	/**
-	 * Only show the insurance link for contractors who are linked to an
-	 * operator that collects insurance data. Also, don't show the link to users
-	 * who don't have the InsuranceCerts permission.
+	 * Only show the insurance link for contractors who are linked to an operator that collects insurance data. Also,
+	 * don't show the link to users who don't have the InsuranceCerts permission.
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
@@ -231,8 +234,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	/**
-	 * Only show the Integrity Management link for contractors who are linked to
-	 * an operator that subscribes to Integrity Management
+	 * Only show the Integrity Management link for contractors who are linked to an operator that subscribes to
+	 * Integrity Management
 	 */
 	public boolean isRequiresIntegrityManagement() {
 		if (!accountDao.isContained(getOperators().iterator().next()))
@@ -388,9 +391,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 	public List<Note> getNotes() {
 		if (notes == null) {
 			NoteDAO dao = (NoteDAO) SpringUtils.getBean("NoteDAO");
-			// status != " + NoteStatus.Closed.ordinal()
-			notes = dao.getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal() + " AND noteCategory = '"
-					+ noteCategory.toString() + "'", 5);
+			notes = dao.getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal()
+					+ " AND noteCategory IN ('" + noteCategory.toString() + "','General')", 5);
 		}
 		return notes;
 	}

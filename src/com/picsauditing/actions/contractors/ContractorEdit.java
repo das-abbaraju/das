@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -18,6 +19,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 
@@ -146,11 +148,29 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				accountDao.remove(contractor, getFtpDir());
 
 				return "ConList";
+			} else if (button.equals("Reactivate")) {
+				contractor.setRenew(true);
+				accountDao.save(contractor);
+				this.addNote(contractor, "Reactivated account");
+				this.addActionMessage("Successfully reactivated this contractor account. "
+						+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
+			} else if (button.equals("Cancel")) {
+				contractor.setRenew(false);
+				
+				String expiresMessage = "";
+				if (contractor.getPaymentExpires().before(new Date()))
+					expiresMessage = " This account will no longer be visible to operators after " + contractor.getPaymentExpires();
+				else {
+					expiresMessage = " This account is no longer visible to operators.";
+					contractor.setActive('N');
+				}
+				accountDao.save(contractor);
+				
+				this.addNote(contractor, "Closed contractor account." + expiresMessage);
+				this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
 			} else {
-				// Because there are anomalies between browsers and how they
-				// pass
-				// in the button values, this is a catch all so we can get
-				// notified
+				// Because there are anomalies between browsers and how they pass
+				// in the button values, this is a catch all so we can get notified
 				// when the button name isn't set correctly
 				throw new Exception("no button action found called " + button);
 			}

@@ -93,6 +93,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					if (newFeeId > 0) {
 						addInvoiceItem(newFeeId);
 						newFeeId = 0;
+						edit = true;
 					}
 					updateTotals();
 				}
@@ -157,10 +158,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 					invoiceDAO.save(invoice);
 
-					contractor.syncBalance();
-
-					contractor.syncContractorMembership();
-					contractor.setAuditColumns(permissions);
 					conAccountDAO.save(contractor);
 
 					Note note = new Note();
@@ -172,11 +169,16 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					noteDAO.save(note);
 				}
 			}
+			contractor.syncBalance();
+			conAccountDAO.save(contractor);
+			
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}
 
 		updateTotals();
 		invoiceDAO.save(invoice);
+
+		contractor.syncBalance();
 		conAccountDAO.save(contractor);
 		return SUCCESS;
 	}
@@ -227,8 +229,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
 			invoice.setPaymentMethod(contractor.getPaymentMethod());
 		}
-
-		contractor.syncBalance();
 	}
 
 	private void markInvoicePaid() {
@@ -236,29 +236,15 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		invoice.setPaidDate(new Date());
 		invoice.setAuditColumns(getUser());
 		invoiceDAO.save(invoice);
-
-		updateTotals();
 	}
 
 	private void payInvoice() {
 		markInvoicePaid();
 
-		if (contractor.getMembershipDate() == null) {
-			for (InvoiceItem item : invoice.getItems()) {
-				if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
-					contractor.setMembershipDate(new Date());
-					contractor.setAuditColumns(getUser());
-				}
-			}
-		}
-
 		if (!contractor.isActiveB()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
 					contractor.setActive('Y');
-					Calendar cal = Calendar.getInstance();
-					cal.add(Calendar.YEAR, 1);
-					contractor.setPaymentExpires(cal.getTime());
 					contractor.setAuditColumns(getUser());
 				}
 			}
@@ -270,8 +256,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
-		updateTotals();
 	}
 
 	private void addNote(String subject) {

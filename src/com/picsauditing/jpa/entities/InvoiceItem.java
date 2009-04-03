@@ -19,7 +19,7 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 	private Invoice invoice;
 	private InvoiceFee invoiceFee;
 	// TODO change this to decimal 
-	private BigDecimal amount;
+	private BigDecimal amount = BigDecimal.ZERO;
 	private String description;
 	private Date paymentExpires;
 	private boolean refunded = false;
@@ -32,6 +32,11 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 		super();
 		invoiceFee = fee;
 		amount = fee.getAmount();
+	}
+
+	public InvoiceItem(InvoiceFee fee, Date paymentExpires) {
+		this(fee);
+		this.paymentExpires = paymentExpires;
 	}
 
 	@ManyToOne

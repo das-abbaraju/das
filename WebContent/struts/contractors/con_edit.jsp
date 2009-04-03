@@ -267,15 +267,17 @@
 				<fieldset class="form">
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
-					<li><label>Visible?</label>
-						<s:radio list="#{'Y':'Yes','N':'No'}" name="contractor.active" theme="pics" />
+					<li><label>Will be Renewed:</label>
+						<s:if test="contractor.renew">Yes</s:if>
+						<s:else>No</s:else>
+						<s:if test="contractor.renew"><a href="?id=<s:property value="id"/>&button=Cancel">Cancel Account</a></s:if>
+						<s:else><a href="?id=<s:property value="id"/>&button=Reactivate">Reactivate</a></s:else>
 					</li>
 					<li><label>Risk Level:</label>
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
 					<li><label>Password:</label>
 						<s:property value="user.password" />
-						<br />* We will eventually hide this field and allow you to reset the password instead.
 					</li>
 					<li><label>Tax ID:</label>
 						<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
@@ -290,10 +292,6 @@
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
 							value="contractor.mustPay" theme="pics" />
 					</li>
-					<li><label>Renew?</label>
-						<s:radio list="#{'true':'Yes','false':'No'}" name="contractor.renew"
-							value="contractor.renew" theme="pics" />
-					</li>					
 					<li><label>Activation Date:</label>
 						<input name="contractor.membershipDate" id="membershipDate" 
 							type="text" class="forms" size="10" 

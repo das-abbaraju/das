@@ -27,11 +27,10 @@
 				name="contractor.creationDate" format="MMM d, yyyy" /></li>
 			<li><label title="The Date the Activation/Reactivation Fee was Paid.">Activation Date:</label> <s:date
 				name="contractor.membershipDate" format="MMM d, yyyy" /></li>
-			<li><label>Will be Renewed:</label> <s:if test="contractor.renew == true">
-							Yes
-						</s:if> <s:else>
-							No
-						</s:else></li>
+			<li><label>Will be Renewed:</label>
+				<s:if test="contractor.renew">Yes</s:if>
+				<s:else>No</s:else>
+			</li>
 			<li><label>Renewal Date:</label> <s:date name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
 			<li><label>Payment Method:</label> <s:property value="contractor.paymentMethod.description" /></li>
 			<li><label>Credit Card on File?</label> <s:if test="contractor.ccOnFile">Yes</s:if> <s:else>No</s:else></li>
