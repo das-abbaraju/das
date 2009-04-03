@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -23,8 +24,8 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.FileUtils;
 
 /**
- * Used by Audit.action to show a list of categories for a given audit. Also
- * allows users to change the status of an audit.
+ * Used by Audit.action to show a list of categories for a given audit. Also allows users to change the status of an
+ * audit.
  * 
  * @author Trevor
  * 
@@ -34,10 +35,10 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 	private boolean hasDuplicate = false;
 
 	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator,
-				auditBuilder, contractorAuditOperatorDAO);
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
+			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
+				contractorAuditOperatorDAO);
 	}
 
 	public String execute() throws Exception {
@@ -48,9 +49,9 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 		int oldconID = conAudit.getContractorAccount().getId();
 		if (button != null) {
 			ContractorAccount nConAccount = accountDao.findConID(contractorSelect);
-			if(nConAccount == null) {
+			if (nConAccount == null) {
 				addActionError("No Contractor Found");
-				return SUCCESS; 
+				return SUCCESS;
 			}
 			List<ContractorAudit> auditList = new Vector<ContractorAudit>(nConAccount.getAudits());
 			auditDao.clear();
@@ -71,46 +72,40 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 					auditDao.remove(existingAudit.getId(), getFtpDir());
 				}
 			}
-			
-			
+
 			// copy audit now
 			findConAudit();
-			
+
 			Map<Integer, AuditData> preToPostAuditDataIdMapper = new HashMap<Integer, AuditData>();
-			
+
 			auditDao.copy(conAudit, nConAccount, preToPostAuditDataIdMapper);
 
 			ContractorAudit oldConAudit = auditDao.find(auditID);
-			
+
 			for (AuditData auditData : oldConAudit.getData()) {
-				
+
 				if (auditData.getQuestion().getQuestionType().equals("File")) {
 
-					AuditData newAnswer = preToPostAuditDataIdMapper.get(auditData.getId());  
-					
+					AuditData newAnswer = preToPostAuditDataIdMapper.get(auditData.getId());
+
 					String newFileBase = "files/"
-						+ FileUtils.thousandize(preToPostAuditDataIdMapper.get(auditData.getId()).getId());
+							+ FileUtils.thousandize(preToPostAuditDataIdMapper.get(auditData.getId()).getId());
 					String newFileName = "data_" + auditData.getId();
 
-					
-					String oldFileBase = "files/"
-						+ FileUtils.thousandize(auditData.getId());
+					String oldFileBase = "files/" + FileUtils.thousandize(auditData.getId());
 					String oldFileName = "data_" + auditData.getId() + "." + newAnswer.getAnswer();
 
-					File oldFile = new File( getFtpDir() + "/" + oldFileBase, oldFileName );
+					File oldFile = new File(getFtpDir() + "/" + oldFileBase, oldFileName);
 					try {
-						FileUtils.copyFile(oldFile, getFtpDir(),
-								newFileBase, newFileName,
-								newAnswer.getAnswer(), true);
-					}
-					catch( Exception couldntCopyTheFile ) {
+						FileUtils.copyFile(oldFile, getFtpDir(), newFileBase, newFileName, newAnswer.getAnswer(), true);
+					} catch (Exception couldntCopyTheFile) {
 						couldntCopyTheFile.printStackTrace();
 					}
 				}
 			}
 
 			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, LowMedHigh.Low, true); 
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE);
 			return "Audit";
 		}
 

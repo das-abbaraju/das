@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -76,6 +77,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 			// Default their current membership to 0
 			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
+			contractor.setPaymentExpires(new Date());
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
 			contractor.setNameIndex();
 			contractor = accountDao.save(contractor);

@@ -359,11 +359,11 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory noteCategory) throws Exception {
-		addNote(contractor, newNote, noteCategory, LowMedHigh.Low, false);
+		addNote(contractor, newNote, noteCategory, LowMedHigh.Low, false, Account.EVERYONE);
 	}
 
 	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory category, LowMedHigh priority,
-			boolean canContractorView) throws Exception {
+			boolean canContractorView, int viewableBy) throws Exception {
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		Note note = new Note();
 		note.setAccount(contractor);
@@ -371,7 +371,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		note.setSummary(newNote);
 		note.setPriority(priority);
 		note.setNoteCategory(category);
-		note.setViewableById(Account.EVERYONE);
+		note.setViewableById(viewableBy);
 		note.setCanContractorView(canContractorView);
 		note.setStatus(NoteStatus.Closed);
 		noteDAO.save(note);

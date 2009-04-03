@@ -281,6 +281,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 					EmailSender.send(emailBuilder.build());
 					addNote(contractor, "Sent Audits Thank You email to "
 							+ emailBuilder.getSentTo(), NoteCategory.Audits);
+					// TODO email all the operators as well
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
