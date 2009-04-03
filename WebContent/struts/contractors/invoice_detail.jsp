@@ -43,7 +43,12 @@ h1 {
 							<th class="big">Invoice #</th>
 						</tr>
 						<tr>
-							<td class="center"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></td>
+							<td class="center"><nobr>
+								<s:date name="invoice.creationDate" format="MMM d, yyyy" />
+								<s:set name="o" value="invoice"></s:set>
+								<s:include value="../who.jsp"></s:include>
+								</nobr>
+							</td>
 							<td class="center"><s:property value="invoice.id" /></td>
 						</tr>
 					</table>
@@ -65,6 +70,7 @@ h1 {
 						<br />
 						<input type="submit" class="picsbutton positive" name="button" value="Save" />
 					</s:if></div>
+					
 					</td>
 				</tr>
 			</table>
@@ -112,7 +118,11 @@ h1 {
 				</tr>
 				<s:iterator value="invoice.items" status="stat">
 					<tr>
-						<td style="border-right: 0"><s:property value="invoiceFee.fee" /></td>
+						<td style="border-right: 0">
+							<s:set name="o" value="[0]"></s:set>
+							<s:include value="../who.jsp"></s:include>
+							<s:property value="invoiceFee.fee" />
+						</td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
 							(optional description) <s:if test="invoiceFee.fee != contractor.newMembershipLevel.fee">
