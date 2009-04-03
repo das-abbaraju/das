@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -130,8 +132,8 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					try {
 						EmailQueue email = emailInvoice();
 						String note = "Invoice emailed to " + email.getToAddresses();
-						if (Strings.isEmpty(email.getCcAddresses()))
-							note += "and cc'd " + email.getCcAddresses();
+						if (!Strings.isEmpty(email.getCcAddresses()))
+							note += " and cc'd " + email.getCcAddresses();
 						addNote(note);
 						
 					} catch (Exception e) {
@@ -139,21 +141,16 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					}
 				}
 				if(button.startsWith("Cancel Invoice")) {
-					boolean invoiceIncludesMembership = false;
-					boolean invoiceIncludesFullMembership = false;
+					boolean invoiceIncludesFullMembership = BillingCalculatorSingle.isContainsFullMembership(invoice.getItems());
+					
 					Iterator<InvoiceItem> inIterator = invoice.getItems().iterator();
-
 					while (inIterator.hasNext()) {
 						InvoiceItem invoiceItem = inIterator.next();
-						//if (invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
-						//	invoiceIncludesMembership = true;
-						//	invoiceIncludesFullMembership = (invoiceItem.getAmount() == invoiceItem.getInvoiceFee().getAmount());
-						//}
 						inIterator.remove();
 						invoiceItemDAO.remove(invoiceItem);
 					}
 
-					invoice.setTotalAmount(0);
+					invoice.setTotalAmount(BigDecimal.ZERO);
 					invoice.setPaid(true);
 					invoice.setPaidDate(new Date());
 					invoice.setAuditColumns(permissions);
@@ -162,8 +159,15 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 					invoiceDAO.save(invoice);
 
-					BillingCalculatorSingle billingCalculatorSingle = new BillingCalculatorSingle();
-					contractor = billingCalculatorSingle.calculateCurrentBalance(contractor, invoiceIncludesMembership, invoiceIncludesFullMembership, -1);
+					contractor.syncBalance();
+					
+					if (invoiceIncludesFullMembership && contractor.isActiveB()) {
+						// Revert the paymentExpires back one year
+						contractor.setPaymentExpires(DateBean.addMonths(contractor.getPaymentExpires(), -12));
+					}
+					// TODO figure out how to roll this back too
+					// contractor.setMembershipLevel(contractor.getNewMembershipLevel());
+
 					contractor.setAuditColumns(permissions);
 					conAccountDAO.save(contractor);
 
@@ -226,22 +230,13 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 	private void updateTotals() {
 		if (!invoice.isPaid()) {
-			int total = 0;
+			invoice.setTotalAmount(BigDecimal.ZERO);
 			for (InvoiceItem item : invoice.getItems())
-				total += item.getAmount();
-			invoice.setTotalAmount(total);
+				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
 			invoice.setPaymentMethod(contractor.getPaymentMethod());
 		}
 
-		int balance = 0;
-		for (Invoice conInvoice : contractor.getInvoices())
-			if (!conInvoice.isPaid())
-				balance += conInvoice.getTotalAmount();
-		contractor.setBalance(balance);
-		if (balance <= 0) {
-			// This contractor is fully paid up
-
-		}
+		contractor.syncBalance();
 	}
 
 	private void markInvoicePaid() {

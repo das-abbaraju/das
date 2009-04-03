@@ -1,5 +1,8 @@
 package com.picsauditing.PICS;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
@@ -104,15 +107,19 @@ public class BillingCalculatorSingle {
 		return InvoiceFee.FACILITIES1;
 	}
 
+	/**
+	 * Create a list of fees that this contractor should be charge for
+	 * @param contractor
+	 * @return
+	 */
 	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 		// TODO add in the activation fee if the date is ever missing
 		if (contractor.getMembershipDate() == null) {
 			InvoiceFee fee = new InvoiceFee(InvoiceFee.ACTIVATION);
 			items.add(new InvoiceItem(fee));
-			
+
 		}
-	
 
 		// For Activation Fee and New Membership
 		if ("Activation".equals(contractor.getBillingStatus())) {
@@ -143,28 +150,29 @@ public class BillingCalculatorSingle {
 		// and when the actual membership expires
 		if ("Upgrade".equals(contractor.getBillingStatus())) {
 			if (contractor.getNewMembershipLevel() != null && contractor.getMembershipLevel() != null) {
-				int upgradeAmount = 0;
+				BigDecimal upgradeAmount = BigDecimal.ZERO;
 				String description = "";
 
-				if (contractor.getMembershipLevel().getAmount() == 0) {
+				if (contractor.getMembershipLevel().isFree()) {
 					// Starting from scratch/Free Membership Level
 					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
 					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
-					
+
 				} else if (DateBean.getDateDifference(contractor.getPaymentExpires()) < 0) {
 					// Their membership has already expired so we need to do a full renewal amount
 					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
 					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
-					
+
 				} else {
 					// Actual prorated Upgrade
-					Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor.getLastUpgradeDate();
-					double daysUntilExpiration = DateBean.getDateDifference(upgradeDate, contractor.getPaymentExpires());
-					double upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount()
-							- contractor.getMembershipLevel().getAmount();
+					Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor
+							.getLastUpgradeDate();
+					double daysUntilExpiration = DateBean
+							.getDateDifference(upgradeDate, contractor.getPaymentExpires());
+					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(contractor.getMembershipLevel().getAmount());
 
-					double proratedCalc = upgradeAmountDifference / 365;
-					upgradeAmount = (int)Math.round(daysUntilExpiration * proratedCalc);
+					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365));
+					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
 							+ upgradeAmount;
@@ -172,7 +180,7 @@ public class BillingCalculatorSingle {
 
 				InvoiceItem invoiceItem = new InvoiceItem();
 				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
-				invoiceItem.setAmount(upgradeAmount);
+				invoiceItem.setAmount(upgradeAmount.round(new MathContext(0, RoundingMode.HALF_UP)));
 				invoiceItem.setDescription(description);
 				items.add(invoiceItem);
 			}
@@ -181,27 +189,31 @@ public class BillingCalculatorSingle {
 		return items;
 	}
 
-	public ContractorAccount calculateCurrentBalance(ContractorAccount contractor, boolean invoiceIncludesMembership,
-			boolean invoiceIncludesFullMembership, int addYear) {
-		int balance = 0;
-		for (Invoice invoice2 : contractor.getInvoices()) {
-			if (!invoice2.isPaid()) {
-				balance += invoice2.getTotalAmount();
-			}
-		}
-		contractor.setBalance(balance);
+	/**
+	 * Return TRUE if any one of the items is for a Fee Class = "Membership"
+	 * 
+	 * @param items
+	 * @return
+	 */
+	static public boolean isContainsMembership(List<InvoiceItem> items) {
 
-		if (invoiceIncludesMembership) {
-			if (invoiceIncludesFullMembership && contractor.isActiveB()) {
-				if (contractor.getPaymentExpires() != null) {
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(contractor.getPaymentExpires());
-					cal.add(Calendar.YEAR, addYear);
-					contractor.setPaymentExpires(cal.getTime());
-				}
-				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
-			}
-		}
-		return contractor;
+		for (InvoiceItem item : items)
+			if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+				return true;
+		return false;
 	}
+
+	/**
+	 * Return TRUE if any one of the items is for a Fee Class = "Membership" and the amount isn't prorated
+	 * 
+	 * @param items
+	 * @return
+	 */
+	static public boolean isContainsFullMembership(List<InvoiceItem> items) {
+		for (InvoiceItem item : items)
+			if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+				return (item.getAmount() == item.getInvoiceFee().getAmount());
+		return false;
+	}
+	
 }

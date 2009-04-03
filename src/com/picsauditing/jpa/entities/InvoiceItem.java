@@ -1,10 +1,15 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @SuppressWarnings("serial")
 @Entity
@@ -14,8 +19,11 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 	private Invoice invoice;
 	private InvoiceFee invoiceFee;
 	// TODO change this to decimal 
-	private int amount;
+	private BigDecimal amount;
 	private String description;
+	private Date paymentExpires;
+	private boolean refunded = false;
+	private String qbRefundID;
 	
 	public InvoiceItem() {
 	}
@@ -46,11 +54,11 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 		this.invoiceFee = invoiceFee;
 	}
 
-	public int getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -61,6 +69,36 @@ public class InvoiceItem extends BaseTable implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * If the fee is for a contractor membership, the date the membership is valid until
+	 * @return
+	 */
+	@Temporal(TemporalType.DATE)
+	public Date getPaymentExpires() {
+		return paymentExpires;
+	}
+
+	public void setPaymentExpires(Date paymentExpires) {
+		this.paymentExpires = paymentExpires;
+	}
+
+	public boolean isRefunded() {
+		return refunded;
+	}
+
+	public void setRefunded(boolean refunded) {
+		this.refunded = refunded;
+	}
+
+	@Column(length=25)
+	public String getQbRefundID() {
+		return qbRefundID;
+	}
+
+	public void setQbRefundID(String qbRefundID) {
+		this.qbRefundID = qbRefundID;
 	}
 
 }

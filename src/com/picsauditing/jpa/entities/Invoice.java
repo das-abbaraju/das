@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +31,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private Account account;
 	private Date dueDate;
 	private boolean paid;
-	private int totalAmount;
+	private BigDecimal totalAmount;
 	private Date paidDate;
 	private PaymentMethod paymentMethod;
 	private String checkNumber;
@@ -58,7 +59,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public boolean isOverdue() {
-		if (totalAmount <= 0)
+		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0)
 			return false;
 		
 		if (paid)
@@ -87,11 +88,11 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.paid = paid;
 	}
 
-	public int getTotalAmount() {
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 

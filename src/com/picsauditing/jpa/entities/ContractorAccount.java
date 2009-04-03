@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,7 +67,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private Date paymentExpires;
 	private boolean renew = true;
 	private Date lastUpgradeDate;
-	private int balance;
+	private BigDecimal balance;
 	private InvoiceFee membershipLevel;
 	private InvoiceFee newMembershipLevel;
 	private List<Invoice> invoices = new ArrayList<Invoice>();
@@ -368,7 +369,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@Column(name = "paymentExpires", length = 10)
+	@Column(name = "paymentExpires", nullable = false)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}
@@ -429,18 +430,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	// /// Transient/Helper Methods ///////
-
-	@Transient
-	@Deprecated
-	public int getUpgradeAmountOwed() {
-		return balance;
-	}
-
-	@Transient
-	@Deprecated
-	public int getAnnualAmountOwed() {
-		return balance;
-	}
 
 	@Transient
 	public boolean isPaymentOverdue() {
@@ -589,6 +578,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.renew = renew;
 	}
 
+	/**
+	 * The last day someone added a facility to this contractor. This is used to prorate upgrade amounts
+	 * @return
+	 */
 	@Temporal(TemporalType.DATE)
 	public Date getLastUpgradeDate() {
 		return lastUpgradeDate;
@@ -598,12 +591,24 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.lastUpgradeDate = lastUpgradeDate;
 	}
 
-	public int getBalance() {
+	public BigDecimal getBalance() {
 		return balance;
 	}
 
-	public void setBalance(int balance) {
+	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+	
+	/**
+	 * Set the balance equal to the sum of all unpaid invoices
+	 */
+	@Transient
+	public void syncBalance() {
+		balance = BigDecimal.ZERO;
+		for (Invoice invoice : getInvoices()) {
+			if (!invoice.isPaid())
+				balance = balance.add(invoice.getTotalAmount());
+		}
 	}
 
 	@ManyToOne
@@ -684,7 +689,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			}
 		}
 
-		if (newMembershipLevel.getAmount() > membershipLevel.getAmount())
+		if (newMembershipLevel.getAmount().compareTo(membershipLevel.getAmount()) > 0)
 			return "Upgrade";
 
 		if (!renew)

@@ -1,8 +1,11 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 @SuppressWarnings("serial")
@@ -20,7 +23,7 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int FACILITIES13 = 9;
 	public final static int FACILITIES20 = 10;
 	private String fee;
-	private int amount;
+	private BigDecimal amount;
 	private boolean visible = true;
 	private String feeClass;
 	private String qbFullName;
@@ -43,11 +46,11 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	}
 
 	@Column( name = "defaultAmount")
-	public int getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -79,4 +82,8 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 		this.qbFullName = qbFullName;
 	}
 
+	@Transient
+	public boolean isFree() {
+		return this.id == FREE;
+	}
 }

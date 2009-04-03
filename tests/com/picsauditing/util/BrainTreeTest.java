@@ -1,5 +1,7 @@
 package com.picsauditing.util;
 
+import java.math.BigDecimal;
+
 import junit.framework.TestCase;
 
 import com.picsauditing.EntityFactory;
@@ -18,7 +20,7 @@ public class BrainTreeTest extends TestCase {
 		Invoice invoice = new Invoice();
 		invoice.setAccount(EntityFactory.makeContractor());
 		invoice.setId(123);
-		invoice.setTotalAmount(99);
+		invoice.setTotalAmount(new BigDecimal(99));
 		try {
 			service.processPayment(invoice);
 		} catch (Exception e) {

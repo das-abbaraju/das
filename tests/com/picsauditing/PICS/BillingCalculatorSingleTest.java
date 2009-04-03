@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Vector;
 
@@ -153,12 +154,12 @@ public class BillingCalculatorSingleTest extends TestCase {
 		
 	}
 	
-	private int lookup( InvoiceFee fee ) {
+	private BigDecimal lookup( InvoiceFee fee ) {
 		InvoiceFee connected = feeDao.find(fee.getId());
 		return connected.getAmount();
 	}
 	
-	private int lookup(int feeID) {
+	private BigDecimal lookup(int feeID) {
 		InvoiceFee connected = feeDao.find(feeID);
 		return connected.getAmount();
 	}
