@@ -628,7 +628,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 							foundCurrentMembership = true;
 						}
 						if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
-							membershipDate = invoice.getCreationDate();
+							if(invoiceItem.getPaymentExpires() != null)
+								membershipDate = invoiceItem.getPaymentExpires();
+							else
+								membershipDate = invoice.getCreationDate();
 							foundMembershipDate = true;
 						}
 					}
