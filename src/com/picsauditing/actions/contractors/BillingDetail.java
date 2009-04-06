@@ -55,7 +55,7 @@ public class BillingDetail extends ContractorActionSupport {
 		newFee = invoiceFeeDAO.find(newFee.getId());
 		contractor.setNewMembershipLevel(newFee);
 
-		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor);
+		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 
 		invoiceTotal = new BigDecimal(0);
 		for (InvoiceItem item : invoiceItems)

@@ -116,8 +116,10 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				closedDate = null;
 			if (completedDate != null)
 				completedDate = null;
-			if (expiresDate != null)
-				expiresDate = null;
+			if(!getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+				if (expiresDate != null)
+					expiresDate = null;
+			}
 		}
 		if (auditStatus.equals(AuditStatus.Submitted) || auditStatus.equals(AuditStatus.Resubmitted)) {
 			// If we're going "forward" then (re)set the closedDate
