@@ -5,16 +5,15 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -121,7 +120,7 @@ public class BillingCalculatorSingle {
 	 * @param contractor
 	 * @return
 	 */
-	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor) {
+	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, InvoiceFeeDAO feeDAO) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 		if (contractor.getBillingStatus().equals("Not Calculated"))
@@ -134,6 +133,7 @@ public class BillingCalculatorSingle {
 			// This contractor has never paid their activation fee, make them now
 			// This applies regardless if this is a new reg or renewal
 			InvoiceFee fee = new InvoiceFee(InvoiceFee.ACTIVATION);
+			fee.setAmount(new BigDecimal(99)); // Yes this is hard coded
 			// Activate effective today
 			items.add(new InvoiceItem(fee, new Date()));
 		}
@@ -148,6 +148,7 @@ public class BillingCalculatorSingle {
 		// For Reactivation Fee and Reactivating Membership
 		if ("Reactivation".equals(contractor.getBillingStatus())) {
 			InvoiceFee fee = new InvoiceFee(InvoiceFee.REACTIVATION);
+			fee.setAmount(new BigDecimal(199)); // Yes this is hard coded
 			// Reactivate effective today
 			items.add(new InvoiceItem(fee, new Date()));
 
@@ -190,8 +191,8 @@ public class BillingCalculatorSingle {
 					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(
 							contractor.getMembershipLevel().getAmount());
 
-					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365));
-					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference);
+					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365), 3, BigDecimal.ROUND_UP);
+					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(proratedCalc);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
 							+ upgradeAmount;
