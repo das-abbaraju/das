@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Audit List</title>
+<title>Lifetime Members</title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Audit List</h1>
+<h1>Lifetime Members</h1>
 
 <s:include value="filters.jsp" />
 
@@ -18,19 +18,17 @@
 	<thead>
 	<tr>
 		<td></td>
-	    <th>ID</th>
 	    <td>Name</td>
-	    <td>Active</td>
-	    <td>Paying Facilities</td>
+	    <td class="center">Active</td>
+	    <td class="center">Paying<br>Facilities</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-		<td><s:property value="get('id')"/></td>
-		<td><s:property value="get('name')"/></td>
-		<td><s:property value="get('active')"/></td>
-		<td><s:property value="get('payingFacilities')"/></td>
+		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
+		<td class="center"><s:property value="get('active')"/></td>
+		<td class="center"><s:property value="get('payingFacilities')"/></td>
 	</tr>
 	</s:iterator>
 </table>
