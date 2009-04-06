@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum CaoStatus {
-	NotApplicable, Awaiting, Approved, Rejected;
+	Pending, Verified, NotApplicable, Awaiting, Approved, Rejected;
 	
 	/**
 	 * 
