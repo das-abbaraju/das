@@ -41,7 +41,7 @@ public class EmailQueue implements java.io.Serializable {
 	private String subject = "";
 	private String body = "";
 	private int priority = 50;
-	private Date creationDate;
+	private Date creationDate = new Date();
 	private User createdBy;
 	private Date sentDate;
 	private EmailTemplate emailTemplate;

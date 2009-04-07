@@ -84,7 +84,7 @@
 			EmailSender.send(mail);
 
 		} catch (Exception e) {
-			// do nothing
+			%>Failed to send email: <%= e.getMessage() %><%
 		}
 	}
 %>

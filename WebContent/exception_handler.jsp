@@ -30,6 +30,7 @@
 <%
 	boolean debugging = "1".equals(System.getProperty("pics.debug"));
 	
+	debugging = false;
 	String message = "";
 	String cause = "Undetermined";
 	String stacktrace = "";
@@ -49,6 +50,7 @@
 
 	if (!debugging) {
 		try {
+			%>Debugging<%
 			StringBuilder email = new StringBuilder();
 			email.append("An error occurred on PICS\n\n");
 			email.append(message);
@@ -82,7 +84,7 @@
 			EmailSender.send(mail);
 			
 		} catch (Exception e) {
-			// do nothing
+			%>Failed to send email: <%= e.getMessage() %><%
 		}
 	}
 %>
