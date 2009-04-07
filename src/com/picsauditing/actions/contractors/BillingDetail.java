@@ -58,10 +58,8 @@ public class BillingDetail extends ContractorActionSupport {
 		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 
 		invoiceTotal = new BigDecimal(0);
-		for (InvoiceItem item : invoiceItems) {
-			invoiceFeeDAO.connect(item);
+		for (InvoiceItem item : invoiceItems)
 			invoiceTotal = invoiceTotal.add(item.getAmount());
-		}
 
 		if ("Create".equalsIgnoreCase(button)) {
 
