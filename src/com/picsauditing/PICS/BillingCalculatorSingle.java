@@ -122,11 +122,13 @@ public class BillingCalculatorSingle {
 	 */
 	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, InvoiceFeeDAO feeDAO) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
+		
+		String billingStatus = contractor.getBillingStatus();
 
-		if (contractor.getBillingStatus().equals("Not Calculated"))
+		if (billingStatus.equals("Not Calculated"))
 			return items;
 
-		if (contractor.getBillingStatus().equals("Current"))
+		if (billingStatus.equals("Current"))
 			return items;
 
 		if (contractor.getMembershipDate() == null) {
@@ -139,14 +141,14 @@ public class BillingCalculatorSingle {
 		}
 
 		// For Activation Fee and New Membership
-		if ("Activation".equals(contractor.getBillingStatus())) {
+		if ("Activation".equals(billingStatus)) {
 			// Payment expires 12 months from today
 			Date paymentExpires = DateBean.addMonths(new Date(), 12);
 			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
 
 		// For Reactivation Fee and Reactivating Membership
-		if ("Reactivation".equals(contractor.getBillingStatus())) {
+		if ("Reactivation".equals(billingStatus)) {
 			InvoiceFee fee = getFee(InvoiceFee.REACTIVATION, feeDAO);
 			// Reactivate effective today
 			items.add(new InvoiceItem(fee, new Date()));
@@ -157,7 +159,7 @@ public class BillingCalculatorSingle {
 		}
 
 		// For Renewals
-		if (contractor.getBillingStatus().startsWith("Renew")) {
+		if (billingStatus.startsWith("Renew")) {
 			// We could eventually customize the 12 months to support monthly/quarterly billing cycles
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
@@ -166,7 +168,7 @@ public class BillingCalculatorSingle {
 		// For Upgrades
 		// Calculate a prorated amount depending on when the upgrade happens
 		// and when the actual membership expires
-		if ("Upgrade".equals(contractor.getBillingStatus())) {
+		if ("Upgrade".equals(billingStatus)) {
 			if (contractor.getNewMembershipLevel() != null && contractor.getMembershipLevel() != null) {
 				BigDecimal upgradeAmount = BigDecimal.ZERO;
 				String description = "";
@@ -190,9 +192,7 @@ public class BillingCalculatorSingle {
 					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(
 							contractor.getMembershipLevel().getAmount());
 
-					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365), 3,
-							BigDecimal.ROUND_UP);
-					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(proratedCalc);
+					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(new BigDecimal(365), 0, RoundingMode.HALF_UP);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
 							+ upgradeAmount;
@@ -200,7 +200,7 @@ public class BillingCalculatorSingle {
 
 				InvoiceItem invoiceItem = new InvoiceItem();
 				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
-				invoiceItem.setAmount(upgradeAmount.round(new MathContext(0, RoundingMode.HALF_UP)));
+				invoiceItem.setAmount(upgradeAmount);
 				invoiceItem.setDescription(description);
 				invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
 				items.add(invoiceItem);

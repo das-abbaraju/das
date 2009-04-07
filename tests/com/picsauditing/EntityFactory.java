@@ -1,7 +1,7 @@
 package com.picsauditing;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import com.picsauditing.PICS.AuditCriteriaAnswer;
@@ -18,17 +18,19 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
  * This generates jpa objects that we can then use in our unit testing
+ * 
  * @author Trevor
- *
+ * 
  */
 public class EntityFactory {
-	
+
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
 		operator.setActive('Y');
@@ -37,9 +39,10 @@ public class EntityFactory {
 		operator.setCanSeeInsurance(YesNo.Yes);
 		return operator;
 	}
-	
+
 	/**
 	 * Create an active, Medium Risk Level ContractorAccount named Contractor Unit Test
+	 * 
 	 * @return
 	 */
 	static public ContractorAccount makeContractor() {
@@ -49,7 +52,7 @@ public class EntityFactory {
 		contractor.setRiskLevel(LowMedHigh.Med);
 		return contractor;
 	}
-	
+
 	static public ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
@@ -57,9 +60,10 @@ public class EntityFactory {
 		contractor.getOperators().add(co);
 		return co;
 	}
-	
+
 	/**
 	 * Make an AuditOperator that canSee = true, canEdit = false, AuditStatus = Active, and RiskLevel = Medium
+	 * 
 	 * @param auditTypeID
 	 * @param operator
 	 * @return
@@ -76,9 +80,10 @@ public class EntityFactory {
 		operator.getAudits().add(ao);
 		return ao;
 	}
-	
+
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
+	 * 
 	 * @param auditTypeID
 	 * @return
 	 */
@@ -89,7 +94,7 @@ public class EntityFactory {
 		conAudit.setAuditStatus(AuditStatus.Active);
 		return conAudit;
 	}
-	
+
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
@@ -97,9 +102,10 @@ public class EntityFactory {
 		auditType.setClassType(AuditTypeClass.Audit);
 		return auditType;
 	}
-	
+
 	/**
 	 * Add an Approved CAO to the passed in ConAudit
+	 * 
 	 * @param conAudit
 	 */
 	static public void addCao(ContractorAudit conAudit, OperatorAccount operator) {
@@ -110,7 +116,7 @@ public class EntityFactory {
 		cao.setRecommendedStatus(CaoStatus.Approved);
 		conAudit.getOperators().add(cao);
 	}
-	
+
 	static public void addAuditCriteriaAnswer(ContractorAudit conAudit, AuditQuestion question, String answer) {
 		AuditData data = new AuditData();
 		data.setAudit(conAudit);
@@ -125,11 +131,53 @@ public class EntityFactory {
 		question.setQuestion("jUnit Question");
 		return question;
 	}
-	
+
 	static public AuditData makeAuditData(String answer) {
 		AuditData data = new AuditData();
 		data.setQuestion(EntityFactory.makeAuditQuestion());
 		data.setAnswer(answer);
 		return data;
+	}
+
+	/**
+	 * Creates a fee that would normally be stored in the database without having to access a DAO
+	 * @param feeID
+	 * @return
+	 */
+	static public InvoiceFee makeInvoiceFee(int feeID) {
+		InvoiceFee fee = new InvoiceFee(feeID);
+		fee.setFeeClass("Membership");
+
+		if (feeID == InvoiceFee.ACTIVATION || feeID == InvoiceFee.REACTIVATION)
+			fee.setFeeClass("Activation");
+
+		int amount = 0;
+
+		switch (feeID) {
+		case InvoiceFee.PQFONLY:
+			amount = 99;
+			break;
+		case InvoiceFee.FACILITIES1:
+			amount = 399;
+			break;
+		case InvoiceFee.FACILITIES2:
+			amount = 699;
+			break;
+		case InvoiceFee.FACILITIES5:
+			amount = 999;
+			break;
+		case InvoiceFee.FACILITIES9:
+			amount = 1399;
+			break;
+		case InvoiceFee.FACILITIES13:
+			amount = 1699;
+			break;
+		case InvoiceFee.FACILITIES20:
+			amount = 1999;
+			break;
+		}
+		fee.setAmount(new BigDecimal(amount));
+
+		return fee;
 	}
 }
