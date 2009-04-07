@@ -13,7 +13,6 @@ at <s:date name="#o.creationDate"/>
 </s:if>
 
 </div>
-<img class="noprint" src="images/down.gif" width="20" height="20" 
-	title="Show who created this record" style="cursor: pointer;" 
+<img class="noprint" src="images/help.gif" width="12" height="12" 
+	title="Show who created this record and when" style="cursor: pointer;" 
 	onclick="getElement('who_<s:property value="#o"/>').style.display = 'block'; return false;" />
-

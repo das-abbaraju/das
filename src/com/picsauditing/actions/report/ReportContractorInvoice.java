@@ -23,6 +23,7 @@ public class ReportContractorInvoice extends ReportAccount {
 		getFilter().setShowConWithPendingAudits(false);
 		
 		sql.addField("i.id as invoiceId");
+		sql.addField("i.creationDate as invoicedDate");
 		sql.addField("ROUND(i.totalAmount) as totalAmount");
 		sql.addField("i.dueDate");
 		sql.addField("c.ccOnFile");

@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -13,7 +12,6 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -31,7 +29,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
@@ -118,6 +115,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						payInvoice();
 						addNote("Credit Card transaction completed for $" + invoice.getTotalAmount());
 					} catch (Exception e) {
+						addNote("Credit Card transaction failed: " + e.getMessage());
 						this.addActionError("Failed to charge credit card. " + e.getMessage());
 						return SUCCESS;
 					}
