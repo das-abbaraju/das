@@ -7,7 +7,6 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
