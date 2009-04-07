@@ -15,9 +15,12 @@ h1 {
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
-<s:if test="invoice.paid">
-	<div id="info" class="noprint">This invoice was paid on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
+<s:if test="invoice.cancelledInvoice">
+	<div id="alert" class="noprint">This invoice was cancelled on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
 </s:if>
+<s:elseif test="invoice.paid">
+	<div id="info" class="noprint">This invoice was paid on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
+</s:elseif>
 <s:elseif test="invoice.overdue">
 	<div id="alert" class="noprint">This invoice is currently overdue!</div>
 </s:elseif>

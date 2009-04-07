@@ -88,6 +88,17 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.paid = paid;
 	}
 
+	/**
+	 * Check to see if a invoice is Cancelled 
+	 * @return
+	 */
+	@Transient
+	public boolean isCancelledInvoice() {
+		if(isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
+			return true;
+		return false;
+	}
+	
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}

@@ -118,7 +118,7 @@
 							<td class="right">$<s:property value="totalAmount" /></td>
 							<td class="right"><s:date name="dueDate" format="M/d/yy" /></td>
 							<td class="right"><s:date name="paidDate" format="M/d/yy" /></td>
-							<td class="right"><s:if test="paid">Yes</s:if><s:else>No</s:else></td>
+							<td class="right"><s:if test="cancelledInvoice">Cancelled</s:if><s:elseif test="paid">Yes</s:elseif><s:else>No</s:else></td>
 						</tr>
 					</s:iterator>
 				</tbody>
