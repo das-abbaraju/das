@@ -42,7 +42,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 		Query query = em.createQuery("FROM InvoiceFee ORDER BY fee");
 		return query.getResultList();
 	}
-	@SuppressWarnings("unchecked")
+	
 	public InvoiceFee findByName(String feeName) {
 		Query query = em.createQuery("FROM InvoiceFee where fee = ?");
 		
@@ -55,4 +55,5 @@ public class InvoiceFeeDAO extends PicsDAO {
 			return null;
 		}
 	}
+
 }
