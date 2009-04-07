@@ -1,6 +1,7 @@
 package com.picsauditing.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 public class AnswerMapByAudits {
 
@@ -198,9 +200,10 @@ public class AnswerMapByAudits {
 		List<ContractorAudit> matchingConAudits = new ArrayList<ContractorAudit>();
 		if (data.size() > 0)
 			for (ContractorAudit conAudit : data.keySet())
-				if (conAudit.getAuditType().equals(matchingAuditType))
+				if (conAudit.getAuditType().equals(matchingAuditType) && !conAudit.getAuditStatus().isExpired())
 					matchingConAudits.add(conAudit);
-
+		
+		Collections.sort(matchingConAudits, new ContractorAuditComparator("auditFor -1"));
 		return matchingConAudits;
 	}
 

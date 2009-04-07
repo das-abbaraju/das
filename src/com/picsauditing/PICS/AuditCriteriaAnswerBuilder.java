@@ -153,10 +153,14 @@ public class AuditCriteriaAnswerBuilder {
 	
 						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
 							List<AuditData> dataList = new ArrayList<AuditData>();
-							for (ContractorAudit conAudit : matchingConAudits) {
-								AuditData data = answerMapByAudits.get(conAudit).get(question.getId());
-								if( data != null ) {
-									dataList.add(data);
+							int count = 0;
+							if(count < 3) {
+								for (ContractorAudit conAudit : matchingConAudits) {
+									AuditData data = answerMapByAudits.get(conAudit).get(question.getId());
+									if( data != null ) {
+										dataList.add(data);
+										count++;
+									}
 								}
 							}
 							AuditData data = AuditData.addAverageData(dataList);
