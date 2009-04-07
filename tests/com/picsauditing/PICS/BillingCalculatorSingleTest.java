@@ -160,11 +160,11 @@ public class BillingCalculatorSingleTest extends TestCase {
 		List<InvoiceItem> items = null;
 		
 		// New contractor with no facilities
-		items = BillingCalculatorSingle.createInvoiceItems(contractor);
+		items = BillingCalculatorSingle.createInvoiceItems(contractor, null);
 		assertEquals(0, items.size());
 		
 		// New contractor with no facilities
-		items = BillingCalculatorSingle.createInvoiceItems(contractor);
+		items = BillingCalculatorSingle.createInvoiceItems(contractor, null);
 		assertEquals(0, items.size());
 	}
 	

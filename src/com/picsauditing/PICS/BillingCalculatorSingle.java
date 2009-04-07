@@ -125,15 +125,15 @@ public class BillingCalculatorSingle {
 
 		if (contractor.getBillingStatus().equals("Not Calculated"))
 			return items;
-		
+
 		if (contractor.getBillingStatus().equals("Current"))
 			return items;
 
 		if (contractor.getMembershipDate() == null) {
 			// This contractor has never paid their activation fee, make them now
 			// This applies regardless if this is a new reg or renewal
-			InvoiceFee fee = new InvoiceFee(InvoiceFee.ACTIVATION);
-			fee.setAmount(new BigDecimal(99)); // Yes this is hard coded
+			InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
+
 			// Activate effective today
 			items.add(new InvoiceItem(fee, new Date()));
 		}
@@ -147,8 +147,7 @@ public class BillingCalculatorSingle {
 
 		// For Reactivation Fee and Reactivating Membership
 		if ("Reactivation".equals(contractor.getBillingStatus())) {
-			InvoiceFee fee = new InvoiceFee(InvoiceFee.REACTIVATION);
-			fee.setAmount(new BigDecimal(199)); // Yes this is hard coded
+			InvoiceFee fee = getFee(InvoiceFee.REACTIVATION, feeDAO);
 			// Reactivate effective today
 			items.add(new InvoiceItem(fee, new Date()));
 
@@ -191,7 +190,8 @@ public class BillingCalculatorSingle {
 					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(
 							contractor.getMembershipLevel().getAmount());
 
-					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365), 3, BigDecimal.ROUND_UP);
+					BigDecimal proratedCalc = upgradeAmountDifference.divide(new BigDecimal(365), 3,
+							BigDecimal.ROUND_UP);
 					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(proratedCalc);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
@@ -237,4 +237,16 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
+	static private InvoiceFee getFee(int feeID, InvoiceFeeDAO feeDao) {
+		InvoiceFee fee = null;
+		if (feeID > 0) {
+			if (feeDao == null) {
+				System.out.println("WARNING: dao was not passed in, so fee " + feeID + " will not be linked");
+				fee = new InvoiceFee(feeID);
+				// fee.setAmount(new BigDecimal(99));
+			} else
+				fee = feeDao.find(feeID);
+		}
+		return fee;
+	}
 }

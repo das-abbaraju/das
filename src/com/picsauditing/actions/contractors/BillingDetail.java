@@ -58,8 +58,10 @@ public class BillingDetail extends ContractorActionSupport {
 		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 
 		invoiceTotal = new BigDecimal(0);
-		for (InvoiceItem item : invoiceItems)
+		for (InvoiceItem item : invoiceItems) {
+			invoiceFeeDAO.connect(item);
 			invoiceTotal = invoiceTotal.add(item.getAmount());
+		}
 
 		if ("Create".equalsIgnoreCase(button)) {
 
@@ -104,14 +106,6 @@ public class BillingDetail extends ContractorActionSupport {
 
 			contractor.getInvoices().add(invoice);
 			contractor.syncBalance();
-
-			if (BillingCalculatorSingle.isContainsMembership(invoiceItems)) {
-				if (BillingCalculatorSingle.isContainsFullMembership(invoiceItems) && contractor.isActiveB()) {
-					// Bump the paymentExpires one year
-					contractor.setPaymentExpires(DateBean.addMonths(contractor.getPaymentExpires(), 12));
-				}
-				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
-			}
 			accountDao.save(contractor);
 
 			this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,

@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
@@ -158,13 +159,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 					invoiceDAO.save(invoice);
 
-					Note note = new Note();
-					note.setAccount(invoice.getAccount());
-					note.setAuditColumns(this.getUser());
-					note.setSummary("Cancelled Invoice");
-					note.setNoteCategory(NoteCategory.Billing);
-					note.setViewableById(Account.PicsID);
-					noteDAO.save(note);
+					addNote("Cancelled Invoice " + invoice.getId());
 				}
 				
 				if (button.startsWith("Refund")) {
@@ -178,13 +173,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						invoiceItem.setAuditColumns(permissions);
 						invoiceItemDAO.save(invoiceItem);
 
-						Note note = new Note();
-						note.setAccount(invoice.getAccount());
-						note.setAuditColumns(this.getUser());
-						note.setSummary("Refunded Invoice");
-						note.setNoteCategory(NoteCategory.Billing);
-						note.setViewableById(Account.PicsID);
-						noteDAO.save(note);
+						addNote("Refunded Invoice " + invoice.getId());
 					}
 				}
 			}
@@ -390,5 +379,5 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	public void setRefundFeeId(int refundFeeId) {
 		this.refundFeeId = refundFeeId;
 	}
-
+	
 }

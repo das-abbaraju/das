@@ -727,6 +727,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			if (!renew)
 				return "Membership Canceled";
 			else {
+				if (new Date().before(paymentExpires))
+					return "Current";
+				
 				if (membershipDate == null)
 					return "Activation";
 				else
