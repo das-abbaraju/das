@@ -723,7 +723,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (newMembershipLevel.isFree())
 			return "Current";
 
-		if (!isActiveB()) {
+		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
+		
+		if (!isActiveB() || daysUntilRenewal < -90) {
+			// this contractor is not active or their membership expired more than 90 days ago
 			if (!renew)
 				return "Membership Canceled";
 			else {
@@ -743,7 +746,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (!renew)
 			return "Do not renew";
 
-		int daysUntilRenewal = DateBean.getDateDifference(paymentExpires);
 		if (daysUntilRenewal < 0)
 			return "Renewal Overdue";
 		if (daysUntilRenewal < 45)

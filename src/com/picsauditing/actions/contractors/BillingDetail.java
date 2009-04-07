@@ -78,10 +78,11 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(DateBean.addDays(contractor.getLastUpgradeDate(), 30));
 			} else if (contractor.getBillingStatus().startsWith("Renew")) {
 				invoice.setDueDate(contractor.getPaymentExpires());
-			} else {
+			}
+			if (invoice.getDueDate() == null)
 				// For all other statuses like (Current)
 				invoice.setDueDate(DateBean.addDays(new Date(), 30));
-			}
+			
 			// Make sure the invoice isn't due within 7 days for active accounts
 			if (contractor.isActiveB() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
 				invoice.setDueDate(DateBean.addDays(new Date(), 7));
