@@ -139,8 +139,8 @@ public class FlagQuestionCriteria extends BaseTable {
 			float tempRate = 0;
 			float tempCutoff = 0;
 			try {
-				tempRate = Float.parseFloat(answer);
-				tempCutoff = Float.parseFloat(value);
+				tempRate = Float.parseFloat(answer.replace(",", ""));
+				tempCutoff = Float.parseFloat(value.replace(",", ""));
 			} catch (Exception e) {
 				return true;
 			}
