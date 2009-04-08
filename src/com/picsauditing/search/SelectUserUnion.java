@@ -36,7 +36,7 @@ public class SelectUserUnion extends SelectSQL {
 			sql.append("*");
 		sql.append("\nFROM (\n");
 
-		String innerUnionSQL = "SELECT 'User' as tableType, 'User' as columnType, id, username, password, email, name, isActive, creationDate, lastLogin, accountID, null as phone "
+		String innerUnionSQL = "SELECT 'User' as tableType, 'User' as columnType, id, username, password, email, name, isActive, creationDate, lastLogin, accountID, phoneIndex as phone "
 				+ "FROM users where isGroup ='No' "
 				+ userWhere
 				+ " UNION "

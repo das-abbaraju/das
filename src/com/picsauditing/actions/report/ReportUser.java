@@ -113,7 +113,7 @@ public class ReportUser extends ReportActionSupport {
 		}
 		
 		if (filterOn(f.getCompanyName())) {
-			report.addFilter(new SelectFilter("companyName", "a.name LIKE '%?%'", f.getCompanyName()));
+			report.addFilter(new SelectFilter("companyName", "a.nameIndex LIKE '%?%'", f.getCompanyName()));
 		}
 	}
 
