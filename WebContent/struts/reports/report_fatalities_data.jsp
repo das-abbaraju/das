@@ -20,6 +20,7 @@
 				<td><a href="?orderBy=flag DESC">Flag</a></td>
 			</s:if>
 			<td><a href="?orderBy=ca.auditFor DESC">For</a></td>
+			<td><a href="?orderBy=os.SHAType DESC">SHAType</a></td>
 			<td>Fatalities</td>
 			<s:if test="showContact">
 				<td>Primary Contact</td>
@@ -56,6 +57,7 @@
 					width="12" height="15" border="0"></a></td>
 			</s:if>
 			<td class="center"><s:property value="get('auditFor')" /></td>
+			<td><s:property value="get('SHAType')"/></td>
 			<td class="center"><s:property value="get('fatalities')" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
