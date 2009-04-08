@@ -623,7 +623,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (!invoiceItem.isRefunded()) {
 						if (!foundCurrentMembership && invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
-							paymentExpires = invoiceItem.getPaymentExpires();
+							if(invoiceItem.getPaymentExpires() != null)
+								paymentExpires = invoiceItem.getPaymentExpires();
 							membershipLevel = invoiceItem.getInvoiceFee();
 							foundCurrentMembership = true;
 						}
