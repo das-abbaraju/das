@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title><s:property value="contractor.name" /> Billing Detail</title>
@@ -106,6 +107,9 @@
 						<th>Due Date</th>
 						<th>Date Paid</th>
 						<th>Paid</th>
+						<pics:permission perm="InvoiceEdit">
+							<th>Edit</th>
+						</pics:permission>
 					</tr>
 				</thead>
 				<tbody>
@@ -118,7 +122,10 @@
 							<td class="right">$<s:property value="totalAmount" /></td>
 							<td class="right"><s:date name="dueDate" format="M/d/yy" /></td>
 							<td class="right"><s:date name="paidDate" format="M/d/yy" /></td>
-							<td class="right"><s:if test="cancelledInvoice">Cancelled</s:if><s:elseif test="paid">Yes</s:elseif><s:else>No</s:else></td>
+							<td class="right"><s:if test="cancelledInvoice">Canceled</s:if><s:elseif test="paid">Yes</s:elseif><s:else>No</s:else></td>
+							<pics:permission perm="InvoiceEdit">
+								<td><a href="ConInvoiceMaintain.action?id=<s:property value="contractor.id"/>&invoiceId=<s:property value="id"/>">Edit</a></td>
+							</pics:permission>
 						</tr>
 					</s:iterator>
 				</tbody>

@@ -303,6 +303,14 @@
 			class="com.picsauditing.actions.contractors.CalculateFee">
 			<result>struts/contractors/calculate_fee_ajax.jsp</result>
 		</action>
+		<action name="ConInvoiceMaintain"
+			class="com.picsauditing.actions.contractors.ConInvoiceMaintain">
+			<result>struts/contractors/invoice_maintain.jsp</result>
+			<result name="BillingDetail" type="redirect-action">
+				<param name="actionName">BillingDetail</param>
+				<param name="id">${contractor.id}</param>
+			</result>
+		</action>
 
 		<!-- User List -->
 		<action name="UserList"

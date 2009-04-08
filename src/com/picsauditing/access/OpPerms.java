@@ -66,8 +66,7 @@ public enum OpPerms {
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false),
 	DelinquentAccounts("Delinquent Accounts", "Allows users to view Delinquent Contractor Accounts", false, false),
 	CreditCard("Credit Card", "Allow users to perform add, edit and delete Credit Card functions for Accounts added to Braintree.", true, true),
-	InvoiceEdit("Edit Invoice", "Can view and edit all fields related to an invoice", true, false),
-	InvoiceItemsEdit("Edit Invoice Items", "Can view and edit all fields related to an invoice items", true, false),
+	InvoiceEdit("Edit Invoice", "Can view and edit all fields related to an invoice"),
 	
 	ContractorTags("Contractor Tags", "Allow operators to tag and categorize their contractors into searchable groups."),
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false),
