@@ -611,6 +611,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void syncBalance() {
 		boolean foundCurrentMembership = false;
 		boolean foundMembershipDate = false;
+		boolean foundPaymentExpires = false;
 
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
@@ -622,11 +623,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (!invoiceItem.isRefunded()) {
-						if (!foundCurrentMembership && invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
-							if(invoiceItem.getPaymentExpires() != null)
+						if (invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {
+							if (!foundCurrentMembership) {
+								membershipLevel = invoiceItem.getInvoiceFee();
+								foundCurrentMembership = true;
+							}
+							if(!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
 								paymentExpires = invoiceItem.getPaymentExpires();
-							membershipLevel = invoiceItem.getInvoiceFee();
-							foundCurrentMembership = true;
+								foundPaymentExpires = true;
+							}
 						}
 						if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
 							if(invoiceItem.getPaymentExpires() != null)
@@ -637,14 +642,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 						}
 					}
 				}
-				if (foundCurrentMembership && foundMembershipDate)
+				if (foundCurrentMembership && foundMembershipDate && foundPaymentExpires)
 					return;
 			}
 		}
-		if (!foundCurrentMembership) {
-			paymentExpires = creationDate;
+		if (!foundCurrentMembership)
 			membershipLevel = new InvoiceFee(InvoiceFee.FREE);
-		}
+		if (!foundPaymentExpires)
+			paymentExpires = creationDate;
 		if (!foundMembershipDate)
 			membershipDate = null;
 	}
@@ -678,6 +683,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.invoices = invoices;
 	}
 
+	/**
+	 * 
+	 * @return a list of invoices sorted by creationDate DESC
+	 */
 	@Transient
 	public List<Invoice> getSortedInvoices() {
 		List<Invoice> sortedInvoiceList = new ArrayList<Invoice>(getInvoices());
