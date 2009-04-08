@@ -248,5 +248,10 @@ h1 {
 		</tr>
 	</table>
 </s:form>
+
+<pics:permission perm="InvoiceEdit">
+	<div class="noprint"><a href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">System Edit</a></div>
+</pics:permission>
+
 </body>
 </html>
