@@ -128,7 +128,8 @@ h1 {
 						</td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
-							(optional description) <s:if test="invoiceFee.fee != contractor.newMembershipLevel.fee">
+							(optional description) 
+							<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
 								<input type="submit" class="picsbutton positive" name="button"
 									value="Change to: <s:property value="contractor.newMembershipLevel.fee" />">
 							</s:if></td>
