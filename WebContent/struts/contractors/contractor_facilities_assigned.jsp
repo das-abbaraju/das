@@ -47,7 +47,7 @@
 				<td><s:property value="flag.waitingOn.name()" /></td>
 
 				<pics:permission perm="RemoveContractors">
-					<td><a href="#"
+					<td><a id="facility_<s:property value="id"/>" href="#"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</pics:permission>
 			</tr>
