@@ -185,4 +185,8 @@ public class StringsTest extends TestCase {
 				Strings.indexName(" H. Bob & Q. John's 5 Star Crane Inc./BJ Crane"));
 		assertEquals("QWERTYASDFZXCV", Strings.indexName("QWERTYASDFZXCV"));
 	}
+	
+	public void testMd5() {
+		assertEquals("4537d592b7fa52bffeb06f5123328c13", Strings.md5("pass1234|20080516190549"));
+	}
 }
