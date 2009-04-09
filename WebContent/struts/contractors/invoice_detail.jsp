@@ -210,7 +210,7 @@ h1 {
 								</s:if>
 								<s:else>
 									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
-									<input type="submit" class="picsbutton positive" name="button" maxlength="50"
+									<input id="collectCheck" type="submit" class="picsbutton positive" name="button" maxlength="50"
 										value="Collect Check for $ <s:property value=" invoice.totalAmount" />"/>
 								</s:else>
 								<pics:permission perm="InvoiceEdit" type="Edit">
