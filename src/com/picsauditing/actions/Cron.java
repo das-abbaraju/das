@@ -295,6 +295,7 @@ public class Cron extends PicsActionSupport {
 		PicsLogger.log("logging in to server...");
 
 		ftp.connect(server);
+		ftp.enterLocalPassiveMode();
 		ftp.login(username, password);
 
 		ftp.changeWorkingDirectory(folder);
