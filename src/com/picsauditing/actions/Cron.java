@@ -295,22 +295,22 @@ public class Cron extends PicsActionSupport {
 		PicsLogger.log("logging in to server...");
 
 		ftp.connect(server);
-		ftp.enterLocalPassiveMode();
+
 		ftp.login(username, password);
 
 		ftp.changeWorkingDirectory(folder);
 
-		FTPFile[] files = ftp.listFiles();
+		String[] names = ftp.listNames();
+		
+		if (names != null) {
 
-		if (files != null) {
+			for (String fileName : names) {
 
-			for (FTPFile ftpFile : files) {
-
-				PicsLogger.log("Processing file: " + ftpFile.getName());
+				PicsLogger.log("Processing file: " + fileName);
 
 				BufferedReader reader = null;
 
-				InputStream retrieveFileStream = ftp.retrieveFileStream(ftpFile.getName());
+				InputStream retrieveFileStream = ftp.retrieveFileStream(fileName);
 
 				if (retrieveFileStream != null) {
 
