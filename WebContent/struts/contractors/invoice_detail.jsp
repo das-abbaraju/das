@@ -148,7 +148,7 @@ h1 {
 						<s:else>
 							<td style="border-left: 0"><s:property value="description" />
 							<s:if test="refunded"> Refunded </s:if>
-							<pics:permission perm="Billing" type="Edit">
+							<pics:permission perm="InvoiceEdit" type="Edit">
 								<s:if test="invoice.paid && amount > 0 && !refunded">
 									<s:if test="@com.picsauditing.PICS.DateBean@isBeforeAWeek(invoice.paidDate)">
 										<s:hidden name="refundFeeId" value="%{id}"/>
@@ -213,8 +213,11 @@ h1 {
 									<input type="submit" class="picsbutton positive" name="button" maxlength="50"
 										value="Collect Check for $ <s:property value=" invoice.totalAmount" />"/>
 								</s:else>
-								<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice"/>
-							</s:if> <s:elseif test="invoice.totalAmount < 0 || invoice.totalAmount == 0">
+								<pics:permission perm="InvoiceEdit" type="Edit">
+									<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice"/>
+								</pics:permission>
+							</s:if>
+							<s:elseif test="invoice.totalAmount < 0 || invoice.totalAmount == 0">
 								<input type="submit" class="picsbutton positive" name="button" value="Mark Paid">
 							</s:elseif>
 							</td>
