@@ -69,7 +69,7 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td valign="top" bgcolor="#FFFFFF">
                   	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
 				  		<tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">12/1/08</span>AES Joins PICS</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">1/1/09</span>AES Joins PICS</span><br>
                             <br> 
 								AES is one of the world's largest global power companies. With operations in 29 countries on five continents, AES's generation and distribution facilities have the capacity to serve 100 million people worldwide. AES employs 28,000 people worldwide and generated $13.6 billion of revenue in 2007.</td>
                         </tr>
