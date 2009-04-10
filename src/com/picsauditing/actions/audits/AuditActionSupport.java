@@ -2,11 +2,12 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
@@ -24,7 +25,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -272,12 +272,21 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 			if (allActive) {
-				// Send email to contractor telling them thank you for playing
+				// Sending all the operator Emails too
+				String emailAddresses = "";
+				for (ContractorOperator contractorOperator : contractor.getOperators()) {
+					if(!Strings.isEmpty(contractorOperator.getOperatorAccount().getActivationEmails())) {
+						emailAddresses += contractorOperator.getOperatorAccount().getActivationEmails();
+						emailAddresses += ",";
+					}
+				}
+				// Send email to contractor telling them thank you for submitting all the audits
 				try {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(13); // Audits Thank You
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
+					emailBuilder.setBccAddresses(emailAddresses); 
 					EmailSender.send(emailBuilder.build());
 					addNote(contractor, "Sent Audits Thank You email to "
 							+ emailBuilder.getSentTo(), NoteCategory.Audits);
