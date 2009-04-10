@@ -2,9 +2,13 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
+
+import org.jboss.util.Strings;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -14,13 +18,21 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
@@ -34,17 +46,23 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private InvoiceFeeDAO invoiceFeeDAO;
 	protected ContractorValidator contractorValidator;
 	protected UserDAO userDAO;
+	protected OperatorAccountDAO operatorAccountDAO;
+	protected EmailQueueDAO emailQueueDAO;
 	protected String password1 = null;
 	protected String password2 = null;
+	protected int[] operatorIds = new int[300];
+	
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
-			InvoiceFeeDAO invoiceFeeDAO) {
+			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.userDAO = userDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
+		this.emailQueueDAO = emailQueueDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -64,6 +82,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				newFee = invoiceFeeDAO.find(newFee.getId());
 				contractor.setNewMembershipLevel(newFee);
 				user = userDAO.findByAccountID(conID, "", "No").get(0);
+				int i = 0;
+				for (ContractorOperator conOperator : contractor.getOperators()) {
+					operatorIds[i] = conOperator.getOperatorAccount().getId();
+					i++;
+				}
 			}
 			accountDao.clear();
 		}
@@ -168,6 +191,30 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				
 				this.addNote(contractor, "Closed contractor account." + expiresMessage);
 				this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
+			} else if (button.equals("SendDeactivationEmail")) {
+				permissions.tryPermission(OpPerms.EmailOperators);
+				if (operatorIds != null) {
+					String emailAddresses = "";
+					for (int operatorID : operatorIds) {
+						OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
+						if(!Strings.isEmpty(operatorAccount.getActivationEmails())) {
+							emailAddresses += operatorAccount.getActivationEmails();
+							emailAddresses += ",";
+						}
+					}
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(51); // Deactivation Email for operators
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setContractor(contractor);
+					emailBuilder.setBccAddresses(emailAddresses);
+					emailBuilder.setCcAddresses("");
+					emailBuilder.setToAddresses("info@picsauditing.com");
+					EmailQueue email = emailBuilder.build();
+					email.setPriority(50);
+					emailQueueDAO.save(email);
+					addNote(contractor, "Deactivation Email Sent to "+ emailAddresses, NoteCategory.General, LowMedHigh.Med, false, Account.PicsID);
+					this.addActionMessage("Successfully sent the email to operators");
+				}
 			} else {
 				// Because there are anomalies between browsers and how they pass
 				// in the button values, this is a catch all so we can get notified
@@ -229,5 +276,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public int[] getOperatorIds() {
+		return operatorIds;
+	}
+
+	public void setOperatorIds(int[] operatorIds) {
+		this.operatorIds = operatorIds;
 	}
 }

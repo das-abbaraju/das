@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.struts2.ServletActionContext;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
@@ -20,7 +18,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
-import org.apache.struts2.ServletActionContext;
 
 /**
  * Merges an email template with a map of token data and creates an email
