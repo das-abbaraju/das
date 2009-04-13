@@ -20,11 +20,47 @@
 	var catDataID = <s:property value="catDataID"/>;
 	var conID = <s:property value="conAudit.contractorAccount.id"/>;
 	var mode = '<s:property value="#parameters.mode"/>';
+
+	function verifyReject(status, opID) {
+		var caoNotes = $('notes_'+opID) != null ? $('notes_'+opID).value : "";
+		startThinking( {div:'cao_' + opID, type: 'large'} );
+		var pars = {
+			auditID: auditID,
+			button: status,
+			caoNotes: caoNotes,
+			opID: opID			
+		};
+		
+		var myAjax = new Ajax.Updater('cao_verification', 'PolicySaveAjax.action',
+				{
+					method: 'post',
+					parameters: pars
+				});
+	}
+
+	function submitPolicy(opID, isResubmit) {
+		startThinking( {div: 'submit_'+opID, type: 'large'} );
+		var pars = {
+			opID: opID,
+			auditID: auditID,
+			button: (isResubmit)? 'Resubmit' : 'Submit'
+		};
+
+		var myAjax = new Ajax.Updater('cao_submit', 'AuditCatSubmitAjax.action',
+				{
+					method: 'post',
+					parameters: pars
+				});
+	}
 	
-	function editCao( caoId ) {
+	function editCao( caoId, act ) {
+		var pars;
+		if ("save" == act)
+			pars= $('caoForm').serialize();
+		else
+			pars= 'cao.id=' + caoId;
 		startThinking( {div: 'caoSection', type: 'large' } );
 		
-		var pars= 'cao.id=' + caoId;
 		var myAjax = new Ajax.Updater($('caoSection'),'CaoEditAjax.action', 
 		{
 			method: 'post', 
@@ -166,33 +202,19 @@
 <s:if test="catDataID > 0">
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
-		<s:if test="conAudit.auditStatus.toString().equals('Submitted') || conAudit.auditStatus.toString().equals('Resubmitted')">
-			<s:if test="conAudit.auditType.classType.toString().equals('Policy') ">
-				<div id="alert" class="buttons">
-					<form id="redirectOptionsForm" method="get" action="PolicySave.action">
-						<input type="hidden" name="auditID" value="<s:property value="auditID" />"/>
-						<input type="submit" class="picsbutton positive" value="Verify" name="policyStatus" />
-						<input type="submit" class="picsbutton negative" value="Reject" name="policyStatus" />
-						Click Verify when you have verified the <s:property value="conAudit.auditType.auditName"/>. 
-						<br />
-					 	<s:if test="needsNextPolicyForContractor()"> 
-					 		<input type="radio" id="radioOldestPolicy" name="redirectOptions" value="oldestPolicy" />
-							<label for="radioOldestPolicy">Oldest Submitted Policy</label>
-							<input type="radio" id="radioNextPolicy" name="redirectOptions" value="nextPolicyForContractor" checked />
-							<label for="radioNextPolicy">Next Policy for Contractor</label>
-					 	</s:if>
-					 	<s:else>
-					 		<input type="radio" id="radioOldestPolicy" name="redirectOptions" value="oldestPolicy" checked />
-							<label for="radioOldestPolicy">Oldest Submitted Policy</label>
-					 	</s:else>
-					 	
-						<input type="radio" id="radioBackToReport" name="redirectOptions" value="backToReport" />
-						<label for="radioBackToReport">Back to Report</label>
-						<input type="radio" id="radioStay" name="redirectOptions" value="stay" />
-						<label for="radioStay">Stay on this Page</label>
-					</form>	
+		<s:if test="conAudit.auditType.classType.policy">
+			<s:if test="hasAwaitingCaos">
+				<div id="cao_verification">
+					<s:include value="audit_cat_cao_verification.jsp"/>
 				</div>
 			</s:if>
+			<div class="buttons" style="float:right">
+				<s:if test="needsNextPolicyForContractor">
+					<a class="button" href="AuditCat.action?auditID=<s:property value="nextPolicy.id"/>&catDataId=<s:property value="nextPolicy.categories.get(0).id"/>"> Next Policy &gt;</a>
+				</s:if>
+				<a class="button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Awaiting&button=getFirst"> Oldest Policy &gt;&gt;</a>
+			</div>
+			<br clear="all"/>
 		</s:if>
 	</pics:permission>
 	<s:if test="!singleCat">
@@ -208,14 +230,16 @@
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
 	<s:else>
-		<s:if test="conAudit.percentComplete < 100 && conAudit.auditStatus.pending">
+		<s:if test="conAudit.auditType.classType.policy && canSubmit">
+			<div id="cao_submit">
+				<s:include value="audit_cat_policy_submit.jsp"/>
+			</div>
+		</s:if>
+		<s:if test="conAudit.percentComplete < 100 && conAudit.auditStatus.pending && !conAudit.auditType.classType.policy">
 			<div id="info" class="buttons" style="">
 			<s:if test="conAudit.auditType.annualAddendum">
 				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Done</a>
 			</s:if>
-			<s:else>
-				<a href="AuditCat.action?button=done&auditID=<s:property value="auditID"/>&catDataID=<s:property value="catDataID"/>&mode=<s:property value="mode"/>" class="positive">Done</a>
-			</s:else>	
 			Click Done when you're ready to submit the <s:property value="conAudit.auditType.auditName"/>
 			</div>
 		</s:if>

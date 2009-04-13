@@ -18,7 +18,7 @@
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 		<td>Policy</td>
 		<td>Submitted</td>
-		<td>Status</td>
+		<td>Operators</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -27,7 +27,7 @@
 			<td><s:property value="get('name')"/></td>
 			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')" />"><s:property value="get('auditName')"/></a></td>
 			<td><s:date name="get('completedDate')" format="M/d/yy"/></td>
-			<td><s:property value="get('auditStatus')"/></td>
+			<td><s:property value="get('operatorCount')"/></td>
 		
 		</tr>
 	</s:iterator>	

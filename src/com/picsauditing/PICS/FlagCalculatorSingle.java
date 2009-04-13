@@ -303,22 +303,19 @@ public class FlagCalculatorSingle {
 										// This policy is already approved by operator
 										if(CaoStatus.Approved.equals(cao.getStatus()))
 											return WaitingOn.None;
-										
-										// This Policy is required by the operator
-										if (!auditStatus.isComplete(audit.getRequiredAuditStatus()))
-											// The contractor needs to still submit it
+
+										if (cao.getStatus() == CaoStatus.Pending) {
 											return WaitingOn.Contractor;
-										
-										if (audit.getRequiredAuditStatus().equals(AuditStatus.Active) 
-												&& (auditStatus.isPendingSubmittedResubmitted()))
-											// This policy requires verification by PICS
+										}
+
+										if (cao.getStatus() == CaoStatus.Awaiting) {
 											waitingOnPics = true;
-										
-										if (auditStatus.equals(AuditStatus.Active))
-											// This is active, the operator needs to verify it
-											if (cao.getStatus().equals(CaoStatus.Awaiting))
-												waitingOnOperator = true;
-										
+										}
+
+										if (cao.getStatus() == CaoStatus.Verified) {
+											waitingOnOperator = true;
+										}
+
 										if (CaoStatus.Rejected.equals(cao.getStatus()))
 											// The operator rejected their certificate, 
 											// they should fix it and resubmit it

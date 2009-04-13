@@ -29,7 +29,6 @@
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');" >Submitted</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.closedDate DESC');" >Closed</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');" >Status</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.percentComplete');" >Comp%</a></td>
 	    <td>File</td>
 		<s:if test="showContact">
@@ -50,6 +49,13 @@
 			<td>Trade</td>
 			<td>Industry</td>			
 		</s:if>
+		<s:if test="permissions.operator">
+			<td>Status</td>
+		</s:if>
+		<s:else> 
+			<td>OperatorCount</td>
+		</s:else>
+		
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -64,7 +70,6 @@
 		<td class="center"><s:date name="get('completedDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('closedDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
-		<td><s:property value="get('auditStatus')"/></td>
 		<td class="right"><s:property value="get('percentComplete')"/>%</td>
 		<td>
 		
@@ -120,6 +125,12 @@
 			<td><s:property value="get('main_trade')"/></td>
 			<td><s:property value="get('industry')"/></td>
 		</s:if>
+		<s:if test="permissions.operator">
+			<td><s:property value="get('CaoStatus')"/></td>
+		</s:if>
+		<s:else>
+			<td><s:property value="get('operatorCount')"/></td>
+		</s:else>
 	</tr>
 	</s:iterator>
 </table>

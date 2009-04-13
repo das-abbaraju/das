@@ -68,7 +68,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		getFilter().setShowCreatedDate(false);
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowCaoStatus(true);
-		getFilter().setShowAuditStatus(true);
+		getFilter().setShowAuditStatus(false);
 		getFilter().setShowRecommendedStatus(true);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);

@@ -11,7 +11,7 @@
 	<br />
 	<s:textarea id="cao.notes" name="cao.notes" cols="60" rows="2"/>
 	<div class="buttons">
-		<button type="submit" class="positive">Save</button>
+		<button class="positive" onclick="editCao(<s:property value="cao.id"/>,'save')">Save</button>
 		<a class="negative" href="#" onclick="javascript: $('caoSection').hide(); return false;">Close</a>
 	</div>
 </s:form>

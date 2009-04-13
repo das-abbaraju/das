@@ -18,8 +18,10 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -397,24 +399,23 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return notes;
 	}
 
-	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {
-		for (ContractorAudit contractorAudit : conAudit.getContractorAccount().getAudits()) {
-			if (!conAudit.equals(contractorAudit)
-					&& contractorAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
-					&& (contractorAudit.getAuditStatus().isSubmitted() || contractorAudit.getAuditStatus()
-							.isResubmitted())) {
-				for (ContractorOperator contractorOperator : conAudit.getContractorAccount().getOperators()) {
-					for (AuditOperator auditOperator : contractorOperator.getOperatorAccount().getAudits()) {
-						if (contractorAudit.getAuditType().equals(auditOperator.getAuditType())
-								&& auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0
-								&& auditOperator.getRequiredAuditStatus().isActive()) {
-							return contractorAudit;
+	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {		
+		for (ContractorAudit otherAudit : conAudit.getContractorAccount().getAudits()) {
+			if (!conAudit.equals(otherAudit) && !conAudit.getAuditStatus().isExpired() && otherAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+				for (ContractorAuditOperator cao : otherAudit.getOperators()) {
+					if (cao.getStatus().equals(CaoStatus.Awaiting)) {
+						for (AuditOperator auditOperator : cao.getOperator().getAudits()) {
+							if (otherAudit.getAuditType().equals(auditOperator.getAuditType())
+									&& auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0
+									&& auditOperator.getRequiredAuditStatus().isActive()) {
+								return otherAudit;
+							}
 						}
 					}
 				}
 			}
 		}
-
+		
 		return null;
 	}
 }

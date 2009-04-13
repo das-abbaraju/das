@@ -34,11 +34,11 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
 
-	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
-				contractorAuditOperatorDAO);
+	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator,
+				auditBuilder, contractorAuditOperatorDAO);
 	}
 
 	public String execute() throws Exception {

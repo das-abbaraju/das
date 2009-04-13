@@ -10,7 +10,6 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
-@SuppressWarnings("serial")
 public class ReportPolicyVerification extends ReportContractorAudits {
 	private static final long serialVersionUID = 6697393552632136569L;
 	
@@ -28,23 +27,19 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
 		
-		// Only show policies that are required by operators ( that haven't decided yet
-		SelectSQL subSelect = new SelectSQL("contractor_audit_operator cao");
-		subSelect.addJoin("JOIN contractor_audit ca ON cao.auditID = ca.id");
-		subSelect.addJoin("JOIN audit_operator ao ON ca.auditTypeID = ao.auditTypeID AND cao.opID = ao.opID");
-		subSelect.addJoin("JOIN generalcontractors gc on gc.genID = ao.opID AND gc.subid = ca.conId");
-		subSelect.addField("ca.id auditID");
-		subSelect.addWhere("ao.canSee = 1");
-		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
-		subSelect.addWhere("ao.requiredAuditStatus = 'Active'");
-		subSelect.addWhere("cao.status = 'Awaiting'");
-		sql.addWhere("ca.id IN (" + subSelect.toString() + ")");
+		sql.addJoin("JOIN contractor_audit_operator cao on ca.id = cao.auditID");
+		sql.addWhere("cao.status = 'Awaiting'");
+		sql.addWhere("ca.auditStatus != 'Expired'");
 		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
+		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addField("pcd.id catdataID");
+		sql.addField("cao.status as caoStatus");
+		sql.addGroupBy("ca.id");
 		
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowAuditFor(false);
+		getFilter().setShowAuditStatus(false);
 
 	}
 	

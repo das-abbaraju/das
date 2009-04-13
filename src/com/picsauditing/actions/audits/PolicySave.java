@@ -1,15 +1,14 @@
 package com.picsauditing.actions.audits;
 
-import org.apache.struts2.ServletActionContext;
-
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.Strings;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -17,14 +16,20 @@ import com.picsauditing.jpa.entities.ContractorAudit;
  * @author Trevor
  * 
  */
+@SuppressWarnings("serial")
 public class PolicySave extends AuditActionSupport {
+	
+	protected ContractorAuditOperatorDAO caoDAO;
 
-	protected String policyStatus;
-	protected String redirectOptions;
+	protected int opID;
+	
+	protected ContractorAuditOperator cao;
+	protected String caoNotes;
 
 	public PolicySave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO) {
+			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO, ContractorAuditOperatorDAO caoDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
+		this.caoDAO = caoDAO;
 	}
 
 	public String execute() throws Exception {
@@ -32,73 +37,53 @@ public class PolicySave extends AuditActionSupport {
 			return LOGIN;
 
 		findConAudit();
-		if ("Verify".equals(policyStatus)) {
-			conAudit.changeStatus(AuditStatus.Active, getUser());
-		}
+		
+		cao = caoDAO.find(conAudit.getId(), opID);
+		
+		if (cao.getAudit().getPercentComplete() == 100) {
+			
+			if ("Verify".equals(button)) {
+				cao.setStatus(CaoStatus.Verified);
+				cao.setNotes(caoNotes);
+				caoDAO.save(cao);
 
-		if ("Reject".equals(policyStatus)) {
-			conAudit.changeStatus(AuditStatus.Pending, getUser());
-			for (AuditCatData aCatData : conAudit.getCategories()) {
-				aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
-				catDataDao.save(aCatData);
+				addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName() + "</strong> Policy has been verified for <strong>" + cao.getOperator().getName() + "</strong>.");
 			}
-		}
 
-		auditDao.save(conAudit);
+			if ("Reject".equals(button)) {
+				if (Strings.isEmpty(caoNotes)) {
+					addActionError("You must enter notes if you are rejecting a contractor's policy.");
+				} else {
+					cao.setStatus(CaoStatus.Rejected);
+					cao.setNotes(caoNotes);
+					caoDAO.save(cao);
 
-		if ("oldestPolicy".equals(redirectOptions)) {
-			ServletActionContext
-					.getResponse()
-					.sendRedirect(
-							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&button=getFirst");
-			return BLANK;
-		}
-		if ("nextPolicyForContractor".equals(redirectOptions)) {
-			ContractorAudit contractorAudit = findNextRequiredPolicyForVerification(conAudit);
-			if (contractorAudit != null) {
-				ServletActionContext.getResponse().sendRedirect(
-						"AuditCat.action?auditID=" + contractorAudit.getId() + "&catDataID="
-								+ contractorAudit.getCategories().get(0).getId());
-			} else {
-				ServletActionContext.getResponse().sendRedirect(
-						"AuditCat.action?auditID=" + conAudit.getId() + "&catDataID="
-								+ catDataDao.findByAudit(conAudit, permissions).get(0).getId());
+					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName() + "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName() + "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
+				}
 			}
-			return BLANK;
+		} else {
+			addActionError("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+					+ "</strong> policy is not finished, it can not be Verified or Rejected until all required fields are entered.");
 		}
-		if ("backToReport".equals(redirectOptions)) {
-			ServletActionContext
-					.getResponse()
-					.sendRedirect(
-							"PolicyVerification.action?filter.visible=Y&filter.auditStatus=Submitted&filter.auditStatus=Resubmitted");
-			return BLANK;
-		}
-		if ("stay".equals(redirectOptions)) {
-			ServletActionContext.getResponse().sendRedirect(
-					"AuditCat.action?auditID=" + conAudit.getId() + "&catDataID="
-							+ catDataDao.findByAudit(conAudit, permissions).get(0).getId());
-		}
-
-		ContractorAccount contractorAccount = conAudit.getContractorAccount();
-		contractor.setNeedsRecalculation(true);
-		accountDao.save(contractorAccount);
-
+		
 		return SUCCESS;
 	}
-
-	public String getRedirectOptions() {
-		return redirectOptions;
+	
+	public int getOpID() {
+		return opID;
 	}
 
-	public void setRedirectOptions(String redirectOptions) {
-		this.redirectOptions = redirectOptions;
+	public void setOpID(int opID) {
+		this.opID = opID;
+	}
+	
+	public String getCaoNotes() {
+		return caoNotes;
 	}
 
-	public String getPolicyStatus() {
-		return policyStatus;
-	}
-
-	public void setPolicyStatus(String policyStatus) {
-		this.policyStatus = policyStatus;
+	public void setCaoNotes(String caoNotes) {
+		if (Strings.isEmpty(caoNotes))
+			caoNotes = null;
+		this.caoNotes = caoNotes;
 	}
 }

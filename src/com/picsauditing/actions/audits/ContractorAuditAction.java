@@ -35,10 +35,10 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 	private int applyCategoryID = 0;
 	private int removeCategoryID = 0;
 
-	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 	}
 

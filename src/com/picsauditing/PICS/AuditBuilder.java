@@ -358,8 +358,8 @@ public class AuditBuilder {
 					if (required) {
 						// This cao is always required so add it if it doesn't exist
 						// and then calculate the recommended status
-						cao.setStatus(CaoStatus.Awaiting);
-						cao.setRecommendedStatus(CaoStatus.Awaiting);
+						cao.setStatus(CaoStatus.Pending);
+						cao.setRecommendedStatus(CaoStatus.Pending);
 					} else {
 						// This cao might be required (if the operator manually requested it)
 						cao.setStatus(CaoStatus.NotApplicable);

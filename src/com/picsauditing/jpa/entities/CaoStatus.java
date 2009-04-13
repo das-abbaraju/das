@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum CaoStatus {
-	Pending, Verified, NotApplicable, Awaiting, Approved, Rejected;
+	NotApplicable, Pending, Awaiting, Verified, Approved, Rejected;
 	
 	/**
 	 * 
@@ -13,5 +13,25 @@ public enum CaoStatus {
 		if (this.equals(Awaiting))
 			return true;
 		return false;
+	}
+	
+	public boolean isPending() {
+		return this.equals(CaoStatus.Pending);
+	}
+	
+	public boolean isAwaiting() {
+		return this.equals(CaoStatus.Awaiting);
+	}
+	
+	public boolean isVerified() {
+		return this.equals(CaoStatus.Verified);
+	}
+	
+	public boolean isApproved() {
+		return this.equals(CaoStatus.Approved);
+	}
+	
+	public boolean isRejected() {
+		return this.equals(CaoStatus.Rejected);
 	}
 }

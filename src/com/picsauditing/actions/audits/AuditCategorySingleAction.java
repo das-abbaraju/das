@@ -9,6 +9,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -26,12 +27,16 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	protected AuditStatus auditStatus;
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected AuditBuilder auditBuilder;
+	
+	protected int opID;
+	protected ContractorAuditOperatorDAO caoDAO;
 
-	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
+		this.caoDAO = caoDAO;
 	}
 
 	public String execute() throws Exception {
@@ -57,6 +62,21 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				else
 					auditStatus = AuditStatus.Submitted;
 				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
+			} else if (conAudit.getAuditType().getClassType().isPolicy()) {
+				if (conAudit.getPercentComplete() == 100 && !conAudit.getAuditStatus().isExpired()) {
+					ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
+					if (cao != null) {
+						cao.setStatus(CaoStatus.Awaiting);
+						cao.setAuditColumns(permissions);
+						caoDAO.save(cao);
+						addActionMessage("The <strong>" + conAudit.getAuditType().getAuditName()
+								+ "</strong> Policy has been submitted for <strong>" + cao.getOperator().getName()
+								+ "</strong>.");
+					}
+				} else {
+					addActionError("The <strong>" + conAudit.getAuditType().getAuditName() 
+							+ "</strong> policy is not complete. Please enter all required answers before submitting.");
+				}
 			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
 				auditStatus = AuditStatus.Submitted;
 			else
@@ -64,9 +84,21 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		}
 
 		if ("Resubmit".equals(button)) {
-			conAudit.changeStatus(AuditStatus.Submitted, getUser());
-			auditDao.save(conAudit);
-			return SUCCESS;
+			if (conAudit.getAuditType().getClassType().isPolicy()) {
+				ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
+				if (cao != null) {
+					cao.setStatus(CaoStatus.Awaiting);
+					cao.setAuditColumns(permissions);
+					caoDAO.save(cao);
+					addActionMessage("The <strong>" + conAudit.getAuditType().getAuditName()
+							+ "</strong> Policy has been resubmitted  for <strong>" + cao.getOperator().getName()
+							+ "</strong>.");
+				}
+			} else {
+				conAudit.changeStatus(AuditStatus.Submitted, getUser());
+				auditDao.save(conAudit);
+				return SUCCESS;
+			}
 		}
 
 		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
@@ -162,7 +194,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	public boolean isCanSubmit() {
 		if (!isCanEdit())
 			return false;
-		if (conAudit.getPercentComplete() < 100)
+		if (conAudit.getPercentComplete() < 100 && !conAudit.getAuditType().getClassType().isPolicy())
 			return false;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
@@ -206,10 +238,9 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	public boolean isCanResubmitPolicy() {
 		if (!isCanEdit())
 			return false;
-		if (conAudit.getAuditStatus().isSubmitted()
-				&& conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+		if (conAudit.getAuditType().getClassType().isPolicy()) {
 			for (ContractorAuditOperator cOperator : conAudit.getOperators()) {
-				if (cOperator.getStatus().equals(CaoStatus.Rejected))
+				if (cOperator.getStatus().isRejected())
 					return true;
 			}
 		}
@@ -223,5 +254,13 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	public void setAuditStatus(AuditStatus auditStatus) {
 		this.auditStatus = auditStatus;
+	}
+
+	public int getOpID() {
+		return opID;
+	}
+
+	public void setOpID(int opID) {
+		this.opID = opID;
 	}
 }

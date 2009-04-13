@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -51,8 +52,28 @@ public class ConAuditList extends ContractorActionSupport {
 
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or all of them
-			if (!contractorAudit.getAuditType().isAnnualAddendum()) {
-				if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+			if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+				if (auditClass.isPolicy()) {
+					if (contractorAudit.getAuditStatus().isExpired()) {
+						expiredAudits.add(contractorAudit);
+					} else {
+						for (ContractorAuditOperator conAuditOp : contractorAudit.getOperators()) {
+							if (conAuditOp.getStatus().isPending() || conAuditOp.getStatus().isAwaiting()
+									|| conAuditOp.getStatus().isVerified()) {
+								if (!upComingAudits.contains(contractorAudit))
+									upComingAudits.add(contractorAudit);
+								else
+									break;
+							} else if (conAuditOp.getStatus().isApproved() || conAuditOp.getStatus().isRejected()) {
+								if (!currentAudits.contains(contractorAudit))
+									currentAudits.add(contractorAudit);
+								else
+									break;
+							}
+						}
+					}
+				} else if (!contractorAudit.getAuditType().isAnnualAddendum()) {
+
 					if (contractorAudit.getAuditStatus().isPendingSubmitted())
 						upComingAudits.add(contractorAudit);
 					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())

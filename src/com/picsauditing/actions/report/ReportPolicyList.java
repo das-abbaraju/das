@@ -27,17 +27,22 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 
 		super.buildQuery();
 		
+		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+
 		if(permissions.isOperator()) {
 			sql.addField("cao.status AS CaoStatus");
-			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
 			sql.addWhere("cao.opID = "+permissions.getAccountId());
+		} else {
+			sql.addField("COUNT(cao.status) as operatorCount");
+			sql.addGroupBy("ca.id");
 		}
+		
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
 		getFilter().setShowConAuditor(false);
 		getFilter().setShowAuditFor(false);
-		if(permissions.isOperator())
-			getFilter().setShowCaoStatus(true);
+		getFilter().setShowCaoStatus(true);
+		getFilter().setShowAuditStatus(false);
 	}
 }

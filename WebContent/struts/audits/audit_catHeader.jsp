@@ -46,36 +46,38 @@
 
 <s:form>
 	<s:hidden name="auditID" />
-	<s:if test="canSubmit">
-		<div id="alert" class="buttons" style="">
-			<s:if test="conAudit.auditStatus.pendingExpired">
-				<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
-				<s:if test="conAudit.auditType.pqf">
-					<br />You're almost done! Please take another opportunity to double check your information.
-					<br />Click Submit when you're ready to send your information to PICS for review.
-					<br />You MUST click this button before your PQF can become Activated.
+	<s:if test="!conAudit.auditType.typeClass.policy">
+		<s:if test="canSubmit">
+			<div id="alert" class="buttons" style="">
+				<s:if test="conAudit.auditStatus.pendingExpired">
+					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
+					<s:if test="conAudit.auditType.pqf">
+						<br />You're almost done! Please take another opportunity to double check your information.
+						<br />Click Submit when you're ready to send your information to PICS for review.
+						<br />You MUST click this button before your PQF can become Activated.
+					</s:if>
+					<s:else>
+						<br />Click Submit when you're ready to finalize the <s:property value="conAudit.auditType.auditName"/>.
+					</s:else>
 				</s:if>
 				<s:else>
-					<br />Click Submit when you're ready to finalize the <s:property value="conAudit.auditType.auditName"/>.
+					<s:checkbox name="''" onchange="resubmitPqf(this);"/>
+					 I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
+					<s:submit id="submit" value="Submit" name="button" disabled="true"></s:submit>
 				</s:else>
-			</s:if>
-			<s:else>
-				<s:checkbox name="''" onchange="resubmitPqf(this);"/>
-				 I have reviewed and updated my previously submitted data and verified its accuracy.<br/>
-				<s:submit id="submit" value="Submit" name="button" disabled="true"></s:submit>
-			</s:else>
-		</div>
-	</s:if>
-	<s:if test="canResubmitPolicy">
-		<div id="alert" class="buttons">
-			<button id="submit" value="Resubmit" name="button" class="positive">Resubmit</button>
-			 I have reviewed and updated information for: 
-			 <s:iterator value="conAudit.operators">
-			 	<s:if test="status.name() == 'Rejected'"> 
-			 		<br /><s:property value="operator.name"/>
-			 	</s:if>
-			 </s:iterator>
-		</div>
+			</div>
+		</s:if>
+		<s:if test="canResubmitPolicy">
+			<div id="alert" class="buttons">
+				<button id="submit" value="Resubmit" name="button" class="positive">Resubmit</button>
+				 I have reviewed and updated information for: 
+				 <s:iterator value="conAudit.operators">
+				 	<s:if test="status.name() == 'Rejected'"> 
+				 		<br /><s:property value="operator.name"/>
+				 	</s:if>
+				 </s:iterator>
+			</div>
+		</s:if>
 	</s:if>
 	<s:if test="canClose">
 		<div id="alert" class="buttons" style="">

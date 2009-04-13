@@ -98,15 +98,23 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 
 				if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) { 
-					if(conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
-						openTasks
-						.add("Please <a href=\"Audit.action?auditID="
-							+ conAudit.getId()
-							+ "\">upload and submit your insurance data for your "
-							+ conAudit.getAuditType().getAuditName() + " Policy </a>");
+					Set<String> pendingOperators = new TreeSet<String>();
+					for (ContractorAuditOperator cAuditOperator : conAudit.getOperators()) {
+						if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
+							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(cAuditOperator.getAudit().getAuditType().getId());
+							if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
+								pendingOperators.add(cAuditOperator.getOperator().getName());
+							}
+						}
 					}
-					Set<String> rejectedOperators = new TreeSet<String>();
 					
+					if (pendingOperators.size() > 0) {
+						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upload and submit your "
+								+ conAudit.getAuditType().getAuditName() + " Policy for </a>"
+								+ Strings.implode(pendingOperators, ","));
+					}
+
+					Set<String> rejectedOperators = new TreeSet<String>();
 					for(ContractorAuditOperator cAuditOperator : conAudit.getOperators()) {
 						if(CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
 							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(cAuditOperator.getAudit().getAuditType().getId());

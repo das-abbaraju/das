@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -23,7 +24,9 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -56,6 +59,8 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	protected ContractorAudit previousAudit = null;
 	protected ContractorAudit nextAudit = null;
+	
+	protected ContractorAudit nextPolicy = null;
 
 	protected OshaAudit averageOshas = null;
 	protected AnswerMap answerMap = null;
@@ -63,10 +68,12 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	private AuditCategoryDAO auditCategoryDAO;
 	private OshaAuditDAO oshaAuditDAO;
 
-	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+	protected ContractorAuditOperator cao = null;
+
+	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
 			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder) {
-		super(accountDao, auditDao, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
@@ -274,13 +281,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				}
 			}
 		}
-		
-		if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy && 
-				"done".equals(button) && conAudit.getCategories().get(0).getPercentCompleted() == 100 &&
-				conAudit.getAuditStatus() == AuditStatus.Pending) {
-			conAudit.changeStatus(AuditStatus.Submitted, getUser());
-			mode = "View";
-		}
 
 		PicsLogger.stop();
 		return SUCCESS;
@@ -378,9 +378,27 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		return false;
 	}
 
-	public boolean needsNextPolicyForContractor() {
-		return findNextRequiredPolicyForVerification(conAudit) != null;
+	public boolean isNeedsNextPolicyForContractor() {
+		nextPolicy = findNextRequiredPolicyForVerification(conAudit);
+		return nextPolicy != null;
 	}
+	
+	public ContractorAudit getNextPolicy() {
+		if (nextPolicy != null || isNeedsNextPolicyForContractor()) {
+			return nextPolicy;
+		}
+		
+		return null;
+	}
+	
+	public boolean isHasAwaitingCaos() {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus() == CaoStatus.Awaiting)
+				return true;
+		}
+		return false;
+	}
+
 
 	public List<String> getLegalNamesFiltered() {
 		List<String> sortedList = super.getLegalNames();
@@ -399,5 +417,4 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 		return sortedList;
 	}
-
 }

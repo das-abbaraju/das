@@ -21,7 +21,7 @@
 <table class="report">
 	<thead>
 	<tr>
-		<th>Status</th>
+		<th>Op Status</th>
 		<th>Type</th>
 		<th>Operator</th>
 		<s:if test="certificatesFiles.size() > 0">
@@ -31,7 +31,13 @@
 	</thead>
 	<s:iterator id="conAudit" value="upComingAudits" status="auditStatus">
 		<tr>
-			<td><s:property value="auditStatus" /></td>
+			<td>
+				<s:iterator value="operators">
+					<s:if test="status.pending||status.awaiting||status.verified">
+						<s:property value="operator.name"/> - <span class="Amber"><s:property value="status"/></span> <br/>
+					</s:if>
+				</s:iterator>
+			</td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<s:if test="requestingOpAccount.name != null">
 				<td><s:property value="requestingOpAccount.name" /></td>
@@ -90,6 +96,7 @@
 <table class="report">
 	<thead>
 	<tr>
+		<th>Op Status</th>
 		<th>Type</th>
 		<th>Effective</th>
 		<th>Expires</th>
@@ -100,6 +107,16 @@
 	</thead>
 	<s:iterator id="conAudit" value="currentAudits" status="auditStatus">
 		<tr>
+		<td>
+			<s:iterator value="operators">
+				<s:if test="status.approved">
+					<s:property value="operator.name"/> - <span class="Green"><s:property value="status"/></span><br/>
+				</s:if>
+				<s:elseif test="status.rejected">
+					<s:property value="operator.name"/> - <span class="Red"><s:property value="status"/></span><br/>
+				</s:elseif>
+			</s:iterator>
+		</td>
 		<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 		<td><s:date name="creationDate" format="M/d/yy" /></td>
 		<td><s:date name="expiresDate" format="M/d/yy" /></td>

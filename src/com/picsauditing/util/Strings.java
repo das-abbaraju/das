@@ -248,5 +248,13 @@ public class Strings {
 		
 		return buf.toString();
 	}
+	
+	
+	public static String htmlStrip(String input) {
+		if (Strings.isEmpty(input))
+			return null;
+
+		return input.replaceAll("<", "").replaceAll(">", "");
+	}
 
 }

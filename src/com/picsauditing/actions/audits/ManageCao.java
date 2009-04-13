@@ -7,6 +7,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageCao extends ContractorActionSupport implements Preparable {
@@ -29,6 +30,7 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 			if (this.cao != null)
 				this.caoBefore = cao.getStatus();
 		}
+		caoDao.clear();
 	}
 
 	public String execute() throws Exception {
@@ -44,6 +46,12 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 		if (button != null) {
 			if (button.equalsIgnoreCase("save")) {
 				// TODO figure out how to set the inherit flag
+				if (Strings.isEmpty(cao.getNotes()))
+					cao.setNotes(null);
+				if (cao.getStatus().isRejected() && Strings.isEmpty(cao.getNotes())) {
+					addActionError("Notes are required when rejecting policies.");
+					return SUCCESS;
+				}
 				cao.setAuditColumns(getUser());
 				cao = caoDao.save(cao);
 
@@ -53,8 +61,7 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 				contractor.setNeedsRecalculation(true);
 				accountDao.save(contractor);
 				
-				redirect("AuditCat.action?auditID=" + cao.getAudit().getId());
-				return SUCCESS;
+				return BLANK;
 			}
 		}
 
