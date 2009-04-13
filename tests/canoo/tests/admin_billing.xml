@@ -23,8 +23,11 @@
 				&click_report;
 				</group>
 				
+				<!--Invoicing-->
+				<group description="Invoicing">
 				<group description="Sort by billing level, click on contractor"/>
 				<clickLink label="Billing Report"/>
+				<clickLink description="Page 2 of report working" label="2"/>	
 				<clickLink label="New Level"/>
 				<clickLink href="ContractorView.action"/>
 							
@@ -38,26 +41,61 @@
 	            <group description="Create an Invoice">
 				<clickLink label="Billing Details"/>
 				<clickButton label="Create"/>
-				</group>
+	            <clickLink label="Edit" href="InvoiceDetail.action?"/>
+				<setSelectField description="Add Expedite Fee" name="newFeeId" text="Expedite Fee"/>
+	            </group>
 				
-				<group description="Add 3 facilities">
+				<group description="Add 20 facilities">
 				<clickLink label="Facilities"/>				
 				<sleep seconds="2"/>
-				<clickLink description="Add a facility" href="#"/>
-				<clickLink description="Add a facility" href="#"/>
-				<clickLink description="Add a facility" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
+				<clickLink description="Add a facility" label="Add" href="#"/>
 				</group>
 				
 				<group description="Adjust Invoice to New Tier">
-				<clickLink label="Billing Details"/>
+				<clickLink href="BillingDetail.action" label="Billing Details"/>
 				<clickLink href="InvoiceDetail.action"/>
 				<clickLink label="Edit" href="InvoiceDetail.action?"/>
 				<clickButton name="button" fieldIndex="1"/>
 				</group>
-			
+			    
 				<group description="Collect a Check">
 				<setInputField name="invoice.checkNumber" value="1111"/>
 				<clickButton description="Collect a check" htmlId="collectCheck"/>
+				</group>
+				</group>
+				
+				<!--Deactivating Contactors-->
+				<group description="Deactivating Contractors">
+                <invoke url="ContractorEdit.action?id=2396" description="Go to Contractor 2396"/>
+				<clickLink label="Cancel Account"/>
+				<verifyText text="Successfully closed this contractor account."/>	
+				</group>
+				
+				<!--Reactivating Contactors-->
+				<group description="Reactivating Contractors">
+				<clickLink label="Reactivate"/>
+				<clickLink label="Click to Create their invoice"/>
+				<clickLink href="InvoiceDetail.action"/>
+				<verifyText text="Reactivation Fee"/>
+				<verifyText text="$199"/>
+					
 				</group>
 		    </steps>		
 		</webtest>
