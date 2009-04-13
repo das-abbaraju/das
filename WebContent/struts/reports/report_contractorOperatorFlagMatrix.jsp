@@ -7,8 +7,7 @@
 <body>
 <h1><s:property value="reportName"/></h1>
 <s:include value="filters.jsp" />
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div>Number of contractors : <s:property value="reportData.size()" /></div>
 <s:form id="contractorOperatorFlagMatrix" method="post" cssClass="forms">
 <br/><br/>
 		<table class="report">
@@ -49,9 +48,6 @@
 	</table>
 	
 </s:form>
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
-<br clear="both"/>
 </body>
 </html>
 				

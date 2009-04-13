@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Facility;
@@ -31,6 +30,7 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 	
 	@Override
 	protected void buildQuery() {
+		skipPermissions = true;
 		super.buildQuery();
 		
 		getFilter().setShowPrimaryInformation(false);
@@ -63,10 +63,8 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
-		sql.addField("a.name AS conName");
-		sql.addField("a.id as conId");
 		sql.addField("flag.flag as flag");
-		
+		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("operator.id in (" + Strings.implode(ops, ",") + ")");
 		orderByDefault = "a.name, operator.name";
 
@@ -109,8 +107,8 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			operators.add( operator );
 
 			ContractorAccount contractor = new ContractorAccount();
-			contractor.setId( (Integer) row.get("conId"));
-			contractor.setName( (String) row.get("conName") );
+			contractor.setId( (Integer) row.get("id"));
+			contractor.setName( (String) row.get("name") );
 			
 			
 			Map<OperatorAccount, String> dataForThisContractor = reportData.get(contractor);
