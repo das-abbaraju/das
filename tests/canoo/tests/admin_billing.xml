@@ -7,17 +7,59 @@
 		<webtest name="Admin Billing">
 			&config;
 			<steps>
+				<group description="Login as Billing Admin">
 				&login;
+				
 				<property name="error_expected" value="false" />
 				&body_verify;
+				</group>
+					
+				<group description="Check Billing Reports">
+				<storeProperty name="report_link" value="Unpaid Invoices Report" />
+				&click_report;
+				<storeProperty name="report_link" value="Lifetime Members Report" />
+				&click_report;
+				<storeProperty name="report_link" value="Billing Report" />
+				&click_report;
+				</group>
 				
-				<storeProperty name="report_link" value="Activation" />
-				&click_report;
-				<storeProperty name="report_link" value="Contractor Payments" />
-				&click_report;
-				<storeProperty name="report_link" value="Upgrade Payments" />
-				&click_report;
-			</steps>
+				<group description="Sort by billing level, click on contractor"/>
+				<clickLink label="Billing Report"/>
+				<clickLink label="New Level"/>
+				<clickLink href="ContractorView.action"/>
+							
+				<group description="Make Check Payment Method, Adjust Risk-Level to High">
+				<clickLink label="Edit Account"/>
+				<setRadioButton description="Change Payment Method to Check" name="contractor.paymentMethod" value="Check"/>
+				<setRadioButton description="Make High-Risk" name="contractor.riskLevel" value="High"/>
+				<clickButton label="Save"/>
+				</group>
+				
+	            <group description="Create an Invoice">
+				<clickLink label="Billing Details"/>
+				<clickButton label="Create"/>
+				</group>
+				
+				<group description="Add 3 facilities">
+				<clickLink label="Facilities"/>				
+				<sleep seconds="2"/>
+				<clickLink description="Add a facility" href="#"/>
+				<clickLink description="Add a facility" href="#"/>
+				<clickLink description="Add a facility" href="#"/>
+				</group>
+				
+				<group description="Adjust Invoice to New Tier">
+				<clickLink label="Billing Details"/>
+				<clickLink href="InvoiceDetail.action"/>
+				<clickLink label="Edit" href="InvoiceDetail.action?"/>
+				<clickButton name="button" fieldIndex="1"/>
+				</group>
+			
+				<group description="Collect a Check">
+				<setInputField name="invoice.checkNumber" value="1111"/>
+				<clickButton description="Collect a check" htmlId="collectCheck"/>
+				</group>
+		    </steps>		
 		</webtest>
 	</target>
 </project>
