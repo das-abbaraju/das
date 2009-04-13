@@ -90,12 +90,24 @@
 				
 				<!--Reactivating Contactors-->
 				<group description="Reactivating Contractors">
+				<group description="Reactivate Account">
 				<clickLink label="Reactivate"/>
 				<clickLink label="Click to Create their invoice"/>
+				</group>
+				<group description="Create Invoice">
+				<clickButton label="Create"/>
 				<clickLink href="InvoiceDetail.action"/>
+				<clickLink label="View"/>
 				<verifyText text="Reactivation Fee"/>
 				<verifyText text="$199"/>
-					
+				</group>
+				<group description="Zero out fees, mark paid">
+				<clickLink label="Edit" href="InvoiceDetail.action?"/>
+				<setInputField name="invoice.items[0].amount" value="0"/>
+				<setInputField name="invoice.items[1].amount" value="0"/>				
+				<clickButton label="Save"/>	
+				<clickButton label="Mark Paid"/>
+				</group>
 				</group>
 		    </steps>		
 		</webtest>
