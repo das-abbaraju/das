@@ -2,10 +2,8 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import org.jboss.util.Strings;
@@ -181,7 +179,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setRenew(false);
 				
 				String expiresMessage = "";
-				if (contractor.getPaymentExpires().before(new Date()))
+				if (contractor.getPaymentExpires().after(new Date()))
 					expiresMessage = " This account will no longer be visible to operators after " + contractor.getPaymentExpires();
 				else {
 					expiresMessage = " This account is no longer visible to operators.";
@@ -208,7 +206,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					emailBuilder.setContractor(contractor);
 					emailBuilder.setBccAddresses(emailAddresses);
 					emailBuilder.setCcAddresses("");
-					emailBuilder.setToAddresses("info@picsauditing.com");
+					emailBuilder.setToAddresses("aharker@picsauditing.com");
 					EmailQueue email = emailBuilder.build();
 					email.setPriority(50);
 					emailQueueDAO.save(email);
