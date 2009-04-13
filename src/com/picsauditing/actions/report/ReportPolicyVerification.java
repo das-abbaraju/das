@@ -35,6 +35,9 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 		sql.addField("pcd.id catdataID");
 		sql.addField("cao.status as caoStatus");
 		sql.addGroupBy("ca.id");
+		sql.addWhere("a.active = 'Y'");
+		
+		getFilter().setShowVisible(false);
 		
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
