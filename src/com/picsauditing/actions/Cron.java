@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -133,19 +132,40 @@ public class Cron extends PicsActionSupport {
 			} catch (Throwable t) {
 				handleException(t);
 			}
-
+			try {
+				startTask("\nActivating Pqf and Annual Updates Audits which are complete and verified...");
+				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1,11) AND percentComplete = 100 AND percentVerified = 100";
+				List<ContractorAudit> conList = contractorAuditDAO.findWhere(10, where, "creationDate");
+				for (ContractorAudit cAudit : conList) {
+					cAudit.changeStatus(AuditStatus.Active, system);
+					contractorAuditDAO.save(cAudit);
+					stampNote(cAudit.getContractorAccount(), "Activated the "+cAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+				}
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+			try {
+				startTask("\nSubmitting Pqf and Annual Updates Audits which are complete...");
+				String where = "auditStatus = 'Pending' AND auditTypeID IN (1,11) AND percentComplete = 100";
+				List<ContractorAudit> conList = contractorAuditDAO.findWhere(40, where, "creationDate");
+				for (ContractorAudit cAudit : conList) {
+					cAudit.changeStatus(AuditStatus.Submitted, system);
+					contractorAuditDAO.save(cAudit);
+					stampNote(cAudit.getContractorAccount(), "Submitted the "+cAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+				}
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
 			try {
 				startTask("\nRecalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
-					// Long startTime = System.currentTimeMillis();
 					auditPercentCalculator.percentCalculateComplete(cAudit, true);
-					// System.out.println("categories : " + new Long(System.currentTimeMillis() -
-					// startTime).toString());
 					cAudit.setLastRecalculation(new Date());
 					cAudit.setAuditColumns(system);
 					contractorAuditDAO.save(cAudit);
-					// System.out.println("total : " + new Long(System.currentTimeMillis() - startTime).toString());
 				}
 				endTask();
 			} catch (Throwable t) {
@@ -165,13 +185,7 @@ public class Cron extends PicsActionSupport {
 				contractor.setAuditColumns(system);
 				contractorAccountDAO.save(contractor);
 				
-				Note note = new Note(contractor, system,
-						"Automatically inactivating account based on expired membership");
-				note.setCanContractorView(true);
-				note.setPriority(LowMedHigh.High);
-				note.setAuditColumns(system);
-				note.setViewableById(Account.PicsID);
-				noteDAO.save(note);
+				stampNote(contractor, "Automatically inactivating account based on expired membership", NoteCategory.Billing);
 			}
 			endTask();
 		} catch (Throwable t) {
@@ -259,14 +273,8 @@ public class Cron extends PicsActionSupport {
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-
-			Note note = new Note();
-			note.setAccount(policy);
-			note.setAuditColumns(system);
-			note.setSummary("Sent Policy Expiration Email to " + emailBuilder.getSentTo());
-			note.setNoteCategory(NoteCategory.Insurance);
-			note.setViewableById(Account.EVERYONE);
-			noteDAO.save(note);
+			
+			stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
 		}
 	}
 
@@ -383,5 +391,15 @@ public class Cron extends PicsActionSupport {
 		ftp.disconnect();
 
 		PicsLogger.stop();
+	}
+	
+	public void stampNote(ContractorAccount cAccount, String text, NoteCategory noteCategory) {
+		Note note = new Note(cAccount, system, text);
+		note.setCanContractorView(true);
+		note.setPriority(LowMedHigh.High);
+		note.setNoteCategory(noteCategory);
+		note.setAuditColumns(system);
+		note.setViewableById(Account.PicsID);
+		noteDAO.save(note);
 	}
 }

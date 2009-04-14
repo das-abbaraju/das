@@ -35,6 +35,9 @@ public class ConAuditSave extends AuditActionSupport {
 
 		findConAudit();
 		if (auditStatus.equals(AuditStatus.Active.toString())) {
+			if(conAudit.getPercentComplete() < 100) 
+				return SUCCESS;
+			
 			conAudit.changeStatus(AuditStatus.Active, getUser());
 			emailContractorOnAudit();
 		}
