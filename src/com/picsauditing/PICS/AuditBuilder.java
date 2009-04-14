@@ -304,7 +304,7 @@ public class AuditBuilder {
 			boolean visible = false;
 			boolean required = false;
 
-			if (operator.getCanSeeInsurance().equals(YesNo.Yes)) {
+			if (operator.getCanSeeInsurance().equals(YesNo.Yes) && (conAudit.getRequestingOpAccount() == null || operator.equals(conAudit.getRequestingOpAccount()))) {
 				PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
 				for (AuditOperator ao : operator.getAudits()) {
 					if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
