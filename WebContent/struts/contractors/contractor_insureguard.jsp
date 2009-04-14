@@ -85,14 +85,10 @@
 				</s:elseif>
 			</td>
 			<td>
-				<s:if test="permissions.admin">
-				<s:select list="operators" name="selectedOperator"
-					headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
-				</s:if>
-				<s:elseif test="permissions.contractor">
+				<s:if test="permissions.contractor || permissions.admin">
 				<s:select list="operatorsWithInsurance" name="selectedOperator"
 					headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
-				</s:elseif>
+				</s:if>
 			</td>
 			</s:form>
 		</tr>
