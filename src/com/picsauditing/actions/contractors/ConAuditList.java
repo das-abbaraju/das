@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
@@ -34,16 +35,20 @@ public class ConAuditList extends ContractorActionSupport {
 	private Map<String, String> imScores = new HashMap<String, String>();
 	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass = AuditTypeClass.Audit;
+	
+	private AuditBuilder auditBuilder;
+	
 	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
 	public List<AuditData> certificatesFiles = new ArrayList<AuditData>();
 
 	public ConAuditList(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			AuditDataDAO auditDataDAO) {
+			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDataDAO = auditDataDAO;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -153,8 +158,9 @@ public class ConAuditList extends ContractorActionSupport {
 				addActionError("Audit already exists");
 			} else {
 				ContractorAudit conAudit = new ContractorAudit();
-				conAudit.setAuditType(new AuditType());
-				conAudit.getAuditType().setId(selectedAudit);
+				AuditType auditType = auditTypeDAO.find(selectedAudit);
+
+				conAudit.setAuditType(auditType);
 				conAudit.setAuditFor(this.auditFor);
 				conAudit.setContractorAccount(contractor);
 				conAudit.changeStatus(AuditStatus.Pending, getUser());
@@ -167,10 +173,14 @@ public class ConAuditList extends ContractorActionSupport {
 				conAudit.setManuallyAdded(true);
 				conAudit = auditDao.save(conAudit);
 
-				AuditType auditType = auditTypeDAO.find(selectedAudit);
 				addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
 						NoteCategory.Audits);
 
+				if (auditClass.isPolicy()) {
+					contractor.getAudits().add(conAudit);
+					auditBuilder.setUser(getUser());
+					auditBuilder.buildAudits(contractor);
+				}
 				return "saved";
 			}
 		}
