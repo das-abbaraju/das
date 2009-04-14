@@ -308,7 +308,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 	}
 
 	// TODO change this to List<OperatorAccount> instead or figure out why we're
-	// getting an expection on isRequiresInsurance()
+	// getting an exception on isRequiresInsurance()
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)

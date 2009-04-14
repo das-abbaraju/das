@@ -13,13 +13,16 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.YesNo;
 
 @SuppressWarnings("serial")
 public class ConAuditList extends ContractorActionSupport {
@@ -271,5 +274,37 @@ public class ConAuditList extends ContractorActionSupport {
 
 	public void setCertificatesFiles(List<AuditData> certificatesFiles) {
 		this.certificatesFiles = certificatesFiles;
+	}
+	
+	public List<ContractorOperator> getOperatorsWithInsurance() {
+		List<ContractorOperator> result = new ArrayList<ContractorOperator>();
+		
+		for (ContractorOperator o : getOperators()) {
+			if (o.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes)) {
+				for (AuditOperator ao : o.getOperatorAccount().getAudits()){
+					if (ao.isCanSee() && ao.getMinRiskLevel() > 0 && 
+							ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
+						result.add(o);
+						break;
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public List<AuditType> getRequiredAuditTypeNames() {
+		List<AuditType> result = new ArrayList<AuditType>();
+		
+		for (ContractorOperator co : contractor.getOperators()) {
+			for (AuditOperator ao : co.getOperatorAccount().getAudits()) {
+				if (auditTypeList.contains(ao.getAuditType()) && ao.isCanSee() && !result.contains(ao.getAuditType())) {
+					result.add(ao.getAuditType());
+				}
+			}
+		}
+		
+		return result;
 	}
 }
