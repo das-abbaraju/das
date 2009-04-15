@@ -131,6 +131,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 							addActionError(error);
 						return SUCCESS;
 					}
+					contractor.setQbSync(true);
 					contractor.setNeedsRecalculation(true);
 					contractor.setNameIndex();
 

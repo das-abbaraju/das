@@ -80,6 +80,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setPaymentExpires(new Date());
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
 			contractor.setNameIndex();
+			contractor.setQbSync(true);
 			contractor = accountDao.save(contractor);
 			user.setIsActive(YesNo.Yes);
 			user.setAccount(contractor);
