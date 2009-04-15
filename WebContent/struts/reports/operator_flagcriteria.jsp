@@ -103,7 +103,7 @@
 				<s:property value="[0].get('name')"/></a></nobr>
 			</td>
 			<td class="center">
-				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" title="Click to view Flag Color details">
+				<a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="operatorID"/>" title="Click to view Flag Color details">
 				<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
 			</td>
 			<td class="center">
