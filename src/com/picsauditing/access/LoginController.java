@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
@@ -56,12 +57,6 @@ public class LoginController extends PicsActionSupport {
 		if ("logout".equals(button)) {
 			int adminID = permissions.getAdminID();
 			permissions.clear();
-			getRequest().getSession().invalidate();
-
-			Cookie cookie = new Cookie( "userName", "" );
-			cookie.setMaxAge( 0 );
-			
-			ServletActionContext.getResponse().addCookie( cookie );
 			
 			if (adminID > 0) {
 				// Re login the admin on logout
@@ -96,18 +91,21 @@ public class LoginController extends PicsActionSupport {
 		if (switchToUser > 0) {
 			if (permissions.getUserId() == switchToUser) {
 				// Switch back to myself
-				permissions.setAdminID(0);
 				user = getUser();
 			} else {
-				permissions.setAdminID(permissions.getUserId());
 				user = userDAO.find(switchToUser);
 			}
 			
 			if (permissions.hasPermission(OpPerms.SwitchUser)) {
+				int adminID = 0;
+				if (permissions.getUserId() != switchToUser)
+					adminID = permissions.getUserId();
+				
 				permissions.login(user);
+				permissions.setAdminID(adminID);
 				password = "switchUser";
 			} else {
-				// Verify the user has access to login
+				// TODO Verify the user has access to login
 				permissions.setAccountPerms(user);
 				password = "switchAccount";
 			}
@@ -125,7 +123,7 @@ public class LoginController extends PicsActionSupport {
 
 			// /////////////////
 			permissions.login(user);
-
+			
 			user.setLastLogin(new Date());
 			user.getAccount().setLastLogin(new Date());
 			userDAO.save(user);
@@ -135,6 +133,7 @@ public class LoginController extends PicsActionSupport {
 			if (permissions.isPicsEmployee())
 				getRequest().getSession().setMaxInactiveInterval(3600);
 		}
+		ActionContext.getContext().getSession().put("permissions", permissions);
 		logAttempt();
 		postLogin();
 
@@ -232,12 +231,6 @@ public class LoginController extends PicsActionSupport {
 	private void postLogin() throws Exception {
 		MenuComponent menu = PicsMenu.getMenu(permissions);
 
-		
-		Cookie userName = new Cookie("userName", permissions.getUsername());
-		userName.setMaxAge(-1);  //session scoped
-		getResponse().addCookie(userName);
-		
-		
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
 		Cookie[] cookiesA = getRequest().getCookies();
@@ -260,7 +253,7 @@ public class LoginController extends PicsActionSupport {
 		String url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
-
+		
 		getResponse().sendRedirect(url);
 		return;
 	}
