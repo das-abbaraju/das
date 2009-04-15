@@ -303,7 +303,7 @@
 					</li>
 				</ol>
 				</fieldset>
-				<s:if test="!contractor.activeB">	
+				<s:if test="!contractor.activeB || !contractor.renew">	
 					<pics:permission perm="EmailOperators">
 						<fieldset class="form">
 						<legend><span>De-activation Email</span></legend>
