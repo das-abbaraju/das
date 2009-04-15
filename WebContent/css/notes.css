@@ -1,4 +1,4 @@
-/******************** Primary Table class="report"  ************************/
+/******************** Primary Table class="notes"  ************************/
 
 table.notes {
 	border-collapse: collapse;
@@ -29,6 +29,20 @@ table.notes td.right {
 table.notes td.priority {
 	vertical-align: middle;
 	text-align: center;
+}
+
+table.notes thead a:hover {
+	text-decoration: underline;
+}
+table.notes tbody td a {
+	text-decoration: none;
+}
+table.notes tbody td a:hover {
+	text-decoration: underline;
+}
+table.notes tbody tr:hover {
+	background: #EEE;
+	color: #A84D10;
 }
 
 
