@@ -17,7 +17,6 @@ public class ReportContractorInvoice extends ReportAccount {
 		super.buildQuery();
 		
 		if(permissions.hasPermission(OpPerms.Billing)) {
-			getFilter().setShowCcOnFile(true);
 			getFilter().setShowInvoiceDueDate(true);
 		}
 		getFilter().setShowConWithPendingAudits(false);

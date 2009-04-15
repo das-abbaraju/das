@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
@@ -337,6 +338,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowRiskLevel(true);
 			setShowConWithPendingAudits(true);
 		}
+		if(permissions.hasPermission(OpPerms.Billing))
+			setShowCcOnFile(true);
 	}
 
 	// ///
