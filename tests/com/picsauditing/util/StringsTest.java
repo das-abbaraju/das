@@ -187,6 +187,6 @@ public class StringsTest extends TestCase {
 	}
 	
 	public void testMd5() {
-		assertEquals("4537d592b7fa52bffeb06f5123328c13", Strings.md5("pass1234|20080516190549"));
+		assertEquals("593b069af7c100f8ee335184c763fad1", Strings.md5("e4d909c290d0fb1ca068ffaddf22cbd0|20080516190549"));
 	}
 }
