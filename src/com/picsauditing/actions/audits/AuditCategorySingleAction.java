@@ -66,7 +66,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				if (conAudit.getPercentComplete() == 100 && !conAudit.getAuditStatus().isExpired()) {
 					ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
 					if (cao != null) {
-						cao.setStatus(CaoStatus.Awaiting);
+						cao.setStatus(CaoStatus.Submitted);
 						cao.setAuditColumns(permissions);
 						caoDAO.save(cao);
 						addActionMessage("The <strong>" + conAudit.getAuditType().getAuditName()
@@ -87,7 +87,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
 				if (cao != null) {
-					cao.setStatus(CaoStatus.Awaiting);
+					cao.setStatus(CaoStatus.Submitted);
 					cao.setAuditColumns(permissions);
 					caoDAO.save(cao);
 					addActionMessage("The <strong>" + conAudit.getAuditType().getAuditName()

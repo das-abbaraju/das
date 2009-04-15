@@ -403,7 +403,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 		for (ContractorAudit otherAudit : conAudit.getContractorAccount().getAudits()) {
 			if (!conAudit.equals(otherAudit) && !conAudit.getAuditStatus().isExpired() && otherAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 				for (ContractorAuditOperator cao : otherAudit.getOperators()) {
-					if (cao.getStatus().equals(CaoStatus.Awaiting)) {
+					if (cao.getStatus().equals(CaoStatus.Submitted)) {
 						for (AuditOperator auditOperator : cao.getOperator().getAudits()) {
 							if (otherAudit.getAuditType().equals(auditOperator.getAuditType())
 									&& auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0

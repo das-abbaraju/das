@@ -393,7 +393,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	
 	public boolean isHasAwaitingCaos() {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus() == CaoStatus.Awaiting)
+			if (cao.getStatus() == CaoStatus.Submitted)
 				return true;
 		}
 		return false;

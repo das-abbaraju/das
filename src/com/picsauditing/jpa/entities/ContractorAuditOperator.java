@@ -16,8 +16,8 @@ import com.picsauditing.util.Strings;
 public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
-	private CaoStatus status = CaoStatus.Awaiting;
-	private CaoStatus recommendedStatus = CaoStatus.Awaiting;
+	private CaoStatus status = CaoStatus.Pending;
+	private CaoStatus recommendedStatus = CaoStatus.Pending;
 	private String notes;
 	private boolean inherit;
 

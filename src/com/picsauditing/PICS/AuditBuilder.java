@@ -383,7 +383,7 @@ public class AuditBuilder {
 				// or it has one or more parents that have already made a decision on this policy
 				
 				// Remove the cao if it's Awaiting
-				if (cao.getStatus().equals(CaoStatus.Awaiting)) {
+				if (cao.getStatus().equals(CaoStatus.Pending)) {
 					PicsLogger.log("Removing unneeded ContractorAuditOperator " + cao.getId());
 					conAudit.getOperators().remove(cao);
 					contractorAuditOperatorDAO.remove(cao);

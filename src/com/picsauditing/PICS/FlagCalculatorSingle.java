@@ -308,7 +308,7 @@ public class FlagCalculatorSingle {
 											return WaitingOn.Contractor;
 										}
 
-										if (cao.getStatus() == CaoStatus.Awaiting) {
+										if (cao.getStatus() == CaoStatus.Submitted) {
 											waitingOnPics = true;
 										}
 
@@ -384,7 +384,7 @@ public class FlagCalculatorSingle {
 		}
 		
 		if( flagColor == null )
-			return CaoStatus.Awaiting;
+			return CaoStatus.Pending;
 
 		if (flagColor.equals(FlagColor.Red))
 			return CaoStatus.Rejected;
@@ -392,7 +392,7 @@ public class FlagCalculatorSingle {
 		if (flagColor.equals(FlagColor.Green))
 			return CaoStatus.Approved;
 		
-		return CaoStatus.Awaiting;
+		return CaoStatus.Pending;
 	}
 	
 	/**

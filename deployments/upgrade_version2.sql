@@ -60,3 +60,10 @@ where cao.status not in ('Approved', 'Rejected', 'NotApplicable')
                             id
                           from audit_type
                           where classType = 'Policy');
+                          
+/**
+ * Updating all the Awaiting policies to Submitted policies
+ */
+update contractor_audit_operator set status = 'Submitted', updatedBy = 1098, updateDate = Now()
+where status = 'Awaiting';
+                     
