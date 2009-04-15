@@ -86,7 +86,7 @@ public class Strings {
 		return buffer.toString();
 	}
 
-	public static String implode(Collection<Integer> collection, String delimiter) {
+	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";
 		StringBuffer buffer = new StringBuffer();
@@ -110,18 +110,6 @@ public class Strings {
 		return buffer.toString();
 	}
 	
-	public static String implode(Set<String> collection, String delimiter) {
-		if (collection == null)
-			return "";
-		StringBuffer buffer = new StringBuffer();
-		for (Object o : collection) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append(o);
-		}
-		return buffer.toString();
-	}
-
 	public static String hash(String seed) {
 		MessageDigest digest = null;
 		try {
