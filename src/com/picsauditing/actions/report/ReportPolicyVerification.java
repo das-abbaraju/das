@@ -28,7 +28,7 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 		super.buildQuery();
 		
 		sql.addJoin("JOIN contractor_audit_operator cao on ca.id = cao.auditID");
-		sql.addWhere("cao.status = 'Awaiting'");
+		sql.addWhere("cao.status = 'Submitted'");
 		sql.addWhere("ca.auditStatus != 'Expired'");
 		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
 		sql.addField("COUNT(cao.auditID) as operatorCount");
