@@ -64,7 +64,7 @@
 					<input type="checkbox" onclick="javascript: return syncSelects()" class="massCheckable" name="caoids" value="<s:property value="get('caoId')"/>"/>
 				</td>
 				<td style="text-align: center;" >
-					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Awaiting' )"></s:if>
+					<s:if test="( get('caoRecommendedStatus') == null ) || ( get('caoRecommendedStatus') == 'Pending' )"></s:if>
 					<s:elseif test="get('caoRecommendedStatus') == 'Approved'">
 						<img src="images/okCheck.gif" width="18" height="15" border="0" />
 					</s:elseif>

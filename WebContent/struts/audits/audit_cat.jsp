@@ -212,7 +212,7 @@
 				<s:if test="needsNextPolicyForContractor">
 					<a class="button" href="AuditCat.action?auditID=<s:property value="nextPolicy.id"/>&catDataId=<s:property value="nextPolicy.categories.get(0).id"/>"> Next Policy &gt;</a>
 				</s:if>
-				<a class="button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Awaiting&button=getFirst"> Oldest Policy &gt;&gt;</a>
+				<a class="button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted&button=getFirst"> Oldest Policy &gt;&gt;</a>
 			</div>
 			<br clear="all"/>
 		</s:if>

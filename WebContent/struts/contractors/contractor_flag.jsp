@@ -128,7 +128,7 @@
 						<s:else>
 							<s:iterator value="#con.operators">
 								<s:if test="opID == operator.id">
-									<s:if test="status.toString()=='Awaiting'">
+									<s:if test="status.awaiting">
 										<s:if test="!#con.auditStatus.expired">	
 											<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
 											<s:property value="status"/><br/>
