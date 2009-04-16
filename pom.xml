@@ -14,25 +14,21 @@
 			<repositories>
 				<repository>
 					<id>standard mvn repository</id>
-					<url>http://repo1.maven.org/maven2
-					</url>
+					<url>http://repo1.maven.org/maven2</url>
 				</repository>
 				<repository>
 					<id>jboss repository</id>
-					<url>http://repository.jboss.com/maven2/
-					</url>
+					<url>http://repository.jboss.com/maven2/</url>
 				</repository>
 				<repository>
 					<id>ibiblio</id>
-					<url>http://mirrors.ibiblio.org/pub/mirrors/maven2
-					</url>
+					<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
 					<id>standard mvn repository</id>
-					<url>http://repo1.maven.org/maven2
-					</url>
+					<url>http://repo1.maven.org/maven2</url>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
@@ -73,8 +69,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<additionalClasspathElements>
-						<additionalClasspathElement>tests/
-						</additionalClasspathElement>
+						<additionalClasspathElement>tests/</additionalClasspathElement>
 					</additionalClasspathElements>
 				</configuration>
 			</plugin>
@@ -115,8 +110,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-commons-annotations
-			</artifactId>
+			<artifactId>hibernate-commons-annotations</artifactId>
 			<version>3.3.0.ga</version>
 		</dependency>
 		<dependency>
@@ -126,8 +120,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager
-			</artifactId>
+			<artifactId>hibernate-entitymanager</artifactId>
 			<version>3.3.1.ga</version>
 		</dependency>
 		<dependency>
@@ -142,8 +135,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-sitemesh-plugin
-			</artifactId>
+			<artifactId>struts2-sitemesh-plugin</artifactId>
 			<version>2.0.9</version>
 		</dependency>
 		<dependency>
@@ -253,8 +245,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.ws.commons.schema
-			</groupId>
+			<groupId>org.apache.ws.commons.schema</groupId>
 			<artifactId>XmlSchema</artifactId>
 			<version>1.2</version>
 		</dependency>
@@ -285,16 +276,12 @@
 			<version>1.4.1</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-javamail_1.4_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-javamail_1.4_spec</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-activation_1.1_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-activation_1.1_spec</artifactId>
 				</exclusion>
 			</exclusions>
 
@@ -320,10 +307,8 @@
 			<version>1.4.1</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-activation_1.1_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-activation_1.1_spec</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -334,63 +319,48 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.ws.commons.axiom
-			</groupId>
+			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-impl</artifactId>
 			<version>1.2.8</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-javamail_1.4_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-javamail_1.4_spec</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-activation_1.1_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-activation_1.1_spec</artifactId>
 				</exclusion>
 			</exclusions>
 
 		</dependency>
 		<dependency>
-			<groupId>org.apache.ws.commons.axiom
-			</groupId>
+			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-api</artifactId>
 			<version>1.2.8</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-javamail_1.4_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-javamail_1.4_spec</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-activation_1.1_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-activation_1.1_spec</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.ws.commons.axiom
-			</groupId>
+			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-dom</artifactId>
 			<version>1.2.8</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-javamail_1.4_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-javamail_1.4_spec</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.apache.geronimo.specs
-					</groupId>
-					<artifactId>geronimo-activation_1.1_spec
-					</artifactId>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-activation_1.1_spec</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
