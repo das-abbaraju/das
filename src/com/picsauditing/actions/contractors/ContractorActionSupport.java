@@ -215,12 +215,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {
-				String year = DateBean.format(audit.getEffectiveDate(), "yy");
-				String linkText = audit.getAuditType().getAuditName() + " '" + year;
-				if (!Strings.isEmpty(audit.getAuditFor()))
-					linkText = audit.getAuditFor() + " " + linkText;
-
-				subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+				if (audit.getAuditType().getClassType().isAudit()) {
+					String year = DateBean.format(audit.getEffectiveDate(), "yy");
+					String linkText = audit.getAuditType().getAuditName() + " '" + year;
+					if (!Strings.isEmpty(audit.getAuditFor()))
+						linkText = audit.getAuditFor() + " " + linkText;
+	
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+				}
 			}
 		}
 		return menu;

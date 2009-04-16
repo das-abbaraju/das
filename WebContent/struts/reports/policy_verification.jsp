@@ -26,7 +26,7 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><s:property value="get('name')"/></td>
 			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')" />"><s:property value="get('auditName')"/></a></td>
-			<td><s:date name="get('completedDate')" format="M/d/yy"/></td>
+			<td><s:date name="get('caoUpdateDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
 		
 		</tr>

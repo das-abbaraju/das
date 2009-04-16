@@ -6,15 +6,20 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
-public class ReportPolicyVerification extends ReportContractorAudits {
-	private static final long serialVersionUID = 6697393552632136569L;
+@SuppressWarnings("serial")
+public class ReportPolicyVerification extends ReportInsuranceSupport {
 	
-	public ReportPolicyVerification(){
-		orderByDefault = "ca.completedDate ASC, a.name";
+	public ReportPolicyVerification(AuditDataDAO auditDataDao,
+			AuditQuestionDAO auditQuestionDao, OperatorAccountDAO operatorAccountDAO) {
+		super( auditDataDao, auditQuestionDao, operatorAccountDAO );
+		orderByDefault = "MIN(cao.updateDate), a.name";
 	}
 	
 	@Override
@@ -24,26 +29,22 @@ public class ReportPolicyVerification extends ReportContractorAudits {
 
 	@Override
 	protected void buildQuery() {
-		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
 		
-		sql.addJoin("JOIN contractor_audit_operator cao on ca.id = cao.auditID");
 		sql.addWhere("cao.status = 'Submitted'");
 		sql.addWhere("ca.auditStatus != 'Expired'");
+		
 		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
-		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addField("pcd.id catdataID");
-		sql.addField("cao.status as caoStatus");
+		sql.addField("MIN(cao.updateDate) caoUpdateDate");
+		
+		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addGroupBy("ca.id");
+		
 		sql.addWhere("a.active = 'Y'");
 		
 		getFilter().setShowVisible(false);
-		
-		getFilter().setShowTradeInformation(false);
-		getFilter().setShowPrimaryInformation(false);
-		getFilter().setShowAuditFor(false);
-		getFilter().setShowAuditStatus(false);
-
+		getFilter().setShowCaoStatus(false);
 	}
 	
 	@Override
