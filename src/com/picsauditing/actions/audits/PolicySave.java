@@ -41,43 +41,36 @@ public class PolicySave extends AuditActionSupport {
 
 		cao = caoDAO.find(conAudit.getId(), opID);
 
-		if (cao.getAudit().getPercentComplete() == 100) {
+		if ("Verify".equals(button)) {
+			cao.setStatus(CaoStatus.Verified);
+			cao.setNotes(caoNotes);
+			caoDAO.save(cao);
 
-			if ("Verify".equals(button)) {
-				cao.setStatus(CaoStatus.Verified);
+			addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+					+ "</strong> Policy has been verified for <strong>" + cao.getOperator().getName()
+					+ "</strong>.");
+		}
+
+		if ("Reject".equals(button)) {
+			if (Strings.isEmpty(caoNotes)) {
+				addActionError("You must enter notes if you are rejecting a contractor's policy.");
+			} else {
+				cao.setStatus(CaoStatus.Rejected);
 				cao.setNotes(caoNotes);
 				caoDAO.save(cao);
 
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(52); // Insurance Policy rejected by PICS
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setFromAddress(permissions.getEmail());
+				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
+				emailBuilder.addToken("cao", cao);
+				EmailSender.send(emailBuilder.build());
+
 				addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
-						+ "</strong> Policy has been verified for <strong>" + cao.getOperator().getName()
-						+ "</strong>.");
+						+ "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName()
+						+ "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
 			}
-
-			if ("Reject".equals(button)) {
-				if (Strings.isEmpty(caoNotes)) {
-					addActionError("You must enter notes if you are rejecting a contractor's policy.");
-				} else {
-					cao.setStatus(CaoStatus.Rejected);
-					cao.setNotes(caoNotes);
-					caoDAO.save(cao);
-
-					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(52); // Insurance Policy rejected by PICS
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setFromAddress(permissions.getEmail());
-					emailBuilder.setContractor(cao.getAudit().getContractorAccount());
-					emailBuilder.addToken("cao", cao);
-					EmailSender.send(emailBuilder.build());
-
-					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
-							+ "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName()
-							+ "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
-				}
-			}
-		} else {
-			addActionError("The <strong>"
-					+ cao.getAudit().getAuditType().getAuditName()
-					+ "</strong> policy is not finished, it can not be Verified or Rejected until all required fields are entered.");
 		}
 
 		return SUCCESS;
