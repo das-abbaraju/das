@@ -62,7 +62,7 @@ public enum CaoStatus {
 		
 		if ("Approved".equals(status)) 
 			icon.append("okCheck");
-		if ("Rejected".equals(status)) 
+		else if ("Rejected".equals(status)) 
 			icon.append("notOkCheck");
 		else
 			icon.append("help");
