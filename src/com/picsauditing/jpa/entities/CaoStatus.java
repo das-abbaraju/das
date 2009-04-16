@@ -14,6 +14,10 @@ public enum CaoStatus {
 			return true;
 		return false;
 	}
+	
+	public boolean isNotApplicable() {
+		return this.equals(CaoStatus.NotApplicable);
+	}
 
 	public boolean isPending() {
 		return this.equals(CaoStatus.Pending);
