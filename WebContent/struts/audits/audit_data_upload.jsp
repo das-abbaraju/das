@@ -51,7 +51,7 @@ function closePage() {
 		OR <br />
 			<s:select id="copyList" name="copyDataID" list="fileList"
 				listKey="id"
-				listValue="audit.auditType.auditName.concat(' for ').concat(parentAnswer.answer)"
+				listValue="audit.auditType.auditName.concat(' for ').concat(parentAnswer.answer).concat(' effective ').concat(@com.picsauditing.PICS.DateBean@toShowFormat(audit.effectiveDate))"
 				headerKey="0" headerValue=" - Copy From Another File - " />
 		</s:if>
 	</s:if>
