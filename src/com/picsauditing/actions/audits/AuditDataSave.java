@@ -158,13 +158,13 @@ public class AuditDataSave extends AuditActionSupport {
 				contractor.setNeedsRecalculation(true);
 				accountDao.save(contractor);
 				
-				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType().isPolicy() ) {
 					
-					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyExpirationDate") 
+					if("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode()) 
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						tempAudit.setExpiresDate(DateBean.parseDate( auditData.getAnswer() ) );
 					}
-					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyEffectiveDate") 
+					if("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode()) 
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						tempAudit.setCreationDate(DateBean.parseDate( auditData.getAnswer() ) );
 					}
