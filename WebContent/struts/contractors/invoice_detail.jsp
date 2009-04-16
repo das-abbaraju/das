@@ -16,7 +16,7 @@ h1 {
 <s:include value="conHeader.jsp"></s:include>
 
 <s:if test="invoice.cancelledInvoice">
-	<div id="alert" class="noprint">This invoice was cancelled on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
+	<div id="alert" class="noprint">This invoice was canceled on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
 </s:if>
 <s:elseif test="invoice.paid">
 	<div id="info" class="noprint">This invoice was paid on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
@@ -213,7 +213,7 @@ h1 {
 									<input id="collectCheck" type="submit" class="picsbutton positive" name="button" maxlength="50"
 										value="Collect Check for $ <s:property value=" invoice.totalAmount" />"/>
 								</s:else>
-								<pics:permission perm="InvoiceEdit" type="Edit">
+								<pics:permission perm="Billing" type="Delete">
 									<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice"/>
 								</pics:permission>
 							</s:if>

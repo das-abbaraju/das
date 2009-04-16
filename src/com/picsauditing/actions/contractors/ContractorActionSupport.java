@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -131,23 +132,46 @@ public class ContractorActionSupport extends PicsActionSupport {
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
 		String url = "Audit.action?auditID=";
+		
+		List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();
+		auditList.addAll(getActiveAudits());
 
-		// Add the PQF
-		for (ContractorAudit audit : getActiveAudits()) {
-			if (audit.getAuditType().isPqf()) {
-				MenuComponent menuComponent = new MenuComponent("PQF", url + audit.getId());
+		{
+			// Add the PQF
+			List<ContractorAudit> pqfs = new ArrayList<ContractorAudit>();
+			
+			Iterator<ContractorAudit> iter = auditList.iterator();
+			while (iter.hasNext()) {
+				ContractorAudit audit = iter.next();
+				if (audit.getAuditType().isPqf() || audit.getAuditType().getAuditName().startsWith("PQF")) {
+					pqfs.add(audit);
+					iter.remove();
+				}
+			}
+			if (pqfs.size() == 1) {
+				ContractorAudit audit = pqfs.get(0);
+				MenuComponent menuComponent = new MenuComponent(audit.getAuditType().getAuditName(), url
+						+ audit.getId());
 				menuComponent.setAuditId(audit.getId());
 				menu.add(menuComponent);
+			} else if (pqfs.size() > 1) {
+				MenuComponent subMenu = new MenuComponent("PQF");
+				menu.add(subMenu);
+				for (ContractorAudit audit : pqfs)
+					subMenu.addChild(audit.getAuditType().getAuditName(), url + audit.getId(), audit.getId(), "");
 			}
 		}
 
 		{ // Add the Annual Updates
 			MenuComponent subMenu = new MenuComponent("Annual Update", "ConAnnualUpdates.action?id=" + id);
 			menu.add(subMenu);
-			for (ContractorAudit audit : getActiveAudits()) {
+			Iterator<ContractorAudit> iter = auditList.iterator();
+			while (iter.hasNext()) {
+				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().isAnnualAddendum()) {
 					String linkText = audit.getAuditFor() + " Update";
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), "");
+					iter.remove();
 				}
 			}
 		}
@@ -156,7 +180,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 			// Add InsureGuard
 			MenuComponent subMenu = new MenuComponent("InsureGuard", "ConInsureGuard.action?id=" + id);
 			menu.add(subMenu);
-			for (ContractorAudit audit : getActiveAudits()) {
+			Iterator<ContractorAudit> iter = auditList.iterator();
+			while (iter.hasNext()) {
+				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
 						&& !audit.equals(AuditStatus.Exempt)) {
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
@@ -164,6 +190,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 
 					subMenu.addChild(linkText, "AuditCat.action?auditID=" + audit.getId() + "&catDataID="
 							+ audit.getCategories().get(0).getId(), audit.getId(), audit.getAuditStatus().toString());
+					iter.remove();
 				}
 			}
 		}
@@ -172,11 +199,14 @@ public class ContractorActionSupport extends PicsActionSupport {
 			// Add InsureGuard
 			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
 			menu.add(subMenu);
-			for (ContractorAudit audit : getActiveAudits()) {
+			Iterator<ContractorAudit> iter = auditList.iterator();
+			while (iter.hasNext()) {
+				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.equals(AuditStatus.Exempt)) {
 					String linkText = audit.getAuditType().getAuditName() + " " + audit.getAuditFor();
 
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+					iter.remove();
 				}
 			}
 		}
@@ -184,16 +214,13 @@ public class ContractorActionSupport extends PicsActionSupport {
 		{ // Add All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
-			for (ContractorAudit audit : getActiveAudits()) {
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit) && !audit.getAuditType().isPqf()
-						&& !audit.getAuditType().isAnnualAddendum()) {
-					String year = DateBean.format(audit.getEffectiveDate(), "yy");
-					String linkText = audit.getAuditType().getAuditName() + " '" + year;
-					if (!Strings.isEmpty(audit.getAuditFor()))
-						linkText = audit.getAuditFor() + " " + linkText;
+			for (ContractorAudit audit : auditList) {
+				String year = DateBean.format(audit.getEffectiveDate(), "yy");
+				String linkText = audit.getAuditType().getAuditName() + " '" + year;
+				if (!Strings.isEmpty(audit.getAuditFor()))
+					linkText = audit.getAuditFor() + " " + linkText;
 
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
-				}
+				subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 			}
 		}
 		return menu;
@@ -399,9 +426,10 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return notes;
 	}
 
-	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {		
+	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {
 		for (ContractorAudit otherAudit : conAudit.getContractorAccount().getAudits()) {
-			if (!conAudit.equals(otherAudit) && !conAudit.getAuditStatus().isExpired() && otherAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if (!conAudit.equals(otherAudit) && !conAudit.getAuditStatus().isExpired()
+					&& otherAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 				for (ContractorAuditOperator cao : otherAudit.getOperators()) {
 					if (cao.getStatus().equals(CaoStatus.Submitted)) {
 						for (AuditOperator auditOperator : cao.getOperator().getAudits()) {
@@ -415,7 +443,7 @@ public class ContractorActionSupport extends PicsActionSupport {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 }
