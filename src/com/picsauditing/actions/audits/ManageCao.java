@@ -45,11 +45,13 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 		
 		if (button != null) {
 			if (button.equalsIgnoreCase("save")) {
+				
 				// TODO figure out how to set the inherit flag
 				if (Strings.isEmpty(cao.getNotes()))
 					cao.setNotes(null);
 				if (cao.getStatus().isRejected() && Strings.isEmpty(cao.getNotes())) {
 					addActionError("Notes are required when rejecting policies.");
+					cao = caoDao.find(cao.getId());
 					return SUCCESS;
 				}
 				cao.setAuditColumns(getUser());
@@ -65,6 +67,7 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 			}
 		}
 
+		cao = caoDao.save(cao);
 		return SUCCESS;
 	}
 
