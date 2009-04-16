@@ -30,7 +30,6 @@
 <%
 	boolean debugging = "1".equals(System.getProperty("pics.debug"));
 	
-	debugging = false;
 	String message = "";
 	String cause = "Undetermined";
 	String stacktrace = "";
