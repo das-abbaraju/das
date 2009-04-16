@@ -270,7 +270,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		return "Yes".equals(mustPay);
 	}
 
-	@Column(name = "payingFacilities", nullable = false)
+	@Column(nullable = false)
 	public int getPayingFacilities() {
 		return this.payingFacilities;
 	}

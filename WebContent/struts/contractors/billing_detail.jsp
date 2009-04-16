@@ -42,17 +42,14 @@
 		<ol>
 			<li><label>Requested By:</label> <s:property value="requestedBy.name" /></li>
 			<li><label>Risk Level:</label> <s:property value="contractor.riskLevel" /></li>
-			<li><label>Facilities:</label> <s:property value="contractor.operators.size()" /> operator(s)<br />
+			<li><label>Facilities:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
 			<br />
 			<ul style="float: right; list-style-type: disc;">
 				<s:iterator value="contractor.operators">
-					<s:if test="permissions.admin">
+					<s:if test="operatorAccount.activeB">
 						<li><a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property
 							value="operatorAccount.name" /></a></li>
 					</s:if>
-					<s:else>
-						<li><s:property value="operatorAccount.name" /></li>
-					</s:else>
 				</s:iterator>
 			</ul>
 			</li>

@@ -25,7 +25,8 @@ public class BillingCalculatorSingle {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
-			if (operator.getDoContractorsPay() != null && !"No".equals(operator.getDoContractorsPay()))
+			if (operator.isActiveB() && operator.getDoContractorsPay() != null
+					&& !"No".equals(operator.getDoContractorsPay()))
 				payingOperators.add(operator);
 		}
 
@@ -122,7 +123,7 @@ public class BillingCalculatorSingle {
 	 */
 	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, InvoiceFeeDAO feeDAO) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
-		
+
 		String billingStatus = contractor.getBillingStatus();
 
 		if (billingStatus.equals("Not Calculated"))
@@ -192,7 +193,8 @@ public class BillingCalculatorSingle {
 					BigDecimal upgradeAmountDifference = contractor.getNewMembershipLevel().getAmount().subtract(
 							contractor.getMembershipLevel().getAmount());
 
-					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(new BigDecimal(365), 0, RoundingMode.HALF_UP);
+					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
+							new BigDecimal(365), 0, RoundingMode.HALF_UP);
 
 					description = "Upgrading from $" + contractor.getMembershipLevel().getAmount() + ". Prorated $"
 							+ upgradeAmount;
