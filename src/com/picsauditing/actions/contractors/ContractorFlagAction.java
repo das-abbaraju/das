@@ -163,7 +163,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		for( ContractorAudit audit : contractor.getAudits() ) {
 			if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (cao.getStatus() == CaoStatus.Submitted) {
+					if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
 						CaoStatus recommendedStatus = calculator
 								.calculateCaoRecommendedStatus(cao);
 						cao.setRecommendedStatus(recommendedStatus);

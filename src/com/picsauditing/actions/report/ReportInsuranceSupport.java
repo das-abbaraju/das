@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +9,12 @@ import java.util.Vector;
 import org.apache.commons.beanutils.DynaBean;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AnswerMap;
@@ -62,7 +59,9 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addField("cao.recommendedStatus as caoRecommendedStatus");
 			sql.addWhere("cao.opid = " + permissions.getAccountId());
 		}
-
+		
+		sql.addWhere("ca.auditStatus != 'Expired'");
+		
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowTrade(false);

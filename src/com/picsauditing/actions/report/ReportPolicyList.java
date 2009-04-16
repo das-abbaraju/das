@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

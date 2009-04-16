@@ -234,7 +234,8 @@ public class FlagCalculator2 {
 				if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getOperator().equals(operator) 
-								&& cao.getStatus() == CaoStatus.Submitted) {
+								&& (cao.getStatus().isSubmitted()
+								|| cao.getStatus().isVerified())) {
 							CaoStatus recommendedStatus = calcSingle
 									.calculateCaoRecommendedStatus(cao);
 							
