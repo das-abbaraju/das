@@ -66,4 +66,8 @@ where cao.status not in ('Approved', 'Rejected', 'NotApplicable')
  */
 update contractor_audit_operator set status = 'Submitted', updatedBy = 1098, updateDate = Now()
 where status = 'Awaiting';
+
+update contractor_audit_operator set recommendedStatus = 'Pending'
+where recommendedStatus = 'Awaiting';
+
                      

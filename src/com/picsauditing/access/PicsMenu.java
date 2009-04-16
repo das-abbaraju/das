@@ -105,7 +105,7 @@ public class PicsMenu {
 		if(permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
-			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.caoStatus=Verified");
+			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted");
 		}
 		
 		subMenu = menu.addChild("Management");
