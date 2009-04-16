@@ -7,7 +7,8 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 /**
@@ -18,11 +19,11 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class PolicySave extends AuditActionSupport {
-	
+
 	protected ContractorAuditOperatorDAO caoDAO;
 
 	protected int opID;
-	
+
 	protected ContractorAuditOperator cao;
 	protected String caoNotes;
 
@@ -37,17 +38,19 @@ public class PolicySave extends AuditActionSupport {
 			return LOGIN;
 
 		findConAudit();
-		
+
 		cao = caoDAO.find(conAudit.getId(), opID);
-		
+
 		if (cao.getAudit().getPercentComplete() == 100) {
-			
+
 			if ("Verify".equals(button)) {
 				cao.setStatus(CaoStatus.Verified);
 				cao.setNotes(caoNotes);
 				caoDAO.save(cao);
 
-				addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName() + "</strong> Policy has been verified for <strong>" + cao.getOperator().getName() + "</strong>.");
+				addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+						+ "</strong> Policy has been verified for <strong>" + cao.getOperator().getName()
+						+ "</strong>.");
 			}
 
 			if ("Reject".equals(button)) {
@@ -58,17 +61,28 @@ public class PolicySave extends AuditActionSupport {
 					cao.setNotes(caoNotes);
 					caoDAO.save(cao);
 
-					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName() + "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName() + "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(52); // Insurance Policy rejected by PICS
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setFromAddress(permissions.getEmail());
+					emailBuilder.setContractor(cao.getAudit().getContractorAccount());
+					emailBuilder.addToken("cao", cao);
+					EmailSender.send(emailBuilder.build());
+
+					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+							+ "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName()
+							+ "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
 				}
 			}
 		} else {
-			addActionError("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+			addActionError("The <strong>"
+					+ cao.getAudit().getAuditType().getAuditName()
 					+ "</strong> policy is not finished, it can not be Verified or Rejected until all required fields are entered.");
 		}
-		
+
 		return SUCCESS;
 	}
-	
+
 	public int getOpID() {
 		return opID;
 	}
@@ -76,7 +90,7 @@ public class PolicySave extends AuditActionSupport {
 	public void setOpID(int opID) {
 		this.opID = opID;
 	}
-	
+
 	public String getCaoNotes() {
 		return caoNotes;
 	}
