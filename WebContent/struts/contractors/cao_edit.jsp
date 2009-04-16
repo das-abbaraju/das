@@ -5,10 +5,15 @@
 	<s:hidden id="cao.id" name="cao.id"/>
 	<input type="hidden" name="button" value="save"/>
 	<s:radio name="cao.status" list="#{'Approved':'Approve', 'Rejected':'Reject', 'NotApplicable':'Not Applicable'}"/>
-	<s:if test="cao.operator.parent != null">
+	<!--<s:if test="cao.operator.parent != null">
 		<s:checkbox name="cao.inherit"></s:checkbox> Default to status at <s:property value="cao.operator.parent.name"/>
-	</s:if>
+	</s:if>-->
 	<br />
+	Updated By: <s:property value="cao.updatedBy.name"/> from <s:property value="cao.updatedBy.account.name"/>
+	<br />
+	<s:if test="!cao.recommendedStatus.notApplicable">
+		Pics Recommendation: <s:property value="cao.recommendedStatus.icon" escape="false"/> <br />
+	</s:if>
 	<s:textarea id="cao.notes" name="cao.notes" cols="60" rows="2"/>
 	<div class="buttons">
 		<button class="positive" onclick="editCao(<s:property value="cao.id"/>,'save')">Save</button>
