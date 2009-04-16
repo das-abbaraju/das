@@ -360,12 +360,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The date the lastPayment expires and the contractor is due to pay another
-	 * "period's" membership fee. This should NEVER be null.
+	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee. This should
+	 * NEVER be null.
 	 * 
-	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE
-	 * (paymentExpires = '0000-00-00' or paymentExpires is null) AND
-	 * contractor_info.id = accounts.id;
+	 * UPDATE contractor_info, accounts SET paymentExpires = creationDate WHERE (paymentExpires = '0000-00-00' or
+	 * paymentExpires is null) AND contractor_info.id = accounts.id;
 	 * 
 	 * @return
 	 */
@@ -380,8 +379,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * Used to determine if we need to calculate the flagColor, audits and
-	 * billing
+	 * Used to determine if we need to calculate the flagColor, audits and billing
 	 * 
 	 * @return
 	 */
@@ -436,15 +434,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	@Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices())
-			if (!invoice.isPaid() && invoice.getDueDate() != null && invoice.getDueDate().before(new Date()))
+			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && !invoice.isPaid()
+					&& invoice.getDueDate() != null && invoice.getDueDate().before(new Date()))
 				return true;
 		return false;
 	}
 
 	@Transient
 	/*
-	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of
-	 * applicable osha data (verified or not)
+	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of applicable osha data (verified or not)
 	 */
 	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
@@ -582,8 +580,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The last day someone added a facility to this contractor. This is used to
-	 * prorate upgrade amounts
+	 * The last day someone added a facility to this contractor. This is used to prorate upgrade amounts
 	 * 
 	 * @return
 	 */
@@ -618,7 +615,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			if (!invoice.isPaid())
 				balance = balance.add(invoice.getTotalAmount());
 		}
-		
+
 		for (Invoice invoice : getSortedInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
@@ -628,13 +625,13 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 								membershipLevel = invoiceItem.getInvoiceFee();
 								foundCurrentMembership = true;
 							}
-							if(!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
+							if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
 								paymentExpires = invoiceItem.getPaymentExpires();
 								foundPaymentExpires = true;
 							}
 						}
 						if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
-							if(invoiceItem.getPaymentExpires() != null)
+							if (invoiceItem.getPaymentExpires() != null)
 								membershipDate = invoiceItem.getPaymentExpires();
 							else
 								membershipDate = invoice.getCreationDate();
@@ -701,23 +698,17 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	/**
-	 * The following are states of Billing Status: Membership Canceled
-	 * Contractor is not active and membership is not set to renew:<br />
+	 * The following are states of Billing Status: Membership Canceled Contractor is not active and membership is not
+	 * set to renew:<br />
 	 * <br>
 	 * <b>Current</b> means the contractor doesn't owe anything right now<br>
-	 * <b>Activation</b> means the contractor is not active and has never been
-	 * active<br>
-	 * <b>Reactivation</b> means the contractor was active, but is no longer
-	 * active anymore<br>
+	 * <b>Activation</b> means the contractor is not active and has never been active<br>
+	 * <b>Reactivation</b> means the contractor was active, but is no longer active anymore<br>
 	 * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
-	 * <b>Do not renew</b> means the contractor has asked not to renew their
-	 * account<br>
-	 * <b>Membership Canceled</b> means the contractor closed their account and
-	 * doesn't want to renew<br>
-	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration
-	 * Date is past.<br>
-	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
-	 * in the next 30 Days<br>
+	 * <b>Do not renew</b> means the contractor has asked not to renew their account<br>
+	 * <b>Membership Canceled</b> means the contractor closed their account and doesn't want to renew<br>
+	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration Date is past.<br>
+	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * 
 	 * @return A String of the current Billing Status
@@ -734,7 +725,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			return "Current";
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
-		
+
 		if (!isActiveB() || daysUntilRenewal < -90) {
 			// this contractor is not active or their membership expired more than 90 days ago
 			if (!renew)
@@ -742,7 +733,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 			else {
 				if (new Date().before(paymentExpires))
 					return "Current";
-				
+
 				if (membershipDate == null)
 					return "Activation";
 				else

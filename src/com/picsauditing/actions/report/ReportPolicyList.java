@@ -5,6 +5,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportPolicyList extends ReportInsuranceSupport {
@@ -23,26 +24,17 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 
 	@Override
 	public void buildQuery() {
-		auditTypeClass = AuditTypeClass.Policy;
-
 		super.buildQuery();
 		
-		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
-
-		if(permissions.isOperator()) {
-			sql.addField("cao.status AS CaoStatus");
-			sql.addWhere("cao.opID = "+permissions.getAccountId());
-		} else {
-			sql.addField("COUNT(cao.status) as operatorCount");
-			sql.addGroupBy("ca.id");
+		if (permissions.hasPermission(OpPerms.AllContractors)) {
+			if (getFilter().getOperator() != null && getFilter().getOperator().length > 0) {
+				sql.addField("cao.status as caoStatus");
+				sql.addWhere("cao.opid IN (" + Strings.implode(getFilter().getOperator(), ",") + ")");
+			} else {
+				sql.addGroupBy("ca.id");
+			}
 		}
 		
-		getFilter().setShowPolicyType(true);
-		getFilter().setShowAuditType(false);
-		getFilter().setShowAuditor(false);
-		getFilter().setShowConAuditor(false);
-		getFilter().setShowAuditFor(false);
-		getFilter().setShowCaoStatus(true);
-		getFilter().setShowAuditStatus(false);
+
 	}
 }

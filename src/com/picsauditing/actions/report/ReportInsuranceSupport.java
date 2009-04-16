@@ -48,6 +48,43 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
+	@Override
+	protected void buildQuery() {
+		auditTypeClass = AuditTypeClass.Policy;
+		super.buildQuery();
+		
+		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
+		
+		if (!permissions.hasPermission(OpPerms.AllContractors)) {
+			sql.addField("cao.status as caoStatus");
+			sql.addField("cao.notes as caoNotes");
+			sql.addField("cao.id as caoId");
+			sql.addField("cao.recommendedStatus as caoRecommendedStatus");
+			sql.addWhere("cao.opid = " + permissions.getAccountId());
+		}
+
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowCompletedDate(false);
+		getFilter().setShowClosedDate(false);
+		getFilter().setShowHasClosedDate(true);
+		getFilter().setShowPercentComplete(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowAuditStatus(false);
+		getFilter().setShowAuditor(false);
+		getFilter().setShowPercentComplete(false);
+		getFilter().setShowAuditFor(false);
+		
+		getFilter().setShowCreatedDate(true);
+		getFilter().setShowExpiredDate(true);
+		getFilter().setShowPolicyType(true);
+		getFilter().setShowCaoStatus(true);
+		getFilter().setShowRecommendedStatus(true);
+
+		//getFilter().setShowConAuditor(false);
+
+	}
 
 	/**
 	 * returns the proper answer(s) of the questionData, which holds supplemental

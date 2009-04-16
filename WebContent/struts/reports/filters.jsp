@@ -89,7 +89,7 @@
 	</s:if>
 
 	<s:if test="filter.showCcOnFile">
-		<div class="filterOption"><s:select list="#{'1':'Yes','0':'No'}" headerKey="2" headerValue="- ccOnFile -"
+		<div class="filterOption"><s:select list="#{'1':'Yes','0':'No'}" headerKey="2" headerValue="- Credit Card -"
 			cssClass="forms" name="filter.ccOnFile" /></div>
 	</s:if>
 
@@ -400,7 +400,7 @@
 
 	<s:if test="filter.showCaoStatus">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_caoStatus'); return false;">Approval Status
+			onclick="toggleBox('form1_caoStatus'); return false;">Policy Status
 			</a> = <span id="form1_caoStatus_query">ALL</span><br />
 		<span id="form1_caoStatus_select" style="display: none"
 			class="clearLink"> <s:select id="form1_caoStatus" list="filter.caoStatusList"

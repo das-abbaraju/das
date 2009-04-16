@@ -101,12 +101,11 @@ public class PicsMenu {
 
 		subMenu = menu.addChild("InsureGuard");
 		if(permissions.hasPermission(OpPerms.InsuranceCerts))
-			subMenu.addChild("Contractor Policies", "ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected");
+			subMenu.addChild("Contractor Policies", "ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.caoStatus=Verified&filter.caoStatus=Submitted");
 		if(permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted");
-		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
+		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild("Policies Awaiting Decision", "ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted");
-		}
 		
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))

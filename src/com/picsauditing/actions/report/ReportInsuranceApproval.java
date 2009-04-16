@@ -30,7 +30,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		// sql = new SelectContractorAudit();
 		super( auditDataDao, auditQuestionDao, operatorAccountDAO );
 		this.report.setLimit(25);
-		orderByDefault = "ca.auditStatus ASC, ca.completedDate DESC";
+		orderByDefault = "cao.status DESC, cao.updateDate ASC";
 	}
 
 	@Override
@@ -40,39 +40,16 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 
 	@Override
 	public void buildQuery() {
-		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
-		//sql.addField("a_op.requiredAuditStatus");
-		sql.addField("ca.expiresDate");
+		
+		getFilter().setShowVisible(false);
+		sql.addWhere("a.active = 'Y'");
+		
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
 		sql.addField("cao.recommendedStatus as caoRecommendedStatus");
-		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
-		//sql.addJoin("JOIN audit_operator a_op on a_op.auditTypeID = atype.id AND a_op.opID = cao.opID");
-	
-		//sql.addWhere("a.active = 'Y'");
-
-		sql.addWhere("cao.opid = " + permissions.getAccountId());
 		
-		getFilter().setShowVisible(false);
-		getFilter().setShowTrade(false);
-		getFilter().setShowCompletedDate(false);
-		getFilter().setShowClosedDate(false);
-		getFilter().setShowHasClosedDate(true);
-		getFilter().setShowExpiredDate(false);
-		getFilter().setShowPercentComplete(true);
-		getFilter().setShowAuditType(false);
-		getFilter().setShowAuditor(false);
-		getFilter().setShowPercentComplete(false);
-		getFilter().setShowCreatedDate(false);
-		getFilter().setShowPolicyType(true);
-		getFilter().setShowCaoStatus(true);
-		getFilter().setShowAuditStatus(false);
-		getFilter().setShowRecommendedStatus(true);
-		getFilter().setShowPrimaryInformation(false);
-		getFilter().setShowTradeInformation(false);
-		getFilter().setShowAuditFor(false);
 	}
 
 	

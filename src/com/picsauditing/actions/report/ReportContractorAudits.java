@@ -49,9 +49,9 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (download) {
 			sql.addField("atype.classType");
-			if(auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
+			if (auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
 				sql.addField("cao.notes");
-			}	
+			}
 		}
 
 		addFilterToSQL();
@@ -78,18 +78,16 @@ public class ReportContractorAudits extends ReportAccount {
 			sql.addWhere("atype.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
 		if (auditTypeClass != null) {
-			if( auditTypeClass == AuditTypeClass.Audit ) {
+			if (auditTypeClass == AuditTypeClass.Audit) {
 				sql.addWhere("atype.classType in ( 'Audit', 'IM' ) ");
-			}
-			else {
-				sql.addWhere("atype.classType = '"+ auditTypeClass.toString() + "'");	
+			} else {
+				sql.addWhere("atype.classType = '" + auditTypeClass.toString() + "'");
 			}
 		}
-			
-		
+
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
-		
+
 		getFilter().setShowAuditFor(true);
 
 	}
@@ -121,7 +119,7 @@ public class ReportContractorAudits extends ReportAccount {
 			sql.addWhere("cao.recommendedStatus IN (" + caoRecommendedStatus + ")");
 			setFiltered(true);
 		}
-		
+
 		String auditorIdList = Strings.implode(f.getAuditorId(), ",");
 		if (filterOn(auditorIdList)) {
 			sql.addWhere("ca.auditorID IN (" + auditorIdList + ")");
@@ -136,10 +134,10 @@ public class ReportContractorAudits extends ReportAccount {
 
 		String auditFor = Strings.implodeForDB(f.getAuditFor(), ",");
 		if (filterOn(auditFor)) {
-			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");
+			sql.addWhere("ca.auditFor IN (" + auditFor + ")");
 			setFiltered(true);
 		}
-		
+
 		if (filterOn(f.getCreatedDate1())) {
 			report.addFilter(new SelectFilterDate("createdDate1", "ca.creationDate >= '?'", DateBean.format(f
 					.getCreatedDate1(), "M/d/yy")));
@@ -170,13 +168,13 @@ public class ReportContractorAudits extends ReportAccount {
 					.getClosedDate2(), "M/d/yy")));
 		}
 
-		if( filterOn( f.getHasClosedDate() ) ) {
-			if( f.getHasClosedDate().equals("true") ) 
+		if (filterOn(f.getHasClosedDate())) {
+			if (f.getHasClosedDate().equals("true"))
 				sql.addWhere("ca.closedDate is not null ");
 			else
 				sql.addWhere("ca.closedDate is null ");
 		}
-		
+
 		if (filterOn(f.getExpiredDate1())) {
 			report.addFilter(new SelectFilterDate("expiredDate1", "ca.expiresDate >= '?'", DateBean.format(f
 					.getExpiredDate1(), "M/d/yy")));
