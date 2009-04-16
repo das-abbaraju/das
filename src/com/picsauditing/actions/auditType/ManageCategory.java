@@ -45,6 +45,7 @@ public class ManageCategory extends ManageAuditType {
 				}
 				category.setNumber(maxID + 1);
 			}
+			category.setAuditColumns(permissions);
 			category = auditCategoryDao.save(category);
 			id = category.getAuditType().getId();
 			return true;

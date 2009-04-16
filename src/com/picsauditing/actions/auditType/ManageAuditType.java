@@ -117,6 +117,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				addActionError("Audit name is required");
 				return false;
 			}
+			auditType.setAuditColumns(permissions);
 			auditType = auditTypeDao.save(auditType);
 			id = auditType.getId();
 			return true;

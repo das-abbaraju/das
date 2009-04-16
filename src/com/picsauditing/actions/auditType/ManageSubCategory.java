@@ -47,6 +47,7 @@ public class ManageSubCategory extends ManageCategory {
 				}
 				subCategory.setNumber(maxID + 1);
 			}
+			subCategory.setAuditColumns(permissions);
 			subCategory = auditSubCategoryDao.save(subCategory);
 			id = subCategory.getCategory().getId();
 			return true;
