@@ -203,7 +203,7 @@
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
 		<s:if test="conAudit.auditType.classType.policy">
-			<s:if test="hasAwaitingCaos">
+			<s:if test="hasSubmittedCaos">
 				<div id="cao_verification">
 					<s:include value="audit_cat_cao_verification.jsp"/>
 				</div>
@@ -230,7 +230,7 @@
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
 	<s:else>
-		<s:if test="conAudit.auditType.classType.policy && canSubmit">
+		<s:if test="conAudit.auditType.classType.policy && canSubmitPolicy">
 			<div id="cao_submit">
 				<s:include value="audit_cat_policy_submit.jsp"/>
 			</div>

@@ -194,7 +194,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	public boolean isCanSubmit() {
 		if (!isCanEdit())
 			return false;
-		if (conAudit.getPercentComplete() < 100 && !conAudit.getAuditType().getClassType().isPolicy())
+		if (conAudit.getPercentComplete() < 100)
 			return false;
 		if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
@@ -234,18 +234,39 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			return true;
 		return false;
 	}
+	
+	public boolean isHasPendingCaos() {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().isPending())
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isHasSubmittedCaos() {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus() == CaoStatus.Submitted)
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isHasRejectedCaos() {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().isRejected()) 
+				return true;
+		}
+		return false;
+	}
 
-	public boolean isCanResubmitPolicy() {
+	public boolean isCanSubmitPolicy() {
 		if (!isCanEdit())
 			return false;
-		if (conAudit.getAuditType().getClassType().isPolicy()) {
-			for (ContractorAuditOperator cOperator : conAudit.getOperators()) {
-				if (cOperator.getStatus().isRejected())
-					return true;
-			}
-		}
 
-		return false;
+		if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid())
+			return false;
+		return true;
+
 	}
 
 	public AuditStatus getAuditStatus() {

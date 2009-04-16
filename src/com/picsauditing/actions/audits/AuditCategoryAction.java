@@ -390,15 +390,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		
 		return null;
 	}
-	
-	public boolean isHasAwaitingCaos() {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus() == CaoStatus.Submitted)
-				return true;
-		}
-		return false;
-	}
-
 
 	public List<String> getLegalNamesFiltered() {
 		List<String> sortedList = super.getLegalNames();
