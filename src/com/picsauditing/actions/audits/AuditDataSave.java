@@ -160,10 +160,6 @@ public class AuditDataSave extends AuditActionSupport {
 				
 				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 					
-					if( tempAudit.getAuditStatus() == AuditStatus.Active ) {
-						tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
-					}
-					
 					if( auditData.getQuestion().getUniqueCode() != null && auditData.getQuestion().getUniqueCode().equals("policyExpirationDate") 
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						tempAudit.setExpiresDate(DateBean.parseDate( auditData.getAnswer() ) );
