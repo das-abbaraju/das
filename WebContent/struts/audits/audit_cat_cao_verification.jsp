@@ -3,7 +3,7 @@
 <s:include value="../actionMessages.jsp"/>
 
 <s:iterator value="conAudit.operators">	
-	<s:if test="status.awaiting">
+	<s:if test="status.submitted">
 		<div id="cao_<s:property value="operator.id"/>" style="padding:0px">
 			<div id="alert">
 				<button class="picsbutton positive" onclick="verifyReject('Verify',<s:property value="operator.id"/>)">Verify</button>
