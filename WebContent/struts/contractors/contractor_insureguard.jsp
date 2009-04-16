@@ -33,7 +33,7 @@
 		<tr>
 			<td>
 				<s:iterator value="operators">
-					<s:if test="status.pending||status.awaiting||status.verified">
+					<s:if test="status.pending||status.submitted||status.verified">
 						<s:property value="operator.name"/> - <span class="Amber"><s:property value="status"/></span> <br/>
 					</s:if>
 				</s:iterator>
