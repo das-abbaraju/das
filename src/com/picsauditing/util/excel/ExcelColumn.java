@@ -16,6 +16,11 @@ public class ExcelColumn {
 		this.name = name;
 		this.columnHeader = columnHeader;
 	}
+	
+	public ExcelColumn(String name, ExcelCellType cellType) {
+		this.name = name;
+		this.cellType = cellType;
+	}
 
 	public ExcelColumn(String name, String columnHeader, int displayOrder, boolean visible, ExcelCellType cellType,
 			String format) {
@@ -38,11 +43,12 @@ public class ExcelColumn {
 
 	public void setName(String name) {
 		this.name = name;
-		if (columnHeader == null)
-			setColumnHeader(name);
 	}
 
 	public String getColumnHeader() {
+		if (columnHeader == null)
+			return name;
+		
 		return columnHeader;
 	}
 

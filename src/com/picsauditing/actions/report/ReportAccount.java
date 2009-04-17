@@ -37,6 +37,7 @@ import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
@@ -91,8 +92,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 	
 	protected void addExcelColumns() {
+		excelSheet.setData(data);
 		excelSheet.addColumn(new ExcelColumn("id"));
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", 400, true, ExcelCellType.Date, ""));
 	}
 
 	// TODO make this method final
