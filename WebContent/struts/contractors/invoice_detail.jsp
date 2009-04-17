@@ -128,7 +128,7 @@ h1 {
 							<span style="color: #444; font-style: italic; font-size: 10px;">
 							<s:if test="invoiceFee.feeClass == 'Activation'">effective
 								<s:if test="paymentExpires == null"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></s:if>
-								<s:else><s:date name="invoice.paymentExpires" /></s:else>
+								<s:else><s:date name="paymentExpires" /></s:else>
 							</s:if>
 							<s:if test="invoiceFee.feeClass == 'Membership' && paymentExpires != null">
 								expires <s:date name="paymentExpires" format="MMM d, yyyy"/>
@@ -198,7 +198,8 @@ h1 {
 					</s:elseif>
 					<s:else>
 						<pics:permission perm="Billing" type="Edit">
-							<td colspan="3" class="print noprint"><s:if test="invoice.totalAmount > 0 && !invoice.paid">
+							<td colspan="3" class="print noprint">
+							<s:if test="invoice.totalAmount > 0 && !invoice.paid">
 								<s:if test="invoice.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
 										<input type="submit" class="picsbutton positive" name="button"

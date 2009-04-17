@@ -7,12 +7,12 @@
 	<s:radio name="cao.status" list="#{'Approved':'Approve', 'Rejected':'Reject', 'NotApplicable':'Not Applicable'}"/>
 	<!--<s:if test="cao.operator.parent != null">
 		<s:checkbox name="cao.inherit"></s:checkbox> Default to status at <s:property value="cao.operator.parent.name"/>
-	</s:if>-->
 	<br />
 	Updated By: <s:property value="cao.updatedBy.name"/> from <s:property value="cao.updatedBy.account.name"/>
+	</s:if>-->
 	<br />
 	<s:if test="!cao.recommendedStatus.notApplicable">
-		Pics Recommendation: <s:property value="cao.recommendedStatus.icon" escape="false"/> <br />
+		Pics Recommendation: <s:property value="cao.recommendedStatus.icon" escape="false"/> <s:property value="cao.recommendedStatus" /> <br />
 	</s:if>
 	<s:textarea id="cao.notes" name="cao.notes" cols="60" rows="2"/>
 	<div class="buttons">
