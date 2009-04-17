@@ -3,7 +3,6 @@ package com.picsauditing.util.excel;
 public class ExcelColumn {
 	private String name;
 	private String columnHeader;
-	private int displayOrder;
 	private boolean visible = true;
 	private ExcelCellType cellType = ExcelCellType.String;
 	private String format;
@@ -22,11 +21,10 @@ public class ExcelColumn {
 		this.cellType = cellType;
 	}
 
-	public ExcelColumn(String name, String columnHeader, int displayOrder, boolean visible, ExcelCellType cellType,
+	public ExcelColumn(String name, String columnHeader, boolean visible, ExcelCellType cellType,
 			String format) {
 		this.name = name;
 		this.columnHeader = columnHeader;
-		this.displayOrder = displayOrder;
 		this.visible = visible;
 		this.cellType = cellType;
 		this.format = format;
@@ -54,14 +52,6 @@ public class ExcelColumn {
 
 	public void setColumnHeader(String columnHeader) {
 		this.columnHeader = columnHeader;
-	}
-
-	public int getDisplayOrder() {
-		return displayOrder;
-	}
-
-	public void setDisplayOrder(int displayOrder) {
-		this.displayOrder = displayOrder;
 	}
 
 	public boolean isVisible() {

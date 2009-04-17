@@ -117,4 +117,8 @@ public class ExcelSheet {
 		this.data = data;
 	}
 
+	public Map<Integer, ExcelColumn> getColumns() {
+		return columns;
+	}
+
 }

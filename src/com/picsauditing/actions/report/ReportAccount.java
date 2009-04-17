@@ -87,7 +87,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		excelSheet.setData(data);
 		excelSheet.addColumn(new ExcelColumn("id"));
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
-		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", 400, true, ExcelCellType.Date, ""), 50);
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", true, ExcelCellType.Date, ""), 50);
 	}
 
 	// TODO make this method final
