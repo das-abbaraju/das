@@ -1,12 +1,23 @@
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -121,11 +132,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 		
 		if (download) {
+			
+			HSSFWorkbook wb = buildExcel();
+
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
-			filename += ".csv";
+			filename += ".xls";
 
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
 		}
 
 		return SUCCESS;
@@ -334,5 +353,60 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if(showTradeInfo == null) 
 			showTradeInfo = getFilter().isTradeInformation();
 		return showTradeInfo;	
+	}
+	
+	public HSSFWorkbook buildExcel() throws IOException {
+
+		// create a new workbook
+		HSSFWorkbook wb = new HSSFWorkbook();
+		// create a new sheet
+		
+		HSSFSheet s = wb.createSheet();
+	
+		HSSFCellStyle cs = wb.createCellStyle();
+		HSSFCellStyle cs2 = wb.createCellStyle();
+		HSSFCellStyle cs3 = wb.createCellStyle();
+		HSSFDataFormat df = wb.createDataFormat();
+		HSSFFont f = wb.createFont();
+		f.setFontHeightInPoints((short) 12);
+		cs.setFont(f);
+		cs.setDataFormat(df.getFormat("#,##0.0"));
+		
+		wb.setSheetName(0, "ReportAccount");
+		HSSFRow r = s.createRow(0);;
+		HSSFCell c = r.createCell(0);
+		c.setCellValue("Contractor ID");
+		
+		HSSFRow r1 = s.createRow(1);
+		HSSFCell c1 = r1.createCell(0);
+		c1.setCellValue("Contractor Name");
+		
+		HSSFRow r2 = s.createRow(2);
+		HSSFCell c2 = r1.createCell(0);
+		c2.setCellValue("Registration Date");
+
+		HSSFRow r3 = s.createRow(3);
+		HSSFCell c3 = r1.createCell(0);
+		c3.setCellValue("Risk");
+		
+		for(int i = 0; i < report.getAllRows(); i++) {
+			r = s.createRow(i+1);
+			c = r.createCell(0);
+			c.setCellValue((Integer) data.get(i).get("id"));
+
+			r1 = s.createRow(i+2);
+			c = r1.createCell(1);
+			c1.setCellValue(data.get(i).get("name").toString());
+
+			r2 = s.createRow(i+3);
+			c2 = r2.createCell(2);
+			c2.setCellValue((DateBean.format((Date) data.get(i).get("creationDate"), "M/d/yy")));
+
+			r3 = s.createRow(i+4);
+			c3 = r3.createCell(3);
+			c3.setCellValue((Integer) data.get(i).get("riskLevel"));
+		}
+
+		return wb;
 	}
 }	
