@@ -1,9 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,12 +9,6 @@ import java.util.Set;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.DynaBean;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
@@ -95,7 +87,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		excelSheet.setData(data);
 		excelSheet.addColumn(new ExcelColumn("id"));
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
-		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", 400, true, ExcelCellType.Date, ""));
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", 400, true, ExcelCellType.Date, ""), 50);
 	}
 
 	// TODO make this method final

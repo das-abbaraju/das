@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportEmrRates extends ReportAnnualAddendum {
@@ -29,5 +30,11 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		sql.addWhere("d.answer > ''");
 		
 	}
-
+	
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		excelSheet.addColumn(new ExcelColumn("auditFor", "Year"), 30);
+		excelSheet.addColumn(new ExcelColumn("answer", "Rate"), 40);
+	}
 }
