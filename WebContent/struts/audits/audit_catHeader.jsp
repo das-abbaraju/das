@@ -46,7 +46,7 @@
 
 <s:form>
 	<s:hidden name="auditID" />
-	<s:if test="!conAudit.auditType.typeClass.policy">
+	<s:if test="!conAudit.auditType.classType.policy">
 		<s:if test="canSubmit">
 			<div id="alert" class="buttons" style="">
 				<s:if test="conAudit.auditStatus.pendingExpired">
