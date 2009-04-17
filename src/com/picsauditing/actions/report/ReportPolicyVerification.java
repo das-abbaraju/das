@@ -32,7 +32,6 @@ public class ReportPolicyVerification extends ReportInsuranceSupport {
 		super.buildQuery();
 		
 		sql.addWhere("cao.status = 'Submitted'");
-		sql.addWhere("ca.auditStatus != 'Expired'");
 		
 		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
 		sql.addField("pcd.id catdataID");
