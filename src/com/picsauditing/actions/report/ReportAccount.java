@@ -37,6 +37,7 @@ import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAccount extends ReportActionSupport implements Preparable {
@@ -75,8 +76,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
-		if(download)
+		if(download) {
 			getFilter().setPrimaryInformation(true);
+		}
 
 		sql.addField("a.fax");
 		sql.addField("a.creationDate");
@@ -86,6 +88,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		sql.addField("c.billingEmail");
 		
 		addFilterToSQL();
+	}
+	
+	protected void addExcelColumns() {
+		excelSheet.addColumn(new ExcelColumn("id"));
+		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
 	}
 
 	// TODO make this method final
@@ -132,10 +139,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 		
 		if (download) {
-			
-			HSSFWorkbook wb = buildExcel();
-
+			addExcelColumns();
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			excelSheet.setName(filename);
+			HSSFWorkbook wb = excelSheet.buildWorkbook();
+
 			filename += ".xls";
 
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
@@ -355,58 +363,4 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return showTradeInfo;	
 	}
 	
-	public HSSFWorkbook buildExcel() throws IOException {
-
-		// create a new workbook
-		HSSFWorkbook wb = new HSSFWorkbook();
-		// create a new sheet
-		
-		HSSFSheet s = wb.createSheet();
-	
-		HSSFCellStyle cs = wb.createCellStyle();
-		HSSFCellStyle cs2 = wb.createCellStyle();
-		HSSFCellStyle cs3 = wb.createCellStyle();
-		HSSFDataFormat df = wb.createDataFormat();
-		HSSFFont f = wb.createFont();
-		f.setFontHeightInPoints((short) 12);
-		cs.setFont(f);
-		cs.setDataFormat(df.getFormat("#,##0.0"));
-		
-		wb.setSheetName(0, "ReportAccount");
-		HSSFRow r = s.createRow(0);;
-		HSSFCell c = r.createCell(0);
-		c.setCellValue("Contractor ID");
-		
-		HSSFRow r1 = s.createRow(1);
-		HSSFCell c1 = r1.createCell(0);
-		c1.setCellValue("Contractor Name");
-		
-		HSSFRow r2 = s.createRow(2);
-		HSSFCell c2 = r1.createCell(0);
-		c2.setCellValue("Registration Date");
-
-		HSSFRow r3 = s.createRow(3);
-		HSSFCell c3 = r1.createCell(0);
-		c3.setCellValue("Risk");
-		
-		for(int i = 0; i < report.getAllRows(); i++) {
-			r = s.createRow(i+1);
-			c = r.createCell(0);
-			c.setCellValue((Integer) data.get(i).get("id"));
-
-			r1 = s.createRow(i+2);
-			c = r1.createCell(1);
-			c1.setCellValue(data.get(i).get("name").toString());
-
-			r2 = s.createRow(i+3);
-			c2 = r2.createCell(2);
-			c2.setCellValue((DateBean.format((Date) data.get(i).get("creationDate"), "M/d/yy")));
-
-			r3 = s.createRow(i+4);
-			c3 = r3.createCell(3);
-			c3.setCellValue((Integer) data.get(i).get("riskLevel"));
-		}
-
-		return wb;
-	}
 }	

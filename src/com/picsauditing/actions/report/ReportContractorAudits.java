@@ -21,6 +21,7 @@ import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorAudits extends ReportAccount {
@@ -91,6 +92,15 @@ public class ReportContractorAudits extends ReportAccount {
 		getFilter().setShowAuditFor(true);
 
 	}
+
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		//excelSheet.removeColumn("id");
+		excelSheet.addColumn(new ExcelColumn("closedDate", "Audit Closed Date"));
+		
+	}
+
 
 	protected void addFilterToSQL() {
 		super.addFilterToSQL();

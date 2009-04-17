@@ -28,7 +28,7 @@ public class ReportAccountAudits extends ReportAccount {
 		sql.addField("certs.certificateCount");
 		 */
 	}
-
+	
 	public boolean isPqfVisible() {
 		return permissions.canSeeAudit(AuditType.PQF);
 	}

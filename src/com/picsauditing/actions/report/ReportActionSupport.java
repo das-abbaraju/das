@@ -11,10 +11,12 @@ import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
+import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings("serial")
 public class ReportActionSupport extends PicsActionSupport {
 	protected Report report = new Report();
+	protected ExcelSheet excelSheet = new ExcelSheet();
 	protected List<BasicDynaBean> data;
 
 	protected ListType listType;
