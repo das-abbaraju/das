@@ -162,20 +162,16 @@ public class ContractorAccountDAO extends PicsDAO {
 	 */
 	public List<Integer> findContractorsNeedingRecalculation() {
 		String hql = "SELECT c.id FROM ContractorAccount c " +
-				"WHERE (" +
-				"   (c.needsRecalculation = 1 AND c.lastRecalculation < :lastRunDate) " +
-				" OR c.lastRecalculation < :weekAgo " +
-				" OR c.lastRecalculation IS NULL " +
-				") ORDER BY c.lastRecalculation";
+				"WHERE " +
+				"c.lastRecalculation < :lastRunDate " +
+				"OR c.lastRecalculation IS NULL " +
+				"ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(10);
 		
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, -30);
+		calendar.add(Calendar.MINUTE, -10);
 		query.setParameter("lastRunDate", calendar.getTime());
-		
-		calendar.add(Calendar.DAY_OF_YEAR, -5);
-		query.setParameter("weekAgo", calendar.getTime());
 		
 		return query.getResultList();
 	}
