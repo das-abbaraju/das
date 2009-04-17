@@ -75,6 +75,10 @@
 		return false;
 	}
 
+	function changeButton(button, checked) {
+		$(button).disabled = !checked;
+	}
+
 	function openOsha(logID) {
 		url = 'DownloadOsha.action?id='+logID;
 		title = 'Osha300Logs';
