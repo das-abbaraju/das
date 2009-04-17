@@ -44,6 +44,7 @@ public class PolicySave extends AuditActionSupport {
 		if ("Verify".equals(button)) {
 			cao.setStatus(CaoStatus.Verified);
 			cao.setNotes(caoNotes);
+			cao.setAuditColumns(permissions);
 			caoDAO.save(cao);
 
 			addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
@@ -57,6 +58,7 @@ public class PolicySave extends AuditActionSupport {
 			} else {
 				cao.setStatus(CaoStatus.Rejected);
 				cao.setNotes(caoNotes);
+				cao.setAuditColumns(permissions);
 				caoDAO.save(cao);
 
 				EmailBuilder emailBuilder = new EmailBuilder();
