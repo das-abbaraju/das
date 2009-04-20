@@ -123,7 +123,14 @@ public class ExcelSheet {
 				columnCount++;
 			}
 		}
-		
+
+		int c = 0;
+		for (ExcelColumn column : columns.values()) {
+			sheet.autoSizeColumn((short)c);
+			sheet.setColumnHidden(c, column.isHidden());
+			c++;
+		}
+
 		return wb;
 	}
 
