@@ -15,6 +15,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -85,8 +86,42 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
-		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer));
+		// Add the following columns to the far right
+		if (permissions.isOperator()) {
+			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.Date), 400);
+			if (permissions.hasPermission(OpPerms.ViewUnApproved)) {
+				excelSheet.addColumn(new ExcelColumn("workStatus", "Work Status"));
+			}
+		}
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 500);
+		excelSheet.addColumn(new ExcelColumn("riskLevel", "Risk Level"));
+		if (isShowContact()) {
+			excelSheet.addColumn(new ExcelColumn("contact", "Primary Contact"));
+			excelSheet.addColumn(new ExcelColumn("email", "Email"));
+			excelSheet.addColumn(new ExcelColumn("address", "Address"));
+			excelSheet.addColumn(new ExcelColumn("city", "City"));
+			excelSheet.addColumn(new ExcelColumn("state", "State"));
+			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code", ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("phone", "Phone"));
+			excelSheet.addColumn(new ExcelColumn("phone2", "Second Phone"));
+			excelSheet.addColumn(new ExcelColumn("secondContact", "Secondary Contact"));
+			excelSheet.addColumn(new ExcelColumn("secondPhone", "Secondary Contact Phone"));
+			excelSheet.addColumn(new ExcelColumn("secondEmail", "Secondary Contact Email"));
+			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
+		}
+		if (isShowTrade()) {
+			excelSheet.addColumn(new ExcelColumn("industry", "Industry"));
+			excelSheet.addColumn(new ExcelColumn("main_trade", "Main Trade"));
+		}
+		excelSheet.addColumn(new ExcelColumn("fax", "Fax Number"));
+		excelSheet.addColumn(new ExcelColumn("billingContact", "Billing Contact"));
+		excelSheet.addColumn(new ExcelColumn("billingPhone", "Billing Phone"));
+		excelSheet.addColumn(new ExcelColumn("billingEmail", "Billing Email"));
+
+		// Add these to the beginning
+		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
+
 	}
 
 	// TODO make this method final
