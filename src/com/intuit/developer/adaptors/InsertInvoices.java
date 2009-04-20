@@ -184,9 +184,9 @@ public class InsertInvoices extends CustomerAdaptor {
 						connected.setQbListID(invoiceRet.getTxnID());
 						connected.setQbSync(false);
 
-						if( connected.isPaid() ) {
-							currentSession.getPaymentsToInsert().add(connected);
-						}
+//						if( connected.isPaid() ) {
+//							currentSession.getPaymentsToInsert().add(connected);
+//						}
 					}
 				}
 				catch( Exception e ) {

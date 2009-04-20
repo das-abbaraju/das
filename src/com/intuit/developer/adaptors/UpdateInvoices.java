@@ -3,7 +3,9 @@ package com.intuit.developer.adaptors;
 import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -200,15 +202,15 @@ public class UpdateInvoices extends CustomerAdaptor {
 				if( invoiceId != 0 ) {
 					invoiceJPA.setQbSync(false);
 					
-					if( invoiceJPA.isPaid() ) {
-
-						if( invoiceJPA.getQbPaymentListID() == null ) {
-							currentSession.getPaymentsToInsert().add(invoiceJPA);
-						}
+//					if( invoiceJPA.isPaid() ) {
+//
+//						if( invoiceJPA.getQbPaymentListID() == null ) {
+//							currentSession.getPaymentsToInsert().add(invoiceJPA);
+//						}
 //						else if( ! invoiceJPA.getQbPaymentListID().startsWith("NOLOAD") ){
 //							currentSession.getPossiblePaymentUpdates().add(invoiceJPA);
 //						}
-					}
+//					}
 				}
 				
 			}
