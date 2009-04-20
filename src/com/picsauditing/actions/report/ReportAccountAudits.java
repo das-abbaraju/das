@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
@@ -39,7 +40,7 @@ public class ReportAccountAudits extends ReportAccount {
 		super.addExcelColumns();
 		
 		if (permissions.isOperator()) {
-			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On"), 405);
+			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On", ExcelCellType.Enum), 405);
 		}
 	}
 }

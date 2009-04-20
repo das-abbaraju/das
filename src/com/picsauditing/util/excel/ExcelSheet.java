@@ -18,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.WaitingOn;
 
 public class ExcelSheet {
 	private String name = "Report";
@@ -130,8 +131,14 @@ public class ExcelSheet {
 							|| ExcelCellType.Double.equals(column.getCellType())
 							|| ExcelCellType.Money.equals(column.getCellType()))
 						c.setCellValue(Double.parseDouble(row.get(column.getName()).toString()));
-					else if (ExcelCellType.Enum.equals(column.getCellType()))
-						c.setCellValue(new HSSFRichTextString(LowMedHigh.getName((Integer) row.get(column.getName()))));
+					else if (ExcelCellType.Enum.equals(column.getCellType())) {
+						String value = "";
+						if ("riskLevel".equals(column.getName()))
+							value = LowMedHigh.getName((Integer) row.get(column.getName()));
+						else if ("waitingOn".equals(column.getName()))
+							value = WaitingOn.valueOf((Integer) row.get(column.getName())).toString();
+						c.setCellValue(new HSSFRichTextString(value));
+					}
 					else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 				} catch (Exception e) {
