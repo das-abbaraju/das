@@ -10,6 +10,8 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAnswerSearch extends ReportAccount {
@@ -72,6 +74,16 @@ public class ReportAnswerSearch extends ReportAccount {
 	public void run(SelectSQL sql) throws SQLException, IOException {
 		if (questions.size() > 0)
 			super.run(sql);
+	}
+	
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		int i = 30;
+		for(AuditQuestion auditQuestion : questions) {
+			excelSheet.addColumn(new ExcelColumn("answer"+auditQuestion.getId(), auditQuestion.getQuestion()), i);
+			i++;
+		}
 	}
 
 	public void setQuestionSelect(String value) {

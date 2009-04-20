@@ -556,7 +556,7 @@
 		<action name="QuestionAnswerSearchCSV"
 			class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<param name="download">true</param>
-			<result>struts/reports/qanswersearch_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 
 		<action name="AuditDataUpdates"
