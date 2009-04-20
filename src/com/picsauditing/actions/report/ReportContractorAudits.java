@@ -6,7 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -21,6 +24,7 @@ import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
@@ -96,11 +100,30 @@ public class ReportContractorAudits extends ReportAccount {
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-		//excelSheet.removeColumn("id");
-		excelSheet.addColumn(new ExcelColumn("closedDate", "Audit Closed Date"));
-		
-	}
+		// Remove fields from the parent that are not accessible/necessary here
+		excelSheet.removeColumn("creationDate");
+		excelSheet.removeColumn("riskLevel");
+		excelSheet.removeColumn("fax");
+		excelSheet.removeColumn("billingContact");
+		excelSheet.removeColumn("billingPhone");
+		excelSheet.removeColumn("billingEmail");
 
+		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
+		excelSheet.addColumn(new ExcelColumn("auditStatus", "Audit Status"));
+		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("completedDate", "Completed Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("scheduledDate", "Schedule Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("closedDate", "Audit Closed Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("expiresDate", "Date Expires", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("percentComplete", "Percent Complete", ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("percentVerified", "Percent Verified", ExcelCellType.Integer));
+		if (auditTypeClass.isPolicy() && permissions.isOperator()) {
+			excelSheet.addColumn(new ExcelColumn("CaoStatus", "Op Status"));
+			excelSheet.addColumn(new ExcelColumn("notes", "Notes"));
+		}
+
+	}
 
 	protected void addFilterToSQL() {
 		super.addFilterToSQL();
@@ -251,11 +274,20 @@ public class ReportContractorAudits extends ReportAccount {
 		}
 
 		if (download) {
+			addExcelColumns();
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
-			filename += ".csv";
+			excelSheet.setName(filename);
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += ".xls";
 
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
 		}
 
 		return SUCCESS;

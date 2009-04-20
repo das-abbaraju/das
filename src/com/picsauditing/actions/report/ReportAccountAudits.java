@@ -34,6 +34,7 @@ public class ReportAccountAudits extends ReportAccount {
 		return permissions.canSeeAudit(AuditType.PQF);
 	}
 	
+	@Override
 	public void addExcelColumns() {
 		super.addExcelColumns();
 		
