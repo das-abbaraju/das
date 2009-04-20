@@ -69,7 +69,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
-		if(download) {
+		if (download) {
 			getFilter().setPrimaryInformation(true);
 		}
 
@@ -79,15 +79,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		sql.addField("c.billingContact");
 		sql.addField("c.billingPhone");
 		sql.addField("c.billingEmail");
-		
+
 		addFilterToSQL();
 	}
-	
+
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
-		excelSheet.addColumn(new ExcelColumn("id", "Contractor ID", ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
-		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 60);
 	}
 
 	// TODO make this method final
@@ -105,11 +104,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		checkPermissions();
-		
+
 		if (runReport()) {
 			buildQuery();
 			run(sql);
-			
+
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.clear();
 			wizardSession.setFilter(listType, filter);
@@ -132,12 +131,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
 		}
-		
+
 		if (download) {
 			addExcelColumns();
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			excelSheet.setName(filename);
-			HSSFWorkbook wb = excelSheet.buildWorkbook();
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.isPicsEmployee());
 
 			filename += ".xls";
 
@@ -183,7 +182,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
-		if(f.isPrimaryInformation()) {
+		if (f.isPrimaryInformation()) {
 			sql.addField("a.contact");
 			sql.addField("a.phone");
 			sql.addField("a.phone2");
@@ -197,12 +196,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addField("c.secondEmail");
 			sql.addField("a.web_URL");
 		}
-		
-		if(f.isTradeInformation()) {
+
+		if (f.isTradeInformation()) {
 			sql.addField("c.main_trade");
 			sql.addField("a.industry");
 		}
-		
+
 		/** **** Filters for Contractors ********** */
 
 		if (filterOn(f.getTrade())) {
@@ -260,17 +259,17 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getRiskLevel(), 0))
 			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
 
-		if(f.getEmailTemplate() > 0) {
+		if (f.getEmailTemplate() > 0) {
 			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
 					+ f.getEmailTemplate();
 			if (filterOn(f.getEmailSentDate())) {
-				emailQueueJoin += " AND eq.sentDate >= '"+ DateBean.format(f.getEmailSentDate(), "yyyy-M-d")+"'";
+				emailQueueJoin += " AND eq.sentDate >= '" + DateBean.format(f.getEmailSentDate(), "yyyy-M-d") + "'";
 			}
 			sql.addJoin(emailQueueJoin);
 			sql.addWhere("eq.emailID IS NULL");
 			setFiltered(true);
 		}
-		
+
 		if (filterOn(f.getRegistrationDate1())) {
 			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(f
 					.getRegistrationDate1(), "M/d/yy")));
@@ -280,21 +279,21 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(f
 					.getRegistrationDate2(), "M/d/yy")));
 		}
-		
-		if(f.isPendingPqfAnnualUpdate()) {
+
+		if (f.isPendingPqfAnnualUpdate()) {
 			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
-				+ "WHERE ca.auditStatus = 'Pending' AND ca.auditTypeID IN (1,11))";
+					+ "WHERE ca.auditStatus = 'Pending' AND ca.auditTypeID IN (1,11))";
 			sql.addWhere(query);
 		}
-		
+
 		if (filterOn(f.getOperatorTagName(), 0)) {
-			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " 
-				+ "WHERE ct.tagID = "+  f.getOperatorTagName() +")";
+			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " + "WHERE ct.tagID = "
+					+ f.getOperatorTagName() + ")";
 			sql.addWhere(query);
 		}
-		
+
 		if (f.getCcOnFile() < 2)
-			sql.addWhere("c.ccOnFile = "+ f.getCcOnFile());
+			sql.addWhere("c.ccOnFile = " + f.getCcOnFile());
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
@@ -341,21 +340,21 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	public void setSql(SelectAccount sql) {
 		this.sql = sql;
 	}
-	
+
 	public boolean isShowContact() {
-		if(getFilter() == null)
+		if (getFilter() == null)
 			return false;
-		if(showContactInfo == null) 
+		if (showContactInfo == null)
 			showContactInfo = getFilter().isPrimaryInformation();
-		return showContactInfo;	
+		return showContactInfo;
 	}
-	
+
 	public boolean isShowTrade() {
-		if(getFilter() == null)
+		if (getFilter() == null)
 			return false;
-		if(showTradeInfo == null) 
+		if (showTradeInfo == null)
 			showTradeInfo = getFilter().isTradeInformation();
-		return showTradeInfo;	
+		return showTradeInfo;
 	}
-	
-}	
+
+}
