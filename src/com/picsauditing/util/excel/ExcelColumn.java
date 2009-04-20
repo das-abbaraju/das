@@ -5,7 +5,6 @@ public class ExcelColumn {
 	private String columnHeader;
 	private boolean visible = true;
 	private ExcelCellType cellType = ExcelCellType.String;
-	private String format;
 
 	public ExcelColumn(String name) {
 		this.name = name;
@@ -15,23 +14,21 @@ public class ExcelColumn {
 		this.name = name;
 		this.columnHeader = columnHeader;
 	}
-	
+
 	public ExcelColumn(String name, ExcelCellType cellType) {
 		this.name = name;
 		this.cellType = cellType;
 	}
 
-	public ExcelColumn(String name, String columnHeader, boolean visible, ExcelCellType cellType,
-			String format) {
+	public ExcelColumn(String name, String columnHeader, ExcelCellType cellType) {
 		this.name = name;
 		this.columnHeader = columnHeader;
-		this.visible = visible;
 		this.cellType = cellType;
-		this.format = format;
 	}
 
 	/**
-	 * Database column from an SQL result. This is usually unique, unless you want to include the same column twice.
+	 * Database column from an SQL result. This is usually unique, unless you
+	 * want to include the same column twice.
 	 * 
 	 * @return
 	 */
@@ -46,7 +43,7 @@ public class ExcelColumn {
 	public String getColumnHeader() {
 		if (columnHeader == null)
 			return name;
-		
+
 		return columnHeader;
 	}
 
@@ -68,14 +65,6 @@ public class ExcelColumn {
 
 	public void setCellType(ExcelCellType cellType) {
 		this.cellType = cellType;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 }

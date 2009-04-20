@@ -11,11 +11,10 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-import com.picsauditing.PICS.DateBean;
 
 public class ExcelSheet {
 	private String name = "Report";
@@ -41,23 +40,48 @@ public class ExcelSheet {
 	public void removeColumn(String name) {
 		// TODO
 	}
-	
+
 	public HSSFWorkbook buildWorkbook() {
 		return buildWorkbook(false);
 	}
 
 	public HSSFWorkbook buildWorkbook(boolean showOrder) {
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet s = wb.createSheet();
+		HSSFSheet sheet = wb.createSheet();
 
-		HSSFCellStyle cs = wb.createCellStyle();
-		HSSFCellStyle headerStyle = wb.createCellStyle();
-		HSSFCellStyle cs3 = wb.createCellStyle();
 		HSSFDataFormat df = wb.createDataFormat();
-		HSSFFont f = wb.createFont();
-		f.setFontHeightInPoints((short) 12);
-		cs.setFont(f);
-		cs.setDataFormat(df.getFormat("#,##0.0"));
+		HSSFFont font = wb.createFont();
+		font.setFontHeightInPoints((short) 12);
+
+		short col = 0;
+		for (ExcelColumn column : columns.values()) {
+
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+
+			if (ExcelCellType.Date.equals(column.getCellType()))
+				cellStyle.setDataFormat(df.getFormat("m/d/yyyy"));
+			else if (ExcelCellType.Integer.equals(column.getCellType()))
+				cellStyle.setDataFormat(df.getFormat("0"));
+			else if (ExcelCellType.Double.equals(column.getCellType()))
+				cellStyle.setDataFormat(df.getFormat("#,##0.00"));
+			else if (ExcelCellType.Money.equals(column.getCellType()))
+				cellStyle.setDataFormat(df.getFormat("($#,##0_);($#,##0)"));
+			else
+				cellStyle.setDataFormat(df.getFormat("@"));
+
+			cellStyle.setFont(font);
+
+			sheet.setDefaultColumnStyle(col, cellStyle);
+			col++;
+		}
+
+		HSSFFont headerFont = wb.createFont();
+		headerFont.setFontHeightInPoints((short) 12);
+		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		HSSFCellStyle headerStyle = wb.createCellStyle();
+		headerStyle.setFont(headerFont);
+		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 
 		wb.setSheetName(0, name);
 
@@ -66,14 +90,14 @@ public class ExcelSheet {
 		{
 			// Add the Column Headers to the top of the report
 			int columnCount = 0;
-			HSSFRow r = s.createRow(rowNumber);
+			HSSFRow r = sheet.createRow(rowNumber);
 			rowNumber++;
 			for (Map.Entry<Integer, ExcelColumn> entry : this.columns.entrySet()) {
 				HSSFCell c = r.createCell(columnCount);
-				if (showOrder) 
-					c.setCellValue(entry.getValue().getColumnHeader() + " - " + entry.getKey());
+				if (showOrder)
+					c.setCellValue(new HSSFRichTextString(entry.getValue().getColumnHeader() + " - " + entry.getKey()));
 				else
-					c.setCellValue(entry.getValue().getColumnHeader());
+					c.setCellValue(new HSSFRichTextString(entry.getValue().getColumnHeader()));
 				c.setCellStyle(headerStyle);
 				columnCount++;
 			}
@@ -81,23 +105,25 @@ public class ExcelSheet {
 
 		for (int i = 0; i < data.size(); i++) {
 			DynaBean row = data.get(i);
-			HSSFRow r = s.createRow(i + 1);
+			HSSFRow r = sheet.createRow(i + 1);
 			int columnCount = 0;
 			for (ExcelColumn column : this.columns.values()) {
 				HSSFCell c = r.createCell(columnCount);
 				// TODO Look at data type here
-				
-				if (ExcelCellType.Date.equals(column.getCellType()))	
-					c.setCellValue(DateBean.format((Date)row.get(column.getName()), column.getFormat()));
-				else if (ExcelCellType.Number.equals(column.getCellType()))
-					c.setCellValue((Double)row.get(column.getName()));
+
+				if (ExcelCellType.Date.equals(column.getCellType())) {
+					c.setCellValue((Date) row.get(column.getName()));
+				} else if (ExcelCellType.Integer.equals(column.getCellType())
+						|| ExcelCellType.Double.equals(column.getCellType())
+						|| ExcelCellType.Money.equals(column.getCellType()))
+					c.setCellValue(Double.parseDouble(row.get(column.getName()).toString()));
 				else
-					c.setCellValue(row.get(column.getName()).toString());
-				
-				c.setCellStyle(cs);
+					c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
+
 				columnCount++;
 			}
 		}
+		
 		return wb;
 	}
 
