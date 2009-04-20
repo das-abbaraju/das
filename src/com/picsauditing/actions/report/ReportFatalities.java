@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportFatalities extends ReportAnnualAddendum {
@@ -26,5 +28,13 @@ public class ReportFatalities extends ReportAnnualAddendum {
 		sql.addField("os.SHAType");
 		
 		getFilter().setPendingPqfAnnualUpdate(false);
+	}
+	
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		excelSheet.addColumn(new ExcelColumn("auditFor", "Year", ExcelCellType.Integer), 30);
+		excelSheet.addColumn(new ExcelColumn("SHAType", "SHAType"));
+		excelSheet.addColumn(new ExcelColumn("fatalities", "Fatalities", ExcelCellType.Integer));
 	}
 }

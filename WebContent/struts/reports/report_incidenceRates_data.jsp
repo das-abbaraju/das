@@ -57,7 +57,7 @@
 			<td><s:property value="[0].get('SHAType')" /></td>
 			<!--Need to fix this before the year end-->
 			<td class="right"><s:property
-				value="%{new java.text.DecimalFormat('#,##0.00').format([0].get('recordableTotal')*200000f/[0].get('manHours'))}" />
+				value="%{new java.text.DecimalFormat('#,##0.00').format(get('incidenceRate'))}" />
 			</td>
 			<td><s:property value="get('auditFor')" />
 			</td>

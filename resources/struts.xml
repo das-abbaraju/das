@@ -437,7 +437,7 @@
 		<action name="ReportEmrRatesCSV"
 			class="com.picsauditing.actions.report.ReportEmrRates">
 			<param name="download">true</param>
-			<result>struts/reports/report_emr_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 
 		<action name="ReportFatalities"
@@ -455,7 +455,7 @@
 		<action name="ReportFatalitiesCSV"
 			class="com.picsauditing.actions.report.ReportFatalities">
 			<param name="download">true</param>
-			<result>/struts/reports/report_fatalities_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 
 		<action name="ReportContractorLicenses"
@@ -483,7 +483,7 @@
 		<action name="ReportIncidenceRateCSV"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
 			<param name="download">true</param>
-			<result>/struts/reports/report_incidenceRates_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 
 		<action name="ContractorAssigned"

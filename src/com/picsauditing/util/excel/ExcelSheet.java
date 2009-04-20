@@ -111,7 +111,9 @@ public class ExcelSheet {
 				HSSFCell c = r.createCell(columnCount);
 				// TODO Look at data type here
 
-				if (ExcelCellType.Date.equals(column.getCellType())) {
+				if(row.get(column.getName()) == null)
+					c.setCellValue(new HSSFRichTextString(""));
+				else if (ExcelCellType.Date.equals(column.getCellType())) {
 					c.setCellValue((Date) row.get(column.getName()));
 				} else if (ExcelCellType.Integer.equals(column.getCellType())
 						|| ExcelCellType.Double.equals(column.getCellType())

@@ -121,7 +121,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		// Add these to the beginning
 		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
 		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
-
 	}
 
 	// TODO make this method final
