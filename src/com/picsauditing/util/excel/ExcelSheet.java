@@ -1,6 +1,7 @@
 package com.picsauditing.util.excel;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,6 +42,13 @@ public class ExcelSheet {
 
 	public void removeColumn(String name) {
 		// TODO
+		Iterator<ExcelColumn> i = columns.values().iterator();
+		
+		while (i.hasNext()) {
+			ExcelColumn column = i.next();
+			if (column.getName().equals(name))
+				i.remove();
+		}
 	}
 
 	public HSSFWorkbook buildWorkbook() {
