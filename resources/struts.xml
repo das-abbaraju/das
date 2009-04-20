@@ -273,7 +273,7 @@
 		<action name="ContractorListCSV"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<param name="download">true</param>
-			<result>struts/reports/contractors_list_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 		<action name="ContractorListAjax"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
@@ -343,7 +343,7 @@
 		<action name="ReportAuditListCSV"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<param name="download">true</param>
-			<result>struts/reports/audit_list_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 		<action name="ReportAuditListAjax"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
@@ -384,7 +384,7 @@
 		<action name="NewContractorSearchCSV"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<param name="download">true</param>
-			<result>struts/reports/newcontractor_operator_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 
 		<action name="AuditListAuditor"

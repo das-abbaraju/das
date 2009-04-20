@@ -121,23 +121,22 @@ public class ExcelSheet {
 				HSSFCell c = r.createCell(columnCount);
 				// TODO Look at data type here
 
-				if (row.get(column.getName()) == null)
-					c.setCellValue(new HSSFRichTextString(""));
-				else if (ExcelCellType.Date.equals(column.getCellType())) {
-					c.setCellValue((Date) row.get(column.getName()));
-				} else if (ExcelCellType.Integer.equals(column.getCellType())
-						|| ExcelCellType.Double.equals(column.getCellType())
-						|| ExcelCellType.Money.equals(column.getCellType()))
-					try {
+				try {
+					if (row.get(column.getName()) == null)
+						c.setCellValue(new HSSFRichTextString(""));
+					else if (ExcelCellType.Date.equals(column.getCellType())) {
+						c.setCellValue((Date) row.get(column.getName()));
+					} else if (ExcelCellType.Integer.equals(column.getCellType())
+							|| ExcelCellType.Double.equals(column.getCellType())
+							|| ExcelCellType.Money.equals(column.getCellType()))
 						c.setCellValue(Double.parseDouble(row.get(column.getName()).toString()));
-					} catch (Exception e) {
+					else if (ExcelCellType.Enum.equals(column.getCellType()))
+						c.setCellValue(new HSSFRichTextString(LowMedHigh.getName((Integer) row.get(column.getName()))));
+					else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
-					}
-				else if (ExcelCellType.Enum.equals(column.getCellType()))
-					c.setCellValue(new HSSFRichTextString(LowMedHigh.getName((Integer) row.get(column.getName()))));
-				else
+				} catch (Exception e) {
 					c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
-
+				}
 				columnCount++;
 			}
 		}
