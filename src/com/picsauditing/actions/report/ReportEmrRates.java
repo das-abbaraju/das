@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
@@ -34,7 +35,7 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-		excelSheet.addColumn(new ExcelColumn("auditFor", "Year"), 30);
-		excelSheet.addColumn(new ExcelColumn("answer", "Rate"), 40);
+		excelSheet.addColumn(new ExcelColumn("auditFor", "Year", ExcelCellType.Integer), 30);
+		excelSheet.addColumn(new ExcelColumn("answer", "Rate", ExcelCellType.Double));
 	}
 }
