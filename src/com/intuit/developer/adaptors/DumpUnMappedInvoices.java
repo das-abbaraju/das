@@ -65,9 +65,11 @@ public class DumpUnMappedInvoices extends InvoiceAdaptor {
 		FileWriter fw2 = null;
 		
 		try {
-		
-			File outputFile = new File("invoices.out"); 
-			File outputFile2 = new File("paid_in_pics_but_not_qb.out"); 
+			File fileBase = new File(System.getProperty("pics.ftpDir"));
+			
+			
+			File outputFile = new File(fileBase, "invoices.out"); 
+			File outputFile2 = new File(fileBase, "paid_in_pics_but_not_qb.out"); 
 			
 			if( outputFile.isFile() ) {
 				outputFile.delete();
