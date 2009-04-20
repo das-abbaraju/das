@@ -16,6 +16,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.picsauditing.jpa.entities.LowMedHigh;
+
 public class ExcelSheet {
 	private String name = "Report";
 	private Map<Integer, ExcelColumn> columns = new TreeMap<Integer, ExcelColumn>();
@@ -119,6 +121,8 @@ public class ExcelSheet {
 						|| ExcelCellType.Double.equals(column.getCellType())
 						|| ExcelCellType.Money.equals(column.getCellType()))
 					c.setCellValue(Double.parseDouble(row.get(column.getName()).toString()));
+				else if (ExcelCellType.Enum.equals(column.getCellType()))
+					c.setCellValue(new HSSFRichTextString(LowMedHigh.getName((Integer) row.get(column.getName()))));
 				else
 					c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 
@@ -128,7 +132,7 @@ public class ExcelSheet {
 
 		int c = 0;
 		for (ExcelColumn column : columns.values()) {
-			sheet.autoSizeColumn((short)c);
+			sheet.autoSizeColumn((short) c);
 			sheet.setColumnHidden(c, column.isHidden());
 			c++;
 		}

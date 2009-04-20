@@ -94,7 +94,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			}
 		}
 		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 500);
-		excelSheet.addColumn(new ExcelColumn("riskLevel", "Risk Level"));
+		excelSheet.addColumn(new ExcelColumn("riskLevel", "Risk Level", ExcelCellType.Enum));
 		if (isShowContact()) {
 			excelSheet.addColumn(new ExcelColumn("contact", "Primary Contact"));
 			excelSheet.addColumn(new ExcelColumn("email", "Email"));

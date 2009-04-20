@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAccountAudits extends ReportAccount {
@@ -31,5 +32,13 @@ public class ReportAccountAudits extends ReportAccount {
 	
 	public boolean isPqfVisible() {
 		return permissions.canSeeAudit(AuditType.PQF);
+	}
+	
+	public void addExcelColumns() {
+		super.addExcelColumns();
+		
+		if (permissions.isOperator()) {
+			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On"), 405);
+		}
 	}
 }
