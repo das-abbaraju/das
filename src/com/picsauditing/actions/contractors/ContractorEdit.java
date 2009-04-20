@@ -2,11 +2,11 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
-
-import org.jboss.util.Strings;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
@@ -49,7 +50,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected String password1 = null;
 	protected String password2 = null;
 	protected int[] operatorIds = new int[300];
-	
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
@@ -178,48 +178,47 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
 			} else if (button.equals("Cancel")) {
 				contractor.setRenew(false);
-				
+
 				String expiresMessage = "";
 				if (contractor.getPaymentExpires().after(new Date()))
-					expiresMessage = " This account will no longer be visible to operators after " + contractor.getPaymentExpires();
+					expiresMessage = " This account will no longer be visible to operators after "
+							+ contractor.getPaymentExpires();
 				else {
 					expiresMessage = " This account is no longer visible to operators.";
 					contractor.setActive('N');
 				}
 				accountDao.save(contractor);
-				
+
 				this.addNote(contractor, "Closed contractor account." + expiresMessage);
 				this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
 			} else if (button.equals("SendDeactivationEmail")) {
 				permissions.tryPermission(OpPerms.EmailOperators);
+				Set<String> emailAddresses = new HashSet<String>();
 				if (operatorIds != null) {
-					String emailAddresses = "";
 					for (int operatorID : operatorIds) {
 						OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
-						if(!Strings.isEmpty(operatorAccount.getActivationEmails())) {
-							emailAddresses += operatorAccount.getActivationEmails();
-							emailAddresses += ",";
-						}
+						emailAddresses.addAll(Strings.findUniqueEmailAddresses(operatorAccount.getActivationEmails()));
 					}
-					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(51); // Deactivation Email for operators
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setContractor(contractor);
-					emailBuilder.setBccAddresses(emailAddresses);
-					emailBuilder.setCcAddresses("");
-					emailBuilder.setToAddresses("aharker@picsauditing.com");
-					EmailQueue email = emailBuilder.build();
-					email.setPriority(50);
-					emailQueueDAO.save(email);
-					addNote(contractor, "Deactivation Email Sent to "+ emailAddresses, NoteCategory.General, LowMedHigh.Med, false, Account.PicsID);
-					this.addActionMessage("Successfully sent the email to operators");
 				}
-			} else {
-				// Because there are anomalies between browsers and how they pass
-				// in the button values, this is a catch all so we can get notified
-				// when the button name isn't set correctly
-				throw new Exception("no button action found called " + button);
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(51); // Deactivation Email for operators
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(contractor);
+				emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
+				emailBuilder.setCcAddresses("");
+				emailBuilder.setToAddresses("aharker@picsauditing.com");
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(50);
+				emailQueueDAO.save(email);
+				addNote(contractor, "Deactivation Email Sent to " + emailAddresses, NoteCategory.General,
+						LowMedHigh.Med, false, Account.PicsID);
+				this.addActionMessage("Successfully sent the email to operators");
 			}
+		} else {
+			// Because there are anomalies between browsers and how they pass
+			// in the button values, this is a catch all so we can get notified
+			// when the button name isn't set correctly
+			throw new Exception("no button action found called " + button);
 		}
 
 		this.subHeading = "Contractor Edit";

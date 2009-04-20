@@ -3,6 +3,7 @@ package com.picsauditing.util;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,7 +110,7 @@ public class Strings {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String hash(String seed) {
 		MessageDigest digest = null;
 		try {
@@ -233,11 +234,10 @@ public class Strings {
 			System.out.println(matcher.group());
 			buf.append(matcher.group());
 		}
-		
+
 		return buf.toString();
 	}
-	
-	
+
 	public static String htmlStrip(String input) {
 		if (Strings.isEmpty(input))
 			return null;
@@ -245,4 +245,16 @@ public class Strings {
 		return input.replaceAll("<", "").replaceAll(">", "");
 	}
 
+	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
+		Set<String> validEmail = new HashSet<String>();
+
+		if (!Strings.isEmpty(emailAddresses)) {
+			String[] list1 = emailAddresses.split(",");
+			for (String email : list1) {
+				if (Utilities.isValidEmail(email))
+					validEmail.add(email);
+			}
+		}
+		return validEmail;
+	}
 }
