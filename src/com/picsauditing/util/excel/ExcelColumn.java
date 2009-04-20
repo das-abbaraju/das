@@ -3,7 +3,7 @@ package com.picsauditing.util.excel;
 public class ExcelColumn {
 	private String name;
 	private String columnHeader;
-	private boolean hidden = true;
+	private boolean hidden = false;
 	private ExcelCellType cellType = ExcelCellType.String;
 
 	public ExcelColumn(String name) {
