@@ -319,11 +319,6 @@
 			<param name="filter.destinationAction">UserList</param>
 			<result>struts/reports/report_users.jsp</result>
 		</action>
-		<action name="UserListCSV"
-			class="com.picsauditing.actions.report.ReportUser">
-			<param name="download">true</param>
-			<result>struts/reports/report_users_csv.jsp</result>
-		</action>
 		<action name="UserListAjax"
 			class="com.picsauditing.actions.report.ReportUser">
 			<result>struts/reports/report_users_data.jsp</result>
@@ -985,7 +980,7 @@
 		<action name="ReportPolicyListCSV"
 			class="com.picsauditing.actions.report.ReportPolicyList">
 			<param name="download">true</param>
-			<result>struts/reports/audit_list_csv.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 		<action name="ReportPolicyListAjax"
 			class="com.picsauditing.actions.report.ReportPolicyList">
