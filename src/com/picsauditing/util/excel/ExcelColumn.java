@@ -3,7 +3,7 @@ package com.picsauditing.util.excel;
 public class ExcelColumn {
 	private String name;
 	private String columnHeader;
-	private boolean visible = true;
+	private boolean hidden = true;
 	private ExcelCellType cellType = ExcelCellType.String;
 
 	public ExcelColumn(String name) {
@@ -51,12 +51,12 @@ public class ExcelColumn {
 		this.columnHeader = columnHeader;
 	}
 
-	public boolean isVisible() {
-		return visible;
+	public boolean isHidden() {
+		return hidden;
 	}
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	public ExcelCellType getCellType() {
