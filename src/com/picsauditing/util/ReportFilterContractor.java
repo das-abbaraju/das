@@ -39,7 +39,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showTaxID = true;
 	protected boolean showFlagStatus = false;
 	protected boolean showConAuditor = false;
-	protected boolean showRiskLevel = false;
+	protected boolean showRiskLevel = true;
 	protected boolean showAssignedCon = false;
 	protected boolean showInParentCorporation = false;
 	protected boolean showWaitingOn = false;
@@ -328,14 +328,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowOperator(false);
 			setShowFlagStatus(true);
 			setShowWaitingOn(true);
-			setShowRiskLevel(true);
 			setShowOpertorTagName(true);
 		}
 		if (permissions.isCorporate()) {
 		}
 		if (permissions.isPicsEmployee()) {
 			setShowConAuditor(true);
-			setShowRiskLevel(true);
 			setShowConWithPendingAudits(true);
 		}
 		if(permissions.hasPermission(OpPerms.Billing))
