@@ -37,6 +37,12 @@
 <s:include value="filters.jsp" />
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
+
+<div class="buttons">
+	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Approved">Show PICS Approved Policies</a>
+	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Rejected">Show PICS Rejected Policies</a>
+</div>
+
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
 <br/><br/>
 		<table class="report">

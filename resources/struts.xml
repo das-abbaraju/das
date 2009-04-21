@@ -996,12 +996,6 @@
 			class="com.picsauditing.actions.report.ReportInsuranceApprovalSave">
 			<result>struts/blank.jsp</result>
 		</action>
-		<action name="ReportUpdatedPolicies"
-			class="com.picsauditing.actions.report.ReportInsuranceApproval">
-			<param name="reportName">Recently Updated Policies</param>
-			<result>struts/reports/opinsurance_approval.jsp</result>
-		</action>
-		
 		<action name="PolicyVerification"
 			class="com.picsauditing.actions.report.ReportPolicyVerification">
 			<result>struts/reports/policy_verification.jsp</result>
