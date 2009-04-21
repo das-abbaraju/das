@@ -148,6 +148,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						invoiceItemDAO.remove(invoiceItem);
 					}
 
+					String noteText = "Cancelled Invoice " + invoice.getId() + " for $" + invoice.getTotalAmount().toString();
 					invoice.setTotalAmount(BigDecimal.ZERO);
 					invoice.setPaid(true);
 					invoice.setPaidDate(new Date());
@@ -157,7 +158,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 					invoiceDAO.save(invoice);
 
-					addNote("Cancelled Invoice " + invoice.getId());
+					addNote(noteText);
 				}
 				
 				if (button.startsWith("Refund")) {
