@@ -18,6 +18,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -27,7 +28,9 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
@@ -47,13 +50,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected UserDAO userDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected EmailQueueDAO emailQueueDAO;
+	protected NoteDAO noteDAO;
 	protected String password1 = null;
 	protected String password2 = null;
 	protected int[] operatorIds = new int[300];
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
-			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO) {
+			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO, NoteDAO noteDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -61,6 +65,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.userDAO = userDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.emailQueueDAO = emailQueueDAO;
+		this.noteDAO = noteDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -199,28 +204,40 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
 						emailAddresses.addAll(Strings.findUniqueEmailAddresses(operatorAccount.getActivationEmails()));
 					}
-				}
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(51); // Deactivation Email for operators
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setContractor(contractor);
-				emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
-				emailBuilder.setCcAddresses("");
-				emailBuilder.setToAddresses("aharker@picsauditing.com");
-				EmailQueue email = emailBuilder.build();
-				email.setPriority(50);
-				emailQueueDAO.save(email);
-				addNote(contractor, "Deactivation Email Sent to " + emailAddresses, NoteCategory.General,
-						LowMedHigh.Med, false, Account.PicsID);
-				this.addActionMessage("Successfully sent the email to operators");
-			}
-		} else {
-			// Because there are anomalies between browsers and how they pass
-			// in the button values, this is a catch all so we can get notified
-			// when the button name isn't set correctly
-			throw new Exception("no button action found called " + button);
-		}
 
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(51); // Deactivation Email for operators
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setContractor(contractor);
+					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
+					emailBuilder.setCcAddresses("");
+					emailBuilder.setToAddresses("aharker@picsauditing.com");
+					EmailQueue email = emailBuilder.build();
+					email.setPriority(50);
+					emailQueueDAO.save(email);
+					
+					Note note = new Note();
+					note.setAccount(contractor);
+					note.setAuditColumns(new User(permissions.getUserId()));
+					note.setSummary("Deactivation Email Sent to " + emailAddresses);
+					note.setPriority(LowMedHigh.Med);
+					note.setNoteCategory(NoteCategory.General);
+					note.setViewableById(Account.PicsID);
+					note.setCanContractorView(false);
+					note.setStatus(NoteStatus.Closed);
+					noteDAO.save(note);
+
+					this.addActionMessage("Successfully sent the email to operators");
+				}
+			} else {
+				// Because there are anomalies between browsers and how they
+				// pass
+				// in the button values, this is a catch all so we can get
+				// notified
+				// when the button name isn't set correctly
+				throw new Exception("no button action found called " + button);
+			}
+		}
 		this.subHeading = "Contractor Edit";
 
 		return SUCCESS;
