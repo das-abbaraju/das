@@ -2,7 +2,7 @@
 
 <s:include value="../actionMessages.jsp"/>
 
-<s:iterator value="conAudit.operators">	
+<s:iterator value="conAudit.currentOperators">	
 	<s:if test="status.submitted">
 		<div id="cao_<s:property value="operator.id"/>" style="padding:0px">
 			<div id="alert">

@@ -2,7 +2,7 @@
 
 <s:include value="../actionMessages.jsp"/>
 
-<s:iterator value="conAudit.operators">
+<s:iterator value="conAudit.currentOperators">
 	<s:if test="status.pending">
 		<div id="submit_<s:property value="operator.id"/>" style="padding:0px">
 			<div id="alert">
@@ -14,7 +14,7 @@
 	</s:if>
 </s:iterator>
 
-<s:iterator value="conAudit.operators">
+<s:iterator value="conAudit.currentOperators">
 	<s:if test="status.rejected">
 		<div id="submit_<s:property value="operator.id"/>" style="padding:0px">
 			<div id="alert">

@@ -116,7 +116,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				closedDate = null;
 			if (completedDate != null)
 				completedDate = null;
-			if(!getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if (!getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 				if (expiresDate != null)
 					expiresDate = null;
 			}
@@ -345,6 +345,23 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		if (expiresDate.after(cal1.getTime()) && expiresDate.before(cal2.getTime()))
 			return true;
 		return false;
+	}
+
+	@Transient
+	public List<ContractorAuditOperator> getCurrentOperators() {
+		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
+
+		for (ContractorAuditOperator cao : getOperators()) {
+			for (ContractorOperator co : getContractorAccount().getOperators()) {
+				if (co.getOperatorAccount().getId() == cao.getOperator().getId()) {
+					currentCaos.add(cao);
+					break;
+				}
+			}
+
+		}
+
+		return currentCaos;
 	}
 
 	@Override

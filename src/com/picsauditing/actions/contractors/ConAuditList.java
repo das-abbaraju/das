@@ -65,7 +65,7 @@ public class ConAuditList extends ContractorActionSupport {
 					if (contractorAudit.getAuditStatus().isExpired()) {
 						expiredAudits.add(contractorAudit);
 					} else {
-						for (ContractorAuditOperator conAuditOp : contractorAudit.getOperators()) {
+						for (ContractorAuditOperator conAuditOp : contractorAudit.getCurrentOperators()) {
 							if (conAuditOp.getStatus().isPending() || conAuditOp.getStatus().isSubmitted()
 									|| conAuditOp.getStatus().isVerified()) {
 								if (!upComingAudits.contains(contractorAudit))

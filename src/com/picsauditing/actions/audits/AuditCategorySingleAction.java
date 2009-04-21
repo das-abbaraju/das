@@ -236,7 +236,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 	
 	public boolean isHasPendingCaos() {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
 			if (cao.getStatus().isPending())
 				return true;
 		}
@@ -244,7 +244,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 	
 	public boolean isHasSubmittedCaos() {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
 			if (cao.getStatus() == CaoStatus.Submitted)
 				return true;
 		}
@@ -252,7 +252,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 	
 	public boolean isHasRejectedCaos() {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
 			if (cao.getStatus().isRejected()) 
 				return true;
 		}

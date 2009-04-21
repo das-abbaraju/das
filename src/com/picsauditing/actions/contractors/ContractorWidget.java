@@ -89,7 +89,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 				if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
 					Set<String> pendingOperators = new TreeSet<String>();
-					for (ContractorAuditOperator cAuditOperator : conAudit.getOperators()) {
+					for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
 						if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
 							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
 									cAuditOperator.getAudit().getAuditType().getId());
@@ -105,7 +105,7 @@ public class ContractorWidget extends ContractorActionSupport {
 								+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
 					}
 
-					for (ContractorAuditOperator cAuditOperator : conAudit.getOperators()) {
+					for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
 						if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
 							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
 									cAuditOperator.getAudit().getAuditType().getId());
