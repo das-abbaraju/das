@@ -39,8 +39,8 @@
 	escape="false" /></div>
 
 <div class="buttons">
-	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Approved">Show PICS Approved Policies</a>
-	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Rejected">Show PICS Rejected Policies</a>
+	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Approved"><s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon('Approved')" escape="false"/>Show Policies to Approve</a>
+	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Rejected"><s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon('Rejected')" escape="false"/>Show Policies to Reject</a>
 </div>
 
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">

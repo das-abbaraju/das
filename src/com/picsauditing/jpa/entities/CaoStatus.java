@@ -14,7 +14,7 @@ public enum CaoStatus {
 			return true;
 		return false;
 	}
-	
+
 	public boolean isNotApplicable() {
 		return this.equals(CaoStatus.NotApplicable);
 	}
@@ -22,7 +22,7 @@ public enum CaoStatus {
 	public boolean isPending() {
 		return this.equals(CaoStatus.Pending);
 	}
-	
+
 	public boolean isSubmitted() {
 		return this.equals(CaoStatus.Submitted);
 	}
@@ -40,40 +40,31 @@ public enum CaoStatus {
 	}
 
 	public String getIcon() {
+		String title;
 		if (this.equals(NotApplicable)) {
 			return "";
-		}		
+		}
 
 		StringBuilder icon = new StringBuilder("<img src=\"images/");
-		
-		if (this.isApproved())
+
+		if (this.isApproved()) {
 			icon.append("okCheck");
-		else if (this.isRejected())
+			title = this.toString();
+		} else if (this.isRejected()) {
 			icon.append("notOkCheck");
-		else
+			title = this.toString();
+		} else {
 			icon.append("help");
-		
-		icon.append(".gif\" width=\"18\" height=\"15\" border=\"0\" title=\"").append(this.toString()).append("\" />");
+			title = "No Recommendation";
+		}
+
+		icon.append(".gif\" title=\"").append(title).append("\" />");
 
 		return icon.toString();
 	}
 
 	static public String getIcon(String status) {
-		if ("NotApplicable".equals(status))
-			return "";
-		
-		StringBuilder icon = new StringBuilder("<img src=\"images/");
-		
-		if ("Approved".equals(status)) 
-			icon.append("okCheck");
-		else if ("Rejected".equals(status)) 
-			icon.append("notOkCheck");
-		else
-			icon.append("help");
-		
-		icon.append(".gif\" width=\"18\" height=\"15\" border=\"0\" title=\"").append(status).append("\" />");
-
-		return icon.toString();
+		return valueOf(status).getIcon();
 	}
 
 }
