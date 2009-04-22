@@ -53,7 +53,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<Facility> corporateFacilities = new ArrayList<Facility>();
 	protected List<Facility> operatorFacilities = new ArrayList<Facility>();
 	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
-	protected List<OperatorAccount> operatorAccounts = new ArrayList<OperatorAccount>();
+	protected List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
 	protected List<OperatorTag> tags = new ArrayList<OperatorTag>();
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	protected Map<Integer, AuditOperator> auditMap = null;
@@ -258,11 +258,11 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	 */
 	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorChildren() {
-		return operatorAccounts;
+		return operatorChildren;
 	}
 
-	public void setOperatorAccounts(List<OperatorAccount> operatorAccounts) {
-		this.operatorAccounts = operatorAccounts;
+	public void setOperatorChildren(List<OperatorAccount> operatorChildren) {
+		this.operatorChildren = operatorChildren;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
