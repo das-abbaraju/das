@@ -352,10 +352,12 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
 
 		for (ContractorAuditOperator cao : getOperators()) {
-			for (ContractorOperator co : getContractorAccount().getOperators()) {
-				if (co.getOperatorAccount().getId() == cao.getOperator().getId()) {
-					currentCaos.add(cao);
-					break;
+			if (YesNo.Yes.equals(cao.getOperator().getCanSeeInsurance())) {
+				for (ContractorOperator co : getContractorAccount().getOperators()) {
+					if (co.getOperatorAccount().getId() == cao.getOperator().getId()) {
+						currentCaos.add(cao);
+						break;
+					}
 				}
 			}
 
