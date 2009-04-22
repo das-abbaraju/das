@@ -257,7 +257,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	 * for example, BASF would contain BASF Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
-	public List<OperatorAccount> getOperatorAccounts() {
+	public List<OperatorAccount> getOperatorChildren() {
 		return operatorAccounts;
 	}
 
