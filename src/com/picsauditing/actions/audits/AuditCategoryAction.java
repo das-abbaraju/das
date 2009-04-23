@@ -1,11 +1,19 @@
 package com.picsauditing.actions.audits;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.struts2.ServletActionContext;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.actions.converters.OshaTypeConverter;
@@ -24,7 +32,6 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -103,6 +110,33 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		}
 
 		this.findConAudit();
+		
+		if("PrintPDF".equals(button)) {
+			String filename = conAudit.getContractorAccount().getName();
+			filename += ".pdf";
+			ServletActionContext.getResponse().setContentType("application/pdf");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = "+ filename);
+			Document document = new Document();
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			PdfWriter.getInstance(document, outstream);
+			document.open();
+			document.add(new Paragraph("Audit For "+ conAudit.getContractorAccount().getName()));
+			for(AuditCatData auditCatData : getCategories()) {
+				document.add(new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory()));
+				for(AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
+					document.add(new Paragraph("Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory()));
+					for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+						String text = auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() +" "+ auditQuestion.getQuestion();
+						document.add(new Paragraph(text));
+					}
+				}
+			}
+			document.close();
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
+		}
+		
 		super.execute();
 
 		if (isSingleCat()) {
@@ -407,5 +441,22 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		}
 
 		return sortedList;
+	}
+	
+	public void createDocument(Document document) {
+		try {
+			for(AuditCatData auditCatData : getCategories()) {
+				document.add(new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory()));
+				for(AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
+					document.add(new Paragraph("Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory()));
+					for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+						String text = auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() +" "+ auditQuestion.getQuestion() + "  "+ answerMap.get(auditQuestion.getId()).getAnswer();
+						document.add(new Paragraph(text));
+					}
+				}
+			}
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
 	}
 }

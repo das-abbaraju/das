@@ -6,7 +6,9 @@
 			href="Audit.action?auditID=<s:property value="auditID"/>">Up to
 		Category List</a> / <a
 			href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=View">View
-		All</a></td>
+		All</a> /
+		<a href="AuditCat.action?auditID=<s:property value="auditID"/>&button=PrintPDF">View PDF</a>
+		</td>
 		<td colspan="3"></td>
 	</tr>
 	<s:if test="catDataID > 0">
