@@ -121,35 +121,10 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			filename += ".pdf";
 			ServletActionContext.getResponse().setContentType("application/pdf");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = "+ filename);
-			Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
-			Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
-			Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
-			Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLACK);
-			Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLUE);			
 			Document document = new Document();
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 			PdfWriter.getInstance(document, outstream);
-			document.open();
-			document.add(new Paragraph("Audit For "+ conAudit.getContractorAccount().getName(), headerFont));
-			for(AuditCatData auditCatData : getCategories()) {
-				Paragraph categoryParagraph = new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory(), categoryFont);
-				categoryParagraph.setIndentationLeft(10);
-				document.add(categoryParagraph);
-				for(AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
-					Paragraph subCategoryParagraph = new Paragraph(20,"Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory(), subCategoryFont);
-					subCategoryParagraph.setIndentationLeft(20);
-					document.add(subCategoryParagraph);
-					for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-						Paragraph questionAnswer = new Paragraph();	
-						questionAnswer.setIndentationLeft(30);
-						Chunk question = new Chunk(auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() + " " + auditQuestion.getQuestion(),questionFont);
-						questionAnswer.add(question);
-						// add answer with answerFont
-						document.add(questionAnswer);
-					}
-				}
-			}
-			document.close();
+			createDocument(document);
 			outstream.flush();
 			ServletActionContext.getResponse().flushBuffer();
 			return null;
@@ -462,19 +437,35 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	}
 	
 	public void createDocument(Document document) {
+		Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
+		Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
+		Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
+		Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLACK);
+		Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLUE);			
+		document.open();
 		try {
+			document.add(new Paragraph("Audit For "+ conAudit.getContractorAccount().getName(), headerFont));
 			for(AuditCatData auditCatData : getCategories()) {
-				document.add(new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory()));
+				Paragraph categoryParagraph = new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory(), categoryFont);
+				categoryParagraph.setIndentationLeft(10);
+				document.add(categoryParagraph);
 				for(AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
-					document.add(new Paragraph("Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory()));
+					Paragraph subCategoryParagraph = new Paragraph(20,"Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory(), subCategoryFont);
+					subCategoryParagraph.setIndentationLeft(20);
+					document.add(subCategoryParagraph);
 					for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-						String text = auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() +" "+ auditQuestion.getQuestion() + "  "+ answerMap.get(auditQuestion.getId()).getAnswer();
-						document.add(new Paragraph(text));
+						Paragraph questionAnswer = new Paragraph();	
+						questionAnswer.setIndentationLeft(30);
+						Chunk question = new Chunk(auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() + " " + auditQuestion.getQuestion(),questionFont);
+						questionAnswer.add(question);
+						// add answer with answerFont
+						document.add(questionAnswer);
 					}
 				}
 			}
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
+		document.close();
 	}
 }
