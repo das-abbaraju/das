@@ -98,6 +98,8 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.setBillAddress(factory.createBillAddress());
 				
 				invoice.getBillAddress().setAddr1(invoiceJPA.getAccount().getName());
+				invoice.getBillAddress().setAddr2(((ContractorAccount) invoiceJPA.getAccount()).getBillingContact());
+				invoice.getBillAddress().setAddr3(invoiceJPA.getAccount().getAddress());
 				invoice.getBillAddress().setCity(invoiceJPA.getAccount().getCity());
 				invoice.getBillAddress().setState(invoiceJPA.getAccount().getState());
 				invoice.getBillAddress().setPostalCode(invoiceJPA.getAccount().getZip());
