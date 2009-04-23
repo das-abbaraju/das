@@ -147,6 +147,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.verifiedByPics = verifiedByPics;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="inheritFlagCriteria")
 	public OperatorAccount getInheritFlagCriteria() {
 		return inheritFlagCriteria;
 	}
@@ -155,14 +157,20 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.inheritFlagCriteria = inheritFlagCriteria;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="inheritInsuranceCriteria")
 	public OperatorAccount getInheritInsuranceCriteria() {
 		return inheritInsuranceCriteria;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="inheritInsuranceCriteria")
 	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="inheritAudits")
 	public OperatorAccount getInheritAudits() {
 		return inheritAudits;
 	}
@@ -171,6 +179,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.inheritAudits = inheritAudits;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="inheritAuditCategories")
 	public OperatorAccount getInheritAuditCategories() {
 		return inheritAuditCategories;
 	}

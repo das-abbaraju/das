@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +27,6 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.SpringUtils;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -38,6 +40,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	protected FacilitiesDAO facilitiesDAO;
 	protected AccountNameDAO accountNameDAO;
 	protected int[] facilities = new int[300];
+	protected Set<OperatorAccount> relatedFacilities = null;
 	protected int auditorid;
 	protected int nameId;
 	protected int parentid;
@@ -92,7 +95,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			if (button.equalsIgnoreCase("AddName")) {
 				boolean skip = false;
 				name = name.trim();
-				
+
 				for (AccountName an : operatorAccount.getNames()) {
 					if (an.getName().equalsIgnoreCase(name)) {
 						skip = true;
@@ -114,7 +117,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 						}
 					});
 					account = accountNameDAO.save(account);
-					//operatorAccount.getNames().add(account);
+					// operatorAccount.getNames().add(account);
 				}
 				return SUCCESS;
 			}
@@ -126,7 +129,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 						addActionError(error);
 					return SUCCESS;
 				}
-				
 
 				if (parentid > 0) {
 					operatorAccount.setParent(operatorAccountDAO.find(parentid));
@@ -278,6 +280,20 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Set<OperatorAccount> getRelatedFacilities() {
+		if (relatedFacilities == null) {
+			relatedFacilities = new TreeSet<OperatorAccount>();
+			// Add myself
+			relatedFacilities.add(operatorAccount);
+			// Add all my parents
+			for(Facility parent : operatorAccount.getCorporateFacilities())
+				relatedFacilities.add(parent.getCorporate());
+			// Add PICS
+			relatedFacilities.add(operatorAccountDAO.find(Account.PicsID));
+		}
+		return relatedFacilities;
 	}
 
 	@Override
