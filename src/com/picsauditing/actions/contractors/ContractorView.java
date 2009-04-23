@@ -1,14 +1,30 @@
 package com.picsauditing.actions.contractors;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Images;
@@ -49,6 +65,20 @@ public class ContractorView extends ContractorActionSupport {
 			contractorTagDAO.remove(tagId);
 		}
 
+		if ("PrintPDF".equals(button)) {
+			String filename = contractor.getName();
+			filename += ".pdf";
+			ServletActionContext.getResponse().setContentType("application/pdf");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + filename);
+			Document document = new Document();
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			PdfWriter.getInstance(document, outstream);
+			createDocument(document);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
+		}
+
 		if (permissions.isOperator()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -87,9 +117,9 @@ public class ContractorView extends ContractorActionSupport {
 	}
 
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
-		if(operatorTags != null && operatorTags.size() > 0)
+		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;
-		
+
 		return operatorTagDAO.findByOperator(permissions.getAccountId());
 	}
 
@@ -107,5 +137,49 @@ public class ContractorView extends ContractorActionSupport {
 
 	public void setOperatorTags(List<OperatorTag> operatorTags) {
 		this.operatorTags = operatorTags;
+	}
+
+	public void createDocument(Document document) {
+		Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
+		Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
+		Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
+		Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLACK);
+		Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLUE);
+		document.open();
+		try {
+			document.add(new Paragraph(contractor.getName(), headerFont));
+			for (ContractorAudit conAudit : contractor.getAudits()) {
+				if (conAudit.getAuditType().isPqf()) {
+					document.add(new Paragraph(conAudit.getAuditType().getAuditName(), answerFont));
+					for (AuditCatData auditCatData : conAudit.getCategories()) {
+						Paragraph categoryParagraph = new Paragraph("Category "
+								+ auditCatData.getCategory().getNumber() + " - "
+								+ auditCatData.getCategory().getCategory(), categoryFont);
+						categoryParagraph.setIndentationLeft(10);
+						document.add(categoryParagraph);
+						for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
+							Paragraph subCategoryParagraph = new Paragraph(20, "Sub Category "
+									+ auditSubCategory.getCategory().getNumber() + " - "
+									+ auditSubCategory.getSubCategory(), subCategoryFont);
+							subCategoryParagraph.setIndentationLeft(20);
+							document.add(subCategoryParagraph);
+							for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+								Paragraph questionAnswer = new Paragraph();
+								questionAnswer.setIndentationLeft(30);
+								Chunk question = new Chunk(auditCatData.getCategory().getNumber() + "."
+										+ auditQuestion.getSubCategory().getNumber() + "." + auditQuestion.getNumber()
+										+ " " + auditQuestion.getQuestion(), questionFont);
+								questionAnswer.add(question);
+								// add answer with answerFont
+								document.add(questionAnswer);
+							}
+						}
+					}
+				}
+			}
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		document.close();
 	}
 }

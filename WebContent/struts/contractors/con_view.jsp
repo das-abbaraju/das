@@ -95,6 +95,12 @@
 		Member Since: <strong><s:date name="contractor.membershipDate" format="MMM yyyy" /></strong><br />
 		PICS CSR: <strong><s:property value="contractor.auditor.name" /></strong><br />
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
+		
+		<pics:permission perm="ContractorDetails">
+			<strong><a class="pdf" href="ContractorView.action?id=<s:property value="id"/>&button=PrintPDF">View PQF & Annual Update</a>
+			</strong><br/>
+		</pics:permission>
+		
 		Facilities:
 		<ul style="list-style-type: none;">
 			<s:iterator value="activeOperators">
