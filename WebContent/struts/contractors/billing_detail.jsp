@@ -75,23 +75,29 @@
 		</fieldset>
 
 		<s:if test="permissions.admin">
-			<s:form id="save" method="POST" enctype="multipart/form-data">
-				<s:hidden name="id" />
-				<fieldset class="form"><legend><span>Create Invoice</span></legend>
-				<ol>
-					<s:iterator value="invoiceItems">
-						<s:if test="invoiceFee != null">
-							<li><label><s:property value="invoiceFee.fee" />:</label> $<s:property value="amount" /> USD</li>
-						</s:if>
-						<s:else>
-							<li><label><s:property value="description" />:</label> $<s:property value="amount" /> USD</li>
-						</s:else>
-					</s:iterator>
-					<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
-				</ol>
-				<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
-				</fieldset>
-			</s:form>
+			<fieldset class="form"><legend><span>Create Invoice</span></legend>
+				<s:form id="save" method="POST" enctype="multipart/form-data">
+					<s:hidden name="id" />
+					<ol>
+						<s:iterator value="invoiceItems">
+							<s:if test="invoiceFee != null">
+								<li><label><s:property value="invoiceFee.fee" />:</label> $<s:property value="amount" /> USD</li>
+							</s:if>
+							<s:else>
+								<li><label><s:property value="description" />:</label> $<s:property value="amount" /> USD</li>
+							</s:else>
+						</s:iterator>
+						<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
+					</ol>
+					<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
+				</s:form>
+				<s:if test="contractor.billingStatus == 'Current' && !contractor.activeB">
+					<s:form>
+						<s:hidden name="id" />
+						<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Activate" /></div>
+					</s:form>
+				</s:if>
+			</fieldset>
 		</s:if> <s:if test="permissions.admin">
 			<div class="clear"></div>
 			<h3 style="margin-top: 50px">Past Invoices</h3>

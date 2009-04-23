@@ -113,6 +113,11 @@ public class BillingDetail extends ContractorActionSupport {
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}
+		
+		if ("Activate".equals(button)) {
+			contractor.setActive('Y');
+			this.addNote(contractor, "Activated free account", NoteCategory.Billing, LowMedHigh.High, true, Account.PicsID);
+		}
 
 		contractor.syncBalance();
 

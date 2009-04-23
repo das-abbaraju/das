@@ -22,7 +22,6 @@ public class ReportBilling extends ReportAccount {
 		sql.addField("f2.fee");
 		sql.addField("ROUND(f1.defaultAmount) as oldAmount");
 		sql.addField("ROUND(f2.defaultAmount) as newAmount");
-		sql.addWhere("f2.defaultAmount > 0");
 		sql.addField("c.ccOnFile");
 		sql.addField("c.lastUpgradeDate");
 		
@@ -40,12 +39,13 @@ public class ReportBilling extends ReportAccount {
 		String where = "";
 		// Show activations and reactivations
 		if (billingState.equals("All") || billingState.equals("Activations")) {
-			where += "(a.active = 'N' AND c.renew = 1 AND (f1.id IS NULL OR f1.id = " + InvoiceFee.FREE + "))";
+			where += "(a.active = 'N' AND c.renew = 1 AND (c.membershipLevelID IS NULL OR c.membershipLevelID = " + InvoiceFee.FREE + "))";
 		}
 		// Show renewals
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
+			sql.addWhere("");
 			if (where.length() > 0) where += " OR ";
-			where += "(a.active = 'Y' AND c.renew = 1 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY))";
+			where += "(a.active = 'Y' AND c.renew = 1 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY))";
 		}
 		// Show upgrades
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {

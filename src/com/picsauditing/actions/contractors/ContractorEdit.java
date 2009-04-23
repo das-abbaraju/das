@@ -177,12 +177,17 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				return "ConList";
 			} else if (button.equals("Reactivate")) {
 				contractor.setRenew(true);
+				if (contractor.getNewMembershipLevel().isFree())
+					contractor.setActive('Y');
+				
 				accountDao.save(contractor);
 				this.addNote(contractor, "Reactivated account");
 				this.addActionMessage("Successfully reactivated this contractor account. "
 						+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
 			} else if (button.equals("Cancel")) {
 				contractor.setRenew(false);
+				if (contractor.getNewMembershipLevel().isFree())
+					contractor.setActive('N');
 
 				String expiresMessage = "";
 				if (contractor.getPaymentExpires().after(new Date()))
