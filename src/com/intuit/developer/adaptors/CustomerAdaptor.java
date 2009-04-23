@@ -183,7 +183,7 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 	}
 
 	
-	public String nullSafeSubString( String in, int start, int end ) {
+	static public String nullSafeSubString( String in, int start, int end ) {
 		if( in == null )
 			return "";
 		
@@ -194,18 +194,21 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 		return in.substring(start, end);
 	}
 
-	public String nullSafePhoneFormat( String in ) {
+	static public String nullSafePhoneFormat( String in ) {
 		if( in == null )
 			return "";
 		
+		in = in.trim();
 		in = in.replaceAll("  ", " " );
+		in = in.toUpperCase().replaceAll("Extension ", "x" );
+		in = in.toUpperCase().replaceAll("Extension", "x" );
 		in = in.toUpperCase().replaceAll("EXT. ", "x" );
 		in = in.toUpperCase().replaceAll("EXT.", "x" );
 		in = in.toUpperCase().replaceAll("EXT ", "x" );
 		in = in.toUpperCase().replaceAll("EXT", "x" );
+		in = in.toUpperCase().replaceAll("X ", "x" );
 		
-		return in.trim();
+		return nullSafeSubString(in, 0, 20);
 	}
 
-	
 }
