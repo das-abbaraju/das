@@ -1,6 +1,6 @@
 package com.picsauditing.actions.audits;
 
-import java.io.FileOutputStream;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +9,15 @@ import javax.servlet.ServletOutputStream;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.lowagie.text.Cell;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
@@ -116,18 +121,31 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			filename += ".pdf";
 			ServletActionContext.getResponse().setContentType("application/pdf");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = "+ filename);
+			Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
+			Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
+			Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
+			Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLACK);
+			Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLUE);			
 			Document document = new Document();
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 			PdfWriter.getInstance(document, outstream);
 			document.open();
-			document.add(new Paragraph("Audit For "+ conAudit.getContractorAccount().getName()));
+			document.add(new Paragraph("Audit For "+ conAudit.getContractorAccount().getName(), headerFont));
 			for(AuditCatData auditCatData : getCategories()) {
-				document.add(new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory()));
+				Paragraph categoryParagraph = new Paragraph("Category " + auditCatData.getCategory().getNumber() +" - " + auditCatData.getCategory().getCategory(), categoryFont);
+				categoryParagraph.setIndentationLeft(10);
+				document.add(categoryParagraph);
 				for(AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
-					document.add(new Paragraph("Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory()));
+					Paragraph subCategoryParagraph = new Paragraph(20,"Sub Category " + auditSubCategory.getCategory().getNumber() +" - " + auditSubCategory.getSubCategory(), subCategoryFont);
+					subCategoryParagraph.setIndentationLeft(20);
+					document.add(subCategoryParagraph);
 					for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-						String text = auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() +" "+ auditQuestion.getQuestion();
-						document.add(new Paragraph(text));
+						Paragraph questionAnswer = new Paragraph();	
+						questionAnswer.setIndentationLeft(30);
+						Chunk question = new Chunk(auditCatData.getCategory().getNumber() +"." + auditQuestion.getSubCategory().getNumber()+"." + auditQuestion.getNumber() + " " + auditQuestion.getQuestion(),questionFont);
+						questionAnswer.add(question);
+						// add answer with answerFont
+						document.add(questionAnswer);
 					}
 				}
 			}
