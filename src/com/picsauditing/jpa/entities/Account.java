@@ -26,7 +26,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Account extends BaseTable implements java.io.Serializable {
+public class Account extends BaseTable implements java.io.Serializable, Comparable<Account> {
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
@@ -209,9 +209,10 @@ public class Account extends BaseTable implements java.io.Serializable {
 	public void setActive(char active) {
 		this.active = active;
 	}
-	
+
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * 
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -224,6 +225,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
+	 * 
 	 * @return
 	 */
 	public String getQbListID() {
@@ -236,6 +238,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * Contractor, Operator, Admin, Corporate
+	 * 
 	 * @return
 	 */
 	public String getType() {
@@ -245,13 +248,13 @@ public class Account extends BaseTable implements java.io.Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	@OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+
+	@OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
 	@OrderBy("name")
 	public List<AccountName> getNames() {
 		return names;
 	}
-	
+
 	public void setNames(List<AccountName> names) {
 		this.names = names;
 	}
@@ -264,7 +267,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
-	
+
 	@Transient
 	public String getCountryCode() {
 		return "US";
@@ -274,23 +277,22 @@ public class Account extends BaseTable implements java.io.Serializable {
 	public boolean isContractor() {
 		return "Contractor".equals(type);
 	}
-	
+
 	@Transient
 	public boolean isOperator() {
 		return "Operator".equals(type);
 	}
-	
+
 	@Transient
 	public boolean isCorporate() {
 		return "Corporate".equals(type);
 	}
-	
+
 	@Transient
 	public boolean isActiveB() {
 		return active == 'Y';
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -305,7 +307,7 @@ public class Account extends BaseTable implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		
+
 		// We use to compare class names, but with Hibernate, the names get really weird
 		// Now we just ignore the names and just cast it to an Account object
 		// System.out.println("this.getClass() "+getClass().getName());
@@ -322,5 +324,12 @@ public class Account extends BaseTable implements java.io.Serializable {
 			return false;
 		}
 	}
-	
+
+	@Override
+	public int compareTo(Account o) {
+		if (o.getId() == id)
+			return 0;
+		return name.compareToIgnoreCase(o.getName());
+	}
+
 }

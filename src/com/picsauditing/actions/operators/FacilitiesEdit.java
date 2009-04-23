@@ -290,8 +290,11 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			// Add all my parents
 			for(Facility parent : operatorAccount.getCorporateFacilities())
 				relatedFacilities.add(parent.getCorporate());
-			// Add PICS
-			relatedFacilities.add(operatorAccountDAO.find(Account.PicsID));
+			relatedFacilities.add(operatorAccount.getInheritAuditCategories());
+			relatedFacilities.add(operatorAccount.getInheritAudits());
+			relatedFacilities.add(operatorAccount.getInheritFlagCriteria());
+			relatedFacilities.add(operatorAccount.getInheritInsuranceCriteria());
+			
 		}
 		return relatedFacilities;
 	}

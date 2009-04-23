@@ -27,7 +27,7 @@ import org.hibernate.annotations.Type;
 @Table(name = "operators")
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class OperatorAccount extends Account implements java.io.Serializable {
+public class OperatorAccount extends Account {
 	public static final String DEFAULT_NAME = "- Operator -";
 
 	private OperatorAccount parent;

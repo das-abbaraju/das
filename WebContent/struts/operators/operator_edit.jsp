@@ -92,8 +92,20 @@
 					listValue="name" listKey="id" name="auditorid" /></span></nobr></li>
 
 				<li><label>Verified By PICS:</label> <s:checkbox name="operatorAccount.verifiedByPics" /></li>
-				<s:if test="operatorAccount.corporateFacilities.size() != 0 || operatorAccount.parent != null">
+				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
+					name="operatorAccount.doContractorsPay" theme="pics" /></li>
+				<li><label>Send Emails to:</label> <s:textfield name="operatorAccount.activationEmails" /> <br />
+				* separate emails with commas ex: a@bb.com, c@dd.com</li>
 
+			</ol>
+			</fieldset>
+			<fieldset class="form"><legend><span>Linked Accounts</span></legend>
+			<ol>
+				<s:if test="operatorAccount.corporate">
+					<li><label>Facilities:</label> <s:select list="operatorList" listValue="name" listKey="id" name="facilities"
+						multiple="7" size="15" /></li>
+				</s:if>
+				<s:if test="operatorAccount.operator">
 					<li><label>Parent Corporation / Division / Hub:</label> <s:if
 						test="operatorAccount.corporateFacilities.size() != 0">
 						<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name"
@@ -102,25 +114,19 @@
 						<s:select list="#{operatorAccount.parent.id:operatorAccount.parent.name}" headerKey="0"
 							headerValue=" - Select a Parent Facility - " name="parentid" />
 					</s:else></li>
+					
+					<div style="font-weight: bold; margin-top: 50px; margin-bottom: 5px; text-align: center;">Operator Configuration Inheritance</div>
 
-					<li><label>Inherit Flag Criteria:</label> <s:select name="operatorAccount.inheritFlagCriteria"
+					<li><label>Flag Criteria:</label> <s:select name="operatorAccount.inheritFlagCriteria"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Inherit Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria"
+					<li><label>Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Inherit Audit Matrix:</label> <s:select name="operatorAccount.inheritAudits"
+					<li><label>Audit Types:</label> <s:select name="operatorAccount.inheritAudits"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Inherit Audit Category Matrix:</label> <s:select name="operatorAccount.inheritAuditCategories"
+					<li><label>Audit Categories:</label> <s:select name="operatorAccount.inheritAuditCategories"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 				</s:if>
-				<s:if test="!typeOperator">
-					<li><label>Facilities:</label> <s:select list="operatorList" listValue="name" listKey="id" name="facilities"
-						multiple="7" size="15" /></li>
-				</s:if>
-				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
-					name="operatorAccount.doContractorsPay" theme="pics" /></li>
-				<li><label>Send Emails to:</label> <s:textfield name="operatorAccount.activationEmails" /> <br />
-				* separate emails with commas ex: a@bb.com, c@dd.com</li>
-
+			
 			</ol>
 			</fieldset>
 			<fieldset class="form"><legend><span>Legal Additional Insured Names</span></legend>
