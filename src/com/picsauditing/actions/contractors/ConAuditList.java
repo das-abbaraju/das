@@ -35,9 +35,9 @@ public class ConAuditList extends ContractorActionSupport {
 	private Map<String, String> imScores = new HashMap<String, String>();
 	private List<AuditType> auditTypeList;
 	private AuditTypeClass auditClass = AuditTypeClass.Audit;
-	
+
 	private AuditBuilder auditBuilder;
-	
+
 	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
@@ -65,7 +65,7 @@ public class ConAuditList extends ContractorActionSupport {
 					if (contractorAudit.getAuditStatus().isExpired()) {
 						expiredAudits.add(contractorAudit);
 					} else {
-						for (ContractorAuditOperator conAuditOp : contractorAudit.getCurrentOperators()) {
+						for (ContractorAuditOperator conAuditOp : getCaosByAccount(contractorAudit)) {
 							if (conAuditOp.getStatus().isPending() || conAuditOp.getStatus().isSubmitted()
 									|| conAuditOp.getStatus().isVerified()) {
 								if (!upComingAudits.contains(contractorAudit))
@@ -189,6 +189,26 @@ public class ConAuditList extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
+	public List<ContractorAuditOperator> getCaosByAccount(ContractorAudit ca) {
+		List<ContractorAuditOperator> result = new ArrayList<ContractorAuditOperator>();
+		boolean add = false;
+		for (ContractorAuditOperator cao : ca.getCurrentOperators()) {
+			if (permissions.isOperator() && cao.getOperator().getId() == permissions.getAccountId())
+				add = true;
+			else if (permissions.isCorporate()) {
+				if (permissions.getOperatorChildren().contains(cao.getOperator().getId()))
+					add = true;
+			}
+			else if(!permissions.isOperator() && !permissions.isCorporate())
+				add = true;
+
+			if (add)
+				result.add(cao);
+		}
+
+		return result;
+	}
+
 	public List<AuditType> getAuditTypeName() {
 		return auditTypeList;
 	}
@@ -272,7 +292,7 @@ public class ConAuditList extends ContractorActionSupport {
 		OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
 
 		for (AuditData answer : certificatesFiles) {
-			if(answer.getParentAnswer() != null) {
+			if (answer.getParentAnswer() != null) {
 				if (thisOp.isHasLegalName(answer.getParentAnswer().getAnswer())) {
 					operatorList.add(answer);
 				}
@@ -285,28 +305,28 @@ public class ConAuditList extends ContractorActionSupport {
 	public void setCertificatesFiles(List<AuditData> certificatesFiles) {
 		this.certificatesFiles = certificatesFiles;
 	}
-	
+
 	public List<ContractorOperator> getOperatorsWithInsurance() {
 		List<ContractorOperator> result = new ArrayList<ContractorOperator>();
-		
+
 		for (ContractorOperator o : getOperators()) {
 			if (o.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes)) {
-				for (AuditOperator ao : o.getOperatorAccount().getAudits()){
-					if (ao.isCanSee() && ao.getMinRiskLevel() > 0 && 
-							ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
+				for (AuditOperator ao : o.getOperatorAccount().getAudits()) {
+					if (ao.isCanSee() && ao.getMinRiskLevel() > 0
+							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
 						result.add(o);
 						break;
 					}
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public List<AuditType> getRequiredAuditTypeNames() {
 		List<AuditType> result = new ArrayList<AuditType>();
-		
+
 		for (ContractorOperator co : contractor.getOperators()) {
 			for (AuditOperator ao : co.getOperatorAccount().getAudits()) {
 				if (auditTypeList.contains(ao.getAuditType()) && ao.isCanSee() && !result.contains(ao.getAuditType())) {
@@ -314,7 +334,7 @@ public class ConAuditList extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		return result;
 	}
 }

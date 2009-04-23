@@ -33,9 +33,20 @@
 		<tr>
 			<td>
 				<s:iterator value="currentOperators">
-					<s:if test="status.pending||status.submitted||status.verified">
-						<s:property value="operator.name"/> - <span class="Amber"><s:property value="status"/></span> <br/>
+					<s:if test="permissions.operator || permissions.corporate">
+						<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
+							<s:if test="status.pending||status.submitted||status.verified">
+								<s:property value="operator.name" /> - <span class="Amber"><s:property
+									value="status" /></span>
+								<br />
+							</s:if>
+						</s:if>
 					</s:if>
+					<s:else>
+						<s:property value="operator.name" /> - <span class="Amber"><s:property
+							value="status" /></span>
+						<br />
+					</s:else>
 				</s:iterator>
 			</td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
@@ -115,12 +126,32 @@
 		<tr>
 		<td>
 			<s:iterator value="currentOperators">
-				<s:if test="status.approved">
-					<s:property value="operator.name"/> - <span class="Green"><s:property value="status"/></span><br/>
+				<s:if test="permissions.operator || permissions.corporate">
+					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
+						<s:if test="status.approved">
+							<s:property value="operator.name" /> - <span class="Green"><s:property
+								value="status" /></span>
+							<br />
+						</s:if>
+						<s:elseif test="status.rejected">
+							<s:property value="operator.name" /> - <span class="Red"><s:property
+								value="status" /></span>
+							<br />
+						</s:elseif>
+					</s:if>
 				</s:if>
-				<s:elseif test="status.rejected">
-					<s:property value="operator.name"/> - <span class="Red"><s:property value="status"/></span><br/>
-				</s:elseif>
+				<s:else>
+					<s:if test="status.approved">
+						<s:property value="operator.name" /> - <span class="Green"><s:property
+							value="status" /></span>
+						<br />
+					</s:if>
+					<s:elseif test="status.rejected">
+						<s:property value="operator.name" /> - <span class="Red"><s:property
+							value="status" /></span>
+						<br />
+					</s:elseif>
+				</s:else>
 			</s:iterator>
 		</td>
 		<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
