@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+    <target name="test">
+					<webtest name="Admin Verification">
+						&config;
+						<steps>
+							&login;
+							&body_verify;
+							
+				<group description="PQF Verification">
+				<group description="Go to test account 6163">
+                <invoke url="http://alpha.picsauditing.com/Audit.action?auditID=33301"/>
+					</group>
+				<group description="Go to Verification page">	
+                <clickLink label="Verify" href="VerifyView.action"/>
+				<clickButton label="Verify PQF"/>
+				<sleep seconds="3"/>
+					</group>
+				<group description="Reject safety manual">
+				<setInputField htmlID="comment_1331" value="Manual not uploaded"/>
+				<clickElement htmlId="rejectButton"/>
+				<sleep seconds="5"/>
+				<clickLink label="PQF"/>
+				<verifyText text="Pending"/>
+					</group>
+				<group description="Verify safety manual">			
+				<clickLink label="Verify"/>
+				<clickButton label="Verify PQF"/>
+				<sleep seconds="3"/>
+				<clickElement htmlID="verify_1331"/>
+				<sleep seconds="3"/>
+				<verifyText text="Trevor Allred"/>
+				<clickElement htmlID="approveButton1"/>
+				<clickLink label="PQF"/>
+				<verifyText text="Active"/>
+				</group>
+				<group description="Shift back to pending">
+				<clickLink label="System Edit"/>
+				<setSelectField name="conAudit.auditStatus" text="Pending"/>
+				<clickButton label="Save"/>
+				</group>
+				</group>
+							
+		    </steps>		
+		</webtest>
+	</target>
+</project>
