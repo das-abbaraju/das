@@ -74,8 +74,7 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 
 	public boolean hasValidQuestions() {
 		for (AuditQuestion question : this.getQuestions())
-			if (category.getValidDate().after(question.getEffectiveDate())
-					&& category.getValidDate().before(question.getExpirationDate()))
+			if(question.isValid())
 				return true;
 		return false;
 	}

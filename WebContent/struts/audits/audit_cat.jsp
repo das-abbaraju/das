@@ -158,7 +158,7 @@
 									</div>
 								</s:if>
 													
-								<s:if test="category.validDate.after(effectiveDate) && category.validDate.before(expirationDate)">
+								<s:if test="valid">
 									<s:set name="q" value="[0]" />
 									<s:if test="#q.allowMultipleAnswers">
 										<!-- Tuple Anchor Question -->

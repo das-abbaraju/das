@@ -31,8 +31,8 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "Check Box", "Country", "Date", "Decimal Number", "File",
-			"FileCertificate", "Industry", "License", "Main Work", "Money", "Office Location", "Radio",
+	static public final String[] TYPE_ARRAY = { "Additional Insured", "Check Box", "Country", "Date", "Decimal Number",
+			"File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Office Location", "Radio",
 			"Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
 	private AuditSubCategory subCategory;
@@ -108,7 +108,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public YesNo getHasRequirement() {
 		return this.hasRequirement;
 	}
-	
+
 	@Transient
 	public boolean isHasRequirementB() {
 		if (Strings.isEmpty(requirement))
@@ -358,7 +358,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public void setAllowMultipleAnswers(boolean allowMultipleAnswers) {
 		this.allowMultipleAnswers = allowMultipleAnswers;
 	}
-	
+
 	@Column(length = 50)
 	public String getUniqueCode() {
 		return uniqueCode;
@@ -381,7 +381,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public List<AuditQuestion> getChildQuestions() {
 		return childQuestions;
 	}
-	
+
 	public void setChildQuestions(List<AuditQuestion> childQuestions) {
 		this.childQuestions = childQuestions;
 	}
@@ -391,11 +391,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public List<AuditQuestionOption> getOptions() {
 		return options;
 	}
-	
+
 	@Transient
 	public List<AuditQuestionOption> getOptionsVisible() {
 		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
-		for(AuditQuestionOption o : getOptions())
+		for (AuditQuestionOption o : getOptions())
 			if (o.isVisibleB())
 				options.add(o);
 		return options;
@@ -404,7 +404,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public void setOptions(List<AuditQuestionOption> options) {
 		this.options = options;
 	}
-	
+
 	@Enumerated(EnumType.ORDINAL)
 	public boolean isShowComment() {
 		return showComment;
@@ -469,6 +469,14 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	public void setCriteriaAnswer(String criteriaAnswer) {
 		this.criteriaAnswer = criteriaAnswer;
+	}
+
+	@Transient
+	public boolean isValid() {
+		if (getSubCategory().getCategory().getValidDate().after(getEffectiveDate())
+				&& getSubCategory().getCategory().getValidDate().before(getExpirationDate()))
+			return true;
+		return false;
 	}
 
 	@Override
