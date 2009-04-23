@@ -180,7 +180,8 @@ public class ContractorView extends ContractorActionSupport {
 									questionAnswer.add(question);
 									if(answerMap.get(auditQuestion.getId()) != null) {
 										Chunk answer = new Chunk(answerMap.get(auditQuestion.getId()).getAnswer(), answerFont);
-										questionAnswer.add("   " + answer);
+										questionAnswer.add("   ");
+										questionAnswer.add(answer);
 									}	
 									document.add(questionAnswer);
 								}
