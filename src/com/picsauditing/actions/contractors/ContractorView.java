@@ -45,10 +45,11 @@ public class ContractorView extends ContractorActionSupport {
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 	Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
+	Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
 	Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
 	Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
-	Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLACK);
-	Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLUE);
+	Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
+	Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLUE);
 
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, AuditDataDAO auditDataDAO) {
@@ -167,7 +168,7 @@ public class ContractorView extends ContractorActionSupport {
 					else if (!Strings.isEmpty(conAudit.getAuditFor()))
 						auditName += conAudit.getAuditFor();
 
-					document.add(new Paragraph(auditName, answerFont));
+					document.add(new Paragraph(auditName, auditFont));
 					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId());
 					for (AuditCatData auditCatData : conAudit.getCategories()) {
 						if (auditCatData.isAppliesB() && auditCatData.getPercentCompleted() > 0) {
@@ -203,7 +204,7 @@ public class ContractorView extends ContractorActionSupport {
 			if(!Strings.isEmpty(oshaAudit.getDescription()))
 				logInfo +=  " " +oshaAudit.getDescription();
 			
-			document.add(new Paragraph(logInfo, categoryFont));
+			document.add(new Paragraph(logInfo, subCategoryFont));
 			if(!oshaAudit.isApplicable()) {
 				document.add(new Paragraph("Exempt from submitting " + oshaAudit.getType().toString() + " Logs", answerFont));
 			} 
