@@ -43,7 +43,39 @@
 				<clickButton label="Save"/>
 				</group>
 				</group>
-							
+		
+				<group description="Annual Update Verification">
+				<group description="Verify 2008"/>
+				<clickLink label="Verify"/>
+				<clickButton label="Verify"/>
+				<sleep seconds="3"/>
+				<clickButton description="Verify" htmlID="verify_2033"/>
+				<clickButton description="Verify" htmlID="verify_2064"/>
+				<clickButton description="Verify" htmlID="verify_2065"/>
+				<clickButton description="Verify" htmlID="verify_2066"/>
+				<clickButton description="Verify" htmlID="verify_2034"/>
+				<clickButton description="Verify" htmlID="verify_2037"/>
+				<clickButton description="Verify" htmlID="verify_16310"/>
+				<verifyText text="Trevor Allred"/>
+				<clickElement htmlID="approveButton1"/>	
+				<clickLink label="2008 Update"/>
+				<verifyText text="Active"/>
+				<group description="Shift back to pending">
+				<clickLink label="System Edit"/>
+				<setSelectField name="conAudit.auditStatus" text="Pending"/>
+				<clickButton label="Save"/>
+				<clickLink label="Verify"/>
+				<clickButton label="Verify"/>
+				<sleep seconds="3"/>
+				<clickButton description="Verify" htmlID="verify_2033"/>
+				<clickButton description="Verify" htmlID="verify_2064"/>
+				<clickButton description="Verify" htmlID="verify_2065"/>
+				<clickButton description="Verify" htmlID="verify_2066"/>
+				<clickButton description="Verify" htmlID="verify_2034"/>
+				<clickButton description="Verify" htmlID="verify_2037"/>
+				<clickButton description="Verify" htmlID="verify_16310"/>
+					</group>	
+				</group>
 		    </steps>		
 		</webtest>
 	</target>
