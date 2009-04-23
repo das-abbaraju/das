@@ -192,6 +192,7 @@ public class ContractorView extends ContractorActionSupport {
 						}
 					}
 				}
+				document.newPage();
 			}
 		} catch (DocumentException e) {
 			e.printStackTrace();
