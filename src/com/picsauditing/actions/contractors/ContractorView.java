@@ -199,7 +199,11 @@ public class ContractorView extends ContractorActionSupport {
 
 	public void addOshaLog(Document document, ContractorAudit conAudit) throws DocumentException {
 		for(OshaAudit oshaAudit : conAudit.getOshas()) {
-			document.add(new Paragraph(oshaAudit.getType().toString() + " - " + oshaAudit.getLocation() +" "+oshaAudit.getDescription(), categoryFont));
+			String logInfo = oshaAudit.getType().toString() + " - " + oshaAudit.getLocation();
+			if(!Strings.isEmpty(oshaAudit.getDescription()))
+				logInfo +=  " " +oshaAudit.getDescription();
+			
+			document.add(new Paragraph(logInfo, categoryFont));
 			if(!oshaAudit.isApplicable()) {
 				document.add(new Paragraph("Exempt from submitting " + oshaAudit.getType().toString() + " Logs", answerFont));
 			} 
@@ -207,31 +211,31 @@ public class ContractorView extends ContractorActionSupport {
 				document.add(new Paragraph("Total Hours Worked " + format(oshaAudit.getManHours(),"#,##0")));
 				document.add(new Paragraph("Number of Fatalities "+ oshaAudit.getFatalities()));
 				document.add(new Paragraph("Rate "+ format(oshaAudit.getFatalitiesRate())));
-				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "+ oshaAudit.getType().toString()+" Recordable ";
+				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "+ oshaAudit.getDescriptionReportable() + " ";
 				if(oshaAudit.getType().equals(OshaType.COHS))
 					lostWorkDaysCases = "Number of Lost Time Injuries ";
 				document.add(new Paragraph(lostWorkDaysCases + oshaAudit.getLostWorkCases()));
 				document.add(new Paragraph("Rate "+ oshaAudit.getLostWorkCasesRate()));
 				
-				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "+ oshaAudit.getType().toString()+" Recordable ";
+				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "+ oshaAudit.getDescriptionReportable()+ " ";
 				if(oshaAudit.getType().equals(OshaType.COHS))
 					lostWorkDays = "Number of Days Away From Work ";
 				document.add(new Paragraph(lostWorkDays + oshaAudit.getLostWorkDays()));
 				document.add(new Paragraph("Rate "+ format(oshaAudit.getLostWorkDaysRate())));
 
-				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "+ oshaAudit.getType().toString()+" Recordable(non-fatal) ";
+				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "+ oshaAudit.getDescriptionReportable() +"(non-fatal) ";
 				if(oshaAudit.getType().equals(OshaType.COHS))
 					injuryAndIllness = "Number of Medical Aid/Treatment Cases ";
 				document.add(new Paragraph(injuryAndIllness + oshaAudit.getInjuryIllnessCases()));
 				document.add(new Paragraph("Rate "+ format(oshaAudit.getInjuryIllnessCasesRate())));
 				
-				String restrictedCases = "Has restricted days AND no lost days AND is "+ oshaAudit.getType().toString()+" Recordable ";
+				String restrictedCases = "Has restricted days AND no lost days AND is "+ oshaAudit.getDescriptionReportable() +" ";
 				if(oshaAudit.getType().equals(OshaType.COHS))
 					restrictedCases = "Number of Restricted/Modified Cases ";
 				document.add(new Paragraph(restrictedCases + oshaAudit.getRestrictedWorkCases()));
 				document.add(new Paragraph("Rate "+ format(oshaAudit.getRestrictedWorkCasesRate())));
 
-				String totalInjuriesAndIllnesses = "Total "+ oshaAudit.getType().toString()+" Recordable Injuries and Illnesses ";
+				String totalInjuriesAndIllnesses = "Total "+ oshaAudit.getDescriptionReportable()+" Injuries and Illnesses ";
 				if(oshaAudit.getType().equals(OshaType.COHS))
 					totalInjuriesAndIllnesses = "Total Recordable Injuries and Illnesses ";
 				document.add(new Paragraph(totalInjuriesAndIllnesses + oshaAudit.getRecordableTotal()));
