@@ -13,6 +13,7 @@ import org.apache.struts2.ServletActionContext;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
@@ -88,6 +89,7 @@ public class ContractorView extends ContractorActionSupport {
 			Document document = new Document();
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 			PdfWriter.getInstance(document, outstream);
+
 			document.open();
 			createDocument(document);
 			document.close();
@@ -158,7 +160,9 @@ public class ContractorView extends ContractorActionSupport {
 
 	public void createDocument(Document document) {
 		try {
-			document.add(new Paragraph(contractor.getName(), headerFont));
+			Paragraph conName = new Paragraph(contractor.getName(), headerFont);
+			conName.setAlignment(Element.ALIGN_CENTER);
+			document.add(conName);
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (!conAudit.getAuditStatus().isExpired()
 						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
@@ -167,8 +171,9 @@ public class ContractorView extends ContractorActionSupport {
 						auditName += DateBean.format(conAudit.getEffectiveDate(), "MMM yyyy");
 					else if (!Strings.isEmpty(conAudit.getAuditFor()))
 						auditName += conAudit.getAuditFor();
-
-					document.add(new Paragraph(auditName, auditFont));
+					Paragraph name = new Paragraph(auditName, auditFont);
+					name.setAlignment(Element.ALIGN_CENTER);
+					document.add(name);
 					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId());
 					for (AuditCatData auditCatData : conAudit.getCategories()) {
 						if (auditCatData.isAppliesB() && auditCatData.getPercentCompleted() > 0) {
