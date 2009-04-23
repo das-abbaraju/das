@@ -330,6 +330,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowWaitingOn(true);
 			setShowOpertorTagName(true);
 		}
+		if(permissions.hasPermission(OpPerms.ContractorDetails)) {
+			setShowPrimaryInformation(true);
+			setShowTradeInformation(true);
+		}
 		if (permissions.isCorporate()) {
 		}
 		if (permissions.isPicsEmployee()) {

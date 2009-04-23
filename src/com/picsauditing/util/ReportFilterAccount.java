@@ -14,8 +14,8 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
 	protected boolean showVisible = false;
-	protected boolean showPrimaryInformation = true;
-	protected boolean showTradeInformation = true;
+	protected boolean showPrimaryInformation = false;
+	protected boolean showTradeInformation = false;
 	
 	///////// Parameter Values  /////////////////
 	protected String startsWith;

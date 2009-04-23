@@ -1,5 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
+<%@ taglib prefix="pics" uri="pics-taglib"%>
+<pics:permission perm="ContractorDetails">
 <s:if test="!filter.allowMailMerge">
 	<div class="right"><a 
 		class="excel" 
@@ -8,6 +9,7 @@
 		title="Download all <s:property value="report.allRows"/> results to a CSV file"
 		>Download</a></div>
 </s:if>
+</pics:permission>
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>

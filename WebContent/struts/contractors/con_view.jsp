@@ -108,7 +108,9 @@
 				<a title="Waiting On : <s:property value="flag.waitingOn"/>" href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
 			</li>
 			</s:iterator>
-			<li>...<a href="ContractorFacilities.action?id=<s:property value="id" />">see Facilities</a></li>
+			<s:if test="!permissions.operator">
+				<li>...<a href="ContractorFacilities.action?id=<s:property value="id" />">see Facilities</a></li>
+			</s:if>
 		</ul>
 		<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
 			<fieldset class="form">
