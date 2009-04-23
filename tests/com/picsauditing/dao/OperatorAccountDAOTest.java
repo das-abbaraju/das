@@ -56,7 +56,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setDoSendActivationEmail("Yes");
 		operatoraccount.setDoContractorsPay("Multiple");
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
-		operatoraccount.setIsCorporate(YesNo.Yes);
 		operatoraccount.setInsuranceAuditor(new User());
 		operatoraccount.getInsuranceAuditor().setId(941); //tallred
 		operatoraccount.setIsUserManualUploaded(YesNo.Yes);

@@ -138,7 +138,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 				if (operatorAccount.isCorporate()) {
 					permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
-					operatorAccount.setIsCorporate(YesNo.Yes);
 
 					if (facilities != null) {
 						List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();

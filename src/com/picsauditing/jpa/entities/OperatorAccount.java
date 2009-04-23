@@ -31,17 +31,16 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public static final String DEFAULT_NAME = "- Operator -";
 
 	private OperatorAccount parent;
-	
-	private boolean inheritFlagCriteria;
-	private boolean inheritInsuranceCriteria;
-	private boolean inheritAudits;
-	private boolean inheritLegalNames;
+
+	private OperatorAccount inheritFlagCriteria;
+	private OperatorAccount inheritInsuranceCriteria;
+	private OperatorAccount inheritAudits;
+	private OperatorAccount inheritAuditCategories;
 
 	private String activationEmails = "";
 	private String doSendActivationEmail = "No";
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
-	private YesNo isCorporate = YesNo.No;
 	private User insuranceAuditor;
 	private YesNo isUserManualUploaded = YesNo.No;
 	private YesNo approvesRelationships = YesNo.No;
@@ -57,7 +56,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	protected List<OperatorTag> tags = new ArrayList<OperatorTag>();
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
 	protected Map<Integer, AuditOperator> auditMap = null;
-	
+
 	public OperatorAccount() {
 		this.type = "Operator";
 	}
@@ -107,17 +106,6 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 		this.canSeeInsurance = canSeeInsurance;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
-	@Column(name = "isCorporate", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getIsCorporate() {
-		return this.isCorporate;
-	}
-
-	public void setIsCorporate(YesNo isCorporate) {
-		this.isCorporate = isCorporate;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "insuranceAuditor_id")
 	public User getInsuranceAuditor() {
@@ -157,6 +145,38 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setVerifiedByPics(boolean verifiedByPics) {
 		this.verifiedByPics = verifiedByPics;
+	}
+
+	public OperatorAccount getInheritFlagCriteria() {
+		return inheritFlagCriteria;
+	}
+
+	public void setInheritFlagCriteria(OperatorAccount inheritFlagCriteria) {
+		this.inheritFlagCriteria = inheritFlagCriteria;
+	}
+
+	public OperatorAccount getInheritInsuranceCriteria() {
+		return inheritInsuranceCriteria;
+	}
+
+	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
+		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
+	}
+
+	public OperatorAccount getInheritAudits() {
+		return inheritAudits;
+	}
+
+	public void setInheritAudits(OperatorAccount inheritAudits) {
+		this.inheritAudits = inheritAudits;
+	}
+
+	public OperatorAccount getInheritAuditCategories() {
+		return inheritAuditCategories;
+	}
+
+	public void setInheritAuditCategories(OperatorAccount inheritAuditCategories) {
+		this.inheritAuditCategories = inheritAuditCategories;
 	}
 
 	@OneToMany(mappedBy = "operatorAccount")
@@ -199,19 +219,17 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	@Transient
 	public Map<Integer, AuditOperator> getAuditMap() {
-		if(auditMap == null) { 
+		if (auditMap == null) {
 			auditMap = new HashMap<Integer, AuditOperator>();
-			for(AuditOperator auditOperator : getAudits()) {
+			for (AuditOperator auditOperator : getAudits()) {
 				auditMap.put(auditOperator.getAuditType().getId(), auditOperator);
 			}
 		}
 		return auditMap;
 	}
 
-
 	/**
-	 * Get a list of QuestionIDs that are Verified or Checked as part of a Flag
-	 * calculation
+	 * Get a list of QuestionIDs that are Verified or Checked as part of a Flag calculation
 	 * 
 	 * @return
 	 */
@@ -239,8 +257,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * @see getOperatorAccounts()
-	 * @return a list of all "associated" operator accounts associated via the facilities intersection table
-	 * for example, BASF would contain BASF Port Arthur but not BASF Freeport Hub
+	 * @return a list of all "associated" operator accounts associated via the facilities intersection table for
+	 *         example, BASF would contain BASF Port Arthur but not BASF Freeport Hub
 	 */
 	@OneToMany(mappedBy = "corporate")
 	public List<Facility> getOperatorFacilities() {
@@ -253,8 +271,8 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	/**
 	 * @see getOperatorFacilities()
-	 * @return a list of all the "direct" child operators/corporates mapped through operator.parentID
-	 * for example, BASF would contain BASF Freeport Hub, but not BASF Port Arthur
+	 * @return a list of all the "direct" child operators/corporates mapped through operator.parentID for example, BASF
+	 *         would contain BASF Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorChildren() {
@@ -274,7 +292,7 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 	public void setParent(OperatorAccount parent) {
 		this.parent = parent;
 	}
-	
+
 	public boolean isDescendantOf(int id) {
 		if (getParent() == null)
 			// No parent exists
@@ -305,38 +323,6 @@ public class OperatorAccount extends Account implements java.io.Serializable {
 
 	public void setTags(List<OperatorTag> value) {
 		this.tags = value;
-	}
-	
-	public boolean isInheritFlagCriteria() {
-		return inheritFlagCriteria;
-	}
-
-	public void setInheritFlagCriteria(boolean inheritFlagCriteria) {
-		this.inheritFlagCriteria = inheritFlagCriteria;
-	}
-
-	public boolean isInheritInsuranceCriteria() {
-		return inheritInsuranceCriteria;
-	}
-
-	public void setInheritInsuranceCriteria(boolean inheritInsuranceCriteria) {
-		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
-	}
-
-	public boolean isInheritAudits() {
-		return inheritAudits;
-	}
-
-	public void setInheritAudits(boolean inheritAudits) {
-		this.inheritAudits = inheritAudits;
-	}
-
-	public boolean isInheritLegalNames() {
-		return inheritLegalNames;
-	}
-
-	public void setInheritLegalNames(boolean inheritLegalNames) {
-		this.inheritLegalNames = inheritLegalNames;
 	}
 
 	@Transient
