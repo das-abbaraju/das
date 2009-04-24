@@ -17,6 +17,9 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.DateBean;
@@ -215,46 +218,95 @@ public class ContractorView extends ContractorActionSupport {
 				document.add(new Paragraph("Exempt from submitting " + oshaAudit.getType().toString() + " Logs", answerFont));
 			} 
 			else {
-				document.add(new Paragraph("Total Hours Worked " + format(oshaAudit.getManHours(),"#,##0")));
-				document.add(new Paragraph("Number of Fatalities "+ oshaAudit.getFatalities()));
-				document.add(new Paragraph("Rate "+ format(oshaAudit.getFatalitiesRate())));
-				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "+ oshaAudit.getDescriptionReportable() + " ";
-				if(oshaAudit.getType().equals(OshaType.COHS))
-					lostWorkDaysCases = "Number of Lost Time Injuries ";
-				document.add(new Paragraph(lostWorkDaysCases + oshaAudit.getLostWorkCases()));
-				document.add(new Paragraph("Rate "+ oshaAudit.getLostWorkCasesRate()));
+				PdfPTable oshaTable = new PdfPTable(3);
 				
-				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "+ oshaAudit.getDescriptionReportable()+ " ";
-				if(oshaAudit.getType().equals(OshaType.COHS))
-					lostWorkDays = "Number of Days Away From Work ";
-				document.add(new Paragraph(lostWorkDays + oshaAudit.getLostWorkDays()));
-				document.add(new Paragraph("Rate "+ format(oshaAudit.getLostWorkDaysRate())));
-
-				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "+ oshaAudit.getDescriptionReportable() +"(non-fatal) ";
-				if(oshaAudit.getType().equals(OshaType.COHS))
-					injuryAndIllness = "Number of Medical Aid/Treatment Cases ";
-				document.add(new Paragraph(injuryAndIllness + oshaAudit.getInjuryIllnessCases()));
-				document.add(new Paragraph("Rate "+ format(oshaAudit.getInjuryIllnessCasesRate())));
+				oshaTable.setWidths(new int[] {80, 5, 15});
+				oshaTable.setSpacingBefore(20);
 				
-				String restrictedCases = "Has restricted days AND no lost days AND is "+ oshaAudit.getDescriptionReportable() +" ";
+				List<PdfPCell> cells = new ArrayList<PdfPCell>();
+				
+				PdfPCell cell = new PdfPCell(new Phrase("Total Hours Worked"));
+				cell.setColspan(2);
+				cells.add(cell);
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getManHours(),"#,##0"), questionFont)));
+				
+				cells.add(new PdfPCell(new Phrase("")));
+				cells.add(new PdfPCell(new Phrase("#")));
+				cells.add(new PdfPCell(new Phrase("Rate")));
+				
+				cells.add(new PdfPCell(new Phrase("Number of Fatalities", questionFont)));
+				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getFatalities(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getFatalitiesRate()), questionFont)));
+				
+				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "+ oshaAudit.getDescriptionReportable();
 				if(oshaAudit.getType().equals(OshaType.COHS))
-					restrictedCases = "Number of Restricted/Modified Cases ";
-				document.add(new Paragraph(restrictedCases + oshaAudit.getRestrictedWorkCases()));
-				document.add(new Paragraph("Rate "+ format(oshaAudit.getRestrictedWorkCasesRate())));
+					lostWorkDaysCases = "Number of Lost Time Injuries";
+				cells.add(new PdfPCell(new Phrase(lostWorkDaysCases, questionFont)));
+				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getLostWorkCases(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkCasesRate(),"#,##0"), questionFont)));
+				
 
-				String totalInjuriesAndIllnesses = "Total "+ oshaAudit.getDescriptionReportable()+" Injuries and Illnesses ";
+				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "+ oshaAudit.getDescriptionReportable();
 				if(oshaAudit.getType().equals(OshaType.COHS))
-					totalInjuriesAndIllnesses = "Total Recordable Injuries and Illnesses ";
-				document.add(new Paragraph(totalInjuriesAndIllnesses + oshaAudit.getRecordableTotal()));
-				document.add(new Paragraph("Rate "+ format(oshaAudit.getRecordableTotalRate())));
+					lostWorkDays = "Number of Days Away From Work";
+				cells.add(new PdfPCell(new Phrase(lostWorkDays, questionFont)));
+				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getLostWorkDays(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkDaysRate()), questionFont)));
+				
+				
 
+				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "+ oshaAudit.getDescriptionReportable() +"(non-fatal)";
+				if(oshaAudit.getType().equals(OshaType.COHS))
+					injuryAndIllness = "Number of Medical Aid/Treatment Cases";
+				cells.add(new PdfPCell(new Phrase(injuryAndIllness, questionFont)));
+				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getInjuryIllnessCases(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getInjuryIllnessCasesRate()), questionFont)));
+
+				
+				
+				
+				String restrictedCases = "Has restricted days AND no lost days AND is "+ oshaAudit.getDescriptionReportable();
+				if(oshaAudit.getType().equals(OshaType.COHS))
+					restrictedCases = "Number of Restricted/Modified Cases";
+				cells.add(new PdfPCell(new Phrase(restrictedCases, questionFont)));
+				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getRestrictedWorkCases(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getRestrictedWorkCasesRate()), questionFont)));
+		
+
+				String totalInjuriesAndIllnesses = "Total "+ oshaAudit.getDescriptionReportable()+" Injuries and Illnesses";
+				if(oshaAudit.getType().equals(OshaType.COHS))
+					totalInjuriesAndIllnesses = "Total Recordable Injuries and Illnesses";
+				cells.add(new PdfPCell(new Phrase(totalInjuriesAndIllnesses, questionFont)));
+				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getRecordableTotal(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getRecordableTotalRate()), questionFont)));
+				
 				if(oshaAudit.getType().equals(OshaType.COHS)) {
-					document.add(new Paragraph("What is your CAD-7 " + oshaAudit.getCad7()));
-					document.add(new Paragraph("What is your NEER " + oshaAudit.getNeer()));
+					cell = new PdfPCell(new Phrase("What is your CAD-7", questionFont));
+					cell.setColspan(2);
+					cells.add(cell);
+					cells.add(new PdfPCell(new Phrase(""+oshaAudit.getCad7(), questionFont)));
+					
+					cell = new PdfPCell(new Phrase("What is your NEER", questionFont));
+					cell.setColspan(2);
+					cells.add(cell);
+					cells.add(new PdfPCell(new Phrase(""+oshaAudit.getNeer(), questionFont)));
 				}
 				if(!oshaAudit.getType().equals(OshaType.COHS)) {
-					document.add(new Paragraph("Uploaded Log Files " + oshaAudit.isFileUploaded()));
+					cell = new PdfPCell(new Phrase("Uploaded Log Files", questionFont));
+					cell.setColspan(2);
+					cells.add(cell);
+					cells.add(new PdfPCell(new Phrase(oshaAudit.isFileUploaded()?"Yes":"No", questionFont)));
 				}
+				
+				for (PdfPCell c : cells) {
+					c.setBorderColor(new Color(0xa8, 0x4d, 0x10));
+					c.setPadding(5);
+					oshaTable.addCell(c);
+				}
+				
+				document.add(oshaTable);
+
+				
 			}
 		}
 	}
