@@ -136,12 +136,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if (cc == null || cc.getCardNumber() == null) {
 			contractor.setCcOnFile(false);
-			contractor.setCcValid(false);
+			contractor.setCcExpiration(null);
 		} else {
 			contractor.setCcExpiration(cc.getExpirationDate2());
 			contractor.setCcOnFile(true);
 			// The card must be valid if BrainTree is accepting it and it hasn't expired yet.
-			contractor.setCcValid( new Date().before(contractor.getCcExpiration()) );
 		}
 
 		time = DateBean.getBrainTreeDate();

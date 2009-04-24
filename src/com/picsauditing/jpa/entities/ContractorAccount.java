@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -62,7 +63,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 	private boolean ccOnFile = false;
 	private Date ccExpiration;
-	private boolean ccValid = false;
 
 	private String oqEmployees;
 
@@ -286,9 +286,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (paymentMethod == null)
 			return false;
 		if (paymentMethod.isCreditCard()) {
-			if (ccOnFile)
-				return true;
-			return false;
+			return isCcValid();
 		}
 		// If Check
 		return true;
@@ -314,13 +312,25 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setCcExpiration(Date ccExpiration) {
 		this.ccExpiration = ccExpiration;
 	}
-
+	
+	@Transient
 	public boolean isCcValid() {
-		return ccValid;
-	}
-
-	public void setCcValid(boolean ccValid) {
-		this.ccValid = ccValid;
+		if (!ccOnFile)
+			return false;
+		
+		if (ccExpiration == null)
+			// Because this is new, some haven't been loaded yet
+			// Assume it's fine for now
+			// TODO remove this section once we load all the dates
+			return true;
+		
+		Calendar expires = Calendar.getInstance();
+		expires.setTime(ccExpiration);
+		expires.set(Calendar.DAY_OF_MONTH, 1);
+		expires.add(Calendar.MONTH, 1);
+		expires.add(Calendar.DAY_OF_MONTH, -1);
+		
+		return expires.getTime().after(new Date());
 	}
 
 	/**
