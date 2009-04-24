@@ -173,7 +173,6 @@ public class AuditDataUpload extends AuditActionSupport {
 						addActionError("Could not find data record to copy");
 						return BLANK;
 					}
-					addActionMessage("Successfully copied file");
 				} else {
 					// UPLOAD FILE
 
@@ -181,12 +180,10 @@ public class AuditDataUpload extends AuditActionSupport {
 						addActionError("File was missing or empty");
 						return SUCCESS;
 					}
-	
-					addActionMessage("Successfully uploaded <b>" + fileFileName
-							+ "</b> file");
 				}
 				String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 				if (!FileUtils.checkFileExtension(extension)) {
+					file = null;
 					addActionError("Bad File Extension");
 					return SUCCESS;
 				}
@@ -201,10 +198,13 @@ public class AuditDataUpload extends AuditActionSupport {
 					FileUtils.copyFile(file, getFtpDir(), "files/"
 							+ FileUtils.thousandize(dataID), getFileName(dataID),
 							extension, true);
+					addActionMessage("Successfully copied file");
 				} else {
 					FileUtils.moveFile(file, getFtpDir(), "files/"
 							+ FileUtils.thousandize(dataID), getFileName(dataID),
 							extension, true);
+					addActionMessage("Successfully uploaded <b>" + fileFileName
+							+ "</b> file");
 				}
 				if( conAudit.getAuditType() != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
 					
