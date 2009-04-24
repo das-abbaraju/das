@@ -206,13 +206,6 @@ public class AuditDataUpload extends AuditActionSupport {
 					addActionMessage("Successfully uploaded <b>" + fileFileName
 							+ "</b> file");
 				}
-				if( conAudit.getAuditType() != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
-					
-					if( conAudit.getAuditStatus() == AuditStatus.Active ) {
-						conAudit.changeStatus(AuditStatus.Resubmitted, getUser());
-						auditDao.save(conAudit);
-					}
-				}	
 			}
 		}
 
