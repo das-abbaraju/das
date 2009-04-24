@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@page language="java" errorPage="../../exception_handler.jsp"%>
 <html>
 <head>
 <title><s:property value="operatorAccount.name" /></title>
@@ -106,17 +106,14 @@
 						multiple="7" size="15" /></li>
 				</s:if>
 				<s:if test="operatorAccount.operator">
-					<li><label>Parent Corporation / Division / Hub:</label> <s:if
-						test="operatorAccount.corporateFacilities.size() != 0">
-						<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name"
-							headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid" />
-					</s:if> <s:else>
-						<s:select list="#{operatorAccount.parent.id:operatorAccount.parent.name}" headerKey="0"
-							headerValue=" - Select a Parent Facility - " name="parentid" />
-					</s:else></li>
+					<s:if test="operatorAccount.corporateFacilities.size() > 0">
+						<li><label>Parent Corporation / Division / Hub:</label> 
+							<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name"
+								headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid" />
+						</li>
+					</s:if>
 					
-					<div style="font-weight: bold; margin-top: 50px; margin-bottom: 5px; text-align: center;">Operator Configuration Inheritance</div>
-
+					<li><div style="font-weight: bold; text-align: center;">Operator Configuration Inheritance</div></li>
 					<li><label>Flag Criteria:</label> <s:select name="operatorAccount.inheritFlagCriteria"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 					<li><label>Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria"
