@@ -69,7 +69,9 @@ public class BillingDetail extends ContractorActionSupport {
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(getUser());
-			invoice.setQbSync(true);
+			
+			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
+				invoice.setQbSync(true);
 
 			// Calculate the due date for the invoice
 			if (contractor.getBillingStatus().equals("Activation")
@@ -83,7 +85,7 @@ public class BillingDetail extends ContractorActionSupport {
 			if (invoice.getDueDate() == null)
 				// For all other statuses like (Current)
 				invoice.setDueDate(DateBean.addDays(new Date(), 30));
-			
+
 			// Make sure the invoice isn't due within 7 days for active accounts
 			if (contractor.isActiveB() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
 				invoice.setDueDate(DateBean.addDays(new Date(), 7));
@@ -114,10 +116,11 @@ public class BillingDetail extends ContractorActionSupport {
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}
-		
+
 		if ("Activate".equals(button)) {
 			contractor.setActive('Y');
-			this.addNote(contractor, "Activated free account", NoteCategory.Billing, LowMedHigh.High, true, Account.PicsID);
+			this.addNote(contractor, "Activated free account", NoteCategory.Billing, LowMedHigh.High, true,
+					Account.PicsID);
 		}
 
 		contractor.syncBalance();
