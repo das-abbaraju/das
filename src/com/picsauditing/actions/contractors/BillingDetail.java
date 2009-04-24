@@ -69,6 +69,7 @@ public class BillingDetail extends ContractorActionSupport {
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(getUser());
+			invoice.setQbSync(true);
 
 			// Calculate the due date for the invoice
 			if (contractor.getBillingStatus().equals("Activation")

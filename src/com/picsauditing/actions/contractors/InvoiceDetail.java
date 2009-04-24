@@ -94,6 +94,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						edit = true;
 					}
 					updateTotals();
+					invoice.setQbSync(true);
 				}
 
 				if (button.startsWith("Change to")) {
@@ -148,27 +149,28 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 						invoiceItemDAO.remove(invoiceItem);
 					}
 
-					String noteText = "Cancelled Invoice " + invoice.getId() + " for $" + invoice.getTotalAmount().toString();
+					String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
+							+ invoice.getTotalAmount().toString();
 					invoice.setTotalAmount(BigDecimal.ZERO);
 					invoice.setPaid(true);
 					invoice.setPaidDate(new Date());
 					invoice.setAuditColumns(permissions);
-					// invoice.setQbSync(true);
+					invoice.setQbSync(true);
 					invoice.setNotes("Cancelled Invoice");
 
 					invoiceDAO.save(invoice);
 
 					addNote(noteText);
 				}
-				
+
 				if (button.startsWith("Refund")) {
-					if(refundFeeId == 0) {
+					if (refundFeeId == 0) {
 						addActionError("Line item not found");
 						return SUCCESS;
 					}
 					InvoiceItem invoiceItem = invoiceItemDAO.find(refundFeeId);
-					if(invoiceItem != null) {
-						invoiceItem.setRefunded(true);						
+					if (invoiceItem != null) {
+						invoiceItem.setRefunded(true);
 						invoiceItem.setAuditColumns(permissions);
 						invoiceItemDAO.save(invoiceItem);
 
@@ -378,5 +380,5 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	public void setRefundFeeId(int refundFeeId) {
 		this.refundFeeId = refundFeeId;
 	}
-	
+
 }
