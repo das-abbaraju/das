@@ -188,6 +188,7 @@ public class FlagCalculator2 {
 		
 		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		contractor.setNewMembershipLevel(fee);
+		contractor.syncBalance();
 		
 		// Run the auditBuilder for this contractor
 		auditBuilder.buildAudits(contractor);

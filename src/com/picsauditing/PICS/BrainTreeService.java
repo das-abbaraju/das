@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -143,6 +144,14 @@ public class BrainTreeService {
 
 		public String getExpirationDate() {
 			return expirationDate;
+		}
+
+		public Date getExpirationDate2() {
+			try {
+				return new SimpleDateFormat("MMyy").parse(expirationDate);
+			} catch (Exception e) {
+			}
+			return null;
 		}
 
 		public void setExpirationDate(String expirationDate) {

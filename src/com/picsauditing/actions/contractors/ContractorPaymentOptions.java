@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.BrainTreeService;
@@ -135,8 +136,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if (cc == null || cc.getCardNumber() == null) {
 			contractor.setCcOnFile(false);
+			contractor.setCcValid(false);
 		} else {
+			contractor.setCcExpiration(cc.getExpirationDate2());
 			contractor.setCcOnFile(true);
+			// The card must be valid if BrainTree is accepting it and it hasn't expired yet.
+			contractor.setCcValid( new Date().before(contractor.getCcExpiration()) );
 		}
 
 		time = DateBean.getBrainTreeDate();

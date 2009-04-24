@@ -59,8 +59,10 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private User auditor;
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
-	private boolean ccOnFile = false;
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
+	private boolean ccOnFile = false;
+	private Date ccExpiration;
+	private boolean ccValid = false;
 
 	private String oqEmployees;
 
@@ -303,6 +305,22 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setCcOnFile(boolean ccOnFile) {
 		this.ccOnFile = ccOnFile;
+	}
+
+	public Date getCcExpiration() {
+		return ccExpiration;
+	}
+
+	public void setCcExpiration(Date ccExpiration) {
+		this.ccExpiration = ccExpiration;
+	}
+
+	public boolean isCcValid() {
+		return ccValid;
+	}
+
+	public void setCcValid(boolean ccValid) {
+		this.ccValid = ccValid;
 	}
 
 	/**
