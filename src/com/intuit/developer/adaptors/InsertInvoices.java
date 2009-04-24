@@ -35,7 +35,7 @@ public class InsertInvoices extends CustomerAdaptor {
 		//first time, load up the inserts
 		if( currentSession.getInvoicesToInsert() == null ) {
 			currentSession.setInvoicesToInsert(new Vector<Invoice>());
-			List<Invoice> invoices = getInvoiceDao().findWhere("i.qbSync = true and i.qbListID is null");
+			List<Invoice> invoices = getInvoiceDao().findWhere("i.qbSync = true and i.qbListID is null and i.account.qbListID is not null and i.account.qbListID not like 'NOLOAD%'");
 			currentSession.getInvoicesToInsert().addAll(invoices);
 		}
 
