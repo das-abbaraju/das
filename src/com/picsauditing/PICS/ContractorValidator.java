@@ -69,7 +69,7 @@ public class ContractorValidator {
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
 
-		if (Strings.isEmpty(contractor.getEmail()) || !Utilities.isValidEmail(contractor.getEmail()))
+		if (!Utilities.isValidEmail(contractor.getEmail()))
 			errorMessages
 					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
 		

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.util.Strings;
+
 /**
  * @see Inputs not sure what the difference is
  */
@@ -113,7 +115,7 @@ public class Utilities {
 
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
-		if (null == email)
+		if (Strings.isEmpty(email))
 			return false;
 		int index = email.indexOf("@");
 		if (index > 0) {
