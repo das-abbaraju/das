@@ -213,7 +213,9 @@ public class ContractorView extends ContractorActionSupport {
 			if(!Strings.isEmpty(oshaAudit.getDescription()))
 				logInfo +=  " " +oshaAudit.getDescription();
 			
-			document.add(new Paragraph(logInfo, subCategoryFont));
+			Paragraph oshaSubCat = new Paragraph(logInfo, subCategoryFont);
+			oshaSubCat.setIndentationLeft(20);
+			document.add(oshaSubCat);
 			if(!oshaAudit.isApplicable()) {
 				document.add(new Paragraph("Exempt from submitting " + oshaAudit.getType().toString() + " Logs", answerFont));
 			} 
