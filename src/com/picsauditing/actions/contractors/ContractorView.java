@@ -208,117 +208,114 @@ public class ContractorView extends ContractorActionSupport {
 	}
 
 	public void addOshaLog(Document document, ContractorAudit conAudit) throws DocumentException {
-		for(OshaAudit oshaAudit : conAudit.getOshas()) {
+		for (OshaAudit oshaAudit : conAudit.getOshas()) {
 			String logInfo = oshaAudit.getType().toString() + " - " + oshaAudit.getLocation();
-			if(!Strings.isEmpty(oshaAudit.getDescription()))
-				logInfo +=  " " +oshaAudit.getDescription();
-			
+			if (!Strings.isEmpty(oshaAudit.getDescription()))
+				logInfo += " " + oshaAudit.getDescription();
+
 			Paragraph oshaSubCat = new Paragraph(logInfo, subCategoryFont);
 			oshaSubCat.setIndentationLeft(20);
 			document.add(oshaSubCat);
-			if(!oshaAudit.isApplicable()) {
-				document.add(new Paragraph("Exempt from submitting " + oshaAudit.getType().toString() + " Logs", answerFont));
-			} 
-			else {
+			if (!oshaAudit.isApplicable()) {
+				document.add(new Paragraph("Exempt from submitting " + oshaAudit.getType().toString() + " Logs",
+						answerFont));
+			} else {
 				PdfPTable oshaTable = new PdfPTable(3);
-				
-				oshaTable.setWidths(new int[] {80, 5, 15});
+
+				oshaTable.setWidths(new int[] { 80, 5, 15 });
 				oshaTable.setSpacingBefore(20);
-				
+
 				List<PdfPCell> cells = new ArrayList<PdfPCell>();
-				
+
 				PdfPCell cell = new PdfPCell(new Phrase("Total Hours Worked"));
 				cell.setColspan(2);
 				cells.add(cell);
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getManHours(),"#,##0"), questionFont)));
-				
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getManHours(), "#,##0"), questionFont)));
+
 				cells.add(new PdfPCell(new Phrase("")));
 				cells.add(new PdfPCell(new Phrase("#")));
 				cells.add(new PdfPCell(new Phrase("Rate")));
-				
+
 				cells.add(new PdfPCell(new Phrase("Number of Fatalities", questionFont)));
-				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getFatalities(), questionFont)));
+				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getFatalities(), questionFont)));
 				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getFatalitiesRate()), questionFont)));
-				
-				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "+ oshaAudit.getDescriptionReportable();
-				if(oshaAudit.getType().equals(OshaType.COHS))
+
+				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "
+						+ oshaAudit.getDescriptionReportable();
+				if (oshaAudit.getType().equals(OshaType.COHS))
 					lostWorkDaysCases = "Number of Lost Time Injuries";
 				cells.add(new PdfPCell(new Phrase(lostWorkDaysCases, questionFont)));
-				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getLostWorkCases(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkCasesRate(),"#,##0"), questionFont)));
-				
+				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getLostWorkCases(), questionFont)));
+				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkCasesRate(), "#,##0"), questionFont)));
 
-				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "+ oshaAudit.getDescriptionReportable();
-				if(oshaAudit.getType().equals(OshaType.COHS))
+				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "
+						+ oshaAudit.getDescriptionReportable();
+				if (oshaAudit.getType().equals(OshaType.COHS))
 					lostWorkDays = "Number of Days Away From Work";
 				cells.add(new PdfPCell(new Phrase(lostWorkDays, questionFont)));
-				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getLostWorkDays(), questionFont)));
+				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getLostWorkDays(), questionFont)));
 				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkDaysRate()), questionFont)));
-				
-				
 
-				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "+ oshaAudit.getDescriptionReportable() +"(non-fatal)";
-				if(oshaAudit.getType().equals(OshaType.COHS))
+				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "
+						+ oshaAudit.getDescriptionReportable() + "(non-fatal)";
+				if (oshaAudit.getType().equals(OshaType.COHS))
 					injuryAndIllness = "Number of Medical Aid/Treatment Cases";
 				cells.add(new PdfPCell(new Phrase(injuryAndIllness, questionFont)));
-				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getInjuryIllnessCases(), questionFont)));
+				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getInjuryIllnessCases(), questionFont)));
 				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getInjuryIllnessCasesRate()), questionFont)));
 
-				
-				
-				
-				String restrictedCases = "Has restricted days AND no lost days AND is "+ oshaAudit.getDescriptionReportable();
-				if(oshaAudit.getType().equals(OshaType.COHS))
+				String restrictedCases = "Has restricted days AND no lost days AND is "
+						+ oshaAudit.getDescriptionReportable();
+				if (oshaAudit.getType().equals(OshaType.COHS))
 					restrictedCases = "Number of Restricted/Modified Cases";
 				cells.add(new PdfPCell(new Phrase(restrictedCases, questionFont)));
-				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getRestrictedWorkCases(), questionFont)));
+				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getRestrictedWorkCases(), questionFont)));
 				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getRestrictedWorkCasesRate()), questionFont)));
-		
 
-				String totalInjuriesAndIllnesses = "Total "+ oshaAudit.getDescriptionReportable()+" Injuries and Illnesses";
-				if(oshaAudit.getType().equals(OshaType.COHS))
+				String totalInjuriesAndIllnesses = "Total " + oshaAudit.getDescriptionReportable()
+						+ " Injuries and Illnesses";
+				if (oshaAudit.getType().equals(OshaType.COHS))
 					totalInjuriesAndIllnesses = "Total Recordable Injuries and Illnesses";
 				cells.add(new PdfPCell(new Phrase(totalInjuriesAndIllnesses, questionFont)));
-				cells.add(new PdfPCell(new Phrase(""+oshaAudit.getRecordableTotal(), questionFont)));
+				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getRecordableTotal(), questionFont)));
 				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getRecordableTotalRate()), questionFont)));
-				
-				if(oshaAudit.getType().equals(OshaType.COHS)) {
+
+				if (oshaAudit.getType().equals(OshaType.COHS)) {
 					cell = new PdfPCell(new Phrase("What is your CAD-7", questionFont));
 					cell.setColspan(2);
 					cells.add(cell);
-					cells.add(new PdfPCell(new Phrase(""+oshaAudit.getCad7(), questionFont)));
-					
+					cells.add(new PdfPCell(new Phrase("" + oshaAudit.getCad7(), questionFont)));
+
 					cell = new PdfPCell(new Phrase("What is your NEER", questionFont));
 					cell.setColspan(2);
 					cells.add(cell);
-					cells.add(new PdfPCell(new Phrase(""+oshaAudit.getNeer(), questionFont)));
+					cells.add(new PdfPCell(new Phrase("" + oshaAudit.getNeer(), questionFont)));
 				}
-				if(!oshaAudit.getType().equals(OshaType.COHS)) {
+				if (!oshaAudit.getType().equals(OshaType.COHS)) {
 					cell = new PdfPCell(new Phrase("Uploaded Log Files", questionFont));
 					cell.setColspan(2);
 					cells.add(cell);
-					cells.add(new PdfPCell(new Phrase(oshaAudit.isFileUploaded()?"Yes":"No", questionFont)));
+					cells.add(new PdfPCell(new Phrase(oshaAudit.isFileUploaded() ? "Yes" : "No", questionFont)));
 				}
-				
+
 				for (PdfPCell c : cells) {
 					c.setBorderColor(new Color(0xa8, 0x4d, 0x10));
 					c.setPadding(5);
 					oshaTable.addCell(c);
 				}
-				
+
 				document.add(oshaTable);
 
-				
 			}
 		}
 	}
-	
-	public void addAuditData(Document document, AuditCatData auditCatData, AnswerMap answerMap) throws DocumentException {
-		for (AuditSubCategory auditSubCategory : auditCatData.getCategory()
-				.getValidSubCategories()) {
+
+	public void addAuditData(Document document, AuditCatData auditCatData, AnswerMap answerMap)
+			throws DocumentException {
+		for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
 			Paragraph subCategoryParagraph = new Paragraph(20, "Sub Category "
-					+ auditSubCategory.getCategory().getNumber() + " - "
-					+ auditSubCategory.getSubCategory(), subCategoryFont);
+					+ auditSubCategory.getCategory().getNumber() + " - " + auditSubCategory.getSubCategory(),
+					subCategoryFont);
 			subCategoryParagraph.setIndentationLeft(20);
 			document.add(subCategoryParagraph);
 			for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
@@ -326,13 +323,11 @@ public class ContractorView extends ContractorActionSupport {
 					Paragraph questionAnswer = new Paragraph();
 					questionAnswer.setIndentationLeft(30);
 					Chunk question = new Chunk(auditCatData.getCategory().getNumber() + "."
-							+ auditQuestion.getSubCategory().getNumber() + "."
-							+ auditQuestion.getNumber() + " " + auditQuestion.getQuestion(),
-							questionFont);
+							+ auditQuestion.getSubCategory().getNumber() + "." + auditQuestion.getNumber() + " "
+							+ auditQuestion.getQuestion(), questionFont);
 					questionAnswer.add(question);
 					if (answerMap.get(auditQuestion.getId()) != null) {
-						Chunk answer = new Chunk(answerMap.get(auditQuestion.getId())
-								.getAnswer(), answerFont);
+						Chunk answer = new Chunk(answerMap.get(auditQuestion.getId()).getAnswer(), answerFont);
 						questionAnswer.add("   ");
 						questionAnswer.add(answer);
 					}
