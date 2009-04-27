@@ -55,6 +55,11 @@ function save(id, aID, oID, pKey) {
 <h1>Edit Operator/Audit Permissions <span class="sub"><s:property
 	value="aName" /><s:property value="oName" /></span></h1>
 <div>
+<s:if test="operatorChildren.size() > 0">
+<div id="info"> The following operators inherit the Audit Criteria from <s:property value="oName"/> Account : <br/>
+	<s:property value="@com.picsauditing.util.Strings@implode(operatorChildren,',')"/><br/>
+</div>
+</s:if>
 <s:form>
 	<s:if test="oID > 0">
 		<s:select list="operators" listKey="id" cssClass="blueMain"

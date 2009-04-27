@@ -33,6 +33,7 @@ public class AuditOperatorList extends PicsActionSupport {
 	private AuditTypeDAO auditDAO;
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
+	private List<String> operatorChildren = new ArrayList<String>();
 
 	public AuditOperatorList(OperatorAccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
 		this.operatorDAO = operatorDAO;
@@ -45,7 +46,13 @@ public class AuditOperatorList extends PicsActionSupport {
 			return LOGIN;
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
-		operators = operatorDAO.findWhere(false, "", permissions);
+		operators = operatorDAO.findWhere(true, "", permissions);
+		for(OperatorAccount operatorAccount : operators) {
+			if(oID > 0) {
+				if(operatorAccount.getInheritAudits().getId() == oID)
+					operatorChildren.add(operatorAccount.getName());
+			}
+		}
 
 		auditTypes = new AuditTypeCache(auditDAO).getAuditTypes();
 
@@ -81,9 +88,13 @@ public class AuditOperatorList extends PicsActionSupport {
 			for (OperatorAccount operator : operators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
-					newRow = new AuditOperator();
-					newRow.setOperatorAccount(operator);
-					newRow.setAuditType(selectedAudit);
+					if(operators.contains(operator.getInheritAudits()))
+						continue;
+					else {
+						newRow = new AuditOperator();
+						newRow.setOperatorAccount(operator);
+						newRow.setAuditType(selectedAudit);
+					}
 				}
 				data.add(newRow);
 			}
@@ -189,4 +200,7 @@ public class AuditOperatorList extends PicsActionSupport {
 		return FlagColor.values();
 	}
 
+	public List<String> getOperatorChildren() {
+		return operatorChildren;
+	}
 }
