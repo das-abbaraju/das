@@ -965,6 +965,16 @@
 			<result>struts/operators/op_flag_criteria.jsp</result>
 		</action>
 
+		<action name="OperatorFlagCriteriaAjax"
+			class="com.picsauditing.actions.operators.OperatorFlagCriteria">
+			<result>struts/operators/op_flag_criteria_list.jsp</result>
+		</action>
+
+		<action name="FlagCriteriaActionAjax"
+			class="com.picsauditing.actions.operators.FlagCriteriaAction">
+			<result>struts/operators/op_flag_criteria_view.jsp</result>
+		</action>
+
 		<action name="Trevor"
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/blank.jsp</result>

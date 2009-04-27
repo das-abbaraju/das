@@ -26,7 +26,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 		loadPermissions();
-		getOperator();
+		findOperator();
 		tags = operatorTagDAO.findByOperator(id);
 	}
 
@@ -45,7 +45,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 						if (!Strings.isEmpty(tag.getTag())) {
 							// Add a new tag
 							tag.setActive(true);
-							tag.setOperator(getOperator());
+							tag.setOperator(operator);
 							tag.setAuditColumns(getUser());
 							operatorTagDAO.save(tag);
 						}

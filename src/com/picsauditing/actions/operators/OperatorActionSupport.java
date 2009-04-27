@@ -9,7 +9,7 @@ public class OperatorActionSupport extends PicsActionSupport {
 	private static final long serialVersionUID = 8967320010000259378L;
 	protected int id;
 	protected OperatorAccountDAO operatorDao;
-	private OperatorAccount operator;
+	protected OperatorAccount operator;
 	protected String subHeading;
 
 	public OperatorActionSupport(OperatorAccountDAO operatorDao) {
@@ -24,9 +24,9 @@ public class OperatorActionSupport extends PicsActionSupport {
 		this.id = id;
 	}
 
-	public OperatorAccount getOperator() throws Exception {
+	public void findOperator() throws Exception {
+		loadPermissions();
 		if (operator == null) {
-			loadPermissions();
 			
 			if (id == 0) {
 				// Check the parameter list just in case it hasn't been set yet 
@@ -47,7 +47,6 @@ public class OperatorActionSupport extends PicsActionSupport {
 
 			operator = operatorDao.find(id);
 		}
-		return operator;
 	}
 
 	public String getSubHeading() {
