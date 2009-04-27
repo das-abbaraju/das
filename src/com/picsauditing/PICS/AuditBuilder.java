@@ -280,41 +280,35 @@ public class AuditBuilder {
 
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
 		
-		/*
-		 TODO add back in
-		// Get distinct set of corporate caos that have already been "processed"
-		Set<Integer> processedCorporates = new HashSet<Integer>();
-		for(ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getOperator().isCorporate() 
-					&& !cao.getStatus().equals(CaoStatus.Awaiting)
-					&& !cao.isInherit())
-				processedCorporates.add(cao.getOperator().getId());
-		}
-		PicsLogger.log("Found " + processedCorporates.size() + " processedCorporates");
-		
-		Map<Integer, OperatorAccount> corporateMap = new HashMap<Integer, OperatorAccount>();
-
-		*/
-
+		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
+		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
+			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes))
+				operatorSet.add(co.getOperatorAccount().getInheritInsuranceCriteria());
+		}
+
+		for (OperatorAccount operator : operatorSet) {
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
-			OperatorAccount operator = co.getOperatorAccount();
 
 			boolean visible = false;
 			boolean required = false;
 
-			if (operator.getCanSeeInsurance().equals(YesNo.Yes) && (conAudit.getRequestingOpAccount() == null || operator.equals(conAudit.getRequestingOpAccount()))) {
-				PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
-				for (AuditOperator ao : operator.getAudits()) {
-					if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
-						visible = true;
-						if (ao.getMinRiskLevel() > 0 && ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal())
-							required = true;
-						PicsLogger.log(contractor.getName() + " can see " + (required ? "required " : " ")
-								+ ao.getAuditType().getAuditName());
-						break;
-					}
+			// conAudit.getRequestingOpAccount()
+			// NOTE!!! I've removed the requesting op account functionality
+			// I don't think it's very common for an operator to need specific/custom policies only for that facility
+			// If a facility needs "Pollution" and the contractor adds it, 
+			// then other operators should be able to see it as well that subscribe to Pollution insurance 
+			
+			PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
+			for (AuditOperator ao : operator.getAudits()) {
+				if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
+					visible = true;
+					if (ao.getMinRiskLevel() > 0 && ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal())
+						required = true;
+					PicsLogger.log(contractor.getName() + " can see " + (required ? "required " : " ")
+							+ ao.getAuditType().getAuditName());
+					break;
 				}
 			}
 
@@ -327,24 +321,6 @@ public class AuditBuilder {
 				}
 			}
 			
-			/*
-		 	TODO add back in
-			// TODO Consider using Legal names to determine inheritablity
-			if (operator.isInheritInsuranceCriteria() && (cao == null || cao.isInherit())) {
-				// If this operator is a descendant of any of the processed corporates,
-				// then don't require this cao anymore.
-				for(Integer processedCorporate : processedCorporates)
-					// TODO - one day, this may not be sufficient. (weird case below)
-					// We'll need to check for operator inheritance along with ancestry
-					// For example, if I inherit from parent, but parent doesn't inherit 
-					// from grandparent but uncle inherits from grandparent, I would end up inheriting from grandparent (sometimes)
-					if (operator.isDescendantOf(processedCorporate)) {
-						visible = false;
-						break;
-					}
-			}
-			*/
-			
 			if (visible) {
 				if (cao == null) {
 					// If we don't have one, then add it
@@ -353,7 +329,6 @@ public class AuditBuilder {
 					cao.setAudit(conAudit);
 					cao.setOperator(operator);
 					cao.setAuditColumns(user);
-					cao.setInherit(true);
 					conAudit.getOperators().add(cao);
 					if (required) {
 						// This cao is always required so add it if it doesn't exist
@@ -369,13 +344,6 @@ public class AuditBuilder {
 				if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 					// This operator has specifically stated they don't need this policy
 					cao.setRecommendedStatus(CaoStatus.NotApplicable);
-				} else {
-					// If this cao is still needed for the operator, 
-					// then add the operator's ancestors to the map
-					/*
-					 TODO add back in
-					buildMap(corporateMap, operator);
-					*/
 				}
 				
 			} else if (cao != null) {
@@ -398,53 +366,9 @@ public class AuditBuilder {
 			}
 		}
 
-		/*
-		 TODO add back in
-		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
-		while (iter.hasNext()) {
-			ContractorAuditOperator corpCao = iter.next();
-			OperatorAccount corporate = corpCao.getOperator();
-			if (corporate.isCorporate() 
-					&& corpCao.getStatus().equals(CaoStatus.Awaiting)
-					&& !corporateMap.containsKey(corporate.getId())) {
-				// This cao is for a corporate account is no longer needed 
-				// and hasn't been approved or rejected yet
-				conAudit.getOperators().remove(corpCao);
-				contractorAuditOperatorDAO.remove(corpCao);
-			}
-		}
-		
-		// Remove from the map, all the caos we already have
-		for(ContractorAuditOperator cao : conAudit.getOperators()) {
-			corporateMap.remove(cao.getOperator().getId());
-		}
-		
-		// Add the remaining caos (if any)
-		for(OperatorAccount corporate : corporateMap.values()) {
-			PicsLogger.log("Adding missing cao");
-			ContractorAuditOperator cao = new ContractorAuditOperator();
-			cao.setAudit(conAudit);
-			cao.setOperator(corporate);
-			cao.setAuditColumns(user);
-			cao.setInherit(true);
-			conAudit.getOperators().add(cao);
-			cao.setStatus(CaoStatus.Awaiting);
-			cao.setRecommendedStatus(CaoStatus.Awaiting);
-			contractorAuditOperatorDAO.save(cao);
-		}
-		*/
-
 		PicsLogger.stop();
 	}
 	
-	private void buildMap(Map<Integer, OperatorAccount> corporateMap, OperatorAccount operator) {
-		if (operator.getParent() == null)
-			return;
-		// TODO only do this if operator.isInheritInsuranceCritiera
-		corporateMap.put(operator.getParent().getId(), operator.getParent());
-		buildMap(corporateMap, operator.getParent());
-	}
-
 	/**
 	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
 	 * shouldn't be there
