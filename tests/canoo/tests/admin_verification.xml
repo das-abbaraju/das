@@ -16,7 +16,7 @@
 					</group>
 				<group description="Go to Verification page">	
                 <clickLink label="Verify" href="VerifyView.action"/>
-				<clickButton label="Verify PQF"/>
+				<clickButton xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/div[@id='verification_detail']/form[@id='verify']/table[1]/tbody/tr[2]/td/input"/>
 				<sleep seconds="3"/>
 					</group>
 				<group description="Reject safety manual">
