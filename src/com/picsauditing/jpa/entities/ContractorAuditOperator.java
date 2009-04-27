@@ -19,7 +19,6 @@ public class ContractorAuditOperator extends BaseTable {
 	private CaoStatus status = CaoStatus.Pending;
 	private CaoStatus recommendedStatus = CaoStatus.Pending;
 	private String notes;
-	private boolean inherit;
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -70,14 +69,6 @@ public class ContractorAuditOperator extends BaseTable {
 		this.notes = notes;
 	}
 	
-	public boolean isInherit() {
-		return inherit;
-	}
-
-	public void setInherit(boolean inherit) {
-		this.inherit = inherit;
-	}
-
 	@Transient
 	public boolean isNotesLength() {
 		if(Strings.isEmpty(notes))

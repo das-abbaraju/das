@@ -70,14 +70,23 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 	@Override
 	public void prepare() {
 		int invoiceId = getParameter("invoice.id");
-		invoice = invoiceDAO.find(invoiceId);
-		id = invoice.getAccount().getId();
-		contractor = (ContractorAccount) invoice.getAccount();
+		if (invoiceId > 0) {
+			invoice = invoiceDAO.find(invoiceId);
+			if (invoice != null) {
+				id = invoice.getAccount().getId();
+				contractor = (ContractorAccount) invoice.getAccount();
+			}
+		}
 	}
 
 	public String execute() throws NoRightsException, IOException {
 		if (!forceLogin())
 			return LOGIN;
+		
+		if (invoice == null) {
+			addActionError("We could not find the invoice you were looking for");
+			return BLANK;
+		}
 
 		if (!permissions.hasPermission(OpPerms.AllContractors)
 				&& permissions.getAccountId() != invoice.getAccount().getId()) {

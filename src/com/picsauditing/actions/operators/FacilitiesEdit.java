@@ -23,11 +23,13 @@ import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountName;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -43,8 +45,8 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	protected Set<OperatorAccount> relatedFacilities = null;
 	protected int auditorid;
 	protected int nameId;
-	protected int parentid;
 	protected String name;
+	protected int parentid;
 	protected HttpServletRequest request;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
@@ -79,7 +81,28 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				operatorAccountDAO.save(operatorAccount);
 				parentid = operatorAccount.getParent().getId();
 			}
+
+			operatorAccount.setInheritAudits((OperatorAccount) setForeignKey(operatorAccount.getInheritAudits(),
+					"operatorAccount.inheritAudits.id"));
+			operatorAccount.setInheritAuditCategories((OperatorAccount) setForeignKey(operatorAccount
+					.getInheritAuditCategories(), "operatorAccount.inheritAuditCategories.id"));
+			operatorAccount.setInheritFlagCriteria((OperatorAccount) setForeignKey(operatorAccount
+					.getInheritFlagCriteria(), "operatorAccount.inheritFlagCriteria.id"));
+			operatorAccount.setInheritInsuranceCriteria((OperatorAccount) setForeignKey(operatorAccount
+					.getInheritInsuranceCriteria(), "operatorAccount.inheritInsuranceCriteria.id"));
 		}
+	}
+
+	private BaseTable setForeignKey(BaseTable table, String parameter) {
+		if (Strings.isEmpty(request.getParameter(parameter)))
+			return table;
+		int foreignKey = getParameter(parameter);
+		if (table == null || table.getId() != foreignKey) {
+			BaseTable newRow = new OperatorAccount();
+			newRow.setId(foreignKey);
+			return newRow;
+		}
+		return table;
 	}
 
 	public String execute() throws Exception {
@@ -288,13 +311,13 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			// Add myself
 			relatedFacilities.add(operatorAccount);
 			// Add all my parents
-			for(Facility parent : operatorAccount.getCorporateFacilities())
+			for (Facility parent : operatorAccount.getCorporateFacilities())
 				relatedFacilities.add(parent.getCorporate());
 			relatedFacilities.add(operatorAccount.getInheritAuditCategories());
 			relatedFacilities.add(operatorAccount.getInheritAudits());
 			relatedFacilities.add(operatorAccount.getInheritFlagCriteria());
 			relatedFacilities.add(operatorAccount.getInheritInsuranceCriteria());
-			
+
 		}
 		return relatedFacilities;
 	}

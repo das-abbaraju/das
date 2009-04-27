@@ -114,13 +114,13 @@
 					</s:if>
 					
 					<li><div style="font-weight: bold; text-align: center;">Operator Configuration Inheritance</div></li>
-					<li><label>Flag Criteria:</label> <s:select name="operatorAccount.inheritFlagCriteria"
+					<li><label>Flag Criteria:</label> <s:select name="operatorAccount.inheritFlagCriteria.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria"
+					<li><label>Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Audit Types:</label> <s:select name="operatorAccount.inheritAudits"
+					<li><label>Audit Types:</label> <s:select name="operatorAccount.inheritAudits.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Audit Categories:</label> <s:select name="operatorAccount.inheritAuditCategories"
+					<li><label>Audit Categories:</label> <s:select name="operatorAccount.inheritAuditCategories.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 				</s:if>
 			

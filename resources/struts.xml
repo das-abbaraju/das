@@ -606,6 +606,7 @@
 		<action name="AuditDataUpload"
 			class="com.picsauditing.actions.audits.AuditDataUpload">
 			<result>struts/audits/audit_data_upload.jsp</result>
+			<result name="success">struts/audits/audit_data_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		<action name="DownloadAuditData"
