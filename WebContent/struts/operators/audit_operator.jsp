@@ -55,11 +55,23 @@ function save(id, aID, oID, pKey) {
 <h1>Edit Operator/Audit Permissions <span class="sub"><s:property
 	value="aName" /><s:property value="oName" /></span></h1>
 <div>
+<div id="info">
 <s:if test="operatorChildren.size() > 0">
-<div id="info"> The following operators inherit the Audit Criteria from <s:property value="oName"/> Account : <br/>
+The following operators inherit the Audit Criteria from <s:property value="oName"/> Account : <br/>
 	<s:property value="@com.picsauditing.util.Strings@implode(operatorChildren,',')"/><br/>
-</div>
 </s:if>
+<s:else>
+	<s:property value="operator.name" /> inherits the 
+	<s:if test="operator.inheritAudits.equals(operator.inheritInsuranceCriteria)">
+	Audit/Policy Criteria from <a href="AuditOperator.action?oID=<s:property value="operator.inheritAudits.id" />"><s:property value="operator.inheritAudits.name" /></a>
+	</s:if>
+	<s:else>
+	Audit Criteria from <a href="AuditOperator.action?oID=<s:property value="operator.inheritAudits.id" />"><s:property value="operator.inheritAudits.name" /></a> and 
+	Policy Criteria from <a href="AuditOperator.action?oID=<s:property value="operator.inheritInsuranceCriteria.id" />"><s:property value="operator.inheritInsuranceCriteria.name" /></a>
+	</s:else>  
+</s:else>
+</div>
+
 <s:form>
 	<s:if test="oID > 0">
 		<s:select list="operators" listKey="id" cssClass="blueMain"

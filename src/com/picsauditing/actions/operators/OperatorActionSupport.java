@@ -57,4 +57,8 @@ public class OperatorActionSupport extends PicsActionSupport {
 		this.subHeading = subHeading;
 	}
 
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
 }

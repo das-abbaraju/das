@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.operators.OperatorActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -16,12 +16,13 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AuditTypeCache;
 
-public class AuditOperatorList extends PicsActionSupport {
+public class AuditOperatorList extends OperatorActionSupport {
 	private static final long serialVersionUID = -618269908092576272L;
 
 	protected int oID;
@@ -29,14 +30,13 @@ public class AuditOperatorList extends PicsActionSupport {
 
 	protected List<OperatorAccount> operators;
 	protected List<AuditType> auditTypes;
-	protected OperatorAccountDAO operatorDAO;
 	private AuditTypeDAO auditDAO;
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
 	private List<String> operatorChildren = new ArrayList<String>();
 
-	public AuditOperatorList(OperatorAccountDAO operatorDAO, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
-		this.operatorDAO = operatorDAO;
+	public AuditOperatorList(OperatorAccountDAO operatorDao, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
+		super(operatorDao);
 		this.auditDAO = auditDAO;
 		this.dataDAO = dataDAO;
 	}
@@ -46,7 +46,12 @@ public class AuditOperatorList extends PicsActionSupport {
 			return LOGIN;
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
-		operators = operatorDAO.findWhere(true, "", permissions);
+		operators = operatorDao.findWhere(true, "", permissions);
+		if(oID > 0) {
+			super.id = oID;
+			findOperator();
+		}
+		
 		for(OperatorAccount operatorAccount : operators) {
 			if(oID > 0) {
 				if(operatorAccount.getInheritAudits().getId() == oID)
@@ -88,7 +93,11 @@ public class AuditOperatorList extends PicsActionSupport {
 			for (OperatorAccount operator : operators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
-					if(operators.contains(operator.getInheritAudits()))
+					if(rawData.get(0).getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+						if(operators.contains(operator.getInheritInsuranceCriteria()))
+							continue;
+					}
+					else if(operators.contains(operator.getInheritAudits()))
 						continue;
 					else {
 						newRow = new AuditOperator();
