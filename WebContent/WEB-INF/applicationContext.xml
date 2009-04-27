@@ -32,6 +32,7 @@
 	<bean id="DesktopMatrixDAO" class="com.picsauditing.dao.DesktopMatrixDAO"/>
 	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
+	<bean id="FlagQuestionCriteriaDAO" class="com.picsauditing.dao.FlagQuestionCritieraDAO"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>
 	<bean id="OperatorTagDAO" class="com.picsauditing.dao.OperatorTagDAO"/>
 	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO"/>
