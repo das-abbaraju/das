@@ -10,7 +10,7 @@
 			<steps>
 				&login;
 				&body_verify;
-				
+				<!--
 				<storeProperty name="report_link" value="Audit List" />
 				&click_report;
 				<storeProperty name="report_link" value="NCMS Audits" />
@@ -20,8 +20,31 @@
 				<storeProperty name="report_link" value="Sched. &amp; Assign" />
 				&click_report;
 				<storeProperty name="report_link" value="PQF Verification" />
-				&click_report;
+				&click_report;-->
 				
+				<group description="Scheduling Audits">
+				<group description="Set Filter">
+					<clickLink label="Assign" href="AuditAssignments.action"/>
+					<clickLink label="Audit Type"/>
+					<setSelectField name="filter.auditTypeID" text="Office Audit"/>
+					<clickButton label="Search"/>
+					<clickLink label="Scheduled"/>
+					</group>
+						<group description="Schedule Audit and auditor">
+					<setSelectField xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/form[@id='assignScheduleAuditsForm']/table/tbody/tr/td[6]/nobr/select" text="Jesse Cota"/>
+					<setInputField xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/form[@id='assignScheduleAuditsForm']/table/tbody/tr/td[8]/nobr/input" value="6/30/2009"/>
+					<setRadioButton forLabel="Web"/>
+					<clickButton label="Save"/>
+				</group>
+				<group description="">
+					<clickLink label="Audit Calendar" href="audit_calendar.jsp"/>
+					<clickLink label="June"/>
+					<verifyText text="12:00 PM"/>
+					<verifyText text="(Jesse Cota)"/>
+					<clickLink href="Audit.action"/>
+					&doOfficeAudit;
+				</group>
+				</group>
 			</steps>
 		</webtest>
 	</target>
