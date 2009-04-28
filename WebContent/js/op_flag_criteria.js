@@ -1,11 +1,17 @@
 
 function showCriteria(opID , questionID) {
+	startThinking({div:'criteriaEdit', type: 'large', message: "getting Flag Criteria from server.."});
+	$('criteriaEdit').show();
+	
 	var pars = { 'id': opID, 'question.id':questionID };
 	var myAjax = new Ajax.Updater('criteriaEdit','FlagCriteriaActionAjax.action', {
 		method : 'post',
-		parameters : pars,
-		onComplete: function() { }
+		parameters : pars
 	});
+}
+
+function closeEditCriteria() {
+	$('criteriaEdit').innerHTML = '';
 }
 
 function addNewCriteria(opID, questionID) {
@@ -16,14 +22,6 @@ function addNewCriteria(opID, questionID) {
 		parameters : pars,
 		onComplete: function() { }
 	});
-}
-
-function closeModal() {
-	Effect.Fade('OverlayContainer');
-}
-
-function closeEditCriteria() {
-	$('criteriaEdit').hide();
 }
 
 function saveCriteria(opID, questionID) {

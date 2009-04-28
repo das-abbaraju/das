@@ -3,7 +3,8 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th></th>
+			<th>Type</th>
+			<th class="right">#</th>
 			<th>Question</th>
 			<th>Red if...</th>
 			<th title="and not Red">Amber if...</th>
@@ -11,8 +12,8 @@
 	</thead>
 	<s:iterator value="questionList">
 		<tr>
-			<td>
-				<s:property value="question.subCategory.category.auditType.auditName" /><br />
+			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>
+			<td class="right">
 				<nobr><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></nobr>
 			</td>
 			<td>
@@ -27,6 +28,3 @@
 		</tr>
 	</s:iterator>
 </table>
-
-<s:property value="operator == operator.inheritFlagCriteria"/>
-
