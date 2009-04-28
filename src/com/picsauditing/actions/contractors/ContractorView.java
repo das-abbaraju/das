@@ -10,6 +10,7 @@ import javax.servlet.ServletOutputStream;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -295,7 +296,16 @@ public class ContractorView extends ContractorActionSupport {
 					cell = new PdfPCell(new Phrase("Uploaded Log Files", questionFont));
 					cell.setColspan(2);
 					cells.add(cell);
-					cells.add(new PdfPCell(new Phrase(oshaAudit.isFileUploaded() ? "Yes" : "No", questionFont)));
+					if(oshaAudit.isFileUploaded()) {
+						Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.UNDERLINE, new Color(0, 0, 255)));
+						anchor.setReference("http://www.picsauditing.com/DownloadOsha.action?id="+oshaAudit.getId());
+						anchor.setName("View File");
+						Phrase phrase = new Phrase();
+						phrase.add(anchor);
+						cells.add(new PdfPCell(phrase));
+					}
+					else
+						cells.add(new PdfPCell(new Phrase("No File Uploaded", questionFont)));
 				}
 
 				for (PdfPCell c : cells) {
