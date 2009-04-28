@@ -54,7 +54,7 @@ public class ContractorView extends ContractorActionSupport {
 	Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
 	Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
 	Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
-	Font answerFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLUE);
+	Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
 
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, AuditDataDAO auditDataDAO) {
@@ -332,9 +332,14 @@ public class ContractorView extends ContractorActionSupport {
 				if (auditQuestion.isValid()) {
 					Paragraph questionAnswer = new Paragraph();
 					questionAnswer.setIndentationLeft(30);
-					Chunk question = new Chunk(auditCatData.getCategory().getNumber() + "."
+					String questionLine = "";
+					if ("Yes".equals(auditQuestion.getIsRequired()))
+						questionLine += "*";
+					questionLine += auditCatData.getCategory().getNumber() + "."
 							+ auditQuestion.getSubCategory().getNumber() + "." + auditQuestion.getNumber() + " "
-							+ auditQuestion.getQuestion(), questionFont);
+							+ auditQuestion.getQuestion();
+					
+					Chunk question = new Chunk(questionLine, questionFont);
 					questionAnswer.add(question);
 					if (answerMap.get(auditQuestion.getId()) != null) {
 						Chunk answer = new Chunk(answerMap.get(auditQuestion.getId()).getAnswer(), answerFont);
