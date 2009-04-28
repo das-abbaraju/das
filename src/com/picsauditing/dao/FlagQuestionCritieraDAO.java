@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.Query;
 
@@ -35,7 +36,19 @@ public class FlagQuestionCritieraDAO extends PicsDAO {
 
 	public Map<FlagColor, FlagQuestionCriteria> find(int operatorID, int questionID) {
 		// TODO fill this in
-		return null;
+		Query query = em.createQuery("SELECT f FROM FlagQuestionCriteria f WHERE opID = ? and questionID = ?");
+		query.setParameter(1, operatorID);
+		query.setParameter(2, questionID);
+
+		List<FlagQuestionCriteria> resultList = query.getResultList();
+		if (resultList.size() > 0) {
+			Map<FlagColor, FlagQuestionCriteria> resultMap = new TreeMap<FlagColor, FlagQuestionCriteria>();
+			for (FlagQuestionCriteria result : resultList) {
+				resultMap.put(result.getFlagColor(), result);
+			}
+			return resultMap;
+		} else
+			return null;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -3,6 +3,7 @@ package com.picsauditing.actions.operators;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.FlagQuestionCritieraDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -10,15 +11,20 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 
 public class FlagCriteriaAction extends OperatorActionSupport implements Preparable {
-	
+
 	private FlagQuestionCriteria red;
 	private FlagQuestionCriteria amber;
+
 	private FlagQuestionCritieraDAO criteriaDao;
+	private AuditQuestionDAO questionDao;
+
 	private AuditQuestion question = null;
-	
-	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCritieraDAO criteriaDao) {
+
+	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCritieraDAO criteriaDao,
+			AuditQuestionDAO questionDao) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;
+		this.questionDao = questionDao;
 	}
 
 	@Override
@@ -28,25 +34,27 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		int questionID = getParameter("question.id");
 		if (questionID > 0) {
 			Map<FlagColor, FlagQuestionCriteria> criteriaMap = criteriaDao.find(operator.getId(), questionID);
-			red = criteriaMap.get(FlagColor.Red);
-			if (red != null)
-				question = red.getAuditQuestion();
-			amber = criteriaMap.get(FlagColor.Amber);
-			if (amber != null)
-				question = amber.getAuditQuestion();
+			if (criteriaMap != null) {
+				red = criteriaMap.get(FlagColor.Red);
+				if (red != null)
+					question = red.getAuditQuestion();
+				amber = criteriaMap.get(FlagColor.Amber);
+				if (amber != null)
+					question = amber.getAuditQuestion();
+			}
 		}
 		if (question == null) {
 			// TODO Add in the QuestionDAO
-			// question = getParameter("question.id")
+			question = questionDao.find(getParameter("question.id"));
 		}
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		// TODO Check permissions to edit
 		// REQUIRE an operator record
 		// REQUIRE a question record
-		
+
 		if (button != null) {
 			if ("delete".equals(button)) {
 				// TODO delete both criteria
@@ -63,7 +71,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 				// TODO insert each criteria
 			}
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -74,7 +82,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		}
 		return question;
 	}
-	
+
 	public void setQuestion(AuditQuestion question) {
 		this.question = question;
 	}
@@ -94,6 +102,5 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 	public void setAmber(FlagQuestionCriteria amber) {
 		this.amber = amber;
 	}
-	
-	
+
 }
