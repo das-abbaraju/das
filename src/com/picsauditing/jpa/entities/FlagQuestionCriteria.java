@@ -165,6 +165,17 @@ public class FlagQuestionCriteria extends BaseTable {
 		}
 		return false;
 	}
+	
+	/**
+	 * Print this out:
+	 * value < 
+	 */
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("<i>value</i> ").append(comparison).append(" ").append(this.value);
+		return buf.toString();
+	}
 
 	@Override
 	public int hashCode() {
