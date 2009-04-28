@@ -58,6 +58,7 @@
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
 	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle" scope="prototype"/>
 	<bean id="CronMetricsAggregator" class="com.picsauditing.cron.InMemoryAggregator"/>
+	<bean id="AuditPdfConverter" class="com.picsauditing.actions.contractors.AuditPdfConverter" scope="prototype"/>
 	
 		
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
