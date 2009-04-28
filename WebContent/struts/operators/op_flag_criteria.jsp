@@ -6,19 +6,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
-
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript">
-	function AddNewCriteria(questionID) {
-		var pars = { 'id': <s:property value="id"/>, 'question.id':questionID };
-		
-		var myAjax = new Ajax.Updater('criteriaEdit','FlagCriteriaActionAjax.action', {
-			method : 'post',
-			parameters : pars,
-			onComplete: function() { }
-		});
-	}
-</script>
 </head>
 <body>
 <h1>Manage Flag Criteria
@@ -29,7 +16,7 @@
 <s:include value="op_flag_criteria_list.jsp"></s:include>
 </div>
 
-<div id="criteriaEdit" >
+<div id="criteriaEdit">
 Edit Criteria
 </div>
 
