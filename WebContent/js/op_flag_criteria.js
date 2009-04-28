@@ -7,3 +7,11 @@ function showCriteria(opID , questionID) {
 		onComplete: function() { }
 	});
 }
+
+function closeEditCriteria() {
+	$('criteriaEdit').hide();
+}
+
+function saveCriteria(opID, questionID) {
+	alert($('criteriaEditForm').serialize());
+}
