@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.picsauditing.dao.FlagQuestionCritieraDAO;
+import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -14,9 +14,9 @@ import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 public class OperatorFlagCriteria extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
-	private FlagQuestionCritieraDAO criteriaDao;
+	private FlagQuestionCriteriaDAO criteriaDao;
 
-	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCritieraDAO criteriaDao) {
+	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;
 	}

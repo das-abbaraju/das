@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.FlagQuestionCritieraDAO;
+import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -15,12 +15,12 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 	private FlagQuestionCriteria red;
 	private FlagQuestionCriteria amber;
 
-	private FlagQuestionCritieraDAO criteriaDao;
+	private FlagQuestionCriteriaDAO criteriaDao;
 	private AuditQuestionDAO questionDao;
 
 	private AuditQuestion question = null;
 
-	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCritieraDAO criteriaDao,
+	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			AuditQuestionDAO questionDao) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;

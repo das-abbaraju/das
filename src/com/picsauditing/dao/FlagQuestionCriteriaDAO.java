@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 
 @Transactional
-public class FlagQuestionCritieraDAO extends PicsDAO {
+public class FlagQuestionCriteriaDAO extends PicsDAO {
 
 	public FlagQuestionCriteria save(FlagQuestionCriteria o) {
 		if (o.getId() == 0) {
@@ -34,9 +34,10 @@ public class FlagQuestionCritieraDAO extends PicsDAO {
 		return em.find(FlagQuestionCriteria.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<FlagColor, FlagQuestionCriteria> find(int operatorID, int questionID) {
 		// TODO fill this in
-		Query query = em.createQuery("SELECT f FROM FlagQuestionCriteria f WHERE opID = ? and questionID = ?");
+		Query query = em.createQuery("SELECT f FROM FlagQuestionCriteria f WHERE operatorAccount.id = ? and auditQuestion.id = ?");
 		query.setParameter(1, operatorID);
 		query.setParameter(2, questionID);
 
