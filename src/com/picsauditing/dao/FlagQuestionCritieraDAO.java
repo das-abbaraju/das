@@ -1,6 +1,9 @@
 package com.picsauditing.dao;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,14 @@ public class FlagQuestionCritieraDAO extends PicsDAO {
 	public Map<FlagColor, FlagQuestionCriteria> find(int operatorID, int questionID) {
 		// TODO fill this in
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<FlagQuestionCriteria> findByOperator(int operatorID) {
+		Query query = em.createQuery("SELECT t FROM FlagQuestionCriteria t "
+				+ "WHERE t.operatorAccount.id = ? ");
+		query.setParameter(1, operatorID);
+		return query.getResultList();
 	}
 
 }

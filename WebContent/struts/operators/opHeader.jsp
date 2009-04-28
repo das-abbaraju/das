@@ -12,6 +12,7 @@
 	</s:if>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>
 	<li><a href="op_editFlagCriteria.jsp?opID=<s:property value="operator.id"/>">Flag Criteria</a></li>
+	<li><a href="OperatorFlagCriteria.action?id=<s:property value="operator.id"/>">Flag Criteria 2</a></li>
 	<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('operator_tags')">class="current"</s:if>>Tags</a></li>
 </ul>
