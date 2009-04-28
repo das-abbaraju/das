@@ -4,12 +4,13 @@
 	<thead>
 		<tr>
 			<th>Type</th>
-			<th class="right">#</th>
+			<th class="center">#</th>
 			<th>Question</th>
-			<th>Red if...</th>
-			<th title="and not Red">Amber if...</th>
+			<th><s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.smallIcon" escape="false"/> Red if...</th>
+			<th title="and not Red"><s:property value="@com.picsauditing.jpa.entities.FlagColor@Amber.smallIcon" escape="false"/> Amber if...</th>
 		</tr>
 	</thead>
+	
 	<s:iterator value="questionList">
 		<tr>
 			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>

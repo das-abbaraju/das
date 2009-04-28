@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @Transactional
 public class FlagQuestionCriteriaDAO extends PicsDAO {
@@ -53,10 +54,12 @@ public class FlagQuestionCriteriaDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<FlagQuestionCriteria> findByOperator(int operatorID) {
+	public List<FlagQuestionCriteria> findByOperator(OperatorAccount operator) {
 		Query query = em.createQuery("SELECT t FROM FlagQuestionCriteria t "
-				+ "WHERE t.operatorAccount.id = ? ");
-		query.setParameter(1, operatorID);
+				+ "WHERE (t.operatorAccount = :flagID AND t.auditQuestion.subCategory.category.auditType.classType <> 'Policy')" +
+					" OR (t.operatorAccount = :insureID AND t.auditQuestion.subCategory.category.auditType.classType = 'Policy')");
+		query.setParameter("flagID", operator.getInheritFlagCriteria());
+		query.setParameter("insureID", operator.getInheritInsuranceCriteria());
 		return query.getResultList();
 	}
 
