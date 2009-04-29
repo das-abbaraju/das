@@ -9,6 +9,10 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
+<script type="text/javascript">
+var opID = 0;
+</script>
+
 </head>
 <body>
 <h1>Manage Flag Criteria <span class="sub"><s:property value="operator.name" /></span></h1>
@@ -40,13 +44,19 @@
 	style="display: none; position: absolute; top: 100px; left: 100px; z-index: 10; background-color: white; padding: 10px; border: 2px solid black;"></div>
 
 <button id="addButton" class="picsbutton positive" onclick="showNewCriteria();">+ Add Criteria</button>
-<div id="criteriaAdd" style="display: none; clear: left;">
-Search for a Question: 
+<table id="criteriaAdd" style="display: none;">
+<tr>
+<td style="padding: 5px; vertical-align: top;"><input type="text" id="questionTextBox" value="" /></td>
+<td>
 <button id="questionSearch" class="picsbutton positive" onclick="questionSearch();">Search</button>
-
-</div>
-
+<button id="newCriteriaClose" class="picsbutton negative" onclick="closeNewCriteria();">Close</button>
+</td>
+</tr>
+</table>
 <div class="clear"></div>
+
+<div id="questionList"></div>
+
 <div>
 <table style="width: 100%;">
 	<tr>

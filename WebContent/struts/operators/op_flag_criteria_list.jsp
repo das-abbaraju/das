@@ -20,9 +20,9 @@
 			<td>
 				<s:if test="(operator == operator.inheritFlagCriteria && !question.subCategory.category.auditType.classType.policy) 
 						|| (operator == operator.inheritInsuranceCriteria && question.subCategory.category.auditType.classType.policy)">
-						<a href="#editCriteria" onclick="showCriteria('<s:property value="operator.id" />', '<s:property value="question.id" />');"><s:property value="question.question" /></a>
+						<a href="#editCriteria" onclick="showCriteria('<s:property value="operator.id" />', '<s:property value="question.id" />'); return false;"><s:property value="question.question" /></a>
 				</s:if>
-				<s:else><s:property value="question.question" /></s:else>
+				<s:else><s:property value="question.question" escape="false" /></s:else>
 			</td>
 			<td><s:property value="red" escape="false" /></td>
 			<td><s:property value="amber" escape="false" /></td>

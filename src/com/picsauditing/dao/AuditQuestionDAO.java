@@ -32,12 +32,18 @@ public class AuditQuestionDAO extends PicsDAO {
 		return em.find(AuditQuestion.class, id);
 	}
 
+	/**
+	 * Get the first 100 results that match the criteria
+	 * @param where
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findWhere(String where) {
 		if (where == null)
 			where = "";
 		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE " + where + "ORDER BY "
 				+ "t.subCategory.category.number,t.subCategory.number,t.number");
+		query.setMaxResults(100);
 		return query.getResultList();
 
 	}
