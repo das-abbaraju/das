@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript">
-var opID = 0;
+var opID = '<s:property value="operator.id" />';
 </script>
 
 </head>
