@@ -54,6 +54,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
 	protected boolean mustVerify;
+	protected boolean renewable;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -153,6 +154,14 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setMustVerify(boolean mustVerify) {
 		this.mustVerify = mustVerify;
+	}
+	
+	public boolean isRenewable() {
+		return renewable;
+	}
+
+	public void setRenewable(boolean renewable) {
+		this.renewable = renewable;
 	}
 
 	@OneToMany(mappedBy = "auditType")
