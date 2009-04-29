@@ -1,6 +1,8 @@
 package com.picsauditing.actions.users;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
@@ -8,11 +10,17 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -40,10 +48,10 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public String execute() throws Exception {
 		loadPermissions();
-		
+
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
-		
+
 		permissions.tryPermission(OpPerms.EditProfile);
 
 		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
@@ -56,11 +64,12 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					addActionError("Passwords don't match");
 
 				Vector<String> errors = PasswordValidator.validateContractor(u, password1);
-				
+
 				if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail())) {
-					errors.add("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
+					errors
+							.add("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
 				}
-				
+
 				for (String error : errors)
 					addActionError(error);
 
@@ -95,9 +104,22 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	public void setPassword2(String password2) {
 		this.password2 = password2;
 	}
-	
+
 	public List<UserSwitch> getSwitchTos() {
 		return userSwitchDao.findByUserId(u.getId());
+	}
+
+	public List<AuditType> getViewableAuditsList() {
+		AuditTypeDAO dao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		String auditsList = Strings.implode(permissions.getCanSeeAudit(), ",");
+		if (auditsList.length() > 0)
+			return dao.findWhere("id IN (" + auditsList + ")");
+		return new ArrayList<AuditType>();
+	}
+
+	public List<UserLoginLog> getRecentLogins() {
+		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
+		return loginLogDao.findRecentLogins(u.getUsername(), 10);
 	}
 
 }
