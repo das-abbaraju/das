@@ -34,6 +34,7 @@ public class OperatorAccount extends Account {
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
+	private OperatorAccount inheritInsurance;
 	private OperatorAccount inheritAudits;
 	private OperatorAccount inheritAuditCategories;
 
@@ -167,6 +168,16 @@ public class OperatorAccount extends Account {
 	@JoinColumn(name="inheritInsuranceCriteria")
 	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="inheritInsurance")
+	public OperatorAccount getInheritInsurance() {
+		return inheritInsurance;
+	}
+
+	public void setInheritInsurance(OperatorAccount inheritInsurance) {
+		this.inheritInsurance = inheritInsurance;
 	}
 
 	@ManyToOne
@@ -339,7 +350,7 @@ public class OperatorAccount extends Account {
 	public boolean isHasLegalName(String legalName) {
 		if (legalName.equals("All"))
 			return true;
-		for (AccountName accountName : getNames()) {
+		for (AccountName accountName : getInheritInsurance().getNames()) {
 			if (accountName.getName().equalsIgnoreCase(legalName)) {
 				return true;
 			}

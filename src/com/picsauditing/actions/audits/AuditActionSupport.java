@@ -312,7 +312,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 					canSeeLegalName = true;
 				}
 				if (canSeeLegalName) {
-					for (AccountName legalName : co.getOperatorAccount()
+					for (AccountName legalName : co.getOperatorAccount().getInheritInsurance()
 							.getNames()) {
 						list.add(legalName.getName());
 					}

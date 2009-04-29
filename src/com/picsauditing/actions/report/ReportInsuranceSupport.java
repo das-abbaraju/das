@@ -225,7 +225,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 							OperatorAccount thisOp = (OperatorAccount) getUser()
 									.getAccount();
 	
-							List<AccountName> names = thisOp.getNames();
+							List<AccountName> names = thisOp.getInheritInsurance().getNames();
 	
 							if (names != null) {
 								for (AccountName accountName : names) {

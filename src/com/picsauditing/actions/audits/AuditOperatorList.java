@@ -93,7 +93,7 @@ public class AuditOperatorList extends OperatorActionSupport {
 			for (OperatorAccount operator : operators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
-					if(rawData.get(0).getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+					if(rawData != null && rawData.get(0).getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 						if(operators.contains(operator.getInheritInsuranceCriteria()))
 							continue;
 					}
