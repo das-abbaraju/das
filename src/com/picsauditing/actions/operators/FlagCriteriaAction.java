@@ -45,27 +45,17 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 			}
 		}
 		if (question == null) {
-			// TODO Add in the QuestionDAO
 			question = questionDao.find(getParameter("question.id"));
 		}
-		// criteriaDao.clear();
 	}
 
 	@Override
 	public String execute() throws Exception {
-		// TODO Check permissions to edit
 		// REQUIRE an operator record
 		// REQUIRE a question record
 
 		if (button != null) {
-			if ("delete".equals(button)) {
-				// TODO delete both criteria
-				addActionMessage("Successfully deleted criteria");
-				return BLANK;
-			}
 			if ("save".equals(button)) {
-				// TODO insert or update each criteria
-				// TODO delete unused criteria
 				addActionMessage("Successfully saved criteria");
 				if (red != null) {
 					red.setFlagColor(FlagColor.Red);
@@ -73,7 +63,6 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 					red.setChecked(YesNo.Yes);
 					red.setOperatorAccount(operator);
 					criteriaDao.save(red);
-					addActionMessage(red.getFlagColor() + " " + red);
 				}
 				if (amber != null) {
 					amber.setFlagColor(FlagColor.Amber);
@@ -81,7 +70,6 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 					amber.setChecked(YesNo.Yes);
 					amber.setOperatorAccount(operator);
 					criteriaDao.save(amber);
-					addActionMessage(amber.getFlagColor() + " " + amber);
 				}
 				return BLANK;
 			}

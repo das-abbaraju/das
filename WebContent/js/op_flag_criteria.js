@@ -49,9 +49,9 @@ function saveCriteria(questionID) {
 			method: 'post',
 			parameters: pars,
 			onComplete: function() {
-					//stopThinking();
-					//refreshList();
-					//closeCriteriaEdit();
+					stopThinking();
+					refreshList();
+					closeCriteriaEdit();
 				}
 		});
 }
