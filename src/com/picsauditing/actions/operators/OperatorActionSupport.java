@@ -1,5 +1,7 @@
 package com.picsauditing.actions.operators;
 
+import java.util.List;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -11,6 +13,10 @@ public class OperatorActionSupport extends PicsActionSupport {
 	protected OperatorAccountDAO operatorDao;
 	protected OperatorAccount operator;
 	protected String subHeading;
+	private List<OperatorAccount> inheritsFlagCriteria = null;
+	private List<OperatorAccount> inheritsInsuranceCriteria = null;
+	private List<OperatorAccount> inheritsAudits = null;
+	private List<OperatorAccount> inheritsInsurance = null;
 
 	public OperatorActionSupport(OperatorAccountDAO operatorDao) {
 		this.operatorDao = operatorDao;
@@ -59,6 +65,38 @@ public class OperatorActionSupport extends PicsActionSupport {
 
 	public OperatorAccount getOperator() {
 		return operator;
+	}
+	
+	public List<OperatorAccount> getInheritsFlagCriteria() {
+		if (inheritsFlagCriteria == null) {
+			inheritsFlagCriteria = operatorDao.findWhere(true, "a.inheritFlagCriteria.id = " + operator.getId());
+			inheritsFlagCriteria.remove(operator);
+		}
+		return inheritsFlagCriteria;
+	}
+
+	public List<OperatorAccount> getInheritsInsuranceCriteria() {
+		if (inheritsInsuranceCriteria == null) {
+			inheritsInsuranceCriteria = operatorDao.findWhere(true, "a.inheritInsuranceCriteria.id = " + operator.getId());
+			inheritsInsuranceCriteria.remove(operator);
+		}
+		return inheritsInsuranceCriteria;
+	}
+
+	public List<OperatorAccount> getInheritsAudits() {
+		if (inheritsAudits == null) {
+			inheritsAudits = operatorDao.findWhere(true, "a.inheritAudits.id = " + operator.getId());
+			inheritsAudits.remove(operator);
+		}
+		return inheritsAudits;
+	}
+
+	public List<OperatorAccount> getInheritsInsurance() {
+		if (inheritsInsurance == null) {
+			inheritsInsurance = operatorDao.findWhere(true, "a.inheritInsurance.id = " + operator.getId());
+			inheritsInsurance.remove(operator);
+		}
+		return inheritsInsurance;
 	}
 
 }

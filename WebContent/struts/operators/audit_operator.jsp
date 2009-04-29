@@ -55,22 +55,35 @@ function save(id, aID, oID, pKey) {
 <h1>Edit Operator/Audit Permissions <span class="sub"><s:property
 	value="aName" /><s:property value="oName" /></span></h1>
 <div>
-<div id="info">
-<s:if test="operatorChildren.size() > 0">
-The following operators inherit the Audit Criteria from <s:property value="oName"/> Account : <br/>
-	<s:property value="@com.picsauditing.util.Strings@implode(operatorChildren,',')"/><br/>
-</s:if>
-<s:else>
-	<s:property value="operator.name" /> inherits the 
-	<s:if test="operator.inheritAudits.equals(operator.inheritInsuranceCriteria)">
-	Audit/Policy Criteria from <a href="AuditOperator.action?oID=<s:property value="operator.inheritAudits.id" />"><s:property value="operator.inheritAudits.name" /></a>
-	</s:if>
-	<s:else>
-	Audit Criteria from <a href="AuditOperator.action?oID=<s:property value="operator.inheritAudits.id" />"><s:property value="operator.inheritAudits.name" /></a> and 
-	Policy Criteria from <a href="AuditOperator.action?oID=<s:property value="operator.inheritInsuranceCriteria.id" />"><s:property value="operator.inheritInsuranceCriteria.name" /></a>
-	</s:else>  
-</s:else>
+
+<div>
+<table style="width: 100%;">
+	<tr>
+		<s:if test="inheritsAudits.size > 0">
+			<td style="padding: 10px;">
+			<h3>Companies that inherit the Audit </h3>
+			<ul>
+				<s:iterator value="inheritsAudits">
+					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
+				</s:iterator>
+			</ul>
+			</td>
+		</s:if>
+		<s:if test="inheritsInsurance.size > 0">
+			<td style="padding: 10px;">
+			<h3>Companies that inherit the InsureGuard</h3>
+			<ul>
+				<s:iterator value="inheritsInsurance">
+					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
+				</s:iterator>
+			</ul>
+			</td>
+		</s:if>
+	</tr>
+</table>
 </div>
+
+
 
 <s:form>
 	<s:if test="oID > 0">
