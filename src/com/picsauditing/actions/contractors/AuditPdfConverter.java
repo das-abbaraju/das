@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+
+import org.apache.struts2.ServletActionContext;
+
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -27,8 +31,9 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -42,21 +47,48 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class AuditPdfConverter extends PicsActionSupport {
+public class AuditPdfConverter extends ContractorActionSupport {
 	private List<File> attachments = new ArrayList<File>();
 	private AuditDataDAO auditDataDAO;
-	Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
-	Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
-	Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
-	Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
-	Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
-	Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
+	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
+	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
+	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
+	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
+	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
+	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
 
-	public AuditPdfConverter(AuditDataDAO auditDataDAO) {
+	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO) {
+		super(accountDao, auditDao);
 		 this.auditDataDAO = auditDataDAO;
 	}
 	
-	public void createDocument(Document document, ContractorAccount contractor) throws Exception {
+	@Override
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		limitedView = true;
+		findContractor();
+		
+		String filename = contractor.getName();
+		filename += ".pdf";
+		
+		ServletActionContext.getResponse().setContentType("application/pdf");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + filename);
+		Document document = new Document();
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		PdfWriter pdfWriter = PdfWriter.getInstance(document, outstream);
+		
+		document.open();
+		
+		createDocument(document, contractor);
+		showOshaLogs(document, pdfWriter);
+		document.close();
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+		return null;
+	}
+	
+	private void createDocument(Document document, ContractorAccount contractor) throws Exception {
 		try {
 			Paragraph conName = new Paragraph(contractor.getName(), headerFont);
 			conName.setAlignment(Element.ALIGN_CENTER);
@@ -102,7 +134,7 @@ public class AuditPdfConverter extends PicsActionSupport {
 		}
 	}
 
-	public void addOshaLog(Document document, ContractorAudit conAudit) throws DocumentException {
+	private void addOshaLog(Document document, ContractorAudit conAudit) throws DocumentException {
 		for (OshaAudit oshaAudit : conAudit.getOshas()) {
 			String logInfo = oshaAudit.getType().toString() + " - " + oshaAudit.getLocation();
 			if (!Strings.isEmpty(oshaAudit.getDescription()))
@@ -227,7 +259,7 @@ public class AuditPdfConverter extends PicsActionSupport {
 		}
 	}
 
-	public void addAuditData(Document document, AuditCatData auditCatData, AnswerMap answerMap)
+	private void addAuditData(Document document, AuditCatData auditCatData, AnswerMap answerMap)
 			throws DocumentException {
 		for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
 			Paragraph subCategoryParagraph = new Paragraph(20, "Sub Category "
@@ -275,7 +307,7 @@ public class AuditPdfConverter extends PicsActionSupport {
 		}
 	}
 
-	public void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException,
+	private void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException,
 			IOException {
 		for (File oshaFile : attachments) {
 			try {

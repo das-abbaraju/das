@@ -57,25 +57,6 @@ public class ContractorView extends ContractorActionSupport {
 			contractorTagDAO.remove(tagId);
 		}
 
-		if ("PrintPDF".equals(button)) {
-			String filename = contractor.getName();
-			filename += ".pdf";
-			ServletActionContext.getResponse().setContentType("application/pdf");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + filename);
-			Document document = new Document();
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			PdfWriter pdfWriter = PdfWriter.getInstance(document, outstream);
-			
-			document.open();
-			
-			auditPdfConverter.createDocument(document, contractor);
-			auditPdfConverter.showOshaLogs(document, pdfWriter);
-			document.close();
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
-
 		if (permissions.isOperator()) {
 			operatorTags = getOperatorTagNamesList();
 

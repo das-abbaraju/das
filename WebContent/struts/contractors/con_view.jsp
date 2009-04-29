@@ -97,7 +97,7 @@
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
 		
 		<pics:permission perm="ContractorDetails">
-			<strong><a class="pdf" href="ContractorView.action?id=<s:property value="id"/>&button=PrintPDF">View PQF & Annual Update</a>
+			<strong><a class="pdf" href="AuditPdfConverter.action?id=<s:property value="id"/>">Download PQF & Annual Updates</a>
 			</strong><br/>
 		</pics:permission>
 		
