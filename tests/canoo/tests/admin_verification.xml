@@ -35,7 +35,7 @@
 				<verifyText text="Trevor Allred"/>
 				<clickElement htmlID="approveButton1"/>
 				<clickLink label="PQF"/>
-				<verifyText text="Active"/>
+				<verifyText text="Active"/> 
 				</group>
 				<group description="Shift back to pending">
 				<clickLink label="System Edit"/>
