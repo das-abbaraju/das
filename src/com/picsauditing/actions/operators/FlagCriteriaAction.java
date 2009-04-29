@@ -9,6 +9,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.YesNo;
 
 public class FlagCriteriaAction extends OperatorActionSupport implements Preparable {
 
@@ -47,6 +48,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 			// TODO Add in the QuestionDAO
 			question = questionDao.find(getParameter("question.id"));
 		}
+		// criteriaDao.clear();
 	}
 
 	@Override
@@ -65,6 +67,22 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 				// TODO insert or update each criteria
 				// TODO delete unused criteria
 				addActionMessage("Successfully saved criteria");
+				if (red != null) {
+					red.setFlagColor(FlagColor.Red);
+					red.setAuditQuestion(question);
+					red.setChecked(YesNo.Yes);
+					red.setOperatorAccount(operator);
+					criteriaDao.save(red);
+					addActionMessage(red.getFlagColor() + " " + red);
+				}
+				if (amber != null) {
+					amber.setFlagColor(FlagColor.Amber);
+					amber.setAuditQuestion(question);
+					amber.setChecked(YesNo.Yes);
+					amber.setOperatorAccount(operator);
+					criteriaDao.save(amber);
+					addActionMessage(amber.getFlagColor() + " " + amber);
+				}
 				return BLANK;
 			}
 			if ("add".equals(button)) {

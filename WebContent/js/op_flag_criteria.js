@@ -21,7 +21,7 @@ function showCriteria(questionID) {
 			});
 }
 
-function closeEditCriteria() {
+function closeCriteriaEdit() {
 	$('criteriaEdit').innerHTML = '';
 	$('criteriaEdit').hide();
 	new Effect.Opacity('criteriaList', {
@@ -35,10 +35,25 @@ function saveCriteria(questionID) {
 		message :"saving criteria..."
 	});
 	// TODO save criteriaEditForm
-	// alert($('criteriaEditForm').serialize());
-	stopThinking();
-	refreshList();
-	closeEditCriteria();
+	var pars = "";
+	//Form.getElements('criteriaEditForm', 'button').invoke('disable');
+	Form.getElements('criteriaEditForm').each(function (e) 
+			{
+				if (!$F(e).blank() && e.type != 'button')
+					pars += e.serialize() + "&";
+			}.bind(pars));
+	// TODO handle DAO save
+	pars += 'button=save';
+	alert(pars);
+	var myAjax = new Ajax.Updater('criteriaEdit','FlagCriteriaActionAjax.action', {
+			method: 'post',
+			parameters: pars,
+			onComplete: function() {
+					//stopThinking();
+					//refreshList();
+					//closeCriteriaEdit();
+				}
+		});
 }
 
 function refreshList() {
@@ -46,9 +61,11 @@ function refreshList() {
 		message :"refreshing list..."
 	});
 	$('criteriaList').show();
+	var pars = { id : opID };
 	var myAjax = new Ajax.Updater('criteriaList',
 			'OperatorFlagCriteriaAjax.action', {
 				method :'post',
+				parameters: pars,
 				onComplete : function() {
 					stopThinking();
 				}
