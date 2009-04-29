@@ -54,7 +54,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean canContractorEdit;
 	protected Integer monthsToExpire;
 	protected boolean mustVerify;
-	protected boolean renewable;
+	protected boolean renewable = true;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -91,6 +91,10 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.description = description;
 	}
 
+	/**
+	 * More than one audit of this type can be active for a contractor at a time
+	 * @return
+	 */
 	public boolean isHasMultiple() {
 		return hasMultiple;
 	}
@@ -156,6 +160,10 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		this.mustVerify = mustVerify;
 	}
 	
+	/**
+	 * Do we auto create a new audit when the old one is about to expire?
+	 * @return
+	 */
 	public boolean isRenewable() {
 		return renewable;
 	}
