@@ -24,17 +24,15 @@ public class ContractorView extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
-	private AuditPdfConverter auditPdfConverter;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, AuditPdfConverter auditPdfConverter) {
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
-		this.auditPdfConverter = auditPdfConverter;
 	}
 
 	public String execute() throws Exception {
