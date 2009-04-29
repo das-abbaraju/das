@@ -25,7 +25,10 @@ public class FlagQuestionCriteriaDAO extends PicsDAO {
 	}
 
 	public void remove(int id) {
-		FlagQuestionCriteria row = find(id);
+		remove(find(id));
+	}
+
+	public void remove(FlagQuestionCriteria row) {
 		if (row != null) {
 			em.remove(row);
 		}

@@ -27,7 +27,7 @@ public class FlagQuestionCriteria extends BaseTable {
 	protected OperatorAccount operatorAccount;
 	protected AuditQuestion auditQuestion;
 	protected FlagColor flagColor;
-	protected YesNo checked;
+	protected YesNo checked = YesNo.Yes;
 
 	protected String comparison;
 	protected String value;
@@ -45,6 +45,7 @@ public class FlagQuestionCriteria extends BaseTable {
 	}
 
 	@Column(name = "flagStatus", nullable = false)
+	@Enumerated(EnumType.STRING)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
@@ -183,20 +184,6 @@ public class FlagQuestionCriteria extends BaseTable {
 		int result = 1;
 		result = PRIME * result + id;
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final FlagQuestionCriteria other = (FlagQuestionCriteria) obj;
-		if (id != other.id)
-			return false;
-		return true;
 	}
 
 }
