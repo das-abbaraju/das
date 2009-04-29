@@ -16,7 +16,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -73,7 +72,7 @@ public class AuditOperatorList extends OperatorActionSupport {
 				this.addActionError("No auditType found with ID " + aID);
 				return SUCCESS;
 			}
-
+			AuditType auditType = auditDAO.find(aID);
 			// Query the db for operators using this audit and index them by
 			// opID
 			List<AuditOperator> rawData = dataDAO.findByAudit(aID);
@@ -81,8 +80,18 @@ public class AuditOperatorList extends OperatorActionSupport {
 				rawDataIndexed.put(row.getOperatorAccount().getId(), row);
 			}
 			rawData = null; // we don't need this anymore
-
-			for (OperatorAccount operator : operators) {
+			List<OperatorAccount> criteriaOperators = new ArrayList<OperatorAccount>();
+			for(OperatorAccount account : operators) {
+				if(auditType.getClassType().isAudit() || auditType.getClassType().isPQF()) {
+					if(account.getInheritAudits().equals(account)) {
+						criteriaOperators.add(account);
+					}	
+				}
+				else if(account.getInheritInsurance().equals(account))
+					criteriaOperators.add(account);
+			}	
+			
+			for (OperatorAccount operator : criteriaOperators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
 					newRow = new AuditOperator();
@@ -117,10 +126,8 @@ public class AuditOperatorList extends OperatorActionSupport {
 						ownedAuditTypes.add(auditType);
 					}
 				}
-				if(auditType.getClassType().isPolicy()) {
-					if(operator.getInheritInsurance().equals(operator)) {
-						ownedAuditTypes.add(auditType);
-					}
+				else if(operator.getInheritInsurance().equals(operator)) {
+					ownedAuditTypes.add(auditType);
 				}
 			}
 			// AuditOperator temp = rawData.get(0);
