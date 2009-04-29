@@ -115,3 +115,8 @@ function saveNewCriteria(questionID) {
 				}
 			});
 }
+
+function clearRow(row) {
+	$(row+'_comparison').value = '';
+	$(row+'_value').value = '';
+}

@@ -29,4 +29,8 @@
 		<s:textfield name="%{criteria}.value" />
 </s:if>
 
+<s:if test="#criteria_handle != null">
+	<a style="cursor:pointer" onclick="clearRow('<s:property value="#criteria"/>')"><img src="images/notOkCheck.gif"/></a>
+</s:if>
+
 <br/>
