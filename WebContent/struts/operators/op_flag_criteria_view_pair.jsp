@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<label> <s:property value="label"/>: </label>
+<label> <s:property value="#label"/>: </label>
 <s:if test="question.questionType == 'Yes/No'">
 		<s:select list="#{'!=':'!=','=':'='}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
 		<s:select list="#{'Yes':'Yes','No':'No'}" headerKey="" headerValue="" name="%{criteria}.value"></s:select>
