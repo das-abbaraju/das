@@ -7,7 +7,7 @@
 <ul id="navlist">
 	<li><a href="FacilitiesEdit.action?opID=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('operator_edit')">class="current"</s:if>>Edit</a></li>
-	<s:if test="operator.corporate">
+	<s:if test="operator.equals(operator.inheritInsurance) || operator.equals(operator.inheritAudits)">
 		<li><a href="AuditOperator.action?oID=<s:property value="operator.id"/>">Audits</a></li>
 	</s:if>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>

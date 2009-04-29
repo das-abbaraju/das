@@ -118,6 +118,8 @@
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 					<li><label>Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
+					<li><label>Policy Types:</label> <s:select name="operatorAccount.inheritInsurance.id"
+						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 					<li><label>Audit Types:</label> <s:select name="operatorAccount.inheritAudits.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 					<li><label>Audit Categories:</label> <s:select name="operatorAccount.inheritAuditCategories.id"
