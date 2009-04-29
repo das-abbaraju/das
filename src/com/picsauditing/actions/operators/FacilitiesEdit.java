@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -90,6 +89,8 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 					.getInheritFlagCriteria(), "operatorAccount.inheritFlagCriteria.id"));
 			operatorAccount.setInheritInsuranceCriteria((OperatorAccount) setForeignKey(operatorAccount
 					.getInheritInsuranceCriteria(), "operatorAccount.inheritInsuranceCriteria.id"));
+			operatorAccount.setInheritInsurance((OperatorAccount) setForeignKey(operatorAccount
+					.getInheritInsurance(), "operatorAccount.inheritInsurance.id"));
 		}
 	}
 
@@ -317,7 +318,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 			relatedFacilities.add(operatorAccount.getInheritAudits());
 			relatedFacilities.add(operatorAccount.getInheritFlagCriteria());
 			relatedFacilities.add(operatorAccount.getInheritInsuranceCriteria());
-
+			relatedFacilities.add(operatorAccount.getInheritInsurance());
 		}
 		return relatedFacilities;
 	}

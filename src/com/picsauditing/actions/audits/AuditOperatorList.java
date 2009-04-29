@@ -33,7 +33,6 @@ public class AuditOperatorList extends OperatorActionSupport {
 	private AuditTypeDAO auditDAO;
 	private AuditOperatorDAO dataDAO;
 	private List<AuditOperator> data;
-	private List<String> operatorChildren = new ArrayList<String>();
 
 	public AuditOperatorList(OperatorAccountDAO operatorDao, AuditTypeDAO auditDAO, AuditOperatorDAO dataDAO) {
 		super(operatorDao);
@@ -52,13 +51,6 @@ public class AuditOperatorList extends OperatorActionSupport {
 			findOperator();
 		}
 		
-		for(OperatorAccount operatorAccount : operators) {
-			if(oID > 0) {
-				if(operatorAccount.getInheritAudits().getId() == oID)
-					operatorChildren.add(operatorAccount.getName());
-			}
-		}
-
 		auditTypes = new AuditTypeCache(auditDAO).getAuditTypes();
 
 		AuditType selectedAudit = null;
@@ -93,17 +85,9 @@ public class AuditOperatorList extends OperatorActionSupport {
 			for (OperatorAccount operator : operators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
-					if(rawData != null && rawData.get(0).getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-						if(operators.contains(operator.getInheritInsuranceCriteria()))
-							continue;
-					}
-					else if(operators.contains(operator.getInheritAudits()))
-						continue;
-					else {
-						newRow = new AuditOperator();
-						newRow.setOperatorAccount(operator);
-						newRow.setAuditType(selectedAudit);
-					}
+					newRow = new AuditOperator();
+					newRow.setOperatorAccount(operator);
+					newRow.setAuditType(selectedAudit);
 				}
 				data.add(newRow);
 			}
@@ -126,9 +110,21 @@ public class AuditOperatorList extends OperatorActionSupport {
 				rawDataIndexed.put(row.getAuditType().getId(), row);
 			}
 			rawData = null; // we don't need this anymore
-
+			List<AuditType> ownedAuditTypes = new ArrayList<AuditType>();
+			for(AuditType auditType : auditTypes) {
+				if(auditType.getClassType().isAudit() || auditType.getClassType().isPQF()) {
+					if(operator.getInheritAudits().equals(operator)) {
+						ownedAuditTypes.add(auditType);
+					}
+				}
+				if(auditType.getClassType().isPolicy()) {
+					if(operator.getInheritInsurance().equals(operator)) {
+						ownedAuditTypes.add(auditType);
+					}
+				}
+			}
 			// AuditOperator temp = rawData.get(0);
-			for (AuditType aType : auditTypes) {
+			for (AuditType aType : ownedAuditTypes) {
 				AuditOperator newRow = rawDataIndexed.get(aType.getId());
 				if (newRow == null) {
 					newRow = new AuditOperator();
@@ -207,9 +203,5 @@ public class AuditOperatorList extends OperatorActionSupport {
 
 	public FlagColor[] getFlagColorList() {
 		return FlagColor.values();
-	}
-
-	public List<String> getOperatorChildren() {
-		return operatorChildren;
 	}
 }
