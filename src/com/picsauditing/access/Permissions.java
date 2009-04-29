@@ -3,8 +3,8 @@ package com.picsauditing.access;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class Permissions implements Serializable {
 	private int userID;
 	private boolean loggedIn = false;
 	private Set<Integer> groups = new HashSet<Integer>();
-	private Set<UserAccess> permissions = new HashSet<UserAccess>();
+	private Set<UserAccess> permissions = new TreeSet<UserAccess>();
 	private Set<Integer> canSeeAudits = new HashSet<Integer>();
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
@@ -103,19 +103,29 @@ public class Permissions implements Serializable {
 					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 					for (Facility facility : operator.getCorporateFacilities())
 						corporateParent.add(facility.getCorporate().getId());
-					for (AuditOperator auditOperator : operator.getAudits()) {
-						if (auditOperator.isCanSee())
-							canSeeAudits.add(auditOperator.getAuditType().getId());
-					}
+					
+					loadAuditTypes(operator.getInheritAudits(), false);
+					loadAuditTypes(operator.getInheritInsuranceCriteria(), true);
 				}
 				if (isCorporate()) {
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
-						for (AuditOperator auditOperator : facility.getOperator().getAudits()) {
-							if (auditOperator.isCanSee())
-								canSeeAudits.add(auditOperator.getAuditType().getId());
-						}
-
+						
+						/* NOTE!!! There is a big hole here with this logic
+						 * If corporate has two operators A & B
+						 * A uses PQF only
+						 * B uses PQF and Desktop
+						 * Another Operator C uses PQF and Desktop 
+						 * Contractor signs up for operators A & C
+						 * Corporate will be able to incorrectly see the desktop for that Contractor
+						 * 
+						 * One solution would be to add CAOs for each audit and operator
+						 * This would allow us to restrict permissions to view each 
+						 * audit for given operator or corporate account.
+						 * This could be useful if we want to eventually sell access for an operator to each audit
+						 */
+						loadAuditTypes(facility.getOperator().getInheritAudits(), false);
+						loadAuditTypes(facility.getOperator().getInheritInsuranceCriteria(), true);
 					}
 				}
 			}
@@ -128,6 +138,19 @@ public class Permissions implements Serializable {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
 			throw ex;
+		}
+	}
+	
+	private void loadAuditTypes(OperatorAccount operator, boolean insurance) {
+		for (AuditOperator auditOperator : operator.getAudits()) {
+			if (auditOperator.isCanSee())
+				if (insurance) {
+					if (auditOperator.getAuditType().getClassType().isPolicy())
+						canSeeAudits.add(auditOperator.getAuditType().getId());
+				} else {
+					if (!auditOperator.getAuditType().getClassType().isPolicy())
+						canSeeAudits.add(auditOperator.getAuditType().getId());
+				}
 		}
 	}
 
@@ -272,6 +295,14 @@ public class Permissions implements Serializable {
 		return "Operator".equals(this.accountType);
 	}
 
+	/**
+	 * True if operator or corporate
+	 * @return
+	 */
+	public boolean isOperatorCorporate() {
+		return isOperator() || isCorporate();
+	}
+	
 	/**
 	 * @deprecated use seesAllContractors Now
 	 * @return
