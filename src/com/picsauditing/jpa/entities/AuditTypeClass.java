@@ -1,7 +1,11 @@
 package com.picsauditing.jpa.entities;
 
 public enum AuditTypeClass {
-	Audit, Policy, IM;
+	PQF, Audit, Policy, IM;
+	
+	public boolean isPQF() {
+		return PQF == this;
+	}
 	
 	public boolean isAudit() {
 		return Audit == this;

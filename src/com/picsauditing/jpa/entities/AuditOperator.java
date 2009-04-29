@@ -148,6 +148,16 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 		this.contractorFlag = contractorFlag;
 	}
 
+	/**
+	 * Transient method that returns true if below are all true
+	 * <ul>
+	 * <li>the operator canSee this AuditType</li>
+	 * <li>minRiskLevel > 0</li>
+	 * <li>minRiskLevel <= contractor.getRiskLevel().ordinal()</li>
+	 * </ul>
+	 * @param contractor
+	 * @return
+	 */
 	@Transient
 	public boolean isRequiredFor(ContractorAccount contractor) {
 		return (canSee && minRiskLevel > 0 && minRiskLevel <= contractor.getRiskLevel().ordinal());
