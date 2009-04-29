@@ -34,17 +34,13 @@ function saveCriteria(questionID) {
 	startThinking( {
 		message :"saving criteria..."
 	});
-	// TODO save criteriaEditForm
 	var pars = "";
-	//Form.getElements('criteriaEditForm', 'button').invoke('disable');
 	Form.getElements('criteriaEditForm').each(function (e) 
 			{
 				if (!$F(e).blank() && e.type != 'button')
 					pars += e.serialize() + "&";
 			}.bind(pars));
-	// TODO handle DAO save
 	pars += 'button=save';
-	alert(pars);
 	var myAjax = new Ajax.Updater('criteriaEdit','FlagCriteriaActionAjax.action', {
 			method: 'post',
 			parameters: pars,
