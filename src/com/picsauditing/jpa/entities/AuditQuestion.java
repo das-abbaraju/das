@@ -26,7 +26,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfquestions")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditQuestion extends BaseTable implements java.io.Serializable, Comparable<AuditQuestion> {
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;

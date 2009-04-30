@@ -29,7 +29,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_queue")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class EmailQueue implements java.io.Serializable {
 	private int id;
 	private EmailStatus status = EmailStatus.Pending;

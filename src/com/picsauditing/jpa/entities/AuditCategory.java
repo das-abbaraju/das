@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfcategories")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditCategory extends BaseTable implements java.io.Serializable, Comparable<AuditCategory> {
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;

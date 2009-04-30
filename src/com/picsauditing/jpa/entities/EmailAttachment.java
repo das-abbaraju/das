@@ -17,7 +17,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_attachment")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
 public class EmailAttachment implements java.io.Serializable {
 	private int id;
 	private EmailQueue emailQueue;

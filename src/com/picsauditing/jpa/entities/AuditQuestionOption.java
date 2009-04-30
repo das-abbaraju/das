@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfoptions")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditQuestionOption extends BaseTable implements java.io.Serializable {
 	private AuditQuestion auditQuestion;
 	private String optionName;

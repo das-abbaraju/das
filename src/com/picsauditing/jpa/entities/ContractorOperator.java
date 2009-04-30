@@ -33,7 +33,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private Date forceEnd;
 	private ContractorOperatorFlag flag;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;

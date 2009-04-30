@@ -27,7 +27,7 @@ import com.picsauditing.PICS.Utilities;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "note")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class Note extends BaseTable implements java.io.Serializable {
 	private Account account;
 	private String summary = "";

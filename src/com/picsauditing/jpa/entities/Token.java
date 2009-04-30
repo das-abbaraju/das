@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "token")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="global")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
 public class Token implements java.io.Serializable {
 	protected int id;
 	protected String tokenName;

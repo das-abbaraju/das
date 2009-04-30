@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_type")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "global")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditType extends BaseTable implements Comparable<AuditType>, java.io.Serializable {
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
