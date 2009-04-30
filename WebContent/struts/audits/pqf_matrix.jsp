@@ -50,6 +50,24 @@ function clearSelected(name) {
 	<br clear="all" />
 </div>
 </div>
+
+<div>
+<table style="width: 100%;">
+	<s:if test="operatorAccounts.size > 0">
+		<s:iterator value="operatorChildren.entrySet()">
+			<tr><td style="padding: 10px;">
+			<h3>Companies that inherit the Audit Categories from <s:property value="key.name"/></h3>
+			<ul>
+				<s:iterator value="value">
+					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
+				</s:iterator>
+			</ul>
+			</td></tr>
+		</s:iterator>
+	</s:if>
+</table>
+</div>
+
 <s:if test="columns.size() > 0">
 	<div class="buttons">
 		<button class="positive" name="button" type="submit" value="Save">Save</button>

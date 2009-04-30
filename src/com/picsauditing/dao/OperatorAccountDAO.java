@@ -178,4 +178,12 @@ public class OperatorAccountDAO extends PicsDAO {
 		remove(operatorAccount);
 		return true;
 	}
+	
+	public List<OperatorAccount> findInheritOperators(String field) {
+		
+		Query query = em.createQuery("select DISTINCT "+ field +" from OperatorAccount a order by a.name");
+
+		return query.getResultList();
+	}
+
 }

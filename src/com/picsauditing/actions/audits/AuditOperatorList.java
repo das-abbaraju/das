@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -81,14 +82,11 @@ public class AuditOperatorList extends OperatorActionSupport {
 			}
 			rawData = null; // we don't need this anymore
 			List<OperatorAccount> criteriaOperators = new ArrayList<OperatorAccount>();
-			for(OperatorAccount account : operators) {
-				if(auditType.getClassType().isAudit() || auditType.getClassType().isPQF()) {
-					if(account.getInheritAudits().equals(account)) {
-						criteriaOperators.add(account);
-					}	
-				}
-				else if(account.getInheritInsurance().equals(account))
-					criteriaOperators.add(account);
+			if(auditType.getClassType().isAudit() || auditType.getClassType().equals(AuditTypeClass.IM)|| auditType.getClassType().isPQF()) {
+				criteriaOperators.addAll(operatorDao.findInheritOperators("a.inheritAudits"));
+			}
+			else {
+				criteriaOperators.addAll(operatorDao.findInheritOperators("a.inheritInsurance"));
 			}	
 			
 			for (OperatorAccount operator : criteriaOperators) {

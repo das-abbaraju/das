@@ -80,7 +80,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				operatorAccountDAO.save(operatorAccount);
 				parentid = operatorAccount.getParent().getId();
 			}
-
+			
 			operatorAccount.setInheritAudits((OperatorAccount) setForeignKey(operatorAccount.getInheritAudits(),
 					"operatorAccount.inheritAudits.id"));
 			operatorAccount.setInheritAuditCategories((OperatorAccount) setForeignKey(operatorAccount

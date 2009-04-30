@@ -12,9 +12,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatOperator;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.DesktopMatrix;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -36,6 +34,7 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected AuditTypeDAO auditDAO;
 	protected AuditCatOperatorDAO auditCatOperatorDAO;
+	private Map<OperatorAccount, List<OperatorAccount>> operatorChildren;
 	
 	public ManagePQFMatrix(OperatorAccountDAO operatorAccountDAO, AuditTypeDAO auditDAO, AuditCatOperatorDAO auditCatOperatorDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
@@ -53,7 +52,12 @@ public class ManagePQFMatrix extends PicsActionSupport {
 				&& (button == null || ! button.equals("save")) )
 			return SUCCESS;
 		
-		operatorAccounts = operatorAccountDAO.findWhere(false, "id IN ("+Strings.implode(operators, ",")+")");
+		operatorAccounts = operatorAccountDAO.findWhere(true, "id IN ("+Strings.implode(operators, ",")+")");
+		for(OperatorAccount opAccount : operatorAccounts) {
+			if(operatorChildren == null)
+				operatorChildren = new HashMap<OperatorAccount, List<OperatorAccount>>();
+			operatorChildren.put(opAccount, getInheritsAuditCategories(opAccount.getId()));
+		}
 		for(OperatorAccount operator : operatorAccounts) {
 			for(int risk : riskLevels) {
 				OperatorRisk opRisk = new OperatorRisk(operator, LowMedHigh.values()[risk]);
@@ -159,7 +163,11 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		return operatorAccountDAO.findWhere(false, "active='Y'");
+		return operatorAccountDAO.findInheritOperators("a.inheritAuditCategories");
+	}
+	
+	public List<OperatorAccount> getInheritsAuditCategories(int opID) {
+		return operatorAccountDAO.findWhere(true, "a.active = 'Y' AND a.inheritAuditCategories.id = " + opID);
 	}
 
 	public int[] getRiskLevels() {
@@ -205,6 +213,10 @@ public class ManagePQFMatrix extends PicsActionSupport {
 
 	public void setIncoming(Map<String, Boolean> incoming) {
 		this.incoming = incoming;
+	}
+
+	public Map<OperatorAccount, List<OperatorAccount>> getOperatorChildren() {
+		return operatorChildren;
 	}
 
 	
