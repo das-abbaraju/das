@@ -37,7 +37,7 @@
 </tr>
 </s:if>
 <tr>
-	<th class="label"><s:property value="getText('totalHoursWorked')"/></th>
+	<th class="label"><span class="required"><s:property value="getText('totalHoursWorked')"/></span></th>
 	<td><s:textfield name="osha.manHours" value="%{manHours}" cssClass="osha"></s:textfield></td>
 </tr>
 <tr>
@@ -76,7 +76,7 @@
 </s:if>
 <s:if test="!type.toString().equals('COHS')">	
 	<tr>
-		<th class="label">Upload <s:property value="conAudit.auditFor"/> <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</th>
+		<th class="label"><span class="required">Upload <s:property value="conAudit.auditFor"/> <s:property value="type"/> Log File(.pdf, .doc, .txt, .xls or .jpg)</span></th>
 		<td colspan="3">
 		<s:if test="fileUploaded">
 			<a href="#" onclick="openOsha(<s:property value="id"/>); return false;">View File</a>
