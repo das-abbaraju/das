@@ -1,24 +1,10 @@
 function showCriteria(questionID) {
-	startThinking( {
-		div :'criteriaEdit',
-		type :'large',
-		message :"getting Flag Criteria from server..."
-	});
-	$('criteriaEdit').show();
-	new Effect.Opacity('criteriaList', {
-		to :0.5,
-		duration :0.7
-	});
-
 	var pars = {
 		'id' :opID,
 		'question.id' :questionID
 	};
-	var myAjax = new Ajax.Updater('criteriaEdit',
-			'FlagCriteriaActionAjax.action', {
-				method :'post',
-				parameters :pars
-			});
+	
+	Modalbox.show('FlagCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria'});
 }
 
 function clearRow(row) {
@@ -27,12 +13,7 @@ function clearRow(row) {
 }
 
 function closeCriteriaEdit() {
-	$('criteriaEdit').innerHTML = '';
-	$('criteriaEdit').hide();
-	new Effect.Opacity('criteriaList', {
-		to :1.0,
-		duration :0.3
-	});
+	Modalbox.hide();
 }
 
 function saveCriteria(questionID) {
@@ -45,19 +26,11 @@ function saveCriteria(questionID) {
 			method: 'post',
 			parameters: pars,
 			onComplete: function() {
+					closeCriteriaEdit();
 					stopThinking();
 					refreshList();
-					growl();
-					closeCriteriaEdit();
 				}
 		});
-}
-
-function growl() {
-	var growlBox = $('growlBox');
-	Effect.Appear(growlBox, { duration: 1});
-	Effect.Fade(growlBox, {delay: 3, duration: 1});
-	
 }
 
 function refreshList() {

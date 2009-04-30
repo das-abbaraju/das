@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 public class FlagCriteriaAction extends OperatorActionSupport implements Preparable {
 
@@ -56,21 +57,37 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 
 		if (button != null) {
 			if ("save".equals(button)) {
-				addActionMessage("Successfully saved criteria");
 				if (red != null) {
-					red.setFlagColor(FlagColor.Red);
-					red.setAuditQuestion(question);
-					red.setChecked(YesNo.Yes);
-					red.setOperatorAccount(operator);
-					criteriaDao.save(red);
+					if (Strings.isEmpty(red.getComparison()) && Strings.isEmpty(red.getValue())) {
+						if (red.getId() != 0) {
+							criteriaDao.remove(red);
+						}
+					} else if (Strings.isEmpty(red.getComparison()) || Strings.isEmpty(red.getValue())) {
+						addActionError("Cannot save Red Flag Criteria without a comparison and a value");
+					} else { // Both comparison and value exist
+						red.setFlagColor(FlagColor.Red);
+						red.setAuditQuestion(question);
+						red.setChecked(YesNo.Yes);
+						red.setOperatorAccount(operator);
+						criteriaDao.save(red);
+					}
 				}
 				if (amber != null) {
-					amber.setFlagColor(FlagColor.Amber);
-					amber.setAuditQuestion(question);
-					amber.setChecked(YesNo.Yes);
-					amber.setOperatorAccount(operator);
-					criteriaDao.save(amber);
+					if (Strings.isEmpty(amber.getComparison()) && Strings.isEmpty(amber.getValue())) {
+						if (amber.getId() != 0) {
+							criteriaDao.remove(amber);
+						}
+					} else if (Strings.isEmpty(amber.getComparison()) || Strings.isEmpty(amber.getValue())) {
+						addActionError("Cannot save Amber Flag Criteria without a comparison and a value");
+					} else { // Both comparison and value exist
+						amber.setFlagColor(FlagColor.Amber);
+						amber.setAuditQuestion(question);
+						amber.setChecked(YesNo.Yes);
+						amber.setOperatorAccount(operator);
+						criteriaDao.save(amber);
+					}
 				}
+
 				return BLANK;
 			}
 			if ("add".equals(button)) {
@@ -83,7 +100,6 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 
 	public AuditQuestion getQuestion() {
 		if (question == null) {
-			// TODO query the question here ???
 			question = red.getAuditQuestion();
 		}
 		return question;
@@ -108,5 +124,4 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 	public void setAmber(FlagQuestionCriteria amber) {
 		this.amber = amber;
 	}
-
 }

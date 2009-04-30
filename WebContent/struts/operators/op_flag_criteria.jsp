@@ -6,8 +6,10 @@
 <title>Manage Flag Criteria</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/modalbox.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
+<script type="text/javascript" src="js/modalbox.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript">
 var opID = '<s:property value="operator.id" />';
@@ -38,7 +40,7 @@ var opID = '<s:property value="operator.id" />';
 
 <div style="position: relative;">
 <div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
-<div id="growlBox" style="display:none;position: absolute; top: -15px; right: 20px;"></div>
+<div id="growlBox"></div>
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
 
 <div id="criteriaEdit"

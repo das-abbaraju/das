@@ -7,16 +7,28 @@
 		
 		<s:property value="question.question" /><br/>
 	</div>
-	<div class="forms">
-		<s:set name="criteria" value="'red'" />
-		<s:set name="criteria_handle" value="red"/>
-		<label>Red:</label>
-		<s:include value="op_flag_criteria_view_pair.jsp"/>
-		<s:set name="criteria" value="'amber'" />
-		<s:set name="criteria_handle" value="amber"/>
-		<label>Amber:</label>
-		<s:include value="op_flag_criteria_view_pair.jsp"/>
-	</div>
+	<table>
+		<tr>
+			<td>
+				<s:set name="criteria" value="'red'" />
+				<s:set name="criteria_handle" value="red"/>
+				<label>Red:</label>
+			</td>
+			<td>
+				<s:include value="op_flag_criteria_view_pair.jsp"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<s:set name="criteria" value="'amber'" />
+				<s:set name="criteria_handle" value="amber"/>
+				<label>Amber:</label>
+			</td>
+			<td>
+				<s:include value="op_flag_criteria_view_pair.jsp"/>
+			</td>
+		</tr>
+	</table>
 	
 	<div class="buttons">
 		<input type="button" class="picsbutton positive" onclick="saveCriteria(<s:property value="operator.id"/>,<s:property value="question.id"/>); return false;" value="Save"/>
