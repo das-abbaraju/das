@@ -12,17 +12,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "flagcriteria")
-// We can't use this yet because hibernate doesn't save this 
-// data yet, see op_editFlagCriteria.jsp
-//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagQuestionCriteria extends BaseTable {
 	protected OperatorAccount operatorAccount;
 	protected AuditQuestion auditQuestion;
@@ -166,10 +165,9 @@ public class FlagQuestionCriteria extends BaseTable {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Print this out:
-	 * value < 
+	 * Print this out: value <
 	 */
 	@Override
 	public String toString() {

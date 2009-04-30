@@ -23,10 +23,7 @@ public class InvoiceDAO extends PicsDAO {
 	}
 
 	public void remove(int id) {
-		Invoice row = find(id);
-		if (row != null) {
-			em.remove(row);
-		}
+		remove(find(id));
 	}
 
 	public void remove(Invoice row) {

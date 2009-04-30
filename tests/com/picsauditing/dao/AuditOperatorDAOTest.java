@@ -1,11 +1,9 @@
 package com.picsauditing.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Calendar;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +19,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
-public class AuditOperatorDAOTest {
+@Transactional
+public class AuditOperatorDAOTest extends TestCase {
 
 	@Autowired
 	private AuditOperatorDAO auditoperatorDAO;

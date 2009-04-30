@@ -132,9 +132,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmailQueue))
 			subMenu.addChild("Email Queue", "EmailQueueList.action");		
 
-		if (permissions.hasPermission(OpPerms.EditFlagCriteria)) {
-			subMenu.addChild("Flag Criteria (old)", "op_editFlagCriteria.jsp");
-			subMenu.addChild("Flag Criteria (new)", "OperatorFlagCriteria.action");
+		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
+			subMenu.addChild("Flag Criteria", "OperatorFlagCriteria.action");
 		}
 		
 		if (permissions.hasPermission(OpPerms.EditProfile))

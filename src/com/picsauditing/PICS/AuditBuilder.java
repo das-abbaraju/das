@@ -133,15 +133,37 @@ public class AuditBuilder {
 			currentAudits.add(pqfAudit);
 		}
 
-		/** * Add other Audits ** */
+		/** Add other Audits and Policy Types **/
 		// Get a distinct list of AuditTypes that attached operators require
-		List<AuditType> list = auditTypeDAO.findWhere("t IN (SELECT auditType " + "FROM AuditOperator "
-				+ "WHERE auditType.id > 1 AND canSee=1 " + " AND minRiskLevel BETWEEN 1 AND "
-				+ contractor.getRiskLevel().ordinal() + " AND operatorAccount IN ("
-				+ "SELECT operatorAccount FROM ContractorOperator " + "WHERE contractorAccount.id = "
-				+ contractor.getId() + "))");
+		// Note: this is a lot of iterating over JPA Entities, my assumption
+		// is that the operators and auditTypes will be really cached well
+		Set<AuditType> auditTypeList = new HashSet<AuditType>();
+		for (ContractorOperator co : contractor.getOperators()) {
+			if (co.getOperatorAccount().isActiveB()
+					&& (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No) || co.getWorkStatus()
+							.equals("Y"))) {
+				for (AuditOperator ao : co.getOperatorAccount().getInheritAudits().getAudits()) {
+					if (ao.isRequiredFor(contractor) && !ao.getAuditType().getClassType().isPolicy()) {
+						PicsLogger
+								.log(co.getOperatorAccount().getName() + " needs " + ao.getAuditType().getAuditName());
+						auditTypeList.add(ao.getAuditType());
+					}
+				}
+				if (co.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes)) {
+					// If the operator uses insurance, then look to see if any audits are enabled
+					for (AuditOperator ao : co.getOperatorAccount().getInheritInsurance().getAudits()) {
+						if (ao.isRequiredFor(contractor) && ao.getAuditType().getClassType().isPolicy()) {
+							PicsLogger.log(co.getOperatorAccount().getName() + " needs "
+									+ ao.getAuditType().getAuditName());
+							auditTypeList.add(ao.getAuditType());
+						}
+					}
+				}
+			}
+		}
+
 		int year = DateBean.getCurrentYear();
-		for (AuditType auditType : list) {
+		for (AuditType auditType : auditTypeList) {
 			if (auditType.getId() == AuditType.DA && !"Yes".equals(contractor.getOqEmployees())) {
 				// Don't add the D&A audit because this contractor
 				// doesn't have employees subject OQ requirements
@@ -160,20 +182,18 @@ public class AuditBuilder {
 				// For each audit this contractor SHOULD have
 				// Figure out if the contractor currently has an
 				// active audit that isn't scheduled to expire soon
-				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (okStatuses.contains(conAudit.getAuditStatus())) {
-						if (!conAudit.willExpireSoon()) {
-							// The audit is still valid for atleast another 60
-							// days
-							if (conAudit.getAuditType().equals(auditType)) {
-								// We found a matching audit type
+				for (ContractorAudit conAudit : currentAudits) {
+					if (conAudit.getAuditType().equals(auditType)
+							|| (AuditType.NCMS == conAudit.getAuditType().getId() && auditType.isDesktop())) {
+						// We found a matching audit for this requirement
+						// Now determine if it will be good enough
+						if (auditType.isRenewable()) {
+							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
+								// The audit is still valid for at least another 60 days
 								found = true;
-							}
-							if (AuditType.NCMS == conAudit.getAuditType().getId()
-									&& AuditType.DESKTOP == auditType.getId()) {
-								// We needed a desktop and found an NCMS audit
-								found = true;
-							}
+						} else {
+							// This audit should not be renewed but we already have one
+							found = true;
 						}
 					}
 				}
@@ -191,11 +211,9 @@ public class AuditBuilder {
 
 					if (auditType.getId() == AuditType.DESKTOP
 							&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-						// The current PQF has been submitted, but we need to
-						// know
-						// if the Safety Manual is there first before creating
-						// the
-						// desktop
+						// The current PQF has been submitted, but we need to know
+						// if the Safety Manual is there first before creating the desktop
+						// TODO add field to the contractorAccount
 						AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(),
 								AuditQuestion.MANUAL_PQF);
 						if (safetyManual == null || !safetyManual.isVerified())
@@ -205,8 +223,7 @@ public class AuditBuilder {
 						System.out.println("Adding: " + auditType.getId() + auditType.getAuditName());
 						ContractorAudit pendingToInsert = cAuditDAO.addPending(auditType, contractor);
 						currentAudits.add(pendingToInsert);
-						
-						
+
 					} else
 						System.out.println("Skipping: " + auditType.getId() + auditType.getAuditName());
 				}
@@ -237,7 +254,7 @@ public class AuditBuilder {
 				// this doesn't handle one rare case: when a
 				// contractor changes their OQ employees from Yes to No
 				// Since this would probably never happen, we won't add it
-				for (AuditType auditType : list) {
+				for (AuditType auditType : auditTypeList) {
 					if (conAudit.getAuditType().equals(auditType)) {
 						needed = true;
 					}
@@ -253,7 +270,6 @@ public class AuditBuilder {
 		}
 
 		for (Integer auditID : auditsToRemove) {
-			// cAuditDAO.clear(); //this was disconnecting our flag calculator
 			cAuditDAO.remove(auditID);
 			fillAuditCategories = false;
 		}
@@ -279,7 +295,7 @@ public class AuditBuilder {
 			return;
 
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
-		
+
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
@@ -297,9 +313,9 @@ public class AuditBuilder {
 			// conAudit.getRequestingOpAccount()
 			// NOTE!!! I've removed the requesting op account functionality
 			// I don't think it's very common for an operator to need specific/custom policies only for that facility
-			// If a facility needs "Pollution" and the contractor adds it, 
-			// then other operators should be able to see it as well that subscribe to Pollution insurance 
-			
+			// If a facility needs "Pollution" and the contractor adds it,
+			// then other operators should be able to see it as well that subscribe to Pollution insurance
+
 			PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
 			for (AuditOperator ao : operator.getAudits()) {
 				if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
@@ -320,7 +336,7 @@ public class AuditBuilder {
 					break;
 				}
 			}
-			
+
 			if (visible) {
 				if (cao == null) {
 					// If we don't have one, then add it
@@ -345,11 +361,11 @@ public class AuditBuilder {
 					// This operator has specifically stated they don't need this policy
 					cao.setRecommendedStatus(CaoStatus.NotApplicable);
 				}
-				
+
 			} else if (cao != null) {
 				// This existing cao is either no longer needed by the operator (ie audit/operator matrix)
 				// or it has one or more parents that have already made a decision on this policy
-				
+
 				// Remove the cao if it's Awaiting
 				if (cao.getStatus().equals(CaoStatus.Pending)) {
 					PicsLogger.log("Removing unneeded ContractorAuditOperator " + cao.getId());
@@ -368,7 +384,7 @@ public class AuditBuilder {
 
 		PicsLogger.stop();
 	}
-	
+
 	/**
 	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
 	 * shouldn't be there
