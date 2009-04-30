@@ -24,8 +24,8 @@
 				</s:if>
 				<s:else><s:property value="question.question" escape="false" /></s:else>
 			</td>
-			<td><s:property value="red" escape="false" /></td>
-			<td><s:property value="amber" escape="false" /></td>
+			<td><nobr><s:property value="red" escape="false" /></nobr></td>
+			<td><nobr><s:property value="amber" escape="false" /></nobr></td>
 		</tr>
 	</s:iterator>
 </table>

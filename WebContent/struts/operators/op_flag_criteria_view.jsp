@@ -10,11 +10,11 @@
 	<div class="forms">
 		<s:set name="criteria" value="'red'" />
 		<s:set name="criteria_handle" value="red"/>
-		<s:set name="label" value="'Red'"/>
+		<label>Red:</label>
 		<s:include value="op_flag_criteria_view_pair.jsp"/>
 		<s:set name="criteria" value="'amber'" />
-		<s:set name="label" value="'Amber'"/>
 		<s:set name="criteria_handle" value="amber"/>
+		<label>Amber:</label>
 		<s:include value="op_flag_criteria_view_pair.jsp"/>
 	</div>
 	

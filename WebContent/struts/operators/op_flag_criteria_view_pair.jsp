@@ -1,5 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<label> <s:property value="#label"/>: </label>
 <s:if test="question.questionType == 'Yes/No'">
 		<s:select list="#{'!=':'!=','=':'='}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
 		<s:select list="#{'Yes':'Yes','No':'No'}" headerKey="" headerValue="" name="%{criteria}.value"></s:select>
@@ -14,19 +13,23 @@
 </s:if>
 <s:if test="question.questionType == 'License'">
 		<s:select list="#{'!=':'!=','=':'='}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
-		<s:textfield name="%{criteria}.value" />
+		<s:textfield name="%{criteria}.value" size="10" />
+</s:if>
+<s:if test="question.questionType == 'Text'">
+		<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
+		<s:textfield name="%{criteria}.value" size="10" />
 </s:if>
 <s:if test="question.questionType == 'Date'">
 		<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
-		<s:textfield name="%{criteria}.value" />
+		<s:textfield name="%{criteria}.value" size="10" />
 </s:if>
 <s:if test="question.questionType == 'Decimal Number'">
 		<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
-		<s:textfield name="%{criteria}.value" />
+		<s:textfield name="%{criteria}.value" size="10" />
 </s:if>
 <s:if test="question.questionType == 'Money'">
 		<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison"></s:select>
-		<s:textfield name="%{criteria}.value" />
+		<s:textfield name="%{criteria}.value" size="10" />
 </s:if>
 
 <s:if test="#criteria_handle != null">

@@ -34,22 +34,26 @@ function saveCriteria(questionID) {
 	startThinking( {
 		message :"saving criteria..."
 	});
-	var pars = "";
-	Form.getElements('criteriaEditForm').each(function (e) 
-			{
-				if (!$F(e).blank() && e.type != 'button')
-					pars += e.serialize() + "&";
-			}.bind(pars));
-	pars += 'button=save';
-	var myAjax = new Ajax.Updater('criteriaEdit','FlagCriteriaActionAjax.action', {
+	var pars = $('criteriaEditForm').serialize(true);
+	pars.button = 'save';
+	var myAjax = new Ajax.Updater('growlBox','FlagCriteriaActionAjax.action', {
 			method: 'post',
 			parameters: pars,
 			onComplete: function() {
 					stopThinking();
 					refreshList();
+					growl();
 					closeCriteriaEdit();
 				}
 		});
+}
+
+function growl() {
+	var growlBox = $('growlBox');
+	growlBox.style.top = scrollY + "px";
+	Effect.Appear(growlBox, { duration: 1});
+	Effect.Fade(growlBox, {delay: 3, duration: 1});
+	
 }
 
 function refreshList() {
@@ -72,6 +76,7 @@ function showNewCriteria() {
 	$('criteriaAdd').show();
 	Effect.DropOut('addButton');
 	$('questionTextBox').focus();
+	$('questionList').show();
 }
 
 function questionSearch() {
@@ -93,28 +98,33 @@ function questionSearch() {
 function closeNewCriteria() {
 	$('addButton').show();
 	$('criteriaAdd').hide();
+	$('questionList').hide();
 }
 
-function saveNewCriteria(questionID) {
-	startThinking( {
-		message :"saving criteria..."
-	});
-	var pars = {
-		'id' :opID,
-		'question.id' :questionID,
-		'button' :'save'
-	};
-	var myAjax = new Ajax.Updater('questionList',
-			'FlagCriteriaActionAjax.action', {
-				method :'post',
-				parameters :pars,
-				onComplete : function() {
-					stopThinking();
-					closeNewCriteria();
-					refreshList();
-				}
-			});
-}
+//function saveNewCriteria(questionID) {
+//	startThinking( {
+//		message :"saving criteria..."
+//	});
+//	$('criteriaEdit').show();
+//	new Effect.Opacity('criteriaList', {
+//		to :0.5,
+//		duration :0.7
+//	});
+//	var pars = {
+//		'id' :opID,
+//		'question.id' :questionID,
+//	};
+//	var myAjax = new Ajax.Updater('criteriaEdit',
+//			'FlagCriteriaActionAjax.action', {
+//				method :'post',
+//				parameters :pars,
+//				onComplete : function() {
+//					stopThinking();
+//					closeNewCriteria();
+//					refreshList();
+//				}
+//			});
+//}
 
 function clearRow(row) {
 	$(row+'_comparison').value = '';

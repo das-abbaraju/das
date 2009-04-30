@@ -16,7 +16,7 @@
 				<td class="right"><nobr><s:property value="subCategory.category.number" />.<s:property
 					value="subCategory.number" />.<s:property value="number" /></nobr></td>
 				<td><s:property value="question" escape="false" /></td>
-				<td><a href="#" onclick="saveNewCriteria(<s:property value="id" />)">Add</a></td>
+				<td><a href="#" onclick="showCriteria(<s:property value="id" />)">Add</a></td>
 			</tr>
 		</s:iterator>
 	</table>
