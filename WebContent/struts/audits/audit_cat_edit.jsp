@@ -33,7 +33,7 @@
 		<s:else>
 			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id, #parentAnswer.id)" />
 		</s:else>
-		<s:if test="(#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')) || #q.dependsOnAnswer == #dependsAnswer.answer">
+		<s:if test="(#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')) || (#dependsAnswer == null) || (#q.dependsOnAnswer == #dependsAnswer.answer)">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>
 	</s:if>
