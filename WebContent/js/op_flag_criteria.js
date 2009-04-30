@@ -21,6 +21,11 @@ function showCriteria(questionID) {
 			});
 }
 
+function clearRow(row) {
+	$(row+'_comparison').value = '';
+	$(row+'_value').value = '';
+}
+
 function closeCriteriaEdit() {
 	$('criteriaEdit').innerHTML = '';
 	$('criteriaEdit').hide();
@@ -50,7 +55,6 @@ function saveCriteria(questionID) {
 
 function growl() {
 	var growlBox = $('growlBox');
-	growlBox.style.top = scrollY + "px";
 	Effect.Appear(growlBox, { duration: 1});
 	Effect.Fade(growlBox, {delay: 3, duration: 1});
 	
@@ -72,13 +76,6 @@ function refreshList() {
 			});
 }
 
-function showNewCriteria() {
-	$('criteriaAdd').show();
-	Effect.DropOut('addButton');
-	$('questionTextBox').focus();
-	$('questionList').show();
-}
-
 function questionSearch() {
 	startThinking( {
 		div :'questionList',
@@ -95,38 +92,15 @@ function questionSearch() {
 			});
 }
 
+function showNewCriteria() {
+	$('criteriaAdd').show();
+	Effect.DropOut('addButton');
+	$('questionTextBox').focus();
+	$('questionList').show();
+}
+
 function closeNewCriteria() {
 	$('addButton').show();
 	$('criteriaAdd').hide();
 	$('questionList').hide();
-}
-
-//function saveNewCriteria(questionID) {
-//	startThinking( {
-//		message :"saving criteria..."
-//	});
-//	$('criteriaEdit').show();
-//	new Effect.Opacity('criteriaList', {
-//		to :0.5,
-//		duration :0.7
-//	});
-//	var pars = {
-//		'id' :opID,
-//		'question.id' :questionID,
-//	};
-//	var myAjax = new Ajax.Updater('criteriaEdit',
-//			'FlagCriteriaActionAjax.action', {
-//				method :'post',
-//				parameters :pars,
-//				onComplete : function() {
-//					stopThinking();
-//					closeNewCriteria();
-//					refreshList();
-//				}
-//			});
-//}
-
-function clearRow(row) {
-	$(row+'_comparison').value = '';
-	$(row+'_value').value = '';
 }
