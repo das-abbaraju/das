@@ -128,6 +128,10 @@
 			<result>/struts/widgets/contractor_statistics.jsp</result>
 		</action>
 
+		<action name="UserOpenNotesAjax"
+			class="com.picsauditing.actions.users.OpenNotesWidget">
+			<result>/struts/widgets/open_notes.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"

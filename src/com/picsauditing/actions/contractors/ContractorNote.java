@@ -58,7 +58,7 @@ public class ContractorNote extends ContractorActionSupport {
 
 	public List<Note> getNotes() {
 		if (notes == null) 
-			notes = noteDAO.getNotes(contractor.getId(), permissions, "status = 2" + getFilters("notes"), 25);
+			notes = noteDAO.getNotes(contractor.getId(), permissions, "status IN (1,2)" + getFilters("notes"), 25);
 		
 		return notes;
 	}

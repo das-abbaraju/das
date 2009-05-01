@@ -105,7 +105,8 @@ public class NoteDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Note WHERE createdBy.id = ? AND status = ? "
 				+ "ORDER BY priority DESC, creationDate");
 		query.setParameter(1, userID);
-		query.setParameter(2, NoteStatus.Open.ordinal());
+		query.setParameter(2, NoteStatus.Open);
+		query.setMaxResults(10);
 		return query.getResultList();
 	}
 
@@ -114,7 +115,7 @@ public class NoteDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Note WHERE createdBy.id = ? AND account.id = ? AND status = ? "
 				+ "ORDER BY priority DESC, creationDate");
 		query.setParameter(1, userID);
-		query.setParameter(2, NoteStatus.Open.ordinal());
+		query.setParameter(2, NoteStatus.Open);
 		query.setParameter(3, accountID);
 		return query.getResultList();
 	}

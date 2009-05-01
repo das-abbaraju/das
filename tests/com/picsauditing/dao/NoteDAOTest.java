@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -42,4 +43,10 @@ public class NoteDAOTest extends TestCase {
 		noteDAO.remove(note.getId());
 		assertNull(noteDAO.find(note.getId()));
 	}
+	
+	@Test
+	public void testTasksForUser() {
+		List<Note> openNotes = noteDAO.getTasksForUser(8051);
+		assertTrue(openNotes.size() > 0);
+	}	
 }
