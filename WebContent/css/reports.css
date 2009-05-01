@@ -187,6 +187,7 @@ table.report td.inactive {
 table.report tr.clickable:hover {
 	background-color: #ffff99;	
 	color:inherit;
+	cursor: pointer;
 }
 
 div.filterOption {

@@ -12,7 +12,7 @@
 	</thead>
 	
 	<s:iterator value="questionList">
-		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>');" style="cursor:pointer" class="clickable">
+		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>');" class="clickable">
 			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>
 			<td class="right">
 				<nobr><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></nobr>
