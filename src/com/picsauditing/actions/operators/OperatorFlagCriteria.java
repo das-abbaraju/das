@@ -24,16 +24,16 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	public String execute() throws Exception {
 		findOperator();
 		// TODO check permissions
-		//FlagCriteria
-		
+		// FlagCriteria
+
 		return SUCCESS;
 	}
-	
+
 	public Collection<QuestionCriteria> getQuestionList() {
 		Map<AuditQuestion, QuestionCriteria> map = new TreeMap<AuditQuestion, QuestionCriteria>();
-		
+
 		List<FlagQuestionCriteria> criteriaList = criteriaDao.findByOperator(operator);
-		for(FlagQuestionCriteria criteria : criteriaList) {
+		for (FlagQuestionCriteria criteria : criteriaList) {
 			AuditQuestion q = criteria.getAuditQuestion();
 			if (!map.containsKey(q)) {
 				map.put(q, new QuestionCriteria(q));
@@ -43,7 +43,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 			if (criteria.getFlagColor().equals(FlagColor.Red))
 				map.get(q).red = criteria;
 		}
-		
+
 		return map.values();
 	}
 
@@ -51,12 +51,13 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		public AuditQuestion question;
 		public FlagQuestionCriteria red;
 		public FlagQuestionCriteria amber;
+
 		public QuestionCriteria(AuditQuestion q) {
 			question = q;
 		}
 	}
-	
-	public String getSubHeading(){
+
+	public String getSubHeading() {
 		return "Manage Flag Criteria";
 	}
 
