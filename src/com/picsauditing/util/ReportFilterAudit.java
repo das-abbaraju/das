@@ -346,6 +346,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return new AuditTypeCache(auditDAO).getAuditTypes(permissions);
 	}
 
+	public List<AuditType> getPQFTypeList() {
+		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		return new AuditTypeCache(auditDAO).getPqfTypes(permissions);
+	}
+
 	public List<AuditType> getPolicyTypeList() {
 		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
 		return new AuditTypeCache(auditDAO).getPolicyTypes(permissions);
