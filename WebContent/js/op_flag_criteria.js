@@ -1,4 +1,12 @@
+var cal2;
 function showCriteria(questionID, auditName) {
+	if (typeof(cal2) == 'undefined') {
+		cal2 = new CalendarPopup('caldiv2');
+		cal2.setCssPrefix("PICS");
+		cal2.setReturnFunction("calendarReturn");
+		cal2.offsetX = -350;
+		cal2.offsetY = -20;
+	}
 	var pars = {
 		'id' :opID,
 		'question.id' :questionID
@@ -7,9 +15,26 @@ function showCriteria(questionID, auditName) {
 	Modalbox.show('FlagCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria - '+auditName});
 }
 
+function calendarReturn(y, m, d) {
+	if (window.CP_targetInput != null) {
+		var dt = new Date(y, m - 1, d, 0, 0, 0);
+		if (window.CP_calendarObject != null) {
+			window.CP_calendarObject.copyMonthNamesToWindow();
+		} 
+		var now = new Date();
+		if (now.getFullYear() == dt.getFullYear() && now.getMonth() == dt.getMonth() && now.getDay() == dt.getDay())
+			window.CP_targetInput.value = "Today";
+		else
+			window.CP_targetInput.value = formatDate(dt, window.CP_dateFormat);
+		
+		window.CP_targetInput.onchange();
+	}
+}
+
 function clearRow(row) {
 	$(row+'_comparison').value = '';
 	$(row+'_value').value = '';
+	$(row+'_clear').hide();
 }
 
 function closeCriteriaEdit() {
