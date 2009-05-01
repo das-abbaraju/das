@@ -55,5 +55,9 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 			question = q;
 		}
 	}
+	
+	public String getSubHeading(){
+		return "Manage Flag Criteria";
+	}
 
 }

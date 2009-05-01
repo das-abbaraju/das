@@ -17,7 +17,7 @@ var opID = '<s:property value="operator.id" />';
 
 </head>
 <body>
-<h1>Manage Flag Criteria <span class="sub"><s:property value="operator.name" /></span></h1>
+<s:include value="opHeader.jsp"></s:include>
 
 <s:if test="operator != operator.inheritFlagCriteria">
 	<div id="info">The PQF/Audit Criteria for this account inherits the configuration from <s:property
