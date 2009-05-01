@@ -184,6 +184,11 @@ table.report td.inactive {
 	font-style: italic;
 }
 
+table.report tr.clickable:hover {
+	background-color: #ffff99;	
+	color:inherit;
+}
+
 div.filterOption {
 	margin: 0px;
 	padding: 0px;

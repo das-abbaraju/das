@@ -1,10 +1,10 @@
-function showCriteria(questionID) {
+function showCriteria(questionID, auditName) {
 	var pars = {
 		'id' :opID,
 		'question.id' :questionID
 	};
 	
-	Modalbox.show('FlagCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria'});
+	Modalbox.show('FlagCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria - '+auditName});
 }
 
 function clearRow(row) {

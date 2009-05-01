@@ -12,7 +12,7 @@
 	</thead>
 	
 	<s:iterator value="questionList">
-		<tr>
+		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>');" style="cursor:pointer" class="clickable">
 			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>
 			<td class="right">
 				<nobr><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></nobr>
@@ -20,7 +20,7 @@
 			<td>
 				<s:if test="(operator == operator.inheritFlagCriteria && !question.subCategory.category.auditType.classType.policy) 
 						|| (operator == operator.inheritInsuranceCriteria && question.subCategory.category.auditType.classType.policy)">
-						<a href="#criteriaEdit" onclick="showCriteria('<s:property value="question.id" />'); return false;"><s:property value="question.question" /></a>
+						<s:property value="question.question" />
 				</s:if>
 				<s:else><s:property value="question.question" escape="false" /></s:else>
 			</td>
