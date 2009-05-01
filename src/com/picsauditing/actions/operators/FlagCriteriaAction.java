@@ -3,6 +3,7 @@ package com.picsauditing.actions.operators;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -64,7 +65,8 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						}
 					} else if (Strings.isEmpty(red.getComparison()) || Strings.isEmpty(red.getValue())) {
 						addActionError("Cannot save Red Flag Criteria without a comparison and a value");
-					} else { // Both comparison and value exist
+					} else if (isValidValue(red)) { // Both comparison and value
+													// exist
 						red.setFlagColor(FlagColor.Red);
 						red.setAuditQuestion(question);
 						red.setChecked(YesNo.Yes);
@@ -79,7 +81,8 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						}
 					} else if (Strings.isEmpty(amber.getComparison()) || Strings.isEmpty(amber.getValue())) {
 						addActionError("Cannot save Amber Flag Criteria without a comparison and a value");
-					} else { // Both comparison and value exist
+					} else if (isValidValue(amber)) { // Both comparison and
+														// value exist
 						amber.setFlagColor(FlagColor.Amber);
 						amber.setAuditQuestion(question);
 						amber.setChecked(YesNo.Yes);
@@ -98,9 +101,20 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		return SUCCESS;
 	}
 
+	private boolean isValidValue(FlagQuestionCriteria criteria) {
+		if ("Date".equals(getQuestion().getQuestionType())) {
+			if (!"Today".equals(criteria.getValue()) && DateBean.parseDate(criteria.getValue()) == null)
+				addActionError("The value entered is not a valid date");
+		}
+		return true;
+	}
+
 	public AuditQuestion getQuestion() {
 		if (question == null) {
-			question = red.getAuditQuestion();
+			if (red != null)
+				question = red.getAuditQuestion();
+			else if (amber != null)
+				question = amber.getAuditQuestion();
 		}
 		return question;
 	}
