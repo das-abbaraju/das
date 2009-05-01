@@ -24,6 +24,8 @@
 	<s:hidden name="orderBy" />
 </s:form>
 
+<div class="alphapaging"><s:property
+value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

@@ -2,13 +2,24 @@
 <html>
 <head>
 <title>NCMS Data</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<s:include value="reportHeader.jsp" />
 </head>
 <body>
 <h1>NCMS Data</h1> 
+<s:form id="form1">
+	<s:hidden name="filter.ajax" />
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
+	<s:hidden name="showPage" value="1" />
+	<s:hidden name="filter.startsWith" />
+	<s:hidden name="orderBy" />
+</s:form>
+
 <table border="0" cellpadding="5" cellspacing="0" align="center">
 	<tr>
-		<td height="30" align="left"><s:property escape="false" value="report.startsWithLinks" /></td>
+		<td height="30" align="left"><s:property
+			value="report.startsWithLinksWithDynamicForm" escape="false" />
+		</td>
 		<td align="right"><s:property escape="false" value="report.pageLinks" /></td>
 	</tr>
 </table>

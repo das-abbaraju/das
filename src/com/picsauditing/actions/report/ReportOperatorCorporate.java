@@ -45,6 +45,7 @@ public class ReportOperatorCorporate extends ReportAccount {
 		sql.addField("a.industry");
 		sql.addField("a.state");
 		sql.addField("a.city");
+		addFilterToSQL();
 	}
 	
 	@Override
