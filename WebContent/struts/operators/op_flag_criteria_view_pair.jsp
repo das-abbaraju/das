@@ -40,5 +40,3 @@
 	>
 	<a  style="cursor:pointer" title="Clear Criteria" onclick="clearRow('<s:property value="#criteria"/>');">
 <img src="images/notOkCheck.gif"/></a></span>
-
-<br/>

@@ -37,6 +37,14 @@ function clearRow(row) {
 	$(row+'_clear').hide();
 }
 
+function testCriteria(comparison, value, test) {
+	var comp = $F(comparison) == '=' ? '==' : $F(comparison);
+	if (eval($F(value)+comp+$F(test)))
+		alert("It Works!");
+	else
+		alert("It does not work!");
+}
+
 function closeCriteriaEdit() {
 	Modalbox.hide();
 }

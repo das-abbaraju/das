@@ -17,6 +17,9 @@
 			<td>
 				<s:include value="op_flag_criteria_view_pair.jsp"/>
 			</td>
+			<td>
+				Test: <input type="text" id="red_test" size="10"> <input type="button" onclick="testCriteria('red_comparison','red_value','red_test');return false;" value="Test"/>
+			</td>
 		</tr>
 		<tr>
 			<td>
@@ -26,6 +29,9 @@
 			</td>
 			<td>
 				<s:include value="op_flag_criteria_view_pair.jsp"/>
+			</td>
+			<td>
+				Test: <input type="text" id="amber_test" size="10"> <input type="button" onclick="testCriteria('amber_comparison','amber_value','amber_test');return false;" value="Test"/>
 			</td>
 		</tr>
 	</table>
