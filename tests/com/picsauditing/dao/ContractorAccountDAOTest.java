@@ -82,18 +82,30 @@ public class ContractorAccountDAOTest {
 	@Test
 	public void testFind() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
-		System.out.println("contractoraccount.getFlags()");
-		for (OperatorAccount operator : contractoraccount.getFlags().keySet()) {
-			System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
-		}
-		System.out.println("contractoraccount.getOperators()");
-		for (ContractorOperator operator : contractoraccount.getOperators()) {
-			System.out.println(operator.getOperatorAccount().getName() + operator.getFlag().getFlagColor());
-		}
-		System.out.println("contractoraccountDAO.findOperators");
-		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions(), "")) {
-			System.out.println(operator.getOperatorAccount().getName());
-		}
+		List<ContractorOperator> operators = contractoraccount.getOperators();
+		assertTrue(operators.size() > 0);
+		for(ContractorOperator co : operators)
+			assertTrue(co.getOperatorAccount().getName().length() > 0);
+
+		ContractorAccount cached = contractoraccountDAO.find(14);
+		List<ContractorOperator> cachedOps = cached.getOperators();
+		assertTrue(cachedOps.size() > 0);
+		for(ContractorOperator co : cachedOps)
+			assertTrue(co.getOperatorAccount().getName().length() > 0);
+		
+		
+//		System.out.println("contractoraccount.getFlags()");
+//		for (OperatorAccount operator : contractoraccount.getFlags().keySet()) {
+//			System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
+//		}
+//		System.out.println("contractoraccount.getOperators()");
+//		for (ContractorOperator operator : contractoraccount.getOperators()) {
+//			System.out.println(operator.getOperatorAccount().getName() + operator.getFlag().getFlagColor());
+//		}
+//		System.out.println("contractoraccountDAO.findOperators");
+//		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions(), "")) {
+//			System.out.println(operator.getOperatorAccount().getName());
+//		}
 		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());
 	}
 

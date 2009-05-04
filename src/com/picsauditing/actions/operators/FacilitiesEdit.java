@@ -8,15 +8,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.interceptor.ServletRequestAware;
-
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountNameDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -33,73 +28,60 @@ import com.picsauditing.util.Strings;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
-public class FacilitiesEdit extends PicsActionSupport implements Preparable, ServletRequestAware {
-	protected int opID;
-	protected String type;
-	protected OperatorAccount operatorAccount;
-	protected OperatorAccountDAO operatorAccountDAO;
-	protected FacilitiesDAO facilitiesDAO;
-	protected AccountNameDAO accountNameDAO;
+public class FacilitiesEdit extends OperatorActionSupport implements Preparable {
+	protected String type = "Operator";
 	protected int[] facilities = new int[300];
 	protected Set<OperatorAccount> relatedFacilities = null;
-	protected int auditorid;
 	protected int nameId;
 	protected String name;
-	protected int parentid;
-	protected HttpServletRequest request;
+
+	protected FacilitiesDAO facilitiesDAO;
+	protected AccountNameDAO accountNameDAO;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
 			AccountNameDAO accountNameDAO) {
-		this.operatorAccountDAO = operatorAccountDAO;
+		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.accountNameDAO = accountNameDAO;
 	}
 
 	public void prepare() throws Exception {
-		getPermissions();
-		opID = getParameter("opID");
-		type = request.getParameter("type");
-		if (type == null)
-			type = "Operator";
+		id = getParameter("id");
 
-		if (opID > 0) {
-			operatorAccount = operatorAccountDAO.find(opID);
-			type = operatorAccount.getType();
-			if (operatorAccount.getInsuranceAuditor() != null)
-				auditorid = operatorAccount.getInsuranceAuditor().getId();
+		if (id > 0) {
+			findOperator();
+			type = operator.getType();
+			subHeading = "Edit " + operator.getType();
+
 			int i = 0;
-			for (Facility fac : operatorAccount.getOperatorFacilities()) {
+			for (Facility fac : operator.getOperatorFacilities()) {
 				facilities[i] = fac.getOperator().getId();
 				i++;
 			}
 
-			if (operatorAccount.getParent() != null)
-				parentid = operatorAccount.getParent().getId();
-			else if (operatorAccount.getCorporateFacilities().size() == 1) {
-				operatorAccount.setParent(operatorAccount.getCorporateFacilities().get(0).getCorporate());
-				operatorAccountDAO.save(operatorAccount);
-				parentid = operatorAccount.getParent().getId();
+			operator.setInheritAudits(setForeignKey(operator.getInheritAudits(), "operator.inheritAudits.id"));
+			operator.setInheritAuditCategories(setForeignKey(operator.getInheritAuditCategories(),
+					"operator.inheritAuditCategories.id"));
+			operator.setInheritFlagCriteria(setForeignKey(operator.getInheritFlagCriteria(),
+					"operator.inheritFlagCriteria.id"));
+			operator.setInheritInsuranceCriteria(setForeignKey(operator.getInheritInsuranceCriteria(),
+					"operator.inheritInsuranceCriteria.id"));
+			operator.setInheritInsurance(setForeignKey(operator.getInheritInsurance(), "operator.inheritInsurance.id"));
+
+			operator.setParent(setForeignKey(operator.getParent(), "operator.parent.id"));
+
+			if (operator.getParent() == null && operator.getCorporateFacilities().size() > 0) {
+				operator.setParent(operator.getCorporateFacilities().get(0).getCorporate());
+				operatorDao.save(operator);
 			}
-			
-			operatorAccount.setInheritAudits((OperatorAccount) setForeignKey(operatorAccount.getInheritAudits(),
-					"operatorAccount.inheritAudits.id"));
-			operatorAccount.setInheritAuditCategories((OperatorAccount) setForeignKey(operatorAccount
-					.getInheritAuditCategories(), "operatorAccount.inheritAuditCategories.id"));
-			operatorAccount.setInheritFlagCriteria((OperatorAccount) setForeignKey(operatorAccount
-					.getInheritFlagCriteria(), "operatorAccount.inheritFlagCriteria.id"));
-			operatorAccount.setInheritInsuranceCriteria((OperatorAccount) setForeignKey(operatorAccount
-					.getInheritInsuranceCriteria(), "operatorAccount.inheritInsuranceCriteria.id"));
-			operatorAccount.setInheritInsurance((OperatorAccount) setForeignKey(operatorAccount
-					.getInheritInsurance(), "operatorAccount.inheritInsurance.id"));
+
 		}
 	}
 
-	private BaseTable setForeignKey(BaseTable table, String parameter) {
-		if (Strings.isEmpty(request.getParameter(parameter)))
-			return table;
+	private OperatorAccount setForeignKey(OperatorAccount table, String parameter) {
 		int foreignKey = getParameter(parameter);
-		if (table == null || table.getId() != foreignKey) {
-			BaseTable newRow = new OperatorAccount();
+		if (foreignKey > 0) {
+			OperatorAccount newRow = new OperatorAccount();
 			newRow.setId(foreignKey);
 			return newRow;
 		}
@@ -109,6 +91,11 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+
+		tryPermissions(OpPerms.ManageOperators);
+
+		if (id == 0)
+			subHeading = "Add " + type;
 
 		if (button != null) {
 			if (button.equalsIgnoreCase("RemoveName")) {
@@ -120,7 +107,7 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				boolean skip = false;
 				name = name.trim();
 
-				for (AccountName an : operatorAccount.getNames()) {
+				for (AccountName an : operator.getNames()) {
 					if (an.getName().equalsIgnoreCase(name)) {
 						skip = true;
 						name = "";
@@ -130,39 +117,32 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				if (!skip) {
 					AccountName account = new AccountName();
 					account.setAccount(new Account());
-					account.getAccount().setId(opID);
+					account.getAccount().setId(id);
 					account.setName(name);
 					account.setAuditColumns(new User(permissions.getUserId()));
-					operatorAccount.getNames().add(account);
-					Collections.sort(operatorAccount.getNames(), new Comparator<AccountName>() {
+					operator.getNames().add(account);
+					Collections.sort(operator.getNames(), new Comparator<AccountName>() {
 						@Override
 						public int compare(AccountName o1, AccountName o2) {
 							return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
 						}
 					});
 					account = accountNameDAO.save(account);
-					// operatorAccount.getNames().add(account);
+					// operator.getNames().add(account);
 				}
 				return SUCCESS;
 			}
 
 			if (button.equalsIgnoreCase("Save")) {
-				Vector<String> errors = validateAccount(operatorAccount);
+				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
+				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
 					for (String error : errors)
 						addActionError(error);
 					return SUCCESS;
 				}
 
-				if (parentid > 0) {
-					operatorAccount.setParent(operatorAccountDAO.find(parentid));
-				} else {
-					if (operatorAccount.getParent() != null) {
-						parentid = operatorAccount.getParent().getId();
-					}
-				}
-
-				if (operatorAccount.isCorporate()) {
+				if (operator.isCorporate()) {
 					permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
 
 					if (facilities != null) {
@@ -174,32 +154,32 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 							newFacilities.add(opAccount);
 						}
 
-						Iterator<Facility> facList = operatorAccount.getOperatorFacilities().iterator();
+						Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
 						while (facList.hasNext()) {
 							Facility opFacilities = facList.next();
 							if (newFacilities.contains(opFacilities.getOperator())) {
 								newFacilities.remove(opFacilities.getOperator());
 							} else {
 								facilitiesDAO.remove(opFacilities);
-								if (operatorAccount.equals(opFacilities.getOperator().getParent())) {
+								if (operator.equals(opFacilities.getOperator().getParent())) {
 									opFacilities.getOperator().setParent(null);
-									operatorAccountDAO.save(opFacilities.getOperator());
+									operatorDao.save(opFacilities.getOperator());
 								}
 								facList.remove();
 							}
 						}
 
 						for (OperatorAccount opAccount : newFacilities) {
-							opAccount = operatorAccountDAO.find(opAccount.getId());
+							opAccount = operatorDao.find(opAccount.getId());
 							if (opAccount != null) {
 								Facility facility = new Facility();
-								facility.setCorporate(operatorAccount);
+								facility.setCorporate(operator);
 								facility.setOperator(opAccount);
 								facilitiesDAO.save(facility);
-								operatorAccount.getOperatorFacilities().add(facility);
+								operator.getOperatorFacilities().add(facility);
 								if (opAccount.getParent() == null) {
-									opAccount.setParent(operatorAccount);
-									operatorAccountDAO.save(opAccount);
+									opAccount.setParent(operator);
+									operatorDao.save(opAccount);
 								}
 							}
 						}
@@ -208,41 +188,15 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 				} else {
 					permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 				}
-				operatorAccount.setType(type);
-				if (auditorid > 0)
-					operatorAccount.setInsuranceAuditor(new User(auditorid));
-				operatorAccountDAO.save(operatorAccount);
-				addActionMessage("Successfully modified " + operatorAccount.getName());
+				operator.setType(type);
+				operatorDao.save(operator);
+				addActionMessage("Successfully modified " + operator.getName());
 			} else {
 				throw new Exception("no button action found called " + button);
 			}
 		}
 
 		return SUCCESS;
-	}
-
-	public int getOpID() {
-		return opID;
-	}
-
-	public void setOpID(int opID) {
-		this.opID = opID;
-	}
-
-	public OperatorAccount getOperatorAccount() {
-		return operatorAccount;
-	}
-
-	public void setOperatorAccount(OperatorAccount operatorAccount) {
-		this.operatorAccount = operatorAccount;
-	}
-
-	public OperatorAccount getOperator() {
-		return operatorAccount;
-	}
-
-	public void setOperator(OperatorAccount operatorAccount) {
-		this.operatorAccount = operatorAccount;
 	}
 
 	public Industry[] getIndustryList() {
@@ -260,14 +214,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 
 	public void setFacilities(int[] facilities) {
 		this.facilities = facilities;
-	}
-
-	public int getAuditorid() {
-		return auditorid;
-	}
-
-	public void setAuditorid(int auditorid) {
-		this.auditorid = auditorid;
 	}
 
 	public boolean isTypeOperator() {
@@ -290,14 +236,6 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 		this.nameId = nameId;
 	}
 
-	public int getParentid() {
-		return parentid;
-	}
-
-	public void setParentid(int parentid) {
-		this.parentid = parentid;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -310,36 +248,29 @@ public class FacilitiesEdit extends PicsActionSupport implements Preparable, Ser
 		if (relatedFacilities == null) {
 			relatedFacilities = new TreeSet<OperatorAccount>();
 			// Add myself
-			relatedFacilities.add(operatorAccount);
+			relatedFacilities.add(operator);
 			// Add all my parents
-			for (Facility parent : operatorAccount.getCorporateFacilities())
+			for (Facility parent : operator.getCorporateFacilities())
 				relatedFacilities.add(parent.getCorporate());
-			relatedFacilities.add(operatorAccount.getInheritAuditCategories());
-			relatedFacilities.add(operatorAccount.getInheritAudits());
-			relatedFacilities.add(operatorAccount.getInheritFlagCriteria());
-			relatedFacilities.add(operatorAccount.getInheritInsuranceCriteria());
-			relatedFacilities.add(operatorAccount.getInheritInsurance());
+			relatedFacilities.add(operator.getInheritAuditCategories());
+			relatedFacilities.add(operator.getInheritAudits());
+			relatedFacilities.add(operator.getInheritFlagCriteria());
+			relatedFacilities.add(operator.getInheritInsuranceCriteria());
+			relatedFacilities.add(operator.getInheritInsurance());
 		}
 		return relatedFacilities;
 	}
 
-	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	public Vector<String> validateAccount(OperatorAccount operatorAccount) {
+	static private Vector<String> validateAccount(OperatorAccount operator) {
 		Vector<String> errorMessages = new Vector<String>();
-		if (null == type)
-			errorMessages.addElement("Please indicate the account type");
-		if (operatorAccount.getName().length() == 0)
+		if (Strings.isEmpty(operator.getName()))
 			errorMessages.addElement("Please fill in the Company Name field");
-		if (operatorAccount.getName().length() < 3)
+		else if (operator.getName().length() < 3)
 			errorMessages.addElement("Your company name must be at least 3 characters long");
 
-		if ((operatorAccount.getEmail().length() == 0) || (!Utilities.isValidEmail(operatorAccount.getEmail())))
-			errorMessages
-					.addElement("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
+		if (!Utilities.isValidEmail(operator.getEmail()))
+			errorMessages.addElement("Please enter a valid email address. "
+					+ "This is our main way of communicating with you so it must be valid.");
 		return errorMessages;
 	}
 

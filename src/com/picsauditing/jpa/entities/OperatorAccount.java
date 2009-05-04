@@ -45,7 +45,7 @@ public class OperatorAccount extends Account {
 	private User insuranceAuditor;
 	private YesNo isUserManualUploaded = YesNo.No;
 	private YesNo approvesRelationships = YesNo.No;
-	private boolean verifiedByPics = false;
+	private boolean verifiedByPics = true;
 
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();

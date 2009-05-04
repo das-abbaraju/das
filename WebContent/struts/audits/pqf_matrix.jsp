@@ -59,7 +59,7 @@ function clearSelected(name) {
 			<h3>Companies that inherit the Audit Categories from <s:property value="key.name"/></h3>
 			<ul>
 				<s:iterator value="value">
-					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
+					<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
 				</s:iterator>
 			</ul>
 			</td></tr>

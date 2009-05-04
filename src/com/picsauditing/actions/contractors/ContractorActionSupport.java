@@ -3,19 +3,15 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Inputs;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -24,21 +20,15 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ContractorActionSupport extends PicsActionSupport {
-	protected int id = 0;
+public class ContractorActionSupport extends AccountActionSupport {
 	protected ContractorAccount contractor;
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
 	protected ContractorAccountDAO accountDao;
@@ -46,13 +36,9 @@ public class ContractorActionSupport extends PicsActionSupport {
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
-	private List<Note> notes;
-	protected NoteCategory noteCategory = NoteCategory.General;
 
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
-
-	protected String subHeading;
 
 	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		this.accountDao = accountDao;
@@ -91,20 +77,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return permissionToViewContractor.check(limitedView);
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public ContractorAccount getContractor() {
 		return contractor;
-	}
-
-	public void setContractor(ContractorAccount contractor) {
-		this.contractor = contractor;
 	}
 
 	public List<ContractorAudit> getActiveAudits() {
@@ -226,14 +200,6 @@ public class ContractorActionSupport extends PicsActionSupport {
 			}
 		}
 		return menu;
-	}
-
-	public String getSubHeading() {
-		return subHeading;
-	}
-
-	public void setSubHeading(String subHeading) {
-		this.subHeading = subHeading;
 	}
 
 	/**
@@ -372,60 +338,8 @@ public class ContractorActionSupport extends PicsActionSupport {
 		return temp;
 	}
 
-	public TreeMap<String, String> getStateList() {
-		return State.getStates(true);
-	}
-
-	public String[] getCountryList() {
-		return Inputs.COUNTRY_ARRAY;
-	}
-
-	public Industry[] getIndustryList() {
-		return Industry.values();
-	}
-
 	public LowMedHigh[] getRiskLevelList() {
 		return LowMedHigh.values();
-	}
-
-	protected void addNote(ContractorAccount contractor, String newNote) throws Exception {
-		addNote(contractor, newNote, NoteCategory.General);
-	}
-
-	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory noteCategory) throws Exception {
-		addNote(contractor, newNote, noteCategory, LowMedHigh.Low, false, Account.EVERYONE);
-	}
-
-	protected void addNote(ContractorAccount contractor, String newNote, NoteCategory category, LowMedHigh priority,
-			boolean canContractorView, int viewableBy) throws Exception {
-		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-		Note note = new Note();
-		note.setAccount(contractor);
-		note.setAuditColumns(this.getUser());
-		note.setSummary(newNote);
-		note.setPriority(priority);
-		note.setNoteCategory(category);
-		note.setViewableById(viewableBy);
-		note.setCanContractorView(canContractorView);
-		note.setStatus(NoteStatus.Closed);
-		noteDAO.save(note);
-	}
-
-	public NoteCategory getNoteCategory() {
-		return noteCategory;
-	}
-
-	public void setNoteCategory(NoteCategory noteCategory) {
-		this.noteCategory = noteCategory;
-	}
-
-	public List<Note> getNotes() {
-		if (notes == null) {
-			NoteDAO dao = (NoteDAO) SpringUtils.getBean("NoteDAO");
-			notes = dao.getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal()
-					+ " AND noteCategory IN ('" + noteCategory.toString() + "','General')", 5);
-		}
-		return notes;
 	}
 
 	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {

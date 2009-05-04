@@ -64,7 +64,7 @@ function save(id, aID, oID, pKey) {
 			<h3>Companies that inherit the Audit </h3>
 			<ul>
 				<s:iterator value="inheritsAudits">
-					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
+					<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
 				</s:iterator>
 			</ul>
 			</td>
@@ -74,7 +74,7 @@ function save(id, aID, oID, pKey) {
 			<h3>Companies that inherit the InsureGuard</h3>
 			<ul>
 				<s:iterator value="inheritsInsurance">
-					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
+					<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
 				</s:iterator>
 			</ul>
 			</td>

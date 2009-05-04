@@ -41,7 +41,7 @@ public class ReportAccountQuick extends ReportAccount {
 			if (data.get(0).get("type").equals("Contractor"))
 				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + id);
 			else
-				ServletActionContext.getResponse().sendRedirect("FacilitiesEdit.action?opID=" + id);
+				ServletActionContext.getResponse().sendRedirect("FacilitiesEdit.action?id=" + id);
 		}
 		return SUCCESS;
 	}

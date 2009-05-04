@@ -3,13 +3,13 @@
 <%@page language="java" errorPage="../../exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="operatorAccount.name" /></title>
+<title><s:property value="operator.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript">
 	function removeName(nameId) {
-		var pars = "button=RemoveName&nameId=" + nameId+'&opID='+<s:property value="operatorAccount.id"/>;
+		var pars = "button=RemoveName&nameId=" + nameId+'&id='+<s:property value="operator.id"/>;
 		var divName ='operator_name';
 		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
 		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', 
@@ -25,7 +25,7 @@
 	
 	function addName() {
 		name = $('legalName').value;
-		var pars = "button=AddName&name=" + name+'&opID='+<s:property value="operatorAccount.id"/>;
+		var pars = "button=AddName&name=" + name+'&id='+<s:property value="operator.id"/>;
 		var divName ='operator_name';
 		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
 		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', 
@@ -42,7 +42,7 @@
 </script>
 </head>
 <body>
-<s:if test="operatorAccount == null">
+<s:if test="operator == null">
 	<h1>Create New <s:property value="type" /> Account</h1>
 </s:if>
 <s:else>
@@ -52,80 +52,79 @@
 <s:form id="save" method="POST" enctype="multipart/form-data">
 	<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 	<br clear="all" />
-	<s:hidden name="opID" />
+	<s:hidden name="id" />
 	<s:hidden name="type" />
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 			<fieldset class="form"><legend><span>Details</span></legend>
 			<ol>
-				<li><label>Name:</label> <s:textfield name="operatorAccount.name" size="35" /></li>
-				<li><label>Primary Contact:</label> <s:textfield name="operatorAccount.contact" /></li>
-				<li><label>Industry:</label> <s:select list="industryList" name="operatorAccount.industry" /></li>
+				<li><label>Name:</label> <s:textfield name="operator.name" size="35" /></li>
+				<li><label>Primary Contact:</label> <s:textfield name="operator.contact" /></li>
+				<li><label>Industry:</label> <s:select list="industryList" name="operator.industry" /></li>
 			</ol>
 			</fieldset>
 			<fieldset class="form"><legend><span>Primary Address</span></legend>
 			<ol>
-				<li><label>Address:</label> <s:textfield name="operatorAccount.address" size="35" /></li>
-				<li><label>City:</label> <s:textfield name="operatorAccount.city" size="20" /></li>
-				<li><label>State/Province:</label> <s:textfield name="operatorAccount.state" size="5" /></li>
-				<li><label>Zip:</label> <s:textfield name="operatorAccount.zip" size="7" /></li>
-				<li><label>Phone:</label> <s:textfield name="operatorAccount.phone" size="15" /></li>
-				<li><label>Phone 2:</label> <s:textfield name="operatorAccount.phone2" size="15" /></li>
-				<li><label>Fax:</label> <s:textfield name="operatorAccount.fax" size="15" /></li>
-				<li><label>Email:</label> <s:textfield name="operatorAccount.email" size="30" /></li>
-				<li><label>Web URL:</label> <s:textfield name="operatorAccount.webUrl" size="30" /></li>
+				<li><label>Address:</label> <s:textfield name="operator.address" size="35" /></li>
+				<li><label>City:</label> <s:textfield name="operator.city" size="20" /></li>
+				<li><label>State/Province:</label> <s:textfield name="operator.state" size="5" /></li>
+				<li><label>Zip:</label> <s:textfield name="operator.zip" size="7" /></li>
+				<li><label>Phone:</label> <s:textfield name="operator.phone" size="15" /></li>
+				<li><label>Phone 2:</label> <s:textfield name="operator.phone2" size="15" /></li>
+				<li><label>Fax:</label> <s:textfield name="operator.fax" size="15" /></li>
+				<li><label>Email:</label> <s:textfield name="operator.email" size="30" /></li>
+				<li><label>Web URL:</label> <s:textfield name="operator.webUrl" size="30" /></li>
 			</ol>
 			</fieldset>
 			</td>
 			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
 			<fieldset class="form"><legend><span>Admin Fields</span></legend>
 			<ol>
-				<li><label>Visible?</label> <s:radio list="#{'Y':'Yes','N':'No'}" name="operatorAccount.active" theme="pics" />
-				</li>
+				<li><label>Visible?</label> <s:radio list="#{'Y':'Yes','N':'No'}" name="operator.active" theme="pics" /></li>
 				<li><label>Receive contractor activation emails:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
-					name="operatorAccount.doSendActivationEmail" theme="pics" /></li>
+					name="operator.doSendActivationEmail" theme="pics" /></li>
 				<li><label>Approves Contractors:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
-					name="operatorAccount.approvesRelationships" theme="pics" /></li>
-				<li><label>Sees Ins. Certs:</label> <nobr><s:radio list="#{'Yes':'Yes','No':'No'}"
-					name="operatorAccount.canSeeInsurance" theme="pics" /> <span id="auditorID"><s:select list="auditorList"
-					listValue="name" listKey="id" name="auditorid" /></span></nobr></li>
+					name="operator.approvesRelationships" theme="pics" /></li>
+				<li><label>Sees Ins. Certs:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
+					theme="pics" /></li>
 
-				<li><label>Verified By PICS:</label> <s:checkbox name="operatorAccount.verifiedByPics" /></li>
+				<li><label>Verified By PICS:</label> <s:checkbox name="operator.verifiedByPics" /></li>
 				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
-					name="operatorAccount.doContractorsPay" theme="pics" /></li>
-				<li><label>Send Emails to:</label> <s:textfield name="operatorAccount.activationEmails" /> <br />
+					name="operator.doContractorsPay" theme="pics" /></li>
+				<li><label>Send Emails to:</label> <s:textarea name="operator.activationEmails" rows="3" cols="40" /> <br />
 				* separate emails with commas ex: a@bb.com, c@dd.com</li>
-
+				
 			</ol>
 			</fieldset>
 			<fieldset class="form"><legend><span>Linked Accounts</span></legend>
 			<ol>
-				<s:if test="operatorAccount.corporate">
+				<s:if test="operator.corporate">
 					<li><label>Facilities:</label> <s:select list="operatorList" listValue="name" listKey="id" name="facilities"
 						multiple="7" size="15" /></li>
 				</s:if>
-				<s:if test="operatorAccount.operator">
-					<s:if test="operatorAccount.corporateFacilities.size() > 0">
-						<li><label>Parent Corporation / Division / Hub:</label> 
-							<s:select list="operatorAccount.corporateFacilities" listKey="corporate.id" listValue="corporate.name"
-								headerKey="0" headerValue=" - Select a Parent Facility - " name="parentid" />
-						</li>
+				<s:if test="operator.operator">
+					<s:if test="operator.corporateFacilities.size() > 0">
+						<li><label>Parent Corporation / Division / Hub:</label> <s:select list="operator.corporateFacilities"
+							listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - "
+							name="operator.parent.id" /></li>
 					</s:if>
-					
-					<li><div style="font-weight: bold; text-align: center;">Operator Configuration Inheritance</div></li>
-					<li><label>Flag Criteria:</label> <s:select name="operatorAccount.inheritFlagCriteria.id"
+
+					<li>
+					<div style="font-weight: bold; text-align: center;">Operator Configuration Inheritance</div>
+					</li>
+					<li><label>Flag Criteria:</label> <s:select name="operator.inheritFlagCriteria.id" list="relatedFacilities"
+						listKey="id" listValue="name"></s:select></li>
+					<li><label>Insurance Criteria:</label> <s:select name="operator.inheritInsuranceCriteria.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Insurance Criteria:</label> <s:select name="operatorAccount.inheritInsuranceCriteria.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Policy Types:</label> <s:select name="operatorAccount.inheritInsurance.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Audit Types:</label> <s:select name="operatorAccount.inheritAudits.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Audit Categories:</label> <s:select name="operatorAccount.inheritAuditCategories.id"
+					<li><label>Policy Types:</label> <s:select name="operator.inheritInsurance.id" list="relatedFacilities"
+						listKey="id" listValue="name"></s:select></li>
+					<li><label>Audit Types:</label> <s:select name="operator.inheritAudits.id" list="relatedFacilities"
+						listKey="id" listValue="name"></s:select></li>
+					<li><label>Audit Categories:</label> <s:select name="operator.inheritAuditCategories.id"
 						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
 				</s:if>
-			
+
 			</ol>
 			</fieldset>
 			<fieldset class="form"><legend><span>Legal Additional Insured Names</span></legend>

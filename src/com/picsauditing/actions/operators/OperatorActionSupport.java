@@ -3,16 +3,14 @@ package com.picsauditing.actions.operators;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-public class OperatorActionSupport extends PicsActionSupport {
+public class OperatorActionSupport extends AccountActionSupport {
 	private static final long serialVersionUID = 8967320010000259378L;
-	protected int id;
 	protected OperatorAccountDAO operatorDao;
 	protected OperatorAccount operator;
-	protected String subHeading;
 	private List<OperatorAccount> inheritsFlagCriteria = null;
 	private List<OperatorAccount> inheritsInsuranceCriteria = null;
 	private List<OperatorAccount> inheritsAudits = null;
@@ -22,15 +20,7 @@ public class OperatorActionSupport extends PicsActionSupport {
 		this.operatorDao = operatorDao;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public void findOperator() throws Exception {
+	protected void findOperator() throws Exception {
 		loadPermissions();
 		if (operator == null) {
 			
@@ -40,27 +30,17 @@ public class OperatorActionSupport extends PicsActionSupport {
 				id = this.getParameter("id");
 			}
 
-			if (permissions.isOperator())
+			if (permissions.isOperatorCorporate())
 				id = permissions.getAccountId();
-			else if (id == 0)
+			
+			if (id == 0)
 				throw new Exception("Missing operator id");
-			else if (permissions.isCorporate()) {
-				if (!permissions.getOperatorChildren().contains(id))
-					throw new Exception("Corporate account doesn't have access to that operator");
-			} else {
-				permissions.tryPermission(OpPerms.AllOperators);
-			}
-
+//			else if (permissions.isCorporate()) {
+//				if (!permissions.getOperatorChildren().contains(id))
+//					throw new Exception("Corporate account doesn't have access to that operator");
+			
 			operator = operatorDao.find(id);
 		}
-	}
-
-	public String getSubHeading() {
-		return subHeading;
-	}
-
-	public void setSubHeading(String subHeading) {
-		this.subHeading = subHeading;
 	}
 
 	public OperatorAccount getOperator() {

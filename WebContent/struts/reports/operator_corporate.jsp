@@ -47,10 +47,10 @@ value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			
 			<s:if test="%{[0].get('active') == \"Y\"}">
-			<td><a href="FacilitiesEdit.action?opID=<s:property value="[0].get('id')"/>&type=<s:property value="[0].get('type')"/>"><s:property value="[0].get('name')"/></a>
+			<td><a href="FacilitiesEdit.action?id=<s:property value="[0].get('id')"/>&type=<s:property value="[0].get('type')"/>"><s:property value="[0].get('name')"/></a>
 			</td></s:if>
 			<s:else>
-			<td class="inactive"><a href="FacilitiesEdit.action?opID=<s:property value="[0].get('id')"/>&type=<s:property value="[0].get('type')"/>"><s:property value="[0].get('name')"/>*</a>
+			<td class="inactive"><a href="FacilitiesEdit.action?id=<s:property value="[0].get('id')"/>&type=<s:property value="[0].get('type')"/>"><s:property value="[0].get('name')"/>*</a>
 			</td>
 			</s:else>
 			<td><s:property value="get('industry')"/></td>

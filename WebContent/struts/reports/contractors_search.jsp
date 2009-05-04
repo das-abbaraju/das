@@ -44,7 +44,7 @@
 					><s:property value="get('name')" /></a>
 				</s:if>
 				<s:else>
-					<a href="FacilitiesEdit.action?opID=<s:property value="get('id')"/>"
+					<a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>"
 					><s:property value="get('name')" /></a>
 				</s:else>
 			</td>

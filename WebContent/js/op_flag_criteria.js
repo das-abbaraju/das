@@ -112,3 +112,7 @@ function closeNewCriteria() {
 	$('criteriaAdd').hide();
 	$('questionList').hide();
 }
+
+function showOtherAccounts() {
+	$('otherAccounts').toggle();
+}
