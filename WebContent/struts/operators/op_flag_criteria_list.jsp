@@ -11,8 +11,57 @@
 		</tr>
 	</thead>
 	
-	<s:iterator value="oshaList">
-	</s:iterator>
+	<tr>
+		<td>OSHA</td>
+		<td class="right"></td>
+		<td>
+			Lost Workdays Case Rate (LWCR):
+		</td>
+		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.lwcr.flag.toString() == 'Yes'">
+			<s:property value="oshaRedFlagCriteria.lwcr.hurdle"/>
+			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.lwcr.time)"/>
+			</s:if>
+		</nobr></td>
+		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.lwcr.flag.toString() == 'Yes'">
+			<s:property value="oshaAmberFlagCriteria.lwcr.hurdle"/>
+			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.lwcr.time)"/>
+			</s:if>
+		</nobr></td>
+	</tr>
+	<tr>
+		<td>OSHA</td>
+		<td class="right"></td>
+		<td>
+			Total Recordable Incident Rate (TRIR):
+		</td>
+		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.trir.flag.toString() == 'Yes'">
+			<s:property value="oshaRedFlagCriteria.trir.hurdle"/>
+			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.trir.time)"/>
+			</s:if>
+		</nobr></td>
+		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.trir.flag.toString() == 'Yes'">
+			<s:property value="oshaAmberFlagCriteria.trir.hurdle"/>
+			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.trir.time)"/>
+			</s:if>
+		</nobr></td>
+	</tr>
+	<tr>
+		<td>OSHA</td>
+		<td class="right"></td>
+		<td>
+			Fatalities:
+		</td>
+		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.fatalities.flag.toString() == 'Yes'">
+			<s:property value="oshaRedFlagCriteria.fatalities.hurdle"/>
+			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.fatalities.time)"/>
+			</s:if>
+		</nobr></td>
+		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.fatalities.flag.toString() == 'Yes'">
+			<s:property value="oshaAmberFlagCriteria.fatalities.hurdle"/>
+			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.fatalities.time)"/>
+			</s:if>
+		</nobr></td>
+	</tr>
 	
 	<s:iterator value="questionList">
 		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" 

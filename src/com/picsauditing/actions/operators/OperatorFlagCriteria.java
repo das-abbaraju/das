@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.FlagOshaCriteriaDAO;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -18,11 +19,14 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
 	private FlagQuestionCriteriaDAO criteriaDao;
+	private FlagOshaCriteriaDAO flagOshaCriteriaDAO;
 	private AuditTypeClass classType = AuditTypeClass.PQF;
 
-	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao) {
+	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
+			FlagOshaCriteriaDAO flagOshaCriteriaDAO) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;
+		this.flagOshaCriteriaDAO = flagOshaCriteriaDAO;
 		subHeading = "Manage Flag Criteria";
 	}
 
@@ -31,11 +35,19 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 			return LOGIN;
 
 		// TODO check permissions
-		//tryPermissions(OpPerms.EditFlagCriteria);
+		// tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
 
 		return SUCCESS;
+	}
+
+	public FlagOshaCriteria getOshaRedFlagCriteria() {
+		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Red'");
+	}
+	
+	public FlagOshaCriteria getOshaAmberFlagCriteria() {
+		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Amber'");
 	}
 
 	public Collection<QuestionCriteria> getQuestionList() {
@@ -83,5 +95,12 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	public void setClassType(AuditTypeClass classType) {
 		this.classType = classType;
 	}
-
+	
+	public static String getTime(int time)  {
+		if(time == 1)
+			return "Individual Yrs";
+		if(time == 3)
+			return "ThreeYearAverage";
+		return "";
+	}
 }
