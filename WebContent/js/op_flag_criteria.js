@@ -1,11 +1,13 @@
 var cal2;
-function showCriteria(questionID, auditName) {
-	if (typeof(cal2) == 'undefined') {
-		cal2 = new CalendarPopup('caldiv2');
-		cal2.setCssPrefix("PICS");
-		cal2.setReturnFunction("calendarReturn");
-		cal2.offsetX = -350;
-		cal2.offsetY = -20;
+function showCriteria(questionID, auditName, requiresCal) {
+	if(requiresCal) {
+		if (typeof(cal2) == 'undefined') {
+			cal2 = new CalendarPopup('caldiv2');
+			cal2.setCssPrefix("PICS");
+			cal2.setReturnFunction("calendarReturn");
+			cal2.offsetX = -350;
+			cal2.offsetY = -20;
+		}
 	}
 	var pars = {
 		'id' :opID,
