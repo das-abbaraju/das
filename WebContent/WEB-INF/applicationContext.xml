@@ -50,6 +50,7 @@
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
 	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
 	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
+	<bean id="FlagOshaCriteriaDAO" class="com.picsauditing.dao.FlagOshaCriteriaDAO"/>
 	
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
