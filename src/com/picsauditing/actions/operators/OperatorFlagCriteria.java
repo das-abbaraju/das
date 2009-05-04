@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class OperatorFlagCriteria extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
@@ -54,7 +55,17 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 
 		return map.values();
 	}
-
+	
+	/**
+	 * Get a list of operators that inherit their criteria from this account
+	 * @return
+	 */
+	public Collection<OperatorAccount> getInheritingOperators() {
+		if (classType.isPolicy())
+			return getInheritsInsuranceCriteria();
+		return getInheritsFlagCriteria();
+	}
+	
 	public class QuestionCriteria {
 		public AuditQuestion question;
 		public FlagQuestionCriteria red;

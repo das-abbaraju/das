@@ -44,14 +44,13 @@
 <div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
 <div id="growlBox"></div>
 
-<s:if test="inheritsFlagCriteria.size > 0">
+<s:if test="inheritingOperators.size > 0">
 <div style="position: absolute; right: 0; top: 0;"><a href=""
 	style="background-color: #EEE; padding: 3px 8px;" onclick="showOtherAccounts(); return false;"
-	>There are <s:property value="inheritsFlagCriteria.size"/> other account(s) that use the following
-criteria</a></div>
+	>There are <s:property value="inheritingOperators.size"/> other account(s) that use this criteria</a></div>
 <div id="otherAccounts" style="position: absolute; top: 28px; right: 10px; background-color: #F0F0F0; display: none;">
 <ol>
-	<s:iterator value="inheritsFlagCriteria">
+	<s:iterator value="inheritingOperators">
 		<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
 	</s:iterator>
 </ol>
