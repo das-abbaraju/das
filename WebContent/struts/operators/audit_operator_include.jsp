@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<div style="<s:if test="!canSee">color: #AAA; </s:if>padding: 0px; margin: 0px;">
 <nobr>
 <s:checkbox name="canSee%{htmlID}" value="canSee" title="View"
 onclick="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
@@ -15,3 +16,4 @@ onchange="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')
 <s:radio name="requiredAuditStatus%{htmlID}" list="AuditStatusList" value="requiredAuditStatus" disabled="!canSee"
 onchange="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
 </nobr>
+</div>

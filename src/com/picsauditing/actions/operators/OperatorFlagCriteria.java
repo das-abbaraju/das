@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 
@@ -15,16 +17,22 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
 	private FlagQuestionCriteriaDAO criteriaDao;
+	private AuditTypeClass classType = AuditTypeClass.PQF;
 
 	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;
+		subHeading = "Manage Flag Criteria";
 	}
 
 	public String execute() throws Exception {
-		findOperator();
+		if (!forceLogin())
+			return LOGIN;
+
 		// TODO check permissions
-		// FlagCriteria
+		//tryPermissions(OpPerms.EditFlagCriteria);
+
+		findOperator();
 
 		return SUCCESS;
 	}
@@ -57,8 +65,12 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		}
 	}
 
-	public String getSubHeading() {
-		return "Manage Flag Criteria";
+	public AuditTypeClass getClassType() {
+		return classType;
+	}
+
+	public void setClassType(AuditTypeClass classType) {
+		this.classType = classType;
 	}
 
 }

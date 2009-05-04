@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/CalendarPopup.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript">
-var opID = '<s:property value="operator.id" />';
+	var opID = '<s:property value="operator.id" />';
 </script>
 
 </head>
@@ -43,51 +43,29 @@ var opID = '<s:property value="operator.id" />';
 <div style="position: relative;">
 <div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
 <div id="growlBox"></div>
-<div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
 
-<div id="criteriaEdit"
-	style="display: none; position: absolute; top: 100px; left: 100px; z-index: 10; background-color: white; padding: 10px; border: 2px solid black;"></div>
-
-<button id="addButton" class="picsbutton positive" onclick="showNewCriteria();">+ Add Criteria</button>
-<table id="criteriaAdd" style="display: none;">
-<tr>
-<td style="padding: 5px; vertical-align: top;"><input type="text" id="questionTextBox" value="" /></td>
-<td>
-<button id="questionSearch" class="picsbutton positive" onclick="questionSearch();">Search</button>
-<button id="newCriteriaClose" class="picsbutton negative" onclick="closeNewCriteria();">Close</button>
-</td>
-</tr>
-</table>
-<div class="clear"></div>
-
-<div id="questionList"></div>
-
-<div>
-<table style="width: 100%;">
-	<tr>
-		<s:if test="inheritsFlagCriteria.size > 0">
-			<td style="padding: 10px;">
-			<h3>Companies that inherit the PQF/Audit Criteria</h3>
-			<ul>
-				<s:iterator value="inheritsFlagCriteria">
-					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
-				</s:iterator>
-			</ul>
-			</td>
-		</s:if>
-		<s:if test="inheritsInsuranceCriteria.size > 0">
-			<td style="padding: 10px;">
-			<h3>Companies that inherit the InsureGuard&trade; Criteria</h3>
-			<ul>
-				<s:iterator value="inheritsInsuranceCriteria">
-					<li><a href="FacilitiesEdit.action?opID=<s:property value="id"/>"><s:property value="name" /></a></li>
-				</s:iterator>
-			</ul>
-			</td>
-		</s:if>
-	</tr>
-</table>
+<s:if test="inheritsFlagCriteria.size > 0">
+<div style="position: absolute; right: 0; top: 0;"><a href=""
+	style="background-color: #EEE; padding: 3px 8px;" onclick="showOtherAccounts(); return false;"
+	>There are <s:property value="inheritsFlagCriteria.size"/> other account(s) that use the following
+criteria</a></div>
+<div id="otherAccounts" style="position: absolute; top: 28px; right: 10px; background-color: #F0F0F0; display: none;">
+<ol>
+	<s:iterator value="inheritsFlagCriteria">
+		<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
+	</s:iterator>
+</ol>
+<a href="#" onclick="$('otherAccounts').hide(); return false;">...hide</a>
 </div>
+</s:if>
+
+<ul id="navListTop">
+	<li><a href="?id=<s:property value="id"/>&classType=PQF" class="<s:if test="classType.PQF">current</s:if>">PQF</a></li>
+	<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.policy">current</s:if>">InsureGuard</a></li>
+	<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.audit">current</s:if>">Audits</a></li>
+</ul>
+
+<div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
 </div>
 
 </body>

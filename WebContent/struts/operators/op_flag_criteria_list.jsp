@@ -6,13 +6,17 @@
 			<th>Type</th>
 			<th class="center">#</th>
 			<th>Question</th>
-			<th><s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.smallIcon" escape="false"/> Red if...</th>
-			<th title="and not Red"><s:property value="@com.picsauditing.jpa.entities.FlagColor@Amber.smallIcon" escape="false"/> Amber if...</th>
+			<th title="Red Flag Criteria"><s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.bigIcon" escape="false"/></th>
+			<th title="Yellow Flag Criteria"><s:property value="@com.picsauditing.jpa.entities.FlagColor@Amber.bigIcon" escape="false"/></th>
 		</tr>
 	</thead>
 	
+	<s:iterator value="oshaList">
+	</s:iterator>
+	
 	<s:iterator value="questionList">
-		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" class="clickable">
+		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" 
+		class="clickable" title="Click to open">
 			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>
 			<td class="right">
 				<nobr><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></nobr>
