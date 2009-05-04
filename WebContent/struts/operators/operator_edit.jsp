@@ -138,7 +138,7 @@
 		</tr>
 	</table>
 	<br clear="all">
-	<div class="buttons"><input type="submit" class="picsbutton positi`" name="button" value="Save" /></div>
+	<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 </s:form>
 <div id="caldiv1"
 	style="position: absolute; visibility: hidden; background-color: white; layer-background-color: white;"></div>
