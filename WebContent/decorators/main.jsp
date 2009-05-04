@@ -22,6 +22,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
 <script src="js/chrome.js" type="text/javascript" ></script>
 <script src="js/pics_main.js" type="text/javascript" ></script>
+<script src="js/notes.js" type="text/javascript"></script>
 
 <!--CSS FIXES FOR INTERNET EXPLORER -->
 <!--[if IE]>

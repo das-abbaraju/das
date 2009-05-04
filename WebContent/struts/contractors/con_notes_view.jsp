@@ -30,8 +30,8 @@
 	<li><label>Priority:</label>
 		<s:property value="note.priority"/>
 	</li>
-	<li><label>Created:</label>
-		<s:date name="note.creationDate"/>
+	<li><label>Note Status:</label>
+		<s:property value="note.status"/>
 	</li>
 </ul>
 </fieldset>
@@ -48,6 +48,9 @@
 	</li>
 	<li><label>Created By:</label>
 		<s:property value="note.createdBy.name"/> - <s:property value="note.createdBy.account.name"/>
+	</li>
+	<li><label>Created:</label>
+		<s:date name="note.creationDate"/>
 	</li>
 </ul>
 </fieldset>
