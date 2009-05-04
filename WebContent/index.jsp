@@ -69,19 +69,19 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td valign="top" bgcolor="#FFFFFF">
                   	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
 				  		<tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">1/1/09</span>AES Joins PICS</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/09</span>PICS announced today that BP Cooper River, AES Hawaii and Delta Consultants have all joined the PICS network of Operator Owners in the past 7 days!</span><br>
+                            <br> 
+								President and CEO of PICS, John Moreland stated,"PICS has continually been able to show why we are the largest provider of contractor audits in the U.S. Our commitment to both the owners and contractors is evident by our ability to add three new clients within a week timeframe. PICS prides itself on the "service behind the data". Our safety expertise has repeatedly been instrumental in why PICS is the premier provider of contractor management services. PICS is looking forward to supporting our newest clients and plans on tremendous growth going forward this year".</td>
+                        </tr>
+				  		<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">01/01/09</span>AES Joins PICS</span><br>
                             <br> 
 								AES is one of the world's largest global power companies. With operations in 29 countries on five continents, AES's generation and distribution facilities have the capacity to serve 100 million people worldwide. AES employs 28,000 people worldwide and generated $13.6 billion of revenue in 2007.</td>
                         </tr>
 						<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF Joins PICS</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF Joins PICS</span><br>
                             <br> 
                             	BASF is the world's leading chemical company. Their portfolio ranges from oil and gas to chemicals, plastics, performance products, agricultural products and fine chemicals. As a reliable partner BASF helps its customers in virtually all industries to be more successful. With its high-value products and intelligent solutions, BASF plays an important role in finding answers to global challenges such as climate protection, energy efficiency, nutrition and mobility. BASF has more than 95,000 employees and posted sales of almost &euro;58 billion in 2007.</td></tr>
-				  		<tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">09/23/08</span>2008 NSC Annual Congress &amp; Expo</span><br>
-                            <br> 
-								The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS CEO, John Moreland,  gave a demonstration of the free online tool for contractor pre-qualification.</td>
-                        </tr>
 						<tr>
                       		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     	</tr>
