@@ -95,15 +95,15 @@
 
 	<s:if test="filter.showAuditType">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_auditTypeID'); return false;">PQF
-		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
-		<span id="form1_auditTypeID_select" style="display: none"
-			class="clearLink"> <s:select id="form1_auditTypeID" list="filter.pQFTypeList"
+			onclick="toggleBox('form1_pqfAuditTypeID'); return false;">PQF
+		Type</a> = <span id="form1_pqfAuditTypeID_query">ALL</span><br />
+		<span id="form1_pqfAuditTypeID_select" style="display: none"
+			class="clearLink"> <s:select id="form1_pqfAuditTypeID" list="filter.pQFTypeList"
 			cssClass="forms" name="filter.auditTypeID" listKey="id"
 			listValue="auditName" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_auditTypeID');</script> <br />
+			type="text/javascript">updateQuery('form1_pqfAuditTypeID');</script> <br />
 		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_auditTypeID'); return false;">Clear</a>
+			onclick="clearSelected('form1_pqfAuditTypeID'); return false;">Clear</a>
 		</span></div>
 	</s:if>
 
