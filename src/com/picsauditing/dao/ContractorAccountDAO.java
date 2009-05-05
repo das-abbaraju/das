@@ -177,10 +177,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 	
 	public void updateContractorByOperator(OperatorAccount operator) {
-		String where = "UPDATE ContractorAccount a SET a.needsRecalculation = 1 WHERE a.operators.operatorAccount.id = ?";
+		String where = "UPDATE ContractorAccount a SET a.needsRecalculation = 1 WHERE EXISTS (SELECT co.contractorAccount FROM a.operators co WHERE co.operatorAccount.id = ?)";
 		Query query = em.createQuery(where);
 		query.setParameter(1, operator.getId());
 		query.executeUpdate();
 	}
-
 }
