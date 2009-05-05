@@ -1,16 +1,19 @@
-package com.picsauditing.actions;
+package com.picsauditing.actions.accounts;
 
 import java.util.List;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.Inputs;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.SpringUtils;
 
@@ -18,6 +21,7 @@ import com.picsauditing.util.SpringUtils;
 public class AccountActionSupport extends PicsActionSupport {
 
 	protected int id;
+	protected Account account;
 	protected String subHeading;
 	private List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
@@ -39,7 +43,23 @@ public class AccountActionSupport extends PicsActionSupport {
 	public void setSubHeading(String subHeading) {
 		this.subHeading = subHeading;
 	}
+
+	public Account getAccount() {
+		return account;
+	}
 	
+	public ContractorAccount getContractor() {
+		if (account.isContractor())
+			return (ContractorAccount)account;
+		return null;
+	}
+
+	public OperatorAccount getOperator() {
+		if (account.isOperator() || account.isCorporate())
+			return (OperatorAccount)account;
+		return null;
+	}
+
 	/*************  NOTES  ************/
 
 	protected NoteDAO getNoteDao() {

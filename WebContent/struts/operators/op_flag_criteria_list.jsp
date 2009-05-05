@@ -62,6 +62,10 @@
 			</s:if>
 		</nobr></td>
 	</tr>
+
+	<s:if test="questionList.size() == 0">
+		<tr><td colspan="5">No flag criteria has been defined for this type</td></tr>
+	</s:if>
 	
 	<s:iterator value="questionList">
 		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" 

@@ -62,13 +62,19 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		List<FlagQuestionCriteria> criteriaList = criteriaDao.findByOperator(operator);
 		for (FlagQuestionCriteria criteria : criteriaList) {
 			AuditQuestion q = criteria.getAuditQuestion();
-			if (!map.containsKey(q)) {
-				map.put(q, new QuestionCriteria(q));
+			AuditTypeClass qClassType = q.getSubCategory().getCategory().getAuditType().getClassType();
+			if (!qClassType.isPQF() && !qClassType.isPolicy())
+				// Convert IM and any "other" audit type to Audit
+				qClassType = AuditTypeClass.Audit;
+			if (qClassType.equals(classType)) {
+				if (!map.containsKey(q)) {
+					map.put(q, new QuestionCriteria(q));
+				}
+				if (criteria.getFlagColor().equals(FlagColor.Amber))
+					map.get(q).amber = criteria;
+				if (criteria.getFlagColor().equals(FlagColor.Red))
+					map.get(q).red = criteria;
 			}
-			if (criteria.getFlagColor().equals(FlagColor.Amber))
-				map.get(q).amber = criteria;
-			if (criteria.getFlagColor().equals(FlagColor.Red))
-				map.get(q).red = criteria;
 		}
 
 		return map.values();

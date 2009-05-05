@@ -14,7 +14,16 @@ function showCriteria(questionID, auditName, requiresCal) {
 		'question.id' :questionID
 	};
 	
-	Modalbox.show('FlagCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria - '+auditName});
+	Modalbox.show('FlagCriteriaActionAjax.action', {
+		method : 'post', 
+		params: pars, 
+		title: 'Edit Criteria - '+auditName,
+		slideDownDuration: .5,
+		slideUpDuration: 0,
+		resizeDuration: .2,
+		overlayClose: false,
+		height: 200
+		});
 }
 
 function calendarReturn(y, m, d) {
@@ -119,5 +128,8 @@ function closeNewCriteria() {
 }
 
 function showOtherAccounts() {
-	$('otherAccounts').toggle();
+	if ($('otherAccounts').visible())
+		Effect.SlideUp('otherAccounts', { duration: .2 });
+	else
+		Effect.SlideDown('otherAccounts', { duration: .3 });
 }

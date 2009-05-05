@@ -12,6 +12,10 @@
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="js/modalbox.js"></script>
 <script type="text/javascript" src="js/CalendarPopup.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+<script src="js/notes.js" type="text/javascript"></script>
+
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript">
 	var opID = '<s:property value="operator.id" />';
@@ -45,16 +49,21 @@
 <div id="growlBox"></div>
 
 <s:if test="inheritingOperators.size > 0">
-<div style="position: absolute; right: 0; top: 0;"><a href=""
-	style="background-color: #EEE; padding: 3px 8px;" onclick="showOtherAccounts(); return false;"
-	>There are <s:property value="inheritingOperators.size"/> other account(s) that use this criteria</a></div>
-<div id="otherAccounts" style="position: absolute; top: 28px; right: 10px; background-color: #F0F0F0; display: none;">
+<div style="position: absolute; right: 0; top: 0;">[<a href=""
+	style="padding: 3px;" onclick="showOtherAccounts(); return false;"
+	>There are <s:property value="inheritingOperators.size"/> other account(s) that use this criteria</a>]</div>
+<div id="otherAccounts" style="position: absolute; top: 28px; right: 10px; background-color: #EEEEEE; border: 1px solid #C3C3C3; display: none;">
 <ol>
 	<s:iterator value="inheritingOperators">
-		<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
+		<pics:permission perm="ManageOperators">
+			<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
+		</pics:permission>
+		<pics:permission perm="ManageOperators" negativeCheck="true">
+			<li><s:property value="name" /></li>
+		</pics:permission>
 	</s:iterator>
 </ol>
-<a href="#" onclick="$('otherAccounts').hide(); return false;">...hide</a>
+... <a href="#" onclick="showOtherAccounts(); return false;">hide</a>
 </div>
 </s:if>
 
@@ -91,7 +100,6 @@
 		</s:iterator>
 	</table>
 </div>
-
 </div>
 
 </body>
