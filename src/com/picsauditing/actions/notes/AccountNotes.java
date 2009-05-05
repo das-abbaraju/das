@@ -1,10 +1,11 @@
-package com.picsauditing.actions.accounts;
+package com.picsauditing.actions.notes;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -27,12 +28,10 @@ public class AccountNotes extends AccountActionSupport {
 	private ReportFilterNote filter = new ReportFilterNote();
 	
 	private AccountDAO accountDao;
-	private ContractorAuditDAO auditDao;
 	private NoteDAO noteDAO;
 	private EmailQueueDAO emailDAO;
 
-	public AccountNotes(AccountDAO accountDao, ContractorAuditDAO auditDao, NoteDAO noteDAO,
-			EmailQueueDAO emailDAO) {
+	public AccountNotes(AccountDAO accountDao, NoteDAO noteDAO, EmailQueueDAO emailDAO) {
 		this.accountDao = accountDao;
 		this.noteDAO = noteDAO;
 		this.emailDAO = emailDAO;

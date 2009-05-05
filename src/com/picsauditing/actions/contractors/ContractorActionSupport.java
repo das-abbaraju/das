@@ -57,6 +57,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			id = permissions.getAccountId();
 
 		contractor = accountDao.find(id);
+		account = contractor;
 		if (contractor == null)
 			throw new Exception("Contractor " + this.id + " not found");
 

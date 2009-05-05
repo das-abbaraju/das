@@ -235,7 +235,7 @@ h1 {
 			</s:if> <s:else>
 				<s:property value="invoice.notes" />
 				<br />
-				<s:property value="operators" />
+				<s:property value="operatorsString" />
 				<br />
 				<br />
 			</s:else></td>

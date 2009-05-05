@@ -1,10 +1,9 @@
-package com.picsauditing.actions.accounts;
+package com.picsauditing.actions;
 
 import java.util.List;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.Inputs;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;

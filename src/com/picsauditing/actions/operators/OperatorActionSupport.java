@@ -3,7 +3,7 @@ package com.picsauditing.actions.operators;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.accounts.AccountActionSupport;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 

@@ -7,7 +7,8 @@
 <ul id="navlist">
 	<li><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('operator_edit')">class="current"</s:if>>Edit</a></li>
-	<li><a href="" class="inactive">Notes</a></li>
+	<li><a href="AccountNotes.action?id=<s:property value="operator.id"/>"
+		<s:if test="requestURI.contains('operator_notes')">class="current"</s:if>>Notes</a></li>
 	<s:if test="operator.equals(operator.inheritInsurance) || operator.equals(operator.inheritAudits)">
 		<li><a href="AuditOperator.action?oID=<s:property value="operator.id"/>">Audits</a></li>
 	</s:if>
@@ -18,6 +19,7 @@
 		<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"
 			<s:if test="requestURI.contains('operator_tags')">class="current"</s:if>>Tags</a></li>
 	</pics:permission>
+	<li><a href="ContractorList.action?filter.visible=Y&filter.operator=<s:property value="operator.id"/>">Contractors</a></li>
 </ul>
 </div>
 

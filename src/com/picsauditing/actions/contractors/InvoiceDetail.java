@@ -18,6 +18,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -36,33 +37,31 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class InvoiceDetail extends PicsActionSupport implements Preparable {
-	private int id; // accountID
+public class InvoiceDetail extends ContractorActionSupport implements Preparable {
 	private boolean edit = false;
 
 	private InvoiceDAO invoiceDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private InvoiceItemDAO invoiceItemDAO;
 	private NoteDAO noteDAO;
-	private ContractorAccountDAO conAccountDAO;
 
 	private int newFeeId;
 	private int refundFeeId;
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Invoice invoice;
-	private ContractorAccount contractor;
 
 	private List<InvoiceFee> feeList = null;
 
 	AppPropertyDAO appPropDao;
 
 	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
-			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
+			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO,
+			ContractorAuditDAO auditDao) {
+		super(conAccountDAO, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.noteDAO = noteDAO;
-		this.conAccountDAO = conAccountDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 	}
@@ -74,7 +73,8 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 			invoice = invoiceDAO.find(invoiceId);
 			if (invoice != null) {
 				id = invoice.getAccount().getId();
-				contractor = (ContractorAccount) invoice.getAccount();
+				account = invoice.getAccount();
+				contractor = (ContractorAccount) account;
 			}
 		}
 	}
@@ -119,7 +119,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 					try {
 						paymentService.processPayment(invoice);
 
-						CreditCard cc = paymentService.getCreditCard(contractor.getId());
+						CreditCard cc = paymentService.getCreditCard(id);
 						invoice.setCcNumber(cc.getCardNumber());
 
 						payInvoice();
@@ -195,7 +195,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 		contractor.syncBalance();
 		contractor.setAuditColumns(permissions);
-		conAccountDAO.save(contractor);
+		accountDao.save(contractor);
 
 		return SUCCESS;
 	}
@@ -314,7 +314,7 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 		contractor.setMembershipLevel(newFee);
 	}
 
-	public String getOperators() {
+	public String getOperatorsString() {
 		List<String> operatorsString = new ArrayList<String>();
 
 		for (ContractorOperator co : contractor.getOperators()) {
@@ -341,10 +341,6 @@ public class InvoiceDetail extends PicsActionSupport implements Preparable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public ContractorAccount getContractor() {
-		return contractor;
 	}
 
 	public Invoice getInvoice() {
