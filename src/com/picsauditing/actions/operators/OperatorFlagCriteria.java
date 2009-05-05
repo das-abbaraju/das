@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagOshaCriteriaDAO;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -25,14 +26,17 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private FlagQuestionCriteriaDAO criteriaDao;
 	private AuditQuestionDAO questionDao;
 	private FlagOshaCriteriaDAO flagOshaCriteriaDAO;
+	private ContractorAccountDAO contractorAccountDAO;
 	private AuditTypeClass classType = AuditTypeClass.PQF;
 
 	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
-			FlagOshaCriteriaDAO flagOshaCriteriaDAO, AuditQuestionDAO questionDao) {
+			FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO,
+			AuditQuestionDAO questionDao) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;
 		this.questionDao = questionDao;
 		this.flagOshaCriteriaDAO = flagOshaCriteriaDAO;
+		this.contractorAccountDAO = contractorAccountDAO;
 		subHeading = "Manage Flag Criteria";
 	}
 
@@ -142,4 +146,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 			return "ThreeYearAverage";
 		return "";
 	}
+	
+	public int getContractorsNeedingRecalculation() {
+		return contractorAccountDAO.findContractorsNeedingRecalculation(operator);
+	}	
 }

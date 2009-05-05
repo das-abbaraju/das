@@ -102,5 +102,10 @@
 </div>
 </div>
 
+<s:if test="contractorsNeedingRecalculation > 10">
+	<div id="alert">
+		<s:property value="contractorsNeedingRecalculation"/> contractors in your database needs recalculation of their flags.
+	</div>
+</s:if>
 </body>
 </html>
