@@ -19,20 +19,19 @@ import com.picsauditing.util.ReportFilterNote;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class AccountNotes extends AccountActionSupport {
+public class ContractorNotes extends ContractorActionSupport {
 	private List<Note> openTasks = null;
 	private List<Note> notes = null;
 	private List<EmailQueue> emailList = null;
 	private String returnType = SUCCESS;
-	
+
 	private ReportFilterNote filter = new ReportFilterNote();
-	
-	private AccountDAO accountDao;
+
 	private NoteDAO noteDAO;
 	private EmailQueueDAO emailDAO;
 
-	public AccountNotes(AccountDAO accountDao, NoteDAO noteDAO, EmailQueueDAO emailDAO) {
-		this.accountDao = accountDao;
+	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, NoteDAO noteDAO, EmailQueueDAO emailDAO) {
+		super(accountDao, auditDao);
 		this.noteDAO = noteDAO;
 		this.emailDAO = emailDAO;
 		this.subHeading = "Notes/Emails";
@@ -41,7 +40,7 @@ public class AccountNotes extends AccountActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		account = accountDao.find(id);
 
 		if ("addFilter".equals(button)) {
@@ -54,21 +53,21 @@ public class AccountNotes extends AccountActionSupport {
 	public List<Note> getOpenTasks() {
 		if (openTasks == null)
 			openTasks = noteDAO.getNotes(account.getId(), permissions, "status = 1" + getFilters("tasks"), 25);
-		
+
 		return openTasks;
 	}
 
 	public List<Note> getNotes() {
-		if (notes == null) 
+		if (notes == null)
 			notes = noteDAO.getNotes(account.getId(), permissions, "status IN (1,2)" + getFilters("notes"), 25);
-		
+
 		return notes;
 	}
-	
+
 	public List<EmailQueue> getEmailList() {
 		if (emailList == null)
 			emailList = emailDAO.findByContractorId(account.getId());
-		
+
 		return emailList;
 	}
 
@@ -89,17 +88,17 @@ public class AccountNotes extends AccountActionSupport {
 		if (filter.getCategory() != null && filter.getCategory().length > 0) {
 			filterString += " AND noteCategory IN (" + Strings.implodeForDB(filter.getCategory(), ",") + ")";
 		}
-		
+
 		if (filter.getPriority() != null && filter.getPriority().length > 0) {
 			Set<Integer> set = new HashSet<Integer>();
-			for(LowMedHigh e : filter.getPriority())
+			for (LowMedHigh e : filter.getPriority())
 				set.add(e.ordinal());
-			
+
 			filterString += " AND priority IN (" + Strings.implode(set, ",") + ")";
 		}
 		return filterString;
 	}
-	
+
 	public String getReturnType() {
 		return returnType;
 	}
@@ -111,5 +110,5 @@ public class AccountNotes extends AccountActionSupport {
 	public ReportFilterNote getFilter() {
 		return filter;
 	}
-	
+
 }
