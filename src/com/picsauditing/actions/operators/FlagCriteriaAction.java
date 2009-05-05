@@ -5,6 +5,7 @@ import java.util.Map;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -20,14 +21,16 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 
 	private FlagQuestionCriteriaDAO criteriaDao;
 	private AuditQuestionDAO questionDao;
+	private ContractorAccountDAO contractorAccountDAO;
 
 	private AuditQuestion question = null;
 
 	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
-			AuditQuestionDAO questionDao) {
+			AuditQuestionDAO questionDao, ContractorAccountDAO contractorAccountDAO) {
 		super(operatorDao);
 		this.criteriaDao = criteriaDao;
 		this.questionDao = questionDao;
+		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
 	@Override
@@ -90,7 +93,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						criteriaDao.save(amber);
 					}
 				}
-
+				contractorAccountDAO.updateContractorByOperator(operator);
 				return BLANK;
 			}
 			if ("add".equals(button)) {
