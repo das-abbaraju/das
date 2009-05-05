@@ -57,7 +57,9 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addField("cao.notes as caoNotes");
 			sql.addField("cao.id as caoId");
 			sql.addField("cao.recommendedStatus as caoRecommendedStatus");
-			sql.addWhere("cao.opid = " + permissions.getAccountId());
+			
+			String subSelect = "SELECT inheritInsurance FROM Operators WHERE id = " + permissions.getAccountId();
+			sql.addWhere("cao.opid = (" + subSelect + ")");
 		}
 		
 		sql.addWhere("ca.auditStatus != 'Expired'");
