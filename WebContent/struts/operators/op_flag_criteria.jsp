@@ -65,6 +65,33 @@
 </ul>
 
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
+
+<div id="questionList">
+	<input type="button" class="picsbutton positive" value="Add Question" onclick="$('questionTable').show();this.hide();return false;"/>
+	<table class="report" id="questionTable" style="display:none">
+		<thead>
+			<tr>
+				<th> Type </th>
+				<th> # </th>
+				<th> Question </th>
+			</tr>
+		</thead>
+		<s:iterator value="questions">
+			<tr id="addRow<s:property value="id"/>" class="clickable" onclick="showCriteria(<s:property value="id"/>,'<s:property value="subCategory.category.auditType.auditName"/>')">
+				<td>
+					<s:property value="subCategory.category.auditType.auditName"/>
+				</td>
+				<td>
+					<s:property value="subCategory.category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>
+				</td>
+				<td>
+					<s:property value="question"/>
+				</td>
+			</tr>
+		</s:iterator>
+	</table>
+</div>
+
 </div>
 
 </body>

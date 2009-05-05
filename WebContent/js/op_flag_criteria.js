@@ -39,12 +39,16 @@ function clearRow(row) {
 	$(row+'_clear').hide();
 }
 
-function testCriteria(comparison, value, test) {
-	var comp = $F(comparison) == '=' ? '==' : $F(comparison);
-	if (eval($F(value)+comp+$F(test)))
-		alert("It Works!");
-	else
-		alert("It does not work!");
+function testCriteria(criteria) {
+	var comp = $F(criteria+'_comparison') == '=' ? '==' : $F(criteria+'_comparison');
+	var val = $F(criteria+'_value');
+	var test = $F(criteria+'_test');
+	if(!comp.blank() && !val.blank() && !test.blank()) {
+		if (eval(test+comp+val))
+			$(criteria+'_test_output').innerHTML = '<img src="images/icon_'+criteria+'Flag.gif"/>';
+		else
+			$(criteria+'_test_output').innerHTML = '<img src="images/icon_greenFlag.gif"/>';
+	}
 }
 
 function closeCriteriaEdit() {
@@ -64,6 +68,7 @@ function saveCriteria(questionID) {
 					closeCriteriaEdit();
 					stopThinking();
 					refreshList();
+					$('addRow'+questionID).hide();
 				}
 		});
 }

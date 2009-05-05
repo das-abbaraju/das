@@ -18,7 +18,10 @@
 				<s:include value="op_flag_criteria_view_pair.jsp"/>
 			</td>
 			<td>
-				Test: <input type="text" id="red_test" size="10"> <input type="button" onclick="testCriteria('red_comparison','red_value','red_test');return false;" value="Test"/>
+				Test: <input type="text" id="red_test" size="10"> <input type="button" onclick="testCriteria('red');return false;" value="Test"/>
+			</td>
+			<td>
+				<span id="red_test_output"></span>
 			</td>
 		</tr>
 		<tr>
@@ -31,13 +34,16 @@
 				<s:include value="op_flag_criteria_view_pair.jsp"/>
 			</td>
 			<td>
-				Test: <input type="text" id="amber_test" size="10"> <input type="button" onclick="testCriteria('amber_comparison','amber_value','amber_test');return false;" value="Test"/>
+				Test: <input type="text" id="amber_test" size="10"> <input type="button" onclick="testCriteria('amber');return false;" value="Test"/>
+			</td>
+			<td>
+				<span id="amber_test_output"></span>
 			</td>
 		</tr>
 	</table>
 	
 	<div class="buttons">
-		<input type="button" class="picsbutton positive" onclick="saveCriteria(<s:property value="operator.id"/>,<s:property value="question.id"/>); return false;" value="Save"/>
+		<input type="button" class="picsbutton positive" onclick="saveCriteria(<s:property value="question.id"/>); return false;" value="Save"/>
 		<input type="button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
 	</div>
 </form>
