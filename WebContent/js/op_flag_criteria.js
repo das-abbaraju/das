@@ -50,7 +50,7 @@ function calendarReturn(y, m, d) {
 			window.CP_calendarObject.copyMonthNamesToWindow();
 		} 
 		var now = new Date();
-		if (now.getFullYear() == dt.getFullYear() && now.getMonth() == dt.getMonth() && now.getDay() == dt.getDay())
+		if (typeof(y) == "string" && now.getFullYear() == dt.getFullYear() && now.getMonth() == dt.getMonth() && now.getDay() == dt.getDay())
 			window.CP_targetInput.value = "Today";
 		else
 			window.CP_targetInput.value = formatDate(dt, window.CP_dateFormat);
