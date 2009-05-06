@@ -95,7 +95,7 @@
 					<s:property value="subCategory.category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>
 				</td>
 				<td>
-					<s:property value="question"/>
+					<s:property value="question" escape="false"/>
 				</td>
 			</tr>
 		</s:iterator>
