@@ -19,6 +19,7 @@
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript">
 	var opID = '<s:property value="operator.id" />';
+	var classType = '<s:property value="classType"/>';
 </script>
 
 </head>

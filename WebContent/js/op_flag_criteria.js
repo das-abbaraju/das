@@ -32,7 +32,15 @@ function showOshaCriteria(type) {
 		'type': type 
 	};
 	
-	Modalbox.show('FlagOshaCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria - OSHA'});
+	Modalbox.show('FlagOshaCriteriaActionAjax.action', {
+		method : 'post', 
+		params: pars, 
+		title: 'Edit Criteria - OSHA',
+		slideDownDuration: .5,
+		slideUpDuration: 0,
+		resizeDuration: .2,
+		overlayClose: false,
+		height: 200});
 }
 
 function calendarReturn(y, m, d) {
@@ -63,7 +71,7 @@ function testCriteria(criteria) {
 	var test = $F(criteria+'_test');
 	if(!comp.blank() && !val.blank() && !test.blank()) {
 		if (eval(test+comp+val))
-			$(criteria+'_test_output').innerHTML = '<img src="images/icon_'+criteria+'Flag.gif"/>';
+			$(criteria+'_test_output').innerHTML = '<img src="images/icon_'+criteria.toLowerCase()+'Flag.gif"/>';
 		else
 			$(criteria+'_test_output').innerHTML = '<img src="images/icon_greenFlag.gif"/>';
 	}
@@ -113,7 +121,7 @@ function refreshList() {
 		message :"refreshing list..."
 	});
 	$('criteriaList').show();
-	var pars = { id : opID };
+	var pars = { id : opID, classType: classType };
 	var myAjax = new Ajax.Updater('criteriaList',
 			'OperatorFlagCriteriaAjax.action', {
 				method :'post',
