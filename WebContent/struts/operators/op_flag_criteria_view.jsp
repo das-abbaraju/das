@@ -16,7 +16,7 @@
 				<label><s:property value="key.substring(0,1).toUpperCase()+key.substring(1)"/>:</label>
 			</td>
 			<td>
-				<s:set name="criteria" value="key.toLowerCase()" />
+				<s:set name="criteria" value="key" />
 				<s:set name="criteria_handle" value="value"/>
 				<s:include value="op_flag_criteria_view_pair.jsp"/>
 			</td>
