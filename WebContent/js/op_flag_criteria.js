@@ -26,6 +26,15 @@ function showCriteria(questionID, auditName, requiresCal) {
 		});
 }
 
+function showOshaCriteria(type) {
+	var pars = {
+		'id' :opID,
+		'type': type 
+	};
+	
+	Modalbox.show('FlagOshaCriteriaActionAjax.action', {method : 'post', params: pars, title: 'Edit Criteria - OSHA'});
+}
+
 function calendarReturn(y, m, d) {
 	if (window.CP_targetInput != null) {
 		var dt = new Date(y, m - 1, d, 0, 0, 0);
@@ -78,6 +87,23 @@ function saveCriteria(questionID) {
 					stopThinking();
 					refreshList();
 					$('addRow'+questionID).hide();
+				}
+		});
+}
+
+function saveOshaCriteria() {
+	startThinking( {
+		message :"saving criteria..."
+	});
+	var pars = $('criteriaEditForm').serialize(true);
+	pars.button = 'save';
+	var myAjax = new Ajax.Updater('growlBox','FlagOshaCriteriaActionAjax.action', {
+			method: 'post',
+			parameters: pars,
+			onComplete: function() {
+					closeCriteriaEdit();
+					stopThinking();
+					refreshList();
 				}
 		});
 }

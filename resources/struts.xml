@@ -988,6 +988,11 @@
 			<result>struts/operators/op_flag_criteria_view.jsp</result>
 		</action>
 
+		<action name="FlagOshaCriteriaActionAjax"
+			class="com.picsauditing.actions.operators.FlagOshaCriteriaAction">
+			<result>struts/operators/op_oshaflag_criteria_view.jsp</result>
+		</action>
+
 		<action name="Trevor"
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/blank.jsp</result>

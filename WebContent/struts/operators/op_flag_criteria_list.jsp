@@ -11,7 +11,7 @@
 		</tr>
 	</thead>
 	
-	<tr>
+	<tr onclick="showOshaCriteria('1');" class="clickable" title="Click to open">
 		<td>OSHA</td>
 		<td class="right"></td>
 		<td>
@@ -28,7 +28,7 @@
 			</s:if>
 		</nobr></td>
 	</tr>
-	<tr>
+	<tr onclick="showOshaCriteria('2');" class="clickable" title="Click to open">
 		<td>OSHA</td>
 		<td class="right"></td>
 		<td>
@@ -45,7 +45,7 @@
 			</s:if>
 		</nobr></td>
 	</tr>
-	<tr>
+	<tr onclick="showOshaCriteria('3');" class="clickable" title="Click to open">
 		<td>OSHA</td>
 		<td class="right"></td>
 		<td>

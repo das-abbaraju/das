@@ -2,15 +2,18 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
 @Embeddable
 public class FlagOshaCriterion {
-	protected YesNo flag;
-	protected float hurdle;
-	protected int time;
+	protected YesNo flag = YesNo.No;
+	protected float hurdle = 0.0f;
+	protected int time = 1;
 
 	@Column(nullable=false)
+	@Enumerated(EnumType.STRING)
 	public YesNo getFlag() {
 		return flag;
 	}

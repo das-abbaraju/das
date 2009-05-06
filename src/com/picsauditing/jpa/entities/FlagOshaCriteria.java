@@ -5,6 +5,8 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -32,6 +34,7 @@ public class FlagOshaCriteria extends BaseTable {
 	}
 
 	@Column(name = "flagStatus", nullable = false)
+	@Enumerated(EnumType.STRING)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
