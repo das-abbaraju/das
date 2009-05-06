@@ -41,9 +41,10 @@
 			</td>
 		</tr>
 	</table>
-	
-	<div class="buttons">
-		<input type="button" class="picsbutton positive" onclick="saveCriteria(<s:property value="question.id"/>); return false;" value="Save"/>
-		<input type="button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
+	<div style="margin: 20px auto 0pt; width: 200px;">
+		<div class="buttons">
+			<input type="button" class="picsbutton positive" onclick="saveCriteria(<s:property value="question.id"/>); return false;" value="Save"/>
+			<input type="button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
+		</div>
 	</div>
 </form>
