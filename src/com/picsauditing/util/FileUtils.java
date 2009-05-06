@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class FileUtils {
@@ -25,30 +29,25 @@ public class FileUtils {
 	 */
 	static public void moveFile(File f, String ftpDir, String partialPath, String fileName, String extension,
 			boolean deleteDuplicates) throws Exception {
-		
-		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName,
-				extension, deleteDuplicates);
+
+		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName, extension, deleteDuplicates);
 
 		// finally, do the copy
 		if (!f.renameTo(theNewFile))
 			throw new Exception("Could not move file to " + theNewFile.getAbsolutePath());
 	}
 
-	
 	static public void copyFile(File f, String ftpDir, String partialPath, String fileName, String extension,
 			boolean deleteDuplicates) throws Exception {
-		
-		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName,
-				extension, deleteDuplicates);
+
+		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName, extension, deleteDuplicates);
 
 		// finally, do the copy
 		copyFile(f, theNewFile);
 	}
 
-
-	protected static File picsUploadLogic(String ftpDir, String partialPath,
-			String fileName, String extension, boolean deleteDuplicates)
-			throws FileNotFoundException, Exception {
+	protected static File picsUploadLogic(String ftpDir, String partialPath, String fileName, String extension,
+			boolean deleteDuplicates) throws FileNotFoundException, Exception {
 		File rootFile = new File(ftpDir);
 
 		if (rootFile == null || !rootFile.exists())
@@ -81,14 +80,7 @@ public class FileUtils {
 		}
 		return theNewFile;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
 	static public File[] getSimilarFiles(File folder, final String fileName) {
 		File[] fileList = folder.listFiles(new FilenameFilter() {
 			@Override
@@ -109,8 +101,8 @@ public class FileUtils {
 
 		for (int i = 0; i < folders.length; i++) {
 			String currentLevel = folders[i];
-			//if (currentLevel.contains(".")) // don't create dir for files
-			//	break;
+			// if (currentLevel.contains(".")) // don't create dir for files
+			// break;
 
 			if (currentLevel.length() > 0) {
 				path = path + currentLevel;
@@ -119,12 +111,12 @@ public class FileUtils {
 
 				if (!thisDir.exists()) {
 					if (!thisDir.mkdir()) {
-						throw new RuntimeException("unable to create directory: " + thisDir.getAbsolutePath() );
+						throw new RuntimeException("unable to create directory: " + thisDir.getAbsolutePath());
 					}
 				}
 			}
 			path = path + "/";
-			
+
 		}
 		return thisDir;
 	}
@@ -197,7 +189,7 @@ public class FileUtils {
 		fis.close();
 		fos.close();
 	}
-	
+
 	static public String readFile(String fileLocation) {
 		File file = new File(fileLocation);
 
@@ -218,8 +210,6 @@ public class FileUtils {
 		}
 		return noteText.toString();
 	}
-	
-	
 
 	/**
 	 * This method will take and int and convert it into a folder structure
@@ -240,22 +230,39 @@ public class FileUtils {
 	 * @param id the number to be converted into a path
 	 * @return String that represents the number converted into a path.
 	 */
-	public static String thousandize( int id ) {
-		
+	public static String thousandize(int id) {
+
 		StringBuilder response = new StringBuilder();
-		
+
 		int workingCopy = id;
-		String asString = String.valueOf( workingCopy );
-		
-		while( asString.length() > 3 ) {
+		String asString = String.valueOf(workingCopy);
+
+		while (asString.length() > 3) {
 			String firstThree = asString.substring(0, 3);
 			asString = asString.substring(3);
-			
+
 			response.append(firstThree);
 			response.append("/");
 		}
-		
+
 		return response.toString();
 	}
 
+	public static String getFileMD5(File file) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			InputStream is = new FileInputStream(file);
+			byte[] buffer = new byte[8192];
+			int read = 0;
+			while ((read = is.read(buffer)) > 0) {
+				digest.update(buffer, 0, read);
+			}
+			is.close();
+			byte[] md5sum = digest.digest();
+			BigInteger bigInt = new BigInteger(1, md5sum);
+			return bigInt.toString(16);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

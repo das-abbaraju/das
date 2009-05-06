@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
 
@@ -21,8 +23,10 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfPCell;
@@ -48,7 +52,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditPdfConverter extends ContractorActionSupport {
-	private List<File> attachments = new ArrayList<File>();
+	private Map<String, File> attachments = new TreeMap<String, File>();
 	private AuditDataDAO auditDataDAO;
 	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
 	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
@@ -79,7 +83,6 @@ public class AuditPdfConverter extends ContractorActionSupport {
 		PdfWriter pdfWriter = PdfWriter.getInstance(document, outstream);
 		
 		document.open();
-		
 		createDocument(document, contractor);
 		showOshaLogs(document, pdfWriter);
 		document.close();
@@ -231,7 +234,10 @@ public class AuditPdfConverter extends ContractorActionSupport {
 							String filename = oshaFile.getName();
 							String extension = filename.substring(filename.lastIndexOf('.') + 1, filename.length());
 							if ("pdf".equalsIgnoreCase(extension)) {
-								attachments.add(oshaFile);
+								String fileMD5 = FileUtils.getFileMD5(oshaFile);
+									if(fileMD5 == null || !attachments.containsKey(fileMD5)) {
+										attachments.put(fileMD5, oshaFile);
+									}	
 								cells.add(new PdfPCell(new Phrase("See Attached", questionFont)));
 							} else {
 								Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
@@ -309,18 +315,19 @@ public class AuditPdfConverter extends ContractorActionSupport {
 
 	private void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException,
 			IOException {
-		for (File oshaFile : attachments) {
+		for (File oshaFile : attachments.values()) {
 			try {
-				int pageOfCurrentReaderPDF = 0;
-				int currentPageNumber = 0;
 				InputStream pdfs = new FileInputStream(oshaFile);
 				PdfReader pdfReader = new PdfReader(pdfs);
 				PdfContentByte cb = pdfWriter.getDirectContent();
-				while (pageOfCurrentReaderPDF < pdfReader.getNumberOfPages()) {
+				for(int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
+					Rectangle rec = pdfReader.getPageSizeWithRotation(i);
+					if(rec.getWidth() > rec.getHeight())
+						document.setPageSize(PageSize.A3.rotate());
+					else
+						document.setPageSize(PageSize.A4);
 					document.newPage();
-					pageOfCurrentReaderPDF++;
-					currentPageNumber++;
-					PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, pageOfCurrentReaderPDF);
+					PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, i);
 					cb.addTemplate(page, 0, 0);
 				}
 			} catch (FileNotFoundException e) {
