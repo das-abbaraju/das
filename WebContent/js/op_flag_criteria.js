@@ -82,18 +82,17 @@ function closeCriteriaEdit() {
 }
 
 function deactivateModal() {
+	Modalbox.show("<div style='text-align:center'><img src='images/ajax_process2.gif' /></div>");
 	Modalbox.deactivate();
-	$('save_button').disabled=true;
-	$('close_button').disabled=true;
 }
 
 function saveCriteria(questionID) {
 	startThinking( {
 		message :"saving criteria..."
 	});
-	deactivateModal();
 	var pars = $('criteriaEditForm').serialize(true);
 	pars.button = 'save';
+	deactivateModal();
 	var myAjax = new Ajax.Updater('growlBox','FlagCriteriaActionAjax.action', {
 			method: 'post',
 			parameters: pars,
