@@ -81,10 +81,17 @@ function closeCriteriaEdit() {
 	Modalbox.hide();
 }
 
+function deactivateModal() {
+	Modalbox.deactivate();
+	$('save_button').disabled=true;
+	$('close_button').disabled=true;
+}
+
 function saveCriteria(questionID) {
 	startThinking( {
 		message :"saving criteria..."
 	});
+	deactivateModal();
 	var pars = $('criteriaEditForm').serialize(true);
 	pars.button = 'save';
 	var myAjax = new Ajax.Updater('growlBox','FlagCriteriaActionAjax.action', {
@@ -103,6 +110,7 @@ function saveOshaCriteria() {
 	startThinking( {
 		message :"saving criteria..."
 	});
+	deactivateModal();
 	var pars = $('criteriaEditForm').serialize(true);
 	pars.button = 'save';
 	var myAjax = new Ajax.Updater('growlBox','FlagOshaCriteriaActionAjax.action', {

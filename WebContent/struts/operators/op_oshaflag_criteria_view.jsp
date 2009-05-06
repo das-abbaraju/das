@@ -71,7 +71,7 @@
 	</table>
 	
 	<div class="buttons">
-		<input type="button" class="picsbutton positive" onclick="saveOshaCriteria(); return false;" value="Save"/>
-		<input type="button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
+		<input type="button" id="save_button" class="picsbutton positive" onclick="saveOshaCriteria(); return false;" value="Save"/>
+		<input type="button" id="close_button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
 	</div>
 </form>

@@ -6,7 +6,7 @@
 	<div>
 		<strong><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></strong>
 		
-		<s:property value="question.question" /><br/>
+		<s:property value="question.question" escape="false"/><br/>
 	</div>
 	
 	<table>
@@ -38,7 +38,7 @@
 	</table>
 	
 	<div class="buttons" style="margin-top:20px">
-		<input type="button" class="picsbutton positive" onclick="saveCriteria(<s:property value="question.id"/>); return false;" value="Save"/>
-		<input type="button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
+		<input type="button" id="save_button" class="picsbutton positive" onclick="saveCriteria(<s:property value="question.id"/>); return false;" value="Save"/>
+		<input type="button" id="close_button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
 	</div>
 </form>
