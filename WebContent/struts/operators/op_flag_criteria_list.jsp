@@ -14,53 +14,59 @@
 	<s:if test="classType.toString() == 'Audit'">
 	<tr onclick="showOshaCriteria('1');" class="clickable" title="Click to open">
 		<td>OSHA</td>
-		<td class="right"></td>
+		<td class="right">LWCR</td>
 		<td>
-			Lost Workdays Case Rate (LWCR):
+			Lost Workdays Case Rate 
 		</td>
 		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.lwcr.flag.toString() == 'Yes'">
-			<s:property value="oshaRedFlagCriteria.lwcr.hurdle"/>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.lwcr.time)"/>
+			> <s:property value="oshaRedFlagCriteria.lwcr.hurdle"/>
 			</s:if>
+			<s:else>N/A</s:else>
 		</nobr></td>
 		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.lwcr.flag.toString() == 'Yes'">
-			<s:property value="oshaAmberFlagCriteria.lwcr.hurdle"/>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.lwcr.time)"/>
+			> <s:property value="oshaAmberFlagCriteria.lwcr.hurdle"/>
 			</s:if>
+			<s:else>N/A</s:else>
 		</nobr></td>
 	</tr>
 	<tr onclick="showOshaCriteria('2');" class="clickable" title="Click to open">
 		<td>OSHA</td>
-		<td class="right"></td>
+		<td class="right">TRIR</td>
 		<td>
-			Total Recordable Incident Rate (TRIR):
+			Total Recordable Incident Rate 
 		</td>
 		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.trir.flag.toString() == 'Yes'">
-			<s:property value="oshaRedFlagCriteria.trir.hurdle"/>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.trir.time)"/>
+			> <s:property value="oshaRedFlagCriteria.trir.hurdle"/>
 			</s:if>
+			<s:else>N/A</s:else>
 		</nobr></td>
 		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.trir.flag.toString() == 'Yes'">
-			<s:property value="oshaAmberFlagCriteria.trir.hurdle"/>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.trir.time)"/>
+			> <s:property value="oshaAmberFlagCriteria.trir.hurdle"/>
 			</s:if>
+			<s:else>N/A</s:else>
 		</nobr></td>
 	</tr>
 	<tr onclick="showOshaCriteria('3');" class="clickable" title="Click to open">
 		<td>OSHA</td>
-		<td class="right"></td>
+		<td class="right">Fatalities</td>
 		<td>
-			Fatalities:
+			Fatalities
 		</td>
 		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.fatalities.flag.toString() == 'Yes'">
-			<s:property value="oshaRedFlagCriteria.fatalities.hurdle"/>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.fatalities.time)"/>
+			> <s:property value="oshaRedFlagCriteria.fatalities.hurdle"/>
 			</s:if>
+			<s:else>N/A</s:else>
 		</nobr></td>
 		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.fatalities.flag.toString() == 'Yes'">
-			<s:property value="oshaAmberFlagCriteria.fatalities.hurdle"/>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.fatalities.time)"/>
+			> <s:property value="oshaAmberFlagCriteria.fatalities.hurdle"/>
 			</s:if>
+			<s:else>N/A</s:else>
 		</nobr></td>
 	</tr>
 	</s:if>
@@ -82,8 +88,12 @@
 				</s:if>
 				<s:else><s:property value="question.question" escape="false" /></s:else>
 			</td>
-			<td><nobr><s:property value="red" escape="false" /></nobr></td>
-			<td><nobr><s:property value="amber" escape="false" /></nobr></td>
+			<td><nobr><s:if test="red != null"><s:property value="red" escape="false" /></s:if>
+			<s:else>N/A</s:else>
+			</nobr></td>
+			<td><nobr><s:if test="amber != null"><s:property value="amber" escape="false" /></s:if>
+			<s:else>N/A</s:else>
+			</nobr></td>
 		</tr>
 	</s:iterator>
 </table>
