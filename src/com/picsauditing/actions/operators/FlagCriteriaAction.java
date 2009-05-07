@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import java.util.Date;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
@@ -24,6 +25,9 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 	private ContractorAccountDAO contractorAccountDAO;
 
 	private AuditQuestion question = null;
+
+	private FlagQuestionCriteria testCriteria;
+	private String testValue;
 
 	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			AuditQuestionDAO questionDao, ContractorAccountDAO contractorAccountDAO) {
@@ -68,8 +72,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						}
 					} else if (Strings.isEmpty(red.getComparison()) || Strings.isEmpty(red.getValue())) {
 						addActionError("Cannot save Red Flag Criteria without a comparison and a value");
-					} else if (isValidValue(red)) { // Both comparison and value
-													// exist
+					} else if (isValidValue(red.getValue())) {
 						red.setFlagColor(FlagColor.Red);
 						red.setAuditQuestion(question);
 						red.setChecked(YesNo.Yes);
@@ -84,8 +87,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						}
 					} else if (Strings.isEmpty(amber.getComparison()) || Strings.isEmpty(amber.getValue())) {
 						addActionError("Cannot save Amber Flag Criteria without a comparison and a value");
-					} else if (isValidValue(amber)) { // Both comparison and
-														// value exist
+					} else if (isValidValue(amber.getValue())) {
 						amber.setFlagColor(FlagColor.Amber);
 						amber.setAuditQuestion(question);
 						amber.setChecked(YesNo.Yes);
@@ -96,17 +98,26 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 				contractorAccountDAO.updateContractorByOperator(operator);
 				return BLANK;
 			}
-			if ("add".equals(button)) {
-				// TODO insert each criteria
+			if ("test".equals(button)) {
+				if (testCriteria != null) {
+					if (isValidValue(testCriteria.getValue()) && isValidValue(testValue)
+							&& !Strings.isEmpty(testCriteria.getComparison())) {
+						testCriteria.setAuditQuestion(getQuestion());
+						return "test";
+					}
+				}
+				return BLANK;
 			}
 		}
 
 		return SUCCESS;
 	}
 
-	private boolean isValidValue(FlagQuestionCriteria criteria) {
+	private boolean isValidValue(String criteria) {
+		if (Strings.isEmpty(criteria))
+			return false;
 		if ("Date".equals(getQuestion().getQuestionType())) {
-			if (!"Today".equals(criteria.getValue()) && DateBean.parseDate(criteria.getValue()) == null)
+			if (!"Today".equals(criteria) && DateBean.parseDate(criteria) == null)
 				addActionError("The value entered is not a valid date");
 		}
 		return true;
@@ -140,5 +151,21 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 
 	public void setAmber(FlagQuestionCriteria amber) {
 		this.amber = amber;
+	}
+
+	public String getTestValue() {
+		return testValue;
+	}
+
+	public void setTestValue(String test) {
+		this.testValue = test;
+	}
+
+	public FlagQuestionCriteria getTestCriteria() {
+		return testCriteria;
+	}
+
+	public void setTestCriteria(FlagQuestionCriteria testCriteria) {
+		this.testCriteria = testCriteria;
 	}
 }

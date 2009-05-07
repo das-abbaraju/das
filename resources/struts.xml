@@ -986,6 +986,7 @@
 		<action name="FlagCriteriaActionAjax"
 			class="com.picsauditing.actions.operators.FlagCriteriaAction">
 			<result>struts/operators/op_flag_criteria_view.jsp</result>
+			<result name="test">struts/operators/op_flag_criteria_test_result.jsp</result>
 		</action>
 
 		<action name="FlagOshaCriteriaActionAjax"

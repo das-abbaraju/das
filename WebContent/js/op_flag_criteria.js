@@ -66,15 +66,21 @@ function clearRow(row) {
 }
 
 function testCriteria(criteria) {
-	var comp = $F(criteria+'_comparison') == '=' ? '==' : $F(criteria+'_comparison');
-	var val = $F(criteria+'_value');
-	var test = $F(criteria+'_test');
-	if(!comp.blank() && !val.blank() && !test.blank()) {
-		if (eval(test+comp+val))
-			$(criteria+'_test_output').innerHTML = '<img src="images/icon_'+criteria.toLowerCase()+'Flag.gif"/>';
-		else
-			$(criteria+'_test_output').innerHTML = '<img src="images/icon_greenFlag.gif"/>';
-	}
+	startThinking({div:criteria+'_test_output', message:''});
+	var pars = {
+			'testCriteria.comparison': $(criteria+'_comparison').value,
+			'testCriteria.value' : $(criteria+'_value').value,
+			'testCriteria.flagColor' : criteria.capitalize(),
+			'button' : 'test',
+			'testValue' : $(criteria+'_test').value.capitalize(),
+			'question.id' : $('criteriaEditForm')['question.id'].value,
+			'id' : opID
+	};
+	
+	var myAjax = new Ajax.Updater(criteria+'_test_output', 'FlagCriteriaActionAjax.action', {
+			method: 'post',
+			parameters: pars
+		});
 }
 
 function closeCriteriaEdit() {
