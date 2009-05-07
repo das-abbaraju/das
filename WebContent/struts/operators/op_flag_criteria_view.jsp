@@ -3,13 +3,13 @@
 	<input type="hidden" value="<s:property value="operator.id"/>" name="id"/>
 	<input type="hidden" value="<s:property value="question.id"/>" name="question.id"/>
 
-	<div>
+	<div style="font-size: 13px;color : #4C4D4D;">
 		<strong><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></strong>
 		
 		<s:property value="question.question" escape="false"/><br/>
 	</div>
 	
-	<table>
+	<table style="font-size: 13px;color : #4C4D4D;">
 		<s:iterator value="#{'red':red, 'amber':amber}">
 			<tr>
 				<td>

@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <form id="criteriaEditForm">
 	<input type="hidden" value="<s:property value="operator.id"/>" name="id"/>
-	<div>
+	<div style="font-size: 13px;color : #4C4D4D;">
 		<s:if test="lwcr">		
 			Lost Workdays Case Rate (LWCR):
 		</s:if>
@@ -13,16 +13,16 @@
 		</s:else>
 		<br/>
 	</div>
-	<table>
+	<table style="font-size: 13px;color : #4C4D4D;">
 	<tr>
-		<td><label>Red:</label></td>
-		<td><s:if test="lwcr">
+		<td><label>Red: </label></td>
+		<td><nobr><s:if test="lwcr">
 			<s:textfield name="redOshaCriteria.lwcr.hurdle"/>
 		</s:if> <s:elseif test="trir">
 			<s:textfield name="redOshaCriteria.trir.hurdle" />
 		</s:elseif> <s:else>
 			<s:textfield name="redOshaCriteria.fatalities.hurdle" />
-		</s:else></td>
+		</s:else></nobr></td>
 		<td><s:if test="lwcr">
 			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.lwcr.time" theme="pics" />
@@ -42,15 +42,15 @@
 	</tr>
 	<tr>
 		<td>
-			<label>Amber:</label>
+			<label>Amber: </label>
 		</td>
-		<td><s:if test="lwcr">
+		<td><nobr><s:if test="lwcr">
 			<s:textfield name="amberOshaCriteria.lwcr.hurdle" />
 		</s:if> <s:elseif test="trir">
 			<s:textfield name="amberOshaCriteria.trir.hurdle" />
 		</s:elseif> <s:else>
 			<s:textfield name="amberOshaCriteria.fatalities.hurdle" />
-		</s:else></td>
+		</s:else></nobr></td>
 		<td><s:if test="lwcr">
 			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.lwcr.time" theme="pics" />

@@ -26,6 +26,13 @@
 <body>
 <s:include value="opHeader.jsp"></s:include>
 
+<s:if test="contractorsNeedingRecalculation > 10">
+	<div id="alert">
+		<s:property value="contractorsNeedingRecalculation"/> of your contractor's flags will be recalculated.
+	</div>
+</s:if>
+<br clear="all"/>
+
 <s:if test="operator != operator.inheritFlagCriteria">
 	<div id="info">The PQF/Audit Criteria for this account inherits the configuration from <s:property
 		value="operator.inheritFlagCriteria.name" />. Please login to that account to modify the criteria. <s:if
@@ -102,11 +109,5 @@
 	</table>
 </div>
 </div>
-<br clear="all"/>
-<s:if test="contractorsNeedingRecalculation > 10">
-	<div id="alert">
-		<s:property value="contractorsNeedingRecalculation"/> of your contractor's flags will be recalculated.
-	</div>
-</s:if>
 </body>
 </html>
