@@ -24,7 +24,7 @@
 					<span id="<s:property value="key"/>_clear"
 						<s:if test="value == null">style="display:none"</s:if> 
 						>
-						<a class="remove" title="Clear Criteria" onclick="clearRow('<s:property value="key"/>');">Remove</a>
+						<a href="#" class="remove" title="Clear Criteria" onclick="clearRow('<s:property value="key"/>');">Remove</a>
 					</span>
 				</td>
 			</tr>
