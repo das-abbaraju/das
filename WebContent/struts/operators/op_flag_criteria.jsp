@@ -69,9 +69,8 @@
 </s:if>
 
 <ul id="navListTop">
-	<li><a href="?id=<s:property value="id"/>&classType=PQF" class="<s:if test="classType.PQF">current</s:if>">PQF</a></li>
-	<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.policy">current</s:if>">InsureGuard</a></li>
-	<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.audit">current</s:if>">Audits</a></li>
+	<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.Audit">current</s:if>">PQF/Audits</a></li>
+	<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.Policy">current</s:if>">InsureGuard</a></li>
 </ul>
 
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>

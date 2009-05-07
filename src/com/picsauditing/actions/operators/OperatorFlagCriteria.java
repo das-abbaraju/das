@@ -27,7 +27,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private AuditQuestionDAO questionDao;
 	private FlagOshaCriteriaDAO flagOshaCriteriaDAO;
 	private ContractorAccountDAO contractorAccountDAO;
-	private AuditTypeClass classType = AuditTypeClass.PQF;
+	private AuditTypeClass classType = AuditTypeClass.Audit;
 
 	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO,
@@ -67,20 +67,19 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		for (FlagQuestionCriteria criteria : criteriaList) {
 			AuditQuestion q = criteria.getAuditQuestion();
 			AuditTypeClass qClassType = q.getSubCategory().getCategory().getAuditType().getClassType();
-			if (!qClassType.isPQF() && !qClassType.isPolicy())
+			if (!qClassType.isPolicy()) 
 				// Convert IM and any "other" audit type to Audit
 				qClassType = AuditTypeClass.Audit;
-			if (qClassType.equals(classType)) {
-				if (!map.containsKey(q)) {
-					map.put(q, new QuestionCriteria(q));
+				if (qClassType.equals(classType)) {
+					if (!map.containsKey(q)) {
+						map.put(q, new QuestionCriteria(q));
+					}
+					if (criteria.getFlagColor().equals(FlagColor.Amber))
+						map.get(q).amber = criteria;
+					if (criteria.getFlagColor().equals(FlagColor.Red))
+						map.get(q).red = criteria;
 				}
-				if (criteria.getFlagColor().equals(FlagColor.Amber))
-					map.get(q).amber = criteria;
-				if (criteria.getFlagColor().equals(FlagColor.Red))
-					map.get(q).red = criteria;
-			}
-		}
-
+		}	
 		return map.values();
 	}
 
@@ -91,7 +90,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 
 		while (questions.hasNext()) {
 			AuditQuestion question = questions.next();
-			if (!question.getSubCategory().getCategory().getAuditType().getClassType().equals(classType))
+			if ((classType.isAudit() && question.getSubCategory().getCategory().getAuditType().getClassType().isPolicy()) 
+					|| (classType.isPolicy() && !question.getSubCategory().getCategory().getAuditType().getClassType().isPolicy()))
 				questions.remove();
 		}
 
@@ -146,8 +146,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 			return "ThreeYearAverage";
 		return "";
 	}
-	
+
 	public int getContractorsNeedingRecalculation() {
 		return contractorAccountDAO.findContractorsNeedingRecalculation(operator);
-	}	
+	}
 }

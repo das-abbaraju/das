@@ -11,6 +11,7 @@
 		</tr>
 	</thead>
 	
+	<s:if test="classType.toString() == 'Audit'">
 	<tr onclick="showOshaCriteria('1');" class="clickable" title="Click to open">
 		<td>OSHA</td>
 		<td class="right"></td>
@@ -62,7 +63,7 @@
 			</s:if>
 		</nobr></td>
 	</tr>
-
+	</s:if>
 	<s:if test="questionList.size() == 0">
 		<tr><td colspan="5">No flag criteria has been defined for this type</td></tr>
 	</s:if>
