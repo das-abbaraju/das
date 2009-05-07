@@ -103,10 +103,7 @@ function saveCriteria(questionID) {
 			method: 'post',
 			parameters: pars,
 			onComplete: function() {
-					closeCriteriaEdit();
-					stopThinking();
-					refreshList();
-					$('addRow'+questionID).hide();
+					location.reload();
 				}
 		});
 }
@@ -143,6 +140,12 @@ function refreshList() {
 					stopThinking();
 				}
 			});
+}
+
+function toggleQuestionList() {
+	$('questionList').toggle();
+	$('addQuestionButton').toggle();
+	$('hideQuestionButton').toggle();
 }
 
 function questionSearch() {

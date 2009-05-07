@@ -75,9 +75,10 @@
 
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
 
-<div id="questionList">
-	<input type="button" class="picsbutton positive" value="Add Question" onclick="$('questionTable').show();this.hide();return false;"/>
-	<table class="report" id="questionTable" style="display:none">
+<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList()"/>
+<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList()" style="display:none"/>
+<div id="questionList" style="display:none">
+	<table class="report" id="questionTable">
 		<thead>
 			<tr>
 				<th> Type </th>
