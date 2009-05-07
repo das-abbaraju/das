@@ -26,8 +26,8 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 
 	private AuditQuestion question = null;
 
-	private FlagQuestionCriteria testCriteria;
 	private String testValue;
+	private FlagColor testResult;
 
 	public FlagCriteriaAction(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			AuditQuestionDAO questionDao, ContractorAccountDAO contractorAccountDAO) {
@@ -99,13 +99,31 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 				return BLANK;
 			}
 			if ("test".equals(button)) {
-				if (testCriteria != null) {
-					if (isValidValue(testCriteria.getValue()) && isValidValue(testValue)
-							&& !Strings.isEmpty(testCriteria.getComparison())) {
-						testCriteria.setAuditQuestion(getQuestion());
-						return "test";
+				if (isValidValue(testValue)) {
+					if (isValidValue(amber.getValue()) && !Strings.isEmpty(amber.getComparison())) {
+						if (amber.getAuditQuestion() == null)
+							amber.setAuditQuestion(getQuestion());
+						
+						if (amber.isFlagged(testValue))
+							testResult = FlagColor.Amber;
+						else
+							testResult = FlagColor.Green;
 					}
+
+					if (isValidValue(red.getValue()) && !Strings.isEmpty(red.getComparison())) {
+						if (red.getAuditQuestion() == null)
+							red.setAuditQuestion(getQuestion());
+						
+						if (red.isFlagged(testValue))
+							testResult = FlagColor.Red;
+						else
+							testResult = (testResult == null) ? FlagColor.Green : testResult;
+					}
+
+					if (testResult != null)
+						return "test";
 				}
+
 				return BLANK;
 			}
 		}
@@ -161,11 +179,11 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		this.testValue = test;
 	}
 
-	public FlagQuestionCriteria getTestCriteria() {
-		return testCriteria;
+	public FlagColor getTestResult() {
+		return testResult;
 	}
 
-	public void setTestCriteria(FlagQuestionCriteria testCriteria) {
-		this.testCriteria = testCriteria;
+	public void setTestResult(FlagColor testResult) {
+		this.testResult = testResult;
 	}
 }

@@ -66,21 +66,16 @@ function clearRow(row) {
 }
 
 function testCriteria(criteria) {
-	startThinking({div:criteria+'_test_output', message:''});
-	var pars = {
-			'testCriteria.comparison': $(criteria+'_comparison').value,
-			'testCriteria.value' : $(criteria+'_value').value,
-			'testCriteria.flagColor' : criteria.capitalize(),
-			'button' : 'test',
-			'testValue' : $(criteria+'_test').value.capitalize(),
-			'question.id' : $('criteriaEditForm')['question.id'].value,
-			'id' : opID
-	};
-	
-	var myAjax = new Ajax.Updater(criteria+'_test_output', 'FlagCriteriaActionAjax.action', {
-			method: 'post',
-			parameters: pars
-		});
+	if (!$('test').value.blank()) {
+		startThinking({div:'test_output', message:''});
+		var pars = $('criteriaEditForm').serialize(true);
+		pars.button = 'test';
+		pars.testValue = $('test').value.capitalize();
+		var myAjax = new Ajax.Updater('test_output','FlagCriteriaActionAjax.action', {
+				method: 'post',
+				parameters: pars,
+			});
+	}
 }
 
 function closeCriteriaEdit() {
