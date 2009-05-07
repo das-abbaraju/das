@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<div style="font-size: 13px;color : #4C4D4D;">
 <form id="criteriaEditForm">
 	<input type="hidden" value="<s:property value="operator.id"/>" name="id"/>
 	<input type="hidden" value="<s:property value="question.id"/>" name="question.id"/>
@@ -9,7 +10,7 @@
 		<s:property value="question.question" escape="false"/><br/>
 	</div>
 	
-	<table style="font-size: 13px;color : #4C4D4D;">
+	<table>
 		<s:iterator value="#{'red':red, 'amber':amber}">
 			<tr>
 				<td>
@@ -43,3 +44,4 @@
 		<span id="test_output"></span>
 	</div>
 </form>
+</div>
