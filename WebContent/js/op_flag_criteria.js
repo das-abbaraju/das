@@ -112,9 +112,9 @@ function saveOshaCriteria() {
 	startThinking( {
 		message :"saving criteria..."
 	});
-	deactivateModal();
 	var pars = $('criteriaEditForm').serialize(true);
 	pars.button = 'save';
+	deactivateModal();
 	var myAjax = new Ajax.Updater('growlBox','FlagOshaCriteriaActionAjax.action', {
 			method: 'post',
 			parameters: pars,
