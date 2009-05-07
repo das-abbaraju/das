@@ -84,7 +84,8 @@
 
 <input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList()"/>
 <input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList()" style="display:none"/>
-<div id="questionList" style="display:none">
+<div id="questionList" style="display:none;margin-top:35px">
+	<h2>Add Flag Criteria Questions</h2>
 	<table class="report" id="questionTable">
 		<thead>
 			<tr>
