@@ -41,16 +41,16 @@ public class ContractorAccountDAOTest {
 	@Autowired
 	AccountDAO accountDAO;
 
-	@Test
-	public void testUpdateContractorByOperator() {
-		OperatorAccount operator = new OperatorAccount();
-		operator.setId(1813);
-		try {
-			contractoraccountDAO.updateContractorByOperator(operator);
-		} catch (RuntimeException e) {
-			Assert.fail(e.getMessage());
-		}
-	}
+//	@Test
+//	public void testUpdateContractorByOperator() {
+//		OperatorAccount operator = new OperatorAccount();
+//		operator.setId(1813);
+//		try {
+//			contractoraccountDAO.updateContractorByOperator(operator);
+//		} catch (RuntimeException e) {
+//			Assert.fail(e.getMessage());
+//		}
+//	}
 	
 	// @Test
 	public void testSaveAndRemove() {
