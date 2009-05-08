@@ -27,16 +27,10 @@ public class InsertContractors extends CustomerAdaptor {
 	@Override
 	public String getQbXml( QBSession currentSession) throws Exception {
 	
-		
-		//first time, load up the inserts
-		if( currentSession.getToInsert() == null ) {
-			currentSession.setToInsert(new Vector<ContractorAccount>());
-			List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and a.qbListID is null");
-			currentSession.getToInsert().addAll(contractors);
-		}
+		List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and a.qbListID is null");
 
 		//no work to do
-		if( currentSession.getToInsert().size() == 0 ) {
+		if( contractors.size() == 0 ) {
 			return super.getQbXml(currentSession);  
 		}
 		
@@ -56,7 +50,7 @@ public class InsertContractors extends CustomerAdaptor {
 
 		
 		int x = 0;
-		for( ContractorAccount contractor : currentSession.getToInsert() ) {
+		for( ContractorAccount contractor : contractors ) {
 			
 			if( contractor != null ) {
 			
@@ -64,7 +58,6 @@ public class InsertContractors extends CustomerAdaptor {
 					break;
 				}
 
-				
 				CustomerAddRqType customerAddRequest = factory.createCustomerAddRqType();
 				customerAddRequest.setRequestID("insert_customer_" + contractor.getId());
 
@@ -179,13 +172,8 @@ public class InsertContractors extends CustomerAdaptor {
 
 			getContractorDao().save(connected);
 			
-			currentSession.getToInsert().remove(connected);
 		}
 		
-		if( currentSession.getToInsert().size() > 0 ) {
-			setRepeat(true);
-		}
-
 		return null;
 	}
 	

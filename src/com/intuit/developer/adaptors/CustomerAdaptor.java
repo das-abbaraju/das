@@ -182,33 +182,4 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 		}
 	}
 
-	
-	static public String nullSafeSubString( String in, int start, int end ) {
-		if( in == null )
-			return "";
-		
-		if( in.length() < start + end ) {
-			return in.substring(start);
-		}
-		
-		return in.substring(start, end);
-	}
-
-	static public String nullSafePhoneFormat( String in ) {
-		if( in == null )
-			return "";
-		
-		in = in.trim();
-		in = in.replaceAll("  ", " " );
-		in = in.toUpperCase().replaceAll("Extension ", "x" );
-		in = in.toUpperCase().replaceAll("Extension", "x" );
-		in = in.toUpperCase().replaceAll("EXT. ", "x" );
-		in = in.toUpperCase().replaceAll("EXT.", "x" );
-		in = in.toUpperCase().replaceAll("EXT ", "x" );
-		in = in.toUpperCase().replaceAll("EXT", "x" );
-		in = in.toUpperCase().replaceAll("X ", "x" );
-		
-		return nullSafeSubString(in, 0, 20);
-	}
-
 }

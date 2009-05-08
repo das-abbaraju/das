@@ -205,12 +205,6 @@ public class QBWebConnectorSvcSkeleton {
 		return response;
 	}
 
-	private ContractorAccountDAO getContractorDao() {
-		ContractorAccountDAO contractorDao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-		return contractorDao;
-	}
-
-
 	public ConnectionErrorResponse connectionError(
 			ConnectionError connectionError) {
 

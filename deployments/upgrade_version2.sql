@@ -7,3 +7,9 @@ update pqfquestions set isRedFlagQuestion = CASE isRedFlagQuestion WHEN 2 THEN 1
 UPDATE audit_type set classType = 'PQF'
 where auditName like 'PQF%';
 
+update flagoshacriteria set lwcrHurdleType = 'None', trirHurdleType = 'None', fatalitiesHurdleType = 'None';
+
+update flagoshacriteria set lwcrHurdleType = 'Absolute' where flagLwcr = 'Yes';
+update flagoshacriteria set trirHurdleType = 'Absolute' where flagTrir = 'Yes';
+update flagoshacriteria set fatalitiesHurdleType = 'Absolute' where flagFatalities = 'Yes';
+

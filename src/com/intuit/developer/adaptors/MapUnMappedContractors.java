@@ -62,19 +62,19 @@ public class MapUnMappedContractors extends CustomerAdaptor {
 
 				try {
 					ContractorAccount contractor2 = getContractorDao().find(contractor.getId());
-					if( contractor != null ) {
+					if( contractor2 != null ) {
 						
 						if( contractor2.getQbListID() == null || contractor2.getQbListID().length() == 0 ) {
 							contractor2.setQbListID(listId);
 							getContractorDao().save(contractor2);
-						} 
+						}
 						else {
-							currentSession.getErrors().add("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + ";");
+							currentSession.getErrors().add("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + " AND qbListID is null;");
 						}
 					}
 				}
 				catch( Exception e ) {
-					currentSession.getErrors().add("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + ";");
+					currentSession.getErrors().add("update accounts set qbListID = '" + listId + "' where id = " + contractor.getId() + " AND qbListID is null;");
 				}
 				
 			}

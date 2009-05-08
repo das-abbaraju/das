@@ -106,9 +106,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 				
 				invoice.setBillAddress(factory.createBillAddress());
 				
-				invoice.getBillAddress().setAddr1(invoiceJPA.getAccount().getName());
-				invoice.getBillAddress().setAddr2(((ContractorAccount) invoiceJPA.getAccount()).getBillingContact());
-				invoice.getBillAddress().setAddr3(invoiceJPA.getAccount().getAddress());
+				invoice.getBillAddress().setAddr1(nullSafeSubString(invoiceJPA.getAccount().getName(), 0, 41));
+				invoice.getBillAddress().setAddr2(nullSafeSubString(((ContractorAccount) invoiceJPA.getAccount()).getBillingContact(), 0,41));
+				invoice.getBillAddress().setAddr3(nullSafeSubString(invoiceJPA.getAccount().getAddress(), 0, 41));
 				invoice.getBillAddress().setCity(invoiceJPA.getAccount().getCity());
 				invoice.getBillAddress().setState(invoiceJPA.getAccount().getState());
 				invoice.getBillAddress().setPostalCode(invoiceJPA.getAccount().getZip());
@@ -167,8 +167,6 @@ public class UpdateInvoices extends CustomerAdaptor {
 	@Override
 	public Object parseQbXml( QBSession currentSession, String qbXml ) throws Exception {
 
-		List<ContractorAccount> successes = new Vector<ContractorAccount>();
-		
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 		
 		StringReader stringReader = new StringReader(qbXml);

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
@@ -44,7 +45,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		if (invoiceId > 0) {
 			invoice = invoiceDAO.find(invoiceId);
 			invList.addAll(invoice.getItems());
-			invoiceDAO.clear();
+			//invoiceDAO.clear();
 		}
 	}
 	
@@ -55,12 +56,18 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		permissions.tryPermission(OpPerms.InvoiceEdit);
 
 		if ("Save".equals(button)) {
+			if (invoice.getId() > 0) {
+				addActionError("Failed to do something here");
+				//invoiceDAO.clear();
+				throw new InputMismatchException();
+			}
 			invoice.setAuditColumns(getUser());
 			for(InvoiceItem invoiceItem : invList) {
 				invoiceItem.setAuditColumns(getUser());
 			}
 			invoice.getItems().addAll(invList);
-			invoiceDAO.save(invoice);
+			invoice.setQbSync(true);
+			//invoiceDAO.save(invoice);
 			addActionMessage("Successfully saved data");
 		}
 		

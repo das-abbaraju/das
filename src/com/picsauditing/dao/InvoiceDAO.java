@@ -53,14 +53,14 @@ public class InvoiceDAO extends PicsDAO {
 	}
 
 
-	public List<Invoice> findWhere(String where) {
+	public List<Invoice> findWhere(String where, int limit) {
 		if (where == null)
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("select i from Invoice i " + where + " order by i.id");
+		Query query = em.createQuery("SELECT i FROM Invoice i " + where + " ORDER BY i.id");
+		query.setMaxResults(limit);
 		return query.getResultList();
 	}
-
 	
 }
