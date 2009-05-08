@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -53,10 +54,11 @@ public class ConAuditSave extends AuditActionSupport {
 						if (aCatData.getCategory() == auditCategory && aCatData.getPercentVerified() < 100) {
 							aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
 							aCatData.setPercentCompleted(99);
-							catDataDao.save(aCatData);
 						}
 					}
 				}
+				conAudit.setPercentComplete(99);
+				auditDao.save(conAudit);
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				for (AuditCatData aCatData : conAudit.getCategories()) {
@@ -67,10 +69,13 @@ public class ConAuditSave extends AuditActionSupport {
 						if (aCatData.getPercentVerified() < 100) {
 							aCatData.setRequiredCompleted(aCatData.getRequiredCompleted() - 1);
 							aCatData.setPercentCompleted(99);
-							catDataDao.save(aCatData);
+							aCatData.setAuditColumns(permissions);
 						}
 					}
 				}
+				conAudit.setPercentComplete(99);
+				conAudit.setLastRecalculation(new Date());
+				auditDao.save(conAudit);
 			}
 		}
 		conAudit = contractorAuditDAO.save(conAudit);
