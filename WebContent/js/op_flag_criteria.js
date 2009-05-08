@@ -73,7 +73,7 @@ function testCriteria(criteria) {
 		pars.testValue = $('test').value.capitalize();
 		var myAjax = new Ajax.Updater('test_output','FlagCriteriaActionAjax.action', {
 				method: 'post',
-				parameters: pars,
+				parameters: pars
 			});
 	}
 }
