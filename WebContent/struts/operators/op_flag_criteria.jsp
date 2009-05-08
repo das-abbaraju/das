@@ -28,7 +28,7 @@
 
 <s:if test="contractorsNeedingRecalculation > 10">
 	<div id="alert">
-		<s:property value="contractorsNeedingRecalculation"/> of your contractor's flags will be recalculated.
+		<s:property value="contractorsNeedingRecalculation"/> contractor flags are now waiting to be automatically recalculated.
 	</div>
 </s:if>
 <br clear="all"/>

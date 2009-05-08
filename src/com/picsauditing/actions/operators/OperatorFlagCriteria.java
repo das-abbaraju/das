@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagOshaCriteriaDAO;
@@ -29,6 +30,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private FlagOshaCriteriaDAO flagOshaCriteriaDAO;
 	private ContractorAccountDAO contractorAccountDAO;
 	private AuditTypeClass classType = AuditTypeClass.Audit;
+	private Integer contractorsNeedingRecalculation = null;
 
 	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO,
@@ -47,7 +49,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 			return LOGIN;
 
 		// TODO check permissions
-		// tryPermissions(OpPerms.EditFlagCriteria);
+		tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
 
@@ -154,6 +156,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	}
 
 	public int getContractorsNeedingRecalculation() {
-		return contractorAccountDAO.findContractorsNeedingRecalculation(operator);
+		if (contractorsNeedingRecalculation == null)
+			contractorsNeedingRecalculation = contractorAccountDAO.findContractorsNeedingRecalculation(operator);
+		return contractorsNeedingRecalculation;
 	}
 }

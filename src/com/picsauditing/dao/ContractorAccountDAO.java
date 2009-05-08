@@ -177,31 +177,35 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 	
 	public void updateContractorByOperator(OperatorAccount operator) {
-		String where = "UPDATE ContractorAccount a SET a.needsRecalculation = 1 " +
-				"WHERE EXISTS (SELECT co.contractorAccount FROM a.operators co WHERE ";
-		if(operator.getType().equals("Operator"))
-			where += " co.operatorAccount.id = ? ";
-		if(operator.getType().equals("Corporate"))
-			where += " co.operatorAccount IN (SELECT f.operator FROM Facility f WHERE f.corporate.id = ?)" ;
+		String subSelect = "";
+		if(operator.isOperator())
+			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
+		else if(operator.isCorporate())
+			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = " + operator.getId();
+		else
+			return;
+		
+		String sql = "UPDATE contractor_info SET needsRecalculation = 1 " +
+				"WHERE id IN (" + subSelect + ")";
 
-		where += " )";
-
-		Query query = em.createQuery(where);
-		query.setParameter(1, operator.getId());
+		Query query = em.createNativeQuery(sql);
 		query.executeUpdate();
 	}
 	
 	public int findContractorsNeedingRecalculation(OperatorAccount operator) {
-		String hql = "SELECT c.id FROM ContractorAccount c " +
-				"WHERE EXISTS (SELECT co.contractorAccount FROM c.operators co WHERE ";
-		if(operator.getType().equals("Operator"))
-			hql += "co.operatorAccount.id = ? ";
-		if(operator.getType().equals("Corporate"))
-			hql += "co.operatorAccount IN (SELECT f.operator FROM Facility f WHERE f.corporate.id = ?)" ;
-		hql += ") AND c.needsRecalculation = 1";
-		Query query = em.createQuery(hql);
-		query.setParameter(1, operator.getId());
-
-		return query.getResultList().size();
+		String subSelect = "";
+		if(operator.isOperator())
+			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
+		else if(operator.isCorporate())
+			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = " + operator.getId();
+		else
+			return 0;
+		
+		String sql = "SELECT count(*) total FROM contractor_info " +
+				"WHERE needsRecalculation = 1 AND id IN (" + subSelect + ")";
+		
+		Query query = em.createNativeQuery(sql);
+		Object result = query.getSingleResult();
+		return Integer.parseInt(result.toString());
 	}
 }

@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,17 @@ public class ContractorAccountDAOTest {
 	@Autowired
 	AccountDAO accountDAO;
 
+	@Test
+	public void testUpdateContractorByOperator() {
+		OperatorAccount operator = new OperatorAccount();
+		operator.setId(1813);
+		try {
+			contractoraccountDAO.updateContractorByOperator(operator);
+		} catch (RuntimeException e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+	
 	// @Test
 	public void testSaveAndRemove() {
 		Calendar cal = Calendar.getInstance();
