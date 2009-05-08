@@ -49,12 +49,11 @@ function closePage() {
 	<li><label>Status:</label>
 		<s:radio theme="pics" list="filter.statusList" name="note.status" />
 	</li>
-	<li><label>Can Contractor View:</label>
+	<li><label>Can <s:property value="account.type"/> View:</label>
 		<s:checkbox name="note.canContractorView"></s:checkbox>
 	</li>
 	<li><label>Viewable By:</label>
-		<s:radio theme="pics" list="viewableByList" name="viewableBy"></s:radio>
-		<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"></s:select>
+		<s:radio theme="pics" list="#{1:'Everyone',2:'Only Me'}" name="viewableBy"></s:radio>
 	</li>
 	<li id="liAdditionalText"><label>Additional Text (optional):</label>
 		<s:textarea name="note.body" cols="50" rows="6"></s:textarea>

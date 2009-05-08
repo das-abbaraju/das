@@ -19,6 +19,7 @@ var accountType = '<s:property value="account.type"/>';
 <body>
 <s:if test="account.contractor">
 	<s:include value="../contractors/conHeader.jsp" />
+	<h3>Notes</h3>
 </s:if>
 <s:else>
 	<s:include value="../operators/opHeader.jsp" />
@@ -27,6 +28,13 @@ var accountType = '<s:property value="account.type"/>';
 <div id="notesList">
 <s:include value="account_notes_notes.jsp"></s:include>
 </div>
+
+<s:if test="account.contractor">
+	<h3>Email History</h3>
+	<div id="notesList">
+	<s:include value="account_notes_email.jsp"></s:include>
+	</div>
+</s:if>
 
 </body>
 </html>

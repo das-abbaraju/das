@@ -38,12 +38,12 @@
 <fieldset>
 <ul>
 	<s:if test="note.canContractorView">
-		<li><label>Contractor:</label>Can View</li>
+		<li><label><s:property value="account.type"/>:</label>Can View</li>
 	</s:if>
 	<li><label>Viewable By:</label>
 		<s:property value="note.viewableBy.name"/>
 		<s:if test="note.viewableBy.id == 1 && !note.canContractorView">
-			except contractor
+			except <s:property value="account.type"/>
 		</s:if>
 	</li>
 	<li><label>Created By:</label>

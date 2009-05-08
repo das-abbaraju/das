@@ -5,7 +5,7 @@
 <div id="thinking_notesList"></div>
 <table class="notes">
 	<thead>
-		<tr><th colspan="3">Notes</th>
+		<tr><th colspan="3">Notes (<s:property value="noteCategory"/>)</th>
 		</tr>
 	</thead>
 	<tbody>

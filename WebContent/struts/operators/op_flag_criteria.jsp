@@ -112,5 +112,10 @@
 	</table>
 </div>
 </div>
+
+<br />
+<br />
+<div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
+
 </body>
 </html>

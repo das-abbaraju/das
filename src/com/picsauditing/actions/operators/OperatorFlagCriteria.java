@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class OperatorFlagCriteria extends OperatorActionSupport {
@@ -38,6 +39,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		this.flagOshaCriteriaDAO = flagOshaCriteriaDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		subHeading = "Manage Flag Criteria";
+		noteCategory = NoteCategory.Flags;
 	}
 
 	public String execute() throws Exception {
