@@ -8,18 +8,15 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/modalbox.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="js/modalbox.js"></script>
 <script type="text/javascript" src="js/CalendarPopup.js"></script>
-
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<script src="js/notes.js" type="text/javascript"></script>
-
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
+<script type="text/javascript" src="js/notes.js"></script>
 <script type="text/javascript">
 	var opID = '<s:property value="operator.id" />';
-	var classType = '<s:property value="classType"/>';
 </script>
 
 </head>
@@ -77,13 +74,16 @@
 
 <ul id="navListTop">
 	<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.Audit">current</s:if>">PQF/Audits</a></li>
-	<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.Policy">current</s:if>">InsureGuard</a></li>
+	<s:if test="operator.canSeeInsurance.toString().equals('Yes')">
+		<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.Policy">current</s:if>">InsureGuard</a></li>
+	</s:if>
 </ul>
 
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
-
-<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList()"/>
-<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList()" style="display:none"/>
+<div>
+<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList();return false;"/>
+<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList();return false;" style="display:none"/>
+</div>
 <div id="questionList" style="display:none;margin-top:35px">
 	<h2>Add Flag Criteria Questions</h2>
 	<table class="report" id="questionTable">
