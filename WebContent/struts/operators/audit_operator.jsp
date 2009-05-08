@@ -61,7 +61,7 @@ function save(id, aID, oID, pKey) {
 	<tr>
 		<s:if test="inheritsAudits.size > 0">
 			<td style="padding: 10px;">
-			<h3>Companies that inherit the Audit </h3>
+			<h3>Companies that inherit the Audit configuration</h3>
 			<ul>
 				<s:iterator value="inheritsAudits">
 					<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>
@@ -71,7 +71,7 @@ function save(id, aID, oID, pKey) {
 		</s:if>
 		<s:if test="inheritsInsurance.size > 0">
 			<td style="padding: 10px;">
-			<h3>Companies that inherit the InsureGuard</h3>
+			<h3>Companies that inherit the InsureGuard&trade; configuration</h3>
 			<ul>
 				<s:iterator value="inheritsInsurance">
 					<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>

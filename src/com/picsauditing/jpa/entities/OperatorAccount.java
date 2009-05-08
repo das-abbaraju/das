@@ -46,6 +46,7 @@ public class OperatorAccount extends Account {
 	private YesNo isUserManualUploaded = YesNo.No;
 	private YesNo approvesRelationships = YesNo.No;
 	private boolean verifiedByPics = true;
+	private OshaType oshaType = OshaType.OSHA;
 
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
@@ -146,6 +147,15 @@ public class OperatorAccount extends Account {
 
 	public void setVerifiedByPics(boolean verifiedByPics) {
 		this.verifiedByPics = verifiedByPics;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public OshaType getOshaType() {
+		return oshaType;
+	}
+
+	public void setOshaType(OshaType oshaType) {
+		this.oshaType = oshaType;
 	}
 
 	@ManyToOne

@@ -14,7 +14,7 @@
 </script>
 </head>
 <body>
-<s:push value="#subHeading='IntegrityManagement'"/>
+<s:push value="#subHeading='Integrity Management'"/>
 <s:include value="conHeader.jsp" />
 
 

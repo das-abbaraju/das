@@ -154,7 +154,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (isRequiresInsurance()) {
 			// Add InsureGuard
-			MenuComponent subMenu = new MenuComponent("InsureGuard", "ConInsureGuard.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent("InsureGuard&trade;", "ConInsureGuard.action?id=" + id);
 			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
@@ -172,14 +172,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (isRequiresIntegrityManagement()) {
-			// Add InsureGuard
+			// Add Integrity Management
 			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
 			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.equals(AuditStatus.Exempt)) {
-					String linkText = audit.getAuditType().getAuditName() + " " + audit.getAuditFor();
+					String linkText = audit.getAuditType().getAuditName() +
+						(audit.getAuditFor() == null ? "" : " " + audit.getAuditFor() );
 
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 					iter.remove();

@@ -7,7 +7,7 @@
 	<s:if test="conAudit.auditFor != null">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:else>- <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></s:else>
 </s:if> <s:else>
-	<s:property value="subHeading" />
+	<s:property value="subHeading" escape="false" />
 </s:else></span></h1>
 <s:if test="showHeader">
 <div id="internalnavcontainer">
@@ -35,11 +35,11 @@
 		<s:if test="children.size() > 0">
 			<a class="dropdown <s:if test="current == true"> current</s:if>" href="<s:property value="url" />" 
 				onmouseover="cssdropdown.dropit(this, event, 'auditSubMenu<s:property value="url" />')"
-				title="<s:property value="title" />"><s:property value="name" /></a>
+				title="<s:property value="title" />"><s:property value="name" escape="false" /></a>
 		</s:if>
 		<s:else>
 			<a href="<s:property value="url" />" class="<s:if test="current == true"> current</s:if>"
-			title="<s:property value="title" />"><s:property value="name" /></a>
+			title="<s:property value="title" />"><s:property value="name" escape="false" /></a>
 		</s:else>
 		</li>
 	</s:iterator>

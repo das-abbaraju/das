@@ -99,7 +99,7 @@ public class PicsMenu {
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
 		}
 
-		subMenu = menu.addChild("InsureGuard");
+		subMenu = menu.addChild("InsureGuard&trade;");
 		if(permissions.hasPermission(OpPerms.InsuranceCerts))
 			subMenu.addChild("Contractor Policies", "ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.caoStatus=Verified&filter.caoStatus=Submitted");
 		if(permissions.hasPermission(OpPerms.InsuranceVerification))
