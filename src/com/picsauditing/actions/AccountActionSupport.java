@@ -92,11 +92,11 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	protected void addNote(Account account, String newNote) throws Exception {
-		addNote(account, newNote, NoteCategory.General);
+		addNote(account, newNote, noteCategory);
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory noteCategory) throws Exception {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, false, Account.EVERYONE);
+		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE);
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
