@@ -1,6 +1,5 @@
 package com.picsauditing.actions.operators;
 
-import java.util.Date;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
@@ -9,9 +8,12 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
 
@@ -35,6 +37,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		this.criteriaDao = criteriaDao;
 		this.questionDao = questionDao;
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.noteCategory = NoteCategory.Flags;
 	}
 
 	@Override
@@ -95,6 +98,10 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						criteriaDao.save(amber);
 					}
 				}
+				this.addNote(operator, "Flag Criteria has been edited for "
+						+ question.getSubCategory().getCategory().getAuditType().getAuditName() + " question "
+						+ question.getSubCategory().getCategory().getNumber() + "."
+						+ question.getSubCategory().getNumber() + "." + question.getNumber());
 				contractorAccountDAO.updateContractorByOperator(operator);
 				return BLANK;
 			}
@@ -103,7 +110,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 					if (isValidValue(amber.getValue()) && !Strings.isEmpty(amber.getComparison())) {
 						if (amber.getAuditQuestion() == null)
 							amber.setAuditQuestion(getQuestion());
-						
+
 						if (amber.isFlagged(testValue))
 							testResult = FlagColor.Amber;
 						else
@@ -113,7 +120,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 					if (isValidValue(red.getValue()) && !Strings.isEmpty(red.getComparison())) {
 						if (red.getAuditQuestion() == null)
 							red.setAuditQuestion(getQuestion());
-						
+
 						if (red.isFlagged(testValue))
 							testResult = FlagColor.Red;
 						else
