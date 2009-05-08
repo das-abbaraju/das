@@ -9,8 +9,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Note;
@@ -19,7 +17,6 @@ import com.picsauditing.util.ReportFilterNote;
 
 @SuppressWarnings("serial")
 public class NoteEditor extends AccountActionSupport implements Preparable {
-	private Account account;
 	private String mode = "edit";
 	private Note note;
 	private int viewableBy;
@@ -41,6 +38,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		int noteID = this.getParameter("note.id");
 		if (noteID > 0) {
 			note = noteDAO.find(noteID);
+			account = note.getAccount();
 			viewableBy = note.getViewableBy().getId();
 			if (viewableBy > 2) {
 				viewableByOther = viewableBy;
@@ -56,7 +54,8 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 		
-		account = accountDAO.find(id);
+		if (account == null)
+			account = accountDAO.find(id);
 		// Check permissions to view
 		
 		

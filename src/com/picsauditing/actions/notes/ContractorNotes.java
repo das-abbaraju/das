@@ -20,7 +20,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorNotes extends ContractorActionSupport {
-	private List<Note> openTasks = null;
 	private List<Note> notes = null;
 	private List<EmailQueue> emailList = null;
 	private String returnType = SUCCESS;
@@ -30,7 +29,8 @@ public class ContractorNotes extends ContractorActionSupport {
 	private NoteDAO noteDAO;
 	private EmailQueueDAO emailDAO;
 
-	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, NoteDAO noteDAO, EmailQueueDAO emailDAO) {
+	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, NoteDAO noteDAO,
+			EmailQueueDAO emailDAO) {
 		super(accountDao, auditDao);
 		this.noteDAO = noteDAO;
 		this.emailDAO = emailDAO;
@@ -40,8 +40,8 @@ public class ContractorNotes extends ContractorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		account = accountDao.find(id);
+		
+		findContractor();
 
 		if ("addFilter".equals(button)) {
 			return "tasks";
@@ -50,18 +50,8 @@ public class ContractorNotes extends ContractorActionSupport {
 		return returnType;
 	}
 
-	public List<Note> getOpenTasks() {
-		if (openTasks == null)
-			openTasks = noteDAO.getNotes(account.getId(), permissions, "status = 1" + getFilters("tasks"), 25);
-
-		return openTasks;
-	}
-
 	public List<Note> getNotes() {
-		if (notes == null)
-			notes = noteDAO.getNotes(account.getId(), permissions, "status IN (1,2)" + getFilters("notes"), 25);
-
-		return notes;
+		return super.getNotes(getFilters(), 25);
 	}
 
 	public List<EmailQueue> getEmailList() {
@@ -71,7 +61,7 @@ public class ContractorNotes extends ContractorActionSupport {
 		return emailList;
 	}
 
-	private String getFilters(String listType) {
+	private String getFilters() {
 		String filterString = "";
 		if (!Strings.isEmpty(filter.getKeyword())) {
 			filterString += " AND summary LIKE '%" + Utilities.escapeQuotes(filter.getKeyword()) + "%'";

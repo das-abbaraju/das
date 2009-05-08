@@ -12,7 +12,7 @@
 </style>
 </head>
 <body>
-<h1><s:property value="contractor.name"/></h1>
+<h1><s:property value="account.name"/></h1>
 <div id="auditHeader">
 <div class="buttons" style="float: right">
 	<button name="button" type="button" value="cancel" onclick="window.close();">Close</button>
@@ -57,7 +57,7 @@
 <div class="clear"></div>
 </div>
 
-<p><s:property value="note.summary"/></p>
+<div><s:property value="note.summary"/></div>
 
 <div><s:property value="note.bodyHtml" escape="false"/></div>
 

@@ -246,24 +246,32 @@
 			<result>struts/contractors/con_payment_options.jsp</result>
 		</action>
 		
+		<!--  NOTES for CONTRACTORS and OPERATORS -->
+		<action name="OperatorNotes"
+			class="com.picsauditing.actions.notes.OperatorNotes">
+			<result>struts/notes/account_notes.jsp</result>
+		</action>
 		<action name="ContractorNotes"
-			class="com.picsauditing.actions.contractors.ContractorNote">
-			<result>struts/contractors/con_notes.jsp</result>
+			class="com.picsauditing.actions.notes.ContractorNotes">
+			<result>struts/notes/account_notes.jsp</result>
+		</action>
+		<action name="OperatorNotesAjax"
+			class="com.picsauditing.actions.notes.OperatorNotes">
+			<result name="notes">struts/notes/account_notes_notes.jsp</result>
 		</action>
 		<action name="ContractorNotesAjax"
-			class="com.picsauditing.actions.contractors.ContractorNote">
-			<result name="tasks">struts/contractors/con_notes_tasks.jsp</result>
-			<result name="notes">struts/contractors/con_notes_notes.jsp</result>
-			<result name="email">struts/contractors/con_notes_email.jsp</result>
+			class="com.picsauditing.actions.notes.ContractorNotes">
+			<result name="notes">struts/notes/account_notes_notes.jsp</result>
 		</action>
+		
 		<action name="EmbeddedNotesAjax"
-			class="com.picsauditing.actions.contractors.ContractorActionSupport">
-			<result>struts/contractors/con_notes_embed.jsp</result>
+			class="com.picsauditing.actions.AccountActionSupport">
+			<result>struts/notes/account_notes_embed.jsp</result>
 		</action>
 		<action name="NoteEditor"
-			class="com.picsauditing.actions.contractors.NoteEditor">
-			<result name="edit">struts/contractors/con_notes_edit.jsp</result>
-			<result name="view">struts/contractors/con_notes_view.jsp</result>
+			class="com.picsauditing.actions.notes.NoteEditor">
+			<result name="edit">struts/notes/account_notes_edit.jsp</result>
+			<result name="view">struts/notes/account_notes_view.jsp</result>
 		</action>
 
 		<!-- REPORTS Primary Search Pages (Contractor/Audit/User lists) -->
@@ -315,6 +323,8 @@
 		<action name="ConInvoiceMaintain"
 			class="com.picsauditing.actions.contractors.ConInvoiceMaintain">
 			<result>struts/contractors/invoice_maintain.jsp</result>
+			<exception-mapping exception="java.util.InputMismatchException"
+				result="success" />
 			<result name="BillingDetail" type="redirect-action">
 				<param name="actionName">BillingDetail</param>
 				<param name="id">${contractor.id}</param>

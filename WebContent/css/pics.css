@@ -341,9 +341,9 @@ a.print {
 }
 
 a.refresh {
-	padding-left: 30px;
-	margin-left: 2px;
-	background: url('../images/refresh_icon.jpg') no-repeat left center;; padding-right:5px; padding-top:5px; padding-bottom:5px
+	padding-left: 25px;
+	margin-left: 0px;
+	background: url('../images/refresh_icon.jpg') no-repeat left center;
 }
 
 a.remove {
@@ -369,12 +369,6 @@ a.view {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/edit_pencil.png') no-repeat left center;
-}
-
-a.refresh {
-	padding-left: 25px;
-	margin-left: 0px;
-	background: url('../images/refresh_icon.jpg') no-repeat left center;
 }
 
 label.tooltipped {

@@ -27,6 +27,13 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	private NoteDAO noteDao;
 	
+	@Override
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		return SUCCESS;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -47,18 +54,6 @@ public class AccountActionSupport extends PicsActionSupport {
 		return account;
 	}
 	
-	public ContractorAccount getContractor() {
-		if (account.isContractor())
-			return (ContractorAccount)account;
-		return null;
-	}
-
-	public OperatorAccount getOperator() {
-		if (account.isOperator() || account.isCorporate())
-			return (OperatorAccount)account;
-		return null;
-	}
-
 	/*************  NOTES  ************/
 
 	protected NoteDAO getNoteDao() {
@@ -75,12 +70,25 @@ public class AccountActionSupport extends PicsActionSupport {
 		this.noteCategory = noteCategory;
 	}
 
-	public List<Note> getNotes() {
-		if (notes == null) {
-			notes = getNoteDao().getNotes(id, permissions, "status != " + NoteStatus.Hidden.ordinal()
-					+ " AND noteCategory IN ('" + noteCategory.toString() + "','General')", 5);
-		}
+	/**
+	 * Get a list of notes up to the limit, using the given where clause
+	 * @param where should be in the format of "AND field=1", can be an empty string
+	 * @param limit ie 25
+	 * @return
+	 */
+	public List<Note> getNotes(String where, int limit) {
+		if (notes == null)
+			notes = getNoteDao().getNotes(id, permissions, "status IN (1,2)" + where, limit);
+
 		return notes;
+	}
+
+	/**
+	 * Get a list of 5 embedded notes, based on noteCategory
+	 * @return
+	 */
+	public List<Note> getNotes() {
+		return getNotes(" AND noteCategory IN ('" + noteCategory.toString() + "','General')", 5);
 	}
 
 	protected void addNote(Account account, String newNote) throws Exception {

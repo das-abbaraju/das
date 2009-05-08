@@ -1,27 +1,27 @@
 function filter(returnType, filter, value) {
-	if (conID == null) {
-		alert("conID is not set");
+	if (accountID == null) {
+		alert("accountID is not set");
 		return;
 	}
 	var divName = returnType + 'List';
-	var pars = 'id='+conID+'&button=refresh&returnType='+returnType+'&'+filter+'='+value;
+	var pars = 'id='+accountID+'&button=refresh&returnType='+returnType+'&'+filter+'='+value;
 	
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, 'ContractorNotesAjax.action', {method: 'post', parameters: pars});
+	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
 }
 
 
 function refresh(returnType) {
-	if (conID == null) {
-		alert("conID is not set");
+	if (accountID == null) {
+		alert("accountID is not set");
 		return;
 	}
 
 	var divName = returnType + 'List';
-	var pars = 'id='+conID+'&button=refresh&returnType='+returnType;
+	var pars = 'id='+accountID+'&button=refresh&returnType='+returnType;
 
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, 'ContractorNotesAjax.action', {method: 'post', parameters: pars});
+	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
 }
 
 function refreshNoteCategory(accountID, defaultCategory) {
@@ -38,7 +38,7 @@ function runNoteSearch(returnType) {
 	var pars = $(returnType+'Form').serialize();
 	
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, 'ContractorNotesAjax.action', {method: 'post', parameters: pars});
+	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
 }
 
 function noteEditor(accountID, noteID, mode, defaultCategory) {

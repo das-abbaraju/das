@@ -119,7 +119,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					account.setAccount(new Account());
 					account.getAccount().setId(id);
 					account.setName(name);
-					account.setAuditColumns(new User(permissions.getUserId()));
+					account.setAuditColumns(permissions);
 					operator.getNames().add(account);
 					Collections.sort(operator.getNames(), new Comparator<AccountName>() {
 						@Override
@@ -189,8 +189,15 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 				}
 				operator.setType(type);
+				operator.setAuditColumns(permissions);
+				if (id == 0) {
+					// Save so we can get the id and then update the NOLOAD with a unique id
+					operatorDao.save(operator);
+				}
+				operator.setQbListID("NOLOAD" + operator.getId());
 				operatorDao.save(operator);
-				addActionMessage("Successfully modified " + operator.getName());
+				
+				addActionMessage("Successfully saved " + operator.getName());
 			} else {
 				throw new Exception("no button action found called " + button);
 			}

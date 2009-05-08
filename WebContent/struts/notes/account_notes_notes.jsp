@@ -36,6 +36,11 @@
 		</tr>
 	</thead>
 	<tbody>
+		<s:if test="notes.size() == 0">
+		<tr>
+			<td class="center" colspan="3">No notes were found</td>
+		</tr>
+		</s:if>
 		<s:iterator value="notes">
 		<tr>
 			<td class="center">
@@ -53,7 +58,7 @@
 				<a href="#view" style="float: right; padding: 5px" 
 					onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','view')">Show Details</a>
 				<a class="filter" href="#" onclick="filter('notes', 'filter.category', '<s:property value="noteCategory" />'); return false;"><s:property value="noteCategory" /></a>:
-					<s:property value="summary" /><s:if test="body != null"> ......</s:if><br /><br />
+					<s:property value="summary" /><s:if test="body != null"><br />...more notes in detail</s:if><br /><br />
 				<s:if test="updateDate != null && updateDate.after(creationDate)">
 					<b>Edited:</b> by <s:property value="updatedBy.name" /> at <s:date name="updateDate" format="M/d/yy h:mm a" />
 				</s:if>

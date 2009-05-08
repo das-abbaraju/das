@@ -34,17 +34,14 @@ public class OperatorNotes extends OperatorActionSupport {
 
 		findOperator();
 
-		return SUCCESS;
+		return returnType;
 	}
 
 	public List<Note> getNotes() {
-		if (notes == null)
-			notes = noteDAO.getNotes(id, permissions, "status IN (1,2)", 25);
-
-		return notes;
+		return super.getNotes(getFilters(), 25);
 	}
 
-	private String getFilters(String listType) {
+	private String getFilters() {
 		String filterString = "";
 		if (!Strings.isEmpty(filter.getKeyword())) {
 			filterString += " AND summary LIKE '%" + Utilities.escapeQuotes(filter.getKeyword()) + "%'";

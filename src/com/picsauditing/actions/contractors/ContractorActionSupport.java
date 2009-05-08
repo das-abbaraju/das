@@ -8,6 +8,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -59,7 +60,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		contractor = accountDao.find(id);
 		account = contractor;
 		if (contractor == null)
-			throw new Exception("Contractor " + this.id + " not found");
+			throw new RecordNotFoundException("Contractor " + id);
 
 		if (!checkPermissionToView())
 			throw new NoRightsException("No Rights to View this Contractor");

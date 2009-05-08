@@ -32,7 +32,7 @@
 		</tr>
 		</s:iterator>
 		<tr>
-			<td colspan="3" class="center"><a href="ContractorNotes.action?id=<s:property value="id" />">Show more Notes</a></td>
+			<td colspan="3" class="center"><a href="<s:property value="account.type"/>Notes.action?id=<s:property value="id" />">Show more Notes</a></td>
 		</tr>
 	</tbody>
 </table>

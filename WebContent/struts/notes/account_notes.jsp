@@ -12,7 +12,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script src="js/notes.js" type="text/javascript"></script>
 <script type="text/javascript">
-var conID = '<s:property value="id"/>';
+var accountID = '<s:property value="id"/>';
+var accountType = '<s:property value="account.type"/>';
 </script>
 </head>
 <body>
@@ -26,12 +27,6 @@ var conID = '<s:property value="id"/>';
 <div id="notesList">
 <s:include value="account_notes_notes.jsp"></s:include>
 </div>
-
-<s:if test="emailList.size > 0">
-<div id="emailList">
-<s:include value="account_notes_email.jsp"></s:include>
-</div>
-</s:if>
 
 </body>
 </html>
