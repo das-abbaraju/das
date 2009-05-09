@@ -81,7 +81,8 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						red.setChecked(YesNo.Yes);
 						red.setOperatorAccount(operator);
 						criteriaDao.save(red);
-					}
+					} else
+						criteriaDao.refresh(red);
 				}
 				if (amber != null) {
 					if (Strings.isEmpty(amber.getComparison()) && Strings.isEmpty(amber.getValue())) {
@@ -96,7 +97,8 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						amber.setChecked(YesNo.Yes);
 						amber.setOperatorAccount(operator);
 						criteriaDao.save(amber);
-					}
+					} else
+						criteriaDao.refresh(amber);
 				}
 				this.addNote(operator, "Flag Criteria has been edited for "
 						+ question.getSubCategory().getCategory().getAuditType().getAuditName() + " question "
@@ -141,9 +143,19 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 	private boolean isValidValue(String criteria) {
 		if (Strings.isEmpty(criteria))
 			return false;
-		if ("Date".equals(getQuestion().getQuestionType())) {
-			if (!"Today".equals(criteria) && DateBean.parseDate(criteria) == null)
+		if ("Date".equals(question.getQuestionType())) {
+			if (!"Today".equals(criteria) && DateBean.parseDate(criteria) == null) {
 				addActionError("The value entered is not a valid date");
+				return false;
+			}
+		}
+		if ("Decimal Number".equals(question.getQuestionType()) || "Money".equals(question.getQuestionType())){
+			try {
+				Float.parseFloat(criteria.replace(",", ""));
+			} catch (Exception e) {
+				addActionError("The value entered is not a valid number");
+				return false;
+			}
 		}
 		return true;
 	}

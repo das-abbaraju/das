@@ -34,7 +34,7 @@
 	</div>
 	
 	<div class="buttons">
-		<input type="button" id="save_button" class="picsbutton positive" onclick="saveCriteria(<s:property value="question.id"/>); return false;" value="Save"/>
+		<input type="button" id="save_button" class="picsbutton positive" onclick="saveCriteria(); return false;" value="Save"/>
 		<input type="button" id="close_button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
 	</div>
 

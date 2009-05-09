@@ -87,7 +87,7 @@ function deactivateModal() {
 	Modalbox.deactivate();
 }
 
-function saveCriteria(questionID) {
+function saveCriteria() {
 	startThinking( {
 		message :"saving criteria..."
 	});

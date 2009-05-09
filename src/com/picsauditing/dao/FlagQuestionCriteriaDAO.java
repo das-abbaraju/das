@@ -33,6 +33,10 @@ public class FlagQuestionCriteriaDAO extends PicsDAO {
 			em.remove(row);
 		}
 	}
+	
+	public void refresh(FlagQuestionCriteria row) {
+		em.refresh(row);
+	}
 
 	public FlagQuestionCriteria find(int id) {
 		return em.find(FlagQuestionCriteria.class, id);
