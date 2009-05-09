@@ -45,6 +45,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String email;
 	protected String webUrl;
 	protected Industry industry;
+	private String naics;
 	protected char active;
 	protected char seesAllB;
 	protected char sendActivationEmailB;
@@ -201,13 +202,32 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.industry = industry;
 	}
 
-	@Column(name = "active", nullable = false, length = 1)
+	/**
+	 * North American Industry Classification System
+	 * http://www.census.gov/eos/www/naics/
+	 * NAICS replaced the SIC in 1997
+	 * @return
+	 */
+	public String getNaics() {
+		return naics;
+	}
+
+	public void setNaics(String naics) {
+		this.naics = naics;
+	}
+
+	@Column(nullable = false, length = 1)
 	public char getActive() {
 		return this.active;
 	}
 
 	public void setActive(char active) {
 		this.active = active;
+	}
+
+	@Transient
+	public boolean isActiveB() {
+		return active == 'Y';
 	}
 
 	/**
@@ -286,11 +306,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	@Transient
 	public boolean isCorporate() {
 		return "Corporate".equals(type);
-	}
-
-	@Transient
-	public boolean isActiveB() {
-		return active == 'Y';
 	}
 
 	@Override

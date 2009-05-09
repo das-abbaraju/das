@@ -252,7 +252,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
 	}
-
+	
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
 	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
