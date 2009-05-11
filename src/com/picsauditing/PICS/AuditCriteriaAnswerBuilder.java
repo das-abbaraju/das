@@ -51,16 +51,14 @@ public class AuditCriteriaAnswerBuilder {
 		Map<AuditQuestion, List<FlagQuestionCriteria>> criteriaMapByQuestion = new HashMap<AuditQuestion, List<FlagQuestionCriteria>>();
 		
 		for( FlagQuestionCriteria criteria : criterias ) {
-			if (criteria.getChecked().equals(YesNo.Yes)) { // This question is required by the operator
-				List<FlagQuestionCriteria> criteriaForQuestion = criteriaMapByQuestion.get(criteria.getAuditQuestion());
-				
-				if( criteriaForQuestion == null ) {
-								
-					criteriaForQuestion = new Vector<FlagQuestionCriteria>();
-					criteriaMapByQuestion.put(criteria.getAuditQuestion(), criteriaForQuestion);
-				}
-				criteriaForQuestion.add(criteria);
+			List<FlagQuestionCriteria> criteriaForQuestion = criteriaMapByQuestion.get(criteria.getAuditQuestion());
+			
+			if( criteriaForQuestion == null ) {
+							
+				criteriaForQuestion = new Vector<FlagQuestionCriteria>();
+				criteriaMapByQuestion.put(criteria.getAuditQuestion(), criteriaForQuestion);
 			}
+			criteriaForQuestion.add(criteria);
 		}
 
 		for( AuditQuestion question : criteriaMapByQuestion.keySet() ) {
