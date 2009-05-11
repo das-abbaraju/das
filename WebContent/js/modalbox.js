@@ -346,6 +346,7 @@ Modalbox.Methods = {
 	},
 	
 	_setPosition: function () {
+		this.MBwindow.style.top = Math.round((Element.getHeight(document.viewport) - Element.getHeight(this.MBwindow)) / 2 ) + "px";
 		this.MBwindow.style.left = Math.round((Element.getWidth(document.body) - Element.getWidth(this.MBwindow)) / 2 ) + "px";
 	},
 	
