@@ -33,9 +33,10 @@ public class FlagQuestionCriteriaDAO extends PicsDAO {
 			em.remove(row);
 		}
 	}
-	
+
 	public void refresh(FlagQuestionCriteria row) {
-		em.refresh(row);
+		if (row != null && row.getId() != 0)
+			em.refresh(row);
 	}
 
 	public FlagQuestionCriteria find(int id) {
@@ -45,7 +46,8 @@ public class FlagQuestionCriteriaDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public Map<FlagColor, FlagQuestionCriteria> find(int operatorID, int questionID) {
 		// TODO fill this in
-		Query query = em.createQuery("SELECT f FROM FlagQuestionCriteria f WHERE operatorAccount.id = ? and auditQuestion.id = ?");
+		Query query = em
+				.createQuery("SELECT f FROM FlagQuestionCriteria f WHERE operatorAccount.id = ? and auditQuestion.id = ?");
 		query.setParameter(1, operatorID);
 		query.setParameter(2, questionID);
 
@@ -62,9 +64,10 @@ public class FlagQuestionCriteriaDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<FlagQuestionCriteria> findByOperator(OperatorAccount operator) {
-		Query query = em.createQuery("SELECT t FROM FlagQuestionCriteria t "
-				+ "WHERE (t.operatorAccount = :flagID AND t.auditQuestion.subCategory.category.auditType.classType <> 'Policy')" +
-					" OR (t.operatorAccount = :insureID AND t.auditQuestion.subCategory.category.auditType.classType = 'Policy')");
+		Query query = em
+				.createQuery("SELECT t FROM FlagQuestionCriteria t "
+						+ "WHERE (t.operatorAccount = :flagID AND t.auditQuestion.subCategory.category.auditType.classType <> 'Policy')"
+						+ " OR (t.operatorAccount = :insureID AND t.auditQuestion.subCategory.category.auditType.classType = 'Policy')");
 		query.setParameter("flagID", operator.getInheritFlagCriteria());
 		query.setParameter("insureID", operator.getInheritInsuranceCriteria());
 		return query.getResultList();
