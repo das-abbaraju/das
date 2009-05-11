@@ -352,6 +352,12 @@ a.remove {
 	background: url('../images/cross.png') no-repeat left center;
 }
 
+a.add {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/plus.png') no-repeat left center;
+}
+
 a.edit {
 	padding-left: 17px;
 	margin-left: 2px;
