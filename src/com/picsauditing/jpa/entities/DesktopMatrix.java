@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,7 +16,7 @@ public class DesktopMatrix extends BaseTable implements java.io.Serializable {
 	private AuditCategory category;
 	private AuditQuestion question;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "categoryID", nullable = false, updatable = false)
 	public AuditCategory getCategory() {
 		return category;
@@ -27,7 +26,7 @@ public class DesktopMatrix extends BaseTable implements java.io.Serializable {
 		this.category = category;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = false, updatable = false)
 	public AuditQuestion getQuestion() {
 		return question;
@@ -43,19 +42,5 @@ public class DesktopMatrix extends BaseTable implements java.io.Serializable {
 		int result = 1;
 		result = PRIME * result + id;
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final DesktopMatrix other = (DesktopMatrix) obj;
-		if (id != other.id)
-			return false;
-		return true;
 	}
 }

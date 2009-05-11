@@ -142,21 +142,11 @@ public class AuditBuilder {
 			if (co.getOperatorAccount().isActiveB()
 					&& (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No) || co.getWorkStatus()
 							.equals("Y"))) {
-				for (AuditOperator ao : co.getOperatorAccount().getInheritAudits().getAudits()) {
-					if (ao.isRequiredFor(contractor) && !ao.getAuditType().getClassType().isPolicy()) {
-						PicsLogger
-								.log(co.getOperatorAccount().getName() + " needs " + ao.getAuditType().getAuditName());
+				for (AuditOperator ao : co.getOperatorAccount().getRequiredAudits()) {
+					if (ao.isRequiredFor(contractor)) {
+						PicsLogger.log(co.getOperatorAccount().getName() + " needs "
+								+ ao.getAuditType().getAuditName());
 						auditTypeList.add(ao.getAuditType());
-					}
-				}
-				if (co.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes)) {
-					// If the operator uses insurance, then look to see if any audits are enabled
-					for (AuditOperator ao : co.getOperatorAccount().getInheritInsurance().getAudits()) {
-						if (ao.isRequiredFor(contractor) && ao.getAuditType().getClassType().isPolicy()) {
-							PicsLogger.log(co.getOperatorAccount().getName() + " needs "
-									+ ao.getAuditType().getAuditName());
-							auditTypeList.add(ao.getAuditType());
-						}
 					}
 				}
 			}
@@ -419,8 +409,7 @@ public class AuditBuilder {
 			List<AuditCategory> pqfCategories = auditCategoryDAO.findPqfCategories(conAudit.getContractorAccount());
 			categories.addAll(pqfCategories);
 
-			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
-			for (AuditCategory category : allCategories) {
+			for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 				if (!categories.contains(category))
 					naCategories.add(category);
 			}

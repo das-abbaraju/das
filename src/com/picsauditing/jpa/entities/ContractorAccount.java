@@ -514,9 +514,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				}
 			}
 		}
-		for (OshaType oshaType : oshas.keySet()) {
+		for (OshaType type : oshas.keySet()) {
 
-			Map<String, OshaAudit> theseOshas = oshas.get(oshaType);
+			Map<String, OshaAudit> theseOshas = oshas.get(type);
 
 			int count = theseOshas.size();
 			if (count > 0) {

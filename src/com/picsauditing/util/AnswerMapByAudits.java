@@ -56,6 +56,7 @@ public class AnswerMapByAudits {
 			boolean canSeeAudit = false;
 
 			// check that they can see it
+			// TODO, we need to make sure we're looking at the inherited operator settings here
 			for (AuditOperator auditOperator : operator.getAudits()) {
 				if (auditOperator.getAuditType().equals(
 						audit.getAuditType())) {

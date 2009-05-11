@@ -22,6 +22,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.picsauditing.util.log.PicsLogger;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operators")
@@ -249,6 +251,15 @@ public class OperatorAccount extends Account {
 	}
 
 	@Transient
+	public List<AuditOperator> getRequiredAudits() {
+		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
+		requiredAudits.addAll(inheritAudits.getAudits());
+		if (canSeeInsurance.isTrue())
+			requiredAudits.addAll(inheritInsurance.getAudits());
+		return requiredAudits;
+	}
+
+	@Transient
 	public Map<Integer, AuditOperator> getAuditMap() {
 		if (auditMap == null) {
 			auditMap = new HashMap<Integer, AuditOperator>();
@@ -258,7 +269,7 @@ public class OperatorAccount extends Account {
 		}
 		return auditMap;
 	}
-
+	
 	/**
 	 * Get a list of INHERITED QuestionIDs that are Verified or Checked as part of a Flag calculation.
 	 * Include:

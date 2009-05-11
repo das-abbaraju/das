@@ -72,12 +72,7 @@ public class FlagCalculatorSingle {
 
 		debug(" post override flagColor=" + flagColor);
 
-		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
-		requiredAudits.addAll(operator.getInheritAudits().getAudits());
-		if (operator.getCanSeeInsurance().isTrue())
-			requiredAudits.addAll(operator.getInheritInsurance().getAudits());
-
-		for (AuditOperator audit : requiredAudits) {
+		for (AuditOperator audit : operator.getRequiredAudits()) {
 			audit.setContractorFlag(null);
 			if (audit.isCanSee()) {
 				boolean hasAudit = false;
@@ -199,9 +194,9 @@ public class FlagCalculatorSingle {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
-				if (contractor.getOshas() != null && contractor.getOshas().get(OshaType.OSHA) != null) {
-					for (String key : contractor.getOshas().get(OshaType.OSHA).keySet()) {
-						OshaAudit osha = contractor.getOshas().get(OshaType.OSHA).get(key);
+				if (contractor.getOshas() != null && contractor.getOshas().get(operator.getOshaType()) != null) {
+					for (String key : contractor.getOshas().get(operator.getOshaType()).keySet()) {
+						OshaAudit osha = contractor.getOshas().get(operator.getOshaType()).get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
 							if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()))
@@ -282,7 +277,7 @@ public class FlagCalculatorSingle {
 		boolean waitingOnOperator = false;
 
 		// PQF, Desktop & Office Audits
-		for (AuditOperator audit : operator.getAudits()) {
+		for (AuditOperator audit : operator.getInheritAudits().getAudits()) {
 			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null
 					&& !audit.getRequiredForFlag().equals(FlagColor.Green)) {
 

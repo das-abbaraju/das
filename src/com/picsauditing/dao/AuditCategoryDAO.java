@@ -41,7 +41,7 @@ public class AuditCategoryDAO extends PicsDAO {
 	public List<AuditCategory> findPqfCategories(ContractorAccount contractor) {
 		String sql = "SELECT DISTINCT c.category FROM AuditCatOperator c " +
 			"WHERE riskLevel = :riskLevel AND c.operatorAccount IN " +
-					"(SELECT co.operatorAccount FROM ContractorOperator co WHERE co.contractorAccount = :contractor)";
+					"(SELECT co.operatorAccount.inheritAuditCategories FROM ContractorOperator co WHERE co.contractorAccount = :contractor)";
 		Query query = em.createQuery(sql);
 		query.setParameter("contractor", contractor);
 		query.setParameter("riskLevel", contractor.getRiskLevel().ordinal());
