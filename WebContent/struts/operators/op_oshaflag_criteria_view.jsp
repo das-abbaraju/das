@@ -2,7 +2,7 @@
 <div id="criteriaContent">
 <form id="criteriaEditForm">
 	<input type="hidden" value="<s:property value="operator.id"/>" name="id"/>
-	<div style="font-size: 13px;color : #4C4D4D;">
+	<div>
 		<s:if test="lwcr">		
 			Lost Workdays Case Rate (LWCR):
 		</s:if>
@@ -15,7 +15,7 @@
 		<br/>
 	</div>
 	<div>
-		<table style="font-size: 13px;color : #4C4D4D;">
+		<table>
 		<tr>
 			<td><label>Red: </label></td>
 			<td><nobr><s:if test="lwcr">
