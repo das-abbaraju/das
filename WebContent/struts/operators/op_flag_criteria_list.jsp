@@ -12,8 +12,12 @@
 	</thead>
 	
 	<s:if test="classType.toString() == 'Audit'">
-	<tr onclick="showOshaCriteria('1');" class="clickable" title="Click to open">
-		<td>OSHA</td>
+	<tr 
+		<s:if test="operator == operator.inheritFlagCriteria">
+			onclick="showOshaCriteria('1');" class="clickable" title="Click to open"
+		</s:if>
+	>
+		<td><s:property value="operator.oshaType"/></td>
 		<td class="right">LWCR</td>
 		<td>
 			Lost Workdays Case Rate 
@@ -33,8 +37,12 @@
 			<s:else>N/A</s:else>
 		</nobr></td>
 	</tr>
-	<tr onclick="showOshaCriteria('2');" class="clickable" title="Click to open">
-		<td>OSHA</td>
+	<tr 
+		<s:if test="operator == operator.inheritFlagCriteria">
+			onclick="showOshaCriteria('2');" class="clickable" title="Click to open"
+		</s:if>
+	>
+		<td><s:property value="operator.oshaType"/></td>
 		<td class="right">TRIR</td>
 		<td>
 			Total Recordable Incident Rate 
@@ -54,8 +62,12 @@
 			<s:else>N/A</s:else>
 		</nobr></td>
 	</tr>
-	<tr onclick="showOshaCriteria('3');" class="clickable" title="Click to open">
-		<td>OSHA</td>
+	<tr 
+		<s:if test="operator == operator.inheritFlagCriteria">
+			onclick="showOshaCriteria('3');" class="clickable" title="Click to open"
+			</s:if>
+	>
+		<td><s:property value="operator.oshaType"/></td>
 		<td class="right">Fatalities</td>
 		<td>
 			Fatalities
@@ -81,8 +93,13 @@
 	</s:if>
 	
 	<s:iterator value="questionList">
-		<tr onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" 
-		class="clickable" title="Click to open">
+		<tr 
+			<s:if test="(operator == operator.inheritFlagCriteria && !question.subCategory.category.auditType.classType.policy) 
+						|| (operator == operator.inheritInsuranceCriteria && question.subCategory.category.auditType.classType.policy)">
+				onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" 
+				class="clickable" title="Click to open"
+			</s:if>	
+		>
 			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>
 			<td class="right">
 				<nobr><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></nobr>
