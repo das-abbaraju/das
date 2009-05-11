@@ -39,3 +39,18 @@ where naics = 'NA' or naics = 'N/A';
 
 update accounts a set naics = 562910
 where id = 7060;
+
+/**
+ * Added open Notes widget to all users
+ */
+insert into widget values
+('Open Notes', 'Html',0,'UserOpenNotesAjax.action',null, null);
+
+insert into widget_user values
+(newwidgetid, 941, 1,1,5, null);
+insert into widget_user values
+(newwidgetid, 910, 1,1,5, null);
+insert into widget_user values
+(newwidgetid, 616, 1,1,5, null);
+insert into widget_user values
+(newwidgetid, 646, 1,1,5, null);
