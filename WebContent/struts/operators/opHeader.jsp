@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<h1><s:property value="operator.name" /><span class="sub"><s:property value="subHeading" /></span></h1>
+<h1><s:property value="operator.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 
 <div id="internalnavcontainer">
 <ul id="navlist">
