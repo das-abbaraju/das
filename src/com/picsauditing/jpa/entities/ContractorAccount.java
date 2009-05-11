@@ -469,24 +469,36 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Transient
+	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
+		return getOshas(OshaType.OSHA);
+	}
+
+	@Transient
 	/*
 	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of applicable osha data (verified or not)
 	 */
-	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
+	public Map<OshaType, Map<String, OshaAudit>> getOshas(OshaType shaType) {
 		if (oshas != null)
 			return oshas;
 		int number = 0;
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
-
+		
+		int auditCategoryID = 0;
+		if(shaType.equals(OshaType.OSHA))
+			auditCategoryID = AuditCategory.OSHA_AUDIT;
+		else if(shaType.equals(OshaType.MSHA))
+			auditCategoryID = AuditCategory.MSHA;
+		else if(shaType.equals(OshaType.COHS))
+			auditCategoryID = AuditCategory.CANADIAN_STATISTICS;
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 3) {
 				for (AuditCatData auditCatData : audit.getCategories()) {
-					if (auditCatData.getCategory().getId() == AuditCategory.OSHA_AUDIT
+					if (auditCatData.getCategory().getId() == auditCategoryID
 							&& auditCatData.getPercentCompleted() == 100) {
 						// Store the corporate OSHA rates into a map for later
 						// use
 						for (OshaAudit osha : audit.getOshas())
-							if (osha.getType().equals(OshaType.OSHA) && osha.isCorporate() && osha.isApplicable()) {
+							if (osha.getType().equals(shaType) && osha.isCorporate() && osha.isApplicable()) {
 								number++;
 								Map<String, OshaAudit> theMap = oshas.get(osha.getType());
 
