@@ -100,7 +100,7 @@
 		
 		<pics:permission perm="EditNotes" type="Edit">
 			<div id="notesList">
-				<s:include value="con_notes_embed.jsp"></s:include>
+				<s:include value="../notes/account_notes_embed.jsp"></s:include>
 			</div>
 		</pics:permission>
 	</td>
