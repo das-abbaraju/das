@@ -6,7 +6,7 @@ function showCriteria(questionID, auditName, requiresCal) {
 			cal2.setCssPrefix("PICS");
 			cal2.setReturnFunction("calendarReturn");
 			cal2.offsetX = -350;
-			cal2.offsetY = -20;
+			cal2.offsetY = -250;
 		}
 	}
 	var pars = {
