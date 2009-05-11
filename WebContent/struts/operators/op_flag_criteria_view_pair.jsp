@@ -24,7 +24,7 @@
 	<s:textfield name="%{criteria}.value" size="10" onchange="$('%{criteria}_clear').show()"/>
 	<a id="<s:property value="#criteria"/>_anchor_date" name="anchor_date"
 		onclick="cal2.select($('<s:property value="#criteria"/>_value'),'<s:property value="#criteria"/>_anchor_date','M/d/yy');"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-	<div id="caldiv2" style="position:absolute; visibility:hidden;"></div>  
+	<div id="caldiv2" style="top: 20px;position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>  
 </s:if>
 <s:if test="question.questionType == 'Decimal Number'">
 	<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison" onchange="$('%{criteria}_clear').show()"></s:select>
