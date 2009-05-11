@@ -22,7 +22,7 @@ function showCriteria(questionID, auditName, requiresCal) {
 		slideUpDuration: 0,
 		resizeDuration: .2,
 		overlayClose: false,
-		height: 200
+		height: 250
 		});
 }
 
@@ -121,55 +121,10 @@ function saveOshaCriteria() {
 		});
 }
 
-function refreshList() {
-	startThinking( {
-		message :"refreshing list..."
-	});
-	$('criteriaList').show();
-	var pars = { id : opID, classType: classType };
-	var myAjax = new Ajax.Updater('criteriaList',
-			'OperatorFlagCriteriaAjax.action', {
-				method :'post',
-				parameters: pars,
-				onComplete : function() {
-					stopThinking();
-				}
-			});
-}
-
 function toggleQuestionList() {
 	$('questionList').toggle();
 	$('addQuestionButton').toggle();
 	$('hideQuestionButton').toggle();
-}
-
-function questionSearch() {
-	startThinking( {
-		div :'questionList',
-		type :'large',
-		message :"searching for matching questions..."
-	});
-
-	var box = $('questionTextBox');
-	var pars = 'questionName=' + escape(box.value);
-	var myAjax = new Ajax.Updater('questionList',
-			'QuestionSelectTableAjax.action', {
-				method :'post',
-				parameters :pars
-			});
-}
-
-function showNewCriteria() {
-	$('criteriaAdd').show();
-	Effect.DropOut('addButton');
-	$('questionTextBox').focus();
-	$('questionList').show();
-}
-
-function closeNewCriteria() {
-	$('addButton').show();
-	$('criteriaAdd').hide();
-	$('questionList').hide();
 }
 
 function showOtherAccounts() {
