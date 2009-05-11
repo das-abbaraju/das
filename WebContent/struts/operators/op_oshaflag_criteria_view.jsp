@@ -36,11 +36,11 @@
 		</s:else></td>
 		<td> > </td>
 		<td><s:if test="lwcr">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:if> <s:elseif test="trir">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif> <s:else>
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:else></td>
 		<td>
 		<s:if test="redOshaCriteria.lwcr.hurdleFlag.toString() == 'None'">
@@ -83,11 +83,11 @@
 		</s:else></td>
 		<td> > </td>
 		<td><s:if test="lwcr">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="amberOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:if> <s:elseif test="trir">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="amberOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:elseif> <s:else>
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="amberOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:else></td>		
 		<td>
 		<s:if test="amberOshaCriteria.lwcr.hurdleFlag.toString() == 'None'">
