@@ -54,9 +54,6 @@ public class FlagOshaCriterion {
 	public boolean isFlagged(float value) {
 		if (!isRequired())
 			return false;
-		if(hurdleFlag.equals(HurdleType.NAICS)) {
-			return value > ((value*hurdle)*100);
-		}
 		return value > hurdle;
 	}
 	

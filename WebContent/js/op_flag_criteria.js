@@ -40,7 +40,7 @@ function showOshaCriteria(type) {
 		slideUpDuration: 0,
 		resizeDuration: .2,
 		overlayClose: false,
-		height: 330});
+		height: 350});
 }
 
 function calendarReturn(y, m, d) {

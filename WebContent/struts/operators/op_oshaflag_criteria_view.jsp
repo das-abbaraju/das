@@ -123,8 +123,7 @@
 	</div>
 </form>
 <br clear="all"/>
-<div id="info">
-If "Absolute" select a cutoff value.
-If "NAICS" select a cutoff percentage.
-</div> 
 </div>
+<div id="info">
+If "Absolute" enter a cutoff value. If "NAICS" select a percentage.
+</div> 
