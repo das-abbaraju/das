@@ -124,6 +124,6 @@
 </form>
 <br clear="all"/>
 </div>
-<div id="info">
-If "Absolute" enter a cutoff value. If "NAICS" select a percentage.
+<div id="info" style="font-size: 13px;color : #4C4D4D;">
+	If "Absolute" enter a cutoff value. <s:if test="trir">If "NAICS" select a percentage.</s:if>
 </div> 
