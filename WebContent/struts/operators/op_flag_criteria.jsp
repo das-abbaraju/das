@@ -72,17 +72,17 @@
 </div>
 </s:if>
 
-<ul id="navListTop">
-	<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.Audit">current</s:if>">PQF/Audits</a></li>
-	<s:if test="operator.canSeeInsurance.toString().equals('Yes')">
+<s:if test="operator.canSeeInsurance.toString().equals('Yes')">
+	<ul id="navListTop">
+		<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.Audit">current</s:if>">PQF/Audits</a></li>
 		<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.Policy">current</s:if>">InsureGuard&trade;</a></li>
-	</s:if>
-</ul>
+	</ul>
+</s:if>
 
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
 <div>
-<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList();return false;"/>
-<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList();return false;" style="display:none"/>
+	<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList();return false;"/>
+	<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList();return false;" style="display:none"/>
 </div>
 <div id="questionList" style="display:none;margin-top:35px">
 	<h2>Add Flag Criteria Questions</h2>
