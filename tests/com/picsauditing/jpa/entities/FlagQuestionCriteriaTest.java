@@ -11,7 +11,6 @@ public class FlagQuestionCriteriaTest extends TestCase {
 	@Test
 	public void testIsFlagged() {
 		FlagQuestionCriteria criteria = new FlagQuestionCriteria();
-		criteria.setChecked(YesNo.Yes);
 		criteria.setAuditQuestion(new AuditQuestion());
 
 		// Test for Money/Decimal QuestionType

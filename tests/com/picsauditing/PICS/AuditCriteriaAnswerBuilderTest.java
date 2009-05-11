@@ -88,7 +88,6 @@ public class AuditCriteriaAnswerBuilderTest extends TestCase {
 		FlagQuestionCriteria criteria = new FlagQuestionCriteria();
 		criteria.setFlagColor(flagColor);
 		criteria.setAuditQuestion(question);
-		criteria.setChecked(YesNo.Yes);
 		criteria.setComparison(comparison);
 		criteria.setValue(value);
 		return criteria;

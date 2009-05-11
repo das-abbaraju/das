@@ -76,6 +76,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	private String criteria;
 	private String criteriaAnswer;
 
+	@Transient
+	public AuditType getAuditType() {
+		return subCategory.getCategory().getAuditType();
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false)
 	public AuditSubCategory getSubCategory() {

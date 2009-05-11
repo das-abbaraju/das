@@ -120,8 +120,8 @@ public class FlagCalculator2 {
 		// Create a list of questions that the operators want to ask
 		for (OperatorAccount operator : operators) {
 			// Read the operator data from database
-			operator.getFlagOshaCriteria();
-			operator.getAudits();
+			operator.getInheritFlagCriteria().getFlagOshaCriteria();
+			operator.getInheritAudits().getAudits();
 			questionIDs.addAll(operator.getQuestionIDs());
 			oList.add(operator.getId());
 		}

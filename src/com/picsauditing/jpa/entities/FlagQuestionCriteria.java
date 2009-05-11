@@ -63,16 +63,6 @@ public class FlagQuestionCriteria extends BaseTable {
 		this.auditQuestion = auditQuestion;
 	}
 
-	@Column(name = "isChecked", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public YesNo getChecked() {
-		return checked;
-	}
-
-	public void setChecked(YesNo checked) {
-		this.checked = checked;
-	}
-
 	public String getComparison() {
 		return comparison;
 	}
@@ -108,6 +98,15 @@ public class FlagQuestionCriteria extends BaseTable {
 		this.multiYearScope = multiYearScope;
 	}
 
+	/**
+	 * Just an easy helper method to know if this criteria is for a policy or audit
+	 * @return auditQuestion.getSubCategory().getCategory().getAuditType().getClassType()
+	 */
+	@Transient
+	public AuditTypeClass getClassType() {
+		return auditQuestion.getSubCategory().getCategory().getAuditType().getClassType();
+	}
+	
 	@Transient
 	public boolean isFlagged(String answer) {
 		String questionType = auditQuestion.getQuestionType();

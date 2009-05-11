@@ -78,7 +78,6 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 					} else if (isValidValue(red.getValue())) {
 						red.setFlagColor(FlagColor.Red);
 						red.setAuditQuestion(question);
-						red.setChecked(YesNo.Yes);
 						red.setOperatorAccount(operator);
 						criteriaDao.save(red);
 					} else
@@ -94,7 +93,6 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 					} else if (isValidValue(amber.getValue())) {
 						amber.setFlagColor(FlagColor.Amber);
 						amber.setAuditQuestion(question);
-						amber.setChecked(YesNo.Yes);
 						amber.setOperatorAccount(operator);
 						criteriaDao.save(amber);
 					} else

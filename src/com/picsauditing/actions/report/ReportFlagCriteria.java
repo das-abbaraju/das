@@ -125,8 +125,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 		Set<Integer> questionIds = new HashSet<Integer>();
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
-					&& flagQuestionCriteria.getChecked() == YesNo.Yes) {
+			if ( flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()) ) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (!questionIds.contains(questionID)) {
 					questionIds.add(questionID);

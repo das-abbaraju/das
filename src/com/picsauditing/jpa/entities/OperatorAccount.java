@@ -260,19 +260,30 @@ public class OperatorAccount extends Account {
 	}
 
 	/**
-	 * Get a list of QuestionIDs that are Verified or Checked as part of a Flag calculation
-	 * 
+	 * Get a list of INHERITED QuestionIDs that are Verified or Checked as part of a Flag calculation.
+	 * Include:
+	 * <ul>
+	 * <li>inheritFlagCriteria.getAuditQuestions()</li>
+	 * <li>inheritFlagCriteria.getFlagQuestionCriteria() where !criteria.getClassType().isPolicy()</li>
+	 * <li>inheritInsuranceCriteria.getFlagQuestionCriteria() where getClassType().isPolicy()</li>
+	 * </ul>
 	 * @return
 	 */
 	@Transient
 	public List<Integer> getQuestionIDs() {
 		List<Integer> questionIDs = new ArrayList<Integer>();
-		for (AuditQuestionOperatorAccount question : getAuditQuestions()) {
+		for (AuditQuestionOperatorAccount question : inheritFlagCriteria.getAuditQuestions()) {
 			questionIDs.add(question.getAuditQuestion().getId());
 		}
-		for (FlagQuestionCriteria criteria : getFlagQuestionCriteria()) {
-			if (criteria.getChecked().equals(YesNo.Yes))
+		for (FlagQuestionCriteria criteria : inheritFlagCriteria.getFlagQuestionCriteria()) {
+			if (!criteria.getClassType().isPolicy())
 				questionIDs.add(criteria.getAuditQuestion().getId());
+		}
+		if (canSeeInsurance.equals(YesNo.Yes)) {
+			for (FlagQuestionCriteria criteria : inheritInsuranceCriteria.getFlagQuestionCriteria()) {
+				if (criteria.getClassType().isPolicy())
+					questionIDs.add(criteria.getAuditQuestion().getId());
+			}
 		}
 		return questionIDs;
 	}

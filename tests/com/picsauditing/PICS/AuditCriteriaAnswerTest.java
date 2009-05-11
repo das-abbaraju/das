@@ -23,10 +23,8 @@ public class AuditCriteriaAnswerTest extends TestCase {
 		FlagQuestionCriteria amberFlag = new FlagQuestionCriteria();
 		redFlag.setFlagColor(FlagColor.Red);
 		redFlag.setAuditQuestion(answer.getQuestion());
-		redFlag.setChecked(YesNo.Yes);
 		amberFlag.setFlagColor(FlagColor.Amber);
 		amberFlag.setAuditQuestion(answer.getQuestion());
-		amberFlag.setChecked(YesNo.Yes);
 
 		criteriaMap.put(FlagColor.Amber, amberFlag);
 		criteriaMap.put(FlagColor.Red, redFlag);
