@@ -40,7 +40,7 @@ function showOshaCriteria(type) {
 		slideUpDuration: 0,
 		resizeDuration: .2,
 		overlayClose: false,
-		height: 200});
+		height: 330});
 }
 
 function calendarReturn(y, m, d) {
@@ -114,10 +114,8 @@ function saveOshaCriteria() {
 			method: 'post',
 			parameters: pars,
 			onComplete: function() {
-					closeCriteriaEdit();
-					stopThinking();
-					refreshList();
-				}
+				location.reload();	
+			}
 		});
 }
 
@@ -132,4 +130,21 @@ function showOtherAccounts() {
 		Effect.SlideUp('otherAccounts', { duration: .2 });
 	else
 		Effect.SlideDown('otherAccounts', { duration: .3 });
+}
+
+function showHudleType(elm, criteria) {
+	var option =  $F(elm);
+	if(option == 'None') {
+		$('show_'+criteria+'hurdle').hide();
+		$('show_'+criteria+'hurdlepercent').hide();
+	}
+	if(option == 'Absolute') {
+		$('show_'+criteria+'hurdle').show();
+		$('show_'+criteria+'hurdlepercent').hide();
+	}
+	if(option == 'NAICS') {
+		$('show_'+criteria+'hurdle').show();
+		$('show_'+criteria+'hurdlepercent').show();
+	}	
+	return false;
 }

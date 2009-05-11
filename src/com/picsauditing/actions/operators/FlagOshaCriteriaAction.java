@@ -7,6 +7,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagOshaCriterion;
+import com.picsauditing.jpa.entities.NoteCategory;
 
 public class FlagOshaCriteriaAction extends OperatorActionSupport implements Preparable {
 
@@ -14,7 +15,7 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 	private ContractorAccountDAO contractorAccountDAO;
 	protected FlagOshaCriteria redOshaCriteria = null;
 	protected FlagOshaCriteria amberOshaCriteria = null;
-	private int type;
+	private int type = 0;
 	private boolean lwcr;
 	private boolean trir;
 	private boolean fatalities;
@@ -23,8 +24,9 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 		super(operatorDao);
 		this.flagOshaCriteriaDAO = flagOshaCriteriaDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.noteCategory = NoteCategory.Flags;
 	}
-
+	
 	@Override
 	public void prepare() throws Exception {
 		findOperator();
@@ -38,7 +40,6 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 				fatalities = true;
 		}
 	}
-
 	@Override
 	public String execute() throws Exception {
 		if (button != null) {
@@ -74,7 +75,15 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 					amberOshaCriteria.setFlagColor(FlagColor.Amber);
 					amberOshaCriteria.setAuditColumns(permissions);
 					flagOshaCriteriaDAO.save(amberOshaCriteria);
-				}	
+				}
+				String note = "Flag Criteria has been edited for OSHA ";
+				if(isLwcr())
+					note += "LWCR";
+				else if(isTrir())
+					note += "TRIR";
+				else
+					note += "Fatalities";
+				this.addNote(operator, note);
 				contractorAccountDAO.updateContractorByOperator(operator);
 				return BLANK;
 			}

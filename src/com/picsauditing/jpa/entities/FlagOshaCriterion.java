@@ -8,23 +8,24 @@ import javax.persistence.Transient;
 
 @Embeddable
 public class FlagOshaCriterion {
-	protected YesNo flag = YesNo.No;
+	protected HurdleType hurdleFlag = HurdleType.None;
 	protected float hurdle = 0.0f;
 	protected int time = 1;
 
-	@Column(nullable=false)
 	@Enumerated(EnumType.STRING)
-	public YesNo getFlag() {
-		return flag;
+	public HurdleType getHurdleFlag() {
+		return hurdleFlag;
 	}
 
-	public void setFlag(YesNo flag) {
-		this.flag = flag;
+	public void setHurdleFlag(HurdleType hurdleFlag) {
+		this.hurdleFlag = hurdleFlag;
 	}
 	
 	@Transient
 	public boolean isRequired() {
-		return YesNo.Yes.equals(flag);
+		if(HurdleType.NAICS.equals(hurdleFlag) || HurdleType.Absolute.equals(hurdleFlag))
+			return true;
+		return false;
 	}
 
 	@Column(nullable=false)
@@ -53,13 +54,16 @@ public class FlagOshaCriterion {
 	public boolean isFlagged(float value) {
 		if (!isRequired())
 			return false;
+		if(hurdleFlag.equals(HurdleType.NAICS)) {
+			return value > ((value*hurdle)*100);
+		}
 		return value > hurdle;
 	}
 	
 	@Transient
 	@Override
 	public String toString() {
-		return "flag:"+flag+" time:"+time+" hurdle:"+hurdle;
+		return "flag:"+hurdleFlag+" time:"+time+" hurdle:"+hurdle;
 	}
 	
 }

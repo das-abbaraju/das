@@ -44,7 +44,7 @@ public class FlagOshaCriteria extends BaseTable {
 	}
 
 	@Embedded
-	@AttributeOverrides( { @AttributeOverride(name = "flag", column = @Column(name = "flaglwcr")),
+	@AttributeOverrides( {@AttributeOverride(name = "hurdleFlag", column = @Column(name = "lwcrHurdleType")),
 			@AttributeOverride(name = "hurdle", column = @Column(name = "lwcrHurdle")),
 			@AttributeOverride(name = "time", column = @Column(name = "lwcrTime")) })
 	public FlagOshaCriterion getLwcr() {
@@ -56,7 +56,7 @@ public class FlagOshaCriteria extends BaseTable {
 	}
 
 	@Embedded
-	@AttributeOverrides( { @AttributeOverride(name = "flag", column = @Column(name = "flagtrir")),
+	@AttributeOverrides( { @AttributeOverride(name = "hurdleFlag", column = @Column(name = "trirHurdleType")),
 			@AttributeOverride(name = "hurdle", column = @Column(name = "trirHurdle")),
 			@AttributeOverride(name = "time", column = @Column(name = "trirTime")) })
 	public FlagOshaCriterion getTrir() {
@@ -68,7 +68,7 @@ public class FlagOshaCriteria extends BaseTable {
 	}
 
 	@Embedded
-	@AttributeOverrides( { @AttributeOverride(name = "flag", column = @Column(name = "flagfatalities")),
+	@AttributeOverrides( { @AttributeOverride(name = "hurdleFlag", column = @Column(name = "fatalitiesHurdleType")),
 			@AttributeOverride(name = "hurdle", column = @Column(name = "fatalitiesHurdle")),
 			@AttributeOverride(name = "time", column = @Column(name = "fatalitiesTime")) })
 	public FlagOshaCriterion getFatalities() {
