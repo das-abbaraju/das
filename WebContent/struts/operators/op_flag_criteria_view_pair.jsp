@@ -9,7 +9,7 @@
 </s:if>
 <s:if test="question.questionType == 'Check Box'">
 	<s:select list="#{'!=':'!=','=':'='}" headerKey="" headerValue="" name="%{criteria}.comparison" onchange="$('%{criteria}_clear').show()"></s:select>
-	<s:select list="#{'Yes':'Yes','No':'No'}" headerKey="" headerValue="" name="%{criteria}.value" onchange="$('%{criteria}_clear').show()"></s:select>
+	<s:select list="#{'Checked':'Checked','Not Checked':'Not Checked'}" headerKey="" headerValue="" name="%{criteria}.value" onchange="$('%{criteria}_clear').show()"></s:select>
 </s:if>
 <s:if test="question.questionType == 'License'">
 	<s:select list="#{'!=':'!=','=':'='}" headerKey="" headerValue="" name="%{criteria}.comparison" onchange="$('%{criteria}_clear').show()"></s:select>
