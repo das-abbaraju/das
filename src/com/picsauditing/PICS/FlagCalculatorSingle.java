@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +24,8 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * Determine the Flag color for a single contractor at a given facility. This
- * doesn't persist any data nor does it query the database for the required
- * data.
+ * Determine the Flag color for a single contractor at a given facility. This doesn't persist any data nor does it query
+ * the database for the required data.
  * 
  * @author Trevor
  */
@@ -39,16 +39,14 @@ public class FlagCalculatorSingle {
 	protected List<AuditCriteriaAnswer> acaList;
 
 	/**
-	 * 1) Check to see all required audits are there 2) OSHA Data 3)
-	 * AuditQuestions
+	 * 1) Check to see all required audits are there 2) OSHA Data 3) AuditQuestions
 	 * 
 	 * @param contractor
 	 *            The contractor jpa entity to calculate the flag for
 	 * @param operator
 	 *            The operator jpa entity to calculate the contractor flag for
 	 * @param conAudits
-	 *            A list of audits for this contractor that may be required by
-	 *            this operator
+	 *            A list of audits for this contractor that may be required by this operator
 	 * @param auditAnswers
 	 * @return
 	 */
@@ -74,45 +72,50 @@ public class FlagCalculatorSingle {
 
 		debug(" post override flagColor=" + flagColor);
 
-		for (AuditOperator audit : operator.getAudits()) {
+		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
+		requiredAudits.addAll(operator.getInheritAudits().getAudits());
+		if (operator.getCanSeeInsurance().isTrue())
+			requiredAudits.addAll(operator.getInheritInsurance().getAudits());
+
+		for (AuditOperator audit : requiredAudits) {
 			audit.setContractorFlag(null);
 			if (audit.isCanSee()) {
 				boolean hasAudit = false;
 				for (ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditType().equals(audit.getAuditType()) 
-							&& !conAudit.getAuditStatus().isExpired()) {
+					if (conAudit.getAuditType().equals(audit.getAuditType()) && !conAudit.getAuditStatus().isExpired()) {
 						hasAudit = true;
 						break;
 					}
-				}	
+				}
 				// Always start with Green
-				if(hasAudit)
+				if (hasAudit)
 					audit.setContractorFlag(FlagColor.Green);
 				// removed contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() (needs further review)
-				boolean auditFlagRedOrAmber = audit.getRequiredForFlag() != null && !audit.getRequiredForFlag().equals(FlagColor.Green);
-				boolean contractorRiskLevelHighEnough = audit.getMinRiskLevel() > 0 && contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel();
+				boolean auditFlagRedOrAmber = audit.getRequiredForFlag() != null
+						&& !audit.getRequiredForFlag().equals(FlagColor.Green);
+				boolean contractorRiskLevelHighEnough = audit.getMinRiskLevel() > 0
+						&& contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel();
 				boolean adHocExists = false;
-				// Setting the Flag Color to 
-				if(audit.getMinRiskLevel() == 0) {
-					if(hasAudit)
+				// Setting the Flag Color to
+				if (audit.getMinRiskLevel() == 0) {
+					if (hasAudit)
 						adHocExists = true;
 					else
 						audit.setContractorFlag(null);
-				}	
-						
-				if ((adHocExists || contractorRiskLevelHighEnough) 
-						&& auditFlagRedOrAmber) {
+				}
+
+				if ((adHocExists || contractorRiskLevelHighEnough) && auditFlagRedOrAmber) {
 					debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
 					// The contractor requires this audit,
 					// make sure they have an active one
 					// If an active audit doesn't exist, then set
 					// the contractor's flag to the required color
 					audit.setContractorFlag(audit.getRequiredForFlag());
-					
+
 					int annualAuditCount = 0;
 					for (ContractorAudit conAudit : conAudits) {
 						if (conAudit.getAuditType().equals(audit.getAuditType())) {
-						
+
 							if (conAudit.getAuditType().getClassType().isAudit()) {
 								boolean statusOK = false;
 								boolean typeOK = false;
@@ -130,15 +133,15 @@ public class FlagCalculatorSingle {
 								if (conAudit.getAuditType().getId() == AuditType.NCMS
 										&& audit.getAuditType().getId() == AuditType.DESKTOP)
 									typeOK = true;
-								
+
 								if (typeOK) {
 									if (statusOK) {
-										// We found a matching "valid" audit for this 
+										// We found a matching "valid" audit for this
 										// contractor audit requirement
 										debug(" ---- found");
-				
+
 										if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
-											// We actually require THREE annual addendums 
+											// We actually require THREE annual addendums
 											// before we consider this requirement complete
 											annualAuditCount++;
 										} else {
@@ -147,11 +150,11 @@ public class FlagCalculatorSingle {
 										}
 									}
 								}
-								
+
 							} else {
 								// For Policies
-								if(!conAudit.getAuditStatus().isExpired()) {
-									for(ContractorAuditOperator cao : conAudit.getOperators()) {
+								if (!conAudit.getAuditStatus().isExpired()) {
+									for (ContractorAuditOperator cao : conAudit.getOperators()) {
 										if (cao.getOperator().equals(operator)) {
 											if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 												audit.setContractorFlag(null);
@@ -183,11 +186,11 @@ public class FlagCalculatorSingle {
 		debug(" post audit flagColor=" + flagColor);
 
 		// Initialize the flag color to the default Green
-		for( OshaType oshaType : contractor.getOshas().keySet() ) {
+		for (OshaType oshaType : contractor.getOshas().keySet()) {
 			Map<String, OshaAudit> theseOshas = contractor.getOshas().get(oshaType);
-			
-			if( theseOshas != null ) {
-				for (OshaAudit oa : theseOshas.values() ) {
+
+			if (theseOshas != null) {
+				for (OshaAudit oa : theseOshas.values()) {
 					oa.setFlagColor(FlagColor.Green);
 				}
 			}
@@ -196,8 +199,7 @@ public class FlagCalculatorSingle {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
-				if (contractor.getOshas() != null 
-						&& contractor.getOshas().get(OshaType.OSHA) != null) {
+				if (contractor.getOshas() != null && contractor.getOshas().get(OshaType.OSHA) != null) {
 					for (String key : contractor.getOshas().get(OshaType.OSHA).keySet()) {
 						OshaAudit osha = contractor.getOshas().get(OshaType.OSHA).get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
@@ -225,10 +227,9 @@ public class FlagCalculatorSingle {
 			}
 		}
 		debug(" post osha flagColor=" + flagColor);
-		
-		
+
 		debug(" evaluating " + acaList.size() + " question criteria");
-		for(AuditCriteriaAnswer aca : acaList) {
+		for (AuditCriteriaAnswer aca : acaList) {
 			if (aca.getClassType() == AuditTypeClass.Audit)
 				flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
@@ -282,26 +283,25 @@ public class FlagCalculatorSingle {
 
 		// PQF, Desktop & Office Audits
 		for (AuditOperator audit : operator.getAudits()) {
-			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() 
-					&& audit.getRequiredForFlag() != null
-					&& !audit.getRequiredForFlag().equals(FlagColor.Green) ) {
+			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null
+					&& !audit.getRequiredForFlag().equals(FlagColor.Green)) {
 
 				for (ContractorAudit conAudit : conAudits) {
 					AuditStatus auditStatus = conAudit.getAuditStatus();
 					if (conAudit.getAuditType().equals(audit.getAuditType())) {
 						// We found a matching audit type. Is it required?
 						if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-							
+
 							if (!auditStatus.equals(AuditStatus.Exempt) && !auditStatus.equals(AuditStatus.Expired)) {
 								// Pending, Submitted, Resubmitted, or Active Policy
-								
+
 								// This is a Policy, find the CAO for this operator
-								for(ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator) 
+								for (ContractorAuditOperator cao : conAudit.getOperators()) {
+									if (cao.getOperator().equals(operator)
 											&& !CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())) {
-										
+
 										// This policy is already approved by operator
-										if(CaoStatus.Approved.equals(cao.getStatus()))
+										if (CaoStatus.Approved.equals(cao.getStatus()))
 											return WaitingOn.None;
 
 										if (cao.getStatus() == CaoStatus.Pending) {
@@ -317,7 +317,7 @@ public class FlagCalculatorSingle {
 										}
 
 										if (CaoStatus.Rejected.equals(cao.getStatus()))
-											// The operator rejected their certificate, 
+											// The operator rejected their certificate,
 											// they should fix it and resubmit it
 											return WaitingOn.Contractor;
 									} // if
@@ -373,31 +373,30 @@ public class FlagCalculatorSingle {
 		// If everything is done, then quit with waiting on = no one
 		return WaitingOn.None;
 	}
-	
+
 	public CaoStatus calculateCaoRecommendedStatus(ContractorAuditOperator cao) {
 		debug(" calculateCaoRecommendedStatus");
-		
+
 		FlagColor flagColor = null;
-		for(AuditCriteriaAnswer aca : acaList) {
-			if (aca.getClassType() == AuditTypeClass.Policy && aca.getAnswer().getAudit().equals( cao.getAudit() ) )
+		for (AuditCriteriaAnswer aca : acaList) {
+			if (aca.getClassType() == AuditTypeClass.Policy && aca.getAnswer().getAudit().equals(cao.getAudit()))
 				flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
-		
-		if( flagColor == null )
+
+		if (flagColor == null)
 			return CaoStatus.Pending;
 
 		if (flagColor.equals(FlagColor.Red))
 			return CaoStatus.Rejected;
-		
+
 		if (flagColor.equals(FlagColor.Green))
 			return CaoStatus.Approved;
-		
+
 		return CaoStatus.Pending;
 	}
-	
+
 	/**
-	 * Set the flag color, but only let it get worse Green to Red but not
-	 * reverse
+	 * Set the flag color, but only let it get worse Green to Red but not reverse
 	 * 
 	 * @param oldColor
 	 * @param newColor
@@ -409,7 +408,7 @@ public class FlagCalculatorSingle {
 			return oldColor;
 
 		if (oldColor == null) {
-			//System.out.println("WARNING: oldColor == null");
+			// System.out.println("WARNING: oldColor == null");
 			// Now we've changed this because of insurance
 			// oldColor = FlagColor.Green;
 			return newColor;
