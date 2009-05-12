@@ -14,7 +14,6 @@ import java.util.Vector;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -46,20 +45,17 @@ import com.picsauditing.util.log.PicsLogger;
 public class AuditBuilder {
 	private boolean fillAuditCategories = true;
 	private User user = null;
-
-	private AuditTypeDAO auditTypeDAO;
-	private ContractorAccountDAO contractorDAO;
+	private ContractorAccount contractor = null;
+	
 	private ContractorAuditDAO cAuditDAO;
 	private AuditDataDAO auditDataDAO;
 	private AuditCategoryDAO auditCategoryDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditCategoryDataDAO auditCategoryDataDAO;
 
-	public AuditBuilder(AuditTypeDAO auditTypeDAO, ContractorAccountDAO contractorDAO, ContractorAuditDAO cAuditDAO,
+	public AuditBuilder(ContractorAuditDAO cAuditDAO,
 			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO) {
-		this.auditTypeDAO = auditTypeDAO;
-		this.contractorDAO = contractorDAO;
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
@@ -67,17 +63,8 @@ public class AuditBuilder {
 		this.auditCategoryDataDAO = auditCategoryDataDAO;
 	}
 
-	/**
-	 * Create new/remove unneeded audits for a given contractor
-	 * 
-	 * @param conID
-	 */
-	public void buildAudits(int conID) throws Exception {
-		ContractorAccount contractor = contractorDAO.find(conID);
-		buildAudits(contractor);
-	}
-
-	public void buildAudits(ContractorAccount contractor) {
+	public void buildAudits(ContractorAccount con) {
+		this.contractor = con;
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
@@ -108,7 +95,8 @@ public class AuditBuilder {
 				}
 			}
 			if (needsWelcome) {
-				ContractorAudit welcomeCall = cAuditDAO.addPending(AuditType.WELCOME, contractor);
+				ContractorAudit welcomeCall = createAudit(AuditType.WELCOME);
+				cAuditDAO.save(welcomeCall);
 				currentAudits.add(welcomeCall);
 			}
 		}
@@ -129,7 +117,9 @@ public class AuditBuilder {
 			}
 		}
 		if (pqfAudit == null) {
-			pqfAudit = cAuditDAO.addPending(AuditType.PQF, contractor);
+			PicsLogger.log("adding PQF");
+			pqfAudit = createAudit(AuditType.PQF);
+			cAuditDAO.save(pqfAudit);
 			currentAudits.add(pqfAudit);
 		}
 
@@ -143,7 +133,9 @@ public class AuditBuilder {
 					&& (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No) || co.getWorkStatus()
 							.equals("Y"))) {
 				for (AuditOperator ao : co.getOperatorAccount().getRequiredAudits()) {
-					if (ao.isRequiredFor(contractor)) {
+					if (ao.isRequiredFor(contractor)
+							&& ao.getAuditType().getId() != AuditType.PQF
+							&& ao.getAuditType().getId() != AuditType.WELCOME) {
 						PicsLogger.log(co.getOperatorAccount().getName() + " needs "
 								+ ao.getAuditType().getAuditName());
 						auditTypeList.add(ao.getAuditType());
@@ -163,10 +155,9 @@ public class AuditBuilder {
 			}
 
 			if (auditType.getId() == AuditType.ANNUALADDENDUM) {
-				List<ContractorAudit> cList = contractor.getAudits();
-				addAnnualAddendum(cList, contractor, year - 1, auditType, currentAudits);
-				addAnnualAddendum(cList, contractor, year - 2, auditType, currentAudits);
-				addAnnualAddendum(cList, contractor, year - 3, auditType, currentAudits);
+				addAnnualAddendum(currentAudits, year - 1, auditType);
+				addAnnualAddendum(currentAudits, year - 2, auditType);
+				addAnnualAddendum(currentAudits, year - 3, auditType);
 			} else {
 				boolean found = false;
 				// For each audit this contractor SHOULD have
@@ -211,7 +202,8 @@ public class AuditBuilder {
 					}
 					if (insertNow) {
 						System.out.println("Adding: " + auditType.getId() + auditType.getAuditName());
-						ContractorAudit pendingToInsert = cAuditDAO.addPending(auditType, contractor);
+						ContractorAudit pendingToInsert = createAudit(auditType);
+						cAuditDAO.save(pendingToInsert);
 						currentAudits.add(pendingToInsert);
 
 					} else
@@ -252,6 +244,7 @@ public class AuditBuilder {
 
 				if (!needed) {
 					if (conAudit.getData().size() == 0) {
+						System.out.println("removing unneeded audit " + conAudit.getAuditType().getAuditName());
 						auditsToRemove.add(conAudit.getId());
 						iter.remove();
 					}
@@ -267,7 +260,7 @@ public class AuditBuilder {
 		if (fillAuditCategories) {
 			/** Generate Categories * */
 			for (ContractorAudit conAudit : currentAudits) {
-				fillAuditOperators(contractor, conAudit);
+				fillAuditOperators(conAudit);
 				fillAuditCategories(conAudit);
 			}
 		}
@@ -280,7 +273,7 @@ public class AuditBuilder {
 	 * 
 	 * @param conAudit
 	 */
-	private void fillAuditOperators(ContractorAccount contractor, ContractorAudit conAudit) {
+	private void fillAuditOperators(ContractorAudit conAudit) {
 		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
 			return;
 
@@ -595,10 +588,10 @@ public class AuditBuilder {
 		this.fillAuditCategories = fillAuditCategories;
 	}
 
-	public void addAnnualAddendum(List<ContractorAudit> cList, ContractorAccount contractor, int year,
-			AuditType auditType, List<ContractorAudit> currentAudits) {
+	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year,
+			AuditType auditType) {
 		boolean found = false;
-		for (ContractorAudit cAudit : cList) {
+		for (ContractorAudit cAudit : currentAudits) {
 			if (cAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
 					&& year == Integer.parseInt(cAudit.getAuditFor())) {
 				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
@@ -611,7 +604,14 @@ public class AuditBuilder {
 			Calendar startDate = Calendar.getInstance();
 			startDate.set(year, 11, 31);
 			System.out.println("Adding: " + auditType.getId() + auditType.getAuditName());
-			currentAudits.add(cAuditDAO.addPending(auditType, contractor, Integer.toString(year), startDate.getTime()));
+			ContractorAudit annualAudit = createAudit(auditType);
+			annualAudit.setAuditFor(Integer.toString(year));
+			annualAudit.setCreationDate(startDate.getTime());
+			Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType
+					.getMonthsToExpire());
+			annualAudit.setExpiresDate(dateToExpire);
+			cAuditDAO.save(annualAudit);
+			currentAudits.add(annualAudit);
 		}
 	}
 
@@ -622,4 +622,22 @@ public class AuditBuilder {
 		}
 		return false;
 	}
+	
+	private ContractorAudit createAudit(AuditType auditType) {
+		ContractorAudit audit = new ContractorAudit();
+		audit.setContractorAccount(contractor);
+		audit.setAuditType(auditType);
+		if (user != null)
+			audit.setAuditColumns(user);
+		else
+			audit.setAuditColumns(new User(User.SYSTEM));
+		return audit;
+	}
+
+	private ContractorAudit createAudit(int auditTypeID) {
+		AuditType auditType = new AuditType();
+		auditType.setId(auditTypeID);
+		return createAudit(auditType);
+	}
+
 }
