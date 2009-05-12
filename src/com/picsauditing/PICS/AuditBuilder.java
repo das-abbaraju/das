@@ -132,7 +132,7 @@ public class AuditBuilder {
 			if (co.getOperatorAccount().isActiveB()
 					&& (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No) || co.getWorkStatus()
 							.equals("Y"))) {
-				for (AuditOperator ao : co.getOperatorAccount().getRequiredAudits()) {
+				for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
 					if (ao.isRequiredFor(contractor)
 							&& ao.getAuditType().getId() != AuditType.PQF
 							&& ao.getAuditType().getId() != AuditType.WELCOME) {

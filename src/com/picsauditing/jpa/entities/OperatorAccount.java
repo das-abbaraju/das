@@ -225,6 +225,20 @@ public class OperatorAccount extends Account {
 	public List<FlagQuestionCriteria> getFlagQuestionCriteria() {
 		return flagQuestionCriteria;
 	}
+	
+	@Transient
+	public List<FlagQuestionCriteria> getFlagQuestionCriteriaInherited() {
+		List<FlagQuestionCriteria> criteriaList = new ArrayList<FlagQuestionCriteria>();
+		for(FlagQuestionCriteria c : getInheritFlagCriteria().getFlagQuestionCriteria()) {
+			if (!c.getClassType().isPolicy())
+				criteriaList.add(c);
+		}
+		for(FlagQuestionCriteria c : getInheritInsuranceCriteria().getFlagQuestionCriteria()) {
+			if (c.getClassType().isPolicy())
+				criteriaList.add(c);
+		}
+		return criteriaList;
+	}
 
 	public void setFlagQuestionCriteria(List<FlagQuestionCriteria> flagQuestionCriteria) {
 		this.flagQuestionCriteria = flagQuestionCriteria;
@@ -251,14 +265,14 @@ public class OperatorAccount extends Account {
 	}
 
 	@Transient
-	public List<AuditOperator> getRequiredAudits() {
+	public List<AuditOperator> getVisibleAudits() {
 		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
-		PicsLogger.log("getting required pqf/audits from " + inheritAudits.getName());
+		PicsLogger.log("getting visible pqf/audits from " + inheritAudits.getName());
 		for(AuditOperator ao : inheritAudits.getAudits())
 			if (ao.isCanSee() && !ao.getAuditType().getClassType().isPolicy())
 				requiredAudits.add(ao);
 		if (canSeeInsurance.isTrue())
-			PicsLogger.log("getting required policies from " + inheritInsurance.getName());
+			PicsLogger.log("getting visible policies from " + inheritInsurance.getName());
 			for(AuditOperator ao : inheritInsurance.getAudits())
 				if (ao.isCanSee() && ao.getAuditType().getClassType().isPolicy())
 					requiredAudits.add(ao);

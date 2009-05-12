@@ -24,6 +24,7 @@
 <ol>
 	<!-- List All System Logging Options here -->
 
+	<li><a class="edit" href="?button=add&rule.name=AnswerMapByAudits">AnswerMapByAudits</a></li>
 	<li><a class="edit" href="?button=add&rule.name=AuditCategoryAction.execute">AuditCategoryAction.execute</a></li>
 	<li><a class="edit" href="?button=add&rule.name=AuditCriteriaAnswerBuilder.build">AuditCriteriaAnswerBuilder.build</a></li>
 	<li><a class="edit" href="?button=add&rule.name=CaoStatus">CaoStatus</a></li>

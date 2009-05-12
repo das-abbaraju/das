@@ -192,7 +192,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {
-				if (audit.getAuditType().getClassType().isAudit()) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))

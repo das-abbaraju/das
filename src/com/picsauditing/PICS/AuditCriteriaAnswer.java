@@ -7,6 +7,12 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 
+/**
+ * A simple POJO that evaluates an Audit answer based against a given set of criteria and returns a flag color
+ * This is often referred to an "ACA"
+ * @author Trevor
+ *
+ */
 public class AuditCriteriaAnswer {
 
 	private AuditData answer = null;

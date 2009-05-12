@@ -94,8 +94,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 
 		while (questions.hasNext()) {
 			AuditQuestion question = questions.next();
-			if ((classType.isAudit() && question.getSubCategory().getCategory().getAuditType().getClassType().isPolicy()) 
-					|| (classType.isPolicy() && !question.getSubCategory().getCategory().getAuditType().getClassType().isPolicy()))
+			if ((!classType.isPolicy() && question.getAuditType().getClassType().isPolicy()) 
+					|| (classType.isPolicy() && !question.getAuditType().getClassType().isPolicy()))
 				questions.remove();
 		}
 

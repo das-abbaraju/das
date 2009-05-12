@@ -304,6 +304,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		if (getAuditType().getClassType() == AuditTypeClass.Policy)
 			return creationDate;
 
+		if (auditStatus.equals(AuditStatus.Exempt))
+			return creationDate;
+		
 		if (auditStatus.equals(AuditStatus.Pending)) {
 			if (auditor != null && assignedDate != null)
 				return assignedDate;

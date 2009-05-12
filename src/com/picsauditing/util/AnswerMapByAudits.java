@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
+import com.picsauditing.util.log.PicsLogger;
 
 public class AnswerMapByAudits {
 
@@ -38,7 +39,9 @@ public class AnswerMapByAudits {
 	 */
 	public AnswerMapByAudits(AnswerMapByAudits toCopy, OperatorAccount operator) {
 
-		if( toCopy != null && toCopy.data != null ) {
+		PicsLogger.start("AnswerMapByAudits", "Pruning the contractor data for operator " + operator.getName());
+
+		if (toCopy != null && toCopy.data != null) {
 			for (ContractorAudit audit : toCopy.data.keySet()) {
 				AnswerMap mapCopy = new AnswerMap(toCopy.get(audit), operator);
 				put(audit, mapCopy);
@@ -53,54 +56,47 @@ public class AnswerMapByAudits {
 		auditSet.addAll(data.keySet());
 
 		for (ContractorAudit audit : auditSet) {
+			PicsLogger.log("- audit " + audit.getId() + " " + audit.getAuditType().getAuditName());
 			boolean canSeeAudit = false;
 
 			// check that they can see it
-			// TODO, we need to make sure we're looking at the inherited operator settings here
-			for (AuditOperator auditOperator : operator.getAudits()) {
-				if (auditOperator.getAuditType().equals(
-						audit.getAuditType())) {
-					if (auditOperator.isCanSee()) {
-						canSeeAudit = true;
-					}
+			for (AuditOperator auditOperator : operator.getVisibleAudits()) {
+				if (auditOperator.getAuditType().equals(audit.getAuditType())) {
+					canSeeAudit = true;
 					break;
 				}
 			}
 
 			if (canSeeAudit) {
+				PicsLogger.log("- is visible");
 
-				Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName
-						.get(audit.getContractorAccount().getId());
+				Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName.get(audit
+						.getContractorAccount().getId());
 
 				if (byAuditTypeName == null) {
 					byAuditTypeName = new HashMap<String, List<ContractorAudit>>();
-					byContractorIdAndAuditTypeName.put(audit
-							.getContractorAccount().getId(),
-							byAuditTypeName);
+					byContractorIdAndAuditTypeName.put(audit.getContractorAccount().getId(), byAuditTypeName);
 				}
 
-				List<ContractorAudit> audits = byAuditTypeName
-						.get(audit.getAuditType().getAuditName());
+				List<ContractorAudit> audits = byAuditTypeName.get(audit.getAuditType().getAuditName());
 
 				if (audits == null) {
 					audits = new Vector<ContractorAudit>();
-					byAuditTypeName.put(audit.getAuditType()
-							.getAuditName(), audits);
+					byAuditTypeName.put(audit.getAuditType().getAuditName(), audits);
 				}
 
 				audits.add(audit);
 			} else {
+				PicsLogger.log("- is NOT visible ... removing from map");
 				remove(audit);
 			}
 		}
 
 		for (Integer contractorId : byContractorIdAndAuditTypeName.keySet()) {
-			Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName
-					.get(contractorId);
+			Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName.get(contractorId);
 
 			for (String auditTypeName : byAuditTypeName.keySet()) {
-				List<ContractorAudit> audits = byAuditTypeName
-						.get(auditTypeName);
+				List<ContractorAudit> audits = byAuditTypeName.get(auditTypeName);
 
 				int biggest = 0;
 				ContractorAudit bestAudit = null;
@@ -120,7 +116,7 @@ public class AnswerMapByAudits {
 				}
 			}
 		}
-
+		PicsLogger.stop();
 	}
 
 	private int scoreAudit(ContractorAudit audit, OperatorAccount operator) {
@@ -135,7 +131,7 @@ public class AnswerMapByAudits {
 			}
 		}
 
-		if( auditOperator != null ) {
+		if (auditOperator != null) {
 			if (auditOperator.getRequiredAuditStatus() != null
 					&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
 					&& audit.getAuditStatus() == AuditStatus.Submitted) {
@@ -152,13 +148,11 @@ public class AnswerMapByAudits {
 				score = 60;
 			} else if (audit.getAuditStatus() == AuditStatus.Pending)
 				score = 50;
-	
-			if (audit.getRequestingOpAccount() != null
-					&& audit.getRequestingOpAccount().equals(operator)) {
+
+			if (audit.getRequestingOpAccount() != null && audit.getRequestingOpAccount().equals(operator)) {
 				score += 101;
 			}
-		}
-		else {
+		} else {
 			score = 1;
 		}
 		return score;
@@ -189,7 +183,7 @@ public class AnswerMapByAudits {
 
 	public Map<AuditQuestion, AuditData> getAuditQuestionAnswerMap() {
 		Map<AuditQuestion, AuditData> map = new TreeMap<AuditQuestion, AuditData>();
-		
+
 		return map;
 	}
 
@@ -203,7 +197,7 @@ public class AnswerMapByAudits {
 			for (ContractorAudit conAudit : data.keySet())
 				if (conAudit.getAuditType().equals(matchingAuditType) && !conAudit.getAuditStatus().isExpired())
 					matchingConAudits.add(conAudit);
-		
+
 		Collections.sort(matchingConAudits, new ContractorAuditComparator("auditFor -1"));
 		return matchingConAudits;
 	}

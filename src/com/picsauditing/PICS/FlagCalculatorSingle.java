@@ -72,7 +72,7 @@ public class FlagCalculatorSingle {
 
 		debug(" post override flagColor=" + flagColor);
 
-		for (AuditOperator audit : operator.getRequiredAudits()) {
+		for (AuditOperator audit : operator.getVisibleAudits()) {
 			audit.setContractorFlag(null);
 			boolean hasAudit = false;
 			for (ContractorAudit conAudit : conAudits) {
@@ -187,7 +187,7 @@ public class FlagCalculatorSingle {
 				}
 			}
 		}
-		for (FlagOshaCriteria criteria : operator.getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
@@ -222,7 +222,7 @@ public class FlagCalculatorSingle {
 
 		debug(" evaluating " + acaList.size() + " question criteria");
 		for (AuditCriteriaAnswer aca : acaList) {
-			if (aca.getClassType() == AuditTypeClass.Audit)
+			if (!aca.getClassType().isPolicy())
 				flagColor = setFlagColor(flagColor, aca.getResultColor());
 		}
 		debug(" post aca flagColor=" + flagColor);

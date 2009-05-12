@@ -46,11 +46,11 @@ public class AuditOperatorList extends OperatorActionSupport {
 		permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
 
 		operators = operatorDao.findWhere(true, "", permissions);
-		if(oID > 0) {
+		if (oID > 0) {
 			super.id = oID;
 			findOperator();
 		}
-		
+
 		auditTypes = new AuditTypeCache(auditDAO).getAuditTypes();
 
 		AuditType selectedAudit = null;
@@ -82,13 +82,12 @@ public class AuditOperatorList extends OperatorActionSupport {
 			}
 			rawData = null; // we don't need this anymore
 			List<OperatorAccount> criteriaOperators = new ArrayList<OperatorAccount>();
-			if(auditType.getClassType().isAudit() || auditType.getClassType().equals(AuditTypeClass.IM)|| auditType.getClassType().isPQF()) {
+			if (auditType.getClassType().isPolicy()) {
+				criteriaOperators.addAll(operatorDao.findInheritOperators("a.inheritInsurance"));
+			} else {
 				criteriaOperators.addAll(operatorDao.findInheritOperators("a.inheritAudits"));
 			}
-			else {
-				criteriaOperators.addAll(operatorDao.findInheritOperators("a.inheritInsurance"));
-			}	
-			
+
 			for (OperatorAccount operator : criteriaOperators) {
 				AuditOperator newRow = rawDataIndexed.get(operator.getId());
 				if (newRow == null) {
@@ -118,14 +117,13 @@ public class AuditOperatorList extends OperatorActionSupport {
 			}
 			rawData = null; // we don't need this anymore
 			List<AuditType> ownedAuditTypes = new ArrayList<AuditType>();
-			for(AuditType auditType : auditTypes) {
-				if(auditType.getClassType().isAudit() || auditType.getClassType().isPQF()) {
-					if(operator.getInheritAudits().equals(operator)) {
+			for (AuditType auditType : auditTypes) {
+				if (auditType.getClassType().isPolicy()) {
+					if (operator.getInheritInsurance().equals(operator))
 						ownedAuditTypes.add(auditType);
-					}
-				}
-				else if(operator.getInheritInsurance().equals(operator)) {
-					ownedAuditTypes.add(auditType);
+				} else {
+					if (operator.getInheritAudits().equals(operator))
+						ownedAuditTypes.add(auditType);
 				}
 			}
 			// AuditOperator temp = rawData.get(0);
@@ -202,7 +200,7 @@ public class AuditOperatorList extends OperatorActionSupport {
 	}
 
 	public AuditStatus[] getAuditStatusList() {
-		AuditStatus[] list = {AuditStatus.Active, AuditStatus.Submitted};
+		AuditStatus[] list = { AuditStatus.Active, AuditStatus.Submitted };
 		return list;
 	}
 

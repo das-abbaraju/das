@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
@@ -91,6 +92,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			String text = "Changed the flag color to " + forceFlag + " for "+ co.getOperatorAccount();
 			addNote(co.getContractorAccount(), text);
 		}
+		
 		if ("deleteOverride".equals(action)) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
 			if (deleteAll == true) {
@@ -102,7 +104,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					
 					// Make sure the operator has only the answers that are visible to them
 					AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
-					AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
+					AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteriaInherited());
 					acaList = acaBuilder.getAuditCriteriaAnswers();
 					calculator.setAcaList(acaList);
 					
@@ -155,13 +157,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		// Make sure the operator has only the answers that are visible to them
 		AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
 		PicsLogger.log(" Found " + answerMapForOperator.getAuditSet().size() + " audits in answerMapForOperator");
-		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteria());
+		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteriaInherited());
 		acaList = acaBuilder.getAuditCriteriaAnswers();
 		calculator.setAcaList(acaList);
 		
 		PicsLogger.start("CaoStatus");
 		for( ContractorAudit audit : contractor.getAudits() ) {
-			if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+			if( audit.getAuditType().getClassType().isPolicy() ) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
 					if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
 						CaoStatus recommendedStatus = calculator
@@ -247,7 +249,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public List<AuditCriteriaAnswer> getAcaListAudits() {
 		List<AuditCriteriaAnswer> list = new ArrayList<AuditCriteriaAnswer>();
 		for(AuditCriteriaAnswer aca : acaList)
-			if (aca.getClassType().isAudit())
+			if (!aca.getClassType().isPolicy())
 				list.add(aca);
 		return list;
 	}

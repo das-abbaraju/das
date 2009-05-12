@@ -139,10 +139,13 @@
 			</tr>
 		</s:if>
 	</s:iterator>
+	
 	<pics:permission perm="ManageOperators">
-		<tr><td colspan="3" class="center"><a
-			href="AuditOperator.action?oID=<s:property value="opID" />">Flag
-		Criteria for Audits</a></td></tr>
+		<tr><td colspan="3" class="center">
+			Operator Matrix 
+			<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">for Audits</a>
+			<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">for Policies</a>
+		</td></tr>
 	</pics:permission>
 </table>
 
@@ -228,31 +231,30 @@
 </s:if>
 </s:if>
 
-<s:if test="acaListAudits.size() > 0">
-	<table class="report" style="clear: none">
-		<thead>
-			<tr>
-				<td>Flag</td>
-				<td>Answer</td>
-				<td>For</td>
-				<td>Question</td>
-			</tr>
-		</thead>
-		<s:iterator value="acaListAudits">
-			<tr class="<s:property value="resultColor" />">
-				<td class="center"><s:property
-					value="resultColor.smallIcon" escape="false" /></td>
-				<td class="center"><s:property value="answer.answer" /></td>
-				<td><s:property value="answer.audit.auditType.auditName" /> <s:property value="answer.audit.auditFor" /></td>
-				<td><s:property value="answer.question.question" /></td>
-			</tr>
-		</s:iterator>
-	</table>
-</s:if>
+<table class="report" style="clear: none">
+	<thead>
+		<tr>
+			<td>Flag</td>
+			<td>Answer</td>
+			<td>For</td>
+			<td>Question</td>
+		</tr>
+	</thead>
+	<s:iterator value="acaListAudits">
+		<tr class="<s:property value="resultColor" />">
+			<td class="center"><s:property
+				value="resultColor.smallIcon" escape="false" /></td>
+			<td class="center"><s:property value="answer.answer" /></td>
+			<td><s:property value="answer.audit.auditType.auditName" /> <s:property value="answer.audit.auditFor" /></td>
+			<td><s:property value="answer.question.question" /></td>
+		</tr>
+	</s:iterator>
+	<pics:permission perm="EditFlagCriteria">
+		<tr><td colspan="4" class="center"><a 
+			href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.id" />">Edit Flag Criteria</a></td></tr>
+	</pics:permission>
+</table>
 
-<pics:permission perm="EditFlagCriteria">
-	<div><a href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.id" />">Edit Flag Criteria</a></div>
-</pics:permission>
 
 <s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 	<s:if test="co.workStatusPending">
