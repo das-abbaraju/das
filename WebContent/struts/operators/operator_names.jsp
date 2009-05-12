@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="report">
-	<s:iterator value="operatorAccount.names">
+	<s:iterator value="operator.names">
 		<tr>
 			<td><s:property value="name" /></td>
 			<td><a class="remove"
