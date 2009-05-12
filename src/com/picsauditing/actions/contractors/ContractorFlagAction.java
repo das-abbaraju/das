@@ -213,7 +213,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaLwcrUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getLwcr().isRequired())
 				return true;
 		}
@@ -221,7 +221,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaFatalitiesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isRequired())
 				return true;
 		}
@@ -229,7 +229,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public boolean isOshaAveragesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
 				return true;
 			if (criteria.getLwcr().isTimeAverage())

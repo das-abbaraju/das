@@ -253,10 +253,12 @@ public class OperatorAccount extends Account {
 	@Transient
 	public List<AuditOperator> getRequiredAudits() {
 		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
+		PicsLogger.log("getting required pqf/audits from " + inheritAudits.getName());
 		for(AuditOperator ao : inheritAudits.getAudits())
 			if (ao.isCanSee() && !ao.getAuditType().getClassType().isPolicy())
 				requiredAudits.add(ao);
 		if (canSeeInsurance.isTrue())
+			PicsLogger.log("getting required policies from " + inheritInsurance.getName());
 			for(AuditOperator ao : inheritInsurance.getAudits())
 				if (ao.isCanSee() && ao.getAuditType().getClassType().isPolicy())
 					requiredAudits.add(ao);

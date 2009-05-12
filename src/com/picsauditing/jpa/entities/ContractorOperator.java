@@ -43,7 +43,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.operatorAccount = operator;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "subID", nullable = false, updatable = false)
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;

@@ -139,13 +139,12 @@
 			</tr>
 		</s:if>
 	</s:iterator>
+	<pics:permission perm="ManageOperators">
+		<tr><td colspan="3" class="center"><a
+			href="AuditOperator.action?oID=<s:property value="opID" />">Flag
+		Criteria for Audits</a></td></tr>
+	</pics:permission>
 </table>
-
-<pics:permission perm="ManageOperators">
-	<div><a
-		href="AuditOperator.action?oID=<s:property value="opID" />">Flag
-	Criteria for Audits</a></div>
-</pics:permission>
 
 <s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed">
 <s:if test="contractor.oshas.size > 0">
