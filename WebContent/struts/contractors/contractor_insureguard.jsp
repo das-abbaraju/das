@@ -43,9 +43,11 @@
 						</s:if>
 					</s:if>
 					<s:else>
-						<s:property value="operator.name" /> - <span class="Amber"><s:property
-							value="status" /></span>
-						<br />
+						<s:if test="status.pending||status.submitted||status.verified">
+							<s:property value="operator.name" /> - <span class="Amber"><s:property
+								value="status" /></span>
+							<br />
+						</s:if>
 					</s:else>
 				</s:iterator>
 			</td>
@@ -72,7 +74,7 @@
 	<s:if test="manuallyAddAudit">
 		<s:if test="auditTypeName.size > 0">
 			<tr>
-				<td id="addAudit" colspan="3" class="center">
+				<td id="addAudit" colspan="4" class="center">
 					<a href="#" onclick="showAddAudit(); return false;">Add New Policy</a>
 				</td>
 			</tr>
@@ -81,7 +83,7 @@
 		<s:form method="post" id="form1" >
 			<td>
 			<div class="buttons">
-				<button class="positive" name="button" type="submit" value="Add">Add</button>
+				<input class="picsbutton positive" name="button" type="submit" value="Add"/>
 			</div>
 			</td>
 			<td>
@@ -101,6 +103,7 @@
 						headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
 				</s:if>
 			</td>
+			<td></td>
 			</s:form>
 		</tr>
 	</s:if>
