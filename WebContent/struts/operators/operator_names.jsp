@@ -3,7 +3,7 @@
 	<s:iterator value="operatorAccount.names">
 		<tr>
 			<td><s:property value="name" /></td>
-			<td><img src="images/cross.png" width="18" height="18" /><a
+			<td><a class="remove"
 				href="#" onclick="javascript:return removeName(<s:property value="id"/>);">Remove</a></td>
 		</tr>
 	</s:iterator>
