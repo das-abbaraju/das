@@ -113,7 +113,7 @@ public class FlagCalculatorSingle {
 							// For Policies
 							if (!conAudit.getAuditStatus().isExpired()) {
 								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator)) {
+									if (cao.getOperator().equals(operator.getInheritInsurance())) {
 										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 											audit.setContractorFlag(null);
 											debug(" ---- found N/A");

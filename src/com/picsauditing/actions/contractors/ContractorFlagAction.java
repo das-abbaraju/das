@@ -179,9 +179,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		PicsLogger.start("Flag.calculate");
 		FlagColor newColor = calculator.calculate();
 		PicsLogger.stop();
-		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor()))
+		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor())) {
+			addActionMessage("Flag color has been now updated from " + co.getFlag() + " to " + newColor);
+			this.addNote(contractor, "Flag color changed from " + co.getFlag() + " to " + newColor, NoteCategory.Flags);
 			co.getFlag().setLastUpdate(new Date());
-		co.getFlag().setFlagColor(newColor);
+			co.getFlag().setFlagColor(newColor);
+		}
 		co.getFlag().setWaitingOn(calculator.calculateWaitingOn());
 		contractorOperatorDao.save(co);
 

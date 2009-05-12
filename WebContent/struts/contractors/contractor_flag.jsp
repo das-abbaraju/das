@@ -107,7 +107,7 @@
 			<td>Upcoming</td>
 		</tr>
 	</thead>
-	<s:iterator id="op" value="co.operatorAccount.requiredAudits">
+	<s:iterator id="op" value="co.operatorAccount.visibleAudits">
 		<s:if test="contractorFlag != null">
 			<tr class="<s:property value="contractorFlag" />">
 				<td class="center"><s:property value="contractorFlag.smallIcon"
@@ -142,9 +142,9 @@
 	
 	<pics:permission perm="ManageOperators">
 		<tr><td colspan="3" class="center">
-			Operator Matrix 
-			<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">for Audits</a>
-			<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">for Policies</a>
+			Operator Matrix <br />
+			[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">For Audits</a>]
+			[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">For Policies</a>]
 		</td></tr>
 	</pics:permission>
 </table>
