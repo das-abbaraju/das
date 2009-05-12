@@ -81,6 +81,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		return subCategory.getCategory().getAuditType();
 	}
 	
+	@Transient
+	public String getExpandedNumber() {
+		return subCategory.getCategory().getNumber() + "." + subCategory.getNumber() + "." + number;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false)
 	public AuditSubCategory getSubCategory() {

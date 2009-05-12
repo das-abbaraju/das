@@ -102,7 +102,7 @@
 		>
 			<td><s:property value="question.subCategory.category.auditType.auditName" /></td>
 			<td class="right">
-				<nobr><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></nobr>
+				<nobr><s:property value="question.expandedNumber"/></nobr>
 			</td>
 			<td>
 				<s:if test="(operator == operator.inheritFlagCriteria && !question.subCategory.category.auditType.classType.policy) 

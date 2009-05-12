@@ -5,7 +5,7 @@
 	<input type="hidden" value="<s:property value="question.id"/>" name="question.id"/>
 
 	<div>
-		<strong><s:property value="question.subCategory.category.number" />.<s:property value="question.subCategory.number" />.<s:property value="question.number" /></strong>
+		<strong><s:property value="question.expandedNumber"/></strong>
 		
 		<s:property value="question.question" escape="false"/><br/>
 	</div>

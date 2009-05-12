@@ -103,7 +103,7 @@
 						<s:property value="subCategory.category.auditType.auditName"/>
 					</td>
 					<td>
-						<s:property value="subCategory.category.number"/>.<s:property value="subCategory.number"/>.<s:property value="number"/>
+						<s:property value="expandedNumber"/>
 					</td>
 					<td>
 						<s:property value="question" escape="false"/>
