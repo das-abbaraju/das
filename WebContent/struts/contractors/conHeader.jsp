@@ -142,7 +142,7 @@
 			</li>
 		</s:if>
 		<s:if test="conAudit.auditType.classType.policy">
-			<s:iterator value="conAudit.currentOperators" status="rowStatus">
+			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="permissions.operator || permissions.corporate">
 					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
 						<li>
@@ -157,7 +157,7 @@
 						</li>
 					</s:if>
 				</s:if>
-				<s:elseif test="!status.temporary">
+				<s:elseif test="!status.notApplicable">
 					<li style="">
 						<label 
 							<s:if test="notes != null && notes.length() > 0">
