@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @Entity
 @Table(name = "contractor_audit")
@@ -352,16 +355,22 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
 
 		for (ContractorAuditOperator cao : getOperators()) {
-			if (YesNo.Yes.equals(cao.getOperator().getCanSeeInsurance())) {
+			if (cao.getOperator().getInheritInsurance().getCanSeeInsurance().isTrue()) { //TODO - inherit or not ???
 				for (ContractorOperator co : getContractorAccount().getOperators()) {
-					if (co.getOperatorAccount().getId() == cao.getOperator().getId()) {
+					if (co.getOperatorAccount().getInheritInsurance().getId() == cao.getOperator().getId()) {
 						currentCaos.add(cao);
 						break;
 					}
 				}
 			}
-
 		}
+
+		Collections.sort(currentCaos, new Comparator<ContractorAuditOperator>() {
+			@Override
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().compareTo(o2.getOperator());
+			}
+		});
 
 		return currentCaos;
 	}
