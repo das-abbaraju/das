@@ -191,8 +191,8 @@ public class ConAuditList extends ContractorActionSupport {
 
 	public List<ContractorAuditOperator> getCaosByAccount(ContractorAudit ca) {
 		List<ContractorAuditOperator> result = new ArrayList<ContractorAuditOperator>();
-		boolean add = false;
 		for (ContractorAuditOperator cao : ca.getCurrentOperators()) {
+			boolean add = false;
 			if (permissions.isOperator() && cao.getOperator().getId() == permissions.getAccountId())
 				add = true;
 			else if (permissions.isCorporate()) {
