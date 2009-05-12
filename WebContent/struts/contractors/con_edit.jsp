@@ -297,14 +297,9 @@
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
 							value="contractor.mustPay" theme="pics" />
 					</li>
-					<li><label>Activation Date:</label>
-						<input name="contractor.membershipDate" id="membershipDate" 
-							type="text" class="forms" size="10" 
+					<li><label>Upgrade Date:</label>
+						<input name="contractor.lastUpgradeDate" type="text" class="forms" size="10" 
 							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
-						<a href="#" 
-							id="anchormembershipDate" name="anchormembershipDate" 
-							onclick="cal1.select($('membershipDate'), 'anchormembershipDate','MM/dd/yyyy'); return false;">
-							<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 					</li>
 				</ol>
 				</fieldset>

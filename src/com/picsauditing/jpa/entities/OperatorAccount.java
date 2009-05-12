@@ -254,11 +254,11 @@ public class OperatorAccount extends Account {
 	public List<AuditOperator> getRequiredAudits() {
 		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
 		for(AuditOperator ao : inheritAudits.getAudits())
-			if (!ao.getAuditType().getClassType().isPolicy())
+			if (ao.isCanSee() && !ao.getAuditType().getClassType().isPolicy())
 				requiredAudits.add(ao);
 		if (canSeeInsurance.isTrue())
 			for(AuditOperator ao : inheritInsurance.getAudits())
-				if (ao.getAuditType().getClassType().isPolicy())
+				if (ao.isCanSee() && ao.getAuditType().getClassType().isPolicy())
 					requiredAudits.add(ao);
 		return requiredAudits;
 	}

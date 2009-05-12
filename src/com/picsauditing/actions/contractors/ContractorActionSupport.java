@@ -326,6 +326,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public List<ContractorAudit> getAudits() {
+		// Why is this method so complicated? Seems like it could be simpler
+		// Like this: return contractor.getAudits()
+		
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
 		try {
 			if (!accountDao.isContained(contractor))

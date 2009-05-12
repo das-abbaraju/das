@@ -17,6 +17,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
@@ -27,7 +28,10 @@ import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.AnswerMapByAudits;
@@ -50,6 +54,8 @@ public class FlagCalculator2 {
 	private ContractorAuditOperatorDAO caoDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
+	private NoteDAO noteDAO;
+	
 	private AuditBuilder auditBuilder;
 	private CronMetricsAggregator cronMetrics;
 
@@ -61,7 +67,7 @@ public class FlagCalculator2 {
 
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
 			ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
-			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder) {
+			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder, NoteDAO noteDAO) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
@@ -69,6 +75,7 @@ public class FlagCalculator2 {
 		this.coFlagDAO = coFlagDAO;
 		this.caoDAO = caoDAO;
 		this.auditBuilder = auditBuilder;
+		this.noteDAO = noteDAO;
 	}
 
 	public void runAll() {
@@ -281,10 +288,40 @@ public class FlagCalculator2 {
 				contractor.getFlags().put(operator, coFlag);
 			} else {
 				if (color == null || !color.equals(coFlag.getFlagColor())) {
+					try {
+						Note note = new Note();
+						note.setAccount(contractor);
+						note.setNoteCategory(NoteCategory.Flags);
+						note.setAuditColumns(new User(User.SYSTEM));
+						note.setSummary("Flag color changed from " + coFlag.getFlagColor() + " to " + color);
+						note.setCanContractorView(true);
+						note.setViewableByOperator(operator);
+						if (operator.getParent() != null)
+							note.setViewableByOperator(operator.getParent());
+						noteDAO.save(note);
+					} catch (Exception e) {
+						System.out.println("ERROR: failed to save note because - " + e.getMessage());
+					}
+
 					coFlag.setFlagColor(color);
 					coFlag.setLastUpdate(new Date());
 				}
 				if (waitingOn == null || !waitingOn.equals(coFlag.getWaitingOn())) {
+					try {
+						Note note = new Note();
+						note.setAccount(contractor);
+						note.setNoteCategory(NoteCategory.General);
+						note.setAuditColumns(new User(User.SYSTEM));
+						note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn);
+						note.setViewableByOperator(operator);
+						note.setCanContractorView(true);
+						if (operator.getParent() != null)
+							note.setViewableByOperator(operator.getParent());
+						noteDAO.save(note);
+					} catch (Exception e) {
+						System.out.println("ERROR: failed to save note because - " + e.getMessage());
+					}
+					
 					coFlag.setWaitingOn(waitingOn);
 					coFlag.setLastUpdate(new Date());
 				}

@@ -26,9 +26,6 @@
 <div style="text-align: center; width: 100%">
 <s:if test="co.flag.waitingOn.ordinal() > 0"><div id="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.flag.waitingOn"/></b></div></s:if>
 
-<s:if test="co.operatorAccount.canSeeInsurance.toString() == 'Yes'">
-</s:if>
-
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
@@ -114,20 +111,18 @@
 		<s:if test="contractorFlag != null">
 			<tr class="<s:property value="contractorFlag" />">
 				<td class="center"><s:property value="contractorFlag.smallIcon"
-					escape="false" /></td>
+					escape="false" />
+					</td>
 				<td><s:property value="auditType.auditName" /></td>
 				<td>
 				<s:iterator id="con" value="contractor.audits">
 					<s:if test="#op.auditType == #con.auditType">
 						<s:if test="#op.auditType.classType.policy">
-<s:property value="#con.auditType.id"/>
 							<s:iterator value="#con.operators">
-								<s:if test="opID == operator.id">
-									<s:if test="status.submitted">
-										<s:if test="!#con.auditStatus.expired">	
-											<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
-											<s:property value="status"/><br/>
-										</s:if>
+								<s:if test="#op.operatorAccount == operator">
+									<s:if test="!status.approved && !status.notApplicable">
+										<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
+										<s:property value="status"/><br/>
 									</s:if>
 								</s:if>
 							</s:iterator>
@@ -257,7 +252,7 @@
 </s:if>
 
 <pics:permission perm="EditFlagCriteria">
-<div><a href="op_editFlagCriteria.jsp?opID=<s:property value="opID" />">Edit Flag Criteria</a></div>
+	<div><a href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.id" />">Edit Flag Criteria</a></div>
 </pics:permission>
 
 <s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
