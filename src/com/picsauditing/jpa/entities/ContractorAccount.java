@@ -479,8 +479,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		
 		List<ContractorAudit> annualAudits = getSortedAudits();
 		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.OSHA, AuditCategory.OSHA_AUDIT));
-		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.MSHA, AuditCategory.MSHA));
-		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.COHS, AuditCategory.CANADIAN_STATISTICS));
+		oshas.put(OshaType.MSHA, buildOshaMap(annualAudits, OshaType.MSHA, AuditCategory.MSHA));
+		oshas.put(OshaType.COHS, buildOshaMap(annualAudits, OshaType.COHS, AuditCategory.CANADIAN_STATISTICS));
 		
 		return oshas;
 	}
@@ -499,68 +499,55 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 						for (OshaAudit osha : audit.getOshas())
 							if (osha.getType().equals(oshaType) && osha.isCorporate()) {
 								number++;
-								Map<String, OshaAudit> theMap = oshas.get(osha.getType());
-
-								if (theMap == null) {
-									theMap = new TreeMap<String, OshaAudit>();
-									oshas.put(osha.getType(), theMap);
-								}
-
-								theMap.put(audit.getAuditFor(), osha);
-
+								oshaMap.put(audit.getAuditFor(), osha);
 							}
 					}
 				}
 			}
 		}
-		for (OshaType type : oshas.keySet()) {
+		int count = oshaMap.size();
+		if (count > 0) {
+			// Add in the average for the past 3 years
+			OshaAudit avg = new OshaAudit();
+			avg.setLostWorkCasesRate(0);
+			avg.setRecordableTotalRate(0);
 
-			Map<String, OshaAudit> theseOshas = oshas.get(type);
+			float manHours = 0;
+			float fatalities = 0;
+			float injuries = 0;
+			float lwc = 0;
+			float lwcr = 0;
+			float lwd = 0;
+			float tri = 0;
+			float trir = 0;
+			float rwc = 0;
 
-			int count = theseOshas.size();
-			if (count > 0) {
-				// Add in the average for the past 3 years
-				OshaAudit avg = new OshaAudit();
-				avg.setLostWorkCasesRate(0);
-				avg.setRecordableTotalRate(0);
+			for (String key : oshaMap.keySet()) {
+				OshaAudit osha = oshaMap.get(key);
+				avg.setFactor(osha.getFactor());
+				avg.setConAudit(osha.getConAudit());
 
-				float manHours = 0;
-				float fatalities = 0;
-				float injuries = 0;
-				float lwc = 0;
-				float lwcr = 0;
-				float lwd = 0;
-				float tri = 0;
-				float trir = 0;
-				float rwc = 0;
-
-				for (String key : theseOshas.keySet()) {
-					OshaAudit osha = theseOshas.get(key);
-					avg.setFactor(osha.getFactor());
-					avg.setConAudit(osha.getConAudit());
-
-					manHours += osha.getManHours();
-					fatalities += osha.getFatalities();
-					injuries += osha.getInjuryIllnessCases();
-					lwc += osha.getLostWorkCases();
-					lwcr += osha.getLostWorkCasesRate();
-					lwd += osha.getLostWorkDays();
-					tri += osha.getRecordableTotal();
-					trir += osha.getRecordableTotalRate();
-					rwc += osha.getRestrictedWorkCases();
-				}
-				avg.setManHours(Math.round(manHours / count));
-				avg.setFatalities(Math.round(fatalities / count));
-				avg.setInjuryIllnessCases(Math.round(injuries / count));
-				avg.setLostWorkCases(Math.round(lwc / count));
-				avg.setLostWorkCasesRate(lwcr / count);
-				avg.setLostWorkDays(Math.round(lwd / count));
-				avg.setRecordableTotal(Math.round(tri / count));
-				avg.setRecordableTotalRate(trir / count);
-				avg.setRestrictedWorkCases(Math.round(rwc / count));
-
-				theseOshas.put(OshaAudit.AVG, avg);
+				manHours += osha.getManHours();
+				fatalities += osha.getFatalities();
+				injuries += osha.getInjuryIllnessCases();
+				lwc += osha.getLostWorkCases();
+				lwcr += osha.getLostWorkCasesRate();
+				lwd += osha.getLostWorkDays();
+				tri += osha.getRecordableTotal();
+				trir += osha.getRecordableTotalRate();
+				rwc += osha.getRestrictedWorkCases();
 			}
+			avg.setManHours(Math.round(manHours / count));
+			avg.setFatalities(Math.round(fatalities / count));
+			avg.setInjuryIllnessCases(Math.round(injuries / count));
+			avg.setLostWorkCases(Math.round(lwc / count));
+			avg.setLostWorkCasesRate(lwcr / count);
+			avg.setLostWorkDays(Math.round(lwd / count));
+			avg.setRecordableTotal(Math.round(tri / count));
+			avg.setRecordableTotalRate(trir / count);
+			avg.setRestrictedWorkCases(Math.round(rwc / count));
+
+			oshaMap.put(OshaAudit.AVG, avg);
 		}
 
 		return oshaMap;

@@ -17,7 +17,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -25,7 +24,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.AnswerMapByAudits;
@@ -182,6 +180,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		FlagColor newColor = calculator.calculate();
 		PicsLogger.stop();
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor())) {
+			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor() + " to " + newColor);
+			this.addNote(contractor, "Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for " + co.getOperatorAccount().getName(), NoteCategory.Flags);
 			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor().name() + " to " + newColor);
 			this.addNote(contractor, "Flag color changed from " + co.getFlag().getFlagColor().name() + " to " + newColor, NoteCategory.Flags);
 			co.getFlag().setLastUpdate(new Date());

@@ -293,7 +293,7 @@ public class FlagCalculator2 {
 						note.setAccount(contractor);
 						note.setNoteCategory(NoteCategory.Flags);
 						note.setAuditColumns(new User(User.SYSTEM));
-						note.setSummary("Flag color changed from " + coFlag.getFlagColor() + " to " + color);
+						note.setSummary("Flag color changed from " + coFlag.getFlagColor() + " to " + color + " for " + operator.getName());
 						note.setCanContractorView(true);
 						note.setViewableByOperator(operator);
 						if (operator.getParent() != null)

@@ -150,7 +150,7 @@
 </table>
 
 <s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed">
-<s:if test="contractor.oshas.size > 0">
+<s:if test="oshas.size > 0">
 	<table class="report" style="clear: none">
 		<thead>
 			<tr>
