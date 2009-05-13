@@ -17,11 +17,6 @@
 		<td valign="top" bgcolor="#FFFFFF">
 		<table border="0" align="center" cellpadding="0" cellspacing="0">
 			<tr>
-				<td class="blueHome2"><strong>09/23/08</strong> <strong
-					class="articleTitle">2008 NSC Annual Congress &amp; Expo</strong><br>
-				The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS CEO, John Moreland,  gave a demonstration of the free online tool for contractor pre-qualification.</td>
-			</tr>
-			<tr>
 				<td bgcolor="#F8F8F8" class="blueHome2"><strong>09/01/08</strong> <strong
 					class="articleTitle">PICS EHS/VPP Resident Expert</strong><br>
 				Dennis Truitt joins PICS with more than 20 years of experience managing health and safety in the highly-regulated petrochemical industry, including the VPP program. Prior to joining PICS, Dennis was the Refinery Safety Manager for the Valero Wilmington Refinery.</td>
