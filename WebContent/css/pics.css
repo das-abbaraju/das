@@ -657,7 +657,7 @@ div.buttons a, .picsbutton, div.buttons button {
 	color: #fff;
 }
 
-.buttons button.disabled {
+/*.buttons button.disabled {
 	background-color: #999;
 	color: #CCC;
 	border: 1px solid #666;
@@ -667,6 +667,15 @@ div.buttons a, .picsbutton, div.buttons button {
 	color: #CCC;
 	border: 1px solid #666;
 	cursor: default;
+}*/
+
+.picsbutton[disabled], .picsbutton[disabled]:hover{
+	background: #dedede;
+	border: 2px solid #ababab;
+	border-top: 1px solid #ababab;
+	border-left: 1px solid #ababab;
+	cursor:default;
+	color: #ababab;
 }
 
 /********************** LIVE HELP BOX ******************************/
