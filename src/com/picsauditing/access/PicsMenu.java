@@ -143,6 +143,10 @@ public class PicsMenu {
 			subMenu = menu.addChild("Dev");
 			subMenu.addChild("System Logging", "LoggerConfig.action");
 			subMenu.addChild("Clear Cache", "ClearCache.action");
+			subMenu.addChild("Cron", "Cron.action");
+			subMenu.addChild("Contractor Cron", "ContractorCron.action");
+			subMenu.addChild("Mail Cron", "MailCron.action");
+			subMenu.addChild("Huntsman Sync", "ContractorCron.action");
 		}
 
 		subMenu = menu.addChild("Operators");
