@@ -99,14 +99,18 @@ public class FlagQuestionCriteria extends BaseTable {
 	}
 
 	/**
-	 * Just an easy helper method to know if this criteria is for a policy or audit
-	 * @return auditQuestion.getSubCategory().getCategory().getAuditType().getClassType()
+	 * Just an easy helper method to know if this criteria is for a policy or
+	 * audit
+	 * 
+	 * @return 
+	 *         auditQuestion.getSubCategory().getCategory().getAuditType().getClassType
+	 *         ()
 	 */
 	@Transient
 	public AuditTypeClass getClassType() {
 		return auditQuestion.getSubCategory().getCategory().getAuditType().getClassType();
 	}
-	
+
 	@Transient
 	public boolean isFlagged(String answer) {
 		String questionType = auditQuestion.getQuestionType();
@@ -171,7 +175,13 @@ public class FlagQuestionCriteria extends BaseTable {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		buf.append("<i>value</i> ").append(comparison).append(" ").append(this.value);
+		if ("Check Box".equals(auditQuestion.getQuestionType())) {
+			if ("X".equals(value))
+				buf.append("<i>Checked</i>");
+			else
+				buf.append("<i>Not Checked</i>");
+		} else
+			buf.append("<i>value</i> ").append(comparison).append(" ").append(this.value);
 		return buf.toString();
 	}
 

@@ -73,9 +73,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						if (red.getId() != 0) {
 							criteriaDao.remove(red);
 						}
-					} else if (Strings.isEmpty(red.getComparison()) || Strings.isEmpty(red.getValue())) {
-						addActionError("Cannot save Red Flag Criteria without a comparison and a value");
-					} else if (isValidValue(red.getValue())) {
+					} else if (isValid(red)) {
 						red.setFlagColor(FlagColor.Red);
 						red.setAuditQuestion(question);
 						red.setOperatorAccount(operator);
@@ -88,9 +86,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						if (amber.getId() != 0) {
 							criteriaDao.remove(amber);
 						}
-					} else if (Strings.isEmpty(amber.getComparison()) || Strings.isEmpty(amber.getValue())) {
-						addActionError("Cannot save Amber Flag Criteria without a comparison and a value");
-					} else if (isValidValue(amber.getValue())) {
+					} else if (isValid(amber)) {
 						amber.setFlagColor(FlagColor.Amber);
 						amber.setAuditQuestion(question);
 						amber.setOperatorAccount(operator);
@@ -107,7 +103,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 			}
 			if ("test".equals(button)) {
 				if (isValidValue(testValue)) {
-					if (isValidValue(amber.getValue()) && !Strings.isEmpty(amber.getComparison())) {
+					if (isValid(amber)) {
 						if (amber.getAuditQuestion() == null)
 							amber.setAuditQuestion(getQuestion());
 
@@ -117,7 +113,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 							testResult = FlagColor.Green;
 					}
 
-					if (isValidValue(red.getValue()) && !Strings.isEmpty(red.getComparison())) {
+					if (isValid(red)) {
 						if (red.getAuditQuestion() == null)
 							red.setAuditQuestion(getQuestion());
 
@@ -147,7 +143,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 				return false;
 			}
 		}
-		if ("Decimal Number".equals(question.getQuestionType()) || "Money".equals(question.getQuestionType())){
+		if ("Decimal Number".equals(question.getQuestionType()) || "Money".equals(question.getQuestionType())) {
 			try {
 				Float.parseFloat(criteria.replace(",", ""));
 			} catch (Exception e) {
@@ -156,6 +152,17 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 			}
 		}
 		return true;
+	}
+
+	private boolean isValid(FlagQuestionCriteria criteria) {
+
+		if (Strings.isEmpty(criteria.getValue()))
+			return false;
+
+		if (Strings.isEmpty(criteria.getComparison()))
+			return false;
+
+		return isValidValue(criteria.getValue());
 	}
 
 	public AuditQuestion getQuestion() {
