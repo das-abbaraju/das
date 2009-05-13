@@ -1,3 +1,58 @@
+USE `pics_stage`;
+
+ALTER TABLE `accounts` 
+	CHANGE `createdBy` `createdBy` int(11)   NULL after `name`, 
+	CHANGE `creationDate` `creationDate` datetime   NULL after `createdBy`, 
+	CHANGE `updatedBy` `updatedBy` int(11)   NULL after `creationDate`, 
+	CHANGE `updateDate` `updateDate` datetime   NULL after `updatedBy`, 
+	CHANGE `active` `active` char(1)  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'N' after `updateDate`, 
+	CHANGE `lastLogin` `lastLogin` datetime   NULL after `active`, 
+	CHANGE `contact` `contact` varchar(50)  COLLATE latin1_swedish_ci NULL after `lastLogin`, 
+	CHANGE `address` `address` varchar(50)  COLLATE latin1_swedish_ci NULL after `contact`, 
+	CHANGE `city` `city` varchar(50)  COLLATE latin1_swedish_ci NULL after `address`, 
+	CHANGE `state` `state` char(2)  COLLATE latin1_swedish_ci NULL after `city`, 
+	CHANGE `zip` `zip` varchar(50)  COLLATE latin1_swedish_ci NULL after `state`, 
+	CHANGE `phone` `phone` varchar(50)  COLLATE latin1_swedish_ci NULL after `zip`, 
+	CHANGE `phone2` `phone2` varchar(50)  COLLATE latin1_swedish_ci NULL after `phone`, 
+	CHANGE `fax` `fax` varchar(20)  COLLATE latin1_swedish_ci NULL after `phone2`, 
+	CHANGE `email` `email` varchar(50)  COLLATE latin1_swedish_ci NULL after `fax`, 
+	CHANGE `web_URL` `web_URL` varchar(50)  COLLATE latin1_swedish_ci NULL after `email`, 
+	CHANGE `industry` `industry` varchar(50)  COLLATE latin1_swedish_ci NULL after `web_URL`, 
+	ADD COLUMN `naics` varchar(10)  COLLATE latin1_swedish_ci NULL after `industry`, 
+	CHANGE `nameIndex` `nameIndex` varchar(50)  COLLATE latin1_swedish_ci NULL after `naics`, 
+	CHANGE `seesAll_B` `seesAll_B` char(1)  COLLATE latin1_swedish_ci NULL DEFAULT 'N' after `nameIndex`, 
+	CHANGE `sendActivationEmail_B` `sendActivationEmail_B` char(1)  COLLATE latin1_swedish_ci NULL DEFAULT 'N' after `seesAll_B`, 
+	CHANGE `activationEmails_B` `activationEmails_B` varchar(155)  COLLATE latin1_swedish_ci NULL after `sendActivationEmail_B`, 
+	CHANGE `qbSync` `qbSync` tinyint(4)   NOT NULL DEFAULT '1' after `activationEmails_B`, 
+	CHANGE `qbListID` `qbListID` varchar(25)  COLLATE latin1_swedish_ci NULL after `qbSync`, 
+	DROP COLUMN `synced`, 
+	DROP KEY `synced`, add KEY `synced`(`qbSync`), COMMENT='';
+
+ALTER TABLE `flagoshacriteria` 
+	ADD COLUMN `lwcrHurdleType` varchar(15)  COLLATE latin1_swedish_ci NULL after `flagLwcr`, 
+	CHANGE `lwcrHurdle` `lwcrHurdle` decimal(5,2)   NOT NULL after `lwcrHurdleType`, 
+	CHANGE `lwcrTime` `lwcrTime` tinyint(3) unsigned   NOT NULL DEFAULT '1' after `lwcrHurdle`, 
+	CHANGE `flagTrir` `flagTrir` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `lwcrTime`, 
+	ADD COLUMN `trirHurdleType` varchar(15)  COLLATE latin1_swedish_ci NULL after `flagTrir`, 
+	CHANGE `trirHurdle` `trirHurdle` decimal(5,2)   NOT NULL after `trirHurdleType`, 
+	CHANGE `trirTime` `trirTime` tinyint(3) unsigned   NOT NULL DEFAULT '1' after `trirHurdle`, 
+	CHANGE `flagFatalities` `flagFatalities` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `trirTime`, 
+	ADD COLUMN `fatalitiesHurdleType` varchar(15)  COLLATE latin1_swedish_ci NULL after `flagFatalities`, 
+	CHANGE `fatalitiesHurdle` `fatalitiesHurdle` decimal(5,2)   NOT NULL after `fatalitiesHurdleType`, 
+	CHANGE `fatalitiesTime` `fatalitiesTime` tinyint(3) unsigned   NOT NULL DEFAULT '1' after `fatalitiesHurdle`, 
+	CHANGE `createdBy` `createdBy` int(11)   NULL after `fatalitiesTime`, 
+	CHANGE `updatedBy` `updatedBy` int(11)   NULL after `createdBy`, 
+	CHANGE `creationDate` `creationDate` datetime   NULL after `updatedBy`, 
+	CHANGE `updateDate` `updateDate` datetime   NULL after `creationDate`, COMMENT='';
+
+ALTER TABLE `operators` 
+	ADD COLUMN `oshaType` varchar(10)  COLLATE latin1_swedish_ci NULL DEFAULT 'OSHA' after `inheritInsurance`, COMMENT='';
+
+ALTER TABLE `note` 
+	ADD KEY `createdByStatus`(`createdBy`,`status`), COMMENT='';
+
+
+
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
@@ -145,6 +200,18 @@ group by pm.catid, pm.opid;
 
 -- Remove these categories from pqfopmatrix
 delete from pqfopmatrix where catid in (select tca.categoryID from temp_category_audittype tca);
+
+update operators set inheritFlagCriteria = id where inheritFlagCriteria is null;
+update operators set inheritInsuranceCriteria = id where inheritInsuranceCriteria is null;
+update operators set inheritAudits = id where inheritAudits is null;
+update operators set inheritAuditCategories = id where inheritAuditCategories is null;
+update operators set inheritInsurance = id where inheritInsurance is null;
+
+delete from flagcriteria where isChecked = 'No';
+alter table flagcriteria drop column isChecked;
+
+update flagoshacriteria
+set createdBy = 1, updatedBy = 1, creationDate = '2000-01-01', updateDate = now();
 
 
 -- Remove the isApplicable field from the osha table
