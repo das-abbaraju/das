@@ -330,7 +330,7 @@ public class FlagCalculatorSingle {
 								// We found a matching pending or submitted audit still not finished
 								// Whose fault is it??
 								debug(" ---- still required");
-								if (conAudit.getAuditType().isPqf()) {
+								if (conAudit.getAuditType().getClassType().isPqf()) {
 									if (auditStatus.equals(AuditStatus.Pending))
 										// The contractor still needs to submit their PQF
 										return WaitingOn.Contractor;

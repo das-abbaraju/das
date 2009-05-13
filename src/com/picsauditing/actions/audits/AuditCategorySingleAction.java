@@ -202,7 +202,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			}
 			return true;
 		}
-		if (conAudit.getAuditType().isPqf()) {
+		if (conAudit.getAuditType().getClassType().isPqf()) {
 			// PQFs are perpetual audits and can be renewed
 			if (permissions.isContractor()) {
 				// We don't allow admins to resubmit audits (only contractors)

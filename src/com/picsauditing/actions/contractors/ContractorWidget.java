@@ -68,16 +68,20 @@ public class ContractorWidget extends ContractorActionSupport {
 					e.printStackTrace();
 				}
 			}
-
+			String auditName;
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
-				if (conAudit.getAuditType().isPqf()) {
+				if (conAudit.getAuditType().getClassType().isPqf()) {
+					if(conAudit.getAuditType().isPqf())
+						auditName = "Pre-Qualification Form";
+					else
+						auditName = conAudit.getAuditType().getAuditName();
 					if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
 						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">complete and submit your Pre-Qualification Form</a>");
+								+ "\">complete and submit your "+ auditName +"</a>");
 					} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
 						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">review and re-submit your Pre-Qualification Form</a>");
+								+ "\">review and re-submit your "+ auditName +"</a>");
 					}
 				}
 				if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Pending)) {

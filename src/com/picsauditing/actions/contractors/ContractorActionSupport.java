@@ -119,7 +119,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().isPqf() || audit.getAuditType().getAuditName().startsWith("PQF")) {
+				if (audit.getAuditType().getClassType().isPqf()) {
 					pqfs.add(audit);
 					iter.remove();
 				}

@@ -40,7 +40,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 
 			for (ContractorAudit conAudit : ca.getAudits()) {
 				System.out.println(" found " + conAudit.getAuditType().getAuditName());
-				if (conAudit.getAuditType().isPqf() 
+				if (conAudit.getAuditType().getClassType().isPqf() 
 						|| conAudit.getAuditType().isAnnualAddendum()
 						|| conAudit.getAuditType().getId() == AuditType.WELCOME) {
 					conAudit.setAuditor(new User(auditorId));

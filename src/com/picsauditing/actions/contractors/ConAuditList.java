@@ -60,7 +60,8 @@ public class ConAuditList extends ContractorActionSupport {
 
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or all of them
-			if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+			if (contractorAudit.getAuditType().getClassType().equals(auditClass) 
+					|| (auditClass.equals(AuditTypeClass.Audit) && contractorAudit.getAuditType().getClassType().isPqf())) {
 				if (auditClass.isPolicy()) {
 					if (contractorAudit.getAuditStatus().isExpired()) {
 						expiredAudits.add(contractorAudit);

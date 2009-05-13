@@ -135,7 +135,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// We don't actually loop through the all the questions just yet, that's
 		// later
 		for (AuditCatData catData : categories)
-			if (conAudit.getAuditType().isPqf())
+			if (conAudit.getAuditType().getClassType().isPqf())
 				catData.getCategory().setValidDate(new Date());
 			else
 				catData.getCategory().setValidDate(conAudit.getCreationDate());

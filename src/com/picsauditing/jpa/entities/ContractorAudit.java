@@ -334,7 +334,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public Date getValidDate() {
-		if (auditType.isPqf())
+		if (auditType.getClassType().isPqf())
 			return new Date();
 		else
 			return creationDate;
