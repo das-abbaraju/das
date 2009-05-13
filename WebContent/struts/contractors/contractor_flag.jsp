@@ -171,7 +171,7 @@
 				<td></td>
 			</tr>
 		</thead>
-		<s:iterator value="contractor.oshas.entrySet()">
+		<s:iterator value="oshas">
 			<s:iterator value="value">
 					<tr class="<s:property value="value.flagColor" />">
 						<td class="center"><s:property

@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
@@ -178,39 +179,46 @@ public class FlagCalculatorSingle {
 		debug(" post audit flagColor=" + flagColor);
 
 		// Initialize the flag color to the default Green
-		for (OshaType oshaType : contractor.getOshas().keySet()) {
-			Map<String, OshaAudit> theseOshas = contractor.getOshas().get(oshaType);
+		Map<String, OshaAudit> shaMap = contractor.getOshas().get(operator.getOshaType());
 
-			if (theseOshas != null) {
-				for (OshaAudit oa : theseOshas.values()) {
-					oa.setFlagColor(FlagColor.Green);
-				}
+		if (shaMap != null) {
+			for (OshaAudit oa : shaMap.values()) {
+				oa.setFlagColor(FlagColor.Green);
 			}
 		}
+
+		Naics naics = new Naics();
+		// TODO convert this here
+		// contractor.getNaics();
+		
 		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
 
-				if (contractor.getOshas() != null && contractor.getOshas().get(operator.getOshaType()) != null) {
-					for (String key : contractor.getOshas().get(operator.getOshaType()).keySet()) {
-						OshaAudit osha = contractor.getOshas().get(operator.getOshaType()).get(key);
+				if (shaMap != null) {
+					for (String key : shaMap.keySet()) {
+						OshaAudit osha = shaMap.get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
-							if (criteria.getLwcr().isFlagged(osha.getLostWorkCasesRate()))
+							if (criteria.getLwcr().isFlagged(naics, osha.getLostWorkCasesRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())) {
-							if (criteria.getTrir().isFlagged(osha.getRecordableTotalRate()))
+							if (criteria.getTrir().isFlagged(naics, osha.getRecordableTotalRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
-							if (criteria.getFatalities().isFlagged(osha.getFatalities()))
+							if (criteria.getFatalities().isFlagged(naics, osha.getFatalities()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						flagColor = setFlagColor(flagColor, osha.getFlagColor());
 					}
+				} else {
+					// TODO what if they don't enter any OSHA/MSHA record?
+					// I think we should auto set it to red
+					flagColor = FlagColor.Red;
 				}
 
 				if (answerOnly && flagColor.equals(FlagColor.Red))

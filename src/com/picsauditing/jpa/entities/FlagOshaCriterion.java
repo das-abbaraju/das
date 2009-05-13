@@ -20,15 +20,15 @@ public class FlagOshaCriterion {
 	public void setHurdleFlag(HurdleType hurdleFlag) {
 		this.hurdleFlag = hurdleFlag;
 	}
-	
+
 	@Transient
 	public boolean isRequired() {
-		if(HurdleType.NAICS.equals(hurdleFlag) || HurdleType.Absolute.equals(hurdleFlag))
+		if (HurdleType.NAICS.equals(hurdleFlag) || HurdleType.Absolute.equals(hurdleFlag))
 			return true;
 		return false;
 	}
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	public float getHurdle() {
 		return hurdle;
 	}
@@ -37,30 +37,40 @@ public class FlagOshaCriterion {
 		this.hurdle = hurdle;
 	}
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	public int getTime() {
 		return time;
 	}
-	
+
 	@Transient
-	public boolean isTimeAverage(){
+	public boolean isTimeAverage() {
 		return time == 3;
 	}
-	
+
 	public void setTime(int time) {
 		this.time = time;
 	}
-	
-	public boolean isFlagged(float value) {
+
+	public boolean isFlagged(Naics naics, float value) {
 		if (!isRequired())
 			return false;
-		return value > hurdle;
+
+		if (HurdleType.NAICS.equals(hurdleFlag)) {
+			if (naics == null) {
+				throw new RuntimeException("");
+			}
+			return value > naics.getTrir() * hurdle / 100;
+		}
+
+		if (HurdleType.Absolute.equals(hurdleFlag))
+			return value > hurdle;
+		return false;
 	}
-	
+
 	@Transient
 	@Override
 	public String toString() {
-		return "flag:"+hurdleFlag+" time:"+time+" hurdle:"+hurdle;
+		return "flag:" + hurdleFlag + " time:" + time + " hurdle:" + hurdle;
 	}
-	
+
 }

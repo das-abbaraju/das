@@ -23,7 +23,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "osha_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
@@ -44,7 +43,6 @@ public class OshaAudit implements java.io.Serializable {
 	private String location = "Corporate";
 	private String description;
 
-	private boolean applicable = true;
 	private Date verifiedDate;
 
 	private boolean fileUploaded = false;
@@ -139,14 +137,6 @@ public class OshaAudit implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public boolean isApplicable() {
-		return applicable;
-	}
-
-	public void setApplicable(boolean applicable) {
-		this.applicable = applicable;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -310,7 +300,7 @@ public class OshaAudit implements java.io.Serializable {
 	
 	@Transient
 	private float calculateRate(int value) {
-		if (isApplicable() && manHours > 0) {
+		if (manHours > 0) {
 			float rate = value * 200000;
 			return rate / manHours;
 		}

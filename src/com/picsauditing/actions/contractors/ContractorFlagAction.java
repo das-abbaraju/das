@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.AuditCriteriaAnswer;
 import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
@@ -26,6 +27,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -210,7 +212,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	// Other helper getters for osha criteria
 	public boolean isOshaTrirUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getFlagOshaCriteria()) {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getTrir().isRequired())
 				return true;
 		}
@@ -245,6 +247,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
+	/**
+	 * The contractor's OSHA/MSHA record that the operator uses for evaluation
+	 * @return
+	 */
+	public Map<String, OshaAudit> getOshas() {
+		return co.getContractorAccount().getOshas().get(co.getOperatorAccount().getOshaType());
+	}
+	
 	public List<AuditCriteriaAnswer> getAcaList() {
 		return acaList;
 	}

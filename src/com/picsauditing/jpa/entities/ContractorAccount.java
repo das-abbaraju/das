@@ -469,36 +469,35 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Transient
-	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
-		return getOshas(OshaType.OSHA);
-	}
-
-	@Transient
 	/*
 	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of applicable osha data (verified or not)
 	 */
-	public Map<OshaType, Map<String, OshaAudit>> getOshas(OshaType shaType) {
+	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
 		if (oshas != null)
 			return oshas;
-		int number = 0;
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
 		
-		int auditCategoryID = 0;
-		if(shaType.equals(OshaType.OSHA))
-			auditCategoryID = AuditCategory.OSHA_AUDIT;
-		else if(shaType.equals(OshaType.MSHA))
-			auditCategoryID = AuditCategory.MSHA;
-		else if(shaType.equals(OshaType.COHS))
-			auditCategoryID = AuditCategory.CANADIAN_STATISTICS;
-		for (ContractorAudit audit : getSortedAudits()) {
+		List<ContractorAudit> annualAudits = getSortedAudits();
+		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.OSHA, AuditCategory.OSHA_AUDIT));
+		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.MSHA, AuditCategory.MSHA));
+		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.COHS, AuditCategory.CANADIAN_STATISTICS));
+		
+		return oshas;
+	}
+	
+	@Transient
+	private Map<String, OshaAudit> buildOshaMap(List<ContractorAudit> annualAudits, OshaType oshaType, int auditCategoryID) {
+		Map<String, OshaAudit> oshaMap = new TreeMap<String, OshaAudit>();
+		
+		int number = 0;
+		for (ContractorAudit audit : annualAudits) {
 			if (number < 3) {
 				for (AuditCatData auditCatData : audit.getCategories()) {
 					if (auditCatData.getCategory().getId() == auditCategoryID
 							&& auditCatData.getPercentCompleted() == 100) {
-						// Store the corporate OSHA rates into a map for later
-						// use
+						// Store the corporate OSHA rates into a map for later use
 						for (OshaAudit osha : audit.getOshas())
-							if (osha.getType().equals(shaType) && osha.isCorporate() && osha.isApplicable()) {
+							if (osha.getType().equals(oshaType) && osha.isCorporate()) {
 								number++;
 								Map<String, OshaAudit> theMap = oshas.get(osha.getType());
 
@@ -538,7 +537,6 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				for (String key : theseOshas.keySet()) {
 					OshaAudit osha = theseOshas.get(key);
 					avg.setFactor(osha.getFactor());
-					avg.setApplicable(true);
 					avg.setConAudit(osha.getConAudit());
 
 					manHours += osha.getManHours();
@@ -564,7 +562,8 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 				theseOshas.put(OshaAudit.AVG, avg);
 			}
 		}
-		return oshas;
+
+		return oshaMap;
 	}
 
 	@Transient
