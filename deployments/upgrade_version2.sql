@@ -27,9 +27,6 @@ and pd.questionid = 57
 set a.naics = t.answer
 where a.id = t.conID;
 
-update accounts a set naics = 562910
-where id = 7060;
-
 /**
  * Added open Notes widget to all users
  */
@@ -148,3 +145,43 @@ group by pm.catid, pm.opid;
 
 -- Remove these categories from pqfopmatrix
 delete from pqfopmatrix where catid in (select tca.categoryID from temp_category_audittype tca);
+
+
+-- Remove the isApplicable field from the osha table
+update pqfcatdata pcd, osha_audit os, contractor_audit ca set pcd.applies = 'No'
+where pcd.auditid = os.auditid
+and ca.id = os.auditid
+and os.applicable = 0
+and pcd.applies = 'Yes'
+and pcd.catID = 151
+and os.manhours = 0
+and os.fileuploaded = 0
+and ca.auditSTatus IN ('Active','Submitted');
+
+create TEMPORARY table temp_oshaaudit
+(id Mediumint(8));
+
+insert into temp_oshaaudit
+select os.id from osha_audit os
+join pqfcatdata pcd on pcd.auditid = os.auditid
+where os.applicable = 1
+and pcd.applies = 'No'
+and pcd.catID = 151
+and os.manhours = 0
+and os.fileuploaded = 0;
+
+delete from osha_audit where id in (select id from temp_oshaaudit);
+
+select os.applicable, os.auditid, pcd.applies from osha_audit os 
+join pqfcatdata pcd on pcd.auditid = os.auditid
+where os.applicable = 1
+and pcd.applies = 'No'
+and pcd.catID = 151; 
+
+select os.applicable, os.auditid, pcd.applies from osha_audit os 
+join pqfcatdata pcd on pcd.auditid = os.auditid
+join contractor_audit ca on ca.id = os.auditid 
+where os.applicable = 0
+and pcd.applies = 'Yes'
+and pcd.catID = 151;
+

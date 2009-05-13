@@ -21,14 +21,6 @@
 </tr>
 </thead>
 <tbody>
-<s:if test="category.id in { 151, 157 }">
-	<tr>
-		<th class="label">Were you exempt from submitting <s:property value="type"/> Logs? &nbsp;&nbsp;&nbsp;&nbsp;
-			<a href="#" onClick="window.open('reasons.html','name','scrollbars=1,resizable=1,width=800,height=600'); return false;">Valid exemptions</a>
-		</th>
-		<td><nobr><s:radio list="#{false:'Yes',true:'No'}" name="osha.applicable" value="%{applicable}"></s:radio></nobr></td>
-	</tr>
-</s:if>
 <s:if test="!corporate">
 <tr>
 	<th class="label">Site Description</th>

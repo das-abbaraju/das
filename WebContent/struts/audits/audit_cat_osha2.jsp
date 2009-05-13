@@ -4,12 +4,6 @@
 	<td colspan="3"><s:property value="conAudit.auditFor"/> <s:property value="getText('dataHeader.'.concat(type))"/> <s:property value="location"/> <s:property value="description"/></td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td colspan="2" class="label" style="text-align: center; font-size: smaller;">3 year avg.</td></s:if>
 </tr>
-<s:if test="applicable == false && category.id in {151,157} ">
-	<tr>
-		<th class="label" colspan="3"><s:property value="contractor.name"/> was EXEMPT from submitting <s:property value="conAudit.auditFor"/> <s:property value="type"/> Logs</th>
-		<s:if test="type.toString().equals('OSHA') && corporate"><th colspan="2" class="label">&nbsp;</th></s:if>
-	</tr>
-</s:if>
 <tr>
 	<th class="label"><s:property value="getText('totalHoursWorked')"/></th>
 	<td colspan="2"><s:property value="%{format(manHours,'#,##0')}"/></td>
