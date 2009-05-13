@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.AnswerMapByAudits;
@@ -181,9 +182,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		PicsLogger.stop();
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor())) {
 			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor() + " to " + newColor);
-			this.addNote(contractor, "Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for " + co.getOperatorAccount().getName(), NoteCategory.Flags);
-			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor().name() + " to " + newColor);
-			this.addNote(contractor, "Flag color changed from " + co.getFlag().getFlagColor().name() + " to " + newColor, NoteCategory.Flags);
+			addNote(contractor, 
+					"Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for " + co.getOperatorAccount().getName(), 
+					NoteCategory.Flags, LowMedHigh.Med, true, co.getOperatorAccount().getId());
 			co.getFlag().setLastUpdate(new Date());
 			co.getFlag().setFlagColor(newColor);
 		}

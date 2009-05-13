@@ -295,9 +295,7 @@ public class FlagCalculator2 {
 						note.setAuditColumns(new User(User.SYSTEM));
 						note.setSummary("Flag color changed from " + coFlag.getFlagColor() + " to " + color + " for " + operator.getName());
 						note.setCanContractorView(true);
-						note.setViewableByOperator(operator);
-						if (operator.getParent() != null)
-							note.setViewableByOperator(operator.getParent());
+						note.setViewableById(operator.getId());
 						noteDAO.save(note);
 					} catch (Exception e) {
 						System.out.println("ERROR: failed to save note because - " + e.getMessage());
@@ -312,11 +310,9 @@ public class FlagCalculator2 {
 						note.setAccount(contractor);
 						note.setNoteCategory(NoteCategory.General);
 						note.setAuditColumns(new User(User.SYSTEM));
-						note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn);
-						note.setViewableByOperator(operator);
+						note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn + " for " + operator.getName());
 						note.setCanContractorView(true);
-						if (operator.getParent() != null)
-							note.setViewableByOperator(operator.getParent());
+						note.setViewableById(operator.getId());
 						noteDAO.save(note);
 					} catch (Exception e) {
 						System.out.println("ERROR: failed to save note because - " + e.getMessage());

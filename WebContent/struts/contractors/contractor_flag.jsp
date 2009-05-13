@@ -4,8 +4,10 @@
 <html>
 <head>
 <title>Flag Status for <s:property value="contractor.name" /></title>
-<script type="text/javascript" src="js/prototype.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script src="js/notes.js" type="text/javascript"></script>
 <SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
 	var cal1 = new CalendarPopup('caldiv1');
@@ -264,6 +266,8 @@
 		<div id="alert">The operator did not approve this contractor.</div>
 	</s:if>
 </s:if>
+
+<div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 

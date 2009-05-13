@@ -51,14 +51,14 @@ public class AuditCriteriaAnswerBuilder {
 		PicsLogger.start("AuditCriteriaAnswerBuilder.build");
 
 		if (criterias == null)
-			System.out.println("WARNING: List<FlagQuestionCriteria> criterias is NULL");
+			System.out.println("AuditCriteriaAnswerBuilder WARNING: List<FlagQuestionCriteria> criterias is NULL");
 		else if (criterias.size() == 0)
-			System.out.println("WARNING: List<FlagQuestionCriteria> criterias is empty");
+			System.out.println("AuditCriteriaAnswerBuilder WARNING: List<FlagQuestionCriteria> criterias is empty");
 
 		if (answerMapByAudits == null)
-			System.out.println("WARNING: AnswerMapByAudits answerMapByAudits is NULL");
+			System.out.println("AuditCriteriaAnswerBuilder WARNING: AnswerMapByAudits answerMapByAudits is NULL");
 		else if (answerMapByAudits.getAuditSet().size() == 0)
-			System.out.println("WARNING: AnswerMapByAudits answerMapByAudits is empty");
+			System.out.println("AuditCriteriaAnswerBuilder WARNING: AnswerMapByAudits answerMapByAudits is empty");
 
 		auditCriteriaAnswers = new Vector<AuditCriteriaAnswer>();
 
