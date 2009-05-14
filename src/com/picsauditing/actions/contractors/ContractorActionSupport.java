@@ -137,7 +137,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					String auditName = audit.getAuditType().getAuditName();
 					if(isShowCheckIcon(audit))
 						auditName = checkIcon + auditName;
-					subMenu.addChild(auditName, url + audit.getId(), audit.getId(), "");
+					subMenu.addChild(auditName, url + audit.getId(), audit.getId(), audit.getAuditStatus() + " - " + audit.getPercent() + "% Complete");
 				}
 			}
 		}
