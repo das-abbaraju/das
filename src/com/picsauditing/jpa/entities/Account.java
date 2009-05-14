@@ -11,6 +11,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -45,7 +47,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String email;
 	protected String webUrl;
 	protected Industry industry;
-	private String naics;
+	private Naics naics;
 	protected char active;
 	protected char seesAllB;
 	protected char sendActivationEmailB;
@@ -208,11 +210,13 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	 * NAICS replaced the SIC in 1997
 	 * @return
 	 */
-	public String getNaics() {
+	@ManyToOne
+	@JoinColumn(name = "naics")
+	public Naics getNaics() {
 		return naics;
 	}
 
-	public void setNaics(String naics) {
+	public void setNaics(Naics naics) {
 		this.naics = naics;
 	}
 

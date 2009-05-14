@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<div>
 <form id="criteriaEditForm">
 	<input type="hidden" value="<s:property value="operator.id"/>" name="id"/>
 	<input type="hidden" value="<s:property value="type"/>" name="type"/>
@@ -38,7 +39,7 @@
 		<td><s:if test="lwcr">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>','NAICS':'NAICS'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute<br/>'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif> <s:else>
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:else></td>
@@ -122,8 +123,4 @@
 		<input type="button" id="close_button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
 	</div>
 </form>
-<br clear="all"/>
 </div>
-<div id="info" style="font-size: 13px;color : #4C4D4D;">
-	If "Absolute" enter a cutoff value. <s:if test="trir">If "NAICS" select a percentage.</s:if>
-</div> 
