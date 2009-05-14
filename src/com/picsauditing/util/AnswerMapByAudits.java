@@ -54,9 +54,14 @@ public class AnswerMapByAudits {
 		// concurrentmodificationexceptions
 		Set<ContractorAudit> auditSet = new HashSet<ContractorAudit>();
 		auditSet.addAll(data.keySet());
+		
+		// check that they can see it
+		
+		for (AuditOperator auditOperator : operator.getVisibleAudits())
+			PicsLogger.log(" operator can see" + auditOperator.getAuditType().getAuditName());
 
 		for (ContractorAudit audit : auditSet) {
-			PicsLogger.log("- audit " + audit.getId() + " " + audit.getAuditType().getAuditName());
+			PicsLogger.log("- conAudit " + audit.getId() + " " + audit.getAuditType().getAuditName());
 			boolean canSeeAudit = false;
 
 			// check that they can see it

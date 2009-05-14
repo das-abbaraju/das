@@ -243,20 +243,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditType other = (AuditType) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
-
-	@Override
 	public int compareTo(AuditType o) {
 		if(!this.getClassType().equals(o.getClassType())) {
 			return getClassType().ordinal() - o.getClassType().ordinal();

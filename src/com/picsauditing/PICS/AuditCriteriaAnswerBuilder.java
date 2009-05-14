@@ -57,8 +57,6 @@ public class AuditCriteriaAnswerBuilder {
 
 		if (answerMapByAudits == null)
 			System.out.println("AuditCriteriaAnswerBuilder WARNING: AnswerMapByAudits answerMapByAudits is NULL");
-		else if (answerMapByAudits.getAuditSet().size() == 0)
-			System.out.println("AuditCriteriaAnswerBuilder WARNING: AnswerMapByAudits answerMapByAudits is empty");
 
 		auditCriteriaAnswers = new Vector<AuditCriteriaAnswer>();
 

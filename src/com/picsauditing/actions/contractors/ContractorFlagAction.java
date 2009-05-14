@@ -11,6 +11,7 @@ import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -77,6 +78,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		// or merge the gc and flag tables into one (I prefer the latter) Trevor
 		// 5/29/08
 		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError("This contractor doesn't work at the given site");
+			return BLANK;
+		}
 		co.getOperatorAccount().getFlagOshaCriteria();
 		co.getOperatorAccount().getAudits();
 
@@ -139,6 +144,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				PicsLogger.stop();
 				return SUCCESS;
 			} else {
+				String text = "Removed the " + co.getForceFlag() + " forced flag color for "+ co.getOperatorAccount();
+				addNote(co.getContractorAccount(), text);
 				co.setForceEnd(forceEnd);
 				co.setForceFlag(forceFlag);
 			}

@@ -19,6 +19,7 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -127,8 +128,10 @@ public class FlagCalculator2 {
 		// Create a list of questions that the operators want to ask
 		for (OperatorAccount operator : operators) {
 			// Read the operator data from database
-			operator.getInheritFlagCriteria().getFlagOshaCriteria();
-			operator.getInheritAudits().getAudits();
+			operator.getFlagQuestionCriteriaInherited();
+			//operator.getVisibleAudits();
+			for (AuditOperator auditOperator : operator.getVisibleAudits())
+				PicsLogger.log(" operator can see" + auditOperator.getAuditType().getAuditName());
 			questionIDs.addAll(operator.getQuestionIDs());
 			oList.add(operator.getId());
 		}
@@ -203,13 +206,13 @@ public class FlagCalculator2 {
 		// debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 
-		List<ContractorAudit> nonExpiredByContractor = conAuditDAO.findNonExpiredByContractor(contractor.getId());
+		//List<ContractorAudit> nonExpiredByContractor = conAuditDAO.findNonExpiredByContractor(contractor.getId());
 		
 		calcSingle.setContractor(contractor);
 		
-		calcSingle.setConAudits(nonExpiredByContractor);
+		calcSingle.setConAudits(contractor.getAudits());
 		
-		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( nonExpiredByContractor, questionIDs );
+		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits(contractor.getAudits(), questionIDs);
 		
 //		//since the @Transactional annotation is on this method (and it seems for good reason), and not on the class 
 //		//level, the runCalc method actually runs from within a different transaction than the transaction in which 
@@ -218,13 +221,15 @@ public class FlagCalculator2 {
 //		for (OperatorAccount opFromDifferentTransaction : operators) {  
 //			
 //			OperatorAccount operator = operatorDAO.find(opFromDifferentTransaction.getId());
-		for (OperatorAccount operator : operators) {  
+		for (OperatorAccount operator : operators) {
+			PicsLogger.log(" Starting FlagCalculator2 for conID: " + conID + " opID:" + operator.getId());
 		
 			//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
 			//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
 			//on each run through the "operators" list.
 			AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, operator);
-			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, operator.getFlagQuestionCriteria());
+			PicsLogger.log(" Found " + answerMapForOperator.getAuditSet().size() + " audits in answerMapForOperator");
+			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, operator.getFlagQuestionCriteriaInherited());
 			calcSingle.setAcaList(acaBuilder.getAuditCriteriaAnswers());
 
 			calcSingle.setOperator(operator);
@@ -239,7 +244,7 @@ public class FlagCalculator2 {
 			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
 
 			for( ContractorAudit audit : contractor.getAudits() ) {
-				if( audit.getAuditType().getClassType() == AuditTypeClass.Policy ) {
+				if( audit.getAuditType().getClassType().isPolicy() ) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getOperator().equals(operator) 
 								&& (cao.getStatus().isSubmitted()
