@@ -23,11 +23,19 @@
 
 <s:if test="permissions.contractor">
 	<s:if test="conAudit.auditStatus.activeSubmitted || conAudit.auditStatus.activeResubmittedExempt">
-		<s:iterator value="activeAudits">
-			<s:if test="auditStatus.pending && auditType.canContractorEdit">
-				<div id="info">Please complete the <a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditFor"/> <s:property value="auditType.auditName"/></a>.</div>
-			</s:if>
-		</s:iterator>
+		<s:if test="activePendingEditableAudits.size > 0">
+			<div id="alert">
+				You have <strong><s:property value="activePendingEditableAudits.size"/></strong> Audits to complete. To see your list of open tasks go to your <a href="Home.action">home page</a>.
+				<ul>
+					<s:iterator value="activePendingEditableAudits">
+						<li>Please complete the <a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditFor"/> <s:property value="auditType.auditName"/></a>.</li>
+					</s:iterator>
+				</ul>
+			</div>
+			<div class="buttons">
+				<a href="Audit.action?auditID=<s:property value="activePendingEditableAudits.get(0).getId()"/>" class="picsbutton">Next Audit &gt;</a>
+			</div>
+		</s:if>
 	</s:if>
 	<s:if test="conAudit.auditType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
 		<div id="alert">Your PQF is about to expire, please review every section and re-submit it.</div>

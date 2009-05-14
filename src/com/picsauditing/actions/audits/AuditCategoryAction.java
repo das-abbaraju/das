@@ -58,7 +58,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	protected ContractorAudit previousAudit = null;
 	protected ContractorAudit nextAudit = null;
-	
+
 	protected ContractorAudit nextPolicy = null;
 
 	protected OshaAudit averageOshas = null;
@@ -69,9 +69,12 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	protected ContractorAuditOperator cao = null;
 
-	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditCategoryDAO auditCategoryDAO, OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder) {
+	private List<ContractorAudit> activePendingEditableAudits = null;
+
+	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
+			AuditPercentCalculator auditPercentCalculator, AuditCategoryDAO auditCategoryDAO,
+			OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
@@ -382,12 +385,12 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		nextPolicy = findNextRequiredPolicyForVerification(conAudit);
 		return nextPolicy != null;
 	}
-	
+
 	public ContractorAudit getNextPolicy() {
 		if (nextPolicy != null || isNeedsNextPolicyForContractor()) {
 			return nextPolicy;
 		}
-		
+
 		return null;
 	}
 
@@ -407,5 +410,17 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		}
 
 		return sortedList;
+	}
+
+	public List<ContractorAudit> getActivePendingEditableAudits() {
+		if (activePendingEditableAudits == null) {
+			activePendingEditableAudits = new ArrayList<ContractorAudit>();
+			for (ContractorAudit ca : getActiveAudits()) {
+				if (ca.getAuditStatus().isPending() && ca.getAuditType().isCanContractorEdit())
+					activePendingEditableAudits.add(ca);
+			}
+		}
+
+		return activePendingEditableAudits;
 	}
 }
