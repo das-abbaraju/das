@@ -106,11 +106,22 @@ public class FlagCalculator2 {
 		execute();
 	}
 
-	public void runOne(int conID, int opID) {
-		OperatorAccount operator = operatorDAO.find(opID);
-		operators.add(operator);
-		contractorIDs.add(conID);
+	public void run(int[] cons, int[] ops) {
+		if (ops != null)
+			for(Integer opID : ops) {
+				OperatorAccount operator = operatorDAO.find(opID);
+				operators.add(operator);
+			}
+		for(Integer conID : cons)
+			contractorIDs.add(conID);
+		
 		execute();
+	}
+
+	public void runOne(int conID, int opID) {
+		int[] cons = {conID};
+		int[] ops = {opID};
+		run(cons, ops);
 	}
 
 	@Transactional
@@ -129,6 +140,7 @@ public class FlagCalculator2 {
 		for (OperatorAccount operator : operators) {
 			// Read the operator data from database
 			operator.getFlagQuestionCriteriaInherited();
+			operator.getInheritFlagCriteria().getFlagOshaCriteria();
 			//operator.getVisibleAudits();
 			for (AuditOperator auditOperator : operator.getVisibleAudits())
 				PicsLogger.log(" operator can see" + auditOperator.getAuditType().getAuditName());

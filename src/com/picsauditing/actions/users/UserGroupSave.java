@@ -16,7 +16,8 @@ public class UserGroupSave extends UsersManage {
 	protected UserGroupDAO userGroupDAO;
 	protected UserSwitchDAO userSwitchDAO;
 
-	public UserGroupSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO) {
+	public UserGroupSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO,
+			UserSwitchDAO userSwitchDAO) {
 		super(operatorDao, userDAO);
 		this.userGroupDAO = userGroupDAO;
 		this.userSwitchDAO = userSwitchDAO;
@@ -46,7 +47,7 @@ public class UserGroupSave extends UsersManage {
 					this.addActionError("You can't add a circular relationship");
 					return SUCCESS;
 				}
-					
+
 				uGroup.setGroup(newGroup);
 				uGroup.setUser(user);
 				uGroup.setAuditColumns(this.getUser());
@@ -72,10 +73,10 @@ public class UserGroupSave extends UsersManage {
 					this.addActionError("You can't add a circular relationship");
 					return "member";
 				}
-				
+
 				uGroup.setUser(newUser);
 				uGroup.setGroup(user);
-				uGroup.setAuditColumns(this.getUser());
+				uGroup.setAuditColumns(getUser());
 				userGroupDAO.save(uGroup);
 				user.getMembers().add(uGroup);
 			}
@@ -87,40 +88,41 @@ public class UserGroupSave extends UsersManage {
 		}
 		if ("AddSwitchFrom".equals(button)) {
 			User member = userDAO.find(memberId);
-			
-			if(member != null) {		
+
+			if (member != null) {
 				UserSwitch userSwitch = userSwitchDAO.findByUserIdAndSwitchToId(memberId, user.getId());
-				
+
 				if (userSwitch != null) {
 					addActionError("That user already has the ability to switch to this group.");
 				} else {
 					userSwitch = new UserSwitch();
 					userSwitch.setUser(member);
 					userSwitch.setSwitchTo(user);
-					userSwitchDAO.save(userSwitch);					
+					userSwitch.setAuditColumns(getUser());
+					userSwitchDAO.save(userSwitch);
 				}
 			}
-			
+
 			return "userswitch";
 		}
-		if("RemoveSwitchFrom".equals(button)) {
-			
+		if ("RemoveSwitchFrom".equals(button)) {
+
 			if (memberId != 0) {
 				UserSwitch userSwitch = userSwitchDAO.findByUserIdAndSwitchToId(memberId, user.getId());
 				if (userSwitch != null) {
 					userSwitchDAO.remove(userSwitch.getId());
 				}
 			}
-			
+
 			return "userswitch";
 		}
 
 		return SUCCESS;
 	}
-	
+
 	private boolean containsMember(User group, User member) {
-		for(UserGroup userMember : group.getMembers()) {
-			if(userMember.getUser().getId() == member.getId()) {
+		for (UserGroup userMember : group.getMembers()) {
+			if (userMember.getUser().getId() == member.getId()) {
 				return true;
 			}
 			if (containsMember(userMember.getUser(), member))
@@ -128,10 +130,10 @@ public class UserGroupSave extends UsersManage {
 		}
 		return false;
 	}
-	
+
 	private boolean containsGroup(User user, User group) {
-		for(UserGroup userGroup : user.getGroups()) {
-			if(userGroup.getGroup().getId() == group.getId()) {
+		for (UserGroup userGroup : user.getGroups()) {
+			if (userGroup.getGroup().getId() == group.getId()) {
 				return true;
 			}
 			if (containsGroup(userGroup.getGroup(), group))
