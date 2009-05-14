@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.PICS.FlagCalculator2;
@@ -17,6 +18,9 @@ public class ContractorCron extends PicsActionSupport {
 	protected CronMetricsAggregator cronMetrics = null;
 
 	protected long startTime = 0L;
+	
+	private int conID = 0;
+	private int opID = 0;
 
 	public ContractorCron(FlagCalculator2 fc2, ContractorAccountDAO contractorAccountDAO , CronMetricsAggregator cronMetrics ) {
 		this.flagCalculator = fc2;
@@ -32,10 +36,17 @@ public class ContractorCron extends PicsActionSupport {
 			PicsLogger.start("ContractorCron");
 	
 			try {
-				List<Integer> conIDsList = contractorAccountDAO.findContractorsNeedingRecalculation();
-	
-				if( conIDsList != null && conIDsList.size() > 0 ) {
-					flagCalculator.runByContractors(conIDsList);
+				if (conID > 0) {
+					if (opID > 0)
+						flagCalculator.runOne(conID, opID);
+					else
+						flagCalculator.runByContractor(conID);
+				} else {
+					List<Integer> conIDsList = contractorAccountDAO.findContractorsNeedingRecalculation();
+					
+					if( conIDsList != null && conIDsList.size() > 0 ) {
+						flagCalculator.runByContractors(conIDsList);
+					}
 				}
 				
 				PicsLogger.log("Cron completed successfully");
@@ -60,4 +71,22 @@ public class ContractorCron extends PicsActionSupport {
 	protected void startTask(String taskName) {
 		PicsLogger.log(taskName);
 	}
+
+	public int getConID() {
+		return conID;
+	}
+
+	public void setConID(int conID) {
+		this.conID = conID;
+	}
+
+	public int getOpID() {
+		return opID;
+	}
+
+	public void setOpID(int opID) {
+		this.opID = opID;
+	}
+	
+	
 }
