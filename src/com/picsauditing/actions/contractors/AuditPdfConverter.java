@@ -35,6 +35,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -54,6 +55,7 @@ import com.picsauditing.util.Strings;
 public class AuditPdfConverter extends ContractorActionSupport {
 	private Map<String, File> attachments = new TreeMap<String, File>();
 	private AuditDataDAO auditDataDAO;
+	protected AuditCategoryDataDAO catDataDao;
 	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
 	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
 	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
@@ -61,9 +63,10 @@ public class AuditPdfConverter extends ContractorActionSupport {
 	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
 
-	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO) {
+	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDao) {
 		super(accountDao, auditDao);
 		 this.auditDataDAO = auditDataDAO;
+		 this.catDataDao = catDataDao;
 	}
 	
 	@Override
@@ -99,6 +102,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			for (ContractorAudit conAudit : contractor.getAudits()) {
 				if (!conAudit.getAuditStatus().isExpired()
 						&& (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum())) {
+					List<AuditCatData> aList = new ArrayList<AuditCatData>();
 					String auditName = conAudit.getAuditType().getAuditName() + " - ";
 					if (conAudit.getAuditType().isPqf())
 						auditName += DateBean.format(conAudit.getEffectiveDate(), "MMM yyyy");
@@ -108,7 +112,11 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					name.setAlignment(Element.ALIGN_CENTER);
 					document.add(name);
 					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId());
-					for (AuditCatData auditCatData : conAudit.getCategories()) {
+					if(conAudit.getAuditType().isPqf())
+						aList = catDataDao.findByAudit(conAudit, permissions);
+					else
+						aList = conAudit.getCategories();
+					for (AuditCatData auditCatData : aList) {
 						if (auditCatData.isAppliesB() && auditCatData.getPercentCompleted() > 0) {
 							if (conAudit.getAuditType().isPqf())
 								auditCatData.getCategory().setValidDate(new Date());
