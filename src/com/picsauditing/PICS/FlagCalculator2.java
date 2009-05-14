@@ -11,6 +11,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.redFlagReport.FlagCriteria;
 import com.picsauditing.cron.CronMetricsAggregator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -28,6 +29,8 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagOshaCriteria;
+import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -126,27 +129,33 @@ public class FlagCalculator2 {
 
 	@Transactional
 	private void execute() {
-		debug("FlagCalculator.execute()");
+		PicsLogger.log("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
 		if (operators.size() == 0)
 			operators = operatorDAO.findWhere(false, "type='Operator' and active='Y'");
 		if (contractorIDs.size() == 0) {
 			contractorIDs = contractorDAO.findAll();
 		}
-		debug("...getting question for operators");
-		List<Integer> oList = new Vector<Integer>();
-		List<Integer> questionIDs = new ArrayList<Integer>();
+		
 		// Create a list of questions that the operators want to ask
+		List<Integer> questionIDs = new ArrayList<Integer>();
+		
+		PicsLogger.start("OperatorCache", "...getting data cache for operators");
 		for (OperatorAccount operator : operators) {
-			// Read the operator data from database
-			operator.getFlagQuestionCriteriaInherited();
-			operator.getInheritFlagCriteria().getFlagOshaCriteria();
-			//operator.getVisibleAudits();
+			PicsLogger.log("----------- " + operator.getName());
+			
+			for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteriaInherited())
+				PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for " + criteria.getAuditQuestion().getQuestion());
+			
+			for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria())
+				PicsLogger.log(" osha criteria " + criteria.getFlagColor());
+			
 			for (AuditOperator auditOperator : operator.getVisibleAudits())
-				PicsLogger.log(" operator can see" + auditOperator.getAuditType().getAuditName());
+				PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
+			
 			questionIDs.addAll(operator.getQuestionIDs());
-			oList.add(operator.getId());
 		}
+		PicsLogger.stop();
 
 		int errorCount = 0;
 

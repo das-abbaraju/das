@@ -233,9 +233,11 @@ public class OperatorAccount extends Account {
 			if (!c.getClassType().isPolicy())
 				criteriaList.add(c);
 		}
-		for(FlagQuestionCriteria c : getInheritInsuranceCriteria().getFlagQuestionCriteria()) {
-			if (c.getClassType().isPolicy())
-				criteriaList.add(c);
+		if (canSeeInsurance.equals(YesNo.Yes)) {
+			for(FlagQuestionCriteria c : getInheritInsuranceCriteria().getFlagQuestionCriteria()) {
+				if (c.getClassType().isPolicy())
+					criteriaList.add(c);
+			}
 		}
 		return criteriaList;
 	}
@@ -306,15 +308,9 @@ public class OperatorAccount extends Account {
 		for (AuditQuestionOperatorAccount question : inheritFlagCriteria.getAuditQuestions()) {
 			questionIDs.add(question.getAuditQuestion().getId());
 		}
-		for (FlagQuestionCriteria criteria : inheritFlagCriteria.getFlagQuestionCriteria()) {
-			if (!criteria.getClassType().isPolicy())
-				questionIDs.add(criteria.getAuditQuestion().getId());
-		}
-		if (canSeeInsurance.equals(YesNo.Yes)) {
-			for (FlagQuestionCriteria criteria : inheritInsuranceCriteria.getFlagQuestionCriteria()) {
-				if (criteria.getClassType().isPolicy())
-					questionIDs.add(criteria.getAuditQuestion().getId());
-			}
+		
+		for(FlagQuestionCriteria c : getFlagQuestionCriteriaInherited()) {
+			questionIDs.add(c.getAuditQuestion().getId());
 		}
 		return questionIDs;
 	}
