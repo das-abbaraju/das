@@ -3,7 +3,10 @@ package com.picsauditing.actions.report;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
@@ -22,6 +25,7 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
+import com.picsauditing.servlet.upload.PQFProcessor;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
@@ -84,7 +88,7 @@ public class ReportContractorAudits extends ReportAccount {
 		}
 		if (auditTypeClass != null) {
 			if (auditTypeClass == AuditTypeClass.Audit) {
-				sql.addWhere("atype.classType in ( 'Audit', 'IM' ) ");
+				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF' ) ");
 			} else {
 				sql.addWhere("atype.classType = '" + auditTypeClass.toString() + "'");
 			}
@@ -129,7 +133,15 @@ public class ReportContractorAudits extends ReportAccount {
 		super.addFilterToSQL();
 
 		ReportFilterAudit f = getFilter();
+		
 		String auditTypeList = Strings.implode(f.getAuditTypeID(), ",");
+		String pqfTypeList = Strings.implode(f.getPqfTypeID(), ",");
+		if (filterOn(auditTypeList) && filterOn(pqfTypeList)) {
+			auditTypeList += ","+ pqfTypeList;
+		}
+		else if(filterOn(pqfTypeList)) {
+			auditTypeList = pqfTypeList;
+		}
 		if (filterOn(auditTypeList)) {
 			sql.addWhere("ca.auditTypeID IN (" + auditTypeList + ")");
 			setFiltered(true);

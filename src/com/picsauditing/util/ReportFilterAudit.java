@@ -35,6 +35,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	// Filter values
 	protected int[] auditID;
 	protected int[] auditTypeID;
+	protected int[] pqfTypeID;
 	protected AuditStatus[] auditStatus;
 	protected CaoStatus[] caoStatus;
 	protected CaoStatus[] recommendedStatus;
@@ -418,5 +419,13 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setIncidenceRate(double incidenceRate) {
 		this.incidenceRate = incidenceRate;
+	}
+
+	public int[] getPqfTypeID() {
+		return pqfTypeID;
+	}
+
+	public void setPqfTypeID(int[] pqfTypeID) {
+		this.pqfTypeID = pqfTypeID;
 	}
 }
