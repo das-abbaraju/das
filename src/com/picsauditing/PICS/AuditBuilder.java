@@ -14,7 +14,6 @@ import java.util.Vector;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -282,7 +281,7 @@ public class AuditBuilder {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getInheritInsurance().getCanSeeInsurance().equals(YesNo.Yes))
+			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getInheritInsurance().getCanSeeInsurance().isTrue())
 				operatorSet.add(co.getOperatorAccount().getInheritInsurance());
 		}
 
@@ -362,6 +361,12 @@ public class AuditBuilder {
 			if (cao != null) {
 				// If we still have a "dirty" cao record, then save it
 				contractorAuditOperatorDAO.save(cao);
+			}
+		}
+		
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (!operatorSet.contains(cao.getOperator().getInheritInsurance()) && cao.getStatus().isPending()) {
+				cao.setNotes("This Operator Should Be Gone - " + new Date());
 			}
 		}
 
