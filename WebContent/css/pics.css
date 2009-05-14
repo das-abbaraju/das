@@ -545,7 +545,8 @@ div#error {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
-	width: 86%
+	width: 86%;
+	clear : left
 }
 
 td.money, th.money {
