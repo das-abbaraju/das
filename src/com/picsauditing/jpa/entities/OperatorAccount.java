@@ -273,11 +273,12 @@ public class OperatorAccount extends Account {
 		for(AuditOperator ao : inheritAudits.getAudits())
 			if (ao.isCanSee() && !ao.getAuditType().getClassType().isPolicy())
 				requiredAudits.add(ao);
-		if (canSeeInsurance.isTrue())
+		if (inheritInsurance.getCanSeeInsurance().isTrue()) {
 			PicsLogger.log("getting visible policies from " + inheritInsurance.getName());
 			for(AuditOperator ao : inheritInsurance.getAudits())
 				if (ao.isCanSee() && ao.getAuditType().getClassType().isPolicy())
 					requiredAudits.add(ao);
+		}	
 		return requiredAudits;
 	}
 

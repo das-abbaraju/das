@@ -257,12 +257,12 @@ public class Cron extends PicsActionSupport {
 	public void sendEmailExpiredCertificates() throws Exception {
 		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates();
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
 
 		for (ContractorAudit cAudit : cList) {
-			policies.add(cAudit.getContractorAccount());
+			if(cAudit.getCurrentOperators().size() > 0)
+				policies.add(cAudit.getContractorAccount());
 		}
 		for (ContractorAccount policy : policies) {
 			emailBuilder.clear();

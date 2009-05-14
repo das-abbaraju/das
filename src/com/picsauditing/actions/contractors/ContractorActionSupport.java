@@ -225,7 +225,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
 				OperatorAccount op = insurContractors.getOperatorAccount();
-				if (permissions.getAccountId() == op.getId() && op.getCanSeeInsurance().equals(YesNo.Yes))
+				if (permissions.getAccountId() == op.getId() && op.getInheritInsurance().getCanSeeInsurance().equals(YesNo.Yes))
 					return true;
 			}
 			return false;

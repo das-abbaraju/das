@@ -282,8 +282,8 @@ public class AuditBuilder {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getCanSeeInsurance().equals(YesNo.Yes))
-				operatorSet.add(co.getOperatorAccount().getInheritInsuranceCriteria());
+			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getInheritInsurance().getCanSeeInsurance().equals(YesNo.Yes))
+				operatorSet.add(co.getOperatorAccount().getInheritInsurance());
 		}
 
 		for (OperatorAccount operator : operatorSet) {
