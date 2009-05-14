@@ -241,9 +241,7 @@
 		</s:if>
 		<s:if test="conAudit.percentComplete < 100 && conAudit.auditStatus.pending && !conAudit.auditType.classType.policy">
 			<div id="info" class="buttons" style="">
-			<s:if test="conAudit.auditType.annualAddendum">
 				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Done</a>
-			</s:if>
 			Click Done when you're ready to submit the <s:property value="conAudit.auditType.auditName"/>
 			</div>
 		</s:if>
