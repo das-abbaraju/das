@@ -11,10 +11,12 @@ import java.util.TreeSet;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.Strings;
@@ -154,6 +156,12 @@ public class ContractorWidget extends ContractorActionSupport {
 					openTasks.add(text);
 				}
 			}
+			if (contractor.getNaics() == null) {
+				AuditCatData auditCatData = getAuditCatData(contractor);
+				if(auditCatData != null)
+				openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()+ "&catDataID="+ auditCatData.getId()
+						+ "\"> update your 2007 NAICS code</a>");
+			}
 
 		}
 		return openTasks;
@@ -185,6 +193,18 @@ public class ContractorWidget extends ContractorActionSupport {
 		}
 
 		return false;
+	}
+	
+	private AuditCatData getAuditCatData(ContractorAccount contractor) {
+		for(ContractorAudit contractorAudit : contractor.getAudits()) {
+			if(contractorAudit.getAuditType().isPqf()) {
+				for(AuditCatData auditCatData : contractorAudit.getCategories()) {
+					if(auditCatData.getCategory().getId() == 2)
+						return auditCatData;
+				}
+			}
+		}
+		return null;	
 	}
 
 }

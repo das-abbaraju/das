@@ -7,7 +7,7 @@ import com.picsauditing.jpa.entities.Naics;
 @Transactional
 public class NaicsDAO extends PicsDAO {
 
-	public Naics find(int id) {
-		return em.find(Naics.class, id);
+	public Naics find(String code) {
+		return em.find(Naics.class, code);
 	}
 }

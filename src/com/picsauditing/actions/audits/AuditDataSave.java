@@ -17,6 +17,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
@@ -24,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -33,6 +35,7 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditData auditData = null;
 	private AnswerMap answerMap;
 	private AuditQuestionDAO questionDao = null;
+	private NaicsDAO naicsDAO;
 	private int catDataID = 0;
 	private AuditPercentCalculator auditPercentCalculator;
 	private String mode;
@@ -41,10 +44,11 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
 			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO auditDao,
-			OshaAuditDAO oshaAuditDAO) {
+			OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO) {
 		super(accountDAO, auditDao, catDataDao, dao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.questionDao = questionDao;
+		this.naicsDAO = naicsDAO;
 	}
 
 	public String execute() throws Exception {
@@ -156,9 +160,9 @@ public class AuditDataSave extends AuditActionSupport {
 				ContractorAccount contractor = tempAudit.getContractorAccount();
 				contractor.setNeedsRecalculation(true);
 				if(tempAudit.getAuditType().isPqf()) {
-					if(auditData.getQuestion().getId() == 57 
-							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						contractor.setNaics(auditData.getAnswer());
+					if(auditData.getQuestion().getId() == 57) {
+						contractor.setNaics(new Naics());
+						contractor.getNaics().setCode(auditData.getAnswer());
 					}
 				}
 				accountDao.save(contractor);
@@ -279,6 +283,16 @@ public class AuditDataSave extends AuditActionSupport {
 			databaseCopy = auditData;
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 		
+		if(databaseCopy.getQuestion().getId() == 57) {
+			if(!isValidNAICScode(auditData.getAnswer())) {
+				addActionError("Invalid 2007 NAICS code");
+				return false;
+			}
+			else
+				return true;
+		}
+		
+		
 		if("Money".equals(questionType) 
 				|| "Decimal Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
@@ -328,5 +342,13 @@ public class AuditDataSave extends AuditActionSupport {
 		}	
 		
 		return sortedList;
+	}
+	
+	public boolean isValidNAICScode(String answer) {
+		Naics naics = naicsDAO.find(answer);
+		if(naics != null)
+			return true;
+		
+		return false;
 	}
 }
