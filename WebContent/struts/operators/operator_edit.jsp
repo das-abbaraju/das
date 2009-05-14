@@ -49,6 +49,15 @@
 	<s:include value="opHeader.jsp"></s:include>
 </s:else>
 <s:include value="../actionMessages.jsp" />
+
+<s:if test="id > 0 && operator.visibleAudits.size == 0">
+	<div id="alert">This operator doesn't have access to any audits. Please <a href="AuditOperator.action?oID=<s:property value="id"/>">double check the configuration</a>.</div>
+</s:if>
+<s:if test="id > 0 && operator.flagQuestionCriteriaInherited.size == 0">
+
+	<div id="alert">This operator doesn't have any flag criteria defined. Please <a href="OperatorFlagCriteria.action?id=<s:property value="id"/>">double check the configuration</a>.</div>
+</s:if>
+
 <s:form id="save" method="POST" enctype="multipart/form-data">
 	<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 	<br clear="all" />
@@ -75,6 +84,18 @@
 				<li><label>Fax:</label> <s:textfield name="operator.fax" size="15" /></li>
 				<li><label>Email:</label> <s:textfield name="operator.email" size="30" /></li>
 				<li><label>Web URL:</label> <s:textfield name="operator.webUrl" size="30" /></li>
+			</ol>
+			</fieldset>
+			<fieldset class="form"><legend><span>Visible Audits</span></legend>
+			<ol>
+				<s:iterator value="operator.visibleAudits">
+					<li><label><s:property value="auditType.auditName"/>:</label>
+						Risk >= <s:property value="minRiskLevel" />,
+						Status >= <s:property value="requiredAuditStatus"/>,
+						Flag = <s:property value="requiredForFlag"/>
+						<s:if test="canEdit">, Editable = Yes</s:if>
+					</li>
+				</s:iterator>
 			</ol>
 			</fieldset>
 			</td>
