@@ -74,9 +74,10 @@ update flagoshacriteria set fatalitiesHurdleType = 'Absolute' where flagFataliti
  */
 
 update accounts a, (
-select ca.conID, SUBSTRING_INDEX(pd.answer,',',1) answer from contractor_audit ca
-Left join pqfdata pd on pd.auditID = ca.id
-where pd.answer is not null and pd.answer > '' AND pd.answer != 'NA' AND pd.answer != 'N/A'
+select ca.conID, answer from contractor_audit ca
+join pqfdata pd on pd.auditID = ca.id
+join naics n on n.code = pd.answer 
+where ca.auditTypeID = 1
 and pd.questionid = 57
 ) t
 set a.naics = t.answer
