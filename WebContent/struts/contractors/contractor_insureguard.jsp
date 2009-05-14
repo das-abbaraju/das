@@ -104,7 +104,9 @@
 							headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
 					</s:if>
 				</td>
-				<td></td>
+				<s:if test="certificatesFiles.size() > 0">
+					<td></td>
+				</s:if>
 				</s:form>
 			</tr>
 		</s:if>
