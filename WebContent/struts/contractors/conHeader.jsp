@@ -147,7 +147,7 @@
 					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
 						<li>
 							<label 
-								<s:if test="notes != null && notes.length() > 0">
+								<s:if test="notes != null && notes.length() > 0 && !status.approved">
 									title="<s:property value="notes"/>" 
 									class="tooltipped"
 								</s:if>>Op Status:</label>
@@ -160,7 +160,7 @@
 				<s:elseif test="!status.notApplicable">
 					<li style="">
 						<label 
-							<s:if test="notes != null && notes.length() > 0">
+							<s:if test="notes != null && notes.length() > 0 && !status.approved">
 								title="<s:property value="notes"/>" 
 								class="tooltipped"
 							</s:if>>Op Status:</label>
