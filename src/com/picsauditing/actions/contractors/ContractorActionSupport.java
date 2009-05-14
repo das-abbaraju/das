@@ -108,7 +108,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
 		String url = "Audit.action?auditID=";
-		
+		String checkIcon = "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
 		List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();
 		auditList.addAll(getActiveAudits());
 
@@ -131,10 +131,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 				menuComponent.setAuditId(audit.getId());
 				menu.add(menuComponent);
 			} else if (pqfs.size() > 1) {
-				MenuComponent subMenu = new MenuComponent("PQF");
+				MenuComponent subMenu = new MenuComponent("PQF", "ConPqfList.action?id=" + id);
 				menu.add(subMenu);
-				for (ContractorAudit audit : pqfs)
-					subMenu.addChild(audit.getAuditType().getAuditName(), url + audit.getId(), audit.getId(), "");
+				for (ContractorAudit audit : pqfs) {
+					String auditName = audit.getAuditType().getAuditName();
+					if(isShowCheckIcon(audit))
+						auditName = checkIcon + auditName;
+					subMenu.addChild(auditName, url + audit.getId(), audit.getId(), "");
+				}
 			}
 		}
 
@@ -146,6 +150,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().isAnnualAddendum()) {
 					String linkText = audit.getAuditFor() + " Update";
+					if(isShowCheckIcon(audit))
+						linkText = checkIcon + linkText;
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), "");
 					iter.remove();
 				}
@@ -181,7 +187,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.equals(AuditStatus.Exempt)) {
 					String linkText = audit.getAuditType().getAuditName() +
 						(audit.getAuditFor() == null ? "" : " " + audit.getAuditFor() );
-
+					if(isShowCheckIcon(audit))
+						linkText = checkIcon + linkText;
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 					iter.remove();
 				}
@@ -197,7 +204,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
 						linkText = audit.getAuditFor() + " " + linkText;
-	
+					if(isShowCheckIcon(audit))
+						linkText = checkIcon + linkText;
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
 			}
@@ -367,5 +375,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		return null;
+	}
+	
+	public boolean isShowCheckIcon(ContractorAudit conAudit) {
+		if(permissions.isContractor()) {
+			if(conAudit.getAuditStatus().isActiveSubmitted())
+				return true;
+		}
+		else if(conAudit.getAuditStatus().isActive())
+			return true;
+		return false;
 	}
 }
