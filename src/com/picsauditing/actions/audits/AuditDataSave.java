@@ -52,7 +52,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-		
+
 		if ("removeTuple".equals(button)) {
 			try {
 				auditDataDao.remove(auditData.getId());
@@ -62,24 +62,24 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 			return BLANK;
 		}
-		
+
 		if (catDataID == 0) {
 			addActionError("Missing catDataID");
 			return BLANK;
 		}
-		
+
 		try {
 			if (!forceLogin())
 				return LOGIN;
-			
+
 			getUser();
 			if (auditData.getId() == 0) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 				auditData.setQuestion(question);
-				if(!checkAnswerFormat(auditData, null))
+				if (!checkAnswerFormat(auditData, null))
 					return SUCCESS;
-				
+
 				if (auditData.getParentAnswer() != null && auditData.getParentAnswer().getId() == 0)
 					auditData.setParentAnswer(null);
 			} else {
@@ -88,11 +88,10 @@ public class AuditDataSave extends AuditActionSupport {
 				if (auditData.getAnswer() != null) {
 					// if answer is being set, then
 					// we are not currently verifying
-					if (auditData.getAnswer() == null 
-							|| newCopy.getAnswer() == null 
+					if (auditData.getAnswer() == null || newCopy.getAnswer() == null
 							|| !newCopy.getAnswer().equals(auditData.getAnswer())) {
 
-						if(!checkAnswerFormat(auditData, newCopy)) {
+						if (!checkAnswerFormat(auditData, newCopy)) {
 							auditData = newCopy;
 							return SUCCESS;
 						}
@@ -102,11 +101,11 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 
 						newCopy.setAnswer(auditData.getAnswer());
-						if (newCopy.getAudit().getAuditType().isHasRequirements() 
+						if (newCopy.getAudit().getAuditType().isHasRequirements()
 								&& newCopy.getAudit().getAuditStatus().equals(AuditStatus.Submitted)
 								&& permissions.isPicsEmployee()) {
 							newCopy.setWasChanged(YesNo.Yes);
-							
+
 							if (!toggleVerify) {
 								if (newCopy.isRequirementOpen()) {
 									newCopy.setDateVerified(null);
@@ -119,7 +118,7 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 					}
 				}
-				// we were handed the verification parms 
+				// we were handed the verification parms
 				// instead of the edit parms
 
 				if (toggleVerify) {
@@ -139,61 +138,64 @@ public class AuditDataSave extends AuditActionSupport {
 
 				auditData = newCopy;
 			}
-			
+
 			auditID = auditData.getAudit().getId();
 			auditData.setAuditColumns(getUser());
 			if ("reload".equals(button)) {
 				return SUCCESS;
 			}
-			if(auditData.getQuestion().getId() == 57) {
-				if(!isValidNAICScode(auditData.getAnswer(), false)) {
+			if (auditData.getQuestion().getId() == 57) {
+				if (!isValidNAICScode(auditData.getAnswer())) {
 					addActionError("This is not a valid 2007 NAICS code");
 				}
-			}	
+			}
 			auditData = auditDataDao.save(auditData);
-			
-			
-			if( auditData.getAudit() != null ) {
+
+			if (auditData.getAudit() != null) {
 				ContractorAudit tempAudit = null;
-				if(!auditDao.isContained(auditData.getAudit())) {
+				if (!auditDao.isContained(auditData.getAudit())) {
 					findConAudit();
 					tempAudit = conAudit;
-				}	
-				else
+				} else
 					tempAudit = auditData.getAudit();
-				
+
 				ContractorAccount contractor = tempAudit.getContractorAccount();
 				contractor.setNeedsRecalculation(true);
-				if(tempAudit.getAuditType().isPqf()) {
-					if(auditData.getQuestion().getId() == 57) {
-						contractor.setNaics(new Naics());
-						if(isValidNAICScode(auditData.getAnswer(), false)) {
+				if (tempAudit.getAuditType().isPqf()) {
+					if (auditData.getQuestion().getId() == 57) {
+						if (isValidNAICScode(auditData.getAnswer())) {
+							contractor.setNaics(new Naics());
 							contractor.getNaics().setCode(auditData.getAnswer());
 							contractor.setNaicsValid(true);
+						} else {
+							String guess = guessNaicsCode(auditData.getAnswer());
+							if (!Strings.isEmpty(guess)) {
+								contractor.setNaics(new Naics());
+								contractor.getNaics().setCode(guess);
+								contractor.setNaicsValid(false);
+								addActionError("Setting your current NAICS code to " + contractor.getNaics().getCode());
+							}
 						}
-						
 					}
 				}
 				accountDao.save(contractor);
-				
-				if( tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType().isPolicy() ) {
-					
-					if("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode()) 
+
+				if (tempAudit.getAuditType() != null && tempAudit.getAuditType().getClassType().isPolicy()) {
+
+					if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						tempAudit.setExpiresDate(DateBean.parseDate( auditData.getAnswer() ) );
+						tempAudit.setExpiresDate(DateBean.parseDate(auditData.getAnswer()));
 					}
-					if("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode()) 
+					if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						tempAudit.setCreationDate(DateBean.parseDate( auditData.getAnswer() ) );
+						tempAudit.setCreationDate(DateBean.parseDate(auditData.getAnswer()));
 					}
 
 					auditDao.save(tempAudit);
 				}
 			}
-			
-			
 
-			// hook to calculation read/update 
+			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
 			AuditCatData catData = null;
 
@@ -225,24 +227,26 @@ public class AuditDataSave extends AuditActionSupport {
 			addActionError(e.getMessage());
 			return BLANK;
 		}
-		
+
 		if ("addTuple".equals(button)) {
 			return "tuple";
 		}
 
 		return SUCCESS;
 	}
-	
+
 	public String getMode() {
-		// When we're adding a tuple, we call audit_cat_question via audit_cat_tuples
+		// When we're adding a tuple, we call audit_cat_question via
+		// audit_cat_tuples
 		// That page requires mode to be set
-		// Since we're always in edit mode when we're adding tuples, I'm going to hard code this
+		// Since we're always in edit mode when we're adding tuples, I'm going
+		// to hard code this
 		// We may need to pass it in though
-		if("Verify".equals(mode))
+		if ("Verify".equals(mode))
 			return "Verify";
 		return "Edit";
 	}
-	
+
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
@@ -258,7 +262,7 @@ public class AuditDataSave extends AuditActionSupport {
 	public void setCatDataID(int catDataID) {
 		this.catDataID = catDataID;
 	}
-	
+
 	public AnswerMap getAnswerMap() {
 		return answerMap;
 	}
@@ -281,74 +285,78 @@ public class AuditDataSave extends AuditActionSupport {
 		list.add("Incorrect Year");
 		return list;
 	}
-	
+
 	public boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
 		// Null or blank answers are always OK
 		String answer = auditData.getAnswer();
 		if (Strings.isEmpty(answer))
 			return true;
-		
-		if(databaseCopy == null)
+
+		if (databaseCopy == null)
 			databaseCopy = auditData;
 		String questionType = databaseCopy.getQuestion().getQuestionType();
-		
-		if("Money".equals(questionType) 
-				|| "Decimal Number".equals(questionType)) {
+
+		if ("Money".equals(questionType) || "Decimal Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
 			// We add them back in later
 			answer = answer.replace(",", "");
-			
-			boolean hasBadChar = false;
-	        for (int i = 0; i < answer.length(); i++) {
-	        	char c = answer.charAt(i);
-	            if (!Character.isDigit(c) 
-	            		&& (c != '.') 
-	            		&& (c != '-'))
-	            	hasBadChar = true;
-	        }
 
-			if(hasBadChar) {
+			boolean hasBadChar = false;
+			for (int i = 0; i < answer.length(); i++) {
+				char c = answer.charAt(i);
+				if (!Character.isDigit(c) && (c != '.') && (c != '-'))
+					hasBadChar = true;
+			}
+
+			if (hasBadChar) {
 				addActionError("The answer must be a number.");
 				return false;
 			}
-			
-			NumberFormat format = new DecimalFormat("#,##0"); 
-			if("Decimal Number".equals(questionType))
+
+			NumberFormat format = new DecimalFormat("#,##0");
+			if ("Decimal Number".equals(questionType))
 				format = new DecimalFormat("#,##0.000");
 			BigDecimal value = new BigDecimal(answer);
 			auditData.setAnswer(format.format(value));
 		}
-		
-		if("Date".equals(databaseCopy.getQuestion().getQuestionType())) {
+
+		if ("Date".equals(databaseCopy.getQuestion().getQuestionType())) {
 			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
 			Date newDate = DateBean.parseDate(answer);
-			
+
 			if (newDate == null) {
 				addActionError("Invalid Date Format");
 				return false;
-			}
-			else
+			} else
 				auditData.setAnswer(s.format(newDate));
 		}
-		
+
 		return true;
 	}
-	
+
 	public List<String> getLegalNamesFiltered() {
 		List<String> sortedList = super.getLegalNames();
-		for(AuditData auditData : answerMap.getAnswerList(this.auditData.getQuestion().getId())) {
-				sortedList.remove(auditData.getAnswer());
-		}	
-		
+		for (AuditData auditData : answerMap.getAnswerList(this.auditData.getQuestion().getId())) {
+			sortedList.remove(auditData.getAnswer());
+		}
+
 		return sortedList;
 	}
-	
-	public boolean isValidNAICScode(String answer, boolean isValid) {
+
+	public boolean isValidNAICScode(String answer) {
 		Naics naics = naicsDAO.find(answer);
-		if(naics != null)
+		if (naics != null)
 			return true;
-		if(isValid)
-			isValidNAICScode(answer, true);
 		return false;
+	}
+
+	public String guessNaicsCode(String naics) {
+		if (Strings.isEmpty(naics))
+			return "";
+
+		if (isValidNAICScode(naics))
+			return naics;
+
+		return guessNaicsCode(naics.substring(0, naics.length() - 1));
 	}
 }
