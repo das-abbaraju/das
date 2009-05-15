@@ -2,7 +2,6 @@ package com.intuit.developer.adaptors;
 
 import com.intuit.developer.QBSession;
 
-
 public class Finished extends QBXmlAdaptor {
 
 	@Override

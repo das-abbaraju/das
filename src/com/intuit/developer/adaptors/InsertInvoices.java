@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -81,7 +80,8 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.setBillAddress(factory.createBillAddress());
 
 				invoice.getBillAddress().setAddr1(nullSafeSubString(invoiceJPA.getAccount().getName(), 0, 41));
-				invoice.getBillAddress().setAddr2(nullSafeSubString(((ContractorAccount) invoiceJPA.getAccount()).getBillingContact(), 0,41));
+				invoice.getBillAddress().setAddr2(
+						nullSafeSubString(((ContractorAccount) invoiceJPA.getAccount()).getBillingContact(), 0, 41));
 				invoice.getBillAddress().setAddr3(nullSafeSubString(invoiceJPA.getAccount().getAddress(), 0, 41));
 				invoice.getBillAddress().setCity(invoiceJPA.getAccount().getCity());
 				invoice.getBillAddress().setState(invoiceJPA.getAccount().getState());
