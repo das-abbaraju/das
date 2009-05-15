@@ -74,7 +74,7 @@
 
 <s:if test="operator.canSeeInsurance.toString().equals('Yes')">
 	<ul id="navListTop">
-		<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="classType.Audit">current</s:if>">PQF/Audits</a></li>
+		<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="!classType.Policy">current</s:if>">PQF/Audits</a></li>
 		<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.Policy">current</s:if>">InsureGuard&trade;</a></li>
 	</ul>
 </s:if>
