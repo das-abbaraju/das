@@ -49,6 +49,7 @@ public class ConAuditList extends ContractorActionSupport {
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditBuilder = auditBuilder;
+		this.noteCategory = NoteCategory.Audits;
 	}
 
 	public String execute() throws Exception {

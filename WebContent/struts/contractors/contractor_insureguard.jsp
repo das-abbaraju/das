@@ -6,6 +6,8 @@
 <title>InsureGuard&trade; for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+<script src="js/notes.js" type="text/javascript"></script>
 <script type="text/javascript">
 	function showAddAudit() {
 	$('addAudit').hide();	
@@ -196,7 +198,9 @@
 		</tr>
 	</s:iterator>
 </table>
-<br/><br/>
 </s:if>
+
+<div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
+
 </body>
 </html>
