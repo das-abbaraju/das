@@ -267,6 +267,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			return this.percentComplete;
 		if (AuditStatus.Submitted.equals(auditStatus))
 			return this.percentVerified;
+		if (AuditStatus.Resubmitted.equals(auditStatus))
+			return this.percentVerified;
 
 		return 100;
 	}
