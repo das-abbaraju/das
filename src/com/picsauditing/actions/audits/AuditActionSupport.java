@@ -188,8 +188,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanEdit() {
 		if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
 			return false;
-
+		
 		AuditType type = conAudit.getAuditType();
+
+		if (type.getClassType().isPolicy()) {
+			if (conAudit.willExpireSoon())
+				// Never let them edit the old policy
+				return false;
+		}
 
 		// Auditors can edit their assigned audits
 		if (type.isHasAuditor() && !type.isCanContractorEdit()
@@ -201,11 +207,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (type.isAnnualAddendum()
 					&& conAudit.getAuditStatus().equals(AuditStatus.Active))
 				return false;
-			if (type.getClassType().isPolicy()) {
-				if (conAudit.willExpireSoon())
-					// Never let them edit the old policy
-					return false;
-			}
 
 			if (type.isCanContractorEdit())
 				return true;
@@ -213,29 +214,20 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return false;
 		}
 
-		if (permissions.isCorporate())
-			return false;
-
-		if (permissions.isOperator()) {
-			if (conAudit.getAuditType().getClassType().equals(
-					AuditTypeClass.Policy)) {
+		if (permissions.isOperatorCorporate()) {
+			if (permissions.getCanEditAudits().contains(conAudit.getAuditType().getId()))
+				return true;
+			
+			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				if (conAudit.getAuditStatus().isPending())
 					return true;
-				if (conAudit.getOperators().size() == 1
-						&& conAudit.getOperators().get(0).getOperator().getId() == permissions
-								.getAccountId())
-					return true;
-			}
-
-			if (conAudit.getRequestingOpAccount() != null) {
-				for (AuditOperator auditOperator : conAudit
-						.getRequestingOpAccount().getAudits()) {
-					if (auditOperator.getAuditType().equals(
-							conAudit.getAuditType())
-							&& auditOperator.isCanEdit())
+				if (conAudit.getOperators().size() == 1) {
+					int onlyOperatorForThisPolicy = conAudit.getOperators().get(0).getOperator().getId();
+					if (permissions.getVisibleAccounts().contains(onlyOperatorForThisPolicy))
 						return true;
 				}
 			}
+
 			return false;
 		}
 

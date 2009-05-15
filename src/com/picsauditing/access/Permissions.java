@@ -33,6 +33,7 @@ public class Permissions implements Serializable {
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new TreeSet<UserAccess>();
 	private Set<Integer> canSeeAudits = new HashSet<Integer>();
+	private Set<Integer> canEditAudits = new HashSet<Integer>();
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
 	private String username;
@@ -64,6 +65,7 @@ public class Permissions implements Serializable {
 		permissions.clear();
 		groups.clear();
 		canSeeAudits.clear();
+		canEditAudits.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
 	}
@@ -104,8 +106,7 @@ public class Permissions implements Serializable {
 					for (Facility facility : operator.getCorporateFacilities())
 						corporateParent.add(facility.getCorporate().getId());
 					
-					loadAuditTypes(operator.getInheritAudits(), false);
-					loadAuditTypes(operator.getInheritInsuranceCriteria(), true);
+					loadAuditTypes(operator);
 				}
 				if (isCorporate()) {
 					for (Facility facility : operator.getOperatorFacilities()) {
@@ -124,8 +125,7 @@ public class Permissions implements Serializable {
 						 * audit for given operator or corporate account.
 						 * This could be useful if we want to eventually sell access for an operator to each audit
 						 */
-						loadAuditTypes(facility.getOperator().getInheritAudits(), false);
-						loadAuditTypes(facility.getOperator().getInheritInsuranceCriteria(), true);
+						loadAuditTypes(facility.getOperator());
 					}
 				}
 			}
@@ -141,16 +141,11 @@ public class Permissions implements Serializable {
 		}
 	}
 	
-	private void loadAuditTypes(OperatorAccount operator, boolean insurance) {
-		for (AuditOperator auditOperator : operator.getAudits()) {
-			if (auditOperator.isCanSee())
-				if (insurance) {
-					if (auditOperator.getAuditType().getClassType().isPolicy())
-						canSeeAudits.add(auditOperator.getAuditType().getId());
-				} else {
-					if (!auditOperator.getAuditType().getClassType().isPolicy())
-						canSeeAudits.add(auditOperator.getAuditType().getId());
-				}
+	private void loadAuditTypes(OperatorAccount operator) {
+		for (AuditOperator auditOperator : operator.getVisibleAudits()) {
+			canSeeAudits.add(auditOperator.getAuditType().getId());
+			if (auditOperator.isCanEdit())
+				canEditAudits.add(auditOperator.getAuditType().getId());
 		}
 	}
 
@@ -304,7 +299,6 @@ public class Permissions implements Serializable {
 	}
 	
 	/**
-	 * @deprecated use seesAllContractors Now
 	 * @return
 	 */
 	public boolean isAdmin() {
@@ -317,7 +311,6 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * @deprecated use isPicsEmployee Now
 	 * @return
 	 */
 	public boolean isAuditor() {
@@ -376,32 +369,22 @@ public class Permissions implements Serializable {
 		return canSeeAudits;
 	}
 
-	public void setCanSeeAudit(Set<Integer> auditIds) {
-		canSeeAudits = auditIds;
+	public Set<Integer> getCanEditAudits() {
+		if (canEditAudits == null)
+			canEditAudits = new HashSet<Integer>();
+		return canEditAudits;
 	}
 
 	public boolean isApprovesRelationships() {
 		return approvesRelationships;
 	}
 
-	public void setApprovesRelationships(boolean approvesRelationships) {
-		this.approvesRelationships = approvesRelationships;
-	}
-
 	public Set<Integer> getCorporateParent() {
 		return corporateParent;
 	}
 
-	public void setCorporateParent(Set<Integer> corporateParent) {
-		this.corporateParent = corporateParent;
-	}
-
 	public Set<Integer> getOperatorChildren() {
 		return operatorChildren;
-	}
-
-	public void setOperatorChildren(Set<Integer> operatorChildren) {
-		this.operatorChildren = operatorChildren;
 	}
 
 	public Set<Integer> getVisibleAccounts() {
