@@ -102,22 +102,26 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		List<AuditQuestion> result = questionDao.findWhere("isRedFlagQuestion = 'Yes'");
 
 		Iterator<AuditQuestion> questions = result.iterator();
-		// Set<AuditType> visibleAudits = new HashSet<AuditType>();
+		Set<AuditType> visibleAudits = new HashSet<AuditType>();
+		Set<OperatorAccount> children = new HashSet<OperatorAccount>();
 
-		// for (AuditOperator ao : operator.getVisibleAudits()) {
-		// if ((ao.getAuditType().getClassType().isPolicy() &&
-		// classType.isPolicy())
-		// || !ao.getAuditType().getClassType().isPolicy() &&
-		// !classType.isPolicy())
-		// visibleAudits.add(ao.getAuditType());
-		// }
+		if (classType.isPolicy())
+			children.addAll(getInheritsInsuranceCriteria());
+		else
+			children.addAll(getInheritsFlagCriteria());
+		
+		children.add(operator);
+
+		for (OperatorAccount o : children) {
+			for (AuditOperator ao : o.getInheritAudits().getVisibleAudits()) {
+				if ((ao.getAuditType().getClassType().isPolicy() && classType.isPolicy())
+						|| !ao.getAuditType().getClassType().isPolicy() && !classType.isPolicy())
+					visibleAudits.add(ao.getAuditType());
+			}
+		}
 		while (questions.hasNext()) {
 			AuditQuestion question = questions.next();
-			// if (!visibleAudits.contains(question.getAuditType()))
-			// questions.remove();
-
-			if ((!question.getAuditType().getClassType().isPolicy() && classType.isPolicy())
-					|| question.getAuditType().getClassType().isPolicy() && !classType.isPolicy())
+			if (!visibleAudits.contains(question.getAuditType()))
 				questions.remove();
 			else
 				for (QuestionCriteria cq : getQuestionList()) {
