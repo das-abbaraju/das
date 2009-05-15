@@ -3,9 +3,11 @@ package com.picsauditing.actions.operators;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.picsauditing.access.OpPerms;
@@ -14,7 +16,9 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagOshaCriteriaDAO;
 import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
@@ -31,6 +35,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private ContractorAccountDAO contractorAccountDAO;
 	private AuditTypeClass classType = AuditTypeClass.Audit;
 	private Integer contractorsNeedingRecalculation = null;
+
+	private Collection<QuestionCriteria> questionList = null;
 
 	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO,
@@ -65,15 +71,16 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	}
 
 	public Collection<QuestionCriteria> getQuestionList() {
-		Map<AuditQuestion, QuestionCriteria> map = new TreeMap<AuditQuestion, QuestionCriteria>();
+		if (questionList == null) {
+			Map<AuditQuestion, QuestionCriteria> map = new TreeMap<AuditQuestion, QuestionCriteria>();
 
-		List<FlagQuestionCriteria> criteriaList = criteriaDao.findByOperator(operator);
-		for (FlagQuestionCriteria criteria : criteriaList) {
-			AuditQuestion q = criteria.getAuditQuestion();
-			AuditTypeClass qClassType = q.getSubCategory().getCategory().getAuditType().getClassType();
-			if (!qClassType.isPolicy()) 
-				// Convert IM and any "other" audit type to Audit
-				qClassType = AuditTypeClass.Audit;
+			List<FlagQuestionCriteria> criteriaList = criteriaDao.findByOperator(operator);
+			for (FlagQuestionCriteria criteria : criteriaList) {
+				AuditQuestion q = criteria.getAuditQuestion();
+				AuditTypeClass qClassType = q.getSubCategory().getCategory().getAuditType().getClassType();
+				if (!qClassType.isPolicy())
+					// Convert IM and any "other" audit type to Audit
+					qClassType = AuditTypeClass.Audit;
 				if (qClassType.equals(classType)) {
 					if (!map.containsKey(q)) {
 						map.put(q, new QuestionCriteria(q));
@@ -83,24 +90,42 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 					if (criteria.getFlagColor().equals(FlagColor.Red))
 						map.get(q).red = criteria;
 				}
-		}	
-		return map.values();
+			}
+
+			questionList = map.values();
+		}
+
+		return questionList;
 	}
 
 	public List<AuditQuestion> getQuestions() {
 		List<AuditQuestion> result = questionDao.findWhere("isRedFlagQuestion = 'Yes'");
 
 		Iterator<AuditQuestion> questions = result.iterator();
+		// Set<AuditType> visibleAudits = new HashSet<AuditType>();
 
+		// for (AuditOperator ao : operator.getVisibleAudits()) {
+		// if ((ao.getAuditType().getClassType().isPolicy() &&
+		// classType.isPolicy())
+		// || !ao.getAuditType().getClassType().isPolicy() &&
+		// !classType.isPolicy())
+		// visibleAudits.add(ao.getAuditType());
+		// }
 		while (questions.hasNext()) {
 			AuditQuestion question = questions.next();
-			if ((!classType.isPolicy() && question.getAuditType().getClassType().isPolicy()) 
-					|| (classType.isPolicy() && !question.getAuditType().getClassType().isPolicy()))
-				questions.remove();
-		}
+			// if (!visibleAudits.contains(question.getAuditType()))
+			// questions.remove();
 
-		for (QuestionCriteria qc : getQuestionList()) {
-			result.remove(qc.question);
+			if ((!question.getAuditType().getClassType().isPolicy() && classType.isPolicy())
+					|| question.getAuditType().getClassType().isPolicy() && !classType.isPolicy())
+				questions.remove();
+			else
+				for (QuestionCriteria cq : getQuestionList()) {
+					if (cq.question.equals(question)) {
+						questions.remove();
+						break;
+					}
+				}
 		}
 
 		Collections.sort(result, new Comparator<AuditQuestion>() {
