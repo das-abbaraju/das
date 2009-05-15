@@ -156,7 +156,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					openTasks.add(text);
 				}
 			}
-			if (contractor.getNaics() == null) {
+			if (!contractor.isNaicsValid()) {
 				AuditCatData auditCatData = getAuditCatData(contractor);
 				if(auditCatData != null)
 				openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()+ "&catDataID="+ auditCatData.getId()
