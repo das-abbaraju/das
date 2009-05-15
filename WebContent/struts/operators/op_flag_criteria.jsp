@@ -108,7 +108,7 @@
 					<td>
 						<s:property value="question" escape="false"/>
 					</td>
-					<td><a href="#" class="add" onclick="showCriteria(<s:property value="id"/>,'<s:property value="subCategory.category.auditType.auditName"/>')">Add</td>
+					<td><a href="#" class="add" onclick="showCriteria(<s:property value="id"/>,'<s:property value="subCategory.category.auditType.auditName"/>'); return false;">Add</td>
 				</tr>
 			</s:iterator>
 		</table>
