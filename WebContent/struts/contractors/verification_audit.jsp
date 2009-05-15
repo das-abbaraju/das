@@ -163,39 +163,29 @@
 				<li>
 				<hr>
 				</li>
-				<li><label>Applicable:</label> <s:checkbox id="applicable_%{id}" name="applicable"
-					value="applicable" onclick="$('applicableFields').toggle()"/></li>
-				<s:if test="applicable">
-					<s:set name="showApplicableFieldsDisplay" value="'block'"/>
+				<li><label>File:</label> <s:if test="fileUploaded">
+					<a href="#" onclick="openOsha(<s:property value="id"/>); return false;"	target="_BLANK">View File</a>
+					<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
 				</s:if>
 				<s:else>
-					<s:set name="showApplicableFieldsDisplay" value="'none'"/>
-				</s:else>
-				<s:div id="applicableFields" cssStyle="display : %{showApplicableFieldsDisplay};">
-					<li><label>File:</label> <s:if test="fileUploaded">
-						<a href="#" onclick="openOsha(<s:property value="id"/>); return false;"	target="_BLANK">View File</a>
-						<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
-					</s:if>
-					<s:else>
-						None. <a
-							href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
-							target="_BLANK">Upload New Files</a>
-					</s:else></li>
-					<li><label>Man Hours Worked:</label> <s:textfield id="manHours_%{id}"
-						name="manHours" cssClass="oshanum" /></li>
-					<li><label>Number of Fatalities:</label> <s:textfield id="fatalities_%{id}"
-						name="fatalities" cssClass="oshanum" /></li>
-					<li><label>Number of Lost Work Cases:</label> <s:textfield id="lwc_%{id}"
-						name="lostWorkCases" cssClass="oshanum" /></li>
-					<li><label>Number of Lost Workdays:</label> <s:textfield id="lwd_%{id}"
-						name="lostWorkDays" cssClass="oshanum" /></li>
-					<li><label>Injury &amp; Illnesses Medical Cases:</label> <s:textfield id="imc_%{id}"
-						name="injuryIllnessCases" cssClass="oshanum" /></li>
-					<li><label>Restricted Work Cases:</label> <s:textfield id="rwc_%{id}"
-						name="restrictedWorkCases" cssClass="oshanum" /></li>
-					<li><label>Total Injuries and Illnesses:</label> <s:textfield id="tii_%{id}"
-						name="recordableTotal" cssClass="oshanum" /></li>
-				 </s:div>
+					None. <a
+						href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
+						target="_BLANK">Upload New Files</a>
+				</s:else></li>
+				<li><label>Man Hours Worked:</label> <s:textfield id="manHours_%{id}"
+					name="manHours" cssClass="oshanum" /></li>
+				<li><label>Number of Fatalities:</label> <s:textfield id="fatalities_%{id}"
+					name="fatalities" cssClass="oshanum" /></li>
+				<li><label>Number of Lost Work Cases:</label> <s:textfield id="lwc_%{id}"
+					name="lostWorkCases" cssClass="oshanum" /></li>
+				<li><label>Number of Lost Workdays:</label> <s:textfield id="lwd_%{id}"
+					name="lostWorkDays" cssClass="oshanum" /></li>
+				<li><label>Injury &amp; Illnesses Medical Cases:</label> <s:textfield id="imc_%{id}"
+					name="injuryIllnessCases" cssClass="oshanum" /></li>
+				<li><label>Restricted Work Cases:</label> <s:textfield id="rwc_%{id}"
+					name="restrictedWorkCases" cssClass="oshanum" /></li>
+				<li><label>Total Injuries and Illnesses:</label> <s:textfield id="tii_%{id}"
+					name="recordableTotal" cssClass="oshanum" /></li>
 			</ol>
 		</s:div>
 		</s:if>
