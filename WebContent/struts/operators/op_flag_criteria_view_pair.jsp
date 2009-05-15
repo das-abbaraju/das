@@ -16,7 +16,7 @@
 	<s:textfield name="%{criteria}.value" size="10" onchange="$('%{criteria}_clear').show()"/>
 </s:if>
 <s:if test="question.questionType == 'Text'">
-	<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison" onchange="$('%{criteria}_clear').show()"></s:select>
+	<s:select list="#{'!=':'!=','=':'='}" headerKey="" headerValue="" name="%{criteria}.comparison" onchange="$('%{criteria}_clear').show()"></s:select>
 	<s:textfield name="%{criteria}.value" size="10" onchange="$('%{criteria}_clear').show()"/>
 </s:if>
 <s:if test="question.questionType == 'Date'">
