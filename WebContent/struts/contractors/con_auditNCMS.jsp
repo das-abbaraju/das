@@ -6,7 +6,7 @@
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 </head>
 <body>
 <s:include value="conHeader.jsp" />
@@ -23,7 +23,7 @@
 		<tr<s:if test="status == 'N/A'"> class="notapp"</s:if>>
 			<td class="right"><s:property value="#rowStatus.index + 1" /></td>
 			<td><s:property value="name" /></td>
-			<td class="right"><s:property value="status" /></td>
+			<td class="center"><s:property value="status" /></td>
 		</tr>
 	</s:iterator>
 </table>

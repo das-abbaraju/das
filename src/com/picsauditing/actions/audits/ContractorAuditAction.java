@@ -13,7 +13,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.NcmsCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.NcmsCategory;
@@ -87,13 +86,10 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 
 	public List<NcmsCategory> getNcmsCategories() {
 		try {
-			NcmsCategoryDAO dao = new NcmsCategoryDAO();
-			return dao.findCategories(this.id);
+			return catDataDao.findNcmsCategories(this.id);
 		} catch (Exception e) {
 			List<NcmsCategory> error = new ArrayList<NcmsCategory>();
-			NcmsCategory cat = new NcmsCategory();
-			cat.setName("Error retrieving list");
-			error.add(cat);
+			error.add(new NcmsCategory("Error retrieving list", ""));
 			return error;
 		}
 	}

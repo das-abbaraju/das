@@ -13,7 +13,9 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class AuditCategoryDataDAO extends PicsDAO {
@@ -50,35 +52,34 @@ public class AuditCategoryDataDAO extends PicsDAO {
 			if (!permissions.isContractor()) {
 				if (!permissions.hasPermission(OpPerms.ViewFullPQF))
 					where += "AND d.category.id <> " + AuditCategory.WORK_HISTORY + " ";
-				
+
 				if (permissions.isOperator()) {
-					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o " +
-							"WHERE o.category.auditType.id = :auditType AND o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
+					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o "
+							+ "WHERE o.category.auditType.id = :auditType AND o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
 				}
 				if (permissions.isCorporate()) {
-					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o " +
-							"WHERE o.riskLevel = :risk AND o.operatorAccount IN (" +
-							"SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
+					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o "
+							+ "WHERE o.riskLevel = :risk AND o.operatorAccount IN ("
+							+ "SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
 				}
 			}
 		}
-		
-		// There is a strange bug when 
-		// If this is an operator or corporate, we already 
+
+		// There is a strange bug when
+		// If this is an operator or corporate, we already
 		if (!where.contains(":auditType"))
 			where += "AND d.category.auditType.id = :auditType ";
-		//inner join fetch d.category 
+		// inner join fetch d.category
 		try {
-			String queryString = "SELECT d FROM AuditCatData d " +
-				"WHERE d.audit.id = :conAudit " + where +
-				" ORDER BY d.category.number";
+			String queryString = "SELECT d FROM AuditCatData d " + "WHERE d.audit.id = :conAudit " + where
+					+ " ORDER BY d.category.number";
 			Query query = em.createQuery(queryString);
-			
+
 			query.setParameter("conAudit", contractorAudit.getId());
 			setOptionalParameter(query, "auditType", contractorAudit.getAuditType().getId());
 			setOptionalParameter(query, "id", permissions.getAccountId());
 			setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
-			
+
 			return query.getResultList();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -96,13 +97,39 @@ public class AuditCategoryDataDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<AuditCatData> findAllAuditCatData(int auditID, int catID) {
-		String selectQuery = "FROM AuditCatData d "+
-		"WHERE d.category.id="+catID+" AND d.audit.id="+auditID;
+		String selectQuery = "FROM AuditCatData d " + "WHERE d.category.id=" + catID + " AND d.audit.id=" + auditID;
 		Query query = em.createQuery(selectQuery);
 		return query.getResultList();
 	}
 
+	/**
+	 * Get a list of NCMS categories and their statuses for a given contractor.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<NcmsCategory> findNcmsCategories(int conID) throws Exception {
+		List<NcmsCategory> categories = new ArrayList<NcmsCategory>();
+		if (conID == 0)
+			return categories;
 
+		StringBuffer sql = new StringBuffer("SELECT ");
+		for (String columnName : NcmsCategory.columns)
+			sql.append("`").append(columnName).append("`,");
+		sql.append(" 1 FROM NCMS_Desktop WHERE conID=" + conID);
+		
+		Query query = em.createNativeQuery(sql.toString());
 
+		List results = query.getResultList();
+
+		for (Object o : results) {
+			Object[] data = (Object[]) o;
+			int i = 0;
+			for (String columnName : NcmsCategory.columns) {
+				NcmsCategory cat = new NcmsCategory(columnName, data[i].toString());
+				categories.add(cat);
+				i++;
+			}
+		}
+		return categories;
+	}
 
 }
