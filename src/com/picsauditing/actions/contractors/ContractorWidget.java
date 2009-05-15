@@ -160,7 +160,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				AuditCatData auditCatData = getAuditCatData(contractor);
 				if(auditCatData != null)
 				openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()+ "&catDataID="+ auditCatData.getId()
-						+ "\"> update your 2007 NAICS code</a>");
+						+ "&mode=Edit#node_0_57\"> update your 2007 NAICS code</a>");
 			}
 
 		}
