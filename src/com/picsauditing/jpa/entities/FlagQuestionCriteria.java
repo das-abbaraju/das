@@ -181,6 +181,8 @@ public class FlagQuestionCriteria extends BaseTable {
 			else
 				buf.append("<i>Not Checked</i>");
 		} else
+			if(multiYearScope != null)
+				buf.append(multiYearScope + " ");
 			buf.append("<i>value</i> ").append(comparison).append(" ").append(this.value);
 		return buf.toString();
 	}
