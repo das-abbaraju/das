@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -56,7 +57,7 @@ public class FlagCalculator2 {
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
 	private NoteDAO noteDAO;
-	
+
 	private AuditBuilder auditBuilder;
 	private CronMetricsAggregator cronMetrics;
 
@@ -101,6 +102,7 @@ public class FlagCalculator2 {
 		contractorIDs.add(conID);
 		execute();
 	}
+
 	public void runByContractors(List<Integer> cons) {
 		contractorIDs.addAll(cons);
 		execute();
@@ -108,19 +110,19 @@ public class FlagCalculator2 {
 
 	public void run(int[] cons, int[] ops) {
 		if (ops != null)
-			for(Integer opID : ops) {
+			for (Integer opID : ops) {
 				OperatorAccount operator = operatorDAO.find(opID);
 				operators.add(operator);
 			}
-		for(Integer conID : cons)
+		for (Integer conID : cons)
 			contractorIDs.add(conID);
-		
+
 		execute();
 	}
 
 	public void runOne(int conID, int opID) {
-		int[] cons = {conID};
-		int[] ops = {opID};
+		int[] cons = { conID };
+		int[] ops = { opID };
 		run(cons, ops);
 	}
 
@@ -133,23 +135,24 @@ public class FlagCalculator2 {
 		if (contractorIDs.size() == 0) {
 			contractorIDs = contractorDAO.findAll();
 		}
-		
+
 		// Create a list of questions that the operators want to ask
 		List<Integer> questionIDs = new ArrayList<Integer>();
-		
+
 		PicsLogger.start("OperatorCache", "...getting data cache for operators");
 		for (OperatorAccount operator : operators) {
 			PicsLogger.log("----------- " + operator.getName());
-			
+
 			for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteriaInherited())
-				PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for " + criteria.getAuditQuestion().getQuestion());
-			
+				PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for "
+						+ criteria.getAuditQuestion().getQuestion());
+
 			for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria())
 				PicsLogger.log(" osha criteria " + criteria.getFlagColor());
-			
+
 			for (AuditOperator auditOperator : operator.getVisibleAudits())
 				PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
-			
+
 			questionIDs.addAll(operator.getQuestionIDs());
 		}
 		PicsLogger.stop();
@@ -162,11 +165,11 @@ public class FlagCalculator2 {
 				long conStart = System.currentTimeMillis();
 				PicsLogger.start("Flag.calculate", "for : " + conID);
 				runCalc(questionIDs, conID);
-				
-				if( cronMetrics != null ) {
-					cronMetrics.addContractor(conID, System.currentTimeMillis() - conStart );
+
+				if (cronMetrics != null) {
+					cronMetrics.addContractor(conID, System.currentTimeMillis() - conStart);
 				}
-				
+
 			} catch (Throwable t) {
 				t.printStackTrace();
 				StringBuffer body = new StringBuffer();
@@ -213,63 +216,70 @@ public class FlagCalculator2 {
 		// long startTime = System.currentTimeMillis();
 
 		ContractorAccount contractor = contractorDAO.find(conID);
-		
+
 		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		contractor.setNewMembershipLevel(fee);
 		contractor.syncBalance();
-		
+
 		// Run the auditBuilder for this contractor
 		auditBuilder.buildAudits(contractor);
-		
+
 		// debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 
-		//List<ContractorAudit> nonExpiredByContractor = conAuditDAO.findNonExpiredByContractor(contractor.getId());
-		
+		// List<ContractorAudit> nonExpiredByContractor =
+		// conAuditDAO.findNonExpiredByContractor(contractor.getId());
+
 		calcSingle.setContractor(contractor);
-		
+
 		calcSingle.setConAudits(contractor.getAudits());
-		
+
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits(contractor.getAudits(), questionIDs);
-		
-//		//since the @Transactional annotation is on this method (and it seems for good reason), and not on the class 
-//		//level, the runCalc method actually runs from within a different transaction than the transaction in which 
-//		//the operator was initially loaded, which means we can't traverse it's graph.  
-//		//Reloading the operator on the first line here will give us a connected operator in scope.
-//		for (OperatorAccount opFromDifferentTransaction : operators) {  
-//			
-//			OperatorAccount operator = operatorDAO.find(opFromDifferentTransaction.getId());
+		List<ContractorOperator> conOperators = contractor.getOperators();
+		// //since the @Transactional annotation is on this method (and it seems
+		// for good reason), and not on the class
+		// //level, the runCalc method actually runs from within a different
+		// transaction than the transaction in which
+		// //the operator was initially loaded, which means we can't traverse
+		// it's graph.
+		// //Reloading the operator on the first line here will give us a
+		// connected operator in scope.
+		// for (OperatorAccount opFromDifferentTransaction : operators) {
+		//			
+		// OperatorAccount operator =
+		// operatorDAO.find(opFromDifferentTransaction.getId());
 		for (OperatorAccount operator : operators) {
 			PicsLogger.log(" Starting FlagCalculator2 for conID: " + conID + " opID:" + operator.getId());
-		
-			//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
-			//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
-			//on each run through the "operators" list.
+
+			// prune our answermapMAP for this operator (take out audits they
+			// can't see, and answers to questions they shouldn't see)
+			// also note that this uses the copy constructor, so our local
+			// variable answerMapByAUdits is not affected by pruning
+			// on each run through the "operators" list.
 			AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, operator);
 			PicsLogger.log(" Found " + answerMapForOperator.getAuditSet().size() + " audits in answerMapForOperator");
-			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, operator.getFlagQuestionCriteriaInherited());
+			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, operator
+					.getFlagQuestionCriteriaInherited());
 			calcSingle.setAcaList(acaBuilder.getAuditCriteriaAnswers());
 
 			calcSingle.setOperator(operator);
 			// Calculate the color of the flag right here
 			FlagColor color = calcSingle.calculate();
 			debug(" - FlagColor returned: " + color);
-			
+
 			// Set the flag color on the object
 			// em.refresh(contractor);
 			ContractorOperatorFlag coFlag = null;
 
 			WaitingOn waitingOn = calcSingle.calculateWaitingOn();
 
-			for( ContractorAudit audit : contractor.getAudits() ) {
-				if( audit.getAuditType().getClassType().isPolicy() ) {
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (audit.getAuditType().getClassType().isPolicy()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
-						if (cao.getOperator().equals(operator) 
-								&& (cao.getStatus().isSubmitted()
-								|| cao.getStatus().isVerified())) {
-							CaoStatus recommendedStatus = calcSingle
-									.calculateCaoRecommendedStatus(cao);
-							
+						if (cao.getOperator().equals(operator)
+								&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
+							CaoStatus recommendedStatus = calcSingle.calculateCaoRecommendedStatus(cao);
+
 							cao.setRecommendedStatus(recommendedStatus);
 							caoDAO.save(cao);
 						}
@@ -310,39 +320,48 @@ public class FlagCalculator2 {
 				coFlagDAO.save(coFlag);
 				contractor.getFlags().put(operator, coFlag);
 			} else {
-				if (color == null || !color.equals(coFlag.getFlagColor())) {
-					try {
-						Note note = new Note();
-						note.setAccount(contractor);
-						note.setNoteCategory(NoteCategory.Flags);
-						note.setAuditColumns(new User(User.SYSTEM));
-						note.setSummary("Flag color changed from " + coFlag.getFlagColor() + " to " + color + " for " + operator.getName());
-						note.setCanContractorView(true);
-						note.setViewableById(operator.getId());
-						noteDAO.save(note);
-					} catch (Exception e) {
-						System.out.println("ERROR: failed to save note because - " + e.getMessage());
-					}
-
-					coFlag.setFlagColor(color);
-					coFlag.setLastUpdate(new Date());
+				boolean isLinked = false;
+				for (ContractorOperator cOperator : conOperators) {
+					if (cOperator.getOperatorAccount().equals(operator))
+						isLinked = true;
 				}
-				if (waitingOn == null || !waitingOn.equals(coFlag.getWaitingOn())) {
-					try {
-						Note note = new Note();
-						note.setAccount(contractor);
-						note.setNoteCategory(NoteCategory.General);
-						note.setAuditColumns(new User(User.SYSTEM));
-						note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn + " for " + operator.getName());
-						note.setCanContractorView(true);
-						note.setViewableById(operator.getId());
-						noteDAO.save(note);
-					} catch (Exception e) {
-						System.out.println("ERROR: failed to save note because - " + e.getMessage());
+				if (isLinked) {
+					if (color == null || !color.equals(coFlag.getFlagColor())) {
+						try {
+							Note note = new Note();
+							note.setAccount(contractor);
+							note.setNoteCategory(NoteCategory.Flags);
+							note.setAuditColumns(new User(User.SYSTEM));
+							note.setSummary("Flag color changed from " + coFlag.getFlagColor() + " to " + color
+									+ " for " + operator.getName());
+							note.setCanContractorView(true);
+							note.setViewableById(operator.getId());
+							noteDAO.save(note);
+						} catch (Exception e) {
+							System.out.println("ERROR: failed to save note because - " + e.getMessage());
+						}
+
+						coFlag.setFlagColor(color);
+						coFlag.setLastUpdate(new Date());
 					}
-					
-					coFlag.setWaitingOn(waitingOn);
-					coFlag.setLastUpdate(new Date());
+					if (waitingOn == null || !waitingOn.equals(coFlag.getWaitingOn())) {
+						try {
+							Note note = new Note();
+							note.setAccount(contractor);
+							note.setNoteCategory(NoteCategory.General);
+							note.setAuditColumns(new User(User.SYSTEM));
+							note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn + " for "
+									+ operator.getName());
+							note.setCanContractorView(true);
+							note.setViewableById(operator.getId());
+							noteDAO.save(note);
+						} catch (Exception e) {
+							System.out.println("ERROR: failed to save note because - " + e.getMessage());
+						}
+
+						coFlag.setWaitingOn(waitingOn);
+						coFlag.setLastUpdate(new Date());
+					}
 				}
 			}
 		}
