@@ -48,6 +48,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String webUrl;
 	protected Industry industry;
 	private Naics naics;
+	private boolean naicsValid;
 	protected char active;
 	protected char seesAllB;
 	protected char sendActivationEmailB;
@@ -218,6 +219,14 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setNaics(Naics naics) {
 		this.naics = naics;
+	}
+
+	public boolean isNaicsValid() {
+		return naicsValid;
+	}
+
+	public void setNaicsValid(boolean naicsValid) {
+		this.naicsValid = naicsValid;
 	}
 
 	@Column(nullable = false, length = 1)
