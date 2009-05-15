@@ -128,9 +128,11 @@ public class AuditBuilder {
 		// is that the operators and auditTypes will be really cached well
 		Set<AuditType> auditTypeList = new HashSet<AuditType>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB()
-					&& (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No) || co.getWorkStatus()
-							.equals("Y"))) {
+			if (co.getOperatorAccount().isActiveB()) {
+				// We used to also check to see that the contractor is approved,
+				// But now we just add in advance of being approved
+				// (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No)
+				//		|| co.getWorkStatus().equals("Y"))
 				for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
 					if (ao.isRequiredFor(contractor)
 							&& ao.getAuditType().getId() != AuditType.PQF
@@ -253,6 +255,10 @@ public class AuditBuilder {
 
 		for (Integer auditID : auditsToRemove) {
 			cAuditDAO.remove(auditID);
+			// TODO try removing the audits from the list if we can
+			//ContractorAudit removeMe = new ContractorAudit();
+			//removeMe.setId(auditID);
+			//contractor.getAudits().remove(removeMe);
 			fillAuditCategories = false;
 		}
 
@@ -273,7 +279,7 @@ public class AuditBuilder {
 	 * @param conAudit
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit) {
-		if (!AuditTypeClass.Policy.equals(conAudit.getAuditType().getClassType()))
+		if (!conAudit.getAuditType().getClassType().isPolicy())
 			return;
 
 		PicsLogger.start("AuditOperators", conAudit.getAuditType().getAuditName());
@@ -281,11 +287,13 @@ public class AuditBuilder {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getInheritInsurance().getCanSeeInsurance().isTrue())
+			if (co.getOperatorAccount().isActiveB() 
+					&& co.getOperatorAccount().getInheritInsurance().getCanSeeInsurance().isTrue())
 				operatorSet.add(co.getOperatorAccount().getInheritInsurance());
 		}
 
 		for (OperatorAccount operator : operatorSet) {
+			PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
 
@@ -298,11 +306,10 @@ public class AuditBuilder {
 			// If a facility needs "Pollution" and the contractor adds it,
 			// then other operators should be able to see it as well that subscribe to Pollution insurance
 
-			PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
 			for (AuditOperator ao : operator.getAudits()) {
 				if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
 					visible = true;
-					if (ao.getMinRiskLevel() > 0 && ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal())
+					if (ao.isRequiredFor(contractor))
 						required = true;
 					PicsLogger.log(contractor.getName() + " can see " + (required ? "required " : " ")
 							+ ao.getAuditType().getAuditName());
@@ -364,9 +371,13 @@ public class AuditBuilder {
 			}
 		}
 		
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (!operatorSet.contains(cao.getOperator().getInheritInsurance()) && cao.getStatus().isPending()) {
-				cao.setNotes("This Operator Should Be Gone - " + new Date());
+		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
+		while (iter.hasNext()) {
+			ContractorAuditOperator cao = iter.next();
+			if (!operatorSet.contains(cao.getOperator()) 
+					&& cao.getStatus().isPending()) {
+				contractorAuditOperatorDAO.remove(cao);
+				iter.remove();
 			}
 		}
 

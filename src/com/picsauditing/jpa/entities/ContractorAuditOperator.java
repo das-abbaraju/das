@@ -30,6 +30,9 @@ public class ContractorAuditOperator extends BaseTable {
 		this.audit = audit;
 	}
 
+	/**
+	 * @return The "inherited" operator/corporate/division that is associated with this CAO
+	 */
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
 	public OperatorAccount getOperator() {
