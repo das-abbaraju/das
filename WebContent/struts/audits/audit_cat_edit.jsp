@@ -100,7 +100,7 @@
 	<s:if test="#q.questionType == 'License'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
 			onchange="saveAnswer('%{#divID}', this);"/>
-		<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />			
+		<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />			
 	</s:if>
 	<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
 		<s:checkbox fieldValue="X" value="#a.id > 0 && #a.answer.length() == 1" name="answer%{#divID}"

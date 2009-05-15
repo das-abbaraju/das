@@ -24,7 +24,7 @@
 	<s:else>
 		<s:property value="#a.answer" />
 		<s:if test="#q.questionType == 'License'">
-			<s:property value="@com.picsauditing.PICS.pqf.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
+			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 	</s:else>
 	

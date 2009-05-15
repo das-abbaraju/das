@@ -5,13 +5,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.redFlagReport.FlagCriteria;
 import com.picsauditing.cron.CronMetricsAggregator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -21,7 +19,6 @@ import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
