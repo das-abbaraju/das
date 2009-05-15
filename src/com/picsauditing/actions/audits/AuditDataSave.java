@@ -145,6 +145,11 @@ public class AuditDataSave extends AuditActionSupport {
 			if ("reload".equals(button)) {
 				return SUCCESS;
 			}
+			if(auditData.getQuestion().getId() == 57) {
+				if(!isValidNAICScode(auditData.getAnswer(), false)) {
+					addActionError("This is not a valid 2007 NAICS code");
+				}
+			}	
 			auditData = auditDataDao.save(auditData);
 			
 			
@@ -162,7 +167,11 @@ public class AuditDataSave extends AuditActionSupport {
 				if(tempAudit.getAuditType().isPqf()) {
 					if(auditData.getQuestion().getId() == 57) {
 						contractor.setNaics(new Naics());
-						contractor.getNaics().setCode(auditData.getAnswer());
+						if(isValidNAICScode(auditData.getAnswer(), false)) {
+							contractor.getNaics().setCode(auditData.getAnswer());
+							contractor.setNaicsValid(true);
+						}
+						
 					}
 				}
 				accountDao.save(contractor);
@@ -283,16 +292,6 @@ public class AuditDataSave extends AuditActionSupport {
 			databaseCopy = auditData;
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 		
-		if(databaseCopy.getQuestion().getId() == 57) {
-			if(!isValidNAICScode(auditData.getAnswer())) {
-				addActionError("Invalid 2007 NAICS code");
-				return false;
-			}
-			else
-				return true;
-		}
-		
-		
 		if("Money".equals(questionType) 
 				|| "Decimal Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
@@ -344,11 +343,12 @@ public class AuditDataSave extends AuditActionSupport {
 		return sortedList;
 	}
 	
-	public boolean isValidNAICScode(String answer) {
+	public boolean isValidNAICScode(String answer, boolean isValid) {
 		Naics naics = naicsDAO.find(answer);
 		if(naics != null)
 			return true;
-		
+		if(isValid)
+			isValidNAICScode(answer, true);
 		return false;
 	}
 }
