@@ -2,7 +2,6 @@ package com.picsauditing.actions.users;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.Preparable;
@@ -16,8 +15,8 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.util.SpringUtils;
@@ -43,6 +42,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		if (permissions == null)
 			return;
 		u = dao.find(permissions.getUserId());
+		// Load the account too if they are a contractor
+		u.getAccount().isContractor();
 		dao.clear();
 	}
 
@@ -82,6 +83,14 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			}
 			u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 			u = dao.save(u);
+			
+			if(u.getAccount().isContractor()) {
+				ContractorAccount contractor = (ContractorAccount)u.getAccount();
+				contractor.setContact(u.getName());
+				contractor.setEmail(u.getEmail());
+				contractor.setPhone(u.getPhone());
+				accountDao.save(contractor);
+			}
 
 			addActionMessage("Your profile was saved successfully");
 		}
