@@ -15,7 +15,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.Strings;
 
 @Transactional
 public class AuditCategoryDataDAO extends PicsDAO {

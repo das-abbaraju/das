@@ -20,19 +20,21 @@ public class ReportAccountQuick extends ReportAccount {
 		sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor')");
 		sql.setPermissions(permissions);
 		orderByDefault = "a.type, a.name";
-		
+
 		ReportFilterContractor f = getFilter();
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
 			int id = Strings.extractAccountID(accountName);
-			if (id > 0)
-				report.addFilter(new SelectFilterInteger("id", "a.id = ?", id));
-			else
-				report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%'", accountName));
+			if (id > 0) {
+				sql.addWhere("a.id = " + id);
+			} else {
+				sql.addWhere("a.name LIKE '" + accountName + "%' OR a.nameIndex LIKE '%"
+						+ Strings.indexName(accountName) + "%'");
+			}
 		}
 
 	}
-	
+
 	@Override
 	protected String returnResult() throws IOException {
 		if (data.size() == 1) {
