@@ -13,15 +13,10 @@ import com.picsauditing.util.log.PicsLogger;
 
 public class PicsInterceptor extends AbstractInterceptor {
 	
-	//these are pages which should flip over to ssl
+	/**
+	 * these are pages which should flip over to ssl
+	 */
 	public static Set<String> securePages = new HashSet<String>();
-	
-	//these are pages which do not require the user to be logged in
-//	public static List<String> publicPages = new Vector<String>();
-//	
-//	public static Set<String> protectedPages = new HashSet<String>();
-//	public static Set<String> unprotectedPages = new HashSet<String>();
-	
 	
 	@Override
 	public String intercept(ActionInvocation arg0) throws Exception {
