@@ -98,7 +98,7 @@
 					</s:form>
 				</s:if>
 			</fieldset>
-		</s:if> <s:if test="permissions.admin">
+		</s:if>
 			<div class="clear"></div>
 			<h3 style="margin-top: 50px">Past Invoices</h3>
 			<table class="report">
@@ -127,7 +127,7 @@
 					</s:iterator>
 				</tbody>
 			</table>
-		</s:if></td>
+		</td>
 	</tr>
 </table>
 
