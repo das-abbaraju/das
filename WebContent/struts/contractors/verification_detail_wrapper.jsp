@@ -2,13 +2,15 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<script src="js/prototype.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
-<script src="js/validate_contractor.js" type="text/javascript"></script>
-	<script type="text/javascript"
+<script src="js/prototype.js" type="text/javascript"></script>
+<script type="text/javascript"
 		src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+<script src="js/notes.js" type="text/javascript"></script>
+<script src="js/validate_contractor.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, answerId) {
@@ -241,31 +243,23 @@
 
 <div id="verification_audit"></div>
 <div class="clear"></div>
-	<table>
-		<tr bgcolor="#003366" class="whiteTitle">
-			<td>Contractor Notes:</td>
-		</tr>
-		<s:iterator value="contractorNotes">
-			<tr class="blueMain">
-				<td><s:property value="summary"/></td>
-			</tr>
-		</s:iterator>
-		<tr><td><a href="ContractorNotes.action?id=<s:property value="id" />">...show all
-				notes</a></td></tr>
-		<tr class="blueMain">
-			<td><div class="buttons">
-					<button name="button" onclick="previewEmail();">Preview Email</button>
-					<button class="positive" name="button" onclick="sendEmail();">Send Email</button>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td id="emailTemplate"></td>
-		</tr>
-		<tr>
-			<td><div id="emailStatus" style="font-style: italic; color: red;"></div></td>
-		</tr>
-	</table>
+<table>
+	<tr class="blueMain">
+		<td><div class="buttons">
+				<button name="button" onclick="previewEmail();">Preview Email</button>
+				<button class="positive" name="button" onclick="sendEmail();">Send Email</button>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td id="emailTemplate"></td>
+	</tr>
+	<tr>
+		<td><div id="emailStatus" style="font-style: italic; color: red;"></div></td>
+	</tr>
+</table>
+
+<div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 </body>
 </html>

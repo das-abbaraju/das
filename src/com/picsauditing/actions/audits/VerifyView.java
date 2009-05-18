@@ -24,13 +24,13 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
+@SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
@@ -49,6 +49,7 @@ public class VerifyView extends ContractorActionSupport {
 		super(accountDao, contractorAuditDAO);
 		this.auditDataDAO = auditDataDAO;
 		this.noteDAO = noteDAO;
+		noteCategory = NoteCategory.Audits;
 	}
 
 	public String execute() throws Exception {
@@ -180,11 +181,6 @@ public class VerifyView extends ContractorActionSupport {
 
 		output = "The email was sent at and the contractor notes were stamped";
 		return SUCCESS;
-	}
-
-	public List<Note> getContractorNotes() {
-		List<Note> notes = noteDAO.getNotes(contractor.getId(), permissions, "noteCategory = 'Audits'", 10);
-		return notes;
 	}
 
 	public Map<Integer, AuditData> getPqfQuestions() {
