@@ -146,6 +146,17 @@
 			value="#a.answer" name="answer%{#divID}" 
 			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"/>
 	</s:if>
+	<s:if test="#q.questionType == 'AMBest'">
+		<input type="text" id="ambest_autocomplete" name="autocomplete_parameter"/>
+		<div id="ambest_autocomplete_choices" class="autocomplete"></div>
+		
+		<script type="text/javascript">
+			new Ajax.Autocompleter("ambest_autocomplete", "ambest_autocomplete_choices", "AmBestSuggestAjax.action", {paramName: "search", afterUpdateElement : saveNaic});
+			function saveNaic(text, li) {
+			    alert (li.id);
+			}
+		</script>
+	</s:if>
 	<s:if test="#q.questionType.startsWith('File')">
 		<nobr>
 			<s:if test="#a.id > 0 && #a.answer.length() > 0">

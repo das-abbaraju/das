@@ -936,6 +936,10 @@
 			</result>
 		</action>
 
+		<action name="AmBestSuggestAjax"
+			class="com.picsauditing.actions.AmBestAction">
+			<result>/struts/misc/ambest_suggest.jsp</result>
+		</action>
 
 
 

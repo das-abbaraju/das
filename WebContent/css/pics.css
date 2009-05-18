@@ -17,8 +17,8 @@ p {
 #content div.clear {
 	float: none;
 	clear: both;
-	height: 0px; 
-	margin: 0px; 
+	height: 0px;
+	margin: 0px;
 	padding: 0px;
 }
 
@@ -68,7 +68,7 @@ p {
 		margin-top: 10px;
 		padding-top: 8px;
 */
-/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
+	/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 #sidebox {
 	float: right;
 	margin: 10px auto;
@@ -86,14 +86,14 @@ p {
 	padding-bottom: 7px;
 }
 
-#sidebox a, #sidebox a:link, #sidebox a:visited {
+#sidebox a,#sidebox a:link,#sidebox a:visited {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #eeeeee;
 	padding: 5px;
 }
 
-#sidebox a:hover, #sidebox a:active {
+#sidebox a:hover,#sidebox a:active {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	color: #1B3665;
@@ -107,10 +107,7 @@ p {
 	background: url('../images/3dsquare-left.jpg') no-repeat bottom left;
 	height: 30px
 }
-*/
-
-
-/********************  SMALL NAV STYLES  ************************/
+*/ /********************  SMALL NAV STYLES  ************************/
 	/*#smallnav {
 	width: 260px;
 	margin-top: 10px;
@@ -141,9 +138,7 @@ p {
 	padding: 10px 5px;
 	background-color: #eeeeee;
 	text-decoration: none;
-}*/
-
-/********************  Main body Styles  ************************/
+}*/ /********************  Main body Styles  ************************/
 #bodyholder {
 	margin: 0 auto;
 	background-color: white;
@@ -158,7 +153,7 @@ p {
 	position: static;
 	margin: 0;
 	padding: 45px;
-	height : 100%;
+	height: 100%;
 }
 
 #content div {
@@ -246,6 +241,7 @@ h1,h2,h3,h4,h5,h6 {
 	font-weight: bold;
 	letter-spacing: -1px;
 }
+
 h1 {
 	font-size: 32px;
 	color: rgb(168, 77, 16);
@@ -283,19 +279,19 @@ h6 {
 	color: #003768;
 }
 
-a:link, a:visited {
+a:link,a:visited {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	color: #003768;
 	text-decoration: underline;
 }
 
-a:hover, a:active {
+a:hover,a:active {
 	font-family: Helvetica, Arial, Verdana, sans-serif;
 	color: rgb(168, 77, 16);
 	text-decoration: underline;
 }
 
-b, strong {
+b,strong {
 	font-weight: bold;
 }
 
@@ -313,19 +309,36 @@ ul {
 }
 
 a[href $=".doc"] {
-	background: url('../images/icon_link_word.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
+	background: url('../images/icon_link_word.png') no-repeat left center;;
+	padding-left: 14px;
+	padding-right: 0;
+	padding-top: 0;
+	padding-bottom: 0
 }
 
-a[href $=".pdf"], a.pdf {
-	background: url('../images/icon_link_pdf.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
+a[href $=".pdf"],a.pdf {
+	background: url('../images/icon_link_pdf.png') no-repeat left center;;
+	padding-left: 14px;
+	padding-right: 0;
+	padding-top: 0;
+	padding-bottom: 0
 }
 
-a[href $=".xls"], a.excel {
-	background: url('../images/icon_link_excel.png') no-repeat left center;; padding-left:14px; padding-right:0; padding-top:0; padding-bottom:0
+a[href $=".xls"],a.excel {
+	background: url('../images/icon_link_excel.png') no-repeat left center;;
+	padding-left: 14px;
+	padding-right: 0;
+	padding-top: 0;
+	padding-bottom: 0
 }
 
 a.email {
-	background: url('../images/icon_link_email.png') no-repeat right center;; padding-left:0; padding-right:15px; padding-top:0; padding-bottom:0
+	background: url('../images/icon_link_email.png') no-repeat right center;
+	;
+	padding-left: 0;
+	padding-right: 15px;
+	padding-top: 0;
+	padding-bottom: 0
 }
 
 a.ext {
@@ -337,7 +350,10 @@ a.ext {
 a.print {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: url('../images/print_icon.gif') no-repeat left center;; padding-right:3px; padding-top:3px; padding-bottom:3px
+	background: url('../images/print_icon.gif') no-repeat left center;;
+	padding-right: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px
 }
 
 a.refresh {
@@ -367,8 +383,7 @@ a.edit {
 a.verify {
 	padding-left: 17px;
 	margin-left: 2px;
-	background: url('../images/okCheck.gif') no-repeat left center
-		;
+	background: url('../images/okCheck.gif') no-repeat left center;
 }
 
 a.view {
@@ -380,13 +395,19 @@ a.view {
 label.tooltipped {
 	background: url('../images/icon_text_alert.png') no-repeat left center;
 }
+
 /******************** Styles for vCard  ************************/ /*
 .vcard p{
  line-height: 15px;
   margin-bottom: -5px;
 } */
 p.email a {
-	background: url('../images/icon_link_email.png') no-repeat right center;; padding-left:0; padding-right:15px; padding-top:0; padding-bottom:0
+	background: url('../images/icon_link_email.png') no-repeat right center;
+	;
+	padding-left: 0;
+	padding-right: 15px;
+	padding-top: 0;
+	padding-bottom: 0
 }
 
 p.url a {
@@ -415,11 +436,11 @@ div.message_info {
 }
 
 /******************** Internal Page Navigation  ************************/
-#content #internalnavcontainer {
-	//display: block;
+#content #internalnavcontainer { //
+	display: block;
 	height: 30px;
-	width: 100%;
-	//position: relative;
+	width: 100%; //
+	position: relative;
 }
 
 ul#navlist {
@@ -448,19 +469,20 @@ ul#navlist {
 	margin-left: 5px;
 }
 
-#navlist a:link, #navlist a:visited {
+#navlist a:link,#navlist a:visited {
 	color: #fff;
 	background-color: #003768;
 	text-decoration: none;
 }
 
-#navlist a:hover, #navlist a:active {
+#navlist a:hover,#navlist a:active {
 	color: #fff;
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
 }
 
-#navlist a.dropdown, #navlist a.dropdown:active, #navlist a.dropdown:visited, #navlist a.dropdown:hover {
+#navlist a.dropdown,#navlist a.dropdown:active,#navlist a.dropdown:visited,#navlist a.dropdown:hover
+	{
 	background-image: url('../images/down.gif');
 	background-position: right;
 	background-repeat: no-repeat;
@@ -475,7 +497,7 @@ ul#navlist {
 
 #navlist a.inactive {
 	color: #fff;
-	background-color: rgb(192,192,192);
+	background-color: rgb(192, 192, 192);
 	text-decoration: none;
 }
 
@@ -531,7 +553,8 @@ div#alert {
 	padding-left: 5em;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
+	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px
+		10px;
 	width: 86%
 }
 
@@ -546,16 +569,16 @@ div#error {
 	margin-bottom: 10px;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
 	width: 86%;
-	clear : left
+	clear: left
 }
 
-td.money, th.money {
+td.money,th.money {
 	text-align: right;
 }
-	
+
 /* add to table elements representing money to have it right aligned */
-/********************** BUTTONS ******************************/
-div.buttons a, .picsbutton, div.buttons button {
+	/********************** BUTTONS ******************************/
+div.buttons a,.picsbutton,div.buttons button {
 	display: block;
 	float: left;
 	margin: 0 7px 0 0;
@@ -572,11 +595,11 @@ div.buttons a, .picsbutton, div.buttons button {
 	padding: 5px 10px 6px 7px; /* Links */
 }
 
-.picsbutton, .buttons a, .buttons button {
+.picsbutton,.buttons a,.buttons button {
 	background-color: #fff;
 }
 
-.picsbutton, .buttons button {
+.picsbutton,.buttons button {
 	width: auto;
 	overflow: visible;
 	padding: 4px 10px 3px 7px; /* IE6 */
@@ -591,7 +614,7 @@ div.buttons a, .picsbutton, div.buttons button {
 	padding: 4px 10px 3px 7px; /* IE7 */
 }
 
-.buttons button img, .buttons a img {
+.buttons button img,.buttons a img {
 	margin: 0 3px -3px 0 !important;
 	padding: 0;
 	border: none;
@@ -600,7 +623,7 @@ div.buttons a, .picsbutton, div.buttons button {
 }
 
 /* UTILITIES */
-.picsbutton:hover, button:hover, .buttons a:hover {
+.picsbutton:hover,button:hover,.buttons a:hover {
 	background-color: #dff4ff;
 	border: 2px solid #6990DB;
 	border-bottom: 1px solid #6990DB;
@@ -608,7 +631,7 @@ div.buttons a, .picsbutton, div.buttons button {
 	color: #336699;
 }
 
-.picsbutton:active, .buttons a:active {
+.picsbutton:active,.buttons a:active {
 	background-color: #6299c5;
 	border: 2px solid #6990DB;
 	border-bottom: 1px solid #6990DB;
@@ -669,13 +692,12 @@ div.buttons a, .picsbutton, div.buttons button {
 	border: 1px solid #666;
 	cursor: default;
 }*/
-
-.picsbutton[disabled], .picsbutton[disabled]:hover{
+.picsbutton[disabled],.picsbutton[disabled]:hover {
 	background: #dedede;
 	border: 2px solid #ababab;
 	border-top: 1px solid #ababab;
 	border-left: 1px solid #ababab;
-	cursor:default;
+	cursor: default;
 	color: #ababab;
 }
 
@@ -696,7 +718,8 @@ div.buttons a, .picsbutton, div.buttons button {
 	background: url('../images/help.gif') no-repeat left center;
 }
 
-#helpbox a, a:active, a:hover, a:visited {
+#helpbox a,a:active,a:hover,a:visited {
+	
 }
 
 #chatIcon {
@@ -737,7 +760,6 @@ div.pageStats {
 	float: right;
 }
 
-
 /**** Legacy Styles ****/
 .blueSmall {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -745,6 +767,7 @@ div.pageStats {
 	color: #003366;
 	line-height: 15px;
 }
+
 a.blueSmall:link {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
@@ -758,18 +781,21 @@ a.blueSmall:link {
 	color: #003366;
 	line-height: 23px;
 }
+
 .redMain {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
-	color: rgb(168,77,16);
+	color: rgb(168, 77, 16);
 	line-height: 23px;
 }
+
 .whiteMain {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
 	color: #FFFFFF;
 	line-height: 23px;
 }
+
 .whiteTitle {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
@@ -777,6 +803,7 @@ a.blueSmall:link {
 	line-height: 23px;
 	font-weight: bold;
 }
+
 a.whiteTitle:link {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
@@ -784,6 +811,7 @@ a.whiteTitle:link {
 	line-height: 23px;
 	font-weight: bold;
 }
+
 a.whiteTitle:visited {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
@@ -791,6 +819,7 @@ a.whiteTitle:visited {
 	line-height: 23px;
 	font-weight: bold;
 }
+
 a.whiteTitle:hover {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
@@ -798,11 +827,13 @@ a.whiteTitle:hover {
 	line-height: 23px;
 	font-weight: bold;
 }
+
 .forms {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	color: #003366;
 }
+
 .blueHeader {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
@@ -810,10 +841,40 @@ a.whiteTitle:hover {
 	line-height: 23px;
 	font-weight: bold;
 }
+
 a.blueHeader:link {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13px;
 	color: #003366;
 	line-height: 23px;
 	font-weight: bold;
+}
+
+div.autocomplete {
+	position: absolute;
+	background-color: white;
+	border: 1px solid #888;
+	margin: 0;
+	padding: 0;
+}
+
+div.autocomplete ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+div.autocomplete ul li.selected {
+	background-color: #ffb;
+}
+
+div.autocomplete ul li {
+	list-style-type: none;
+	display: block;
+	margin: 0;
+	padding: 2px;
+	padding-left: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	white-space: nowrap;
 }

@@ -11,7 +11,7 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <s:if test="mode == 'Edit' || mode == 'Verify'">
 	<script type="text/javascript"
-		src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+		src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
 	<script type="text/javascript" src="js/validateForms.js"></script>
 	<script type="text/javascript" src="js/audit_cat_edit.js"></script>
 </s:if>
