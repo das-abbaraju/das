@@ -147,15 +147,27 @@
 			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'AMBest'">
-		<input type="text" id="ambest_autocomplete" name="autocomplete_parameter"/>
+		<input type="hidden" id="ambest_naic_code" />
+		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" />
 		<div id="ambest_autocomplete_choices" class="autocomplete"></div>
 		
 		<script type="text/javascript">
-			new Ajax.Autocompleter("ambest_autocomplete", "ambest_autocomplete_choices", "AmBestSuggestAjax.action", {paramName: "search", afterUpdateElement : saveNaic});
+			new Ajax.Autocompleter("ambest_autocomplete", "ambest_autocomplete_choices", "AmBestSuggestAjax.action", {tokens: ',', paramName: "search", afterUpdateElement : saveNaic});
 			function saveNaic(text, li) {
-			    alert (li.id);
+				if (li.id != "NEW")
+				    $('ambest_naic_code').value = li.id;
+				else
+					$('ambest_naic_code').value = "";
+				saveAnswerComment('<s:property value="%{#divID}" />', $('ambest_autocomplete'), $('ambest_naic_code'));
 			}
 		</script>
+		
+		<s:if test="#a.commentLength">
+			
+		</s:if>
+		<s:else>
+			
+		</s:else>
 	</s:if>
 	<s:if test="#q.questionType.startsWith('File')">
 		<nobr>
@@ -195,7 +207,7 @@
 		<br/>
 		<label>Comments:</label>
 		<s:textfield name="answer%{#divID}" value="%{#a.comment}" size="30"
-			onchange="saveComment('%{#divID}', this);"/>
+			onchange="saveAnswerComment('%{#divID}', null, this);"/>
 	</s:if>
 </div>
 

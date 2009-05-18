@@ -28,63 +28,21 @@ function verifyAnswer(questionid, answerid, parentid) {
 	});
 }
 
-
-function saveComment(divId, elm) {
-	if (catDataID == 0) return;
-
-	var	answerid = $(divId + '_answerID').value;
-	var	questionid = $(divId + '_questionID').value;
-	var	parentid = $(divId + '_parentAnswerID').value;
-	var	allowMultiple = $(divId + '_multiple').value;
-	
-	var divName = 'node_'+parentid+'_'+questionid;
-	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
-	
-	if (answerid > 0) {
-		pars += '&auditData.id='+answerid;
-		if (allowMultiple == 'true')
-			divName = 'node_'+answerid+'_'+questionid;
-	} else {
-		if (allowMultiple == 'true') {
-			// This is adding a new tuple, we may just want to call addTuple(questionid)
-			return;
-		}
-		pars += '&auditData.question.id=' + questionid;
-		if (parentid > 0)
-			pars += '&auditData.parentAnswer.id=' + parentid;
-	}
-
-	pars += '&auditData.comment=' + escape(elm.value);
-	
-	startThinking({div:'thinking_' + divId, message: "Saving Comment"});
-	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
-	{
-		method: 'post', 
-		parameters: pars,
-		onException: function(request, exception) {
-			alert(exception.message);
-		},
-		onSuccess: function(transport) {
-			stopThinking({div:'thinking_' + divId});
-			if (transport.status == 200)
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
-			else
-				alert("Failed to save comment" + transport.statusText + transport.responseText);
-		}
-	});
-	return true;
+function saveAnswer(divId, elm) {
+	saveAnswerComment(divId, elm, null);
 }
 
-function saveAnswer(divId, elm) {
+function saveAnswerComment(divId, answerElm, commentElm) {
 	if (catDataID == 0) return;
+
 	var	answerid = $(divId + '_answerID').value;
 	var	questionid = $(divId + '_questionID').value;
 	var	parentid = $(divId + '_parentAnswerID').value;
 	var	allowMultiple = $(divId + '_multiple').value;
-
+	
 	var divName = 'node_'+parentid+'_'+questionid;
 	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
-
+	
 	if (answerid > 0) {
 		pars += '&auditData.id='+answerid;
 		if (allowMultiple == 'true')
@@ -98,53 +56,59 @@ function saveAnswer(divId, elm) {
 		if (parentid > 0)
 			pars += '&auditData.parentAnswer.id=' + parentid;
 	}
-	
-	var thevalue = '';
-	if( elm.type == 'checkbox') {
-		if(
-			( elm.name == ('answer' + divId + '_C') || elm.name == ('answer' + divId + '_S') )
-			&& ( document.getElementById('answer' + divId + '_C') != undefined 
-			&& document.getElementById('answer' + divId + '_S') != undefined)  
-			) {
-				
-				if( document.getElementById('answer' + divId + '_C').checked )
-				{
-					thevalue = thevalue + 'C';
-				}
-								
-				if( document.getElementById('answer' + divId + '_S').checked )
-				{
-					thevalue = thevalue + 'S';
-				}
+
+	if (answerElm != null) {
+		var thevalue = '';
+		if( answerElm.type == 'checkbox') {
+			if(
+				( answerElm.name == ('answer' + divId + '_C') || answerElm.name == ('answer' + divId + '_S') )
+				&& ( document.getElementById('answer' + divId + '_C') != undefined 
+				&& document.getElementById('answer' + divId + '_S') != undefined)  
+				) {
+					
+					if( document.getElementById('answer' + divId + '_C').checked )
+					{
+						thevalue = thevalue + 'C';
+					}
+									
+					if( document.getElementById('answer' + divId + '_S').checked )
+					{
+						thevalue = thevalue + 'S';
+					}
+			}
+			else {
+				if (answerElm.checked)
+					thevalue = 'X';
+				else
+					thevalue = ' ';
+			}
+		} else if( answerElm.type == 'text' || answerElm.type == 'radio' || answerElm.type == 'textarea') {
+			thevalue = escape(answerElm.value);
+		} else if (answerElm.type == 'select-one') {
+			thevalue = answerElm.value;
+		} else {
+			alert('Unsupported type: ' + answerElm.type + ' ' +answerElm.value );
+			return false;
 		}
-		else {
-			if (elm.checked)
-				thevalue = 'X';
-			else
-				thevalue = ' ';
-		}
-	} else if( elm.type == 'text' || elm.type == 'radio' || elm.type == 'textarea') {
-		thevalue = escape(elm.value);
-	} else if (elm.type == 'select-one') {
-		thevalue = elm.value;
-	} else {
-		alert('Unsupported type: ' + elm.type + ' ' +elm.value );
-		return false;
+		pars += '&auditData.answer=' + thevalue;
 	}
-	pars += '&auditData.answer=' + thevalue;
+	
+	if (commentElm != null)
+		pars += '&auditData.comment=' + escape(commentElm.value);
 	
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
 	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
 	{
 		method: 'post', 
+		evalScripts: true,
 		parameters: pars,
 		onException: function(request, exception) {
 			alert(exception.message);
 		},
 		onSuccess: function(transport) {
-			if (transport.status == 200)
+			if (transport.status == 200) {
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
-			else
+			} else
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
 		}
 	});
