@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -81,6 +82,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setAuditColumns(new User(User.CONTRACTOR));
 			contractor.setNameIndex();
 			contractor.setQbSync(true);
+			contractor.setNaics(new Naics());
+			contractor.getNaics().setCode("0");
+			contractor.setNaicsValid(false);
 			contractor = accountDao.save(contractor);
 			user.setIsActive(YesNo.Yes);
 			user.setAccount(contractor);

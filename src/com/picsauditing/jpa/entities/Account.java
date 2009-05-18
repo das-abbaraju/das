@@ -211,7 +211,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	 * NAICS replaced the SIC in 1997
 	 * @return
 	 */
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "naics")
 	public Naics getNaics() {
 		return naics;
