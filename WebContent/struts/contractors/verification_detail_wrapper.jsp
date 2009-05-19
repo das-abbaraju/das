@@ -48,7 +48,6 @@
 	
 	function toggleOSHAVerify( oshaId ) {
 		var comment = $F($('comment_' + oshaId));
-		var applicable = $F($('applicable_' + oshaId));
 	
 		startThinking({div:'status_'+oshaId});
 		var pars = '';
@@ -61,7 +60,7 @@
 		var rwc = $F($('rwc_' + oshaId)); 
 		var tii = $F($('tii_' + oshaId)); 
 
-		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.applicable='+applicable+'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&osha.recordableTotal='+tii + '&button=toggleVerify';
+		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&osha.recordableTotal='+tii + '&button=toggleVerify';
 
 		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
 		{
