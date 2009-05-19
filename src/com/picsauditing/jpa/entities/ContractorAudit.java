@@ -308,7 +308,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		if (auditStatus.equals(AuditStatus.Exempt))
 			return creationDate;
-		
+
 		if (auditStatus.equals(AuditStatus.Pending)) {
 			if (auditor != null && assignedDate != null)
 				return assignedDate;
@@ -360,12 +360,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
 
 		for (ContractorAuditOperator cao : getOperators()) {
-			if (cao.getOperator().getInheritInsurance().getCanSeeInsurance().isTrue()) { //TODO - inherit or not ???
-				for (ContractorOperator co : getContractorAccount().getOperators()) {
-					if (co.getOperatorAccount().getInheritInsurance().getId() == cao.getOperator().getId()) {
-						currentCaos.add(cao);
-						break;
-					}
+			// BASF Corporate still needs insurance
+			for (ContractorOperator co : getContractorAccount().getOperators()) {
+				// Iterate over gencon tables
+				// co.getOperatorAccount() == BASF Abbotsford that's attached to Ancon Marine
+				if (co.getOperatorAccount().getCanSeeInsurance().isTrue() 
+						&& co.getOperatorAccount().getInheritInsurance().equals(cao.getOperator())) {
+					currentCaos.add(cao);
+					break;
 				}
 			}
 		}
@@ -429,8 +431,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
-	 * for "John Doe"
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM for "John Doe"
 	 * 
 	 * @return
 	 */

@@ -312,7 +312,7 @@ public class ConAuditList extends ContractorActionSupport {
 		List<ContractorOperator> result = new ArrayList<ContractorOperator>();
 
 		for (ContractorOperator o : getOperators()) {
-			if (o.getOperatorAccount().getInheritInsurance().getCanSeeInsurance().equals(YesNo.Yes)) {
+			if (o.getOperatorAccount().getCanSeeInsurance().isTrue()) {
 				for (AuditOperator ao : o.getOperatorAccount().getAudits()) {
 					if (ao.isCanSee() && ao.getMinRiskLevel() > 0
 							&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {

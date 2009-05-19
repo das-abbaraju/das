@@ -225,7 +225,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
 				OperatorAccount op = insurContractors.getOperatorAccount();
-				if (permissions.getAccountId() == op.getId() && op.getInheritInsurance().getCanSeeInsurance().equals(YesNo.Yes))
+				if (permissions.getAccountId() == op.getId() && op.getCanSeeInsurance().isTrue())
 					return true;
 			}
 			return false;
@@ -233,9 +233,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 		// If Contractor or admin, any operator requiring certs will see this
 		// If corporate, then the operators list is already restricted to my
 		// facilities
-		for (ContractorOperator insurContractors : getOperators()) {
-			OperatorAccount op = insurContractors.getOperatorAccount();
-			if (op.getCanSeeInsurance().equals(YesNo.Yes))
+		for (ContractorOperator co : getOperators()) {
+			if (co.getOperatorAccount().getCanSeeInsurance().isTrue())
 				return true;
 		}
 		return false;
