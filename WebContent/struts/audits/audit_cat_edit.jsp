@@ -163,7 +163,7 @@
 		</script>
 		
 		<s:if test="#a.commentLength">
-			
+			NAIC#: <s:property value="%{#a.comment}" /><br />
 		</s:if>
 		<s:else>
 			

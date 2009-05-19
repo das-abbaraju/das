@@ -7,6 +7,7 @@
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 
 <script type="text/javascript" src="js/prototype.js"></script>
 <s:if test="mode == 'Edit' || mode == 'Verify'">
@@ -86,6 +87,14 @@
 		window.open(url,title,pars);
 	}
 </script>
+<style>
+label.policy {
+	color:#003768;
+	font-weight:bold;
+	margin-right:0.3em;
+	margin-left: 1em;
+}
+</style>
 </head>
 <body>
 
@@ -203,6 +212,68 @@
 		</s:else>
 	</s:if>
 </s:iterator>
+
+<s:if test="conAudit.auditType.classType.policy">
+	<div class="subCategory">
+	<s:iterator value="conAudit.currentOperators">
+		<h3><s:property value="operator.name" /></h3>
+		<div class="question shaded">
+			<label class="policy">Status:</label> Verified
+				<i>by Trevor Allred on 5/1/2009</i>
+			<label class="policy">Meets Criteria</label> <img height="12" width="10" border="0" title="Green" src="images/icon_greenFlag.gif"/> Green
+			<br /><label class="policy">Notes:</label> Everything is correct but the additional named insured
+			<br /><label class="policy">Contractor Remarks:</label> I'm just submitting this for a bid right now.
+		</div>
+		<div class="question">
+			<span class="question">1.3.1&nbsp;&nbsp; Upload a Certificate of Insurance or other supporting documentation for this policy. If you selected "All" above, please make sure the Certificate does not list any Operators by name.</span>
+			<div class="answer">
+				<a href="" title="Open File" >View File</a> &nbsp;&nbsp;&nbsp;&nbsp;<a href="" onclick="return confirm('Are you sure?');" class="remove">Remove</a>
+				
+				<br /><a href="#" onclick="$('choose_certs').toggle(); return false;" >Attach File</a>
+				<table class="report" style="display: none" id="choose_certs">
+				<thead>
+				<tr>
+					<td>Certificate</td>
+					<td>Uploaded</td>
+					<td></td>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><a href="" title="Open File" >Policy2009_StateFarm.pdf</a></td>
+					<td>1/15/2009</td>
+					<td><a href="">Select</a></td>
+				</tr>
+				<tr>
+					<td>New Certificate</td>
+					<td></td>
+					<td colspan="2"><a href="" class="add">Add New</a></td>
+				</tr>
+				</tbody>
+				</table>
+			</div>
+			<br clear="all"/>
+		</div>
+		<div class="question shaded">
+			<span class="question">1.3.2&nbsp;&nbsp; Does the additional insured listed on the above certificate match EXACTLY as shown below?</span>
+			<div class="answer"><s:radio name="aiNameValid" list="#{'1':'Yes','0':'No'}"></s:radio></div>
+			<br clear="all"/>
+		</div>
+		<div class="question">
+			<span class="question">1.3.3&nbsp;&nbsp; If no, then enter the name listed:</span>
+			<div class="answer"><s:textfield name="aiName" /></div>
+			<br clear="all"/>
+		</div>
+		<div class="buttons">
+			<button class="positive">Approve</button>
+			<button class="negative">Reject</button>
+			<button>Not Applicable</button>
+		</div>
+		<br clear="all"/><br />
+	</s:iterator>
+	</div>
+</s:if>
+
 <s:if test="catDataID > 0">
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
