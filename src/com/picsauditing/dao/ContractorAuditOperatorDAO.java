@@ -45,7 +45,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	}
 
 	public List<ContractorAuditOperator> findByContractorAccount(int conID) {
-		String query = "SELECT cao FROM ContractorAuditOperator cao LEFT JOIN ContractorAudit ca ON cao.audit.id = ca.id WHERE ca.contractor.id = ?";
+		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = ?";
 
 		Query q = em.createQuery(query);
 		q.setParameter(1, conID);
