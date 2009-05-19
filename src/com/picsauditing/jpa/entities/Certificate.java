@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Certificate {
@@ -22,6 +23,7 @@ public class Certificate {
 		this.id = id;
 	}
 
+	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false, updatable = false)
 	public ContractorAccount getContractor() {
 		return contractor;
