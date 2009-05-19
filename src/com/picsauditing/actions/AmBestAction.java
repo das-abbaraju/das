@@ -3,20 +3,31 @@ package com.picsauditing.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AmBestAction extends PicsActionSupport {
 	private String search;
 	private List<AmBest> results;
+	private AmBestDAO amBestDao;
+
+	public AmBestAction(AmBestDAO amBestDao) {
+		this.amBestDao = amBestDao;
+	}
 
 	public String execute() throws Exception {
-		results = new ArrayList<AmBest>();
+
+		if (!Strings.isEmpty(search)) {
+			results = amBestDao.findByCompanyName(search);
+		}
 		
-		results.add(newItem("1234", "ABC Corp"));
-		results.add(newItem("8494", "Life Prudential"));
-		results.add(newItem("8509", "ASDF Inc"));
-		results.add(newItem("5503", "Juliet Mutual"));
+		if (results == null)
+			results = new ArrayList<AmBest>();
+		
+		if (results.size() == 0)
+			results.add(newItem("NEW", search));
 		
 		return SUCCESS;
 	}
