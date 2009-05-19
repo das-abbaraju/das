@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Certificate {
+public class Certificate extends BaseTable {
 	private int id;
 	private ContractorAccount contractor;
 	private String fileType;
