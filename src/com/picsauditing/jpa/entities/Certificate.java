@@ -40,6 +40,7 @@ public class Certificate {
 		this.fileType = fileType;
 	}
 
+	@Column(length = 100)
 	public String getDescription() {
 		return description;
 	}
