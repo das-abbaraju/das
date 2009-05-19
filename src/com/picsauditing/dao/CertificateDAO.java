@@ -11,8 +11,28 @@ import com.picsauditing.jpa.entities.Certificate;
 @Transactional
 public class CertificateDAO extends PicsDAO {
 
-	public Certificate find(String id) {
+	public Certificate save(Certificate o) {
+		if (o.getId() == 0) {
+			em.persist(o);
+		} else {
+			o = em.merge(o);
+		}
+		return o;
+	}
+
+	public Certificate find(int id) {
 		return em.find(Certificate.class, id);
+	}
+
+	public void remove(int id) {
+		Certificate row = find(id);
+		if (row != null)
+			remove(row);
+	}
+
+	public void remove(Certificate row) {
+		if (row != null)
+			em.remove(row);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -20,7 +40,7 @@ public class CertificateDAO extends PicsDAO {
 		Query q = em.createQuery("SELECT c FROM certificate WHERE contractor.id = ?");
 
 		q.setParameter(1, conID);
-		
+
 		return q.getResultList();
 	}
 }
