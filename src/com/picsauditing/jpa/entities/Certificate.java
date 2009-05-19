@@ -13,7 +13,7 @@ public class Certificate {
 	private String description;
 
 	@Id
-	@Column(nullable = false, length = 6)
+	@Column(nullable = false, length = 10)
 	public int getId() {
 		return id;
 	}
@@ -31,6 +31,7 @@ public class Certificate {
 		this.contractor = contractor;
 	}
 
+	@Column(nullable = false)
 	public String getFileType() {
 		return fileType;
 	}
