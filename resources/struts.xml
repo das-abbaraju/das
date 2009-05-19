@@ -212,7 +212,7 @@
 		</action>
 
 		<action name="ConInsureGuard"
-			class="com.picsauditing.actions.contractors.ConAuditList">
+			class="com.picsauditing.actions.contractors.ConInsureGuard">
 			<param name="auditClass">Policy</param>
 			<param name="noteCategory">Insurance</param>
 			<result>struts/contractors/contractor_insureguard.jsp</result>

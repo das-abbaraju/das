@@ -1,6 +1,6 @@
 package com.picsauditing.dao;
 
-import java.util.Date;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -8,8 +8,6 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -29,9 +27,13 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return o;
 	}
 
+	public ContractorAuditOperator find(int id) {
+		return em.find(ContractorAuditOperator.class, id);
+	}
+
 	public ContractorAuditOperator find(int auditId, int operatorId) {
 		Query query = em
-				.createQuery("SELECT t FROM ContractorAuditOperator t where t.audit.id = ? and t.operator.id = ? ");
+				.createQuery("SELECT t FROM ContractorAuditOperator t WHERE t.audit.id = ? AND t.operator.id = ? ");
 		query.setParameter(1, auditId);
 		query.setParameter(2, operatorId);
 
@@ -40,6 +42,15 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		} catch (NoResultException nre) {
 			return null;
 		}
+	}
+
+	public List<ContractorAuditOperator> findByContractorAccount(int conID) {
+		String query = "SELECT cao FROM ContractorAuditOperator cao LEFT JOIN ContractorAudit ca ON cao.audit.id = ca.id WHERE ca.contractor.id = ?";
+
+		Query q = em.createQuery(query);
+		q.setParameter(1, conID);
+
+		return q.getResultList();
 	}
 
 	public void remove(int id) {
@@ -53,15 +64,12 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		}
 	}
 
-	public ContractorAuditOperator find(int id) {
-		return em.find(ContractorAuditOperator.class, id);
-	}
-
 	public static void saveNoteAndEmail(ContractorAuditOperator cao, Permissions permissions) {
 		if (!cao.getStatus().isTemporary()) {
 			try {
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(33); // Insurance Approval Status Change
+				emailBuilder.setTemplate(33); // Insurance Approval Status
+				// Change
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setFromAddress(permissions.getEmail());
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
