@@ -80,39 +80,41 @@
 </s:if>
 
 <div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
-<s:if test="(operator == operator.inheritFlagCriteria && !classType.policy) 
-						|| (operator == operator.inheritInsuranceCriteria && classType.policy)">
-	<div>
-		<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList();return false;"/>
-		<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList();return false;" style="display:none"/>
-	</div>
-	<div id="questionList" style="display:none;margin-top:35px">
-		<h2>Add Flag Criteria Questions</h2>
-		<table class="report" id="questionTable">
-			<thead>
-				<tr>
-					<th> Type </th>
-					<th> # </th>
-					<th> Question </th>
-					<th></th>
-				</tr>
-			</thead>
-			<s:iterator value="questions">
-				<tr id="addRow<s:property value="id"/>">
-					<td>
-						<s:property value="subCategory.category.auditType.auditName"/>
-					</td>
-					<td>
-						<s:property value="expandedNumber"/>
-					</td>
-					<td>
-						<s:property value="question" escape="false"/>
-					</td>
-					<td><a href="#" class="add" onclick="showCriteria(<s:property value="id"/>,'<s:property value="subCategory.category.auditType.auditName"/>'); return false;">Add</td>
-				</tr>
-			</s:iterator>
-		</table>
-	</div>
+<s:if test="questions.size > 0">
+	<s:if test="(operator == operator.inheritFlagCriteria && !classType.policy) 
+							|| (operator == operator.inheritInsuranceCriteria && classType.policy)">
+		<div>
+			<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList();return false;"/>
+			<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList();return false;" style="display:none"/>
+		</div>
+		<div id="questionList" style="display:none;margin-top:35px">
+			<h2>Add Flag Criteria Questions</h2>
+			<table class="report" id="questionTable">
+				<thead>
+					<tr>
+						<th> Type </th>
+						<th> # </th>
+						<th> Question </th>
+						<th></th>
+					</tr>
+				</thead>
+				<s:iterator value="questions">
+					<tr id="addRow<s:property value="id"/>">
+						<td>
+							<s:property value="subCategory.category.auditType.auditName"/>
+						</td>
+						<td>
+							<s:property value="expandedNumber"/>
+						</td>
+						<td>
+							<s:property value="question" escape="false"/>
+						</td>
+						<td><a href="#" class="add" onclick="showCriteria(<s:property value="id"/>,'<s:property value="subCategory.category.auditType.auditName"/>'); return false;">Add</td>
+					</tr>
+				</s:iterator>
+			</table>
+		</div>
+	</s:if>
 </s:if>
 </div>
 

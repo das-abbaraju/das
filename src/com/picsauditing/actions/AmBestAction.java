@@ -22,7 +22,7 @@ public class AmBestAction extends PicsActionSupport {
 		if (!Strings.isEmpty(search)) {
 			results = amBestDao.findByCompanyName(search);
 		}
-		
+
 		if (results == null)
 			results = new ArrayList<AmBest>();
 		

@@ -37,6 +37,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	private Integer contractorsNeedingRecalculation = null;
 
 	private Collection<QuestionCriteria> questionList = null;
+	private List<AuditQuestion> addableQuestions = null;
 
 	public OperatorFlagCriteria(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
 			FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO,
@@ -99,48 +100,49 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	}
 
 	public List<AuditQuestion> getQuestions() {
-		List<AuditQuestion> result = questionDao.findWhere("isRedFlagQuestion = 'Yes'");
+		if (addableQuestions == null) {
+			addableQuestions = questionDao.findWhere("isRedFlagQuestion = 'Yes'");
 
-		Iterator<AuditQuestion> questions = result.iterator();
-		Set<AuditType> visibleAudits = new HashSet<AuditType>();
-		Set<OperatorAccount> children = new HashSet<OperatorAccount>();
+			Iterator<AuditQuestion> questions = addableQuestions.iterator();
+			Set<AuditType> visibleAudits = new HashSet<AuditType>();
+			Set<OperatorAccount> children = new HashSet<OperatorAccount>();
 
-		if (classType.isPolicy())
-			children.addAll(getInheritsInsuranceCriteria());
-		else
-			children.addAll(getInheritsFlagCriteria());
-		
-		children.add(operator);
-
-		for (OperatorAccount o : children) {
-			for (AuditOperator ao : o.getInheritAudits().getVisibleAudits()) {
-				if ((ao.getAuditType().getClassType().isPolicy() && classType.isPolicy())
-						|| !ao.getAuditType().getClassType().isPolicy() && !classType.isPolicy())
-					visibleAudits.add(ao.getAuditType());
-			}
-		}
-		while (questions.hasNext()) {
-			AuditQuestion question = questions.next();
-			if (!visibleAudits.contains(question.getAuditType()))
-				questions.remove();
+			if (classType.isPolicy())
+				children.addAll(getInheritsInsuranceCriteria());
 			else
-				for (QuestionCriteria cq : getQuestionList()) {
-					if (cq.question.equals(question)) {
-						questions.remove();
-						break;
-					}
+				children.addAll(getInheritsFlagCriteria());
+
+			children.add(operator);
+
+			for (OperatorAccount o : children) {
+				for (AuditOperator ao : o.getInheritAudits().getVisibleAudits()) {
+					if ((ao.getAuditType().getClassType().isPolicy() && classType.isPolicy())
+							|| !ao.getAuditType().getClassType().isPolicy() && !classType.isPolicy())
+						visibleAudits.add(ao.getAuditType());
 				}
-		}
-
-		Collections.sort(result, new Comparator<AuditQuestion>() {
-			@Override
-			public int compare(AuditQuestion o1, AuditQuestion o2) {
-				return o1.getSubCategory().getCategory().getAuditType().compareTo(
-						o2.getSubCategory().getCategory().getAuditType());
 			}
-		});
+			while (questions.hasNext()) {
+				AuditQuestion question = questions.next();
+				if (!visibleAudits.contains(question.getAuditType()))
+					questions.remove();
+				else
+					for (QuestionCriteria cq : getQuestionList()) {
+						if (cq.question.equals(question)) {
+							questions.remove();
+							break;
+						}
+					}
+			}
 
-		return result;
+			Collections.sort(addableQuestions, new Comparator<AuditQuestion>() {
+				@Override
+				public int compare(AuditQuestion o1, AuditQuestion o2) {
+					return o1.getSubCategory().getCategory().getAuditType().compareTo(
+							o2.getSubCategory().getCategory().getAuditType());
+				}
+			});
+		}
+		return addableQuestions;
 	}
 
 	/**
