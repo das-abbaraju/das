@@ -216,7 +216,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public List<ContractorAudit> findExpiredCertificates() {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ "WHERE ca.auditType.classType = 'Policy' "
-				+ "AND ca.auditStatus = 'Pending' "
+				+ "AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status = 'Pending') " 
 				+ "AND (ca.contractorAccount NOT IN (SELECT contractorAccount FROM EmailQueue et " 
 				+ "WHERE et.sentDate > :Before14Days "
 				+ "AND et.emailTemplate.id = 10)"
