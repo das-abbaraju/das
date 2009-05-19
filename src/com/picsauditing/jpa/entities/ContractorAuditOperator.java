@@ -17,8 +17,13 @@ public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
 	private CaoStatus status = CaoStatus.Pending;
-	private CaoStatus recommendedStatus = CaoStatus.Pending;
+	private String aiName;
+	private boolean aiNameValid;
+	//private Certificate certificate;
+	private FlagColor flag;
+	// private CaoStatus recommendedStatus = CaoStatus.Pending;
 	private String notes;
+	private String reason;
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -53,14 +58,21 @@ public class ContractorAuditOperator extends BaseTable {
 		this.status = status;
 	}
 
-	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
+	@Transient
+	@Deprecated
 	public CaoStatus getRecommendedStatus() {
-		return recommendedStatus;
+		if (flag == null)
+			return CaoStatus.NotApplicable;
+		if (flag.equals(FlagColor.Green))
+			return CaoStatus.Approved;
+		if (flag.equals(FlagColor.Amber))
+			return CaoStatus.Pending;
+		return CaoStatus.Rejected;
 	}
 
+	@Deprecated
 	public void setRecommendedStatus(CaoStatus recommendedStatus) {
-		this.recommendedStatus = recommendedStatus;
+		// this.recommendedStatus = recommendedStatus;
 	}
 
 	@Column(length = 255)
@@ -71,11 +83,55 @@ public class ContractorAuditOperator extends BaseTable {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	
+
 	@Transient
 	public boolean isNotesLength() {
-		if(Strings.isEmpty(notes))
+		if (Strings.isEmpty(notes))
 			return false;
 		return true;
 	}
+
+	public String getAiName() {
+		return aiName;
+	}
+
+	public void setAiName(String aiName) {
+		this.aiName = aiName;
+	}
+
+	public boolean isAiNameValid() {
+		return aiNameValid;
+	}
+
+	public void setAiNameValid(boolean aiNameValid) {
+		this.aiNameValid = aiNameValid;
+	}
+
+//	@ManyToOne
+//	@JoinColumn(name = "certificateID")
+//	public Certificate getCertificate() {
+//		return certificate;
+//	}
+//
+//	public void setCertificate(Certificate certificate) {
+//		this.certificate = certificate;
+//	}
+
+	@Enumerated(EnumType.STRING)
+	public FlagColor getFlag() {
+		return flag;
+	}
+
+	public void setFlag(FlagColor flag) {
+		this.flag = flag;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
 }
