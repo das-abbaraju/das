@@ -12,70 +12,20 @@
 							
 				<group description="PQF Verification">
 				<group description="Go to test account 6163">
-                <invoke url="http://alpha.picsauditing.com/Audit.action?auditID=33301"/>
+					<invoke url="http://alpha.picsauditing.com/ReportAuditList.action?&amp;filter.auditTypeID=11"/>
+					<clickLink label="Status"/>
+					<setSelectField name="filter.auditStatus" text="Submitted"/>
+					<clickButton label="Search"/>
+					<sleep seconds="3"/>
+					<clickLink label="Type"/>
+					<clickLink label="Annual Update"/>
+					<clickLink label="Verify"/>
+					<sleep seconds="2"/>
+					<clickButton label="Verify"/>
+					<sleep seconds="3"/>
 					</group>
-				<group description="Go to Verification page">	
-                <clickLink label="Verify" href="VerifyView.action"/>
-				<clickButton xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/div[@id='verification_detail']/form[@id='verify']/table[1]/tbody/tr[2]/td/input"/>
-				<sleep seconds="3"/>
-					</group>
-				<group description="Reject safety manual">
-				<setInputField htmlID="comment_1331" value="Manual not uploaded"/>
-				<clickElement htmlId="rejectButton"/>
-				<sleep seconds="5"/>
-				<clickLink label="PQF"/>
-				<verifyText text="Pending"/>
-					</group>
-				<group description="Verify safety manual">			
-				<clickLink label="Verify"/>
-				<clickButton label="Verify PQF"/>
-				<sleep seconds="3"/>
-				<clickElement htmlID="verify_1331"/>
-				<sleep seconds="3"/>
-				<verifyText text="Trevor Allred"/>
-				<clickElement htmlID="approveButton1"/>
-				<clickLink label="PQF"/>
-				<verifyText text="Active"/> 
-				</group>
-				<group description="Shift back to pending">
-				<clickLink label="System Edit"/>
-				<setSelectField name="conAudit.auditStatus" text="Pending"/>
-				<clickButton label="Save"/>
-				</group>
-				</group>
-		
-				<group description="Annual Update Verification">
-				<group description="Verify 2008"/>
-				<clickLink label="Verify"/>
-				<clickButton label="Verify"/>
-				<sleep seconds="3"/>
-				<clickButton description="Verify" htmlID="verify_2033"/>
-				<clickButton description="Verify" htmlID="verify_2064"/>
-				<clickButton description="Verify" htmlID="verify_2065"/>
-				<clickButton description="Verify" htmlID="verify_2066"/>
-				<clickButton description="Verify" htmlID="verify_2034"/>
-				<clickButton description="Verify" htmlID="verify_2037"/>
-				<clickButton description="Verify" htmlID="verify_16310"/>
-				<verifyText text="Trevor Allred"/>
-				<clickElement htmlID="approveButton1"/>	
-				<clickLink label="2008 Update"/>
-				<verifyText text="Active"/>
-				<group description="Shift back to pending">
-				<clickLink label="System Edit"/>
-				<setSelectField name="conAudit.auditStatus" text="Pending"/>
-				<clickButton label="Save"/>
-				<clickLink label="Verify"/>
-				<clickButton label="Verify"/>
-				<sleep seconds="3"/>
-				<clickButton description="Verify" htmlID="verify_2033"/>
-				<clickButton description="Verify" htmlID="verify_2064"/>
-				<clickButton description="Verify" htmlID="verify_2065"/>
-				<clickButton description="Verify" htmlID="verify_2066"/>
-				<clickButton description="Verify" htmlID="verify_2034"/>
-				<clickButton description="Verify" htmlID="verify_2037"/>
-				<clickButton description="Verify" htmlID="verify_16310"/>
+				
 					</group>	
-				</group>
 		    </steps>		
 		</webtest>
 	</target>
