@@ -32,4 +32,11 @@ public class FileUtilsTest extends TestCase {
 			fail(e.getMessage());
 		}
 	}
+	
+	public void testSize() {
+		assertEquals("1 Bytes", FileUtils.size(1));
+		assertEquals("1.2 KB", FileUtils.size(1234));
+		assertEquals("1.2 MB", FileUtils.size(1234000));
+		assertEquals("1.2 GB", FileUtils.size(1234000000));
+	}
 }

@@ -144,15 +144,18 @@ public class FileUtils {
 	}
 
 	static public String size(File file) {
-		long length = file.length();
+		return size(file.length());
+	}
+
+	static public String size(long length) {
 		if (length == 0)
 			return "empty or missing";
 		if (length > 1000000000)
-			return Math.round(length / 1000000000) + " GB";
+			return Math.round(length / 100000000f)/10f + " GB";
 		if (length > 1000000)
-			return Math.round(length / 1000000) + " MB";
+			return Math.round(length / 100000f)/10f + " MB";
 		if (length > 1000)
-			return Math.round(length / 1000) + " KB";
+			return Math.round(length / 100f)/10f + " KB";
 		return length + " Bytes";
 	}
 

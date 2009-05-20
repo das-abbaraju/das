@@ -21,7 +21,6 @@ public class ContractorAuditOperator extends BaseTable {
 	private boolean aiNameValid;
 	private Certificate certificate;
 	private FlagColor flag;
-	// private CaoStatus recommendedStatus = CaoStatus.Pending;
 	private String notes;
 	private String reason;
 

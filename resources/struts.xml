@@ -980,6 +980,10 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="ContractorPolicyConverter"
+			class="com.picsauditing.actions.contractors.ContractorPolicyConverter">
+			<result>struts/blank.jsp</result>
+		</action>
 
 
 
