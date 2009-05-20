@@ -11,7 +11,7 @@
 							&body_verify;
 							
 				<group description="PQF Verification">
-				<group description="Go to test account 6163">
+				<group description="Find contractor">
 					<invoke url="http://alpha.picsauditing.com/ReportAuditList.action?&amp;filter.auditTypeID=11"/>
 					<clickLink label="Status"/>
 					<setSelectField name="filter.auditStatus" text="Submitted"/>
@@ -24,7 +24,6 @@
 					<clickButton label="Verify"/>
 					<sleep seconds="3"/>
 					</group>
-				&doOfficeAudit;
 					</group>	
 		    </steps>		
 		</webtest>
