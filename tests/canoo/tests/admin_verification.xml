@@ -15,15 +15,27 @@
 					<invoke url="http://alpha.picsauditing.com/ReportAuditList.action?&amp;filter.auditTypeID=11"/>
 					<clickLink label="Status"/>
 					<setSelectField name="filter.auditStatus" text="Submitted"/>
+					<setSelectField name="filter.visible" text="Y"/>
 					<clickButton label="Search"/>
 					<sleep seconds="3"/>
-					<clickLink label="Type"/>
+					<clickLink label="Contractor"/>
 					<clickLink label="Annual Update"/>
 					<clickLink label="Verify"/>
 					<sleep seconds="2"/>
 					<clickButton label="Verify"/>
 					<sleep seconds="3"/>
 					</group>
+					<clickButton description="Verify" htmlID="verify_2033"/>
+					<clickButton description="Verify" htmlID="verify_2064"/>
+					<clickButton description="Verify" htmlID="verify_2065"/>
+					<clickButton description="Verify" htmlID="verify_2066"/>
+					<clickButton description="Verify" htmlID="verify_2034"/>
+					<clickButton description="Verify" htmlID="verify_2037"/>
+					<verifyText text="Trevor Allred"/>
+					<clickElement htmlID="approveButton1"/>
+					<clickLink label="Annual Update"/>
+					<verifyText text="Trevor Allred"/>
+					<verifyText text="Active"/>
 					</group>	
 		    </steps>		
 		</webtest>
