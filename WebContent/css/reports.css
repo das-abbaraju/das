@@ -53,7 +53,10 @@ table.report td.right, table.report th.right {
 	float: none;
 }
 
-
+table.noshade tbody tr:hover {
+	color: #4C4D4D;
+	background: #f9f9f9;
+}
 
 /******************** Primary Table class="tablestyle"  ************************/
 
