@@ -117,6 +117,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					co2.setForceBegin(null);
 					co2.setForceEnd(null);
 					co2.setForceFlag(null);
+					co2.setAuditColumns(permissions);
 					FlagColor newColor = calculator.calculate();
 					co2.getFlag().setFlagColor(newColor);
 					contractorOperatorDao.save(co2);
@@ -137,6 +138,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				for (ContractorOperator operator : getOperators()) {
 					operator.setForceEnd(forceEnd);
 					operator.setForceFlag(forceFlag);
+					operator.setAuditColumns(permissions);
 					// FlagColor newColor = calculator.calculate();
 					operator.getFlag().setFlagColor(forceFlag);
 					contractorOperatorDao.save(operator);
@@ -196,6 +198,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co.getFlag().setFlagColor(newColor);
 		}
 		co.getFlag().setWaitingOn(calculator.calculateWaitingOn());
+		co.setAuditColumns(permissions);
 		contractorOperatorDao.save(co);
 
 		PicsLogger.stop();
