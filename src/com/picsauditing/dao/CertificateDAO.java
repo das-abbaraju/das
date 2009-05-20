@@ -37,7 +37,7 @@ public class CertificateDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<Certificate> findByConId(int conID) {
-		Query q = em.createQuery("SELECT c FROM certificate WHERE contractor.id = ?");
+		Query q = em.createQuery("SELECT c FROM Certificate c WHERE c.contractor.id = ?");
 
 		q.setParameter(1, conID);
 
