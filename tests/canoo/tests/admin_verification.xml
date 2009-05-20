@@ -24,7 +24,7 @@
 					<clickButton label="Verify"/>
 					<sleep seconds="3"/>
 					</group>
-				
+				&doOfficeAudit;
 					</group>	
 		    </steps>		
 		</webtest>
