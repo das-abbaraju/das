@@ -14,8 +14,8 @@
 	$('addAuditManually').show();
 	}
 
-	function showCertUpload(conid) {
-		url = 'CertificateUpload.action?id='+conid+'&button=AddCert';
+	function showCertUpload(conid, certid) {
+		url = 'CertificateUpload.action?id='+conid+'&certID='+certid;
 		title = 'Upload';
 		pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 		fileUpload = window.open(url,title,pars);
@@ -270,7 +270,7 @@
 		<thead>
 			<tr><th>FileName</th>
 			<th>CreatedDate</th>
-			<th>Delete</th></tr>
+			<th></th></tr>
 		</thead>
 		<s:iterator value="certificates">
 			<tr>
@@ -279,15 +279,13 @@
 					target="_BLANK"><s:property value="description"/></a>
 				</td>
 				<td><s:date name="creationDate" format="M/d/yy"/></td>
-				<td><div class="buttons">
-					<input type="submit" class="picsbutton negative" name="button" value="Remove" />
-				</div>
-				</td>
+				<td><a class="edit"
+					href="#" onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)" title="Opens in new window (please disable your popup blocker)"">Edit</a></td>
 			</tr>
 		</s:iterator>
 	</table>
 	<div class="buttons">
-		<input type="button" class="picsbutton positive" value="Add File" onclick="showCertUpload(<s:property value="id" />)" title="Opens in new window (please disable your popup blocker)"/>
+		<input type="button" class="picsbutton positive" value="Add File" onclick="showCertUpload(<s:property value="id" />, 0)" title="Opens in new window (please disable your popup blocker)"/>
 	</div>
 </td>
 </tr>

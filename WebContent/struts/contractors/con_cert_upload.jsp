@@ -22,6 +22,7 @@
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="id" />
 	<br />
+	File Name : <s:textfield name="fileName" size="50"/><br/>
 	<s:file name="file" size="50"></s:file>
 	<br />
 	<div class="buttons"><a href="javascript: closePage();">Close
@@ -34,7 +35,13 @@
 		type="submit">Save</button>
 	</div>
 </s:form> <br clear="all" />
-
+<br clear="all" />
+<s:if test="file != null && file.exists()">
+	<div><a
+		href="CertificateUpload.action?id=<s:property value="id"/>&certID=<s:property value="certID"/>&button=download"
+		target="_BLANK">Open Existing <s:property value="fileSize" />
+	File</a></div>
+</s:if>
 </div>
 </div>
 </div>

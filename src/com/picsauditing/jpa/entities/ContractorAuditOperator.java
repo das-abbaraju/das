@@ -19,7 +19,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private CaoStatus status = CaoStatus.Pending;
 	private String aiName;
 	private boolean aiNameValid;
-	//private Certificate certificate;
+	private Certificate certificate;
 	private FlagColor flag;
 	// private CaoStatus recommendedStatus = CaoStatus.Pending;
 	private String notes;
@@ -107,15 +107,15 @@ public class ContractorAuditOperator extends BaseTable {
 		this.aiNameValid = aiNameValid;
 	}
 
-//	@ManyToOne
-//	@JoinColumn(name = "certificateID")
-//	public Certificate getCertificate() {
-//		return certificate;
-//	}
-//
-//	public void setCertificate(Certificate certificate) {
-//		this.certificate = certificate;
-//	}
+	@ManyToOne
+	@JoinColumn(name = "certificateID")
+	public Certificate getCertificate() {
+		return certificate;
+	}
+
+	public void setCertificate(Certificate certificate) {
+		this.certificate = certificate;
+	}
 
 	@Enumerated(EnumType.STRING)
 	public FlagColor getFlag() {

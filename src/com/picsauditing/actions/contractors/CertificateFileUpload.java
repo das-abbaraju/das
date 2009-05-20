@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 
 import org.apache.struts2.ServletActionContext;
+import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.CertificateDAO;
@@ -20,6 +21,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	protected String fileFileName = null;
 	private CertificateDAO certificateDAO = null;
 	protected int certID;
+	protected String fileName = null;
 
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
@@ -46,34 +48,25 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				}
 			}
 
-//			if (certID > 0 && button.startsWith("Delete")) {
-//				
-//				
-//				try {
-//
-//					for (File oldFile : getFiles(dataID))
-//						FileUtils.deleteFile(oldFile);
-//				} catch (Exception e) {
-//					addActionError("Failed to save file: " + e.getMessage());
-//					e.printStackTrace();
-//					return INPUT;
-//				}
-//
-//				auditDataDao.remove(answer.getId());
-//
-//				answer = new AuditData();
-//				answer.setAudit(conAudit);
-//				AuditQuestion question = null;
-//				if (questionID > 0)
-//					question = questionDAO.find(questionID);
-//				if (question == null) {
-//					addActionError("Failed to find question");
-//					return BLANK;
-//				}
-//				answer.setQuestion(question);
-//
-//				addActionMessage("Successfully removed file");
-//			}
+			if (certID > 0 && button.startsWith("Delete")) {
+				Certificate certificate = certificateDAO.find(certID);
+				if(certificate.getCaos().size() > 0) {
+					addActionError("Failed to remove the file attached to a Policy.");
+					return SUCCESS;
+				}
+				try {
+					for (File oldFile : getFiles(certID))
+						FileUtils.deleteFile(oldFile);
+				} catch (Exception e) {
+					addActionError("Failed to save file: " + e.getMessage());
+					e.printStackTrace();
+					return SUCCESS;
+				}
+				certificateDAO.remove(certificate);
+				addActionMessage("Successfully removed file");
+				return INPUT;
+			}
+
 			if (button.startsWith("Save")) {
 				if (file == null || file.length() == 0) {
 					addActionError("File was missing or empty");
@@ -89,7 +82,10 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 				Certificate certificate = new Certificate();
 				certificate.setContractor(contractor);
-				certificate.setDescription(fileFileName);
+				if(Strings.isEmpty(fileName))
+					certificate.setDescription(fileFileName);
+				else
+					certificate.setDescription(fileName);
 				certificate.setFileType(extension);
 				certificate.setAuditColumns(permissions);
 				certificate = certificateDAO.save(certificate);
@@ -100,15 +96,15 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						extension, true);
 				addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 			}
+		}
 
-			if (certID > 0) {
-				File[] files = getFiles(certID);
-				if (files != null) {
-					if (files.length > 0)
-						file = files[0];
-					if (files.length > 1)
-						addActionError("Somehow, two files were uploaded.");
-				}
+		if (certID > 0) {
+			File[] files = getFiles(certID);
+			if (files != null) {
+				if (files.length > 0)
+					file = files[0];
+				if (files.length > 1)
+					addActionError("Somehow, two files were uploaded.");
 			}
 		}
 
@@ -158,5 +154,13 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public void setCertID(int certID) {
 		this.certID = certID;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
