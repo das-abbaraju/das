@@ -10,6 +10,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -18,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -29,6 +31,7 @@ import com.picsauditing.jpa.entities.YesNo;
 public class ConInsureGuard extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private AuditDataDAO auditDataDAO;
+	private CertificateDAO certificateDAO;
 	private ContractorAuditOperatorDAO caoDao;
 	private int selectedAudit;
 	private int selectedOperator;
@@ -46,11 +49,12 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder, ContractorAuditOperatorDAO caoDao) {
+			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditBuilder = auditBuilder;
+		this.certificateDAO = certificateDAO;
 		this.caoDao = caoDao;
 		this.noteCategory = NoteCategory.Audits;
 	}
@@ -281,6 +285,9 @@ public class ConInsureGuard extends ContractorActionSupport {
 		}
 
 		return result;
+	}
+	public List<Certificate> getCertificates() {
+		return certificateDAO.findByConId(contractor.getId());
 	}
 
 	public Map<ContractorAudit, List<ContractorAuditOperator>> getRequested() {

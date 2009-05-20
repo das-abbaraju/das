@@ -1060,6 +1060,13 @@
 			<result>struts/audits/audit_cat_cao_verification.jsp</result>
 		</action>
 
+		<action name="CertificateUpload"
+			class="com.picsauditing.actions.contractors.CertificateFileUpload">
+			<result>struts/contractors/con_cert_upload.jsp</result>
+			<result name="success">struts/contractors/con_cert_upload.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+
 		<!--  Development struts mappings -->
 		<!-- 
 

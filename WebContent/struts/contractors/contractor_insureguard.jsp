@@ -13,12 +13,21 @@
 	$('addAudit').hide();	
 	$('addAuditManually').show();
 	}
+
+	function showCertUpload(conid) {
+		url = 'CertificateUpload.action?id='+conid+'&button=AddCert';
+		title = 'Upload';
+		pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
+		fileUpload = window.open(url,title,pars);
+		fileUpload.focus();
+	}
 </script>
 </head>
 <body>
 <s:push value="#subHeading='InsureGuard&trade;'"/>
 <s:include value="conHeader.jsp" />
-
+<table>
+<tr><td>
 <h3> Requested Insurance Policies (NEW) </h3>
 <table class="report">
 	<thead>
@@ -70,6 +79,7 @@
 </table>
 
 <!--<s:if test="requiredAuditTypeNames.size > 0 || upComingAudits.size > 0">
+>>>>>>> .r5432
 	<h3>Requested Insurance Policies</h3>
 	<table class="report">
 		<thead>
@@ -253,6 +263,35 @@
 	</s:iterator>
 </table>
 </s:if>
+</td>
+<td>
+	<h3>Certificates</h3>
+	<table class="report">
+		<thead>
+			<tr><th>FileName</th>
+			<th>CreatedDate</th>
+			<th>Delete</th></tr>
+		</thead>
+		<s:iterator value="certificates">
+			<tr>
+				<td>
+					<a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download" 
+					target="_BLANK"><s:property value="description"/></a>
+				</td>
+				<td><s:date name="creationDate" format="M/d/yy"/></td>
+				<td><div class="buttons">
+					<input type="submit" class="picsbutton negative" name="button" value="Remove" />
+				</div>
+				</td>
+			</tr>
+		</s:iterator>
+	</table>
+	<div class="buttons">
+		<input type="button" class="picsbutton positive" value="Add File" onclick="showCertUpload(<s:property value="id" />)" title="Opens in new window (please disable your popup blocker)"/>
+	</div>
+</td>
+</tr>
+</table>
 
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
