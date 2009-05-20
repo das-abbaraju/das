@@ -19,7 +19,57 @@
 <s:push value="#subHeading='InsureGuard&trade;'"/>
 <s:include value="conHeader.jsp" />
 
-<s:if test="requiredAuditTypeNames.size > 0 || upComingAudits.size > 0">
+<h3> Requested Insurance Policies (NEW) </h3>
+<table class="report">
+	<thead>
+		<tr>
+			<th>Policy Type</th>
+			<th>Operator</th>
+			<th>Status</th>
+			<th>File</th>
+		</tr>
+	</thead>
+	<s:iterator value="requested">
+	<tr>
+		<td rowspan="<s:property value="value.size+1"/>"><s:property value="key.auditType.auditName"/></td>
+	</tr>
+		<s:iterator value="value">
+		<tr>
+			<td><s:property value="operator.name"/></td>
+			<td class="Amber"><s:property value="status"/></td>
+			<td></td>
+		</tr>
+		</s:iterator>
+	</s:iterator>
+</table>
+
+<br/>
+
+<h3> Current Insurance Policies (NEW) </h3>
+<table class="report">
+	<thead>
+		<tr>
+			<th>Policy Type</th>
+			<th>Operator</th>
+			<th>Status</th>
+			<th>File</th>
+		</tr>
+	</thead>
+	<s:iterator value="current">
+	<tr>
+		<td rowspan="<s:property value="value.size+1"/>"><s:property value="key.auditType.auditName"/></td>
+	</tr>
+		<s:iterator value="value">
+		<tr>
+			<td><s:property value="operator.name"/></td>
+			<td class="<s:if test="status.approved">Green</s:if><s:else>Red</s:else>"><s:property value="status"/></td>
+			<td></td>
+		</tr>
+		</s:iterator>
+	</s:iterator>
+</table>
+
+<!--<s:if test="requiredAuditTypeNames.size > 0 || upComingAudits.size > 0">
 	<h3>Requested Insurance Policies</h3>
 	<table class="report">
 		<thead>
@@ -181,6 +231,8 @@
 	</s:iterator>
 </table>
 </s:if>
+-->
+
 <s:if test="expiredAudits.size() > 0">
 <br/>
 <h3>Expired Policies</h3>
@@ -189,12 +241,14 @@
 	<tr>
 		<th>Type</th>
 		<th>Effective</th>
+		<th>Expired</th>
 	</tr>
 	</thead>
 	<s:iterator value="expiredAudits" status="auditStatus">
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:date name="creationDate" format="M/d/yy" /></td>
+			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 </table>

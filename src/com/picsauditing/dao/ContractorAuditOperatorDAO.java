@@ -44,8 +44,8 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		}
 	}
 
-	public List<ContractorAuditOperator> findByContractorAccount(int conID) {
-		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = ?";
+	public List<ContractorAuditOperator> findActiveByContractorAccount(int conID) {
+		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = ? AND cao.audit.auditStatus != 'Expired'";
 
 		Query q = em.createQuery(query);
 		q.setParameter(1, conID);

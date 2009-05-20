@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
@@ -13,6 +12,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.YesNo;
 public class ConInsureGuard extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	private AuditDataDAO auditDataDAO;
+	private ContractorAuditOperatorDAO caoDao;
 	private int selectedAudit;
 	private int selectedOperator;
 	private String auditFor;
@@ -38,17 +39,19 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	private AuditBuilder auditBuilder;
 
-	public List<ContractorAudit> upComingAudits = new ArrayList<ContractorAudit>();
-	public List<ContractorAudit> currentAudits = new ArrayList<ContractorAudit>();
 	public List<ContractorAudit> expiredAudits = new ArrayList<ContractorAudit>();
 	public List<AuditData> certificatesFiles = new ArrayList<AuditData>();
 
+	private Map<ContractorAudit, List<ContractorAuditOperator>> requested = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
+	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
+
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder) {
+			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder, ContractorAuditOperatorDAO caoDao) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditBuilder = auditBuilder;
+		this.caoDao = caoDao;
 		this.noteCategory = NoteCategory.Audits;
 	}
 
@@ -57,7 +60,22 @@ public class ConInsureGuard extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 
-		Map<String, List<ContractorAudit>> allIMAudits = new HashMap<String, List<ContractorAudit>>();
+		List<ContractorAuditOperator> caoList = caoDao.findActiveByContractorAccount(contractor.getId());
+		
+		for (ContractorAuditOperator cao : caoList) {
+			if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
+				if (requested.get(cao.getAudit()) == null)
+					requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
+
+				requested.get(cao.getAudit()).add(cao);
+			} else if (cao.getStatus().isApproved() || cao.getStatus().isRejected()) {
+				if (current.get(cao.getAudit()) == null)
+					current.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
+
+				current.get(cao.getAudit()).add(cao);
+
+			}
+		}
 
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or all of them
@@ -67,21 +85,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 				if (auditClass.isPolicy()) {
 					if (contractorAudit.getAuditStatus().isExpired()) {
 						expiredAudits.add(contractorAudit);
-					} else {
-						for (ContractorAuditOperator conAuditOp : getCaosByAccount(contractorAudit)) {
-							if (conAuditOp.getStatus().isPending() || conAuditOp.getStatus().isSubmitted()
-									|| conAuditOp.getStatus().isVerified()) {
-								if (!upComingAudits.contains(contractorAudit))
-									upComingAudits.add(contractorAudit);
-								else
-									break;
-							} else if (conAuditOp.getStatus().isApproved() || conAuditOp.getStatus().isRejected()) {
-								if (!currentAudits.contains(contractorAudit))
-									currentAudits.add(contractorAudit);
-								else
-									break;
-							}
-						}
 					}
 				}
 			}
@@ -177,14 +180,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public void setSelectedOperator(int selectedOperator) {
 		this.selectedOperator = selectedOperator;
-	}
-
-	public List<ContractorAudit> getUpComingAudits() {
-		return upComingAudits;
-	}
-
-	public List<ContractorAudit> getCurrentAudits() {
-		return currentAudits;
 	}
 
 	public List<ContractorAudit> getExpiredAudits() {
@@ -286,5 +281,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 		}
 
 		return result;
+	}
+
+	public Map<ContractorAudit, List<ContractorAuditOperator>> getRequested() {
+		return requested;
+	}
+
+	public void setRequested(Map<ContractorAudit, List<ContractorAuditOperator>> requested) {
+		this.requested = requested;
+	}
+
+	public Map<ContractorAudit, List<ContractorAuditOperator>> getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(Map<ContractorAudit, List<ContractorAuditOperator>> current) {
+		this.current = current;
 	}
 }
