@@ -1,0 +1,162 @@
+package com.picsauditing.actions.contractors;
+
+import java.io.File;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.util.Downloader;
+import com.picsauditing.util.FileUtils;
+
+public class CertificateFileUpload extends ContractorActionSupport {
+	private static final long serialVersionUID = 2438788697676816034L;
+
+	private File file;
+	protected String fileContentType = null;
+	protected String fileFileName = null;
+	private CertificateDAO certificateDAO = null;
+	protected int certID;
+
+	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			CertificateDAO certificateDAO) {
+		super(accountDao, auditDao);
+		this.certificateDAO = certificateDAO;
+	}
+
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		this.findContractor();
+
+		if (button != null) {
+			if (certID > 0 && button.equals("download")) {
+				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+						.getServletContext());
+				try {
+					File[] files = getFiles(certID);
+					downloader.download(files[0], null);
+					return null;
+				} catch (Exception e) {
+					addActionError("Failed to download file: " + e.getMessage());
+					return BLANK;
+				}
+			}
+
+//			if (certID > 0 && button.startsWith("Delete")) {
+//				
+//				
+//				try {
+//
+//					for (File oldFile : getFiles(dataID))
+//						FileUtils.deleteFile(oldFile);
+//				} catch (Exception e) {
+//					addActionError("Failed to save file: " + e.getMessage());
+//					e.printStackTrace();
+//					return INPUT;
+//				}
+//
+//				auditDataDao.remove(answer.getId());
+//
+//				answer = new AuditData();
+//				answer.setAudit(conAudit);
+//				AuditQuestion question = null;
+//				if (questionID > 0)
+//					question = questionDAO.find(questionID);
+//				if (question == null) {
+//					addActionError("Failed to find question");
+//					return BLANK;
+//				}
+//				answer.setQuestion(question);
+//
+//				addActionMessage("Successfully removed file");
+//			}
+			if (button.startsWith("Save")) {
+				if (file == null || file.length() == 0) {
+					addActionError("File was missing or empty");
+					return SUCCESS;
+				}
+
+				String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+				if (!FileUtils.checkFileExtension(extension)) {
+					file = null;
+					addActionError("Bad File Extension");
+					return SUCCESS;
+				}
+
+				Certificate certificate = new Certificate();
+				certificate.setContractor(contractor);
+				certificate.setDescription(fileFileName);
+				certificate.setFileType(extension);
+				certificate.setAuditColumns(permissions);
+				certificate = certificateDAO.save(certificate);
+
+				certID = certificate.getId();
+
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID), getFileName(certID),
+						extension, true);
+				addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+			}
+
+			if (certID > 0) {
+				File[] files = getFiles(certID);
+				if (files != null) {
+					if (files.length > 0)
+						file = files[0];
+					if (files.length > 1)
+						addActionError("Somehow, two files were uploaded.");
+				}
+			}
+		}
+
+		return SUCCESS;
+	}
+
+	private String getFileName(int certID) {
+		return PICSFileType.certs + "_" + certID;
+	}
+
+	private File[] getFiles(int certID) {
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(certID));
+		return FileUtils.getSimilarFiles(dir, getFileName(certID));
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileFileName() {
+		return fileFileName;
+	}
+
+	public void setFileFileName(String fileFileName) {
+		this.fileFileName = fileFileName;
+	}
+
+	public String getFileSize() {
+		return FileUtils.size(file);
+	}
+
+	public int getCertID() {
+		return certID;
+	}
+
+	public void setCertID(int certID) {
+		this.certID = certID;
+	}
+}
