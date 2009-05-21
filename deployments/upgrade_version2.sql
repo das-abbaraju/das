@@ -19,33 +19,10 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 
---NAICS codes
-update accounts a,
-  (select
-     ca.conID,
-     answer
-   from contractor_audit ca
-     join pqfdata pd
-       on pd.auditID = ca.id
-     join naics n
-       on n.code = pd.answer
-   where ca.auditTypeID = 1
-       and pd.questionid = 57) t
-set a.naics = t.answer,    
-naicsValid = 1
-where a.id = t.conID and a.naics = 0;
-
-update accounts a,
-  (select
-     ca.conID,
-     answer
-   from contractor_audit ca
-     join pqfdata pd
-       on pd.auditID = ca.id
-     join naics n
-       on n.code = LEFT(pd.answer, 10)
-   where ca.auditTypeID = 1
-       and pd.questionid = 57) t
-set a.naics = LEFT(t.answer,10) ,    
-naicsValid = 0
-where a.id = t.conID and a.naics = 0;
+/**
+ * update the visible field to 0 on the CAO if not required
+ */
+update contractor_audit_operator cao set visible = 0 
+where status = 'NotApplicable' 
+and recommendedStatus = 'NotApplicable'
+and creationDate = updateDate;  

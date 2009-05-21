@@ -100,7 +100,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 
 		ContractorAccount contractor = contractorAccountDAO.find(conID);
 
-		List<Certificate> certificates = certificateDAO.findByConId(conID, permissions);
+		List<Certificate> certificates = certificateDAO.findByConId(conID);
 		Map<String, Certificate> certFiles = new HashMap<String, Certificate>();
 		for (Certificate c : certificates) {
 			File file = getFile(PICSFileType.certs, c.getId());

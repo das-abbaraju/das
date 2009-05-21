@@ -169,26 +169,32 @@
 </td>
 <td>
 	<h3>Certificates</h3>
-	<table class="report">
-		<thead>
-			<tr><th>FileName</th>
-			<th>CreatedDate</th>
-			<th>View</th>
-			<th>Edit</th></tr>
-		</thead>
-		<s:iterator value="certificates">
-			<tr>
-				<td>
-					<s:property value="description"/>
-				</td>
-				<td><s:date name="creationDate" format="M/d/yy"/></td>
-				<td><a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download" 
-					target="_BLANK"><img src="images/icon_insurance.gif"/></a></td>
-				<td><a class="edit"
-					href="#" onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)" title="Opens in new window (please disable your popup blocker)"">Edit</a></td>
-			</tr>
-		</s:iterator>
-	</table>
+	<s:if test="certificates.size() > 0">
+		<table class="report">
+			<thead>
+				<tr>
+					<th>FileName</th>
+					<th>CreatedDate</th>
+					<th>View</th>
+					<th>Edit</th>
+				</tr>
+			</thead>
+			<s:iterator value="certificates">
+				<tr>
+					<td><s:property value="description" /></td>
+					<td><s:date name="creationDate" format="M/d/yy" /></td>
+					<td><a
+						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download"
+						target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>
+					<td><s:if test="caos.size() == 0 && permissions.userId == createdBy.Id">
+						<a class="edit" href="#"
+							onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)"
+							title="Opens in new window (please disable your popup blocker)"">Edit</a>
+					</s:if></td>
+				</tr>
+			</s:iterator>
+		</table>
+	</s:if>
 	<div class="buttons">
 		<input type="button" class="picsbutton positive" value="Add File" onclick="showCertUpload(<s:property value="id" />, 0)" title="Opens in new window (please disable your popup blocker)"/>
 	</div>
