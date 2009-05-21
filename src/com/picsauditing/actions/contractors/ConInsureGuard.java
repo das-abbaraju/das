@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 @SuppressWarnings("serial")
 public class ConInsureGuard extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
@@ -49,7 +52,8 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private Map<ContractorAudit, List<ContractorAuditOperator>> current = new HashMap<ContractorAudit, List<ContractorAuditOperator>>();
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
+			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder, CertificateDAO certificateDAO,
+			ContractorAuditOperatorDAO caoDao) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -65,7 +69,14 @@ public class ConInsureGuard extends ContractorActionSupport {
 		findContractor();
 
 		List<ContractorAuditOperator> caoList = caoDao.findActiveByContractorAccount(contractor.getId());
-		
+
+		Collections.sort(caoList, new Comparator<ContractorAuditOperator>() {
+			@Override
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().compareTo(o2.getOperator());
+			}
+		});
+
 		for (ContractorAuditOperator cao : caoList) {
 			if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
 				if (requested.get(cao.getAudit()) == null)
@@ -286,6 +297,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		return result;
 	}
+
 	public List<Certificate> getCertificates() {
 		return  certificateDAO.findByConId(contractor.getId(), permissions);
 	}
