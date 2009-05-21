@@ -28,6 +28,7 @@
 <s:include value="conHeader.jsp" />
 <table>
 <tr><td>
+
 <h3> Requested Insurance Policies (NEW) </h3>
 <table class="report noshade">
 	<thead>
@@ -41,21 +42,23 @@
 		</tr>
 	</thead>
 	<s:iterator value="requested">
-	<tr>
-		<td rowspan="<s:property value="value.size+1"/>">
-			<a href="Audit.action?auditID=<s:property value="key.id" />"><s:property value="key.auditType.auditName" /></a>
-			<s:if test="key.requestingOpAccount != null">
-				<span style="font-size:10px"> for <s:property value="key.requestingOpAccount.name"/></span>
+
+		<s:iterator value="value" status="stat">
+		<tr>
+			<s:if test="#stat.first">
+				<td rowspan="<s:property value="value.size"/>">
+					<a href="Audit.action?auditID=<s:property value="key.id" />"><s:property value="key.auditType.auditName" /></a>
+					<s:if test="key.requestingOpAccount != null">
+						<br />
+						<span style="font-size:10px"> for <s:property value="key.requestingOpAccount.name"/></span>
+					</s:if>
+				</td>
+				<td rowspan="<s:property value="value.size"/>"><s:date name="key.creationDate" format="M/d/yy" /></td>
+				<td rowspan="<s:property value="value.size"/>"><s:date name="key.expiresDate" format="M/d/yy"/></td>
 			</s:if>
-		</td>
-		<td rowspan="<s:property value="value.size+1"/>"><s:date name="key.creationDate" format="M/d/yy" /></td>
-		<td rowspan="<s:property value="value.size+1"/>"><s:date name="key.expiresDate" format="M/d/yy"/></td>
-	</tr>
-		<s:iterator value="value">
-		<tr style="height:30px">
 			<td><s:property value="operator.name"/></td>
 			<td class="Amber"><s:property value="status"/></td>
-			<td>
+			<td style="height:30px">
 				<s:if test="certificate != null">
 					<a title="<s:property value="certificate.description"/>"
 						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="certificate.id"/>&button=download">
@@ -66,6 +69,7 @@
 		</tr>
 		</s:iterator>
 	</s:iterator>
+
 	<s:if test="manuallyAddAudit">
 		<s:if test="auditTypeName.size > 0">
 			<tr>
@@ -98,7 +102,6 @@
 		</tr>
 	</s:if>
 </table>
-
 <br/>
 
 <h3> Current Insurance Policies (NEW) </h3>
@@ -114,24 +117,26 @@
 		</tr>
 	</thead>
 	<s:iterator value="current">
-	<tr>
-		<td rowspan="<s:property value="value.size+1"/>">
-			<a href="Audit.action?auditID=<s:property value="key.id" />"><s:property value="key.auditType.auditName" /></a>
-			<s:if test="key.requestingOpAccount != null">
-				<span style="font-size:10px"> for <s:property value="key.requestingOpAccount.name"/></span>
+		<s:iterator value="value" status="stat">
+		<tr>
+			<s:if test="#stat.first">
+				<td rowspan="<s:property value="value.size"/>">
+					<a href="Audit.action?auditID=<s:property value="key.id" />"><s:property value="key.auditType.auditName" /></a>
+					<s:if test="key.requestingOpAccount != null">
+						<br />
+						<span style="font-size:10px"> for <s:property value="key.requestingOpAccount.name"/></span>
+					</s:if>
+				</td>
+				<td rowspan="<s:property value="value.size"/>"><s:date name="key.creationDate" format="M/d/yy" /></td>
+				<td rowspan="<s:property value="value.size"/>"><s:date name="key.expiresDate" format="M/d/yy"/></td>
 			</s:if>
-		</td>
-		<td rowspan="<s:property value="value.size+1"/>"><s:date name="key.creationDate" format="M/d/yy" /></td>
-		<td rowspan="<s:property value="value.size+1"/>"><s:date name="key.expiresDate" format="M/d/yy"/></td>
-	</tr>
-		<s:iterator value="value">
-		<tr style="height:30px">
 			<td><s:property value="operator.name"/></td>
 			<td class="<s:if test="status.approved">Green</s:if><s:else>Red</s:else>"><s:property value="status"/></td>
-			<td>
+			<td style="height:30px">
 				<s:if test="certificate != null">
-					<a href="" title="<s:property value="certificate.description"/>">
-						<img src="../images/icon_insurance.gif"/>
+					<a title="<s:property value="certificate.description"/>"
+						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="certificate.id"/>&button=download">
+						<img src="images/icon_insurance.gif"/>
 					</a>
 				</s:if>
 			</td>
