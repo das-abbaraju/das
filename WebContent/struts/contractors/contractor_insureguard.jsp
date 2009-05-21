@@ -26,9 +26,11 @@
 <body>
 <s:push value="#subHeading='InsureGuard&trade;'"/>
 <s:include value="conHeader.jsp" />
+
 <table>
 <tr><td>
 
+<s:if test="current.size > 0 || manuallyAddAudit">
 <h3> Requested Insurance Policies (NEW) </h3>
 <table class="report noshade">
 	<thead>
@@ -99,7 +101,9 @@
 	</s:if>
 </table>
 <br/>
+</s:if>
 
+<s:if test="current.size > 0">
 <h3> Current Insurance Policies (NEW) </h3>
 <table class="report noshade">
 	<thead>
@@ -140,6 +144,7 @@
 		</s:iterator>
 	</s:iterator>
 </table>
+</s:if>
 
 <s:if test="expiredAudits.size() > 0">
 <br/>

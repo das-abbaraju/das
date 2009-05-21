@@ -68,14 +68,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 
-		List<ContractorAuditOperator> caoList = caoDao.findActiveByContractorAccount(contractor.getId());
-
-		Collections.sort(caoList, new Comparator<ContractorAuditOperator>() {
-			@Override
-			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
-				return o1.getOperator().compareTo(o2.getOperator());
-			}
-		});
+		List<ContractorAuditOperator> caoList = getCaoList();
 
 		for (ContractorAuditOperator cao : caoList) {
 			if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
@@ -88,7 +81,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 					current.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
 
 				current.get(cao.getAudit()).add(cao);
-
 			}
 		}
 
@@ -158,6 +150,19 @@ public class ConInsureGuard extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
+	public List<ContractorAuditOperator> getCaoList() {
+		List<ContractorAuditOperator> caoList = caoDao.findActiveByContractorAccount(contractor.getId(), permissions);
+
+		Collections.sort(caoList, new Comparator<ContractorAuditOperator>() {
+			@Override
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().compareTo(o2.getOperator());
+			}
+		});
+
+		return caoList;
+	}
+
 	public List<ContractorAuditOperator> getCaosByAccount(ContractorAudit ca) {
 		List<ContractorAuditOperator> result = new ArrayList<ContractorAuditOperator>();
 		for (ContractorAuditOperator cao : ca.getCurrentOperators()) {
@@ -203,18 +208,23 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public boolean isManuallyAddAudit() {
 		if (permissions.isContractor()) {
-			if (auditClass.equals(AuditTypeClass.Policy) || auditClass.equals(AuditTypeClass.IM))
+			if (auditClass.equals(AuditTypeClass.Policy))
 				return true;
 			return false;
 		}
-
-		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)
-				|| permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit))
-			return true;
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			if (auditTypeList.size() > 0)
-				return true;
+		
+		if (permissions.isOperatorCorporate()){
+			if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+				return auditTypeList.size() > 0;
 		}
+
+//		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)
+//				|| permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit))
+//			return true;
+//		if (permissions.isOperator() || permissions.isCorporate()) {
+//			if (auditTypeList.size() > 0)
+//				return true;
+//		}
 		return false;
 	}
 
@@ -299,7 +309,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	}
 
 	public List<Certificate> getCertificates() {
-		return  certificateDAO.findByConId(contractor.getId(), permissions);
+		return certificateDAO.findByConId(contractor.getId(), permissions);
 	}
 
 	public Map<ContractorAudit, List<ContractorAuditOperator>> getRequested() {
