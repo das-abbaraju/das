@@ -93,10 +93,6 @@
 						<s:select list="requiredAuditTypeNames" name="selectedAudit" cssClass="pics"
 							headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
 					</s:elseif>
-					<s:if test="permissions.contractor || permissions.admin">
-						<s:select list="operatorsWithInsurance" name="selectedOperator"
-							headerKey="" headerValue="- Shared by All Operators -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
-					</s:if>
 				</td>
 			</s:form>
 		</tr>
