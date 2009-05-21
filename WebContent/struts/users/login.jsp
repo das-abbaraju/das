@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Login</title>
+<meta name="help" content="Logging_In">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 </head>
 <body onload="document.forms['login'].username.focus();">

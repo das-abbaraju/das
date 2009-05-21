@@ -89,13 +89,8 @@
 <div id="bodyholder">
 <div id="content">
 <div id="helpbox">
-	<a href='javascript:D2H_ShowHelp(<decorator:getProperty property="meta.contextID" default="1" />, 
-	<% if(permissions.isAccountActive()) { %>
-		<% if(permissions.isContractor()) { %>"help/c/default.htm"
-		<% } else if(permissions.isOperator() || permissions.isCorporate()) { %>"help/o/default.htm"
-		<% } else { %>"help/a/default.htm"
-		<% } %>, "_BLANK", 1)'>Help Center</a> |
-	<% } %>
+	<a href="http://help.picsauditing.com/wiki/<decorator:getProperty property="meta.help"
+		default="Help_Center" />" target="_BLANK">Help Center</a>
 	<a id="_lpChatBtn"
 	onmouseover="showChat();"
 	onmouseout="hideChat();"
