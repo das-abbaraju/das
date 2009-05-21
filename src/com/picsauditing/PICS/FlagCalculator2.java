@@ -278,9 +278,9 @@ public class FlagCalculator2 {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getOperator().equals(operator)
 								&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-							CaoStatus recommendedStatus = calcSingle.calculateCaoRecommendedStatus(cao);
+							FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
 
-							cao.setRecommendedStatus(recommendedStatus);
+							cao.setFlag(flagColor);
 							caoDAO.save(cao);
 						}
 					}

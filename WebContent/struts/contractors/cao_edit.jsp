@@ -11,8 +11,8 @@
 	Updated By: <s:property value="cao.updatedBy.name"/> from <s:property value="cao.updatedBy.account.name"/>
 	</s:if>-->
 	<br />
-	<s:if test="!cao.recommendedStatus.notApplicable">
-		Pics Recommendation: <s:property value="cao.recommendedStatus.icon" escape="false"/> <s:property value="cao.recommendedStatus" /> <br />
+	<s:if test="!cao.visible">
+		Pics Recommendation: <s:property value="cao.flag.smallIcon" escape="false"/> <s:property value="cao.flag" /> <br />
 	</s:if>
 	<s:textarea id="cao.notes" name="cao.notes" cols="60" rows="2"/>
 	<div class="buttons">

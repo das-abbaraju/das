@@ -17,10 +17,11 @@ public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
 	private CaoStatus status = CaoStatus.Pending;
+	private boolean visible = true;
 	private String aiName;
 	private boolean aiNameValid;
 	private Certificate certificate;
-	private FlagColor flag;
+	private FlagColor flag = null;
 	private String notes;
 	private String reason;
 
@@ -57,21 +58,12 @@ public class ContractorAuditOperator extends BaseTable {
 		this.status = status;
 	}
 
-	@Transient
-	@Deprecated
-	public CaoStatus getRecommendedStatus() {
-		if (flag == null)
-			return CaoStatus.NotApplicable;
-		if (flag.equals(FlagColor.Green))
-			return CaoStatus.Approved;
-		if (flag.equals(FlagColor.Amber))
-			return CaoStatus.Pending;
-		return CaoStatus.Rejected;
+	public boolean isVisible() {
+		return visible;
 	}
 
-	@Deprecated
-	public void setRecommendedStatus(CaoStatus recommendedStatus) {
-		// this.recommendedStatus = recommendedStatus;
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	@Column(length = 255)

@@ -140,7 +140,7 @@ public class FlagCalculatorTest extends TestCase {
 		cao.setStatus(CaoStatus.Rejected);
 		assertEquals(FlagColor.Red, calculator.calculate());
 		
-		cao.setRecommendedStatus(CaoStatus.NotApplicable);
+		cao.setFlag(FlagColor.Red);
 		assertEquals(FlagColor.Red, calculator.calculate());
 
 		cao.setStatus(CaoStatus.NotApplicable);

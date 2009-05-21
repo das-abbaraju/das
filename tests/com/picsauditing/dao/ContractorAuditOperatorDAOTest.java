@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
@@ -35,7 +36,7 @@ public class ContractorAuditOperatorDAOTest {
 
 		cao.setOperator(op);
 		cao.setAudit(ca);
-		cao.setRecommendedStatus(CaoStatus.Approved);
+		cao.setFlag(FlagColor.Green);
 		cao.setStatus(CaoStatus.Approved);
 		cao.setAuditColumns(new User(2357)); // kpartridge
 

@@ -298,7 +298,7 @@ public class FlagCalculatorSingle {
 								// This is a Policy, find the CAO for this operator
 								for (ContractorAuditOperator cao : conAudit.getOperators()) {
 									if (cao.getOperator().equals(operator)
-											&& !CaoStatus.NotApplicable.equals(cao.getRecommendedStatus())) {
+											&& cao.isVisible()) {
 
 										// This policy is already approved by operator
 										if (CaoStatus.Approved.equals(cao.getStatus()))
@@ -374,8 +374,8 @@ public class FlagCalculatorSingle {
 		return WaitingOn.None;
 	}
 
-	public CaoStatus calculateCaoRecommendedStatus(ContractorAuditOperator cao) {
-		debug(" calculateCaoRecommendedStatus");
+	public FlagColor calculateCaoRecommendedFlag(ContractorAuditOperator cao) {
+		debug(" calculateCaoRecommendedFlag");
 
 		FlagColor flagColor = null;
 		for (AuditCriteriaAnswer aca : acaList) {
@@ -384,15 +384,18 @@ public class FlagCalculatorSingle {
 		}
 
 		if (flagColor == null)
-			return CaoStatus.Pending;
+			return null;
 
 		if (flagColor.equals(FlagColor.Red))
-			return CaoStatus.Rejected;
-
+			return FlagColor.Red;
+		
+		if(flagColor.equals(FlagColor.Amber))
+			return FlagColor.Amber;
+		
 		if (flagColor.equals(FlagColor.Green))
-			return CaoStatus.Approved;
+			return FlagColor.Green;
 
-		return CaoStatus.Pending;
+		return null;
 	}
 
 	/**

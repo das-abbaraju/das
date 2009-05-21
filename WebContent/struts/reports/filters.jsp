@@ -425,18 +425,11 @@
 		</span></div>
 	</s:if>
 
-	<s:if test="filter.showRecommendedStatus">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_recommendedStatus'); return false;">PICS Recommendation</a> = <span id="form1_recommendedStatus_query">ALL</span><br />
-		<span id="form1_recommendedStatus_select" style="display: none"
-			class="clearLink"> <s:select id="form1_recommendedStatus" list="filter.caoStatusList"
-			cssClass="forms" name="filter.recommendedStatus" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_recommendedStatus');</script> <br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_recommendedStatus'); return false;">Clear</a>
-		</span></div>
+	<s:if test="filter.showRecommendedFlag">
+		<div class="filterOption"><s:select list="filter.flagStatusList"
+			cssClass="forms" name="filter.recommendedFlag" /></div>
 	</s:if>
-	
+
 	<s:if test="filter.showBillingState">
 		<div class="filterOption">
 			<span>Billing State: <s:radio list="{'Activations', 'Renewals', 'Upgrades', 'All'}" name="filter.billingState"></s:radio></span>

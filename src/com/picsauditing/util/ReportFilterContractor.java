@@ -1,6 +1,5 @@
 package com.picsauditing.util;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -368,10 +366,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public String[] getTradePerformedByList() {
 		String[] list = { "- Performed By -", "Self Performed", "Sub Contracted" };
 		return list;
-	}
-
-	public ArrayList<String> getFlagStatusList() throws Exception {
-		return FlagColor.getValuesWithDefault();
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {

@@ -19,6 +19,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
@@ -159,11 +160,8 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
-		String caoRecommendedStatus = Strings.implodeForDB(f.getRecommendedStatus(), ",");
-		if (filterOn(caoRecommendedStatus)) {
-			sql.addWhere("cao.recommendedStatus IN (" + caoRecommendedStatus + ")");
-			setFiltered(true);
-		}
+		if (filterOn(f.getRecommendedFlag(), FlagColor.DEFAULT_FLAG_STATUS))
+			report.addFilter(new SelectFilter("recommendedFlag", "cao.flag = '?'", f.getRecommendedFlag()));
 
 		String auditorIdList = Strings.implode(f.getAuditorId(), ",");
 		if (filterOn(auditorIdList)) {

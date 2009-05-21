@@ -39,8 +39,8 @@
 	escape="false" /></div>
 
 <div class="buttons">
-	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Approved"><s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon('Approved')" escape="false"/>Show Policies to Approve</a>
-	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.recommendedStatus=Rejected"><s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon('Rejected')" escape="false"/>Show Policies to Reject</a>
+	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.flag=Green"><s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon('Approved')" escape="false"/>Show Policies to Approve</a>
+	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.caoStatus=Submitted&filter.flag=Red"><s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon('Rejected')" escape="false"/>Show Policies to Reject</a>
 </div>
 
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
@@ -70,7 +70,7 @@
 					<input type="checkbox" onclick="javascript: return syncSelects()" class="massCheckable" name="caoids" value="<s:property value="get('caoId')"/>"/>
 				</td>
 				<td style="text-align: center;" >
-					<s:property value="@com.picsauditing.jpa.entities.CaoStatus@getIcon(get('caoRecommendedStatus').toString())" escape="false"/>
+					<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('caoRecommendedFlag').toString())" escape="false"/>
 				</td>
 				<td>
 					<a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>

@@ -1,6 +1,9 @@
 package com.picsauditing.util;
 
+import java.util.ArrayList;
+
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 
 public class ReportFilterAccount extends ReportFilter {
@@ -44,7 +47,10 @@ public class ReportFilterAccount extends ReportFilter {
 	public String[] getVisibleOptions() {
 		return new String[] { DEFAULT_VISIBLE, "Y", "N" };
 	}
-
+	
+	public ArrayList<String> getFlagStatusList() throws Exception {
+		return FlagColor.getValuesWithDefault();
+	}
 	public boolean isShowAccountName() {
 		return showAccountName;
 	}

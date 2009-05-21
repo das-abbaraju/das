@@ -16,7 +16,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showPolicyType = false;
 	protected boolean showAuditStatus = true;
 	protected boolean showCaoStatus = false;
-	protected boolean showRecommendedStatus = false;
+	protected boolean showRecommendedFlag = false;
 	protected boolean showAuditor = true;
 	protected boolean showCreatedDate = true;
 	protected boolean showCompletedDate = true;
@@ -38,7 +38,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected int[] pqfTypeID;
 	protected AuditStatus[] auditStatus;
 	protected CaoStatus[] caoStatus;
-	protected CaoStatus[] recommendedStatus;
+	protected String recommendedFlag;
 	protected int[] auditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
@@ -164,12 +164,12 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showPolicyType = showPolicyType;
 	}
 	
-	public boolean isShowRecommendedStatus() {
-		return showRecommendedStatus;
+	public boolean isShowRecommendedFlag() {
+		return showRecommendedFlag;
 	}
 
-	public void setShowRecommendedStatus(boolean showRecommendedStatus) {
-		this.showRecommendedStatus = showRecommendedStatus;
+	public void setShowRecommendedFlag(boolean showRecommendedFlag) {
+		this.showRecommendedFlag = showRecommendedFlag;
 	}
 	
 	public boolean isShowHasClosedDate() {
@@ -333,12 +333,12 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.validLicense = validLicense;
 	}
 
-	public CaoStatus[] getRecommendedStatus() {
-		return recommendedStatus;
+	public String getRecommendedFlag() {
+		return recommendedFlag;
 	}
 
-	public void setRecommendedStatus(CaoStatus[] recommendedStatus) {
-		this.recommendedStatus = recommendedStatus;
+	public void setRecommendedFlag(String recommendedFlag) {
+		this.recommendedFlag = recommendedFlag;
 	}
 
 	// Getting all the Lists

@@ -35,6 +35,9 @@ public enum FlagColor {
 				"Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\""+this.toString()+"\" />";
 	}
 	
+	static public String getSmallIcon(String flagColor) {
+		return valueOf(flagColor).getSmallIcon();
+	}
 	
 	public static FlagColor getWorseColor( FlagColor color1, FlagColor color2) {
 		if (color2 == null)

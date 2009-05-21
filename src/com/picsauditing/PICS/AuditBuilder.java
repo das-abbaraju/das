@@ -335,20 +335,19 @@ public class AuditBuilder {
 					cao.setOperator(operator);
 					cao.setAuditColumns(user);
 					conAudit.getOperators().add(cao);
+					cao.setVisible(true);
 					if (required) {
 						// This cao is always required so add it if it doesn't exist
 						// and then calculate the recommended status
 						cao.setStatus(CaoStatus.Pending);
-						cao.setRecommendedStatus(CaoStatus.Pending);
 					} else {
 						// This cao might be required (if the operator manually requested it)
 						cao.setStatus(CaoStatus.NotApplicable);
-						cao.setRecommendedStatus(CaoStatus.NotApplicable);
 					}
 				}
 				if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 					// This operator has specifically stated they don't need this policy
-					cao.setRecommendedStatus(CaoStatus.NotApplicable);
+					cao.setVisible(false);
 				}
 
 			} else if (cao != null) {
@@ -362,7 +361,7 @@ public class AuditBuilder {
 					contractorAuditOperatorDAO.remove(cao);
 					cao = null;
 				} else {
-					cao.setRecommendedStatus(CaoStatus.NotApplicable);
+					cao.setVisible(false);
 				}
 			}
 			if (cao != null) {

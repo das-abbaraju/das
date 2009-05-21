@@ -38,33 +38,4 @@ public enum CaoStatus {
 	public boolean isRejected() {
 		return this.equals(CaoStatus.Rejected);
 	}
-
-	public String getIcon() {
-		String title;
-		if (this.equals(NotApplicable)) {
-			return "";
-		}
-
-		StringBuilder icon = new StringBuilder("<img src=\"images/");
-
-		if (this.isApproved()) {
-			icon.append("okCheck");
-			title = this.toString();
-		} else if (this.isRejected()) {
-			icon.append("notOkCheck");
-			title = this.toString();
-		} else {
-			icon.append("help");
-			title = "No Recommendation";
-		}
-
-		icon.append(".gif\" title=\"").append(title).append("\" />");
-
-		return icon.toString();
-	}
-
-	static public String getIcon(String status) {
-		return valueOf(status).getIcon();
-	}
-
 }

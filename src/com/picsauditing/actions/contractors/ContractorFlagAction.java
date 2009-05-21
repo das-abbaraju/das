@@ -176,9 +176,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			if( audit.getAuditType().getClassType().isPolicy() ) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
 					if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
-						CaoStatus recommendedStatus = calculator
-								.calculateCaoRecommendedStatus(cao);
-						cao.setRecommendedStatus(recommendedStatus);
+						FlagColor flagColor = calculator
+								.calculateCaoRecommendedFlag(cao);
+						cao.setFlag(flagColor);
 						caoDAO.save(cao);
 					}
 				}

@@ -113,7 +113,7 @@ public class EntityFactory {
 		cao.setAudit(conAudit);
 		cao.setOperator(operator);
 		cao.setStatus(CaoStatus.Approved);
-		cao.setRecommendedStatus(CaoStatus.Approved);
+		cao.setFlag(FlagColor.Green);
 		conAudit.getOperators().add(cao);
 	}
 

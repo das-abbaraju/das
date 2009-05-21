@@ -37,7 +37,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
-		sql.addField("cao.recommendedStatus as caoRecommendedStatus");
+		sql.addField("cao.flag as caoRecommendedFlag");
 		
 	}
 
