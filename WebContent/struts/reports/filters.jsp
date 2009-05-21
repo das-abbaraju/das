@@ -25,7 +25,7 @@
 			<button type="button" name="button" value="Find Recipients" onclick="clickSearch('form1')">Find Recipients</button>
 		</s:if>
 		<s:else>
-			<button type="submit" name="button" value="Search" onclick="return clickSearch('form1');" class="positive">Search</button>
+			<button id="searchfilter" type="submit" name="button" value="Search" onclick="return clickSearch('form1');" class="positive">Search</button>
 			<br clear="all" />
 		</s:else>
 	</div>
