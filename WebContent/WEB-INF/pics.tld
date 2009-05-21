@@ -1,46 +1,68 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
-    version="2.0">
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
 
-  <description>PICS Auditing custom tag library</description>
-  <display-name>PICS taglib</display-name>
-  <tlib-version>1.1</tlib-version>
-  <short-name>p</short-name>
-  <uri>http://picsauditing.com/taglibs</uri>
-  
-   <tag>
-    <description>
-        Performs a security check and evaluates the body if the response is true 
-    </description>
-    <name>permission</name>
-    <tag-class>com.picsauditing.tags.SecurityCheck</tag-class>
-    <body-content>JSP</body-content>
-    <attribute>
-    	<description>The Permission (in OpPerms) to be checked</description>
-        <name>perm</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-    	<description>The Type (in OpType) of the permission to be checked.  Defaults to View</description>
-        <name>type</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-    	<description>Whether or not to print debugging information to System.out</description>
-        <name>debug</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-    	<description>If true, the tag will test if the user does NOT have the permission.  If false, it tests if the user DOES have the permission.  Defaults to false.</description>
-        <name>negativeCheck</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-</taglib>   
+	<description>PICS Auditing custom tag library</description>
+	<display-name>PICS taglib</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>p</short-name>
+	<uri>http://picsauditing.com/taglibs</uri>
+
+	<tag>
+		<description>Performs a security check and evaluates the body if the response is true</description>
+		<name>permission</name>
+		<tag-class>com.picsauditing.tags.SecurityCheck</tag-class>
+		<attribute>
+			<description>The Permission (in OpPerms) to be checked</description>
+			<name>perm</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The Type (in OpType) of the permission to be checked.  Defaults to View</description>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>Whether or not to print debugging information to System.out</description>
+			<name>debug</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>If true, the tag will test if the user does NOT have the permission.  If false, it tests if the user DOES have the permission.  Defaults to false.</description>
+			<name>negativeCheck</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<description>Prints a link to the help center at help.picsauditing.com</description>
+		<name>help</name>
+		<tag-class>com.picsauditing.tags.HelpLink</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The destination help page such as Logging_In</description>
+			<name>page</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>Should a help icon be displayed? Default=true</description>
+			<name>icon</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>An optional message to display in the link. If icon=false and message=BLANK, then the page will be used as the label.</description>
+			<name>message</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib>
