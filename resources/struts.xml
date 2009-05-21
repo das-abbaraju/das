@@ -663,6 +663,10 @@
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${contractor.id}</param>
 			</result>
+			<result name="PolicyList" type="redirect-action">
+				<param name="actionName">ConInsureGuard</param>
+				<param name="id">${contractor.id}</param>
+			</result>
 		</action>
 
 		<action name="ConAuditCopy"

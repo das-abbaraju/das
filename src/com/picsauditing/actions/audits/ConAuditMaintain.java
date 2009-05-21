@@ -39,6 +39,8 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		if ("Delete".equals(button)) {
 			auditDao.clear();
 			auditDao.remove(auditID, getFtpDir());
+			if (conAudit.getAuditType().getClassType().isPolicy()) 
+				return "PolicyList";
 			return "AuditList";
 		}
 
