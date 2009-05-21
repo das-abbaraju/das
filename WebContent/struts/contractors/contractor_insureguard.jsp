@@ -31,7 +31,7 @@
 <tr><td>
 
 <s:if test="current.size > 0 || manuallyAddAudit">
-<h3> Requested Insurance Policies (NEW) </h3>
+<h3> Requested Insurance Policies</h3>
 <table class="report noshade">
 	<thead>
 		<tr>
@@ -100,11 +100,11 @@
 		</tr>
 	</s:if>
 </table>
-<br/>
 </s:if>
 
 <s:if test="current.size > 0">
-<h3> Current Insurance Policies (NEW) </h3>
+<br/>
+<h3> Current Insurance Policies</h3>
 <table class="report noshade">
 	<thead>
 		<tr>
@@ -157,11 +157,30 @@
 		<th>Expired</th>
 	</tr>
 	</thead>
-	<s:iterator value="expiredAudits" status="auditStatus">
+	<s:iterator value="expiredAudits">
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:date name="creationDate" format="M/d/yy" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
+		</tr>
+	</s:iterator>
+</table>
+</s:if>
+
+<s:if test="others.size > 0">
+<br/>
+<h3> Other Non-Required Policies </h3>
+<table class="report">
+	<thead>
+	<tr>
+		<th>Type</th>
+		<th>Created on</th>
+	</tr>
+	</thead>
+	<s:iterator value="others">
+		<tr>
+			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
+			<td><s:date name="creationDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
 </table>
