@@ -225,6 +225,7 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ "SELECT ca2 FROM ContractorAudit ca2 "
 				+ "WHERE ca.auditType = ca2.auditType "
 				+ "AND ca.contractorAccount = ca2.contractorAccount "
+				+ "AND ca.id > ca2.id "
 				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days "
 				+ ") "
 				+ "ORDER BY ca.contractorAccount";

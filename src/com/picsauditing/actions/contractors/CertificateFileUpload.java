@@ -22,6 +22,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	private CertificateDAO certificateDAO = null;
 	protected int certID;
 	protected String fileName = null;
+	private Certificate certificate = null;
 
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
@@ -33,7 +34,11 @@ public class CertificateFileUpload extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findContractor();
-
+		
+		if(certID > 0) {
+			certificate = certificateDAO.find(certID);
+			fileName = certificate.getDescription();
+		}
 		if (button != null) {
 			if (certID > 0 && button.equals("download")) {
 				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
@@ -49,7 +54,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 			}
 
 			if (certID > 0 && button.startsWith("Delete")) {
-				Certificate certificate = certificateDAO.find(certID);
 				if(certificate.getCaos().size() > 0) {
 					addActionError("Failed to remove the file attached to a Policy.");
 					return SUCCESS;
@@ -64,7 +68,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				}
 				certificateDAO.remove(certificate);
 				addActionMessage("Successfully removed file");
-				return INPUT;
+				return SUCCESS;
 			}
 
 			if (button.startsWith("Save")) {
@@ -80,10 +84,10 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					return SUCCESS;
 				}
 
-				Certificate certificate = new Certificate();
+				certificate = new Certificate();
 				certificate.setContractor(contractor);
 				if(Strings.isEmpty(fileName))
-					certificate.setDescription(fileFileName);
+					certificate.setDescription(fileFileName.substring(0, fileFileName.lastIndexOf(".")));
 				else
 					certificate.setDescription(fileName);
 				certificate.setFileType(extension);

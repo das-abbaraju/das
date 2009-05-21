@@ -270,15 +270,17 @@
 		<thead>
 			<tr><th>FileName</th>
 			<th>CreatedDate</th>
-			<th></th></tr>
+			<th>View</th>
+			<th>Edit</th></tr>
 		</thead>
 		<s:iterator value="certificates">
 			<tr>
 				<td>
-					<a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download" 
-					target="_BLANK"><s:property value="description"/></a>
+					<s:property value="description"/>
 				</td>
 				<td><s:date name="creationDate" format="M/d/yy"/></td>
+				<td><a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download" 
+					target="_BLANK"><img src="images/icon_insurance.gif"/></a></td>
 				<td><a class="edit"
 					href="#" onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)" title="Opens in new window (please disable your popup blocker)"">Edit</a></td>
 			</tr>

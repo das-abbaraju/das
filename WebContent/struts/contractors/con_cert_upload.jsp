@@ -9,6 +9,14 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
+<script type="text/javascript">
+function closePage() {
+	try {
+		window.opener.location.reload(true);
+	} catch(err) {}
+	self.close();
+}
+</script>
 </head>
 <body>
 <br />
@@ -21,6 +29,7 @@
 
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="id" />
+	<s:hidden name="certID" />
 	<br />
 	File Name : <s:textfield name="fileName" size="50"/><br/>
 	<s:file name="file" size="50"></s:file>

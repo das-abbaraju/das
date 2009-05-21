@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Certificate;
 
 @Transactional
@@ -36,8 +37,12 @@ public class CertificateDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Certificate> findByConId(int conID) {
-		Query q = em.createQuery("SELECT c FROM Certificate c WHERE c.contractor.id = ?");
+	public List<Certificate> findByConId(int conID, Permissions permissions) {
+		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
+		if(permissions.isOperatorCorporate())
+			query += " c.createdBy.id = "+ permissions.getUserId();
+		
+		Query q = em.createQuery(query);
 
 		q.setParameter(1, conID);
 
