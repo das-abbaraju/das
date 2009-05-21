@@ -21,6 +21,11 @@
 		</s:if>
 		<s:else>File Not Uploaded</s:else>
 	</s:if>
+	<s:elseif test="#q.questionType == 'Check Box'">
+		<s:if test='#a.answer.equals("X")'>
+			<span class="checked"></span>
+		</s:if>
+	</s:elseif>
 	<s:else>
 		<s:property value="#a.answer" />
 		<s:if test="#q.questionType == 'License'">

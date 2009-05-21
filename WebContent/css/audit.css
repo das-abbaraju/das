@@ -86,6 +86,12 @@ span.boxed {
 	border: 1px #900 dashed;
 }
 
+span.checked {
+	padding-left: 20px;
+	background: transparent url(../images/checkBoxTrue.gif) no-repeat
+		left center;
+}
+
 /** END Audit Data ***/
 
 /** Table Report override for Category list **/
