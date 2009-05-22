@@ -16,7 +16,7 @@
 			<br /><label class="policy">Contractor Remarks:</label> I'm just submitting this for a bid right now.
 					-->
 		</div>
-		<div class="question">
+		<div class="question" id="fileQuestion<s:property value="operator.id"/>">
 			<span class="question">1.3.1&nbsp;&nbsp;
 				Upload a Certificate of Insurance or other supporting documentation
 				for this policy. If you selected "All" above, please make sure the
@@ -24,15 +24,17 @@
 			</span>
 			<div class="answer">
 				<s:if test="certificate != null">
-					<a href="#" title="Open File">View File</a> &nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" onclick="return confirm('Are you sure?');" class="remove">Remove</a>
+					<a href="CertificateUpload.action?id=<s:property value="audit.contractorAccount.id"/>&certID=<s:property value="certificate.id"/>&button=download"
+						target="_BLANK" class="insurance"><span></span>View File</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" onclick="if (confirm('Are you sure you want to remove this certificate? It will not delete the certificate.')) saveCao(<s:property value="operator.id"/>, <s:property value="certificate.id"/>, 'fileQuestion<s:property value="operator.id"/>', 'Remove'); return false;" class="remove">Remove</a>
 				</s:if> 
 				<s:else>
 						No File Uploaded
 				</s:else> 
 				<br />
 				<a href="#" onclick="$('choose_certs<s:property value="id"/>').toggle(); return false;">Attach File</a>
-				<table class="report" style="display: none;width:320px;" id="choose_certs<s:property value="id"/>">
+				<table class="report" style="display:none;width:320px;" id="choose_certs<s:property value="id"/>">
 					<thead>
 						<tr>
 							<td>Certificate</td>
@@ -44,13 +46,13 @@
 							<tr>
 								<td><a class="insurance"
 									href="#"
-									onclick="saveCao(<s:property value="111"/>, <s:property value="id"/>); return false;"
+									onclick="saveCao(<s:property value="operator.id"/>, <s:property value="id"/>, 'fileQuestion<s:property value="operator.id"/>', 'Attach'); return false;"
 									target="_BLANK"><span></span><s:property value="description" /></a></td>
 								<td><s:date name="creationDate" format="M/d/yy" /></td>
 							</tr>
 						</s:iterator>
 						<tr>
-							<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="id" />, 0)" title="Opens in new window (please disable your popup blocker);return false;">Upload New Certificate</a></td>
+							<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="conAudit.contractorAccount.id" />, 0); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
 						</tr>
 					</tbody>
 				</table>

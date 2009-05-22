@@ -1,7 +1,10 @@
 package com.picsauditing.actions.audits;
 
+import java.util.List;
+
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -22,6 +25,7 @@ import com.picsauditing.util.Strings;
 public class PolicySave extends AuditActionSupport {
 
 	protected ContractorAuditOperatorDAO caoDAO;
+	protected CertificateDAO certificateDao;
 
 	protected int opID;
 
@@ -29,10 +33,12 @@ public class PolicySave extends AuditActionSupport {
 	protected String caoNotes;
 	protected Certificate certificate;
 
+
 	public PolicySave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO, ContractorAuditOperatorDAO caoDAO) {
+			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO, ContractorAuditOperatorDAO caoDAO, CertificateDAO certificateDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.caoDAO = caoDAO;
+		this.certificateDao = certificateDao;
 	}
 
 	public String execute() throws Exception {
@@ -64,7 +70,7 @@ public class PolicySave extends AuditActionSupport {
 
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(52); // Insurance Policy rejected by
-												// PICS
+				// PICS
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setFromAddress(permissions.getEmail());
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
@@ -80,10 +86,24 @@ public class PolicySave extends AuditActionSupport {
 		if ("Attach".equals(button)) {
 			if (certificate != null) {
 				cao.setCertificate(certificate);
+				caoDAO.save(cao);
 			}
 		}
 
+		if ("Remove".equals(button)) {
+			cao.setCertificate(null);
+			caoDAO.save(cao);
+		}
+
 		return SUCCESS;
+	}
+
+	public ContractorAuditOperator getCao() {
+		return cao;
+	}
+
+	public void setCao(ContractorAuditOperator cao) {
+		this.cao = cao;
 	}
 
 	public int getOpID() {
@@ -110,5 +130,9 @@ public class PolicySave extends AuditActionSupport {
 
 	public void setCertificate(Certificate certificate) {
 		this.certificate = certificate;
+	}
+
+	public List<Certificate> getCertificates() {
+		return certificateDao.findByConId(contractor.getId(), permissions);
 	}
 }

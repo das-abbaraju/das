@@ -204,15 +204,24 @@ function showCertUpload(conid, certid) {
 	fileUpload.focus();
 }
 
-function saveCao(caoID, certID) {
+function saveCao(opID, certID, div, action) {
 	
 	var pars = {
-		auditID : auditID
+		'opID'			: opID,
+		auditID 		: auditID,
+		'certificate.id': certID,
+		button			: action
 	};
 
 	var myAjax = new Ajax.Updater('cao_layer', 'PolicySaveAjax.action', {
 		method:'post',
-		parameters: pars
+		parameters: pars,
+		onComplete: function(transport) {
+			if (transport.status == 200) 
+				new Effect.Highlight($(div),{duration: 0.75, startcolor:'#FFFF11'});
+			else
+				alert("Failed to save answer" + transport.statusText + transport.responseText);
+		}
 	});
 }
 
