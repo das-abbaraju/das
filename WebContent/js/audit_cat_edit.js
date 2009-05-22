@@ -207,14 +207,12 @@ function showCertUpload(conid, certid) {
 function saveCao(caoID, certID) {
 	
 	var pars = {
-		'certificate.id' : certID,
-		'auditID' : auditID,
-		'cao.id':caoID
+		auditID : auditID
 	};
-	
+
 	var myAjax = new Ajax.Updater('cao_layer', 'PolicySaveAjax.action', {
 		method:'post',
-		paramaters: pars
+		parameters: pars
 	});
 }
 
