@@ -286,18 +286,17 @@ public class AuditDataDAO extends PicsDAO {
 	 * @param auditIds
 	 * @return Answers in the subcategories named Policy Limits for the given auditIds
 	 */
-	public List<AuditData> findPolicyLimits( List<Integer> auditIds) {
+	public List<AuditData> findPolicyData( List<Integer> auditIds) {
 		
 		StringBuilder sb = new StringBuilder("SELECT d FROM AuditData d JOIN d.question q JOIN q.subCategory sub")
-			.append( " WHERE sub.subCategory = ? and d.audit.id in ( " )
-			.append( glue( auditIds ) ) 
+			.append( " WHERE d.audit.id in ( " )
+			.append( Strings.implode(auditIds, "," ) ) 
 			.append(" ) " );
 		
 		Query query = em.createQuery(  sb.toString() );
 		
 		// WARNING!! This is hard coded based on the sub category name of Policy AuditTypes
 		// If someone changes the subcategory name, this won't work anymore!!
-		query.setParameter(1, "Policy Limits" );
 		return query.getResultList();
 	}
 	

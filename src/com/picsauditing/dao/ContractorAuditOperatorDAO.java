@@ -100,5 +100,4 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		noteDAO.save(note);
 	}
-
 }
