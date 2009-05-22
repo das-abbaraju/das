@@ -12,6 +12,7 @@ import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -24,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -74,8 +76,9 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	public AuditCategoryAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
 			AuditPercentCalculator auditPercentCalculator, AuditCategoryDAO auditCategoryDAO,
-			OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder) {
-		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
+			OshaAuditDAO oshaAuditDAO, AuditBuilder auditBuilder, CertificateDAO certificateDao) {
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
+				certificateDao);
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}

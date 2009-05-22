@@ -1,12 +1,14 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
+import java.util.List;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -14,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -26,30 +29,32 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 	protected AuditStatus auditStatus;
 	protected AuditPercentCalculator auditPercentCalculator;
+	protected CertificateDAO certificateDao;
 	protected AuditBuilder auditBuilder;
-	
+
 	protected int opID;
 	protected ContractorAuditOperatorDAO caoDAO;
 
-	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder) {
+	public AuditCategorySingleAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, CertificateDAO certificateDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.caoDAO = caoDAO;
+		this.certificateDao = certificateDao;
 	}
 
 	public String execute() throws Exception {
 
 		// Calculate and set the percent complete
-		if(conAudit.getLastRecalculation() == null) {
+		if (conAudit.getLastRecalculation() == null) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 			conAudit.setLastRecalculation(new Date());
 			auditDao.save(conAudit);
-		}
-		else	
+		} else
 			auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getClassType().equals(
-				AuditTypeClass.IM));
+					AuditTypeClass.IM));
 
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {
@@ -74,7 +79,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 								+ "</strong>.");
 					}
 				} else {
-					addActionError("The <strong>" + conAudit.getAuditType().getAuditName() 
+					addActionError("The <strong>" + conAudit.getAuditType().getAuditName()
 							+ "</strong> policy is not complete. Please enter all required answers before submitting.");
 				}
 			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
@@ -235,6 +240,10 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		return false;
 	}
 	
+	public List<Certificate> getCertificates() {
+		return certificateDao.findByConId(contractor.getId(), permissions);
+	}
+
 	public boolean isHasPendingCaos() {
 		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
 			if (cao.getStatus().isPending())
@@ -242,7 +251,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		}
 		return false;
 	}
-	
+
 	public boolean isHasSubmittedCaos() {
 		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
 			if (cao.getStatus() == CaoStatus.Submitted)
@@ -250,10 +259,10 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		}
 		return false;
 	}
-	
+
 	public boolean isHasRejectedCaos() {
 		for (ContractorAuditOperator cao : conAudit.getCurrentOperators()) {
-			if (cao.getStatus().isRejected()) 
+			if (cao.getStatus().isRejected())
 				return true;
 		}
 		return false;

@@ -392,6 +392,15 @@ a.view {
 	background: url('../images/edit_pencil.png') no-repeat left center;
 }
 
+a.insurance span{
+	float: left;
+	clear:both;
+	height: 20px;
+	width: 20px;
+	cursor: pointer;
+	background: url('../images/icon_insurance.gif') no-repeat left center;
+}
+
 label.tooltipped {
 	background: url('../images/icon_text_alert.png') no-repeat left center;
 }

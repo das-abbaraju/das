@@ -195,3 +195,26 @@ function showFileUpload(answerid, questionid, parentid, divId) {
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
+
+function showCertUpload(conid, certid) {
+	url = 'CertificateUpload.action?id='+conid+'&certID='+certid;
+	title = 'Upload';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url,title,pars);
+	fileUpload.focus();
+}
+
+function saveCao(caoID, certID) {
+	
+	var pars = {
+		'certificate.id' : certID,
+		'auditID' : auditID,
+		'cao.id':caoID
+	};
+	
+	var myAjax = new Ajax.Updater('cao_layer', 'PolicySaveAjax.action', {
+		method:'post',
+		paramaters: pars
+	});
+}
+

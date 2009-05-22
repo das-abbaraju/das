@@ -1065,7 +1065,7 @@
 		</action>
 		<action name="PolicySaveAjax"
 			class="com.picsauditing.actions.audits.PolicySave">
-			<result>struts/audits/audit_cat_cao_verification.jsp</result>
+			<result>struts/audits/audit_cat_cao.jsp</result>
 		</action>
 
 		<action name="CertificateUpload"

@@ -6,6 +6,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -26,6 +27,7 @@ public class PolicySave extends AuditActionSupport {
 
 	protected ContractorAuditOperator cao;
 	protected String caoNotes;
+	protected Certificate certificate;
 
 	public PolicySave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO, ContractorAuditOperatorDAO caoDAO) {
@@ -48,8 +50,7 @@ public class PolicySave extends AuditActionSupport {
 			caoDAO.save(cao);
 
 			addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
-					+ "</strong> Policy has been verified for <strong>" + cao.getOperator().getName()
-					+ "</strong>.");
+					+ "</strong> Policy has been verified for <strong>" + cao.getOperator().getName() + "</strong>.");
 		}
 
 		if ("Reject".equals(button)) {
@@ -62,7 +63,8 @@ public class PolicySave extends AuditActionSupport {
 				caoDAO.save(cao);
 
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(52); // Insurance Policy rejected by PICS
+				emailBuilder.setTemplate(52); // Insurance Policy rejected by
+												// PICS
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setFromAddress(permissions.getEmail());
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
@@ -72,6 +74,12 @@ public class PolicySave extends AuditActionSupport {
 				addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
 						+ "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName()
 						+ "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
+			}
+		}
+
+		if ("Attach".equals(button)) {
+			if (certificate != null) {
+				cao.setCertificate(certificate);
 			}
 		}
 
@@ -94,5 +102,13 @@ public class PolicySave extends AuditActionSupport {
 		if (Strings.isEmpty(caoNotes))
 			caoNotes = null;
 		this.caoNotes = caoNotes;
+	}
+
+	public Certificate getCertificate() {
+		return certificate;
+	}
+
+	public void setCertificate(Certificate certificate) {
+		this.certificate = certificate;
 	}
 }

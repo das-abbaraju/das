@@ -10,6 +10,7 @@ import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -36,8 +37,8 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO) {
-		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder);
+			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao) {
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder, certificateDao);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 	}
 
