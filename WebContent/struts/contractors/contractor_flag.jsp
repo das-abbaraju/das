@@ -119,9 +119,9 @@
 				<td>
 				<s:iterator id="con" value="contractor.audits">
 					<s:if test="#op.auditType == #con.auditType">
-						<s:if test="#op.auditType.classType.policy">
+						<s:if test="#op.auditType.classType.policy && #!con.auditStatus.expired">
 							<s:iterator value="#con.operators">
-								<s:if test="#op.operatorAccount == operator">
+								<s:if test="visible && (#op.operatorAccount == operator)">
 									<s:if test="!status.approved && !status.notApplicable">
 										<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
 										<s:property value="status"/><br/>

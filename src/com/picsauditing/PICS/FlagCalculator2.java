@@ -276,12 +276,14 @@ public class FlagCalculator2 {
 			for (ContractorAudit audit : contractor.getAudits()) {
 				if (audit.getAuditType().getClassType().isPolicy()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
-						if (cao.getOperator().equals(operator)
-								&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-							FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
-
-							cao.setFlag(flagColor);
-							caoDAO.save(cao);
+						if(cao.isVisible()) {
+							if (cao.getOperator().equals(operator)
+									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
+								FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
+	
+								cao.setFlag(flagColor);
+								caoDAO.save(cao);
+							}
 						}
 					}
 				}

@@ -175,11 +175,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		for( ContractorAudit audit : contractor.getAudits() ) {
 			if( audit.getAuditType().getClassType().isPolicy() ) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
-						FlagColor flagColor = calculator
-								.calculateCaoRecommendedFlag(cao);
-						cao.setFlag(flagColor);
-						caoDAO.save(cao);
+					if(cao.isVisible()) {
+						if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
+							FlagColor flagColor = calculator
+									.calculateCaoRecommendedFlag(cao);
+							cao.setFlag(flagColor);
+							caoDAO.save(cao);
+						}
 					}
 				}
 			}

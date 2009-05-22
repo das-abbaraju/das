@@ -360,14 +360,18 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		List<ContractorAuditOperator> currentCaos = new ArrayList<ContractorAuditOperator>();
 
 		for (ContractorAuditOperator cao : getOperators()) {
-			// BASF Corporate still needs insurance
-			for (ContractorOperator co : getContractorAccount().getOperators()) {
-				// Iterate over gencon tables
-				// co.getOperatorAccount() == BASF Abbotsford that's attached to Ancon Marine
-				if (co.getOperatorAccount().getCanSeeInsurance().isTrue() 
-						&& co.getOperatorAccount().getInheritInsurance().equals(cao.getOperator())) {
-					currentCaos.add(cao);
-					break;
+			// Check to see if the CAO is visible
+			if (cao.isVisible()) {
+				// BASF Corporate still needs insurance
+				for (ContractorOperator co : getContractorAccount().getOperators()) {
+					// Iterate over gencon tables
+					// co.getOperatorAccount() == BASF Abbotsford that's
+					// attached to Ancon Marine
+					if (co.getOperatorAccount().getCanSeeInsurance().isTrue()
+							&& co.getOperatorAccount().getInheritInsurance().equals(cao.getOperator())) {
+						currentCaos.add(cao);
+						break;
+					}
 				}
 			}
 		}
@@ -431,7 +435,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM for "John Doe"
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
+	 * for "John Doe"
 	 * 
 	 * @return
 	 */

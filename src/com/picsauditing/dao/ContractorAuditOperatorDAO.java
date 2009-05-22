@@ -45,7 +45,8 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	}
 
 	public List<ContractorAuditOperator> findByContractorAccount(int conID, Permissions perm) {
-		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID";
+		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID "
+			+ " AND cao.visible = 1 ";
 
 		if (perm.isOperatorCorporate())
 			query += "AND cao.operator.inheritInsurance.id = :opID";

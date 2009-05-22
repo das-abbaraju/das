@@ -143,41 +143,43 @@
 		</s:if>
 		<s:if test="conAudit.auditType.classType.policy">
 			<s:iterator value="conAudit.operators" status="rowStatus">
-				<s:if test="permissions.operator || permissions.corporate">
-					<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
-						<li>
+				<s:if test="visible">
+					<s:if test="permissions.operator || permissions.corporate">
+						<s:if test="operator.id == permissions.accountId || operator.isDescendantOf(permissions.accountId) || permissions.corporateParent.contains(operator.id)">
+							<li>
+								<label 
+									<s:if test="notes != null && notes.length() > 0 && !status.approved">
+										title="<s:property value="notes"/>" 
+										class="tooltipped"
+									</s:if>>Op Status:</label>
+								<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" 
+									onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
+								<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
+							</li>
+						</s:if>
+					</s:if>
+					<s:elseif test="!status.notApplicable">
+						<li style="">
 							<label 
 								<s:if test="notes != null && notes.length() > 0 && !status.approved">
 									title="<s:property value="notes"/>" 
 									class="tooltipped"
 								</s:if>>Op Status:</label>
-							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit" 
-								onclick="javascript: return editCao(<s:property value="id"/>);"><s:property value="status"/></a>
+								<pics:permission perm="InsuranceVerification">
+									<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit"
+										onclick="javascript: return editCao(<s:property value="id"/>);">
+										<s:property value="status"/>
+									</a>
+								</pics:permission>
+									
+								<pics:permission perm="InsuranceVerification" negativeCheck="true">
+									<s:property value="status"/>
+								</pics:permission>
+							
 							<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
 						</li>
-					</s:if>
+					</s:elseif>
 				</s:if>
-				<s:elseif test="!status.notApplicable">
-					<li style="">
-						<label 
-							<s:if test="notes != null && notes.length() > 0 && !status.approved">
-								title="<s:property value="notes"/>" 
-								class="tooltipped"
-							</s:if>>Op Status:</label>
-							<pics:permission perm="InsuranceVerification">
-								<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit"
-									onclick="javascript: return editCao(<s:property value="id"/>);">
-									<s:property value="status"/>
-								</a>
-							</pics:permission>
-								
-							<pics:permission perm="InsuranceVerification" negativeCheck="true">
-								<s:property value="status"/>
-							</pics:permission>
-						
-						<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
-					</li>
-				</s:elseif>
 			</s:iterator>
 			</s:if>
 	</ul>

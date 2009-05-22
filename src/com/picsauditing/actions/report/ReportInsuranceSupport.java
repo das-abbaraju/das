@@ -51,7 +51,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		super.buildQuery();
 		
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
-		
+		sql.addWhere("cao.visible = 1");
 		if (!permissions.hasPermission(OpPerms.AllContractors)) {
 			sql.addField("cao.status as caoStatus");
 			sql.addField("cao.notes as caoNotes");
