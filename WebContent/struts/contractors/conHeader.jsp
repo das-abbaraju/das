@@ -167,7 +167,7 @@
 								</s:if>>Op Status:</label>
 								<pics:permission perm="InsuranceVerification">
 									<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit"
-										onclick="javascript: return editCao(<s:property value="id"/>);">
+										onclick="javascript: return editCao(<s:property value="id"/>); return false;">
 										<s:property value="status"/>
 									</a>
 								</pics:permission>
