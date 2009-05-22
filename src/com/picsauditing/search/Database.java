@@ -60,6 +60,17 @@ public class Database {
 		}
 	}
 	
+	public void executeUpdate(String sql) throws SQLException {
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement();
+		try {
+			stmt.executeUpdate(sql);
+		} finally {
+			stmt.close();
+		    Conn.close();
+		}
+	}
+	
 	public int getAllRows() {
 		return allRows;
 	}

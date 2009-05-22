@@ -3,8 +3,10 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -31,9 +33,12 @@ import com.picsauditing.util.log.LoggingRule;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * 
- CREATE TABLE contractor_policy_cleanup AS SELECT DISTINCT ca.conID FROM pqfdata d JOIN contractor_audit ca ON ca.id =
- * d.auditID WHERE d.questionID IN (2100,2199,2205,2259,2260,2261,2272,2274,2273,2275,2276,2277,2387) ORDER BY ca.conID
+ * CREATE TABLE contractor_policy_cleanup AS 
+ * SELECT DISTINCT ca.conID, 0 as done 
+ * FROM pqfdata d 
+ * JOIN contractor_audit ca ON ca.id = d.auditID 
+ * WHERE d.questionID IN (2100,2199,2205,2259,2260,2261,2272,2274,2273,2275,2276,2277,2387)
+ * ORDER BY ca.conID
  * 
  * @author Trevor
  * 
@@ -41,6 +46,8 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class ContractorPolicyConverter extends PicsActionSupport {
 
+	static final private int BATCH_SIZE = 2000;
+	static final private int MAX_ERRORS = 10;
 	private int conID = 0;
 
 	private ContractorAccountDAO contractorAccountDAO;
@@ -49,7 +56,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 	private AuditDataDAO auditDataDAO;
 
 	public ContractorPolicyConverter(ContractorAccountDAO contractorAccountDAO, CertificateDAO certificateDAO,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO ,AuditDataDAO auditDataDAO) {
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditDataDAO auditDataDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.certificateDAO = certificateDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -68,7 +75,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 			SelectSQL sql = new SelectSQL("contractor_policy_cleanup");
 			sql.setSQL_CALC_FOUND_ROWS(true);
 			sql.addOrderBy("conID");
-			sql.setLimit(10);
+			sql.addWhere("done=0");
+			sql.setLimit(BATCH_SIZE);
 			Database db = new Database();
 			List<BasicDynaBean> pageData = db.select(sql.toString(), true);
 			log("Found " + pageData.size() + " of " + db.getAllRows() + " contractor(s) that require processing");
@@ -78,6 +86,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 					int conID = Integer.parseInt(row.get("conID").toString());
 					PicsLogger.start("ContractorPolicyConverter-" + conID);
 					process(conID);
+					String delete = "UPDATE contractor_policy_cleanup SET done = 1 WHERE conID = " + conID;
+					db.executeUpdate(delete);
 				} catch (Exception e) {
 					log("Exception thrown!!" + e.getMessage());
 					log(e.getStackTrace().toString());
@@ -85,7 +95,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 				} finally {
 					PicsLogger.stop();
 				}
-				if (errors > 0)
+				if (errors >= MAX_ERRORS)
 					break;
 			}
 		}
@@ -94,11 +104,24 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	/**
+	 * For the given contractor, do the following:<br>
+	 * 1) Get a list of existing certificates (should be empty)<br>
+	 * 2) For each audit<br>
+	 * 2a) Organize all the AuditData into Map of Tuples (first parents, then children)
+	 * 2b) For each Tuple, find any possible matching CAO
+	 * 2c) For each CAO, find the best Tuple (reduce to only one)
+	 * 2d) For each CAO, if one Tuple exists, then update CAO and map Certificate
+	 * 3) Remove converted AuditData records
+	 * @param conID
+	 * @throws Exception
+	 */
 	@Transactional
 	private void process(int conID) throws Exception {
 		addActionMessage("Processing " + conID);
 
 		ContractorAccount contractor = contractorAccountDAO.find(conID);
+		Set<Integer> oldTupleData = new HashSet<Integer>();
 
 		List<Certificate> certificates = certificateDAO.findByConId(conID);
 		Map<String, Certificate> certFiles = new HashMap<String, Certificate>();
@@ -113,12 +136,13 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (conAudit.getAuditType().getClassType().isPolicy()) {
-				log("  Policy " + conAudit.getId());
+				log("  Policy " + conAudit.getId() + " " + conAudit.getAuditType().getAuditName());
 
 				// Get a map of all the tuples
 				Map<Integer, Tuple> tuples = new TreeMap<Integer, Tuple>();
 				for (AuditData data : conAudit.getData()) {
 					if (data.getQuestion().isAllowMultipleAnswers()) {
+						oldTupleData.add(data.getId());
 						tuples.put(data.getId(), new Tuple(data));
 					}
 				}
@@ -126,6 +150,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 				// Now attach all the child questions to the tuple
 				for (AuditData data : conAudit.getData()) {
 					if (data.getParentAnswer() != null) {
+						oldTupleData.add(data.getId());
+						
 						Tuple tuple = tuples.get(data.getParentAnswer().getId());
 						if (tuple == null)
 							log("    WARNING!! Failed to find the parent for dataID=" + data.getId());
@@ -142,11 +168,13 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 										Certificate certificate = new Certificate();
 										certificate.setAuditColumns(new User(User.SYSTEM));
 										certificate.setContractor(contractor);
-										certificate.setDescription("");
+										certificate.setDescription(data.getParentAnswer().getAnswer());
 										certificate.setFileType(data.getAnswer());
 										certificate.setCreationDate(data.getCreationDate());
+										if (data.getAudit().getCreationDate().before(data.getCreationDate()))
+											certificate.setCreationDate(data.getAudit().getCreationDate());
 										certificate = certificateDAO.save(certificate);
-										
+
 										certificates.add(certificate);
 										certFiles.put(hash, certificate);
 										tuple.setCertificate(certificate);
@@ -156,8 +184,6 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 												+ certificate.getId(), certificate.getFileType(), true);
 									}
 								}
-								// TODO don't remove them yet
-								// auditDataDAO.remove(data.getId());
 							} else {
 								tuple.setChildData(data);
 							}
@@ -197,53 +223,66 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 					log("    Updating " + cao.getOperator().getName());
 					Tuple tuple = getSingleTuple(caoTuples.get(cao));
 					if (tuple != null) {
-						cao.setAiName(tuple.getOtherName());
-						cao.setAiNameValid(tuple.isNameMatches());
-						cao.setCertificate(tuple.getCertificate());
+						if (cao.getAiName() == null || tuple.getOtherName() != null)
+							cao.setAiName(tuple.getOtherName());
+						if (!cao.isAiNameValid())
+							cao.setAiNameValid(tuple.isNameMatches());
+						if (cao.getCertificate() == null || tuple.getCertificate() != null)
+							cao.setCertificate(tuple.getCertificate());
 						contractorAuditOperatorDAO.save(cao);
 						log("      saved cao " + cao.getId());
 					}
 				}
 			}
-		}
+		} // End: for (ContractorAudit conAudit : contractor.getAudits())
+		
+		// Done processing contractor, now remove all of the auditData records
+		auditDataDAO.remove(oldTupleData);
 	}
 
 	private Tuple getSingleTuple(List<Tuple> tuples) {
 		int startingSize = tuples.size();
-		
+
 		if (startingSize == 0) {
 			log("      No matching tuples");
 			return null;
 		}
 		if (startingSize == 1)
 			return tuples.get(0);
-		
+
 		log("      Found " + startingSize + " tuples, reducing...");
-		
-		for(int i=0; i< tuples.size(); i++) {
+
+		for (int i = 0; i < tuples.size(); i++) {
 			if (tuples.get(i).getLegalName().equals("All")) {
-				tuples.remove(i);
 				log("        removed All");
-				return getSingleTuple(tuples);
-			}
-		}
-		
-		for(int i=0; i< tuples.size(); i++) {
-			if (tuples.get(i).getCertificate() == null) {
 				tuples.remove(i);
-				log("        removed " + tuples.get(i).getLegalName() + " because it's missing a file attachment");
 				return getSingleTuple(tuples);
 			}
 		}
-		
-		if (startingSize == tuples.size()) {
-			// This avoids infinite loops
-			log("      Couldn't reduce tuple size, returning first one");
+
+		for (int i = 0; i < tuples.size(); i++) {
+			if (tuples.get(i).getCertificate() == null) {
+				log("        removed " + tuples.get(i).getLegalName() + " because it's missing a file attachment");
+				tuples.remove(i);
+				return getSingleTuple(tuples);
+			}
 		}
-		
+
+		for (int i = 0; i < tuples.size(); i++) {
+			if (tuples.get(i).getLegalName().length() < 5) {
+				log("        removed " + tuples.get(i).getLegalName()
+						+ " because it has a small name (maybe a corporate account)");
+				tuples.remove(i);
+				return getSingleTuple(tuples);
+			}
+		}
+
+		log("        removed " + tuples.get(0).getLegalName()
+				+ " because ... well it was entered first so something had to be uploaded again");
+		tuples.remove(0);
 		return getSingleTuple(tuples);
 	}
-	
+
 	private File getFile(PICSFileType fileType, int fileID) {
 		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(fileID));
 		File[] files = FileUtils.getSimilarFiles(dir, fileType + "_" + fileID);

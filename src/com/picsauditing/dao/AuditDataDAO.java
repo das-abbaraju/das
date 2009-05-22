@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -18,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.AnswerMapByAudits;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -36,6 +38,14 @@ public class AuditDataDAO extends PicsDAO {
 		if (row != null) {
 			em.remove(row);
 		}
+	}
+
+	public int remove(Set<Integer> ids) {
+		if (ids == null || ids.size() == 0)
+			return 0;
+		String idList = Strings.implode(ids, ",");
+		Query query = em.createQuery("DELETE AuditData c WHERE c.id IN (" + idList + ")");
+		return query.executeUpdate();
 	}
 
 	public AuditData find(int id) {
