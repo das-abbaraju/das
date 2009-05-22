@@ -24,8 +24,8 @@
 			</span>
 			<div class="answer">
 				<s:if test="certificate != null">
-					<a href="" title="Open File">View File</a> &nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="" onclick="return confirm('Are you sure?');" class="remove">Remove</a>
+					<a href="#" title="Open File">View File</a> &nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" onclick="return confirm('Are you sure?');" class="remove">Remove</a>
 				</s:if> 
 				<s:else>
 						No File Uploaded
