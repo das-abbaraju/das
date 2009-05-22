@@ -32,10 +32,10 @@
 				</s:else> 
 				<br />
 				<a href="#" onclick="$('choose_certs<s:property value="id"/>').toggle(); return false;">Attach File</a>
-				<table class="report" style="display: none" id="choose_certs<s:property value="id"/>">
+				<table class="report" style="display: none;width:320px;" id="choose_certs<s:property value="id"/>">
 					<thead>
 						<tr>
-							<td style="width:200px">Certificate</td>
+							<td>Certificate</td>
 							<td>Uploaded</td>
 						</tr>
 					</thead>
