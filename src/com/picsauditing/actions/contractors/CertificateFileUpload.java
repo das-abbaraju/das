@@ -45,7 +45,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						.getServletContext());
 				try {
 					File[] files = getFiles(certID);
-					downloader.download(files[0], null);
+					downloader.download(files[0], certificate.getDescription() + "." + certificate.getFileType());
 					return null;
 				} catch (Exception e) {
 					addActionError("Failed to download file: " + e.getMessage());
