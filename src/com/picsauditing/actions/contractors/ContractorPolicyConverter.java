@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -33,11 +34,9 @@ import com.picsauditing.util.log.LoggingRule;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * CREATE TABLE contractor_policy_cleanup AS 
- * SELECT DISTINCT ca.conID, 0 as done 
- * FROM pqfdata d 
- * JOIN contractor_audit ca ON ca.id = d.auditID 
- * WHERE d.questionID IN (2100,2199,2205,2259,2260,2261,2272,2274,2273,2275,2276,2277,2387)
+ * CREATE TABLE contractor_policy_cleanup AS SELECT DISTINCT ca.conID, 0 as done, '' as output <br>
+ * FROM pqfdata d JOIN contractor_audit ca ON ca.id = d.auditID <br>
+ * WHERE d.questionID IN (2100,2199,2205,2259,2260,2261,2272,2274,2273,2275,2276,2277,2387) <br>
  * ORDER BY ca.conID
  * 
  * @author Trevor
@@ -80,6 +79,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 			Database db = new Database();
 			List<BasicDynaBean> pageData = db.select(sql.toString(), true);
 			log("Found " + pageData.size() + " of " + db.getAllRows() + " contractor(s) that require processing");
+			PicsLogger.setOutputOn(true);
+
 			int errors = 0;
 			for (BasicDynaBean row : pageData) {
 				try {
@@ -94,6 +95,10 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 					errors++;
 				} finally {
 					PicsLogger.stop();
+					String output = PicsLogger.getOutput();
+					String sqlUpdate = "UPDATE contractor_policy_cleanup SET output = '" + Utilities.escapeQuotes(output)
+							+ "' WHERE conID = " + conID;
+					db.executeUpdate(sqlUpdate);
 				}
 				if (errors >= MAX_ERRORS)
 					break;
@@ -108,11 +113,10 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 	 * For the given contractor, do the following:<br>
 	 * 1) Get a list of existing certificates (should be empty)<br>
 	 * 2) For each audit<br>
-	 * 2a) Organize all the AuditData into Map of Tuples (first parents, then children)
-	 * 2b) For each Tuple, find any possible matching CAO
-	 * 2c) For each CAO, find the best Tuple (reduce to only one)
-	 * 2d) For each CAO, if one Tuple exists, then update CAO and map Certificate
-	 * 3) Remove converted AuditData records
+	 * 2a) Organize all the AuditData into Map of Tuples (first parents, then children) 2b) For each Tuple, find any
+	 * possible matching CAO 2c) For each CAO, find the best Tuple (reduce to only one) 2d) For each CAO, if one Tuple
+	 * exists, then update CAO and map Certificate 3) Remove converted AuditData records
+	 * 
 	 * @param conID
 	 * @throws Exception
 	 */
@@ -151,7 +155,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 				for (AuditData data : conAudit.getData()) {
 					if (data.getParentAnswer() != null) {
 						oldTupleData.add(data.getId());
-						
+
 						Tuple tuple = tuples.get(data.getParentAnswer().getId());
 						if (tuple == null)
 							log("    WARNING!! Failed to find the parent for dataID=" + data.getId());
@@ -235,7 +239,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 				}
 			}
 		} // End: for (ContractorAudit conAudit : contractor.getAudits())
-		
+
 		// Done processing contractor, now remove all of the auditData records
 		auditDataDAO.remove(oldTupleData);
 	}

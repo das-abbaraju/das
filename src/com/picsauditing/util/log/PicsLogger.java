@@ -10,6 +10,8 @@ public class PicsLogger {
 	protected static ThreadLocal<MyLogger> myLogger = new ThreadLocal<MyLogger>();
 	protected static SortedSet<LoggingRule> rules = new TreeSet<LoggingRule>();
 	protected static String dateFormat = "MMMdd HH:mm:ss.S";
+	protected static boolean outputOn = false;
+	protected static StringBuilder output = new StringBuilder();
 
 	static public void log(String message) {
 
@@ -47,6 +49,8 @@ public class PicsLogger {
 		if (shouldLog) {
 			System.out.println(formatDate(new Date()) + ": " + message);
 		}
+		if (outputOn)
+			output.append(message + "\n");
 	}
 
 	static public void start(String stopWatchName) {
@@ -112,5 +116,21 @@ public class PicsLogger {
 	}
 	public static void setRules(SortedSet<LoggingRule> rules) {
 		PicsLogger.rules = rules;
+	}
+	
+	/**
+	 * Get the current output (if any) and clear it for the next time
+	 * @return
+	 */
+	public static String getOutput() {
+		if (!outputOn)
+			return "Turn on output first";
+		String outputString = output.toString();
+		output = new StringBuilder();
+		return outputString;
+	}
+	
+	public static void setOutputOn(boolean outputOn) {
+		PicsLogger.outputOn = outputOn;
 	}
 }
