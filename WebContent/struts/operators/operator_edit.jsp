@@ -9,32 +9,40 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript">
 	function removeName(nameId) {
-		var pars = "button=RemoveName&nameId=" + nameId+'&id='+'<s:property value="operator.id"/>';
-		var divName ='operator_name';
-		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		var pars = "button=RemoveName&nameId=" + nameId + '&id='
+				+ '<s:property value="operator.id"/>';
+		var divName = 'operator_name';
+		$(divName).innerHTML = "<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', {
+			method :'post',
+			parameters :pars,
+			onSuccess : function(transport) {
+				new Effect.Highlight($(divName), {
+					duration :0.75,
+					startcolor :'#FFFF11',
+					endcolor :'#EEEEEE'
+				});
 			}
 		});
 		return false;
 	}
-	
+
 	function addName() {
 		name = $('legalName').value;
-		var pars = "button=AddName&name=" + name+'&id='+'<s:property value="operator.id"/>';
-		var divName ='operator_name';
-		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				
-				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		var pars = "button=AddName&name=" + name + '&id='
+				+ '<s:property value="operator.id"/>';
+		var divName = 'operator_name';
+		$(divName).innerHTML = "<img src='images/ajax_process.gif' />";
+		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', {
+			method :'post',
+			parameters :pars,
+			onSuccess : function(transport) {
+
+				new Effect.Highlight($(divName), {
+					duration :0.75,
+					startcolor :'#FFFF11',
+					endcolor :'#EEEEEE'
+				});
 			}
 		});
 		return false;
@@ -51,11 +59,13 @@
 <s:include value="../actionMessages.jsp" />
 
 <s:if test="id > 0 && operator.visibleAudits.size == 0">
-	<div id="alert">This operator doesn't have access to any audits. Please <a href="AuditOperator.action?oID=<s:property value="id"/>">double check the configuration</a>.</div>
+	<div id="alert">This operator doesn't have access to any audits. Please <a
+		href="AuditOperator.action?oID=<s:property value="id"/>">double check the configuration</a>.</div>
 </s:if>
 <s:if test="id > 0 && operator.flagQuestionCriteriaInherited.size == 0">
 
-	<div id="alert">This operator doesn't have any flag criteria defined. Please <a href="OperatorFlagCriteria.action?id=<s:property value="id"/>">double check the configuration</a>.</div>
+	<div id="alert">This operator doesn't have any flag criteria defined. Please <a
+		href="OperatorFlagCriteria.action?id=<s:property value="id"/>">double check the configuration</a>.</div>
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
@@ -89,12 +99,9 @@
 			<fieldset class="form"><legend><span>Visible Audits</span></legend>
 			<ol>
 				<s:iterator value="operator.visibleAudits">
-					<li><label><s:property value="auditType.auditName"/>:</label>
-						Risk >= <s:property value="minRiskLevel" />,
-						Status >= <s:property value="requiredAuditStatus"/>,
-						Flag = <s:property value="requiredForFlag"/>
-						<s:if test="canEdit">, Editable = Yes</s:if>
-					</li>
+					<li><label><s:property value="auditType.auditName" />:</label> Risk >= <s:property value="minRiskLevel" />,
+					Status >= <s:property value="requiredAuditStatus" />, Flag = <s:property value="requiredForFlag" /> <s:if
+						test="canEdit">, Editable = Yes</s:if></li>
 				</s:iterator>
 			</ol>
 			</fieldset>
@@ -108,18 +115,22 @@
 				<li><label>Approves Contractors:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
 					name="operator.approvesRelationships" theme="pics" /></li>
 				<s:if test="!operator.corporate">
-					<li><label title="The source of statistics that should be used to evaluate contractors">Health &amp; Safety Organization:</label> <s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}"
-						name="operator.oshaType" theme="pics" /></li>
+					<li><label title="The source of statistics that should be used to evaluate contractors">Health &amp;
+					Safety Organization:</label> <s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" name="operator.oshaType"
+						theme="pics" /></li>
 				</s:if>
 				<li><label>InsureGuard&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 					theme="pics" /></li>
+				<li><label>InsureGuard&trade; Requirements:</label> <s:select list="operatorForms"
+					name="operator.insuranceForm.id" headerKey="0" headerValue="- Please Choose a Document -" listKey="id"
+					listValue="formName"></s:select></li>
 
 				<li><label>Verified By PICS:</label> <s:checkbox name="operator.verifiedByPics" /></li>
 				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
 					name="operator.doContractorsPay" theme="pics" /></li>
 				<li><label>Send Emails to:</label> <s:textarea name="operator.activationEmails" rows="3" cols="40" /> <br />
 				* separate emails with commas ex: a@bb.com, c@dd.com</li>
-				
+
 			</ol>
 			</fieldset>
 			<fieldset class="form"><legend><span>Linked Accounts</span></legend>
