@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -15,13 +16,13 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AccountNameDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountName;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -37,12 +38,14 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	protected FacilitiesDAO facilitiesDAO;
 	protected AccountNameDAO accountNameDAO;
+	protected OperatorFormDAO formDAO;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
-			AccountNameDAO accountNameDAO) {
+			AccountNameDAO accountNameDAO, OperatorFormDAO formDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.accountNameDAO = accountNameDAO;
+		this.formDAO = formDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -59,28 +62,50 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				i++;
 			}
 
-			operator.setInheritAudits(setForeignKey(operator.getInheritAudits(), "operator.inheritAudits.id"));
-			operator.setInheritAuditCategories(setForeignKey(operator.getInheritAuditCategories(),
-					"operator.inheritAuditCategories.id"));
-			operator.setInheritFlagCriteria(setForeignKey(operator.getInheritFlagCriteria(),
-					"operator.inheritFlagCriteria.id"));
-			operator.setInheritInsuranceCriteria(setForeignKey(operator.getInheritInsuranceCriteria(),
-					"operator.inheritInsuranceCriteria.id"));
-			operator.setInheritInsurance(setForeignKey(operator.getInheritInsurance(), "operator.inheritInsurance.id"));
-
-			operator.setParent(setForeignKey(operator.getParent(), "operator.parent.id"));
-
-			if (operator.getParent() == null && operator.getCorporateFacilities().size() > 0) {
-				operator.setParent(operator.getCorporateFacilities().get(0).getCorporate());
-				operatorDao.save(operator);
+			Object button = ActionContext.getContext().getParameters().get("button");
+			if (button != null && button.toString().equalsIgnoreCase("Save")) {
+				operator.setInheritAudits(setForeignKey(operator.getInheritAudits(), "operator.inheritAudits.id"));
+				operator.setInheritAuditCategories(setForeignKey(operator.getInheritAuditCategories(),
+						"operator.inheritAuditCategories.id"));
+				operator.setInheritFlagCriteria(setForeignKey(operator.getInheritFlagCriteria(),
+						"operator.inheritFlagCriteria.id"));
+				operator.setInheritInsuranceCriteria(setForeignKey(operator.getInheritInsuranceCriteria(),
+						"operator.inheritInsuranceCriteria.id"));
+				operator.setInheritInsurance(setForeignKey(operator.getInheritInsurance(), "operator.inheritInsurance.id"));
+	
+				operator.setParent(setForeignKey(operator.getParent(), "operator.parent.id"));
+				
+				{
+					OperatorForm form = operator.getInsuranceForm();
+					int formID = getParameter("operator.insuranceForm.id");
+					if (formID > 0) {
+						if (form != null && form.getId() != formID) {
+							// It's different and needs to be changed
+							form = new OperatorForm();
+							form.setId(formID);
+						}
+					} else {
+						// Remove
+						form = null;
+					}
+					
+					// TODO handle setting to zero
+					operator.setInsuranceForm(form);
+				}
+	
+				if (operator.getParent() == null && operator.getCorporateFacilities().size() > 0) {
+					operator.setParent(operator.getCorporateFacilities().get(0).getCorporate());
+					operator = operatorDao.save(operator);
+				}
 			}
-
 		}
 	}
 
 	private OperatorAccount setForeignKey(OperatorAccount table, String parameter) {
 		int foreignKey = getParameter(parameter);
 		if (foreignKey > 0) {
+			if (table != null && table.getId() == foreignKey)
+				return table;
 			OperatorAccount newRow = new OperatorAccount();
 			newRow.setId(foreignKey);
 			return newRow;
@@ -195,7 +220,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					operatorDao.save(operator);
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
-				operatorDao.save(operator);
+				operator = operatorDao.save(operator);
 				
 				addActionMessage("Successfully saved " + operator.getName());
 			} else {
@@ -266,6 +291,10 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			relatedFacilities.add(operator.getInheritInsurance());
 		}
 		return relatedFacilities;
+	}
+	
+	public List<OperatorForm> getOperatorForms() {
+		return formDAO.findByopID(this.id);
 	}
 
 	static private Vector<String> validateAccount(OperatorAccount operator) {
