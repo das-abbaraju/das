@@ -25,4 +25,10 @@ and pcd.catID = 151;
 update contractor_audit_operator cao set visible = 0 
 where status = 'NotApplicable' 
 and recommendedStatus = 'NotApplicable'
-and creationDate = updateDate;  
+and creationDate = updateDate;
+
+update contractor_audit_operator cao set flag = 'Green'
+where recommendedStatus = 'Approved';
+
+update contractor_audit_operator cao set flag = 'Red'
+where recommendedStatus = 'Rejected';
