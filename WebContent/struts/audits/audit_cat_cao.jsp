@@ -65,7 +65,16 @@
 			<div class="question shaded" id="aiNameValid<s:property value="id"/>">
 				<span class="question">1.3.2&nbsp;&nbsp;
 					Does the additional insured listed in the above certificate match the 
-					name (and address) requirements listed in the <a href="forms/<s:property value="operator.insuranceForm.file"/>" target="_BLANK"><s:property value="operator.name"/> Insurance Requirements</a> document exactly?
+					name (and address) requirements listed in the 
+					<a <s:if test="operator.insuranceForm != null">
+							href="forms/<s:property value="operator.insuranceForm.file"/>" 
+						</s:if>
+						<s:else>
+							href="ContractorForms.action?id=<s:property value="audit.contractorAccount.id"/>"
+						</s:else>
+						target="_BLANK">
+							<s:property value="operator.name"/> Insurance Requirements
+						</a> document exactly?
 				</span>
 				<div class="answer">
 					<s:checkbox name="aiNameValid" onchange="saveCao(this.name, this.checked, %{id}, 'aiNameValid%{id}')"></s:checkbox>
