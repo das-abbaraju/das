@@ -83,7 +83,7 @@
 				</s:if>
 				<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 				<td>
-					<s:iterator value="getDataForAudit(get('auditID'),'limits')">
+					<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
 						<s:property value="getFormattedDollarAmount(answer)"/> - <s:property value="question.question"/><br/>
 					</s:iterator>
 				</td>

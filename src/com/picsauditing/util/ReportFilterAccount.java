@@ -11,16 +11,16 @@ public class ReportFilterAccount extends ReportFilter {
 	public static final String DEFAULT_ZIP = "- Zip -";
 	public static final String DEFAULT_CITY = "- City -";
 	public static final String DEFAULT_VISIBLE = "- Visible -";
-	
-	///////// Filter Visibility /////////////
+
+	// /////// Filter Visibility /////////////
 	protected boolean showAccountName = true;
 	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
 	protected boolean showVisible = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
-	
-	///////// Parameter Values  /////////////////
+
+	// /////// Parameter Values /////////////////
 	protected String startsWith;
 	protected String accountName = DEFAULT_NAME;
 	protected Industry[] industry;
@@ -30,15 +30,16 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String visible;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
-	
+
 	protected Permissions permissions = null;
+
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		if (permissions.isPicsEmployee()) {
 			showVisible = true;
 		}
 	}
-	
+
 	// Getters for search lists
 	public Industry[] getIndustryList() {
 		return Industry.values();
@@ -47,11 +48,11 @@ public class ReportFilterAccount extends ReportFilter {
 	public String[] getVisibleOptions() {
 		return new String[] { DEFAULT_VISIBLE, "Y", "N" };
 	}
-	
+
 	public ArrayList<String> getFlagStatusList() throws Exception {
 		return FlagColor.getValuesWithDefault();
 	}
-	
+
 	public boolean isShowAccountName() {
 		return showAccountName;
 	}
@@ -163,7 +164,7 @@ public class ReportFilterAccount extends ReportFilter {
 	public void setPrimaryInformation(boolean primaryInformation) {
 		this.primaryInformation = primaryInformation;
 	}
-	
+
 	public boolean isTradeInformation() {
 		return tradeInformation;
 	}
