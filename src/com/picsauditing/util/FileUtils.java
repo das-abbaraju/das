@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class FileUtils {
@@ -122,7 +121,7 @@ public class FileUtils {
 	}
 
 	static public boolean checkFileExtension(String extension) {
-		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png", "docx", "xlsx" };
+		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png", "docx", "xlsx", "zip" };
 		return checkFileExtension(extension, validExtensions);
 	}
 
