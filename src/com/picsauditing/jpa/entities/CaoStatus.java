@@ -38,4 +38,16 @@ public enum CaoStatus {
 	public boolean isRejected() {
 		return this.equals(CaoStatus.Rejected);
 	}
+
+	public String getColor() {
+		String color = "";
+		if (isPending() || isSubmitted() || isVerified())
+			color = "Amber";
+		else if (isApproved())
+			color = "Green";
+		else if (isRejected())
+			color = "Red";
+
+		return color;
+	}
 }

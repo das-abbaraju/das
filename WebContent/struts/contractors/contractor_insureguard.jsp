@@ -131,7 +131,7 @@
 				<td rowspan="<s:property value="value.size"/>"><s:date name="key.expiresDate" format="M/d/yy"/></td>
 			</s:if>
 			<td><s:property value="operator.name"/></td>
-			<td class="<s:if test="status.approved">Green</s:if><s:else>Red</s:else>"><s:property value="status"/></td>
+			<td class="<s:property value="status.color"/>"><s:property value="status"/></td>
 			<td style="height:30px">
 				<s:if test="certificate != null">
 					<a title="<s:property value="certificate.description"/>"
