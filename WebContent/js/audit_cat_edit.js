@@ -209,7 +209,7 @@ function saveCao(field, value, caoID, divName) {
 	var pars = {
 		auditID : auditID,
 		'cao.id': caoID,
-		button	: 'Save'
+		button  : 'Save'
 	};
 	
 	pars['cao.'+field] = value;
@@ -226,13 +226,15 @@ function saveCao(field, value, caoID, divName) {
 	});
 }
 
-function saveCert(caoID, certID, divName) {
+function saveCaoStatus(caoID, button, useNotes) {
 	var pars = {
-			'opID'			: opID,
-			auditID 		: auditID,
-			'certificate.id': certID,
-			button			: action
-		};
+		auditID : auditID,
+		'cao.id': caoID,
+		button  : button
+	};
+	
+	if (useNotes)
+		pars['cao.notes'] = $('notes_'+caoID).value;
 	
 	var myAjax = new Ajax.Updater('cao_layer', 'PolicySaveAjax.action', {
 		method:'post',
@@ -244,5 +246,5 @@ function saveCert(caoID, certID, divName) {
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
 		}
 	});
-	
+
 }

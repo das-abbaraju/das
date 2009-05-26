@@ -71,6 +71,11 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 			em.remove(row);
 		}
 	}
+	
+	public void refresh(ContractorAuditOperator row) {
+		if (row != null && row.getId() != 0)
+			em.refresh(row);
+	}
 
 	public static void saveNoteAndEmail(ContractorAuditOperator cao, Permissions permissions) {
 		if (!cao.getStatus().isTemporary()) {

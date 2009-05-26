@@ -2,6 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <div class="subCategory">
+	<s:include value="../actionMessages.jsp"/>
 	<s:iterator value="conAudit.operators" status="stat">
 		<s:if test="isVisibleTo(permissions)">
 			<h3><s:property value="operator.name" /></h3>
@@ -107,12 +108,12 @@
 			</s:if> 
 			<s:if test="permissions.admin">
 				<div class="buttons">
-					<input type="button" class="picsbutton positive" value="Verify" />
-					<input type="button" class="picsbutton negative" value="Reject" />
+					<input type="button" class="picsbutton positive" value="Verify" onclick="saveCaoStatus(<s:property value="id"/>,this.value, true); return false;"/>
+					<input type="button" class="picsbutton negative" value="Reject" onclick="saveCaoStatus(<s:property value="id"/>,this.value, true); return false;"/>
 				</div>
 				<br clear="all"/>
 				<label class="policy">Notes:</label><br/>
-				<s:textarea name="notes" cols="60" rows="2"/>
+				<s:textarea name="notes" cols="60" rows="2" id="notes_%{id}"/>
 			</s:if> 
 			<s:if test="permission.operatorCorporate">
 				<div class="buttons">
@@ -122,7 +123,7 @@
 				</div>
 				<br clear="all"/>
 				<label class="policy">Notes:</label><br/>
-				<s:textarea name="notes" cols="60" rows="2"/>
+				<s:textarea name="notes" cols="60" rows="2" id="notes_%{id}"/>
 			</s:if>
 			<br clear="all"/>
 			<br />
