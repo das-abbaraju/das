@@ -75,7 +75,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(52); // Insurance Policy rejected
-													// by PICS
+					// by PICS
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setFromAddress(permissions.getEmail());
 					emailBuilder.setContractor(cao.getAudit().getContractorAccount());
@@ -86,6 +86,13 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							+ "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName()
 							+ "</strong>. Note: " + Strings.htmlStrip(cao.getNotes()));
 				}
+			}
+
+			if ("Approve".equals(button)) {
+				cao.setStatus(CaoStatus.Approved);
+				caoDAO.save(cao);
+				addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+						+ "</strong> Policy has been approved for <strong>" + cao.getOperator().getName() + "</strong>");
 			}
 
 			if ("Save".equals(button)) {
