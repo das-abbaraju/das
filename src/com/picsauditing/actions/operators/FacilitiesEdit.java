@@ -75,24 +75,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	
 				operator.setParent(setForeignKey(operator.getParent(), "operator.parent.id"));
 				
-				{
-					OperatorForm form = operator.getInsuranceForm();
-					int formID = getParameter("operator.insuranceForm.id");
-					if (formID > 0) {
-						if (form != null && form.getId() != formID) {
-							// It's different and needs to be changed
-							form = new OperatorForm();
-							form.setId(formID);
-						}
-					} else {
-						// Remove
-						form = null;
-					}
-					
-					// TODO handle setting to zero
-					operator.setInsuranceForm(form);
-				}
-	
 				if (operator.getParent() == null && operator.getCorporateFacilities().size() > 0) {
 					operator.setParent(operator.getCorporateFacilities().get(0).getCorporate());
 					operator = operatorDao.save(operator);

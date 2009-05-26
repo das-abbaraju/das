@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,8 +8,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
@@ -29,8 +26,7 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 	protected int minRiskLevel = 0;
 	protected AuditStatus requiredAuditStatus = AuditStatus.Active; // Can sometimes be Submitted
 	protected FlagColor requiredForFlag;
-	protected int orderedCount = -1;
-	protected Date orderDate;
+	protected String help;
 
 	private int htmlID = 0;
 	private FlagColor contractorFlag;
@@ -74,23 +70,6 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 		this.minRiskLevel = minRiskLevel;
 	}
 
-	public int getOrderedCount() {
-		return orderedCount;
-	}
-
-	public void setOrderedCount(int orderedCount) {
-		this.orderedCount = orderedCount;
-	}
-
-	@Temporal(value = TemporalType.DATE)
-	public Date getOrderDate() {
-		return orderDate;
-	}
-
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "opID", nullable = false)
 	public OperatorAccount getOperatorAccount() {
@@ -117,6 +96,15 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 
 	public void setRequiredAuditStatus(AuditStatus requiredAuditStatus) {
 		this.requiredAuditStatus = requiredAuditStatus;
+	}
+
+	@Column(length = 1000)
+	public String getHelp() {
+		return help;
+	}
+
+	public void setHelp(String help) {
+		this.help = help;
 	}
 
 	/**
@@ -155,33 +143,12 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 	 * <li>minRiskLevel > 0</li>
 	 * <li>minRiskLevel <= contractor.getRiskLevel().ordinal()</li>
 	 * </ul>
+	 * 
 	 * @param contractor
 	 * @return
 	 */
 	@Transient
 	public boolean isRequiredFor(ContractorAccount contractor) {
 		return (canSee && minRiskLevel > 0 && minRiskLevel <= contractor.getRiskLevel().ordinal());
-	}
-
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditOperator other = (AuditOperator) obj;
-		if (id != other.id)
-			return false;
-		return true;
 	}
 }

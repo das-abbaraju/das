@@ -227,8 +227,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 					log("    Updating " + cao.getOperator().getName());
 					Tuple tuple = getSingleTuple(caoTuples.get(cao));
 					if (tuple != null) {
-						if (cao.getAiName() == null || tuple.getOtherName() != null)
-							cao.setAiName(tuple.getOtherName());
+						//if (cao.getAiName() == null || tuple.getOtherName() != null)
+						//	cao.setAiName(tuple.getOtherName());
 						if (!cao.isAiNameValid())
 							cao.setAiNameValid(tuple.isNameMatches());
 						if (cao.getCertificate() == null || tuple.getCertificate() != null)

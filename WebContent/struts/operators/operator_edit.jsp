@@ -121,9 +121,6 @@
 				</s:if>
 				<li><label>InsureGuard&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 					theme="pics" /></li>
-				<li><label>InsureGuard&trade; Requirements:</label> <s:select list="operatorForms"
-					name="operator.insuranceForm.id" headerKey="0" headerValue="- Please Choose a Document -" listKey="id"
-					listValue="formName"></s:select></li>
 
 				<li><label>Verified By PICS:</label> <s:checkbox name="operator.verifiedByPics" /></li>
 				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"

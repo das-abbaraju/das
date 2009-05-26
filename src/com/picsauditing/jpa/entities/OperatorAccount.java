@@ -49,7 +49,6 @@ public class OperatorAccount extends Account {
 	private YesNo approvesRelationships = YesNo.No;
 	private boolean verifiedByPics = true;
 	private OshaType oshaType = OshaType.OSHA;
-	private OperatorForm insuranceForm;
 
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
@@ -159,16 +158,6 @@ public class OperatorAccount extends Account {
 
 	public void setOshaType(OshaType oshaType) {
 		this.oshaType = oshaType;
-	}
-
-	@ManyToOne
-	@JoinColumn(name="insuranceFormID")
-	public OperatorForm getInsuranceForm() {
-		return insuranceForm;
-	}
-
-	public void setInsuranceForm(OperatorForm insuranceForm) {
-		this.insuranceForm = insuranceForm;
 	}
 
 	@ManyToOne

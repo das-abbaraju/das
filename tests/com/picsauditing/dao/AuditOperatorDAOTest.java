@@ -34,9 +34,7 @@ public class AuditOperatorDAOTest extends TestCase {
 		auditoperator.getOperatorAccount().setId(228);
 		auditoperator.setMinRiskLevel(2);
 		auditoperator.setRequiredForFlag(FlagColor.Amber);
-		auditoperator.setOrderedCount(1);
 		auditoperator.setCanSee(false);
-		auditoperator.setOrderDate(Calendar.getInstance().getTime());
 		auditoperator = auditoperatorDAO.save(auditoperator);
 		assertTrue(auditoperator.getId() > 0);
 

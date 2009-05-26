@@ -18,8 +18,8 @@ public class ContractorAuditOperator extends BaseTable {
 	private ContractorAudit audit;
 	private OperatorAccount operator;
 	private CaoStatus status = CaoStatus.Pending;
+	private User statusChangedBy = null;
 	private boolean visible = true;
-	private String aiName;
 	private boolean aiNameValid;
 	private Certificate certificate;
 	private FlagColor flag = null;
@@ -59,6 +59,16 @@ public class ContractorAuditOperator extends BaseTable {
 		this.status = status;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "statusChangedBy")
+	public User getStatusChangedBy() {
+		return statusChangedBy;
+	}
+
+	public void setStatusChangedBy(User statusChangedBy) {
+		this.statusChangedBy = statusChangedBy;
+	}
+
 	public boolean isVisible() {
 		return visible;
 	}
@@ -81,14 +91,6 @@ public class ContractorAuditOperator extends BaseTable {
 		if (Strings.isEmpty(notes))
 			return false;
 		return true;
-	}
-
-	public String getAiName() {
-		return aiName;
-	}
-
-	public void setAiName(String aiName) {
-		this.aiName = aiName;
 	}
 
 	public boolean isAiNameValid() {
@@ -130,16 +132,16 @@ public class ContractorAuditOperator extends BaseTable {
 	public boolean isVisibleTo(Permissions permissions) {
 		if (!visible)
 			return false;
-		
+
 		if (permissions.getInsuranceOperatorID() > 0) {
 			return operator.getId() == permissions.getInsuranceOperatorID();
 		}
-		
-		// This may not be necessary any more. We added this when we had 
+
+		// This may not be necessary any more. We added this when we had
 		// BASF but now that it's inherited, we don't have so many records
-		//if (status.isNotApplicable())
-			//return false;
-		
+		// if (status.isNotApplicable())
+		// return false;
+
 		return true;
 	}
 

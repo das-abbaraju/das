@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -15,8 +14,9 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 	protected Account account;
 	protected String formName;
 	protected String file;
+	protected String formType;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false)
 	public Account getAccount() {
 		return account;
@@ -26,7 +26,7 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 		this.account = account;
 	}
 
-	@Column(name = "formName", nullable = false, length = 100)
+	@Column(nullable = false, length = 100)
 	public String getFormName() {
 		return formName;
 	}
@@ -35,7 +35,8 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 		this.formName = formName;
 	}
 
-	@Column(name = "file", nullable = false, length = 100)
+	@Deprecated
+	@Column(nullable = false, length = 100)
 	public String getFile() {
 		return file;
 	}
@@ -44,25 +45,12 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 		this.file = file;
 	}
 
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
+	public String getFormType() {
+		return formType;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditCatOperator other = (AuditCatOperator) obj;
-		if (id != other.id)
-			return false;
-		return true;
+	public void setFormType(String formType) {
+		this.formType = formType;
 	}
+
 }
