@@ -3,7 +3,7 @@
 
 <div class="subCategory">
 	<s:iterator value="conAudit.operators" status="stat">
-		<s:if test="visible">
+		<s:if test="isVisibleTo(permissions)">
 			<h3><s:property value="operator.name" /></h3>
 			<div class="question shaded">
 				<label class="policy">Status:</label>
@@ -19,8 +19,7 @@
 			<div class="question" id="fileQuestion<s:property value="operator.id"/>">
 				<span class="question">1.3.1&nbsp;&nbsp;
 					Upload a Certificate of Insurance or other supporting documentation
-					for this policy. If you selected "All" above, please make sure the
-					Certificate does not list any Operators by name.
+					for this policy.
 				</span>
 				<div class="answer">
 					<s:if test="certificate != null">

@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -123,6 +124,23 @@ public class ContractorAuditOperator extends BaseTable {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	@Transient
+	public boolean isVisibleTo(Permissions permissions) {
+		if (!visible)
+			return false;
+		
+		if (permissions.getInsuranceOperatorID() > 0) {
+			return operator.getId() == permissions.getInsuranceOperatorID();
+		}
+		
+		// This may not be necessary any more. We added this when we had 
+		// BASF but now that it's inherited, we don't have so many records
+		//if (status.isNotApplicable())
+			//return false;
+		
+		return true;
 	}
 
 }

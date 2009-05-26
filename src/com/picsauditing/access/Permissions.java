@@ -43,6 +43,7 @@ public class Permissions implements Serializable {
 	private String accountType;
 	private String email;
 	private int adminID;
+	private int insuranceOperatorID;
 	private boolean approvesRelationships = false;
 	private boolean active = false;
 	private boolean accountActive = false;
@@ -61,6 +62,7 @@ public class Permissions implements Serializable {
 		approvesRelationships = false;
 
 		adminID = 0;
+		insuranceOperatorID = 0;
 
 		permissions.clear();
 		groups.clear();
@@ -98,9 +100,12 @@ public class Permissions implements Serializable {
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			accountActive = user.getAccount().isActiveB();
+			insuranceOperatorID = 0;
 
-			if (isOperator() || isCorporate()) {
+			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
+				insuranceOperatorID = operator.getInheritInsuranceCriteria().getId();
+				
 				if (isOperator()) {
 					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 					for (Facility facility : operator.getCorporateFacilities())
@@ -203,6 +208,10 @@ public class Permissions implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+	
+	public int getInsuranceOperatorID() {
+		return insuranceOperatorID;
 	}
 
 	/**
