@@ -51,6 +51,7 @@ public class ReportFilterAccount extends ReportFilter {
 	public ArrayList<String> getFlagStatusList() throws Exception {
 		return FlagColor.getValuesWithDefault();
 	}
+	
 	public boolean isShowAccountName() {
 		return showAccountName;
 	}

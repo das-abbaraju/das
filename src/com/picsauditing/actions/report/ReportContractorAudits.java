@@ -160,7 +160,7 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getRecommendedFlag(), FlagColor.DEFAULT_FLAG_STATUS))
+		if (filterOn(f.getRecommendedFlag()))
 			report.addFilter(new SelectFilter("recommendedFlag", "cao.flag = '?'", f.getRecommendedFlag()));
 
 		String auditorIdList = Strings.implode(f.getAuditorId(), ",");

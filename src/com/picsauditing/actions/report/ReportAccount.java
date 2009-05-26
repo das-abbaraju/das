@@ -277,7 +277,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID))
 			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", f.getTaxID()));
 
-		if (filterOn(f.getFlagStatus(), FlagColor.DEFAULT_FLAG_STATUS))
+		if (filterOn(f.getFlagStatus()))
 			report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", f.getFlagStatus()));
 
 		if (filterOn(f.getWaitingOn()))

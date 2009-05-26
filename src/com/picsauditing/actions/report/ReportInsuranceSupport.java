@@ -54,7 +54,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addJoin("JOIN accounts oper ON oper.id = cao.opID");
 			sql.addField("oper.name as operatorName");
 
-			String subSelect = "SELECT inheritInsurance FROM Operators WHERE id = " + permissions.getAccountId();
+			String subSelect = "SELECT inheritInsuranceCriteria FROM Operators WHERE id = " + permissions.getAccountId();
 			sql.addWhere("cao.opid = (" + subSelect + ")");
 		}
 
@@ -72,12 +72,13 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		getFilter().setShowAuditor(false);
 		getFilter().setShowPercentComplete(false);
 		getFilter().setShowAuditFor(false);
+		getFilter().setShowFlagStatus(false);
 
 		getFilter().setShowCreatedDate(true);
 		getFilter().setShowExpiredDate(true);
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowCaoStatus(true);
-
+		getFilter().setShowRecommendedFlag(true);
 		// getFilter().setShowConAuditor(false);
 
 	}

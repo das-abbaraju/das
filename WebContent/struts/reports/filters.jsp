@@ -79,7 +79,7 @@
 	</s:if>
 
 	<s:if test="filter.showFlagStatus">
-		<div class="filterOption"><s:select list="filter.flagStatusList"
+		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Flag Status -"
 			cssClass="forms" name="filter.flagStatus" /></div>
 	</s:if>
 
@@ -426,7 +426,7 @@
 	</s:if>
 
 	<s:if test="filter.showRecommendedFlag">
-		<div class="filterOption"><s:select list="filter.flagStatusList"
+		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Compliant Status -"
 			cssClass="forms" name="filter.recommendedFlag" /></div>
 	</s:if>
 
