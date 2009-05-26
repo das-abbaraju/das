@@ -55,6 +55,16 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 		// cao = caoDAO.find(conAudit.getId(), opID);
 		if (button != null) {
+			if ("Submit".equals(button) || "Resubmit".equals(button)) {
+				if (cao.getAudit().getPercentComplete() == 100) {
+					cao.setStatus(CaoStatus.Submitted);
+					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
+							+ "</strong> Policy has been submitted tor <strong>" + cao.getOperator().getName()
+							+ "</strong>.");
+				} else
+					addActionError("Please enter all required questions before submitting the policy.");
+			}
+
 			if ("Verify".equals(button)) {
 				cao.setStatus(CaoStatus.Verified);
 				cao.setAuditColumns(permissions);

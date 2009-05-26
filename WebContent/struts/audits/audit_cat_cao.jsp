@@ -101,7 +101,7 @@
 							<s:else>
 								value="Submit" 
 							</s:else>
-							onclick="saveCaoStatus(<s:property value="id"/>,this.value, true); return false;"
+							onclick="saveCaoStatus(<s:property value="id"/>,this.value, false); return false;"
 						/>
 					</div>
 					<br clear="all"/>
