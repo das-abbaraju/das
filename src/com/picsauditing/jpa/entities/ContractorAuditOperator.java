@@ -20,7 +20,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private CaoStatus status = CaoStatus.Pending;
 	private User statusChangedBy = null;
 	private boolean visible = true;
-	private boolean aiNameValid;
+	private boolean valid;
 	private Certificate certificate;
 	private FlagColor flag = null;
 	private String notes;
@@ -93,12 +93,21 @@ public class ContractorAuditOperator extends BaseTable {
 		return true;
 	}
 
+	@Transient
 	public boolean isAiNameValid() {
-		return aiNameValid;
+		return valid;
 	}
 
 	public void setAiNameValid(boolean aiNameValid) {
-		this.aiNameValid = aiNameValid;
+		this.valid = aiNameValid;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 
 	@ManyToOne
