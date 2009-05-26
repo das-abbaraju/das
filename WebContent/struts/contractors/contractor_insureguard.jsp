@@ -30,7 +30,7 @@
 <table>
 <tr><td>
 
-<s:if test="current.size > 0 || manuallyAddAudit">
+<s:if test="requested.size > 0 || manuallyAddAudit">
 <h3> Requested Insurance Policies</h3>
 <table class="report noshade">
 	<thead>
