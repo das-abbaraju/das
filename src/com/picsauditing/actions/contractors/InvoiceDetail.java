@@ -15,7 +15,6 @@ import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -206,7 +205,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor);
 		emailBuilder.addToken("invoice", invoice);
-		emailBuilder.addToken("operators", getOperators());
+		emailBuilder.addToken("operators", getOperatorsString());
 		emailBuilder.addToken("ccType", getCcType());
 		emailBuilder.setFromAddress("billing@picsauditing.com");
 
