@@ -95,6 +95,9 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 			if ("Save".equals(button)) {
 				if (cao != null) {
+					if (cao.getCertificate() == null || cao.getCertificate().getId() == 0) {
+						cao.setCertificate(null);
+					}
 					caoDAO.save(cao);
 				}
 			}
