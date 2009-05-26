@@ -10,7 +10,7 @@
 				<s:property value="status" />
 				<s:if test="flag != null">
 					<label class="policy">Meets Criteria:</label>
-					<s:property value="flag.smallIcon" />
+					<s:property value="flag.smallIcon" escape="false"/>
 					<s:property value="flag" />
 				</s:if> <!--<br /><label class="policy">Notes:</label> Everything is correct but the additional named insured
 				<br /><label class="policy">Contractor Remarks:</label> I'm just submitting this for a bid right now.
