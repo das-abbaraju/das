@@ -49,7 +49,7 @@
 		<thead>
 			<tr>
 				<td>Select</td>
-				<td title="PICS Recommendation" style="cursor: help;">Compliant?</td>
+				<td title="PICS Recommendation" style="cursor: help;"></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td><a href="javascript: changeOrderBy('form1','atype.auditName');">Policy</a></td>
 				<s:if test="requiresActivePolicy">	
@@ -58,10 +58,9 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
 				<td title="Waiver of Subrogation">Waiver</td>
-				<td>Additional Insured / Certificate Holder</td>
+				<td title="Additional Insured / Certificate Holder">AI/CH</td>
 				<td>Cert</td>
 				<td>Notes</td>
-				<td>Approval<br/>Status</td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat">
@@ -84,7 +83,8 @@
 				<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
-						<s:property value="getFormattedDollarAmount(answer)"/> - <s:property value="question.question"/><br/>
+						<nobr><s:property value="getFormattedDollarAmount(answer)"/> = <span style="font-size: 9px;"><s:property value="question.columnHeader"/></span></nobr>
+						<br/>
 					</s:iterator>
 				</td>
 				<td>
@@ -94,7 +94,7 @@
 				</td>
 				<td>
 					<s:if test="get('aiNameValid') == 1">
-						<s:property value="get('operatorName')"/>
+						VALID
 					</s:if>
 					<s:else>
 						<s:property value="get('aiName')"/>
@@ -107,8 +107,7 @@
 					</s:if>
 					<s:else></s:else>
 				</td>
-				<td><s:textfield name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}"/></td>
-				<td><s:property value="get('caoStatus')"/></td>
+				<td onclick="$('approveInsuranceForm_caos_<s:property value="get('caoId')"/>__notes').show();"><s:textfield name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}" cssStyle="display: none;"/></td>
 			</tr>
 		</s:iterator>
 		<tr>
