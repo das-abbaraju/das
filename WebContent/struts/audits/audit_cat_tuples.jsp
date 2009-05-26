@@ -22,7 +22,9 @@
 		<s:set name="parentAnswer" value="" />
 	</div>
 </s:iterator>
-<s:if test="mode == 'Edit'">
+
+<s:if test="false">
+	<!-- Removing tuples -->
 	<div class="tuple">
 		<h4 class="groupTitle">Add New</h4>
 		<s:set name="q" value="#anchorQuestion" />

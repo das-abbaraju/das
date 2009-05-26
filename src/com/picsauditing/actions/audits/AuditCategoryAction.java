@@ -36,8 +36,8 @@ import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * Viewing audit Data including one or more categories and their subcategories
- * and data This handles View, Edit, and Verify all at the same time
+ * Viewing audit Data including one or more categories and their subcategories and data This handles View, Edit, and
+ * Verify all at the same time
  * 
  * @author Trevor
  * 
@@ -425,5 +425,23 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		}
 
 		return activePendingEditableAudits;
+	}
+
+	/**
+	 * 
+	 * @return true if the current users is an operator and there is a visible cao belonging to another operator
+	 */
+	public boolean isOperatorWithMultiCaoPolicy() {
+		if (!permissions.isOperatorCorporate())
+			return false;
+
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.isVisible()) {
+				if (cao.getOperator().getId() != permissions.getInsuranceOperatorID())
+					return true;
+			}
+		}
+
+		return false;
 	}
 }

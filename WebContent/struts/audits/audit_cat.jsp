@@ -10,12 +10,11 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 
 <script type="text/javascript" src="js/prototype.js"></script>
-<s:if test="mode == 'Edit' || mode == 'Verify'">
-	<script type="text/javascript"
-		src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
-	<script type="text/javascript" src="js/validateForms.js"></script>
-	<script type="text/javascript" src="js/audit_cat_edit.js"></script>
-</s:if>
+<script type="text/javascript"
+	src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
+<script type="text/javascript" src="js/validateForms.js"></script>
+<script type="text/javascript" src="js/audit_cat_edit.js"></script>
+
 <script type="text/javascript">
 	var auditID = <s:property value="auditID"/>;
 	var catDataID = <s:property value="catDataID"/>;

@@ -4,10 +4,10 @@
 	
 	<s:if test="conAudit.auditType.classType.policy">
 		<s:if test="permissions.operator && !canEdit">
-			<div id="alert">More than one facility has access to this data. Please contact PICS if any changes are needed.</div>
+			<div id="alert">More than one facility has access to this data. Please contact PICS if any changes to existing data are needed.</div>
 		</s:if>
 		<s:if test="conAudit.willExpireSoon() && !conAudit.auditStatus.expired">
-			<div id="alert">This policy is about to Expire. Please update this information on 
+			<div id="alert">This policy is about to Expire and is currently locked for editing. Please use the up coming policy to record any changes 
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
 					<s:if test="#newPending.auditType.classType.policy && conAudit.id != #newPending.id">
 						<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">

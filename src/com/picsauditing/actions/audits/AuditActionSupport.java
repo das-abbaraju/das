@@ -194,6 +194,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (type.getClassType().isPolicy()) {
 			if (conAudit.willExpireSoon())
 				// Never let them edit the old policy
+				// But should we allow for exceptions?
 				return false;
 		}
 
@@ -206,19 +207,21 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isContractor()) {
 			if (type.isAnnualAddendum()
 					&& conAudit.getAuditStatus().equals(AuditStatus.Active))
+				// contractors can't modify annual updates that are already verified
 				return false;
 
-			if (type.isCanContractorEdit())
-				return true;
-			else
-				return false;
+			return type.isCanContractorEdit();
 		}
 
 		if (permissions.isOperatorCorporate()) {
-			if (permissions.getCanEditAudits().contains(conAudit.getAuditType().getId()))
+			if (permissions.getCanEditAudits().contains(type.getId()))
 				return true;
 			
-			if (conAudit.getAuditType().getClassType().isPolicy()) {
+			if (type.getClassType().isPolicy()) {
+				// We are going to try something new. We're going to allow operators to 
+				// change policy data as long as they are adding common data. We'll disallow
+				// updates or deletions of 
+				//return true;
 				if (conAudit.getAuditStatus().isPending())
 					return true;
 				if (conAudit.getOperators().size() == 1) {
