@@ -21,64 +21,6 @@
 	var conID = <s:property value="conAudit.contractorAccount.id"/>;
 	var mode = '<s:property value="#parameters.mode"/>';
 
-	function verifyReject(status, opID) {
-		var caoNotes = $('notes_'+opID) != null ? $('notes_'+opID).value : "";
-		startThinking( {div:'cao_' + opID, type: 'large'} );
-		var pars = {
-			auditID: auditID,
-			button: status,
-			caoNotes: caoNotes,
-			opID: opID			
-		};
-		
-		var myAjax = new Ajax.Updater('cao_verification', 'PolicySaveAjax.action',
-				{
-					method: 'post',
-					parameters: pars
-				});
-	}
-
-	function submitPolicy(opID, isResubmit) {
-		startThinking( {div: 'submit_'+opID, type: 'large'} );
-		var pars = {
-			opID: opID,
-			auditID: auditID,
-			button: (isResubmit)? 'Resubmit' : 'Submit'
-		};
-
-		var myAjax = new Ajax.Updater('cao_submit', 'AuditCatSubmitAjax.action',
-				{
-					method: 'post',
-					parameters: pars
-				});
-	}
-	
-	function editCao( caoId, act ) {
-		var pars;
-		if ("save" == act)
-			pars= $('caoForm').serialize();
-		else
-			pars= 'cao.id=' + caoId;
-		startThinking( {div: 'caoSection', type: 'large' } );
-		
-		var myAjax = new Ajax.Updater($('caoSection'),'CaoEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
-				if (transport.status == 200) {
-					$('caoSection').show();
-				}
-			}
-		});
-		
-		return false;
-	}
-
-	function changeButton(button, checked) {
-		$(button).disabled = !checked;
-	}
-
 	function openOsha(logID) {
 		url = 'DownloadOsha.action?id='+logID;
 		title = 'Osha300Logs';
@@ -103,7 +45,6 @@ label.policy {
 	<s:if test="!singleCat">
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
-	<div id="caoSection"></div>
 </s:if>
 
 <div id="auditToolbar" class="right">

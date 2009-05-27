@@ -1,3 +1,13 @@
+/**
+ * This is used to enable the submit button when contractors have to resubmit their PQF
+ * @param button
+ * @param checked
+ * @return
+ */
+function changeButton(button, checked) {
+	$(button).disabled = !checked;
+}
+
 function verifyAnswer(questionid, answerid, parentid) {
 	if (catDataID == 0) return;
 	if (parentid == null || parentid == '')

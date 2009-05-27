@@ -145,11 +145,7 @@
 			<s:iterator value="conAudit.operators" status="rowStatus">
 				<s:if test="isVisibleTo(permissions)">
 					<li>
-						<label 
-							<s:if test="notes != null && notes.length() > 0 && !status.approved">
-								title="<s:property value="notes"/>" 
-								class="tooltipped"
-							</s:if>>Op Status:</label>
+						<label>Op Status:</label>
 							<a href="#cao<s:property value="id"/>"><s:property value="status"/></a>
 							<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
 					</li>
