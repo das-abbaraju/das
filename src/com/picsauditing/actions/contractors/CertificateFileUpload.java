@@ -37,7 +37,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 		
 		if(certID > 0) {
 			certificate = certificateDAO.find(certID);
-			fileName = certificate.getDescription();
 		}
 		if (button != null) {
 			if (certID > 0 && button.equals("download")) {
@@ -72,33 +71,34 @@ public class CertificateFileUpload extends ContractorActionSupport {
 			}
 
 			if (button.startsWith("Save")) {
-				if (file == null || file.length() == 0) {
-					addActionError("File was missing or empty");
-					return SUCCESS;
+				if(certID == 0) {
+					if (file == null || file.length() == 0) {
+						addActionError("File was missing or empty");
+						return SUCCESS;
+					}
+					certificate = new Certificate();
+					certificate.setContractor(contractor);
 				}
-
-				String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-				if (!FileUtils.checkFileExtension(extension)) {
-					file = null;
-					addActionError("Bad File Extension");
-					return SUCCESS;
+				
+				if(file != null && file.length() > 0) {
+					String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+					if (!FileUtils.checkFileExtension(extension)) {
+						file = null;
+						addActionError("Bad File Extension");
+						return SUCCESS;
+					}
+					if(Strings.isEmpty(fileName))
+						certificate.setDescription(fileFileName.substring(0, fileFileName.lastIndexOf(".")));
+					certificate.setFileType(extension);
+					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID), getFileName(certID),
+							extension, true);
+					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 				}
-
-				certificate = new Certificate();
-				certificate.setContractor(contractor);
-				if(Strings.isEmpty(fileName))
-					certificate.setDescription(fileFileName.substring(0, fileFileName.lastIndexOf(".")));
-				else
+				if(!Strings.isEmpty(fileName))
 					certificate.setDescription(fileName);
-				certificate.setFileType(extension);
 				certificate.setAuditColumns(permissions);
 				certificate = certificateDAO.save(certificate);
-
 				certID = certificate.getId();
-
-				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID), getFileName(certID),
-						extension, true);
-				addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 			}
 		}
 
@@ -166,5 +166,9 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public Certificate getCertificate() {
+		return certificate;
 	}
 }

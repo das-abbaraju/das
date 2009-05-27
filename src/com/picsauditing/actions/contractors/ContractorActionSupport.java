@@ -23,7 +23,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;

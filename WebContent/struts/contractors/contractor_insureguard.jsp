@@ -205,7 +205,7 @@
 					<td><a
 						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download"
 						target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>
-					<td><s:if test="caos.size() == 0 && permissions.userId == createdBy.Id">
+					<td><s:if test="permissions.userId == createdBy.Id">
 						<a class="edit" href="#"
 							onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)"
 							title="Opens in new window (please disable your popup blocker)"">Edit</a>

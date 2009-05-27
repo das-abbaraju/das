@@ -32,3 +32,11 @@ where recommendedStatus = 'Approved';
 
 update contractor_audit_operator cao set flag = 'Red'
 where recommendedStatus = 'Rejected';
+
+/**
+ * update the column header for these questions on live 
+**/
+select pq.* from pqfquestions pq 
+where subcategoryId in (select ps.id from pqfsubcategories ps where ps.subcategory = 'Policy Limits')
+and columnHeader = '';
+

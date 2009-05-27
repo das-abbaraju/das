@@ -31,14 +31,17 @@ function closePage() {
 	<s:hidden name="id" />
 	<s:hidden name="certID" />
 	<br />
-	File Name : <s:textfield name="fileName" size="50"/><br/>
-	<s:file name="file" size="50"></s:file>
-	<br />
+	<s:if test="certificate.caos == null || certificate.caos.size() == 0">
+		<s:file name="file" value="%{file}" size="50"></s:file><br />
+	</s:if>
+	File Name : <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
 	<div class="buttons"><a href="javascript: closePage();">Close
 	and Return to Form</a> <s:if test="file != null && file.exists()">
+		<s:if test="certificate.caos == null || certificate.caos.size() == 0">
 		<button class="negative" name="button" value="Delete" type="submit"
 			onclick="return confirm('Are you sure you want to delete this file?');">Delete
 		File</button>
+		</s:if>
 	</s:if>
 	<button class="positive right" name="button" value="Save"
 		type="submit">Save</button>
