@@ -42,12 +42,12 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 		int caoID = this.getParameter("cao.id");
-		if (caoID > 0) {
+		if (caoID > 0)
 			this.cao = caoDAO.find(caoID);
-		}
 
 		int certID = this.getParameter("certificate.id");
-		certificate = certificateDao.find(certID);
+		if (certID > 0)
+			certificate = certificateDao.find(certID);
 
 	}
 
@@ -112,7 +112,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							+ "</strong> Policy has been approved for <strong>" + cao.getOperator().getName()
 							+ "</strong>");
 				}
-				
+
 				if ("NotApplicable".equals(button)) {
 					cao.setStatus(CaoStatus.NotApplicable);
 					button = "Save";
