@@ -84,7 +84,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 			int errors = 0;
 			for (BasicDynaBean row : pageData) {
 				try {
-					int conID = Integer.parseInt(row.get("conID").toString());
+					conID = Integer.parseInt(row.get("conID").toString());
 					PicsLogger.start("ContractorPolicyConverter-" + conID);
 					process(conID);
 					String delete = "UPDATE contractor_policy_cleanup SET done = 1 WHERE conID = " + conID;
