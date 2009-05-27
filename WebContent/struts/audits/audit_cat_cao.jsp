@@ -9,7 +9,9 @@
 			<fieldset>
 			<ul>
 				<li><label>Op Status:</label>
-					<span style="cursor: pointer"><s:property value="#cao.status" /></span>
+					<span style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); this.hide();"><s:property value="#cao.status" /></span>
+					<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Save')"
+						 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>   
 				</li>
 					<li><label>Changed By:</label>
 						<s:property value="#cao.statusChangedBy.name" /> from <s:property value="#cao.statusChangedBy.account.name" />
