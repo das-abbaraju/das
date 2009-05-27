@@ -241,26 +241,3 @@ function saveCert(certID, form, divName) {
 	$(form)['certificate.id'].value = certID;
 	saveCao(form, 'Save', divName);
 }
-
-function saveCaoStatus(caoID, button, useNotes) {
-	var pars = {
-		auditID : auditID,
-		'cao.id': caoID,
-		button  : button
-	};
-	
-	if (useNotes)
-		pars['cao.notes'] = $('notes_'+caoID).value;
-	
-	var myAjax = new Ajax.Updater('cao_layer', 'PolicySaveAjax.action', {
-		method:'post',
-		parameters: pars,
-		onComplete: function(transport) {
-			if (transport.status == 200) 
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
-			else
-				alert("Failed to save answer" + transport.statusText + transport.responseText);
-		}
-	});
-
-}
