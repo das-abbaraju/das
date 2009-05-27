@@ -144,7 +144,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							cao.setNotes(null);
 
 						if (statusChanged) {
-							cao.setStatusChangedBy(new User(permissions.getUserId()));
+							cao.setStatusChangedBy(getUser());
 							cao.setStatusChangedDate(new Date());
 						}
 						caoDAO.save(cao);

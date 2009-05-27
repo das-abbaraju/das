@@ -5,7 +5,7 @@
 	<s:hidden name="auditID" value="%{#cao.audit.id}"/>
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
 	<s:if test="!#cao.status.pending">
-		<div class="auditHeader">
+		<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 			<fieldset>
 			<ul>
 				<li><label>Op Status:</label>
@@ -34,7 +34,7 @@
 				</s:if>
 
 				<s:if test="permissions.admin || permissions.operatorCorporate">
-					<li><label>Remarks: </label>
+					<li><label>Contractor Remarks: </label>
 						<s:property value="#cao.reason"/>
 					</li>
 				</s:if>

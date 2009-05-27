@@ -222,6 +222,9 @@ function saveCao(form, status, divName) {
 	pars['cao.valid'] = $(form)['cao.valid'].checked;
 	pars['button'] = typeof(status) != 'undefined' ? status: 'Save';
 	
+	if (typeof(divName) == 'undefined')
+		divName = 'auditHeader' + pars['cao.id'];
+	
 	var myAjax = new Ajax.Updater('cao_'+pars['cao.id'], 'PolicySaveAjax.action', {
 		method:'post',
 		parameters: pars,
