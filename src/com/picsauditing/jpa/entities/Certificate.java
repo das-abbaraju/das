@@ -61,5 +61,4 @@ public class Certificate extends BaseTable {
 	public void setCaos(List<ContractorAuditOperator> caos) {
 		this.caos = caos;
 	}
-
 }
