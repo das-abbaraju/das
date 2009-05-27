@@ -100,6 +100,11 @@
 				I have reviewed the requirements for <strong><s:property value="#cao.operator.name"/></strong> 
 				and I am in compliance with their standards.
 			</s:else>
+			<s:iterator value="#cao.operator.audits">
+				<s:if test="#cao.audit.auditType == auditType && help != null && help.length() > 0">
+					<div id="alert"><s:property value="help"/></div>
+				</s:if>
+			</s:iterator>
 		</span>
 		<div class="answer">
 			<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> onchange="saveCao('cao_form<s:property value="#cao.id"/>', 'Save', 'aiNameValid<s:property value="#cao.id"/>')" />
