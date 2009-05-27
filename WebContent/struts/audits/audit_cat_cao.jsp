@@ -148,7 +148,7 @@
 					value="Submit" 
 				</s:else>
 				
-				<s:if test="#cao.canContractorSubmit">
+				<s:if test="!#cao.canContractorSubmit">
 					disabled
 				</s:if>
 				onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
