@@ -81,7 +81,7 @@
 			<br clear="all"/>
 		</div>
 		<div class="question">
-			<span class="question<s:if test="!#cao.valid && #cao.reason == null"> required</s:if>"> 1.3.3 &nbsp;&nbsp;
+			<span class="question<s:if test="!#cao.valid && #cao.reason == null"> required</s:if>">
 			Contractor Remarks:
 			</span>
 			<div class="answer">
@@ -89,6 +89,7 @@
 			</div>
 			<br clear="all"/>
 		</div>
+		<s:set name="disabled" value="(!#cao.valid && #cao.reason == null) || #cao.certificate == null"/>
 		<s:if test="permissions.contractor">
 			<div class="buttons">
 				<input type="button" class="picsbutton positive" 
@@ -98,6 +99,10 @@
 					<s:else>
 						value="Submit" 
 					</s:else>
+					
+					<s:if test="#disabled">
+						disabled
+					</s:if>
 					onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
 				/>
 			</div>
