@@ -49,7 +49,8 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 			divName = 'node_'+answerid+'_'+questionid;
 	} else {
 		if (allowMultiple == 'true') {
-			// This is adding a new tuple, we may just want to call addTuple(questionid)
+			// This is adding a new tuple, we may just want to call
+			// addTuple(questionid)
 			return;
 		}
 		pars += '&auditData.question.id=' + questionid;
@@ -204,17 +205,14 @@ function showCertUpload(conid, certid) {
 	fileUpload.focus();
 }
 
-function saveCao(field, value, caoID, divName) {
+function saveCao(form, status) {
 	
-	var pars = {
-		auditID : auditID,
-		'cao.id': caoID,
-		button  : 'Save'
-	};
+	var pars = $(form).serialize(true);
 	
-	pars['cao.'+field] = value;
+	pars['cao.valid'] = $(form).getInputs('checkbox', 'cao.valid')[0].checked;
+	pars['button'] = typeof(status) != 'undefined' ? status: 'Save';
 
-	var myAjax = new Ajax.Updater('cao_layer', 'PolicySaveAjax.action', {
+	var myAjax = new Ajax.Updater('cao_'+pars['cao.id'], 'PolicySaveAjax.action', {
 		method:'post',
 		parameters: pars,
 		onComplete: function(transport) {

@@ -213,8 +213,13 @@ label.policy {
 </s:iterator>
 
 <s:if test="conAudit.auditType.classType.policy">
-<div id="cao_layer">
-	<s:include value="audit_cat_cao.jsp"/>
+<div id="cao_layer" class="subCategory">
+	<s:iterator value="conAudit.operators" id="cao">
+		<s:property value="cao.id"/>
+		<div id="cao_<s:property value="#cao.id"/>">
+			<s:include value="audit_cat_cao.jsp"/>
+		</div>
+	</s:iterator>
 </div>
 </s:if>
 
