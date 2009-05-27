@@ -62,47 +62,8 @@
 					No File Attached
 			</s:else> 
 			<br />
-			<a href="#" onclick="$('choose_certs<s:property value="#cao.id"/>').toggle(); return false;">Attach File</a>
-			<table class="report" style="display:none" id="choose_certs<s:property value="#cao.id"/>">
-				<thead>
-					<tr>
-						<th>Uploaded</th>
-						<th>Certificate</th>
-						<th>Used By</th>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="certificates">
-						<tr>
-							<td><s:date name="creationDate" format="M/d/yy" /></td>
-							<td>
-								<a class="insurance"
-									href="#"
-									onclick="saveCert(<s:property value="id"/>,<s:property value="#cao.id"/>); return false;"
-									>
-									<span></span><s:property value="description" />
-								</a>
-							</td>
-							<td>
-								<table class="inner">
-									<s:iterator value="caos">
-										<s:if test="!permissions.operatorCorporate || !permissions.insuranceOperatorID == permissions.accountID">
-										<tr>
-											<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
-											<td style="font-size:10px"><nobr><s:property value="operator.name"/></td>
-											<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="M/d/yy"/></nobr></td>
-										</tr>
-										</s:if>
-									</s:iterator>
-								</table>
-							</td>
-						</tr>
-					</s:iterator>
-					<tr>
-						<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="#cao.audit.contractorAccount.id" />, 0, <s:property value="#cao.id"/>); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
-					</tr>
-				</tbody>
-			</table>
+			<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
+			<div id="certificates<s:property value="#cao.id"/>"></div>
 		</div>
 		<br clear="all"/>
 	</div>

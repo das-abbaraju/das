@@ -215,6 +215,20 @@ function showCertUpload(conid, certid, caoID) {
 	fileUpload.focus();
 }
 
+function showCertificates(conID, caoID) {
+	var pars = {
+		id: conID,
+		caoID: caoID
+	};
+	
+	var myAjax = new Ajax.Updater('certificates'+caoID, 'ContractorCertificatesAjax.action', {
+		method:'post',
+		evalScripts:true,
+		parameters: pars
+	});
+
+}
+
 function saveCao(form, button, divName) {
 	
 	var pars = $(form).serialize(true);

@@ -191,6 +191,11 @@
 			<result name="search">/struts/contractors/contractor_facilities_results.jsp</result>
 		</action>
 		
+		<action name="ContractorCertificatesAjax"
+			class="com.picsauditing.actions.contractors.ContractorCertificates">
+			<result>struts/contractors/contractor_certificates.jsp</result>
+		</action>
+		
 		<action name="ConPqfList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<param name="auditClass">Audit</param>
