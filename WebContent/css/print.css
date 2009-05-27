@@ -23,7 +23,7 @@ table.footerNav {
 	display: none;
 }
 
-div.dropmenudiv, div.auditSubMenu {
+div.dropmenudiv,div.auditSubMenu {
 	display: none;
 }
 
@@ -36,6 +36,16 @@ div.footer {
 }
 
 /** Audits **/
+div.auditHeader fieldset {
+	float: left;
+	width: 30%;
+}
+
+div.auditHeader ul {
+	list-style-type: none;
+	margin-left: 0;
+}
+
 table.audit {
 	width: 100%;
 	border-collapse: collapse;
@@ -51,16 +61,13 @@ table.audit td {
 td.question {
 	color: #999;
 }
+
 span.answer {
 	color: black;
 	font-weight: bold;
 }
 
 input.hidden {
-	display: none;
-}
-
-#auditHeaderNav {
 	display: none;
 }
 
@@ -89,14 +96,14 @@ table td.right {
 
 .buttons {
 	display: none;
-}	
+}
 
 /**
 * For Search Filters
 **/
 ul.paging {
 	display: none;
-}	
+}
 
 #search {
 	display: none;
@@ -107,7 +114,7 @@ ul.paging {
 **/
 #helpbox {
 	display: none;
-}	
+}
 
 #chatIcon {
 	display: none;
@@ -118,20 +125,19 @@ ul.paging {
 **/
 div.panel {
 	border: 1px solid #BBB;
-	margin:0px;
-	padding:5px;
+	margin: 0px;
+	padding: 5px;
 }
 
 div.panel_header {
 	height: 22px;
-	font-size:10pt;
+	font-size: 10pt;
 	color: black;
 	font-weight: bold;
-	border-bottom:1px solid #B3B3B3;
+	border-bottom: 1px solid #B3B3B3;
 }
 
 div.panel_placeholder {
-	padding:20px;
+	padding: 20px;
 	width: 500px;
 }
-

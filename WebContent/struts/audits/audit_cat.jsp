@@ -213,14 +213,15 @@ label.policy {
 </s:iterator>
 
 <s:if test="conAudit.auditType.classType.policy">
-<div id="cao_layer" class="subCategory">
 	<s:iterator value="conAudit.operators" id="cao">
-		<s:property value="cao.id"/>
-		<div id="cao_<s:property value="#cao.id"/>">
-			<s:include value="audit_cat_cao.jsp"/>
-		</div>
+		<s:if test="#cao.isVisibleTo(permissions)">
+			<a name="cao<s:property value="id"/>"></a>
+			<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
+			<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
+				<s:include value="audit_cat_cao.jsp"/>
+			</div>
+		</s:if>
 	</s:iterator>
-</div>
 </s:if>
 
 <s:if test="catDataID > 0">

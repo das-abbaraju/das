@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <style>
-#auditHeader fieldset {
+div.auditHeader fieldset {
 	width: 40%;
 }
 </style>

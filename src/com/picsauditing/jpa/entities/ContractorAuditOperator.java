@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +21,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private OperatorAccount operator;
 	private CaoStatus status = CaoStatus.Pending;
 	private User statusChangedBy = null;
+	private Date statusChangedDate;
 	private boolean visible = true;
 	private boolean valid;
 	private Certificate certificate;
@@ -67,6 +70,14 @@ public class ContractorAuditOperator extends BaseTable {
 
 	public void setStatusChangedBy(User statusChangedBy) {
 		this.statusChangedBy = statusChangedBy;
+	}
+
+	public Date getStatusChangedDate() {
+		return statusChangedDate;
+	}
+
+	public void setStatusChangedDate(Date statusChangedDate) {
+		this.statusChangedDate = statusChangedDate;
 	}
 
 	public boolean isVisible() {

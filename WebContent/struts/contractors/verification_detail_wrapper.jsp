@@ -184,7 +184,7 @@
 <body >
 <s:include value="conHeader.jsp" />
 
-<div id="auditHeader">
+<div id="auditHeader" class="auditHeader">
 	<fieldset>
 	<ul>
 		<li><label>CSR:</label>

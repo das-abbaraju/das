@@ -109,30 +109,30 @@ table.report tr.na a {
 }
 
 /** Audit Header ***/
-#content #auditHeader {
+#content div.auditHeader {
 	border-top: 2px solid #C3C3C3;
 	border-bottom: 2px solid #C3C3C3;
 	background-color: #F6F6F0;
 	margin-bottom: 10px;
 }
 
-#auditHeader fieldset {
+div.auditHeader fieldset {
 	width: 33%;
 	float: left;
 }
 
-#auditHeader ul {
+div.auditHeader ul {
 	list-style-type: none;
 	margin-left:0px;
 }
 
-#auditHeader li {
+div.auditHeader li {
 	float: left;
 	clear: left;
 	width: 100%;
 }
 
-#auditHeader fieldset label {
+div.auditHeader fieldset label {
 	float: left;
 	line-height: 26px;
 	margin-right: .7em;
@@ -142,7 +142,7 @@ table.report tr.na a {
 	color: #003768;
 }
 
-#auditHeaderNav ul {
+div.auditHeaderNav ul {
 	display: block;
 	clear: both;
 	float: none;
@@ -157,18 +157,18 @@ table.report tr.na a {
 	list-style-type: none;
 }
 
-#auditHeaderNav ul li {
+div.auditHeaderNav ul li {
 	padding: 0px 4px 0px 0px;
 	float: right;
 	width: auto;
 	clear: none;
 }
 
-#auditHeaderNav a:hover, #auditHeaderNav a.current {
+div.auditHeaderNav a:hover, div.auditHeaderNav a.current {
 	background-color: #A84D10;
 }
 
-#auditHeaderNav a {
+div.auditHeaderNav a {
 	padding: 6px 8px;
 	text-decoration: none;
 	background-color: #003768;

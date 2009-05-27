@@ -47,7 +47,7 @@
 </div>
 
 <s:if test="auditID > 0">
-<div id="auditHeader">
+<div class="auditHeader">
 	<fieldset>
 	<ul>
 		<li><label>Type:</label>
@@ -150,17 +150,8 @@
 								title="<s:property value="notes"/>" 
 								class="tooltipped"
 							</s:if>>Op Status:</label>
-						<pics:permission perm="InsuranceVerification">
-							<a href="#" id="caoStatusMain_<s:property value="id"/>" class="edit"
-								onclick="javascript: return editCao(<s:property value="id"/>);">
-								<s:property value="status"/>
-							</a>
-						</pics:permission>
-						
-						<pics:permission perm="InsuranceVerification" negativeCheck="true">
-							<s:property value="status"/>
-						</pics:permission>
-						<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
+							<a href="#cao<s:property value="id"/>"><s:property value="status"/></a>
+							<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
 					</li>
 				</s:if>
 			</s:iterator>
@@ -169,7 +160,7 @@
 	</fieldset>
 	<div class="clear"></div>
 </div>
-<div id="auditHeaderNav">
+<div class="auditHeaderNav noprint">
 	<ul>
 		<pics:permission perm="AuditEdit">
 			<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
