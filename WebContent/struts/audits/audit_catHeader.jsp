@@ -3,7 +3,7 @@
 	<s:include value="../contractors/conHeader.jsp" />
 	
 	<s:if test="conAudit.auditType.classType.policy">
-		<s:if test="permissions.operator && !canEdit">
+		<s:if test="permissions.operatorCorporate && policyWithOtherOperators">
 			<div id="alert">More than one facility has access to this data. Please contact PICS if any changes to existing data are needed.</div>
 		</s:if>
 		<s:if test="conAudit.willExpireSoon() && !conAudit.auditStatus.expired">

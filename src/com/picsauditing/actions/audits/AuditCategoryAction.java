@@ -397,24 +397,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		return null;
 	}
 
-	public List<String> getLegalNamesFiltered() {
-		List<String> sortedList = super.getLegalNames();
-		AuditQuestion aiName = null;
-		for (AuditSubCategory auditSubCategory : currentCategory.getCategory().getSubCategories()) {
-			for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-				if (auditQuestion.getQuestionType().equals("Additional Insured"))
-					aiName = auditQuestion;
-			}
-		}
-		if (aiName != null) {
-			for (AuditData auditData : answerMap.getAnswerList(aiName.getId())) {
-				sortedList.remove(auditData.getAnswer());
-			}
-		}
-
-		return sortedList;
-	}
-
 	public List<ContractorAudit> getActivePendingEditableAudits() {
 		if (activePendingEditableAudits == null) {
 			activePendingEditableAudits = new ArrayList<ContractorAudit>();
@@ -425,23 +407,5 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		}
 
 		return activePendingEditableAudits;
-	}
-
-	/**
-	 * 
-	 * @return true if the current users is an operator and there is a visible cao belonging to another operator
-	 */
-	public boolean isOperatorWithMultiCaoPolicy() {
-		if (!permissions.isOperatorCorporate())
-			return false;
-
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.isVisible()) {
-				if (cao.getOperator().getId() != permissions.getInsuranceOperatorID())
-					return true;
-			}
-		}
-
-		return false;
 	}
 }

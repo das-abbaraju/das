@@ -334,15 +334,6 @@ public class AuditDataSave extends AuditActionSupport {
 		return true;
 	}
 
-	public List<String> getLegalNamesFiltered() {
-		List<String> sortedList = super.getLegalNames();
-		for (AuditData auditData : answerMap.getAnswerList(this.auditData.getQuestion().getId())) {
-			sortedList.remove(auditData.getAnswer());
-		}
-
-		return sortedList;
-	}
-
 	public boolean isValidNAICScode(String answer) {
 		Naics naics = naicsDAO.find(answer);
 		if (naics != null)

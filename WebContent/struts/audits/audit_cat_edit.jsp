@@ -82,15 +82,8 @@
 			onchange="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Additional Insured'">
-		<s:if test="#a.id > 0">
-			<s:select list="legalNames" value="%{#a.answer}" name="answer%{#divID}" 
-			onchange="saveAnswer('%{#divID}', this);"></s:select>
-		</s:if>
-		<s:else>
-			<s:radio theme="pics" cssClass="question_%{#q.id}" list="legalNamesFiltered" 
-			value="#a.answer" name="answer%{#divID}" 
-			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this); javascript: addTuple(%{#q.id}, this);"/>
-		</s:else>
+		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
+			onchange="saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Date'">
 		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="8" 

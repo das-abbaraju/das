@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -214,23 +215,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (permissions.isOperatorCorporate()) {
-			if (permissions.getCanEditAudits().contains(type.getId()))
+			if (permissions.getCanEditAudits().contains(type.getId())) {
+				if (type.getClassType().isPolicy() && isPolicyWithOtherOperators())
+					return false;
+				
 				return true;
-			
-			if (type.getClassType().isPolicy()) {
-				// We are going to try something new. We're going to allow operators to 
-				// change policy data as long as they are adding common data. We'll disallow
-				// updates or deletions of 
-				//return true;
-				if (conAudit.getAuditStatus().isPending())
-					return true;
-				if (conAudit.getOperators().size() == 1) {
-					int onlyOperatorForThisPolicy = conAudit.getOperators().get(0).getOperator().getId();
-					if (permissions.getVisibleAccounts().contains(onlyOperatorForThisPolicy))
-						return true;
-				}
 			}
-
 			return false;
 		}
 
@@ -239,6 +229,21 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		return false;
 
+	}
+
+	/**
+	 * 
+	 * @return true if the current users is an operator and there is a visible cao belonging to another operator
+	 */
+	public boolean isPolicyWithOtherOperators() {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.isVisible()) {
+				if (cao.getOperator().getId() != permissions.getInsuranceOperatorID())
+					return true;
+			}
+		}
+
+		return false;
 	}
 
 	public String getDescriptionOsMs() {
@@ -281,7 +286,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ",")); 
 					EmailSender.send(emailBuilder.build());
 					addNote(contractor, "Sent Audits Thank You email to "
-							+ emailBuilder.getSentTo(), NoteCategory.Audits);
+							+ emailBuilder.getSentTo(),
+							NoteCategory.Audits);
 					// TODO email all the operators as well
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -289,37 +295,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 
-	}
-
-	public List<String> getLegalNames() {
-		Set<String> list = new TreeSet<String>();
-		boolean canSeeLegalName;
-		if (conAudit != null) {
-			for (ContractorOperator co : conAudit.getContractorAccount()
-					.getOperators()) {
-				canSeeLegalName = false;
-				if (permissions.isOperator()) {
-					if (co.getOperatorAccount().getId() == permissions
-							.getAccountId()) {
-						canSeeLegalName = true;
-					}
-				} else {
-					canSeeLegalName = true;
-				}
-				if (canSeeLegalName) {
-					for (AccountName legalName : co.getOperatorAccount().getInheritInsurance()
-							.getNames()) {
-						list.add(legalName.getName());
-					}
-				}
-
-			}
-		}
-		List<String> sortedList = new ArrayList<String>();
-		sortedList.add("All");
-		sortedList.addAll(list);
-
-		return sortedList;
 	}
 
 }
