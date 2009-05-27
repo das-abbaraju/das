@@ -151,7 +151,7 @@ public class OperatorAccount extends Account {
 	public void setVerifiedByPics(boolean verifiedByPics) {
 		this.verifiedByPics = verifiedByPics;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	public OshaType getOshaType() {
 		return oshaType;
@@ -162,7 +162,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@ManyToOne
-	@JoinColumn(name="inheritFlagCriteria")
+	@JoinColumn(name = "inheritFlagCriteria")
 	public OperatorAccount getInheritFlagCriteria() {
 		return inheritFlagCriteria;
 	}
@@ -172,19 +172,19 @@ public class OperatorAccount extends Account {
 	}
 
 	@ManyToOne
-	@JoinColumn(name="inheritInsuranceCriteria")
+	@JoinColumn(name = "inheritInsuranceCriteria")
 	public OperatorAccount getInheritInsuranceCriteria() {
 		return inheritInsuranceCriteria;
 	}
 
 	@ManyToOne
-	@JoinColumn(name="inheritInsuranceCriteria")
+	@JoinColumn(name = "inheritInsuranceCriteria")
 	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
 
 	@ManyToOne
-	@JoinColumn(name="inheritInsurance")
+	@JoinColumn(name = "inheritInsurance")
 	public OperatorAccount getInheritInsurance() {
 		return inheritInsurance;
 	}
@@ -194,7 +194,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@ManyToOne
-	@JoinColumn(name="inheritAudits")
+	@JoinColumn(name = "inheritAudits")
 	public OperatorAccount getInheritAudits() {
 		return inheritAudits;
 	}
@@ -204,7 +204,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@ManyToOne
-	@JoinColumn(name="inheritAuditCategories")
+	@JoinColumn(name = "inheritAuditCategories")
 	public OperatorAccount getInheritAuditCategories() {
 		return inheritAuditCategories;
 	}
@@ -226,16 +226,16 @@ public class OperatorAccount extends Account {
 	public List<FlagQuestionCriteria> getFlagQuestionCriteria() {
 		return flagQuestionCriteria;
 	}
-	
+
 	@Transient
 	public List<FlagQuestionCriteria> getFlagQuestionCriteriaInherited() {
 		List<FlagQuestionCriteria> criteriaList = new ArrayList<FlagQuestionCriteria>();
-		for(FlagQuestionCriteria c : getInheritFlagCriteria().getFlagQuestionCriteria()) {
+		for (FlagQuestionCriteria c : getInheritFlagCriteria().getFlagQuestionCriteria()) {
 			if (!c.getClassType().isPolicy())
 				criteriaList.add(c);
 		}
 		if (canSeeInsurance.equals(YesNo.Yes)) {
-			for(FlagQuestionCriteria c : getInheritInsuranceCriteria().getFlagQuestionCriteria()) {
+			for (FlagQuestionCriteria c : getInheritInsuranceCriteria().getFlagQuestionCriteria()) {
 				if (c.getClassType().isPolicy())
 					criteriaList.add(c);
 			}
@@ -277,15 +277,27 @@ public class OperatorAccount extends Account {
 	}
 
 	@Transient
+	public List<OperatorForm> getInsuranceForms() {
+		ArrayList<OperatorForm> forms = new ArrayList<OperatorForm>();
+
+		for (OperatorForm f : operatorForms) {
+			if ("Insurance".equals(f.getFormType()))
+				forms.add(f);
+		}
+
+		return forms;
+	}
+
+	@Transient
 	public List<AuditOperator> getVisibleAudits() {
 		List<AuditOperator> requiredAudits = new ArrayList<AuditOperator>();
 		PicsLogger.log("getting visible pqf/audits from " + inheritAudits.getName());
-		for(AuditOperator ao : inheritAudits.getAudits())
+		for (AuditOperator ao : inheritAudits.getAudits())
 			if (ao.isCanSee() && !ao.getAuditType().getClassType().isPolicy())
 				requiredAudits.add(ao);
 		if (canSeeInsurance.isTrue()) {
 			PicsLogger.log("getting visible policies from " + inheritInsurance.getName());
-			for(AuditOperator ao : inheritInsurance.getAudits())
+			for (AuditOperator ao : inheritInsurance.getAudits())
 				if (ao.isCanSee() && ao.getAuditType().getClassType().isPolicy())
 					requiredAudits.add(ao);
 		}
@@ -302,15 +314,18 @@ public class OperatorAccount extends Account {
 		}
 		return auditMap;
 	}
-	
+
 	/**
-	 * Get a list of INHERITED QuestionIDs that are Verified or Checked as part of a Flag calculation.
-	 * Include:
+	 * Get a list of INHERITED QuestionIDs that are Verified or Checked as part
+	 * of a Flag calculation. Include:
 	 * <ul>
 	 * <li>inheritFlagCriteria.getAuditQuestions()</li>
-	 * <li>inheritFlagCriteria.getFlagQuestionCriteria() where !criteria.getClassType().isPolicy()</li>
-	 * <li>inheritInsuranceCriteria.getFlagQuestionCriteria() where getClassType().isPolicy()</li>
+	 * <li>inheritFlagCriteria.getFlagQuestionCriteria() where
+	 * !criteria.getClassType().isPolicy()</li>
+	 * <li>inheritInsuranceCriteria.getFlagQuestionCriteria() where
+	 * getClassType().isPolicy()</li>
 	 * </ul>
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -319,8 +334,8 @@ public class OperatorAccount extends Account {
 		for (AuditQuestionOperatorAccount question : inheritFlagCriteria.getAuditQuestions()) {
 			questionIDs.add(question.getAuditQuestion().getId());
 		}
-		
-		for(FlagQuestionCriteria c : getFlagQuestionCriteriaInherited()) {
+
+		for (FlagQuestionCriteria c : getFlagQuestionCriteriaInherited()) {
 			questionIDs.add(c.getAuditQuestion().getId());
 		}
 		return questionIDs;
@@ -337,8 +352,9 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * @see getOperatorAccounts()
-	 * @return a list of all "associated" operator accounts associated via the facilities intersection table for
-	 *         example, BASF would contain BASF Port Arthur but not BASF Freeport Hub
+	 * @return a list of all "associated" operator accounts associated via the
+	 *         facilities intersection table for example, BASF would contain
+	 *         BASF Port Arthur but not BASF Freeport Hub
 	 */
 	@OneToMany(mappedBy = "corporate")
 	public List<Facility> getOperatorFacilities() {
@@ -351,8 +367,9 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * @see getOperatorFacilities()
-	 * @return a list of all the "direct" child operators/corporates mapped through operator.parentID for example, BASF
-	 *         would contain BASF Freeport Hub, but not BASF Port Arthur
+	 * @return a list of all the "direct" child operators/corporates mapped
+	 *         through operator.parentID for example, BASF would contain BASF
+	 *         Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorChildren() {

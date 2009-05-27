@@ -108,11 +108,11 @@
 	</div>
 	<div class="question shaded" id="aiNameValid<s:property value="#cao.id"/>">
 		<span class="question">1.3.2&nbsp;&nbsp;
-			<s:if test="#cao.operator.operatorForms.size > 0">
+			<s:if test="#cao.operator.insuranceForms.size > 0">
 				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
 				<ul style="list-style:none">
-					<s:iterator value="#cao.operator.operatorForms">
-						<li><a href="forms/<s:property value="file"/>"><s:property value="formName"/></a></li>
+					<s:iterator value="#cao.operator.insuranceForms">
+						<li><a href="forms/<s:property value="file"/>" target="_BLANK"><s:property value="formName"/></a></li>
 					</s:iterator>
 				</ul>
 				and I am in compliance.
