@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.AuditCriteriaAnswer;
+import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
+import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -13,10 +16,13 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -151,6 +157,17 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					}
 				}
 			}
+			// TODO this is a duplicate of FlagCalculator2 because we need the color to change instantly
+			FlagCalculatorSingle calculator = new FlagCalculatorSingle();
+			List<Integer> criteriaQuestionIDs = cao.getOperator().getQuestionIDs();
+			AnswerMapByAudits answerMapByAudits = auditDataDao.findAnswersByAudits( contractor.getAudits(), criteriaQuestionIDs );
+			AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, cao.getOperator());
+			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, cao.getOperator().getFlagQuestionCriteriaInherited());
+			List<AuditCriteriaAnswer> acaList = acaBuilder.getAuditCriteriaAnswers();
+			calculator.setAcaList(acaList);
+			FlagColor flagColor = calculator.calculateCaoRecommendedFlag(cao);
+			cao.setFlag(flagColor);
+			caoDAO.save(cao);
 		}
 
 		return SUCCESS;

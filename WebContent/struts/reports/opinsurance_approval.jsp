@@ -11,25 +11,6 @@
 		});
 		return false;
 	}
-
-	function saveRows(formName) {
-
-		var pars = $(formName).serialize();
-
-		var myAjax = new Ajax.Updater('', 'ReportInsuranceApprovalSave.action',
-				{
-					method :'post',
-					parameters :pars,
-					onException : function(request, exception) {
-						alert(exception);
-					},
-					onSuccess : function(transport) {
-						clickSearch('form1');
-					}
-				});
-
-		return false;
-	}
 </SCRIPT>
 </head>
 <body>
@@ -42,8 +23,8 @@
 	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.recommendedFlag=Green"><s:property value="@com.picsauditing.jpa.entities.FlagColor@Green.bigIcon" escape="false"/>Show Policies to Approve</a>
 	<a class="button" href="ReportInsuranceApproval.action?filter.caoStatus=Verified&filter.recommendedFlag=Red"><s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.bigIcon" escape="false"/>Show Policies to Reject</a>
 </div>
-
 <s:form id="approveInsuranceForm" method="post" cssClass="forms">
+<s:include value="../actionMessages.jsp"/>
 <br/><br/>
 		<table class="report">
 		<thead>
@@ -57,10 +38,9 @@
 				</s:if>
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
-				<td title="Waiver of Subrogation">Waiver</td>
-				<td title="Additional Insured / Certificate Holder">AI/CH</td>
+				<td>Valid</td>
 				<td>Cert</td>
-				<td>Notes</td>
+				<td>Admin Notes</td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat">
@@ -87,18 +67,12 @@
 						<br/>
 					</s:iterator>
 				</td>
-				<td>
-					<s:iterator value="getDataForAudit(get('auditID'),'aiWaiverSub')">
-						<s:property value="answer"/><br/>
-					</s:iterator>
-				</td>
-				<td>
-					<s:if test="get('aiNameValid') == 1">
-						VALID
+				<td class="center">
+					<s:if test="get('valid') == 1">Yes</s:if>
+					<s:else>No</s:else>
+					<s:if test="get('reason') != null">
+						<br><img src="images/icon_notes.gif" title="<s:property value="get('reason')"/>">
 					</s:if>
-					<s:else>
-						<s:property value="get('aiName')"/>
-					</s:else>	
 				</td>
 				<td>
 					<s:if test="get('certificateID') != null">
@@ -107,7 +81,17 @@
 					</s:if>
 					<s:else></s:else>
 				</td>
-				<td onclick="$('approveInsuranceForm_caos_<s:property value="get('caoId')"/>__notes').show();"><s:textfield name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}" cssStyle="display: none;"/></td>
+				<td>
+					<a id="show_<s:property value="get('caoId')"/>Text" href="#" class="edit" 
+						onclick="$('approveInsuranceForm_caos_<s:property value="get('caoId')"/>__notes').show(); $('show_<s:property value="get('caoId')"/>Text').hide(); return false;"
+						title="<s:property value="get('caoNotes')"/>">
+					<s:if test="get('caoNotes') != null">
+						<s:property value="@com.picsauditing.util.Strings@trim(get('caoNotes'),30)"/>
+					</s:if>
+					<s:else>...</s:else>
+					</a>
+					<s:textarea rows="4" cols="20" name="caos[%{get('caoId')}].notes" value="%{get('caoNotes')}" cssStyle="display: none;"/>
+				</td>
 			</tr>
 		</s:iterator>
 		<tr>
