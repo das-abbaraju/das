@@ -16,7 +16,7 @@
 			</s:if>
 		</div>
 		<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
-			<span class="question">1.3.1&nbsp;&nbsp;
+			<span class="question<s:if test="#cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
 				Upload a Certificate of Insurance or other supporting documentation
 				for this policy.
 			</span>
@@ -25,10 +25,10 @@
 					<a href="CertificateUpload.action?id=<s:property value="#cao.audit.contractorAccount.id"/>&certID=<s:property value="#cao.certificate.id"/>&button=download"
 						target="_BLANK" class="insurance"><span></span>View File</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" onclick="if (confirm('Are you sure you want to remove this certificate?')) saveCao('certificate', null, <s:property value="#cao.id"/>,'fileQuestion<s:property value="#cao.operator.id"/>'); return false;" class="remove">Remove</a>
+					<a href="#" onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCao('certificate', null, <s:property value="#cao.id"/>,'fileQuestion<s:property value="#cao.operator.id"/>'); return false;" class="remove">Remove</a>
 				</s:if> 
 				<s:else>
-						No File Uploaded
+						No File Attached
 				</s:else> 
 				<br />
 				<a href="#" onclick="$('choose_certs<s:property value="#cao.id"/>').toggle(); return false;">Attach File</a>
@@ -76,12 +76,12 @@
 					</a> document exactly?
 			</span>
 			<div class="answer">
-				<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> />
+				<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> onchange="saveCao('cao_form<s:property value="#cao.id"/>', 'Save', 'aiNameValid<s:property value="#cao.id"/>')" />
 			</div>
 			<br clear="all"/>
 		</div>
 		<div class="question">
-			<span class="question"> 1.3.3 &nbsp;&nbsp;
+			<span class="question<s:if test="!#cao.valid && #cao.reason == null"> required</s:if>"> 1.3.3 &nbsp;&nbsp;
 			Contractor Remarks:
 			</span>
 			<div class="answer">
@@ -98,7 +98,7 @@
 					<s:else>
 						value="Submit" 
 					</s:else>
-					onclick="return false;"
+					onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
 				/>
 			</div>
 		</s:if> 
