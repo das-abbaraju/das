@@ -373,10 +373,14 @@ public class AuditBuilder {
 		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
 		while (iter.hasNext()) {
 			ContractorAuditOperator cao = iter.next();
-			if (!operatorSet.contains(cao.getOperator()) 
-					&& cao.getStatus().isPending()) {
-				contractorAuditOperatorDAO.remove(cao);
-				iter.remove();
+			if (!operatorSet.contains(cao.getOperator())) {
+				if (cao.getStatus().isTemporary()) {
+					contractorAuditOperatorDAO.remove(cao);
+					iter.remove();
+				} else if (cao.isVisible()) {
+					cao.setVisible(false);
+					contractorAuditOperatorDAO.save(cao);
+				}
 			}
 		}
 

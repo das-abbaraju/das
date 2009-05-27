@@ -147,11 +147,11 @@
 					<li>
 						<label>Op Status:</label>
 							<a href="#cao<s:property value="id"/>"><s:property value="status"/></a>
-							<span style="font-size: 10px; white-space: nowrap;"><s:property value="operator.name"/></span>
+							<span style="font-size: 10px; white-space: nowrap;"><s:property value="@com.picsauditing.util.Strings@trim(operator.name, 30)" /></span>
 					</li>
 				</s:if>
 			</s:iterator>
-			</s:if>
+		</s:if>
 	</ul>
 	</fieldset>
 	<div class="clear"></div>

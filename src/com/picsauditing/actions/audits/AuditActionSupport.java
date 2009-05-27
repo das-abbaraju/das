@@ -176,13 +176,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (permissions.isAuditor())
 				return true;
 
-		if (conAudit.getAuditType().getClassType()
-				.equals(AuditTypeClass.Policy)
-				&& conAudit.getAuditStatus().equals(AuditStatus.Submitted)
-				&& permissions.hasPermission(OpPerms.InsuranceVerification,
-						OpType.Edit)) {
-			return true;
-		}
 		return false;
 	}
 

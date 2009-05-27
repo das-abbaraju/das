@@ -354,27 +354,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return LowMedHigh.values();
 	}
 
-	public ContractorAudit findNextRequiredPolicyForVerification(ContractorAudit conAudit) {
-		for (ContractorAudit otherAudit : conAudit.getContractorAccount().getAudits()) {
-			if (!conAudit.equals(otherAudit) && !conAudit.getAuditStatus().isExpired()
-					&& otherAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-				for (ContractorAuditOperator cao : otherAudit.getOperators()) {
-					if (cao.getStatus().equals(CaoStatus.Submitted)) {
-						for (AuditOperator auditOperator : cao.getOperator().getAudits()) {
-							if (otherAudit.getAuditType().equals(auditOperator.getAuditType())
-									&& auditOperator.isCanSee() && auditOperator.getMinRiskLevel() > 0
-									&& auditOperator.getRequiredAuditStatus().isActive()) {
-								return otherAudit;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return null;
-	}
-	
 	public boolean isShowCheckIcon(ContractorAudit conAudit) {
 		if(permissions.isContractor()) {
 			if(conAudit.getAuditStatus().isActiveSubmitted())

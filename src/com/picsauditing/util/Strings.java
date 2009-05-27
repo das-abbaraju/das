@@ -257,4 +257,12 @@ public class Strings {
 		}
 		return validEmail;
 	}
+	
+	public static String trim(String input, int maxlength) {
+		if (isEmpty(input))
+			return "";
+		if (input.length() <= maxlength)
+			return input;
+		return input.substring(0, maxlength-3) + "...";
+	}
 }

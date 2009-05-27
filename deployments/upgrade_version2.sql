@@ -45,3 +45,7 @@ and columnHeader = '';
  **/ 
 update pqfsubcategories set helpText = NULL
 where subcategory = 'Operator Requirements';
+
+update pqfquestions set isVisible = 'No'
+where id in (2099,2100,2201,2387,2198,2199,2205,2119,2207,2125,2131,2213,2137,2216,2143,2219,2237,2283,2291,2393,2397);
+

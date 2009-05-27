@@ -104,15 +104,6 @@ public class ContractorAuditOperator extends BaseTable {
 		return true;
 	}
 
-	@Transient
-	public boolean isAiNameValid() {
-		return valid;
-	}
-
-	public void setAiNameValid(boolean aiNameValid) {
-		this.valid = aiNameValid;
-	}
-
 	public boolean isValid() {
 		return valid;
 	}

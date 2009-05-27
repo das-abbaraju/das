@@ -141,26 +141,112 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				log("  Policy " + conAudit.getId() + " " + conAudit.getAuditType().getAuditName());
-
-				// Get a map of all the tuples
-				Map<Integer, Tuple> tuples = new TreeMap<Integer, Tuple>();
-				for (AuditData data : conAudit.getData()) {
-					if (data.getQuestion().isAllowMultipleAnswers()) {
-						oldTupleData.add(data.getId());
-						tuples.put(data.getId(), new Tuple(data));
+				
+				Set<Integer> tuplePolicyTypes = new HashSet<Integer>();
+				tuplePolicyTypes.add(1);
+				if (tuplePolicyTypes.contains(conAudit.getAuditType().getId())) {
+					// This policy has tuples, we need to map them over
+					// Get a map of all the tuples
+					Map<Integer, Tuple> tuples = new TreeMap<Integer, Tuple>();
+					for (AuditData data : conAudit.getData()) {
+						if (data.getQuestion().isAllowMultipleAnswers()) {
+							oldTupleData.add(data.getId());
+							tuples.put(data.getId(), new Tuple(data));
+						}
 					}
-				}
 
-				// Now attach all the child questions to the tuple
-				for (AuditData data : conAudit.getData()) {
-					if (data.getParentAnswer() != null) {
-						oldTupleData.add(data.getId());
+					// Now attach all the child questions to the tuple
+					for (AuditData data : conAudit.getData()) {
+						if (data.getParentAnswer() != null) {
+							oldTupleData.add(data.getId());
 
-						Tuple tuple = tuples.get(data.getParentAnswer().getId());
-						if (tuple == null)
-							log("    WARNING!! Failed to find the parent for dataID=" + data.getId());
-						else {
-							if ("policyFile".equals(data.getQuestion().getUniqueCode())) {
+							Tuple tuple = tuples.get(data.getParentAnswer().getId());
+							if (tuple == null)
+								log("    WARNING!! Failed to find the parent for dataID=" + data.getId());
+							else {
+								if ("policyFile".equals(data.getQuestion().getUniqueCode())) {
+									File file = getFile(PICSFileType.data, data.getId());
+									if (file != null) {
+										String hash = FileUtils.getFileMD5(file);
+										if (certFiles.containsKey(hash)) {
+											log("  policyFile " + data.getId() + " is a duplicate of certificate "
+													+ certFiles.get(hash).getId());
+										} else {
+											log("  policyFile doesn't exists, adding new Certificate");
+											Certificate certificate = new Certificate();
+											certificate.setAuditColumns(new User(User.SYSTEM));
+											certificate.setContractor(contractor);
+											certificate.setDescription(data.getParentAnswer().getAnswer());
+											certificate.setFileType(data.getAnswer());
+											certificate.setCreationDate(data.getCreationDate());
+											if (data.getAudit().getCreationDate().before(data.getCreationDate()))
+												certificate.setCreationDate(data.getAudit().getCreationDate());
+											certificate = certificateDAO.save(certificate);
+
+											certificates.add(certificate);
+											certFiles.put(hash, certificate);
+											tuple.setCertificate(certificate);
+
+											FileUtils.moveFile(file, getFtpDir(), "/files/"
+													+ FileUtils.thousandize(certificate.getId()), PICSFileType.certs + "_"
+													+ certificate.getId(), certificate.getFileType(), true);
+										}
+									}
+								} else {
+									tuple.setChildData(data);
+								}
+							}
+						}
+					}
+
+					// Create a map of caoTuples so we can attach all the tuples to the appropriate caos
+					Map<ContractorAuditOperator, List<Tuple>> caoTuples = new HashMap<ContractorAuditOperator, List<Tuple>>();
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						caoTuples.put(cao, new ArrayList<Tuple>());
+					}
+					log("    This policy has " + tuples.size() + " tuple(s) and " + caoTuples.size() + " cao(s)");
+
+					// For each tuple, find the appropriate cao and attach it
+					for (Tuple tuple : tuples.values()) {
+						String tupleName = tuple.getLegalName().trim();
+						for (ContractorAuditOperator cao : conAudit.getOperators()) {
+							for (AccountName legalName : cao.getOperator().getNames()) {
+								if (tupleName.equalsIgnoreCase("All")) {
+									if (caoTuples.get(cao).size() == 0)
+										caoTuples.get(cao).add(tuple);
+									tuple.setCao(cao); // Doesn't matter who it's assigned to
+								} else if (tupleName.equalsIgnoreCase(legalName.getName().trim())) {
+									if (tuple.getCao() != null)
+										log("    WARNING!! This tuple was already assigned: " + tuple.toString());
+									caoTuples.get(cao).add(tuple);
+									tuple.setCao(cao);
+								}
+							}
+						}
+						if (tuple.getCao() == null)
+							log("    WARNING!! This tuple was NEVER assigned: " + tuple.toString());
+					}
+
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						log("    Updating " + cao.getOperator().getName());
+						Tuple tuple = getSingleTuple(caoTuples.get(cao));
+						if (tuple != null) {
+							if (!cao.isValid())
+								cao.setValid(tuple.isNameMatches() && tuple.isWaiver());
+							if (cao.getCertificate() == null || tuple.getCertificate() != null)
+								cao.setCertificate(tuple.getCertificate());
+							contractorAuditOperatorDAO.save(cao);
+							log("      saved cao " + cao.getId());
+						}
+					}
+				} else {
+					// This is a flat policy type, all we need to do is to iterate over the caos
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						log("    Updating " + cao.getOperator().getName());
+						
+						for (AuditData data : conAudit.getData()) {
+							String code = data.getQuestion().getUniqueCode();
+							if ("policyFile".equals(code)) {
 								File file = getFile(PICSFileType.data, data.getId());
 								if (file != null) {
 									String hash = FileUtils.getFileMD5(file);
@@ -181,58 +267,16 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 
 										certificates.add(certificate);
 										certFiles.put(hash, certificate);
-										tuple.setCertificate(certificate);
+										cao.setCertificate(certificate);
 
 										FileUtils.moveFile(file, getFtpDir(), "/files/"
 												+ FileUtils.thousandize(certificate.getId()), PICSFileType.certs + "_"
 												+ certificate.getId(), certificate.getFileType(), true);
 									}
 								}
-							} else {
-								tuple.setChildData(data);
 							}
 						}
-					}
-				}
 
-				// Create a map of caoTuples so we can attach all the tuples to the appropriate caos
-				Map<ContractorAuditOperator, List<Tuple>> caoTuples = new HashMap<ContractorAuditOperator, List<Tuple>>();
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					caoTuples.put(cao, new ArrayList<Tuple>());
-				}
-				log("    This policy has " + tuples.size() + " tuple(s) and " + caoTuples.size() + " cao(s)");
-
-				// For each tuple, find the appropriate cao and attach it
-				for (Tuple tuple : tuples.values()) {
-					String tupleName = tuple.getLegalName().trim();
-					for (ContractorAuditOperator cao : conAudit.getOperators()) {
-						for (AccountName legalName : cao.getOperator().getNames()) {
-							if (tupleName.equalsIgnoreCase("All")) {
-								if (caoTuples.get(cao).size() == 0)
-									caoTuples.get(cao).add(tuple);
-								tuple.setCao(cao); // Doesn't matter who it's assigned to
-							} else if (tupleName.equalsIgnoreCase(legalName.getName().trim())) {
-								if (tuple.getCao() != null)
-									log("    WARNING!! This tuple was already assigned: " + tuple.toString());
-								caoTuples.get(cao).add(tuple);
-								tuple.setCao(cao);
-							}
-						}
-					}
-					if (tuple.getCao() == null)
-						log("    WARNING!! This tuple was NEVER assigned: " + tuple.toString());
-				}
-
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					log("    Updating " + cao.getOperator().getName());
-					Tuple tuple = getSingleTuple(caoTuples.get(cao));
-					if (tuple != null) {
-						//if (cao.getAiName() == null || tuple.getOtherName() != null)
-						//	cao.setAiName(tuple.getOtherName());
-						if (!cao.isAiNameValid())
-							cao.setAiNameValid(tuple.isNameMatches());
-						if (cao.getCertificate() == null || tuple.getCertificate() != null)
-							cao.setCertificate(tuple.getCertificate());
 						contractorAuditOperatorDAO.save(cao);
 						log("      saved cao " + cao.getId());
 					}
@@ -316,6 +360,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 		private String legalName;
 		private String nameMatches = null;
 		private String otherName = null;
+		private boolean waiver = false;
 		private Certificate certificate = null;
 		private ContractorAuditOperator cao;
 
@@ -348,6 +393,10 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 			this.certificate = certificate;
 		}
 
+		public boolean isWaiver() {
+			return waiver;
+		}
+
 		public void setChildData(AuditData data) {
 			String code = data.getQuestion().getUniqueCode();
 			if (Strings.isEmpty(code))
@@ -357,6 +406,12 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 			}
 			if (code.equals("aiOther")) {
 				this.otherName = data.getAnswer();
+			}
+			if (code.equals("aiWaiverSub")) {
+				if ("Yes".equals(data.getAnswer()))
+					waiver = true;
+				if ("NA".equals(data.getAnswer()))
+					waiver = true;
 			}
 		}
 

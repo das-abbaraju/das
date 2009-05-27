@@ -167,7 +167,7 @@ label.policy {
 
 <s:if test="catDataID > 0">
 	<br clear="all"/>
-	<!--<pics:permission perm="InsuranceVerification">
+	<pics:permission perm="InsuranceVerification">
 		<s:if test="conAudit.auditType.classType.policy">
 			<s:if test="hasSubmittedCaos">
 				<div id="cao_verification">
@@ -175,14 +175,14 @@ label.policy {
 				</div>
 			</s:if>
 			<div class="buttons" style="float:right">
-				<s:if test="needsNextPolicyForContractor">
-					<a class="button" href="AuditCat.action?auditID=<s:property value="nextPolicy.id"/>&catDataId=<s:property value="nextPolicy.categories.get(0).id"/>"> Next Policy &gt;</a>
+				<s:if test="nextPolicyID > 0">
+					<a class="button" href="AuditCat.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
 				</s:if>
 				<a class="button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted&button=getFirst"> Oldest Policy &gt;&gt;</a>
 			</div>
 			<br clear="all"/>
 		</s:if>
-	</pics:permission>-->
+	</pics:permission>
 	<s:if test="!singleCat">
 		<div class="buttons" style="float: right;">
 			<s:if test="nextCategory == null">

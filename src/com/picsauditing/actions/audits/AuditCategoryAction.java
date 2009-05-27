@@ -20,11 +20,13 @@ import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -61,7 +63,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	protected ContractorAudit previousAudit = null;
 	protected ContractorAudit nextAudit = null;
 
-	protected ContractorAudit nextPolicy = null;
+	protected Integer nextPolicyID = null;
 
 	protected OshaAudit averageOshas = null;
 	protected AnswerMap answerMap = null;
@@ -384,17 +386,22 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		return false;
 	}
 
-	public boolean isNeedsNextPolicyForContractor() {
-		nextPolicy = findNextRequiredPolicyForVerification(conAudit);
-		return nextPolicy != null;
-	}
-
-	public ContractorAudit getNextPolicy() {
-		if (nextPolicy != null || isNeedsNextPolicyForContractor()) {
-			return nextPolicy;
+	public int getNextPolicyID() {
+		if (nextPolicyID == null) {
+			for (ContractorAudit otherAudit : contractor.getAudits()) {
+				if (!conAudit.equals(otherAudit) && !otherAudit.getAuditStatus().isExpired()
+						&& otherAudit.getAuditType().getClassType().isPolicy()) {
+					for (ContractorAuditOperator cao : otherAudit.getOperators()) {
+						if (cao.isVisible()) {
+							nextPolicyID = otherAudit.getId();
+							return nextPolicyID;
+						}
+					}
+				}
+			}
+			nextPolicyID = 0;
 		}
-
-		return null;
+		return nextPolicyID;
 	}
 
 	public List<ContractorAudit> getActivePendingEditableAudits() {

@@ -11,11 +11,11 @@
 				<li><label>Op Status:</label>
 					<span style="cursor: pointer"><s:property value="#cao.status" /></span>
 				</li>
-					<li><label>By:</label>
+					<li><label>Changed By:</label>
 						<s:property value="#cao.statusChangedBy.name" /> from <s:property value="#cao.statusChangedBy.account.name" />
 					</li>
-					<li><label>On:</label>
-						<s:property value="#cao.statusChangedDate" />
+					<li><label>Changed On:</label>
+						<s:date name="#cao.statusChangedDate" />
 					</li>
 					<s:if test="#cao.flag != null">
 						<li><label>Meets Criteria:</label>
