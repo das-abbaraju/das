@@ -25,6 +25,21 @@
 					</s:if>
 			</ul>
 			</fieldset>
+			<fieldset>
+			<ul>
+				<s:if test="permissions.contractor">
+					<li><label>Administrative Notes: </label>
+						<s:property value="#cao.notes"/>
+					</li>
+				</s:if>
+
+				<s:if test="permissions.admin || permissions.operatorCorporate">
+					<li><label>Remarks: </label>
+						<s:property value="#cao.reason"/>
+					</li>
+				</s:if>
+			</ul>
+			</fieldset>
 			<div class="clear"></div>
 		</div>
 	</s:if>
@@ -51,7 +66,7 @@
 					<tr>
 						<th>Uploaded</thd>
 						<th>Certificate</th>
-						<th>Operators</th>
+						<th>Used By</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -93,30 +108,41 @@
 		<span class="question">1.3.2&nbsp;&nbsp;
 			Does the additional insured listed in the above certificate match the 
 			name (and address) requirements listed in the 
-			<a <s:if test="#cao.operator.insuranceForm != null">
-					href="forms/<s:property value="#cao.operator.insuranceForm.file"/>" 
-				</s:if>
-				<s:else>
-					href="ContractorForms.action?id=<s:property value="#cao.audit.contractorAccount.id"/>"
-				</s:else>
-				target="_BLANK">
-					<s:property value="#cao.operator.name"/> Insurance Requirements
-				</a> document exactly?
+			<s:if test="#cao.operator.operatorForms.size > 0">
+				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
+				<ul style="list-style:none">
+					<s:iterator value="#cao.operator.operatorForms">
+						<li><a href="forms/<s:property value="file"/>"><s:property value="formName"/></a></li>
+					</s:iterator>
+				</ul>
+				and I am in compliance.
+			</s:if>
+			<s:else>
+				I have reviewed the requirements for <strong><s:property value="#cao.operator.name"/></strong> 
+				and I am in compliance with their standards.
+			</s:else>
 		</span>
 		<div class="answer">
 			<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> onchange="saveCao('cao_form<s:property value="#cao.id"/>', 'Save', 'aiNameValid<s:property value="#cao.id"/>')" />
 		</div>
 		<br clear="all"/>
 	</div>
-	<div class="question">
-		<span class="question<s:if test="!#cao.valid && #cao.reason == null"> required</s:if>">
-		Contractor Remarks:
-		</span>
-		<div class="answer">
-			<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"/>
+	<s:if test="permissions.contractor">
+		<div class="question">
+			<span class="question<s:if test="permissions.contractor && !#cao.valid && #cao.reason == null"> required</s:if>">
+			1.3.3&nbsp;&nbsp;Contractor Remarks:
+			</span>
+			<div class="answer">
+				<s:if test="permissions.contractor">
+					<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"/>
+				</s:if>
+				<s:else>
+					<s:property value="#cao.reason"/>
+				</s:else>
+			</div>
+			<br clear="all"/>
 		</div>
-		<br clear="all"/>
-	</div>
+	</s:if>
 	<s:set name="disabled" value="(!#cao.valid && #cao.reason == null) || #cao.certificate == null"/>
 	<s:if test="permissions.contractor">
 		<div class="buttons">
@@ -133,6 +159,7 @@
 				</s:if>
 				onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
 			/>
+			<br clear="all"/>
 		</div>
 	</s:if> 
 	<s:if test="permissions.admin">

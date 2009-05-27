@@ -59,6 +59,7 @@ public class OperatorAccount extends Account {
 	protected List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
 	protected List<OperatorTag> tags = new ArrayList<OperatorTag>();
 	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
+	protected List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
 	protected Map<Integer, AuditOperator> auditMap = null;
 
 	public OperatorAccount() {
@@ -264,6 +265,15 @@ public class OperatorAccount extends Account {
 
 	public void setAudits(List<AuditOperator> audits) {
 		this.audits = audits;
+	}
+
+	@OneToMany(mappedBy = "account")
+	public List<OperatorForm> getOperatorForms() {
+		return operatorForms;
+	}
+
+	public void setOperatorForms(List<OperatorForm> operatorForms) {
+		this.operatorForms = operatorForms;
 	}
 
 	@Transient
