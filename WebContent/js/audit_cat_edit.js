@@ -209,9 +209,9 @@ function saveCao(form, status, divName) {
 	
 	var pars = $(form).serialize(true);
 	
-	pars['cao.valid'] = $(form).getInputs('checkbox', 'cao.valid')[0].checked;
+	pars['cao.valid'] = $(form)['cao.valid'].checked;
 	pars['button'] = typeof(status) != 'undefined' ? status: 'Save';
-
+	
 	var myAjax = new Ajax.Updater('cao_'+pars['cao.id'], 'PolicySaveAjax.action', {
 		method:'post',
 		parameters: pars,
@@ -222,6 +222,11 @@ function saveCao(form, status, divName) {
 				alert("Failed to save answer" + transport.statusText + transport.responseText);
 		}
 	});
+}
+
+function saveCert(certID, form, divName) {
+	$(form)['certificate.id'].value = certID;
+	saveCao(form, 'Save', divName);
 }
 
 function saveCaoStatus(caoID, button, useNotes) {
