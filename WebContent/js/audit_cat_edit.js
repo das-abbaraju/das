@@ -221,6 +221,8 @@ function showCertificates(conID, caoID) {
 		caoID: caoID
 	};
 	
+	startThinking({div:'certificates'+caoID, message:' Gathering Certificates'});
+	
 	var myAjax = new Ajax.Updater('certificates'+caoID, 'ContractorCertificatesAjax.action', {
 		method:'post',
 		evalScripts:true,
