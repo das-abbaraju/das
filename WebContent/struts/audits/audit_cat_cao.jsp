@@ -53,10 +53,18 @@
 		<div class="answer">
 			<s:hidden name="certificate.id" value="%{#cao.certificate != null ? #cao.certificate.id : 0}"/>
 			<s:if test="#cao.certificate != null">
+				<s:date name="#cao.certificate.creationDate" format="M/d/yy" /> - <s:property value="#cao.certificate.description" /> <br/>
 				<a href="CertificateUpload.action?id=<s:property value="#cao.audit.contractorAccount.id"/>&certID=<s:property value="#cao.certificate.id"/>&button=download"
-					target="_BLANK" class="insurance"><span></span>View File</a>
+					target="_BLANK" class="insurance">
+					<span></span>
+					View
+				</a>
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="#" onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,<s:property value="#cao.id"/>); return false;" class="remove">Remove</a>
+				<a href="#" 
+				onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,<s:property value="#cao.id"/>); return false;" 
+				class="remove">
+					Detach
+				</a>
 			</s:if> 
 			<s:else>
 					No File Attached
