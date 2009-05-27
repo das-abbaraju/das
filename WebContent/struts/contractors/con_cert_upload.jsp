@@ -15,7 +15,7 @@ var certID = '<s:property value="certID"/>';
 function closePage() {
 	try {
 		if (caoID > 0 && certID > 0)
-			window.opener.saveCert(certID, 'cao_form'+caoID, 'fileQuestion'+caoID);
+			window.opener.saveCert(certID, caoID);
 		else
 			window.opener.changeButton(null,null);
 	} catch(err) {}

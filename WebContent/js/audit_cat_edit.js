@@ -237,7 +237,8 @@ function saveCao(form, status, divName) {
 	});
 }
 
-function saveCert(certID, form, divName) {
+function saveCert(certID, caoID) {
+	var form = "cao_form"+caoID;
 	$(form)['certificate.id'].value = certID;
-	saveCao(form, 'Save', divName);
+	saveCao(form, 'Save', 'fileQuestion'+caoID);
 }

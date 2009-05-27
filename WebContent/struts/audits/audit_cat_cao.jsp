@@ -56,7 +56,7 @@
 				<a href="CertificateUpload.action?id=<s:property value="#cao.audit.contractorAccount.id"/>&certID=<s:property value="#cao.certificate.id"/>&button=download"
 					target="_BLANK" class="insurance"><span></span>View File</a>
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="#" onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,'cao_form<s:property value="#cao.id"/>','fileQuestion<s:property value="#cao.id"/>'); return false;" class="remove">Remove</a>
+				<a href="#" onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,<s:property value="#cao.id"/>); return false;" class="remove">Remove</a>
 			</s:if> 
 			<s:else>
 					No File Attached
@@ -78,8 +78,8 @@
 							<td>
 								<a class="insurance"
 									href="#"
-									onclick="saveCert(<s:property value="id"/>,'cao_form<s:property value="#cao.id"/>','fileQuestion<s:property value="#cao.id"/>'); return false;"
-									target="_BLANK">
+									onclick="saveCert(<s:property value="id"/>,<s:property value="#cao.id"/>); return false;"
+									>
 									<span></span><s:property value="description" />
 								</a>
 							</td>
