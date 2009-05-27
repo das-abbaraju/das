@@ -10,9 +10,14 @@
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 <script type="text/javascript">
+var caoID  = '<s:property value="caoID"/>';
+var certID = '<s:property value="certID"/>';
 function closePage() {
 	try {
-		window.opener.location.reload(true);
+		if (caoID > 0 && certID > 0)
+			window.opener.saveCert(certID, 'cao_form'+caoID, 'fileQuestion'+caoID);
+		else
+			window.opener.changeButton(null,null);
 	} catch(err) {}
 	self.close();
 }
@@ -30,6 +35,7 @@ function closePage() {
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="id" />
 	<s:hidden name="certID" />
+	<s:hidden name="caoID" />
 	<br />
 	<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 		<s:file name="file" value="%{file}" size="50"></s:file><br />

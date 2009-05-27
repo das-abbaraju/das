@@ -28,15 +28,6 @@
 			<div class="clear"></div>
 		</div>
 	</s:if>
-	<div class="question shaded" id="status_<s:property value="#cao.id"/>">
-		<label class="policy">Status:</label>
-		<s:property value="#cao.status" />
-		<s:if test="#cao.flag != null">
-			<label class="policy">Meets Criteria:</label>
-			<s:property value="#cao.flag.smallIcon" escape="false"/>
-			<s:property value="#cao.flag" />
-		</s:if>
-	</div>
 	<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
 		<span class="question<s:if test="#cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
 			Upload a Certificate of Insurance or other supporting documentation
@@ -91,7 +82,7 @@
 						</tr>
 					</s:iterator>
 					<tr>
-						<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="#cao.audit.contractorAccount.id" />, 0); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
+						<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="#cao.audit.contractorAccount.id" />, 0, <s:property value="#cao.id"/>); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
 					</tr>
 				</tbody>
 			</table>

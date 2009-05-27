@@ -23,6 +23,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	protected int certID;
 	protected String fileName = null;
 	private Certificate certificate = null;
+	protected int caoID;
 
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
@@ -158,6 +159,14 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public void setCertID(int certID) {
 		this.certID = certID;
+	}
+
+	public int getCaoID() {
+		return caoID;
+	}
+
+	public void setCaoID(int caoID) {
+		this.caoID = caoID;
 	}
 
 	public String getFileName() {

@@ -207,8 +207,8 @@ function showFileUpload(answerid, questionid, parentid, divId) {
 	fileUpload.focus();
 }
 
-function showCertUpload(conid, certid) {
-	url = 'CertificateUpload.action?id='+conid+'&certID='+certid;
+function showCertUpload(conid, certid, caoID) {
+	url = 'CertificateUpload.action?id='+conid+'&certID='+certid+'&caoID='+caoID;
 	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);
