@@ -1,19 +1,16 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<div style="<s:if test="!canSee">color: #AAA; </s:if>padding: 0px; margin: 0px;">
-<nobr>
-<s:checkbox name="canSee%{htmlID}" value="canSee" title="View"
-onclick="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
-|
-<s:checkbox name="canEdit%{htmlID}" value="canEdit" title="Edit"
-onclick="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
-|
-<s:radio name="riskLevel%{htmlID}" list="riskLevelList" value="minRiskLevel" disabled="!canSee" 
-onchange="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
-|
-<s:radio name="requiredForFlag%{htmlID}" list="FlagColorList" value="requiredForFlag" disabled="!canSee"
-onchange="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
-|
-<s:radio name="requiredAuditStatus%{htmlID}" list="AuditStatusList" value="requiredAuditStatus" disabled="!canSee"
-onchange="save('%{htmlID}', '%{auditType.id}', '%{operatorAccount.id}', '%{id}')" />
-</nobr>
+<div style="padding: 0px; margin: 0px; white-space: nowrap;">
+<form id="ao<s:property value="htmlID" />"><s:hidden name="ao.id" value="%{id}" /> <s:hidden
+	name="ao.auditType.id" value="%{auditType.id}" /> <s:hidden name="ao.operatorAccount.id" value="%{operatorAccount.id}" />
+
+<s:checkbox name="ao.canSee" value="%{canSee}" title="View" onchange="$('button%{htmlID}').show()" /> | <s:checkbox
+	name="ao.canEdit" value="canEdit" title="Edit" onchange="$('button%{htmlID}').show()" /> | <s:radio
+	id="aorisk%{htmlID}" name="ao.minRiskLevel" list="riskLevelList" value="minRiskLevel"
+	onchange="$('button%{htmlID}').show()" /> | <s:radio id="aoflag%{htmlID}" name="ao.requiredForFlag"
+	list="FlagColorList" value="requiredForFlag" onchange="$('button%{htmlID}').show()" /> | <s:radio
+	id="aostatus%{htmlID}" name="ao.requiredAuditStatus" list="AuditStatusList" value="requiredAuditStatus"
+	onchange="$('button%{htmlID}').show()" /> <s:if test="auditType.classType.policy">
+	<br>
+	<s:textarea name="ao.help" value="%{help}" rows="3" cols="70" onkeyup="$('button%{htmlID}').show()"></s:textarea>
+</s:if></form>
 </div>

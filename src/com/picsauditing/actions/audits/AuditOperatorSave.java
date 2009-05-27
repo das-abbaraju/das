@@ -2,18 +2,14 @@ package com.picsauditing.actions.audits;
 
 import java.util.Map;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
 public class AuditOperatorSave extends PicsActionSupport implements Preparable {
@@ -33,23 +29,16 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (ao.getId() == 0) {
-			if (operatorID > 0) {
-				ao.setOperatorAccount(new OperatorAccount());
-				ao.getOperatorAccount().setId(operatorID);
-				ao.setAuditColumns(this.getUser());
-			}
-		}
 		cAccountDAO.updateContractorByOperator(ao.getOperatorAccount());
-		
+
+		ao.setAuditColumns(getUser());
 		ao = dao.save(ao);
 
 		return SUCCESS;
 	}
 
 	public void prepare() throws Exception {
-		String[] ids = (String[]) ActionContext.getContext().getParameters().get("ao.id");
-		int id = new Integer(ids[0]).intValue();
+		int id = this.getParameter("ao.id");
 		ao = dao.find(id);
 	}
 
@@ -68,9 +57,9 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 	public FlagColor[] getFlagColorList() {
 		return FlagColor.values();
 	}
-	
+
 	public AuditStatus[] getAuditStatusList() {
-		AuditStatus[] list = {AuditStatus.Active, AuditStatus.Submitted};
+		AuditStatus[] list = { AuditStatus.Active, AuditStatus.Submitted };
 		return list;
 	}
 
