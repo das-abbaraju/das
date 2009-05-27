@@ -80,26 +80,30 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					certificate = new Certificate();
 					certificate.setContractor(contractor);
 				}
-				
+				String extension = null;
 				if(file != null && file.length() > 0) {
-					String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 					if (!FileUtils.checkFileExtension(extension)) {
 						file = null;
 						addActionError("Bad File Extension");
 						return SUCCESS;
 					}
+					certificate.setFileType(extension);
 					if(Strings.isEmpty(fileName))
 						certificate.setDescription(fileFileName.substring(0, fileFileName.lastIndexOf(".")));
-					certificate.setFileType(extension);
-					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID), getFileName(certID),
-							extension, true);
-					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
-				}
+				}	
+
 				if(!Strings.isEmpty(fileName))
 					certificate.setDescription(fileName);
 				certificate.setAuditColumns(permissions);
 				certificate = certificateDAO.save(certificate);
 				certID = certificate.getId();
+				
+				if(file != null && file.length() > 0) {
+					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID), getFileName(certID),
+							extension, true);
+					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+				}
 			}
 		}
 
