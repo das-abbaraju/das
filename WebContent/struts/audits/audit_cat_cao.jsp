@@ -131,12 +131,7 @@
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">
-				<s:if test="permissions.contractor">
-					<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"/>
-				</s:if>
-				<s:else>
-					<s:property value="#cao.reason"/>
-				</s:else>
+				<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"/>
 			</div>
 			<br clear="all"/>
 		</div>
