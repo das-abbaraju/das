@@ -28,57 +28,73 @@
 			<div class="clear"></div>
 		</div>
 	</s:if>
-		<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
-			<span class="question<s:if test="#cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
-				Upload a Certificate of Insurance or other supporting documentation
-				for this policy.
-			</span>
-			<div class="answer">
-				<s:hidden name="certificate.id" value="%{#cao.certificate.id}"/>
-				<s:if test="#cao.certificate != null">
-					<a href="CertificateUpload.action?id=<s:property value="#cao.audit.contractorAccount.id"/>&certID=<s:property value="#cao.certificate.id"/>&button=download"
-						target="_BLANK" class="insurance"><span></span>View File</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,'cao_form<s:property value="#cao.id"/>','fileQuestion<s:property value="#cao.id"/>'); return false;" class="remove">Remove</a>
-				</s:if> 
-				<s:else>
-						No File Attached
-				</s:else> 
-				<br />
-				<a href="#" onclick="$('choose_certs<s:property value="#cao.id"/>').toggle(); return false;">Attach File</a>
-				<table class="report" style="display:none;width:320px;" id="choose_certs<s:property value="#cao.id"/>">
-					<thead>
+	<div class="question shaded" id="status_<s:property value="#cao.id"/>">
+		<label class="policy">Status:</label>
+		<s:property value="#cao.status" />
+		<s:if test="#cao.flag != null">
+			<label class="policy">Meets Criteria:</label>
+			<s:property value="#cao.flag.smallIcon" escape="false"/>
+			<s:property value="#cao.flag" />
+		</s:if>
+	</div>
+	<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
+		<span class="question<s:if test="#cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
+			Upload a Certificate of Insurance or other supporting documentation
+			for this policy.
+		</span>
+		<div class="answer">
+			<s:hidden name="certificate.id" value="%{#cao.certificate != null ? #cao.certificate.id : 0}"/>
+			<s:if test="#cao.certificate != null">
+				<a href="CertificateUpload.action?id=<s:property value="#cao.audit.contractorAccount.id"/>&certID=<s:property value="#cao.certificate.id"/>&button=download"
+					target="_BLANK" class="insurance"><span></span>View File</a>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="#" onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,'cao_form<s:property value="#cao.id"/>','fileQuestion<s:property value="#cao.id"/>'); return false;" class="remove">Remove</a>
+			</s:if> 
+			<s:else>
+					No File Attached
+			</s:else> 
+			<br />
+			<a href="#" onclick="$('choose_certs<s:property value="#cao.id"/>').toggle(); return false;">Attach File</a>
+			<table class="report" style="display:none" id="choose_certs<s:property value="#cao.id"/>">
+				<thead>
+					<tr>
+						<th>Uploaded</thd>
+						<th>Certificate</th>
+						<th>Operators</th>
+					</tr>
+				</thead>
+				<tbody>
+					<s:iterator value="certificates">
 						<tr>
+							<td><s:date name="creationDate" format="M/d/yy" /></td>
 							<td>
 								<a class="insurance"
 									href="#"
-									onclick="saveCao('certificate.id', <s:property value="id"/>, <s:property value="#cao.id"/>, 'fileQuestion<s:property value="#cao.id"/>'); return false;"
+									onclick="saveCert(<s:property value="id"/>,'cao_form<s:property value="#cao.id"/>','fileQuestion<s:property value="#cao.id"/>'); return false;"
 									target="_BLANK">
 									<span></span><s:property value="description" />
 								</a>
 							</td>
-							<td><s:date name="creationDate" format="M/d/yy" /></td>
+							<td>
+								<table class="inner">
+									<s:iterator value="caos">
+										<s:if test="!permissions.operatorCorporate || !permissions.insuranceOperatorID == permissions.">
+										<tr>
+											<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
+											<td style="font-size:10px"><nobr><s:property value="operator.name"/></td>
+											<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="M/d/yy"/></nobr></td>
+										</tr>
+										</s:if>
+									</s:iterator>
+								</table>
+							</td>
 						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="certificates">
-							<tr>
-								<td>
-									<a class="insurance"
-										href="#"
-										onclick="saveCert(<s:property value="id"/>,'cao_form<s:property value="#cao.id"/>','fileQuestion<s:property value="#cao.id"/>'); return false;"
-										target="_BLANK">
-										<span></span><s:property value="description" />
-									</a>
-								</td>
-								<td><s:date name="creationDate" format="M/d/yy" /></td>
-							</tr>
-						</s:iterator>
-						<tr>
-							<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="#cao.audit.contractorAccount.id" />, 0); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
-						</tr>
-					</tbody>
-				</table>
+					</s:iterator>
+					<tr>
+						<td colspan="3" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="#cao.audit.contractorAccount.id" />, 0); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<br clear="all"/>
 	</div>
