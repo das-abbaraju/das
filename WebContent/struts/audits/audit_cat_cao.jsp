@@ -106,8 +106,6 @@
 	</div>
 	<div class="question shaded" id="aiNameValid<s:property value="#cao.id"/>">
 		<span class="question">1.3.2&nbsp;&nbsp;
-			Does the additional insured listed in the above certificate match the 
-			name (and address) requirements listed in the 
 			<s:if test="#cao.operator.operatorForms.size > 0">
 				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
 				<ul style="list-style:none">
