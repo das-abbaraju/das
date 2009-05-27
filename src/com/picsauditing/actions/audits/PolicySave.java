@@ -62,11 +62,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 		boolean statusChanged = false;
 
-		// cao = caoDAO.find(conAudit.getId(), opID);
 		if (button != null) {
 			if (cao != null) {
 				if ("Submit".equals(button) || "Resubmit".equals(button)) {
-					if (cao.getAudit().getPercentComplete() == 100) {
+					if (cao.getAudit().getPercentComplete() == 100
+							&& cao.isCanContractorSubmit()) {
 						cao.setStatus(CaoStatus.Submitted);
 						statusChanged = true;
 						button = "Save";

@@ -138,7 +138,6 @@
 			<br clear="all"/>
 		</div>
 	</s:if>
-	<s:set name="disabled" value="(!#cao.valid && #cao.reason == null) || #cao.certificate == null"/>
 	<s:if test="permissions.contractor">
 		<div class="buttons">
 			<input type="button" class="picsbutton positive" 
@@ -149,7 +148,7 @@
 					value="Submit" 
 				</s:else>
 				
-				<s:if test="#disabled">
+				<s:if test="#cao.canContractorSubmit">
 					disabled
 				</s:if>
 				onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"

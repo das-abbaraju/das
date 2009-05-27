@@ -155,5 +155,10 @@ public class ContractorAuditOperator extends BaseTable {
 
 		return true;
 	}
+	
+	@Transient
+	public boolean isCanContractorSubmit() {
+		return certificate != null && (valid || !Strings.isEmpty(reason));
+	}
 
 }
