@@ -86,7 +86,7 @@
 							<td>
 								<table class="inner">
 									<s:iterator value="caos">
-										<s:if test="!permissions.operatorCorporate || !permissions.insuranceOperatorID == permissions.">
+										<s:if test="!permissions.operatorCorporate || !permissions.insuranceOperatorID == permissions.accountID">
 										<tr>
 											<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
 											<td style="font-size:10px"><nobr><s:property value="operator.name"/></td>

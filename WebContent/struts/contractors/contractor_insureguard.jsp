@@ -196,6 +196,7 @@
 					<th>CreatedDate</th>
 					<th>View</th>
 					<th>Edit</th>
+					<th>Used By</th>
 				</tr>
 			</thead>
 			<s:iterator value="certificates">
@@ -210,6 +211,19 @@
 							onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)"
 							title="Opens in new window (please disable your popup blocker)"">Edit</a>
 					</s:if></td>
+					<td>
+						<table class="inner">
+							<s:iterator value="caos">
+								<s:if test="!permissions.operatorCorporate || !permissions.insuranceOperatorID == permissions.accountID">
+								<tr>
+									<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
+									<td style="font-size:10px"><nobr><s:property value="operator.name"/></td>
+									<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="M/d/yy"/></nobr></td>
+								</tr>
+								</s:if>
+							</s:iterator>
+						</table>
+					</td>
 				</tr>
 			</s:iterator>
 		</table>
