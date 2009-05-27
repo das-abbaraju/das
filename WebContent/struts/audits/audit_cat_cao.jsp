@@ -31,13 +31,23 @@
 			<ul>
 				<s:if test="permissions.contractor">
 					<li><label>Administrative Notes: </label>
-						<s:property value="#cao.notes"/>
+						<s:if test="#cao.notes != null && #cao.notes.length() > 0">
+							<s:property value="#cao.notes"/>
+						</s:if>
+						<s:else>
+							None
+						</s:else>
 					</li>
 				</s:if>
 
 				<s:if test="permissions.admin || permissions.operatorCorporate">
 					<li><label>Contractor Remarks: </label>
-						<s:property value="#cao.reason"/>
+						<s:if test="#cao.reason != null && #cao.reason.length() > 0">
+							<s:property value="#cao.reason"/>
+						</s:if>
+						<s:else>
+							None
+						</s:else>
 					</li>
 				</s:if>
 			</ul>
