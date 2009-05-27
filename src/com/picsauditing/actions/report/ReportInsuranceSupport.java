@@ -49,10 +49,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addField("cao.id as caoId");
 			sql.addField("cao.flag as caoRecommendedFlag");
 			sql.addField("cao.certificateID");
-			sql.addField("aiName");
-			sql.addField("aiNameValid");
-			sql.addJoin("JOIN accounts oper ON oper.id = cao.opID");
-			sql.addField("oper.name as operatorName");
+			sql.addField("valid");
 
 			String subSelect = "SELECT inheritInsuranceCriteria FROM Operators WHERE id = " + permissions.getAccountId();
 			sql.addWhere("cao.opid = (" + subSelect + ")");

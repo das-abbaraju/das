@@ -40,3 +40,8 @@ select pq.* from pqfquestions pq
 where subcategoryId in (select ps.id from pqfsubcategories ps where ps.subcategory = 'Policy Limits')
 and columnHeader = '';
 
+/**
+ * set the helpText to NULL for all operator requirements
+ **/ 
+update pqfsubcategories set helpText = NULL
+where subcategory = 'Operator Requirements';

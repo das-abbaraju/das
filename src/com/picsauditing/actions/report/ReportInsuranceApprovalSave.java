@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,8 @@ public class ReportInsuranceApprovalSave extends PicsActionSupport {
 				if (newStatus != null && !newStatus.equals(existing.getStatus())) {
 					existing.setStatus(newStatus);
 					existing.setAuditColumns(getUser());
+					existing.setStatusChangedBy(getUser());
+					existing.setStatusChangedDate(new Date());
 					dirty = true;
 					statusChanged = true;
 				}

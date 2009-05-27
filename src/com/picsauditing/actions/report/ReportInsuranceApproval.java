@@ -40,7 +40,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
 		sql.addField("cao.flag as caoRecommendedFlag");
-
+		sql.addField("cao.reason");
 	}
 
 	public boolean isRequiresActivePolicy() {

@@ -426,7 +426,7 @@
 	</s:if>
 
 	<s:if test="filter.showRecommendedFlag">
-		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Compliant Status -"
+		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Policy Compliance -"
 			cssClass="forms" name="filter.recommendedFlag" /></div>
 	</s:if>
 
