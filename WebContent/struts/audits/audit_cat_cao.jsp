@@ -167,5 +167,4 @@
 		</s:if>
 	</s:if>
 	<s:include value="../actionMessages.jsp"/>
-	<br clear="all"/>
 </s:form>
