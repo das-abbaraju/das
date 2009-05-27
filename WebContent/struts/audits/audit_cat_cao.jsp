@@ -85,7 +85,7 @@
 		</div>
 		<br clear="all"/>
 	</div>
-	<div class="question shaded" id="aiNameValid<s:property value="#cao.id"/>">
+	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
 		<span class="question">1.3.2&nbsp;&nbsp;
 			<s:if test="#cao.operator.insuranceForms.size > 0">
 				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
@@ -107,17 +107,18 @@
 			</s:iterator>
 		</span>
 		<div class="answer">
-			<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> onchange="saveCao('cao_form<s:property value="#cao.id"/>', 'Save', 'aiNameValid<s:property value="#cao.id"/>')" />
+			<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> onchange="saveCao('cao_form<s:property value="#cao.id"/>', 'Save', 'caoValid<s:property value="#cao.id"/>')" />
 		</div>
 		<br clear="all"/>
 	</div>
 	<s:if test="permissions.contractor">
-		<div class="question">
+		<div class="question" id="remarks<s:property value="#cao.id"/>">
 			<span class="question<s:if test="permissions.contractor && !#cao.valid && #cao.reason == null"> required</s:if>">
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">
-				<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"/>
+				<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"
+					onchange="saveCao('cao_form%{#cao.id}', 'Save', 'remarks%{#cao.id}')" />
 			</div>
 			<br clear="all"/>
 		</div>
