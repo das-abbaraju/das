@@ -31,7 +31,7 @@ function closePage() {
 
 			<h1>Upload Certificate for <s:property value="contractor.name" /></h1>
 			<s:include value="../actionMessages.jsp" />
-
+			<div>
 			<s:form enctype="multipart/form-data" method="POST">
 				<s:hidden name="id" />
 				<s:hidden name="certID" />
@@ -40,8 +40,12 @@ function closePage() {
 				<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 					<s:file name="file" value="%{file}" size="50"></s:file><br />
 				</s:if>
-				File Name : <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
-				<div class="buttons">
+				Description : <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
+					<div align="center" style="font-size=11px;"><table><tr><td>Example: </td><td>Certificate For BP Cherry Point</td></tr>
+							<tr><td></td><td>Workers Comp Letter</td></tr> 
+							<tr><td></td><td>Generic Certificate</td></tr></table></div>
+					
+					<div class="buttons">
 					<a href="javascript: closePage();">Close and Return to Form</a> 
 					<s:if test="file != null && file.exists()">
 						<s:if test="certificate.caos == null || certificate.caos.size() == 0">
@@ -52,6 +56,7 @@ function closePage() {
 					<button class="positive right" name="button" value="Save" type="submit">Save</button>
 				</div>
 			</s:form>
+			</div>
 			<br clear="all" />
 			<br clear="all" />
 			<s:if test="file != null && file.exists()">

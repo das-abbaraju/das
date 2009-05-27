@@ -38,7 +38,7 @@
 				</s:if>
 				<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 				<td>Limits</td>
-				<td>Valid</td>
+				<td title="Additional Requirements">Add'l</td>
 				<td>Cert</td>
 				<td>Admin Notes</td>
 			</tr>
