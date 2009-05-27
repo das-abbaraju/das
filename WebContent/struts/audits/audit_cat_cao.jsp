@@ -1,7 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:include value="../actionMessages.jsp"/>
 <s:form id="cao_form%{#cao.id}">
 	<s:hidden name="auditID" value="%{#cao.audit.id}"/>
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
@@ -122,7 +121,7 @@
 			<label class="policy">Notes:</label><br/>
 			<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
 		</s:if>
+		<s:include value="../actionMessages.jsp"/>
 		<br clear="all"/>
-		<br />
 	</s:if>
 </s:form>
