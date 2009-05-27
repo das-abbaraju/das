@@ -1055,10 +1055,6 @@
 			<param name="reportName">Policies Awaiting Decision</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
-		<action name="ReportInsuranceApprovalSave"
-			class="com.picsauditing.actions.report.ReportInsuranceApprovalSave">
-			<result>struts/blank.jsp</result>
-		</action>
 		<action name="PolicyVerification"
 			class="com.picsauditing.actions.report.ReportPolicyVerification">
 			<result>struts/reports/policy_verification.jsp</result>
