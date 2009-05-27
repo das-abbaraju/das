@@ -66,7 +66,7 @@
 			<table class="report" style="display:none" id="choose_certs<s:property value="#cao.id"/>">
 				<thead>
 					<tr>
-						<th>Uploaded</thd>
+						<th>Uploaded</th>
 						<th>Certificate</th>
 						<th>Used By</th>
 					</tr>
