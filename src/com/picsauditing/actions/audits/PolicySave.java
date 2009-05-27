@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
@@ -12,6 +13,7 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -58,23 +60,30 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 		findConAudit();
 
+		boolean statusChanged = false;
+
 		// cao = caoDAO.find(conAudit.getId(), opID);
 		if (button != null) {
 			if (cao != null) {
 				if ("Submit".equals(button) || "Resubmit".equals(button)) {
 					if (cao.getAudit().getPercentComplete() == 100) {
 						cao.setStatus(CaoStatus.Submitted);
+						statusChanged = true;
+						button = "Save";
 						addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
 								+ "</strong> Policy has been submitted tor <strong>" + cao.getOperator().getName()
 								+ "</strong>.");
-					} else
+					} else {
 						addActionError("Please enter all required questions before submitting the policy.");
+						caoDAO.refresh(cao);
+					}
 				}
 
 				if ("Verify".equals(button)) {
 					cao.setStatus(CaoStatus.Verified);
 					cao.setAuditColumns(permissions);
-					caoDAO.save(cao);
+					statusChanged = true;
+					button = "Save";
 
 					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
 							+ "</strong> Policy has been verified for <strong>" + cao.getOperator().getName()
@@ -84,10 +93,12 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 				if ("Reject".equals(button)) {
 					if (Strings.isEmpty(cao.getNotes())) {
 						addActionError("You must enter notes if you are rejecting a contractor's policy.");
+						caoDAO.refresh(cao);
 					} else {
 						cao.setStatus(CaoStatus.Rejected);
 						cao.setAuditColumns(permissions);
-						caoDAO.save(cao);
+						statusChanged = true;
+						button = "Save";
 
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(52); // Insurance Policy
@@ -107,7 +118,8 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 				if ("Approve".equals(button)) {
 					cao.setStatus(CaoStatus.Approved);
-					caoDAO.save(cao);
+					statusChanged = true;
+					button = "Save";
 					addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
 							+ "</strong> Policy has been approved for <strong>" + cao.getOperator().getName()
 							+ "</strong>");
@@ -115,6 +127,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 				if ("NotApplicable".equals(button)) {
 					cao.setStatus(CaoStatus.NotApplicable);
+					statusChanged = true;
 					button = "Save";
 				}
 
@@ -129,6 +142,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							cao.setReason(null);
 						if (Strings.isEmpty(cao.getNotes()))
 							cao.setNotes(null);
+
+						if (statusChanged) {
+							cao.setStatusChangedBy(new User(permissions.getUserId()));
+							cao.setStatusChangedDate(new Date());
+						}
 						caoDAO.save(cao);
 					}
 				}
