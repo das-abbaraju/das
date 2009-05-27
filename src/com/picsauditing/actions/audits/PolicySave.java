@@ -112,6 +112,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							+ "</strong> Policy has been approved for <strong>" + cao.getOperator().getName()
 							+ "</strong>");
 				}
+				
+				if ("NotApplicable".equals(button)) {
+					cao.setStatus(CaoStatus.NotApplicable);
+					button = "Save";
+				}
 
 				if ("Save".equals(button)) {
 					if (cao != null) {
