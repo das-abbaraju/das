@@ -215,12 +215,12 @@ function showCertUpload(conid, certid, caoID) {
 	fileUpload.focus();
 }
 
-function saveCao(form, status, divName) {
+function saveCao(form, button, divName) {
 	
 	var pars = $(form).serialize(true);
 	
 	pars['cao.valid'] = $(form)['cao.valid'].checked;
-	pars['button'] = typeof(status) != 'undefined' ? status: 'Save';
+	pars['button'] = typeof(button) != 'undefined' ? button: 'Save';
 	
 	if (typeof(divName) == 'undefined')
 		divName = 'auditHeader' + pars['cao.id'];
