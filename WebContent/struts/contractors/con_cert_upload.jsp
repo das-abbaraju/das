@@ -17,7 +17,7 @@ function closePage() {
 		if (caoID > 0 && certID > 0)
 			window.opener.saveCert(certID, caoID);
 		else
-			window.opener.changeButton(null,null);
+			window.opener.location.reload(true);
 	} catch(err) {}
 	self.close();
 }
