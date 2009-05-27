@@ -31,7 +31,7 @@ function closePage() {
 	<s:hidden name="id" />
 	<s:hidden name="certID" />
 	<br />
-	<s:if test="certificate.caos == null || certificate.caos.size() == 0">
+	<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 		<s:file name="file" value="%{file}" size="50"></s:file><br />
 	</s:if>
 	File Name : <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
