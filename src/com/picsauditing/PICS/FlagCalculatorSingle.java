@@ -379,7 +379,7 @@ public class FlagCalculatorSingle {
 
 		FlagColor flagColor = null;
 		
-		if(cao.isValid() != null && !cao.isValid().isTrue()) 
+		if(cao.getValid() != null && !cao.getValid().isTrue()) 
 			return FlagColor.Red;
 
 		for (AuditCriteriaAnswer aca : acaList) {
