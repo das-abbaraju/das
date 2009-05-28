@@ -136,6 +136,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					statusChanged = true;
 					button = "Save";
 				}
+				
+				if ("Status".equals(button)) {
+					statusChanged = true;
+					button = "Save";
+				}
 
 				if ("Save".equals(button)) {
 					if (cao != null) {

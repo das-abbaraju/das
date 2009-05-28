@@ -19,7 +19,7 @@
 						<s:property value="#cao.status" />
 					</span>
 					<s:if test="!permissions.contractor">
-						<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Save')"
+						<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Status')"
 							 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>
 					</s:if>   
 				</li>
