@@ -81,6 +81,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
 	protected Map<OperatorAccount, ContractorOperatorFlag> flags = new HashMap<OperatorAccount, ContractorOperatorFlag>();
 	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
+	protected List<Certificate> certificates = new ArrayList<Certificate>();
 
 	// Transient helper methods
 	protected Map<OshaType, Map<String, OshaAudit>> oshas = null;
@@ -119,6 +120,15 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setOperatorTags(List<ContractorTag> operatorTags) {
 		this.operatorTags = operatorTags;
+	}
+
+	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.REMOVE })
+	public List<Certificate> getCertificates() {
+		return certificates;
+	}
+
+	public void setCertificates(List<Certificate> certificates) {
+		this.certificates = certificates;
 	}
 
 	@Column(name = "taxID", length = 100)
@@ -705,7 +715,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
 	}
-
+	
 	/**
 	 * 
 	 * @return a list of invoices sorted by creationDate DESC

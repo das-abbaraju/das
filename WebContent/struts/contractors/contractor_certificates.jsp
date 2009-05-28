@@ -39,14 +39,6 @@
 					</td>
 				</tr>
 			</s:iterator>
-			<tr>
-				<td colspan="2" class="center"><a href="#" class="add" onclick="showCertUpload(<s:property value="contractor.id" />, 0, <s:property value="caoID"/>); return false;" title="Opens in new window (please disable your popup blocker)">Upload New Certificate</a></td>
-			</tr>
 		</tbody>
 	</table>
 </s:if>
-<s:else>
-	<script type="text/javascript">
-		showCertUpload(<s:property value="contractor.id"/>,0,<s:property value="caoID"/>);
-	</script>
-</s:else>

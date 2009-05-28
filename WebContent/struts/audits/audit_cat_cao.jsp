@@ -95,7 +95,10 @@
 			</s:else> 
 			<br />
 			<s:if test="#editable">
-				<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
+				<a href="#" class="add" onclick="showCertUpload(<s:property value="contractor.id" />, 0, <s:property value="#cao.id"/>); return false;" title="Opens in new window (please disable your popup blocker)">Upload New File</a>&nbsp;&nbsp;
+				<s:if test="contractor.certificates.size() > 0">
+					<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach Existing File</a>
+				</s:if>
 			</s:if>
 		</div>
 		<div id="certificates<s:property value="#cao.id"/>" class="left"></div>
