@@ -209,8 +209,10 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		for (ContractorOperator co : contractor.getOperators()) {
 			for (AuditOperator ao : co.getOperatorAccount().getAudits()) {
-				if (ao.isCanSee() && !result.contains(ao.getAuditType())) {
-					result.add(ao.getAuditType());
+				if(ao.getAuditType().getClassType().isPolicy()) {
+					if (ao.isCanSee() && !result.contains(ao.getAuditType())) {
+						result.add(ao.getAuditType());
+					}	
 				}
 			}
 		}
