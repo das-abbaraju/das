@@ -38,9 +38,9 @@ function closePage() {
 				<s:hidden name="caoID" />
 				<br />
 				<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
-					<s:file name="file" value="%{file}" size="50"></s:file><br />
+				<label>File:</label>	<s:file name="file" value="%{file}" size="50"></s:file><br />
 				</s:if>
-				Description : <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
+				<label>Description:</label> <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
 					<div align="center" style="font-size=11px;"><table><tr><td>Example: </td><td>Certificate For BP Cherry Point</td></tr>
 							<tr><td></td><td>Workers Comp Letter</td></tr> 
 							<tr><td></td><td>Generic Certificate</td></tr></table></div>
