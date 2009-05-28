@@ -46,8 +46,8 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class ContractorPolicyConverter extends PicsActionSupport {
 
-	static final private int BATCH_SIZE = 2000;
-	static final private int MAX_ERRORS = 10;
+	private int batch = 1;
+	static final private int MAX_ERRORS = 5;
 	private int conID = 0;
 
 	private ContractorAccountDAO contractorAccountDAO;
@@ -76,7 +76,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 			sql.setSQL_CALC_FOUND_ROWS(true);
 			sql.addOrderBy("conID");
 			sql.addWhere("done=0");
-			sql.setLimit(BATCH_SIZE);
+			sql.setLimit(batch);
 			Database db = new Database();
 			List<BasicDynaBean> pageData = db.select(sql.toString(), true);
 			log("Found " + pageData.size() + " of " + db.getAllRows() + " contractor(s) that require processing");
@@ -97,8 +97,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 				} finally {
 					PicsLogger.stop();
 					String output = PicsLogger.getOutput();
-					String sqlUpdate = "UPDATE contractor_policy_cleanup SET output = '" + Utilities.escapeQuotes(output)
-							+ "' WHERE conID = " + conID;
+					String sqlUpdate = "UPDATE contractor_policy_cleanup SET output = '"
+							+ Utilities.escapeQuotes(output) + "' WHERE conID = " + conID;
 					db.executeUpdate(sqlUpdate);
 				}
 				if (errors >= MAX_ERRORS)
@@ -142,9 +142,13 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				log("  Policy " + conAudit.getId() + " " + conAudit.getAuditType().getAuditName());
-				
+
 				Set<Integer> tuplePolicyTypes = new HashSet<Integer>();
-				tuplePolicyTypes.add(1);
+				tuplePolicyTypes.add(13); // GL
+				tuplePolicyTypes.add(14); // WC 
+				tuplePolicyTypes.add(15); // Auto
+				tuplePolicyTypes.add(16); // Excess
+				
 				if (tuplePolicyTypes.contains(conAudit.getAuditType().getId())) {
 					// This policy has tuples, we need to map them over
 					// Get a map of all the tuples
@@ -189,8 +193,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 											tuple.setCertificate(certificate);
 
 											FileUtils.moveFile(file, getFtpDir(), "/files/"
-													+ FileUtils.thousandize(certificate.getId()), PICSFileType.certs + "_"
-													+ certificate.getId(), certificate.getFileType(), true);
+													+ FileUtils.thousandize(certificate.getId()), PICSFileType.certs
+													+ "_" + certificate.getId(), certificate.getFileType(), true);
 										}
 									}
 								} else {
@@ -234,7 +238,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 						if (tuple != null) {
 							if (!cao.getValid().isTrue()) {
 								YesNo tupleValid = YesNo.No;
-								if(tuple.isNameMatches() && tuple.isWaiver())
+								if (tuple.isNameMatches() && tuple.isWaiver())
 									tupleValid = YesNo.Yes;
 								cao.setValid(tupleValid);
 							}
@@ -248,7 +252,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 					// This is a flat policy type, all we need to do is to iterate over the caos
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
 						log("    Updating " + cao.getOperator().getName());
-						
+
 						for (AuditData data : conAudit.getData()) {
 							String code = data.getQuestion().getUniqueCode();
 							if ("policyFile".equals(code)) {
@@ -358,6 +362,14 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 
 	public void setConID(int conID) {
 		this.conID = conID;
+	}
+
+	public int getBatch() {
+		return batch;
+	}
+
+	public void setBatch(int batch) {
+		this.batch = batch;
 	}
 
 	private class Tuple {
