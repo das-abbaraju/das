@@ -156,44 +156,46 @@
 			<div class="clear"></div>
 		</div>
 	</s:if>
-	<s:if test="permissions.contractor">
-		<s:if test="!#cao.status.submitted && !#cao.status.approved">
-			<div class="buttons">
-				<input type="button" class="picsbutton positive" 
-					<s:if test="!#cao.status.pending">
-						value="Resubmit"
-					</s:if>
-					<s:else>
-						value="Submit" 
-					</s:else>
-					
-					onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
-				/>
+	<s:if test="#editable">
+		<s:if test="permissions.contractor">
+			<s:if test="!#cao.status.submitted && !#cao.status.approved">
+				<div class="buttons">
+					<input type="button" class="picsbutton positive" 
+						<s:if test="!#cao.status.pending">
+							value="Resubmit"
+						</s:if>
+						<s:else>
+							value="Submit" 
+						</s:else>
+						
+						onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
+					/>
+					<br clear="all"/>
+				</div>
+			</s:if>
+		</s:if> 
+		<s:if test="permissions.admin">
+			<s:if test="#cao.status.pending || #cao.status.submitted">
+				<div class="buttons">
+					<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				</div>
 				<br clear="all"/>
-			</div>
-		</s:if>
-	</s:if> 
-	<s:if test="permissions.admin">
-		<s:if test="#cao.status.pending || #cao.status.submitted">
-			<div class="buttons">
-				<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-			</div>
-			<br clear="all"/>
-			<label class="policy">Administrative Notes:</label><br/>
-			<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
-		</s:if>
-	</s:if> 
-	<s:if test="permissions.operatorCorporate">
-		<s:if test="#cao.status.submitted || #cao.status.verified">
-			<div class="buttons">
-				<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
-			</div>
-			<br clear="all"/>
-			<label class="policy">Administrative Notes:</label><br/>
-			<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
+				<label class="policy">Administrative Notes:</label><br/>
+				<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
+			</s:if>
+		</s:if> 
+		<s:if test="permissions.operatorCorporate">
+			<s:if test="#cao.status.submitted || #cao.status.verified">
+				<div class="buttons">
+					<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
+				</div>
+				<br clear="all"/>
+				<label class="policy">Administrative Notes:</label><br/>
+				<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
+			</s:if>
 		</s:if>
 	</s:if>
 	<s:include value="../actionMessages.jsp"/>
