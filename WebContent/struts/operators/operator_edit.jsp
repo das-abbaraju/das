@@ -138,24 +138,30 @@
 				</s:if>
 				<s:if test="operator.operator">
 					<s:if test="operator.corporateFacilities.size() > 0">
-						<li><label>Parent Corporation / Division / Hub:</label> <s:select list="operator.corporateFacilities"
-							listKey="corporate.id" listValue="corporate.name" headerKey="0" headerValue=" - Select a Parent Facility - "
-							name="operator.parent.id" /></li>
+						<li><label>Parent Corporation / Division / Hub:</label> <s:select name="foreignKeys.parent"
+							list="operator.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0"
+							headerValue=" - Select a Parent Facility - " value="operator.parent.id" /> <a
+						href="?id=<s:property value="operator.parent.id"/>">Go</a></li>
 					</s:if>
 
 					<li>
 					<div style="font-weight: bold; text-align: center;">Operator Configuration Inheritance</div>
 					</li>
-					<li><label>Flag Criteria:</label> <s:select name="operator.inheritFlagCriteria.id" list="relatedFacilities"
-						listKey="id" listValue="name"></s:select></li>
-					<li><label>Insurance Criteria:</label> <s:select name="operator.inheritInsuranceCriteria.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
-					<li><label>Policy Types:</label> <s:select name="operator.inheritInsurance.id" list="relatedFacilities"
-						listKey="id" listValue="name"></s:select></li>
-					<li><label>Audit Types:</label> <s:select name="operator.inheritAudits.id" list="relatedFacilities"
-						listKey="id" listValue="name"></s:select></li>
-					<li><label>Audit Categories:</label> <s:select name="operator.inheritAuditCategories.id"
-						list="relatedFacilities" listKey="id" listValue="name"></s:select></li>
+					<li><label>Flag Criteria:</label> <s:select name="foreignKeys.inheritFlagCriteria"
+						value="operator.inheritFlagCriteria.id" list="relatedFacilities" listKey="id" listValue="name"></s:select> <a
+						href="?id=<s:property value="operator.inheritFlagCriteria.id"/>">Go</a></li>
+					<li><label>Insurance Criteria:</label> <s:select name="foreignKeys.inheritInsuranceCriteria"
+						value="operator.inheritInsuranceCriteria.id" list="relatedFacilities" listKey="id" listValue="name"></s:select> <a
+						href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
+					<li><label>Policy Types:</label> <s:select name="foreignKeys.inheritInsurance"
+						value="operator.inheritInsurance.id" list="relatedFacilities" listKey="id" listValue="name"></s:select> <a
+						href="?id=<s:property value="operator.inheritInsurance.id"/>">Go</a></li>
+					<li><label>Audit Types:</label> <s:select name="foreignKeys.inheritAudits" value="operator.inheritAudits.id"
+						list="relatedFacilities" listKey="id" listValue="name"></s:select> <a
+						href="?id=<s:property value="operator.inheritAudits.id"/>">Go</a></li>
+					<li><label>Audit Categories:</label> <s:select name="foreignKeys.inheritAuditCategories"
+						value="operator.inheritAuditCategories.id" list="relatedFacilities" listKey="id" listValue="name"></s:select> <a
+						href="?id=<s:property value="operator.inheritAuditCategories.id"/>">Go</a></li>
 				</s:if>
 
 			</ol>

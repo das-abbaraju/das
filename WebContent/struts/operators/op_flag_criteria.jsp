@@ -44,8 +44,8 @@
 		value="operator.inheritInsuranceCriteria.name" />. Please login to that account to modify the criteria. <s:if
 		test="permissions.admin">
 		<a href="OperatorFlagCriteria.action?id=<s:property
-		value="operator.inheritFlagCriteria.id" />">Open <s:property
-			value="operator.inheritFlagCriteria.name" /></a>
+		value="operator.inheritInsuranceCriteria.id" />">Open <s:property
+			value="operator.inheritInsuranceCriteria.name" /></a>
 	</s:if></div>
 </s:if>
 

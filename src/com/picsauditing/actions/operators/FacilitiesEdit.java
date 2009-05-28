@@ -2,8 +2,10 @@ package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -35,6 +37,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected Set<OperatorAccount> relatedFacilities = null;
 	protected int nameId;
 	protected String name;
+	protected Map<String, Integer> foreignKeys = new HashMap<String, Integer>();
 
 	protected FacilitiesDAO facilitiesDAO;
 	protected AccountNameDAO accountNameDAO;
@@ -61,38 +64,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				facilities[i] = fac.getOperator().getId();
 				i++;
 			}
-
-			Object button = ActionContext.getContext().getParameters().get("button");
-			if (button != null && button.toString().equalsIgnoreCase("Save")) {
-				operator.setInheritAudits(setForeignKey(operator.getInheritAudits(), "operator.inheritAudits.id"));
-				operator.setInheritAuditCategories(setForeignKey(operator.getInheritAuditCategories(),
-						"operator.inheritAuditCategories.id"));
-				operator.setInheritFlagCriteria(setForeignKey(operator.getInheritFlagCriteria(),
-						"operator.inheritFlagCriteria.id"));
-				operator.setInheritInsuranceCriteria(setForeignKey(operator.getInheritInsuranceCriteria(),
-						"operator.inheritInsuranceCriteria.id"));
-				operator.setInheritInsurance(setForeignKey(operator.getInheritInsurance(), "operator.inheritInsurance.id"));
-	
-				operator.setParent(setForeignKey(operator.getParent(), "operator.parent.id"));
-				
-				if (operator.getParent() == null && operator.getCorporateFacilities().size() > 0) {
-					operator.setParent(operator.getCorporateFacilities().get(0).getCorporate());
-					operator = operatorDao.save(operator);
-				}
-			}
 		}
-	}
-
-	private OperatorAccount setForeignKey(OperatorAccount table, String parameter) {
-		int foreignKey = getParameter(parameter);
-		if (foreignKey > 0) {
-			if (table != null && table.getId() == foreignKey)
-				return table;
-			OperatorAccount newRow = new OperatorAccount();
-			newRow.setId(foreignKey);
-			return newRow;
-		}
-		return table;
 	}
 
 	public String execute() throws Exception {
@@ -142,6 +114,37 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 			if (button.equalsIgnoreCase("Save")) {
 				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
+
+				Map<Integer, OperatorAccount> opMap = new HashMap<Integer, OperatorAccount>();
+				for(OperatorAccount op : getRelatedFacilities()) {
+					opMap.put(op.getId(), op);
+				}
+
+				for(String key : foreignKeys.keySet()) {
+					int keyID = foreignKeys.get(key);
+					
+					if (key.equals("parent")) {
+						operator.setParent(opMap.get(keyID));
+					}
+					if (key.equals("inheritFlagCriteria")) {
+						operator.setInheritFlagCriteria(opMap.get(keyID));
+					}
+					if (key.equals("inheritInsuranceCriteria")) {
+						operator.setInheritInsuranceCriteria(opMap.get(keyID));
+					}
+					if (key.equals("inheritInsurance")) {
+						operator.setInheritInsurance(opMap.get(keyID));
+					}
+					if (key.equals("inheritAudits")) {
+						operator.setInheritAudits(opMap.get(keyID));
+					}
+					if (key.equals("inheritAuditCategories")) {
+						operator.setInheritAuditCategories(opMap.get(keyID));
+					}
+				}
+
+				
+				
 				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
 					for (String error : errors)
@@ -211,6 +214,15 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		}
 
 		return SUCCESS;
+	}
+
+	
+	public Map<String, Integer> getForeignKeys() {
+		return foreignKeys;
+	}
+
+	public void setForeignKeys(Map<String, Integer> foreignKeys) {
+		this.foreignKeys = foreignKeys;
 	}
 
 	public Industry[] getIndustryList() {
