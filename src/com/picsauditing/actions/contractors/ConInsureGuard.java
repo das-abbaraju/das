@@ -11,7 +11,6 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -39,7 +38,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private int selectedOperator;
 	private String auditFor;
 	private List<AuditType> auditTypeList;
-	private AuditTypeClass auditClass = AuditTypeClass.Audit;
+	private AuditTypeClass auditClass = AuditTypeClass.Policy;
 
 	private AuditBuilder auditBuilder;
 
@@ -101,7 +100,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 			}
 
 			if (alreadyExists) {
-				addActionError("Audit already exists");
+				addActionError("Policy already exists");
 			} else {
 				ContractorAudit conAudit = new ContractorAudit();
 				AuditType auditType = auditTypeDAO.find(selectedAudit);
@@ -122,11 +121,9 @@ public class ConInsureGuard extends ContractorActionSupport {
 				addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
 						NoteCategory.Insurance);
 
-				if (auditClass.isPolicy()) {
-					contractor.getAudits().add(conAudit);
-					auditBuilder.setUser(getUser());
-					auditBuilder.buildAudits(contractor);
-				}
+				contractor.getAudits().add(conAudit);
+				auditBuilder.setUser(getUser());
+				auditBuilder.buildAudits(contractor);
 				return "saved";
 			}
 		}

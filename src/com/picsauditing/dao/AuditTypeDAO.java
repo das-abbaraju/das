@@ -74,7 +74,11 @@ public class AuditTypeDAO extends PicsDAO {
 				where += " AND ";
 			else
 				where = "WHERE ";
-			where += "t.classType = '" + auditClass.toString() + "'";
+			if(auditClass.equals(AuditTypeClass.Audit)) {
+				where += "t.classType IN ('PQF','Audit')";
+			}
+			else
+				where += "t.classType = '" + auditClass.toString() + "'";
 		}
 
 		Query query = em
