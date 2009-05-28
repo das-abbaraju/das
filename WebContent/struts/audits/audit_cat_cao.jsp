@@ -139,7 +139,7 @@
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">
-				<s:if test="editable">
+				<s:if test="#editable">
 					<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"
 						onchange="saveCao('cao_form%{#cao.id}', 'Save', 'remarks%{#cao.id}')" />
 				</s:if>
