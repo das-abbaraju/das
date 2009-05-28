@@ -865,6 +865,7 @@ div.autocomplete {
 	border: 1px solid #888;
 	margin: 0;
 	padding: 0;
+	z-index: 100;
 }
 
 div.autocomplete ul {
