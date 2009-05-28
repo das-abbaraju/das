@@ -65,15 +65,15 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 
-		findConAudit();
-
 		boolean statusChanged = false;
 
 		if (button != null) {
 			if (cao != null) {
+				conAudit = cao.getAudit();
+				contractor = cao.getAudit().getContractorAccount();
+
 				if ("Submit".equals(button) || "Resubmit".equals(button)) {
-					if (cao.getAudit().getPercentComplete() == 100
-							&& cao.isCanContractorSubmit()) {
+					if (cao.getAudit().getPercentComplete() == 100 && cao.isCanContractorSubmit()) {
 						cao.setStatus(CaoStatus.Submitted);
 						statusChanged = true;
 						button = "Save";
@@ -83,6 +83,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					} else {
 						addActionError("Please enter all required questions before submitting the policy.");
 						caoDAO.refresh(cao);
+						return SUCCESS;
 					}
 				}
 
@@ -101,6 +102,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					if (Strings.isEmpty(cao.getNotes())) {
 						addActionError("You must enter notes if you are rejecting a contractor's policy.");
 						caoDAO.refresh(cao);
+						return SUCCESS;
 					} else {
 						cao.setStatus(CaoStatus.Rejected);
 						cao.setAuditColumns(permissions);
@@ -137,7 +139,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					statusChanged = true;
 					button = "Save";
 				}
-				
+
 				if ("Status".equals(button)) {
 					statusChanged = true;
 					button = "Save";
@@ -158,22 +160,25 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						if (statusChanged) {
 							cao.setStatusChangedBy(getUser());
 							cao.setStatusChangedDate(new Date());
+							// TODO this is a duplicate of FlagCalculator2
+							// because we need the color to change instantly
+							FlagCalculatorSingle calculator = new FlagCalculatorSingle();
+							List<Integer> criteriaQuestionIDs = cao.getOperator().getQuestionIDs();
+							AnswerMapByAudits answerMapByAudits = auditDataDao.findAnswersByAudits(contractor
+									.getAudits(), criteriaQuestionIDs);
+							AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, cao
+									.getOperator());
+							AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(
+									answerMapForOperator, cao.getOperator().getFlagQuestionCriteriaInherited());
+							List<AuditCriteriaAnswer> acaList = acaBuilder.getAuditCriteriaAnswers();
+							calculator.setAcaList(acaList);
+							FlagColor flagColor = calculator.calculateCaoRecommendedFlag(cao);
+							cao.setFlag(flagColor);
 						}
 						caoDAO.save(cao);
 					}
 				}
 			}
-			// TODO this is a duplicate of FlagCalculator2 because we need the color to change instantly
-			FlagCalculatorSingle calculator = new FlagCalculatorSingle();
-			List<Integer> criteriaQuestionIDs = cao.getOperator().getQuestionIDs();
-			AnswerMapByAudits answerMapByAudits = auditDataDao.findAnswersByAudits( contractor.getAudits(), criteriaQuestionIDs );
-			AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, cao.getOperator());
-			AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, cao.getOperator().getFlagQuestionCriteriaInherited());
-			List<AuditCriteriaAnswer> acaList = acaBuilder.getAuditCriteriaAnswers();
-			calculator.setAcaList(acaList);
-			FlagColor flagColor = calculator.calculateCaoRecommendedFlag(cao);
-			cao.setFlag(flagColor);
-			caoDAO.save(cao);
 		}
 
 		return SUCCESS;
