@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <style>
 fieldset.form input.login {
-	padding: 5px;
+	padding: 3px;
 	font-size: 16px;
 	width: 240px;
 	font-weight: bold;

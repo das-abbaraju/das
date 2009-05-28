@@ -5,6 +5,8 @@
 <head>
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
+<meta name="help" content="<s:property value="conAudit.auditType.classType"/>">
+
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
@@ -106,7 +108,7 @@ label.policy {
 										<s:include value="audit_cat_questions.jsp"></s:include>
 									</div>
 								</s:if>
-													
+								
 								<s:if test="valid">
 									<s:set name="q" value="[0]" />
 									<s:if test="#q.allowMultipleAnswers">
@@ -154,18 +156,30 @@ label.policy {
 </s:iterator>
 
 <s:if test="conAudit.auditType.classType.policy">
-	<s:iterator value="conAudit.operators" id="cao">
-		<s:if test="#cao.isVisibleTo(permissions)">
-			<div style="position:relative">
-				<a name="cao<s:property value="id"/>"></a>
-				<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
-				<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
-				<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
-					<s:include value="audit_cat_cao.jsp"/>
+<!-- Once we remove the Sub Category 1.3 above, we can start displaying this header
+	<div class="subCategory">
+		<h3 class="subCategory">
+			Sub Category 1.3 - Operator Requirements &amp; File Uploads
+		</h3>
+	</div>
+ -->
+	<s:if test="conAudit.operators.size() > 1">
+		<s:iterator value="conAudit.operators" id="cao">
+			<s:if test="#cao.isVisibleTo(permissions)">
+				<div style="position:relative">
+					<a name="cao<s:property value="id"/>"></a>
+					<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
+					<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
+					<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
+						<s:include value="audit_cat_cao.jsp"/>
+					</div>
 				</div>
-			</div>
-		</s:if>
-	</s:iterator>
+			</s:if>
+		</s:iterator>
+	</s:if>
+	<s:else>
+		<div id="alert">No operators are currently requesting your insurance.</div>
+	</s:else>
 </s:if>
 
 <s:if test="catDataID > 0">

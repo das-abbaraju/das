@@ -7,57 +7,57 @@
 	<s:hidden name="mode"/>
 	<s:set name="required" value="!#cao.status.approved && !#cao.status.notApplicable"/>
 	<s:set name="editable" value="mode == 'Edit' && (!#cao.status.approved || permissions.admin)"/>
-	<s:if test="!#cao.status.pending">
-		<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
-			<fieldset>
-			<ul>
-				<li><label>Op Status:</label>
-					<span id="op_status<s:property value="#cao.id"/>"
-						<s:if test="!permissions.contractor && #editable">
-							style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); $('op_status<s:property value="#cao.id"/>').hide();"
-						</s:if>
-						>
-						<s:property value="#cao.status" />
-					</span>
+	<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
+		<fieldset>
+		<ul>
+			<li><label>Op Status:</label>
+				<span id="op_status<s:property value="#cao.id"/>"
 					<s:if test="!permissions.contractor && #editable">
-						<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Status')"
-							 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>
-					</s:if>   
+						style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); $('op_status<s:property value="#cao.id"/>').hide();"
+					</s:if>
+					>
+					<s:property value="#cao.status" />
+				</span>
+				<s:if test="!permissions.contractor && #editable">
+					<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Status')"
+						 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>
+				</s:if>   
+			</li>
+			<s:if test="!#cao.status.pending">
+				<li><label>Changed By:</label>
+					<s:property value="#cao.statusChangedBy.name" /> from <s:property value="#cao.statusChangedBy.account.name" />
 				</li>
-					<li><label>Changed By:</label>
-						<s:property value="#cao.statusChangedBy.name" /> from <s:property value="#cao.statusChangedBy.account.name" />
-					</li>
-					<li><label>Changed On:</label>
-						<s:date name="#cao.statusChangedDate" />
-					</li>
-					<s:if test="#cao.flag != null">
-						<li><label>Meets Criteria:</label>
-							<s:property value="#cao.flag.smallIcon" escape="false"/>
-							<s:property value="#cao.flag" />
-						</li>
-					</s:if>
-			</ul>
-			</fieldset>
-			<fieldset>
-			<ul>
-				<s:if test="#cao.notes != null && #cao.notes.length() > 0">
-					<li><label>Administrative Notes: </label>
-							<s:property value="#cao.notes"/>
+				<li><label>Changed On:</label>
+					<s:date name="#cao.statusChangedDate" />
+				</li>
+				<s:if test="#cao.flag != null">
+					<li><label>Meets Criteria:</label>
+						<s:property value="#cao.flag.smallIcon" escape="false"/>
+						<s:property value="#cao.flag" />
 					</li>
 				</s:if>
+			</s:if>
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<s:if test="#cao.notes != null && #cao.notes.length() > 0">
+				<li><label>Administrative Notes: </label>
+						<s:property value="#cao.notes"/>
+				</li>
+			</s:if>
 
-				<s:if test="!permissions.contractor">
-					<s:if test="#cao.reason != null && #cao.reason.length() > 0">
-						<li><label>Contractor Remarks: </label>
-								<s:property value="#cao.reason"/>
-						</li>
-					</s:if>
+			<s:if test="!permissions.contractor">
+				<s:if test="#cao.reason != null && #cao.reason.length() > 0">
+					<li><label>Contractor Remarks: </label>
+							<s:property value="#cao.reason"/>
+					</li>
 				</s:if>
-			</ul>
-			</fieldset>
-			<div class="clear"></div>
-		</div>
-	</s:if>
+			</s:if>
+		</ul>
+		</fieldset>
+		<div class="clear"></div>
+	</div>
 	<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
 		<span class="question<s:if test="#required && #cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
 			Upload a Certificate of Insurance or other supporting documentation
@@ -99,7 +99,7 @@
 			This insurance policy complies with all additional <s:property value="#cao.operator.name"/> requirements.
 			<s:iterator value="#cao.operator.audits">
 				<s:if test="#cao.audit.auditType == auditType && help != null && help.length() > 0">
-					<s:property value="help"/>
+					<s:property value="help" escape="false"/>
 				</s:if>
 			</s:iterator>
 			If it does NOT comply, please explain below.
