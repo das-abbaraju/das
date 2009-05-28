@@ -171,12 +171,8 @@ public class AuditDataSave extends AuditActionSupport {
 							String guess = guessNaicsCode(auditData.getAnswer());
 							contractor.setNaics(new Naics());
 							contractor.setNaicsValid(false);
-							if (!Strings.isEmpty(guess))
-								contractor.getNaics().setCode(guess);
-							else
-								contractor.getNaics().setCode("0");
-							
-								addActionError("Setting your current NAICS code to " + contractor.getNaics().getCode());
+							contractor.getNaics().setCode(guess);
+							addActionError("Setting your current NAICS code to " + guess);
 						}
 					}
 				}
@@ -337,7 +333,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	private boolean isValidNAICScode(String code) {
-		Naics naics = naicsDAO.findByCode(code);
+		Naics naics = naicsDAO.find(code);
 		if (naics != null)
 			return true;
 		return false;
@@ -345,7 +341,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private String guessNaicsCode(String naics) {
 		if (Strings.isEmpty(naics))
-			return "";
+			return "0";
 
 		if (isValidNAICScode(naics))
 			return naics;
