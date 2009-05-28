@@ -39,7 +39,7 @@
 		<td><s:if test="lwcr">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif> <s:else>
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:else></td>
@@ -86,7 +86,7 @@
 		<td><s:if test="lwcr">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:elseif> <s:else>
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:else></td>		
@@ -124,3 +124,9 @@
 	</div>
 </form>
 </div>
+<br clear="all"/>
+<s:if test="trir">
+	<div id="info" style="font-size: 12px;">
+		If "NAICS" example, rate is 120% all contractors with 20% more than the standard NAICS value will be flagged.
+	</div>
+</s:if>

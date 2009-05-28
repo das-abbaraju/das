@@ -378,6 +378,10 @@ public class FlagCalculatorSingle {
 		debug(" calculateCaoRecommendedFlag");
 
 		FlagColor flagColor = null;
+		
+		if(cao.isValid() != null && !cao.isValid().isTrue()) 
+			return FlagColor.Red;
+
 		for (AuditCriteriaAnswer aca : acaList) {
 			if (aca.getClassType() == AuditTypeClass.Policy && aca.getAnswer().getAudit().equals(cao.getAudit()))
 				flagColor = setFlagColor(flagColor, aca.getResultColor());
