@@ -4,7 +4,7 @@
 <s:form id="cao_form%{#cao.id}">
 	<s:hidden name="auditID" value="%{#cao.audit.id}"/>
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
-	<s:set name="required" value="!#cao.status.approved"/>
+	<s:set name="required" value="!#cao.status.approved && !#cao.status.notApplicable"/>
 	<s:if test="!#cao.status.pending">
 		<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 			<fieldset>
