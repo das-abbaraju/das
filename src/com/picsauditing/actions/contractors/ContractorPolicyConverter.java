@@ -104,6 +104,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 				if (errors >= MAX_ERRORS)
 					break;
 			}
+			PicsLogger.setOutputOn(false);
 		}
 
 		PicsLogger.stop(); // ContractorPolicyConverter
@@ -275,7 +276,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 										Certificate certificate = new Certificate();
 										certificate.setAuditColumns(new User(User.SYSTEM));
 										certificate.setContractor(contractor);
-										certificate.setDescription(data.getParentAnswer().getAnswer());
+										certificate.setDescription(conAudit.getAuditType().getAuditName());
 										certificate.setFileType(data.getAnswer());
 										certificate.setCreationDate(data.getCreationDate());
 										if (data.getAudit().getCreationDate().before(data.getCreationDate()))

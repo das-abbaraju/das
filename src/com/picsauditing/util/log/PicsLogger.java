@@ -132,5 +132,6 @@ public class PicsLogger {
 	
 	public static void setOutputOn(boolean outputOn) {
 		PicsLogger.outputOn = outputOn;
+		getOutput(); // Clear the log
 	}
 }
