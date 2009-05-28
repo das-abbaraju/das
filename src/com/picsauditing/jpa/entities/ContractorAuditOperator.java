@@ -109,7 +109,7 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
-	public YesNo isValid() {
+	public YesNo getValid() {
 		return valid;
 	}
 
@@ -163,7 +163,7 @@ public class ContractorAuditOperator extends BaseTable {
 	
 	@Transient
 	public boolean isCanContractorSubmit() {
-		return certificate != null && (valid != null || !Strings.isEmpty(reason));
+		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
 	}
 
 }

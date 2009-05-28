@@ -235,8 +235,7 @@ function saveCao(form, button, divName) {
 	
 	var pars = $(form).serialize(true);
 	
-	pars['cao.valid'] = $(form)['cao.valid'].checked;
-	pars['button'] = typeof(button) != 'undefined' ? button: 'Save';
+	pars['button'] = button;
 	
 	if (typeof(divName) == 'undefined')
 		divName = 'auditHeader' + pars['cao.id'];

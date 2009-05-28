@@ -86,7 +86,7 @@
 		<br clear="all"/>
 	</div>
 	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
-		<span class="question">1.3.2&nbsp;&nbsp;
+		<span class="question<s:if test="#cao.valid == null"> required</s:if>">1.3.2&nbsp;&nbsp;
 			<s:if test="#cao.operator.insuranceForms.size > 0">
 				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
 				<ul style="list-style:none">
@@ -107,13 +107,13 @@
 			</s:iterator>
 		</span>
 		<div class="answer">
-			<input type="checkbox" name="cao.valid" <s:if test="#cao.valid">checked</s:if> onchange="saveCao('cao_form<s:property value="#cao.id"/>', 'Save', 'caoValid<s:property value="#cao.id"/>')" />
+			<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onchange="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
 		</div>
 		<br clear="all"/>
 	</div>
 	<s:if test="permissions.contractor">
 		<div class="question" id="remarks<s:property value="#cao.id"/>">
-			<span class="question<s:if test="permissions.contractor && !#cao.valid && #cao.reason == null"> required</s:if>">
+			<span class="question<s:if test="permissions.contractor && !#cao.valid.true && #cao.reason == null"> required</s:if>">
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">
@@ -146,8 +146,8 @@
 	<s:if test="permissions.admin">
 		<s:if test="#cao.status.pending || #cao.status.submitted">
 			<div class="buttons">
-				<input type="button" class="picsbutton positive" value="Verify" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 			</div>
 			<br clear="all"/>
 			<label class="policy">Notes:</label><br/>
