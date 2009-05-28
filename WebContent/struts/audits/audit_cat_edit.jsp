@@ -141,7 +141,7 @@
 	</s:if>
 	<s:if test="#q.questionType == 'AMBest'">
 		<input type="hidden" id="ambest_naic_code" />
-		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" size="50" />
+		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" size="75" />
 		<div id="ambest_autocomplete_choices" class="autocomplete"></div>
 		
 		<script type="text/javascript">

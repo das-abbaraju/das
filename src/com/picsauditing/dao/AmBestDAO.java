@@ -45,7 +45,7 @@ public class AmBestDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<AmBest> findByCompanyName(String name) {
 		Query q = em.createQuery("SELECT ab FROM AmBest ab WHERE ab.companyName LIKE '%" + name +"%'");
-
+		q.setMaxResults(20);
 		return q.getResultList();
 	}
 	
