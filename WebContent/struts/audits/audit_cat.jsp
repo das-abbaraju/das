@@ -169,11 +169,6 @@ label.policy {
 	<br clear="all"/>
 	<pics:permission perm="InsuranceVerification">
 		<s:if test="conAudit.auditType.classType.policy">
-			<s:if test="hasSubmittedCaos">
-				<div id="cao_verification">
-					<s:include value="audit_cat_cao_verification.jsp"/>
-				</div>
-			</s:if>
 			<div class="buttons" style="float:right">
 				<s:if test="nextPolicyID > 0">
 					<a class="button" href="AuditCat.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
@@ -196,11 +191,6 @@ label.policy {
 		<s:include value="audit_cat_nav.jsp" />
 	</s:if>
 	<s:else>
-		<!--<s:if test="conAudit.auditType.classType.policy && canSubmitPolicy">
-			<div id="cao_submit">
-				<s:include value="audit_cat_policy_submit.jsp"/>
-			</div>
-		</s:if>-->
 		<s:if test="conAudit.percentComplete < 100 && conAudit.auditStatus.pending && !conAudit.auditType.classType.policy">
 			<div id="info" class="buttons" style="">
 				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Done</a>
