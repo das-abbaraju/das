@@ -68,7 +68,7 @@
 					</s:iterator>
 				</td>
 				<td class="center">
-					<s:if test="get('valid') == 1">Yes</s:if>
+					<s:if test="get('valid') == Yes">Yes</s:if>
 					<s:else>No</s:else>
 					<s:if test="get('reason') != null">
 						<br><img src="images/icon_notes.gif" title="<s:property value="get('reason')"/>">

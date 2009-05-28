@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.FileUtils;
@@ -231,8 +232,12 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 						log("    Updating " + cao.getOperator().getName());
 						Tuple tuple = getSingleTuple(caoTuples.get(cao));
 						if (tuple != null) {
-							if (!cao.isValid())
-								cao.setValid(tuple.isNameMatches() && tuple.isWaiver());
+							if (!cao.isValid().isTrue()) {
+								YesNo tupleValid = YesNo.No;
+								if(tuple.isNameMatches() && tuple.isWaiver())
+									tupleValid = YesNo.Yes;
+								cao.setValid(tupleValid);
+							}
 							if (cao.getCertificate() == null || tuple.getCertificate() != null)
 								cao.setCertificate(tuple.getCertificate());
 							contractorAuditOperatorDAO.save(cao);

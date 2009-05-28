@@ -11,6 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
@@ -23,7 +26,7 @@ public class ContractorAuditOperator extends BaseTable {
 	private User statusChangedBy = null;
 	private Date statusChangedDate;
 	private boolean visible = true;
-	private boolean valid;
+	private YesNo valid = null;
 	private Certificate certificate;
 	private FlagColor flag = null;
 	private String notes;
@@ -104,11 +107,13 @@ public class ContractorAuditOperator extends BaseTable {
 		return true;
 	}
 
-	public boolean isValid() {
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Enumerated(EnumType.STRING)
+	public YesNo isValid() {
 		return valid;
 	}
 
-	public void setValid(boolean valid) {
+	public void setValid(YesNo valid) {
 		this.valid = valid;
 	}
 
@@ -158,7 +163,7 @@ public class ContractorAuditOperator extends BaseTable {
 	
 	@Transient
 	public boolean isCanContractorSubmit() {
-		return certificate != null && (valid || !Strings.isEmpty(reason));
+		return certificate != null && (valid != null || !Strings.isEmpty(reason));
 	}
 
 }
