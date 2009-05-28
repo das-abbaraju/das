@@ -334,14 +334,14 @@ public class AuditDataSave extends AuditActionSupport {
 		return true;
 	}
 
-	public boolean isValidNAICScode(String answer) {
-		Naics naics = naicsDAO.find(answer);
+	private boolean isValidNAICScode(String code) {
+		Naics naics = naicsDAO.findByCode(code);
 		if (naics != null)
 			return true;
 		return false;
 	}
 
-	public String guessNaicsCode(String naics) {
+	private String guessNaicsCode(String naics) {
 		if (Strings.isEmpty(naics))
 			return "";
 
