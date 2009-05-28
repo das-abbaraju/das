@@ -603,7 +603,6 @@ div.buttons a,.picsbutton,div.buttons button {
 	cursor: pointer;
 	padding: 5px 10px 6px 7px; /* Links */
 }
-
 .picsbutton,.buttons a,.buttons button {
 	background-color: #fff;
 }
@@ -638,6 +637,7 @@ div.buttons a,.picsbutton,div.buttons button {
 	border-bottom: 1px solid #6990DB;
 	border-right: 1px solid #6990DB;
 	color: #336699;
+	text-decoration: none;
 }
 
 .picsbutton:active,.buttons a:active {
@@ -646,6 +646,7 @@ div.buttons a,.picsbutton,div.buttons button {
 	border-bottom: 1px solid #6990DB;
 	border-right: 1px solid #6990DB;
 	color: #fff;
+	text-decoration: none;
 }
 
 /* POSITIVE */
@@ -653,12 +654,13 @@ div.buttons a,.picsbutton,div.buttons button {
 	color: #529214;
 }
 
-.positive:hover {
+a.positive:hover, button.positive:hover {
 	background-color: #E6EFC2;
 	border: 2px solid #C6D880;
 	border-bottom: 1px solid #C6D880;
 	border-right: 1px solid #C6D880;
 	color: #529214;
+	text-decoration: none;
 }
 
 .positive:active {

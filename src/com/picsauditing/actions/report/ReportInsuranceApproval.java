@@ -72,59 +72,63 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		CaoStatus newStatus = null;
-		if (newStatuses != null && newStatuses.size() > 0) {
-			try {
-				newStatus = CaoStatus.valueOf( newStatuses.get(0) );	
+		
+		if ("save".equalsIgnoreCase(button)) {
+			CaoStatus newStatus = null;
+			if (newStatuses != null && newStatuses.size() > 0) {
+				try {
+					newStatus = CaoStatus.valueOf( newStatuses.get(0) );	
+				}
+				catch( Exception emptyStringsDontTurnIntoEnumsVeryWell ) {}
 			}
-			catch( Exception emptyStringsDontTurnIntoEnumsVeryWell ) {}
-		}
-		if( caoids != null && caoids.size() > 0 ) {
-			for (Integer i : caoids) {
-	
-				boolean dirty = false;
-				boolean statusChanged = false;
-	
-				ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
-				ContractorAuditOperator newVersion = caos.get(i);
-				if (! (existing.getNotes() == null && newVersion.getNotes() == null ) ) {
-						existing.setNotes(newVersion.getNotes());
-						dirty = true;
-				}
-	
-				if (newStatus != null && !newStatus.equals(existing.getStatus())) {
-					if(newStatus.equals(CaoStatus.Rejected) 
-							&& Strings.isEmpty(newVersion.getNotes())) {
-						dirty = false;
-						statusChanged = false;
-						addActionError("Add notes before rejecting " + existing.getAudit().getAuditType().getAuditName() + " for "+ existing.getAudit().getContractorAccount().getName());
-						conAuditOperatorDAO.refresh(existing);
+			if( caoids != null && caoids.size() > 0 ) {
+				for (Integer i : caoids) {
+		
+					boolean dirty = false;
+					boolean statusChanged = false;
+		
+					ContractorAuditOperator existing = conAuditOperatorDAO.find(i);
+					ContractorAuditOperator newVersion = caos.get(i);
+					if (! (existing.getNotes() == null && newVersion.getNotes() == null ) ) {
+							existing.setNotes(newVersion.getNotes());
+							dirty = true;
 					}
-					else {
-						existing.setStatus(newStatus);
-						existing.setAuditColumns(getUser());
-						existing.setStatusChangedBy(getUser());
-						existing.setStatusChangedDate(new Date());
-						dirty = true;
-						statusChanged = true;
+		
+					if (newStatus != null && !newStatus.equals(existing.getStatus())) {
+						if(newStatus.equals(CaoStatus.Rejected) 
+								&& Strings.isEmpty(newVersion.getNotes())) {
+							dirty = false;
+							statusChanged = false;
+							addActionError("Add notes before rejecting " + existing.getAudit().getAuditType().getAuditName() + " for "+ existing.getAudit().getContractorAccount().getName());
+							conAuditOperatorDAO.refresh(existing);
+						}
+						else {
+							existing.setStatus(newStatus);
+							existing.setAuditColumns(getUser());
+							existing.setStatusChangedBy(getUser());
+							existing.setStatusChangedDate(new Date());
+							dirty = true;
+							statusChanged = true;
+						}
 					}
-				}
 
-				if (dirty) {
-					conAuditOperatorDAO.save(existing);
-				}
+					if (dirty) {
+						conAuditOperatorDAO.save(existing);
+					}
 
-				if (statusChanged) {
-					ContractorAccount contractor = existing.getAudit().getContractorAccount();
-					contractor.setNeedsRecalculation(true);
-					contractorAccountDAO.save(contractor);
-					updatedContractors.add(contractor.getName());
-					ContractorAuditOperatorDAO.saveNoteAndEmail(existing, permissions);
+					if (statusChanged) {
+						ContractorAccount contractor = existing.getAudit().getContractorAccount();
+						contractor.setNeedsRecalculation(true);
+						contractorAccountDAO.save(contractor);
+						updatedContractors.add(contractor.getName());
+						ContractorAuditOperatorDAO.saveNoteAndEmail(existing, permissions);
+					}
 				}
 			}
+			if(updatedContractors.size() > 0)
+				addActionMessage("Email is sent to " + Strings.implode(updatedContractors, ",") + " notifying them about the policy status change");
+			return BLANK;
 		}
-		if(updatedContractors.size() > 0)
-			addActionMessage("Email is sent to " + Strings.implode(updatedContractors, ",") + " notifying them about the policy status change");
 		
 		return super.execute();
 	}

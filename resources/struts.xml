@@ -1052,9 +1052,16 @@
 		
 		<action name="ReportInsuranceApproval"
 			class="com.picsauditing.actions.report.ReportInsuranceApproval">
-			<param name="reportName">Policies Awaiting Decision</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportInsuranceApproval</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
 		</action>
+
+		<action name="ReportInsuranceApprovalAjax"
+			class="com.picsauditing.actions.report.ReportInsuranceApproval">
+			<result>struts/reports/opinsurance_approval_data.jsp</result>
+		</action>
+		
 		<action name="PolicyVerification"
 			class="com.picsauditing.actions.report.ReportPolicyVerification">
 			<result>struts/reports/policy_verification.jsp</result>
