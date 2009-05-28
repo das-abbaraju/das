@@ -1,5 +1,23 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<span class="question">
+<s:set name="questionStillRequired" value="false" />
+<s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
+	<s:if test="#q.isRequired == 'Yes'">
+		<s:set name="questionStillRequired" value="true" />
+	</s:if>
+	<s:if test="#q.isRequired == 'Depends' && #q.dependsOnQuestion.id > 0">
+		<s:if test="#parentAnswer == null">
+			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
+		</s:if>
+		<s:else>
+			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id, #parentAnswer.id)" />
+		</s:else>
+		<s:if test="(#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')) || (#dependsAnswer == null) || (#q.dependsOnAnswer == #dependsAnswer.answer)">
+			<s:set name="questionStillRequired" value="true" />
+		</s:if>
+	</s:if>
+</s:if>
+
+<span class="question<s:if test="questionStillRequired"> required</s:if>">
 	<a name="q<s:property value="#q.id"/>"></a>
 	<s:property value="#q.subCategory.category.number"/>.<s:property value="#q.subCategory.number"/>.<s:property value="#q.number"/>&nbsp;&nbsp;
 	
