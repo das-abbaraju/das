@@ -33,7 +33,6 @@ import edu.emory.mathcs.backport.java.util.Collections;
 @SuppressWarnings("serial")
 public class ConInsureGuard extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
-	private AuditDataDAO auditDataDAO;
 	private CertificateDAO certificateDAO;
 	private ContractorAuditOperatorDAO caoDao;
 	private int selectedAudit;
@@ -50,11 +49,9 @@ public class ConInsureGuard extends ContractorActionSupport {
 	private Set<ContractorAudit> others = new HashSet<ContractorAudit>();
 
 	public ConInsureGuard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			AuditDataDAO auditDataDAO, AuditBuilder auditBuilder, CertificateDAO certificateDAO,
-			ContractorAuditOperatorDAO caoDao) {
+			AuditBuilder auditBuilder, CertificateDAO certificateDAO, ContractorAuditOperatorDAO caoDao) {
 		super(accountDao, auditDao);
 		this.auditTypeDAO = auditTypeDAO;
-		this.auditDataDAO = auditDataDAO;
 		this.auditBuilder = auditBuilder;
 		this.certificateDAO = certificateDAO;
 		this.caoDao = caoDao;
@@ -65,14 +62,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		findContractor();
-		
+
 		List<ContractorAuditOperator> caoList = getCaoList();
 
 		for (ContractorAuditOperator cao : caoList) {
-			if (cao.getAudit().getAuditStatus().isExpired()){
+			if (cao.getAudit().getAuditStatus().isExpired()) {
 				expiredAudits.add(cao.getAudit());
-			}
-			else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
+			} else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
 				if (requested.get(cao.getAudit()) == null)
 					requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
 
@@ -84,11 +80,11 @@ public class ConInsureGuard extends ContractorActionSupport {
 				current.get(cao.getAudit()).add(cao);
 			}
 		}
-		
-		for (ContractorAudit ca : contractor.getAudits()){
+
+		for (ContractorAudit ca : contractor.getAudits()) {
 			if (ca.getAuditType().getClassType().isPolicy())
 				if (!requested.keySet().contains(ca) && !current.keySet().contains(ca) && !expiredAudits.contains(ca))
-					others .add(ca);
+					others.add(ca);
 		}
 
 		if (button != null && button.equals("Add")) {
@@ -164,8 +160,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 		this.selectedAudit = selectedAudit;
 	}
 
-
-
 	public boolean isManuallyAddAudit() {
 		if (permissions.isContractor()) {
 			if (auditClass.equals(AuditTypeClass.Policy))
@@ -209,10 +203,10 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		for (ContractorOperator co : contractor.getOperators()) {
 			for (AuditOperator ao : co.getOperatorAccount().getAudits()) {
-				if(ao.getAuditType().getClassType().isPolicy()) {
+				if (ao.getAuditType().getClassType().isPolicy()) {
 					if (ao.isCanSee() && !result.contains(ao.getAuditType())) {
 						result.add(ao.getAuditType());
-					}	
+					}
 				}
 			}
 		}
