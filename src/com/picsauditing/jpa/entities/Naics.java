@@ -9,7 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Naics implements java.io.Serializable {
 	private String code;
 	private float trir;

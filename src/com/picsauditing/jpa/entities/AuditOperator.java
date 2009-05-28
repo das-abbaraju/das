@@ -13,18 +13,18 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditOperator extends BaseTable implements java.io.Serializable {
+public class AuditOperator extends BaseTable {
 
 	protected AuditType auditType;
 	protected OperatorAccount operatorAccount;
 	protected boolean canSee;
 	protected boolean canEdit;
 	protected int minRiskLevel = 0;
-	protected AuditStatus requiredAuditStatus = AuditStatus.Active; // Can sometimes be Submitted
+	// Can sometimes be Submitted
+	protected AuditStatus requiredAuditStatus = AuditStatus.Active;
 	protected FlagColor requiredForFlag;
 	protected String help;
 
@@ -108,7 +108,8 @@ public class AuditOperator extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * Unique ID used in HTML. We can't use the auditOperatorID because that may be blank for new records
+	 * Unique ID used in HTML. We can't use the auditOperatorID because that may
+	 * be blank for new records
 	 * 
 	 * @return
 	 */

@@ -28,7 +28,7 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 	public String execute() {
 		if (!forceLogin())
 			return LOGIN;
-
+		
 		cAccountDAO.updateContractorByOperator(ao.getOperatorAccount());
 
 		ao.setAuditColumns(getUser());
