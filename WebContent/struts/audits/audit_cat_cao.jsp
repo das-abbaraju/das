@@ -4,6 +4,7 @@
 <s:form id="cao_form%{#cao.id}">
 	<s:hidden name="auditID" value="%{#cao.audit.id}"/>
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
+	<s:set name="required" value="!#cao.status.approved"/>
 	<s:if test="!#cao.status.pending">
 		<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 			<fieldset>
@@ -64,7 +65,7 @@
 		</div>
 	</s:if>
 	<div class="question" id="fileQuestion<s:property value="#cao.id"/>">
-		<span class="question<s:if test="#cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
+		<span class="question<s:if test="#required && #cao.certificate == null"> required</s:if>">1.3.1&nbsp;&nbsp;
 			Upload a Certificate of Insurance or other supporting documentation
 			for this policy.
 		</span>
@@ -98,7 +99,7 @@
 		<br clear="all"/>
 	</div>
 	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
-		<span class="question<s:if test="#cao.valid == null"> required</s:if>">1.3.2&nbsp;&nbsp;
+		<span class="question<s:if test="#required && #cao.valid == null"> required</s:if>">1.3.2&nbsp;&nbsp;
 			<s:if test="#cao.operator.insuranceForms.size > 0">
 				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
 				<ul style="list-style:none">
@@ -130,7 +131,7 @@
 	</div>
 	<s:if test="permissions.contractor">
 		<div class="question" id="remarks<s:property value="#cao.id"/>">
-			<span class="question<s:if test="permissions.contractor && !#cao.valid.true && #cao.reason == null"> required</s:if>">
+			<span class="question<s:if test="#required && !#cao.valid.isTrue() && #cao.reason == null"> required</s:if>">
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">
