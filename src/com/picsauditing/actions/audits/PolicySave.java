@@ -38,6 +38,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 	protected ContractorAuditOperator cao;
 	protected Certificate certificate;
+	protected String mode;
 
 	public PolicySave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO, ContractorAuditOperatorDAO caoDAO,
@@ -192,6 +193,14 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 	public void setCertificate(Certificate certificate) {
 		this.certificate = certificate;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 
 	public List<Certificate> getCertificates() {

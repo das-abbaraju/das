@@ -4,21 +4,22 @@
 <s:form id="cao_form%{#cao.id}">
 	<s:hidden name="auditID" value="%{#cao.audit.id}"/>
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
+	<s:hidden name="mode"/>
 	<s:set name="required" value="!#cao.status.approved && !#cao.status.notApplicable"/>
-	<s:set name="editable" value="!#cao.status.approved || permissions.admin"/>
+	<s:set name="editable" value="mode == 'Edit' && (!#cao.status.approved || permissions.admin)"/>
 	<s:if test="!#cao.status.pending">
 		<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 			<fieldset>
 			<ul>
 				<li><label>Op Status:</label>
 					<span id="op_status<s:property value="#cao.id"/>"
-						<s:if test="!permissions.contractor">
+						<s:if test="!permissions.contractor && #editable">
 							style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); $('op_status<s:property value="#cao.id"/>').hide();"
 						</s:if>
 						>
 						<s:property value="#cao.status" />
 					</span>
-					<s:if test="!permissions.contractor">
+					<s:if test="!permissions.contractor && #editable">
 						<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Status')"
 							 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>
 					</s:if>   
