@@ -100,24 +100,23 @@
 	</div>
 	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
 		<span class="question<s:if test="#required && #cao.valid == null"> required</s:if>">1.3.2&nbsp;&nbsp;
-			<s:if test="#cao.operator.insuranceForms.size > 0">
-				I have reviewed the following requirements for <strong><s:property value="#cao.operator.name"/></strong>:
-				<ul style="list-style:none">
-					<s:iterator value="#cao.operator.insuranceForms">
-						<li><a href="forms/<s:property value="file"/>" target="_BLANK"><s:property value="formName"/></a></li>
-					</s:iterator>
-				</ul>
-				and I am in compliance.
-			</s:if>
-			<s:else>
-				I have reviewed the requirements for <strong><s:property value="#cao.operator.name"/></strong> 
-				and I am in compliance with their standards.
-			</s:else>
+		
+			This insurance policy complies with all additional <s:property value="#cao.operator.name"/> requirements.
 			<s:iterator value="#cao.operator.audits">
 				<s:if test="#cao.audit.auditType == auditType && help != null && help.length() > 0">
-					<div id="alert"><s:property value="help"/></div>
+					<s:property value="help"/>
 				</s:if>
 			</s:iterator>
+			If it does NOT comply, please explain below.
+			
+			<s:if test="#cao.operator.insuranceForms.size > 0">
+				<ul style="list-style:none">
+					<s:iterator value="#cao.operator.insuranceForms">
+						<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
+					</s:iterator>
+				</ul>
+			</s:if>
+			
 		</span>
 		<div class="answer">
 			<s:if test="!#cao.status.approved">
