@@ -298,6 +298,9 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 	}
 
 	private Tuple getSingleTuple(List<Tuple> tuples) {
+		if (tuples == null)
+			return null;
+		
 		int startingSize = tuples.size();
 
 		if (startingSize == 0) {
