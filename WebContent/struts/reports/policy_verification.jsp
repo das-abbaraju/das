@@ -19,6 +19,7 @@
 		<td>Policy</td>
 		<td>Submitted</td>
 		<td>Operators</td>
+		<td></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -28,7 +29,7 @@
 			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')" />"><s:property value="get('auditName')"/></a></td>
 			<td><s:date name="get('caoUpdateDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
-		
+			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')"/>" target="_BLANK">Open</a></td>
 		</tr>
 	</s:iterator>	
 </table>
