@@ -886,5 +886,5 @@ div.autocomplete ul li {
 	padding-left: 5px;
 	cursor: pointer;
 	font-size: 14px;
-	white-space: nowrap;
+	white-space: normal;
 }

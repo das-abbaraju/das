@@ -145,7 +145,7 @@
 		<div id="ambest_autocomplete_choices" class="autocomplete"></div>
 		
 		<script type="text/javascript">
-			new Ajax.Autocompleter("ambest_autocomplete", "ambest_autocomplete_choices", "AmBestSuggestAjax.action", {tokens: ',', paramName: "search", afterUpdateElement : saveNaic});
+			new Ajax.Autocompleter("ambest_autocomplete", "ambest_autocomplete_choices", "AmBestSuggestAjax.action", {tokens: ',', paramName: "search", select: "companyName", minChars: 3, afterUpdateElement : saveNaic});
 			function saveNaic(text, li) {
 				if (li.id != "NEW")
 				    $('ambest_naic_code').value = li.id;
