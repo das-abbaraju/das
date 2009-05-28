@@ -41,9 +41,9 @@ function closePage() {
 				<label>File:</label>	<s:file name="file" value="%{file}" size="50"></s:file><br />
 				</s:if>
 				<label>Description:</label> <s:textfield name="fileName" value="%{certificate.description}" size="50"/><br/>
-					<div align="center" style="font-size=11px;"><table><tr><td>Example: </td><td>Certificate For BP Cherry Point</td></tr>
-							<tr><td></td><td>Workers Comp Letter</td></tr> 
-							<tr><td></td><td>Generic Certificate</td></tr></table></div>
+					<div align="center" style="font-size: 10px;font-style: italic;"><table><tr><td align="left">Example: </td><td>Certificate For BP Cherry Point</td></tr>
+							<tr><td></td><td align="left">Workers Comp Letter</td></tr> 
+							<tr><td></td><td align="left">Generic Certificate</td></tr></table></div>
 					
 					<div class="buttons">
 					<a href="javascript: closePage();">Close and Return to Form</a> 
