@@ -95,8 +95,9 @@
 				<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
 			</s:if>
 		</div>
-		<div id="certificates<s:property value="#cao.id"/>"></div>
+		<div id="certificates<s:property value="#cao.id"/>" class="left"></div>
 		<br clear="all"/>
+		<div class="clear"></div>
 	</div>
 	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
 		<span class="question<s:if test="#required && #cao.valid == null"> required</s:if>">1.3.2&nbsp;&nbsp;
@@ -120,13 +121,14 @@
 		</span>
 		<div class="answer">
 			<s:if test="!#cao.status.approved">
-				<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onchange="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
+				<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onclick="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
 			</s:if>
 			<s:else>
 				<s:property value="#cao.valid"/>
 			</s:else>
 		</div>
 		<br clear="all"/>
+		<div class="clear"></div>
 	</div>
 	<s:if test="permissions.contractor">
 		<div class="question" id="remarks<s:property value="#cao.id"/>">
@@ -138,6 +140,7 @@
 					onchange="saveCao('cao_form%{#cao.id}', 'Save', 'remarks%{#cao.id}')" />
 			</div>
 			<br clear="all"/>
+			<div class="clear"></div>
 		</div>
 	</s:if>
 	<s:if test="permissions.contractor">

@@ -236,4 +236,5 @@
 	class="verified">Verified on <s:date name="#a.dateVerified"
 	format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
 </s:if>
-<br clear="all"/>
+<br clear="all">
+<div class="clear"></div>

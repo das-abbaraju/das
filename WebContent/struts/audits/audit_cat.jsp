@@ -156,10 +156,13 @@ label.policy {
 <s:if test="conAudit.auditType.classType.policy">
 	<s:iterator value="conAudit.operators" id="cao">
 		<s:if test="#cao.isVisibleTo(permissions)">
-			<a name="cao<s:property value="id"/>"></a>
-			<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
-			<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
-				<s:include value="audit_cat_cao.jsp"/>
+			<div style="position:relative">
+				<a name="cao<s:property value="id"/>"></a>
+				<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
+				<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
+				<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
+					<s:include value="audit_cat_cao.jsp"/>
+				</div>
 			</div>
 		</s:if>
 	</s:iterator>

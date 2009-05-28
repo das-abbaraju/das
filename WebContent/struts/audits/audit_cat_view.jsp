@@ -79,3 +79,4 @@
 </s:if>
 
 <br clear="all"/>
+<div class="clear"></div>

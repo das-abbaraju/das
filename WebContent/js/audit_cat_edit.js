@@ -221,7 +221,7 @@ function showCertificates(conID, caoID) {
 		caoID: caoID
 	};
 	
-	startThinking({div:'certificates'+caoID, message:' Gathering Certificates'});
+	startThinking({div:'certificates'+caoID, message:' Searching for Certificates'});
 	
 	var myAjax = new Ajax.Updater('certificates'+caoID, 'ContractorCertificatesAjax.action', {
 		method:'post',
@@ -239,11 +239,14 @@ function saveCao(form, button, divName) {
 	
 	if (typeof(divName) == 'undefined')
 		divName = 'auditHeader' + pars['cao.id'];
-	
+
+	startThinking({div:'thinking_'+pars['cao.id'], message: "Saving Answer"});
+
 	var myAjax = new Ajax.Updater('cao_'+pars['cao.id'], 'PolicySaveAjax.action', {
 		method:'post',
 		parameters: pars,
 		onComplete: function(transport) {
+			stopThinking({div:'thinking_'+pars['cao.id']});
 			if (transport.status == 200) 
 				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11'});
 			else
