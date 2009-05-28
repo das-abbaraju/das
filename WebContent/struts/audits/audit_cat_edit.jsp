@@ -141,7 +141,7 @@
 	</s:if>
 	<s:if test="#q.questionType == 'AMBest'">
 		<input type="hidden" id="ambest_naic_code" />
-		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" />
+		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" size="50" />
 		<div id="ambest_autocomplete_choices" class="autocomplete"></div>
 		
 		<script type="text/javascript">
@@ -156,7 +156,14 @@
 		</script>
 		
 		<s:if test="#a.commentLength">
-			NAIC#: <s:property value="%{#a.comment}" /><br />
+			<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
+			<br>
+			NAIC#: <s:property value="#a.comment" />
+			<s:if test="#ambest.amBestId > 0">
+				AM Best Rating: <s:property value="#ambest.ratingAlpha" /> /
+				Class: <s:property value="#ambest.financialAlpha" />
+			</s:if>
+			<br>
 		</s:if>
 		<s:else>
 			

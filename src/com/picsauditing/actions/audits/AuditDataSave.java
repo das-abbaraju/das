@@ -350,4 +350,5 @@ public class AuditDataSave extends AuditActionSupport {
 
 		return guessNaicsCode(naics.substring(0, naics.length() - 1));
 	}
+
 }

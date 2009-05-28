@@ -110,3 +110,58 @@ where formName like '%Insurance%';
 
 update contractor_audit_operator set statusChangedBy = updatedBy,
 statusChangedDate = updateDate;
+
+update pqfquestions set expirationDate = '2009-01-01' where question = 'Policy Number';
+
+update pqfquestions set 
+	question = 'Insurance Carrier', 
+	updatedBy = 941, 
+	updateDate = NOW(), 
+	effectiveDate = '2008-01-01', 
+	questionType = 'AMBest', 
+	columnHeader = 'Carrier', 
+	isRedFlagQuestion = 'Yes', 
+	uniqueCode = 'carrier'
+where question like 'Insurance Carrier NAIC%';
+
+update pqfquestions set 
+	updatedBy = 941, 
+	updateDate = NOW(),
+	isVisible = 'No',
+	update pqfquestions set 
+	question = 'Insurance Carrier', 
+	updatedBy = 941, 
+	updateDate = NOW(), 
+	effectiveDate = '2008-01-01', 
+	questionType = 'AMBest', 
+	columnHeader = 'Carrier', 
+	isRedFlagQuestion = 'Yes', 
+	uniqueCode = 'carrier'
+where question like 'Insurance Carrier NAIC%';
+
+update pqfquestions set 
+	updatedBy = 941, 
+	updateDate = NOW(),
+	uniqueCode = 'carrierName',
+	isVisible = 'No'
+where question like 'Insurance Carrier Name%';
+
+drop table ambest_conversion;
+create table ambest_conversion as
+select ca.id auditID, d1.id data1ID, d1.answer carrier_naic, d1.questionID, d2.id data2ID, d2.answer carrier_name, d2.questionID
+from contractor_audit ca
+join audit_type t on ca.auditTypeID = t.id and t.classType = 'Policy'
+LEFT JOIN pqfdata d1 on ca.id = d1.auditID AND d1.questionID IN (SELECT id FROM pqfquestions WHERE uniqueCode = 'carrier')
+LEFT join pqfdata d2 on ca.id = d2.auditID AND d2.questionID IN (SELECT id FROM pqfquestions WHERE uniqueCode = 'carrierName')
+limit 100
+
+delete from ambest_conversion where carrier_naic is null and carrier_name is null;
+
+update pqfdata d, ambest_conversion c
+set d.comment = c.carrier_naic,
+d.answer = c.carrier_name
+where d.id = c.data1ID and c.data2ID > 0;
+
+-- TODO handle these too
+select * from ambest_conversion
+where carrier_naic is null and carrier_name is not null

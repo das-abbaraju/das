@@ -26,6 +26,20 @@
 			<span class="checked"></span>
 		</s:if>
 	</s:elseif>
+	<s:elseif test="#q.questionType == 'AMBest'">
+		<s:property value="#a.answer" />
+		<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
+		<s:if test="#a.commentLength">
+			<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
+			<br>
+			NAIC#: <s:property value="#a.comment" />
+			<s:if test="#ambest.amBestId > 0">
+				AM Best Rating: <s:property value="#ambest.ratingAlpha" /> /
+				Class: <s:property value="#ambest.financialAlpha" />
+			</s:if>
+			<br>
+		</s:if>
+	</s:elseif>
 	<s:else>
 		<s:property value="#a.answer" />
 		<s:if test="#q.questionType == 'License'">
@@ -53,7 +67,7 @@
 			</s:elseif>
 		</span>
 	</s:if>
-	<s:if test="#a.commentLength">
+	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
 		<br/>
 		<label>Comment:</label> <s:property value="#a.comment"/>
 	</s:if>
