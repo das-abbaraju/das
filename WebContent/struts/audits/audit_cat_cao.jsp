@@ -38,26 +38,18 @@
 			</fieldset>
 			<fieldset>
 			<ul>
-				<s:if test="permissions.contractor">
+				<s:if test="#cao.notes != null && #cao.notes.length() > 0">
 					<li><label>Administrative Notes: </label>
-						<s:if test="#cao.notes != null && #cao.notes.length() > 0">
 							<s:property value="#cao.notes"/>
-						</s:if>
-						<s:else>
-							None
-						</s:else>
 					</li>
 				</s:if>
 
-				<s:if test="permissions.admin || permissions.operatorCorporate">
-					<li><label>Contractor Remarks: </label>
-						<s:if test="#cao.reason != null && #cao.reason.length() > 0">
-							<s:property value="#cao.reason"/>
-						</s:if>
-						<s:else>
-							None
-						</s:else>
-					</li>
+				<s:if test="!permissions.contractor">
+					<s:if test="#cao.reason != null && #cao.reason.length() > 0">
+						<li><label>Contractor Remarks: </label>
+								<s:property value="#cao.reason"/>
+						</li>
+					</s:if>
 				</s:if>
 			</ul>
 			</fieldset>
@@ -170,7 +162,7 @@
 				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 			</div>
 			<br clear="all"/>
-			<label class="policy">Notes:</label><br/>
+			<label class="policy">Administrative Notes:</label><br/>
 			<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
 		</s:if>
 	</s:if> 
@@ -182,7 +174,7 @@
 				<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
 			</div>
 			<br clear="all"/>
-			<label class="policy">Notes:</label><br/>
+			<label class="policy">Administrative Notes:</label><br/>
 			<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
 		</s:if>
 	</s:if>
