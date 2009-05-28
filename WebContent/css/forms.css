@@ -78,7 +78,7 @@ fieldset.form label.input {
 	color: inherit;
 }
 
-fieldset.form input[type=text], fieldset.form select {
+fieldset.form input[type=text], fieldset.form input[type=password], fieldset.form select {
 	color: #404245;
 	font-size: 14px;
 	padding: 2px;
