@@ -136,7 +136,7 @@
 		</div>
 	</s:if>
 	<s:if test="permissions.contractor">
-		<s:if test="!#cao.status.submitted">
+		<s:if test="!#cao.status.submitted && !#cao.status.approved">
 			<div class="buttons">
 				<input type="button" class="picsbutton positive" 
 					<s:if test="!#cao.status.pending">
