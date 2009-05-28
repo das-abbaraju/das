@@ -5,6 +5,7 @@
 	<s:hidden name="auditID" value="%{#cao.audit.id}"/>
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
 	<s:set name="required" value="!#cao.status.approved && !#cao.status.notApplicable"/>
+	<s:set name="editable" value="!#cao.status.approved || permissions.admin"/>
 	<s:if test="!#cao.status.pending">
 		<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 			<fieldset>
@@ -70,7 +71,7 @@
 					<span></span>
 					View
 				</a>
-				<s:if test="!#cao.status.approved">
+				<s:if test="#editable">
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" 
 					onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,<s:property value="#cao.id"/>); return false;" 
@@ -83,7 +84,7 @@
 					No File Attached
 			</s:else> 
 			<br />
-			<s:if test="!#cao.status.approved">
+			<s:if test="#editable">
 				<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
 			</s:if>
 		</div>
@@ -112,7 +113,7 @@
 			
 		</span>
 		<div class="answer">
-			<s:if test="!#cao.status.approved">
+			<s:if test="#editable">
 				<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onclick="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
 			</s:if>
 			<s:else>
