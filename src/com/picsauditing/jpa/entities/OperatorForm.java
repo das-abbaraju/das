@@ -6,9 +6,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operatorforms")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorForm extends BaseTable implements java.io.Serializable {
 
 	protected Account account;
