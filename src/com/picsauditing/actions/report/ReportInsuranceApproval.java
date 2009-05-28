@@ -126,12 +126,6 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		if(updatedContractors.size() > 0)
 			addActionMessage("Email is sent to " + Strings.implode(updatedContractors, ",") + " notifying them about the policy status change");
 		
-		if(getFilter().getCaoStatus() == null) {
-			CaoStatus[] caStatus = new CaoStatus[1];
-			caStatus[0] = CaoStatus.Verified;
-			getFilter().setCaoStatus(caStatus);
-		}	
-		
 		return super.execute();
 	}
 

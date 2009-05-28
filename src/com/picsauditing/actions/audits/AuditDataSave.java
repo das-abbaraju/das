@@ -169,12 +169,14 @@ public class AuditDataSave extends AuditActionSupport {
 							contractor.setNaicsValid(true);
 						} else {
 							String guess = guessNaicsCode(auditData.getAnswer());
-							if (!Strings.isEmpty(guess)) {
-								contractor.setNaics(new Naics());
+							contractor.setNaics(new Naics());
+							contractor.setNaicsValid(false);
+							if (!Strings.isEmpty(guess))
 								contractor.getNaics().setCode(guess);
-								contractor.setNaicsValid(false);
+							else
+								contractor.getNaics().setCode("0");
+							
 								addActionError("Setting your current NAICS code to " + contractor.getNaics().getCode());
-							}
 						}
 					}
 				}
