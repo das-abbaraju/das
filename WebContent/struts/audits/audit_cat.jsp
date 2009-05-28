@@ -163,7 +163,7 @@ label.policy {
 		</h3>
 	</div>
  -->
-	<s:if test="conAudit.operators.size() > 1">
+	<s:if test="conAudit.operators.size() > 0">
 		<s:iterator value="conAudit.operators" id="cao">
 			<s:if test="#cao.isVisibleTo(permissions)">
 				<div style="position:relative">
