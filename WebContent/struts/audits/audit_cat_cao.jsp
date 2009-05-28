@@ -9,9 +9,17 @@
 			<fieldset>
 			<ul>
 				<li><label>Op Status:</label>
-					<span style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); this.hide();"><s:property value="#cao.status" /></span>
-					<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Save')"
-						 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>   
+					<span 
+						<s:if test="!permissions.contractor">
+							style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); this.hide();"
+						</s:if>
+						>
+						<s:property value="#cao.status" />
+					</span>
+					<s:if test="!permissions.contractor">
+						<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Save')"
+							 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>
+					</s:if>   
 				</li>
 					<li><label>Changed By:</label>
 						<s:property value="#cao.statusChangedBy.name" /> from <s:property value="#cao.statusChangedBy.account.name" />
@@ -69,19 +77,23 @@
 					<span></span>
 					View
 				</a>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="#" 
-				onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,<s:property value="#cao.id"/>); return false;" 
-				class="remove">
-					Detach
-				</a>
+				<s:if test="!#cao.status.approved">
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" 
+					onclick="if (confirm('Are you sure you want to detach this certificate?')) saveCert(0,<s:property value="#cao.id"/>); return false;" 
+					class="remove">
+						Detach
+					</a>
+				</s:if>
 			</s:if> 
 			<s:else>
 					No File Attached
 			</s:else> 
 			<br />
-			<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
-			<div id="certificates<s:property value="#cao.id"/>"></div>
+			<s:if test="!#cao.status.approved">
+				<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
+				<div id="certificates<s:property value="#cao.id"/>"></div>
+			</s:if>
 		</div>
 		<br clear="all"/>
 	</div>
@@ -107,7 +119,12 @@
 			</s:iterator>
 		</span>
 		<div class="answer">
-			<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onchange="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
+			<s:if test="!#cao.status.approved">
+				<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onchange="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
+			</s:if>
+			<s:else>
+				<s:property value="#cao.valid"/>
+			</s:else>
 		</div>
 		<br clear="all"/>
 	</div>
