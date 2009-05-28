@@ -6,7 +6,16 @@
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
 	<s:hidden name="mode"/>
 	<s:set name="required" value="!#cao.status.approved && !#cao.status.notApplicable"/>
-	<s:set name="editable" value="mode == 'Edit' && (!#cao.status.approved || permissions.admin)"/>
+	<s:set name="editable" value="mode == 'Edit'"/>
+	<s:if test="permissions.contractor">
+		<s:set name="editable" value="#editable && (#cao.status.pending || #cao.status.rejected)"/>
+	</s:if>
+	<s:if test="permissions.admin">
+		<s:set name="editable" value="#editable"/>
+	</s:if>
+	<s:if test="permissions.operatorCorporate">
+		<s:set name="editable" value="#editable && (!#cao.status.approved)"/>
+	</s:if>
 	<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 		<fieldset>
 		<ul>
