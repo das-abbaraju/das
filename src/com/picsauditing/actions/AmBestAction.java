@@ -18,16 +18,18 @@ public class AmBestAction extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
-
-		if (!Strings.isEmpty(search)) {
-			results = amBestDao.findByCompanyName(search);
-		}
+		results = new ArrayList<AmBest>();
+		
+		if (search == null || search.length() < 3)
+			return SUCCESS;
+		
+		results = amBestDao.findByCompanyName(search);
 
 		if (results == null)
 			results = new ArrayList<AmBest>();
 		
 		if (results.size() == 0)
-			results.add(newItem("NEW", search));
+			results.add(newItem("UNKNOWN", search));
 		
 		return SUCCESS;
 	}

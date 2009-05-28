@@ -46,7 +46,6 @@
 	</s:elseif>
 	<s:elseif test="#q.questionType == 'AMBest'">
 		<s:property value="#a.answer" />
-		<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
 		<s:if test="#a.commentLength">
 			<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
 			<br>

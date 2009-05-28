@@ -162,6 +162,11 @@ public class AmBest {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	
+	@Override
+	public String toString() {
+		return naic + " " + companyName + " R:" + ratingMap.get(ratingCode) + " F:" + financialMap.get(financialCode);
+	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getEffectiveDate() {

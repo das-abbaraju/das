@@ -47,7 +47,7 @@
 </div>
 
 <s:if test="auditID > 0">
-<div class="auditHeader">
+<div id="auditHeader" class="auditHeader">
 	<fieldset>
 	<ul>
 		<li><label>Type:</label>
