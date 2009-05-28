@@ -130,8 +130,18 @@
 			1.3.3&nbsp;&nbsp;Contractor Remarks:
 			</span>
 			<div class="answer">
-				<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"
-					onchange="saveCao('cao_form%{#cao.id}', 'Save', 'remarks%{#cao.id}')" />
+				<s:if test="editable">
+					<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"
+						onchange="saveCao('cao_form%{#cao.id}', 'Save', 'remarks%{#cao.id}')" />
+				</s:if>
+				<s:else>
+					<s:if test="#cao.reason != null">
+						<s:property value="#cao.reason"/>
+					</s:if>
+					<s:else>
+						None
+					</s:else>
+				</s:else>
 			</div>
 			<br clear="all"/>
 			<div class="clear"></div>
@@ -148,9 +158,6 @@
 						value="Submit" 
 					</s:else>
 					
-					<s:if test="!#cao.canContractorSubmit">
-						disabled
-					</s:if>
 					onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
 				/>
 				<br clear="all"/>
