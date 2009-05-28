@@ -93,9 +93,9 @@
 			<br />
 			<s:if test="!#cao.status.approved">
 				<a href="#" onclick="showCertificates(<s:property value="contractor.id"/>,<s:property value="#cao.id"/>); return false;">Attach File</a>
-				<div id="certificates<s:property value="#cao.id"/>"></div>
 			</s:if>
 		</div>
+		<div id="certificates<s:property value="#cao.id"/>"></div>
 		<br clear="all"/>
 	</div>
 	<div class="question shaded" id="caoValid<s:property value="#cao.id"/>">
