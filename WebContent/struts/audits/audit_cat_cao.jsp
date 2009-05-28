@@ -10,9 +10,9 @@
 			<fieldset>
 			<ul>
 				<li><label>Op Status:</label>
-					<span 
+					<span id="op_status<s:property value="#cao.id"/>"
 						<s:if test="!permissions.contractor">
-							style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); this.hide();"
+							style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); $('op_status<s:property value="#cao.id"/>').hide();"
 						</s:if>
 						>
 						<s:property value="#cao.status" />
