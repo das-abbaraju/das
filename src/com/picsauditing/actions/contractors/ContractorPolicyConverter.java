@@ -176,8 +176,8 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 										if (certFiles.containsKey(hash)) {
 											log("  policyFile " + data.getId() + " is a duplicate of certificate "
 													+ certFiles.get(hash).getId());
+											tuple.setCertificate(certFiles.get(hash));
 										} else {
-											log("  policyFile doesn't exists, adding new Certificate");
 											Certificate certificate = new Certificate();
 											certificate.setAuditColumns(new User(User.SYSTEM));
 											certificate.setContractor(contractor);
@@ -189,6 +189,7 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 											certificate = certificateDAO.save(certificate);
 
 											certificates.add(certificate);
+											log("  policyFile doesn't exists, added new Certificate " + certificate.getId());
 											certFiles.put(hash, certificate);
 											tuple.setCertificate(certificate);
 
@@ -198,6 +199,12 @@ public class ContractorPolicyConverter extends PicsActionSupport {
 										}
 									}
 								} else {
+									tuple.setChildData(data);
+								}
+							}
+						} else {
+							if ("aiWaiverSub".equals(data.getQuestion().getUniqueCode())) {
+								for(Tuple tuple : tuples.values()) {
 									tuple.setChildData(data);
 								}
 							}
