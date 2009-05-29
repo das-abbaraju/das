@@ -6,7 +6,7 @@
 	<s:hidden name="cao.id" value="%{#cao.id}"/>
 	<s:hidden name="mode"/>
 	<s:set name="required" value="!#cao.status.approved && !#cao.status.notApplicable"/>
-	<s:set name="editable" value="mode == 'Edit'"/>
+	<s:set name="editable" value="mode == 'Edit' || mode == 'Verify'"/>
 	<s:set name="showButtons" value="true"/>
 	<s:if test="permissions.contractor">
 		<s:set name="editable" value="#editable && (#cao.status.pending || #cao.status.rejected)"/>
