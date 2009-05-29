@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -160,6 +161,8 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						if (statusChanged) {
 							cao.setStatusChangedBy(getUser());
 							cao.setStatusChangedDate(new Date());
+							String text = " Changed "+cao.getAudit().getAuditType().getAuditName()+" status to "+ cao.getStatus() +" for " + cao.getOperator().getName(); 
+							addNote(contractor, text , NoteCategory.Insurance);
 							// TODO this is a duplicate of FlagCalculator2
 							// because we need the color to change instantly
 							FlagCalculatorSingle calculator = new FlagCalculatorSingle();
