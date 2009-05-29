@@ -18,7 +18,6 @@
 	</s:if>
 	<s:if test="permissions.operatorCorporate">
 		<s:set name="editable" value="permissions.insuranceOperatorID == #cao.operator.id"/>
-		<s:set name="showButtons" value="#cao.status.submitted || #cao.status.verified"/>
 	</s:if>
 	<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 		<fieldset>
@@ -190,9 +189,15 @@
 		</s:if> 
 		<s:if test="permissions.operatorCorporate">
 			<div class="buttons">
-				<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
+				<s:if test="!#cao.status.approved">
+					<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				</s:if>
+				<s:if test="!#cao.status.rejected">
+					<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				</s:if>
+				<s:if test="!#cao.status.notApplicable">
+					<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
+				</s:if>
 			</div>
 			<br clear="all"/>
 			<label class="policy">Administrative Notes:</label><br/>
