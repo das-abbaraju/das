@@ -13,7 +13,7 @@ div.auditHeader fieldset {
 </head>
 <body>
 <h1><s:property value="account.name"/></h1>
-<div id="auditHeader">
+<div id="auditHeader" class="auditHeader">
 <div class="buttons" style="float: right">
 	<button name="button" type="button" value="cancel" onclick="window.close();">Close</button>
 	<s:if test="permissions.admin || permissions.userId == note.createdBy.id">
