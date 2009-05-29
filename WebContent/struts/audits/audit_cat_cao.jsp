@@ -18,7 +18,7 @@
 	</s:if>
 	<s:if test="permissions.operatorCorporate">
 		<s:set name="editable" value="permissions.insuranceOperatorID == #cao.operator.id"/>
-		<s:set name="showButtons" value="#cao.submitted || #cao.verified"/>
+		<s:set name="showButtons" value="#cao.status.submitted || #cao.status.verified"/>
 	</s:if>
 	<div class="auditHeader" id="auditHeader<s:property value="#cao.id"/>">
 		<fieldset>
