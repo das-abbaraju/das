@@ -42,3 +42,6 @@
 		</tbody>
 	</table>
 </s:if>
+<s:else>
+	There are no certificates attached to this contractor.
+</s:else>
