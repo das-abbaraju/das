@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -23,6 +22,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.util.SpringUtils;
@@ -64,7 +64,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				facilities[i] = fac.getOperator().getId();
 				i++;
 			}
-		}
+		} 
 	}
 
 	public String execute() throws Exception {
@@ -73,7 +73,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 		tryPermissions(OpPerms.ManageOperators);
 
-		if (id == 0)
+		if (id == 0) 
 			subHeading = "Add " + type;
 
 		if (button != null) {
@@ -116,13 +116,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
 
 				Map<Integer, OperatorAccount> opMap = new HashMap<Integer, OperatorAccount>();
-				for(OperatorAccount op : getRelatedFacilities()) {
+				for (OperatorAccount op : getRelatedFacilities()) {
 					opMap.put(op.getId(), op);
 				}
 
-				for(String key : foreignKeys.keySet()) {
+				for (String key : foreignKeys.keySet()) {
 					int keyID = foreignKeys.get(key);
-					
+
 					if (key.equals("parent")) {
 						operator.setParent(opMap.get(keyID));
 					}
@@ -143,8 +143,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					}
 				}
 
-				
-				
 				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
 					for (String error : errors)
@@ -200,13 +198,16 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				}
 				operator.setType(type);
 				operator.setAuditColumns(permissions);
+				operator.setNaics(new Naics());
+				operator.getNaics().setCode("0");
 				if (id == 0) {
-					// Save so we can get the id and then update the NOLOAD with a unique id
+					// Save so we can get the id and then update the NOLOAD with
+					// a unique id
 					operatorDao.save(operator);
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
 				operator = operatorDao.save(operator);
-				
+
 				addActionMessage("Successfully saved " + operator.getName());
 			} else {
 				throw new Exception("no button action found called " + button);
@@ -216,7 +217,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		return SUCCESS;
 	}
 
-	
 	public Map<String, Integer> getForeignKeys() {
 		return foreignKeys;
 	}
@@ -274,19 +274,22 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		if (relatedFacilities == null) {
 			relatedFacilities = new TreeSet<OperatorAccount>();
 			// Add myself
-			relatedFacilities.add(operator);
-			// Add all my parents
-			for (Facility parent : operator.getCorporateFacilities())
-				relatedFacilities.add(parent.getCorporate());
-			relatedFacilities.add(operator.getInheritAuditCategories());
-			relatedFacilities.add(operator.getInheritAudits());
-			relatedFacilities.add(operator.getInheritFlagCriteria());
-			relatedFacilities.add(operator.getInheritInsuranceCriteria());
-			relatedFacilities.add(operator.getInheritInsurance());
+			if (operator.getId() > 0) {
+				relatedFacilities.add(operator);
+				// Add all my parents
+				for (Facility parent : operator.getCorporateFacilities())
+					relatedFacilities.add(parent.getCorporate());
+				relatedFacilities.add(operator.getInheritAuditCategories());
+				relatedFacilities.add(operator.getInheritAudits());
+				relatedFacilities.add(operator.getInheritFlagCriteria());
+				relatedFacilities.add(operator.getInheritInsuranceCriteria());
+				relatedFacilities.add(operator.getInheritInsurance());
+			}
 		}
+
 		return relatedFacilities;
 	}
-	
+
 	public List<OperatorForm> getOperatorForms() {
 		return formDAO.findByopID(this.id);
 	}
@@ -303,5 +306,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					+ "This is our main way of communicating with you so it must be valid.");
 		return errorMessages;
 	}
-
+	
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
 }
