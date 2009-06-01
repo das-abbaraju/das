@@ -52,7 +52,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addField("valid");
 
 			if (permissions.getVisibleCAOs().size() > 0)
-				sql.addWhere("cao.opid = (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")");
+				sql.addWhere("cao.opid IN (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")");
 			else {
 				addActionError("Your account doesn't have access to any policies. Your account may not be set up correctly.");
 				sql.addWhere("a.id = 0");
