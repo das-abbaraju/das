@@ -106,7 +106,7 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			}
 
 			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE);
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE, this.getUser());
 			return "Audit";
 		}
 

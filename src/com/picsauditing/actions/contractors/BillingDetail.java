@@ -111,7 +111,7 @@ public class BillingDetail extends ContractorActionSupport {
 			accountDao.save(contractor);
 
 			this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,
-					false, Account.PicsID);
+					false, Account.PicsID, this.getUser());
 
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
@@ -120,7 +120,7 @@ public class BillingDetail extends ContractorActionSupport {
 		if ("Activate".equals(button)) {
 			contractor.setActive('Y');
 			this.addNote(contractor, "Activated free account", NoteCategory.Billing, LowMedHigh.High, true,
-					Account.PicsID);
+					Account.PicsID, this.getUser());
 		}
 
 		contractor.syncBalance();

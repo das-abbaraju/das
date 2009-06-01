@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -193,7 +194,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor() + " to " + newColor);
 			addNote(contractor, 
 					"Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for " + co.getOperatorAccount().getName(), 
-					NoteCategory.Flags, LowMedHigh.Med, true, co.getOperatorAccount().getId());
+					NoteCategory.Flags, LowMedHigh.Med, true, co.getOperatorAccount().getId(), new User(User.SYSTEM));
 			co.getFlag().setLastUpdate(new Date());
 			co.getFlag().setFlagColor(newColor);
 		}

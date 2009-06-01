@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
@@ -96,14 +97,16 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory noteCategory) throws Exception {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE);
+		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null);
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
-			boolean canContractorView, int viewableBy) throws Exception {
+		boolean canContractorView, int viewableBy, User user) throws Exception {
 		Note note = new Note();
 		note.setAccount(account);
-		note.setAuditColumns(this.getUser());
+		if(user == null)
+			user = this.getUser();
+		note.setAuditColumns(user);
 		note.setSummary(newNote);
 		note.setPriority(priority);
 		note.setNoteCategory(category);
