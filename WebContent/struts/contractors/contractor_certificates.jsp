@@ -18,8 +18,8 @@
 					</td>
 					<td>
 						<a class="insurance"
-							href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download"
-							target="_BLANK"
+							href="#"
+							onclick="showCertUpload(<s:property value="contractor.id"/>,<s:property value="id"/>,<s:property value="caoID"/>);return false;"
 							>
 							<span></span><s:date name="creationDate" format="M/d/yy" /> - <s:property value="description" />
 						</a>
