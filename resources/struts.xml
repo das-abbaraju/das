@@ -493,6 +493,17 @@
 			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp</result>
 		</action>
 
+		<action name="ReportContractorOperatorFlag"
+			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
+			<result>/struts/reports/report_contractorOperatorFlag.jsp</result>
+		</action>
+
+		<action name="ReportContractorOperatorFlagCSV"
+			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+		
 		<action name="ReportIncidenceRate"
 			class="com.picsauditing.actions.report.ReportIncidenceRate">
 			<param name="filter.ajax">true</param>

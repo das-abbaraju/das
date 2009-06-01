@@ -57,6 +57,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			subMenu.addChild("Search For New", "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true");
 		}
+
+		if (permissions.isCorporate())
+			subMenu.addChild("By Flag", "ReportContractorOperatorFlag.action");
 		if (permissions.isCorporate() || permissions.getCorporateParent().size() > 0)
 			subMenu.addChild("By Operator", "ReportContractorOperatorFlagMatrix.action");
 		if(permissions.hasPermission(OpPerms.DelinquentAccounts)) {
