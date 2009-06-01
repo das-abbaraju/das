@@ -36,6 +36,7 @@ public class Permissions implements Serializable {
 	private Set<Integer> canEditAudits = new HashSet<Integer>();
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
+	private Set<Integer> visibleCAOs = new HashSet<Integer>();
 	private String username;
 	private String name;
 	private int accountID;
@@ -43,7 +44,6 @@ public class Permissions implements Serializable {
 	private String accountType;
 	private String email;
 	private int adminID;
-	private int insuranceOperatorID;
 	private boolean approvesRelationships = false;
 	private boolean active = false;
 	private boolean accountActive = false;
@@ -62,12 +62,12 @@ public class Permissions implements Serializable {
 		approvesRelationships = false;
 
 		adminID = 0;
-		insuranceOperatorID = 0;
 
 		permissions.clear();
 		groups.clear();
 		canSeeAudits.clear();
 		canEditAudits.clear();
+		visibleCAOs.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
 	}
@@ -100,22 +100,27 @@ public class Permissions implements Serializable {
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			accountActive = user.getAccount().isActiveB();
-			insuranceOperatorID = 0;
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
-				insuranceOperatorID = operator.getInheritInsuranceCriteria().getId();
 				
 				if (isOperator()) {
 					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 					for (Facility facility : operator.getCorporateFacilities())
 						corporateParent.add(facility.getCorporate().getId());
 					
+					if (operator.getCanSeeInsurance().isTrue())
+						visibleCAOs.add(operator.getInheritInsuranceCriteria().getId());
+					
 					loadAuditTypes(operator);
 				}
 				if (isCorporate()) {
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
+						
+						if (facility.getOperator().getCanSeeInsurance().isTrue())
+							visibleCAOs.add(facility.getOperator().getInheritInsuranceCriteria().getId());
+
 						
 						/* NOTE!!! There is a big hole here with this logic
 						 * If corporate has two operators A & B
@@ -210,10 +215,6 @@ public class Permissions implements Serializable {
 		return name;
 	}
 	
-	public int getInsuranceOperatorID() {
-		return insuranceOperatorID;
-	}
-
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
 	 * 
@@ -394,6 +395,14 @@ public class Permissions implements Serializable {
 
 	public Set<Integer> getOperatorChildren() {
 		return operatorChildren;
+	}
+	
+	public Set<Integer> getVisibleCAOs() {
+		return visibleCAOs;
+	}
+	
+	public Set<Integer> getCanSeeAudits() {
+		return canSeeAudits;
 	}
 
 	public Set<Integer> getVisibleAccounts() {

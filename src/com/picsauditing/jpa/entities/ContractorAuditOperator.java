@@ -149,14 +149,9 @@ public class ContractorAuditOperator extends BaseTable {
 		if (!visible)
 			return false;
 
-		if (permissions.getInsuranceOperatorID() > 0) {
-			return operator.getId() == permissions.getInsuranceOperatorID();
+		if (permissions.isOperatorCorporate() ) {
+			return permissions.getVisibleCAOs().contains(operator.getId());
 		}
-
-		// This may not be necessary any more. We added this when we had
-		// BASF but now that it's inherited, we don't have so many records
-		// if (status.isNotApplicable())
-		// return false;
 
 		return true;
 	}

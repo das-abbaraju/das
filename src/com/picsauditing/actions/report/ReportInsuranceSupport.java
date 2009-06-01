@@ -51,8 +51,12 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addField("cao.certificateID");
 			sql.addField("valid");
 
-			String subSelect = "SELECT inheritInsuranceCriteria FROM Operators WHERE id = " + permissions.getAccountId();
-			sql.addWhere("cao.opid = (" + subSelect + ")");
+			if (permissions.getVisibleCAOs().size() > 0)
+				sql.addWhere("cao.opid = (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")");
+			else {
+				addActionError("Your account doesn't have access to any policies. Your account may not be set up correctly.");
+				sql.addWhere("a.id = 0");
+			}
 		}
 
 		sql.addWhere("ca.auditStatus != 'Expired'");
@@ -80,13 +84,13 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 	}
 
 	/**
-	 * returns the proper answer(s) of the questionData, which holds
-	 * supplemental question data that is not returned in the main query
+	 * returns the proper answer(s) of the questionData, which holds supplemental question data that is not returned in
+	 * the main query
 	 * 
 	 * @param auditId
 	 * @param purpose
-	 *            - kind of like a column name. Known keys for this are:
-	 *            policyFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
+	 *            - kind of like a column name. Known keys for this are: policyFile, aiWaiverSub, aiName, aiMatches,
+	 *            aiOther or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {
