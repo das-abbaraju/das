@@ -141,3 +141,10 @@ div.panel_placeholder {
 	padding: 20px;
 	width: 500px;
 }
+
+span.required {
+	background: transparent url(../images/yellow_star.gif) no-repeat
+		left center;
+	color: #272;
+	font-weight: bold;
+}
