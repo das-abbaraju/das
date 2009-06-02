@@ -55,7 +55,7 @@
 			</fieldset>
 		</s:form></td>
 		<td style="width: 20px;">&nbsp;</td>
-		<td>
+		<td style="vertical-align:top;">
 		<s:if test="switchTos.size > 0">
 			<h3>Switch Accounts</h3>
 			<div>
