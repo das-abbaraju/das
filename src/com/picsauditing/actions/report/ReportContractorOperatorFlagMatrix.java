@@ -16,6 +16,8 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorOperatorFlagMatrix extends ReportAccount {
@@ -57,13 +59,14 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			}
 		}
 			
-		sql.addJoin("JOIN generalcontractors gencon on gencon.subid = a.id");
-		sql.addJoin("JOIN accounts operator on operator.id = gencon.genid");
-		sql.addJoin("LEFT JOIN flags flag on flag.conid = a.id and flag.opid = operator.id");
+		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
+		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
+		sql.addJoin("LEFT JOIN flags flags on flags.conid = a.id and flags.opid = operator.id");
 
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
-		sql.addField("flag.flag as flag");
+		sql.addField("flags.flag as flag");
+		sql.addField("workStatus");
 		sql.addWhere("a.active = 'Y'");
 		sql.addWhere("operator.id in (" + Strings.implode(ops, ",") + ")");
 		orderByDefault = "a.name, operator.name";
@@ -128,5 +131,10 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 		}
 		return operators;
 	}
-
+	
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		excelSheet.addColumn(new ExcelColumn("opName", "Operator Name", ExcelCellType.String), 30);
+	}
 }

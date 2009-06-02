@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Contractor Operator Flag Matrix</title>
@@ -8,6 +9,16 @@
 <h1><s:property value="reportName"/></h1>
 <s:include value="filters.jsp" />
 <div>Number of contractors : <s:property value="reportData.size()" /></div>
+<pics:permission perm="ContractorDetails">
+<s:if test="!filter.allowMailMerge">
+	<div class="right"><a 
+		class="excel" 
+		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('ReportContractorOperatorFlagMatrix');" 
+		title="Download all <s:property value="report.allRows"/> results to a CSV file"
+		>Download</a></div>
+</s:if>
+</pics:permission>
 <s:form id="contractorOperatorFlagMatrix" method="post" cssClass="forms">
 <br/><br/>
 		<table class="report">

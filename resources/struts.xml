@@ -493,6 +493,12 @@
 			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp</result>
 		</action>
 
+		<action name="ReportContractorOperatorFlagMatrixCSV"
+			class="com.picsauditing.actions.report.ReportContractorOperatorFlagMatrix">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="ReportContractorOperatorFlag"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
 			<result>/struts/reports/report_contractorOperatorFlag.jsp</result>
