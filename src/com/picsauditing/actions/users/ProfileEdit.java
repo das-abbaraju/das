@@ -23,7 +23,7 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ProfileEdit extends PicsActionSupport implements Preparable {
+public class ProfileEdit extends PicsActionSupport {
 	protected User u;
 	protected UserDAO dao;
 	protected ContractorAccountDAO accountDao;
@@ -37,23 +37,13 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		this.userSwitchDao = userSwitchDao;
 	}
 
-	public void prepare() throws Exception {
-		loadPermissions();
-		if (permissions == null)
-			return;
-		u = dao.find(permissions.getUserId());
-		// Load the account too if they are a contractor
-		u.getAccount().isContractor();
-		dao.clear();
-	}
-
 	public String execute() throws Exception {
-		loadPermissions();
-
-		if (!permissions.isLoggedIn())
-			return LOGIN_AJAX;
+		if (!forceLogin())
+			return LOGIN;
 
 		permissions.tryPermission(OpPerms.EditProfile);
+
+		u = dao.find(permissions.getUserId());
 
 		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
 			addActionError("Another user is already using the username: " + u.getUsername());
@@ -64,15 +54,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				if (!password1.equals(password2) && !password1.equals(u.getPassword()))
 					addActionError("Passwords don't match");
 
-				Vector<String> errors = PasswordValidator.validateContractor(u, password1);
-
-				if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail())) {
-					errors
-							.add("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
-				}
-
-				for (String error : errors)
-					addActionError(error);
+				if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail()))
+					addActionError("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
 
 				if (getActionErrors().size() > 0)
 					return SUCCESS;
@@ -83,9 +66,9 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			}
 			u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 			u = dao.save(u);
-			
-			if(u.getAccount().isContractor()) {
-				ContractorAccount contractor = (ContractorAccount)u.getAccount();
+
+			if (u.getAccount().isContractor()) {
+				ContractorAccount contractor = (ContractorAccount) u.getAccount();
 				contractor.setContact(u.getName());
 				contractor.setEmail(u.getEmail());
 				contractor.setPhone(u.getPhone());
