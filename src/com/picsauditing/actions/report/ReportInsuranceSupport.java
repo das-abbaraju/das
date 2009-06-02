@@ -51,6 +51,9 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 			sql.addField("cao.certificateID");
 			sql.addField("valid");
 
+			sql.addJoin("JOIN accounts caoaccount on caoaccount.id = cao.opID");
+			sql.addField("caoaccount.name as caoName");
+
 			if (permissions.getVisibleCAOs().size() > 0)
 				sql.addWhere("cao.opid IN (" + Strings.implode(permissions.getVisibleCAOs(), ",") + ")");
 			else {
@@ -84,13 +87,13 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 	}
 
 	/**
-	 * returns the proper answer(s) of the questionData, which holds supplemental question data that is not returned in
-	 * the main query
+	 * returns the proper answer(s) of the questionData, which holds
+	 * supplemental question data that is not returned in the main query
 	 * 
 	 * @param auditId
 	 * @param purpose
-	 *            - kind of like a column name. Known keys for this are: policyFile, aiWaiverSub, aiName, aiMatches,
-	 *            aiOther or limits
+	 *            - kind of like a column name. Known keys for this are:
+	 *            policyFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {
