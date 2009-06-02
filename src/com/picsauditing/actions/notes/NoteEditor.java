@@ -82,8 +82,10 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		
 		if (viewableBy == 0)
 			viewableBy = Account.EVERYONE;
-		if (viewableByOther == 0)
+		if (viewableByOther == 0) {
+			viewableBy = 3;
 			viewableByOther = permissions.getAccountId();
+		}	
 		
 		return mode;
 	}
@@ -109,7 +111,8 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 	public Map<Integer, String> getViewableByList() {
 		Map<Integer, String> list = new HashMap<Integer, String>();
-		list.put(Account.EVERYONE, "Everyone");
+		if(permissions.seesAllContractors())
+			list.put(Account.EVERYONE, "Everyone");
 		list.put(Account.PRIVATE, "Only Me");
 		list.put(3, "Restricted to:");
 		return list;

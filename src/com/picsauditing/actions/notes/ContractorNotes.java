@@ -5,13 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -20,19 +17,16 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorNotes extends ContractorActionSupport {
-	private List<Note> notes = null;
 	private List<EmailQueue> emailList = null;
 	private String returnType = SUCCESS;
 
 	private ReportFilterNote filter = new ReportFilterNote();
 
-	private NoteDAO noteDAO;
 	private EmailQueueDAO emailDAO;
 
-	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, NoteDAO noteDAO,
+	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			EmailQueueDAO emailDAO) {
 		super(accountDao, auditDao);
-		this.noteDAO = noteDAO;
 		this.emailDAO = emailDAO;
 		this.subHeading = "Notes/Emails";
 	}

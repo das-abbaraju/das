@@ -53,13 +53,8 @@ function closePage() {
 		<s:checkbox name="note.canContractorView"></s:checkbox>
 	</li>
 	<li><label>Viewable By:</label>
-		<s:if test="account.contractor">
-			<s:radio theme="pics" list="viewableByList" name="viewableBy"></s:radio>
-			<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"></s:select>			
-		</s:if>
-		<s:else>
-			<s:radio theme="pics" list="#{1:'Everyone',2:'Only Me'}" name="viewableBy"></s:radio>
-		</s:else>
+		<s:radio theme="pics" list="viewableByList" name="viewableBy"></s:radio>
+		<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"></s:select>			
 	</li>
 	<li id="liAdditionalText"><label>Additional Text (optional):</label>
 		<s:textarea name="note.body" cols="50" rows="6"></s:textarea>
