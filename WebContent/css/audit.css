@@ -177,6 +177,10 @@ div.auditHeaderNav a {
 }
 /** END Audit Header ***/
 
+div.caoGroup {
+	position: relative;
+}
+
 /** Category Header+Footer Navigation **/
 table.footerNav {
 	border: 1px #A84D10 dashed;

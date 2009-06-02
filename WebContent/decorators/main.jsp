@@ -24,6 +24,8 @@
 <script src="js/pics_main.js" type="text/javascript" ></script>
 <script src="js/notes.js" type="text/javascript"></script>
 
+<decorator:head />
+
 <!--CSS FIXES FOR INTERNET EXPLORER -->
 <!--[if IE]>
 	<link rel="stylesheet" href="css/ie.css" type="text/css" />
@@ -34,7 +36,6 @@
 	<link rel="stylesheet" href="css/ie6.css" type="text/css" />
 <![endif]-->
 
-<decorator:head />
 </head>
 <body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />">
 <div id="header">

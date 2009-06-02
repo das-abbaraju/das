@@ -13,3 +13,7 @@
 
 #content div.panel_footer {
 }
+
+div.caoGroup {
+	position: static;
+}
