@@ -122,10 +122,12 @@ public class FlagQuestionCriteria extends BaseTable {
 		if ("Date".equals(questionType)) {
 			try {
 				Date answerDate = DateBean.parseDate(answer);
+				Date valueDate = DateBean.parseDate(value);
+
 				if (">".equals(comparison))
-					return (answerDate.after(new Date()));
+					return (answerDate.after(valueDate));
 				if ("<".equals(comparison))
-					return (answerDate.before(new Date()));
+					return (answerDate.before(valueDate));
 			} catch (Exception e) {
 				System.out.println("failed to parse date: " + answer);
 				return true;
@@ -180,6 +182,12 @@ public class FlagQuestionCriteria extends BaseTable {
 				buf.append("<i>Checked</i>");
 			else
 				buf.append("<i>Not Checked</i>");
+		} else if ("Date".equals(auditQuestion.getQuestionType())) {
+			if ("<".equals(comparison))
+				buf.append("<i>before</i> ");
+			else
+				buf.append("<i>after</i> ");
+			buf.append(this.value);
 		} else {
 			if (multiYearScope != null)
 				buf.append(multiYearScope + " ");
