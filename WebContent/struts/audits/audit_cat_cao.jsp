@@ -76,7 +76,7 @@
 			for this policy.
 		</span>
 		<div class="answer">
-			<s:hidden name="certificate.id" value="%{#cao.certificate != null ? #cao.certificate.id : 0}"/>
+			<s:hidden name="certID" value="%{#cao.certificate != null ? #cao.certificate.id : 0}"/>
 			<s:if test="#cao.certificate != null">
 				<s:date name="#cao.certificate.creationDate" format="M/d/yy" /> - <s:property value="#cao.certificate.description" /> <br/>
 				<a href="CertificateUpload.action?id=<s:property value="#cao.audit.contractorAccount.id"/>&certID=<s:property value="#cao.certificate.id"/>&button=download"

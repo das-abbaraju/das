@@ -257,6 +257,6 @@ function saveCao(form, button, divName) {
 
 function saveCert(certID, caoID) {
 	var form = "cao_form"+caoID;
-	$(form)['certificate.id'].value = certID;
+	$(form)['certID'].value = certID;
 	saveCao(form, 'Save', 'fileQuestion'+caoID);
 }
