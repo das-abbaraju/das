@@ -122,7 +122,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						invoice.setCcNumber(cc.getCardNumber());
 
 						payInvoice();
-						addNote("Credit Card transaction completed for $" + invoice.getTotalAmount());
+						addNote("Credit Card transaction completed and emailed the receipt for $" + invoice.getTotalAmount());
 					} catch (Exception e) {
 						addNote("Credit Card transaction failed: " + e.getMessage());
 						this.addActionError("Failed to charge credit card. " + e.getMessage());
@@ -131,7 +131,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				}
 				if (button.startsWith("Collect Check")) {
 					payInvoice();
-					addNote("Received check for $" + invoice.getTotalAmount());
+					addNote("Received check and emailed the receipt for $" + invoice.getTotalAmount());
 				}
 				if (button.startsWith("Mark Paid")) {
 					markInvoicePaid();
