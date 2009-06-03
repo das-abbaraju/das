@@ -36,7 +36,6 @@ function showLists() {
 </script>
 </head>
 <body <s:if test="type != null">onload="selectList('<s:property value="type"/>')"</s:if> >
-<img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
 <h1>Email Wizard</h1>
 
