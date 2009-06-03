@@ -61,6 +61,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				try {
 					for (File oldFile : getFiles(certID))
 						FileUtils.deleteFile(oldFile);
+					certID = 0;
 				} catch (Exception e) {
 					addActionError("Failed to save file: " + e.getMessage());
 					e.printStackTrace();
