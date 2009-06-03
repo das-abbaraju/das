@@ -170,10 +170,10 @@
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_conAuditorId'); return false;">Clear</a> </span></div>
 	</s:if>
-
+	<br clear="all"/>
 	<s:if test="filter.showOperator">
 		<div class="filterOption">
-		<s:if test="filterOperatorSingle">
+		<s:if test="filter.showOperatorSingle">
 			<s:select list="filter.operatorList" cssClass="forms" name="filter.operator" listKey="id" listValue="name"/>
 		</s:if>
 		<s:else>

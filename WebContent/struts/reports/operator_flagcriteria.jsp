@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Operator Flag Criteria</title>
@@ -6,9 +7,18 @@
 </head>
 <body>
 <h1>Operator Flag Criteria</h1>
-
 <s:include value="filters.jsp" />
 
+<pics:permission perm="ContractorDetails">
+<s:if test="!filter.allowMailMerge">
+	<div class="right"><a 
+		class="excel" 
+		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('ReportOperatorCriteria');" 
+		title="Download all <s:property value="report.allRows"/> results to a CSV file"
+		>Download</a></div>
+</s:if>
+</pics:permission>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
@@ -19,41 +29,41 @@
 		<td colspan="2">Contractor Name</td>
 		<td>Flag</td>
 		<td>Risk Level</td>
-		<s:iterator value="operatorAccount.audits">
-			<s:if test="canSee && minRiskLevel > 0">
-				<s:if test="auditType.annualAddendum">
-					<td><s:property value="auditType.auditName"/> 08 Status</td>
-					<td><s:property value="auditType.auditName"/> 07 Status</td>
-					<td><s:property value="auditType.auditName"/> 06 Status</td>
-					<td><s:property value="auditType.auditName"/> 05 Status</td>
-				</s:if>
-				<s:else>
-					<td><s:property value="auditType.auditName"/> Status</td>
-				</s:else>
+		<s:iterator value="operatorAccount.visibleAudits">
+			<s:if test="auditType.annualAddendum">
+				<td><s:property value="auditType.auditName"/> 08 Status</td>
+				<td><s:property value="auditType.auditName"/> 07 Status</td>
+				<td><s:property value="auditType.auditName"/> 06 Status</td>
+				<td><s:property value="auditType.auditName"/> 05 Status</td>
 			</s:if>
+			<s:else>
+				<td><s:property value="auditType.auditName"/> Status</td>
+			</s:else>
 		</s:iterator>
-		<s:iterator value="operatorAccount.flagQuestionCriteria">
-			<s:if test="flagColor.toString().equals(filter.flagStatus) && checked.toString().equals('Yes') && auditQuestion.id != 0">
-				<s:if test="auditQuestion.id == 2034">
-					<s:if test="multiYearScope.description.equals('All Three Years')">
-						<td>EMR 08</td>
-						<td>EMR 07</td>
-						<td>EMR 06</td>
-						<td>EMR 05</td>
-					</s:if>	
-					<s:elseif test="multiYearScope.description.equals('Last Year Only')">
-						<td><s:if test="%{get('answer2008')} != null">
-							EMR 08</s:if>
-							<s:else>EMR 07</s:else>
-						</td>
-					</s:elseif>
-					<s:elseif test="multiYearScope.description.equals('Three Year Average')">
-						<td>EMR AVG</td>
-					</s:elseif>
-				</s:if>
-				<s:else>
-					<td><s:property value="auditQuestion.columnHeader"/></td>
-				</s:else>
+		<s:iterator value="operatorAccount.inheritFlagCriteria.flagQuestionCriteria">
+			<s:if test="flagColor.toString().equals(filter.flagStatus) && checked">
+				<s:if test="!auditQuestion.auditType.classType.policy">
+					<s:if test="auditQuestion.id == 2034">
+						<s:if test="multiYearScope.description.equals('All Three Years')">
+							<td>EMR 08</td>
+							<td>EMR 07</td>
+							<td>EMR 06</td>
+							<td>EMR 05</td>
+						</s:if>	
+						<s:elseif test="multiYearScope.description.equals('Last Year Only')">
+							<td><s:if test="%{get('answer2008')} != null">
+								EMR 08</s:if>
+								<s:else>EMR 07</s:else>
+							</td>
+						</s:elseif>
+						<s:elseif test="multiYearScope.description.equals('Three Year Average')">
+							<td>EMR AVG</td>
+						</s:elseif>
+					</s:if>
+					<s:else>
+						<td><s:property value="auditQuestion.columnHeader"/></td>
+					</s:else>
+				</s:if>	
 			</s:if>
 		</s:iterator>
 		<s:if test="hasFatalities">
@@ -109,63 +119,63 @@
 			<td class="center">
 				<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))" />
 			</td>
-			<s:iterator value="operatorAccount.audits">		
-				<s:if test="canSee && minRiskLevel > 0">
-					<s:if test="auditType.annualAddendum">
-						<td><span title="Completed - <s:property value="%{get('annual2008 Completed')}"/>%"><s:property value="%{get('annual2008 Status')}"/></span></td>
-						<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
-						<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
-						<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
-					</s:if>
-					<s:else>
-						<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
-					</s:else>
+			<s:iterator value="operatorAccount.visibleAudits">		
+				<s:if test="auditType.annualAddendum">
+					<td><span title="Completed - <s:property value="%{get('annual2008 Completed')}"/>%"><s:property value="%{get('annual2008 Status')}"/></span></td>
+					<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
+					<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
+					<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
 				</s:if>
+				<s:else>
+					<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
+				</s:else>
 			</s:iterator>
-			<s:iterator value="operatorAccount.flagQuestionCriteria">
-				<s:if test="flagColor.toString().equals(filter.flagStatus) && checked.toString().equals('Yes') && auditQuestion.id != 0">
-					<s:if test="auditQuestion.id == 2034">
-						<s:if test="multiYearScope.description.equals('All Three Years')">
-							<td><s:property value="%{get('answer2008')}"/></td>
-							<td><s:property value="%{get('answer2007')}"/></td>
-							<td><s:property value="%{get('answer2006')}"/></td>
-							<td><s:property value="%{get('answer2005')}"/></td>
-						</s:if>	
-						<s:elseif test="multiYearScope.description.equals('Last Year Only')">
-							<td><s:if test="%{get('answer2008')} != null">
-									<s:property value="%{get('answer2008')}"/>
-								</s:if>
-								<s:else>
-									<s:property value="%{get('answer2007')}"/>
-								</s:else>
-							</td>
-						</s:elseif>
-						<s:elseif test="multiYearScope.description.equals('Three Year Average')">
-							<td><s:property value="@com.picsauditing.PICS.Utilities@getAverageEMR(get('answer2008'),get('answer2007'),get('answer2006'),get('answer2005'))"/></td>				
-						</s:elseif>
+			<s:iterator value="operatorAccount.inheritFlagCriteria.flagQuestionCriteria">
+				<s:if test="flagColor.toString().equals(filter.flagStatus) && checked">
+					<s:if test="!auditQuestion.auditType.classType.policy">
+						<s:if test="auditQuestion.id == 2034">
+							<s:if test="multiYearScope.description.equals('All Three Years')">
+								<td><s:property value="%{get('answer2008')}"/></td>
+								<td><s:property value="%{get('answer2007')}"/></td>
+								<td><s:property value="%{get('answer2006')}"/></td>
+								<td><s:property value="%{get('answer2005')}"/></td>
+							</s:if>	
+							<s:elseif test="multiYearScope.description.equals('Last Year Only')">
+								<td><s:if test="%{get('answer2008')} != null">
+										<s:property value="%{get('answer2008')}"/>
+									</s:if>
+									<s:else>
+										<s:property value="%{get('answer2007')}"/>
+									</s:else>
+								</td>
+							</s:elseif>
+							<s:elseif test="multiYearScope.description.equals('Three Year Average')">
+								<td><s:property value="@com.picsauditing.PICS.Utilities@getAverageEMR(get('answer2008'),get('answer2007'),get('answer2006'),get('answer2005'))"/></td>				
+							</s:elseif>
+						</s:if>
+						<s:else>
+							<td><s:property value="%{get('answer' + auditQuestion.id)}"/></td>
+						</s:else>
 					</s:if>
-					<s:else>
-						<td><s:property value="%{get('answer' + auditQuestion.id)}"/></td>
-					</s:else>
 				</s:if>
 			</s:iterator>
 			<s:if test="hasFatalities">
-				<td><s:property value="get('fatalities08')"/></td>
-				<td><s:property value="get('fatalities07')"/></td>
-				<td><s:property value="get('fatalities06')"/></td>
-				<td><s:property value="get('fatalities05')"/></td>
+				<td><s:property value="get('fatalities2008')"/></td>
+				<td><s:property value="get('fatalities2007')"/></td>
+				<td><s:property value="get('fatalities2006')"/></td>
+				<td><s:property value="get('fatalities2005')"/></td>
 			</s:if>
 			<s:if test="hasTrir">
-				<td><s:property value="get('trir08')"/></td>
-				<td><s:property value="get('trir07')"/></td>
-				<td><s:property value="get('trir06')"/></td>
-				<td><s:property value="get('trir05')"/></td>
+				<td><s:property value="get('trir2008')"/></td>
+				<td><s:property value="get('trir2007')"/></td>
+				<td><s:property value="get('trir2006')"/></td>
+				<td><s:property value="get('trir2005')"/></td>
 			</s:if>
 			<s:if test="hasLwcr">
-				<td><s:property value="get('lwcr08')"/></td>
-				<td><s:property value="get('lwcr07')"/></td>
-				<td><s:property value="get('lwcr06')"/></td>
-				<td><s:property value="get('lwcr05')"/></td>
+				<td><s:property value="get('lwcr2008')"/></td>
+				<td><s:property value="get('lwcr2007')"/></td>
+				<td><s:property value="get('lwcr2006')"/></td>
+				<td><s:property value="get('lwcr2005')"/></td>
 			</s:if>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>

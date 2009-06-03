@@ -18,6 +18,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "flagcriteria")
@@ -26,8 +27,6 @@ public class FlagQuestionCriteria extends BaseTable {
 	protected OperatorAccount operatorAccount;
 	protected AuditQuestion auditQuestion;
 	protected FlagColor flagColor;
-	protected YesNo checked = YesNo.Yes;
-
 	protected String comparison;
 	protected String value;
 	protected boolean validationRequired;
@@ -168,6 +167,14 @@ public class FlagQuestionCriteria extends BaseTable {
 				}
 			}
 		}
+		return false;
+	}
+	
+	@Transient
+	public boolean isChecked() {
+		if(!Strings.isEmpty(comparison) 
+				&& !Strings.isEmpty(value))
+			return true;
 		return false;
 	}
 
