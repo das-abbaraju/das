@@ -38,6 +38,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 	protected CertificateDAO certificateDao;
 
 	protected ContractorAuditOperator cao;
+	protected int certID = 0;
 	protected Certificate certificate;
 	protected String mode;
 
@@ -55,7 +56,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 		if (caoID > 0)
 			this.cao = caoDAO.find(caoID);
 
-		int certID = this.getParameter("certificate.id");
+		int certID = this.getParameter("certID");
 		if (certID > 0)
 			certificate = certificateDao.find(certID);
 
@@ -161,8 +162,9 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						if (statusChanged) {
 							cao.setStatusChangedBy(getUser());
 							cao.setStatusChangedDate(new Date());
-							String text = " Changed "+cao.getAudit().getAuditType().getAuditName()+" status to "+ cao.getStatus() +" for " + cao.getOperator().getName(); 
-							addNote(contractor, text , NoteCategory.Insurance);
+							String text = " Changed " + cao.getAudit().getAuditType().getAuditName() + " status to "
+									+ cao.getStatus() + " for " + cao.getOperator().getName();
+							addNote(contractor, text, NoteCategory.Insurance);
 							// TODO this is a duplicate of FlagCalculator2
 							// because we need the color to change instantly
 							FlagCalculatorSingle calculator = new FlagCalculatorSingle();
@@ -195,12 +197,12 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 		this.cao = cao;
 	}
 
-	public Certificate getCertificate() {
-		return certificate;
+	public int getCertID() {
+		return certID;
 	}
 
-	public void setCertificate(Certificate certificate) {
-		this.certificate = certificate;
+	public void setCertID(int certID) {
+		this.certID = certID;
 	}
 
 	public String getMode() {
