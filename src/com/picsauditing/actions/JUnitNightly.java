@@ -8,8 +8,8 @@ import javax.persistence.NoResultException;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.Failure;
 
-import com.picsauditing.PicsRunListener;
-import com.picsauditing.PicsTestSuite;
+//import com.picsauditing.PicsRunListener;
+//import com.picsauditing.PicsTestSuite;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.User;
@@ -31,21 +31,21 @@ public class JUnitNightly extends PicsActionSupport {
 
 		report = new StringBuffer();
 
-		JUnitCore core = new JUnitCore();
-		List<Failure> failures = new ArrayList<Failure>();
-		PicsRunListener listener = new PicsRunListener(failures);
-		core.addListener(listener);
-		core.run(new Class[] { PicsTestSuite.class });
-		core.removeListener(listener);
-		
-		report.append("There are ").append(failures.size()).append(" Failures.\n\n");
-		
-		for (Failure f : failures) {
-			report.append(f.getTestHeader()).append("\n");
-			report.append(f.getMessage()).append("\n");
-			report.append(f.getTrace()).append("\n\n");
-		}
-		
+//		JUnitCore core = new JUnitCore();
+//		List<Failure> failures = new ArrayList<Failure>();
+//		PicsRunListener listener = new PicsRunListener(failures);
+//		core.addListener(listener);
+//		core.run(new Class[] { PicsTestSuite.class });
+//		core.removeListener(listener);
+//		
+//		report.append("There are ").append(failures.size()).append(" Failures.<br/><br/>");
+//		
+//		for (Failure f : failures) {
+//			report.append(f.getTestHeader()).append("<br/>");
+//			report.append(f.getMessage()).append("<br/>");
+//			report.append(f.getTrace()).append("<br/><br/>");
+//		}
+//		
 		addActionMessage(report.toString());
 
 		return SUCCESS;
