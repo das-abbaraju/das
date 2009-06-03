@@ -136,5 +136,7 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		excelSheet.addColumn(new ExcelColumn("opName", "Operator Name", ExcelCellType.String), 30);
+		if(permissions.isCorporate())
+			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.String), 40);
 	}
 }
