@@ -166,8 +166,7 @@ label.policy {
 	<s:if test="conAudit.operators.size() > 0">
 		<s:iterator value="conAudit.operators" id="cao">
 			<s:if test="#cao.isVisibleTo(permissions)">
-				<div class="caoGroup">
-					<a name="cao<s:property value="id"/>"></a>
+				<div class="caoGroup" id="cao<s:property value="id"/>">
 					<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
 					<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
 					<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
