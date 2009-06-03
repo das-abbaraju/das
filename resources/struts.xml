@@ -1011,6 +1011,10 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="JUnitNightly" 
+			class="com.picsauditing.actions.JUnitNightly">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 
 		<!-- Other Stuff -->
