@@ -168,6 +168,8 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
 				mode = EDIT;
 			}
+			if (mode == null && conAudit.getAuditType().getClassType().isPolicy() && isHasPendingCaos())
+				mode = EDIT;
 
 		} else {
 			// When we want to show all categories
