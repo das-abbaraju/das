@@ -67,12 +67,15 @@ public class ConInsureGuard extends ContractorActionSupport {
 		for (ContractorAuditOperator cao : caoList) {
 			if (cao.getAudit().getAuditStatus().isExpired()) {
 				expiredAudits.add(cao.getAudit());
-			} else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
+			} else if (cao.getStatus().isPending() 
+					|| cao.getStatus().isSubmitted() 
+					|| cao.getStatus().isVerified()
+					|| cao.getStatus().isRejected()) {
 				if (requested.get(cao.getAudit()) == null)
 					requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
 
 				requested.get(cao.getAudit()).add(cao);
-			} else if (cao.getStatus().isApproved() || cao.getStatus().isRejected()) {
+			} else if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable()) {
 				if (current.get(cao.getAudit()) == null)
 					current.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
 
