@@ -57,18 +57,18 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setActive('N');
 			Vector<String> errors = contractorValidator.validateContractor(contractor, user.getPassword(),
 					confirmPassword, user);
-			if(Strings.isEmpty(user.getPassword()))
+			if (Strings.isEmpty(user.getPassword()))
 				errors.add("Please fill in the Password field.");
 
-			if(!contractorValidator.verifyTaxID(contractor)) {
+			if (!contractorValidator.verifyTaxID(contractor)) {
 				errors.add("The tax ID <b>" + contractor.getTaxId()
 						+ "</b> already exists.  Please contact a PICS representative.");
-			}	
-			
-			if(!contractorValidator.verifyName(contractor)) {
+			}
+
+			if (!contractorValidator.verifyName(contractor)) {
 				errors.add("The name <b>" + contractor.getName()
 						+ "</b> already exists.  Please contact a PICS representative.");
-			}	
+			}
 
 			if (errors.size() > 0) {
 				for (String error : errors)
@@ -95,7 +95,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user = userDAO.save(user);
 			contractor.setUsers(new ArrayList<User>());
 			contractor.getUsers().add(user);
-			
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(2); // Welcome Email
 			emailBuilder.setContractor(contractor);
@@ -110,11 +110,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 			note.setPriority(LowMedHigh.Low);
 			note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
-			
+
 			Permissions permissions = new Permissions();
 			permissions.login(user);
 			ActionContext.getContext().getSession().put("permissions", permissions);
-			
+
 			ServletActionContext.getResponse().sendRedirect("ContractorFacilities.action?id=" + contractor.getId());
 			return BLANK;
 		}
