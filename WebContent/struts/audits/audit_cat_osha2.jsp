@@ -1,7 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="osha">
 <tr class="location">
-	<td colspan="3"><s:property value="conAudit.auditFor"/> <s:property value="getText('dataHeader.'.concat(type))"/> <s:property value="location"/> <s:property value="description"/></td>
+	<td colspan="3"><s:property value="conAudit.auditFor"/> <s:property value="getText('dataHeader.'.concat(type))"/> <s:property value="location"/> <s:property value="description"/>
+		<s:if test="verified"><span class="verified" style="font-size: 16px;" title="Verified by <s:property value="conAudit.auditor.name"/> From PICS">Verified</span></s:if>
+	</td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td colspan="2" class="label" style="text-align: center; font-size: smaller;">3 year avg.</td></s:if>
 </tr>
 <tr>
