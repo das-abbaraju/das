@@ -39,7 +39,17 @@
 		<s:if test="requiresActivePolicy">
 			<td><s:property value="get('auditStatus')"/></td>
 		</s:if>
-		<td class="reportDate"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
+		<td class="reportDate">
+			<s:if test="get('auditName') == 'Workers Comp'">
+				<s:iterator value="getDataForAudit(get('auditID'),'GoodStanding')">
+					<s:if test='answer == "X"'>
+						In Good Standing
+						<br />
+					</s:if>
+				</s:iterator>
+			</s:if>
+			<s:date name="get('expiresDate')" format="M/d/yy" />
+		</td>
 		<td>
 			<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
 				<nobr><s:property value="getFormattedDollarAmount(answer)"/> = <span style="font-size: 9px;"><s:property value="question.columnHeader"/></span></nobr>
