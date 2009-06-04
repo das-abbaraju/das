@@ -136,4 +136,16 @@ public class UserDAO extends PicsDAO {
 		query.setParameter(1, id);
 		return query.getResultList();
 	}
+	
+	public boolean canRemoveUser(String table, int userID) {
+		try {
+			Query query = em.createQuery("SELECT t FROM "+ table +" t WHERE t.updatedBy.id = :userID OR t.createdBy.id = :userID");
+			query.setParameter("userID", userID);
+			query.setMaxResults(1);
+			query.getSingleResult();
+		} catch (NoResultException e) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -94,13 +94,26 @@ public class UserSave extends UsersManage {
 
 		if ("Delete".equalsIgnoreCase(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
-			userDAO.remove(user);
-
-			addActionMessage("Successfully removed "
+			String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
+			if(!userDAO.canRemoveUser("ContractorAudit", user.getId())) {
+				addActionMessage(message);
+			} 
+			else if(!userDAO.canRemoveUser("ContractorAuditOperator", user.getId())) {
+				addActionMessage(message);
+			}
+			else if(!userDAO.canRemoveUser("AuditData", user.getId())) {
+				addActionMessage(message);
+			}
+			else if(!userDAO.canRemoveUser("ContractorOperator", user.getId())) {
+				addActionMessage(message);
+			}
+			else {
+				userDAO.remove(user);
+				addActionMessage("Successfully removed "
 					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
-			user = null;
-		}
-
+				user = null;
+			}
+		}	
 		return SUCCESS;
 	}
 
