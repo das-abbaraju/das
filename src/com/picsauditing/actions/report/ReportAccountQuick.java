@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterInteger;
@@ -28,7 +29,7 @@ public class ReportAccountQuick extends ReportAccount {
 			if (id > 0) {
 				sql.addWhere("a.id = " + id);
 			} else {
-				sql.addWhere("a.name LIKE '" + accountName + "%' OR a.nameIndex LIKE '%"
+				sql.addWhere("a.name LIKE '" + Utilities.escapeQuotes(accountName) + "%' OR a.nameIndex LIKE '%"
 						+ Strings.indexName(accountName) + "%'");
 			}
 		}

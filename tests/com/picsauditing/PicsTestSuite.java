@@ -12,7 +12,6 @@ import com.picsauditing.PICS.DateBeanTest;
 import com.picsauditing.PICS.DefaultDatabase;
 import com.picsauditing.PICS.FlagCalculatorTest;
 import com.picsauditing.dao.AccountDAOTest;
-import com.picsauditing.dao.AccountNameDAOTest;
 import com.picsauditing.dao.AmBestDAOTest;
 import com.picsauditing.dao.AuditCategoryDAOTest;
 import com.picsauditing.dao.AuditCategoryDataTestDAO;
@@ -56,7 +55,6 @@ import com.picsauditing.util.log.PicsLoggerTest;
 @SuiteClasses( {
 	//dao
 	AccountDAOTest.class,
-	AccountNameDAOTest.class,
 	AmBestDAOTest.class,
 	AuditCategoryDAOTest.class,
 	AuditCategoryDataTestDAO.class,

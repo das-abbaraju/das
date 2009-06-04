@@ -7,47 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript">
-	function removeName(nameId) {
-		var pars = "button=RemoveName&nameId=" + nameId + '&id='
-				+ '<s:property value="operator.id"/>';
-		var divName = 'operator_name';
-		$(divName).innerHTML = "<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', {
-			method :'post',
-			parameters :pars,
-			onSuccess : function(transport) {
-				new Effect.Highlight($(divName), {
-					duration :0.75,
-					startcolor :'#FFFF11',
-					endcolor :'#EEEEEE'
-				});
-			}
-		});
-		return false;
-	}
-
-	function addName() {
-		name = $('legalName').value;
-		var pars = "button=AddName&name=" + name + '&id='
-				+ '<s:property value="operator.id"/>';
-		var divName = 'operator_name';
-		$(divName).innerHTML = "<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'AccountNameEditAjax.action', {
-			method :'post',
-			parameters :pars,
-			onSuccess : function(transport) {
-
-				new Effect.Highlight($(divName), {
-					duration :0.75,
-					startcolor :'#FFFF11',
-					endcolor :'#EEEEEE'
-				});
-			}
-		});
-		return false;
-	}
-</script>
 </head>
 <body>
 <s:if test="operator == null">
@@ -164,11 +123,6 @@
 						href="?id=<s:property value="operator.inheritAuditCategories.id"/>">Go</a></li>
 				</s:if>
 
-			</ol>
-			</fieldset>
-			<fieldset class="form"><legend><span>Legal Additional Insured Names</span></legend>
-			<ol>
-				<div id="operator_name"><s:include value="operator_names.jsp" /></div>
 			</ol>
 			</fieldset>
 

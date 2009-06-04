@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -153,19 +152,6 @@ public class FlagQuestionCriteria extends BaseTable {
 			if ("<".equals(comparison))
 				return (tempRate < tempCutoff);
 			return (tempRate == tempCutoff);
-		}
-		if ("Additional Insured".equals(questionType)) {
-			if (operatorAccount != null) {
-				List<AccountName> names = getOperatorAccount().getNames();
-
-				if (names != null && names.size() > 0) {
-					for (AccountName name : names) {
-						if (name.getName().equalsIgnoreCase(answer.trim())) {
-							return true;
-						}
-					}
-				}
-			}
 		}
 		return false;
 	}

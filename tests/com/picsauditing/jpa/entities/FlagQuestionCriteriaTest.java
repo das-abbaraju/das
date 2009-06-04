@@ -1,8 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -51,17 +48,6 @@ public class FlagQuestionCriteriaTest extends TestCase {
 		assertFalse(criteria.isFlagged("No"));
 		assertTrue(criteria.isFlagged("Yes"));
 
-		// Test for additinal Insured Question Type
-		criteria.getAuditQuestion().setQuestionType("Additional Insured");
-		criteria.setOperatorAccount(new OperatorAccount());
-		criteria.getOperatorAccount().setId(3937);
-		List<AccountName> aList = new ArrayList<AccountName>();
-		AccountName accountName = new AccountName();
-		accountName.setName("Roquette America, Inc.");
-		aList.add(accountName);
-		criteria.getOperatorAccount().setNames(aList);
-		assertFalse(criteria.isFlagged("Square"));
-		assertTrue(criteria.isFlagged("Roquette America, Inc."));
 	}
 
 }

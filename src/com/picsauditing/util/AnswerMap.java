@@ -6,9 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
 
-import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -41,45 +39,8 @@ public class AnswerMap {
 	public AnswerMap( AnswerMap toCopy, OperatorAccount operator ) {
 		this( toCopy );
 		
-		
-		//we'll build this collection by going through our main data, then after all the iteration is complete,
-		//we call the remove() on each of the entries.  This avoids any ConcurrentModificationExceptions
-		List<AuditData> toRemove = new Vector<AuditData>();
-		
-		for( Integer questionID : list.keySet() ) {
-			Map<Integer, List<AuditData>> temp = list.get(questionID );
-			
-			for( Integer rowId : temp.keySet() ) {
-				List<AuditData> data = temp.get(rowId);
-				
-				for( AuditData answer : data ) {
-					if( answer.getQuestion().getUniqueCode() != null 
-							&& answer.getQuestion().getUniqueCode().equals("aiName") 
-							&& answer.getAnswer() != null 
-							&& answer.getAnswer().length() > 0) {
-
-						List<AccountName> operatorNames = operator.getNames();
-						boolean matched = false;
-						if( operatorNames != null ) {
-							for( AccountName name : operatorNames ) {
-								if( answer.getAnswer().equalsIgnoreCase( name.getName())) {
-									matched = true;
-									break;
-								}
-							}
-						}
-						
-						if( !matched ) {
-							toRemove.add(answer);
-						}
-					}
-				}
-			}
-		}
-	
-		for( AuditData ad : toRemove ) {
-			remove( ad );
-		}		
+		// This is no longer necessary because we don't store operator tuples
+		// This is data is in CAOs now
 	}
 	
 	

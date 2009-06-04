@@ -1,7 +1,6 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,12 +13,9 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.dao.AccountNameDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountName;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
@@ -27,8 +23,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport implements Preparable {
@@ -40,14 +34,12 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected Map<String, Integer> foreignKeys = new HashMap<String, Integer>();
 
 	protected FacilitiesDAO facilitiesDAO;
-	protected AccountNameDAO accountNameDAO;
 	protected OperatorFormDAO formDAO;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
-			AccountNameDAO accountNameDAO, OperatorFormDAO formDAO) {
+			OperatorFormDAO formDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
-		this.accountNameDAO = accountNameDAO;
 		this.formDAO = formDAO;
 	}
 
@@ -77,41 +69,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			subHeading = "Add " + type;
 
 		if (button != null) {
-			if (button.equalsIgnoreCase("RemoveName")) {
-				accountNameDAO.remove(nameId);
-				return SUCCESS;
-			}
-
-			if (button.equalsIgnoreCase("AddName")) {
-				boolean skip = false;
-				name = name.trim();
-
-				for (AccountName an : operator.getNames()) {
-					if (an.getName().equalsIgnoreCase(name)) {
-						skip = true;
-						name = "";
-						break;
-					}
-				}
-				if (!skip) {
-					AccountName account = new AccountName();
-					account.setAccount(new Account());
-					account.getAccount().setId(id);
-					account.setName(name);
-					account.setAuditColumns(permissions);
-					operator.getNames().add(account);
-					Collections.sort(operator.getNames(), new Comparator<AccountName>() {
-						@Override
-						public int compare(AccountName o1, AccountName o2) {
-							return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-						}
-					});
-					account = accountNameDAO.save(account);
-					// operator.getNames().add(account);
-				}
-				return SUCCESS;
-			}
-
 			if (button.equalsIgnoreCase("Save")) {
 				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
 
@@ -200,6 +157,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.setAuditColumns(permissions);
 				operator.setNaics(new Naics());
 				operator.getNaics().setCode("0");
+				operator.setNameIndex();
 				if (id == 0) {
 					// Save so we can get the id and then update the NOLOAD with
 					// a unique id

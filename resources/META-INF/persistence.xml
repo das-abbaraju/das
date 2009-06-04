@@ -6,7 +6,6 @@
 	<persistence-unit name="punit">
 
 		<class>com.picsauditing.jpa.entities.Account</class>
-		<class>com.picsauditing.jpa.entities.AccountName</class>
 		<class>com.picsauditing.jpa.entities.AppProperty</class>
 		<class>com.picsauditing.jpa.entities.AuditCatData</class>
 		<class>com.picsauditing.jpa.entities.AuditCategory</class>

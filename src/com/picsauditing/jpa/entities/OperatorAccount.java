@@ -422,16 +422,4 @@ public class OperatorAccount extends Account {
 		this.tags = value;
 	}
 
-	@Transient
-	public boolean isHasLegalName(String legalName) {
-		if (legalName.equals("All"))
-			return true;
-		for (AccountName accountName : getInheritInsurance().getNames()) {
-			if (accountName.getName().equalsIgnoreCase(legalName)) {
-				return true;
-			}
-
-		}
-		return false;
-	}
 }

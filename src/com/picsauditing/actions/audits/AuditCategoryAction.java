@@ -19,15 +19,12 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
@@ -262,26 +259,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 								}
 
 							} catch (Exception ignoreIt) {
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if (answerMap != null && conAudit.getAuditType().getClassType() == AuditTypeClass.Policy
-				&& getUser().getAccount() != null && getUser().getAccount().isOperator()) {
-			OperatorAccount thisOp = (OperatorAccount) getUser().getAccount();
-
-			for (AuditCategory cat : conAudit.getAuditType().getCategories()) {
-				for (AuditSubCategory subCat : cat.getSubCategories()) {
-					for (AuditQuestion qstn : subCat.getQuestions()) {
-						if (qstn.getUniqueCode() != null && qstn.getUniqueCode().equals("aiName")) {
-							List<AuditData> answers = answerMap.getAnswerList(qstn.getId());
-							for (AuditData answer : answers) {
-								if (!thisOp.isHasLegalName(answer.getAnswer())) {
-									answerMap.remove(answer);
-								}
 							}
 						}
 					}

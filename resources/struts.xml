@@ -1012,11 +1012,6 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorPolicyConverter"
-			class="com.picsauditing.actions.contractors.ContractorPolicyConverter">
-			<result>struts/blank.jsp</result>
-		</action>
-
 		<action name="JUnitNightly" 
 			class="com.picsauditing.actions.JUnitNightly">
 			<result>/struts/blank.jsp</result>
