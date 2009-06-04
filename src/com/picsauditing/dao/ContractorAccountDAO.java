@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +43,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	public void remove(ContractorAccount row, String ftpDir) {
 		FileUtils.deleteFile(ftpDir + "/logos/" + row.getLogoFile());
-		String filename = "brochure_" + row.getId()+"."+row.getBrochureFile();
+		String filename = "brochure_" + row.getId() + "." + row.getBrochureFile();
 		FileUtils.deleteFile(ftpDir + "/files/brochures/" + filename);
 		remove(row);
 	}
@@ -83,12 +84,12 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount = ? " + where
 				+ " ORDER BY operatorAccount.name");
 		query.setParameter(1, contractor);
-		
+
 		// Make sure we have the list of operators
 		List<ContractorOperator> list = query.getResultList();
-		for(ContractorOperator co : list)
+		for (ContractorOperator co : list)
 			co.getOperatorAccount();
-		
+
 		return list;
 	}
 
@@ -120,11 +121,11 @@ public class ContractorAccountDAO extends PicsDAO {
 			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = " + "'" + taxId + "'");
 			query.setMaxResults(1);
 			return (ContractorAccount) query.getSingleResult();
-		} catch (NoResultException e) {	
+		} catch (NoResultException e) {
 			return null;
-		}	
+		}
 	}
-	
+
 	public int getActiveContractorCounts(String where) {
 		if (where.equals(""))
 			where = "";
@@ -141,69 +142,70 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public ContractorAccount findConID(String name) {
+		if (Strings.isEmpty(name))
+			return null;
+
 		try {
 			Query query;
-			if (Strings.isEmpty(name)){
-				query = em.createQuery("SELECT a FROM ContractorAccount a");
-			}
-			else {
-				query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.name = ?");
-				query.setParameter(1, name);
-			}
-			
+
+			query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.name = ?");
+			query.setParameter(1, name);
+
 			return (ContractorAccount) query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
+
 	/**
-	 * Find ids for all active contractors who either need recalculation but haven't been calculated in the past 30 minutes or haven't been calculated in the past week
+	 * Find ids for all active contractors who either need recalculation but
+	 * haven't been calculated in the past 30 minutes or haven't been calculated
+	 * in the past week
+	 * 
 	 * @return
 	 */
 	public List<Integer> findContractorsNeedingRecalculation() {
-		String hql = "SELECT c.id FROM ContractorAccount c " +
-				"WHERE " +
-				"c.lastRecalculation < :lastRunDate " +
-				"OR c.lastRecalculation IS NULL " +
-				"ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
+		String hql = "SELECT c.id FROM ContractorAccount c " + "WHERE " + "c.lastRecalculation < :lastRunDate "
+				+ "OR c.lastRecalculation IS NULL " + "ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(10);
-		
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, -10);
 		query.setParameter("lastRunDate", calendar.getTime());
-		
+
 		return query.getResultList();
 	}
-	
+
 	public void updateContractorByOperator(OperatorAccount operator) {
 		String subSelect = "";
-		if(operator.isOperator())
+		if (operator.isOperator())
 			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
-		else if(operator.isCorporate())
-			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = " + operator.getId();
+		else if (operator.isCorporate())
+			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = "
+					+ operator.getId();
 		else
 			return;
-		
-		String sql = "UPDATE contractor_info SET needsRecalculation = 1 " +
-				"WHERE id IN (" + subSelect + ")";
+
+		String sql = "UPDATE contractor_info SET needsRecalculation = 1 " + "WHERE id IN (" + subSelect + ")";
 
 		Query query = em.createNativeQuery(sql);
 		query.executeUpdate();
 	}
-	
+
 	public int findContractorsNeedingRecalculation(OperatorAccount operator) {
 		String subSelect = "";
-		if(operator.isOperator())
+		if (operator.isOperator())
 			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
-		else if(operator.isCorporate())
-			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = " + operator.getId();
+		else if (operator.isCorporate())
+			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = "
+					+ operator.getId();
 		else
 			return 0;
-		
-		String sql = "SELECT count(*) total FROM contractor_info " +
-				"WHERE needsRecalculation = 1 AND id IN (" + subSelect + ")";
-		
+
+		String sql = "SELECT count(*) total FROM contractor_info " + "WHERE needsRecalculation = 1 AND id IN ("
+				+ subSelect + ")";
+
 		Query query = em.createNativeQuery(sql);
 		Object result = query.getSingleResult();
 		return Integer.parseInt(result.toString());
