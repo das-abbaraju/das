@@ -143,8 +143,37 @@ div.panel_placeholder {
 }
 
 span.required {
-	background: transparent url(../images/yellow_star.gif) no-repeat
-		left center;
 	color: #272;
 	font-weight: bold;
 }
+
+span.printrequired {
+	display: inline;
+}
+
+/** Audit Header ***/
+#content div.auditHeader {
+	border-top: 2px solid #C3C3C3;
+	border-bottom: 2px solid #C3C3C3;
+	height: 150px;
+}
+
+div.auditHeader li {
+	float: left;
+	clear: left;
+	width: 100%;
+}
+
+div.auditHeader label{
+	float: left;
+	text-align: right;
+	font-weight: bold;
+	color: #003768;
+}
+
+div.auditHeader fieldset{
+	line-height: 26px;
+	width: 15em;
+	border: 0px;
+}
+/** END Audit Header ***/

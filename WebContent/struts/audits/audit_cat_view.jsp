@@ -16,7 +16,9 @@
 		</s:if>
 	</s:if>
 </s:if>
-
+<s:if test="questionStillRequired">
+	<span class="printrequired"><img src="images/yellow_star.gif"></span>
+</s:if>	
 <span class="question<s:if test="questionStillRequired"> required</s:if>">
 	<a name="q<s:property value="#q.id"/>"></a>
 	<s:property value="#q.subCategory.category.number"/>.<s:property value="#q.subCategory.number"/>.<s:property value="#q.number"/>&nbsp;&nbsp;

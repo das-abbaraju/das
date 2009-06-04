@@ -46,6 +46,10 @@ span.required {
 	font-weight: bold;
 }
 
+span.printrequired {
+	display: none;
+}
+
 div.thinking {
 	float: right;
 }
