@@ -102,7 +102,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 				|| ReportFilterAccount.DEFAULT_NAME.equals(getFilter().getAccountName()) || getFilter()
 				.getAccountName().length() < 3)
 				&& (getFilter().getTrade() == null || getFilter().getTrade().length == 0)) {
-			this.addActionMessage("Please enter a contractor name with atleast 3 characters or select a trade");
+			this.addActionMessage("Please enter a contractor name with at least 3 characters or select a trade");
 			return SUCCESS;
 		}
 
