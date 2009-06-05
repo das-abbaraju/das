@@ -81,7 +81,6 @@
 				<li><label>InsureGuard&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 					theme="pics" /></li>
 
-				<li><label>Verified By PICS:</label> <s:checkbox name="operator.verifiedByPics" /></li>
 				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
 					name="operator.doContractorsPay" theme="pics" /></li>
 				<li><label>Send Emails to:</label> <s:textarea name="operator.activationEmails" rows="3" cols="40" /> <br />
