@@ -231,7 +231,7 @@
 						<s:select list="industryList" name="contractor.industry"/>
 					</li>
 					<li><label>NAICS (Primary):</label>
-						<s:property value="contractor.naics"/>
+						<s:property value="contractor.naics.code"/>
 					</li>
 					<li><label>Main Trade:</label>
 						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
