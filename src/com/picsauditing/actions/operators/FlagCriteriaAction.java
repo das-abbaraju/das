@@ -140,7 +140,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		if (Strings.isEmpty(criteria))
 			return false;
 		if ("Date".equals(question.getQuestionType())) {
-			if (DateBean.parseDate(criteria) == null) {
+			if (!"Today".equalsIgnoreCase(criteria) && DateBean.parseDate(criteria) == null) {
 				addActionError("The value entered is not a valid date");
 				return false;
 			}
