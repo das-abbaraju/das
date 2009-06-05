@@ -28,7 +28,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private ContractorAccount contractorAccount;
 	private String workStatus = "P";
 	private FlagColor forceFlag;
-	private Date forceBegin;
 	private Date forceEnd;
 	private ContractorOperatorFlag flag;
 
@@ -91,15 +90,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getForceBegin() {
-		return forceBegin;
-	}
-
-	public void setForceBegin(Date forceBegin) {
-		this.forceBegin = forceBegin;
-	}
-
-	@Temporal(TemporalType.DATE)
 	public Date getForceEnd() {
 		return forceEnd;
 	}
@@ -110,24 +100,20 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Transient
 	public boolean isForcedFlag() {
-		Date now = new Date();
-
-		if (forceEnd != null) {
-			if (now.after(forceEnd)) {
-				// This force has expired, so remove it
-				forceBegin = null;
-				forceEnd = null;
-				forceFlag = null;
-				return false;
-			}
+		if (forceFlag == null || forceEnd == null) {
+			// Just double check they are both set back to null
+			forceFlag = null;
+			forceEnd = null;
+			return false;
 		}
 
-		if (forceBegin == null || now.compareTo(forceBegin) >= 0) {
-			// This flag is in effect as long as it's not null
-			return forceFlag != null;
+		// We have a forced flag, but make sure it's still in effect
+		if (forceEnd.before(new Date())) {
+			forceFlag = null;
+			forceEnd = null;
+			return false;
 		}
-		// The flag is not yet in effect
-		return false;
+		return true;
 	}
 
 	@OneToOne

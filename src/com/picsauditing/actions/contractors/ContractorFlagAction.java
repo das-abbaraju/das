@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
@@ -44,9 +45,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected List<AuditCriteriaAnswer> acaList;
 	protected Date forceEnd;
 	protected FlagColor forceFlag;
+	protected String forceNote;
 	protected boolean overrideAll = false;
-	protected boolean deleteAll = false;
-	
+
 	private ContractorAuditOperatorDAO caoDAO;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
@@ -84,74 +85,82 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		co.getOperatorAccount().getFlagOshaCriteria();
 		co.getOperatorAccount().getAudits();
 
-		//calculator.setDebug(true); // for development
+		// calculator.setDebug(true); // for development
 		calculator.setAnswerOnly(false);
 		calculator.setOperator(co.getOperatorAccount());
 		calculator.setContractor(contractor);
 		calculator.setConAudits(contractor.getAudits());
-		
+
 		List<Integer> criteriaQuestionIDs = co.getOperatorAccount().getQuestionIDs();
-		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits( contractor.getAudits(), criteriaQuestionIDs );
-		
-		if ("Override".equals(action)) {
-			String text = "Changed the flag color to " + forceFlag + " for "+ co.getOperatorAccount().getName();
-			addNote(co.getContractorAccount(), text);
-		}
-		
-		if ("deleteOverride".equals(action)) {
-			permissions.tryPermission(OpPerms.EditForcedFlags);
-			if (deleteAll == true) {
-				for (ContractorOperator co2 : getOperators()) {
-					
-					//prune our answermapMAP for this operator (take out audits they can't see, and answers to questions they shouldn't see)
-					//also note that this uses the copy constructor, so our local variable answerMapByAUdits is not affected by pruning 
-					//on each run through the "operators" list.
-					
-					// Make sure the operator has only the answers that are visible to them
-					AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
-					AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteriaInherited());
-					acaList = acaBuilder.getAuditCriteriaAnswers();
-					calculator.setAcaList(acaList);
-					
-					co2.setForceBegin(null);
-					co2.setForceEnd(null);
-					co2.setForceFlag(null);
-					co2.setAuditColumns(permissions);
-					FlagColor newColor = calculator.calculate();
-					co2.getFlag().setFlagColor(newColor);
-					contractorOperatorDao.save(co2);
-				}
-				PicsLogger.stop();
-				return SUCCESS;
-			} else {
-				co.setForceBegin(null);
-				co.setForceEnd(null);
-				co.setForceFlag(null);
-			}
+		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits(contractor.getAudits(),
+				criteriaQuestionIDs);
 
-		}
-
-		if (forceFlag != null && forceEnd != null) {
+		if (button != null) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
-			if (overrideAll == true) {
-				for (ContractorOperator operator : getOperators()) {
-					operator.setForceEnd(forceEnd);
-					operator.setForceFlag(forceFlag);
-					operator.setAuditColumns(permissions);
-					// FlagColor newColor = calculator.calculate();
-					operator.getFlag().setFlagColor(forceFlag);
-					contractorOperatorDao.save(operator);
+			
+			Note note = new Note();
+			note.setAccount(co.getContractorAccount());
+			note.setAuditColumns(getUser());
+			note.setNoteCategory(noteCategory);
+			note.setViewableByOperator(co.getOperatorAccount());
+			note.setCanContractorView(true);
+			note.setBody(forceNote);
+			
+			String noteText = "";
+			if (button.equalsIgnoreCase("Force Flag")) {
+				if (forceFlag.equals(co.getForceFlag()))
+					addActionError("You didn't change the flag color");
+				if (forceEnd == null)
+					addActionError("You didn't specify an end date");
+				if (forceNote == null)
+					addActionError("You must enter a note when forcing a flag ");
+				
+				if (getActionErrors().size() > 0) {
+					PicsLogger.stop();
+					return SUCCESS;
 				}
-				PicsLogger.stop();
-				return SUCCESS;
-			} else {
-				String text = "Removed the " + co.getForceFlag() + " forced flag color for "+ co.getOperatorAccount();
-				addNote(co.getContractorAccount(), text);
+
 				co.setForceEnd(forceEnd);
 				co.setForceFlag(forceFlag);
-			}
-		}
+				noteText = "Forced the flag to " + forceFlag + " for " + co.getOperatorAccount().getName();
 
+				if (overrideAll == true) {
+					for (ContractorOperator co2 : getOperators()) {
+						if (!co.equals(co2) &&  !forceFlag.equals(co2.getForceFlag())) {
+							co2.setForceEnd(forceEnd);
+							co2.setForceFlag(forceFlag);
+							co2.setAuditColumns(permissions);
+							contractorOperatorDao.save(co2);
+
+							noteText += ", " + co.getOperatorAccount().getName();
+						}
+					}
+				}
+
+			} else if (button.equalsIgnoreCase("Cancel Override")) {
+				co.setForceEnd(null);
+				co.setForceFlag(null);
+				noteText = "Removed the forced flag for " + co.getOperatorAccount().getName();
+
+				if (overrideAll == true) {
+					for (ContractorOperator co2 : getOperators()) {
+						if (!co.equals(co2) && co2.getForceFlag() != null) {
+							// cancel the flag for all my other operators for this contractor
+							contractor.setNeedsRecalculation(true);
+							co2.setForceEnd(null);
+							co2.setForceFlag(null);
+							co2.setAuditColumns(permissions);
+							contractorOperatorDao.save(co2);
+							
+							noteText += ", " + co.getOperatorAccount().getName();
+						}
+					}
+				}
+			}
+			note.setSummary(noteText);
+			getNoteDao().save(note);
+		}
+		
 		if (co.getFlag() == null) {
 			// Add a new flag for the contractor
 			ContractorOperatorFlag newFlag = new ContractorOperatorFlag();
@@ -162,22 +171,22 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			newFlag = coFlagDao.save(newFlag);
 			co.setFlag(newFlag);
 		}
-		
+
 		// Make sure the operator has only the answers that are visible to them
 		AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
 		PicsLogger.log(" Found " + answerMapForOperator.getAuditSet().size() + " audits in answerMapForOperator");
-		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co.getOperatorAccount().getFlagQuestionCriteriaInherited());
+		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co
+				.getOperatorAccount().getFlagQuestionCriteriaInherited());
 		acaList = acaBuilder.getAuditCriteriaAnswers();
 		calculator.setAcaList(acaList);
-		
+
 		PicsLogger.start("CaoStatus");
-		for( ContractorAudit audit : contractor.getAudits() ) {
-			if( audit.getAuditType().getClassType().isPolicy() ) {
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getClassType().isPolicy()) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if(cao.isVisible()) {
+					if (cao.isVisible()) {
 						if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
-							FlagColor flagColor = calculator
-									.calculateCaoRecommendedFlag(cao);
+							FlagColor flagColor = calculator.calculateCaoRecommendedFlag(cao);
 							cao.setFlag(flagColor);
 							caoDAO.save(cao);
 						}
@@ -186,15 +195,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		}
 		PicsLogger.stop();
-		
+
 		PicsLogger.start("Flag.calculate");
 		FlagColor newColor = calculator.calculate();
 		PicsLogger.stop();
 		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor())) {
 			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor() + " to " + newColor);
-			addNote(contractor, 
-					"Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for " + co.getOperatorAccount().getName(), 
-					NoteCategory.Flags, LowMedHigh.Med, true, co.getOperatorAccount().getId(), new User(User.SYSTEM));
+			addNote(contractor, "Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for "
+					+ co.getOperatorAccount().getName(), NoteCategory.Flags, LowMedHigh.Med, true, co
+					.getOperatorAccount().getId(), new User(User.SYSTEM));
 			co.getFlag().setLastUpdate(new Date());
 			co.getFlag().setFlagColor(newColor);
 		}
@@ -261,24 +270,25 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	/**
 	 * The contractor's OSHA/MSHA record that the operator uses for evaluation
+	 * 
 	 * @return
 	 */
 	public Map<String, OshaAudit> getOshas() {
 		return co.getContractorAccount().getOshas().get(co.getOperatorAccount().getOshaType());
 	}
-	
+
 	public List<AuditCriteriaAnswer> getAcaList() {
 		return acaList;
 	}
-	
+
 	public List<AuditCriteriaAnswer> getAcaListAudits() {
 		List<AuditCriteriaAnswer> list = new ArrayList<AuditCriteriaAnswer>();
-		for(AuditCriteriaAnswer aca : acaList)
+		for (AuditCriteriaAnswer aca : acaList)
 			if (!aca.getClassType().isPolicy())
 				list.add(aca);
 		return list;
 	}
-	
+
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
@@ -307,20 +317,20 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.forceFlag = forceFlag;
 	}
 
+	public String getForceNote() {
+		return forceNote;
+	}
+
+	public void setForceNote(String forceNote) {
+		this.forceNote = forceNote;
+	}
+
 	public boolean isOverrideAll() {
 		return overrideAll;
 	}
 
 	public void setOverrideAll(boolean overrideAll) {
 		this.overrideAll = overrideAll;
-	}
-
-	public boolean isDeleteAll() {
-		return deleteAll;
-	}
-
-	public void setDeleteAll(boolean deleteAll) {
-		this.deleteAll = deleteAll;
 	}
 
 	public String getYesterday() {
