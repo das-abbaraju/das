@@ -142,7 +142,7 @@
 			<s:if test="corporate && type.toString().equals('OSHA')">
 			<s:div id="oid_%{id}">
 				<ol>
-				<s:if test="verified == false">
+				<s:if test="!verified">
 					<s:set name="verifyText" value="'Verify'"/>
 				</s:if>
 				<s:else>

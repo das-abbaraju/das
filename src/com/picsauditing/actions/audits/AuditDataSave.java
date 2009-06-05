@@ -191,6 +191,11 @@ public class AuditDataSave extends AuditActionSupport {
 
 					auditDao.save(tempAudit);
 				}
+				if(tempAudit.getAuditType().isAnnualAddendum() 
+						&& tempAudit.getAuditStatus().isActive()) {
+					tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+					auditDao.save(tempAudit);
+				}
 			}
 
 			// hook to calculation read/update
@@ -213,7 +218,7 @@ public class AuditDataSave extends AuditActionSupport {
 				conAudit = auditDao.find(auditData.getAudit().getId());
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
-
+			
 			List<Integer> questionIds = new ArrayList<Integer>();
 			questionIds.add(auditData.getQuestion().getId());
 			if (auditData.getQuestion().getIsRequired().equals("Depends"))

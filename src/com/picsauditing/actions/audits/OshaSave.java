@@ -17,6 +17,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.Downloader;
@@ -32,11 +33,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	private String uploadFileFileName;
 	private AuditPercentCalculator auditPercentCalculator;
 
-	
-	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO conAuditDAO, 
-				AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, AuditPercentCalculator auditPercentCalculator ) {
-		
-		super(accountDAO, conAuditDAO, catDataDAO, dao);
+	public OshaSave(ContractorAccountDAO accountDAO, OshaAuditDAO oshaDAO, ContractorAuditDAO auditDao,
+			AuditCategoryDataDAO catDataDAO, AuditDataDAO dao, AuditPercentCalculator auditPercentCalculator) {
+
+		super(accountDAO, auditDao, catDataDAO, dao);
 		this.oshaDAO = oshaDAO;
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
@@ -59,8 +59,8 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		}
 
 		if (button.equals("download")) {
-			Downloader downloader = new Downloader(ServletActionContext
-					.getResponse(), ServletActionContext.getServletContext());
+			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+					.getServletContext());
 			try {
 				File[] files = getFiles();
 				downloader.download(files[0], null);
@@ -103,7 +103,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			osha = new OshaAudit();
 			osha.setConAudit(new ContractorAudit());
 			osha.getConAudit().setId(auditID);
-			
+
 			AuditCatData auditCatData = catDataDao.find(catDataID);
 			osha.setType(OshaTypeConverter.getTypeFromCategory(auditCatData.getCategory().getId()));
 			osha.setLocation("Division");
@@ -115,8 +115,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		// TODO verify data is saved correctly
 
 		if (uploadFile != null) {
-			String ext = uploadFileFileName.substring(uploadFileFileName
-					.lastIndexOf(".") + 1);
+			String ext = uploadFileFileName.substring(uploadFileFileName.lastIndexOf(".") + 1);
 
 			if (!FileUtils.checkFileExtension(ext)) {
 				addActionError(ext + " is not a valid file type for OSHA logs");
@@ -124,8 +123,8 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			}
 
 			try {
-				FileUtils.moveFile(uploadFile, getFtpDir(), "files/"
-						+ FileUtils.thousandize(id), getFileName(), ext, true);
+				FileUtils.moveFile(uploadFile, getFtpDir(), "files/" + FileUtils.thousandize(id), getFileName(), ext,
+						true);
 			} catch (Exception e) {
 				addActionError("Failed to save file: " + e.getMessage());
 				e.printStackTrace();
@@ -140,11 +139,9 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		if (button.equals("toggleVerify")) {
 			if (osha.isVerified()) {
 				osha.setVerifiedDate(null);
-				osha.getConAudit().setAuditor(null);
-				
+
 			} else {
 				osha.setVerifiedDate(new Date());
-				osha.getConAudit().setAuditor(getUser());
 			}
 		} else {
 			osha.setVerifiedDate(null);
@@ -153,19 +150,22 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		osha.setUpdateDate(new Date());
 		oshaDAO.save(osha);
 
-		if (button.equals("toggleVerify")) {
-			if( osha.isCorporate() ){
-				List<AuditCatData> catDataList = catDataDao.findAllAuditCatData(osha.getConAudit().getId(), OshaTypeConverter.getCategoryFromType(osha.getType()));
-				
-				if( catDataList != null && catDataList.size() > 0 ) {
-					auditPercentCalculator.percentOshaComplete(osha, catDataList.get(0));	
-				}
-				
-				auditPercentCalculator.percentCalculateComplete(osha.getConAudit());
+		if (osha.isCorporate()) {
+			List<AuditCatData> catDataList = catDataDao.findAllAuditCatData(osha.getConAudit().getId(),
+					OshaTypeConverter.getCategoryFromType(osha.getType()));
+			if (catDataList != null && catDataList.size() > 0) {
+				auditPercentCalculator.percentOshaComplete(osha, catDataList.get(0));
 			}
-		}			
-		
-		
+			auditPercentCalculator.percentCalculateComplete(osha.getConAudit());
+			if (!button.equals("toggleVerify")) {
+				findConAudit();
+				if (conAudit.getAuditStatus().isActive()) {
+					conAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+					auditDao.save(conAudit);
+				}
+			}
+		}
+
 		return SUCCESS;
 	}
 
@@ -174,8 +174,7 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	}
 
 	private File[] getFiles() {
-		File oshaDir = new File(getFtpDir() + "/files/"
-				+ FileUtils.thousandize(id));
+		File oshaDir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(id));
 		return FileUtils.getSimilarFiles(oshaDir, getFileName());
 	}
 
@@ -222,7 +221,6 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	public void setUploadFileContentType(String temp) {
 	}
 
-	
 	public ArrayList<String> getOshaProblems() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("");

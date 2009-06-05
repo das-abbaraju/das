@@ -51,12 +51,6 @@
 				</thead>
 
 				<tr>
-					<td>Applicable:</td>
-					<s:iterator value="oshas">
-						<td class="center"><s:property value="applicable" /></td>
-					</s:iterator>
-				</tr>
-				<tr>
 					<td>Upload New Files</td>
 					<s:iterator value="oshas">
 						<td class="center"><s:if test="file && file.name().equals('Yes')">
