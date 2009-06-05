@@ -16,6 +16,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
@@ -47,8 +48,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String description;
 	private Date accountDate;
 	private String mustPay = "Yes";
-	private int requestedById;
-	// TODO private OperatorAccount requestedBy;
+	private OperatorAccount requestedBy;
 	private String secondContact;
 	private String secondPhone;
 	private String secondEmail;
@@ -181,13 +181,14 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		return Utilities.escapeNewLines(this.description);
 	}
 
-	@Column(name = "requestedByID")
-	public int getRequestedById() {
-		return this.requestedById;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "requestedByID")
+	public OperatorAccount getRequestedBy() {
+		return requestedBy;
 	}
 
-	public void setRequestedById(int requestedById) {
-		this.requestedById = requestedById;
+	public void setRequestedBy(OperatorAccount requestedBy) {
+		this.requestedBy = requestedBy;
 	}
 
 	@Column(name = "secondContact", length = 50)

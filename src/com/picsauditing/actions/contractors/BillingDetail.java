@@ -132,8 +132,8 @@ public class BillingDetail extends ContractorActionSupport {
 	public OperatorAccount getRequestedBy() {
 		AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
 
-		if (contractor.getRequestedById() != 0)
-			requestedBy = (OperatorAccount) dao.find(contractor.getRequestedById());
+		if (contractor.getRequestedBy() != null)
+			requestedBy = (OperatorAccount) dao.find(contractor.getRequestedBy().getId());
 
 		return requestedBy;
 	}
