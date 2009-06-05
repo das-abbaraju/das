@@ -14,6 +14,10 @@
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
+<s:if test="contractor.qbListID.startsWith('NOLOAD')">
+	<div id="alert">This contractor is NOT set to sync with QuickBooks</div>
+</s:if>
+
 <table width="100%">
 	<tr>
 		<td style="vertical-align: top; width: 48%;">
