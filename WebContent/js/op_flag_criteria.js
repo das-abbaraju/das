@@ -39,7 +39,7 @@ function showOshaCriteria(type) {
 		slideUpDuration: 0,
 		resizeDuration: .2,
 		overlayClose: false,
-		height: 360});
+		height: 390});
 }
 
 function clearRow(row) {

@@ -39,7 +39,7 @@
 		<td><s:if test="lwcr">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif> <s:else>
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:else></td>
@@ -86,7 +86,7 @@
 		<td><s:if test="lwcr">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:elseif> <s:else>
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:else></td>		
@@ -123,4 +123,18 @@
 		<input type="button" id="close_button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
 	</div>
 </form>
+<br clear="all"/>
+<s:if test="trir">
+	<div id="info">
+		<span style="font-size: 14px;">You have the option to now flag by either your own TRIR Avg(1) or industry based NAICS TRIR
+		provided by BLS(2).</span><br/>
+		<span style="font-size: 11px;">
+		(1) All Contractors are ranked against one TRIR Avg.<br/>
+		(2) Contractors are ranked against their own industry avg.
+		ex: For Construction the NAICS code is 23 and Average TRIR is 5.4. 
+		If the NAICS cut off is 150%(i.e 50% more than the exact value) all the contractors with that 
+		code and TRIR greater than 8.1 will be flagged.
+		</span>  
+	</div>
+</s:if>
 </div>
