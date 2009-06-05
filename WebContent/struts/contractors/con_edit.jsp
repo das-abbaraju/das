@@ -129,6 +129,8 @@
 				<s:else>
 					<li><label>Membership Fee:</label> $<s:property
 						value="contractor.newMembershipLevel.amount" /> USD</li>
+					<li><label>Activation Fee:</label> $<s:property value="activationFee.amount"/> USD</li>
+					<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
 				</s:else>
 				<li><label>Payment Method:</label>
 					<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
