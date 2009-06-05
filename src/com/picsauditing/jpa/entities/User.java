@@ -51,6 +51,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String username;
 	private YesNo isGroup;
 	private String email;
+	// TODO - read GMail to see if emails are bouncing and auto update this field
 	private Date emailConfirmedDate;
 	private String name;
 	private YesNo isActive;
