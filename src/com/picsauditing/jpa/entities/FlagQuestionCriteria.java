@@ -120,7 +120,11 @@ public class FlagQuestionCriteria extends BaseTable {
 		if ("Date".equals(questionType)) {
 			try {
 				Date answerDate = DateBean.parseDate(answer);
-				Date valueDate = DateBean.parseDate(value);
+				Date valueDate;
+				if ("Today".equalsIgnoreCase(value))
+					valueDate = new Date();
+				else
+					valueDate = DateBean.parseDate(value);
 
 				if (">".equals(comparison))
 					return (answerDate.after(valueDate));
