@@ -124,28 +124,6 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AuditCategory other = (AuditCategory) obj;
-		if (id != other.getId())
-			return false;
-		return true;
-	}
-
-	@Override
 	public int compareTo(AuditCategory other) {
 		if (other == null) {
 			return 1;

@@ -311,38 +311,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	}
 
 	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-
-		// We use to compare class names, but with Hibernate, the names get really weird
-		// Now we just ignore the names and just cast it to an Account object
-		// System.out.println("this.getClass() "+getClass().getName());
-		// System.out.println("obj.getClass()  "+obj.getClass().getName());
-		// System.out.println("obj.getClass().getSuperclass()  "+obj.getClass().getSuperclass().getName());
-		try {
-			// Try to cast this to an account
-			final Account other = (Account) obj;
-			if (id == other.getId())
-				return true;
-			return false;
-		} catch (Exception e) {
-			// something went wrong so these must not be equal
-			return false;
-		}
-	}
-
-	@Override
 	public int compareTo(Account o) {
 		if (o.getId() == id)
 			return 0;
