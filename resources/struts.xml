@@ -133,6 +133,13 @@
 			<result>/struts/widgets/open_notes.jsp</result>
 		</action>
 
+		<action name="OperatorsFlagSummaryAjax"
+			class="com.picsauditing.actions.operators.OperatorFlagsWidget">
+			<result>/struts/widgets/flag_changes_summary.jsp</result>
+		</action>
+		
+		
+
 		<!-- Contractor Information -->
 		<action name="ConHeader"
 			class="com.picsauditing.actions.contractors.ConHeader">
@@ -167,6 +174,11 @@
 		<action name="ContractorRegistrationFinish"
 			class="com.picsauditing.actions.contractors.ContractorActionSupport">
 			<result>struts/contractors/con_registration_finish.jsp</result>
+		</action>
+
+		<action name="ContractorRiskRanking"
+			class="com.picsauditing.actions.contractors.ContractorRiskRanking">
+			<result>struts/contractors/con_risk_ranking.jsp</result>
 		</action>
 		
 		<action name="ContractorFlag"

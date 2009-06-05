@@ -6,26 +6,32 @@
 <ul id="navlist">
 	<s:if test="permissions.loggedIn">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('edit')">class="current"</s:if>>1- Edit Details</a></li>
+			<s:if test="requestURI.contains('edit')">class="current"</s:if>>1) Edit Details</a></li>
+		<li><a id="conServicesLink" href="ContractorRiskRanking.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('con_risk_ranking')">class="current"</s:if>>2) Services Performed</a></li>
 		<li><a id="conFacilitiesLink" href="ContractorFacilities.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>2- Add Facilities</a></li>
+			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>3) Add Facilities</a></li>
 		<s:if test="contractor.operators.size > 0">
 			<li><a id="conPaymentLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('payment')">class="current"</s:if>>3- Add Payment Options</a></li>
+				<s:if test="requestURI.contains('payment')">class="current"</s:if>>4) Add Payment Options</a></li>
 		</s:if>
 		<s:if test="contractor.paymentMethodStatusValid">
 			<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
-				<s:if test="requestURI.contains('finish')">class="current"</s:if>>4- Finish</a></li>
+				<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Finish</a></li>
 		</s:if>
+		<s:else>
+			<li><a class="inactive">5) Finish</a></li>
+		</s:else>
 	</s:if>
 	<s:else>
 		<li><a id="conRegisterLink" href="ContractorRegistration.action"
-			<s:if test="requestURI.contains('con_registration')">class="current"</s:if>>1- Register</a></li>
-		<li><a class="inactive">2- Add Facilities</a></li>
-		<li><a class="inactive">3- Add Payment Options</a></li>
-		<li><a class="inactive">4- Finish</a></li>
+			<s:if test="requestURI.contains('con_registration')">class="current"</s:if>>1) Register</a></li>
+		<li><a class="inactive">2) Services Performed</a></li>
+		<li><a class="inactive">3) Add Facilities</a></li>
+		<li><a class="inactive">4) Add Payment Options</a></li>
+		<li><a class="inactive">5) Finish</a></li>
 	</s:else>
 </ul>
 </div>
-<s:include value="../actionMessages.jsp" />
 
+<s:include value="../actionMessages.jsp" />
