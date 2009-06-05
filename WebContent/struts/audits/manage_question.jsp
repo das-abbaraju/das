@@ -77,18 +77,13 @@
 		<li><label>Question Type:</label>
 			<s:select list="questionTypes" name="question.questionType" />
 		</li>
-		<li><label>Allow Tuples:</label>
-			<s:checkbox name="question.allowMultipleAnswers" />
-		</li>
-		<li><label>Minimium Tuples:</label>
-			<s:textfield name="question.minimumTuples" size="5"/>
-		</li>
-		<s:if test="parentQuestionList.size() > 0">
-			<li><label>Parent Question:</label>
-				<s:select list="parentQuestionList" headerKey="0" headerValue="" listKey="id" listValue="question" name="parentQuestionID"></s:select>
-				<s:if test="parentQuestionID > 0"><a href="?id=<s:property value="parentQuestionID" />">Show</a></s:if>
+		
+		<s:if test="subCategory.id == 40">
+			<li><label>Risk Level:</label>
+				<s:select list="@com.picsauditing.jpa.entities.LowMedHigh@values()" name="question.riskLevel" />
 			</li>
 		</s:if>
+		
 		<li><label>Title:</label>
 			<s:textfield name="question.title" size="65"/>
 		</li>

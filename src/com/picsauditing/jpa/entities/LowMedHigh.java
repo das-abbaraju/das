@@ -8,20 +8,20 @@ import java.util.Map;
  */
 public enum LowMedHigh {
 	None, Low, Med, High;
-	
+
 	static public Map<Integer, LowMedHigh> getMap() {
 		Map<Integer, LowMedHigh> map = new HashMap<Integer, LowMedHigh>();
-		for(LowMedHigh value : LowMedHigh.values()) {
+		for (LowMedHigh value : LowMedHigh.values()) {
 			map.put(value.ordinal(), value);
 		}
-		return map; 
+		return map;
 	}
-	
+
 	static public String getName(int id) {
-		for(LowMedHigh value : LowMedHigh.values()) {
-			if(value.ordinal() == id)
+		for (LowMedHigh value : LowMedHigh.values()) {
+			if (value.ordinal() == id)
 				return value.toString();
-		}	
+		}
 		return "";
 	}
 

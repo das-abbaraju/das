@@ -3,18 +3,19 @@
 	<thead>
 		<tr>
 			<th>Contractor</th>
+			<s:if test="permissions.admin">
+				<th>Requested By</th>
+			</s:if>
 			<th>Date</th>
 		</tr>
 	</thead>
 	<s:iterator value="newContractors">
 		<tr>
-			<td>
-				<a href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name" /></a>
-				<s:if test="permissions.admin">
-					<s:property value="requestedById" />
-				</s:if>
-			</td>
-			<td class="center"><s:date name="creationDate" format="M/d HH" /></td>
+			<td><a href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name" /></a></td>
+			<s:if test="permissions.admin">
+				<td><s:property value="requestedBy.name" /></td>
+			</s:if>
+			<td class="center"><s:date name="creationDate" format="MMM d HH:mm" /></td>
 		</tr>
 	</s:iterator>
 </table>

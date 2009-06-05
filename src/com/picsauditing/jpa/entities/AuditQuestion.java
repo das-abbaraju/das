@@ -31,9 +31,9 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
 
-	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date", "Decimal Number",
-			"File", "FileCertificate", "Industry", "License", "Main Work", "Money", "Office Location", "Radio",
-			"Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
+	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
+			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money",
+			"Office Location", "Radio", "Service", "State", "Text", "Text Area", "Yes/No", "Yes/No/NA" };
 
 	private AuditSubCategory subCategory;
 	private int number;
@@ -56,6 +56,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	private YesNo isGroupedWithPrevious = YesNo.No;
 	private boolean allowMultipleAnswers = false;
 	private int minimumTuples = 0;
+	private LowMedHigh riskLevel = null;
 	private String linkUrl1;
 	private String linkText1;
 	private String linkUrl2;
@@ -80,12 +81,12 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public AuditType getAuditType() {
 		return subCategory.getCategory().getAuditType();
 	}
-	
+
 	@Transient
 	public String getExpandedNumber() {
 		return subCategory.getCategory().getNumber() + "." + subCategory.getNumber() + "." + number;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subCategoryID", nullable = false)
 	public AuditSubCategory getSubCategory() {
@@ -424,12 +425,13 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.showComment = showComment;
 	}
 
-	@Override
-	public int hashCode() {
-		final int PRIME = 33;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
+	@Enumerated(EnumType.ORDINAL)
+	public LowMedHigh getRiskLevel() {
+		return riskLevel;
+	}
+
+	public void setRiskLevel(LowMedHigh risk) {
+		this.riskLevel = risk;
 	}
 
 	@Column(length = 30)
