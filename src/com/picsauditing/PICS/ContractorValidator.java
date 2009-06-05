@@ -72,19 +72,23 @@ public class ContractorValidator {
 		if (!Utilities.isValidEmail(contractor.getEmail()))
 			errorMessages
 					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
-		
+
+		if (!Strings.isEmpty(contractor.getSecondEmail()) && !Utilities.isValidEmail(contractor.getSecondEmail()))
+			errorMessages.addElement("Please enter a valid secondary email address.");
+
+		if (!Strings.isEmpty(contractor.getBillingEmail()) && !Utilities.isValidEmail(contractor.getBillingEmail()))
+			errorMessages.addElement("Please enter a valid billing email address.");
+
 		// Risk Level
-		if(contractor.getRiskLevel() == null)
-			errorMessages
-			.addElement("Please select a riskLevel");
-		
+		if (contractor.getRiskLevel() == null)
+			errorMessages.addElement("Please select a riskLevel");
+
 		// Tax Id
 		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
 			errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
 
 		// Main Trade
-		if (Strings.isEmpty(contractor.getMainTrade())
-				|| contractor.getMainTrade().equals("- Trade -"))
+		if (Strings.isEmpty(contractor.getMainTrade()) || contractor.getMainTrade().equals("- Trade -"))
 			errorMessages.addElement("Please select a main trade");
 
 		return errorMessages;
@@ -94,7 +98,7 @@ public class ContractorValidator {
 		User foundUser = userDAO.findName(user.getUsername());
 		if (foundUser == null)
 			return true;
-		if(user.getId() > 0) {
+		if (user.getId() > 0) {
 			user = userDAO.find(user.getId());
 			if (foundUser.equals(user))
 				return true;
