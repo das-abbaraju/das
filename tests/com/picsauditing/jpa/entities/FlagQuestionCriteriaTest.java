@@ -38,6 +38,19 @@ public class FlagQuestionCriteriaTest extends TestCase {
 		criteria.setComparison("<");
 		assertFalse(criteria.isFlagged("2010-02-02"));
 		assertTrue(criteria.isFlagged("2008-02-02"));
+		
+		// Test Date for Today functionality
+		criteria.setValue("Today");
+		criteria.setComparison(">");
+		// Date before today
+		assertFalse(criteria.isFlagged("2006-02-02"));
+		// Date after today
+		assertTrue(criteria.isFlagged("4000-02-02"));
+		criteria.setComparison("<");
+		// Date after today
+		assertFalse(criteria.isFlagged("4000-02-02"));
+		// Date before today
+		assertTrue(criteria.isFlagged("2006-02-02"));
 
 		// Test for Yes/No or Manual Question Type
 		criteria.getAuditQuestion().setQuestionType("Yes/No");
