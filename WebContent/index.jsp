@@ -68,17 +68,22 @@ sets the highest standards possible in regard to contractor qualifications as th
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
                   <td valign="top" bgcolor="#FFFFFF">
                   	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+				  		<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/09</span>BP Cooper River joins PICS</span><br>
+                            <br> 
+								The BP Cooper River plant produces purified terephthalic acid (PTA), the preferred polymer used to manufacture polyester. These polymers are most commonly used to produce products such plastic bottles and bags. They are also used in other products ranging from motor oil additives, bulletproof vests and artificial limbs, to consumer products. BP's Cooper River plant makes 2.76 billion pounds of product per year and is the largest continuous-process PTA plant in the world.</td>
+                        </tr>
 						<tr>
-                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF Joins PICS</span><br>
+                        	<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/09</span>Delta Consultants joins PICS</span><br>
+                            <br> 
+                            	Delta Consultants have provided global leaders in need of sustainable strategies with environmental, health and safety solutions for more than twenty years. With over 4,400 consultants and a global capacity that expands over six continents, Delta offers clients the proven experience and strength of resources vital to developing realistic solutions for a sustainable future.</td></tr>
+						<tr>
+						<tr>
+                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF Joins PICS</span><br>
                             <br> 
                             	BASF is the world's leading chemical company. Their portfolio ranges from oil and gas to chemicals, plastics, performance products, agricultural products and fine chemicals. As a reliable partner BASF helps its customers in virtually all industries to be more successful. With its high-value products and intelligent solutions, BASF plays an important role in finding answers to global challenges such as climate protection, energy efficiency, nutrition and mobility. BASF has more than 95,000 employees and posted sales of almost &euro;58 billion in 2007.</td></tr>
 						<tr>
-				  		<tr>
-                        	<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">09/23/08</span>2008 NSC Annual Congress &amp; Expo</span><br>
-                            <br> 
-								The National Safety Council, founded in 1913, serves as the nation's leading resource on industry trends, professional development, and strategies for advancing safety and health programs and practices. PICS CEO, John Moreland,  gave a demonstration of the free online tool for contractor pre-qualification.</td>
-                        </tr>
-                      		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
+	                  		<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
                     	</tr>
                     </table></td>
                   <td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
