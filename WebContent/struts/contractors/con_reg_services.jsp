@@ -24,12 +24,24 @@
 
 <s:include value="registrationHeader.jsp"></s:include>
 
+
+
+<h3 class="subCategory">General Info</h3>
+<s:iterator value="infoQuestions">
+	<s:set name="q" value="[0]" />
+	<s:set name="a" value="answerMap.get(#q.id)" />
+	<s:set name="paid" value="0" />
+	<s:set name="shaded" value="!#shaded" scope="action" />
+	<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>"
+		class="question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
+</s:iterator>
+
+<h3 class="subCategory">Services Performed</h3>
 <h4 class="groupTitle">
 Please select the services your company performs<br>
 (C) denotes services you perform (S) denotes services performed by subcontractors
 </h4>
-
-<s:iterator value="questions">
+<s:iterator value="serviceQuestions">
 	<s:set name="q" value="[0]" />
 	<s:if test="#q.visible">
 		<s:set name="a" value="answerMap.get(#q.id)" />
@@ -43,7 +55,7 @@ Please select the services your company performs<br>
 <div id="info">Answers on this page automatically save. Click Next to go to the next step.</div>
 
 <div class="buttons">
-	<a href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=followup">Next &gt;&gt;</a>
+	<a href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=calculateRisk">Next &gt;&gt;</a>
 </div>
 </body>
 </html>
