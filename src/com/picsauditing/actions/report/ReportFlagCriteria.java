@@ -119,8 +119,8 @@ public class ReportFlagCriteria extends ReportAccount {
 					if (auditOperator.getAuditType().getClassType().isPolicy()) {
 						sql.addJoin("LEFT JOIN Contractor_audit_operator cao" + name + " ON " + "cao" + name
 								+ ".auditID = " + name + ".id " + " AND cao" + name
-								+ ".opID = (SELECT id from operators where inheritInsuranceCriteria = "
-								+ permissions.getAccountId() + " )" + " AND cao" + name + ".visible = 1");
+								+ ".opID = (SELECT inheritInsuranceCriteria from operators where id = "
+								+ operatorID + " )" + " AND cao" + name + ".visible = 1");
 						sql.addField("cao" + name + ".status AS '" + auditOperator.getAuditType().getAuditName()
 								+ " Status'");
 					} else {
