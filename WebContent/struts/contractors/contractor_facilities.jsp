@@ -72,6 +72,22 @@
 		});
 		return false;
 	}
+	function setRequestedBy( conId, opId) {
+		startThinking( {div: 'thinkingDiv', message: 'Saving Requested Operator Account' } );
+		var pars= 'id=' + conId + '&button=request&operator.id=' + opId; 
+		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete: function(transport) {
+				stopThinking( {div: 'thinkingDiv' } );
+				$('next_button').show();
+				reloadOperators( conId );
+				refreshNoteCategory(conId, 'OperatorChanges');
+			}
+		});
+		return false;
+	}
 </script>
 
 </head>
@@ -84,10 +100,12 @@
 </s:else>
 
 <s:if test="permissions.contractor && !contractor.activeB">
-	<div class="buttons" style="float: left;">
+	<div id="next_button" class="buttons" style="float: left;">
 		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next</a>
+		<div class="clear"></div>
 	</div>
 </s:if>
+<br clear="all"/>
 
 <table width="100%">
 <tr>
@@ -95,7 +113,7 @@
 		<div id="thinkingDiv"></div>
 		
 		<div id="facilities" >
-			<%@ include file="contractor_facilities_assigned.jsp"%>
+			<s:include value="contractor_facilities_assigned.jsp"/>
 		</div>
 		
 		<pics:permission perm="EditNotes" type="Edit">

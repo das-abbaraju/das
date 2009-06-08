@@ -108,9 +108,6 @@ function checkName(name) {
 					name="contractor.mainTrade" headerKey=""
 					headerValue="- Choose a trade -" listKey="question"
 					listValue="question" /><span class="redMain">*</span></li>
-				<li><label>Requested By:</label>
-						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
-				</li>
 				<li><label>DOT OQ:</label> 
 					Does your company have employees who are covered under DOT OQ requirements?
 					<br />

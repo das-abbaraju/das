@@ -97,6 +97,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 				return button;
 			}
+			
+			if("request".equals(button)) {
+				if (operator.getId() > 0 ) {
+					contractor.setRequestedBy(operator);
+					accountDao.save(contractor);
+				}
+				return SUCCESS;
+			}
 
 			boolean recalculate = false;
 

@@ -11,10 +11,13 @@
 			<s:if test="requestURI.contains('con_risk_ranking')">class="current"</s:if>>2) Services Performed</a></li>
 		<li><a id="conFacilitiesLink" href="ContractorFacilities.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>3) Add Facilities</a></li>
-		<s:if test="contractor.operators.size > 0">
+		<s:if test="contractor.operators.size > 0 && (contractor.requestedBy != null || currentOpertors == 1)">
 			<li><a id="conPaymentLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('payment')">class="current"</s:if>>4) Add Payment Options</a></li>
 		</s:if>
+		<s:else>
+			<li><a id="conPaymentLink" href="#" class="inactive">4) Add Payment Options</a></li>
+		</s:else>
 		<s:if test="contractor.paymentMethodStatusValid">
 			<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
 				<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Finish</a></li>

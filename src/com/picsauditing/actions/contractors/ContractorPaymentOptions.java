@@ -57,6 +57,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		this.findContractor();
 
+		// Only during registration
+		if (permissions.isContractor() && !contractor.isActiveB() && contractor.getRequestedBy() == null) {
+			if (contractor.getOperators().size() == 1) {
+				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
+				accountDao.save(contractor);
+			} else {
+				addActionError("Please select the operator that referred you to PICS before continuing.");
+				return "requested";
+			}
+		}
+
 		// The payment method has changed.
 		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
 			contractor.setPaymentMethod(paymentMethod);
@@ -114,9 +125,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
 				addActionMessage("Successfully added Credit Card");
-				addActionMessage("Your card has not been charged. PICS will review your registration " +
-						"to ensure its accuracy and charge your card " +
-						"within one business day and email you the receipt.");
+				addActionMessage("Your card has not been charged. PICS will review your registration "
+						+ "to ensure its accuracy and charge your card "
+						+ "within one business day and email you the receipt.");
 			}
 		}
 
@@ -140,7 +151,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		} else {
 			contractor.setCcExpiration(cc.getExpirationDate2());
 			contractor.setCcOnFile(true);
-			// The card must be valid if BrainTree is accepting it and it hasn't expired yet.
+			// The card must be valid if BrainTree is accepting it and it hasn't
+			// expired yet.
 		}
 
 		time = DateBean.getBrainTreeDate();

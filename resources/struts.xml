@@ -272,6 +272,10 @@
 		<action name="ContractorPaymentOptions"
 			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
 			<result>struts/contractors/con_payment_options.jsp</result>
+			<result name="requested" type="redirect-action">
+				<param name="actionName">ContractorFacilities</param>
+				<param name="id">${contractor.id}</param>			
+			</result>
 		</action>
 		
 		<!--  NOTES for CONTRACTORS and OPERATORS -->

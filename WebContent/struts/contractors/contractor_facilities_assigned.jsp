@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="currentOperators.size() == 0">
-	<div id="alert">This account is not linked to any operators. Use the search tool to the right to find all of the facilities at which <s:property value="contractor.name"/> works or will work.</div>
+	<div id="alert" style="width: inherit;">This account is not linked to any operators. Use the search tool to the right to find all of the facilities at which <s:property value="contractor.name"/> works or will work.</div>
 </s:if>
 <s:else>
 <label># of Linked Facilities:</label> <s:property value="currentOperators.size()" /><br />
@@ -52,6 +52,16 @@
 				</pics:permission>
 			</tr>
 		</s:iterator>
+		<s:if test="currentOperators.size() > 1 && !contractor.activeB">
+			<tr>
+				<td colspan="3"><label>Requested By:</label> <s:select list="currentOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" headerKey="" headerValue="- Select An Operator -" value="contractor.requestedBy.id" onchange="setRequestedBy(%{contractor.id}, this.value)"/></td>
+			</tr>
+		</s:if>
 	</tbody>
 </table>
+<s:if test="permissions.contractor && !contractor.activeB && contractor.operators.size > 1 && contractor.requestedBy == null">
+	<div id="alert" style="width: inherit;">
+		Please select the operator that referred you to PICS before continuing.
+	</div>
+</s:if>
 </s:else>
