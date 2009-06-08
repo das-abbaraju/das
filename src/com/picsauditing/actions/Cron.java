@@ -330,13 +330,16 @@ public class Cron extends PicsActionSupport {
 						if (line.length() > 0) {
 
 							String[] data = line.split(",");
+							PicsLogger.log("Processing data: " + data[0] + "/" + data[1]);
 
-							if (data.length == 2) {
-
-								// contractor id
-								Integer contractorId = Integer.parseInt(data[0]);
-
-								PicsLogger.log("Processing data: " + data[0] + "/" + data[1]);
+							int contractorId = 0;
+							try {
+								contractorId = Integer.parseInt(data[0]);
+							} catch (Exception ignoreStrings) {
+								// Sometimes we get ids that are strings like HC00000629
+							}
+							
+							if (data.length == 2 && contractorId > 0) {
 
 								// the other field. comes in as a Y/N.
 								AuditStatus status = AuditStatus.Pending;
