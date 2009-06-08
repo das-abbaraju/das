@@ -97,7 +97,6 @@
 				</pics:permission>
 			</td>
 		</s:form>	
-	</div>
 	</s:if>		
 </table>
 </s:if>
@@ -110,9 +109,12 @@
 		<th>Status</th>
 		<th>Type</th>
 		<th>For</th>
-		<th>Closed</th>
+		<th>Created</th>
 		<th>Operator</th>
 		<th>Auditor</th>
+		<th>Scheduled</th>
+		<th>Submitted</th>
+		<th>Closed</th>
 		<th>Expires</th>
 		<th>View</th>
 		<pics:permission perm="AuditCopy">
@@ -125,7 +127,7 @@
 			<td><s:property value="auditStatus" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
-			<td><s:date name="closedDate" format="M/d/yy" /></td>
+			<td><s:date name="creationDate" format="M/d/yy" /></td>
 			<td>
 				<s:if test="requestingOpAccount.name != null">
 					<s:property value="requestingOpAccount.name" />
@@ -135,6 +137,9 @@
 				</s:else>
 			</td>
 			<td><s:property value="auditor.name" /></td>
+			<td><s:date name="scheduledDate" format="M/d/yy HH:mm"/></td>
+			<td><s:date name="completedDate" format="M/d/yy" /></td>
+			<td><s:date name="closedDate" format="M/d/yy" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 			<pics:permission perm="AuditCopy">
@@ -162,7 +167,11 @@
 	<tr>
 		<th>Type</th>
 		<th>For</th>
+		<th>Created</th>
 		<th>Operator</th>
+		<th>Scheduled</th>
+		<th>Submitted</th>
+		<th>Closed</th>
 		<th>Expired</th>
 		<th>View</th>
 		<pics:permission perm="AuditCopy">
@@ -174,7 +183,11 @@
 		<tr>
 			<td><a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /></a></td>
 			<td><s:property value="auditFor"/></td>
+			<td><s:date name="creationDate" format="M/d/yy" /></td>			
 			<td><s:property value="requestingOpAccount.name" /></td>
+			<td><s:date name="scheduledDate" format="M/d/yy HH:mm"/></td>
+			<td><s:date name="completedDate" format="M/d/yy" /></td>
+			<td><s:date name="closedDate" format="M/d/yy" /></td>
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 			<pics:permission perm="AuditCopy">
