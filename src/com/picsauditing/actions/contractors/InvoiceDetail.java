@@ -81,7 +81,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	public String execute() throws NoRightsException, IOException {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		if (invoice == null) {
 			addActionError("We could not find the invoice you were looking for");
 			return BLANK;
@@ -122,7 +122,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						invoice.setCcNumber(cc.getCardNumber());
 
 						payInvoice();
-						addNote("Credit Card transaction completed and emailed the receipt for $" + invoice.getTotalAmount());
+						addNote("Credit Card transaction completed and emailed the receipt for $"
+								+ invoice.getTotalAmount());
 					} catch (Exception e) {
 						addNote("Credit Card transaction failed: " + e.getMessage());
 						this.addActionError("Failed to charge credit card. " + e.getMessage());
@@ -134,7 +135,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					addNote("Received check and emailed the receipt for $" + invoice.getTotalAmount());
 				}
 				if (button.startsWith("Mark Paid")) {
-					markInvoicePaid();
+					invoice.markPaid(getUser());
+					invoiceDAO.save(invoice);
 					addNote("Marked invoice paid with amount " + invoice.getTotalAmount() + ". No payment");
 				}
 				if (button.startsWith("Email")) {
@@ -247,15 +249,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
-	private void markInvoicePaid() {
-		invoice.setPaid(true);
-		invoice.setPaidDate(new Date());
-		invoice.setAuditColumns(getUser());
-		invoiceDAO.save(invoice);
-	}
-
 	private void payInvoice() {
-		markInvoicePaid();
+		invoice.markPaid(getUser());
+		invoiceDAO.save(invoice);
 
 		if (!contractor.isActiveB()) {
 			for (InvoiceItem item : invoice.getItems()) {

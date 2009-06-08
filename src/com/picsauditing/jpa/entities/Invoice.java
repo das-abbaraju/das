@@ -42,9 +42,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private boolean qbSync;
 	protected String qbListID;
 	protected String qbPaymentListID;
-	
-	
-	
+
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 	@ManyToOne
@@ -61,16 +59,16 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	public boolean isOverdue() {
 		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0)
 			return false;
-		
+
 		if (paid)
 			return false;
-		
+
 		if (dueDate == null)
 			return false;
-		
+
 		return dueDate.before(new Date());
 	}
-	
+
 	@Temporal(TemporalType.DATE)
 	public Date getDueDate() {
 		return dueDate;
@@ -89,16 +87,17 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * Check to see if a invoice is Cancelled 
+	 * Check to see if a invoice is Cancelled
+	 * 
 	 * @return
 	 */
 	@Transient
 	public boolean isCancelledInvoice() {
-		if(isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
+		if (isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
 			return true;
 		return false;
 	}
-	
+
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -176,7 +175,9 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * True if QuickBooks Web Connector needs to pull this record into
+	 * QuickBooks
+	 * 
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -189,6 +190,7 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
+	 * 
 	 * @return
 	 */
 	public String getQbListID() {
@@ -207,14 +209,23 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.qbPaymentListID = qbPaymentListID;
 	}
 
+	@Transient
+	public void markPaid(User u) {
+		this.setPaid(true);
+		this.setPaidDate(new Date());
+		this.setAuditColumns(u);
+
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		
-		// We use to compare class names, but with Hibernate, the names get really weird
+
+		// We use to compare class names, but with Hibernate, the names get
+		// really weird
 		// Now we just ignore the names and just cast it to an Account object
 		// System.out.println("this.getClass() "+getClass().getName());
 		// System.out.println("obj.getClass()  "+obj.getClass().getName());
@@ -230,6 +241,5 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 			return false;
 		}
 	}
-	
 
 }
