@@ -40,5 +40,10 @@ Please select the services your company performs<br>
 	</s:if>
 </s:iterator>
 
+<div id="info">Answers on this page automatically save. Click Next to go to the next step.</div>
+
+<div class="buttons">
+	<a href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=followup">Next &gt;&gt;</a>
+</div>
 </body>
 </html>

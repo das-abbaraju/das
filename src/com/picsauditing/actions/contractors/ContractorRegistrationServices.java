@@ -37,6 +37,15 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
+
+		if ("calculateRisk".equals(button)) {
+			// TODO calculate the risk level
+			// we may need to move some of the below items before
+			
+			// TODO redirect to facilities
+			redirect("FacilityEdit.action");
+			return BLANK;
+		}
 		
 		for(ContractorAudit ca : contractor.getAudits()) {
 			if (ca.getAuditType().isPqf()) {
@@ -55,7 +64,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 		questions = auditQuestionDAO.findBySubCategory(40);
 		answerMap = auditDataDAO.findServicesPerformed(this.id);
-
 		return SUCCESS;
 	}
 
