@@ -57,7 +57,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		this.findContractor();
 
-		// Only during registration
+		// Only during registration - redirect if no requestedBy operator is set
 		if (permissions.isContractor() && !contractor.isActiveB() && contractor.getRequestedBy() == null) {
 			if (contractor.getOperators().size() == 1) {
 				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
