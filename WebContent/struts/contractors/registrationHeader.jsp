@@ -7,8 +7,8 @@
 	<s:if test="permissions.loggedIn">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>1) Edit Details</a></li>
-		<li><a id="conServicesLink" href="ContractorRiskRanking.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_risk_ranking')">class="current"</s:if>>2) Services Performed</a></li>
+		<li><a id="conServicesLink" href="ContractorRegistrationServices.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('con_reg_services')">class="current"</s:if>>2) Services Performed</a></li>
 		<li><a id="conFacilitiesLink" href="ContractorFacilities.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>3) Add Facilities</a></li>
 		<s:if test="contractor.operators.size > 0 && (contractor.requestedBy != null || currentOpertors == 1)">

@@ -176,9 +176,9 @@
 			<result>struts/contractors/con_registration_finish.jsp</result>
 		</action>
 
-		<action name="ContractorRiskRanking"
-			class="com.picsauditing.actions.contractors.ContractorRiskRanking">
-			<result>struts/contractors/con_risk_ranking.jsp</result>
+		<action name="ContractorRegistrationServices"
+			class="com.picsauditing.actions.contractors.ContractorRegistrationServices">
+			<result>struts/contractors/con_reg_services.jsp</result>
 		</action>
 		
 		<action name="ContractorFlag"

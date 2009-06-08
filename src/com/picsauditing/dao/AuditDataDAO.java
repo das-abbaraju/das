@@ -261,7 +261,20 @@ public class AuditDataDAO extends PicsDAO {
 		return data;
 	}
 	
-	
+	public Map<Integer, AuditData> findServicesPerformed(int conID) {
+		Map<Integer, AuditData> response = new HashMap<Integer, AuditData>();
+		
+		Query query = em.createQuery("SELECT d FROM AuditData d " +
+				"WHERE d.audit.contractorAccount.id = ? and d.question.subCategory.id = 40");
+		query.setParameter(1, conID);
+		List<AuditData> results = query.getResultList();
+		
+		for(AuditData row : results) {
+			response.put(row.getQuestion().getId(), row);
+		}
+		return response;
+	}
+
 	public AnswerMap findAnswersByAuditAndUniqueCode( int auditId, String uniqueCode ) {
 		
 			Query query = em.createQuery("SELECT d FROM AuditData d JOIN AuditQuestion q WHERE d.audit.id = ? AND q.uniqueCode = ? ");
