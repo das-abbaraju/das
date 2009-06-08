@@ -17,7 +17,9 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -95,7 +97,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user = userDAO.save(user);
 			contractor.setUsers(new ArrayList<User>());
 			contractor.getUsers().add(user);
-
+			
+			// Create a blank PQF for this contractor
+			ContractorAudit audit = new ContractorAudit();
+			audit.setContractorAccount(contractor);
+			audit.setAuditType(new AuditType(1));
+			audit.setAuditColumns(new User(User.SYSTEM));
+			auditDao.save(audit);
+			
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(2); // Welcome Email
 			emailBuilder.setContractor(contractor);
@@ -115,7 +124,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			permissions.login(user);
 			ActionContext.getContext().getSession().put("permissions", permissions);
 
-			ServletActionContext.getResponse().sendRedirect("ContractorFacilities.action?id=" + contractor.getId());
+			ServletActionContext.getResponse().sendRedirect("ContractorRiskRanking.action?id=" + contractor.getId());
 			return BLANK;
 		}
 

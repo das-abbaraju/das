@@ -1,10 +1,8 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,7 +12,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -35,6 +32,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	protected String name;
 	protected String nameIndex;
+	protected String doingBusinessAsName;
 	protected Date lastLogin;
 	protected String contact;
 	protected String address;
@@ -92,6 +90,15 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setNameIndex() {
 		this.nameIndex = Strings.indexName(this.name);
+	}
+
+	@Column(name = "name2", nullable = true, length = 500)
+	public String getDoingBusinessAsName() {
+		return doingBusinessAsName;
+	}
+
+	public void setDoingBusinessAsName(String doingBusinessAsName) {
+		this.doingBusinessAsName = doingBusinessAsName;
 	}
 
 	@Column(name = "lastLogin", length = 19)

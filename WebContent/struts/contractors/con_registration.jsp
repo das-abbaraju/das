@@ -48,6 +48,9 @@ function checkName(name) {
 						<li><label>Company Name:</label>
 							<s:textfield name="contractor.name" size="35" onblur="checkName(this.value);"/>
 							<span id="name_status"></span><span class="redMain">*</span></li>
+						<li><label>DBA Name: </label>
+							<s:textarea name="contractor.doingBusinessAsName" cols="27" rows="5" />
+						</li>
 						<li><label>Contact:</label>
 							<s:textfield name="contractor.contact" size="35" /><span class="redMain">*</span></li>
 						<li><label>Web URL:</label> 
@@ -113,16 +116,6 @@ function checkName(name) {
 					<br />
 					<s:radio list="#{'Yes':'Yes','No':'No'}"
 						name="contractor.oqEmployees" theme="pics"/></li>
-				<li><label>Risk Level:<span class="redMain">*</span></label>
-				<table class="report">
-					<tr><td>
-					<s:radio theme="pics" list="#{'Low':'Low</td><td><nobr>Delivery,
-						janitorial, off site engineering, security, computer services,
-						etc.</nobr></td></tr><tr><td>',
-						'Med':'Med</td><td>On site engineering, safety services, landscaping, inspection services,etc.</td></tr><tr><td>',
-						'High':'High</td><td>Mechanical contractor, remediation, industrial cleaning, general construction, etc.'}" name="contractor.riskLevel"></s:radio>
-					</td></tr>	
-				</table>
 			</ol>
 			</fieldset>
 					<fieldset class="form">

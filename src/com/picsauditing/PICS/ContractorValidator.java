@@ -72,16 +72,11 @@ public class ContractorValidator {
 		if (!Utilities.isValidEmail(contractor.getEmail()))
 			errorMessages
 					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
-
 		if (!Strings.isEmpty(contractor.getSecondEmail()) && !Utilities.isValidEmail(contractor.getSecondEmail()))
 			errorMessages.addElement("Please enter a valid secondary email address.");
 
 		if (!Strings.isEmpty(contractor.getBillingEmail()) && !Utilities.isValidEmail(contractor.getBillingEmail()))
 			errorMessages.addElement("Please enter a valid billing email address.");
-
-		// Risk Level
-		if (contractor.getRiskLevel() == null)
-			errorMessages.addElement("Please select a riskLevel");
 
 		// Tax Id
 		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))

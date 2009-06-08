@@ -4,12 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
-
-import org.apache.struts2.ServletActionContext;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.PdfWriter;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -63,8 +57,11 @@ public class ContractorView extends ContractorActionSupport {
 					operatorTags.remove(contractorTag.getTag());
 			}
 		}
-		auditBuilder.setUser(getUser());
-		auditBuilder.buildAudits(this.contractor);
+		if(contractor.getOperators() != null 
+				&& contractor.getOperators().size() > 0) {
+			auditBuilder.setUser(getUser());
+			auditBuilder.buildAudits(this.contractor);
+		}
 
 		this.subHeading = "Contractor Details";
 

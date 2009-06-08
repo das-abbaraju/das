@@ -246,7 +246,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	}
 
 	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "riskLevel", nullable = false)
+	@Column(name = "riskLevel")
 	public LowMedHigh getRiskLevel() {
 		return riskLevel;
 	}
