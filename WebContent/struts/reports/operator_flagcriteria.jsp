@@ -30,15 +30,17 @@
 		<td>Flag</td>
 		<td>Risk Level</td>
 		<s:iterator value="operatorAccount.visibleAudits">
-			<s:if test="auditType.annualAddendum">
-				<td><s:property value="auditType.auditName"/> 08 Status</td>
-				<td><s:property value="auditType.auditName"/> 07 Status</td>
-				<td><s:property value="auditType.auditName"/> 06 Status</td>
-				<td><s:property value="auditType.auditName"/> 05 Status</td>
+			<s:if test="minRiskLevel > 0">
+				<s:if test="auditType.annualAddendum">
+					<td><s:property value="auditType.auditName"/> 08 Status</td>
+					<td><s:property value="auditType.auditName"/> 07 Status</td>
+					<td><s:property value="auditType.auditName"/> 06 Status</td>
+					<td><s:property value="auditType.auditName"/> 05 Status</td>
+				</s:if>
+				<s:else>
+					<td><s:property value="auditType.auditName"/> Status</td>
+				</s:else>
 			</s:if>
-			<s:else>
-				<td><s:property value="auditType.auditName"/> Status</td>
-			</s:else>
 		</s:iterator>
 		<s:iterator value="operatorAccount.inheritFlagCriteria.flagQuestionCriteria">
 			<s:if test="flagColor.toString().equals(filter.flagStatus) && checked">
@@ -120,15 +122,17 @@
 				<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))" />
 			</td>
 			<s:iterator value="operatorAccount.visibleAudits">		
-				<s:if test="auditType.annualAddendum">
-					<td><span title="Completed - <s:property value="%{get('annual2008 Completed')}"/>%"><s:property value="%{get('annual2008 Status')}"/></span></td>
-					<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
-					<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
-					<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
+				<s:if test="minRiskLevel > 0">
+					<s:if test="auditType.annualAddendum">
+						<td><span title="Completed - <s:property value="%{get('annual2008 Completed')}"/>%"><s:property value="%{get('annual2008 Status')}"/></span></td>
+						<td><span title="Completed - <s:property value="%{get('annual2007 Completed')}"/>%"><s:property value="%{get('annual2007 Status')}"/></span></td>
+						<td><span title="Completed - <s:property value="%{get('annual2006 Completed')}"/>%"><s:property value="%{get('annual2006 Status')}"/></span></td>
+						<td><span title="Completed - <s:property value="%{get('annual2005 Completed')}"/>%"><s:property value="%{get('annual2005 Status')}"/></span></td>
+					</s:if>
+					<s:else>
+						<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
+					</s:else>
 				</s:if>
-				<s:else>
-					<td><span title="Completed - <s:property value="%{get(auditType.auditName + ' Completed')}"/>%"><s:property value="%{get(auditType.auditName + ' Status')}"/></span></td>
-				</s:else>
 			</s:iterator>
 			<s:iterator value="operatorAccount.inheritFlagCriteria.flagQuestionCriteria">
 				<s:if test="flagColor.toString().equals(filter.flagStatus) && checked">

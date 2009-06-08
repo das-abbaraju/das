@@ -67,87 +67,89 @@ public class ReportFlagCriteria extends ReportAccount {
 
 		operatorAccount = operatorAccountDAO.find(operatorID);
 		for (AuditOperator auditOperator : operatorAccount.getVisibleAudits()) {
-			String name = auditOperator.getAuditType().getAuditName();
-			name = sanitize(name);
-			if (auditOperator.getAuditType().getId() == 11) {
-				year = getYear();
-				name += year;
-				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-						+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-						+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
-				sql.addField(name + ".auditStatus AS '" + name + " Status'");
-				sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-				sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-						+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA' ");
+			if (auditOperator.getMinRiskLevel() > 0) {
+				String name = auditOperator.getAuditType().getAuditName();
+				name = sanitize(name);
+				if (auditOperator.getAuditType().getId() == 11) {
+					year = getYear();
+					name += year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
+					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA' ");
 
-				year = year - 1;
-				name = "annual" + year;
-				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-						+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-						+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
-				sql.addField(name + ".auditStatus AS '" + name + " Status'");
-				sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-				sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-						+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
+					year = year - 1;
+					name = "annual" + year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
+					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
 
-				year = year - 1;
-				name = "annual" + year;
-				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-						+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-						+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
-				sql.addField(name + ".auditStatus AS '" + name + " Status'");
-				sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-				sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-						+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
+					year = year - 1;
+					name = "annual" + year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
+					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
 
-				year = year - 1;
-				name = "annual" + year;
-				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-						+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-						+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
-				sql.addField(name + ".auditStatus AS '" + name + " Status'");
-				sql.addField(name + ".percentComplete AS '" + name + " Completed'");
-				sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
-						+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
-			} else {
-				if (auditOperator.getAuditType().getId() > 1)
-					name += auditOperator.getAuditType().getId();
-				sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-						+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-						+ ".auditStatus IN ('Pending','Submitted','Active') ");
-				if (auditOperator.getAuditType().getClassType().isPolicy()) {
-					sql.addJoin("LEFT JOIN Contractor_audit_operator cao" + name + " ON " + "cao" + name
-							+ ".auditID = " + name + ".id " + " AND cao" + name
-							+ ".opID = (SELECT id from operators where inheritInsuranceCriteria = "
-							+ permissions.getAccountId() + " )" + " AND cao" + name + ".visible = 1");
-					sql.addField("cao" + name + ".status AS '" + auditOperator.getAuditType().getAuditName()
-							+ " Status'");
+					year = year - 1;
+					name = "annual" + year;
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+					sql.addField(name + ".auditStatus AS '" + name + " Status'");
+					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
+					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
+							+ ".id AND osha" + year + ".location = 'Corporate' AND osha" + year + ".SHAType = 'OSHA'");
 				} else {
-					sql.addField(name + ".auditStatus AS '" + auditOperator.getAuditType().getAuditName() + " Status'");
+					if (auditOperator.getAuditType().getId() > 1)
+						name += auditOperator.getAuditType().getId();
+					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
+							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
+							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+					if (auditOperator.getAuditType().getClassType().isPolicy()) {
+						sql.addJoin("LEFT JOIN Contractor_audit_operator cao" + name + " ON " + "cao" + name
+								+ ".auditID = " + name + ".id " + " AND cao" + name
+								+ ".opID = (SELECT id from operators where inheritInsuranceCriteria = "
+								+ permissions.getAccountId() + " )" + " AND cao" + name + ".visible = 1");
+						sql.addField("cao" + name + ".status AS '" + auditOperator.getAuditType().getAuditName()
+								+ " Status'");
+					} else {
+						sql.addField(name + ".auditStatus AS '" + auditOperator.getAuditType().getAuditName()
+								+ " Status'");
+					}
+					sql.addField(name + ".percentComplete AS '" + auditOperator.getAuditType().getAuditName()
+							+ " Completed'");
 				}
-				sql.addField(name + ".percentComplete AS '" + auditOperator.getAuditType().getAuditName()
-						+ " Completed'");
 			}
 		}
-
 		Set<Integer> questionIds = new HashSet<Integer>();
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getInheritFlagCriteria()
 				.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()) 
-					&& flagQuestionCriteria.isChecked() 
+			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
+					&& flagQuestionCriteria.isChecked()
 					&& !flagQuestionCriteria.getAuditQuestion().getAuditType().getClassType().isPolicy()) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (!questionIds.contains(questionID)) {
 					questionIds.add(questionID);
 					if (flagQuestionCriteria.getAuditQuestion().getId() == AuditQuestion.EMR) {
 						year = getYear();
-						sql.addAnnualQuestion(questionID, false, "answer"+year, "annual"+year);
-						year = year-1;
-						sql.addAnnualQuestion(questionID, false, "answer"+year, "annual"+year);
-						year = year-1;
-						sql.addAnnualQuestion(questionID, false, "answer"+year, "annual"+year);
-						year = year-1; 
-						sql.addAnnualQuestion(questionID, false, "answer"+year, "annual"+year);
+						sql.addAnnualQuestion(questionID, false, "answer" + year, "annual" + year);
+						year = year - 1;
+						sql.addAnnualQuestion(questionID, false, "answer" + year, "annual" + year);
+						year = year - 1;
+						sql.addAnnualQuestion(questionID, false, "answer" + year, "annual" + year);
+						year = year - 1;
+						sql.addAnnualQuestion(questionID, false, "answer" + year, "annual" + year);
 					} else {
 						sql.addPQFQuestion(questionID);
 					}
@@ -161,36 +163,48 @@ public class ReportFlagCriteria extends ReportAccount {
 				if (!hasFatalities && flagOshaCriteria.getFatalities().isRequired()) {
 					hasFatalities = true;
 					year = getYear();
-					sql.addField("osha" + year + ".fatalities AS fatalities"+year);
+					sql.addField("osha" + year + ".fatalities AS fatalities" + year);
 					year = year - 1;
-					sql.addField("osha" + year + ".fatalities AS fatalities"+year);
+					sql.addField("osha" + year + ".fatalities AS fatalities" + year);
 					year = year - 1;
-					sql.addField("osha" + year + ".fatalities AS fatalities"+year);
+					sql.addField("osha" + year + ".fatalities AS fatalities" + year);
 					year = year - 1;
-					sql.addField("osha" + year + ".fatalities AS fatalities"+year);
+					sql.addField("osha" + year + ".fatalities AS fatalities" + year);
 				}
 				if (!hasTrir && flagOshaCriteria.getTrir().isRequired()) {
 					hasTrir = true;
 					year = getYear();
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"+year);
+					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+							+ year);
 					year = year - 1;
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"+year);
+					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+							+ year);
 					year = year - 1;
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"+year);
+					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+							+ year);
 					year = year - 1;
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"+year);
+					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+							+ year);
 
 				}
 				if (!hasLwcr && flagOshaCriteria.getLwcr().isRequired()) {
 					hasLwcr = true;
 					year = getYear();
-					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"+year);
+					sql
+							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+									+ year);
 					year = year - 1;
-					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"+year);
+					sql
+							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+									+ year);
 					year = year - 1;
-					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"+year);
+					sql
+							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+									+ year);
 					year = year - 1;
-					sql.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"+year);
+					sql
+							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+									+ year);
 				}
 			}
 		}
@@ -260,52 +274,57 @@ public class ReportFlagCriteria extends ReportAccount {
 			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.String), 30);
 		int i = 40;
 		for (AuditOperator aOperator : operatorAccount.getVisibleAudits()) {
-			String name = aOperator.getAuditType().getAuditName();
-			name = sanitize(name);
+			if (aOperator.getMinRiskLevel() > 0) {
+				String name = aOperator.getAuditType().getAuditName();
+				name = sanitize(name);
 
-			if (aOperator.getAuditType().getId() == 11) {
-				year = getYear();
-				name += year;
-				excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i);
+				if (aOperator.getAuditType().getId() == 11) {
+					year = getYear();
+					name += year;
+					excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i);
 
-				year = year - 1;
-				name = "annual" + year;
-				excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
+					year = year - 1;
+					name = "annual" + year;
+					excelSheet
+							.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
 
-				year = year - 1;
-				name = "annual" + year;
-				excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
+					year = year - 1;
+					name = "annual" + year;
+					excelSheet
+							.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
 
-				year = year - 1;
-				name = "annual" + year;
-				excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
-			} else {
-				if (aOperator.getAuditType().getId() > 1)
-					name += aOperator.getAuditType().getId();
-				excelSheet.addColumn(new ExcelColumn(aOperator.getAuditType().getAuditName() + " Status", aOperator
-						.getAuditType().getAuditName()
-						+ " Status", ExcelCellType.String), i++);
-				i++;
+					year = year - 1;
+					name = "annual" + year;
+					excelSheet
+							.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
+				} else {
+					if (aOperator.getAuditType().getId() > 1)
+						name += aOperator.getAuditType().getId();
+					excelSheet.addColumn(new ExcelColumn(aOperator.getAuditType().getAuditName() + " Status", aOperator
+							.getAuditType().getAuditName()
+							+ " Status", ExcelCellType.String), i++);
+					i++;
+				}
 			}
 		}
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getInheritFlagCriteria()
 				.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()) 
+			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
 					&& flagQuestionCriteria.isChecked()
 					&& !flagQuestionCriteria.getAuditQuestion().getAuditType().getClassType().isPolicy()) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (flagQuestionCriteria.getAuditQuestion().getId() == AuditQuestion.EMR) {
 					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("answer"+year, "EMR"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("answer"+year, "EMR"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("answer"+year, "EMR"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("answer"+year, "EMR"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
 				} else {
-					excelSheet.addColumn(new ExcelColumn("answer" + questionID, flagQuestionCriteria.getAuditQuestion().getColumnHeaderOrQuestion(),
-							ExcelCellType.String), i);
+					excelSheet.addColumn(new ExcelColumn("answer" + questionID, flagQuestionCriteria.getAuditQuestion()
+							.getColumnHeaderOrQuestion(), ExcelCellType.String), i);
 					i++;
 				}
 			}
@@ -315,33 +334,37 @@ public class ReportFlagCriteria extends ReportAccount {
 					&& flagOshaCriteria.isRequired()) {
 				if (flagOshaCriteria.getFatalities().isRequired()) {
 					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("fatalities"+year, "fatalities"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(
+							new ExcelColumn("fatalities" + year, "fatalities" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("fatalities"+year, "fatalities"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(
+							new ExcelColumn("fatalities" + year, "fatalities" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("fatalities"+year, "fatalities"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(
+							new ExcelColumn("fatalities" + year, "fatalities" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("fatalities"+year, "fatalities"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(
+							new ExcelColumn("fatalities" + year, "fatalities" + year, ExcelCellType.String), i++);
 				}
 				if (flagOshaCriteria.getTrir().isRequired()) {
 					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("trir"+year, "trir"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("trir"+year, "trir"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("trir"+year, "trir"+year, ExcelCellType.String), i++ );
+					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("trir"+year, "trir"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
 				}
 				if (flagOshaCriteria.getLwcr().isRequired()) {
 					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("lwcr"+year, "lwcr"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("lwcr"+year, "lwcr"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("lwcr"+year, "lwcr"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
 					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("lwcr"+year, "lwcr"+year, ExcelCellType.String), i++);
+					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
 				}
 			}
 		}
