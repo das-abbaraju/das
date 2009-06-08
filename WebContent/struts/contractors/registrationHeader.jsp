@@ -16,7 +16,7 @@
 				<s:if test="requestURI.contains('payment')">class="current"</s:if>>4) Add Payment Options</a></li>
 		</s:if>
 		<s:else>
-			<li><a id="conPaymentLink" href="#" class="inactive">4) Add Payment Options</a></li>
+			<li><a class="inactive">4) Add Payment Options</a></li>
 		</s:else>
 		<s:if test="contractor.paymentMethodStatusValid">
 			<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
