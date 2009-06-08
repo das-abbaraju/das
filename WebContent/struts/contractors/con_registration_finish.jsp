@@ -18,6 +18,20 @@
 <s:else>
 </s:else>
 
+<div style="color: red">
+TODO !!!!
+Based on the information provided your level of risk for the the work your company performs is _________.	fill in	low, med. high
+Based on the Operators that you have selected the following audits will apply.	list	PQF, Annual Update, Desktop, Office, IM
+need to provide a brief description of each audit
+
+list the facilities selected
+
+display invoice summary
+
+with button to Complete their registration
+TODO!!!!
+</div>
+
 <div id="info">Thank you for registering at PICS!</div>
 
 <div>
