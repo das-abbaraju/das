@@ -29,6 +29,7 @@
 						Big West Oil, LLC<br />
 						BP Cherry Point Refinery<br />
 						BP Carson Refinery<br />
+						BP Cooper River<br />
 						BP Pipelines &amp; Logistics<br />
 						BP Coke Marketing<br />
 						BP Toledo Refinery<br />
@@ -41,14 +42,13 @@
 						ConocoPhillips Santa Maria Refinery<br />
 						Criterion Catalysts &amp; Technologies<br />
 						CRI<br />
+						Delta Consultants<br />
 						Empire Southwest (CAT)<br />
 						Flying J<br />
 						Frontier Oil El Dorado<br>
 						Frontier Refining Inc. Cheyenne<br>
 						Huntsman International<br />
 						Huntsman Auburn Hills<br />
-						Huntsman Conroe<br />
-						Huntsman Charlotte<br />
 						</nobr></td>
 						<td valign="top" class="blueClientList"><script
 							type="text/javascript">
@@ -66,6 +66,8 @@ AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.
 						</object></noscript>
 						<script type="text/javascript" src="js/ieupdate.js"></script><br>
 						<br>
+						Huntsman Conroe<br />
+						Huntsman Charlotte<br />
 						Huntsman Dayton<br />
 						<nobr>Huntsman Derry<br>
 						Huntsman East Lansing<br>
@@ -83,9 +85,9 @@ AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.
 						Martinez Catalyst Plant<br>
 						Motiva Convent Refinery<br>
 						Motiva Norco Refinery<br>
-						Motiva Port Arthur Refinery
 						</nobr></td>
 						<td valign="top" class="blueClientList">
+						Motiva Port Arthur Refinery
 						Motiva Retail Motiva SD&amp;CM<br>
 						Motorola Field Services<br>
 						Motorola USA<br>
