@@ -9,7 +9,7 @@
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>>1) Edit Details</a></li>
 		<li><a id="conServicesLink" href="ContractorRegistrationServices.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_reg_services')">class="current"</s:if>>2) Services Performed</a></li>
-		<s:if test="contractor.riskLevel != null && contractor.riskLevel > 0">
+		<s:if test="contractor.riskLevel != null">
 			<li><a id="conFacilitiesLink" href="ContractorFacilities.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>3) Add Facilities</a></li>
 			<s:if test="contractor.operators.size > 0 && (contractor.requestedBy != null || currentOpertors == 1)">
@@ -27,6 +27,11 @@
 				<li><a class="inactive">5) Finish</a></li>
 			</s:else>
 		</s:if>
+		<s:else>
+			<li><a class="inactive">3) Add Facilities</a></li>
+			<li><a class="inactive">4) Add Payment Options</a></li>
+			<li><a class="inactive">5) Finish</a></li>
+		</s:else>
 	</s:if>
 	<s:else>
 		<li><a id="conRegisterLink" href="ContractorRegistration.action"

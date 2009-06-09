@@ -16,6 +16,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
@@ -249,8 +250,20 @@ public class LoginController extends PicsActionSupport {
 				}
 			}
 		}
-
-		String url = PicsMenu.getHomePage(menu, permissions);
+		String url = null;
+		if(permissions.isContractor() && !user.getAccount().isActiveB()) {
+			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
+			if(cAccount.getRiskLevel() == null)
+				url = "ContractorRegistrationServices.action?id=" + cAccount.getId();
+			else if(cAccount.getOperators().size() == 0)
+				url = "ContractorFacilities.action?id=" + cAccount.getId();
+			else if(!cAccount.isPaymentMethodStatusValid())
+				url = "ContractorPaymentOptions.action?id="+cAccount.getId();
+			else
+				url = "ContractorEdit.action?id="+cAccount.getId();
+		}
+		else 
+			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
 		

@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.struts2.ServletActionContext;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.Permissions;
@@ -16,6 +14,8 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -103,6 +103,10 @@ public class ContractorRegistration extends ContractorActionSupport {
 			audit.setContractorAccount(contractor);
 			audit.setAuditType(new AuditType(1));
 			audit.setAuditColumns(new User(User.SYSTEM));
+			addAuditCategories(audit, 2); // COMPANY INFORMATION
+			addAuditCategories(audit, 8); // GENERAL INFORMATION
+			addAuditCategories(audit, 20); // DOT PIPELINE OPERATOR QUALIFICATION
+			addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
 			auditDao.save(audit);
 			
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -157,5 +161,17 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public void addAuditCategories(ContractorAudit audit, int CategoryID){
+		AuditCatData catData = new AuditCatData();
+		catData.setCategory(new AuditCategory());
+		catData.getCategory().setId(CategoryID);
+		catData.setAudit(audit);
+		catData.setApplies(YesNo.Yes);
+		catData.setOverride(false);
+		catData.setNumRequired(1);
+		catData.setAuditColumns(new User(User.SYSTEM));
+		audit.getCategories().add(catData);
 	}
 }

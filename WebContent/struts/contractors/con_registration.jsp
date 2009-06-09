@@ -108,11 +108,6 @@ function checkName(name) {
 					name="contractor.mainTrade" headerKey=""
 					headerValue="- Choose a trade -" listKey="question"
 					listValue="question" /><span class="redMain">*</span></li>
-				<li><label>DOT OQ:</label> 
-					Does your company have employees who are covered under DOT OQ requirements?
-					<br />
-					<s:radio list="#{'Yes':'Yes','No':'No'}"
-						name="contractor.oqEmployees" theme="pics"/></li>
 			</ol>
 			</fieldset>
 					<fieldset class="form">
