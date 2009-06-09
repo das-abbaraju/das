@@ -60,9 +60,4 @@
 		</s:iterator>
 	</tbody>
 </table>
-<s:if test="permissions.contractor && !contractor.activeB && contractor.operators.size > 1 && contractor.requestedBy == null">
-	<div id="alert" style="width: inherit;">
-		Please select the operator that referred you to PICS before continuing.
-	</div>
-</s:if>
 </s:else>
