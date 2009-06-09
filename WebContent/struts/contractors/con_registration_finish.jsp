@@ -19,28 +19,50 @@
 </s:else>
 
 <s:if test="!contractor.activeB">
-<div style="color: red">
-TODO !!!!
-Based on the information provided your level of risk for the the work your company performs is _________.	fill in	low, med. high
-Based on the Operators that you have selected the following audits will apply.	list	PQF, Annual Update, Desktop, Office, IM
-need to provide a brief description of each audit
-
-list the facilities selected
-
-display invoice summary
-
-with button to Complete their registration
-TODO!!!!
-</div>
+	<div style="color: red">
+		<s:form><fieldset class="form">
+			Based on the information provided your level of risk for the the work your company performs is <s:property value="contractor.riskLevel"/>.	
+			
+			Based on the Operators that you have selected:
+			<h3>Operators</h3>
+			<ul>
+				<s:iterator value="contractor.operators">
+					<li><s:property value="operatorAccount.name"/></li>
+				</s:iterator>
+			</ul>
+			
+			the following audits will apply:
+			<h3>Audits</h3>
+			<ul>
+				<s:iterator value="contractor.audits">
+					<li><s:property value="auditType.auditName"/> <s:if test="auditFor != null"> (<s:property value="auditFor"/>) </s:if> - <s:property value="auditType.description"/></li>
+				</s:iterator>
+			</ul>
+			
+			need to provide a brief description of each audit
+			
+			display invoice summary <br/>
+			<h3>Invoice</h3>
+			<s:iterator value="contractor.invoices">
+				<s:property value="dueDate"/> - <s:property value="totalAmount"/>
+			</s:iterator>
+			<br/>
+			<br/>
+			
+			<input type="submit" class="picsbutton positive" value="Charge Credit Card"/>
+			</fieldset>
+		</s:form>
+	</div>
 </s:if>
 <s:else>
-	TODO!!!!
-	Show Confirmation page here
-	TODO!!!!
+	<div id="info">
+		TODO!!!!
+		Show Confirmation page here
+		TODO!!!!
+	</div>
 </s:else>
 
-<div id="info">Thank you for registering at PICS!</div>
-
+<!-- 
 <div>
 <ol>
 	<li>We will review your account <s:if test="contractor.newMembershipLevel.amount > 0">and <s:if
@@ -55,8 +77,9 @@ TODO!!!!
 	<li>If you have any questions, please call us at (800) 506-PICS (7427) or chat with us by click the Chat link
 	above</li>
 </ol>
-</div>
+</div>-->
 
 <div class="buttons"><a class="positive" href="Login.action?button=logout">Logout</a></div>
+
 </body>
 </html>

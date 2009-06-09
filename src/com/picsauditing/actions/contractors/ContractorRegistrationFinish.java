@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -38,18 +39,21 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private AppPropertyDAO appPropDAO;
 	private NoteDAO noteDAO;
+	private InvoiceItemDAO invoiceItemDAO;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Invoice invoice;
 
 	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDAO, NoteDAO noteDAO) {
+			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDAO, NoteDAO noteDAO,
+			InvoiceItemDAO invoiceItemDAO) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.appPropDAO = appPropDAO;
 		this.noteDAO = noteDAO;
+		this.invoiceItemDAO = invoiceItemDAO;
 		subHeading = "Finish Registration";
 	}
 
@@ -58,83 +62,112 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
-		if (false) {
+		if (!contractor.isActiveB()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			newFee = invoiceFeeDAO.find(newFee.getId());
 			contractor.setNewMembershipLevel(newFee);
 
-			List<InvoiceItem> invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
-
-			BigDecimal invoiceTotal = new BigDecimal(0);
-			for (InvoiceItem item : invoiceItems)
-				invoiceTotal = invoiceTotal.add(item.getAmount());
-
 			if (contractor.getInvoices().size() == 0) {
 				invoice = new Invoice();
+				invoice.setPaid(false);
+				List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
+				invoice.setItems(items);
+
+				for (InvoiceItem item : items) {
+					item.setInvoice(invoice);
+					item.setAuditColumns(new User(User.SYSTEM));
+				}
 			} else {
 				invoice = contractor.getInvoices().get(0);
+				if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
+					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
+				}
 			}
 
-			invoice.setAccount(contractor);
-			invoice.setPaid(false);
-			invoice.setItems(invoiceItems);
-			invoice.setTotalAmount(invoiceTotal);
-			invoice.setAuditColumns(new User(User.SYSTEM));
+			if (!invoice.isPaid()) {
+				invoice.setAccount(contractor);
+				invoice.setAuditColumns(new User(User.SYSTEM));
 
-			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
-				invoice.setQbSync(true);
+				updateTotals();
+				if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
+					invoice.setQbSync(true);
 
-			invoice.setDueDate(new Date());
+				invoice.setDueDate(new Date());
 
-			String notes = "Thank you for your business.";
-			AppProperty prop = appPropDAO.find("invoice_comment");
-			if (prop != null) {
-				notes = prop.getValue();
+				String notes = "Thank you for your business.";
+				AppProperty prop = appPropDAO.find("invoice_comment");
+				if (prop != null) {
+					notes = prop.getValue();
+				}
+				invoice.setNotes(notes);
+
+				invoice = invoiceDAO.save(invoice);
+
+				if (!contractor.getInvoices().contains(invoice))
+					contractor.getInvoices().add(invoice);
+
+				contractor.syncBalance();
+				accountDao.save(contractor);
+
+				this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
+						LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
 			}
-			invoice.setNotes(notes);
+		}
 
-			contractor.getInvoices().add(invoice);
+		if (button != null) {
+			if (button.startsWith("Charge") && contractor.isCcOnFile()) {
+				paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
+				paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
-			for (InvoiceItem item : invoiceItems) {
-				item.setInvoice(invoice);
-				item.setAuditColumns(getUser());
-			}
-			invoice = invoiceDAO.save(invoice);
+				try {
+					paymentService.processPayment(invoice);
 
-			if (!contractor.getInvoices().contains(invoiceTotal))
-				contractor.getInvoices().add(invoice);
+					CreditCard cc = paymentService.getCreditCard(id);
+					invoice.setCcNumber(cc.getCardNumber());
 
-			contractor.syncBalance();
-			accountDao.save(contractor);
+					payInvoice();
 
-			this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,
-					false, Account.PicsID, new User(User.SYSTEM));
-
-			if (button != null) {
-				if (button.startsWith("Charge") && contractor.isCcOnFile()) {
-					paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
-					paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
-
-					try {
-						paymentService.processPayment(invoice);
-
-						CreditCard cc = paymentService.getCreditCard(id);
-						invoice.setCcNumber(cc.getCardNumber());
-
-						payInvoice();
-
-						contractor.setActive('Y');
-						addNote("Credit Card transaction completed and emailed the receipt for $"
-								+ invoice.getTotalAmount());
-					} catch (Exception e) {
-						addNote("Credit Card transaction failed: " + e.getMessage());
-						this.addActionError("Failed to charge credit card. " + e.getMessage());
-						return SUCCESS;
-					}
+					contractor.setActive('Y');
+					addNote("Credit Card transaction completed and emailed the receipt for $"
+							+ invoice.getTotalAmount());
+				} catch (Exception e) {
+					addNote("Credit Card transaction failed: " + e.getMessage());
+					this.addActionError("Failed to charge credit card. " + e.getMessage());
+					return SUCCESS;
 				}
 			}
 		}
+
 		return SUCCESS;
+	}
+
+	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
+		for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
+			InvoiceItem item = iterator.next();
+			if (item.getInvoiceFee().getId() == currentFee.getId()) {
+				iterator.remove();
+				invoiceItemDAO.remove(item);
+			}
+		}
+
+		InvoiceItem newInvoiceItem = new InvoiceItem();
+		newInvoiceItem.setInvoiceFee(newFee);
+		newInvoiceItem.setAmount(newFee.getAmount());
+		newInvoiceItem.setAuditColumns(getUser());
+
+		newInvoiceItem.setInvoice(invoice);
+		invoice.getItems().add(newInvoiceItem);
+
+		contractor.setMembershipLevel(newFee);
+	}
+
+	private void updateTotals() {
+		if (!invoice.isPaid()) {
+			invoice.setTotalAmount(BigDecimal.ZERO);
+			for (InvoiceItem item : invoice.getItems())
+				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
+			invoice.setPaymentMethod(contractor.getPaymentMethod());
+		}
 	}
 
 	private void payInvoice() {
