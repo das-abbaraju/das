@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,8 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationServices extends ContractorActionSupport {
@@ -42,15 +45,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 		findContractor();
 
-		if ("calculateRisk".equals(button)) {
-			// TODO calculate the risk level
-			// we may need to move some of the below items before
-
-			// TODO redirect to facilities
-			redirect("ContractorFacilities.action");
-			return BLANK;
-		}
-
 		for (ContractorAudit ca : contractor.getAudits()) {
 			if (ca.getAuditType().isPqf()) {
 				auditID = ca.getId();
@@ -67,17 +61,62 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			addActionError("PQF Category for Services Performed hasn't been created yet");
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		infoQuestions = auditQuestionDAO.findWhere("subCategory.id = 269 OR id = 69");
-		for(AuditQuestion q : infoQuestions)
+		infoQuestions = auditQuestionDAO.findWhere("subCategory.id = 269 OR id = 69 OR id = 894");
+		for (AuditQuestion q : infoQuestions)
 			questionIds.add(q.getId());
 		serviceQuestions = auditQuestionDAO.findBySubCategory(40);
-		for(AuditQuestion q : serviceQuestions)
+		for (AuditQuestion q : serviceQuestions)
 			questionIds.add(q.getId());
 
 		Map<Integer, Map<String, AuditData>> indexedResult = auditDataDAO.findAnswersByContractor(id, questionIds);
 		answerMap = new HashMap<Integer, AuditData>();
 		for (Integer questionID : indexedResult.keySet())
 			answerMap.put(questionID, indexedResult.get(questionID).get(""));
+
+		if ("calculateRisk".equals(button)) {
+			if (contractor.getRiskLevel() == null) {
+				boolean requiredQuestions = false;
+				boolean performServices = false;
+				if(answerMap != null) {
+					for(AuditQuestion aq : infoQuestions) {
+						if(answerMap.get(aq.getId()) == null) {
+							requiredQuestions = false;
+							break;
+						}
+						else 
+							requiredQuestions = true;
+					}
+					for(AuditQuestion aq : serviceQuestions) {
+						if(answerMap.get(aq.getId()) != null) { 
+							performServices = true; 
+							break;
+						}	
+					}
+				}
+				if (requiredQuestions && performServices) {
+					Collection<AuditData> auditList = answerMap.values();
+					LowMedHigh riskLevel = LowMedHigh.Low;
+					for (AuditData auditData : auditList) {
+						AuditQuestion q = auditData.getQuestion();
+						if (q.getSubCategory().getId() == 269) {
+							// Subcategory is RISK ASSESSMENT
+							AuditData aData = answerMap.get(q.getId());
+							riskLevel = getRiskLevel(aData, riskLevel);
+						} else if (auditData.getAnswer().startsWith("C")) {
+							//Self Performed Services
+							riskLevel = getMaxRiskLevel(riskLevel, q.getRiskLevel());
+						}
+						if (riskLevel.equals(LowMedHigh.High))
+							break;
+					}
+					contractor.setRiskLevel(riskLevel);
+					contractor.setAuditColumns(getUser());
+					accountDao.save(contractor);
+					redirect("ContractorFacilities.action?id=" + contractor.getId());
+					return BLANK;
+				}
+			}
+		}
 		return SUCCESS;
 	}
 
@@ -101,4 +140,34 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		return answerMap;
 	}
 
+	public LowMedHigh getMaxRiskLevel(LowMedHigh oRiskLevel, LowMedHigh qRiskLevel) {
+		if (oRiskLevel.compareTo(qRiskLevel) < 0)
+			return qRiskLevel;
+		return oRiskLevel;
+	}
+
+	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
+		if (auditData != null && !auditData.getAnswer().equals(riskLevel)) {
+			if (auditData.getQuestion().getId() == 2442 
+					|| auditData.getQuestion().getId() == 2445) {
+				//Question : Does your company perform mechanical services
+				// OR Services conducted at heights greater than six feet?
+				if (auditData.getAnswer().equals("Yes"))
+					return LowMedHigh.High;
+			}
+			if (auditData.getQuestion().getId() == 2443) {
+				// Question : Does your company perform all services from only an office?
+				if (auditData.getAnswer().equals("No"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+			}
+			if (auditData.getQuestion().getId() == 2444) {
+				// Question : What risk level do you believe your company should be rated? 
+				if (auditData.getAnswer().equals("Med"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				if (auditData.getAnswer().equals("High"))
+					return LowMedHigh.High;
+			}
+		}
+		return riskLevel;
+	}
 }

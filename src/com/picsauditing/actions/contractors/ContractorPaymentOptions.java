@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.BrainTreeService;
@@ -13,7 +12,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;

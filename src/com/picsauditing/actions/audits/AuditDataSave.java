@@ -162,6 +162,12 @@ public class AuditDataSave extends AuditActionSupport {
 				ContractorAccount contractor = tempAudit.getContractorAccount();
 				contractor.setNeedsRecalculation(true);
 				if (tempAudit.getAuditType().isPqf()) {
+					if(auditData.getQuestion().getId() == 894) {
+						// Question : Does your company have employees who are covered 
+						// under DOT OQ requirements?
+						contractor.setOqEmployees(auditData.getAnswer());
+						contractor.setAuditColumns(getUser());
+					}	
 					if (auditData.getQuestion().getId() == 57) {
 						if (isValidNAICScode(auditData.getAnswer())) {
 							contractor.setNaics(new Naics());
