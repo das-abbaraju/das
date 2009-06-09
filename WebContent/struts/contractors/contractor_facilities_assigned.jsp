@@ -17,6 +17,12 @@
 	<s:property value="contractor.newMembershipLevel.fee" />
 </s:if>
 
+<s:if test="currentOperators.size() > 1 && !contractor.activeB">
+	<div id="alert" style="width:inherit">
+		<label>Requested By:</label> <s:select list="currentOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" headerKey="" headerValue="- Select An Operator -" value="contractor.requestedBy.id" onchange="setRequestedBy(%{contractor.id}, this.value)"/>
+	</div>
+</s:if>
+
 <table class="report">
 	<thead>
 		<tr>
@@ -52,11 +58,6 @@
 				</pics:permission>
 			</tr>
 		</s:iterator>
-		<s:if test="currentOperators.size() > 1 && !contractor.activeB">
-			<tr>
-				<td colspan="3"><label>Requested By:</label> <s:select list="currentOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" headerKey="" headerValue="- Select An Operator -" value="contractor.requestedBy.id" onchange="setRequestedBy(%{contractor.id}, this.value)"/></td>
-			</tr>
-		</s:if>
 	</tbody>
 </table>
 <s:if test="permissions.contractor && !contractor.activeB && contractor.operators.size > 1 && contractor.requestedBy == null">
