@@ -124,7 +124,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			permissions.login(user);
 			ActionContext.getContext().getSession().put("permissions", permissions);
 
-			ServletActionContext.getResponse().sendRedirect("ContractorRiskRanking.action?id=" + contractor.getId());
+			redirect("ContractorRegistrationServices.action?id=" + contractor.getId());
 			return BLANK;
 		}
 
