@@ -18,6 +18,7 @@
 <s:else>
 </s:else>
 
+<s:if test="!contractor.activeB">
 <div style="color: red">
 TODO !!!!
 Based on the information provided your level of risk for the the work your company performs is _________.	fill in	low, med. high
@@ -31,6 +32,12 @@ display invoice summary
 with button to Complete their registration
 TODO!!!!
 </div>
+</s:if>
+<s:else>
+	TODO!!!!
+	Show Confirmation page here
+	TODO!!!!
+</s:else>
 
 <div id="info">Thank you for registering at PICS!</div>
 
