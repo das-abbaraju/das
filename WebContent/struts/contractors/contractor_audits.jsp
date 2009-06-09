@@ -143,7 +143,7 @@
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && auditType.classType.toString().equals('Audit')">
+				<td><s:if test="!auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
 					<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
 				</s:if></td>
 			</pics:permission>
