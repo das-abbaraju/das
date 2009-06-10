@@ -16,8 +16,9 @@ input[type=submit] {
 </style>
 </head>
 <body>
+<s:if test="!permissions.contractor || contractor.activeB">
 <s:include value="conHeader.jsp"></s:include>
-
+</s:if>
 <s:if test="invoice.cancelledInvoice">
 	<div id="alert" class="noprint">This invoice was canceled on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
 </s:if>
