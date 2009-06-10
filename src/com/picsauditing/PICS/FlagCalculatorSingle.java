@@ -187,10 +187,7 @@ public class FlagCalculatorSingle {
 			}
 		}
 
-		Naics naics = new Naics();
-		// TODO convert this here
-		// contractor.getNaics();
-		
+	
 		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
@@ -200,17 +197,17 @@ public class FlagCalculatorSingle {
 						OshaAudit osha = shaMap.get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
-							if (criteria.getLwcr().isFlagged(naics, osha.getLostWorkCasesRate()))
+							if (criteria.getLwcr().isFlagged(contractor.getNaics(), osha.getLostWorkCasesRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())) {
-							if (criteria.getTrir().isFlagged(naics, osha.getRecordableTotalRate()))
+							if (criteria.getTrir().isFlagged(contractor.getNaics(), osha.getRecordableTotalRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
-							if (criteria.getFatalities().isFlagged(naics, osha.getFatalities()))
+							if (criteria.getFatalities().isFlagged(contractor.getNaics(), osha.getFatalities()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						flagColor = setFlagColor(flagColor, osha.getFlagColor());

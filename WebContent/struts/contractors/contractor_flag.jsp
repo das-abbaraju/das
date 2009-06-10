@@ -215,8 +215,15 @@
 								<s:if test="trir.required">
 									<s:if
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
-	 							&gt; <s:property value="trir.hurdle" /> = <s:property
-											value="flagColor" />
+	 									&gt; 
+	 									<s:if test="trir.hurdleFlag.toString().equals('NAICS')">
+	 										<s:property value="co.contractorAccount.naics.trir" />
+	 									</s:if>
+	 									<s:else>
+	 										<s:property value="trir.hurdle" />
+	 									</s:else>
+	 									= <s:property value="flagColor" />
+	 									<s:if test="trir.hurdleFlag.toString().equals('NAICS')"> (NAICS code:<s:property value="co.contractorAccount.naics.code"/>)</s:if>
 										<br />
 									</s:if>
 								</s:if>
