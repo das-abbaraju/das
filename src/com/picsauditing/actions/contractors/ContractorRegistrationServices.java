@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.util.Strings;
+
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -17,7 +19,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationServices extends ContractorActionSupport {
@@ -61,7 +62,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			addActionError("PQF Category for Services Performed hasn't been created yet");
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		infoQuestions = auditQuestionDAO.findWhere("subCategory.id = 269 OR id = 69 OR id = 894");
+		infoQuestions = auditQuestionDAO.findWhere("subCategory.id = 269 OR id = 894");
 		for (AuditQuestion q : infoQuestions)
 			questionIds.add(q.getId());
 		serviceQuestions = auditQuestionDAO.findBySubCategory(40);
@@ -87,7 +88,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 							requiredQuestions = true;
 					}
 					for(AuditQuestion aq : serviceQuestions) {
-						if(answerMap.get(aq.getId()) != null) { 
+						if(answerMap.get(aq.getId()) != null 
+								&& !Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) { 
 							performServices = true; 
 							break;
 						}	

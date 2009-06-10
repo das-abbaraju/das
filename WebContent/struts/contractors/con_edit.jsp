@@ -14,52 +14,14 @@
 	var cal1 = new CalendarPopup('caldiv1');
 	cal1.offsetY = -110;
 	cal1.setCssPrefix("PICS");
-
-	function showPaymentOptions(conId, method) {
- 		var buttonURL= window.location.href;
- 		
- 		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
- 			buttonURL = buttonURL.replace('http:', 'https:');
- 		}
- 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + conId +'&paymentMethod=' + method; 
-		title = 'Contractor Payment Options';
-		pars = 'scrollbars=yes,resizable=yes,width=700,height=600,toolbar=1,directories=0,menubar=0';
-		popupWindow = window.open(url,title,pars);
-		popupWindow.focus();
-		return false;
-	}
-	
-	function setPaymentUrl() {
- 		var buttonURL= window.location.href;
-
- 		if( buttonURL.indexOf( 'www.picsauditing.com' ) != -1 ) {
- 			buttonURL = buttonURL.replace('http:', 'https:');
- 		}
- 		var url = buttonURL.substr(0, buttonURL.lastIndexOf('/') ) + '/ContractorPaymentOptions.action?id=' + <s:property value="contractor.id"/> +'&paymentMethod=CreditCard'; 
-		$('cc_link').href=url;
-	}
-	
-	function showPaymentMethodOption(elm) {
-		var option =  $F(elm);
-		if(option == 'Check') {
-			$('creditcard_show').hide();
-			$('check_show').show();
-		}
-		if(option == 'CreditCard') {
-			$('check_show').hide();
-			$('creditcard_show').show();
-		}
-		return false;
-	}
 </script>
 </head>
-<body onload="javascript: setPaymentUrl();">
-
+<body>
 <s:if test="permissions.contractor && !contractor.activeB">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>
-<s:include value="conHeader.jsp"></s:include>
+	<s:include value="conHeader.jsp"></s:include>
 </s:else>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
@@ -98,66 +60,6 @@
 					<li><label>Last Login:</label>
 						<s:date name="contractor.lastLogin" format="MMM d, yyyy" />
 					</li>
-				</ol>
-				</fieldset>
-				<fieldset class="form">
-				<legend><span>Billing Details</span></legend>
-				<ol>
-				<s:if test="permissions.contractor">
-				<li><div id="info">
-					<s:if test="contractor.activeB">
-						As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
-					</s:if>
-					<s:elseif test="contractor.newMembershipLevel.amount == 0">
-						You are currently at the free level and do not owe any membership dues.  
-						However, a valid credit card is required to maintain an account with PICS.  
-						Only if you upgrade your account will your card be charged, and only after PICS notifies you at 
-						least 7 days before the charge.  
-					</s:elseif>
-					<s:else>	
-						Please enter your credit card information, which will expedite the registration process.  Your membership is valid for 12 months from the charge date.  An upgrade fee will be charged only if you add additional facilities to your account.  PICS will email you 7 days prior to any charge. If you have questions, contact PICS Accounting anytime at (800) 506-7427 x 708.
-					</s:else>
-					</div>
-				</li>
-				</s:if>
-				<s:if test="contractor.activeB">
-					<li><label>Next Billing Date:</label> <s:date
-						name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-					<li><label>Next Billing Amount:</label> $<s:property
-						value="contractor.newMembershipLevel.amount" /> USD</li>
-				</s:if>
-				<s:else>
-					<li><label>Membership Fee:</label> $<s:property
-						value="contractor.newMembershipLevel.amount" /> USD</li>
-				</s:else>
-				<li><label>Payment Method:</label>
-					<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
-						<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
-					</s:if>
-					<s:else>
-						<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
-					</s:else>
-				</li>
-				<li>
-					<s:if test="contractor.paymentMethod.creditCard">
-						<s:set name="creditcard_show" value="'inline'"/>								
-						<s:set name="check_show" value="'none'"/>
-					</s:if>
-					<s:else>
-						<s:set name="creditcard_show" value="'none'"/>								
-						<s:set name="check_show" value="'inline'"/>
-					</s:else>
-
-					<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500. <a id="cc_link" href="#" title="Opens In a Secure Window">Edit Credit Card</a><br/></span>
-					<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.email"/> 
-					<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if> with payment terms of net 30.</span>
-				</li>
-				<li><label>&nbsp;</label>
-					<a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
-						title="Opens in new window">Privacy Policy</a> |
-					<a href="#" onclick="return openWindow('refund_policy.jsp','REFUND');"
-						title="Opens in new window">Refund Policy</a>
-				</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">

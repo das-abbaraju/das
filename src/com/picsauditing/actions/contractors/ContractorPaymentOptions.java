@@ -319,4 +319,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public void setActivationFee(InvoiceFee activationFee) {
 		this.activationFee = activationFee;
 	}
+	
+	public PaymentMethod[] getPaymentMethodList() {
+		return PaymentMethod.values();
+	}
+
 }

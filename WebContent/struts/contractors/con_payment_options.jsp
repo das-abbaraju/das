@@ -9,6 +9,19 @@
 function updateExpDate() {
 	$('ccexp').value = $F('expMonth') + $F('expYear');
 }
+
+function showPaymentMethodOption(elm) {
+	var option =  $F(elm);
+	if(option == 'Check') {
+		$('creditcard_show').hide();
+		$('check_show').show();
+	}
+	if(option == 'CreditCard') {
+		$('check_show').hide();
+		$('creditcard_show').show();
+	}
+	return false;
+}
 </script>
 </head>
 <body>
@@ -48,6 +61,7 @@ function updateExpDate() {
 	</s:else>
 </s:if>
 
+<s:form id="save" method="POST">
 <fieldset class="form">
 <legend><span>Membership Details</span></legend>
 <ol>
@@ -55,6 +69,27 @@ function updateExpDate() {
 		<s:property value="contractor.name" />
 	</li>
 <s:if test="contractor.newMembershipLevel.amount > 0">
+	<li><label>Payment Method:</label>
+		<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
+			<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
+		</s:if>
+		<s:else>
+			<s:radio list="paymentMethodList" name="paymentMethod" value="%{contractor.paymentMethod}" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
+		</s:else>
+		</li>
+		<li>
+			<s:if test="contractor.paymentMethod.creditCard">
+				<s:set name="creditcard_show" value="'inline'"/>								
+				<s:set name="check_show" value="'none'"/>
+			</s:if>
+			<s:else>
+				<s:set name="creditcard_show" value="'none'"/>								
+				<s:set name="check_show" value="'inline'"/>
+			</s:else>
+			<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500.<br/></span>
+			<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.email"/> 
+			<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if> with payment terms of net 30.</span>
+	</li>
 	<s:if test="contractor.activeB">
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
@@ -77,10 +112,14 @@ function updateExpDate() {
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 							
 </li>
-
+<s:if test="contractor.newMembershipLevel.amount > 500">
+<div class="buttons">
+	<input type="submit" class="picsbutton" name="button" value="Update"/>
+</div>
+</s:if>
 </ol>
 </fieldset>
-
+</s:form>
 
 <s:if test="paymentMethod.creditCard">
 	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="updateExpDate();">
@@ -134,7 +173,7 @@ function updateExpDate() {
 			</li>
 			<li>
 			<div class="buttons">
-				<button class="positive" name="button" type="submit" value="Submit">Submit</button>
+				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
 			</div>
 			</li>
 		</ol>
