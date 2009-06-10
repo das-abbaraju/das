@@ -83,7 +83,7 @@ function checkName(name) {
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<legend><span>Secondary Address</span></legend>
+					<legend><span>Company Contacts</span></legend>
 					<ol>
 						<li><label>Second Contact:</label>
 							<s:textfield name="contractor.secondContact" size="35" /></li>
