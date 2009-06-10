@@ -62,7 +62,28 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
-		if (!contractor.isActiveB()) {
+
+		if (button != null && button.startsWith("Charge") && contractor.isCcOnFile()) {
+			paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
+			paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
+
+			try {
+				paymentService.processPayment(invoice);
+
+				CreditCard cc = paymentService.getCreditCard(id);
+				invoice.setCcNumber(cc.getCardNumber());
+
+				payInvoice();
+
+				contractor.setActive('Y');
+
+				addNote("Credit Card transaction completed and emailed the receipt for $" + invoice.getTotalAmount());
+			} catch (Exception e) {
+				addNote("Credit Card transaction failed: " + e.getMessage());
+				this.addActionError("Failed to charge credit card. " + e.getMessage());
+				return SUCCESS;
+			}
+		} else if (!contractor.isActiveB()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			newFee = invoiceFeeDAO.find(newFee.getId());
 			contractor.setNewMembershipLevel(newFee);
@@ -111,30 +132,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 				this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
 						LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
-			}
-		}
-
-		if (button != null) {
-			if (button.startsWith("Charge") && contractor.isCcOnFile()) {
-				paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
-				paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
-
-				try {
-					paymentService.processPayment(invoice);
-
-					CreditCard cc = paymentService.getCreditCard(id);
-					invoice.setCcNumber(cc.getCardNumber());
-
-					payInvoice();
-
-					contractor.setActive('Y');
-					addNote("Credit Card transaction completed and emailed the receipt for $"
-							+ invoice.getTotalAmount());
-				} catch (Exception e) {
-					addNote("Credit Card transaction failed: " + e.getMessage());
-					this.addActionError("Failed to charge credit card. " + e.getMessage());
-					return SUCCESS;
-				}
 			}
 		}
 

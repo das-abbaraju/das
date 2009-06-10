@@ -19,8 +19,10 @@
 </s:else>
 
 <s:if test="!contractor.activeB">
-	<div style="color: red">
-		<s:form><fieldset class="form">
+	<div>
+		<s:form>
+			<s:hidden name="id" value="%{contractor.id}"/>
+			
 			Based on the information provided your level of risk for the the work your company performs is <s:property value="contractor.riskLevel"/>.	
 			
 			Based on the Operators that you have selected:
@@ -39,18 +41,16 @@
 				</s:iterator>
 			</ul>
 			
-			need to provide a brief description of each audit
-			
 			display invoice summary <br/>
 			<h3>Invoice</h3>
 			<s:iterator value="contractor.invoices">
+				<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK">#<s:property value="id"/></a>
 				<s:property value="dueDate"/> - <s:property value="totalAmount"/>
 			</s:iterator>
 			<br/>
 			<br/>
 			
-			<input type="submit" class="picsbutton positive" value="Charge Credit Card"/>
-			</fieldset>
+			<input type="submit" class="picsbutton positive" value="Charge Credit Card" name="button"/>
 		</s:form>
 	</div>
 </s:if>
@@ -78,8 +78,6 @@
 	above</li>
 </ol>
 </div>-->
-
-<div class="buttons"><a class="positive" href="Login.action?button=logout">Logout</a></div>
 
 </body>
 </html>
