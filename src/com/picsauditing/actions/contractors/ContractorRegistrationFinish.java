@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
@@ -19,6 +21,7 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -44,6 +47,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Invoice invoice;
+	private Map<Integer, List<ContractorAudit>> auditMapList;
 
 	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDAO, NoteDAO noteDAO,
@@ -264,4 +268,26 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		this.invoice = invoice;
 	}
 
+	public Map<Integer, List<ContractorAudit>> getAuditListMap() {
+		if (auditMapList == null) {
+			final int NUM_LISTS = 2;
+			auditMapList = new HashMap<Integer, List<ContractorAudit>>();
+
+			for (int i = 0; i < NUM_LISTS; i++)
+				auditMapList.put(i, new ArrayList<ContractorAudit>());
+
+			int index = 0;
+			int map = 0;
+			int perCol = contractor.getAudits().size() / NUM_LISTS;
+			for (ContractorAudit ca : contractor.getAudits()) {
+				if (index++ >= perCol) {
+					map++;
+					index = 0;
+				}
+				auditMapList.get(map).add(ca);
+			}
+		}
+
+		return auditMapList;
+	}
 }

@@ -35,11 +35,16 @@
 			
 			the following audits will apply:
 			<h3>Audits</h3>
-			<ul>
-				<s:iterator value="contractor.audits">
-					<li><s:property value="auditType.auditName"/> <s:if test="auditFor != null"> (<s:property value="auditFor"/>) </s:if> - <s:property value="auditType.description"/></li>
-				</s:iterator>
-			</ul>
+			<s:iterator value="auditListMap">
+				<div style="float:left; width: <s:property value="100 / auditListMap.size() * 0.9"/>%">
+					<ul>
+						<s:iterator value="value">
+							<li><s:property value="auditType.auditName"/> <s:if test="auditFor != null"> (<s:property value="auditFor"/>) </s:if> - <s:property value="auditType.description"/></li>
+						</s:iterator>
+					</ul>
+				</div>
+			</s:iterator>
+			<br clear="all"/>
 			
 			display invoice summary <br/>
 			<h3>Invoice</h3>
