@@ -33,6 +33,10 @@
 				<th>Remove<br />
 				Operator</th>
 			</pics:permission>
+			<s:if test="permissions.contractor && !contractor.activeB">
+				<th>Remove<br />
+				Operator</th>
+			</s:if>
 		</tr>
 	</thead>
 	<tbody>
@@ -44,18 +48,28 @@
 				</s:url></s:if><s:a href="%{flagUrl}">
 					<s:property value="flag.flagColor.smallIcon" escape="false" />
 				</s:a></td>
-				<td><s:if test="contractor.activeB"><s:url id="opUrl" action="ContractorFlag">
-					<s:param name="id" value="%{contractor.id}" />
-					<s:param name="opID" value="%{operatorAccount.id}" />
-				</s:url></s:if><s:a href="%{opUrl}">
-					<s:property value="operatorAccount.name" />
-				</s:a></td>
+				<td>
+					<s:if test="contractor.activeB">
+						<s:url id="opUrl" action="ContractorFlag">
+							<s:param name="id" value="%{contractor.id}" />
+							<s:param name="opID" value="%{operatorAccount.id}" />
+						</s:url>
+						<s:a href="%{opUrl}"><s:property value="operatorAccount.name" /></s:a>
+					</s:if>
+					<s:else>
+						<s:property value="operatorAccount.name"/>
+					</s:else>
+				</td>
 				<td><s:property value="flag.waitingOn.name()" /></td>
 
 				<pics:permission perm="RemoveContractors">
 					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</pics:permission>
+				<s:if test="permissions.contractor && !contractor.activeB">
+					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#" class="remove"
+						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
+				</s:if>
 			</tr>
 		</s:iterator>
 	</tbody>
