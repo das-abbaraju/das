@@ -55,7 +55,7 @@ function showPaymentMethodOption(elm) {
 				least 7 days before the charge.
 			</s:elseif>
 			<s:else>
-				Please enter your credit card information, which will expedite the registration process.  Your membership is valid for 12 months from the charge date.  An upgrade fee will be charged only if you add additional facilities to your account.  PICS will email you 7 days prior to any charge. If you have questions, contact PICS Accounting anytime at (800) 506-7427 x 708.
+				Please enter your credit card information, which will expedite the registration process.  Your membership is valid for 12 months from the charge date.  An upgrade fee will be charged only if you add additional facilities to your account. If you have questions, contact PICS Accounting anytime at (800) 506-7427 x 708.
 			</s:else>
 		</div>
 	</s:else>

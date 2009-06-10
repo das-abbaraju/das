@@ -54,7 +54,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 
-		if ("Register".equalsIgnoreCase(button)) {
+		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
 			contractor.setActive('N');
 			Vector<String> errors = contractorValidator.validateContractor(contractor, user.getPassword(),

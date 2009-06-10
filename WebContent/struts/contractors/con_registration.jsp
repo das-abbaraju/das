@@ -138,7 +138,7 @@ function checkName(name) {
 					</fieldset>
 					<fieldset class="form submit">
 						<div class="buttons">
-							<button class="positive" value="Register" name="button" type="submit">Register</button>
+							<input type="submit" class="picsbutton positive" name="button" value="Create Account"/>
 						</div>
 					</fieldset>
 			</td>
