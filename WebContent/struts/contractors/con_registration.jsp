@@ -129,7 +129,7 @@ function checkName(name) {
 						 		<span id="username_status"></span><span class="redMain">* Please type in your desired user name</span>
 						 	</li>
 							<li><label>Password:</label> 
-								<s:password name="user.password"/>
+								<s:password name="password"/>
 								<span class="redMain">* At least 5 characters long and different from your username</span></li>
 							<li><label>Confirm Password:</label> 
 								<s:password name="confirmPassword"/>

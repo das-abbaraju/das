@@ -35,6 +35,7 @@ import com.picsauditing.util.Strings;
 public class ContractorRegistration extends ContractorActionSupport {
 	protected ContractorAccount contractor;
 	protected User user;
+	protected String password;
 	protected String confirmPassword;
 
 	protected UserDAO userDAO;
@@ -57,7 +58,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
 			contractor.setActive('N');
-			Vector<String> errors = contractorValidator.validateContractor(contractor, user.getPassword(),
+			Vector<String> errors = contractorValidator.validateContractor(contractor, password,
 					confirmPassword, user);
 			if (Strings.isEmpty(user.getPassword()))
 				errors.add("Please fill in the Password field.");
@@ -137,6 +138,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	public List<AuditQuestion> getTradeList() throws Exception {
 		return auditQuestionDAO.findQuestionByType("Service");
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getConfirmPassword() {
