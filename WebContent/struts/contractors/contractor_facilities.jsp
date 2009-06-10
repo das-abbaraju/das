@@ -101,7 +101,7 @@
 
 <s:if test="permissions.contractor && !contractor.activeB">
 	<div id="next_button" class="buttons" style="float: left;">
-		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next</a>
+		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next &gt;&gt;</a>
 		<div class="clear"></div>
 	</div>
 </s:if>
