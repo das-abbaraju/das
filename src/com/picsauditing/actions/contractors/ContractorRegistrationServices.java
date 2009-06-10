@@ -95,6 +95,10 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 						}	
 					}
 				}
+				if(!requiredQuestions)
+					addActionError("Please answer all the questions on the General Information");
+				if(!performServices)
+					addActionError("Please select the services you perform below");
 				if (requiredQuestions && performServices) {
 					Collection<AuditData> auditList = answerMap.values();
 					LowMedHigh riskLevel = LowMedHigh.Low;
