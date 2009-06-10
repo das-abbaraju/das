@@ -11,14 +11,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_item")
-public class InvoiceItem extends BaseTable implements java.io.Serializable {
+public class InvoiceItem extends BaseTable {
 
 	private Invoice invoice;
 	private InvoiceFee invoiceFee;
-	// TODO change this to decimal 
 	private BigDecimal amount = BigDecimal.ZERO;
 	private String description;
 	private Date paymentExpires;

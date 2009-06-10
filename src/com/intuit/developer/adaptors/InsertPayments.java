@@ -145,7 +145,8 @@ public class InsertPayments extends CustomerAdaptor {
 					String qbPaymentId = receivePaymentRet.getTxnID();
 
 					if (qbPaymentId != null && qbPaymentId.length() > 0) {
-						connected.setQbPaymentListID(qbPaymentId);
+						// TODO Update the Payment object
+						//connected.setQbPaymentListID(qbPaymentId);
 					}
 				} catch (Exception e) {
 				}
@@ -164,7 +165,8 @@ public class InsertPayments extends CustomerAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				connected.setQbPaymentListID(null);
+				// TODO Update the Payment object
+				//connected.setQbPaymentListID(null);
 			}
 
 			getInvoiceDao().save(connected);

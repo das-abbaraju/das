@@ -18,8 +18,9 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 			String thesePayments = getThesePayments(currentSession.getPossiblePaymentUpdates());
 
 			for (Invoice invoice : currentSession.getPossiblePaymentUpdates()) {
-				currentSession.getCurrentBatch().put(invoice.getQbPaymentListID(),
-						new Integer(invoice.getId()).toString());
+				// TODO Update the Payment object
+				//currentSession.getCurrentBatch().put(invoice.getQbPaymentListID(),
+				//		new Integer(invoice.getId()).toString());
 			}
 
 			return thesePayments;

@@ -75,9 +75,10 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 
 		ReceivePaymentQueryRqType query = factory.createReceivePaymentQueryRqType();
 
-		for (Invoice invoice : invoices) {
-			query.getTxnID().add(invoice.getQbPaymentListID());
-		}
+		// TODO add in the Payments
+//		for (Invoice invoice : invoices) {
+//			query.getTxnID().add(invoice.getQbPaymentListID());
+//		}
 
 		query.setRequestID(new Long(System.currentTimeMillis()).toString());
 

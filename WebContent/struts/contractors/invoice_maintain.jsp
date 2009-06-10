@@ -46,8 +46,6 @@
 			<s:checkbox name="invoice.qbSync"/></li>
 		<li><label>QB ListID:</label>
 			<s:textfield name="invoice.qbListID"/></li>
-		<li><label>QB PaymentListID:</label>
-			<s:textfield name="invoice.qbPaymentListID"/></li>
 	</ol>
 </fieldset>
 <s:iterator value="invList" status="item">
@@ -63,10 +61,6 @@
 			<s:textfield name="invList[%{#item.index}].paymentExpires" value="%{paymentExpires && getText('dates', {paymentExpires})}"/></li>
 		<li><label>Description:</label>
 			<s:textfield name="invList[%{#item.index}].description" value="%{description}"/></li>
-		<li><label>Refunded:</label>
-			<s:checkbox name="invList[%{#item.index}].refunded" value="%{refunded}"/></li>
-		<li><label>QB RefundId:</label>
-			<s:textfield name="invList[%{#item.index}].qbRefundID"/></li>
 	</ol>
 </fieldset>
 </s:iterator>

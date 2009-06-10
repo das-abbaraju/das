@@ -10,28 +10,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-/**
- * @author Trevor
- * 
- */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice")
-public class Invoice extends BaseTable implements java.io.Serializable {
+public class Invoice extends Transaction {
 	public final static int daysUntilDue = 30;
 
-	private Account account;
 	private Date dueDate;
 	private boolean paid;
-	private BigDecimal totalAmount = BigDecimal.ZERO;
 	private Date paidDate;
 	private PaymentMethod paymentMethod;
 	private String checkNumber;
@@ -39,21 +30,9 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 	private String poNumber;
 	private String ccNumber;
 	private String notes;
-	private boolean qbSync;
-	protected String qbListID;
-	protected String qbPaymentListID;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
-
-	@ManyToOne
-	@JoinColumn(name = "accountID")
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
+	private List<InvoicePayment> payments = new ArrayList<InvoicePayment>();
 
 	@Transient
 	public boolean isOverdue() {
@@ -96,14 +75,6 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		if (isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
 			return true;
 		return false;
-	}
-
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -174,39 +145,13 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.ccNumber = ccNumber;
 	}
 
-	/**
-	 * True if QuickBooks Web Connector needs to pull this record into
-	 * QuickBooks
-	 * 
-	 * @return
-	 */
-	public boolean isQbSync() {
-		return qbSync;
+	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
+	public List<InvoicePayment> getPayments() {
+		return payments;
 	}
 
-	public void setQbSync(boolean qbSync) {
-		this.qbSync = qbSync;
-	}
-
-	/**
-	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
-	 * 
-	 * @return
-	 */
-	public String getQbListID() {
-		return qbListID;
-	}
-
-	public void setQbListID(String qbListID) {
-		this.qbListID = qbListID;
-	}
-
-	public String getQbPaymentListID() {
-		return qbPaymentListID;
-	}
-
-	public void setQbPaymentListID(String qbPaymentListID) {
-		this.qbPaymentListID = qbPaymentListID;
+	public void setPayments(List<InvoicePayment> payments) {
+		this.payments = payments;
 	}
 
 	@Transient
@@ -214,31 +159,13 @@ public class Invoice extends BaseTable implements java.io.Serializable {
 		this.setPaid(true);
 		this.setPaidDate(new Date());
 		this.setAuditColumns(u);
-
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-
-		// We use to compare class names, but with Hibernate, the names get
-		// really weird
-		// Now we just ignore the names and just cast it to an Account object
-		// System.out.println("this.getClass() "+getClass().getName());
-		// System.out.println("obj.getClass()  "+obj.getClass().getName());
-		// System.out.println("obj.getClass().getSuperclass()  "+obj.getClass().getSuperclass().getName());
-		try {
-			// Try to cast this to an account
-			final Invoice other = (Invoice) obj;
-			if (id == other.getId())
-				return true;
-			return false;
-		} catch (Exception e) {
-			// something went wrong so these must not be equal
-			return false;
+	@Transient
+	public void updateAmountApplied() {
+		amountApplied = BigDecimal.ZERO;
+		for (InvoicePayment ip : payments) {
+			amountApplied = amountApplied.add(ip.getAmount());
 		}
 	}
 
