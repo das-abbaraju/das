@@ -39,6 +39,9 @@
 					<li><label>Name:</label>
 						<s:textfield name="contractor.name" size="35" />
 					</li>
+					<li><label>DBA Name: </label>
+						<s:textarea name="contractor.doingBusinessAsName" cols="27" rows="5" />
+					</li>
 					<li><label>Username:</label>
 						<s:textfield name="user.username" size="20" />
 							<pics:permission perm="SwitchUser">
@@ -240,11 +243,6 @@
 		</pics:permission>
 	</div>
 </s:form>
-<s:if test="permissions.contractor && !contractor.activeB">
-	<div class="buttons" style="float: right;">
-		<a href="ContractorFacilities.action?id=<s:property value="id" />" class="positive">Next</a>
-	</div>
-</s:if>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 </body>
 </html>
