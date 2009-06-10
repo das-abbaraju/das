@@ -7,7 +7,14 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script language="JavaScript">
 function updateExpDate() {
-	$('ccexp').value = $F('expMonth') + $F('expYear');
+	$('ccexpError').hide();
+	if ($F('expMonth') != "" && $F('expYear') != "") {
+		$('ccexp').value = $F('expMonth') + $F('expYear');
+		return true;
+	}
+	$('ccexpError').innerHTML = "* Please enter your card's expiration date";
+	$('ccexpError').show();
+	return false;
 }
 
 function showPaymentMethodOption(elm) {
@@ -122,7 +129,7 @@ function showPaymentMethodOption(elm) {
 </s:form>
 
 <s:if test="paymentMethod.creditCard">
-	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="updateExpDate();">
+	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="return updateExpDate();">
 		<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 		<s:hidden name="hash"></s:hidden>
 		<s:hidden name="key_id"></s:hidden>
@@ -167,9 +174,10 @@ function showPaymentMethodOption(elm) {
 				<s:textfield name="ccnumber" size="20" />
 			</li>
 			<li><label>Expiration Date:</label>
-				<s:select id="expMonth" list="#{'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'}"></s:select>
-				<s:select id="expYear" list="#{'09':2009,10:2010,11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019}"></s:select>
+				<s:select id="expMonth" list="#{'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'}" headerKey="" headerValue="- Month -"></s:select>
+				<s:select id="expYear" list="#{'09':2009,10:2010,11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019}" headerKey="" headerValue="- Year -"></s:select>
 				<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
+				<span id="ccexpError" class="Red" style="display:none"> </span>
 			</li>
 			<li>
 			<div class="buttons">
