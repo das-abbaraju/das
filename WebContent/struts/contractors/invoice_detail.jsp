@@ -10,6 +10,9 @@
 h1 {
 	display: none;
 }
+input[type=submit] {
+	display: none;
+}
 </style>
 </head>
 <body>
