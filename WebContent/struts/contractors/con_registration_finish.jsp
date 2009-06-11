@@ -61,23 +61,25 @@
 								</s:if>
 								<s:property value="operatorAccount.name"/>,
 							</s:iterator>
-						the following audits will apply: <br clear="all"/>
-						<s:iterator value="auditListMap">
-							<div style="float:left; width: <s:property value="100 / auditListMap.size() * 0.9"/>%">
+						the following audits will apply: 
+
+						<br clear="all"/>
+
+						<s:iterator value="auditMenu">
+							<div style="float:left;width: <s:property value="100 / auditMenu.size() * 0.9"/>%">
+								<strong style="font-size:16px"><s:property value="name" escape="false"/></strong>
 								<ul>
-									<s:iterator value="value">
-										<li>
-											<strong><s:property value="auditType.auditName"/></strong>
-											<s:if test="auditFor != null"> (<s:property value="auditFor"/>)</s:if>
-											<s:if test="auditType.description != null && auditType.description.length() > 0"> - <s:property value="auditType.description"/></s:if>
-										</li>
+									<s:iterator value="children">
+										<li><s:property value="name" escape="false"/></li>
 									</s:iterator>
 								</ul>
 							</div>
 						</s:iterator>
+
 						<br clear="all"/>
 						
 						<h3>Invoice Summary</h3>
+						<br clear="all"/>
 						<table class="allborder">
 							<tr>
 								<th>Item &amp; Description</th>
