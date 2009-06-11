@@ -38,7 +38,11 @@
 					<div style="float:left; width: <s:property value="100 / auditListMap.size() * 0.9"/>%">
 						<ul>
 							<s:iterator value="value">
-								<li><strong><s:property value="auditType.auditName"/></strong> <s:if test="auditFor != null"> (<s:property value="auditFor"/>) </s:if> - <s:property value="auditType.description"/></li>
+								<li>
+									<strong><s:property value="auditType.auditName"/></strong>
+									<s:if test="auditFor != null"> (<s:property value="auditFor"/>)</s:if>
+									<s:if test="auditType.description != null && auditType.description.length() > 0"> - <s:property value="auditType.description"/></s:if>
+								</li>
 							</s:iterator>
 						</ul>
 					</div>
