@@ -189,7 +189,7 @@ function showPaymentMethodOption(elm) {
 <br clear="all" /><br/><br/>
 <s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">
-		<a href="ContractorRegistrationFinish.action" class="positive">Next</a>
+		<a href="ContractorRegistrationFinish.action" class="positive">Next &gt;&gt;</a>
 	</div>
 </s:if>
 </body>
