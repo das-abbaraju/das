@@ -24,13 +24,19 @@
 <s:else>
 	<s:if test="complete">
 		<div id="info">
-			Your account has been registered successfully. A copy of the invoice has been emailed to you, or you can <a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>" target="_BLANK">click here</a> to view it online.
+			Your account has been registered successfully. A copy of the invoice has been emailed to you.
 			<s:if test="contractor.paymentMethod.creditCard">
 				<a href="Home.action">Click Here</a> to go to your home page.
 			</s:if>
 			<s:else>
 				<strong>You will have full access to your account once your payment has been received.</strong>.
 			</s:else>
+			<s:if test="contractor.activeB">
+				<div class="buttons">
+					<a href="Home.action" class="picsbutton positive">Click Here to go to your Home Page</a>
+				</div>
+			</s:if>
+			<div class="clear"></div>
 		</div>
 	</s:if>
 	<s:else>
@@ -72,7 +78,6 @@
 						<br clear="all"/>
 						
 						<h3>Invoice Summary</h3>
-						<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>" target="_BLANK">Click Here to view the Invoice</a>
 						<table class="allborder">
 							<tr>
 								<th>Item &amp; Description</th>
