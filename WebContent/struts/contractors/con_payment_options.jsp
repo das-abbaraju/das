@@ -10,10 +10,20 @@ function updateExpDate() {
 	$('ccexpError').hide();
 	if ($F('expMonth') != "" && $F('expYear') != "") {
 		$('ccexp').value = $F('expMonth') + $F('expYear');
-		return true;
+		return updateEmailText();
 	}
 	$('ccexpError').innerHTML = "* Please enter your card's expiration date";
 	$('ccexpError').show();
+	return updateEmailText();
+}
+
+function updateEmailText() {
+	$('emailError').hide();
+	if ($F('email') != "") {
+		return true;
+	}
+	$('emailError').innerHTML = "* Please enter the card holder's email Address";
+	$('emailError').show();
 	return false;
 }
 </script>
@@ -57,28 +67,17 @@ function updateExpDate() {
 	</li>
 <s:if test="contractor.newMembershipLevel.amount > 0">
 	<li><label>Payment Method:</label>
-		<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
+		<s:property value="contractor.paymentMethod.description"/><br/>
+		<s:if test="contractor.newMembershipLevel.amount < 500">
 			Credit Card payment is required for billing amounts less than $500.
 		</s:if>
-		<s:else>
-			<s:property value="contractor.paymentMethod.description"/><br/>
-			<div>
-				Click button to Change the Payment Method 
-				<s:if test="contractor.paymentMethod.creditCard">
-					<input type="submit" name="button" value="Check"/>
-				</s:if>
-				<s:else>
-					<input type="submit" name="button" value="Credit Card"/>
-				</s:else>
-			</div>	
-		</s:else>
 	</li>
-<s:if test="!contractor.paymentMethod.creditCard">
-	<li>
-		<span> Your invoice will be emailed to <s:property value="contractor.email"/> 
-		<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if>.</span>			
-	</li>
-</s:if>
+	<s:if test="!contractor.paymentMethod.creditCard">
+		<li>
+			<span> Your invoice will be emailed to <s:property value="contractor.email"/> 
+			<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if>.</span>			
+		</li>
+	</s:if>
 
 	<s:if test="contractor.activeB">
 		<li><label>Next Billing Date:</label> <s:date
@@ -102,6 +101,18 @@ function updateExpDate() {
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 							
 </li>
+<s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">
+	<li>
+		<div>
+			<s:if test="contractor.paymentMethod.creditCard">
+				<input type="submit" class="picsbutton positive" name="button" value="Change my Payment Method to Check"/>
+			</s:if>
+			<s:else>
+				<input type="submit" class="picsbutton positive" name="button" value="Change my Payment Method to Credit Card"/>
+			</s:else>
+		</div>	
+	</li>	
+</s:if>
 </ol>
 </fieldset>
 </s:form>
@@ -158,12 +169,13 @@ function updateExpDate() {
 				<span id="ccexpError" class="Red" style="display:none"> </span>
 			</li>
 			<li><label>Card Holder Email:</label>
-				<s:textfield name="contractor.ccEmail" size="50" /><span class="redMain">*</span>
+				<s:textfield id="email" name="contractor.ccEmail" size="50" />
+				<span id="emailError" class="Red" style="display:none"></span>
 				<s:if test="@com.picsauditing.PICS.Utilities@isValidEmail(contractor.billingEmail)">
 					<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id"/>&button=copyBillingEmail">Same as Billing Address</a>
 				</s:if>
+				<br/>All the charge notifications will be sent to this email.
 			</li>
-			<li>All the charge notifications will be sent to this email.</li>
 			<li>
 			<div class="buttons">
 				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>

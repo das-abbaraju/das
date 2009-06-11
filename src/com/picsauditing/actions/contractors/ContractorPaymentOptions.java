@@ -66,10 +66,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		// The payment method has changed.
-		if("Check".equalsIgnoreCase(button)) {
+		if("Change my Payment Method to Check".equalsIgnoreCase(button)) {
 			contractor.setPaymentMethod(PaymentMethod.Check);
 		}
-		if("Credit Card".equalsIgnoreCase(button) 
+		if("Change my Payment Method to Credit Card".equalsIgnoreCase(button) 
 				|| (!contractor.getPaymentMethod().isCreditCard() 
 						&& contractor.getNewMembershipLevel().getAmount().intValue() < 500)) {
 			contractor.setPaymentMethod(PaymentMethod.CreditCard);
@@ -89,7 +89,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			return SUCCESS;
 
 		if(!Utilities.isValidEmail(contractor.getCcEmail())) {
-			addActionError("Please enter a valid email address.");
 			return SUCCESS;
 		}		
 

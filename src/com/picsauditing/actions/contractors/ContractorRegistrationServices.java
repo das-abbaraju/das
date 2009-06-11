@@ -96,7 +96,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					}
 				}
 				if(!requiredQuestions)
-					addActionError("Please answer all the questions on the General Information");
+					addActionError("Please answer all the questions on the General Info section");
 				if(!performServices)
 					addActionError("Please select the services you perform below");
 				if (requiredQuestions && performServices) {
