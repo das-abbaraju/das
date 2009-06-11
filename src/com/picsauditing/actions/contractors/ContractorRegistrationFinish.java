@@ -220,7 +220,11 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		emailBuilder.setFromAddress("billing@picsauditing.com");
 
 		List<String> emailAddresses = new ArrayList<String>();
-
+		
+		if(contractor.getPaymentMethod().isCreditCard()) {
+			if(!Strings.isEmpty(contractor.getCcEmail()))
+				emailAddresses.add(contractor.getCcEmail());
+		}
 		if (!Strings.isEmpty(contractor.getBillingEmail()))
 			emailAddresses.add(contractor.getBillingEmail());
 		if (!Strings.isEmpty(contractor.getEmail())) {
