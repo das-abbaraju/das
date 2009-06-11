@@ -28,9 +28,10 @@ public class Home extends ContractorActionSupport {
 			return LOGIN;
 
 		if (permissions.isContractor()) {
-			try {
-				findContractor();
-			} catch (Exception e) {
+			findContractor();
+			if (!contractor.isActiveB()) {
+				addActionError("Your account is inactive. You can't access this page");
+				return BLANK;
 			}
 		} else
 			permissions.tryPermission(OpPerms.Dashboard);

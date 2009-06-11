@@ -1,9 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@page import="com.picsauditing.util.URLUtils"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="com.picsauditing.util.URLUtils"%>
+<%@ page import="com.picsauditing.access.PicsMenu"%>
 
-<jsp:useBean id="permissions"
-	class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
 <decorator:usePage id="thisPage" />
 <html>
@@ -13,17 +12,14 @@
 <link href="css/marketing.css" rel="stylesheet" type="text/css" />
 <decorator:head />
 </head>
-<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0"
-	topmargin="0" marginwidth="0" marginheight="0"
+<body bgcolor="#EEEEEE" vlink="#003366" alink="#003366" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"
 	onload="<decorator:getProperty property="body.onload" />">
-<table width="100%" height="100%" border="0" cellpadding="0"
-	cellspacing="0">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td valign="top">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<td height="72"
-					bgcolor="<decorator:getProperty property="meta.color" default="#993300" />">&nbsp;</td>
+				<td height="72" bgcolor="<decorator:getProperty property="meta.color" default="#993300" />">&nbsp;</td>
 			</tr>
 		</table>
 		</td>
@@ -31,18 +27,16 @@
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td valign="top">
-				<form action="Login.action" method="post">
-					<input type="hidden" name="button" value="login" />
+				<form action="Login.action" method="post"><input type="hidden" name="button" value="login" />
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 					<tr>
-						<td width="146" height="218" align="center" valign="top"><a
-							href="index.jsp"><img src="images/logo.gif" alt="Home"
-							width="146" height="145" border="0"></a><br>
+						<td width="146" height="218" align="center" valign="top"><a href="index.jsp"><img src="images/logo.gif"
+							alt="Home" width="146" height="145" border="0"></a><br>
 						<%
 							if (permissions.isLoggedIn())
 							{
-						%> <a class="blueMain"
-							href="Home.action">Back to PICS Online</a><br />
+						%> <a class="blueMain" href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">Back to
+						PICS Online</a><br />
 						<a class="blueMain" href="Login.action?button=logout">Logout</a> <%
  	} else if (!thisPage.getRequest().getRequestURI().contains("login"))
  	{
@@ -54,24 +48,18 @@
 							</tr>
 							<tr>
 								<td align="right" valign="middle">
-								<p><img src="images/login_user.gif" alt="User Name"
-									width="50" height="9">&nbsp;</p>
+								<p><img src="images/login_user.gif" alt="User Name" width="50" height="9">&nbsp;</p>
 								</td>
-								<td valign="middle"><input name="username" type="text"
-									class="loginForms" size="9"></td>
+								<td valign="middle"><input name="username" type="text" class="loginForms" size="9"></td>
 							</tr>
 							<tr>
-								<td align="right" valign="middle"><img
-									src="images/login_pass.gif" alt="Password" width="50"
-									height="9">&nbsp;</td>
-								<td valign="middle"><input name="password" type="password"
-									class="loginForms" size="9"></td>
+								<td align="right" valign="middle"><img src="images/login_pass.gif" alt="Password" width="50" height="9">&nbsp;</td>
+								<td valign="middle"><input name="password" type="password" class="loginForms" size="9"></td>
 							</tr>
 							<tr>
-								<td class="forgotpassword" valign="middle">
-									<a href="forgot_password.jsp"">Forgot<br>Password</a></td>
-								<td><input name="Submit" type="image"
-									src="images/button_login.jpg" width="65" height="28" border="0">
+								<td class="forgotpassword" valign="middle"><a href="forgot_password.jsp"">Forgot<br>
+								Password</a></td>
+								<td><input name="Submit" type="image" src="images/button_login.jpg" width="65" height="28" border="0">
 								</td>
 
 							</tr>
@@ -89,21 +77,15 @@
 								<td height="72">
 								<table width="511" border="0" cellspacing="0" cellpadding="0">
 									<tr>
-										<td width="364"><object
-											classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+										<td width="364"><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 											codebase="<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"
 											width="364" height="72">
-											<param name="movie"
-												value="flash/NAV_<decorator:getProperty property="meta.flashName" default="HOME" />.swf">
+											<param name="movie" value="flash/NAV_<decorator:getProperty property="meta.flashName" default="HOME" />.swf">
 											<param name="quality" value="high">
-											<embed
-												src="flash/NAV_<decorator:getProperty property="meta.flashName" default="LOGIN" />.swf"
-												quality="high"
+											<embed src="flash/NAV_<decorator:getProperty property="meta.flashName" default="LOGIN" />.swf" quality="high"
 												pluginspage="<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer"
-												type="application/x-shockwave-flash" width="364" height="72"></embed>
-										</object></td>
-										<td><img src="images/squares_home.gif" width="147"
-											height="72"></td>
+												type="application/x-shockwave-flash" width="364" height="72"></embed> </object></td>
+										<td><img src="images/squares_home.gif" width="147" height="72"></td>
 									</tr>
 								</table>
 								</td>
@@ -113,23 +95,21 @@
 									if (thisPage.getRequest().getRequestURI().contains("index.jsp"))
 									{
 								%>
-								<td height="146"><object
-									classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+								<td height="146"><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 									codebase="<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"
 									width="511" height="146">
 									<param name="movie" value="flash/home_feature.swf">
 									<param name="quality" value="high">
 									<embed src="flash/home_feature.swf" quality="high"
 										pluginspage="<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer"
-										type="application/x-shockwave-flash" width="511" height="146"></embed>
-								</object></td>
+										type="application/x-shockwave-flash" width="511" height="146"></embed> </object></td>
 								<%
 									} else
 									{
 								%>
 								<td height="146"><img
-									src="images/photo_<decorator:getProperty property="meta.iconName" default="login" />.jpg"
-									width="510" height="146"></td>
+									src="images/photo_<decorator:getProperty property="meta.iconName" default="login" />.jpg" width="510"
+									height="146"></td>
 								<%
 									}
 								%>
@@ -159,16 +139,14 @@
 		<td valign="top">
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<td height="72"
-					bgcolor="<decorator:getProperty property="meta.color" default="#993300" />">&nbsp;</td>
+				<td height="72" bgcolor="<decorator:getProperty property="meta.color" default="#993300" />">&nbsp;</td>
 			</tr>
 		</table>
 		</td>
 	</tr>
 	<tr bgcolor="#003366">
 		<td height="72">&nbsp;</td>
-		<td height="72" align="center" valign="middle" class="footer">&copy;
-		Copyright 2008 PICS</td>
+		<td height="72" align="center" valign="middle" class="footer">&copy; Copyright 2008 PICS</td>
 		<td height="72" valign="top">&nbsp;</td>
 	</tr>
 </table>
