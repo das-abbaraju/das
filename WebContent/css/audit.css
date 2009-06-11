@@ -41,7 +41,7 @@ span.question {
 
 span.required {
 	background: transparent url(../images/yellow_star.gif) no-repeat
-		left center;
+		left top;
 	color: #272;
 	font-weight: bold;
 }
