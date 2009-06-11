@@ -18,7 +18,6 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
-	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 	private String response_code = null;
 	private String orderid = "";
 	private String amount = "";
@@ -67,17 +66,21 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		// The payment method has changed.
-		if (!paymentMethod.equals(contractor.getPaymentMethod())) {
-			contractor.setPaymentMethod(paymentMethod);
+		if("Check".equalsIgnoreCase(button)) {
+			contractor.setPaymentMethod(PaymentMethod.Check);
 		}
-
+		if("Credit Card".equalsIgnoreCase(button) 
+				|| (!contractor.getPaymentMethod().isCreditCard() 
+						&& contractor.getNewMembershipLevel().getAmount().intValue() < 500)) {
+			contractor.setPaymentMethod(PaymentMethod.CreditCard);
+		}
 		if ("Activation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
 		if ("Membership Canceled".equals(contractor.getBillingStatus())
 				|| "Reactivation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 
-		if (!paymentMethod.isCreditCard())
+		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
 
 		// Setup the new variables for sending the CC to braintree
@@ -159,14 +162,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// We don't explicitly save, but it should happen here
 		// accountDao.save(contractor);
 		return SUCCESS;
-	}
-
-	public PaymentMethod getPaymentMethod() {
-		return paymentMethod;
-	}
-
-	public void setPaymentMethod(PaymentMethod paymentMethod) {
-		this.paymentMethod = paymentMethod;
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -319,9 +314,4 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public void setActivationFee(InvoiceFee activationFee) {
 		this.activationFee = activationFee;
 	}
-	
-	public PaymentMethod[] getPaymentMethodList() {
-		return PaymentMethod.values();
-	}
-
 }

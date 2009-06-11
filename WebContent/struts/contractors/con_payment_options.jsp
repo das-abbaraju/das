@@ -78,25 +78,28 @@ function showPaymentMethodOption(elm) {
 <s:if test="contractor.newMembershipLevel.amount > 0">
 	<li><label>Payment Method:</label>
 		<s:if test="contractor.newMembershipLevel.amount < 500 && !permissions.admin">
-			<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics" disabled="true"/>
+			Credit Card payment is required for billing amounts less than $500.
 		</s:if>
 		<s:else>
-			<s:radio list="paymentMethodList" name="paymentMethod" value="%{contractor.paymentMethod}" theme="pics" onclick="javascript : showPaymentMethodOption(this); return true;"/>
+			<s:property value="contractor.paymentMethod.description"/><br/>
+			<div>
+				Click button to Change the Payment Method 
+				<s:if test="contractor.paymentMethod.creditCard">
+					<input type="submit" name="button" value="Check"/>
+				</s:if>
+				<s:else>
+					<input type="submit" name="button" value="Credit Card"/>
+				</s:else>
+			</div>	
 		</s:else>
-		</li>
-		<li>
-			<s:if test="contractor.paymentMethod.creditCard">
-				<s:set name="creditcard_show" value="'inline'"/>								
-				<s:set name="check_show" value="'none'"/>
-			</s:if>
-			<s:else>
-				<s:set name="creditcard_show" value="'none'"/>								
-				<s:set name="check_show" value="'inline'"/>
-			</s:else>
-			<span id="creditcard_show" style="display: <s:property value="#attr.creditcard_show"/>;"> Credit card payment is required for billing amounts less than $500.<br/></span>
-			<span id="check_show" style="display: <s:property value="#attr.check_show"/>;"> Your invoice will be generated on <s:date name="@com.picsauditing.PICS.DateBean@getFirstofMonth(contractor.paymentExpires,-1)" format="MMM d, yyyy"/> and emailed to <s:property value="contractor.email"/> 
-			<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if> with payment terms of net 30.</span>
 	</li>
+<s:if test="!contractor.paymentMethod.creditCard">
+	<li>
+		<span> Your invoice will be emailed to <s:property value="contractor.email"/> 
+		<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if>.</span>			
+	</li>
+</s:if>
+
 	<s:if test="contractor.activeB">
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
@@ -119,16 +122,11 @@ function showPaymentMethodOption(elm) {
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 							
 </li>
-<s:if test="contractor.newMembershipLevel.amount > 500">
-<div class="buttons">
-	<input type="submit" class="picsbutton" name="button" value="Update"/>
-</div>
-</s:if>
 </ol>
 </fieldset>
 </s:form>
 
-<s:if test="paymentMethod.creditCard">
+<s:if test="contractor.paymentMethod.creditCard">
 	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="return updateExpDate();">
 		<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 		<s:hidden name="hash"></s:hidden>
@@ -188,15 +186,7 @@ function showPaymentMethodOption(elm) {
 		</fieldset>	
 	</form>
 </s:if>
-<s:else>
-	<fieldset class="form">
-	<legend><span>Check</span></legend>
-	<ol>
-	</ol>
-	</fieldset>	
-</s:else>
 <br clear="all" /><br/><br/>
-
 <s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">
 		<a href="ContractorRegistrationFinish.action" class="positive">Next</a>
