@@ -41,32 +41,25 @@ function showPaymentMethodOption(elm) {
 
 <s:include value="../actionMessages.jsp"></s:include>
 
-
-<s:if test="permissions.contractor">
-	<s:if test="contractor.operators.size == 0">
-		<div id="alert">
-			You have not selected any facilities. No operators will be able to view your account until you do. 
-			<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click to update your operator listings.</a>
-		</div>
-	</s:if>
-	<s:else>
-		<div id="info">
-			<s:if test="contractor.activeB">
-				As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
-			</s:if>
-			<s:elseif test="contractor.newMembershipLevel.amount == 0">
-				<s:property value="contractor.operators.size"/>
-				You are currently at the free level and do not owe any membership dues.  
-				However, a valid credit card is required to maintain an account with PICS.  
-				Only if you upgrade your account will your card be charged, and only after PICS notifies you at 
-				least 7 days before the charge.
-			</s:elseif>
-			<s:else>
-				Please enter your credit card information, which will expedite the registration process.  Your membership is valid for 12 months from the charge date.  An upgrade fee will be charged only if you add additional facilities to your account. If you have questions, contact PICS Accounting anytime at (800) 506-7427 x 708.
-			</s:else>
-		</div>
-	</s:else>
+<s:if test="contractor.operators.size == 0">
+	<div id="alert">
+		You have not selected any facilities. No operators will be able to view your account until you do. 
+		<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click to update your operator listings.</a>
+	</div>
 </s:if>
+<s:elseif test="contractor.newMembershipLevel.amount == 0">
+	<div id="alert">
+		You are currently at the free level and do not owe any membership dues.  
+		However, a valid credit card is required to maintain an account with PICS.  
+		Only if you upgrade your account will your card be charged, and only after PICS notifies you at 
+		least 7 days before the charge.
+	</div>
+</s:elseif>
+<s:elseif test="contractor.activeB && !contractor.paymentMethodStatusValid">
+		<div id="info">
+			As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
+		</div>
+</s:elseif>
 
 <s:form id="save" method="POST">
 <fieldset class="form">
@@ -107,7 +100,7 @@ function showPaymentMethodOption(elm) {
 			value="contractor.newMembershipLevel.amount" /> USD</li>
 	</s:if>
 	<s:else>
-		<li><label>Membership Fee:</label> $<s:property
+		<li><label>Annual Membership Fee:</label> $<s:property
 			value="contractor.newMembershipLevel.amount" /> USD</li>
 		<li><label>Activation Fee:</label> $<s:property value="activationFee.amount"/> USD</li>
 		<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
