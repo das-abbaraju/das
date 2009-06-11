@@ -67,23 +67,26 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		findContractor();
 
-		if (button != null && button.startsWith("Charge") && contractor.isCcOnFile()) {
-			paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
-			paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
+		if ("Complete Registration".equals(button)) {
+			if (contractor.isCcOnFile()) {
+				paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
+				paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
-			try {
-				paymentService.processPayment(invoice);
+				try {
+					paymentService.processPayment(invoice);
 
-				CreditCard cc = paymentService.getCreditCard(id);
-				invoice.setCcNumber(cc.getCardNumber());
+					CreditCard cc = paymentService.getCreditCard(id);
+					invoice.setCcNumber(cc.getCardNumber());
 
-				payInvoice();
+					payInvoice();
 
-				addNote("Credit Card transaction completed and emailed the receipt for $" + invoice.getTotalAmount());
-			} catch (Exception e) {
-				addNote("Credit Card transaction failed: " + e.getMessage());
-				this.addActionError("Failed to charge credit card. " + e.getMessage());
-				return SUCCESS;
+					addNote("Credit Card transaction completed and emailed the receipt for $"
+							+ invoice.getTotalAmount());
+				} catch (Exception e) {
+					addNote("Credit Card transaction failed: " + e.getMessage());
+					this.addActionError("Failed to charge credit card. " + e.getMessage());
+					return SUCCESS;
+				}
 			}
 		} else if (!contractor.isActiveB()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
@@ -130,6 +133,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					contractor.getInvoices().add(invoice);
 
 				contractor.syncBalance();
+				contractor.setMembershipDate(null);
 				accountDao.save(contractor);
 
 				this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
