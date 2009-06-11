@@ -55,6 +55,11 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	private String billingContact;
 	private String billingPhone;
 	private String billingEmail;
+	private String billingAddress;
+	private String billingCity;
+	private String billingState;
+	private String billingZip;
+	private String ccEmail;
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
@@ -243,6 +248,51 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 
 	public void setBillingEmail(String billingEmail) {
 		this.billingEmail = billingEmail;
+	}
+
+	@Column(name = "billingAddress", length = 50)
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	@Column(name = "billingCity", length = 35)
+	public String getBillingCity() {
+		return billingCity;
+	}
+
+	public void setBillingCity(String billingCity) {
+		this.billingCity = billingCity;
+	}
+
+	@Column(name = "billingState", length = 10)
+	public String getBillingState() {
+		return billingState;
+	}
+
+	public void setBillingState(String billingState) {
+		this.billingState = billingState;
+	}
+
+	@Column(name = "billingZip", length = 10)
+	public String getBillingZip() {
+		return billingZip;
+	}
+
+	public void setBillingZip(String billingZip) {
+		this.billingZip = billingZip;
+	}
+
+	@Column(name = "ccEmail", length = 50)
+	public String getCcEmail() {
+		return ccEmail;
+	}
+
+	public void setCcEmail(String ccEmail) {
+		this.ccEmail = ccEmail;
 	}
 
 	@Enumerated(EnumType.ORDINAL)

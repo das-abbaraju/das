@@ -91,8 +91,21 @@ function checkName(name) {
 							<s:textfield name="contractor.secondPhone" size="35" /></li>
 						<li><label>Second Email:</label>
 							<s:textfield name="contractor.secondEmail" size="35" /></li>
+					</ol>
+					</fieldset>
+				<fieldset class="form">
+					<legend><span>Billing Contact</span></legend>
+					<ol>
 						<li><label>Billing Contact:</label> 
 							<s:textfield name="contractor.billingContact" size="35" /></li>
+						<li><label>Billing Address:</label> 
+							<s:textfield name="contractor.billingAddress" size="35" /></li>
+						<li><label>Billing City:</label>
+							<s:textfield name="contractor.billingCity" size="35" /></li>
+						<li><label>Billing State:</label>
+							<s:textfield name="contractor.billingState" size="35" /></li>
+						<li><label>Billing Zip:</label>
+							<s:textfield name="contractor.billingZip" size="35" /></li>
 						<li><label>Billing Phone:</label>
 							<s:textfield name="contractor.billingPhone" size="35" /></li>
 						<li><label>Billing Email:</label>
@@ -101,15 +114,15 @@ function checkName(name) {
 					</fieldset>
 					<fieldset class="form">
 						<legend><span>Industry Details</span></legend>
-			<ol>
-				<li><label>Industry:</label> <s:select list="industryList"
-					name="contractor.industry" />
-				<li><label>Main Trade:</label> <s:select list="tradeList"
-					name="contractor.mainTrade" headerKey=""
-					headerValue="- Choose a trade -" listKey="question"
-					listValue="question" /><span class="redMain">*</span></li>
-			</ol>
-			</fieldset>
+							<ol>
+							<li><label>Industry:</label> <s:select list="industryList"
+							name="contractor.industry" />
+						<li><label>Main Trade:</label> <s:select list="tradeList"
+							name="contractor.mainTrade" headerKey=""
+							headerValue="- Choose a trade -" listKey="question"
+							listValue="question" /><span class="redMain">*</span></li>
+					</ol>
+					</fieldset>
 					<fieldset class="form">
 						<legend><span>Company Identification</span></legend>
 						<ol>

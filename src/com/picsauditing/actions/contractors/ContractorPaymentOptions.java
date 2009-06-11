@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -58,7 +59,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (permissions.isContractor() && !contractor.isActiveB() && contractor.getRequestedBy() == null) {
 			if (contractor.getOperators().size() == 1) {
 				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
-				accountDao.save(contractor);
 			} else {
 				addActionError("Please select the operator that referred you to PICS before continuing.");
 				return "requested";
@@ -74,6 +74,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						&& contractor.getNewMembershipLevel().getAmount().intValue() < 500)) {
 			contractor.setPaymentMethod(PaymentMethod.CreditCard);
 		}
+		if("copyBillingEmail".equals(button)) {
+			contractor.setCcEmail(contractor.getBillingEmail());
+		}
+			
+		accountDao.save(contractor);
 		if ("Activation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
 		if ("Membership Canceled".equals(contractor.getBillingStatus())
@@ -82,6 +87,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
+
+		if(!Utilities.isValidEmail(contractor.getCcEmail())) {
+			addActionError("Please enter a valid email address.");
+			return SUCCESS;
+		}		
 
 		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();

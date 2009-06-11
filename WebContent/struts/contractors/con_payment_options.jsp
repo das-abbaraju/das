@@ -16,19 +16,6 @@ function updateExpDate() {
 	$('ccexpError').show();
 	return false;
 }
-
-function showPaymentMethodOption(elm) {
-	var option =  $F(elm);
-	if(option == 'Check') {
-		$('creditcard_show').hide();
-		$('check_show').show();
-	}
-	if(option == 'CreditCard') {
-		$('check_show').hide();
-		$('creditcard_show').show();
-	}
-	return false;
-}
 </script>
 </head>
 <body>
@@ -170,6 +157,13 @@ function showPaymentMethodOption(elm) {
 				<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
 				<span id="ccexpError" class="Red" style="display:none"> </span>
 			</li>
+			<li><label>Card Holder Email:</label>
+				<s:textfield name="contractor.ccEmail" size="50" /><span class="redMain">*</span>
+				<s:if test="@com.picsauditing.PICS.Utilities@isValidEmail(contractor.billingEmail)">
+					<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id"/>&button=copyBillingEmail">Same as Billing Address</a>
+				</s:if>
+			</li>
+			<li>All the charge notifications will be sent to this email.</li>
 			<li>
 			<div class="buttons">
 				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
