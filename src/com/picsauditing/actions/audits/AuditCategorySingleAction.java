@@ -143,9 +143,13 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			}
 
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
-				Date dateToExpire = DateBean.addMonths(conAudit.getCompletedDate(), conAudit.getAuditType()
+				if(conAudit.getAuditType().getClassType().isPqf())
+					conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
+				else {
+					Date dateToExpire = DateBean.addMonths(conAudit.getCompletedDate(), conAudit.getAuditType()
 						.getMonthsToExpire());
-				conAudit.setExpiresDate(dateToExpire);
+					conAudit.setExpiresDate(dateToExpire);
+				}
 			}
 
 			if (auditStatus.equals(AuditStatus.Submitted)) {
