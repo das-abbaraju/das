@@ -1,6 +1,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
+<style type="text/css"/>
+span.questionNumber{
+display:none}
+</style>
 <title>Services Performed</title>
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
@@ -25,7 +29,8 @@
 <s:include value="registrationHeader.jsp"></s:include>
 
 
-
+<div id="info">Answers on this page automatically save. Once you're complete, click <b>Next</b> at the bottom to go to the next step.</div>
+<br/>
 <h3 class="subCategory">General Info</h3>
 <s:iterator value="infoQuestions">
 	<s:set name="q" value="[0]" />
@@ -35,7 +40,6 @@
 	<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>"
 		class="question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
 </s:iterator>
-
 <h3 class="subCategory">Services Performed</h3>
 <h4 class="groupTitle">
 Please select the services your company performs<br>
@@ -52,7 +56,6 @@ Please select the services your company performs<br>
 	</s:if>
 </s:iterator>
 
-<div id="info">Answers on this page automatically save. Click Next to go to the next step.</div>
 
 <div class="buttons">
 	<a href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=calculateRisk">Next &gt;&gt;</a>
