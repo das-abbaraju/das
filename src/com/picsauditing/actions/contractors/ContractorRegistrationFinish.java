@@ -48,6 +48,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 	private Invoice invoice;
 	private Map<Integer, List<ContractorAudit>> auditMapList;
+	private boolean complete = false;
 
 	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDAO, NoteDAO noteDAO,
@@ -88,6 +89,19 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					return SUCCESS;
 				}
 			}
+
+			if (contractor.getInvoices().size() == 1) {
+				invoice = contractor.getInvoices().get(0);
+			}
+			complete = true;
+			
+			// Send a receipt to the contractor
+			try {
+				emailInvoice();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
 		} else if (!contractor.isActiveB()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			newFee = invoiceFeeDAO.find(newFee.getId());
@@ -184,13 +198,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					contractor.setAuditColumns(getUser());
 				}
 			}
-		}
-
-		// Send a receipt to the contractor
-		try {
-			emailInvoice();
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 	}
 
@@ -291,5 +298,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		}
 
 		return auditMapList;
+	}
+
+	public boolean isComplete() {
+		return complete;
 	}
 }

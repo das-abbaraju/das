@@ -27,16 +27,16 @@
 			</s:else>
 			<s:if test="contractor.paymentMethodStatusValid">
 				<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
-					<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Finish</a></li>
+					<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Confirm</a></li>
 			</s:if>
 			<s:else>
-				<li><a class="inactive">5) Finish</a></li>
+				<li><a class="inactive">5) Confirm</a></li>
 			</s:else>
 		</s:if>
 		<s:else>
 			<li><a class="inactive">3) Add Facilities</a></li>
 			<li><a class="inactive">4) Add Payment Options</a></li>
-			<li><a class="inactive">5) Finish</a></li>
+			<li><a class="inactive">5) Confirm</a></li>
 		</s:else>
 	</s:if>
 	<s:else>
@@ -45,7 +45,7 @@
 		<li><a class="inactive">2) Services Performed</a></li>
 		<li><a class="inactive">3) Add Facilities</a></li>
 		<li><a class="inactive">4) Add Payment Options</a></li>
-		<li><a class="inactive">5) Finish</a></li>
+		<li><a class="inactive">5) Confirm</a></li>
 	</s:else>
 </ul>
 </div>
