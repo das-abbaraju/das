@@ -1,12 +1,10 @@
 package com.picsauditing.PICS;
 
 import java.util.*;
-// String escapeQuotes(String value)
-// String escapeHTML(String value)
-// boolean isValidEmail(String email)
 
 /**
- * @see Utilities not sure what the difference is
+ * Old list of HTML <input> methods
+ * @deprecated use struts now
  */
 public class Inputs {
 
@@ -16,8 +14,6 @@ public class Inputs {
 	static final boolean ARRAY_WITHOUT_VALUES = false;
 	static final boolean MULTIPLE = true;
 	static final boolean SINGLE = false;
-	static final String[] YES_NO_ARRAY = {"Yes","No"};
-	public static final String[] YES_NO_NA_ARRAY = {"Yes","No","NA"};
 	public static final String[] COUNTRY_ARRAY = {"- Country -", "USA","Afganistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguila","Antarctica","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerjaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belguim","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana",
 			"Bouvet Island","Brazil","British Indian Ocean territory","Brunei Darussalam","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central African Republic","Chad","Chile","China","Christmas Island","Cocos (Keeling) Islands","Colombia","Comoros","Congo","Cook Islands","Costa Rica","Cote d'Ivoire (Ivory Coast)","Croatia (Hrvatska)","Cuba","Cyprus",
 			"Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","East Timor","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Guiana","French Polynesia","French Southern Territories","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Greenland",
@@ -28,47 +24,6 @@ public class Inputs {
 			"Svalbard and Jan Mayen Islands","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Togo","Tokelau","Tonga","Trinidad and Tobego","Tunisia","Turkey","Turkmenistan","Turks and Caicos Islands","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Vanuatu","Vatican City",
 			"Venezuela","Vietnam","Virgin Islands (British)","Virgin Islands (US)","Wallis and Futuna Islands","Western Sahara","Yemen","Yugoslavia","Zaire","Zambia","Zimbabwe"};
 
-	public static final String[] STATE_ARRAY = {
-			"AL","Alabama","AK","Alaska","AB","Alberta","AZ", "Arizona","AR","Arkansas",
-			"BC","British Columbia","CA","California","CO","Colorado","CT","Connecticut",
-			"DE","Delaware","FL","Florida","GA","Georgia","GU","Guam","HI","Hawaii",
-			"ID","Idaho","IL","Illinois","IN","Indiana","IA","Iowa","KS","Kansas","KY","Kentucky",
-			"LA","Louisiana","ME","Maine","MB","Manitoba","MD","Maryland","MA","Massachusetts",
-			"MI","Michigan","MN","Minnesota","MS","Mississippi","MO","Missouri","MT","Montana",
-			"NE","Nebraska","NV","Nevada","NB","New Brunswick","NL","Newfoundland",
-			"NH","New Hampshire","NJ","New Jersey","NM","New Mexico","NY","New York",
-			"NC","North Carolina","ND","North Dakota","NS","Nova Scotia","NU","Nunavut","OH","Ohio",
-			"OK","Oklahoma","ON","Ontario","OR","Oregon","PA","Pennsylvania",
-			"PE","Prince Edward Is.","PR","Puerto Rico","QC","Quebec","RI","Rhode Island",
-			"SK","Saskatchewan","SC","South Carolina","SD","South Dakota","TN","Tennessee",
-			"TX","Texas","UT","Utah","VT","Vermont","VA","Virginia","WA","Washington",
-			"DC","Washington D.C.","WV","West Virginia","WI","Wisconsin","WY","Wyoming","YT","Yukon"};
-	public static String[] MONTHS_ARRAY = {"01","Jan","02","Feb","03","Mar","04","Apr",
-			"05","May","06","Jun","07","Jul","08","Aug",
-			"09","Sep","10","Oct","11","Nov","12","Dec"};
-	public static String[] DAYS_ARRAY = {"01","02","03","04","05","06","07","08","09","10",
-			"11","12","13","14","15","16","17","18","19","20",
-			"21","22","23","24","25","26","27","28","29","30","31"};
-	public static String[] YEARS_ARRAY = {"2008","2009","2010","2011","2012"};
-
-	public static ArrayList<String> getStateArrayList() {
-		ArrayList<String> tempAL = new ArrayList<String>();
-		tempAL.addAll(Arrays.asList(Inputs.STATE_ARRAY));
-		return tempAL;
-	}//getStateArrayList
-	
-	public static String getStateSelect(String name, String classType, String selectedState) throws Exception {
-		return inputSelect2(name, classType, selectedState, STATE_ARRAY);
-	}//getStateSelect
-
-	public static String getLongStateSelect(String name, String classType, String selectedState) throws Exception {
-		int length = STATE_ARRAY.length;
-		ArrayList<String> tempAL = new ArrayList<String>();
-		for (int i=1;i < length;i+=2)
-			tempAL.add(STATE_ARRAY[i]);
-		return inputSelect(name, classType, selectedState, (String[])tempAL.toArray(new String[0]));
-	}//getStateSelect
-
 	public static String getHourSelect(String name, String classType, String selectedOption) {
 		ArrayList<String> tempAL = new ArrayList<String>();
 		tempAL.add("--");
@@ -76,15 +31,10 @@ public class Inputs {
 			String temp = Integer.toString(i);
 			tempAL.add(temp);
 			tempAL.add(temp+":30");
-		}//for
+		}
 		return inputSelect(name, classType, selectedOption,(String[])tempAL.toArray(new String[0]));
-	}//getHourSelect
+	}
 
-	public static String getAMPMSelect(String name, String classType, String selectedOption) {
-		String[] AMPM_ARRAY = {"--","am","pm"};
-		return inputSelect(name, classType, selectedOption,AMPM_ARRAY);
-	}//getAMPMSelect
-	
 	public static String inputSelectAll(String name, String classType, String selectedOption, String[] optionsArray,
 			String firstOption, String firstValue, boolean autoSubmit, boolean arrayWithValues, boolean multiple, 
 			String size, String[] selectedOptions) {
@@ -116,14 +66,14 @@ public class Inputs {
 				temp.append(" value=\"").append(value).append("\"");
 				if (selectedOptionsAL.contains(value))
 					temp.append(" selected");
-			}//if
+			}
 			String option = (String)li.next();
 			if (!arrayWithValues)
 				if (selectedOptionsAL.contains(option))
 					temp.append(" selected");		
 			
 			temp.append(">").append(option).append("</option>\n");
-		}//while
+		}
 		temp.append("</select>\n");
 		return temp.toString();
 	}
@@ -131,7 +81,7 @@ public class Inputs {
 	public static String inputSelect(String name, String classType, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
 			ARRAY_WITHOUT_VALUES,SINGLE,null,null);
-	}//inputSelect
+	}
 
 	public static String inputSelectSubmit(String name, String classType, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,AUTO_SUBMIT,
@@ -141,134 +91,22 @@ public class Inputs {
 	public static String inputSelectFirst(String name, String classType, String selectedOption, String[] optionsArray, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,null,NO_AUTO_SUBMIT,
 			ARRAY_WITHOUT_VALUES,SINGLE,null,null);
-	}//inputSelectFist
+	}
 
 	public static String inputSelectFirstSubmit(String name, String classType, String selectedOption, String[] optionsArray, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,null,AUTO_SUBMIT,
 			ARRAY_WITHOUT_VALUES,SINGLE,null,null);
-	}//inputSelectFist
+	}
 
 	public static String inputSelect2(String name, String classType, String selectedOption, String[] optionsArray) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
-	}//inputSelect2
+	}
 
 	public static String inputSelect2First(String name, String classType, String selectedOption, String[] optionsArray, 
 											String firstValue, String firstOption) {
 		return inputSelectAll(name,classType,selectedOption,optionsArray,firstOption,firstValue,NO_AUTO_SUBMIT,
 			ARRAY_WITH_VALUES,SINGLE,null,null);
 	}
-
-	public static String inputMultipleSelect(String name, String classType, String size, String selectedOption, String[] optionsArray) {
-		return inputSelectAll(name,classType,selectedOption,optionsArray,null,null,NO_AUTO_SUBMIT,
-			ARRAY_WITHOUT_VALUES,MULTIPLE,size,null);
-	}//inputMultipleSelect
-
-	public static String inputMultipleSelect2Multiples(String name, String classType, String size, String[] selectedOptions, String[] optionsArray) {
-		return inputSelectAll(name,classType,null,optionsArray,null,null,NO_AUTO_SUBMIT,
-			ARRAY_WITH_VALUES,MULTIPLE,size,selectedOptions);
-	}//inputMultipleSelect2Multiples
 	
-	public static String checkedBox(String s1) {
-		if ((s1 != null) && (s1.equals("Y")))
-			return "checked";
-		else
-			return "";
-	}//checkedBox
-
-	public static String getChecked(String s1, String s2) {
-		if ((s1 != null) && (s1.equals(s2)))
-			return "checked";
-		else
-			return "";
-	}//getChecked
-
-	public static String getYesNoRadio(String name, String classType, String selected) {
-		return getRadioInput(name, classType, selected, YES_NO_ARRAY);
-	}//getYesNoReadio
-	
-	public static String getYesNoRadioWithEvent(String name, String classType, String selected,
-			String event, String handler, String params) {
-		return getRadioInputWithEvent(name, classType, selected, YES_NO_ARRAY, event, handler, params);
-	}//getYesNoReadio
-
-	public static String getYesNoNARadio(String name, String classType, String selected) {
-		return getRadioInput(name, classType, selected, YES_NO_NA_ARRAY);
-	}//getYesNoNAReadio
-
-	public static String getRadioInput(String name, String classType, String selected, String[] optionsArray) {
-		StringBuffer temp = new StringBuffer();
-		ArrayList<String> optionsAL = new ArrayList<String>();
-		if (null != optionsArray)
-			optionsAL.addAll(Arrays.asList(optionsArray));
-		ListIterator<String> li = optionsAL.listIterator();
-		while (li.hasNext()) {
-			String option=(String)li.next();
-			temp.append("<nobr><label><input name=\"").append(name).append("\" class=").append(classType);
-			temp.append(" type=radio value=\"").append(option).append("\"");
-			if (option.equals(selected))
-				temp.append(" checked");
-			temp.append(">").append(option).append("</label></nobr>");
-		}//while
-		return temp.toString();
-	}//getReadioInput
-	
-	public static String getRadioInputWithEvent(String name, String classType, String selected, String[] optionsArray,
-			String event, String handler, String params) {
-		StringBuffer temp = new StringBuffer();
-		ArrayList<String> optionsAL = new ArrayList<String>();
-		if (null != optionsArray)
-			optionsAL.addAll(Arrays.asList(optionsArray));
-		ListIterator<String> li = optionsAL.listIterator();
-		while (li.hasNext()) {
-			String option=(String)li.next();
-			temp.append("<nobr><input name=\"").append(name).append("\" class=").append(classType);
-			temp.append(" type=radio value=\"").append(option).append("\"");
-			if (option.equals(selected))
-				temp.append(" checked ");
-			temp.append(event + "=" + handler + "(" + params + ") ");
-			temp.append(">").append(option).append("</nobr>");
-		}//while
-		return temp.toString();
-	}//getReadioInput
-
-	public static String getRadioInputWithOptions(String name, String classType, String selected, String[] valueArray, String[] optionsArray) {
-		StringBuffer temp = new StringBuffer();
-		ArrayList<String> valuesAL = new ArrayList<String>();
-		if (null != valueArray)
-			valuesAL.addAll(Arrays.asList(valueArray));
-		ListIterator<String> li = valuesAL.listIterator();
-		int i = 0;
-		while (li.hasNext()) {
-			String value=(String)li.next();
-			temp.append("<nobr><input name=\"").append(name).append("\" class=").append(classType);
-			temp.append(" type=radio value=\"").append(value).append("\"");
-			if (value.equals(selected))
-				temp.append(" checked");
-			temp.append(">").append((String)optionsArray[i++]).append("</nobr>");
-		}//while
-		return temp.toString();
-	}//getReadioInput
-	
-	
-	public static String getCheckBoxInput(String name, String classType, String value, String checkedValue) {
-		return "<input type=checkbox class="+classType+" name="+name+" value=\""+checkedValue+"\" "+getChecked(value,checkedValue)+">";
-	}//getCheckBoxInput
- 
-	public static String getDateInput(String name, String classType, String value, String formName) {
-		return "<nobr><input name=\""+name+"\" id=\""+name+"\" type=text class=\""+classType+"\" size=8 onClick=\"cal1.select(document.forms('"+formName+"')."+name+",'"+name+"','M/d/yy','"+value+"'); return false;\" value=\""+value+"\">\n"+
-			"                          <input type=image src=\"images/icon_calendar.gif\" width=18 height=15 onClick=\"cal1.select(document.forms('"+formName+"')."+name+",'"+name+"','M/d/yy','"+value+"'); return false;\"></nobr>\n";
-	}//getDateInput
-
-	public static String getDateInput2(String name, String classType, String value, String formName) {
-		return "<nobr><input name=\""+name+"\" id=\""+name+"\" type=text class=\""+classType+"\" size=8 value=\""+value+"\">\n"+
-			"                          <input type=image src=/images/icon_calendar.gif width=18 height=15 onClick=\"cal1.select(document.forms('"+formName+"')."+name+",'"+name+"','M/d/yy','"+value+"'); return false;\"></nobr>\n";
-	}//getDateInput2
-
-//	public static String gteStateLong(String shortState) throws Exception{
-//		 int i = STATE_ARRAY.indexOf(shortState);
-//		 if (1 == i)
-//		 	throw new Exception("Invalid state abr.:"+shortState);
-//		return STATE_ARRAY.
-//	}//getStateLong
-}//utilities
+}

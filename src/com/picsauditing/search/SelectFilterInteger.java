@@ -14,6 +14,12 @@ public class SelectFilterInteger extends SelectFilter {
 	}
 
 	public String getWhere() {
-		return getWhereRaw().replace("?", Utilities.intToDB(value));
+		
+		try {
+			Integer id = Integer.parseInt(value);
+			return getWhereRaw().replace("?", id.toString());
+		} catch (Exception ex) {
+			return "";
+		}
 	}
 }
