@@ -13,10 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-/**
- * @author Trevor
- * 
- */
 @Entity
 @Table(name = "payment")
 public class Payment extends Transaction {
