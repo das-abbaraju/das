@@ -42,6 +42,7 @@
 				<s:if test="%{get('type').equals('Contractor')}">
 					<a href="ContractorView.action?id=<s:property value="get('id')"/>"
 					><s:property value="get('name')" /></a>
+					<s:if test="get('dbaName').length() > 0"><br />DBA: <s:property value="get('dbaName')"/></s:if>
 				</s:if>
 				<s:else>
 					<a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>"

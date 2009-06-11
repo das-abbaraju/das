@@ -126,9 +126,10 @@
 	<td style="width: 45%; vertical-align: top;">
 		<s:if test="permissions.contractor || permissions.admin">
 			<div id="info">Please specify all facilities at which you work.<br/>
-			The pricing is based on the number of facilities you select below. 
-			<a href="#" onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;">
-			Click here to view pricing (opens in new window)</a>	
+			The pricing is based on the number of facilities you select below.
+			<br>
+			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+				href="#" title="opens in new window">Click here to view pricing</a>
 		</div></s:if>
 		<form id="facilitySearch" onsubmit="runSearch(); return false;">
 			<s:hidden name="id"/>
