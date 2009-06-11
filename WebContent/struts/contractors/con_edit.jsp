@@ -40,7 +40,7 @@
 						<s:textfield name="contractor.name" size="35" />
 					</li>
 					<li><label>DBA Name: </label>
-						<s:textarea name="contractor.doingBusinessAsName" cols="27" rows="5" />
+						<s:textfield name="contractor.dbaName" size="35" />
 					</li>
 					<li><label>Username:</label>
 						<s:textfield name="user.username" size="20" />

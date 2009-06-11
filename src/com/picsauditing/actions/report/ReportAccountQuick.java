@@ -16,7 +16,7 @@ import com.picsauditing.util.Strings;
 public class ReportAccountQuick extends ReportAccount {
 	public void buildQuery() {
 		sql = new SelectAccount();
-		sql.addField("name2");
+		sql.addField("dbaName");
 		sql.addField("city");
 		sql.addField("state");
 		sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor')");
@@ -30,7 +30,7 @@ public class ReportAccountQuick extends ReportAccount {
 			if (id > 0) {
 				sql.addWhere("a.id = " + id);
 			} else {
-				sql.addWhere("a.name2 LIKE '" + Utilities.escapeQuotes(accountName) + "%'" + " OR a.nameIndex LIKE '%"
+				sql.addWhere("a.dbaName LIKE '" + Utilities.escapeQuotes(accountName) + "%'" + " OR a.nameIndex LIKE '%"
 						+ Strings.indexName(accountName) + "%'");
 			}
 		}

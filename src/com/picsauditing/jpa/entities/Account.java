@@ -32,7 +32,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	protected String name;
 	protected String nameIndex;
-	protected String doingBusinessAsName;
+	protected String dbaName;
 	protected Date lastLogin;
 	protected String contact;
 	protected String address;
@@ -92,13 +92,13 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.nameIndex = Strings.indexName(this.name);
 	}
 
-	@Column(name = "name2", nullable = true, length = 500)
-	public String getDoingBusinessAsName() {
-		return doingBusinessAsName;
+	@Column(length = 100)
+	public String getDbaName() {
+		return dbaName;
 	}
 
-	public void setDoingBusinessAsName(String doingBusinessAsName) {
-		this.doingBusinessAsName = doingBusinessAsName;
+	public void setDbaName(String dbaName) {
+		this.dbaName = dbaName;
 	}
 
 	@Column(name = "lastLogin", length = 19)

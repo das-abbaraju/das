@@ -64,8 +64,8 @@
 					<s:if test="logoWidth > 0"><img src="logos/<s:property value="contractor.logoFile" />" 
 						width="<s:property value="logoWidth" />" /></s:if>
 					<p class="fn org"><s:property value="contractor.name" /></p>
-					<s:if test="contractor.doingBusinessAsName.length() > 0">
-						<p class="fn org">DBA <s:property value="contractor.doingBusinessAsName" /></p>
+					<s:if test="contractor.dbaName.length() > 0">
+						<p class="fn org">DBA <s:property value="contractor.dbaName" /></p>
 					</s:if>
 					
 					<p><span class="street-address"><s:property value="contractor.address" /></span>,

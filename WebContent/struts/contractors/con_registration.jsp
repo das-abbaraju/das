@@ -49,7 +49,7 @@ function checkName(name) {
 							<s:textfield name="contractor.name" size="35" onblur="checkName(this.value);"/>
 							<span id="name_status"></span><span class="redMain">*</span></li>
 						<li><label>DBA Name: </label>
-							<s:textarea name="contractor.doingBusinessAsName" cols="27" rows="5" />
+							<s:textfield name="contractor.dbaName" size="35" />
 						</li>
 						<li><label>Contact:</label>
 							<s:textfield name="contractor.contact" size="35" /><span class="redMain">*</span></li>
