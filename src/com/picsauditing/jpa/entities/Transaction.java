@@ -55,6 +55,10 @@ public class Transaction extends BaseTable {
 	public void setAmountApplied(BigDecimal amountApplied) {
 		this.amountApplied = amountApplied;
 	}
+	
+	public boolean isApplied() {
+		return totalAmount.compareTo(amountApplied) == 0;
+	}
 
 	public Date getTxnDate() {
 		return txnDate;
