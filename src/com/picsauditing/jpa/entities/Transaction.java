@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 @Entity
 @MappedSuperclass
@@ -56,6 +57,7 @@ public class Transaction extends BaseTable {
 		this.amountApplied = amountApplied;
 	}
 	
+	@Transient
 	public boolean isApplied() {
 		return totalAmount.compareTo(amountApplied) == 0;
 	}
