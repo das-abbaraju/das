@@ -53,6 +53,7 @@
 			parameters: pars,
 			onComplete: function(transport) {
 				stopThinking( {div: 'thinkingDiv' } );
+				runSearch();
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
 			}
