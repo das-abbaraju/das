@@ -17,7 +17,13 @@
 	process your account. <a href="ContractorPaymentOptions.action">Click to Add a Credit Card</a></div>
 </s:elseif>
 <s:else>
-
+	<s:if test="contractor.paymentMethod.check">
+		<div id="alert">
+			Your payment method is currently set to Check. Your account will be activated as soon as we recieve a check from you for
+			<strong>$<s:property value="invoice.totalAmount"/></strong>. If you would like to activate your account now,
+			<a href="ContractorPaymentOptions.action">Click Here to Add a Credit Card</a>.
+		</div>
+	</s:if>
 	<s:if test="!contractor.activeB">
 		<div>
 			<s:form>
@@ -49,7 +55,7 @@
 					<br clear="all"/>
 					
 					<h3>Invoice Summary</h3>
-					<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>" target="_BLANK">Click Here to view the actual invoice</a>
+					<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>" target="_BLANK">Click Here to view the Invoice</a>
 					<table class="allborder">
 						<tr>
 							<th>Item &amp; Description</th>
@@ -83,13 +89,6 @@
 					<s:if test="contractor.paymentMethod.creditCard">
 						<input type="submit" class="picsbutton positive" value="Complete Registration" name="button"/>
 					</s:if>
-					<s:else>
-						<div id="alert">
-							Your payment method is currently set to Check. Your account will be activated as soon as we recieve a check from you for
-							<strong>$<s:property value="invoice.totalAmount"/></strong>. If you would like to activate your account now,
-							<a href="ContractorPaymentOptions.action">Click Here to Add a Credit Card</a>.
-						</div>
-					</s:else>
 				</div>
 			</s:form>
 		</div>
