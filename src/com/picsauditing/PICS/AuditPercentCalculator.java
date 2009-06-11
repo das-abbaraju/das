@@ -9,6 +9,7 @@ import java.util.Map;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
@@ -205,6 +206,11 @@ public class AuditPercentCalculator {
 			int percentCompleted = (int) Math.floor((100 * requiredAnsweredCount) / requiredCount);
 			if (percentCompleted >= 100)
 				percentCompleted = 100;
+			if(catData.getAudit().getAuditType().isAnnualAddendum() 
+					&& catData.getAudit().getAuditStatus().isSubmitted()
+					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
+				requiredCount =  requiredCount - 2;
+			}
 			int percentVerified = (int) Math.floor((100 * verifiedCount) / requiredCount);
 			if (percentVerified >= 100)
 				percentVerified = 100;

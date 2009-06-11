@@ -82,57 +82,59 @@
 	Questions</span></legend>
 		<s:sort comparator="dataComparator" source="conAudit.data">
 	 <s:iterator>
-		<s:div id="qid_%{question.id}">
-		<ol>
-			<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
-				<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
-				<s:property value="question.question"/></li>
-
-			<s:if test="question.questionType != 'File'">
-				<li><label>Answer:</label>			
-				<s:textfield id="answer_%{question.id}" name="answer"/>
-			</s:if>
-			<s:else>
-				<li><label>File:</label> 
-				<s:if test="answer.length() > 0">
-						<a href="DownloadAuditData.action?auditID=<s:property value="conAudit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">View File</a>
-						<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit" target="_BLANK">Change File</a>
-					</s:if>
-					<s:else>
-						None. <a
-							href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit"
-							target="_BLANK">Upload New Files</a>
-					</s:else>
-			</s:else>
-			<s:if test="verified == false">
-				<s:set name="verifyText" value="'Verify'"/>
-			</s:if>
-			<s:else>
-				<s:set name="verifyText" value="'Unverify'"/>
-			</s:else>
-			<li><input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
-			<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
-			<s:if test="verified">
-				<s:set name="displayVerified" value="'block'"/>
-			</s:if>
-			<s:else>
-				<s:set name="displayVerified" value="'none'"/>
-			</s:else>
-			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
-				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
-			<li><label>Comment:</label> 
-				<s:if test="question.subCategory.category.id == 152">
-					<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" list="emrProblems" name="comment" />
+		<s:if test="question.id != 2447 && question.id != 2448">
+			<s:div id="qid_%{question.id}">
+			<ol>
+				<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
+					<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
+					<s:property value="question.question"/></li>
+	
+				<s:if test="question.questionType != 'File'">
+					<li><label>Answer:</label>			
+					<s:textfield id="answer_%{question.id}" name="answer"/>
 				</s:if>
 				<s:else>
-					<s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+					<li><label>File:</label> 
+					<s:if test="answer.length() > 0">
+							<a href="DownloadAuditData.action?auditID=<s:property value="conAudit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">View File</a>
+							<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit" target="_BLANK">Change File</a>
+						</s:if>
+						<s:else>
+							None. <a
+								href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=152&mode=Edit"
+								target="_BLANK">Upload New Files</a>
+						</s:else>
 				</s:else>
-			</li>
-			<li>
-			<hr>
-			</li>
-		</ol>
-		</s:div>
+				<s:if test="verified == false">
+					<s:set name="verifyText" value="'Verify'"/>
+				</s:if>
+				<s:else>
+					<s:set name="verifyText" value="'Unverify'"/>
+				</s:else>
+				<li><input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="id"/>);"	value="<s:property value="#attr.verifyText"/>"/>
+				<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div></li>
+				<s:if test="verified">
+					<s:set name="displayVerified" value="'block'"/>
+				</s:if>
+				<s:else>
+					<s:set name="displayVerified" value="'none'"/>
+				</s:else>
+				<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
+					format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div></li>
+				<li><label>Comment:</label> 
+					<s:if test="question.subCategory.category.id == 152">
+						<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" list="emrProblems" name="comment" />
+					</s:if>
+					<s:else>
+						<s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+					</s:else>
+				</li>
+				<li>
+				<hr>
+				</li>
+			</ol>
+			</s:div>
+		</s:if>
 	</s:iterator>
 	</s:sort>
 	</fieldset>
