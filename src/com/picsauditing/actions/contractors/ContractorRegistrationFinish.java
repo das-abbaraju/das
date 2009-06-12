@@ -66,6 +66,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
+		if (contractor.getInvoices().size() == 1) {
+			invoice = contractor.getInvoices().get(0);
+		}
+
 		auditBuilder.buildAudits(contractor);
 		if ("Complete My Registration".equals(button)) {
 			if (contractor.isCcOnFile()) {
@@ -89,9 +93,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				}
 			}
 
-			if (contractor.getInvoices().size() == 1) {
-				invoice = contractor.getInvoices().get(0);
-			}
 			complete = true;
 
 			// Send a receipt to the contractor
