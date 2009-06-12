@@ -67,7 +67,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		findContractor();
 		auditBuilder.buildAudits(contractor);
-		if ("Complete Registration".equals(button)) {
+		if ("Complete My Registration".equals(button)) {
 			if (contractor.isCcOnFile()) {
 				paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 				paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
@@ -201,7 +201,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	}
 
 	private void addNote(String subject) {
-		Note note = new Note(invoice.getAccount(), getUser(), subject);
+		Note note = new Note(contractor, new User(User.SYSTEM), subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
