@@ -7,5 +7,4 @@ public enum TransactionStatus {
 	public boolean isPaid() {
 		return this == Paid;
 	}
-}	
-
+}

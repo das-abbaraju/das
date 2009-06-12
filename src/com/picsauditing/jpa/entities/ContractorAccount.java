@@ -29,6 +29,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
@@ -39,7 +40,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 @Table(name = "contractor_info")
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorAccount extends Account implements java.io.Serializable {
+public class ContractorAccount extends Account {
 
 	private String taxId;
 	private String mainTrade;
@@ -313,7 +314,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
 	}
-	
+
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
 	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
@@ -373,24 +374,24 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setCcExpiration(Date ccExpiration) {
 		this.ccExpiration = ccExpiration;
 	}
-	
+
 	@Transient
 	public boolean isCcValid() {
 		if (!ccOnFile)
 			return false;
-		
+
 		if (ccExpiration == null)
 			// Because this is new, some haven't been loaded yet
 			// Assume it's fine for now
 			// TODO remove this section once we load all the dates
 			return true;
-		
+
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(ccExpiration);
 		expires.set(Calendar.DAY_OF_MONTH, 1);
 		expires.add(Calendar.MONTH, 1);
 		expires.add(Calendar.DAY_OF_MONTH, -1);
-		
+
 		return expires.getTime().after(new Date());
 	}
 
@@ -537,19 +538,20 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		if (oshas != null)
 			return oshas;
 		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
-		
+
 		List<ContractorAudit> annualAudits = getSortedAudits();
 		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.OSHA, AuditCategory.OSHA_AUDIT));
 		oshas.put(OshaType.MSHA, buildOshaMap(annualAudits, OshaType.MSHA, AuditCategory.MSHA));
 		oshas.put(OshaType.COHS, buildOshaMap(annualAudits, OshaType.COHS, AuditCategory.CANADIAN_STATISTICS));
-		
+
 		return oshas;
 	}
-	
+
 	@Transient
-	private Map<String, OshaAudit> buildOshaMap(List<ContractorAudit> annualAudits, OshaType oshaType, int auditCategoryID) {
+	private Map<String, OshaAudit> buildOshaMap(List<ContractorAudit> annualAudits, OshaType oshaType,
+			int auditCategoryID) {
 		Map<String, OshaAudit> oshaMap = new TreeMap<String, OshaAudit>();
-		
+
 		int number = 0;
 		for (ContractorAudit audit : annualAudits) {
 			if (number < 3) {
@@ -758,7 +760,9 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.newMembershipLevel = newMembershipLevel;
 	}
 
-	@OneToMany(mappedBy = "account", targetEntity=Transaction.class)
+	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	// @JoinColumn(name = "accountID", nullable = false)
+	// @Where(clause = "tableType='I'")
 	public List<Invoice> getInvoices() {
 		return invoices;
 	}
@@ -766,7 +770,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
 	}
-	
+
 	/**
 	 * 
 	 * @return a list of invoices sorted by creationDate DESC

@@ -21,3 +21,14 @@ and pcd.catID = 151;
 
 /*Set the uniqueCode for Workers Comp "In Good Standing" question */
 update pqfquestions set uniqueCode = 'GoodStanding' where id = 2416;
+
+
+update invoice set txnType = 'Invoice';
+
+update invoice set txnType = 'CreditMemo' where totalAmount < 0;
+
+update invoice set status = 'Unpaid';
+
+update invoice set status = 'Paid' where paid = 1;
+
+update invoice set status = 'Void' where totalAmount = 0;

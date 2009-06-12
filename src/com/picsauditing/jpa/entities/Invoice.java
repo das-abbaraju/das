@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-@DiscriminatorValue(value = "I")
+@DiscriminatorValue("I")
 public class Invoice extends Transaction {
 	public final static int daysUntilDue = 30;
 

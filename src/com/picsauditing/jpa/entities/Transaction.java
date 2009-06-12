@@ -15,12 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tableType", discriminatorType = DiscriminatorType.STRING)
-public class Transaction extends BaseTable {
+public abstract class Transaction extends BaseTable {
 	protected Account account;
 	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	protected BigDecimal amountApplied = BigDecimal.ZERO;
@@ -29,7 +28,7 @@ public class Transaction extends BaseTable {
 	private TransactionStatus status;
 
 	@ManyToOne
-	@JoinColumn(name = "accountID")
+	@JoinColumn(name = "accountID", nullable = false)
 	public Account getAccount() {
 		return account;
 	}
@@ -37,7 +36,7 @@ public class Transaction extends BaseTable {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-	
+
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -53,7 +52,7 @@ public class Transaction extends BaseTable {
 	public void setAmountApplied(BigDecimal amountApplied) {
 		this.amountApplied = amountApplied;
 	}
-	
+
 	@Transient
 	public boolean isApplied() {
 		return totalAmount.compareTo(amountApplied) == 0;
