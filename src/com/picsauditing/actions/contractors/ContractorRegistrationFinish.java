@@ -20,6 +20,7 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -67,73 +68,84 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
-		if (contractor.getInvoices().size() == 1) {
-			invoice = contractor.getInvoices().get(0);
-		}
+
+		findUnpaidInvoice();
 
 		auditBuilder.buildAudits(contractor);
+
 		if ("Complete My Registration".equals(button)) {
-			if (contractor.isCcOnFile()) {
-				paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
-				paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
+			// should never be possible
+			if (invoice != null) {
+				if (contractor.isCcOnFile()) {
+					paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
+					paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
+					try {
+						paymentService.processPayment(invoice);
+
+						CreditCard cc = paymentService.getCreditCard(id);
+						// invoice.setCcNumber(cc.getCardNumber());
+
+						payInvoice();
+
+						addNote("Credit Card transaction completed and emailed the receipt for $"
+								+ invoice.getTotalAmount());
+					} catch (Exception e) {
+						addNote("Credit Card transaction failed: " + e.getMessage());
+						this.addActionError("Failed to charge credit card. " + e.getMessage());
+						return SUCCESS;
+					}
+				}
+
+				complete = true;
+
+				// Send a receipt to the contractor
 				try {
-					paymentService.processPayment(invoice);
-
-					CreditCard cc = paymentService.getCreditCard(id);
-					invoice.setCcNumber(cc.getCardNumber());
-
-					payInvoice();
-
-					addNote("Credit Card transaction completed and emailed the receipt for $"
-							+ invoice.getTotalAmount());
+					emailInvoice();
 				} catch (Exception e) {
-					addNote("Credit Card transaction failed: " + e.getMessage());
-					this.addActionError("Failed to charge credit card. " + e.getMessage());
-					return SUCCESS;
+					// TODO: handle exception
 				}
 			}
-
-			complete = true;
-
-			// Send a receipt to the contractor
-			try {
-				emailInvoice();
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-
 		} else if (!contractor.isActiveB()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			newFee = invoiceFeeDAO.find(newFee.getId());
 			contractor.setNewMembershipLevel(newFee);
 
-			if (contractor.getInvoices().size() == 0) {
+			// There are no unpaid invoices - we should create a new one
+			// (could be a re-activation)
+			if (invoice == null) {
 				invoice = new Invoice();
 				invoice.setStatus(TransactionStatus.Unpaid);
 				List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 				invoice.setItems(items);
+				invoice.setAccount(contractor);
+				invoice.setAuditColumns(new User(User.SYSTEM));
+				invoice.setDueDate(new Date());
 
 				for (InvoiceItem item : items) {
 					item.setInvoice(invoice);
 					item.setAuditColumns(new User(User.SYSTEM));
 				}
+
+				updateTotals();
+				this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
+						LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+
 			} else {
-				invoice = contractor.getInvoices().get(0);
+
 				if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
 					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
+					updateTotals();
+					this.addNote(contractor, "Modified current invoice, changed to $" + invoice.getTotalAmount(),
+							NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+
 				}
 			}
 
-			if (!invoice.isPaid()) {
-				invoice.setAccount(contractor);
-				invoice.setAuditColumns(new User(User.SYSTEM));
+			if (!invoice.getStatus().isPaid()) {
 
-				updateTotals();
 				if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
 					invoice.setQbSync(true);
-
-				invoice.setDueDate(new Date());
 
 				String notes = "Thank you for your business.";
 				AppProperty prop = appPropDAO.find("invoice_comment");
@@ -150,13 +162,20 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				contractor.syncBalance();
 				contractor.setMembershipDate(null);
 				accountDao.save(contractor);
-
-				this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
-						LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
 			}
 		}
 
 		return SUCCESS;
+	}
+
+	private void findUnpaidInvoice() {
+		// Get the first unpaid Invoice - this is mainly for re-activations.
+		for (Invoice inv : contractor.getInvoices()) {
+			if (!inv.getStatus().isPaid()) {
+				invoice = inv;
+				break;
+			}
+		}
 	}
 
 	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
@@ -171,7 +190,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		InvoiceItem newInvoiceItem = new InvoiceItem();
 		newInvoiceItem.setInvoiceFee(newFee);
 		newInvoiceItem.setAmount(newFee.getAmount());
-		newInvoiceItem.setAuditColumns(getUser());
+		newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
 
 		newInvoiceItem.setInvoice(invoice);
 		invoice.getItems().add(newInvoiceItem);
@@ -180,11 +199,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	}
 
 	private void updateTotals() {
-		if (!invoice.isPaid()) {
+		if (!invoice.getStatus().isPaid()) {
 			invoice.setTotalAmount(BigDecimal.ZERO);
 			for (InvoiceItem item : invoice.getItems())
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
-			invoice.setPaymentMethod(contractor.getPaymentMethod());
 		}
 	}
 
@@ -245,7 +263,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		emailBuilder.setBccAddresses("billing@picsauditing.com");
 
 		EmailQueue email = emailBuilder.build();
-		if (invoice.isPaid())
+		if (invoice.getStatus().isPaid())
 			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
 		email.setPriority(60);
 		email.setHtml(true);
@@ -270,7 +288,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 	public String getCcType() {
 		BrainTreeService.CreditCard cc = new BrainTreeService.CreditCard();
-		cc.setCardNumber(invoice.getCcNumber());
 		return cc.getCardType();
 	}
 
