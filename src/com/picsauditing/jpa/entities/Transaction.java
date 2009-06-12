@@ -1,8 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -12,11 +12,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.DiscriminatorFormula;
 
 @SuppressWarnings("serial")
 @Entity
@@ -41,15 +38,6 @@ public class Transaction extends BaseTable {
 		this.account = account;
 	}
 	
-	@Enumerated(EnumType.STRING)
-	public TransactionType getTxnType() {
-		return txnType;
-	}
-
-	public void setTxnType(TransactionType type) {
-		this.txnType = type;
-	}
-
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -97,4 +85,13 @@ public class Transaction extends BaseTable {
 		this.qbListID = qbListID;
 	}
 
+	@Column(name = "status", nullable = false)
+	@Enumerated(EnumType.STRING)
+	public TransactionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TransactionStatus status) {
+		this.status = status;
+	}
 }

@@ -6,13 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -36,7 +32,7 @@ public class Invoice extends Transaction {
 		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0)
 			return false;
 
-		if (paid)
+		if (getStatus().isPaid())
 			return false;
 
 		if (dueDate == null)
@@ -54,14 +50,6 @@ public class Invoice extends Transaction {
 		this.dueDate = dueDate;
 	}
 
-	public boolean isPaid() {
-		return paid;
-	}
-
-	public void setPaid(boolean paid) {
-		this.paid = paid;
-	}
-
 	/**
 	 * Check to see if a invoice is Cancelled
 	 * 
@@ -69,7 +57,7 @@ public class Invoice extends Transaction {
 	 */
 	@Transient
 	public boolean isCancelledInvoice() {
-		if (isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
+		if (getStatus().isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
 			return true;
 		return false;
 	}
@@ -81,31 +69,6 @@ public class Invoice extends Transaction {
 
 	public void setPaidDate(Date paidDate) {
 		this.paidDate = paidDate;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public PaymentMethod getPaymentMethod() {
-		return paymentMethod;
-	}
-
-	public void setPaymentMethod(PaymentMethod paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
-
-	public String getCheckNumber() {
-		return checkNumber;
-	}
-
-	public void setCheckNumber(String checkNumber) {
-		this.checkNumber = checkNumber;
-	}
-
-	public String getTransactionID() {
-		return transactionID;
-	}
-
-	public void setTransactionID(String transactionID) {
-		this.transactionID = transactionID;
 	}
 
 	public String getPoNumber() {
@@ -133,15 +96,6 @@ public class Invoice extends Transaction {
 		this.items = items;
 	}
 
-	@Column(name = "ccNumber")
-	public String getCcNumber() {
-		return ccNumber;
-	}
-
-	public void setCcNumber(String ccNumber) {
-		this.ccNumber = ccNumber;
-	}
-
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
 	public List<InvoicePayment> getPayments() {
 		return payments;
@@ -153,7 +107,7 @@ public class Invoice extends Transaction {
 
 	@Transient
 	public void markPaid(User u) {
-		this.setPaid(true);
+		setStatus(TransactionStatus.Paid);
 		this.setPaidDate(new Date());
 		this.setAuditColumns(u);
 	}
