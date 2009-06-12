@@ -8,9 +8,7 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script language="JavaScript">
 function validate() {
-	var exp = updateExpDate();
-	var email = updateEmailText();
-	return exp && email;
+	return updateExpDate();
 }
 function updateExpDate() {
 	$('ccexpError').hide();
@@ -20,16 +18,6 @@ function updateExpDate() {
 	}
 	$('ccexpError').innerHTML = "* Please enter your card's expiration date";
 	$('ccexpError').show();
-	return false;
-}
-
-function updateEmailText() {
-	$('emailError').hide();
-	if ($F('email') != "") {
-		return true;
-	}
-	$('emailError').innerHTML = "* Please enter the card holder's email Address";
-	$('emailError').show();
 	return false;
 }
 </script>
@@ -173,14 +161,6 @@ function updateEmailText() {
 				<s:select id="expYear" list="#{'09':2009,10:2010,11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019}" headerKey="" headerValue="- Year -"></s:select>
 				<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
 				<span id="ccexpError" class="Red" style="display:none"> </span>
-			</li>
-			<li><label>Card Holder Email:</label>
-				<s:textfield id="email" name="contractor.ccEmail" size="50" />
-				<span id="emailError" class="Red" style="display:none"></span>
-				<s:if test="@com.picsauditing.PICS.Utilities@isValidEmail(contractor.billingEmail)">
-					<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id"/>&button=copyBillingEmail">Same as Billing Address</a>
-				</s:if>
-				<br/>All the charge notifications will be sent to this email.
 			</li>
 			<li>
 			<div class="buttons">
