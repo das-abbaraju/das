@@ -122,10 +122,12 @@ public class VerifyView extends ContractorActionSupport {
 					}
 				}
 				for (AuditData auditData : conAudit.getData()) {
-					if (!auditData.isVerified()) {
-						sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
-						sb.append(" : " + auditData.getComment());
-						sb.append("\n");
+					if (auditData.getQuestion().getId() != 2447 || auditData.getQuestion().getId() != 2448) {
+						if (!auditData.isVerified()) {
+							sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
+							sb.append(" : " + auditData.getComment());
+							sb.append("\n");
+						}
 					}
 				}
 			}
