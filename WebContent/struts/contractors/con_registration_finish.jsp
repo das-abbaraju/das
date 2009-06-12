@@ -66,14 +66,16 @@
 						<br clear="all"/>
 
 						<s:iterator value="auditMenu">
-							<div style="float:left;width: <s:property value="100 / auditMenu.size() * 0.9"/>%">
-								<strong style="font-size:16px"><s:property value="name" escape="false"/></strong>
-								<ul>
-									<s:iterator value="children">
-										<li><s:property value="name" escape="false"/></li>
-									</s:iterator>
-								</ul>
-							</div>
+							<s:if test="children.size() > 0">
+								<div style="float:left;width: <s:property value="100 / auditMenu.size() * 0.9"/>%">
+									<strong style="font-size:16px"><s:property value="name" escape="false"/></strong>
+									<ul>
+										<s:iterator value="children">
+											<li><s:property value="name" escape="false"/></li>
+										</s:iterator>
+									</ul>
+								</div>
+							</s:if>
 						</s:iterator>
 
 						<br clear="all"/>
