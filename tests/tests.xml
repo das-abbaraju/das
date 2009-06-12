@@ -11,7 +11,6 @@
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
-	<bean id="AccountNameDAO" class="com.picsauditing.dao.AccountNameDAO"/>
 	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
 	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
@@ -51,7 +50,8 @@
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
 	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
 	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
-	
+	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
+
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
