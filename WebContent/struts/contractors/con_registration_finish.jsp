@@ -26,17 +26,14 @@
 	<s:if test="complete">
 		<div id="info">
 			Your account has been registered successfully. A copy of the invoice has been emailed to you.
-			<s:if test="contractor.paymentMethod.creditCard">
-				<a href="Home.action">Click Here</a> to go to your home page.
-			</s:if>
-			<s:else>
-				<strong>You will have full access to your account once your payment has been received.</strong>.
-			</s:else>
 			<s:if test="contractor.activeB">
 				<div class="buttons">
 					<a href="Home.action" class="picsbutton positive">Click Here to go to your Home Page</a>
 				</div>
 			</s:if>
+			<s:else>
+				<strong>You will have full access to your account once your payment has been received.</strong>
+			</s:else>
 			<div class="clear"></div>
 		</div>
 	</s:if>
