@@ -7,9 +7,6 @@
 <s:else>
 <label># of Linked Facilities:</label> <s:property value="currentOperators.size()" /><br />
 <s:if test="permissions.contractor || permissions.admin">
-	<s:if test="contractor.paymentExpires != null">
-		<label>Next Payment Due:</label> <s:date name="contractor.paymentExpires" format="M/d/yy" /><br />
-	</s:if>	
 	<s:if test="contractor.membershipLevel.amount > 0"> 
 		<label>Current Membership Level:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
 	</s:if>
