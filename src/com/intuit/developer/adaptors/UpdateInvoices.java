@@ -106,7 +106,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 				invoice.getBillAddress().setCity(invoiceJPA.getAccount().getCity());
 				invoice.getBillAddress().setState(invoiceJPA.getAccount().getState());
 				invoice.getBillAddress().setPostalCode(invoiceJPA.getAccount().getZip());
-				invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountryCode());
+				invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry());
 
 				invoice.setIsPending("false");
 

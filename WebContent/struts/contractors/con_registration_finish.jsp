@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Registration Completion</title>
+<meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" href="css/invoice.css"/>
 </head>
 <body>

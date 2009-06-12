@@ -5,6 +5,7 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /></title>
+<meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
@@ -74,9 +75,16 @@
 					<li><label>City:</label>
 						<s:textfield name="contractor.city" size="20" />
 					</li>
-					<li><label>State/Province:</label>
-						<s:textfield name="contractor.state" size="5" />
-					</li>
+					<li><label>Country:</label>
+						<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
+						name="contractor.country"
+						onchange="(this.value == 'USA' || this.value == 'Canada') ? $('state_li').show() : $('state_li').hide();"
+						/></li>
+						
+					<li id="state_li" 
+						<s:if test="contractor.country != 'USA' && contractor.country != 'Canada'">style="display: none"</s:if>
+						><label>State/Province:</label>
+						<s:select list="StateList" name="contractor.state"/></li>
 					<li><label>Zip:</label>
 						<s:textfield name="contractor.zip" size="7" />
 					</li>
@@ -221,21 +229,19 @@
 					</li>
 				</ol>
 				</fieldset>
-				<s:if test="!contractor.activeB || !contractor.renew">	
-					<pics:permission perm="EmailOperators">
-						<fieldset class="form">
-						<legend><span>De-activation Email</span></legend>
-						<ol>
-							<li>
-								<input type="submit" class="picsbutton positive" name="button" value="SendDeactivationEmail"/>
-							</li>
-							<li>
-								<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>
-							</li>
-						</ol>
-						</fieldset>
-					</pics:permission>
-				</s:if>	
+				<pics:permission perm="EmailOperators">
+					<fieldset class="form">
+					<legend><span>De-activation Email</span></legend>
+					<ol>
+						<li>
+							<input type="submit" class="picsbutton positive" name="button" value="SendDeactivationEmail"/>
+						</li>
+						<li>
+							<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>
+						</li>
+					</ol>
+					</fieldset>
+				</pics:permission>
 			</td>
 		</s:if>
 		</tr>

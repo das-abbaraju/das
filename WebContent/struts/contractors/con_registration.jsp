@@ -4,9 +4,7 @@
 <html>
 <head>
 <title>Contractor Registration</title>
-<meta name="color" content="#669966" />
-<meta name="flashName" content="REGISTER" />
-<meta name="iconName" content="register" />
+<meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen"
@@ -68,7 +66,12 @@ function checkName(name) {
 							<s:textfield name="contractor.address" size="35" /><span class="redMain">*</span></li>
 						<li><label>City:</label> 
 							<s:textfield name="contractor.city" size="35" /><span class="redMain">*</span></li>
-						<li><label>State/Province:</label>
+						<li><label>Country:</label>
+							<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
+							name="contractor.country"
+							onchange="(this.value == 'USA' || this.value == 'Canada') ? $('state_li').show() : $('state_li').hide();"
+							/><span class="redMain">*</span></li>
+						<li id="state_li" style="display: none"><label>State/Province:</label>
 							<s:select list="StateList" name="contractor.state"/><span class="redMain">*</span></li>
 						<li><label>Zip:</label>
 							<s:textfield name="contractor.zip" size="35" /><span class="redMain">*</span></li>

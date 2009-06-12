@@ -37,6 +37,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String contact;
 	protected String address;
 	protected String city;
+	protected String country = "USA";
 	protected String state;
 	protected String zip;
 	protected String phone;
@@ -128,7 +129,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.address = address;
 	}
 
-	@Column(name = "city", length = 50)
+	@Column(length = 35)
 	public String getCity() {
 		return this.city;
 	}
@@ -137,7 +138,16 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.city = city;
 	}
 
-	@Column(name = "state", length = 2)
+	@Column(length = 25)
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	@Column(length = 2)
 	public String getState() {
 		return this.state;
 	}
@@ -146,7 +156,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.state = state;
 	}
 
-	@Column(name = "zip", length = 50)
+	@Column(length = 15)
 	public String getZip() {
 		return this.zip;
 	}
@@ -155,7 +165,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.zip = zip;
 	}
 
-	@Column(name = "phone", length = 50)
+	@Column(length = 25)
 	public String getPhone() {
 		return this.phone;
 	}
@@ -164,7 +174,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.phone = phone;
 	}
 
-	@Column(name = "phone2", length = 50)
+	@Column(length = 25)
 	public String getPhone2() {
 		return this.phone2;
 	}
@@ -173,7 +183,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.phone2 = phone2;
 	}
 
-	@Column(name = "fax", length = 20)
+	@Column(length = 20)
 	public String getFax() {
 		return this.fax;
 	}
@@ -182,7 +192,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.fax = fax;
 	}
 
-	@Column(name = "email", length = 50)
+	@Column(length = 50)
 	public String getEmail() {
 		return this.email;
 	}
@@ -212,9 +222,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	}
 
 	/**
-	 * North American Industry Classification System
-	 * http://www.census.gov/eos/www/naics/
-	 * NAICS replaced the SIC in 1997
+	 * North American Industry Classification System http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
+	 * 
 	 * @return
 	 */
 	@ManyToOne(optional = false)
@@ -295,11 +304,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setUsers(List<User> users) {
 		this.users = users;
-	}
-
-	@Transient
-	public String getCountryCode() {
-		return "US";
 	}
 
 	@Transient

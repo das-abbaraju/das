@@ -3,6 +3,7 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> - Payment Method</title>
+<meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script language="JavaScript">
