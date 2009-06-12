@@ -45,7 +45,7 @@ function checkName(name) {
 					<ol>
 						<li><label>Company Name:</label>
 							<s:textfield name="contractor.name" size="35" onblur="checkName(this.value);"/>
-							<span id="name_status"></span><span class="redMain">*</span></li>
+							<span class="redMain">*</span><div id="name_status"></div></li>
 						<li><label>DBA Name: </label>
 							<s:textfield name="contractor.dbaName" size="35" />
 						</li>
