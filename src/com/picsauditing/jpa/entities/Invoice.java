@@ -119,5 +119,9 @@ public class Invoice extends Transaction {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
 	}
-
+	
+	@Deprecated
+	public boolean isPaid() {
+		return getStatus().isPaid();
+	}
 }
