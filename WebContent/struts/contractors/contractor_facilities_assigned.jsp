@@ -19,9 +19,7 @@
 
 <s:if test="currentOperators.size() > 1 && !contractor.activeB">
 	<div id="alert" style="width:inherit">
-		<s:if test="contractor.requestedBy == null">
-			Please select the operator that referred you to PICS before continuing. <br/>
-		</s:if>
+		You have selected more than one operator. Please indicate which operator initially requested your company to register with PICS. <br/>
 		<label>Requested By:</label> <s:select list="currentOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" headerKey="" headerValue="- Select An Operator -" value="contractor.requestedBy.id" onchange="setRequestedBy(%{contractor.id}, this.value)"/>
 	</div>
 </s:if>
