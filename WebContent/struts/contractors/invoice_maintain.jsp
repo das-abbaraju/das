@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="invoice.account.name" /></title>
+<title>Edit Invoice <s:property value="invoice.id" /> for <s:property value="invoice.account.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
 <body>
@@ -11,7 +11,7 @@
 
 <div><a href="InvoiceDetail.action?invoice.id=<s:property value="invoiceId"/>">&lt;&lt; Return to Invoice</a></div>
 
-<s:form action="ConInvoiceMaintain" cssStyle="width: 400px">
+<s:form action="ConInvoiceMaintain" cssStyle="width: 500px">
 	<s:hidden name="invoiceId" />
 	<s:hidden name="id"/>
 <fieldset class="form">
@@ -25,8 +25,8 @@
 			<s:textfield name="invoice.notes"/></li>
 		<li><label>Due Date:</label>
 			<s:textfield name="invoice.dueDate" value="%{invoice.dueDate && getText('dates', {invoice.dueDate})}"/></li>
-		<li><label>Paid:</label>
-			<s:checkbox name="invoice.paid" value="%{invoice.paid}"/></li>
+		<li><label>Status:</label>
+			<s:radio list="#{'Paid':'Paid','Unpaid':'Unpaid'}" name="invoice.status" theme="pics"></s:radio>
 		<li><label>Paid Date:</label>
 			<s:textfield name="invoice.paidDate" value="%{invoice.paidDate && getText('dates', {invoice.paidDate})}"/></li>
 	</ol>
@@ -52,7 +52,7 @@
 <fieldset class="form">
 	<legend><span>Item For <s:property value="invoiceFee.fee"/></span></legend>
 	<ol>
-		<li><label>Invoice Fee</label>
+		<li><label>Fee:</label>
 		<s:select list="feeList" name="invList[%{#item.index}].invoiceFee.id" headerKey="0"
 							headerValue="- Select a New Fee to Add -" listKey="id" listValue="fee" value="%{invoiceFee.id}" /></li>
 		<li><label>Amount:</label>
