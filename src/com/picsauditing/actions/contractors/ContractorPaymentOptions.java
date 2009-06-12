@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -77,7 +76,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if("copyBillingEmail".equals(button)) {
 			contractor.setCcEmail(contractor.getBillingEmail());
 		}
-			
+		
 		accountDao.save(contractor);
 		if ("Activation".equals(contractor.getBillingStatus()))
 			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
@@ -87,10 +86,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
-
-		if(!Utilities.isValidEmail(contractor.getCcEmail())) {
-			return SUCCESS;
-		}		
 
 		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();
