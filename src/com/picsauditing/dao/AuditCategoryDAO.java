@@ -44,7 +44,11 @@ public class AuditCategoryDAO extends PicsDAO {
 					"(SELECT co.operatorAccount.inheritAuditCategories FROM ContractorOperator co WHERE co.contractorAccount = :contractor)";
 		Query query = em.createQuery(sql);
 		query.setParameter("contractor", contractor);
-		query.setParameter("riskLevel", contractor.getRiskLevel().ordinal());
+		if (contractor.getRiskLevel() == null)
+			// until  we know for sure, assume high risk
+			query.setParameter("riskLevel", 3);
+		else
+			query.setParameter("riskLevel", contractor.getRiskLevel().ordinal());
 		return query.getResultList();
 	}
 
