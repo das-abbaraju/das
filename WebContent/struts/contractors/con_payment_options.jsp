@@ -72,12 +72,6 @@ function updateEmailText() {
 			Credit Card payment is required for billing amounts less than $500.
 		</s:if>
 	</li>
-	<s:if test="!contractor.paymentMethod.creditCard">
-		<li>
-			<span> Your invoice will be emailed to <s:property value="contractor.email"/> 
-			<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if>.</span>			
-		</li>
-	</s:if>
 
 	<s:if test="contractor.activeB">
 		<li><label>Next Billing Date:</label> <s:date
@@ -101,6 +95,12 @@ function updateEmailText() {
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 							
 </li>
+<s:if test="!contractor.paymentMethod.creditCard">
+	<li>
+		<span> Your invoice will be emailed to <s:property value="contractor.email"/> 
+		<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if>.</span>			
+	</li>
+</s:if>
 <s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">
 	<li>
 		<div>

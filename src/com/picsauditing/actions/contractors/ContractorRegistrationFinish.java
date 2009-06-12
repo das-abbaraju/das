@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -40,6 +41,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private AppPropertyDAO appPropDAO;
 	private NoteDAO noteDAO;
 	private InvoiceItemDAO invoiceItemDAO;
+	private AuditBuilder auditBuilder;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
@@ -48,13 +50,14 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDAO, NoteDAO noteDAO,
-			InvoiceItemDAO invoiceItemDAO) {
+			InvoiceItemDAO invoiceItemDAO, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.appPropDAO = appPropDAO;
 		this.noteDAO = noteDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
+		this.auditBuilder = auditBuilder;
 		subHeading = "Finish Registration";
 	}
 
@@ -63,7 +66,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
-
+		auditBuilder.buildAudits(contractor);
 		if ("Complete Registration".equals(button)) {
 			if (contractor.isCcOnFile()) {
 				paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
