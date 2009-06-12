@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
@@ -65,7 +66,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 			Invoice invoice = new Invoice();
 			invoice.setAccount(contractor);
-			invoice.setPaid(false);
+			invoice.setStatus(TransactionStatus.Unpaid);
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(getUser());

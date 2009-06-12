@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -162,7 +163,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
 							+ invoice.getTotalAmount().toString();
 					invoice.setTotalAmount(BigDecimal.ZERO);
-					invoice.setPaid(true);
+					invoice.setStatus(TransactionStatus.Paid);
 					invoice.setPaidDate(new Date());
 					invoice.setAuditColumns(permissions);
 					invoice.setQbSync(true);

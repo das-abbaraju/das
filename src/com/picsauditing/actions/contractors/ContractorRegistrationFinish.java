@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -109,7 +110,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 			if (contractor.getInvoices().size() == 0) {
 				invoice = new Invoice();
-				invoice.setPaid(false);
+				invoice.setStatus(TransactionStatus.Unpaid);
 				List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 				invoice.setItems(items);
 
