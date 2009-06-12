@@ -761,8 +761,7 @@ public class ContractorAccount extends Account {
 	}
 
 	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
-	// @JoinColumn(name = "accountID", nullable = false)
-	// @Where(clause = "tableType='I'")
+	@Where(clause = "tableType='I'")
 	public List<Invoice> getInvoices() {
 		return invoices;
 	}
