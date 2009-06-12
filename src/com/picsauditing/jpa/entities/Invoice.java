@@ -132,6 +132,7 @@ public class Invoice extends Transaction {
 	}
 	
 	@Deprecated
+	@Transient
 	public boolean isPaid() {
 		return getStatus().isPaid();
 	}

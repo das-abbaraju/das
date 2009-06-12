@@ -758,7 +758,7 @@ public class ContractorAccount extends Account implements java.io.Serializable {
 		this.newMembershipLevel = newMembershipLevel;
 	}
 
-	@OneToMany(mappedBy = "account")
+	@OneToMany(mappedBy = "account", targetEntity=Transaction.class)
 	public List<Invoice> getInvoices() {
 		return invoices;
 	}

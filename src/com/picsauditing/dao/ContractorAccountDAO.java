@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
