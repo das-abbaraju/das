@@ -7,15 +7,20 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script language="JavaScript">
+function validate() {
+	var exp = updateExpDate();
+	var email = updateEmailText();
+	return exp && email;
+}
 function updateExpDate() {
 	$('ccexpError').hide();
 	if ($F('expMonth') != "" && $F('expYear') != "") {
 		$('ccexp').value = $F('expMonth') + $F('expYear');
-		return updateEmailText();
+		return true;
 	}
 	$('ccexpError').innerHTML = "* Please enter your card's expiration date";
 	$('ccexpError').show();
-	return updateEmailText();
+	return false;
 }
 
 function updateEmailText() {
@@ -119,7 +124,7 @@ function updateEmailText() {
 </s:form>
 
 <s:if test="contractor.paymentMethod.creditCard">
-	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="return updateExpDate();">
+	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="return validate();">
 		<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 		<s:hidden name="hash"></s:hidden>
 		<s:hidden name="key_id"></s:hidden>
