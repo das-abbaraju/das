@@ -165,7 +165,7 @@ function updateEmailText() {
 			<li><label>Type:</label>
 				<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
 			</li>
-			<li><label>Number:</label>
+			<li><label>Card Number:</label>
 				<s:textfield name="ccnumber" size="20" />
 			</li>
 			<li><label>Expiration Date:</label>
@@ -185,6 +185,7 @@ function updateEmailText() {
 			<li>
 			<div class="buttons">
 				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
+				<br>* The card is NOT being charged at this time.
 			</div>
 			</li>
 		</ol>

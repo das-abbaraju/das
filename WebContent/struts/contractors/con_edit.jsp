@@ -166,7 +166,7 @@
 						<s:property value="contractor.riskLevel"/>
 					</li>
 					<li><label>Requested By:</label>
-						<s:select cssStyle="font-size: 12px;" list="operatorList" name="contractor.requestedById" headerKey="0" headerValue="- Choose an operator -" listKey="id" listValue="name"/>
+						<s:property value="contractor.requestedBy.name"/>
 					</li>
 				</ol>
 				</fieldset>
