@@ -19,7 +19,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "invoice")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tableType", discriminatorType = DiscriminatorType.CHAR)
+@DiscriminatorColumn(name = "tableType", discriminatorType = DiscriminatorType.STRING)
 public class Transaction extends BaseTable {
 	protected Account account;
 	protected BigDecimal totalAmount = BigDecimal.ZERO;
