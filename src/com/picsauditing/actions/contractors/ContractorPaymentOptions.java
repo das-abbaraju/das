@@ -130,9 +130,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
 				addActionMessage("Successfully added Credit Card");
-				addActionMessage("Your card has not been charged. PICS will review your registration "
-						+ "to ensure its accuracy and charge your card "
-						+ "within one business day and email you the receipt.");
 			}
 		}
 
