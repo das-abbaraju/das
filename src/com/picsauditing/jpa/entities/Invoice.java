@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,19 +18,15 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "invoice")
+@DiscriminatorValue(value = "I")
 public class Invoice extends Transaction {
 	public final static int daysUntilDue = 30;
 
+	protected TransactionType txnType;
 	private Date dueDate;
-	private boolean paid;
-	private Date paidDate;
-	private PaymentMethod paymentMethod;
-	private String checkNumber;
-	private String transactionID;
 	private String poNumber;
-	private String ccNumber;
 	private String notes;
+	private Date paidDate; // MAX(Payment.creationDate)
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<InvoicePayment> payments = new ArrayList<InvoicePayment>();
