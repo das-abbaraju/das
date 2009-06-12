@@ -150,6 +150,12 @@ public class FlagCalculator2 {
 			for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria())
 				PicsLogger.log(" osha criteria " + criteria.getFlagColor());
 
+			for (AuditOperator auditOperator : operator.getInheritInsurance().getAudits())
+				PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
+			
+			for (AuditOperator auditOperator : operator.getInheritAudits().getAudits())
+				PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
+			
 			for (AuditOperator auditOperator : operator.getVisibleAudits())
 				PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 
