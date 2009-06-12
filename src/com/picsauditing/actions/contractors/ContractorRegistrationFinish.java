@@ -72,6 +72,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		findUnpaidInvoice();
 
 		auditBuilder.buildAudits(contractor);
+		this.resetActiveAudits();
 
 		if ("Complete My Registration".equals(button)) {
 			// should never be possible

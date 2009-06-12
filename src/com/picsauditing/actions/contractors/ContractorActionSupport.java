@@ -79,6 +79,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
+	
+	protected void resetActiveAudits() {
+		contractorNonExpiredAudits = null;
+	}
 
 	public List<ContractorAudit> getActiveAudits() {
 		if (contractorNonExpiredAudits == null) {
