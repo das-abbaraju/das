@@ -149,7 +149,7 @@ public class BillingCalculatorSingle {
 		}
 
 		// For Reactivation Fee and Reactivating Membership
-		if ("Reactivation".equals(billingStatus)) {
+		if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
 			InvoiceFee fee = getFee(InvoiceFee.REACTIVATION, feeDAO);
 			// Reactivate effective today
 			items.add(new InvoiceItem(fee, new Date()));

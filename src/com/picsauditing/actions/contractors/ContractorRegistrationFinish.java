@@ -160,8 +160,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				if (!contractor.getInvoices().contains(invoice))
 					contractor.getInvoices().add(invoice);
 
+				Date oldMembershipDate = contractor.getMembershipDate();
 				contractor.syncBalance();
-				contractor.setMembershipDate(null);
+				contractor.setMembershipDate(oldMembershipDate);
 				accountDao.save(contractor);
 			}
 		}
