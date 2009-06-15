@@ -63,7 +63,8 @@
 			<td style="height:30px">
 				<s:if test="certificate != null">
 					<a title="<s:property value="certificate.description"/>"
-						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="certificate.id"/>&button=download">
+						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="certificate.id"/>&button=download"
+						target="_BLANK">
 						<img src="images/icon_insurance.gif"/>
 					</a>
 				</s:if>
