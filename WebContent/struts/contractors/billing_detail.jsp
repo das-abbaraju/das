@@ -118,29 +118,23 @@
 					</tr>
 				</thead>
 				<tbody>
-					<s:iterator value="contractor.sortedInvoices">
-						<tr style="cursor: pointer;"
-							onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
-							<td>Invoice</td>
-							<td class="<s:if test="status.void"> ? inactive : center</s:if>"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property
-								value="id" /></a></td>
+					<s:iterator value="transactions">
+						<tr 
+							<s:if test="class.simpleName.equals('Invoice')">style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>>
+							<td><s:property value="class.simpleName"/></td>
+							<td class="<s:if test="status.void"> ? inactive : center</s:if>">
+								<s:if test="class.simpleName.equals('Invoice')">
+									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property
+									value="id" /></a>
+								</s:if>
+								<s:else>
+									<s:property value="id"/>
+								</s:else>
+							</td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
 							<td class="right"><s:date name="dueDate" format="M/d/yy" /></td>
 							<td class="right"><s:date name="paidDate" format="M/d/yy" /></td>
-							<td class="right"><s:property value="status"/></td>
-						</tr>
-					</s:iterator>
-					<s:iterator value="payments">
-						<tr style="cursor: pointer;"
-							onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
-							<td>Payment</td>
-							<td class="<s:if test="status.void"> ? inactive : center</s:if>"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property
-								value="id" /></a></td>
-							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
-							<td class="right">$<s:property value="totalAmount" /></td>
-							<td></td>
-							<td></td>
 							<td class="right"><s:property value="status"/></td>
 						</tr>
 					</s:iterator>

@@ -16,6 +16,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Invoice;
@@ -25,6 +26,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.util.SpringUtils;
 
@@ -32,7 +34,7 @@ import com.picsauditing.util.SpringUtils;
 public class BillingDetail extends ContractorActionSupport {
 	private InvoiceFee activationFee = null;
 	private InvoiceDAO invoiceDAO = new InvoiceDAO();
-	private PaymentDAO paymentDAO = null;
+	private TransactionDAO transactionDAO = null;
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private BigDecimal invoiceTotal;
 
@@ -43,12 +45,12 @@ public class BillingDetail extends ContractorActionSupport {
 	AppPropertyDAO appPropDao;
 
 	public BillingDetail(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
-			InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao, PaymentDAO paymentDAO) {
+			InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao, TransactionDAO transactionDAO) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.appPropDao = appPropDao;
-		this.paymentDAO = paymentDAO;
+		this.transactionDAO = transactionDAO;
 		this.noteCategory = NoteCategory.Billing;
 	}
 
@@ -164,10 +166,10 @@ public class BillingDetail extends ContractorActionSupport {
 		return invoiceTotal;
 	}
 	
-	public List<Payment> getPayments() {
-		List<Payment> paList = paymentDAO.findWhere("p.account.id = "+contractor.getId());
-		if(paList == null)
-			return new ArrayList<Payment>();
-		return paList;
+	public List<Transaction> getTransactions() {
+		List<Transaction> transactionList = transactionDAO.findWhere("t.account.id = "+contractor.getId());
+		if(transactionList == null)
+			return new ArrayList<Transaction>();
+		return transactionList;
 	}
 }

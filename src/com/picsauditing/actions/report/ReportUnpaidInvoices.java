@@ -12,7 +12,7 @@ public class ReportUnpaidInvoices extends ReportContractorInvoice {
 
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
-		sql.addWhere("i.paid = 0");
+		sql.addWhere("i.status = 'Unpaid'");
 		sql.addWhere("i.totalAmount > 0");
 	}
 	
