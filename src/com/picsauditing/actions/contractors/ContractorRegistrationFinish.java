@@ -20,7 +20,6 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -145,7 +144,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				}
 			}
 
-			if (!invoice.getStatus().isPaid()) {
+			if (invoice.getStatus().isUnpaid()) {
 
 				if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
 					invoice.setQbSync(true);
@@ -175,7 +174,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private void findUnpaidInvoice() {
 		// Get the first unpaid Invoice - this is mainly for re-activations.
 		for (Invoice inv : contractor.getInvoices()) {
-			if (!inv.getStatus().isPaid()) {
+			if (inv.getStatus().isUnpaid()) {
 				invoice = inv;
 				break;
 			}

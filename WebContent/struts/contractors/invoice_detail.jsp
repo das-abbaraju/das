@@ -61,7 +61,7 @@ input[type=submit] {
 					</table>
 
 					<div class="center"><s:if test="!permissions.contractor">
-						<s:if test="!invoice.paid">
+						<s:if test="!invoice.status.paid">
 							<a class="edit noprint"
 								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"> <s:if
 								test="edit">View</s:if> <s:else>Edit</s:else> </a>
@@ -195,7 +195,7 @@ input[type=submit] {
 						<td><s:date name="invoice.paidDate" format="MMM d, yyyy" /> <br />
 						</td>
 					</s:if>
-					<s:elseif test="invoice.paid && !invoice.paymentMethod.creditCard">
+					<s:elseif test="invoice.status.paid && !invoice.paymentMethod.creditCard">
 						<th colspan="2" class="right">Paid</th>
 						<td><s:date name="invoice.paidDate" format="MMM d, yyyy" /> <br />
 						<s:property value="invoice.checkNumber" /></td>
@@ -203,7 +203,7 @@ input[type=submit] {
 					<s:else>
 						<pics:permission perm="Billing" type="Edit">
 							<td colspan="3" class="print noprint">
-							<s:if test="invoice.totalAmount > 0 && !invoice.paid">
+							<s:if test="!invoice.status.paid">
 								<s:if test="invoice.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
 										<input type="submit" class="picsbutton positive" name="button"
