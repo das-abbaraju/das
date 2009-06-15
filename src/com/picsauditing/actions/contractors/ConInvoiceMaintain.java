@@ -66,8 +66,6 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 		if ("Save".equals(button)) {
 			invoice.setAuditColumns(new User(User.SYSTEM));
-			if (Strings.isEmpty(invoice.getQbListID()))
-				invoice.setQbListID(null);
 
 			for (Iterator<InvoiceItem> items = invoice.getItems().iterator(); items.hasNext();) {
 				InvoiceItem item = items.next();
