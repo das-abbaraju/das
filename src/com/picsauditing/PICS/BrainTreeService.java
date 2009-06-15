@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.util.Strings;
 
 public class BrainTreeService {
@@ -60,13 +61,13 @@ public class BrainTreeService {
 		inputStream.close();
 	}
 	
-	public boolean processPayment(Invoice invoice) throws Exception {
+	public boolean processPayment(Payment payment) throws Exception {
 
 		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=sale");
 		appendUsernamePassword(request);
-		request.append("&customer_vault_id=").append(invoice.getAccount().getId());
-		request.append("&orderid=").append(invoice.getId());
-		request.append("&amount=").append(invoice.getTotalAmount());
+		request.append("&customer_vault_id=").append(payment.getAccount().getId());
+		//request.append("&orderid=").append(orderID);
+		request.append("&amount=").append(payment.getTotalAmount());
 		
 		StringBuffer buffer = new StringBuffer();
 		
@@ -80,7 +81,7 @@ public class BrainTreeService {
 		Map<String, String> map = Strings.mapParams(buffer.toString());
 		String response = map.get("response");
 		if (response.equals("1")) {
-			invoice.setTransactionID(map.get("transactionid"));
+			payment.setTransactionID(map.get("transactionid"));
 			return true;
 		} else {
 			throw new Exception(map.get("responsetext"));

@@ -540,7 +540,7 @@ ol {
 }
 
 /********************** Special Styles ******************************/
-div#info {
+div#info, div.info {
 	border-top: 2px solid #b7d2f2;
 	border-bottom: 2px solid #b7d2f2;
 	padding-top: 1em;
@@ -553,7 +553,7 @@ div#info {
 	width: 86%
 }
 
-div#alert {
+div#alert, div.alert {
 	border-top: 2px solid #D0AE10;
 	border-bottom: 2px solid #D0AE10;
 	padding-top: 1em;
@@ -567,7 +567,7 @@ div#alert {
 	width: 86%
 }
 
-div#error {
+div#error, div.error {
 	border-top: 2px solid #feabab;
 	border-bottom: 2px solid #feabab;
 	padding-top: 1em;

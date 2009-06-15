@@ -25,7 +25,7 @@ public abstract class Transaction extends BaseTable {
 	protected BigDecimal amountApplied = BigDecimal.ZERO;
 	protected boolean qbSync;
 	protected String qbListID;
-	private TransactionStatus status;
+	protected TransactionStatus status = TransactionStatus.Unpaid;
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false)
@@ -54,8 +54,13 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Transient
+	public BigDecimal getBalance() {
+		return totalAmount.subtract(amountApplied);
+	}
+
+	@Transient
 	public boolean isApplied() {
-		return totalAmount.compareTo(amountApplied) == 0;
+		return getBalance().equals(BigDecimal.ZERO);
 	}
 
 	/**
@@ -92,5 +97,14 @@ public abstract class Transaction extends BaseTable {
 
 	public void setStatus(TransactionStatus status) {
 		this.status = status;
+	}
+
+	public void updateAmountApplied() {
+		if (status.equals(TransactionStatus.Void))
+			return;
+		if (getBalance().compareTo(BigDecimal.ZERO) == 0)
+			status = TransactionStatus.Paid;
+		else
+			status = TransactionStatus.Unpaid;
 	}
 }

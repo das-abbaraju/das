@@ -81,7 +81,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
 					try {
-						paymentService.processPayment(invoice);
+						// TODO BEFORE RELEASE TREVOR!!!
+						//paymentService.processPayment(invoice);
 
 						CreditCard cc = paymentService.getCreditCard(id);
 						// invoice.setCcNumber(cc.getCardNumber());

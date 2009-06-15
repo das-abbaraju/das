@@ -10,6 +10,7 @@
 h1 {
 	display: none;
 }
+
 input[type=submit] {
 	display: none;
 }
@@ -17,16 +18,17 @@ input[type=submit] {
 </head>
 <body>
 <s:if test="!permissions.contractor || contractor.activeB">
-<s:include value="conHeader.jsp"></s:include>
+	<s:include value="conHeader.jsp"></s:include>
 </s:if>
+
 <s:if test="invoice.status.void">
-	<div id="alert" class="noprint">This invoice was canceled on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
+	<div id="alert" class="noprint">This invoice has been CANCELED.</div>
 </s:if>
 <s:elseif test="invoice.status.paid">
-	<div id="info" class="noprint">This invoice was paid on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
+	<div id="info" class="noprint">This invoice has been PAID in full.</div>
 </s:elseif>
 <s:elseif test="invoice.overdue">
-	<div id="alert" class="noprint">This invoice is currently overdue!</div>
+	<div id="alert" class="noprint">This invoice is currently OVERDUE!</div>
 </s:elseif>
 
 <s:form id="save" method="POST">
@@ -47,27 +49,26 @@ input[type=submit] {
 					<table width="100%" border="0" cellspacing="0" cellpadding="4" class="allborder">
 						<tr>
 							<th>Date</th>
-							<th class="big">Invoice #</th>
+							<th class="big" style="white-space: nowrap;">Invoice #</th>
 						</tr>
 						<tr>
-							<td class="center"><nobr>
-								<s:date name="invoice.creationDate" format="MMM d, yyyy" />
-								<s:set name="o" value="invoice"></s:set>
-								<s:include value="../who.jsp"></s:include>
-								</nobr>
-							</td>
+							<td class="center"><nobr> <s:date name="invoice.creationDate" format="MMM d, yyyy" /> <s:set
+								name="o" value="invoice"></s:set> <s:include value="../who.jsp"></s:include> </nobr></td>
 							<td class="center"><s:property value="invoice.id" /></td>
 						</tr>
 					</table>
 
 					<div class="center"><s:if test="!permissions.contractor">
-						<s:if test="!invoice.status.paid">
+						<s:if test="invoice.status.unpaid">
+							<pics:permission perm="Billing" type="Delete">
+								<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice" />
+							</pics:permission>
 							<a class="edit noprint"
 								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"> <s:if
 								test="edit">View</s:if> <s:else>Edit</s:else> </a>
 						</s:if>
 					</s:if> <a class="print noprint" href="javascript: window.print();">Print</a> <s:if test="!edit">
-						<s:if test="invoice.paid">
+						<s:if test="invoice.status.paid">
 							<input type="submit" class="picsbutton positive" name="button" value="Email Receipt">
 						</s:if>
 						<s:else>
@@ -77,7 +78,6 @@ input[type=submit] {
 						<br />
 						<input type="submit" class="picsbutton positive" name="button" value="Save" />
 					</s:if></div>
-					
 					</td>
 				</tr>
 			</table>
@@ -90,7 +90,6 @@ input[type=submit] {
 					<th>Bill To</th>
 					<th width="16%">PO #</th>
 					<th width="16%">Due Date</th>
-					<th width="16%">Payment Method</th>
 				</tr>
 				<tr>
 					<td><s:property value="contractor.name" /><br />
@@ -110,7 +109,6 @@ input[type=submit] {
 					</s:if> <s:else>
 						<s:date name="invoice.dueDate" format="MMM d, yyyy" />
 					</s:else></td>
-					<td class="center"><s:property value="invoice.paymentMethod.description" /></td>
 				</tr>
 			</table>
 			</td>
@@ -125,24 +123,22 @@ input[type=submit] {
 				</tr>
 				<s:iterator value="invoice.items" status="stat">
 					<tr>
-						<td style="border-right: 0">
-							<s:set name="o" value="[0]"></s:set>
-							<s:include value="../who.jsp"></s:include>
-							<s:property value="invoiceFee.fee" />
-							<span style="color: #444; font-style: italic; font-size: 10px;">
-							<s:if test="invoiceFee.feeClass == 'Activation'">effective
-								<s:if test="paymentExpires == null"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></s:if>
-								<s:else><s:date name="paymentExpires" /></s:else>
+						<td style="border-right: 0"><s:set name="o" value="[0]"></s:set> <s:include value="../who.jsp"></s:include> <s:property
+							value="invoiceFee.fee" /> <span style="color: #444; font-style: italic; font-size: 10px;"> <s:if
+							test="invoiceFee.feeClass == 'Activation'">effective
+								<s:if test="paymentExpires == null">
+								<s:date name="invoice.creationDate" format="MMM d, yyyy" />
 							</s:if>
-							<s:if test="invoiceFee.feeClass == 'Membership' && paymentExpires != null">
-								expires <s:date name="paymentExpires" format="MMM d, yyyy"/>
-							</s:if>
-							</span>
-						</td>
+							<s:else>
+								<s:date name="paymentExpires" />
+							</s:else>
+						</s:if> <s:if test="invoiceFee.feeClass == 'Membership' && paymentExpires != null">
+								expires <s:date name="paymentExpires" format="MMM d, yyyy" />
+						</s:if> </span></td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
-							(optional description) 
-							<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
+							(optional description) <s:if
+								test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
 								<input type="submit" class="picsbutton positive" name="button"
 									value="Change to: <s:property value="contractor.newMembershipLevel.fee" />">
 							</s:if></td>
@@ -150,17 +146,15 @@ input[type=submit] {
 							USD</td>
 						</s:if>
 						<s:else>
-							<td style="border-left: 0"><s:property value="description" />
-							<s:if test="refunded"> Refunded </s:if>
-							<pics:permission perm="InvoiceEdit" type="Edit">
-								<s:if test="invoice.paid && amount > 0 && !refunded">
+							<td style="border-left: 0"><s:property value="description" /> <s:if test="refunded"> Refunded </s:if> <pics:permission
+								perm="InvoiceEdit" type="Edit">
+								<s:if test="invoice.status.paid && amount > 0 && !refunded">
 									<s:if test="@com.picsauditing.PICS.DateBean@isBeforeAWeek(invoice.paidDate)">
-										<s:hidden name="refundFeeId" value="%{id}"/>
-										<input type="submit" class="picsbutton negative" name="button" value="Refund"/>	
+										<s:hidden name="refundFeeId" value="%{id}" />
+										<input type="submit" class="picsbutton negative" name="button" value="Refund" />
 									</s:if>
 								</s:if>
-							</pics:permission>
-							</td>
+							</pics:permission></td>
 							<td class="right">$<s:property value="amount" /> USD</td>
 						</s:else>
 					</tr>
@@ -177,57 +171,42 @@ input[type=submit] {
 					<td class="big right">$<s:property value="invoice.totalAmount" /> USD</td>
 				</tr>
 				<tr>
-					<th colspan="2" class="big right">Balance</th>
-					<s:if test="invoice.paid">
-						<td class="big right">$0 USD</td>
-					</s:if>
-					<s:else>
-						<td class="big right">$<s:property value="invoice.totalAmount" /> USD</td>
-					</s:else>
-				</tr>
-				<tr>
-					<s:if test="invoice.paid && invoice.paymentMethod.creditCard">
-						<th colspan="2" class="right"><s:if test="cCType != 'Unknown'">
-									Paid with <s:property value="ccType" /> Card 
-										<s:property value="invoice.ccNumber" />
-							<br />
-						</s:if> TransactionID: <s:property value="invoice.transactionID" /></th>
-						<td><s:date name="invoice.paidDate" format="MMM d, yyyy" /> <br />
-						</td>
-					</s:if>
-					<s:elseif test="invoice.status.paid && !invoice.paymentMethod.creditCard">
-						<th colspan="2" class="right">Paid</th>
-						<td><s:date name="invoice.paidDate" format="MMM d, yyyy" /> <br />
-						<s:property value="invoice.checkNumber" /></td>
-					</s:elseif>
-					<s:else>
+					<th colspan="2" class="big right">Payment(s)</th>
+					<td class="right"><s:if test="invoice.status.unpaid">
 						<pics:permission perm="Billing" type="Edit">
-							<td colspan="3" class="print noprint">
-							<s:if test="!invoice.status.paid">
-								<s:if test="invoice.paymentMethod.creditCard">
+							<tr>
+								<td colspan="3" class="print noprint"><s:if test="contractor.paymentMethod.creditCard">
 									<s:if test="contractor.ccOnFile">
 										<input type="submit" class="picsbutton positive" name="button"
-											value="Charge Credit Card for $ <s:property value="invoice.totalAmount"/>"/>
+											value="Charge Credit Card for $ <s:property value="invoice.balance"/>" />
 									</s:if>
 									<s:else>
 										No Credit Card on File
 									</s:else>
-								</s:if>
-								<s:else>
-									Check#<s:textfield name="invoice.checkNumber" size="8"></s:textfield>
+								</s:if> <s:else>
+									Check#<s:textfield name="checkNumber" size="8"></s:textfield>
 									<input id="collectCheck" type="submit" class="picsbutton positive" name="button" maxlength="50"
-										value="Collect Check for $ <s:property value=" invoice.totalAmount" />"/>
-								</s:else>
-								<pics:permission perm="Billing" type="Delete">
-									<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice"/>
-								</pics:permission>
-							</s:if>
-							<s:elseif test="invoice.totalAmount < 0 || invoice.totalAmount == 0">
-								<input type="submit" class="picsbutton positive" name="button" value="Mark Paid">
-							</s:elseif>
-							</td>
+										value="Collect Check for $ <s:property value="invoice.balance" />" />
+								</s:else></td>
+							</tr>
 						</pics:permission>
-					</s:else>
+					</s:if> <s:iterator value="invoice.payments">
+						<s:if test="payment.paymentMethod.creditCard">
+							<s:property value="payment.ccType" /> Card <s:property value="payment.ccNumber" />
+							<br />
+							TransactionID: <s:property value="payment.transactionID" />
+						</s:if>
+						<s:if test="payment.checkNumber.length > 0">
+							Check #<s:property value="payment.checkNumber" />
+						</s:if>
+						<s:date name="payment.creationDate" format="MMM d, yyyy" />
+						<br />
+						<span class="big">($<s:property value="amount" />) USD</span>
+					</s:iterator></td>
+				</tr>
+				<tr>
+					<th colspan="2" class="big right">Balance</th>
+					<td class="big right">$<s:property value="invoice.balance" /> USD</td>
 				</tr>
 			</table>
 			</td>
@@ -238,10 +217,6 @@ input[type=submit] {
 				<s:textarea name="invoice.notes" cols="60" rows="4"></s:textarea>
 			</s:if> <s:else>
 				<s:property value="invoice.notes" />
-				<br />
-				<s:property value="operatorsString" />
-				<br />
-				<br />
 			</s:else></td>
 		</tr>
 		<tr>
@@ -269,7 +244,9 @@ input[type=submit] {
 <div style="font-style: italic; font-size: 10px;"></div>
 
 <pics:permission perm="InvoiceEdit">
-	<div class="noprint"><a href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">System Edit</a></div>
+	<div class="noprint"><a
+		href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">System
+	Edit</a></div>
 </pics:permission>
 
 </body>

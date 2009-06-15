@@ -13,6 +13,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.picsauditing.PICS.BrainTreeService;
+
 @Entity
 @DiscriminatorValue(value = "P")
 public class Payment extends Transaction {
@@ -58,6 +60,13 @@ public class Payment extends Transaction {
 		this.ccNumber = ccNumber;
 	}
 
+	@Transient
+	public String getCcType() {
+		BrainTreeService.CreditCard cc = new BrainTreeService.CreditCard();
+		cc.setCardNumber(ccNumber);
+		return cc.getCardType();
+	}
+
 	@OneToMany(mappedBy = "payment", cascade = { CascadeType.ALL })
 	public List<InvoicePayment> getInvoices() {
 		return invoices;
@@ -73,6 +82,7 @@ public class Payment extends Transaction {
 		for (InvoicePayment ip : invoices) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
+		super.updateAmountApplied();
 	}
 
 }

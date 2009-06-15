@@ -77,12 +77,12 @@ public class InsertPayments extends CustomerAdaptor {
 
 				payment.setPaymentMethodRef(new PaymentMethodRef());
 
-				if (invoiceJPA.getTransactionID() != null) {
-					payment.getPaymentMethodRef().setFullName("Check");
-					payment.setMemo(invoiceJPA.getTransactionID());
-				} else {
-					payment.getPaymentMethodRef().setFullName("Braintree Credit");
-				}
+//				if (invoiceJPA.getTransactionID() != null) {
+//					payment.getPaymentMethodRef().setFullName("Check");
+//					payment.setMemo(invoiceJPA.getTransactionID());
+//				} else {
+//					payment.getPaymentMethodRef().setFullName("Braintree Credit");
+//				}
 
 				// payment.setIsAutoApply("false"); MUST not set this if we apply the payment ourselves
 

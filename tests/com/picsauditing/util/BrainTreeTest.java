@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Payment;
 
 public class BrainTreeTest extends TestCase {
 	public BrainTreeTest(String name) {
@@ -17,12 +18,12 @@ public class BrainTreeTest extends TestCase {
 		BrainTreeService service = new BrainTreeService();
 		service.setUserName("testapi");
 		service.setPassword("password1");
-		Invoice invoice = new Invoice();
-		invoice.setAccount(EntityFactory.makeContractor());
-		invoice.setId(123);
-		invoice.setTotalAmount(new BigDecimal(99));
+		Payment payment = new Payment();
+		payment.setAccount(EntityFactory.makeContractor());
+		payment.setId(123);
+		payment.setTotalAmount(new BigDecimal(99));
 		try {
-			service.processPayment(invoice);
+			service.processPayment(payment);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

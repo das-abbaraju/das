@@ -702,7 +702,7 @@ public class ContractorAccount extends Account {
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
 			if (invoice.getStatus().isUnpaid())
-				balance = balance.add(invoice.getTotalAmount());
+				balance = balance.add(invoice.getBalance());
 		}
 
 		for (Invoice invoice : getSortedInvoices()) {
