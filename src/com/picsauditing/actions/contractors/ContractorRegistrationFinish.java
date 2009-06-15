@@ -89,6 +89,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 						payInvoice();
 
+						contractor.syncBalance();
+
 						addNote("Credit Card transaction completed and emailed the receipt for $"
 								+ invoice.getTotalAmount());
 					} catch (Exception e) {
