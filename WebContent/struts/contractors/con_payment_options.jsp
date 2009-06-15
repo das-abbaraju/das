@@ -53,17 +53,18 @@ function updateExpDate() {
 </s:elseif>
 
 <s:form id="save" method="POST">
+	<s:hidden name="id" />
 <fieldset class="form">
 <legend><span>Membership Details</span></legend>
 <ol>
-	<li><label>Company Name:</label>
-		<s:property value="contractor.name" />
-	</li>
 <s:if test="contractor.newMembershipLevel.amount > 0">
 	<li><label>Payment Method:</label>
 		<s:property value="contractor.paymentMethod.description"/><br/>
-		<s:if test="contractor.newMembershipLevel.amount < 500">
-			Credit Card payment is required for billing amounts less than $500.
+		<s:if test="!contractor.paymentMethod.creditCard">
+			<div id="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
+		</s:if>
+		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipLevel.amount < 500">
+			<i>Note: Credit Card payment is required for memberships under $500.</i>
 		</s:if>
 	</li>
 
@@ -71,12 +72,18 @@ function updateExpDate() {
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
 		<li><label>Next Billing Amount:</label> $<s:property
-			value="contractor.newMembershipLevel.amount" /> USD</li>
+			value="contractor.newMembershipLevel.amount" /> USD
+			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+				href="#" title="opens in new window">Click here to view pricing</a>
+		</li>
 	</s:if>
 	<s:else>
-		<li><label>Annual Membership Fee:</label> $<s:property
-			value="contractor.newMembershipLevel.amount" /> USD</li>
-		<li><label>Activation Fee:</label> $<s:property value="activationFee.amount"/> USD</li>
+		<li><label>Annual Membership:</label> $<s:property
+			value="contractor.newMembershipLevel.amount" /> USD
+			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+				href="#" title="opens in new window">Click here to view pricing</a>
+			</li>
+		<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.amount"/> USD</li>
 		<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
 	</s:else>
 </s:if>
@@ -89,23 +96,17 @@ function updateExpDate() {
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 							
 </li>
-<s:if test="!contractor.paymentMethod.creditCard">
-	<li>
-		<span> Your invoice will be emailed to <s:property value="contractor.email"/> 
-		<s:if test="!@com.picsauditing.util.Strings@isEmpty(contractor.billingEmail) && !contractor.email.equals(contractor.billingEmail)">	and <s:property value="contractor.billingEmail"/></s:if>.</span>			
-	</li>
-</s:if>
 <s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">
 	<li>
 		<div>
 			<s:if test="contractor.paymentMethod.creditCard">
-				<input type="submit" class="picsbutton positive" name="button" value="Change my Payment Method to Check"/>
+				<input type="submit" class="picsbutton" name="button" value="Change Payment Method to Check"/>
 			</s:if>
 			<s:else>
-				<input type="submit" class="picsbutton positive" name="button" value="Change my Payment Method to Credit Card"/>
+				<input type="submit" class="picsbutton" name="button" value="Change Payment Method to Credit Card"/>
 			</s:else>
-		</div>	
-	</li>	
+		</div>
+	</li>
 </s:if>
 </ol>
 </fieldset>
@@ -165,13 +166,15 @@ function updateExpDate() {
 			<li>
 			<div class="buttons">
 				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
-				<br>* The card is NOT being charged at this time.
+				<br clear="all">
 			</div>
+			<div id="info">The card will NOT being charged at this time.</div>
 			</li>
 		</ol>
-		</fieldset>	
+		</fieldset>
 	</form>
 </s:if>
+
 <br clear="all" /><br/><br/>
 <s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">

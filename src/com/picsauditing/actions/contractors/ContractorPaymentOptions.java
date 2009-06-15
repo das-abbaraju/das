@@ -65,24 +65,24 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		// The payment method has changed.
-		if("Change my Payment Method to Check".equalsIgnoreCase(button)) {
+		if ("Change Payment Method to Check".equalsIgnoreCase(button)) {
 			contractor.setPaymentMethod(PaymentMethod.Check);
 		}
-		if("Change my Payment Method to Credit Card".equalsIgnoreCase(button) 
-				|| (!contractor.getPaymentMethod().isCreditCard() 
-						&& contractor.getNewMembershipLevel().getAmount().intValue() < 500)) {
+		if ("Change Payment Method to Credit Card".equalsIgnoreCase(button)) {
 			contractor.setPaymentMethod(PaymentMethod.CreditCard);
 		}
-		if("copyBillingEmail".equals(button)) {
+		if ("copyBillingEmail".equals(button)) {
 			contractor.setCcEmail(contractor.getBillingEmail());
 		}
-		
+
 		accountDao.save(contractor);
-		if ("Activation".equals(contractor.getBillingStatus()))
-			activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
-		if ("Membership Canceled".equals(contractor.getBillingStatus())
-				|| "Reactivation".equals(contractor.getBillingStatus()))
-			activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
+		activationFee = null;
+		if (!contractor.isActiveB()) {
+			if (contractor.getMembershipDate() == null)
+				activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+			else
+				activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
+		}
 
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
@@ -310,9 +310,5 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public InvoiceFee getActivationFee() {
 		return activationFee;
-	}
-
-	public void setActivationFee(InvoiceFee activationFee) {
-		this.activationFee = activationFee;
 	}
 }
