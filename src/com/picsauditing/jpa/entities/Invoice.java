@@ -61,18 +61,6 @@ public class Invoice extends Transaction {
 		this.dueDate = dueDate;
 	}
 
-	/**
-	 * Check to see if a invoice is Cancelled
-	 * 
-	 * @return
-	 */
-	@Transient
-	public boolean isCancelledInvoice() {
-		if (getStatus().isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
-			return true;
-		return false;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getPaidDate() {
 		return paidDate;

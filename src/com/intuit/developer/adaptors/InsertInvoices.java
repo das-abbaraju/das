@@ -31,7 +31,7 @@ public class InsertInvoices extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				"i.account.qbListID is not null AND i.totalAmount > 0 AND i.qbSync = true AND i.qbListID is null "
+				"i.account.qbListID is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
 						+ "AND i.account.qbListID not like 'NOLOAD%'", 10);
 
 		// no work to do

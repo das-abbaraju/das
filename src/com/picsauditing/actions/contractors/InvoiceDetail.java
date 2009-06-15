@@ -230,7 +230,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		emailBuilder.setBccAddresses("billing@picsauditing.com");
 
 		EmailQueue email = emailBuilder.build();
-		if (invoice.isPaid())
+		if (invoice.getStatus().isPaid())
 			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
 		email.setPriority(60);
 		email.setHtml(true);
@@ -239,7 +239,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void updateTotals() {
-		if (!invoice.isPaid()) {
+		if (!invoice.getStatus().isPaid()) {
 			invoice.setTotalAmount(BigDecimal.ZERO);
 			for (InvoiceItem item : invoice.getItems())
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
