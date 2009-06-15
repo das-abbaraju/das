@@ -58,7 +58,7 @@
 
 <div id="companyinfo">
 	<div class="contact">
-		<div class="left info">
+		<div class="left infobox">
 			<div class="vcard">
 				<div class="adr">
 					<s:if test="logoWidth > 0"><img src="logos/<s:property value="contractor.logoFile" />" 
@@ -90,7 +90,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="left info">
+	<div class="left infobox">
 <!-- TODO: add the VCard again -->
 <!--		<div class="right" id="vcardimage"><a -->
 <!--			href="http://suda.co.uk/projects/X2V/get-vcard.php?uri=http://www.albumcreative.com/picscss/index.html"><img -->
