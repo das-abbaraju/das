@@ -104,6 +104,13 @@ public class Invoice extends Transaction {
 	}
 
 	@Transient
+	public void updateAmount() {
+		totalAmount = BigDecimal.ZERO;
+		for (InvoiceItem item : items)
+			totalAmount = totalAmount.add(item.getAmount());
+	}
+
+	@Transient
 	public void updateAmountApplied() {
 		amountApplied = BigDecimal.ZERO;
 		for (InvoicePayment ip : payments) {

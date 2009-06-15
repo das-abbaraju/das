@@ -19,48 +19,39 @@
 	<ol>
 		<li><label>Amount:</label>
 			<s:textfield name="invoice.totalAmount" value="%{invoice.totalAmount}"/></li>
-		<li><label>Payment Method</label>
-			<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics"/></li>
 		<li><label>Notes:</label>
 			<s:textarea name="invoice.notes" cols="30" rows="3"/></li>
 		<li><label>Due Date:</label>
-			<s:textfield name="invoice.dueDate" value="%{invoice.dueDate && getText('dates', {invoice.dueDate})}"/></li>
+			<s:textfield name="invoice.dueDate" /></li>
 		<li><label>Status:</label>
 			<s:radio list="@com.picsauditing.jpa.entities.TransactionStatus@values()" name="invoice.status" theme="pics"></s:radio>
-		<li><label>Paid Date:</label>
-			<s:textfield name="invoice.paidDate" value="%{invoice.paidDate && getText('dates', {invoice.paidDate})}"/></li>
 	</ol>
 </fieldset>
 <fieldset class="form">
 	<legend><span>Quick Books</span></legend>
 	<ol>
-		<li><label>Check Number:</label>
-			<s:textfield name="invoice.checkNumber"/></li>
-		<li><label>TransactionID:</label>
-			<s:textfield name="invoice.transactionID"/></li>
 		<li><label>PO Number:</label>
 			<s:textfield name="invoice.poNumber"/></li>
-		<li><label>CC Number:</label>
-			<s:textfield name="invoice.ccNumber"/></li>
 		<li><label>Quick Books Sync:</label>
 			<s:checkbox name="invoice.qbSync"/></li>
 		<li><label>QB ListID:</label>
-			<s:textfield name="invoice.qbListID"/></li>
+			<s:property value="invoice.qbListID"/></li>
 	</ol>
 </fieldset>
-<s:iterator value="invList" status="item">
+<s:iterator value="invoice.items" status="item">
 <fieldset class="form">
 	<legend><span>Item For <s:property value="invoiceFee.fee"/></span></legend>
 	<ol>
 		<li><label>Fee:</label>
-		<s:select list="feeList" name="invList[%{#item.index}].invoiceFee.id" headerKey="0"
+		<s:select list="feeList" name="feeMap[%{id}]" headerKey="0"
 							headerValue="- Select a New Fee to Add -" listKey="id" listValue="fee" value="%{invoiceFee.id}" /></li>
 		<li><label>Amount:</label>
-			<s:textfield name="invList[%{#item.index}].amount" value="%{amount}"/></li>
+			<s:textfield name="invoice.items[%{#item.index}].amount" value="%{amount}"/></li>
 		<li><label>Payment Expires:</label>
-			<s:textfield name="invList[%{#item.index}].paymentExpires" value="%{paymentExpires && getText('dates', {paymentExpires})}"/></li>
+			<s:textfield name="invoice.items[%{#item.index}].paymentExpires"/></li>
 		<li><label>Description:</label>
-			<s:textfield name="invList[%{#item.index}].description" value="%{description}"/></li>
+			<s:textfield name="invoice.items[%{#item.index}].description" value="%{description}"/></li>
+		<li><label>Remove</label><s:checkbox name="removeMap[%{id}]"/></li>
 	</ol>
 </fieldset>
 </s:iterator>
