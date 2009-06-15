@@ -19,10 +19,10 @@ input[type=submit] {
 <s:if test="!permissions.contractor || contractor.activeB">
 <s:include value="conHeader.jsp"></s:include>
 </s:if>
-<s:if test="invoice.cancelledInvoice">
+<s:if test="invoice.status.void">
 	<div id="alert" class="noprint">This invoice was canceled on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
 </s:if>
-<s:elseif test="invoice.paid">
+<s:elseif test="invoice.status.paid">
 	<div id="info" class="noprint">This invoice was paid on <s:date name="invoice.paidDate" format="MMM d, yyyy" /></div>
 </s:elseif>
 <s:elseif test="invoice.overdue">

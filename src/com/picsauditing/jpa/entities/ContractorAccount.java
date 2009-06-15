@@ -701,12 +701,12 @@ public class ContractorAccount extends Account {
 
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
-			if (!invoice.isPaid())
+			if (invoice.getStatus().isUnpaid())
 				balance = balance.add(invoice.getTotalAmount());
 		}
 
 		for (Invoice invoice : getSortedInvoices()) {
-			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (!invoiceItem.isRefunded()) {
 						if (invoiceItem.getInvoiceFee().getFeeClass().equals("Membership")) {

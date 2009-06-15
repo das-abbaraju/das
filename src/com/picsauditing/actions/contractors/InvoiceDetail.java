@@ -153,17 +153,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					}
 				}
 				if (button.startsWith("Cancel Invoice")) {
-					Iterator<InvoiceItem> inIterator = invoice.getItems().iterator();
-					while (inIterator.hasNext()) {
-						InvoiceItem invoiceItem = inIterator.next();
-						inIterator.remove();
-						invoiceItemDAO.remove(invoiceItem);
-					}
 
 					String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
 							+ invoice.getTotalAmount().toString();
-					invoice.setTotalAmount(BigDecimal.ZERO);
-					invoice.setStatus(TransactionStatus.Paid);
+					invoice.setStatus(TransactionStatus.Void);
 					invoice.setPaidDate(new Date());
 					invoice.setAuditColumns(permissions);
 					invoice.setQbSync(true);
