@@ -67,9 +67,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 		for (ContractorAuditOperator cao : caoList) {
 			if (cao.getAudit().getAuditStatus().isExpired()) {
 				expiredAudits.add(cao.getAudit());
-			} else if (cao.getStatus().isPending() 
-					|| cao.getStatus().isSubmitted() 
-					|| cao.getStatus().isVerified()
+			} else if (cao.getStatus().isPending() || cao.getStatus().isSubmitted() || cao.getStatus().isVerified()
 					|| cao.getStatus().isRejected()) {
 				if (requested.get(cao.getAudit()) == null)
 					requested.put(cao.getAudit(), new ArrayList<ContractorAuditOperator>());
@@ -162,23 +160,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public boolean isManuallyAddAudit() {
 		if (permissions.isContractor()) {
-			if (auditClass.equals(AuditTypeClass.Policy))
+			return true;
+		}
+
+		if (permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit)) {
+			if (auditTypeList.size() > 0)
 				return true;
-			return false;
 		}
-
-		if (permissions.isOperatorCorporate()) {
-			if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
-				return auditTypeList.size() > 0;
-		}
-
-		// if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)
-		// || permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit))
-		// return true;
-		// if (permissions.isOperator() || permissions.isCorporate()) {
-		// if (auditTypeList.size() > 0)
-		// return true;
-		// }
 		return false;
 	}
 
@@ -200,17 +188,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public Set<AuditType> getRequiredAuditTypeNames() {
 		Set<AuditType> result = new HashSet<AuditType>();
-
 		for (ContractorOperator co : contractor.getOperators()) {
-			for (AuditOperator ao : co.getOperatorAccount().getAudits()) {
+			for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
 				if (ao.getAuditType().getClassType().isPolicy()) {
-					if (ao.isCanSee() && !result.contains(ao.getAuditType())) {
+					if (permissions.isOperatorCorporate()
+							&& permissions.getAccountId() == co.getOperatorAccount().getId()) {
+						if (ao.isCanSee() && ao.isCanEdit() && !result.contains(ao.getAuditType())) {
+							result.add(ao.getAuditType());
+						}
+					} else {
 						result.add(ao.getAuditType());
+
 					}
 				}
 			}
 		}
-
 		return result;
 	}
 

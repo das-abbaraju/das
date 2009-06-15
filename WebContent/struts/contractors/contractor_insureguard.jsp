@@ -91,10 +91,10 @@
 						<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
 							headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
 					</s:if>
-					<s:elseif test="permissions.contractor">
+					<s:else>
 						<s:select list="requiredAuditTypeNames" name="selectedAudit" cssClass="pics"
 							headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
-					</s:elseif>
+					</s:else>
 				</td>
 			</s:form>
 		</tr>

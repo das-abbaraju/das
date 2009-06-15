@@ -189,14 +189,7 @@ public class ConAuditList extends ContractorActionSupport {
 	}
 
 	public boolean isManuallyAddAudit() {
-		if (permissions.isContractor()) {
-			if (auditClass.equals(AuditTypeClass.Policy) || auditClass.equals(AuditTypeClass.IM))
-				return true;
-			return false;
-		}
-
-		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)
-				|| permissions.hasPermission(OpPerms.InsuranceCerts, OpType.Edit))
+		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
 			return true;
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			if (auditTypeList.size() > 0)

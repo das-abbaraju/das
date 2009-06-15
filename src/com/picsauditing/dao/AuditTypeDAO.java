@@ -53,7 +53,7 @@ public class AuditTypeDAO extends PicsDAO {
 	public List<AuditType> findAll(Permissions permissions, boolean canEdit, AuditTypeClass auditClass) {
 		String where = "";
 
-		if (permissions.isOperator() || permissions.isCorporate()) {
+		if (permissions.isOperatorCorporate()) {
 			if (permissions.isOperator()) {
 				where = "operatorAccount.id = ?";
 			} else {
@@ -83,7 +83,7 @@ public class AuditTypeDAO extends PicsDAO {
 
 		Query query = em
 				.createQuery("FROM AuditType t " + where + " ORDER BY t.classType, t.displayOrder, t.auditName");
-		if (permissions.isOperator() || permissions.isCorporate())
+		if (permissions.isOperatorCorporate())
 			query.setParameter(1, permissions.getAccountId());
 		return query.getResultList();
 	}
