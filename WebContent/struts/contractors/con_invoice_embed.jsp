@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <table class="allborder">
 	<tr>
-		<th>Item &amp; Description</th>
+		<th width="400px">Item &amp; Description</th>
 		<th width="100px">Fee Amount</th>
 	</tr>
 	<s:iterator value="#i.items">
