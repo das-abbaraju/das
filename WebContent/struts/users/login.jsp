@@ -10,7 +10,7 @@ fieldset.form input.login {
 	font-size: 16px;
 	width: 240px;
 	font-weight: bold;
-	font-family: courier;
+	font-family: 'Trebuchet MS', Helvetica, sans-serif;
 }
 </style>
 </head>
