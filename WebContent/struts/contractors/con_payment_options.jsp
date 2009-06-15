@@ -84,6 +84,7 @@ function updateExpDate() {
 				<s:iterator value="contractor.invoices" id="i">
 					<s:if test="status.unpaid">
 						<s:include value="con_invoice_embed.jsp"/>
+						<br clear="all"/>
 					</s:if>
 				</s:iterator>
 			</li>
