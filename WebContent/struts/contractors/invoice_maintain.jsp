@@ -22,7 +22,7 @@
 		<li><label>Payment Method</label>
 			<s:radio list="#{'Check':'Check','CreditCard':'Credit Card'}" name="contractor.paymentMethod" theme="pics"/></li>
 		<li><label>Notes:</label>
-			<s:textfield name="invoice.notes"/></li>
+			<s:textarea name="invoice.notes" cols="30" rows="3"/></li>
 		<li><label>Due Date:</label>
 			<s:textfield name="invoice.dueDate" value="%{invoice.dueDate && getText('dates', {invoice.dueDate})}"/></li>
 		<li><label>Status:</label>
