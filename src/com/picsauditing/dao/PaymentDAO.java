@@ -1,5 +1,9 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Payment;
@@ -29,5 +33,11 @@ public class PaymentDAO extends PicsDAO {
 	public Payment find(int id) {
 		return em.find(Payment.class, id);
 	}
-
+	
+	public List<Payment> findWhere(String where) {
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		Query query = em.createQuery("SELECT p from Payment p " + where + " ORDER BY p.creationDate DESC");
+		return query.getResultList();
+	}
 }
