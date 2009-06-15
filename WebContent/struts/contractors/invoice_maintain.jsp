@@ -26,7 +26,7 @@
 		<li><label>Due Date:</label>
 			<s:textfield name="invoice.dueDate" value="%{invoice.dueDate && getText('dates', {invoice.dueDate})}"/></li>
 		<li><label>Status:</label>
-			<s:radio list="#{'Paid':'Paid','Unpaid':'Unpaid'}" name="invoice.status" theme="pics"></s:radio>
+			<s:radio list="@com.picsauditing.jpa.entities.TransactionStatus@values()" name="invoice.status" theme="pics"></s:radio>
 		<li><label>Paid Date:</label>
 			<s:textfield name="invoice.paidDate" value="%{invoice.paidDate && getText('dates', {invoice.paidDate})}"/></li>
 	</ol>
