@@ -5,6 +5,7 @@
 <title><s:property value="contractor.name" /> - Payment Method</title>
 <meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/invoice.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script language="JavaScript">
 function validate() {
@@ -78,13 +79,24 @@ function updateExpDate() {
 		</li>
 	</s:if>
 	<s:else>
-		<li><label>Annual Membership:</label> $<s:property
-			value="contractor.newMembershipLevel.amount" /> USD
-			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
-				href="#" title="opens in new window">Click here to view pricing</a>
+		<s:if test="contractor.balance > 0">
+			<li>
+				<s:iterator value="contractor.invoices" id="i">
+					<s:if test="status.unpaid">
+						<s:include value="con_invoice_embed.jsp"/>
+					</s:if>
+				</s:iterator>
 			</li>
-		<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.amount"/> USD</li>
-		<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
+		</s:if>
+		<s:else>
+			<li><label>Annual Membership:</label> $<s:property
+				value="contractor.newMembershipLevel.amount" /> USD
+				<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"
+					href="#" title="opens in new window">Click here to view pricing</a>
+				</li>
+			<li><label><s:property value="activationFee.fee"/>:</label> $<s:property value="activationFee.amount"/> USD</li>
+			<li><label>Total:</label> $<s:property value="activationFee.amount+contractor.newMembershipLevel.amount"/> USD </li>
+		</s:else>
 	</s:else>
 </s:if>
 <s:else>

@@ -80,36 +80,8 @@
 						
 						<h3>Invoice Summary</h3>
 						<br clear="all"/>
-						<table class="allborder">
-							<tr>
-								<th>Item &amp; Description</th>
-								<th width="100px">Fee Amount</th>
-							</tr>
-							<s:iterator value="invoice.items">
-								<tr>
-									<td>
-										<s:property value="invoiceFee.fee" />
-										<span style="color: #444; font-style: italic; font-size: 10px;">
-										<s:if test="invoiceFee.feeClass == 'Activation'">effective
-											<s:if test="paymentExpires == null"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></s:if>
-											<s:else><s:date name="paymentExpires" /></s:else>
-										</s:if>
-										<s:if test="invoiceFee.feeClass == 'Membership' && paymentExpires != null">
-											expires <s:date name="paymentExpires" format="MMM d, yyyy"/>
-										</s:if>
-										</span>
-									</td>
-									<td class="right">
-										$<s:property value="amount" /> USD
-									</td>
-								</tr>
-							</s:iterator>
-							<tr>
-								<th class="big right">Invoice Total</th>
-								<td class="big right">$<s:property value="invoice.totalAmount" /> USD</td>
-							</tr>
-						</table>
-		
+						<s:set name="i" value="invoice"/>
+						<s:include value="con_invoice_embed.jsp"/>
 						<br clear="all"/>
 						<input type="submit" class="picsbutton positive" value="Complete My Registration" name="button"/>
 						<s:if test="contractor.paymentMethod.creditCard">
