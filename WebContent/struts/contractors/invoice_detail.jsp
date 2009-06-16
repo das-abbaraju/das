@@ -57,33 +57,33 @@ input[type=submit] {
 							<td class="center"><s:property value="invoice.id" /></td>
 						</tr>
 					</table>
-					
-					<div id="toolbox"/>
-					<div class="center">
+						<s:set name="urlBase" value="InvoiceDetail.action?invoice.id={%invoice.id}" />
+						<s:property value="#urlBase"/>
+
+					<div id="toolbox" class="noprint" />
 					<ul>
-					<s:if test="!permissions.contractor">
-						<s:if test="invoice.status.unpaid">
-							<pics:permission perm="Billing" type="Delete">
-								<li><input type="submit" class="delete" name="button" value="Cancel Invoice" /></li>
-							</pics:permission>
-							<li><a class="edit noprint"
-								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"> <s:if
-								test="edit">View</s:if> <s:else>Edit</s:else> </a></li>
+						<li><a class="view" href="PaymentDetail.action?invoice.id=<s:property value="invoice.id"/>">Pay</a></li>
+						<pics:permission perm="Billing" type="Edit">
+							<s:if test="edit">
+								<li><a class="save" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Save">Save</a></li>
+								<li><a class="exit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>">Return</a></li>
+							</s:if>
+							<s:else>
+								<li><a class="edit"
+									href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"><s:if
+									test="edit">View</s:if><s:else>Edit</s:else></a></li>
+								<pics:permission perm="Billing" type="Delete">
+									<li><a class="remove"
+										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
+								</pics:permission>
+							</s:else>
+						</pics:permission>
+						<s:if test="!edit">
+							<li><a class="email"
+								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Email">Email</a></li>
 						</s:if>
-					</s:if><li><a class="print noprint" href="javascript: window.print();">Print</a></li> <s:if test="!edit">
-						<s:if test="invoice.status.paid">
-							<li><input type="submit" class="email" name="button" value="Email Receipt"></li>
-						</s:if>
-						<s:else>
-							<li><input type="submit" class="email" name="button" value="Email Invoice"></li>
-						</s:else>
-					</s:if> <s:if test="edit">
-						<br />
-						<li><input type="submit" class="save" name="button" value="Save" /></li>
-					</s:if>
+						<li><a class="print" href="javascript: window.print();">Print</a></li>
 					</ul>
-					</div>
-					<div class="clear"/></div>
 					</div>
 					</td>
 				</tr>
@@ -194,8 +194,7 @@ input[type=submit] {
 						<br />
 						<span class="big">($<s:property value="amount" />) USD</span>
 						<br />
-					</s:iterator>
-					</td>
+					</s:iterator></td>
 				</tr>
 				<tr>
 					<th colspan="2" class="big right">Balance</th>
