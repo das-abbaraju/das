@@ -199,72 +199,83 @@
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
 }
-/* Toolbox */
 
-  div#toolbox{
-  background-color:#4686BF;
-  border-top:1px solid green;
-  border-bottom:1px solid #003768;
-  width:400px;
-  text-align:center;
-  position:relative;
-  margin:10px 0;}
-  
-  div#toolbox li:hover{}
-  
-  div#toolbox ul{
-  text-align:center;
-  padding:0px;
-  margin:6px auto;
-  width:100%}
-  
-  div#toolbox ul li{
-  list-style:none;
-  float:left;
-  text-align:center;
-  padding:0px;
-  border:1px solid black;
-  margin:0 auto;
-  height:40px;
-  position:relative;}
-  
-  div#toolbox input, div#toolbox a{
-  background:transparent;
-  border:none;
-  text-align:center;
-  text-decoration:none;
-  vertical-align:bottom;
-  color:#FFFFFF;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:14px;
-  height:50px;
-  padding:0px;
-  margin:0px;}
-  
-  div#toolbox li input.save{
-  background:url('../images/save.gif') no-repeat top center;}
-  
-  div#toolbox li input.email{
-  background:url('../images/icon_link_email.gif') no-repeat top center;}
-  
-  div#toolbox li input.delete{
-  background:url('../images/cross.png') no-repeat top center;}
-  
-  div#toolbox li a.print{
-  background:url('../images/print_icon.gif') no-repeat top center;}
-  
-  div#toolbox li a.edit{
-  background:url('../images/edit_pencil.png') no-repeat top center;}
-  
-  div#toolbox li a.edit{
-  background:url('../images/edit_pencil.png') no-repeat top center;}
-  
+/************* Toolbox *************/
+#content #toolbox {
+	background-color: #4686BF;
+	border-top: 1px solid green;
+	border-bottom: 1px solid #003768;
+	text-align: center;
+	padding-top: 12px;
+	margin-top: 7px;
+}
 
-  
-  div#toolbox input:hover{
-  text-decoration:underline}
-  
-  div#toolbox a:hover{
-  text-decoration:underline;}
-  
-  
+#toolbox li:hover {
+	
+}
+
+#toolbox ul {
+	text-align: center;
+	padding: 8px 0 0 0px;
+	margin: 0px auto;
+	display: block;
+	white-space: nowrap;
+}
+
+#toolbox ul li {
+	list-style: none;
+	display: inline;
+	text-align: center;
+	padding: 10px;
+	margin: 0 auto;
+	position: relative;
+	height:40px;
+}
+
+#toolbox a {
+	background-repeat: no-repeat;
+	background-position: top center;
+	text-align: center;
+	color: #FFFFFF;
+	line-height: 30px;
+	text-decoration: none;
+	margin: 2px;
+	padding: 2px;
+	padding-top: 18px;
+	border:1px solid transparent;
+}
+
+
+#toolbox a:hover {
+	text-decoration: underline;
+	background-color:;
+	border:1px solid transparent;
+}
+
+#toolbox a.save {
+	background-image: url('../images/save.gif');
+}
+
+#toolbox a.email {
+	background-image: url('../images/icon_link_email.png');
+}
+
+#toolbox a.edit {
+	background: url('../images/edit_pencil.png') no-repeat top center;
+}
+
+#toolbox a.print {
+	background-image: url('../images/print_icon.gif');
+}
+
+#toolbox a.cancel {
+	background-image: url('../images/cross.png');
+}
+
+#toolbox a.charge {
+	background: url('../images/visa.gif') no-repeat top center;
+}
+
+#toolbox a.upgrade {
+	background: url('../images/upgrade.gif') no-repeat top center;
+}
