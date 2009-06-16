@@ -252,16 +252,20 @@
 	border:1px solid transparent;
 }
 
+#toolbox a.default {
+	background: url('../images/default.gif') no-repeat top center;
+}
+
 #toolbox a.save {
 	background-image: url('../images/save.gif');
 }
 
 #toolbox a.email {
-	background-image: url('../images/icon_link_email.png');
+	background-image: url('../images/icon_link_email.gif');
 }
 
 #toolbox a.edit {
-	background: url('../images/edit_pencil.png') no-repeat top center;
+	background: url('../images/edit_pencil.gif') no-repeat top center;
 }
 
 #toolbox a.print {
@@ -272,10 +276,18 @@
 	background-image: url('../images/cross.png');
 }
 
-#toolbox a.charge {
+#toolbox a.pay {
 	background: url('../images/visa.gif') no-repeat top center;
 }
 
 #toolbox a.upgrade {
 	background: url('../images/upgrade.gif') no-repeat top center;
+}
+
+#toolbox a.exit {
+	background: url('../images/cross.png') no-repeat top center;
+}
+
+#toolbox a.void {
+	background: url('../images/void.gif') no-repeat top center;
 }
