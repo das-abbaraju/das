@@ -194,28 +194,8 @@ input[type=submit] {
 						<br />
 						<span class="big">($<s:property value="amount" />) USD</span>
 						<br />
-					</s:iterator> <s:if test="invoice.status.unpaid">
-						<pics:permission perm="Billing" type="Edit">
-							<div class="print noprint"><s:if test="contractor.paymentMethod.creditCard">
-								<s:if test="contractor.ccOnFile">
-									<input type="submit" class="picsbutton positive" name="button"
-										value="Charge Credit Card for $ <s:property value="invoice.balance"/>" />
-								</s:if>
-								<s:else>Missing Credit Card</s:else>
-							</s:if> <s:else>
-									Check #<s:textfield name="checkNumber" size="8"></s:textfield>
-								<input id="collectCheck" type="submit" class="processcheck" name="button" maxlength="50"
-									value="Collect Check for $<s:property value="invoice.balance" />" />
-							</s:else>
-							<s:iterator value="contractor.payments">
-								<s:if test="balance > 0">
-									<input id="applyCredit" type="submit" class="picsbutton positive" name="button"
-										value="Apply Existing Credit of $<s:property value="balance"/>" />
-								</s:if>
-							</s:iterator>
-							</div>
-						</pics:permission>
-					</s:if></td>
+					</s:iterator>
+					</td>
 				</tr>
 				<tr>
 					<th colspan="2" class="big right">Balance</th>

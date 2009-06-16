@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
@@ -112,11 +114,7 @@ public class BillingDetail extends ContractorActionSupport {
 					hasMembership = true;
 			}
 			if (hasMembership) {
-				notes += " You are listed on the following operator list(s): ";
-				for(ContractorOperator co : contractor.getOperators()) {
-					notes += co.getOperatorAccount().getName() + ", ";
-				}
-				notes = notes.substring(0, notes.length() - 2);
+				notes += getOperatorsString();
 			}
 			invoice.setNotes(notes);
 
@@ -149,6 +147,21 @@ public class BillingDetail extends ContractorActionSupport {
 
 		this.subHeading = "Billing Detail";
 		return SUCCESS;
+	}
+
+	private String getOperatorsString() {
+		List<String> operatorsString = new ArrayList<String>();
+
+		for (ContractorOperator co : contractor.getOperators()) {
+			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
+
+			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
+				operatorsString.add(co.getOperatorAccount().getName());
+		}
+
+		Collections.sort(operatorsString);
+
+		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
 	}
 
 	public OperatorAccount getRequestedBy() {
