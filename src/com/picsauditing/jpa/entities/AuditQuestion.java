@@ -47,15 +47,12 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	private String requirement;
 	private YesNo isRedFlagQuestion = YesNo.No;
 	private String isRequired;
-	private AuditQuestion parentQuestion = null;
 	private AuditQuestion dependsOnQuestion = null;
 	private String dependsOnAnswer;
 	private String questionType;
 	private String title;
 	private YesNo isVisible = YesNo.Yes;
 	private YesNo isGroupedWithPrevious = YesNo.No;
-	private boolean allowMultipleAnswers = false;
-	private int minimumTuples = 0;
 	private LowMedHigh riskLevel = null;
 	private String linkUrl1;
 	private String linkText1;
@@ -73,7 +70,6 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
-	protected List<AuditQuestion> childQuestions;
 	private String criteria;
 	private String criteriaAnswer;
 
@@ -352,24 +348,6 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.operator = operator;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "parentID", updatable = true)
-	public AuditQuestion getParentQuestion() {
-		return parentQuestion;
-	}
-
-	public void setParentQuestion(AuditQuestion parentQuestion) {
-		this.parentQuestion = parentQuestion;
-	}
-
-	public boolean isAllowMultipleAnswers() {
-		return allowMultipleAnswers;
-	}
-
-	public void setAllowMultipleAnswers(boolean allowMultipleAnswers) {
-		this.allowMultipleAnswers = allowMultipleAnswers;
-	}
-
 	@Column(length = 50)
 	public String getUniqueCode() {
 		return uniqueCode;
@@ -377,24 +355,6 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	public void setUniqueCode(String uniqueCode) {
 		this.uniqueCode = uniqueCode;
-	}
-
-	public int getMinimumTuples() {
-		return minimumTuples;
-	}
-
-	public void setMinimumTuples(int minimumTuples) {
-		this.minimumTuples = minimumTuples;
-	}
-
-	@OneToMany(mappedBy = "parentQuestion")
-	@OrderBy("number")
-	public List<AuditQuestion> getChildQuestions() {
-		return childQuestions;
-	}
-
-	public void setChildQuestions(List<AuditQuestion> childQuestions) {
-		this.childQuestions = childQuestions;
 	}
 
 	@OneToMany(mappedBy = "auditQuestion")

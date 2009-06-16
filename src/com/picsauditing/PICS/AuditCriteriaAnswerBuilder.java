@@ -20,8 +20,8 @@ import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * Utility used to create ACAs {@link AuditCriteriaAnswer} given AnswerMapByAudits (usually for a given operator) and a
- * full list of criteria
+ * Utility used to create ACAs {@link AuditCriteriaAnswer} given
+ * AnswerMapByAudits (usually for a given operator) and a full list of criteria
  * 
  * @author Trevor
  * 
@@ -52,8 +52,8 @@ public class AuditCriteriaAnswerBuilder {
 
 		if (criterias == null)
 			System.out.println("AuditCriteriaAnswerBuilder WARNING: List<FlagQuestionCriteria> criterias is NULL");
-//		else if (criterias.size() == 0)
-//			System.out.println("AuditCriteriaAnswerBuilder WARNING: List<FlagQuestionCriteria> criterias is empty");
+		// else if (criterias.size() == 0)
+		// System.out.println("AuditCriteriaAnswerBuilder WARNING: List<FlagQuestionCriteria> criterias is empty");
 
 		if (answerMapByAudits == null)
 			System.out.println("AuditCriteriaAnswerBuilder WARNING: AnswerMapByAudits answerMapByAudits is NULL");
@@ -120,10 +120,12 @@ public class AuditCriteriaAnswerBuilder {
 				throw new RuntimeException("system error: more criteria types than expected");
 			}
 
-			// at this point we finally have our list of maps and we can start looking for answers
+			// at this point we finally have our list of maps and we can start
+			// looking for answers
 			for (Map<FlagColor, FlagQuestionCriteria> thisMap : listOfCriteriaMapsForThisQuestion) {
 
-				// Get the first criteria from the map to use in "common" calculations below
+				// Get the first criteria from the map to use in "common"
+				// calculations below
 				MultiYearScope scope = null;
 				for (FlagQuestionCriteria fqc : thisMap.values())
 					if (scope == null)
@@ -190,45 +192,15 @@ public class AuditCriteriaAnswerBuilder {
 
 						AnswerMap answerMap = answerMapByAudits.get(matchingConAudits.get(0));
 
-						if (question.isAllowMultipleAnswers()) {
-							// this question is an anchor question that can have multiple answers
-							// figure out if we should be optimistic or pessimistic here
-							// I'm not going to spend much time on this
-							// because there are no existing use cases of using this yet
-							PicsLogger.log("getting answer to tuple anchor");
-							for (AuditData data : answerMap.getAnswerList(question.getId())) {
-								if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-									auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
-								} else if (thisMap.values().iterator().next().getAuditQuestion().getQuestionType()
-										.equals("NULLSAREBAD")) {
-									auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
-								}
-							}
-
-						} else if (question.getParentQuestion() != null) {
-							PicsLogger.log("getting answer to tuple children");
-							// These questions are "child" questions, so we must first find their parent
-							for (AuditData parentData : answerMap.getAnswerList(question.getParentQuestion().getId())) {
-								// For each row, get the child answer and evaluate it
-								AuditData data = answerMap.get(question.getId(), parentData.getId());
-								if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-									auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
-								} else if (thisMap.values().iterator().next().getAuditQuestion().getQuestionType()
-										.equals("NULLSAREBAD")) {
-									auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
-								}
-							}
-
-						} else {
-							// DEFAULT : this is a normal (root/non child/non multiple) question
-							AuditData data = answerMap.get(question.getId());
-							if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
-								PicsLogger.log("found answer = " + data.getAnswer());
-								auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
-							} else if (thisMap.values().iterator().next().getAuditQuestion().getQuestionType().equals(
-									"NULLSAREBAD")) {
-								auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
-							}
+						// DEFAULT : this is a normal (root/non child/non
+						// multiple) question
+						AuditData data = answerMap.get(question.getId());
+						if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0) {
+							PicsLogger.log("found answer = " + data.getAnswer());
+							auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
+						} else if (thisMap.values().iterator().next().getAuditQuestion().getQuestionType().equals(
+								"NULLSAREBAD")) {
+							auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
 						}
 					}
 				}

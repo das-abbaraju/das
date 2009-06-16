@@ -53,16 +53,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 	public String execute() throws Exception {
 
-		if ("removeTuple".equals(button)) {
-			try {
-				auditDataDao.remove(auditData.getId());
-				addActionMessage("Successfully removed answer group");
-			} catch (Exception e) {
-				addActionError("Failed to remove answer group");
-			}
-			return BLANK;
-		}
-
 		if (catDataID == 0) {
 			addActionError("Missing catDataID");
 			return BLANK;
@@ -79,9 +69,6 @@ public class AuditDataSave extends AuditActionSupport {
 				auditData.setQuestion(question);
 				if (!checkAnswerFormat(auditData, null))
 					return SUCCESS;
-
-				if (auditData.getParentAnswer() != null && auditData.getParentAnswer().getId() == 0)
-					auditData.setParentAnswer(null);
 			} else {
 				// update mode
 				AuditData newCopy = auditDataDao.find(auditData.getId());
@@ -235,10 +222,6 @@ public class AuditDataSave extends AuditActionSupport {
 			e.printStackTrace();
 			addActionError(e.getMessage());
 			return BLANK;
-		}
-
-		if ("addTuple".equals(button)) {
-			return "tuple";
 		}
 
 		return SUCCESS;

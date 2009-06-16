@@ -57,11 +57,7 @@ public class AnswerMap {
 		if (answer == null)
 			return;
 		AuditQuestion question = answer.getQuestion();
-		AuditData parent = answer.getParentAnswer();
-		if (parent == null)
-			add(question.getId(), answer);
-		else
-			add(question.getId(), parent.getId(), answer);
+		add(question.getId(), answer);
 	}
 
 	public void add(int questionID, int rowID, AuditData answer) {
@@ -173,33 +169,10 @@ public class AnswerMap {
 	 */
 	
 	public void remove( AuditData auditData ) {
-		
-		//1
-		List<AuditQuestion> childQuestions = auditData.getQuestion().getChildQuestions();
-		if( childQuestions != null ) {
-			for( AuditQuestion question : childQuestions ) {
-
-				List<AuditData> children = getAnswerList( question.getId(), auditData.getId());
-				
-				if( children != null ) {
-					for( AuditData child : children ) {
-						remove( child );
-					}
-				}
-				
-			}
-		}
-		
-		
 		//2
 		List<AuditData> possibleMatches = null;
 		
-		if( auditData.getParentAnswer() != null ) {
-			possibleMatches = getDataList(auditData.getQuestion().getId(), auditData.getParentAnswer().getId());
-		}
-		else {
-			possibleMatches = getDataList(auditData.getQuestion().getId(),0);
-		}
+		possibleMatches = getDataList(auditData.getQuestion().getId(),0);
 		
 		for( Iterator<AuditData> iterator = possibleMatches.iterator(); iterator.hasNext();) {
 			AuditData possible = iterator.next();

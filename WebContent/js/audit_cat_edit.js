@@ -8,13 +8,11 @@ function changeButton(button, checked) {
 	$(button).disabled = !checked;
 }
 
-function verifyAnswer(questionid, answerid, parentid) {
+function verifyAnswer(questionid, answerid) {
 	if (catDataID == 0) return;
-	if (parentid == null || parentid == '')
-		parentid = 0;
-	
+
 	var pars = 'auditData.audit.id='+auditID+'&catDataID='+catDataID+'&auditData.question.id=' + questionid 
-	+ '&auditData.id='+answerid+'&auditData.parentAnswer.id='+parentid+'&toggleVerify=true';
+	+ '&auditData.id='+answerid+'&toggleVerify=true';
 	
 	var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
 	{
@@ -47,27 +45,16 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 
 	var	answerid = $(divId + '_answerID').value;
 	var	questionid = $(divId + '_questionID').value;
-	var	parentid = $(divId + '_parentAnswerID').value;
-	var	allowMultiple = $(divId + '_multiple').value;
 	
-	var divName = 'node_'+parentid+'_'+questionid;
+	var divName = 'node_'+questionid;
 	var pars = 'catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
 	
 	if (answerid > 0) {
 		pars += '&auditData.id='+answerid;
-		if (allowMultiple == 'true')
-			divName = 'node_'+answerid+'_'+questionid;
-	} else {
-		if (allowMultiple == 'true') {
-			// This is adding a new tuple, we may just want to call
-			// addTuple(questionid)
-			return;
-		}
-		pars += '&auditData.question.id=' + questionid;
-		if (parentid > 0)
-			pars += '&auditData.parentAnswer.id=' + parentid;
 	}
-
+	else {
+		pars += '&auditData.question.id=' + questionid;
+	}	
 	if (answerElm != null) {
 		var thevalue = '';
 		if( answerElm.type == 'checkbox') {
@@ -128,24 +115,17 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 
 function reloadQuestion(divId, answerid) {
 	if (catDataID == 0) return;
-	
 	var	questionid = $(divId + '_questionID').value;
-	var	parentid = $(divId + '_parentAnswerID').value;
-	var	allowMultiple = $(divId + '_multiple').value;
 
-	var divName = 'node_'+parentid+'_'+questionid;
+	var divName = 'node_'+questionid;
 	var pars = 'button=reload&catDataID='+catDataID+'&auditData.audit.id='+auditID+'&mode='+mode;
 
 	if (answerid > 0) {
 		pars += '&auditData.id='+answerid;
-		if (allowMultiple == 'true')
-			divName = 'node_'+answerid+'_'+questionid;
-	} else {
-		pars += '&auditData.question.id=' + questionid;
-		if (parentid > 0)
-			pars += '&auditData.parentAnswer.id=' + parentid;
 	}
-	
+	else {
+		pars += '&auditData.question.id=' + questionid;	
+	}
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
 	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
 	{
@@ -162,45 +142,8 @@ function reloadQuestion(divId, answerid) {
 
 }
 
-function addTuple(questionid, elm) {
-	var thevalue = escape(elm.value);
-	startThinking({div:'thinking_q' + questionid, message: "Adding Answer Group"});
-
-	var pars = 'button=addTuple&catDataID='+catDataID+'&auditData.audit.id='+auditID+'&auditData.question.id=' + questionid + '&auditData.answer=' + thevalue;
-	var myAjax = new Ajax.Updater('tuple_' + questionid, 'AuditDataSaveAjax.action', 
-	{
-		method: 'post', 
-		parameters: pars,
-		onException: function(request, exception) {
-			alert(exception.message);
-		},
-		onSuccess: function(transport) {
-			if (transport.status == 200)
-				new Effect.Highlight($('tuple_' + questionid),{duration: 0.75, startcolor:'#FFFF11'});
-			else
-				alert("Failed to save answer" + transport.statusText + transport.responseText);
-		}
-	});
-}
-
-function removeTuple(answerid) {
-	var divName = 'node_tuple_'+answerid;
-	
-	startThinking({div:'thinking_a' + answerid, message: "Removing Answer Group"});
-	
-	var pars = 'button=removeTuple&catDataID='+catDataID+'&auditData.id=' + answerid;
-	var myAjax = new Ajax.Updater(divName, 'AuditDataSaveAjax.action', 
-	{
-		method: 'post', 
-		parameters: pars
-	});
-}
-
-function showFileUpload(answerid, questionid, parentid, divId) {
-	if (parentid == null || parentid == '')
-		parentid = 0;
-	
-	url = 'AuditDataUpload.action?auditID='+auditID+'&answer.question.id=' + questionid+'&answer.parentAnswer.id=' + parentid + '&divId=' + divId;
+function showFileUpload(answerid, questionid, divId) {
+	url = 'AuditDataUpload.action?auditID='+auditID+'&answer.question.id=' + questionid+'&divId=' + divId;
 	title = 'Upload';
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);

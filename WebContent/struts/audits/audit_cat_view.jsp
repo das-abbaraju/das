@@ -5,12 +5,7 @@
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
 	<s:if test="#q.isRequired == 'Depends' && #q.dependsOnQuestion.id > 0">
-		<s:if test="#parentAnswer == null">
-			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
-		</s:if>
-		<s:else>
-			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id, #parentAnswer.id)" />
-		</s:else>
+		<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
 		<s:if test="(#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')) || (#dependsAnswer == null) || (#q.dependsOnAnswer == #dependsAnswer.answer)">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>

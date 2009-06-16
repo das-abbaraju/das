@@ -53,7 +53,6 @@ public class AuditQuestionDAOTest {
 		auditquestion.setLinkText6("test1");
 		auditquestion.setEffectiveDate(new Date());
 		auditquestion.setExpirationDate(new Date());
-		auditquestion.setAllowMultipleAnswers(true);
 		auditquestion.setIsRedFlagQuestion(YesNo.No);
 		auditquestion.setAuditColumns(new User(941));
 		

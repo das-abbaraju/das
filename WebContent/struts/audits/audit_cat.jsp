@@ -97,7 +97,6 @@ label.policy {
 							</s:if>
 						</s:if>
 						<s:iterator value="questions">
-							<s:if test="parentQuestion == null">
 								<s:if test="title != null && title.length() > 0">
 									<h4 class="groupTitle">
 										<s:property value="title" escape="false"/>
@@ -111,13 +110,6 @@ label.policy {
 								
 								<s:if test="valid">
 									<s:set name="q" value="[0]" />
-									<s:if test="#q.allowMultipleAnswers">
-										<!-- Tuple Anchor Question -->
-										<div id="tuple_<s:property value="#q.id"/>">
-											<s:include value="audit_cat_tuples.jsp"></s:include>
-										</div>
-									</s:if>
-									<s:else>
 										<!-- Single Leaf Question -->
 										<s:set name="a" value="answerMap.get(#q.id)" />
 										<s:set name="visible" value="#q.visible" />
@@ -131,21 +123,11 @@ label.policy {
 											<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
 												<s:set name="shaded" value="!#shaded" scope="action"/>
 											</s:if>
-	
-											<s:if test="#a.parentAnswer != null">
-												<s:set name="paid" value="#a.parentAnswer.id"/>
-											</s:if>
-											<s:else>
-												<s:set name="paid" value="0"/>
-											</s:else>
-											
-											<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
+											<div id="node_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
 												<s:include value="audit_cat_question.jsp"></s:include>
 											</div>
 										</s:if>
-									</s:else>
 								</s:if>
-							</s:if>
 						</s:iterator>
 					</div>
 				</s:iterator>

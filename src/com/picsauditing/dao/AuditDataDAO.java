@@ -116,7 +116,7 @@ public class AuditDataDAO extends PicsDAO {
 	
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
 		try {
-			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id = ? AND parentAnswer IS NULL");
+			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id = ? ");
 			query.setParameter(1, auditId);
 			query.setParameter(2, questionId);
 			return (AuditData) query.getSingleResult();
@@ -125,21 +125,6 @@ public class AuditDataDAO extends PicsDAO {
 		}
 	}
 	
-	public AuditData findAnswerToQuestion(int auditId, int questionId, int parentId) {
-		if (parentId == 0)
-			return findAnswerToQuestion(auditId, questionId);
-		
-		try {
-			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id = ? AND parentAnswer.id = ? ");
-			query.setParameter(1, auditId);
-			query.setParameter(2, questionId);
-			query.setParameter(3, parentId);
-			return (AuditData) query.getSingleResult();
-		} catch (NoResultException e) {
-			return null;
-		}
-	}
-
 	/**
 	 * Get a list of questions that must be verified for this audit.
 	 * 

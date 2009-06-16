@@ -57,141 +57,70 @@ public class AuditPercentCalculator {
 		}
 		// Get a map of all answers in this audit
 		AnswerMap answers = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
-		//System.out.println(answers);
+		// System.out.println(answers);
 
 		@SuppressWarnings("serial")
-		Map<String, Integer> scoreMap = new HashMap<String, Integer>() {{
-			put("Red", 0);
-			put("Yellow", 1);
-			put("Green", 2);
-		}};
-		
+		Map<String, Integer> scoreMap = new HashMap<String, Integer>() {
+			{
+				put("Red", 0);
+				put("Yellow", 1);
+				put("Green", 2);
+			}
+		};
+
 		// Get a list of questions/answers for this category
 		Date validDate = catData.getAudit().getValidDate();
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
-				if (validDate.after(question.getEffectiveDate())
-						&& validDate.before(question.getExpirationDate())) {
-					
+				if (validDate.after(question.getEffectiveDate()) && validDate.before(question.getExpirationDate())) {
+
 					boolean isRequired = false;
-					
-					if (question.isAllowMultipleAnswers()) {
-						//List<AuditData> answer = answers.getAnswerList(question.getId());
-						AuditData answer = answers.get(question.getId(), question.getId());
-						// Only require the tuple if at least one minimum tuple is required
-						isRequired = question.getMinimumTuples() > 0;
-						if (isRequired)
-							requiredCount++;
-						
-						if (answer != null) {
-							if (answer.isAnswered()) {
-								
-								if( "Radio".equals(question.getQuestionType() ) ) {
-									Integer tempScore = scoreMap.get(answer.getAnswer());
-									score += tempScore != null ? tempScore: -1000;
-								}
-								
-								answeredCount++;
-								if (isRequired)
-									requiredAnsweredCount++;
-							}
-							if (answer.getQuestion().isHasRequirementB()) {
-								if (answer.isOK())
-									verifiedCount++;
-							} else {
-								if (answer.isVerified())
-									verifiedCount++;
-							}
-						}
 
-					} else if (question.getParentQuestion() == null) {
-						AuditData answer = answers.get(question.getId());
-						// This question isn't part of a tuple
-						isRequired = "Yes".equals(question.getIsRequired());
-						if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null && question.getDependsOnAnswer() != null) {
-							if(question.getDependsOnAnswer().equals("NULL")) {
-								AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
-								if (otherAnswer == null)
-									isRequired = true;
-							} else {
-							// This question is dependent on another question's answer
-							// Use the parentAnswer, so we get answers in the same tuple as this one
+					AuditData answer = answers.get(question.getId());
+					// This question isn't part of a tuple
+					isRequired = "Yes".equals(question.getIsRequired());
+					if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null
+							&& question.getDependsOnAnswer() != null) {
+						if (question.getDependsOnAnswer().equals("NULL")) {
 							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
-							if (otherAnswer != null 
-									&& question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+							if (otherAnswer == null)
 								isRequired = true;
-							}
-						}
-						if (isRequired)
-							requiredCount++;
-						
-						if (answer != null) {
-							if (answer.isAnswered()) {
-								
-								if( "Radio".equals(question.getQuestionType() ) ) {
-									Integer tempScore = scoreMap.get(answer.getAnswer());
-									score += tempScore != null ? tempScore: -1000;
-								}
-								
-								answeredCount++;
-								if (isRequired)
-									requiredAnsweredCount++;
-							}
-							
-							if (answer.getQuestion().isHasRequirementB()) {
-								if (answer.isOK())
-									verifiedCount++;
-							} else {
-								if (answer.isVerified())
-									verifiedCount++;
-							}
-						}
-
-					} else {
-						// This must be part of a tuple
-						AuditQuestion parentQuestion = question.getParentQuestion();
-						for(AuditData rowAnchor : answers.getAnswerList(parentQuestion.getId())) {
-							// For each tuple, see if this question is required and filled in
-							AuditData answer = answers.get(question, rowAnchor);
-							
-							isRequired = "Yes".equals(question.getIsRequired());
-							if ("Depends".equals(question.getIsRequired())
-									&& question.getDependsOnQuestion() != null 
-									&& question.getDependsOnAnswer() != null) {
-								// This question is dependent on another question's answer
-								// Use the parentAnswer, so we get answers in the same tuple as this one
-								AuditData otherAnswer = answers.get(question.getDependsOnQuestion(), rowAnchor);
-								
-								if (otherAnswer != null && question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
-									isRequired = true;
-							}
-							if (isRequired)
-								requiredCount++;
-
-							if (answer != null) {
-								if (answer.isAnswered()) {
-									
-									if( "Radio".equals(question.getQuestionType() ) ) {
-										Integer tempScore = scoreMap.get(answer.getAnswer());
-										score += tempScore != null ? tempScore: -1000;
-									}
-									
-									answeredCount++;
-									if (isRequired)
-										requiredAnsweredCount++;
-								}
-								if (answer.getQuestion().isHasRequirementB()) {
-									if (answer.isOK())
-										verifiedCount++;
-								} else {
-									if (answer.isVerified())
-										verifiedCount++;
-								}
-							}
+						} else {
+							// This question is dependent on another question's
+							// answer
+							// Use the parentAnswer, so we get answers in the
+							// same tuple as this one
+							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+							if (otherAnswer != null && question.getDependsOnAnswer().equals(otherAnswer.getAnswer()))
+								isRequired = true;
 						}
 					}
-					
-					if( "Radio".equals(question.getQuestionType() ) ) {
+					if (isRequired)
+						requiredCount++;
+
+					if (answer != null) {
+						if (answer.isAnswered()) {
+
+							if ("Radio".equals(question.getQuestionType())) {
+								Integer tempScore = scoreMap.get(answer.getAnswer());
+								score += tempScore != null ? tempScore : -1000;
+							}
+
+							answeredCount++;
+							if (isRequired)
+								requiredAnsweredCount++;
+						}
+
+						if (answer.getQuestion().isHasRequirementB()) {
+							if (answer.isOK())
+								verifiedCount++;
+						} else {
+							if (answer.isVerified())
+								verifiedCount++;
+						}
+					}
+
+					if ("Radio".equals(question.getQuestionType())) {
 						scoreCount++;
 					}
 				}
@@ -206,10 +135,10 @@ public class AuditPercentCalculator {
 			int percentCompleted = (int) Math.floor((100 * requiredAnsweredCount) / requiredCount);
 			if (percentCompleted >= 100)
 				percentCompleted = 100;
-			if(catData.getAudit().getAuditType().isAnnualAddendum() 
+			if (catData.getAudit().getAuditType().isAnnualAddendum()
 					&& catData.getAudit().getAuditStatus().isSubmitted()
 					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
-				requiredCount =  requiredCount - 2;
+				requiredCount = requiredCount - 2;
 			}
 			int percentVerified = (int) Math.floor((100 * verifiedCount) / requiredCount);
 			if (percentVerified >= 100)
@@ -220,16 +149,16 @@ public class AuditPercentCalculator {
 			catData.setPercentCompleted(100);
 			catData.setPercentVerified(100);
 		}
-		
-		if( scoreCount > 0 ) {
-			float scoreAverage = (float) score/ (float) scoreCount;
-			catData.setScore( scoreAverage );
+
+		if (scoreCount > 0) {
+			float scoreAverage = (float) score / (float) scoreCount;
+			catData.setScore(scoreAverage);
 			catData.setScoreCount(scoreCount);
 		}
-		
+
 		catDataDao.save(catData);
 	}
-	
+
 	public void percentCalculateComplete(ContractorAudit conAudit) {
 		percentCalculateComplete(conAudit, false);
 	}
@@ -238,7 +167,7 @@ public class AuditPercentCalculator {
 		int required = 0;
 		int answered = 0;
 		int verified = 0;
-		
+
 		int scoreCount = 0;
 		float runningScore = 0;
 
@@ -253,21 +182,20 @@ public class AuditPercentCalculator {
 				required += data.getNumRequired();
 				answered += data.getRequiredCompleted();
 				verified += (int) Math.round(data.getNumRequired() * data.getPercentVerified() / 100);
-				
-				if( data.getScoreCount() > 0 ) {
+
+				if (data.getScoreCount() > 0) {
 					scoreCount += data.getScoreCount();
 					runningScore += (data.getScore() * data.getScoreCount());
 				}
 			}
 		}
-		
-		if( scoreCount > 0 ) {
-			conAudit.setScore( runningScore / (float) scoreCount);
+
+		if (scoreCount > 0) {
+			conAudit.setScore(runningScore / (float) scoreCount);
+		} else {
+			conAudit.setScore(-1);
 		}
-		else {
-			conAudit.setScore( -1 );
-		}
-		
+
 		int percentComplete = 0;
 		int percentVerified = 0;
 		if (required > 0) {
@@ -293,10 +221,9 @@ public class AuditPercentCalculator {
 					verifiedTotal++;
 				}
 				conAudit.setPercentVerified(Math.round((float) (100 * verified) / verifiedTotal));
-			}
-			else
+			} else
 				conAudit.setPercentVerified(percentVerified);
-		}	
+		}
 	}
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
@@ -334,20 +261,19 @@ public class AuditPercentCalculator {
 			}
 
 		}
-		if (osha.getType().equals(OshaType.MSHA) 
-				|| osha.getType().equals(OshaType.COHS)) {
+		if (osha.getType().equals(OshaType.MSHA) || osha.getType().equals(OshaType.COHS)) {
 			numRequired = 1;
 			if (osha.getManHours() > 0)
 				count++;
 			percentComplete = Math.round(count * 100);
-			if(percentComplete == 100)
+			if (percentComplete == 100)
 				catData.setPercentVerified(100);
 		}
-		
+
 		catData.setRequiredCompleted(count);
 		catData.setNumRequired(numRequired);
 		catData.setPercentCompleted(percentComplete);
-		
+
 		catDataDao.save(catData);
 	}
 }

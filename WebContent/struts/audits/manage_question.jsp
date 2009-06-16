@@ -149,15 +149,5 @@
 	</fieldset>
 </s:form>
 
-<s:if test="question.allowMultipleAnswers">
-	<h2>Child Questions included in Tuple</h2>
-	<ol>
-		<li><s:property value="question.question"/></li>
-	<s:iterator value="question.childQuestions">
-		<li><a href="?id=<s:property value="id"/>"><s:property value="question"/></a></li>
-	</s:iterator>
-	</ol>
-</s:if>
-
-</body>
+<body>
 </html>

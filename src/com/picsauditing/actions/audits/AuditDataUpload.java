@@ -1,8 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.NoResultException;
 
@@ -44,25 +42,6 @@ public class AuditDataUpload extends AuditActionSupport {
 		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
-	public List<AuditData> getFileList() {
-		List<AuditData> temp = auditDataDao
-				.findAnswersByContractorAndUniqueCode(conAudit
-						.getContractorAccount().getId(), "policyFile");
-		List<AuditData> results = new ArrayList<AuditData>();
-		
-		for (AuditData ad : temp) {
-			if (ad.getParentAnswer() == null) {
-				ad.setParentAnswer(new AuditData());
-				ad.getParentAnswer().setAnswer("All");
-			}
-			if (ad.getAudit().getId() != this.auditID) {
-				results.add(ad);
-			}
-		}
-
-		return results;
-	}
-
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -75,7 +54,6 @@ public class AuditDataUpload extends AuditActionSupport {
 
 		int dataID = answer.getId();
 		int questionID = 0;
-		int parentAnswerID = 0;
 		if (answer.getQuestion() != null)
 			questionID = answer.getQuestion().getId();
 
@@ -86,11 +64,7 @@ public class AuditDataUpload extends AuditActionSupport {
 				answer = auditDataDao.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				if (answer.getParentAnswer() != null)
-					parentAnswerID = answer.getParentAnswer().getId();
-
-				answer = auditDataDao.findAnswerToQuestion(auditID, questionID,
-						parentAnswerID);
+				answer = auditDataDao.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
@@ -99,10 +73,6 @@ public class AuditDataUpload extends AuditActionSupport {
 			dataID = 0;
 			answer = new AuditData();
 			answer.setAudit(conAudit);
-			if (parentAnswerID > 0) {
-				answer.setParentAnswer(new AuditData());
-				answer.getParentAnswer().setId(parentAnswerID);
-			}
 			AuditQuestion question = null;
 			if (questionID > 0)
 				question = questionDAO.find(questionID);

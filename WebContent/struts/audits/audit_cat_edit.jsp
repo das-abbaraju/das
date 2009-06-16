@@ -3,21 +3,8 @@
 	<s:set name="divID" value="'a'+#a.id" />
 </s:if>
 <s:else>
-	<s:if test="#parentAnswer.id > 0">
-		<s:set name="divID" value="'q'+#q.id + 'p'+#parentAnswer.id" />
-	</s:if>
-	<s:else>
-		<s:set name="divID" value="'q'+#q.id" />
-	</s:else>
+	<s:set name="divID" value="'q'+#q.id" />
 </s:else>
-
-<s:if test="#q.allowMultipleAnswers">
-	<h4 class="groupTitle"><s:property value="#a.answer"/></h4>
-	<s:if test="#a.id > 0">
-		<a href="javascript: removeTuple(<s:property value="#a.id"/>);" class="remove right" 
-			style="font-size: 14px; font-weight: normal; text-decoration: none; position: relative; top: 5px;">Remove</a>
-	</s:if>
-</s:if>
 
 <div class="thinking" id="thinking_<s:property value="#divID"/>"></div>
 
@@ -27,19 +14,11 @@
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
 	<s:if test="#q.isRequired == 'Depends' && #q.dependsOnQuestion.id > 0">
-		<s:if test="#parentAnswer == null">
-			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
-		</s:if>
-		<s:else>
-			<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id, #parentAnswer.id)" />
-		</s:else>
+		<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
 		<s:if test="(#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')) || (#dependsAnswer == null) || (#q.dependsOnAnswer == #dependsAnswer.answer)">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>
 	</s:if>
-</s:if>
-<s:if test="#q.allowMultipleAnswers">
-	<s:set name="questionStillRequired" value="false" />
 </s:if>
 
 <s:if test="questionStillRequired">
@@ -68,14 +47,6 @@
 	<input type="hidden" id="<s:property value="#divID"/>_answerID" value="<s:property value="#a.id"/>" />
 	<input type="hidden" id="<s:property value="#divID"/>_questionID" value="<s:property value="#q.id"/>" />
 	
-	<s:if test="#parentAnswer != null && #parentAnswer.id != null">
-		<input type="hidden" id="<s:property value="#divID"/>_parentAnswerID" value="<s:property value="#parentAnswer.id"/>" />
-	</s:if>
-	<s:else>
-		<input type="hidden" id="<s:property value="#divID"/>_parentAnswerID" value="0" />
-	</s:else>
-	
-	<input type="hidden" id="<s:property value="#divID"/>_multiple" value="<s:property value="#q.allowMultipleAnswers"/>" />
 	<s:if test="#q.questionType == 'Text Area'">
 		<s:textarea cols="70" rows="4" name="answer%{#divID}" value="%{#a.answer}" cssStyle="margin-left: 80px; width: 100%;"
 			onchange="saveAnswer('%{#divID}', this);">
@@ -184,7 +155,6 @@
 				value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" 
 				onclick="showFileUpload('<s:property value="#a.id"/>', 
 					'<s:property value="#q.id"/>', 
-					'<s:property value="#parentAnswer.id"/>', 
 					'<s:property value="#divID"/>');"
 				title="Opens in new window (please disable your popup blocker)" />
 		</nobr>
@@ -232,7 +202,7 @@
 		<s:set name="verifyDetailDisplay" value="'none'" />
 	</s:else>
 	
-	<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>, '<s:property value="#parentAnswer.id"/>');"
+	<input id="verifyButton_<s:property value="#q.id"/>" type="submit" onclick="return verifyAnswer(<s:property value="#q.id"/>, <s:property value="#a.id"/>);"
 	value="<s:property value="#attr.verifyText"/>" />
 
 	<span id="verify_details_<s:property value="#q.id"/>"

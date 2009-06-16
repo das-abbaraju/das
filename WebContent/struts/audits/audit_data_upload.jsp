@@ -42,19 +42,9 @@ function closePage() {
 	<s:hidden name="auditID" />
 	<s:hidden name="divId" />
 	<s:hidden name="answer.question.id" />
-	<s:hidden name="answer.parentAnswer.id" />
 	<br />
 	<s:file name="file" size="50"></s:file>
 	<br />
-	<s:if test="conAudit.auditType.classType.policy">
-		<s:if test="fileList.size != 0">
-		OR <br />
-			<s:select id="copyList" name="copyDataID" list="fileList"
-				listKey="id"
-				listValue="audit.auditType.auditName.concat(' for ').concat(parentAnswer.answer).concat(' effective ').concat(@com.picsauditing.PICS.DateBean@toShowFormat(audit.effectiveDate))"
-				headerKey="0" headerValue=" - Copy From Another File - " />
-		</s:if>
-	</s:if>
 
 	<div class="buttons"><a href="javascript: closePage();">Close
 	and Return to Form</a> <s:if test="file != null && file.exists()">
@@ -68,7 +58,7 @@ function closePage() {
 </s:form> <br clear="all" />
 <s:if test="file != null && file.exists()">
 	<div><a
-		href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>&answer.parentAnswer.id=<s:property value="answer.parentAnswer.id"/>"
+		href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
 		target="_BLANK">Open Existing <s:property value="fileSize" />
 	File</a></div>
 </s:if></div>
