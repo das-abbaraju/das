@@ -62,7 +62,7 @@ input[type=submit] {
 
 					<div id="toolbox" class="noprint" />
 					<ul>
-						<li><a class="view" href="PaymentDetail.action?invoice.id=<s:property value="invoice.id"/>">Pay</a></li>
+						<li><a class="pay" href="PaymentDetail.action?invoice.id=<s:property value="invoice.id"/>">Pay</a></li>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
 								<li><a class="save" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Save">Save</a></li>
@@ -73,7 +73,7 @@ input[type=submit] {
 									href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"><s:if
 									test="edit">View</s:if><s:else>Edit</s:else></a></li>
 								<pics:permission perm="Billing" type="Delete">
-									<li><a class="remove"
+									<li><a class="void"
 										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
 								</pics:permission>
 							</s:else>
