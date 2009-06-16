@@ -79,6 +79,7 @@ public class ContractorAccount extends Account {
 	private InvoiceFee membershipLevel;
 	private InvoiceFee newMembershipLevel;
 	private List<Invoice> invoices = new ArrayList<Invoice>();
+	private List<Payment> payments = new ArrayList<Payment>();
 
 	private boolean needsRecalculation;
 	private Date lastRecalculation;
@@ -768,6 +769,16 @@ public class ContractorAccount extends Account {
 
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
+	}
+
+	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+	@Where(clause = "tableType='P'")
+	public List<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(List<Payment> payments) {
+		this.payments = payments;
 	}
 
 	/**

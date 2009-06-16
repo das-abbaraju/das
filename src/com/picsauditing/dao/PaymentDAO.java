@@ -34,6 +34,12 @@ public class PaymentDAO extends PicsDAO {
 		}
 	}
 
+	public void remove(InvoicePayment row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+	
 	public Payment find(int id) {
 		return em.find(Payment.class, id);
 	}
@@ -58,15 +64,34 @@ public class PaymentDAO extends PicsDAO {
 		ip.setPayment(payment);
 		ip.setAmount(amount);
 		ip.setAuditColumns(user);
+		em.merge(ip);
 
 		payment.getInvoices().add(ip);
 		payment.updateAmountApplied();
-		save(payment);
 
-		invoice.getPayments();
+		invoice.getPayments().add(ip);
 		invoice.updateAmountApplied();
 
+		em.merge(payment);
+		em.merge(invoice);
 		return true;
+	}
+	
+	public void removePayment(InvoicePayment ip, User user) {
+		if (ip == null)
+			return;
+		Payment payment = ip.getPayment();
+		Invoice invoice = ip.getInvoice();
+		
+		payment.getInvoices().remove(ip);
+		invoice.getPayments().remove(ip);
+		em.remove(ip);
+		
+		payment.updateAmountApplied();
+		invoice.updateAmountApplied();
+		
+		em.merge(payment);
+		em.merge(invoice);
 	}
 
 }

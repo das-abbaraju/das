@@ -56,6 +56,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Invoice invoice;
+	private int paymentID = 0;
 
 	private List<InvoiceFee> feeList = null;
 
@@ -123,6 +124,26 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				}
 
 			} else {
+				if (button.startsWith("unapplyPayment") && paymentID > 0) {
+					InvoicePayment ip = null;
+					for(InvoicePayment ip2 : invoice.getPayments()) {
+						if (ip2.getPayment().getId() == paymentID)
+							ip = ip2;
+					}
+					paymentDAO.removePayment(ip, getUser());
+				}
+				if (button.startsWith("Apply Existing Credit")) {
+					for(Payment payment : contractor.getPayments()) {
+						if (payment.getId() == paymentID && payment.getStatus().isUnpaid()) {
+							BigDecimal amount = null;
+							if (invoice.getBalance().compareTo(payment.getBalance()) > 0)
+								amount = payment.getBalance();
+							else
+								amount = invoice.getBalance();
+							paymentDAO.applyPayment(payment, invoice, getUser(), amount);
+						}
+					}
+				}
 				if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
 					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -150,11 +171,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					payment.setCheckNumber(checkNumber);
 					applyPayment(payment);
 					addNote("Received check and emailed the receipt for $" + payment.getTotalAmount());
-				}
-				if (button.startsWith("Mark Paid")) {
-					invoice.markPaid(getUser());
-					invoiceDAO.save(invoice);
-					addNote("Marked invoice paid with amount " + invoice.getTotalAmount() + ". No payment");
 				}
 				if (button.startsWith("Email")) {
 					try {
@@ -404,6 +420,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public void setCheckNumber(String checkNumber) {
 		this.checkNumber = checkNumber;
+	}
+
+	public int getPaymentID() {
+		return paymentID;
+	}
+
+	public void setPaymentID(int paymentID) {
+		this.paymentID = paymentID;
 	}
 
 }

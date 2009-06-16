@@ -19,6 +19,7 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -103,6 +104,19 @@ public class BillingDetail extends ContractorActionSupport {
 			AppProperty prop = appPropDao.find("invoice_comment");
 			if (prop != null) {
 				notes = prop.getValue();
+			}
+			// Add the list of operators if this invoice has a membership level on it
+			boolean hasMembership = false;
+			for(InvoiceItem item : invoiceItems) {
+				if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+					hasMembership = true;
+			}
+			if (hasMembership) {
+				notes += " You are listed on the following operator list(s): ";
+				for(ContractorOperator co : contractor.getOperators()) {
+					notes += co.getOperatorAccount().getName() + ", ";
+				}
+				notes = notes.substring(0, notes.length() - 2);
 			}
 			invoice.setNotes(notes);
 

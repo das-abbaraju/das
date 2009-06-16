@@ -104,17 +104,15 @@
 			</fieldset>
 		</s:if>
 			<div class="clear"></div>
-			<h3 style="margin-top: 50px">Past Invoices/Payments</h3>
+			<h3 style="margin-top: 50px">Transaction History</h3>
 			<table class="report">
 				<thead>
 					<tr>
 						<th>Transaction</th>
 						<th>#</th>
-						<th>Date Created</th>
+						<th>Date</th>
 						<th>Amount</th>
-						<th>Due Date</th>
-						<th>Date Paid</th>
-						<th>Paid</th>
+						<th>Status</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -133,9 +131,18 @@
 							</td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
-							<td class="right"><s:date name="dueDate" format="M/d/yy" /></td>
-							<td class="right"><s:date name="paidDate" format="M/d/yy" /></td>
-							<td class="right"><s:property value="status"/></td>
+							<td><s:property value="status"/></td>
+						</tr>
+					</s:iterator>
+					<s:iterator value="payments">
+						<tr style="cursor: pointer;"
+							onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
+							<td>Payment</td>
+							<td class="<s:if test="status.void"> ? inactive : center</s:if>"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property
+								value="id" /></a></td>
+							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
+							<td class="right">$<s:property value="totalAmount" /></td>
+							<td></td>
 						</tr>
 					</s:iterator>
 				</tbody>
