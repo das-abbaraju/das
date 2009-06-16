@@ -95,16 +95,19 @@ public class UserSave extends UsersManage {
 		if ("Delete".equalsIgnoreCase(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 			String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
-			if(!userDAO.canRemoveUser("ContractorAudit", user.getId())) {
+			if(!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
 				addActionMessage(message);
 			} 
-			else if(!userDAO.canRemoveUser("ContractorAuditOperator", user.getId())) {
+			else if(!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
 				addActionMessage(message);
 			}
-			else if(!userDAO.canRemoveUser("AuditData", user.getId())) {
+			else if(!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
 				addActionMessage(message);
 			}
-			else if(!userDAO.canRemoveUser("ContractorOperator", user.getId())) {
+			else if(!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
+				addActionMessage(message);
+			}
+			else if(!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
 				addActionMessage(message);
 			}
 			else {

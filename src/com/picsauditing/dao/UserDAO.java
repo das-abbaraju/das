@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.jboss.util.Strings;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.User;
@@ -137,9 +138,11 @@ public class UserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	public boolean canRemoveUser(String table, int userID) {
+	public boolean canRemoveUser(String table, int userID, String where) {
+		if(where == null)
+			where = "t.updatedBy.id = :userID OR t.createdBy.id = :userID";
 		try {
-			Query query = em.createQuery("SELECT t FROM "+ table +" t WHERE t.updatedBy.id = :userID OR t.createdBy.id = :userID");
+			Query query = em.createQuery("SELECT t FROM "+ table +" t WHERE " + where);
 			query.setParameter("userID", userID);
 			query.setMaxResults(1);
 			query.getSingleResult();
