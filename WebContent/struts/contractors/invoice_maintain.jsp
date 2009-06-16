@@ -51,7 +51,7 @@
 			<s:textfield name="invoice.items[%{#item.index}].paymentExpires"/></li>
 		<li><label>Description:</label>
 			<s:textfield name="invoice.items[%{#item.index}].description" value="%{description}"/></li>
-		<li><label>Remove</label><s:checkbox name="removeMap[%{id}]"/></li>
+		<li><label>Remove:</label><s:checkbox name="removeMap[%{id}]"/></li>
 	</ol>
 </fieldset>
 </s:iterator>
