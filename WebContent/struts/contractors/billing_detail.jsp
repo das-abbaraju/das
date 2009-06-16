@@ -118,13 +118,16 @@
 				<tbody>
 					<s:iterator value="transactions">
 						<tr 
-							<s:if test="class.simpleName.equals('Invoice')">style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>>
+							<s:if test="class.simpleName.equals('Invoice')">style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>
+							<s:elseif test="class.simpleName.equals('Payment')">style="cursor: pointer;" onclick="window.location = 'PaymentDetail.action?payment.id=<s:property value="id"/>'"</s:elseif>>
 							<td><s:property value="class.simpleName"/></td>
 							<td class="<s:if test="status.void"> ? inactive : center</s:if>">
 								<s:if test="class.simpleName.equals('Invoice')">
-									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property
-									value="id" /></a>
+									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a>
 								</s:if>
+								<s:elseif test="class.simpleName.equals('Payment')">
+									<a href="PaymentDetail.action?payment.id=<s:property value="id"/>"><s:property value="id" /></a>
+								</s:elseif>
 								<s:else>
 									<s:property value="id"/>
 								</s:else>
