@@ -57,27 +57,34 @@ input[type=submit] {
 							<td class="center"><s:property value="invoice.id" /></td>
 						</tr>
 					</table>
-
-					<div class="center"><s:if test="!permissions.contractor">
+					
+					<div id="toolbox"/>
+					<div class="center">
+					<ul>
+					<s:if test="!permissions.contractor">
 						<s:if test="invoice.status.unpaid">
 							<pics:permission perm="Billing" type="Delete">
-								<input type="submit" class="picsbutton negative" name="button" value="Cancel Invoice" />
+								<li><input type="submit" class="delete" name="button" value="Cancel Invoice" /></li>
 							</pics:permission>
-							<a class="edit noprint"
+							<li><a class="edit noprint"
 								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"> <s:if
-								test="edit">View</s:if> <s:else>Edit</s:else> </a>
+								test="edit">View</s:if> <s:else>Edit</s:else> </a></li>
 						</s:if>
-					</s:if> <a class="print noprint" href="javascript: window.print();">Print</a> <s:if test="!edit">
+					</s:if><li><a class="print noprint" href="javascript: window.print();">Print</a></li> <s:if test="!edit">
 						<s:if test="invoice.status.paid">
-							<input type="submit" class="picsbutton positive" name="button" value="Email Receipt">
+							<li><input type="submit" class="email" name="button" value="Email Receipt"></li>
 						</s:if>
 						<s:else>
-							<input type="submit" class="picsbutton positive" name="button" value="Email Invoice">
+							<li><input type="submit" class="email" name="button" value="Email Invoice"></li>
 						</s:else>
 					</s:if> <s:if test="edit">
 						<br />
-						<input type="submit" class="picsbutton positive" name="button" value="Save" />
-					</s:if></div>
+						<li><input type="submit" class="save" name="button" value="Save" /></li>
+					</s:if>
+					</ul>
+					</div>
+					<div class="clear"/></div>
+					</div>
 					</td>
 				</tr>
 			</table>
@@ -197,7 +204,7 @@ input[type=submit] {
 								<s:else>Missing Credit Card</s:else>
 							</s:if> <s:else>
 									Check #<s:textfield name="checkNumber" size="8"></s:textfield>
-								<input id="collectCheck" type="submit" class="picsbutton positive" name="button" maxlength="50"
+								<input id="collectCheck" type="submit" class="processcheck" name="button" maxlength="50"
 									value="Collect Check for $<s:property value="invoice.balance" />" />
 							</s:else>
 							<s:iterator value="contractor.payments">
