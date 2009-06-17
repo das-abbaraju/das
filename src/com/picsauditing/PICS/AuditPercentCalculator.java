@@ -136,7 +136,6 @@ public class AuditPercentCalculator {
 			if (percentCompleted >= 100)
 				percentCompleted = 100;
 			if (catData.getAudit().getAuditType().isAnnualAddendum()
-					&& catData.getAudit().getAuditStatus().isSubmitted()
 					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
 				requiredCount = requiredCount - 2;
 			}
