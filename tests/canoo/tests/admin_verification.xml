@@ -15,6 +15,7 @@
 					<invoke url="http://alpha.picsauditing.com/ReportAuditList.action?&amp;filter.auditTypeID=11"/>
 					<clickLink label="Status"/>
 					<setSelectField name="filter.auditStatus" text="Submitted"/>
+					<setSelectField name="filter.auditTypeID" text="Annual Update"/>
 					<setSelectField name="filter.visible" text="Y"/>
 					<clickButton label="Search"/>
 					<sleep seconds="3"/>
