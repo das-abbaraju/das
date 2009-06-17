@@ -202,73 +202,71 @@
 
 /************* Toolbox *************/
 #content #toolbox {
-	background-color: #4686BF;
-	border-top: 1px solid green;
-	border-bottom: 1px solid #003768;
+	background-color: #79A7D0;
+	border-top: 3px solid #4686BF;
+	border-bottom: 3px solid #4686BF;
 	text-align: center;
-	padding-top: 12px;
+	padding-top: 15px;
+	padding-bottom: 3px;
 	margin-top: 7px;
-}
-
-#toolbox li:hover {
-	
+	line-height: 30px;
 }
 
 #toolbox ul {
 	text-align: center;
-	padding: 8px 0 0 0px;
-	margin: 0px auto;
+	padding: 0;
+	margin: 0;
 	display: block;
 	white-space: nowrap;
 }
 
-#toolbox ul li {
+#toolbox li {
 	list-style: none;
 	display: inline;
-	text-align: center;
-	padding: 10px;
-	margin: 0 auto;
-	position: relative;
-	height:40px;
+	margin: 0;
 }
 
 #toolbox a {
 	background-repeat: no-repeat;
-	background-position: top center;
-	text-align: center;
+	background-position: center 3px;
+	background-image: url('../images/default.gif');
+	background-color: #79A7D0;
 	color: #FFFFFF;
-	line-height: 30px;
 	text-decoration: none;
-	margin: 2px;
-	padding: 2px;
-	padding-top: 18px;
-	border:1px solid transparent;
+	font-family: Helvetica, Arial, Verdana, sans-serif;
+	margin: 1px;
+	padding-top: 19px;
+	padding-bottom: 6px;
+	padding-right: 10px;
+	padding-left: 10px;
+	font-weight: bold;
 }
 
-
 #toolbox a:hover {
-	text-decoration: underline;
-	background-color:;
-	border:1px solid transparent;
+	text-decoration: none;
+	background-color: #C4D5E3;
+	font-weight: bold;
+	color: #003768;
 }
 
 #toolbox a.default {
-	background: url('../images/default.gif') no-repeat top center;
+	background-image: url('../images/default.gif');
 }
 
 #toolbox a.save {
 	background-image: url('../images/save.gif');
 }
+
 #toolbox a.exit {
-	background: url('../images/cross.png') no-repeat top center;
+	background-image: url('../images/cross.png');
 }
 
 #toolbox a.edit {
-	background: url('../images/edit_pencil.gif') no-repeat top center;
+	background-image: url('../images/edit_pencil.gif');
 }
 
 #toolbox a.system_edit {
-	background: url('../images/system_edit.gif') no-repeat top center;
+	background-image: url('../images/system_edit.gif');
 }
 
 #toolbox a.email {
@@ -288,17 +286,17 @@
 }
 
 #toolbox a.pay {
-	background: url('../images/visa.gif') no-repeat top center;
+	background-image: url('../images/visa.gif');
 }
 
 #toolbox a.upgrade {
-	background: url('../images/upgrade.gif') no-repeat top center;
+	background-image: url('../images/upgrade.gif');
 }
 
 #toolbox a.void {
-	background: url('../images/void.gif') no-repeat top center;
+	background-image: url('../images/void.gif');
 }
 
 #toolbox a.preview {
-	background: url('../images/preview.gif') no-repeat top center;
+	background-image: url('../images/preview.gif');
 }

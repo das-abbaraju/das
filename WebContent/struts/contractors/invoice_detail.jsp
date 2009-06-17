@@ -189,8 +189,6 @@ input[type=submit] {
 							Check #<s:property value="payment.checkNumber" />
 						</s:if>
 						<s:date name="payment.creationDate" format="MMM d, yyyy" />
-						<a
-							href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=unapplyPayment&paymentID=<s:property value="payment.id" />">X</a>
 						<br />
 						<span class="big">($<s:property value="amount" />) USD</span>
 						<br />

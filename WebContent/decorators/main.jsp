@@ -19,7 +19,7 @@
 <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" title="bluemenu"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" />
 <script src="js/chrome.js" type="text/javascript" ></script>
 <script src="js/pics_main.js" type="text/javascript" ></script>
 <script src="js/notes.js" type="text/javascript"></script>
