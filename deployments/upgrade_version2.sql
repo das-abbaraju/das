@@ -18,6 +18,44 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 
+
+-- DROP table pqfdata_duplicates;
+
+create table pqfdata_duplicates as
+select auditID, questionID, max(updateDate) updateDate, MAX(id) id
+from pqfdata
+group by auditID, questionID
+having count(*) > 1;
+
+CREATE UNIQUE INDEX questionaudit ON pqfdata_duplicates (questionID, auditID);
+
+delete from pqfdata
+where exists (
+	select * from pqfdata_duplicates d2
+	where pqfdata.auditID = d2.auditID and pqfdata.questionID = d2.questionID and pqfdata.updateDate < d2.updateDate
+)
+
+DROP table pqfdata_duplicates;
+
+create table pqfdata_duplicates as
+select auditID, questionID, max(updateDate) updateDate, MAX(id) id
+from pqfdata
+group by auditID, questionID
+having count(*) > 1;
+
+CREATE UNIQUE INDEX questionaudit ON pqfdata_duplicates (questionID, auditID);
+
+delete from pqfdata
+where exists (
+	select * from pqfdata_duplicates d2
+	where pqfdata.auditID = d2.auditID and pqfdata.questionID = d2.questionID and pqfdata.id < d2.id
+)
+
+DROP INDEX questionContractor ON pqfdata;
+CREATE UNIQUE INDEX questionaudit ON pqfdata (questionID, auditID);
+
+DROP table pqfdata_duplicates;
+
 /*
 Added a new widget for operators to show contractors with Pending Approval
 */
@@ -27,4 +65,4 @@ values (null,"Contractors Pending Approvals", "Html", 0,
 	"ContractorApproval",null);
 
 insert into widget_user 
-values (null, newWidgetID, 616, 1, 2,10, null);
+values (null, newWidgetID, 616, 1, 2,10, null);>>>>>>> .r5827

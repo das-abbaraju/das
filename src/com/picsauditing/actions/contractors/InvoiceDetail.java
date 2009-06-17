@@ -126,7 +126,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				if (button.startsWith("Cancel Invoice")) {
 
 					invoice.setStatus(TransactionStatus.Void);
-					invoice.setPaidDate(new Date());
 					invoice.setAuditColumns(permissions);
 					invoice.setQbSync(true);
 					invoice.setNotes("Cancelled Invoice");
