@@ -69,4 +69,11 @@ public class ContractorOperatorDAO extends PicsDAO {
 		query.setParameter(1, opID);
 		return query.getResultList();
 	}
+	
+	public List<ContractorOperator> findPendingApprovalContractors(int opID) {
+		Query query = em.createQuery("FROM ContractorOperator WHERE operatorAccount.id = "
+				+ opID + " AND workStatus = 'P' ORDER BY creationDate DESC");
+		query.setMaxResults(10);
+		return query.getResultList();
+	}
 }

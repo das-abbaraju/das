@@ -138,7 +138,10 @@
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
 		
-		
+		<action name="ContractorPendingApprovalAjax"
+			class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
+			<result>struts/widgets/con_pendingapproval.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"

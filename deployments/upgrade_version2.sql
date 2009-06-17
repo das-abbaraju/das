@@ -17,3 +17,14 @@ join contractor_audit ca on ca.id = os.auditid
 where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
+
+/*
+Added a new widget for operators to show contractors with Pending Approval
+*/
+insert into widget 
+values (null,"Contractors Pending Approvals", "Html", 0, 
+	"ContractorPendingApprovalAjax.action", 
+	"ContractorApproval",null);
+
+insert into widget_user 
+values (null, newWidgetID, 616, 1, 2,10, null);
