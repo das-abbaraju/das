@@ -206,9 +206,6 @@
 	</fieldset>
 	<fieldset>
 	<ul>
-		<li><label>SIC:</label>
-			<strong><s:property value="infoSection[55].answer" default="N/A"/></strong>
-		</li>
 		<li><label>NAICS:</label>
 			<strong><s:property value="infoSection[57].answer" default="N/A"/></strong>
 		</li>
