@@ -45,7 +45,7 @@ input[type=submit] {
 					<td style="padding: 10px;">PICS <br>
 					P.O. Box 51387 <br>
 					Irvine, CA 92619-1387</td>
-					<td width="200">
+					<td width="400">
 					<table width="100%" border="0" cellspacing="0" cellpadding="4" class="allborder">
 						<tr>
 							<th>Date</th>

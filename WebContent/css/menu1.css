@@ -218,6 +218,7 @@
 	margin: 0;
 	display: block;
 	white-space: nowrap;
+	list-style-type: none;
 }
 
 #toolbox li {
@@ -239,6 +240,7 @@
 	padding-bottom: 6px;
 	padding-right: 10px;
 	padding-left: 10px;
+	border: 1px solid #79A7D0;
 	font-weight: bold;
 }
 
@@ -247,6 +249,7 @@
 	background-color: #C4D5E3;
 	font-weight: bold;
 	color: #003768;
+	border-color: white;
 }
 
 #toolbox a.default {
