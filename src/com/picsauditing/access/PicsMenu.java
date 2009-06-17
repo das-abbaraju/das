@@ -97,6 +97,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			subMenu.addChild("Billing Report", "ReportBilling.action");
 			subMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action");
+			subMenu.addChild("Invoice Search", "ReportContractorUnpaidInvoices.action");
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
 		}
 

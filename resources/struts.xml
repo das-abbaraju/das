@@ -366,6 +366,11 @@
 				<param name="id">${contractor.id}</param>
 			</result>
 		</action>
+		<action name="ReportContractorUnpaidInvoices"
+			class="com.picsauditing.actions.report.ReportContractorUnpaidInvoice">
+			<param name="reportName">Unpaid Invoices Report By Contractor</param>
+			<result>struts/reports/report_con_unpaidinvoice.jsp</result>
+		</action>
 
 		<!-- User List -->
 		<action name="UserList"
