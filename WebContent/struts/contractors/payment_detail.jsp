@@ -73,7 +73,6 @@
 				<table class="report">
 					<thead>
 						<tr>
-							<th></th>
 							<th>Invoice</th>
 							<th>Date</th>
 							<th>Invoice Amount</th>
@@ -85,9 +84,6 @@
 				
 					<s:iterator value="payment.invoices" id="i">
 						<tr>
-							<td>
-								<s:checkbox name="invoiceID"/>
-							</td>
 							<td>
 								Invoice #<s:property value="invoice.id"/>
 							</td>
@@ -154,7 +150,6 @@
 										$<s:textfield name="amountApplyMap[%{id}]" size="6"/>
 									</td>
 									<td>
-										$<s:property value="getAmountLeft(balance.min(payment.balance))"/>
 									</td>
 								</s:if>
 								<td><s:property value="status"/></td>
