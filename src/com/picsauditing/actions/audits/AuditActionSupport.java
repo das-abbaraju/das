@@ -268,17 +268,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 			if (allActive) {
 				// Sending all the operator Emails too
-				Set<String> emailAddresses = new HashSet<String>();
-				for (ContractorOperator contractorOperator : contractor.getOperators()) {
-					emailAddresses.addAll(Strings.findUniqueEmailAddresses(contractorOperator.getOperatorAccount().getActivationEmails()));
-				}
+//				Set<String> emailAddresses = new HashSet<String>();
+//				for (ContractorOperator contractorOperator : contractor.getOperators()) {
+//					emailAddresses.addAll(Strings.findUniqueEmailAddresses(contractorOperator.getOperatorAccount().getActivationEmails()));
+//				}
 				// Send email to contractor telling them thank you for submitting all the audits
 				try {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(13); // Audits Thank You
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
-					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ",")); 
+//					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ",")); 
 					EmailSender.send(emailBuilder.build());
 					addNote(contractor, "Sent Audits Thank You email to "
 							+ emailBuilder.getSentTo(),
