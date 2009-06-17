@@ -180,7 +180,7 @@
 	<s:if test="#q.showComment || mode == 'Verify'">
 		<br/>
 		<label>Comments:</label>
-		<s:textfield name="answer%{#divID}" value="%{#a.comment}" size="30"
+		<s:textarea name="answer%{#divID}" value="%{#a.comment}" rows="4" cols="20"
 			onchange="saveAnswerComment('%{#divID}', null, this);"/>
 	</s:if>
 </div>
