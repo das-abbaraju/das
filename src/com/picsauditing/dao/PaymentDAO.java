@@ -39,7 +39,12 @@ public class PaymentDAO extends PicsDAO {
 			em.remove(row);
 		}
 	}
-	
+
+	public void refresh(Payment row) {
+		if (em.contains(row))
+			em.refresh(row);
+	}
+
 	public Payment find(int id) {
 		return em.find(Payment.class, id);
 	}
@@ -53,9 +58,9 @@ public class PaymentDAO extends PicsDAO {
 
 	public boolean applyPayment(Payment payment, Invoice invoice, User user, BigDecimal amount) {
 		// Don't ever try to apply more than the invoice or payment balance
-		if (amount.compareTo(invoice.getBalance()) < 0)
+		if (amount.compareTo(invoice.getBalance()) > 0)
 			return false;
-		if (amount.compareTo(payment.getBalance()) < 0)
+		if (amount.compareTo(payment.getBalance()) > 0)
 			return false;
 
 		// Create the new InvoicePayment
@@ -64,32 +69,32 @@ public class PaymentDAO extends PicsDAO {
 		ip.setPayment(payment);
 		ip.setAmount(amount);
 		ip.setAuditColumns(user);
-		em.merge(ip);
+		em.persist(ip);
 
-		payment.getInvoices().add(ip);
+		// payment.getInvoices().add(ip);
 		payment.updateAmountApplied();
 
-		invoice.getPayments().add(ip);
+		// invoice.getPayments().add(ip);
 		invoice.updateAmountApplied();
 
 		em.merge(payment);
 		em.merge(invoice);
 		return true;
 	}
-	
+
 	public void removePayment(InvoicePayment ip, User user) {
 		if (ip == null)
 			return;
 		Payment payment = ip.getPayment();
 		Invoice invoice = ip.getInvoice();
-		
+
 		payment.getInvoices().remove(ip);
 		invoice.getPayments().remove(ip);
 		em.remove(ip);
-		
+
 		payment.updateAmountApplied();
 		invoice.updateAmountApplied();
-		
+
 		em.merge(payment);
 		em.merge(invoice);
 	}

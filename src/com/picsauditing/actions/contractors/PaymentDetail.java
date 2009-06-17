@@ -6,33 +6,29 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.dao.InvoicePaymentDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.InvoicePayment;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
 	private boolean edit = false;
 
 	private InvoiceDAO invoiceDAO;
-	private InvoiceFeeDAO invoiceFeeDAO;
-	private InvoiceItemDAO invoiceItemDAO;
 	private PaymentDAO paymentDAO;
+	private InvoicePaymentDAO invoicePaymentDAO;
 	private NoteDAO noteDAO;
 	private AppPropertyDAO appPropDao;
 
@@ -46,16 +42,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private Map<Integer, BigDecimal> amountApplyMap = new HashMap<Integer, BigDecimal>();
 
 	public PaymentDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
-			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO,
-			ContractorAuditDAO auditDao, PaymentDAO paymentDAO) {
+			ContractorAccountDAO conAccountDAO, ContractorAuditDAO auditDao, PaymentDAO paymentDAO,
+			InvoicePaymentDAO invoicePaymentDAO) {
 		super(conAccountDAO, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
 		this.noteDAO = noteDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
 		this.paymentDAO = paymentDAO;
-
+		this.invoicePaymentDAO = invoicePaymentDAO;
 		this.subHeading = "Payment Detail";
 	}
 
@@ -83,27 +77,22 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			if ("Apply".equals(button) && payment != null) {
 				if (contractor.getPaymentMethod().isCheck()) {
 					payment.setAccount(contractor);
+					payment.setAuditColumns(permissions);
 					payment = paymentDAO.save(payment);
 					for (Invoice inv : contractor.getInvoices()) {
-						if (applyMap.get(inv.getId()) && BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) < 0) {
-							InvoicePayment ip = new InvoicePayment();
-							ip.setInvoice(inv);
-							ip.setPayment(payment);
-							ip.setAmount(amountApplyMap.get(inv.getId()));
-
-							payment.getInvoices().add(ip);
-							paymentDAO.save(payment);
-							inv.getPayments().add(ip);
-							invoiceDAO.save(inv);
+						if (applyMap.get(inv.getId()) != null && applyMap.get(inv.getId())
+								&& amountApplyMap.get(inv.getId()) != null
+								&& amountApplyMap.get(inv.getId()).compareTo(BigDecimal.ZERO) > 0) {
+							applyPayment(inv, amountApplyMap.get(inv.getId()));
 						}
 					}
+					paymentDAO.refresh(payment);
 				}
 			}
 
 			if ("Collect Check".equals(button)) {
-				addActionMessage("I will collect the check for $" + payment.getTotalAmount());
 				payment.setAccount(contractor);
-				payment.setAuditColumns(new User(User.SYSTEM));
+				payment.setAuditColumns(permissions);
 
 				for (Invoice inv : contractor.getInvoices()) {
 					if (inv.getStatus().isUnpaid()) {
@@ -121,58 +110,58 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					}
 				}
 			}
-
-			if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
-				paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-				paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
-				try {
-					Payment payment = createPayment();
-					payment.setPaymentMethod(PaymentMethod.CreditCard);
-
-					paymentService.processPayment(payment);
-
-					CreditCard cc = paymentService.getCreditCard(id);
-					payment.setCcNumber(cc.getCardNumber());
-
-					applyPayment(payment);
-					addNote("Credit Card transaction completed and emailed the receipt for $"
-							+ payment.getTotalAmount());
-				} catch (Exception e) {
-					addNote("Credit Card transaction failed: " + e.getMessage());
-					this.addActionError("Failed to charge credit card. " + e.getMessage());
-					return SUCCESS;
+			if ("Delete".equals(button)) {
+				if (payment != null) {
+					paymentDAO.remove(payment);
+					for (Invoice invoice : contractor.getInvoices()) {
+						invoice.updateAmountApplied();
+					}
+					payment = null;
 				}
 			}
+			//
+			// if (button.startsWith("Charge Credit Card") &&
+			// contractor.isCcOnFile()) {
+			// paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+			// paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+			//
+			// try {
+			// Payment payment = createPayment();
+			// payment.setPaymentMethod(PaymentMethod.CreditCard);
+			//
+			// paymentService.processPayment(payment);
+			//
+			// CreditCard cc = paymentService.getCreditCard(id);
+			// payment.setCcNumber(cc.getCardNumber());
+			//
+			// applyPayment(payment);
+			// addNote("Credit Card transaction completed and emailed the receipt for $"
+			// + payment.getTotalAmount());
+			// } catch (Exception e) {
+			// addNote("Credit Card transaction failed: " + e.getMessage());
+			// this.addActionError("Failed to charge credit card. " +
+			// e.getMessage());
+			// return SUCCESS;
+			// }
+			// }
 		}
 
 		return SUCCESS;
 	}
 
-	private Payment createPayment() {
-		Payment payment = new Payment();
-		payment.setAccount(account);
-		// payment.setTotalAmount(invoice.getBalance());
-		payment.setQbSync(true);
-		payment.setAuditColumns(getUser());
-		return paymentDAO.save(payment);
-	}
+	private void applyPayment(Invoice invoice, BigDecimal amount) {
+		paymentDAO.applyPayment(payment, invoice, getUser(), amount);
 
-	private void applyPayment(Payment payment) {
-		// paymentDAO.applyPayment(payment, invoice, getUser(),
-		// invoice.getBalance());
-		// invoiceDAO.save(invoice);
-		//
-		// if (invoice.getStatus().isPaid()) {
-		// if (!contractor.isActiveB()) {
-		// for (InvoiceItem item : invoice.getItems()) {
-		// if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
-		// contractor.setActive('Y');
-		// contractor.setAuditColumns(getUser());
-		// }
-		// }
-		// }
-		// }
+		if (invoice.getStatus().isPaid()) {
+			if (!contractor.isActiveB()) {
+				for (InvoiceItem item : invoice.getItems()) {
+					if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+						contractor.setActive('Y');
+						contractor.setAuditColumns(getUser());
+					}
+				}
+			}
+		}
 
 		// Send a receipt to the contractor
 		try {
@@ -181,6 +170,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+
+	private void calculateAmountApplied() {
+		payment.getBalance();
 	}
 
 	private void addNote(String subject) {
@@ -237,6 +230,15 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 	public void setAmountApplyMap(Map<Integer, BigDecimal> amountApplyMap) {
 		this.amountApplyMap = amountApplyMap;
+	}
+
+	public boolean isHasUnpaidInvoices() {
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (invoice.getStatus().isUnpaid())
+				return true;
+		}
+
+		return false;
 	}
 
 }

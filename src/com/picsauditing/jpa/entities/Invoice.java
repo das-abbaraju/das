@@ -87,7 +87,7 @@ public class Invoice extends Transaction {
 		this.items = items;
 	}
 
-	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE })
 	public List<InvoicePayment> getPayments() {
 		return payments;
 	}
