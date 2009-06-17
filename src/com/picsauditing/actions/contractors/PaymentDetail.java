@@ -1,7 +1,8 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BrainTreeService;
@@ -16,12 +17,13 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoicePayment;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.Transaction;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
@@ -32,20 +34,16 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private InvoiceItemDAO invoiceItemDAO;
 	private PaymentDAO paymentDAO;
 	private NoteDAO noteDAO;
+	private AppPropertyDAO appPropDao;
 
-	private String checkNumber;
-	private int newFeeId;
-	private int refundFeeId;
 	private BrainTreeService paymentService = new BrainTreeService();
 
 	private Payment payment;
-	private int invoiceID = 0;
 
-	private List<InvoiceFee> feeList = null;
+	private BigDecimal amountLeft;
 
-	private BigDecimal amountApply = BigDecimal.ZERO;
-
-	AppPropertyDAO appPropDao;
+	private Map<Integer, Boolean> applyMap = new HashMap<Integer, Boolean>();
+	private Map<Integer, BigDecimal> amountApplyMap = new HashMap<Integer, BigDecimal>();
 
 	public PaymentDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
 			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO,
@@ -57,6 +55,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		this.invoiceFeeDAO = invoiceFeeDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.paymentDAO = paymentDAO;
+
+		this.subHeading = "Payment Detail";
 	}
 
 	@Override
@@ -80,34 +80,48 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			findContractor();
 
 		if (button != null) {
-			if ("Apply".equals(button) && payment != null && invoiceID > 0) {
-				StringBuilder sb = new StringBuilder();
+			if ("Apply".equals(button) && payment != null) {
+				if (contractor.getPaymentMethod().isCheck()) {
+					payment.setAccount(contractor);
+					payment = paymentDAO.save(payment);
+					for (Invoice inv : contractor.getInvoices()) {
+						if (applyMap.get(inv.getId()) && BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) < 0) {
+							InvoicePayment ip = new InvoicePayment();
+							ip.setInvoice(inv);
+							ip.setPayment(payment);
+							ip.setAmount(amountApplyMap.get(inv.getId()));
 
-				sb.append("Payment applied for invoice #").append(invoiceID).append(" with the amomunt $").append(
-						amountApply);
-				addActionMessage(sb.toString());
+							payment.getInvoices().add(ip);
+							paymentDAO.save(payment);
+							inv.getPayments().add(ip);
+							invoiceDAO.save(inv);
+						}
+					}
+				}
 			}
 
-//			if (button.startsWith("unapplyPayment") && paymentID > 0) {
-//				InvoicePayment ip = null;
-//				for (InvoicePayment ip2 : invoice.getPayments()) {
-//					if (ip2.getPayment().getId() == paymentID)
-//						ip = ip2;
-//				}
-//				paymentDAO.removePayment(ip, getUser());
-//			}
-//			if (button.startsWith("Apply Existing Credit")) {
-//				for (Payment payment : contractor.getPayments()) {
-//					if (payment.getId() == paymentID && payment.getStatus().isUnpaid()) {
-//						BigDecimal amount = null;
-//						if (invoice.getBalance().compareTo(payment.getBalance()) > 0)
-//							amount = payment.getBalance();
-//						else
-//							amount = invoice.getBalance();
-//						paymentDAO.applyPayment(payment, invoice, getUser(), amount);
-//					}
-//				}
-//			}
+			if ("Collect Check".equals(button)) {
+				addActionMessage("I will collect the check for $" + payment.getTotalAmount());
+				payment.setAccount(contractor);
+				payment.setAuditColumns(new User(User.SYSTEM));
+
+				for (Invoice inv : contractor.getInvoices()) {
+					if (inv.getStatus().isUnpaid()) {
+						if (payment.getBalance().compareTo(inv.getBalance()) < 0) {
+							amountApplyMap.put(inv.getId(), payment.getBalance());
+							applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) != 0);
+							payment.setAmountApplied(payment.getAmountApplied().add(payment.getBalance()));
+
+						} else {
+							amountApplyMap.put(inv.getId(), inv.getBalance());
+							applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) != 0);
+							payment.setAmountApplied(payment.getAmountApplied().add(inv.getBalance()));
+						}
+
+					}
+				}
+			}
+
 			if (button.startsWith("Charge Credit Card") && contractor.isCcOnFile()) {
 				paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 				paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -130,13 +144,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 			}
-			if (button.startsWith("Collect Check")) {
-				Payment payment = createPayment();
-				payment.setCheckNumber(checkNumber);
-				applyPayment(payment);
-				addNote("Received check and emailed the receipt for $" + payment.getTotalAmount());
-			}
-
 		}
 
 		return SUCCESS;
@@ -145,31 +152,32 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private Payment createPayment() {
 		Payment payment = new Payment();
 		payment.setAccount(account);
-		//payment.setTotalAmount(invoice.getBalance());
+		// payment.setTotalAmount(invoice.getBalance());
 		payment.setQbSync(true);
 		payment.setAuditColumns(getUser());
 		return paymentDAO.save(payment);
 	}
 
 	private void applyPayment(Payment payment) {
-//		paymentDAO.applyPayment(payment, invoice, getUser(), invoice.getBalance());
-//		invoiceDAO.save(invoice);
-//
-//		if (invoice.getStatus().isPaid()) {
-//			if (!contractor.isActiveB()) {
-//				for (InvoiceItem item : invoice.getItems()) {
-//					if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
-//						contractor.setActive('Y');
-//						contractor.setAuditColumns(getUser());
-//					}
-//				}
-//			}
-//		}
+		// paymentDAO.applyPayment(payment, invoice, getUser(),
+		// invoice.getBalance());
+		// invoiceDAO.save(invoice);
+		//
+		// if (invoice.getStatus().isPaid()) {
+		// if (!contractor.isActiveB()) {
+		// for (InvoiceItem item : invoice.getItems()) {
+		// if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+		// contractor.setActive('Y');
+		// contractor.setAuditColumns(getUser());
+		// }
+		// }
+		// }
+		// }
 
 		// Send a receipt to the contractor
 		try {
 			// TODO: send Email
-			//emailInvoice();
+			// emailInvoice();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -193,19 +201,42 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		this.payment = payment;
 	}
 
-	public BigDecimal getAmountApply() {
-		return amountApply;
+	public BigDecimal getAmountLeft(BigDecimal amount) {
+		if (amountLeft == null)
+			amountLeft = payment.getBalance();
+
+		if (amountLeft.compareTo(amount) < 0) {
+			BigDecimal tmp = amountLeft;
+			amountLeft = BigDecimal.ZERO;
+			return tmp;
+		}
+
+		amountLeft = amountLeft.subtract(amount);
+
+		if (amountLeft.compareTo(BigDecimal.ZERO) < 0)
+			return BigDecimal.ZERO;
+
+		return amount;
 	}
 
-	public void setAmountApply(BigDecimal amountApply) {
-		this.amountApply = amountApply;
+	public void setAmountLeft(BigDecimal amountLeft) {
+		this.amountLeft = amountLeft;
 	}
 
-	public int getInvoiceID() {
-		return invoiceID;
+	public Map<Integer, Boolean> getApplyMap() {
+		return applyMap;
 	}
 
-	public void setInvoiceID(int invoiceID) {
-		this.invoiceID = invoiceID;
+	public void setApplyMap(Map<Integer, Boolean> applyMap) {
+		this.applyMap = applyMap;
 	}
+
+	public Map<Integer, BigDecimal> getAmountApplyMap() {
+		return amountApplyMap;
+	}
+
+	public void setAmountApplyMap(Map<Integer, BigDecimal> amountApplyMap) {
+		this.amountApplyMap = amountApplyMap;
+	}
+
 }
