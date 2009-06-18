@@ -9,7 +9,10 @@ import java.util.Map;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.quickbooks.qbxml.InvoiceQueryRqType;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
@@ -17,9 +20,13 @@ import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentQueryRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentQueryRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+import com.picsauditing.util.SpringUtils;
 
 public class PaymentAdaptor extends QBXmlAdaptor {
 
+	protected PaymentDAO paymentDao = null;
+
+	
 	public Map<String, Map<String, Object>> parsePaymentQueryResponse(String qbXml,
 			Map<String, String> paymentTxnIdToInvoiceIdMap) throws Exception {
 
@@ -42,21 +49,21 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 
 			for (ReceivePaymentRet individualResponse : thisQueryResponse.getReceivePaymentRet()) {
 
-				Invoice invoice = new Invoice();
+				Payment payment = new Payment();
 
 				try {
-					String invoiceNumber = paymentTxnIdToInvoiceIdMap.get(individualResponse.getTxnID());
+					String paymentNumber = paymentTxnIdToInvoiceIdMap.get(individualResponse.getTxnID());
 
-					int refId = Integer.parseInt(invoiceNumber);
+					int refId = Integer.parseInt(paymentNumber);
 
-					invoice.setId(refId);
+					payment.setId(refId);
 				} catch (Exception e) {
-					invoice.setId(0);
+					payment.setId(0);
 				}
-				response.put(new Integer(invoice.getId()).toString(), new HashMap<String, Object>());
-				response.get(new Integer(invoice.getId()).toString()).put("invoice", invoice);
-				response.get(new Integer(invoice.getId()).toString()).put("TxnID", individualResponse.getTxnID());
-				response.get(new Integer(invoice.getId()).toString()).put("paymentRet", individualResponse);
+				response.put(new Integer(payment.getId()).toString(), new HashMap<String, Object>());
+				response.get(new Integer(payment.getId()).toString()).put("payment", payment);
+				response.get(new Integer(payment.getId()).toString()).put("TxnID", individualResponse.getTxnID());
+				response.get(new Integer(payment.getId()).toString()).put("paymentRet", individualResponse);
 			}
 		}
 
@@ -64,7 +71,7 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 
 	}
 
-	public String getThesePayments(List<Invoice> invoices) throws Exception {
+	public String getThesePayments(List<Payment> payments) throws Exception {
 		Writer writer = makeWriter();
 
 		ObjectFactory factory = new ObjectFactory();
@@ -76,9 +83,9 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 		ReceivePaymentQueryRqType query = factory.createReceivePaymentQueryRqType();
 
 		// TODO add in the Payments
-//		for (Invoice invoice : invoices) {
-//			query.getTxnID().add(invoice.getQbPaymentListID());
-//		}
+		for (Payment payment : payments) {
+			query.getTxnID().add(payment.getQbListID());
+		}
 
 		query.setRequestID(new Long(System.currentTimeMillis()).toString());
 
@@ -91,4 +98,10 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 		return writer.toString();
 	}
 
+	protected PaymentDAO getPaymentDao() {
+		if (paymentDao == null)
+			paymentDao = (PaymentDAO) SpringUtils.getBean("PaymentDAO");
+
+		return paymentDao;
+	}
 }

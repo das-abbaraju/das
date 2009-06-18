@@ -1,31 +1,29 @@
 package com.intuit.developer.adaptors;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Payment;
 
 public class GetPaymentsForUpdate extends PaymentAdaptor {
 
+	
+	
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		if (currentSession.getPossiblePaymentUpdates().size() > 0) {
 
-			currentSession.setCurrentBatch(new HashMap<String, String>());
+		String where = "p.account.qbListID is not null AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true";
+		List<Payment> payments = getPaymentDao().findWhere(where, 10);
 
-			String thesePayments = getThesePayments(currentSession.getPossiblePaymentUpdates());
-
-			for (Invoice invoice : currentSession.getPossiblePaymentUpdates()) {
-				// TODO Update the Payment object
-				//currentSession.getCurrentBatch().put(invoice.getQbPaymentListID(),
-				//		new Integer(invoice.getId()).toString());
-			}
-
-			return thesePayments;
+		if (payments.size() > 0) {
+			currentSession.getPossiblePaymentUpdates().addAll(payments);
+			
+			return getThesePayments(payments);
 		}
-
+		
 		return super.getQbXml(currentSession);
 	}
 
@@ -51,4 +49,7 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 
 		return null;
 	}
+	
+	
+
 }

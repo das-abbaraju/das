@@ -50,12 +50,24 @@ public class PaymentDAO extends PicsDAO {
 	}
 
 	public List<Payment> findWhere(String where) {
-		if (where.length() > 0)
-			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT p from Payment p " + where + " ORDER BY p.creationDate DESC");
-		return query.getResultList();
+		return findWhere(where, 0);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Payment> findWhere(String where, int limit) {
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		
+		Query query = em.createQuery("SELECT p from Payment p " + where + " ORDER BY p.creationDate DESC");
+
+		if( limit != 0)
+		{
+			query.setMaxResults(limit);
+		}
+
+		return query.getResultList();
+	}
+	
 	public boolean applyPayment(Payment payment, Invoice invoice, User user, BigDecimal amount) {
 		// Don't ever try to apply more than the invoice or payment balance
 		if (amount.compareTo(invoice.getBalance()) > 0)
