@@ -108,7 +108,7 @@
 			</div>
 		</s:if>
 		<s:if test="hasUnpaidInvoices">
-		<div>
+			<div>
 				<h3>Unapplied Invoices</h3>
 				<table class="report">
 					<thead>
