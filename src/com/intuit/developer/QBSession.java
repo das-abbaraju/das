@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Payment;
 
 public class QBSession {
 
@@ -19,11 +20,10 @@ public class QBSession {
 
 	private List<ContractorAccount> toInsert = null;
 	private List<Invoice> invoicesToInsert = null;
-	private List<Invoice> paymentsToInsert = new Vector<Invoice>();
 
 	private List<ContractorAccount> possibleUpdates = new Vector<ContractorAccount>();
 	private List<Invoice> possibleInvoiceUpdates = new Vector<Invoice>();
-	private List<Invoice> possiblePaymentUpdates = new Vector<Invoice>();
+	private List<Payment> possiblePaymentUpdates = new Vector<Payment>();
 	private Map<String, Map<String, Object>> toUpdate = new HashMap<String, Map<String, Object>>();
 
 	private Map<String, String> currentBatch = new HashMap<String, String>();
@@ -126,19 +126,12 @@ public class QBSession {
 		this.invoicesToInsert = invoicesToInsert;
 	}
 
-	public List<Invoice> getPaymentsToInsert() {
-		return paymentsToInsert;
-	}
 
-	public void setPaymentsToInsert(List<Invoice> paymentsToInsert) {
-		this.paymentsToInsert = paymentsToInsert;
-	}
-
-	public List<Invoice> getPossiblePaymentUpdates() {
+	public List<Payment> getPossiblePaymentUpdates() {
 		return possiblePaymentUpdates;
 	}
 
-	public void setPossiblePaymentUpdates(List<Invoice> possiblePaymentUpdates) {
+	public void setPossiblePaymentUpdates(List<Payment> possiblePaymentUpdates) {
 		this.possiblePaymentUpdates = possiblePaymentUpdates;
 	}
 }

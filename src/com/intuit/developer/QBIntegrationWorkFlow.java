@@ -1,6 +1,6 @@
 package com.intuit.developer;	
 
-import com.intuit.developer.adaptors.MapUnMappedContractors;
+import com.intuit.developer.adaptors.DumpQuickBookPayments;
 import com.intuit.developer.adaptors.DumpUnMappedInvoices;
 import com.intuit.developer.adaptors.Finished;
 import com.intuit.developer.adaptors.GetContractorsForUpdate;
@@ -9,6 +9,7 @@ import com.intuit.developer.adaptors.GetPaymentsForUpdate;
 import com.intuit.developer.adaptors.InsertContractors;
 import com.intuit.developer.adaptors.InsertInvoices;
 import com.intuit.developer.adaptors.InsertPayments;
+import com.intuit.developer.adaptors.MapUnMappedContractors;
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.intuit.developer.adaptors.UpdateContractors;
 import com.intuit.developer.adaptors.UpdateInvoices;
@@ -21,11 +22,12 @@ public enum QBIntegrationWorkFlow {
 	UpdateContractors(UpdateContractors.class),
 	InsertContractors(InsertContractors.class),
 	DumpUnMappedInvoices(DumpUnMappedInvoices.class),
+	DumpPayments(DumpQuickBookPayments.class),
+	GetPaymentsForUpdate(GetPaymentsForUpdate.class),
+	UpdatePayments(UpdatePayments.class),
 	GetInvoicesForUpdate(GetInvoicesForUpdate.class),
 	UpdateInvoices(UpdateInvoices.class),
 	InsertInvoices(InsertInvoices.class),
-	GetPaymentsForUpdate(GetPaymentsForUpdate.class),
-	UpdatePayments(UpdatePayments.class),
 	InsertPayments(InsertPayments.class),
 	Finished(Finished.class);
 
