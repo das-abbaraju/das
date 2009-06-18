@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.InvoicePayment;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentMethod;
 
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
@@ -39,6 +41,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private BigDecimal amountLeft;
 
 	private Map<Integer, Boolean> applyMap = new HashMap<Integer, Boolean>();
+	private Map<Integer, Boolean> unApplyMap = new HashMap<Integer, Boolean>();
 	private Map<Integer, BigDecimal> amountApplyMap = new HashMap<Integer, BigDecimal>();
 
 	public PaymentDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
@@ -73,12 +76,31 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		if (contractor == null)
 			findContractor();
 
+		if (payment != null) {
+			payment.updateAmountApplied();
+			for (InvoicePayment ip : payment.getInvoices())
+				ip.getInvoice().updateAmountApplied();
+		} else {
+			for (Invoice invoice : contractor.getInvoices())
+				invoice.updateAmountApplied();
+		}
+
 		if (button != null) {
-			if ("Apply".equals(button) && payment != null) {
+			if ("Save".equals(button) && payment != null) {
+				for (Iterator<InvoicePayment> ip = payment.getInvoices().iterator(); ip.hasNext();) {
+					InvoicePayment invoicePayment = ip.next();
+					if (unApplyMap.get(invoicePayment.getId())) {
+						ip.remove();
+						invoicePayment.getInvoice().getPayments().remove(invoicePayment);
+						invoicePayment.getInvoice().updateAmountApplied();
+						invoiceDAO.save(invoicePayment.getInvoice());
+						invoicePaymentDAO.remove(invoicePayment);
+					}
+				}
+				payment.updateAmountApplied();
+
 				if (contractor.getPaymentMethod().isCheck()) {
-					payment.setAccount(contractor);
-					payment.setAuditColumns(permissions);
-					payment = paymentDAO.save(payment);
+					payment.setPaymentMethod(PaymentMethod.Check);
 					for (Invoice inv : contractor.getInvoices()) {
 						if (applyMap.get(inv.getId()) != null && applyMap.get(inv.getId())
 								&& amountApplyMap.get(inv.getId()) != null
@@ -86,36 +108,22 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							applyPayment(inv, amountApplyMap.get(inv.getId()));
 						}
 					}
-					paymentDAO.refresh(payment);
 				}
 			}
 
 			if ("Collect Check".equals(button)) {
 				payment.setAccount(contractor);
 				payment.setAuditColumns(permissions);
-
-				for (Invoice inv : contractor.getInvoices()) {
-					if (inv.getStatus().isUnpaid()) {
-						if (payment.getBalance().compareTo(inv.getBalance()) < 0) {
-							amountApplyMap.put(inv.getId(), payment.getBalance());
-							applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) != 0);
-							payment.setAmountApplied(payment.getAmountApplied().add(payment.getBalance()));
-
-						} else {
-							amountApplyMap.put(inv.getId(), inv.getBalance());
-							applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) != 0);
-							payment.setAmountApplied(payment.getAmountApplied().add(inv.getBalance()));
-						}
-
-					}
-				}
+				paymentDAO.save(payment);
 			}
+
 			if ("Delete".equals(button)) {
 				if (payment != null) {
 					paymentDAO.remove(payment);
-					for (Invoice invoice : contractor.getInvoices()) {
-						invoice.updateAmountApplied();
+					for (InvoicePayment ip : payment.getInvoices()) {
+						ip.getInvoice().updateAmountApplied();
 					}
+
 					payment = null;
 				}
 			}
@@ -144,13 +152,42 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			// return SUCCESS;
 			// }
 			// }
+
+			if (payment != null)
+				this.redirect("PaymentDetail.action?payment.id=" + payment.getId());
+			else
+				this.redirect("PaymentDetail.action?id=" + contractor.getId());
+
+			return SUCCESS;
+		}
+
+		if (payment != null) {
+			BigDecimal leftover = payment.getBalance();
+			for (Invoice inv : contractor.getInvoices()) {
+				if (inv.getStatus().isUnpaid()) {
+					if (leftover.compareTo(inv.getBalance()) < 0) {
+						amountApplyMap.put(inv.getId(), leftover);
+						applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) < 0);
+						// payment.setAmountApplied(payment.getAmountApplied().add(payment.getBalance()));
+						leftover = leftover.subtract(payment.getBalance());
+
+					} else {
+						amountApplyMap.put(inv.getId(), inv.getBalance());
+						applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) < 0);
+						// payment.setAmountApplied(payment.getAmountApplied().add(inv.getBalance()));
+						leftover = leftover.subtract(inv.getBalance());
+					}
+
+				}
+			}
 		}
 
 		return SUCCESS;
 	}
 
 	private void applyPayment(Invoice invoice, BigDecimal amount) {
-		paymentDAO.applyPayment(payment, invoice, getUser(), amount);
+		if (!paymentDAO.applyPayment(payment, invoice, getUser(), amount))
+			addActionError("Payment of $" + amount + " was not applied to invoice #" + invoice.getId());
 
 		if (invoice.getStatus().isPaid()) {
 			if (!contractor.isActiveB()) {
@@ -222,6 +259,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 	public void setApplyMap(Map<Integer, Boolean> applyMap) {
 		this.applyMap = applyMap;
+	}
+
+	public Map<Integer, Boolean> getUnApplyMap() {
+		return unApplyMap;
+	}
+
+	public void setUnApplyMap(Map<Integer, Boolean> unApplyMap) {
+		this.unApplyMap = unApplyMap;
 	}
 
 	public Map<Integer, BigDecimal> getAmountApplyMap() {

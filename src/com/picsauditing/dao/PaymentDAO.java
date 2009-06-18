@@ -63,6 +63,10 @@ public class PaymentDAO extends PicsDAO {
 		if (amount.compareTo(payment.getBalance()) > 0)
 			return false;
 
+		// Fetch InvoicePayments
+		invoice.getPayments();
+		payment.getInvoices();
+
 		// Create the new InvoicePayment
 		InvoicePayment ip = new InvoicePayment();
 		ip.setInvoice(invoice);
@@ -71,10 +75,10 @@ public class PaymentDAO extends PicsDAO {
 		ip.setAuditColumns(user);
 		em.persist(ip);
 
-		// payment.getInvoices().add(ip);
+		payment.getInvoices().add(ip);
 		payment.updateAmountApplied();
 
-		// invoice.getPayments().add(ip);
+		invoice.getPayments().add(ip);
 		invoice.updateAmountApplied();
 
 		em.merge(payment);

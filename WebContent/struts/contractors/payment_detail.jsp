@@ -12,7 +12,7 @@
 <s:if test="!permissions.contractor || contractor.activeB">
 	<s:include value="conHeader.jsp"></s:include>
 </s:if>
-
+<s:include value="../actionMessages.jsp"/>
 <div>
 	<s:form>
 		<s:hidden name="id" value="%{contractor.id}"/>
@@ -23,12 +23,7 @@
 			<s:if test="payment != null">
 				<fieldset>
 					<ul>
-						<li><label>Payment:</label>
-							<s:url id="paymentURL">
-								<s:param name="payment.id" value="%{payment.id}"/>
-							</s:url>
-							<s:a href="%{paymentURL}">#<s:property value="payment.id"/></s:a>
-						</li>
+						<li><label>Payment:</label>#<s:property value="payment.id"/></li>
 						<li><label>Total Amount:</label>$<s:textfield name="payment.totalAmount"/></li>
 						<li><label>Applied:</label>$<s:property value="payment.amountApplied"/></li>
 						<li><label>Balance:</label>$<s:property value="payment.balance"/></li>
@@ -73,6 +68,7 @@
 				<table class="report">
 					<thead>
 						<tr>
+							<th>UnApply?</th>	
 							<th>Invoice</th>
 							<th>Date</th>
 							<th>Invoice Amount</th>
@@ -84,6 +80,9 @@
 				
 					<s:iterator value="payment.invoices" id="i">
 						<tr>
+							<td>
+								<s:checkbox name="unApplyMap[%{id}]"/>
+							</td>
 							<td>
 								Invoice #<s:property value="invoice.id"/>
 							</td>
@@ -115,10 +114,11 @@
 					<thead>
 						<tr>
 							<s:if test="payment != null">
-								<th></th>
+								<th>Apply?</th>
 							</s:if>
 							<th>Invoice</th>
 							<th>Date</th>
+							<th>Total</th>
 							<th>Balance</th>
 							<s:if test="payment != null">
 								<th>Apply</th>
@@ -137,10 +137,12 @@
 								</s:if>
 								<td>
 									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK">Invoice #<s:property value="id"/></a>
-									- <s:property value="status"/>
 								</td>
 								<td>
 									<s:date name="creationDate" format="M/d/yy"/>
+								</td>
+								<td>
+									$<s:property value="balance"/>
 								</td>
 								<td>
 									$<s:property value="balance"/>
@@ -157,11 +159,11 @@
 						</s:if>
 					</s:iterator>
 				</table>
-				<s:if test="payment != null">
-					<input type="submit" class="picsbutton positive" value="Apply" name="button"/>
-				</s:if>
 				<br clear="all"/>
 			</div>
+		</s:if>
+		<s:if test="payment != null">
+			<input type="submit" class="picsbutton positive" value="Save" name="button"/>
 		</s:if>
 	</s:form>
 </div>

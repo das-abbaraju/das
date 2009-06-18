@@ -137,7 +137,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					addNote(noteText);
 				}
 			}
-			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
+			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 		}
 
 		updateTotals();
