@@ -7,8 +7,9 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 </head>
 <body>
-<s:include value="opHeader.jsp"></s:include>
-
+<s:if test="permissions.admin">
+	<s:include value="opHeader.jsp"></s:include>
+</s:if>
 <a href="OperatorTags.action?id=<s:property value="id" />">Refresh</a>
 
 <s:form>
