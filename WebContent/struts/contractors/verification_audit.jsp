@@ -10,7 +10,7 @@
 	value="conAudit.auditType.auditName" /></h2>
 
 <div class="buttons">
-	<button id="rejectButton" class="negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
+	<button id="rejectButton" class="negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
 	<button id="approveButton1" style="display: <s:property value="#attr.showApproveButton"/>;" class="positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 </div>
 <br/>

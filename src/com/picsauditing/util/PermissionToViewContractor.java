@@ -68,8 +68,8 @@ public class PermissionToViewContractor {
 
 		for (ContractorAudit audit : activeAudits) {
 			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
-				if (audit.getAuditStatus().equals(AuditStatus.Pending)
-						|| audit.getAuditStatus().equals(AuditStatus.Submitted))
+				if (audit.getAuditStatus().isPendingSubmitted()
+						|| audit.getAuditStatus().isIncomplete())
 					return true;
 		}
 

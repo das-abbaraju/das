@@ -68,6 +68,10 @@
 						<br />Click Submit when you're ready to finalize the <s:property value="conAudit.auditType.auditName"/>.
 					</s:else>
 				</s:if>
+				<s:elseif test="conAudit.auditStatus.incomplete">
+					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
+					<br/>Click Submit when you have completed all the pending requirements.				
+				</s:elseif>
 				<s:else>
 					<s:checkbox name="''" onchange="resubmitPqf(this);"/>
 					 I have reviewed and updated my previously submitted data and verified its accuracy.<br/>

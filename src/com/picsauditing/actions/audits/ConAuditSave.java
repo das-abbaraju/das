@@ -44,8 +44,8 @@ public class ConAuditSave extends AuditActionSupport {
 		}
 		// TODO add a column to auditData to keep track when the contractor has
 		// changed the answer.
-		if (auditStatus.equals(AuditStatus.Pending.toString())) {
-			conAudit.changeStatus(AuditStatus.Pending, getUser());
+		if (auditStatus.equals(AuditStatus.Incomplete.toString())) {
+			conAudit.changeStatus(AuditStatus.Incomplete, getUser());
 			if (conAudit.getAuditType().isPqf()) {
 				List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData auditData : temp) {

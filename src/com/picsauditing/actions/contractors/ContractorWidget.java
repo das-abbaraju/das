@@ -78,7 +78,8 @@ public class ContractorWidget extends ContractorActionSupport {
 						auditName = "Pre-Qualification Form";
 					else
 						auditName = conAudit.getAuditType().getAuditName();
-					if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+					if (conAudit.getAuditStatus().isPending() 
+							|| conAudit.getAuditStatus().isIncomplete()) {
 						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 								+ "\">complete and submit your "+ auditName +"</a>");
 					} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
@@ -86,7 +87,8 @@ public class ContractorWidget extends ContractorActionSupport {
 								+ "\">review and re-submit your "+ auditName +"</a>");
 					}
 				}
-				if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+				if (conAudit.getAuditType().isAnnualAddendum() 
+						&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
 					openTasks
 							.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 									+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()

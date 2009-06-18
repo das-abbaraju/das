@@ -58,7 +58,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 		if ("Submit".equals(button)) {
 			if (conAudit.getAuditType().isPqf()) {
-				if (conAudit.getAuditStatus().equals(AuditStatus.Active) && conAudit.getPercentVerified() == 100) {
+				if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
 					auditStatus = AuditStatus.Active;
 					if (conAudit.isAboutToExpire())
 						conAudit.setCompletedDate(new Date());
@@ -205,7 +205,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			return false;
 		if (conAudit.getPercentComplete() < 100)
 			return false;
-		if (conAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+		if (conAudit.getAuditStatus().isPending() 
+				|| conAudit.getAuditStatus().isIncomplete()) {
 			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
 				return false;
 			}
@@ -215,7 +216,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			// PQFs are perpetual audits and can be renewed
 			if (permissions.isContractor()) {
 				// We don't allow admins to resubmit audits (only contractors)
-				if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
+				if (conAudit.getAuditStatus().isExpired())
 					return true;
 				if (conAudit.isAboutToExpire())
 					return true;

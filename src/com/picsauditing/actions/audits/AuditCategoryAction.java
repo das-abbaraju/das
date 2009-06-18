@@ -157,12 +157,13 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				getCategories();
 			}
 
-			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Pending))
+			if (mode == null && conAudit.getAuditStatus().isPending() 
+					|| conAudit.getAuditStatus().isIncomplete())
 				mode = EDIT;
 			if (mode == null && conAudit.getAuditStatus().isActiveSubmitted() && conAudit.getAuditType().isPqf()
 					&& conAudit.isAboutToExpire())
 				mode = EDIT;
-			if (mode == null && conAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+			if (mode == null && conAudit.getAuditStatus().isSubmitted()) {
 				mode = EDIT;
 			}
 			if (mode == null && conAudit.getAuditType().getClassType().isPolicy() && isHasPendingCaos())
@@ -384,7 +385,8 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		if (activePendingEditableAudits == null) {
 			activePendingEditableAudits = new ArrayList<ContractorAudit>();
 			for (ContractorAudit ca : getActiveAudits()) {
-				if (ca.getAuditStatus().isPending() && ca.getAuditType().isCanContractorEdit())
+				if (ca.getAuditType().isCanContractorEdit() &&
+						(ca.getAuditStatus().isPending() || ca.getAuditStatus().isIncomplete()))
 					activePendingEditableAudits.add(ca);
 			}
 		}

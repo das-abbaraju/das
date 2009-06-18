@@ -72,7 +72,7 @@ public class PermissionQueryBuilder {
 			else
 				subquery = "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();
 			if (this.onlyPendingAudits)
-				subquery += " AND auditStatus IN ('Pending','Submitted')";
+				subquery += " AND auditStatus IN ('Pending','Incomplete','Submitted')";
 		}
 
 		// /////////////////////////

@@ -54,7 +54,8 @@ public class ConAuditList extends ContractorActionSupport {
 							.isPqf())) {
 				if (!contractorAudit.getAuditType().isAnnualAddendum()) {
 
-					if (contractorAudit.getAuditStatus().isPendingSubmitted())
+					if (contractorAudit.getAuditStatus().isPendingSubmitted() 
+							|| contractorAudit.getAuditStatus().isIncomplete())
 						upComingAudits.add(contractorAudit);
 					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
 						currentAudits.add(contractorAudit);

@@ -131,7 +131,7 @@
 							</s:iterator>
 						</s:if>
 						<s:else>
-							<s:if test="#con.auditStatus.pendingSubmitted">
+							<s:if test="#con.auditStatus.pendingSubmitted || #con.auditStatus.incomplete">
 								<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
 								<s:property value="auditStatus" /><br />
 							</s:if>

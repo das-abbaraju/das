@@ -3,8 +3,6 @@ package com.picsauditing.actions.report;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.util.Strings;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -75,7 +73,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					name += year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+							+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active') AND " + name + ".auditFor = " + year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
@@ -85,7 +83,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					name = "annual" + year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+							+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active') AND " + name + ".auditFor = " + year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
@@ -95,7 +93,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					name = "annual" + year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+							+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active') AND " + name + ".auditFor = " + year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
@@ -105,7 +103,7 @@ public class ReportFlagCriteria extends ReportAccount {
 					name = "annual" + year;
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') AND " + name + ".auditFor = " + year);
+							+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active') AND " + name + ".auditFor = " + year);
 					sql.addField(name + ".auditStatus AS '" + name + " Status'");
 					sql.addField(name + ".percentComplete AS '" + name + " Completed'");
 					sql.addJoin("LEFT JOIN osha_audit AS osha" + year + " ON osha" + year + ".auditID = " + name
@@ -115,7 +113,7 @@ public class ReportFlagCriteria extends ReportAccount {
 						name += auditOperator.getAuditType().getId();
 					sql.addJoin("LEFT JOIN Contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 							+ ".auditTypeID = " + auditOperator.getAuditType().getId() + " AND " + name
-							+ ".auditStatus IN ('Pending','Submitted','Active') ");
+							+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active') ");
 					if (auditOperator.getAuditType().getClassType().isPolicy()) {
 						sql.addJoin("LEFT JOIN Contractor_audit_operator cao" + name + " ON " + "cao" + name
 								+ ".auditID = " + name + ".id " + " AND cao" + name

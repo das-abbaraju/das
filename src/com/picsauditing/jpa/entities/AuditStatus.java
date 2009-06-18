@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public enum AuditStatus {
 	Pending,
+	Incomplete,
 	Submitted,
 	Resubmitted,
 	Active,
@@ -43,7 +44,10 @@ public enum AuditStatus {
 		return this.equals(Resubmitted);
 	}
 	
-
+	public boolean isIncomplete() {
+		return this.equals(Incomplete);
+	}
+	
 	/**
 	 * Is the status Active or Exempt
 	 * @return
@@ -118,7 +122,7 @@ public enum AuditStatus {
 			return true;
 		return false;
 	}
-	
+
 	/**
 	 * Is the status Pending or Expired
 	 * @return

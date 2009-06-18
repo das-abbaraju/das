@@ -73,6 +73,7 @@ public class AuditBuilder {
 		okStatuses.add(AuditStatus.Submitted);
 		okStatuses.add(AuditStatus.Exempt);
 		okStatuses.add(AuditStatus.Resubmitted);
+		okStatuses.add(AuditStatus.Incomplete);
 
 		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
 		requiresSafetyManual.add(AuditType.DESKTOP);
@@ -396,13 +397,15 @@ public class AuditBuilder {
 	public void fillAuditCategories(ContractorAudit conAudit) {
 		if (conAudit.getAuditType().isPqf()) {
 			// Only Active and Pending PQFs should be recalculated
-			if (conAudit.getAuditStatus().equals(AuditStatus.Submitted))
+			if (conAudit.getAuditStatus().isIncomplete())
 				return;
-			if (conAudit.getAuditStatus().equals(AuditStatus.Resubmitted))
+			if (conAudit.getAuditStatus().isSubmitted())
 				return;
-			if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
+			if (conAudit.getAuditStatus().isResubmitted())
 				return;
-			if (conAudit.getAuditStatus().equals(AuditStatus.Exempt))
+			if (conAudit.getAuditStatus().isExpired())
+				return;
+			if (conAudit.getAuditStatus().isExempt())
 				return;
 		} else {
 			// Other Audits should only consider Pending

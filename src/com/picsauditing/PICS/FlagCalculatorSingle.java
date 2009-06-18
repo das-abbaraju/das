@@ -327,16 +327,12 @@ public class FlagCalculatorSingle {
 								// We found a matching pending or submitted audit still not finished
 								// Whose fault is it??
 								debug(" ---- still required");
-								if (conAudit.getAuditType().getClassType().isPqf()) {
-									if (auditStatus.equals(AuditStatus.Pending))
+								if (conAudit.getAuditType().getClassType().isPqf() 
+										|| conAudit.getAuditType().isAnnualAddendum()) {
+									if (auditStatus.isPending() 
+											|| auditStatus.isIncomplete())
 										// The contractor still needs to submit their PQF
 										return WaitingOn.Contractor;
-									if (conAudit.getPercentVerified() > 0)
-										// contractor needs to send us updated
-										// information (EMR, OSHA, etc)
-										// This PQF must be submitted and not verified yet
-										// at all, so it's PICS' fault
-										return WaitingOn.Contractor; // The
 									waitingOnPics = true;
 								} else if (conAudit.getAuditType().getId() == AuditType.OFFICE)
 									// either needs to

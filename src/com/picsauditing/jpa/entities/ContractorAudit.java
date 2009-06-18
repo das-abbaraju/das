@@ -114,21 +114,21 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void changeStatus(AuditStatus auditStatus, User user) {
 		// If we're changing the status to Submitted or Active, then we need
 		// to set the dates
-		if (auditStatus.equals(AuditStatus.Pending)) {
+		if (auditStatus.isPending() || auditStatus.isIncomplete()) {
 			if (closedDate != null)
 				closedDate = null;
 			if (completedDate != null)
 				completedDate = null;
-			if (!getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if (!getAuditType().getClassType().isPolicy()) {
 				if (expiresDate != null)
 					expiresDate = null;
 			}
 		}
-		if (auditStatus.equals(AuditStatus.Submitted) || auditStatus.equals(AuditStatus.Resubmitted)) {
+		if (auditStatus.isSubmitted() || auditStatus.isResubmitted()) {
 			// If we're going "forward" then (re)set the closedDate
 			completedDate = new Date();
 		}
-		if (auditStatus.equals(AuditStatus.Active)) {
+		if (auditStatus.isActive()) {
 			// If we're going "forward" then (re)set the closedDate
 			if (closedDate == null || this.auditStatus.isPendingSubmitted())
 				closedDate = new Date();
@@ -493,7 +493,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		if (auditStatus.isResubmitted())
 			statusDescription = "Policy updated; pending approval of changes.";
-
+		
+		if(auditStatus.isIncomplete())
+			statusDescription = "Rejected "+ this.getAuditType().getClassType().toString() +" during verification";
 		return statusDescription;
 	}
 
