@@ -7,167 +7,144 @@
 <link rel="stylesheet" type="text/css" media="all" href="css/invoice.css" />
 <link rel="stylesheet" type="text/css" media="all" href="css/audit.css" />
 <link rel="stylesheet" type="text/css" media="all" href="css/reports.css" />
+
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="js/payment_detail.js"></script>
+
 </head>
 <body>
-<s:if test="!permissions.contractor || contractor.activeB">
-	<s:include value="conHeader.jsp"></s:include>
-</s:if>
-<s:include value="../actionMessages.jsp"/>
-<div>
-	<s:form>
-		<s:hidden name="id" value="%{contractor.id}"/>
-		<s:if test="payment != null">
-			<s:hidden name="payment.id"/>
-		</s:if>
-		<div class="auditHeader">
-			<s:if test="payment != null">
-				<fieldset>
-					<ul>
-						<li><label>Payment:</label>#<s:property value="payment.id"/></li>
-						<li><label>Total Amount:</label>$<s:textfield name="payment.totalAmount"/></li>
-						<li><label>Applied:</label>$<s:property value="payment.amountApplied"/></li>
-						<li><label>Balance:</label>$<s:property value="payment.balance"/></li>
-					</ul>
-				</fieldset>
-				<fieldset>
-					<ul>
-						<li><label>Date:</label><s:date name="payment.creationDate" format="M/d/yy"/></li>
-						<li><label>Status:</label><s:property value="payment.status"/></li>
-					</ul>
-				</fieldset>
-				<fieldset>
-					<ul>
-						<li><label>Method:</label><s:property value="contractor.paymentMethod"/></li>
-						<s:if test="contractor.paymentMethod.check">
-							<li><label>Check Number:</label><s:textfield name="payment.checkNumber"/></li>
-						</s:if>
-						<s:if test="contractor.paymentMethod.creditCard">
-							<li><label>Transaction ID:</label><s:property value="payment.transactionID"/></li>
-						</s:if>
-					</ul>
-				</fieldset>
-			</s:if>
-			<s:if test="contractor.paymentMethod.Check">
-				<fieldset>
-					<ul>
-						<li><label>Total Amount:</label>$<s:textfield name="payment.totalAmount"/></li>
-						<li><label>Check Number:</label><s:textfield name="payment.checkNumber"/></li>
-					</ul>
-				</fieldset>
-				<br/>
-				<input type="submit" class="picsbutton positive" value="Collect Check" name="button"/>
-			</s:if>
-			<s:if test="payment != null && payment.id > 0">
-				<input type="submit" class="picsbutton negative" value="Delete" name="button"/>
-			</s:if>
-			<div class="clear"></div>
-		</div>
-		<s:if test="payment.invoices.size > 0">
-			<div>
-				<h3>Currently Applied Invoices</h3>
-				<table class="report">
-					<thead>
-						<tr>
-							<th>UnApply?</th>	
-							<th>Invoice</th>
-							<th>Date</th>
-							<th>Invoice Amount</th>
-							<th>Balance</th>
-							<th>Payment Amount</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-				
-					<s:iterator value="payment.invoices" id="i">
-						<tr>
-							<td>
-								<s:checkbox name="unApplyMap[%{id}]"/>
-							</td>
-							<td>
-								Invoice #<s:property value="invoice.id"/>
-							</td>
-							<td>
-								<s:date name="invoice.creationDate" format="M/d/yy"/>
-							</td>
-							<td>
-								$<s:property value="invoice.totalAmount"/>
-							</td>
-							<td>
-								$<s:property value="invoice.balance"/>
-							</td>
-							<td>
-								$<s:property value="amount"/>
-							</td>
-							<td>
-								<s:property value="invoice.status"/>
-							</td>
-						</tr>
-					</s:iterator>
-				</table>
-				<br clear="all"/>
-			</div>
-		</s:if>
-		<s:if test="hasUnpaidInvoices">
-			<div>
-				<h3>Unapplied Invoices</h3>
-				<table class="report">
-					<thead>
-						<tr>
-							<s:if test="payment != null || contractor.paymentMethod.creditCard">
-								<th>Apply?</th>
-							</s:if>
-							<th>Invoice</th>
-							<th>Date</th>
-							<th>Total</th>
-							<th>Balance</th>
-							<s:if test="payment != null">
-								<th>Apply</th>
-							</s:if>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<s:iterator value="contractor.invoices" id="i">
-						<s:if test="status.unpaid">
-							<tr>
-								<s:if test="payment != null || contractor.paymentMethod.creditCard">
-									<td>
-										<s:checkbox name="applyMap[%{id}]"/>
-									</td>
-								</s:if>
-								<td>
-									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK">Invoice #<s:property value="id"/></a>
-								</td>
-								<td>
-									<s:date name="creationDate" format="M/d/yy"/>
-								</td>
-								<td>
-									$<s:property value="totalAmount"/>
-								</td>
-								<td>
-									$<s:property value="balance"/>
-								</td>
-								<s:if test="payment != null">
-									<td>
-										$<s:textfield name="amountApplyMap[%{id}]" size="6"/>
-									</td>
-								</s:if>
-								<td><s:property value="status"/></td>
-							</tr>
-						</s:if>
-					</s:iterator>
-				</table>
-				<br clear="all"/>
-			</div>
-		</s:if>
-		<s:if test="payment != null">
-			<input type="submit" class="picsbutton positive" value="Save" name="button"/>
-		</s:if>
-		<s:if test="contractor.paymentMethod.creditCard && payment == null">
-			<input type="submit" class="picsbutton positive" value="Credit Card" name="button"/>
-		</s:if>
-	</s:form>
-</div>
+<s:include value="conHeader.jsp"></s:include>
 
-<br clear="all"/>
+<s:if test="payment == null && method.creditCard">
+	<s:iterator value="contractor.payments">
+		<s:if test="status.unpaid">
+			<div class="alert">This contractor still has an <a
+				href="PaymentDetail.action?payment.id=<s:property value="id"/>">open credit</a>. Please apply that credit before
+			collecting any new payments.</div>
+		</s:if>
+	</s:iterator>
+</s:if>
+
+<s:form>
+	<s:hidden name="id" />
+	<div class="auditHeader"><s:if test="payment != null && payment.id > 0">
+		<s:hidden name="payment.id" />
+		<fieldset>
+		<ul>
+			<li><label>Payment:</label>#<s:property value="payment.id" /></li>
+			<li><label>Date:</label><s:date name="payment.creationDate" format="M/d/yy" /></li>
+			<li><label>Total Amount:</label>$<s:property value="payment.totalAmount" /></li>
+			<li><label>Applied:</label>$<span id="payment_amountApplied"><s:property value="payment.amountApplied" /></span></li>
+			<li><label>Remainder:</label>$<span id="payment_balance"><s:property value="payment.balance" /></span></li>
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<li><label>Method:</label><s:property value="payment.paymentMethod" /></li>
+			<s:if test="payment.paymentMethod.check">
+				<li><label>Check Number:</label><s:textfield name="payment.checkNumber" /></li>
+			</s:if>
+			<s:if test="payment.paymentMethod.creditCard">
+				<li><label>Transaction ID:</label><s:property value="payment.transactionID" /></li>
+				<li><label>Type:</label><s:property value="payment.ccType" /></li>
+				<li><label>Number:</label><s:property value="payment.ccNumber" /></li>
+			</s:if>
+		</ul>
+		</fieldset>
+	</s:if><s:else>
+		<fieldset>
+		<ul>
+			<li><label>Payment:</label>NEW</li>
+			<li><label>Date:</label><s:date name="new java.util.Date()" format="M/d/yy" /></li>
+			<li><label>Total Amount:</label>$<s:textfield name="payment.totalAmount" value="0.00" size="7" /></li>
+			<li><label>Applied:</label>$<span id="payment_amountApplied">0.00</span></li>
+			<li><label>Remainder:</label>$<span id="payment_balance">0.00</span>
+				<input type="button" name="Update Payment" onclick="$('payment.totalAmount').value = $('payment_amountApplied').value;">
+			</li>
+			<li><label>Auto Apply:</label><input id="autoapply" type="checkbox" checked="checked"></li>
+		</ul>
+		</fieldset>
+		<fieldset>
+		<ul>
+			<li><label>Method:</label><s:radio name="method" theme="pics"
+				list="@com.picsauditing.jpa.entities.PaymentMethod@values()"></s:radio></li>
+			<li class="method_check" style="display: none"><label>Check Number:</label><s:textfield
+				name="payment.checkNumber" /></li>
+			<li class="method_cc" style="display: none"><label>Type:</label><s:property value="creditcard.ccType" /></li>
+			<li class="method_cc" style="display: none"><label>Number:</label><s:property value="creditcard.ccNumber" /></li>
+			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditcard.ccType" /></li>
+			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditcard.ccNumber" /></li>
+		</ul>
+		</fieldset>
+	</s:else>
+	<div class="clear"></div>
+	</div>
+	<s:if test="payment.invoices.size > 0">
+		<h3>Currently Applied Invoices</h3>
+		<table class="report">
+			<thead>
+				<tr>
+					<th>UnApply?</th>
+					<th>Invoice</th>
+					<th>Date</th>
+					<th>Invoice Amount</th>
+					<th>Balance</th>
+					<th>Payment Amount</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+
+			<s:iterator value="payment.invoices" id="i">
+				<tr>
+					<td><s:checkbox name="unApplyMap[%{id}]" /></td>
+					<td>Invoice #<s:property value="invoice.id" /></td>
+					<td><s:date name="invoice.creationDate" format="M/d/yy" /></td>
+					<td>$<s:property value="invoice.totalAmount" /></td>
+					<td>$<s:property value="invoice.balance" /></td>
+					<td>$<s:property value="amount" /></td>
+					<td><s:property value="invoice.status" /></td>
+				</tr>
+			</s:iterator>
+		</table>
+	</s:if>
+	<s:if test="hasUnpaidInvoices">
+		<h3>Unapplied Invoices</h3>
+		<table class="report">
+			<thead>
+				<tr>
+					<th>Invoice</th>
+					<th>Date</th>
+					<th>Total</th>
+					<th>Balance</th>
+					<th>Apply</th>
+					<th>Amt to Apply</th>
+				</tr>
+			</thead>
+			<s:iterator value="contractor.invoices">
+				<s:if test="status.unpaid">
+					<tr>
+						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK" title="Opens in new window"><s:property
+							value="id" /></a></td>
+						<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
+						<td class="right">$<s:property value="totalAmount" /></td>
+						<td class="right">$<span id="invoice_balance_%{id}"><s:property value="balance" /></span></td>
+						<td><button type="button" class="basic" onclick="setInvoiceApply(<s:property value="id" />);">&gt;&gt;</button></td>
+						<td class="right">$<s:textfield id="invoice_apply_%{id}" name="amountApplyMap[%{id}]" size="6" onchange="updateSingleAppliedAmount();" /></td>
+					</tr>
+				</s:if>
+			</s:iterator>
+		</table>
+	</s:if>
+	<s:if test="payment == null">
+		<input type="submit" class="picsbutton positive" value="Collect Payment" name="button" />
+	</s:if>
+	<s:else>
+		<input type="submit" class="picsbutton positive" value="Save" name="button" />
+		<s:if test="payment.qbListID == null">
+			<input type="submit" class="picsbutton negative" value="Delete" name="button" />
+		</s:if>
+	</s:else>
+</s:form>
+
 </body>
 </html>
