@@ -47,7 +47,7 @@
 					</ul>
 				</fieldset>
 			</s:if>
-			<s:else>
+			<s:if test="contractor.paymentMethod.Check">
 				<fieldset>
 					<ul>
 						<li><label>Total Amount:</label>$<s:textfield name="payment.totalAmount"/></li>
@@ -56,7 +56,7 @@
 				</fieldset>
 				<br/>
 				<input type="submit" class="picsbutton positive" value="Collect Check" name="button"/>
-			</s:else>
+			</s:if>
 			<s:if test="payment != null && payment.id > 0">
 				<input type="submit" class="picsbutton negative" value="Delete" name="button"/>
 			</s:if>
@@ -113,7 +113,7 @@
 				<table class="report">
 					<thead>
 						<tr>
-							<s:if test="payment != null">
+							<s:if test="payment != null || contractor.paymentMethod.creditCard">
 								<th>Apply?</th>
 							</s:if>
 							<th>Invoice</th>
@@ -122,7 +122,6 @@
 							<th>Balance</th>
 							<s:if test="payment != null">
 								<th>Apply</th>
-								<th>Auto</th>
 							</s:if>
 							<th>Status</th>
 						</tr>
@@ -130,7 +129,7 @@
 					<s:iterator value="contractor.invoices" id="i">
 						<s:if test="status.unpaid">
 							<tr>
-								<s:if test="payment != null">
+								<s:if test="payment != null || contractor.paymentMethod.creditCard">
 									<td>
 										<s:checkbox name="applyMap[%{id}]"/>
 									</td>
@@ -142,7 +141,7 @@
 									<s:date name="creationDate" format="M/d/yy"/>
 								</td>
 								<td>
-									$<s:property value="balance"/>
+									$<s:property value="totalAmount"/>
 								</td>
 								<td>
 									$<s:property value="balance"/>
@@ -150,8 +149,6 @@
 								<s:if test="payment != null">
 									<td>
 										$<s:textfield name="amountApplyMap[%{id}]" size="6"/>
-									</td>
-									<td>
 									</td>
 								</s:if>
 								<td><s:property value="status"/></td>
@@ -164,6 +161,9 @@
 		</s:if>
 		<s:if test="payment != null">
 			<input type="submit" class="picsbutton positive" value="Save" name="button"/>
+		</s:if>
+		<s:if test="contractor.paymentMethod.creditCard && payment == null">
+			<input type="submit" class="picsbutton positive" value="Credit Card" name="button"/>
 		</s:if>
 	</s:form>
 </div>

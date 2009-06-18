@@ -86,24 +86,49 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		if (button != null) {
+			if ("Credit Card".equals(button)) {
+				if (applyMap.size() == 0)
+					this.redirect("PaymentDetail.action?id=" + contractor.getId());
+				payment = new Payment();
+				payment.setAccount(account);
+				payment.setAuditColumns(permissions);
+				// for (Invoice inv : contractor.getInvoices()) {
+				// if (applyMap.get(inv.getId()) != null &&
+				// applyMap.get(inv.getId())) {
+				// payment.setTotalAmount(payment.getTotalAmount().add(inv.getBalance()));
+				// amountApplyMap.put(inv.getId(), inv.getBalance());
+				// }
+				// }
+
+				payment = paymentDAO.save(payment);
+
+				button = "Save";
+			}
+
 			if ("Save".equals(button) && payment != null) {
 				for (Iterator<InvoicePayment> ip = payment.getInvoices().iterator(); ip.hasNext();) {
 					InvoicePayment invoicePayment = ip.next();
-					if (unApplyMap.get(invoicePayment.getId())) {
+					if (unApplyMap.get(invoicePayment.getId()) != null && unApplyMap.get(invoicePayment.getId())) {
 						ip.remove();
 						invoicePayment.getInvoice().getPayments().remove(invoicePayment);
 						invoicePayment.getInvoice().updateAmountApplied();
 						invoiceDAO.save(invoicePayment.getInvoice());
 						invoicePaymentDAO.remove(invoicePayment);
+						
+						if (contractor.getPaymentMethod().isCreditCard())
+							payment.setTotalAmount(payment.getTotalAmount().subtract(invoicePayment.getAmount()));
 					}
 				}
 				payment.updateAmountApplied();
 
-				if (contractor.getPaymentMethod().isCheck()) {
-					payment.setPaymentMethod(PaymentMethod.Check);
-					for (Invoice inv : contractor.getInvoices()) {
-						if (applyMap.get(inv.getId()) != null && applyMap.get(inv.getId())
-								&& amountApplyMap.get(inv.getId()) != null
+				payment.setPaymentMethod(contractor.getPaymentMethod());
+
+				for (Invoice inv : contractor.getInvoices()) {
+					if (applyMap.get(inv.getId()) != null && applyMap.get(inv.getId())) {
+						if (contractor.getPaymentMethod().isCreditCard()) {
+							payment.setTotalAmount(payment.getTotalAmount().add(inv.getBalance()));
+							applyPayment(inv, inv.getBalance());
+						} else if (amountApplyMap.get(inv.getId()) != null
 								&& amountApplyMap.get(inv.getId()).compareTo(BigDecimal.ZERO) > 0) {
 							applyPayment(inv, amountApplyMap.get(inv.getId()));
 						}
@@ -162,22 +187,24 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		if (payment != null) {
-			BigDecimal leftover = payment.getBalance();
-			for (Invoice inv : contractor.getInvoices()) {
-				if (inv.getStatus().isUnpaid()) {
-					if (leftover.compareTo(inv.getBalance()) < 0) {
-						amountApplyMap.put(inv.getId(), leftover);
-						applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) < 0);
-						// payment.setAmountApplied(payment.getAmountApplied().add(payment.getBalance()));
-						leftover = leftover.subtract(payment.getBalance());
+			if (payment.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+				BigDecimal leftover = payment.getBalance();
+				for (Invoice inv : contractor.getInvoices()) {
+					if (inv.getStatus().isUnpaid()) {
+						if (leftover.compareTo(inv.getBalance()) < 0) {
+							amountApplyMap.put(inv.getId(), leftover);
+							applyMap.put(inv.getId(), leftover.compareTo(BigDecimal.ZERO) > 0);
+							// payment.setAmountApplied(payment.getAmountApplied().add(payment.getBalance()));
+							leftover = BigDecimal.ZERO;
 
-					} else {
-						amountApplyMap.put(inv.getId(), inv.getBalance());
-						applyMap.put(inv.getId(), BigDecimal.ZERO.compareTo(amountApplyMap.get(inv.getId())) < 0);
-						// payment.setAmountApplied(payment.getAmountApplied().add(inv.getBalance()));
-						leftover = leftover.subtract(inv.getBalance());
+						} else if (leftover.compareTo(BigDecimal.ZERO) > 0) {
+							amountApplyMap.put(inv.getId(), inv.getBalance());
+							applyMap.put(inv.getId(), leftover.compareTo(BigDecimal.ZERO) > 0);
+							// payment.setAmountApplied(payment.getAmountApplied().add(inv.getBalance()));
+							leftover = leftover.subtract(inv.getBalance());
+						}
+
 					}
-
 				}
 			}
 		}
