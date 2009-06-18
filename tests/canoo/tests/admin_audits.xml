@@ -31,8 +31,8 @@
 					<clickLink label="Scheduled"/>
 					</group>
 					<group description="Schedule Audit, complete Office Audit">
-					<setSelectField xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/form[@id='assignScheduleAuditsForm']/table/tbody/tr/td[6]/nobr/select" text="Jesse Cota"/>
-					<setInputField xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/form[@id='assignScheduleAuditsForm']/table/tbody/tr/td[8]/nobr/input" value="4/29/2009"/>
+					<setSelectField optionIndex="9"/>
+					<setInputField htmlId="auditor_73460" value="4/29/2009"/>
 					<setRadioButton forLabel="Web"/>
 					<clickButton label="Save"/>
 					<clickLink href="Audit.action" label="Office Audit"/>

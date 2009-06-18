@@ -31,6 +31,8 @@
 				<group description="Register and Save">
 					<!-- Register Correctly -->
 					<setInputField name="contractor.name" value="Canoo's Test Contractor" />
+					<setInputField name="contractor.doingBusinessAsName" value="Canoo's DBA" />
+					<setInputField name="contractor.taxId" value="789456123" />
 					<setInputField name="contractor.contact" value="John Doe" />
 					<setInputField name="contractor.address" value="123 Main Street" />
 					<setInputField name="contractor.city" value="Tester" />
@@ -47,7 +49,6 @@
 					<setInputField name="contractor.billingPhone" value="(949) 123-4571" />
 					<setInputField name="contractor.billingEmail" value="billingEmail@picsauditing.com" />
 					<setInputField name="contractor.webUrl" value="http://www.picsauditing.com/canoo/" />
-					<setInputField name="contractor.taxId" value="789456123" />
 					<setSelectField name="contractor.industry" text="Power" />
 					<setSelectField name="contractor.mainTrade" text="Boiler Repair" />
 					<setSelectField name="contractor.requestedById" value="1197" />
@@ -55,6 +56,7 @@
 					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me." />
 					<setInputField name="user.username" value="${register.username}" />
 					<setInputField name="user.password" value="${login.password}" />
+					<setInputField name="confirmPassword" value="${login.password}" />
 					
 					<clickButton description="Click Register" name="button" />
 					&body_verify;

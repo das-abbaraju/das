@@ -9,5 +9,6 @@ Do not edit it else you risk to lose your changes.
 <!ENTITY click_report SYSTEM "../includes/click_report.xml">
 <!ENTITY config SYSTEM "../includes/config.xml">
 <!ENTITY contractor_delete SYSTEM "../includes/contractor_delete.xml">
+<!ENTITY doOfficeAudit SYSTEM "../includes/doOfficeAudit.xml">
 <!ENTITY login SYSTEM "../includes/login.xml">
 
