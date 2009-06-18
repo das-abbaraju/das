@@ -16,6 +16,7 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.quickbooks.qbxml.InvoiceLineMod;
 import com.picsauditing.quickbooks.qbxml.InvoiceMod;
 import com.picsauditing.quickbooks.qbxml.InvoiceModRqType;
@@ -123,26 +124,30 @@ public class UpdateInvoices extends CustomerAdaptor {
 				invoice.setIsToBePrinted("false");
 				invoice.setIsToBeEmailed("false");
 
-				for (InvoiceItem item : invoiceJPA.getItems()) {
 
-					InvoiceLineMod lineItem = factory.createInvoiceLineMod();
-
-					lineItem.setTxnLineID("-1");
-
-					lineItem.setDesc(item.getDescription());
-					lineItem.setQuantity("1");
-
-					lineItem.setClassRef(factory.createClassRef());
-					lineItem.getClassRef().setFullName("Contractors");
-
-					lineItem.setItemRef(factory.createItemRef());
-					lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
-
-					lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-
-					invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
+				if( ! ( invoiceJPA.getStatus().equals( TransactionStatus.Void ) ) )
+				{
+					for (InvoiceItem item : invoiceJPA.getItems()) {
+	
+						InvoiceLineMod lineItem = factory.createInvoiceLineMod();
+	
+						lineItem.setTxnLineID("-1");
+	
+						lineItem.setDesc(item.getDescription());
+						lineItem.setQuantity("1");
+	
+						lineItem.setClassRef(factory.createClassRef());
+						lineItem.getClassRef().setFullName("Contractors");
+	
+						lineItem.setItemRef(factory.createItemRef());
+						lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
+	
+						lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+	
+						invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
+					}
 				}
-
+				
 				currentSession.getCurrentBatch().put(invoiceModRequest.getRequestID(), thePk);
 			}
 		}

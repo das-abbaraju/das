@@ -15,6 +15,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.quickbooks.qbxml.InvoiceAdd;
 import com.picsauditing.quickbooks.qbxml.InvoiceAddRqType;
 import com.picsauditing.quickbooks.qbxml.InvoiceAddRsType;
@@ -103,24 +104,29 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.setIsToBePrinted("false");
 				invoice.setIsToBeEmailed("false");
 
-				for (InvoiceItem item : invoiceJPA.getItems()) {
 
-					InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
-
-					lineItem.setItemRef(factory.createItemRef());
-					lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
-
-					lineItem.setDesc(item.getDescription());
-					lineItem.setQuantity("1");
-
-					lineItem.setClassRef(factory.createClassRef());
-					lineItem.getClassRef().setFullName("Contractors");
-
-					lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-
-					invoice.getInvoiceLineAddOrInvoiceLineGroupAdd().add(lineItem);
+				if( ! ( invoiceJPA.getStatus().equals( TransactionStatus.Void ) ) )
+				{
+					for (InvoiceItem item : invoiceJPA.getItems()) {
+	
+						InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
+	
+						lineItem.setItemRef(factory.createItemRef());
+						lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
+	
+						lineItem.setDesc(item.getDescription());
+						lineItem.setQuantity("1");
+	
+						lineItem.setClassRef(factory.createClassRef());
+						lineItem.getClassRef().setFullName("Contractors");
+	
+						lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+	
+						invoice.getInvoiceLineAddOrInvoiceLineGroupAdd().add(lineItem);
+					}
 				}
-
+				
+				
 				currentSession.getCurrentBatch().put(invoiceAddRequest.getRequestID(),
 						new Integer(invoiceJPA.getId()).toString());
 			}
