@@ -64,6 +64,14 @@ p {
 	font-size: 12px;
 }
 
+#systemMessage {
+	color: #FFFFFF;
+	font-size: 14px;
+	margin-top: 14px;
+	padding-right: 40px;
+	float: right;	
+}
+
 /*
 		margin-top: 10px;
 		padding-top: 8px;

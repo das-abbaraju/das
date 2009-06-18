@@ -1,6 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<%@page import="com.picsauditing.dao.AppPropertyDAO"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
+<%@page import="com.picsauditing.jpa.entities.AppProperty"%>
+<%@page import="com.picsauditing.util.Strings"%>
 <%@ page language="java" %>
 <%@ page import="com.picsauditing.access.MenuComponent"%>
 <%@ page import="com.picsauditing.access.PicsMenu"%>
@@ -11,6 +15,8 @@
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 	MenuComponent menu = PicsMenu.getMenu(permissions);
+	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
 %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
 <head>
@@ -62,6 +68,11 @@
 <input type="submit" value="Search" class="blueMain" />
 </form>
 </div>
+<% } %>
+<% if (!Strings.isEmpty(appProperty.getValue())) { %>
+	<div id="systemMessage">
+		<%= appProperty.getValue()%>
+	</div>
 <% } %>
 <div id="logo"><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
 </div></div></div>

@@ -66,3 +66,8 @@ values (null,"Contractors Pending Approvals", "Html", 0,
 
 insert into widget_user 
 values (null, newWidgetID, 616, 1, 2,10, null);>>>>>>> .r5827
+
+/*
+ * Added a system message to the app_properties.
+ */
+ insert into app_properties values ('SYSTEM.MESSAGE', null);
