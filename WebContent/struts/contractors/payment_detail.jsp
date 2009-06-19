@@ -78,7 +78,7 @@ fieldset.form li {
 		</td><td style="vertical-align: top;" valign="top">
 		<ol>
 			<li><label>Method:</label><s:radio name="method" theme="pics"
-				list="@com.picsauditing.jpa.entities.PaymentMethod@values()"></s:radio></li>
+				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check"><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
 			<li class="method_cc" style="display: none"><label>Type:</label><s:property value="creditcard.ccType" /></li>
