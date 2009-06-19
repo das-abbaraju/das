@@ -79,11 +79,11 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			// Useful during development, we can remove this later
 			for (Invoice invoice : contractor.getInvoices())
 				invoice.updateAmountApplied();
-
-			for (Invoice invoice : contractor.getInvoices()) {
-				if (!amountApplyMap.containsKey(invoice.getId()))
-					amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
-			}
+		}
+		
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (!amountApplyMap.containsKey(invoice.getId()))
+				amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
 		}
 
 		if (button != null) {
