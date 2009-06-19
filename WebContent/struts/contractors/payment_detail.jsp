@@ -5,6 +5,7 @@
 <title><s:property value="contractor.name" /> - Payment <s:property value="payment.id" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="all" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/notes.css" />
 
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/payment_detail.js"></script>
@@ -77,12 +78,12 @@ fieldset.form li {
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
 		<ol>
-			<li><label>Method:</label><s:radio name="method" theme="pics"
+			<li><label>Method:</label><s:radio name="method" theme="pics" onchange="changePaymentMethod(this.value)"
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
-			<li class="method_check"><label>Check Number:</label><s:textfield
+			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
-			<li class="method_cc" style="display: none"><label>Type:</label><s:property value="creditcard.ccType" /></li>
-			<li class="method_cc" style="display: none"><label>Number:</label><s:property value="creditcard.ccNumber" /></li>
+			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label><s:property value="creditcard.ccType" /></li>
+			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label><s:property value="creditcard.ccNumber" /></li>
 			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditcard.ccType" /></li>
 			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditcard.ccNumber" /></li>
 		</ol>

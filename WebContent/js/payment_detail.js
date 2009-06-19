@@ -2,6 +2,17 @@ function isAutoApply() {
 	return $('autoapply').checked;
 }
 
+function changePaymentMethod(method) {
+	if ('Check' == method) {
+		$$('.method_cc').invoke('hide');
+		$$('.method_check').invoke('show');
+	}
+	else if ('CreditCard' == method) {
+		$$('.method_cc').invoke('show');
+		$$('.method_check').invoke('hide');
+	}
+}
+
 function setInvoiceApply(invoiceID) {
 	// when we click the line populate the applied amount
 	// / from the balance
