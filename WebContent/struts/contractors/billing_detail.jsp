@@ -112,42 +112,23 @@
 						<th>#</th>
 						<th>Date</th>
 						<th>Amount</th>
-						<th>Balance</th>
+						<th>Outstanding</th>
 						<th>Status</th>
 					</tr>
 				</thead>
 				<tbody>
 					<s:iterator value="transactions">
-						<tr 
-							<s:if test="class.simpleName.equals('Invoice')">style="cursor: pointer;" onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>
-							<s:elseif test="class.simpleName.equals('Payment')">style="cursor: pointer;" onclick="window.location = 'PaymentDetail.action?payment.id=<s:property value="id"/>'"</s:elseif>>
+						<tr class="clickable<s:if test="status.void"> inactive</s:if>"
+							<s:if test="class.simpleName.equals('Invoice')">onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>
+							<s:elseif test="class.simpleName.equals('Payment')">onclick="window.location = 'PaymentDetail.action?payment.id=<s:property value="id"/>'"</s:elseif>>
 							<td><s:property value="class.simpleName"/></td>
-							<td class="<s:if test="status.void"> ? inactive : center</s:if>">
-								<s:if test="class.simpleName.equals('Invoice')">
-									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id" /></a>
-								</s:if>
-								<s:elseif test="class.simpleName.equals('Payment')">
-									<a href="PaymentDetail.action?payment.id=<s:property value="id"/>"><s:property value="id" /></a>
-								</s:elseif>
-								<s:else>
+							<td>
 									<s:property value="id"/>
-								</s:else>
 							</td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
 							<td class="right">$<s:property value="balance" /></td>
 							<td><s:property value="status"/></td>
-						</tr>
-					</s:iterator>
-					<s:iterator value="payments">
-						<tr style="cursor: pointer;"
-							onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'">
-							<td>Payment</td>
-							<td class="<s:if test="status.void"> ? inactive : center</s:if>"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property
-								value="id" /></a></td>
-							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
-							<td class="right">$<s:property value="totalAmount" /></td>
-							<td></td>
 						</tr>
 					</s:iterator>
 				</tbody>

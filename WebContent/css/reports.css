@@ -192,7 +192,7 @@ table.report td.inactive {
 
 table.report tr.clickable:hover {
 	background-color: #ffff99;	
-	color:inherit;
+	color:black;
 	cursor: pointer;
 }
 

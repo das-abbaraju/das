@@ -62,7 +62,7 @@ input[type=submit] {
 
 					<div id="toolbox" class="noprint" />
 					<ul>
-						<li><a class="pay" href="PaymentDetail.action?invoice.id=<s:property value="invoice.id"/>">Pay</a></li>
+						<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
 								<li><a class="save" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Save">Save</a></li>
