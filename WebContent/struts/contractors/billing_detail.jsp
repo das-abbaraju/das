@@ -32,10 +32,7 @@
 				name="contractor.creationDate" format="MMM d, yyyy" /></li>
 			<li><label title="The Date the Activation/Reactivation Fee was Paid.">Activation Date:</label> <s:date
 				name="contractor.membershipDate" format="MMM d, yyyy" /></li>
-			<li><label>Will be Renewed:</label>
-				<s:if test="contractor.renew">Yes</s:if>
-				<s:else>No</s:else>
-			</li>
+			<li><label>Will be Renewed:</label> <s:if test="contractor.renew">Yes</s:if> <s:else>No</s:else></li>
 			<li><label>Renewal Date:</label> <s:date name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
 			<li><label>Payment Method:</label> <s:property value="contractor.paymentMethod.description" /></li>
 			<li><label>Credit Card on File?</label> <s:if test="contractor.ccOnFile">Yes</s:if> <s:else>No</s:else></li>
@@ -79,32 +76,30 @@
 		</fieldset>
 
 		<s:if test="permissions.admin">
-			<fieldset class="form"><legend><span>Create Invoice</span></legend>
-				<s:form id="save" method="POST" enctype="multipart/form-data">
+			<fieldset class="form"><legend><span>Create Invoice</span></legend> <s:form id="save" method="POST"
+				enctype="multipart/form-data">
+				<s:hidden name="id" />
+				<ol>
+					<s:iterator value="invoiceItems">
+						<s:if test="invoiceFee != null">
+							<li><label><s:property value="invoiceFee.fee" />:</label> $<s:property value="amount" /> USD</li>
+						</s:if>
+						<s:else>
+							<li><label><s:property value="description" />:</label> $<s:property value="amount" /> USD</li>
+						</s:else>
+					</s:iterator>
+					<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
+					<li><div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div></li>
+				</ol>
+			</s:form> <s:if test="contractor.billingStatus == 'Current' && !contractor.activeB">
+				<s:form>
 					<s:hidden name="id" />
-					<ol>
-						<s:iterator value="invoiceItems">
-							<s:if test="invoiceFee != null">
-								<li><label><s:property value="invoiceFee.fee" />:</label> $<s:property value="amount" /> USD</li>
-							</s:if>
-							<s:else>
-								<li><label><s:property value="description" />:</label> $<s:property value="amount" /> USD</li>
-							</s:else>
-						</s:iterator>
-						<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
-					</ol>
-					<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
+					<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Activate" /></div>
 				</s:form>
-				<s:if test="contractor.billingStatus == 'Current' && !contractor.activeB">
-					<s:form>
-						<s:hidden name="id" />
-						<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Activate" /></div>
-					</s:form>
-				</s:if>
-			</fieldset>
+			</s:if></fieldset>
 		</s:if>
-			<div class="clear"></div>
-			<h3 style="margin-top: 50px">Transaction History</h3>
+		<fieldset class="form bottom"><legend><span>Transaction History</span></legend>
+		<ol>
 			<table class="report">
 				<thead>
 					<tr>
@@ -121,18 +116,18 @@
 						<tr class="clickable<s:if test="status.void"> inactive</s:if>"
 							<s:if test="class.simpleName.equals('Invoice')">onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>
 							<s:elseif test="class.simpleName.equals('Payment')">onclick="window.location = 'PaymentDetail.action?payment.id=<s:property value="id"/>'"</s:elseif>>
-							<td><s:property value="class.simpleName"/></td>
-							<td>
-									<s:property value="id"/>
-							</td>
+							<td><s:property value="class.simpleName" /></td>
+							<td><s:property value="id" /></td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
 							<td class="right">$<s:property value="balance" /></td>
-							<td><s:property value="status"/></td>
+							<td><s:property value="status" /></td>
 						</tr>
 					</s:iterator>
 				</tbody>
 			</table>
+		</ol>
+		</fieldset>
 		</td>
 	</tr>
 </table>
