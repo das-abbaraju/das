@@ -100,7 +100,7 @@ fieldset.form ol {
 					<td><s:date name="invoice.creationDate" format="M/d/yy" /></td>
 					<td>$<s:property value="invoice.totalAmount" /></td>
 					<td>$<s:property value="amount" /></td>
-					<td><input type="button" class="" value="Remove" /></td>
+					<td><a class="remove" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=unapply&amountApplyMap[<s:property value="invoice.id" />]=0">Remove</a></td>
 				</tr>
 			</s:iterator>
 			<s:iterator value="payment.refunds">
@@ -138,6 +138,7 @@ fieldset.form ol {
 						<td><input type="button" onclick="setInvoiceApply(<s:property value="id" />);" value="&gt;&gt;"/></td>
 						<td class="right">$<s:textfield id="invoice_apply_%{id}" cssClass="amountApply" name="amountApplyMap[%{id}]" size="6"
 							onchange="updateSingleAppliedAmount(%{id});" /></td>
+						<td><a class="add" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=apply&amountApplyMap[<s:property value="id" />]=<s:property value="payment.balance" />">Apply</a></td>
 					</tr>
 				</s:if>
 			</s:iterator>

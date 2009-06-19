@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
@@ -21,7 +22,9 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.jpa.entities.Refund;
 
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
@@ -68,22 +71,22 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		if (method == null)
 			method = contractor.getPaymentMethod();
 
-		if (payment != null) {
-			payment.updateAmountApplied();
-			for (PaymentAppliedToInvoice ip : payment.getInvoices())
-				ip.getInvoice().updateAmountApplied();
-		} else {
+		if (payment == null || payment.getId() == 0) {
+			for (Invoice invoice : contractor.getInvoices()) {
+				if (!amountApplyMap.containsKey(invoice.getId()))
+					amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
+			}
+
 			if (method.isCreditCard()) {
 				creditCard = paymentService.getCreditCard(id);
 			}
 			// Useful during development, we can remove this later
 			for (Invoice invoice : contractor.getInvoices())
 				invoice.updateAmountApplied();
-		}
-		
-		for (Invoice invoice : contractor.getInvoices()) {
-			if (!amountApplyMap.containsKey(invoice.getId()))
-				amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
+		} else {
+			payment.updateAmountApplied();
+			for (PaymentAppliedToInvoice ip : payment.getInvoices())
+				ip.getInvoice().updateAmountApplied();
 		}
 
 		if (button != null) {
@@ -120,8 +123,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 				}
 
-				paymentDAO.save(payment);
-
 				// if (invoice.getStatus().isPaid()) {
 				// if (!contractor.isActiveB()) {
 				// for (InvoiceItem item : invoice.getItems()) {
@@ -141,18 +142,61 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				return BLANK;
 			}
 
-			// Sync up the amountApplyMap and the payment.invoices()
-			// First delete the applications that aren't there
-
-			// TODO Maybe we should just unapply or apply once invoice/refund at
-			// a time
-			// this would be a LOT easier, than try to figure out what has
-			// changed
-			// especially when we have to consider both invoice and refund lists
-
 			if (amountApplyMap.size() > 0) {
-
+				if (button.equals("unapply")) {
+					// Find the Invoice or Refind # passed through the amountApplyMap and remove it
+					for (int txnID : amountApplyMap.keySet()) {
+						Iterator<PaymentAppliedToInvoice> iterInvoice = payment.getInvoices().iterator();
+						while(iterInvoice.hasNext()) {
+							PaymentAppliedToInvoice pa = iterInvoice.next();
+							if (pa.getInvoice().getId() == txnID) {
+								paymentDAO.removePaymentInvoice(pa, getUser());
+								redirect("PaymentDetail.action?payment.id=" + payment.getId());
+								return BLANK;
+							}
+						}
+						
+						Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
+						while(iterRefund.hasNext()) {
+							PaymentAppliedToRefund pa = iterRefund.next();
+							if (pa.getRefund().getId() == txnID) {
+								paymentDAO.removePaymentRefund(pa, getUser());
+								redirect("PaymentDetail.action?payment.id=" + payment.getId());
+								return BLANK;
+							}
+						}
+					}
+				}
+				if (button.equals("apply")) {
+					for (int txnID : amountApplyMap.keySet()) {
+						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
+							for (Invoice txn : contractor.getInvoices()) {
+								if (txn.getId() == txnID) {
+									PaymentAppliedToInvoice pa = new PaymentAppliedToInvoice();
+									pa.setPayment(payment);
+									pa.setInvoice(txn);
+									pa.setAmount(amountApplyMap.get(txnID));
+									pa.setAuditColumns(getUser());
+									payment.getInvoices().add(pa);
+								}
+							}
+							for (Refund txn : contractor.getRefunds()) {
+								if (txn.getId() == txnID) {
+									PaymentAppliedToRefund pa = new PaymentAppliedToRefund();
+									pa.setPayment(payment);
+									pa.setRefund(txn);
+									pa.setAmount(amountApplyMap.get(txnID));
+									pa.setAuditColumns(getUser());
+									payment.getRefunds().add(pa);
+								}
+							}
+						}
+					}
+				}
 			}
+
+			payment.updateAmountApplied();
+			paymentDAO.save(payment);
 
 			redirect("PaymentDetail.action?payment.id=" + payment.getId());
 			return BLANK;

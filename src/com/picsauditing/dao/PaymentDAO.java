@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.User;
 
 @Transactional
@@ -66,17 +67,16 @@ public class PaymentDAO extends PicsDAO {
 	public List<Payment> findWhere(String where, int limit) {
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		
+
 		Query query = em.createQuery("SELECT p from Payment p " + where + " ORDER BY p.creationDate DESC");
 
-		if( limit != 0)
-		{
+		if (limit != 0) {
 			query.setMaxResults(limit);
 		}
 
 		return query.getResultList();
 	}
-	
+
 	public boolean applyPayment(Payment payment, Invoice invoice, User user, BigDecimal amount) {
 		// Don't ever try to apply more than the invoice or payment balance
 		if (amount.compareTo(invoice.getBalance()) > 0)
@@ -107,21 +107,38 @@ public class PaymentDAO extends PicsDAO {
 		return true;
 	}
 
-	public void removePayment(PaymentAppliedToInvoice ip, User user) {
-		if (ip == null)
+	public void removePaymentInvoice(PaymentAppliedToInvoice pa, User user) {
+		if (pa == null)
 			return;
-		Payment payment = ip.getPayment();
-		Invoice invoice = ip.getInvoice();
+		Payment payment = pa.getPayment();
+		Invoice invoice = pa.getInvoice();
 
-		payment.getInvoices().remove(ip);
-		invoice.getPayments().remove(ip);
-		em.remove(ip);
+		payment.getInvoices().remove(pa);
+		invoice.getPayments().remove(pa);
+		em.remove(pa);
 
 		payment.updateAmountApplied();
 		invoice.updateAmountApplied();
 
 		em.merge(payment);
 		em.merge(invoice);
+	}
+
+	public void removePaymentRefund(PaymentAppliedToRefund pa, User user) {
+		if (pa == null)
+			return;
+		Payment payment = pa.getPayment();
+		Refund refund = pa.getRefund();
+
+		payment.getInvoices().remove(pa);
+		refund.getPayments().remove(pa);
+		em.remove(pa);
+
+		payment.updateAmountApplied();
+		refund.updateAmountApplied();
+
+		em.merge(payment);
+		em.merge(refund);
 	}
 
 }
