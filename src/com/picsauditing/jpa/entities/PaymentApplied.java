@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "invoice_payment")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "paymentType", discriminatorType = DiscriminatorType.STRING)
-public class PaymentApplied extends BaseTable {
+public abstract class PaymentApplied extends BaseTable {
 	private Payment payment;
 	private BigDecimal amount = BigDecimal.ZERO;
 

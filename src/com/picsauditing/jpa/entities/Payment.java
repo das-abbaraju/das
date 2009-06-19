@@ -13,6 +13,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Where;
+
 import com.picsauditing.PICS.BrainTreeService;
 
 @Entity
@@ -68,7 +70,8 @@ public class Payment extends Transaction {
 		return cc.getCardType();
 	}
 
-	@OneToMany(mappedBy = "payment", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "payment", targetEntity = PaymentApplied.class, cascade = { CascadeType.ALL })
+	@Where(clause = "paymentType='I'")
 	public List<PaymentAppliedToInvoice> getInvoices() {
 		return invoices;
 	}
@@ -77,7 +80,8 @@ public class Payment extends Transaction {
 		this.invoices = invoices;
 	}
 
-	@OneToMany(mappedBy = "payment", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "payment", targetEntity = PaymentApplied.class, cascade = { CascadeType.ALL })
+	@Where(clause = "paymentType='R'")
 	public List<PaymentAppliedToRefund> getRefunds() {
 		return refunds;
 	}
