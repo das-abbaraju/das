@@ -6,11 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,7 +25,7 @@ public class Invoice extends Transaction {
 	private Date paidDate; // MAX(Payment.creationDate)
 	
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
-	private List<InvoicePayment> payments = new ArrayList<InvoicePayment>();
+	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
 
 	@Transient
 	public boolean isOverdue() {
@@ -88,11 +85,11 @@ public class Invoice extends Transaction {
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE })
-	public List<InvoicePayment> getPayments() {
+	public List<PaymentAppliedToInvoice> getPayments() {
 		return payments;
 	}
 
-	public void setPayments(List<InvoicePayment> payments) {
+	public void setPayments(List<PaymentAppliedToInvoice> payments) {
 		this.payments = payments;
 	}
 
@@ -113,7 +110,7 @@ public class Invoice extends Transaction {
 	@Transient
 	public void updateAmountApplied() {
 		amountApplied = BigDecimal.ZERO;
-		for (InvoicePayment ip : payments) {
+		for (PaymentApplied ip : payments) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
 		super.updateAmountApplied();

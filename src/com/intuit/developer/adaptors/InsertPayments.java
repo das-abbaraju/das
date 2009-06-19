@@ -12,7 +12,7 @@ import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.jpa.entities.InvoicePayment;
+import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.quickbooks.qbxml.AppliedToTxnAdd;
@@ -119,7 +119,7 @@ public class InsertPayments extends PaymentAdaptor {
 				payment.setMemo(paymentJPA.getCcNumber());
 			}
 
-			for (InvoicePayment invoicePayment : paymentJPA.getInvoices()) {
+			for (PaymentApplied invoicePayment : paymentJPA.getInvoices()) {
 				AppliedToTxnAdd application = factory.createAppliedToTxnAdd();
 				payment.getAppliedToTxnAdd().add(application);
 				application.setTxnID(factory.createAppliedToTxnAddTxnID());

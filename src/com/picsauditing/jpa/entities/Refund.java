@@ -16,16 +16,15 @@ import javax.persistence.Transient;
 import com.picsauditing.PICS.BrainTreeService;
 
 @Entity
-@DiscriminatorValue(value = "P")
-public class Payment extends Transaction {
+@DiscriminatorValue(value = "R")
+public class Refund extends Transaction {
 
 	private PaymentMethod paymentMethod;
 	private String checkNumber;
 	private String transactionID;
 	private String ccNumber;
 
-	private List<PaymentAppliedToInvoice> invoices = new ArrayList<PaymentAppliedToInvoice>();
-	private List<PaymentAppliedToRefund> refunds = new ArrayList<PaymentAppliedToRefund>();
+	private List<PaymentAppliedToRefund> payments = new ArrayList<PaymentAppliedToRefund>();
 
 	@Enumerated(EnumType.STRING)
 	public PaymentMethod getPaymentMethod() {
@@ -52,6 +51,15 @@ public class Payment extends Transaction {
 		this.transactionID = transactionID;
 	}
 
+	@OneToMany(mappedBy = "refund", cascade = { CascadeType.REMOVE })
+	public List<PaymentAppliedToRefund> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(List<PaymentAppliedToRefund> payments) {
+		this.payments = payments;
+	}
+	
 	@Column(name = "ccNumber")
 	public String getCcNumber() {
 		return ccNumber;
@@ -68,28 +76,10 @@ public class Payment extends Transaction {
 		return cc.getCardType();
 	}
 
-	@OneToMany(mappedBy = "payment", cascade = { CascadeType.ALL })
-	public List<PaymentAppliedToInvoice> getInvoices() {
-		return invoices;
-	}
-
-	public void setInvoices(List<PaymentAppliedToInvoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	@OneToMany(mappedBy = "payment", cascade = { CascadeType.ALL })
-	public List<PaymentAppliedToRefund> getRefunds() {
-		return refunds;
-	}
-
-	public void setRefunds(List<PaymentAppliedToRefund> refunds) {
-		this.refunds = refunds;
-	}
-
 	@Transient
 	public void updateAmountApplied() {
 		amountApplied = BigDecimal.ZERO;
-		for (PaymentApplied ip : invoices) {
+		for (PaymentApplied ip : payments) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
 		super.updateAmountApplied();

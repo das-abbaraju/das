@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum PaymentMethod {
-	CreditCard("Credit Card"), Check("Check");
+	CreditCard("Credit Card"), Check("Check"), Refund("Refund");
 
 	private String description;
 

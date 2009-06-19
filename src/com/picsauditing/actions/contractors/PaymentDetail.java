@@ -14,7 +14,8 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoicePayment;
+import com.picsauditing.jpa.entities.PaymentApplied;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
 
@@ -65,7 +66,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 		if (payment != null) {
 			payment.updateAmountApplied();
-			for (InvoicePayment ip : payment.getInvoices())
+			for (PaymentAppliedToInvoice ip : payment.getInvoices())
 				ip.getInvoice().updateAmountApplied();
 		} else {
 			if (method.isCreditCard()) {
@@ -76,13 +77,21 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				invoice.updateAmountApplied();
 		}
 
+		if (button != null) {
+			if (button.equalsIgnoreCase("Delete") && payment != null) {
+				paymentDAO.remove(payment);
+				redirect("PaymentDetail.action?id=" + id);
+				return BLANK;
+			}
+		}
+
 		return SUCCESS;
 	}
 
 	public boolean isHasUnpaidInvoices() {
 		if (payment != null && !payment.getStatus().isUnpaid())
 			return false;
-		
+
 		for (Invoice invoice : contractor.getInvoices()) {
 			if (invoice.getStatus().isUnpaid())
 				return true;

@@ -8,7 +8,9 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoicePayment;
+import com.picsauditing.jpa.entities.PaymentApplied;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
+import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.User;
 
@@ -32,9 +34,16 @@ public class PaymentDAO extends PicsDAO {
 		if (row != null) {
 			em.remove(row);
 		}
+		for (PaymentAppliedToInvoice ip : row.getInvoices()) {
+			ip.getInvoice().updateAmountApplied();
+		}
+		for (PaymentAppliedToRefund ip : row.getRefunds()) {
+			ip.getRefund().updateAmountApplied();
+		}
+		row = null;
 	}
 
-	public void remove(InvoicePayment row) {
+	public void remove(PaymentApplied row) {
 		if (row != null) {
 			em.remove(row);
 		}
@@ -80,7 +89,7 @@ public class PaymentDAO extends PicsDAO {
 		payment.getInvoices();
 
 		// Create the new InvoicePayment
-		InvoicePayment ip = new InvoicePayment();
+		PaymentAppliedToInvoice ip = new PaymentAppliedToInvoice();
 		ip.setInvoice(invoice);
 		ip.setPayment(payment);
 		ip.setAmount(amount);
@@ -98,7 +107,7 @@ public class PaymentDAO extends PicsDAO {
 		return true;
 	}
 
-	public void removePayment(InvoicePayment ip, User user) {
+	public void removePayment(PaymentAppliedToInvoice ip, User user) {
 		if (ip == null)
 			return;
 		Payment payment = ip.getPayment();

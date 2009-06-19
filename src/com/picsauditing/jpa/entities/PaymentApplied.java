@@ -2,27 +2,22 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "invoice_payment")
-public class InvoicePayment extends BaseTable {
-	private Invoice invoice;
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "paymentType", discriminatorType = DiscriminatorType.STRING)
+public class PaymentApplied extends BaseTable {
 	private Payment payment;
 	private BigDecimal amount = BigDecimal.ZERO;
-
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "invoiceID")
-	public Invoice getInvoice() {
-		return invoice;
-	}
-
-	public void setInvoice(Invoice invoice) {
-		this.invoice = invoice;
-	}
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "paymentID")

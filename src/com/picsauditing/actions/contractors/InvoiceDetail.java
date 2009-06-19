@@ -25,7 +25,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.InvoicePayment;
+import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.TransactionStatus;
@@ -89,7 +89,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		invoice.updateAmountApplied();
-		for (InvoicePayment ip : invoice.getPayments())
+		for (PaymentApplied ip : invoice.getPayments())
 			ip.getPayment().updateAmountApplied();
 
 		if (button != null) {
