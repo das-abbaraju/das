@@ -79,11 +79,17 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			// Useful during development, we can remove this later
 			for (Invoice invoice : contractor.getInvoices())
 				invoice.updateAmountApplied();
+
+			for (Invoice invoice : contractor.getInvoices()) {
+				if (!amountApplyMap.containsKey(invoice.getId()))
+					amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
+			}
 		}
 
 		if (button != null) {
 			if (payment == null || payment.getId() == 0) {
-				// If we have a button but no payment, then we're creating a new payment
+				// If we have a button but no payment, then we're creating a new
+				// payment
 				payment.setAccount(contractor);
 				payment.setAuditColumns(getUser());
 				payment.setPaymentMethod(method);
@@ -119,7 +125,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				// if (invoice.getStatus().isPaid()) {
 				// if (!contractor.isActiveB()) {
 				// for (InvoiceItem item : invoice.getItems()) {
-				// if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+				// if (item.getInvoiceFee().getFeeClass().equals("Membership"))
+				// {
 				// contractor.setActive('Y');
 				// contractor.setAuditColumns(getUser());
 				// }
@@ -133,18 +140,20 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				redirect("PaymentDetail.action?id=" + id);
 				return BLANK;
 			}
-			
+
 			// Sync up the amountApplyMap and the payment.invoices()
 			// First delete the applications that aren't there
-			
-			// TODO Maybe we should just unapply or apply once invoice/refund at a time
-			// this would be a LOT easier, than try to figure out what has changed
+
+			// TODO Maybe we should just unapply or apply once invoice/refund at
+			// a time
+			// this would be a LOT easier, than try to figure out what has
+			// changed
 			// especially when we have to consider both invoice and refund lists
-			
+
 			if (amountApplyMap.size() > 0) {
-				
+
 			}
-			
+
 			redirect("PaymentDetail.action?payment.id=" + payment.getId());
 			return BLANK;
 		}
