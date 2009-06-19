@@ -10,17 +10,8 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/payment_detail.js"></script>
 <style type="text/css">
-fieldset.form {
-	margin: 0 0 .5em 0;
-	padding: 0 0 0 0;
-	border-bottom:2px solid #C3C3C3;
-}
 fieldset.form ol {
 	margin-top: 1em;
-	padding-left: 0px;
-}
-fieldset.form li {
-	padding-bottom: .5em;
 }
 </style>
 </head>
@@ -41,14 +32,12 @@ fieldset.form li {
 	<s:hidden name="id" />
 	<s:if test="payment != null && payment.id > 0">
 		<s:hidden name="payment.id" />
-		<fieldset class="form">
+		<fieldset class="form bottom">
 		<table><tr><td style="vertical-align: top;" valign="top">
 		<ol>
 			<li><label>Payment #:</label><s:property value="payment.id" /></li>
 			<li><label>Date:</label><s:date name="payment.creationDate" format="M/d/yy" /></li>
-			<li><label>Payment Amount:</label>$<s:property value="payment.totalAmount" /></li>
-			<li><label>Applied:</label>$<span id="payment_amountApplied"><s:property value="payment.amountApplied" /></span></li>
-			<li><label>Remainder:</label>$<span id="payment_balance"><s:property value="payment.balance" /></span></li>
+			<li><label>Amount:</label>$<s:property value="payment.totalAmount" /></li>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
 		<ol>
@@ -90,32 +79,38 @@ fieldset.form li {
 		</td></tr></table>
 		</fieldset>
 	</s:else>
-	<div class="clear"></div>
 
-	<s:if test="payment.invoices.size > 0">
-		<h3>Currently Applied Invoices</h3>
+	<s:if test="(payment.invoices.size + payment.refunds.size) > 0">
 		<table class="report">
 			<thead>
 				<tr>
-					<th>UnApply?</th>
-					<th>Invoice</th>
+					<th>Type</th>
+					<th>#</th>
 					<th>Date</th>
-					<th>Invoice Amount</th>
-					<th>Balance</th>
-					<th>Payment Amount</th>
-					<th>Status</th>
+					<th>Total</th>
+					<th>Applied</th>
+					<th>&nbsp;</th>
 				</tr>
 			</thead>
 
-			<s:iterator value="payment.invoices" id="i">
+			<s:iterator value="payment.invoices">
 				<tr>
-					<td><s:checkbox name="unApplyMap[%{id}]" /></td>
-					<td>Invoice #<s:property value="invoice.id" /></td>
+					<td>Invoice</td>
+					<td><a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />"><s:property value="invoice.id" /></a></td>
 					<td><s:date name="invoice.creationDate" format="M/d/yy" /></td>
 					<td>$<s:property value="invoice.totalAmount" /></td>
-					<td>$<s:property value="invoice.balance" /></td>
 					<td>$<s:property value="amount" /></td>
-					<td><s:property value="invoice.status" /></td>
+					<td><input type="button" class="" value="Remove" /></td>
+				</tr>
+			</s:iterator>
+			<s:iterator value="payment.refunds">
+				<tr>
+					<td>Refund</td>
+					<td><a href=""><s:property value="refund.id" /></a></td>
+					<td><s:date name="refund.creationDate" format="M/d/yy" /></td>
+					<td>$<s:property value="refund.totalAmount" /></td>
+					<td>$<s:property value="amount" /></td>
+					<td><input type="button" class="" value="Remove" /></td>
 				</tr>
 			</s:iterator>
 		</table>
@@ -136,8 +131,7 @@ fieldset.form li {
 			<s:iterator value="contractor.invoices">
 				<s:if test="status.unpaid">
 					<tr>
-						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK"
-							title="Opens in new window"><span class="invoiceID"><s:property value="id" /></span></a></td>
+						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><span class="invoiceID"><s:property value="id" /></span></a></td>
 						<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
 						<td class="right">$<s:property value="totalAmount" /></td>
 						<td class="right">$<span id="invoice_balance_<s:property value="id"/>"><s:property value="balance" /></span></td>

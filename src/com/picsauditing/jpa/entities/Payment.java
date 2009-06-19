@@ -96,6 +96,9 @@ public class Payment extends Transaction {
 		for (PaymentApplied ip : invoices) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
+		for (PaymentApplied ip : refunds) {
+			amountApplied = amountApplied.add(ip.getAmount());
+		}
 		super.updateAmountApplied();
 	}
 

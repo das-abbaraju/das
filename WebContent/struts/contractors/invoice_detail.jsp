@@ -62,7 +62,9 @@ input[type=submit] {
 
 					<div id="toolbox" class="noprint" />
 					<ul>
-						<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
+						<s:if test="invoice.status.unpaid">
+							<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
+						</s:if>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
 								<li><a class="save" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Save">Save</a></li>
@@ -180,15 +182,7 @@ input[type=submit] {
 				<tr>
 					<th colspan="2" class="big right">Payment(s)</th>
 					<td class="right"><s:iterator value="invoice.payments">
-						<s:if test="payment.paymentMethod.creditCard">
-							<s:property value="payment.ccType" /> Card <s:property value="payment.ccNumber" />
-							<br />
-							TransactionID: <s:property value="payment.transactionID" />
-						</s:if>
-						<s:if test="payment.checkNumber.length() > 0">
-							Check #<s:property value="payment.checkNumber" />
-						</s:if>
-						<s:date name="payment.creationDate" format="MMM d, yyyy" />
+						<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />"><s:date name="payment.creationDate" format="MMM d, yyyy" /></a>
 						<br />
 						<span class="big">($<s:property value="amount" />) USD</span>
 						<br />
