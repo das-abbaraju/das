@@ -139,7 +139,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					}
 				}
 				auditBuilder.buildAudits(contractor);
-				emailContractorOnAudit();
 			}
 
 			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
@@ -154,12 +153,18 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 			if (auditStatus.equals(AuditStatus.Submitted)) {
 				String notes = "";
-				if (conAudit.getAuditType().isPqf()) {
-					// Add a note...
-					// TODO we should probably stop doing this...it's kind of
-					// pointless or at least we should do it for other audits
-					// too
-					notes = conAudit.getContractorAccount().getName() + " Submitted their PQF ";
+				if (conAudit.getAuditType().isPqf() ||
+						conAudit.getAuditType().isAnnualAddendum()) {
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(13); // Audits Thank You
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setConAudit(conAudit);
+					EmailSender.send(emailBuilder.build());
+
+					notes = " Submitted " + conAudit.getAuditType().getAuditName();
+					if(conAudit.getAuditType().isAnnualAddendum())
+						notes += " for " + conAudit.getAuditFor();
+					notes += " and email sent to "+ emailBuilder.getSentTo();
 				}
 				int typeID = conAudit.getAuditType().getId();
 				if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {

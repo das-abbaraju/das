@@ -2,10 +2,8 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
@@ -22,13 +20,11 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.Strings;
 
 public class AuditActionSupport extends ContractorActionSupport {
 	protected int auditID = 0;
@@ -250,47 +246,4 @@ public class AuditActionSupport extends ContractorActionSupport {
 				descriptionText = "OSHA Recordable";
 		return descriptionText;
 	}
-
-	protected void emailContractorOnAudit() {
-		if (conAudit.getAuditType().isCanContractorView()) {
-			boolean allActive = true;
-			for (ContractorAudit cAudit : getActiveAudits()) {
-				// We have to check (cAudit != conAudit) because we haven't set
-				// the status yet...it happens later
-				if (!cAudit.equals(conAudit)
-						&& (cAudit.getAuditStatus()
-								.isPendingSubmittedResubmitted() 
-								|| cAudit.getAuditStatus().isIncomplete())
-						&& cAudit.getAuditType().isCanContractorView()) {
-					// this contractor still has open audits to complete...don't
-					// send the email
-					allActive = false;
-				}
-			}
-			if (allActive) {
-				// Sending all the operator Emails too
-//				Set<String> emailAddresses = new HashSet<String>();
-//				for (ContractorOperator contractorOperator : contractor.getOperators()) {
-//					emailAddresses.addAll(Strings.findUniqueEmailAddresses(contractorOperator.getOperatorAccount().getActivationEmails()));
-//				}
-				// Send email to contractor telling them thank you for submitting all the audits
-				try {
-					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(13); // Audits Thank You
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setContractor(contractor);
-//					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ",")); 
-					EmailSender.send(emailBuilder.build());
-					addNote(contractor, "Sent Audits Thank You email to "
-							+ emailBuilder.getSentTo(),
-							NoteCategory.Audits);
-					// TODO email all the operators as well
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-	}
-	
 }

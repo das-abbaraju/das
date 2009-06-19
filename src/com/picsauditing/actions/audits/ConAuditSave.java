@@ -40,7 +40,6 @@ public class ConAuditSave extends AuditActionSupport {
 				return SUCCESS;
 			
 			conAudit.changeStatus(AuditStatus.Active, getUser());
-			emailContractorOnAudit();
 		}
 		// TODO add a column to auditData to keep track when the contractor has
 		// changed the answer.
