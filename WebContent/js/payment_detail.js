@@ -89,6 +89,11 @@ function changeTotal() {
 	if($('payment_totalAmount').value.blank()) 
 		$('payment_totalAmount').value = '0.00';
 	
+	if (isNaN($('payment_totalAmount').value)) {
+		alert("That value is not a number");
+		$('payment_totalAmount').value = '0.00';
+	}
+	
 	$('payment_totalAmount').value = parseFloat($('payment_totalAmount').value).toFixed(2);
 	autoApply();
 }
