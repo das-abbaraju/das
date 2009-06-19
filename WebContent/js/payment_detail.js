@@ -71,7 +71,7 @@ function updateRemainder() {
 	// update the remainder (Payment Total - Invoice Total)
 	// hide save button if remainder < 0
 	var remainder = parseFloat($('payment_totalAmount').value) - parseFloat($('payment_amountApplied').innerHTML);
-	if (remainder < 0)
+	if (remainder < 0 || $('payment_totalAmount').value <= 0)
 		$('button_div').hide();
 	else
 		$('button_div').show();
@@ -85,4 +85,26 @@ function changeTotal() {
 	
 	$('payment_totalAmount').value = parseFloat($('payment_totalAmount').value).toFixed(2);
 	autoApply();
+}
+
+function applyAll() {
+	$$('.invoiceID').each(
+		function(ele){
+			var invoiceID = ele.innerHTML;
+			setInvoiceApply(invoiceID);
+		});
+		
+	calculateApplied();
+	calculateTotalFromApplied();
+}
+
+function clearAll() {
+	$$('.invoiceID').each(
+		function(ele){
+			var invoiceID = ele.innerHTML;
+			$('invoice_apply_'+invoiceID).value = '0.00';
+		});
+	
+	calculateApplied();
+	calculateTotalFromApplied();
 }

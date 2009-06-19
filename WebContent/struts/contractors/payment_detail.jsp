@@ -136,7 +136,7 @@ fieldset.form li {
 				<s:if test="status.unpaid">
 					<tr>
 						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK"
-							title="Opens in new window"><s:property value="id" /></a></td>
+							title="Opens in new window"><span class="invoiceID"><s:property value="id" /></span></a></td>
 						<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
 						<td class="right">$<s:property value="totalAmount" /></td>
 						<td class="right">$<span id="invoice_balance_<s:property value="id"/>"><s:property value="balance" /></span></td>
@@ -146,6 +146,12 @@ fieldset.form li {
 					</tr>
 				</s:if>
 			</s:iterator>
+			<tr>
+				<td class="right" colspan="6">
+					<input type="button" value="Apply All" onclick="applyAll();return false;"/>
+					<input type="button" value="Clear" onclick="clearAll();return false;"/>
+				</td>
+			</tr>
 		</table>
 		<div><input id="autoapply" type="checkbox" checked="checked" onchange="autoApply();"> <label for="autoapply">Auto Apply</label></div>
 	</s:if>
@@ -161,6 +167,11 @@ fieldset.form li {
 	</s:else>
 	</div>
 </s:form>
+
+<script>
+calculateApplied();
+calculateTotalFromApplied();
+</script>
 
 </body>
 </html>
