@@ -17,26 +17,28 @@ function setInvoiceApply(invoiceID) {
 	// when we click the line populate the applied amount
 	// / from the balance
 	// run the total
-	$('invoice_apply_' + invoiceID).value = $('invoice_balance_' + invoiceID).innerHTML;
+	if (totalLocked)
+		$('invoice_apply_' + invoiceID).value = Math.min(parseFloat($('invoice_balance_' + invoiceID).innerHTML), 
+				parseFloat($('payment_balance').innerHTML) + parseFloat($('invoice_apply_'+invoiceID).value));
+	else
+		$('invoice_apply_' + invoiceID).value = $('invoice_balance_' + invoiceID).innerHTML;
 	updateSingleAppliedAmount(invoiceID);
 }
 
 function updateSingleAppliedAmount(invoiceID) {
 	// change the autoapply = false
-	$('autoapply').checked = false;
-	var amount = $('invoice_apply_'+invoiceID).value;
-	if (amount.blank())
+	if ($('autoapply') != null)
+		$('autoapply').checked = false;
+	
+	var amount = parseFloat($('invoice_apply_'+invoiceID).value);
+	
+	if (isNaN(amount)) 
 		amount = 0.00;
-	else
-		amount = parseFloat(amount);
+	else if (amount < 0) 
+		amount = 0.00;
 
 	if (amount > parseFloat($('invoice_balance_'+invoiceID).innerHTML)) {
 		alert("That amount is greater than the balance of the invoice");
-		amount = 0.00;
-	}
-	
-	if (isNaN(amount)) {
-		alert("That value is not a number");
 		amount = 0.00;
 	}
 
@@ -48,7 +50,7 @@ function updateSingleAppliedAmount(invoiceID) {
 function calculateApplied() {
 	// sum up all the invoice applied amounts
 	// Update the payment_amountApplied
-	var total = 0.00;
+	var total = payment_amountApplied;
 	$$('input.amountApply').each( function(ele) {
 		total += parseFloat(ele.value);
 	}.bind(total));
@@ -128,5 +130,4 @@ function clearAll() {
 		});
 	
 	calculateApplied();
-	calculateTotalFromApplied();
 }

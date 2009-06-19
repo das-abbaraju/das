@@ -9,6 +9,17 @@
 
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/payment_detail.js"></script>
+<script type="text/javascript">
+	<s:if test="payment == null">
+		var payment_amountApplied = 0.00;
+		var totalLocked = false;
+	</s:if>
+	<s:else>
+		var payment_amountApplied = <s:property value="payment.amountApplied"/>;
+		var totalLocked = true;
+	</s:else>
+</script>
+
 <style type="text/css">
 fieldset.form ol {
 	margin-top: 1em;
@@ -37,11 +48,15 @@ fieldset.form ol {
 		<ol>
 			<li><label>Payment #:</label><s:property value="payment.id" /></li>
 			<li><label>Date:</label><s:date name="payment.creationDate" format="M/d/yy" /></li>
-			<li><label>Amount:</label>$<s:property value="payment.totalAmount" /></li>
+			<li><label>Amount:</label>$<s:property value="payment.totalAmount" /><s:hidden id="payment_totalAmount" value="%{payment.totalAmount}"/></li>
+			<s:if test="payment.status.unpaid">
+				<li><label>Applied:</label>$<span id="payment_amountApplied"><s:property value="payment.amountApplied"/></span></li>
+				<li><label>Remainder:</label>$<span id="payment_balance"><s:property value="payment.balance"/></span>
+			</s:if>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
 		<ol>
-			<li><label>Method:</label><s:property value="payment.paymentMethod" /></li>
+			<li><label>Method:</label><s:property value="payment.paymentMethod.description" /></li>
 			<s:if test="payment.paymentMethod.check">
 				<li><label>Check Number:</label><s:textfield name="payment.checkNumber" /></li>
 			</s:if>
@@ -138,18 +153,21 @@ fieldset.form ol {
 						<td><input type="button" onclick="setInvoiceApply(<s:property value="id" />);" value="&gt;&gt;"/></td>
 						<td class="right">$<s:textfield id="invoice_apply_%{id}" cssClass="amountApply" name="amountApplyMap[%{id}]" size="6"
 							onchange="updateSingleAppliedAmount(%{id});" /></td>
-						<td><a class="add" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=apply&amountApplyMap[<s:property value="id" />]=<s:property value="payment.balance" />">Apply</a></td>
 					</tr>
 				</s:if>
 			</s:iterator>
 			<tr>
 				<td class="right" colspan="6">
-					<input type="button" value="Apply All" onclick="applyAll();return false;"/>
+					<s:if test="payment == null">
+						<input type="button" value="Apply All" onclick="applyAll();return false;"/>
+					</s:if>
 					<input type="button" value="Clear" onclick="clearAll();return false;"/>
 				</td>
 			</tr>
 		</table>
-		<div><input id="autoapply" type="checkbox" checked="checked" onchange="autoApply();"> <label for="autoapply">Auto Apply</label></div>
+		<s:if test="payment == null">
+			<div><input id="autoapply" type="checkbox" checked="checked" onchange="autoApply();"> <label for="autoapply">Auto Apply</label></div>
+		</s:if>
 	</s:if>
 	<div id="button_div" class="buttons">
 	<s:if test="payment == null">
@@ -161,12 +179,9 @@ fieldset.form ol {
 			<input type="submit" class="picsbutton negative" value="Delete" name="button" onclick="return confirm('Are you sure you want to remove this payment?');" />
 		</s:if>
 	</s:else>
+	<br clear="all"/>
 	</div>
 </s:form>
-<script type="text/javascript">
-	calculateApplied();
-	calculateTotalFromApplied();
-</script>
 
 <s:if test="payment.balance > 0">
 	<s:form>
@@ -185,5 +200,11 @@ fieldset.form ol {
 	</s:form>
 </s:if>
 
+<s:if test="payment == null">
+	<script>
+	calculateApplied();
+	calculateTotalFromApplied();
+	</script>
+</s:if>
 </body>
 </html>
