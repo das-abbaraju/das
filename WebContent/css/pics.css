@@ -595,13 +595,14 @@ td.money,th.money {
 
 /* add to table elements representing money to have it right aligned */
 	/********************** BUTTONS ******************************/
-div.buttons a,.picsbutton,div.buttons button {
-	display: block;
-	float: left;
+.picsbutton, div.buttons a.picsbutton, div.buttons button.picsbutton {
 	margin: 0 7px 0 0;
-	border: 2px solid #4686BF;
-	border-top: 1px solid #4686BF;
-	border-left: 1px solid #4686BF;
+	border-top: 1px;
+	border-left: 1px;
+	border-bottom: 2px;
+	border-right: 2px;
+	border-color: #4686BF;
+	border-style: solid;
 	font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
 	font-size: 100%;
 	line-height: 130%;
@@ -609,20 +610,20 @@ div.buttons a,.picsbutton,div.buttons button {
 	font-weight: bold;
 	color: #565656;
 	cursor: pointer;
-	padding: 5px 10px 6px 7px; /* Links */
-}
-.picsbutton,.buttons a,.buttons button {
 	background-color: #fff;
 }
 
-.picsbutton,.buttons button {
+div.buttons a.picsbutton {
+	padding: 5px 11px 4px 12px; /* Links */
+}
+
+.picsbutton, div.buttons button.picsbutton {
 	width: auto;
 	overflow: visible;
 	padding: 4px 10px 3px 7px; /* IE6 */
 }
 
 .buttons button[type] {
-	padding: 5px 10px 5px 7px; /* Firefox */
 	line-height: 17px; /* Safari */
 }
 
@@ -639,30 +640,30 @@ div.buttons a,.picsbutton,div.buttons button {
 }
 
 /* UTILITIES */
-.picsbutton:hover,button:hover,.buttons a:hover {
+.picsbutton:hover, div.buttons button:hover, div.buttons a:hover, div.buttons a:active, .picsbutton:active, a:active {
 	background-color: #dff4ff;
-	border: 2px solid #6990DB;
-	border-bottom: 1px solid #6990DB;
-	border-right: 1px solid #6990DB;
+	border-left: 2px;
+	border-right: 1px;
+	border-bottom: 1px;
+	border-top: 2px;
+	margin-top: -1px;
+	border-style: solid;
+	border-color: #6990DB;
 	color: #336699;
 	text-decoration: none;
 }
 
-.picsbutton:active,.buttons a:active {
+.picsbutton:active, div.buttons a:active {
 	background-color: #6299c5;
-	border: 2px solid #6990DB;
-	border-bottom: 1px solid #6990DB;
-	border-right: 1px solid #6990DB;
 	color: #fff;
-	text-decoration: none;
 }
 
 /* POSITIVE */
-.positive {
+.positive, div.buttons a.positive {
 	color: #529214;
 }
 
-a.positive:hover, button.positive:hover {
+.positive:hover, div.buttons a.positive:hover {
 	background-color: #E6EFC2;
 	border: 2px solid #C6D880;
 	border-bottom: 1px solid #C6D880;
@@ -671,7 +672,7 @@ a.positive:hover, button.positive:hover {
 	text-decoration: none;
 }
 
-.positive:active {
+.positive:active, div.buttons a.positive:active {
 	background-color: #529214;
 	border: 2px solid #529214;
 	border-bottom: 1px solid #C6D880;
@@ -680,11 +681,11 @@ a.positive:hover, button.positive:hover {
 }
 
 /* NEGATIVE */
-.negative {
+.negative, div.buttons a.negative {
 	color: #d12f19;
 }
 
-.negative:hover {
+.negative:hover, div.buttons a.negative:hover {
 	background: #fbe3e4;
 	border: 2px solid #fbc2c4;
 	border-bottom: 1px solid #fbc2c4;
@@ -692,7 +693,7 @@ a.positive:hover, button.positive:hover {
 	color: #d12f19;
 }
 
-.negative:active {
+.negative:active, div.buttons a.negative:active {
 	background-color: #d12f19;
 	border: 2px solid #d12f19;
 	border-bottom: 1px solid #d12f19;
@@ -700,18 +701,7 @@ a.positive:hover, button.positive:hover {
 	color: #fff;
 }
 
-/*.buttons button.disabled {
-	background-color: #999;
-	color: #CCC;
-	border: 1px solid #666;
-}
-.buttons button.disabled:hover {
-	background-color: #999;
-	color: #CCC;
-	border: 1px solid #666;
-	cursor: default;
-}*/
-.picsbutton[disabled],.picsbutton[disabled]:hover {
+.picsbutton[disabled], .picsbutton[disabled]:hover {
 	background: #dedede;
 	border: 2px solid #ababab;
 	border-top: 1px solid #ababab;

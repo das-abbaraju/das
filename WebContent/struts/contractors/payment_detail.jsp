@@ -163,11 +163,27 @@ fieldset.form ol {
 	</s:else>
 	</div>
 </s:form>
-
-<script>
-calculateApplied();
-calculateTotalFromApplied();
+<script type="text/javascript">
+	calculateApplied();
+	calculateTotalFromApplied();
 </script>
+
+<s:if test="payment.balance > 0">
+	<s:form>
+	<h3>Refund</h3>
+	<fieldset class="form bottom">
+	<ol>
+		<li><label>Refund Method:</label> <s:property value="payment.paymentMethod.description"/></li>
+		<li><label>Amount:</label> <s:textfield name="refund" value="%{payment.balance}" /></li>
+		<li>
+		<div class="buttons">
+			<input type="submit" class="picsbutton" value="Refund" name="button" />
+		</div>
+		</li>
+	</ol>
+	</fieldset>
+	</s:form>
+</s:if>
 
 </body>
 </html>
