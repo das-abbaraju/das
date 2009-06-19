@@ -23,6 +23,12 @@ function updateSingleAppliedAmount(invoiceID) {
 		alert("That amount is greater than the balance of the invoice");
 		amount = 0.00;
 	}
+	
+	if (isNaN(amount)) {
+		alert("That value is not a number");
+		amount = 0.00;
+	}
+
 	$('invoice_apply_'+invoiceID).value = amount.toFixed(2);
 	calculateApplied();
 	updateRemainder();
