@@ -126,7 +126,13 @@
 						<s:select onchange="return setComment(%{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" list="emrProblems" name="comment" />
 					</s:if>
 					<s:else>
-						<s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+						<nobr><s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id});" id="comment_%{question.id}" name="comment" />
+						<s:if test="question.id == 2033">
+							<s:select id="emrExempt" list="emrExemptReason" onchange="copyComment('emrExempt','comment_%{question.id}');"/>
+						</s:if>
+						<s:if test="question.id == 2064">
+							<s:select id="oshaExempt" list="oshaExemptReason" onchange="copyComment('oshaExempt','comment_%{question.id}');"/>
+						</s:if></nobr>
 					</s:else>
 				</li>
 				<li>

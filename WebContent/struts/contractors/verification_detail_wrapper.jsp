@@ -176,6 +176,14 @@
 		var myAjax = new Ajax.Updater('emailStatus', 'VerifySendEmailAjax.action', {method: 'post', parameters: pars});
 		new Effect.Highlight($('emailStatus'), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
 	}
+
+	function copyComment(divId, commentID) {
+		var text = $(divId);
+		for(i=0; i < text.length; i++)
+			if (text.options[i].selected) {
+				$(commentID).value = text.options[i].value;
+			} 
+	}	
 	 
 </script>
 

@@ -50,6 +50,23 @@ public class VerifyAudit extends AuditActionSupport {
 		return list;
 	}
 
+	public ArrayList<String> getOshaExemptReason() {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("- Exempt Reasons -");
+		list.add("SIC code");
+		list.add("Number of Employees (10 or less)");
+		return list;
+	}
+
+	public ArrayList<String> getEmrExemptReason() {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("- Exempt Reasons -");
+		list.add("Insurance premium to small");
+		list.add("Does not carry workers comp");
+		list.add("Less than 3 years old");
+		return list;
+	}
+
 	public List<AuditData> getPqfQuestions() {
 		if (pqfQuestions == null) {
 			pqfQuestions = auditDataDao.findCustomPQFVerifications(conAudit.getId());
