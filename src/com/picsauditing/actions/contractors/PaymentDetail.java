@@ -12,8 +12,12 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.Payment;
@@ -78,14 +82,82 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		if (button != null) {
-			if (button.equalsIgnoreCase("Delete") && payment != null) {
+			if (payment == null || payment.getId() == 0) {
+				// If we have a button but no payment, then we're creating a new payment
+				payment.setAccount(contractor);
+				payment.setAuditColumns(getUser());
+				payment.setPaymentMethod(method);
+
+				if (payment.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
+					addActionError("Payments must be greater than zero");
+					return SUCCESS;
+				}
+				if (method.isCreditCard()) {
+					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+
+					try {
+						if (creditCard == null || creditCard.getCardNumber() == null) {
+							creditCard = paymentService.getCreditCard(id);
+						}
+						paymentService.processPayment(payment);
+
+						addNote("Credit Card transaction completed and emailed the receipt for $"
+								+ payment.getTotalAmount());
+					} catch (Exception e) {
+						addNote("Credit Card transaction failed: " + e.getMessage());
+						this.addActionError("Failed to charge credit card. " + e.getMessage());
+					}
+
+				} else {
+					// Check
+
+				}
+
+				paymentDAO.save(payment);
+
+				// if (invoice.getStatus().isPaid()) {
+				// if (!contractor.isActiveB()) {
+				// for (InvoiceItem item : invoice.getItems()) {
+				// if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+				// contractor.setActive('Y');
+				// contractor.setAuditColumns(getUser());
+				// }
+				// }
+				// }
+				// }
+
+			}
+			if (button.equalsIgnoreCase("Delete")) {
 				paymentDAO.remove(payment);
 				redirect("PaymentDetail.action?id=" + id);
 				return BLANK;
 			}
+			
+			// Sync up the amountApplyMap and the payment.invoices()
+			// First delete the applications that aren't there
+			
+			// TODO Maybe we should just unapply or apply once invoice/refund at a time
+			// this would be a LOT easier, than try to figure out what has changed
+			// especially when we have to consider both invoice and refund lists
+			
+			if (amountApplyMap.size() > 0) {
+				
+			}
+			
+			redirect("PaymentDetail.action?payment.id=" + payment.getId());
+			return BLANK;
 		}
 
 		return SUCCESS;
+	}
+
+	private void addNote(String subject) {
+		Note note = new Note(payment.getAccount(), getUser(), subject);
+		note.setNoteCategory(NoteCategory.Billing);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.PicsID);
+		noteDAO.save(note);
 	}
 
 	public boolean isHasUnpaidInvoices() {
