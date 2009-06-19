@@ -56,12 +56,12 @@
 		<ul>
 			<li><label>Payment:</label>NEW</li>
 			<li><label>Date:</label><s:date name="new java.util.Date()" format="M/d/yy" /></li>
-			<li><label>Total Amount:</label>$<s:textfield name="payment.totalAmount" value="0.00" size="7" /></li>
+			<li><label>Total Amount:</label>$<s:textfield id="payment_totalAmount" name="payment.totalAmount" value="0.00" size="7" onchange="changeTotal()"/></li>
 			<li><label>Applied:</label>$<span id="payment_amountApplied">0.00</span></li>
 			<li><label>Remainder:</label>$<span id="payment_balance">0.00</span>
-				<input type="button" name="Update Payment" onclick="$('payment.totalAmount').value = $('payment_amountApplied').value;">
+				<input type="button" value="Update Payment" onclick="calculateTotalFromApplied()">
 			</li>
-			<li><label>Auto Apply:</label><input id="autoapply" type="checkbox" checked="checked"></li>
+			<li><label>Auto Apply:</label><input id="autoapply" type="checkbox" checked="checked" onchange="autoApply();"></li>
 		</ul>
 		</fieldset>
 		<fieldset>
@@ -123,27 +123,29 @@
 			<s:iterator value="contractor.invoices">
 				<s:if test="status.unpaid">
 					<tr>
-						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK" title="Opens in new window"><s:property
-							value="id" /></a></td>
+						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>" target="_BLANK" title="Opens in new window"><span class="invoiceID"><s:property
+							value="id" /></span></a></td>
 						<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
 						<td class="right">$<s:property value="totalAmount" /></td>
-						<td class="right">$<span id="invoice_balance_%{id}"><s:property value="balance" /></span></td>
-						<td><button type="button" class="basic" onclick="setInvoiceApply(<s:property value="id" />);">&gt;&gt;</button></td>
-						<td class="right">$<s:textfield id="invoice_apply_%{id}" name="amountApplyMap[%{id}]" size="6" onchange="updateSingleAppliedAmount();" /></td>
+						<td class="right">$<span id="invoice_balance_<s:property value="id"/>"><s:property value="balance" /></span></td>
+						<td><input type="button" onclick="setInvoiceApply(<s:property value="id" />);" value="&gt;&gt;"/></td>
+						<td class="right">$<s:textfield id="invoice_apply_%{id}" cssClass="amountApply" name="amountApplyMap[%{id}]" size="6" value="0.00" onchange="updateSingleAppliedAmount(%{id});" /></td>
 					</tr>
 				</s:if>
 			</s:iterator>
 		</table>
 	</s:if>
-	<s:if test="payment == null">
-		<input type="submit" class="picsbutton positive" value="Collect Payment" name="button" />
-	</s:if>
-	<s:else>
-		<input type="submit" class="picsbutton positive" value="Save" name="button" />
-		<s:if test="payment.qbListID == null">
-			<input type="submit" class="picsbutton negative" value="Delete" name="button" />
+	<div id="button_div" class="buttons">
+		<s:if test="payment == null">
+			<input type="submit" class="picsbutton positive" value="Collect Payment" name="button" />
 		</s:if>
-	</s:else>
+		<s:else>
+			<input type="submit" class="picsbutton positive" value="Save" name="button" />
+			<s:if test="payment.qbListID == null">
+				<input type="submit" class="picsbutton negative" value="Delete" name="button" />
+			</s:if>
+		</s:else>
+	</div>
 </s:form>
 
 </body>
