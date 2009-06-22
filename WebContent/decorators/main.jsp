@@ -135,15 +135,12 @@
 </div>
 <% } %>
 <!-- !end subnavigation -->
-<!-- BEGIN Invitation Positioning  -->
+
+<!-- BEGIN LivePerson -->
 <script type="text/javascript">
 	var lpPosY = 100;
 	var lpPosX = 100;
-</script>
-<!-- END Invitation Positioning  -->
-
-<!-- BEGIN Monitor Tracking Variables  -->
-<script type="text/javascript">
+	
 	if (typeof(tagVars) == "undefined") tagVars = "";
 <%	if (permissions.isLoggedIn()) { %>
 		tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
@@ -151,13 +148,27 @@
 </script>
 <!-- End Monitor Tracking Variables  -->
 
-<!-- BEGIN HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
 <script 
 	type="text/javascript" 
 	src='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'> 
 </script>
-<!-- END HumanTag Monitor. DO NOT MOVE! MUST BE PLACED JUST BEFORE THE /BODY TAG -->
-<%@ include file="../includes/statcounter.jsp"%>
+<!-- END LivePerson -->
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? 
+	"https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + 
+	"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-2785572-1");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+<%	if (permissions.isLoggedIn()) { %>
+	pageTracker._setVar('<%= permissions.getAccountType() %>');
+<%	} %>
+</script>
 
 <!-- !begin footer -->
 <div class="footer">
