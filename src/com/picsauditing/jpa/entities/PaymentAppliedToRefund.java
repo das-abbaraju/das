@@ -11,7 +11,7 @@ public class PaymentAppliedToRefund extends PaymentApplied {
 	private Refund refund;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "invoiceID")
+	@JoinColumn(name = "refundID")
 	public Refund getRefund() {
 		return refund;
 	}

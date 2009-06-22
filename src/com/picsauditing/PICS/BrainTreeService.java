@@ -1,6 +1,8 @@
 package com.picsauditing.PICS;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,12 +10,13 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.util.Strings;
 
@@ -24,19 +27,11 @@ public class BrainTreeService {
 	protected String password = null;
 
 	public CreditCard getCreditCard(int contractorId) throws Exception {
-
 		StringBuilder request = new StringBuilder(urlBase).append("query.php?report_type=customer_vault");
 		appendUsernamePassword(request);
 		request.append("&customer_vault_id=").append(contractorId);
 
-		URL url = new URL(request.toString());
-		InputStream inputStream = url.openStream();
-		
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document document = db.parse(inputStream);
-		inputStream.close();
-
+		Document document = getDocument(request.toString());
 		String cc = getValueFromDocument(document, "cc_number");
 		String expDate = getValueFromDocument(document, "cc_exp");
 
@@ -60,25 +55,23 @@ public class BrainTreeService {
 		InputStream inputStream = url.openStream();
 		inputStream.close();
 	}
-	
-	public boolean processPayment(Payment payment) throws Exception {
 
+	public String getTransactionCondition(String transactionID) throws Exception {
+		StringBuilder request = new StringBuilder(urlBase).append("query.php?transaction_id=").append(transactionID);
+		appendUsernamePassword(request);
+
+		Document document = getDocument(request.toString());
+		return getValueFromDocument(document, "condition");
+	}
+
+
+	public boolean processPayment(Payment payment) throws Exception {
 		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=sale");
 		appendUsernamePassword(request);
 		request.append("&customer_vault_id=").append(payment.getAccount().getId());
-		//request.append("&orderid=").append(orderID);
 		request.append("&amount=").append(payment.getTotalAmount());
-		
-		StringBuffer buffer = new StringBuffer();
-		
-		URL url = new URL(request.toString());
-		InputStream inputStream = url.openStream();
-		int nextByte;
-		while ((nextByte = inputStream.read()) > -1) {
-			buffer.append((char)nextByte);
-		}
-		inputStream.close();
-		Map<String, String> map = Strings.mapParams(buffer.toString());
+
+		Map<String, String> map = getUrl(request.toString());
 		String response = map.get("response");
 		if (response.equals("1")) {
 			payment.setTransactionID(map.get("transactionid"));
@@ -88,7 +81,59 @@ public class BrainTreeService {
 		}
 	}
 
-	protected String getValueFromDocument(Document document, String tagName) {
+	public boolean processRefund(String transactionID, BigDecimal amount) throws Exception {
+		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=refund");
+		appendUsernamePassword(request);
+		request.append("&transactionid=").append(transactionID);
+		request.append("&amount=").append(amount);
+
+		Map<String, String> map = getUrl(request.toString());
+		String response = map.get("response");
+		if (response.equals("1")) {
+			return true;
+		} else {
+			throw new Exception(map.get("responsetext"));
+		}
+	}
+
+	public boolean processCancellation(String transactionID) throws Exception {
+		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=refund");
+		appendUsernamePassword(request);
+		request.append("&transactionid=").append(transactionID);
+
+		Map<String, String> map = getUrl(request.toString());
+		if (map.get("response").equals("1")) {
+			return true;
+		} else {
+			throw new Exception(map.get("responsetext"));
+		}
+	}
+
+	private Document getDocument(String address) throws SAXException, IOException, ParserConfigurationException {
+		URL url = new URL(address);
+		InputStream inputStream = url.openStream();
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document document = db.parse(inputStream);
+		inputStream.close();
+		return document;
+	}
+
+	private Map<String, String> getUrl(String address) throws IOException {
+		URL url = new URL(address);
+		InputStream inputStream = url.openStream();
+
+		StringBuffer buffer = new StringBuffer();
+		int nextByte;
+		while ((nextByte = inputStream.read()) > -1) {
+			buffer.append((char) nextByte);
+		}
+		inputStream.close();
+		return Strings.mapParams(buffer.toString());
+	}
+
+	private String getValueFromDocument(Document document, String tagName) {
 		NodeList list = document.getElementsByTagName(tagName);
 
 		for (int i = 0; i < list.getLength(); i++) {
@@ -106,13 +151,14 @@ public class BrainTreeService {
 	public static class CreditCard {
 		protected String cardNumber = null;
 		protected String expirationDate = null;
-		
-		public CreditCard() {}
-		
+
+		public CreditCard() {
+		}
+
 		public CreditCard(String cardNumber) {
 			this.cardNumber = cardNumber;
 		}
-		
+
 		public CreditCard(String cardNumber, String expirationDate) {
 			this.cardNumber = cardNumber;
 			this.expirationDate = expirationDate;
@@ -170,24 +216,19 @@ public class BrainTreeService {
 			return "";
 		}
 	}
-	
-	public String getUserName() {
-		return userName;
-	}
 
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	private void appendUsernamePassword(StringBuilder request) {
+
+	private void appendUsernamePassword(StringBuilder request) throws Exception {
+		if (userName == null || password == null)
+			throw new Exception("Missing BrainTree username and password");
+
 		request.append("&username=").append(userName);
 		request.append("&password=").append(password);
 	}

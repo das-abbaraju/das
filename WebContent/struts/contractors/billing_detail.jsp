@@ -64,7 +64,10 @@
 		<td style="vertical-align: top; width: 48%;">
 		<fieldset class="form"><legend><span>Invoicing</span></legend>
 		<ol>
-			<li><label>Current Balance:</label> $<s:property value="contractor.balance" /> USD</li>
+			<li><label>Current Balance:</label> $<s:property value="contractor.balance" /> USD <s:if
+				test="contractor.balance > 0">
+				<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Create Payment</a>
+			</s:if></li>
 			<li><label>Billing Status:</label> <s:property value="contractor.billingStatus" /></li>
 			<li><label>Must Pay:</label> <s:property value="contractor.mustPay" /></li>
 			<li><label>New Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> USD <br>
@@ -89,7 +92,9 @@
 						</s:else>
 					</s:iterator>
 					<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
-					<li><div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div></li>
+					<li>
+					<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
+					</li>
 				</ol>
 			</s:form> <s:if test="contractor.billingStatus == 'Current' && !contractor.activeB">
 				<s:form>

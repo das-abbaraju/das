@@ -26,8 +26,7 @@ public class Payment extends Transaction {
 	private String transactionID;
 	private String ccNumber;
 
-	private List<PaymentAppliedToInvoice> invoices = new ArrayList<PaymentAppliedToInvoice>();
-	private List<PaymentAppliedToRefund> refunds = new ArrayList<PaymentAppliedToRefund>();
+	private List<PaymentApplied> applied = new ArrayList<PaymentApplied>();
 
 	@Enumerated(EnumType.STRING)
 	public PaymentMethod getPaymentMethod() {
@@ -69,34 +68,40 @@ public class Payment extends Transaction {
 		cc.setCardNumber(ccNumber);
 		return cc.getCardType();
 	}
+	
+	
 
-	@OneToMany(mappedBy = "payment", targetEntity = PaymentApplied.class, cascade = { CascadeType.ALL })
-	@Where(clause = "paymentType='I'")
+	@OneToMany(mappedBy = "payment", cascade = { CascadeType.ALL })
+	public List<PaymentApplied> getApplied() {
+		return applied;
+	}
+
+	public void setApplied(List<PaymentApplied> applied) {
+		this.applied = applied;
+	}
+
+	@Transient
 	public List<PaymentAppliedToInvoice> getInvoices() {
-		return invoices;
+		List<PaymentAppliedToInvoice> list = new ArrayList<PaymentAppliedToInvoice>();
+		for(PaymentApplied pa : getApplied())
+			if (pa.getClass().getSimpleName().equals("PaymentAppliedToInvoice"))
+				list.add((PaymentAppliedToInvoice)pa);
+		return list;
 	}
 
-	public void setInvoices(List<PaymentAppliedToInvoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	@OneToMany(mappedBy = "payment", targetEntity = PaymentApplied.class, cascade = { CascadeType.ALL })
-	@Where(clause = "paymentType='R'")
+	@Transient
 	public List<PaymentAppliedToRefund> getRefunds() {
-		return refunds;
-	}
-
-	public void setRefunds(List<PaymentAppliedToRefund> refunds) {
-		this.refunds = refunds;
+		List<PaymentAppliedToRefund> list = new ArrayList<PaymentAppliedToRefund>();
+		for(PaymentApplied pa : getApplied())
+			if (pa.getClass().getSimpleName().equals("PaymentAppliedToRefund"))
+				list.add((PaymentAppliedToRefund)pa);
+		return list;
 	}
 
 	@Transient
 	public void updateAmountApplied() {
 		amountApplied = BigDecimal.ZERO;
-		for (PaymentApplied ip : invoices) {
-			amountApplied = amountApplied.add(ip.getAmount());
-		}
-		for (PaymentApplied ip : refunds) {
+		for (PaymentApplied ip : applied) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
 		super.updateAmountApplied();

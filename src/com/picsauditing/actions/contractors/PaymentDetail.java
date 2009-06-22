@@ -16,15 +16,14 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.PaymentApplied;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.Refund;
+import com.picsauditing.jpa.entities.TransactionStatus;
 
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
@@ -38,6 +37,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private NoteDAO noteDAO;
 	private AppPropertyDAO appPropDao;
 	private BrainTreeService paymentService = new BrainTreeService();
+	private String transactionCondition = null;
+	private BigDecimal refundAmount;
 
 	public PaymentDetail(AppPropertyDAO appPropDao, NoteDAO noteDAO, ContractorAccountDAO conAccountDAO,
 			ContractorAuditDAO auditDao, PaymentDAO paymentDAO) {
@@ -71,6 +72,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		if (method == null)
 			method = contractor.getPaymentMethod();
 
+		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+
 		if (payment == null || payment.getId() == 0) {
 			if (method.isCreditCard()) {
 				creditCard = paymentService.getCreditCard(id);
@@ -97,14 +101,12 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 				if (method.isCreditCard()) {
-					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
 					try {
 						if (creditCard == null || creditCard.getCardNumber() == null) {
 							creditCard = paymentService.getCreditCard(id);
 						}
 						paymentService.processPayment(payment);
+						payment.setCcNumber(creditCard.getCardNumber());
 
 						addNote("Credit Card transaction completed and emailed the receipt for $"
 								+ payment.getTotalAmount());
@@ -131,17 +133,73 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				// }
 
 			}
+
+			String message = null;
 			if (button.equalsIgnoreCase("Delete")) {
+				if (payment.getQbListID() != null) {
+					addActionError("You can't delete a payment that has already been synced with QuickBooks.");
+					return SUCCESS;
+				}
 				paymentDAO.remove(payment);
-				redirect("PaymentDetail.action?id=" + id);
+				redirect("PaymentDetail.action?id=" + id + "&msg=" + "Successfully Deleted Payment");
 				return BLANK;
 			}
 
-			if ("Save".equals(button)) {
-				button = "apply";
+			if (button.equalsIgnoreCase("voidcc")) {
+				try {
+					paymentService.processCancellation(payment.getTransactionID());
+					message = "Successfully canceled credit card transaction";
+					payment.setStatus(TransactionStatus.Void);
+
+					unapplyAll();
+				} catch (Exception e) {
+					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
+					return SUCCESS;
+				}
+			}
+			if (button.equalsIgnoreCase("Refund")) {
+				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
+					addActionError("You can't refund negative amounts");
+					return SUCCESS;
+				}
+				if (refundAmount.compareTo(payment.getBalance()) > 0) {
+					addActionError("You can't refund more than the remaining balance");
+					return SUCCESS;
+				}
+
+				try {
+					Refund refund = new Refund();
+					refund.setTotalAmount(refundAmount);
+					refund.setAccount(contractor);
+					refund.setAuditColumns(getUser());
+					refund.setStatus(TransactionStatus.Paid);
+
+					if (payment.getPaymentMethod().isCreditCard()) {
+						paymentService.processRefund(payment.getTransactionID(), refundAmount);
+						message = "Successfully refunded credit card";
+						refund.setCcNumber(payment.getCcNumber());
+						refund.setTransactionID(payment.getTransactionID());
+					}
+					paymentDAO.save(refund);
+
+					PaymentAppliedToRefund pr = new PaymentAppliedToRefund();
+					pr.setPayment(payment);
+					pr.setRefund(refund);
+					pr.setAmount(refund.getTotalAmount());
+					pr.setAuditColumns(getUser());
+					payment.getRefunds().add(pr);
+					refund.getPayments().add(pr);
+				} catch (Exception e) {
+					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
+					return SUCCESS;
+				}
 			}
 
 			if (amountApplyMap.size() > 0) {
+				if ("Save".equals(button)) {
+					button = "apply";
+				}
+
 				if (button.equals("unapply")) {
 					// Find the Invoice or Refind # passed through the
 					// amountApplyMap and remove it
@@ -198,7 +256,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.updateAmountApplied();
 			paymentDAO.save(payment);
 
-			redirect("PaymentDetail.action?payment.id=" + payment.getId());
+			String url = "PaymentDetail.action?payment.id=" + payment.getId();
+			if (message != null)
+				url += "&msg=" + message;
+			redirect(url);
 			return BLANK;
 		}
 
@@ -208,6 +269,21 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		return SUCCESS;
+	}
+
+	private void unapplyAll() {
+		Iterator<PaymentAppliedToInvoice> iterInvoice = payment.getInvoices().iterator();
+		while (iterInvoice.hasNext()) {
+			PaymentAppliedToInvoice pa = iterInvoice.next();
+			paymentDAO.removePaymentInvoice(pa, getUser());
+		}
+		Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
+		while (iterRefund.hasNext()) {
+			PaymentAppliedToRefund pa = iterRefund.next();
+			paymentDAO.removePaymentRefund(pa, getUser());
+		}
+		payment.getInvoices().clear();
+		payment.getRefunds().clear();
 	}
 
 	private void addNote(String subject) {
@@ -264,4 +340,22 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		this.creditCard = creditCard;
 	}
 
+	public BigDecimal getRefundAmount() {
+		return refundAmount;
+	}
+
+	public void setRefundAmount(BigDecimal refundAmount) {
+		this.refundAmount = refundAmount;
+	}
+
+	public String getTransactionCondition() {
+		if (transactionCondition != null)
+			return transactionCondition;
+
+		try {
+			return paymentService.getTransactionCondition(payment.getTransactionID());
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

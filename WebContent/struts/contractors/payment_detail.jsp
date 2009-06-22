@@ -39,6 +39,10 @@ fieldset.form ol {
 	</s:iterator>
 </s:if>
 
+<s:if test="payment.status.toString() == 'Void'">
+	<div id="alert">This payment was canceled.</div>
+</s:if>
+
 <s:form>
 	<s:hidden name="id" />
 	<s:if test="payment != null && payment.id > 0">
@@ -64,6 +68,11 @@ fieldset.form ol {
 				<li><label>Transaction ID:</label><s:property value="payment.transactionID" /></li>
 				<li><label>Type:</label><s:property value="payment.ccType" /></li>
 				<li><label>Number:</label><s:property value="payment.ccNumber" /></li>
+				<li><label>Status:</label><s:property value="transactionCondition" />
+					<s:if test="transactionCondition == 'pendingsettlement'">
+					<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=voidcc" class="remove">Void</a>
+					</s:if>
+				</li>
 			</s:if>
 		</ol>
 		</td></tr></table>
@@ -86,10 +95,10 @@ fieldset.form ol {
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
-			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label><s:property value="creditcard.ccType" /></li>
-			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label><s:property value="creditcard.ccNumber" /></li>
-			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditcard.ccType" /></li>
-			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditcard.ccNumber" /></li>
+			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label><s:property value="creditCard.cardType" /></li>
+			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label><s:property value="creditCard.cardNumber" /></li>
+			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditCard.cardType" /></li>
+			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditCard.cardNumber" /></li>
 		</ol>
 		</td></tr></table>
 		</fieldset>
@@ -185,17 +194,16 @@ fieldset.form ol {
 
 <s:if test="payment.balance > 0">
 	<s:form>
-	<h3>Refund</h3>
+	<s:hidden name="payment.id" />
+	<h3 style="margin-top: 50px">Refund</h3>
 	<fieldset class="form bottom">
 	<ol>
 		<li><label>Refund Method:</label> <s:property value="payment.paymentMethod.description"/></li>
-		<li><label>Amount:</label> <s:textfield name="refund" value="%{payment.balance}" /></li>
-		<li>
-		<div class="buttons">
-			<input type="submit" class="picsbutton" value="Refund" name="button" />
-		</div>
-		</li>
+		<li><label>Amount:</label> <s:textfield name="refundAmount" value="%{payment.balance}" /></li>
 	</ol>
+	<div class="buttons">
+		<input type="submit" class="picsbutton" value="Refund" name="button" />
+	</div>
 	</fieldset>
 	</s:form>
 </s:if>

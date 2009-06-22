@@ -179,19 +179,21 @@ input[type=submit] {
 					<th colspan="2" class="big right">Invoice Total</th>
 					<td class="big right">$<s:property value="invoice.totalAmount" /> USD</td>
 				</tr>
-				<tr>
-					<th colspan="2" class="big right">Payment(s)</th>
-					<td class="right"><s:iterator value="invoice.payments">
-						<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />"><s:date name="payment.creationDate" format="MMM d, yyyy" /></a>
-						<br />
-						<span class="big">($<s:property value="amount" />) USD</span>
-						<br />
-					</s:iterator></td>
-				</tr>
-				<tr>
-					<th colspan="2" class="big right">Balance</th>
-					<td class="big right">$<s:property value="invoice.balance" /> USD</td>
-				</tr>
+				<s:if test="invoice.payments.size() > 0">
+					<tr>
+						<th colspan="2" class="big right">Payment(s)</th>
+						<td class="right"><s:iterator value="invoice.payments">
+							<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />"><s:date name="payment.creationDate" format="MMM d, yyyy" /></a>
+							<br />
+							<span class="big">($<s:property value="amount" />) USD</span>
+							<br />
+						</s:iterator></td>
+					</tr>
+					<tr>
+						<th colspan="2" class="big right">Balance</th>
+						<td class="big right">$<s:property value="invoice.balance" /> USD</td>
+					</tr>
+				</s:if>
 			</table>
 			</td>
 		</tr>
