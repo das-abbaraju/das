@@ -3,8 +3,8 @@
 
 <pics:permission perm="EditNotes" type="Edit">
 	<div class="buttons">
-		<button class="positive" name="button" type="button" 
-			onclick="noteEditor('<s:property value="id"/>', 0, 'edit');">Add Note</button>
+		<input type="button" class="picsbutton positive" name="button" 
+			onclick="noteEditor('<s:property value="id"/>', 0, 'edit');" value="Add Note" />
 	</div>
 </pics:permission>
 <div id="thinking_notesList">&nbsp;</div>
