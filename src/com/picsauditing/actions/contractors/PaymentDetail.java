@@ -72,11 +72,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			method = contractor.getPaymentMethod();
 
 		if (payment == null || payment.getId() == 0) {
-			for (Invoice invoice : contractor.getInvoices()) {
-				if (!amountApplyMap.containsKey(invoice.getId()))
-					amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
-			}
-
 			if (method.isCreditCard()) {
 				creditCard = paymentService.getCreditCard(id);
 			}
@@ -142,12 +137,17 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				return BLANK;
 			}
 
+			if ("Save".equals(button)) {
+				button = "apply";
+			}
+
 			if (amountApplyMap.size() > 0) {
 				if (button.equals("unapply")) {
-					// Find the Invoice or Refind # passed through the amountApplyMap and remove it
+					// Find the Invoice or Refind # passed through the
+					// amountApplyMap and remove it
 					for (int txnID : amountApplyMap.keySet()) {
 						Iterator<PaymentAppliedToInvoice> iterInvoice = payment.getInvoices().iterator();
-						while(iterInvoice.hasNext()) {
+						while (iterInvoice.hasNext()) {
 							PaymentAppliedToInvoice pa = iterInvoice.next();
 							if (pa.getInvoice().getId() == txnID) {
 								paymentDAO.removePaymentInvoice(pa, getUser());
@@ -155,9 +155,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 								return BLANK;
 							}
 						}
-						
+
 						Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
-						while(iterRefund.hasNext()) {
+						while (iterRefund.hasNext()) {
 							PaymentAppliedToRefund pa = iterRefund.next();
 							if (pa.getRefund().getId() == txnID) {
 								paymentDAO.removePaymentRefund(pa, getUser());
@@ -200,6 +200,11 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			redirect("PaymentDetail.action?payment.id=" + payment.getId());
 			return BLANK;
+		}
+
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (!amountApplyMap.containsKey(invoice.getId()))
+				amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
 		}
 
 		return SUCCESS;
