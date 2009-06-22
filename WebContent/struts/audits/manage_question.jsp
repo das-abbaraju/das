@@ -149,5 +149,5 @@
 	</fieldset>
 </s:form>
 
-<body>
+</body>
 </html>

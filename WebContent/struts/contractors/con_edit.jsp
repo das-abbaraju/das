@@ -256,10 +256,6 @@
 				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 			</pics:permission>
 		</s:else>
-		<pics:permission perm="RemoveContractors">
-			<input type="submit" class="picsbutton negative" name="button" value="Delete" 
-				onClick="return confirm('Are you sure you want to delete this account?');"/>
-		</pics:permission>
 	</div>
 </s:form>
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
