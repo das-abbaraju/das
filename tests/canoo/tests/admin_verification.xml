@@ -24,7 +24,7 @@
 					<clickLink label="Verify"/>
 					<sleep seconds="2"/>
 					<clickButton label="Verify"/>
-					<sleep seconds="3"/>
+					<sleep seconds="5"/>
 					</group>
 					<clickButton description="Verify" htmlID="verify_2033"/>
 					<clickButton description="Verify" htmlID="verify_2064"/>
