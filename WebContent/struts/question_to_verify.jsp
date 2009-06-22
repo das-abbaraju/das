@@ -6,6 +6,6 @@
 </s:if>
 <s:elseif test="osha">
 	{'dateVerified' : '<s:date name="osha.verifiedDate" format="MM/dd/yyyy" />', 
-	'who' : '<s:property value="osha.conAudit.auditor.name"/>', 
+	'who' : '<s:property value="osha.auditor.name"/>', 
 	'percentVerified' : <s:property value="osha.conAudit.percentVerified"/>}
 </s:elseif>

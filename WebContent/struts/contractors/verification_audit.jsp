@@ -144,35 +144,33 @@
 	</s:iterator>
 	</s:sort>
 	</fieldset>
-	<s:if test="showOsha">
+	<s:if test="osha != null">
 		<fieldset class="form" style="clear: none; float: left; width: 40%; margin: 0.5em;"><legend><span>OSHA</span></legend>
-		<s:iterator value="conAudit.oshas">
-			<s:if test="corporate && type.toString().equals('OSHA')">
-			<s:div id="oid_%{id}">
+			<s:div id="oid_%{osha.id}">
 				<ol>
-				<s:if test="!verified">
+				<s:if test="!osha.verified">
 					<s:set name="verifyText" value="'Verify'"/>
 				</s:if>
 				<s:else>
 					<s:set name="verifyText" value="'Unverify'"/>
 				</s:else>
-				<input id="verify_<s:property value="id"/>"type="submit" onclick="return toggleOSHAVerify(<s:property value="id"/>);" value="<s:property value="#attr.verifyText"/>"/>
-				<s:div id="status_%{id}"></s:div>
-				<s:if test="verified">
+				<input id="verify_<s:property value="osha.id"/>"type="submit" onclick="return toggleOSHAVerify(<s:property value="osha.id"/>);" value="<s:property value="#attr.verifyText"/>"/>
+				<s:div id="status_%{osha.id}"></s:div>
+				<s:if test="osha.verified">
 					<s:set name="displayVerified" value="'block'"/>
 				</s:if>
 				<s:else>
 					<s:set name="displayVerified" value="'none'"/>
 				</s:else>
-				<li id="verified_<s:property value="id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{id}"><s:date name="verifiedDate"
-						format="MM/dd/yyyy" /> by <s:property value="conAudit.auditor.name"/></s:div></li>
-				<li><label>Comment:</label> <s:select onchange="return setOSHAComment(%{id});" id="comment_%{id}" list="oshaProblems"
-					name="comment" /></li>
+				<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{osha.id}"><s:date name="osha.verifiedDate"
+						format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/></s:div></li>
+				<li><label>Comment:</label> <s:select onchange="return setOSHAComment(%{osha.id});" id="comment_%{osha.id}" list="oshaProblems"
+					name="osha.comment" /></li>
 				<li>
 				<hr>
 				</li>
-				<li><label>File:</label> <s:if test="fileUploaded">
-					<a href="#" onclick="openOsha(<s:property value="id"/>); return false;"	target="_BLANK">View File</a>
+				<li><label>File:</label> <s:if test="osha.fileUploaded">
+					<a href="#" onclick="openOsha(<s:property value="osha.id"/>); return false;"	target="_BLANK">View File</a>
 					<a href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
 				</s:if>
 				<s:else>
@@ -180,24 +178,22 @@
 						href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
 						target="_BLANK">Upload New Files</a>
 				</s:else></li>
-				<li><label>Man Hours Worked:</label> <s:textfield id="manHours_%{id}"
-					name="manHours" cssClass="oshanum" /></li>
-				<li><label>Number of Fatalities:</label> <s:textfield id="fatalities_%{id}"
-					name="fatalities" cssClass="oshanum" /></li>
-				<li><label>Number of Lost Work Cases:</label> <s:textfield id="lwc_%{id}"
-					name="lostWorkCases" cssClass="oshanum" /></li>
-				<li><label>Number of Lost Workdays:</label> <s:textfield id="lwd_%{id}"
-					name="lostWorkDays" cssClass="oshanum" /></li>
-				<li><label>Injury &amp; Illnesses Medical Cases:</label> <s:textfield id="imc_%{id}"
-					name="injuryIllnessCases" cssClass="oshanum" /></li>
-				<li><label>Restricted Work Cases:</label> <s:textfield id="rwc_%{id}"
-					name="restrictedWorkCases" cssClass="oshanum" /></li>
-				<li><label>Total Injuries and Illnesses:</label> <s:textfield id="tii_%{id}"
-					name="recordableTotal" cssClass="oshanum" /></li>
+				<li><label>Man Hours Worked:</label> <s:textfield id="manHours_%{osha.id}"
+					name="osha.manHours" cssClass="oshanum" /></li>
+				<li><label>Number of Fatalities:</label> <s:textfield id="fatalities_%{osha.id}"
+					name="osha.fatalities" cssClass="oshanum" /></li>
+				<li><label>Number of Lost Work Cases:</label> <s:textfield id="lwc_%{osha.id}"
+					name="osha.lostWorkCases" cssClass="oshanum" /></li>
+				<li><label>Number of Lost Workdays:</label> <s:textfield id="lwd_%{osha.id}"
+					name="osha.lostWorkDays" cssClass="oshanum" /></li>
+				<li><label>Injury &amp; Illnesses Medical Cases:</label> <s:textfield id="imc_%{osha.id}"
+					name="osha.injuryIllnessCases" cssClass="oshanum" /></li>
+				<li><label>Restricted Work Cases:</label> <s:textfield id="rwc_%{osha.id}"
+					name="osha.restrictedWorkCases" cssClass="oshanum" /></li>
+				<li><label>Total Injuries and Illnesses:</label> <s:textfield id="tii_%{osha.id}"
+					name="osha.recordableTotal" cssClass="oshanum" /></li>
 			</ol>
 		</s:div>
-		</s:if>
-	</s:iterator>
 	</fieldset>
 	</s:if>
 </s:else>

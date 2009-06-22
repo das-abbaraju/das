@@ -44,6 +44,7 @@ public class OshaAudit implements java.io.Serializable {
 	private String description;
 
 	private Date verifiedDate;
+	private User auditor;
 
 	private boolean fileUploaded = false;
 	private int manHours;
@@ -146,6 +147,16 @@ public class OshaAudit implements java.io.Serializable {
 
 	public void setVerifiedDate(Date verifiedDate) {
 		this.verifiedDate = verifiedDate;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "auditorID")
+	public User getAuditor() {
+		return auditor;
+	}
+
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
 	}
 
 	public boolean isFileUploaded() {

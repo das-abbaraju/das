@@ -9,6 +9,8 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 
 public class VerifyAudit extends AuditActionSupport {
 	private static final long serialVersionUID = -4976847934505647430L;
@@ -103,11 +105,15 @@ public class VerifyAudit extends AuditActionSupport {
 		return false;
 	}
 	
-	public boolean isShowOsha() {
+	public OshaAudit getOsha() {
 		AuditData auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2064);
-		if (auditData != null && "Yes".equals(auditData.getAnswer())) 
-				return true;
-
-		return false;
+		if (auditData != null && "Yes".equals(auditData.getAnswer())) {
+			for(OshaAudit oshaAudit : conAudit.getOshas()) {
+				if(oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate()) {
+					return oshaAudit;
+				}	
+			}
+		}		
+		return null;
 	}
 }

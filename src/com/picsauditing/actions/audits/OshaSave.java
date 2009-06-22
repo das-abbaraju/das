@@ -139,9 +139,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		if (button.equals("toggleVerify")) {
 			if (osha.isVerified()) {
 				osha.setVerifiedDate(null);
-
+				osha.setAuditor(null);
 			} else {
 				osha.setVerifiedDate(new Date());
+				osha.setAuditor(getUser());
 			}
 		} else {
 			osha.setVerifiedDate(null);

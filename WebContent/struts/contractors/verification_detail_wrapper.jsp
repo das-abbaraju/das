@@ -61,7 +61,6 @@
 		var tii = $F($('tii_' + oshaId)); 
 
 		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&osha.recordableTotal='+tii + '&button=toggleVerify';
-
 		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
 		{
 			method: 'post', 
@@ -71,7 +70,6 @@
 				var json = transport.responseText.evalJSON();
 				
 				$('verified_' + oshaId).toggle();
-				
 				if( json.who ) {
 					$('verify_' + oshaId ).value = 'Unverify';
 					$('verify_details_' + oshaId).innerHTML = json.dateVerified + ' by ' + json.who;
