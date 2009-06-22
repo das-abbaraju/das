@@ -123,7 +123,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						// TODO: handle exception
 					}
 				}
-				if (button.startsWith("Cancel Invoice")) {
+				if (button.equalsIgnoreCase("Cancel")) {
 
 					invoice.setStatus(TransactionStatus.Void);
 					invoice.setAuditColumns(permissions);
@@ -144,6 +144,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		invoiceDAO.save(invoice);
 
 		contractor.syncBalance();
+		if(contractor.isActiveB() 
+				&& contractor.getPaymentExpires().before(new Date())) {
+			contractor.setActive('N');
+			addNote("Automatically inactivating account based on expired membership");
+		}
 		contractor.setAuditColumns(permissions);
 		accountDao.save(contractor);
 

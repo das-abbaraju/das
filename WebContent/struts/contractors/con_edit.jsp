@@ -24,7 +24,15 @@
 <s:else>
 	<s:include value="conHeader.jsp"></s:include>
 </s:else>
-
+<s:if test="permissions.admin && unpaidInvoices.size() > 0">
+	<div id="info">Invoices open for this contractor
+	<ol>
+	<s:iterator value="unpaidInvoices">
+		<li><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id"/></a></li>
+	</s:iterator>
+	</ol>
+	</div>
+</s:if>
 <s:form id="save" method="POST" enctype="multipart/form-data">
 <div class="buttons">
 	<input type="submit" class="picsbutton positive" name="button" value="Save"/>

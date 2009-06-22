@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -304,5 +306,18 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setOperatorIds(int[] operatorIds) {
 		this.operatorIds = operatorIds;
+	}
+	
+	public List<Invoice> getUnpaidInvoices() {
+		List<Invoice> unpaidInvoices = new ArrayList<Invoice>();
+		if(!contractor.isRenew()) {
+			for(Invoice item : contractor.getSortedInvoices()) {
+				if(item.getStatus().isUnpaid()) {
+					unpaidInvoices.add(item);
+				}
+			}
+			
+		}
+		return unpaidInvoices;
 	}
 }
