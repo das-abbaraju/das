@@ -8,7 +8,6 @@ import org.apache.struts2.ServletActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 
 @SuppressWarnings("serial")

@@ -15,6 +15,10 @@ membership by contacting PICS.
 	<tr>
 		<td colspan="2">Contractor Name</td>
 		<td>Due Date</td>
+		<s:if test="permissions.admin">
+			<td>Amount</td>
+			<td>Facility Count</td>
+		</s:if>
 		<td>Days Left</td>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
@@ -44,6 +48,10 @@ membership by contacting PICS.
 				<s:property value="[0].get('name')" /></a>
 			</td>
 			<td class="center"><s:date name="[0].get('dueDate')" format="M/d/yy" /></td>
+			<s:if test="permissions.admin">
+				<td><s:property value="get('invoiceAmount')"/></td>
+				<td><s:property value="get('facilityCount')"/></td>
+			</s:if>
 			<td class="center"><s:property value="[0].get('DaysLeft')" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>

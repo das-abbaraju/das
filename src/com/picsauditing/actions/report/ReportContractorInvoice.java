@@ -28,7 +28,7 @@ public class ReportContractorInvoice extends ReportAccount {
 		sql.addField("c.ccOnFile");
 		
 		sql.addJoin("JOIN invoice i ON i.accountID = c.id");
-		
+		sql.addWhere("i.tableType = 'I'");
 		if (filterOn(getFilter().getInvoiceDueDate1())) {
 			report.addFilter(new SelectFilterDate("invoiceDueDate1", "i.dueDate >= '?'", DateBean.format(getFilter().getInvoiceDueDate1(), "M/d/yy")));
 		}	

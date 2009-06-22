@@ -88,14 +88,14 @@ values (null,"Contractors Pending Approvals", "Html", 0,
 	"ContractorApproval",null);
 
 insert into widget_user 
-values (null, newWidgetID, 616, 1, 2,10, null);>>>>>>> .r5827
+values (null, newWidgetID, 616, 1, 2,10, null);
 
 /*
  * Added a system message to the app_properties.
  */
  insert into app_properties values ('SYSTEM.MESSAGE', null);
-
- delete from invoice where tableType = 'P';
+ 
+delete from invoice where tableType = 'P';
 
 delete from invoice_payment;
 
@@ -112,3 +112,10 @@ and i.id = p.qbListID;
 update invoice set qbListID = null where tableType = 'P';
 
 update invoice set amountApplied = totalAmount where tableType = 'I' and status = 'Paid';
+
+ /*
+  * update the amountApplied on the invoices
+  */ 
+update invoice set amountApplied = 0.00
+where status = 'Unpaid'
+or status = 'Void';
