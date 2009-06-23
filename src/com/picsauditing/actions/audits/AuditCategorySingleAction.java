@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditCategorySingleAction extends AuditActionSupport {
@@ -162,8 +163,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					EmailSender.send(emailBuilder.build());
 
 					notes = " Submitted " + conAudit.getAuditType().getAuditName();
-					if(conAudit.getAuditType().isAnnualAddendum())
-						notes += " for " + conAudit.getAuditFor();
 					notes += " and email sent to "+ emailBuilder.getSentTo();
 				}
 				int typeID = conAudit.getAuditType().getId();
@@ -182,9 +181,12 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 					notes = conAudit.getAuditType().getAuditName()
 							+ " Submission email sent for outstanding requirements.";
-				} else
+				} else {
 					notes = conAudit.getAuditType().getAuditName() + " Submitted";
-
+				}
+				
+				if(!Strings.isEmpty(conAudit.getAuditFor()))
+					notes += " for " + conAudit.getAuditFor();
 				addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 			}
 
