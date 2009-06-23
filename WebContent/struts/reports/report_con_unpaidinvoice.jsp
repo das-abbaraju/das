@@ -3,7 +3,9 @@
 <head>
 <title><s:property value="reportName" /></title>
 <s:include value="reportHeader.jsp" />
-<script type="text/javascript" src="js/AutoComplete.js"></script>
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript"
+	src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
 </head>
 <body>
 <h1><s:property value="reportName" /></h1>
@@ -20,10 +22,12 @@
 		<div class="filterOption">
 			Select a Contractor :
 			<s:textfield id="selected_contractor" cssClass="forms" name="filter.accountName" size="60" /> 
+			<div id="selected_contractor_choices" class="autocomplete"></div>
 			<script type="text/javascript">
-				new AutoComplete('selected_contractor', 'ContractorSelectAjax.action?filter.accountName=', {
-				delay: 0.25,
-				resultFormat: AutoComplete.Options.RESULT_FORMAT_TEXT
+				new Ajax.Autocompleter('selected_contractor', 'selected_contractor_choices', 'ContractorSelectAjax.action', {
+					tokens: ',',
+					paramName: "filter.accountName",
+					minChars: 3
 				});
 			</script>
 		</div>
