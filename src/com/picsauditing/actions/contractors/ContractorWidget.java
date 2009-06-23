@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.util.Strings;
 
 /**
@@ -48,46 +50,42 @@ public class ContractorWidget extends ContractorActionSupport {
 	public List<String> getOpenTasks() {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
-			/*
-			 * if (contractor.getBalance() > 0) { for(Invoice invoice :
-			 * contractor.getInvoices()) { if(!invoice.isPaid() &&
-			 * invoice.getTotalAmount() > 0) { try {
-			 * openTasks.add("You have an <a href=\"Invoice.action?invoice.id="
-			 * + invoice.getId() + "\">invoice of <b>$" +
-			 * invoice.getTotalAmount() + "</b></a> due " +
-			 * DateBean.toShowFormat(invoice.getDueDate()) +
-			 * ", please call 949-387-1940 x708 to make a payment"); } catch
-			 * (Exception e) { e.printStackTrace(); } } } }
-			 */
-			if (!contractor.isPaymentMethodStatusValid()) {
-				try {
-					openTasks
-							.add("Please <a href=\"ContractorEdit.action?id="
-									+ contractor.getId()
-									+ "\">update your payment method</a><br/>NOTE: You will not be billed until your renewal date "
-									+ DateBean.toShowFormat(contractor.getPaymentExpires()));
-				} catch (Exception e) {
-					e.printStackTrace();
+
+			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+				for (Invoice invoice : contractor.getInvoices()) {
+					if (invoice.getStatus().isUnpaid()) {
+						String due = null;
+						try {
+							due = DateBean.toShowFormat(invoice.getDueDate());
+						} catch (Exception ignoreFormattingErrors) {
+						}
+						openTasks.add("You have an <a href=\"Invoice.action?invoice.id=" + invoice.getId()
+								+ "\">invoice of <b>$" + invoice.getTotalAmount() + "</b></a> due " + due);
+					}
 				}
+			}
+
+			if (!contractor.isPaymentMethodStatusValid()) {
+				openTasks.add("Please <a href=\"ContractorPaymentOptions.action?id=" + contractor.getId()
+						+ "\">update your payment method</a>");
 			}
 			String auditName;
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
 				if (conAudit.getAuditType().getClassType().isPqf()) {
-					if(conAudit.getAuditType().isPqf())
+					if (conAudit.getAuditType().isPqf())
 						auditName = "Pre-Qualification Form";
 					else
 						auditName = conAudit.getAuditType().getAuditName();
-					if (conAudit.getAuditStatus().isPending() 
-							|| conAudit.getAuditStatus().isIncomplete()) {
+					if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
 						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">complete and submit your "+ auditName +"</a>");
+								+ "\">complete and submit your " + auditName + "</a>");
 					} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
 						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">review and re-submit your "+ auditName +"</a>");
+								+ "\">review and re-submit your " + auditName + "</a>");
 					}
 				}
-				if (conAudit.getAuditType().isAnnualAddendum() 
+				if (conAudit.getAuditType().isAnnualAddendum()
 						&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
 					openTasks
 							.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
@@ -160,9 +158,10 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 			if (!contractor.isNaicsValid()) {
 				AuditCatData auditCatData = getAuditCatData(contractor);
-				if(auditCatData != null)
-				openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()+ "&catDataID="+ auditCatData.getId()
-						+ "&mode=Edit#node_0_57\"> update your 2007 NAICS code</a>");
+				if (auditCatData != null)
+					openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()
+							+ "&catDataID=" + auditCatData.getId()
+							+ "&mode=Edit#node_0_57\"> update your 2007 NAICS code</a>");
 			}
 
 		}
@@ -196,17 +195,17 @@ public class ContractorWidget extends ContractorActionSupport {
 
 		return false;
 	}
-	
+
 	private AuditCatData getAuditCatData(ContractorAccount contractor) {
-		for(ContractorAudit contractorAudit : contractor.getAudits()) {
-			if(contractorAudit.getAuditType().isPqf()) {
-				for(AuditCatData auditCatData : contractorAudit.getCategories()) {
-					if(auditCatData.getCategory().getId() == 2)
+		for (ContractorAudit contractorAudit : contractor.getAudits()) {
+			if (contractorAudit.getAuditType().isPqf()) {
+				for (AuditCatData auditCatData : contractorAudit.getCategories()) {
+					if (auditCatData.getCategory().getId() == 2)
 						return auditCatData;
 				}
 			}
 		}
-		return null;	
+		return null;
 	}
 
 }
