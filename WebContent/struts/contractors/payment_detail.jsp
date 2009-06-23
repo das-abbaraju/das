@@ -102,12 +102,12 @@ fieldset.form ol {
 		</fieldset>
 	</s:else>
 	
-	<s:if test="!payment.status.void">
+	<s:if test="payment == null || !payment.status.void">
 		<div style="float:right">
 			<div id="toolbox">
 				<ul>
 					<s:if test="payment == null">
-						<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Collect Payment</a></li>
+						<li><a class="pay" href="#" onclick="submitPayment('Save');return false;">Collect Payment</a></li>
 					</s:if>
 					<s:else>
 						<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
