@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class ReportContractorUnpaidInvoice extends ReportAccount {
 	protected int invoiceID;
+	protected TransactionStatus transactionStatus;
+
 
 	@Override
 	protected void checkPermissions() throws Exception {
@@ -32,7 +35,10 @@ public class ReportContractorUnpaidInvoice extends ReportAccount {
 		sql.addWhere("i.totalAmount > 0");
 		sql.addField("i.dueDate");
 		sql.addJoin("JOIN invoice i ON i.accountID = c.id");
-		sql.addWhere("i.status = 'Unpaid'");
+		if(transactionStatus == null)
+			sql.addWhere("i.status = 'Unpaid'");
+		else
+			sql.addWhere("i.status = '"+ transactionStatus +"'");
 		sql.addWhere("i.tableType = 'I'");
 		if (invoiceID > 0)
 			sql.addWhere("i.id = " + invoiceID);
@@ -47,4 +53,17 @@ public class ReportContractorUnpaidInvoice extends ReportAccount {
 	public void setInvoiceID(int invoiceID) {
 		this.invoiceID = invoiceID;
 	}
+
+	public TransactionStatus getTransactionStatus() {
+		return transactionStatus;
+	}
+
+	public void setTransactionStatus(TransactionStatus transactionStatus) {
+		this.transactionStatus = transactionStatus;
+	}
+	
+	public TransactionStatus[] getTransactionStatusList() {
+		return TransactionStatus.values();
+	}
+
 }

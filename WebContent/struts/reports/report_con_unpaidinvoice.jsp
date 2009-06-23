@@ -37,6 +37,10 @@
 			Invoice ID :
 			<s:textfield cssClass="forms" name="invoiceID" size="15" /> 
 		</div>
+
+		<div class="filterOption">
+			<s:select list="transactionStatusList" name="transactionStatus" cssClass="forms"/> 
+		</div>
 		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Search"/>
 		</div>
