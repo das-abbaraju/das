@@ -27,7 +27,7 @@ input[type=submit] {
 <s:elseif test="invoice.status.paid">
 	<div id="info" class="noprint">This invoice has been PAID in full.</div>
 </s:elseif>
-<s:elseif test="invoice.overdue">
+<s:elseif test="invoice.overdue && contractor.activeB">
 	<div id="alert" class="noprint">This invoice is currently OVERDUE!</div>
 </s:elseif>
 
