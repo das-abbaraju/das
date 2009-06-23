@@ -114,7 +114,7 @@ fieldset.form ol {
 				<s:else>
 					<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
 					<s:if test="payment.qbListID == null">
-						<li><a class="cancel" href="#" onclick="submitPayment('Delete');return false;">Delete</a></li>
+						<li><a class="cancel" href="PaymentDetail.action?payment.id=<s:property value="payment.id"/>&button=Delete">Delete</a></li>
 					</s:if>
 				</s:else>
 			</ul>
