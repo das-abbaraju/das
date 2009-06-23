@@ -18,7 +18,6 @@ import javax.persistence.Transient;
 public class Invoice extends Transaction {
 	public final static int daysUntilDue = 30;
 
-	protected TransactionType txnType;
 	private Date dueDate;
 	private String poNumber;
 	private String notes;

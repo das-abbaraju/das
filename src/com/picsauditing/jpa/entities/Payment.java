@@ -13,8 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Where;
-
 import com.picsauditing.PICS.BrainTreeService;
 
 @Entity

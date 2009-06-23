@@ -125,7 +125,10 @@
 							<td><s:property value="id" /></td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
-							<td class="right">$<s:property value="balance" /></td>
+							<td class="right">
+								<s:if test="class.simpleName.equals('Refund')">-</s:if>
+								$<s:property value="balance" />
+							</td>
 							<td><s:property value="status" /></td>
 						</tr>
 					</s:iterator>
