@@ -61,7 +61,7 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
 			<td><s:property value="get('address')"/><br/>
-				<s:property value="get(city)"/><br/>
+				<s:property value="get('city')"/><br/>
 				<s:property value="get('state')"/>-<s:property value="get('zip')"/></td>
 			<td class="center"><a href="PaymentDetail.action?id=<s:property value="get('id')"/>"><s:property value="get('invoiceId')"/></a></td>
 			<td class="right">$<s:property value="get('totalAmount')"/></td>
