@@ -91,7 +91,7 @@ public class PaymentDAO extends PicsDAO {
 		Payment payment = pa.getPayment();
 		Invoice invoice = pa.getInvoice();
 
-		payment.getInvoices().remove(pa);
+		payment.getApplied().remove(pa);
 		invoice.getPayments().remove(pa);
 		em.remove(pa);
 
@@ -108,7 +108,7 @@ public class PaymentDAO extends PicsDAO {
 		Payment payment = pa.getPayment();
 		Refund refund = pa.getRefund();
 
-		payment.getInvoices().remove(pa);
+		payment.getApplied().remove(pa);
 		refund.getPayments().remove(pa);
 		em.remove(pa);
 

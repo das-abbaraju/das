@@ -134,7 +134,7 @@ fieldset.form ol {
 					<td><s:date name="refund.creationDate" format="M/d/yy" /></td>
 					<td>$<s:property value="refund.totalAmount" /></td>
 					<td>$<s:property value="amount" /></td>
-					<td><input type="button" class="" value="Remove" /></td>
+					<td><a class="remove" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=unapply&amountApplyMap[<s:property value="refund.id" />]=0">Remove</a></td>
 				</tr>
 			</s:iterator>
 		</table>
