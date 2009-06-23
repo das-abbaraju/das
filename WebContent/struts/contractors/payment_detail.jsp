@@ -91,7 +91,7 @@ fieldset.form ol {
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
 		<ol>
-			<li><label>Method:</label><s:radio name="method" theme="pics" onchange="changePaymentMethod(this.value)"
+			<li><label>Method:</label><s:radio name="method" theme="pics" onclick="changePaymentMethod(this.value)"
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
