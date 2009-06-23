@@ -640,7 +640,7 @@ div.buttons a.picsbutton {
 }
 
 /* UTILITIES */
-.picsbutton:hover, div.buttons button:hover, div.buttons a:hover, div.buttons a:active, .picsbutton:active, a:active {
+.picsbutton:hover, div.buttons button:hover, div.buttons a:hover, div.buttons a:active, .picsbutton:active {
 	background-color: #dff4ff;
 	border-left: 2px;
 	border-right: 1px;
