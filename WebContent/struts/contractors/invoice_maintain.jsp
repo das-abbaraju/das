@@ -9,7 +9,7 @@
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
-<div><a href="InvoiceDetail.action?invoice.id=<s:property value="invoiceId"/>">&lt;&lt; Return to Invoice</a></div>
+<div class="buttons"><a href="InvoiceDetail.action?invoice.id=<s:property value="invoiceId"/>" class="picsbutton">&lt;&lt; Return to Invoice</a></div>
 
 <s:form action="ConInvoiceMaintain" cssStyle="width: 500px">
 	<s:hidden name="invoiceId" />

@@ -93,51 +93,63 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			ip.getPayment().updateAmountApplied();
 
 		if (button != null) {
-			if (edit) {
-				if ("Save".equals(button)) {
-					edit = false;
-					if (newFeeId > 0) {
-						addInvoiceItem(newFeeId);
-						newFeeId = 0;
-						edit = true;
-					}
-					updateTotals();
-					invoice.setQbSync(true);
+			String message = null;
+			
+			if ("Save".equals(button)) {
+				edit = false;
+				if (newFeeId > 0) {
+					addInvoiceItem(newFeeId);
+					newFeeId = 0;
+					edit = true;
+				} else {
+					message = "Saved Invoice";
 				}
-
-				if (button.startsWith("Change to")) {
-					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
-					addNote("Changed invoice " + invoice.getId() + " to " + contractor.getMembershipLevel().getFee());
-				}
-
-			} else {
-				if (button.startsWith("Email")) {
-					try {
-						EmailQueue email = emailInvoice();
-						String note = "Invoice emailed to " + email.getToAddresses();
-						if (!Strings.isEmpty(email.getCcAddresses()))
-							note += " and cc'd " + email.getCcAddresses();
-						addNote(note);
-
-					} catch (Exception e) {
-						// TODO: handle exception
+				updateTotals();
+				invoice.setQbSync(true);
+			}
+			if (button.startsWith("Change to")) {
+				for (InvoiceItem item : invoice.getItems()) {
+					if (item.getInvoiceFee().equals(contractor.getMembershipLevel())) {
+						item.setInvoiceFee(contractor.getNewMembershipLevel());
+						item.setAmount(contractor.getNewMembershipLevel().getAmount());
+						item.setAuditColumns(getUser());
 					}
 				}
-				if (button.equalsIgnoreCase("Cancel")) {
 
-					invoice.setStatus(TransactionStatus.Void);
-					invoice.setAuditColumns(permissions);
-					invoice.setQbSync(true);
-					invoice.setNotes("Cancelled Invoice");
+				contractor.setMembershipLevel(contractor.getNewMembershipLevel());
+				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee());
+				message = "Changed Membership Level";
+			}
+			
+			if (button.startsWith("Email")) {
+				try {
+					EmailQueue email = emailInvoice();
+					String note = "Invoice emailed to " + email.getToAddresses();
+					if (!Strings.isEmpty(email.getCcAddresses()))
+						note += " and cc'd " + email.getCcAddresses();
+					addNote(note);
+					message = "Sent Email";
 
-					invoiceDAO.save(invoice);
-
-					String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
-							+ invoice.getTotalAmount().toString();
-					addNote(noteText);
+				} catch (Exception e) {
+					message = "Sorry!! Failed to send email.";
 				}
 			}
-			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
+			if (button.equalsIgnoreCase("Cancel")) {
+
+				invoice.setStatus(TransactionStatus.Void);
+				invoice.setAuditColumns(permissions);
+				invoice.setQbSync(true);
+				invoice.setNotes("Cancelled Invoice");
+
+				message = "Cancelled Invoice";
+
+				String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
+						+ invoice.getTotalAmount().toString();
+				addNote(noteText);
+			}
+			
+			invoiceDAO.save(invoice);
+			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit + (message == null ? "" : "&msg=" + message ));
 		}
 
 		updateTotals();
@@ -221,26 +233,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		newItem.setAuditColumns(getUser());
 
 		invoice.getItems().add(newItem);
-	}
-
-	private void changeInvoiceItem(InvoiceFee currentFee, InvoiceFee newFee) {
-		for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
-			InvoiceItem item = iterator.next();
-			if (item.getInvoiceFee().getId() == currentFee.getId()) {
-				iterator.remove();
-				invoiceItemDAO.remove(item);
-			}
-		}
-
-		InvoiceItem thisIsTheNewItemThatWeArePuttingOnTheInvoice = new InvoiceItem();
-		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoiceFee(newFee);
-		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAmount(newFee.getAmount());
-		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setAuditColumns(getUser());
-
-		thisIsTheNewItemThatWeArePuttingOnTheInvoice.setInvoice(invoice);
-		invoice.getItems().add(thisIsTheNewItemThatWeArePuttingOnTheInvoice);
-
-		contractor.setMembershipLevel(newFee);
 	}
 
 	public int getId() {

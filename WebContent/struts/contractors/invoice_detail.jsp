@@ -31,10 +31,10 @@ input[type=submit] {
 	<div id="alert" class="noprint">This invoice is currently OVERDUE!</div>
 </s:elseif>
 
-<s:form id="save" method="POST">
-	<s:hidden name="edit"></s:hidden>
+<s:form id="save" name="save" method="POST">
 	<s:hidden name="id"></s:hidden>
 	<s:hidden name="invoice.id"></s:hidden>
+	<s:hidden name="button" value="Save"></s:hidden>
 
 	<table width="100%">
 		<tr>
@@ -64,7 +64,7 @@ input[type=submit] {
 					<ul>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
-								<li><a class="save" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Save">Save</a></li>
+								<li><a class="save" href="#" onclick="document.save.submit(); return false;">Save</a></li>
 								<li><a class="exit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>">Return</a></li>
 							</s:if>
 							<s:else>
@@ -149,17 +149,16 @@ input[type=submit] {
 						</s:if> </span></td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
-							(optional description) <s:if
-								test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
-								<input type="submit" class="picsbutton positive" name="button"
-									value="Change to: <s:property value="contractor.newMembershipLevel.fee" />">
-							</s:if></td>
+							(optional description)</td>
 							<td class="right">$<s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" />
 							USD</td>
 						</s:if>
 						<s:else>
 							<td style="border-left: 0"><s:property value="description" /> <s:if test="refunded"> Refunded </s:if> <pics:permission
 								perm="InvoiceEdit" type="Edit">
+								<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
+									<div class="buttons"><a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to" class="picsbutton positive">Change to: <s:property value="contractor.newMembershipLevel.fee" /></a></div>
+								</s:if>
 								<s:if test="invoice.status.paid && amount > 0 && !refunded">
 									<s:if test="@com.picsauditing.PICS.DateBean@isBeforeAWeek(invoice.paidDate)">
 										<s:hidden name="refundFeeId" value="%{id}" />
