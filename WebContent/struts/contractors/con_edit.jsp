@@ -34,7 +34,7 @@
 	</div>
 </s:if>
 <s:form id="save" method="POST" enctype="multipart/form-data">
-<div class="buttons">
+<div>
 	<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 </div>
 <br clear="all" />

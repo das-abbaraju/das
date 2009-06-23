@@ -10,13 +10,13 @@
 	</thead>
 	<tbody>
 		<pics:permission perm="EditNotes" type="Edit">
-		<tr style="cursor: pointer;"
+		<tr class="clickable"
 				onclick="noteEditor('<s:property value="id"/>', 0, 'edit', '<s:property value="noteCategory"/>');">
 			<td colspan="3" class="center">Click to add a new Note</td>
 		</tr>
 		</pics:permission>
 		<s:iterator value="notes">
-		<tr style="cursor: pointer;"
+		<tr class="clickable"
 				onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','view', '<s:property value="noteCategory"/>')">
 			<td class="center">
 				<nobr><s:date name="creationDate" format="M/d/yy h:mm a" /></nobr><br />

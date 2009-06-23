@@ -13,15 +13,16 @@ div.auditHeader fieldset {
 </head>
 <body>
 <h1><s:property value="account.name"/></h1>
-<div id="auditHeader" class="auditHeader">
 <div class="buttons" style="float: right">
-	<button name="button" type="button" value="cancel" onclick="window.close();">Close</button>
+	<a class="picsbutton" onclick="window.close();" href="#">Close</a>
 	<s:if test="permissions.admin || permissions.userId == note.createdBy.id">
 		<pics:permission perm="EditNotes" type="Edit">
-			<a href="?id=<s:property value="id"/>&note.id=<s:property value="note.id"/>&mode=edit&embedded=<s:property value="embedded"/>">Edit</a>
+			<a class="picsbutton" href="?id=<s:property value="id"/>&note.id=<s:property value="note.id"/>&mode=edit&embedded=<s:property value="embedded"/>">Edit</a>
 		</pics:permission>
 	</s:if>
 </div>
+
+<div id="auditHeader" class="auditHeader">
 <fieldset>
 <ul>
 	<li><label>Category:</label>
@@ -61,9 +62,6 @@ div.auditHeader fieldset {
 
 <div><s:property value="note.bodyHtml" escape="false"/></div>
 
-<div class="buttons">
-	<button name="button" type="button" value="cancel" onclick="window.close();">Close</button>
-</div>
-<br />
+<div><button name="button" class="picsbutton" type="button" value="cancel" onclick="window.close();">Close</button></div>
 </body>
 </html>

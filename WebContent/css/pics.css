@@ -632,6 +632,7 @@ div.buttons a.picsbutton {
 	border-bottom: 1px;
 	border-top: 2px;
 	margin-top: -1px;
+	margin-bottom: 1px;
 	border-style: solid;
 	border-color: #6990DB;
 	color: #336699;
@@ -873,3 +874,10 @@ div.autocomplete ul li {
 	font-size: 14px;
 	white-space: normal;
 }
+
+table.report tr.clickable:hover, table.notes tr.clickable:hover {
+	background-color: #ffff99;	
+	color:black;
+	cursor: pointer;
+}
+
