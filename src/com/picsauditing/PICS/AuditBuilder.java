@@ -45,15 +45,14 @@ public class AuditBuilder {
 	private boolean fillAuditCategories = true;
 	private User user = null;
 	private ContractorAccount contractor = null;
-	
+
 	private ContractorAuditDAO cAuditDAO;
 	private AuditDataDAO auditDataDAO;
 	private AuditCategoryDAO auditCategoryDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditCategoryDataDAO auditCategoryDataDAO;
 
-	public AuditBuilder(ContractorAuditDAO cAuditDAO,
-			AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
+	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
 			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -133,13 +132,12 @@ public class AuditBuilder {
 				// We used to also check to see that the contractor is approved,
 				// But now we just add in advance of being approved
 				// (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No)
-				//		|| co.getWorkStatus().equals("Y"))
+				// || co.getWorkStatus().equals("Y"))
 				for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
-					if (ao.isRequiredFor(contractor)
-							&& ao.getAuditType().getId() != AuditType.PQF
+					if (ao.isRequiredFor(contractor) && ao.getAuditType().getId() != AuditType.PQF
 							&& ao.getAuditType().getId() != AuditType.WELCOME) {
-						PicsLogger.log(co.getOperatorAccount().getName() + " needs "
-								+ ao.getAuditType().getAuditName());
+						PicsLogger
+								.log(co.getOperatorAccount().getName() + " needs " + ao.getAuditType().getAuditName());
 						auditTypeList.add(ao.getAuditType());
 					}
 				}
@@ -172,10 +170,12 @@ public class AuditBuilder {
 						// Now determine if it will be good enough
 						if (auditType.isRenewable()) {
 							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
-								// The audit is still valid for at least another 60 days
+								// The audit is still valid for at least another
+								// 60 days
 								found = true;
 						} else {
-							// This audit should not be renewed but we already have one
+							// This audit should not be renewed but we already
+							// have one
 							found = true;
 						}
 					}
@@ -194,8 +194,10 @@ public class AuditBuilder {
 
 					if (auditType.getId() == AuditType.DESKTOP
 							&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
-						// The current PQF has been submitted, but we need to know
-						// if the Safety Manual is there first before creating the desktop
+						// The current PQF has been submitted, but we need to
+						// know
+						// if the Safety Manual is there first before creating
+						// the desktop
 						// TODO add field to the contractorAccount
 						AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(),
 								AuditQuestion.MANUAL_PQF);
@@ -257,9 +259,9 @@ public class AuditBuilder {
 		for (Integer auditID : auditsToRemove) {
 			cAuditDAO.remove(auditID);
 			// TODO try removing the audits from the list if we can
-			//ContractorAudit removeMe = new ContractorAudit();
-			//removeMe.setId(auditID);
-			//contractor.getAudits().remove(removeMe);
+			// ContractorAudit removeMe = new ContractorAudit();
+			// removeMe.setId(auditID);
+			// contractor.getAudits().remove(removeMe);
 			fillAuditCategories = false;
 		}
 
@@ -274,8 +276,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGuard and automatically require this policy,
-	 * based on riskLevel
+	 * For each audit (policy), get a list of operators who have InsureGuard and
+	 * automatically require this policy, based on riskLevel
 	 * 
 	 * @param conAudit
 	 */
@@ -288,8 +290,7 @@ public class AuditBuilder {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB() 
-					&& co.getOperatorAccount().getCanSeeInsurance().isTrue())
+			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getCanSeeInsurance().isTrue())
 				operatorSet.add(co.getOperatorAccount().getInheritInsuranceCriteria());
 		}
 
@@ -303,9 +304,11 @@ public class AuditBuilder {
 
 			// conAudit.getRequestingOpAccount()
 			// NOTE!!! I've removed the requesting op account functionality
-			// I don't think it's very common for an operator to need specific/custom policies only for that facility
+			// I don't think it's very common for an operator to need
+			// specific/custom policies only for that facility
 			// If a facility needs "Pollution" and the contractor adds it,
-			// then other operators should be able to see it as well that subscribe to Pollution insurance
+			// then other operators should be able to see it as well that
+			// subscribe to Pollution insurance
 
 			for (AuditOperator ao : operator.getAudits()) {
 				if (conAudit.getAuditType().equals(ao.getAuditType()) && ao.isCanSee()) {
@@ -318,7 +321,8 @@ public class AuditBuilder {
 				}
 			}
 
-			// Now find the existing cao record for this operator (if one exists)
+			// Now find the existing cao record for this operator (if one
+			// exists)
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
 				if (cao2.getOperator().equals(operator)) {
@@ -338,22 +342,27 @@ public class AuditBuilder {
 					conAudit.getOperators().add(cao);
 					cao.setVisible(true);
 					if (required) {
-						// This cao is always required so add it if it doesn't exist
+						// This cao is always required so add it if it doesn't
+						// exist
 						// and then calculate the recommended status
 						cao.setStatus(CaoStatus.Pending);
 					} else {
-						// This cao might be required (if the operator manually requested it)
+						// This cao might be required (if the operator manually
+						// requested it)
 						cao.setStatus(CaoStatus.NotApplicable);
 					}
 				}
 				if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
-					// This operator has specifically stated they don't need this policy
+					// This operator has specifically stated they don't need
+					// this policy
 					cao.setVisible(false);
 				}
 
 			} else if (cao != null) {
-				// This existing cao is either no longer needed by the operator (ie audit/operator matrix)
-				// or it has one or more parents that have already made a decision on this policy
+				// This existing cao is either no longer needed by the operator
+				// (ie audit/operator matrix)
+				// or it has one or more parents that have already made a
+				// decision on this policy
 
 				// Remove the cao if it's Awaiting
 				if (cao.getStatus().equals(CaoStatus.Pending)) {
@@ -370,7 +379,7 @@ public class AuditBuilder {
 				contractorAuditOperatorDAO.save(cao);
 			}
 		}
-		
+
 		Iterator<ContractorAuditOperator> iter = conAudit.getOperators().iterator();
 		while (iter.hasNext()) {
 			ContractorAuditOperator cao = iter.next();
@@ -389,16 +398,14 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
-	 * shouldn't be there
+	 * Determine which categories should be on a given audit and add ones that
+	 * aren't there and remove ones that shouldn't be there
 	 * 
 	 * @param conAudit
 	 */
 	public void fillAuditCategories(ContractorAudit conAudit) {
 		if (conAudit.getAuditType().isPqf()) {
 			// Only Active and Pending PQFs should be recalculated
-			if (conAudit.getAuditStatus().isIncomplete())
-				return;
 			if (conAudit.getAuditStatus().isSubmitted())
 				return;
 			if (conAudit.getAuditStatus().isResubmitted())
@@ -406,6 +413,9 @@ public class AuditBuilder {
 			if (conAudit.getAuditStatus().isExpired())
 				return;
 			if (conAudit.getAuditStatus().isExempt())
+				return;
+		} else if (conAudit.getAuditType().isAnnualAddendum()) {
+			if (!conAudit.getAuditStatus().isPending() || !conAudit.getAuditStatus().isIncomplete())
 				return;
 		} else {
 			// Other Audits should only consider Pending
@@ -503,7 +513,8 @@ public class AuditBuilder {
 								AuditStatus.Submitted))) {
 					// Found a Submitted/Active PQF
 					if (currentAuditDate == null || audits.getCompletedDate().after(currentAuditDate)) {
-						// TODO we can only have 1 pqf anway so remove this logic
+						// TODO we can only have 1 pqf anway so remove this
+						// logic
 						// Found the most recent one
 						currentAuditDate = audits.getCompletedDate();
 						pqfAuditID = audits.getId();
@@ -585,7 +596,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Business engine designed to find audits that are about to expire and rebuild them
+	 * Business engine designed to find audits that are about to expire and
+	 * rebuild them
 	 */
 	public void addAuditRenewals() {
 		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();
@@ -610,8 +622,7 @@ public class AuditBuilder {
 		this.fillAuditCategories = fillAuditCategories;
 	}
 
-	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year,
-			AuditType auditType) {
+	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year, AuditType auditType) {
 		boolean found = false;
 		for (ContractorAudit cAudit : currentAudits) {
 			if (cAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
@@ -629,8 +640,7 @@ public class AuditBuilder {
 			ContractorAudit annualAudit = createAudit(auditType);
 			annualAudit.setAuditFor(Integer.toString(year));
 			annualAudit.setCreationDate(startDate.getTime());
-			Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType
-					.getMonthsToExpire());
+			Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire());
 			annualAudit.setExpiresDate(dateToExpire);
 			cAuditDAO.save(annualAudit);
 			currentAudits.add(annualAudit);
@@ -644,7 +654,7 @@ public class AuditBuilder {
 		}
 		return false;
 	}
-	
+
 	private ContractorAudit createAudit(AuditType auditType) {
 		ContractorAudit audit = new ContractorAudit();
 		audit.setContractorAccount(contractor);
