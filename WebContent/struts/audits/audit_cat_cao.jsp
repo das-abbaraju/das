@@ -162,7 +162,7 @@
 	</s:if>
 	<s:if test="#editable && #showButtons">
 		<s:if test="permissions.contractor">
-			<div class="buttons">
+			<div>
 				<input type="button" class="picsbutton positive" 
 					<s:if test="#cao.status.pending">
 						value="Submit"
@@ -177,7 +177,7 @@
 			</div>
 		</s:if> 
 		<s:if test="permissions.admin">
-			<div class="buttons">
+			<div>
 				<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 			</div>
@@ -186,7 +186,7 @@
 			<s:textarea name="cao.notes" value="%{#cao.notes}" cols="60" rows="3"/>
 		</s:if> 
 		<s:if test="permissions.operatorCorporate">
-			<div class="buttons">
+			<div>
 				<s:if test="!#cao.status.approved">
 					<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 				</s:if>

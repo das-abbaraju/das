@@ -92,7 +92,7 @@
 		<td colspan="7">
 			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Rejected':'Reject Selected','NotApplicable':'Mark as N/A'}"/>
 			<div class="buttons">
-				<a class="positive" href="#" onclick="return saveRows();">Save Changes</a>
+				<a class="picsbutton positive" href="#" onclick="return saveRows();">Save Changes</a>
 			</div>
 			</td>
 	</tr>

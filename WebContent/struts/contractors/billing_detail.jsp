@@ -93,13 +93,13 @@
 					</s:iterator>
 					<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
 					<li>
-					<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
+					<div><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
 					</li>
 				</ol>
 			</s:form> <s:if test="contractor.billingStatus == 'Current' && !contractor.activeB">
 				<s:form>
 					<s:hidden name="id" />
-					<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Activate" /></div>
+					<div><input type="submit" class="picsbutton positive" name="button" value="Activate" /></div>
 				</s:form>
 			</s:if></fieldset>
 		</s:if>

@@ -56,7 +56,7 @@
 </fieldset>
 </s:iterator>
 <fieldset class="form submit">
-	<div class="buttons">
+	<div>
 		<pics:permission perm="InvoiceEdit" type="Edit">
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 		</pics:permission>

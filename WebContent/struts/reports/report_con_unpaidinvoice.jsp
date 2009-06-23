@@ -37,7 +37,7 @@
 			Invoice ID :
 			<s:textfield cssClass="forms" name="invoiceID" size="15" /> 
 		</div>
-		<div class="buttons">
+		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Search"/>
 		</div>
 </s:form>

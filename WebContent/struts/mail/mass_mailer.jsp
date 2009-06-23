@@ -95,7 +95,7 @@ type = "<s:property value="type" />";
 				<button id="buttonSave" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save...</button>
 			</pics:permission>
 			<button id="buttonEdit" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
-			<button class="positive" type="button" onclick="sendEmails();">Send	Emails</button>
+			<button class="picsbutton positive" type="button" onclick="sendEmails();">Send	Emails</button>
 			<br clear="all">
 		</div>
 		<br clear="all" />

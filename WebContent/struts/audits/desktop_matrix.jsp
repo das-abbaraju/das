@@ -36,8 +36,8 @@ function clearSelected(name) {
 	<div id="changecolumns"><a href="#" onclick="$('filters').show(); $('changecolumns').hide(); return false;">Change Columns</a></div>
 </s:if>
 <div id="filters" <s:if test="questions.size() > 0">style="display: none;"</s:if>>
-	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="Search">Search</button>
+	<div>
+		<button class="picsbutton positive" name="button" type="submit" value="Search">Search</button>
 	</div>
 
 	<div class="filterOption">Type of Work:<br />
@@ -56,8 +56,8 @@ function clearSelected(name) {
 </div>
 </div>
 <s:if test="questions.size() > 0">
-	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="Save">Save</button>
+	<div>
+		<button class="picsbutton positive" name="button" type="submit" value="Save">Save</button>
 	</div>
 	<table class="report">
 	<thead>
@@ -89,8 +89,8 @@ function clearSelected(name) {
 	</tr>
 	</thead>
 	</table>
-	<div class="buttons">
-		<button class="positive" name="button" type="submit" value="Save">Save</button>
+	<div>
+		<button class="picsbutton positive" name="button" type="submit" value="Save">Save</button>
 	</div>
 </s:if>
 

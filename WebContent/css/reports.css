@@ -6,10 +6,9 @@ table.report {
 	color: #4C4D4D;
 	background: #f9f9f9;
 	clear: both;
-	margin: 10px;
 }
 table.report td, table.report th {
-	border: thin solid #A84D10;
+	border: 1px solid #A84D10;
 	vertical-align: middle;
 	padding: 4px;
 	font-size: 13px;
@@ -215,13 +214,9 @@ a.clearLink {
 
 /*************** topLeft Navlist *******************/
 #navListTop {
-	float: left;
-	position: relative;
-	white-space: nowrap;
-	padding-top: 0px;
-	margin-top: -16px;
-	left: 5px;
-	top: 1px;
+	padding-top: 5px;
+	padding-bottom: 4px;
+	padding-left: 2px;
 }
 
 #navListTop li {
@@ -233,29 +228,23 @@ a.clearLink {
 }
 
 #navListTop a {
+	color: #fff;
 	padding: 8px 10px;
+	text-decoration: none;
 }
 
 #navListTop a:link, #navListTop a:visited {
-	color: #fff;
+	background-color: rgb(168, 77, 16);
+}
+
+#navListTop a:hover, #navListTop a:active, #navListTop a.current {
 	background-color: #003768;
-	text-decoration: none;
 }
 
-#navListTop a:hover, #navListTop a:active {
-	color: #fff;
-	background-color: rgb(168, 77, 16);
-	text-decoration: none;
-}
-
-#navListTop a.current {
-	color: #fff;
-	background-color: rgb(168, 77, 16);
-	text-decoration: none;
+#navListTop a:active {
+	font-weight: bold;
 }
 
 #navListTop a.inactive {
-	color: #fff;
 	background-color: rgb(192,192,192);
-	text-decoration: none;
 }

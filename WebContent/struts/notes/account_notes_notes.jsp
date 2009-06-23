@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <pics:permission perm="EditNotes" type="Edit">
-	<div class="buttons">
+	<div>
 		<input type="button" class="picsbutton positive" name="button" 
 			onclick="noteEditor('<s:property value="id"/>', 0, 'edit');" value="Add Note" />
 	</div>

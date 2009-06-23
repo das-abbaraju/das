@@ -52,6 +52,7 @@
 <div style="position: relative;">
 <div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
 <div id="growlBox"></div>
+</div>
 
 <s:if test="inheritingOperators.size > 0">
 <div style="position: absolute; right: 0; top: 0;">[<a href=""
@@ -116,7 +117,6 @@
 		</div>
 	</s:if>
 </s:if>
-</div>
 
 <br />
 <br />

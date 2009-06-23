@@ -44,10 +44,10 @@ function saveRows() {
 <h1>Policies Awaiting Decision</h1>
 
 <div class="buttons">
-	<a class="button" href="#" onclick="return searchByFlag('Green');"><s:property 
+	<a class="picsbutton button" href="#" onclick="return searchByFlag('Green');"><s:property 
 		value="@com.picsauditing.jpa.entities.FlagColor@Green.bigIcon" escape="false"/>
 		Show Policies to Approve</a>
-	<a class="button" href="#" onclick="return searchByFlag('Red');"><s:property 
+	<a class="picsbutton button" href="#" onclick="return searchByFlag('Red');"><s:property 
 		value="@com.picsauditing.jpa.entities.FlagColor@Red.bigIcon" escape="false"/>
 		Show Policies to Reject</a>
 </div>

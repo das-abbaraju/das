@@ -15,7 +15,7 @@
 		Pics Recommendation: <s:property value="cao.flag.smallIcon" escape="false"/> <s:property value="cao.flag" /> <br />
 	</s:if>
 	<s:textarea id="cao.notes" name="cao.notes" cols="60" rows="2"/>
-	<div class="buttons">
+	<div>
 		<input type="button" class="picsbutton positive" onclick="editCao(<s:property value="cao.id"/>,'save')" value="Save"/>
 		<input type="button" class="picsbutton negative" onclick="$('caoSection').hide();" value="Close"/>
 	</div>

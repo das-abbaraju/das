@@ -15,9 +15,10 @@
 	<input type="button" class="picsbutton" value="Utility" />
 	<input type="button" class="picsbutton negative" value="Negative" />
 	<input type="button" disabled="disabled" class="picsbutton" value="Disabled" />
+	<input type="button" value="Normal" />
 </div>
-<h3>div a.picsbutton</h3>
-<div class="buttons">
+<h3>div.buttons a.picsbutton</h3>
+<div>
 	<a href="#" class="picsbutton positive">Positive</a>
 	<a href="#" class="picsbutton">Utility</a>
 	<a href="#" class="picsbutton negative">Negative</a>

@@ -49,8 +49,8 @@
 			</ol>
 			</fieldset>
 			<fieldset class="form submit">
-			<div class="buttons">
-			<button id="saveButton" class="positive" value="Save Profile" name="button" type="submit">Save Profile</button>
+			<div>
+			<button id="saveButton" class="picsbutton positive" value="Save Profile" name="button" type="submit">Save Profile</button>
 			</div>
 			</fieldset>
 		</s:form></td>

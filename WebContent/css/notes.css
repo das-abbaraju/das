@@ -10,7 +10,7 @@ table.notes {
 }
 
 table.notes td {
-	border: thin solid #A84D10;
+	border: 1px solid #A84D10;
 	padding: 4px;
 	font-size: 13px;
 	line-height: 16px;

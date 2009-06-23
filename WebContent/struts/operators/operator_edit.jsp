@@ -28,7 +28,7 @@
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
-	<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
+	<div><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 	<br clear="all" />
 	<s:hidden name="id" />
 	<s:hidden name="type" />
@@ -129,7 +129,7 @@
 		</tr>
 	</table>
 	<br clear="all">
-	<div class="buttons"><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
+	<div><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 </s:form>
 <div id="caldiv1"
 	style="position: absolute; visibility: hidden; background-color: white; layer-background-color: white;"></div>

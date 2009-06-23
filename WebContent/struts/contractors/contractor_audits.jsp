@@ -83,8 +83,8 @@
 		<tr id="addAuditManually" style="display: none;">
 		<s:form method="post" id="form1">
 			<td>
-			<div class="buttons">
-				<button class="positive" name="button" type="submit" value="Add">Add</button>
+			<div>
+				<button class="picsbutton positive" name="button" type="submit" value="Add">Add</button>
 			</div>
 			</td>
 			<td colspan="3" class="center">

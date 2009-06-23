@@ -84,7 +84,7 @@
 		<tr id="addAuditManually" style="display: none;">
 			<s:form method="post" id="form1" >
 				<td colspan="6">
-					<div class="buttons">
+					<div>
 						<input class="picsbutton positive" name="button" type="submit" value="Add"/>
 					</div>
 					<s:hidden name="id" value="%{id}"/>
@@ -229,7 +229,7 @@
 			</s:iterator>
 		</table>
 	</s:if>
-	<div class="buttons">
+	<div>
 		<input type="button" class="picsbutton positive" value="Add File" onclick="showCertUpload(<s:property value="id" />, 0)" title="Opens in new window (please disable your popup blocker)"/>
 	</div>
 </td>

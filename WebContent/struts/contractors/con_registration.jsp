@@ -140,7 +140,7 @@ function checkName(name) {
 						</ol>
 					</fieldset>
 					<fieldset class="form submit">
-						<div class="buttons">
+						<div>
 							<input type="submit" class="picsbutton positive" name="button" value="Create Account"/>
 						</div>
 					</fieldset>

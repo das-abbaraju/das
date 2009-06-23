@@ -255,7 +255,7 @@
 		</tr>
 	</table>
 <br clear="all">
-	<div class="buttons">
+	<div>
 		<s:if test="permissions.contractor">
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 		</s:if>

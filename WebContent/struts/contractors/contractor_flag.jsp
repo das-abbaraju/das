@@ -48,8 +48,8 @@
 						<s:checkbox name="overrideAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label><br/>
 					</s:if>
 					Reason:<br><s:textarea name="forceNote" value=""></s:textarea>
-					<div class="buttons">
-						<button class="positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
+					<div>
+						<button class="picsbutton positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
 					</div>
 					<br />
 				</pics:permission>
@@ -72,8 +72,8 @@
 							<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
 						</s:if>
 						<s:textarea name="forceNote" value=""></s:textarea><br />
-						<div class="buttons">
-							<button class="positive" type="submit" name="button" value="Force Flag" onclick="return checkForce();">Force Flag</button>
+						<div>
+							<button class="picsbutton positive" type="submit" name="button" value="Force Flag" onclick="return checkForce();">Force Flag</button>
 						</div>
 					</s:form>
 					<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>

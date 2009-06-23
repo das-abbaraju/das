@@ -9,9 +9,9 @@
 <h2><s:property value="conAudit.auditFor" /> <s:property
 	value="conAudit.auditType.auditName" /></h2>
 
-<div class="buttons">
-	<button id="rejectButton" class="negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
-	<button id="approveButton1" style="display: <s:property value="#attr.showApproveButton"/>;" class="positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+<div>
+	<button id="rejectButton" class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
+	<button id="approveButton1" style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 </div>
 <br/>
 <s:if test="conAudit.auditType.pqf">
@@ -198,7 +198,7 @@
 	</s:if>
 </s:else>
 	<div class="clear"/>
-<div class="buttons">
-	<button class="negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
-	<button id="approveButton2" style="display: <s:property value="#attr.showApproveButton"/>;" class="positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
+<div>
+	<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
+	<button id="approveButton2" style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 </div>

@@ -16,8 +16,8 @@
 	<s:hidden name="parentID" value="%{question.subCategory.id}" />
 	<s:hidden name="question.subCategory.id" />
 	<fieldset class="form submit">
-		<div class="buttons">
-			<button class="positive" name="button" type="submit" value="save">Save</button>
+		<div>
+			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
 		</div>
 	</fieldset>
 	<fieldset class="form">
@@ -140,10 +140,10 @@
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<div class="buttons">
-			<button class="positive" name="button" type="submit" value="save">Save</button>
+		<div>
+			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
 		<s:if test="question.id > 0">
-			<button name="button" class="negative" type="submit" value="delete">Delete</button>
+			<button name="button" class="picsbutton negative" type="submit" value="delete">Delete</button>
 		</s:if>
 		</div>
 	</fieldset>

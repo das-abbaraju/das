@@ -45,15 +45,15 @@ function closePage() {
 							<tr><td></td><td align="left">Workers Comp Letter</td></tr> 
 							<tr><td></td><td align="left">Generic Certificate</td></tr></table></div>
 					
-					<div class="buttons">
+					<div>
 					<a href="javascript: closePage();">Close and Return to Form</a> 
 					<s:if test="file != null && file.exists()">
 						<s:if test="certificate.caos == null || certificate.caos.size() == 0">
-							<button class="negative" name="button" value="Delete" type="submit" 
+							<button class="picsbutton negative" name="button" value="Delete" type="submit" 
 							onclick="return confirm('Are you sure you want to delete this file?');">DeleteFile</button>
 						</s:if>
 					</s:if>
-					<button class="positive right" name="button" value="Save" type="submit">Save</button>
+					<button class="picsbutton positive right" name="button" value="Save" type="submit">Save</button>
 				</div>
 			</s:form>
 			</div>

@@ -31,7 +31,7 @@
 </table>
 </div>
 
-<div class="buttons"><input type="button" id="save_button"
+<div><input type="button" id="save_button"
 	class="picsbutton positive" onclick="saveCriteria(); return false;"
 	value="Save" /> <input type="button" id="close_button"
 	class="picsbutton negative"

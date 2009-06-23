@@ -34,8 +34,8 @@
 		</tr>
 	</table>
 
-	<div class="buttons">
-	<button type="submit" name="button" value="Save" class="positive">Save</button>
+	<div>
+	<button type="submit" name="button" value="Save" class="picsbutton positive">Save</button>
 	</div>
 </s:form>
 

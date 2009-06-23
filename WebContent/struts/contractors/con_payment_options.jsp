@@ -177,7 +177,7 @@ function updateExpDate() {
 				<span id="ccexpError" class="Red" style="display:none"> </span>
 			</li>
 			<li>
-			<div class="buttons">
+			<div>
 				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
 				<br clear="all">
 			</div>
@@ -191,7 +191,7 @@ function updateExpDate() {
 <br clear="all" /><br/><br/>
 <s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">
-		<a href="ContractorRegistrationFinish.action" class="positive">Next &gt;&gt;</a>
+		<a href="ContractorRegistrationFinish.action" class="picsbutton positive">Next &gt;&gt;</a>
 	</div>
 </s:if>
 </body>

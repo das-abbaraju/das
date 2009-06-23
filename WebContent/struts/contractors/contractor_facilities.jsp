@@ -102,7 +102,7 @@
 
 <s:if test="permissions.contractor && !contractor.activeB">
 	<div id="next_button" class="buttons" style="float: left;">
-		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="positive">Next &gt;&gt;</a>
+		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="picsbutton positive">Next &gt;&gt;</a>
 		<div class="clear"></div>
 	</div>
 </s:if>
@@ -135,7 +135,7 @@
 			<s:hidden name="id"/>
 			<div id="search">
 				<div class="buttons" style="min-height: 30px;">
-					<button class="positive" name="button" type="button" 
+					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
 					<nobr>Name: <s:textfield cssClass="forms" name="operator.name" onkeypress="return false();"/></nobr>
 					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state"></s:select></nobr>

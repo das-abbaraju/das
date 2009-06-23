@@ -69,7 +69,7 @@
 				<br clear="all">
 			</div>
 			<br clear="all">
-			<div class="buttons">
+			<div>
 				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 				<s:if test="auditType.id > 0 && auditType.categories.size == 0">
 					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>

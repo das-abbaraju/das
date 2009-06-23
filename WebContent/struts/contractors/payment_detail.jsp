@@ -208,7 +208,7 @@ fieldset.form ol {
 		<li><label>Refund Method:</label> <s:property value="payment.paymentMethod.description"/></li>
 		<li><label>Amount:</label> <s:textfield name="refundAmount" value="%{payment.balance}" /></li>
 	</ol>
-	<div class="buttons">
+	<div>
 		<input type="submit" class="picsbutton" value="Refund" name="button" />
 	</div>
 	</fieldset>

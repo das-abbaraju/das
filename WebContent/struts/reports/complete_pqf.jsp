@@ -17,8 +17,8 @@
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
 <s:form id="assignScheduleAuditsForm" method="post" cssClass="forms">
-	<div class="buttons">
-		<button class="positive" type="submit" name="button" value="SendEmail">Send Email</button>
+	<div>
+		<button class="picsbutton positive" type="submit" name="button" value="SendEmail">Send Email</button>
 	</div>
 	<table class="report">
 		<thead>
@@ -54,8 +54,8 @@
 			</tr>
 		</s:iterator>
 	</table>
-	<div class="buttons">
-		<button class="positive" type="submit" name="button" value="SendEmail">Send Email</button>
+	<div>
+		<button class="picsbutton positive" type="submit" name="button" value="SendEmail">Send Email</button>
 	</div>
 	
 </s:form>

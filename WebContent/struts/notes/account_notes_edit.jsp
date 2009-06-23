@@ -27,7 +27,7 @@ function closePage() {
 <s:hidden name="note.id"/>
 <s:hidden name="embedded"/>
 <fieldset class="form">
-	<div class="buttons">
+	<div>
 		<input class="picsbutton positive" name="button" type="submit" value="Save" />
 		<s:if test="note.id > 0">
 			<pics:permission perm="EditNotes" type="Delete">

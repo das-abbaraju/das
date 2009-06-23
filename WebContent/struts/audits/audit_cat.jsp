@@ -169,9 +169,9 @@ label.policy {
 		<s:if test="conAudit.auditType.classType.policy">
 			<div class="buttons" style="float:right">
 				<s:if test="nextPolicyID > 0">
-					<a class="button" href="AuditCat.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
+					<a class="picsbutton button" href="AuditCat.action?auditID=<s:property value="nextPolicyID"/>"> Next Policy &gt;</a>
 				</s:if>
-				<a class="button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted&button=getFirst"> Oldest Policy &gt;&gt;</a>
+				<a class="picsbutton button" href="PolicyVerification.action?filter.visible=Y&filter.caoStatus=Submitted&button=getFirst"> Oldest Policy &gt;&gt;</a>
 			</div>
 			<br clear="all"/>
 		</s:if>
@@ -179,10 +179,10 @@ label.policy {
 	<s:if test="!singleCat">
 		<div class="buttons" style="float: right;">
 			<s:if test="nextCategory == null">
-				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Next &gt;&gt;</a>
+				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="picsbutton positive">Next &gt;&gt;</a>
 			</s:if>
 			<s:else>
-				<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>" class="positive">Next &gt;&gt;</a>
+				<a href="AuditCat.action?auditID=<s:property value="auditID"/>&catDataID=<s:property value="nextCategory.id"/>&mode=<s:property value="mode"/>" class="picsbutton positive">Next &gt;&gt;</a>
 			</s:else>
 		</div>
 		<br clear="all"/>
@@ -191,7 +191,7 @@ label.policy {
 	<s:else>
 		<s:if test="conAudit.percentComplete < 100 && conAudit.auditStatus.pending && !conAudit.auditType.classType.policy">
 			<div id="info" class="buttons" style="">
-				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="positive">Done</a>
+				<a href="Audit.action?auditID=<s:property value="auditID"/>" class="picsbutton positive">Done</a>
 			Click Done when you're ready to submit the <s:property value="conAudit.auditType.auditName"/>
 			</div>
 		</s:if>

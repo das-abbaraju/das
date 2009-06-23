@@ -40,12 +40,12 @@ function setId(Id) {
 
 	<s:iterator value="questions" status="stat">
 		<div class="filterOption">
-			<div class="buttons">
+			<div>
 				<s:hidden name="questions[%{#stat.index}].id" value="%{id}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
 				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
-				<button type="submit" class="negative" name="button" value="Remove" onclick="javascript : return setId(<s:property value="id"/>);">Remove</button>
+				<button type="submit" class="picsbutton negative" name="button" value="Remove" onclick="javascript : return setId(<s:property value="id"/>);">Remove</button>
 			</div>
 		</div>
 	</s:iterator>

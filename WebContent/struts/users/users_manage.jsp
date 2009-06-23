@@ -157,8 +157,8 @@ div.autocomplete ul li {
 		<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 		<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
 		<div style="text-align: center; width: 100%;">
-			<div class="buttons">
-				<button class="positive" type="submit" name="button" value="Search">Search</button>
+			<div>
+				<button class="picsbutton positive" type="submit" name="button" value="Search">Search</button>
 			</div>
 		</div><br/>		
 		<pics:permission perm="AllOperators">
@@ -258,13 +258,13 @@ div.autocomplete ul li {
 			<s:hidden name="user.isActive" />
 		</s:if>
 
-			<div class="buttons">
+			<div>
 				<pics:permission perm="EditUsers" type="Edit">
-					<button id="SaveButton" class="positive" type="submit" name="button" value="Save">Save</button>
+					<button id="SaveButton" class="picsbutton positive" type="submit" name="button" value="Save">Save</button>
 				</pics:permission>
 				<pics:permission perm="EditUsers" type="Delete">
 					<s:if test="user.id > 0">
-						<button type="submit" name="button" class="negative" value="Delete" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+						<button type="submit" name="button" class="picsbutton negative" value="Delete" onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
 					</s:if>
 				</pics:permission>
 			</div>

@@ -38,7 +38,7 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<div class="buttons">
+		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 				<s:if test="category.subCategories.size == 0">
 					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>

@@ -247,9 +247,9 @@
 <div class="clear"></div>
 <table>
 	<tr class="blueMain">
-		<td><div class="buttons">
+		<td><div>
 				<button name="button" onclick="previewEmail();">Preview Email</button>
-				<button class="positive" name="button" onclick="sendEmail();">Send Email</button>
+				<button class="picsbutton positive" name="button" onclick="sendEmail();">Send Email</button>
 			</div>
 		</td>
 	</tr>
