@@ -548,45 +548,30 @@ ol {
 }
 
 /********************** Special Styles ******************************/
+div#info, div#alert, div#error, div.info,  div.alert, div.error {
+	padding: 1em 1em 1em 4em !important;
+	margin: 10px 0 !important;
+	width: 86%;
+	clear: left;
+}
+
 div#info, div.info {
 	border-top: 2px solid #b7d2f2;
 	border-bottom: 2px solid #b7d2f2;
-	padding-top: 1em;
-	padding-right: 1em;
-	padding-bottom: 1em;
-	padding-left: 5em;
-	margin-top: 10px;
-	margin-bottom: 10px;
 	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
-	width: 86%
 }
 
 div#alert, div.alert {
 	border-top: 2px solid #D0AE10;
 	border-bottom: 2px solid #D0AE10;
-	padding-top: 1em;
-	padding-right: 1em;
-	padding-bottom: 1em;
-	padding-left: 5em;
-	margin-top: 10px;
-	margin-bottom: 10px;
 	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px
 		10px;
-	width: 86%
 }
 
 div#error, div.error {
 	border-top: 2px solid #feabab;
 	border-bottom: 2px solid #feabab;
-	padding-top: 1em;
-	padding-right: 1em;
-	padding-bottom: 1em;
-	padding-left: 5em;
-	margin-top: 10px;
-	margin-bottom: 10px;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
-	width: 86%;
-	clear: left
 }
 
 td.money,th.money {
