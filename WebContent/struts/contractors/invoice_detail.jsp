@@ -74,6 +74,9 @@ input[type=submit] {
 								<li><a class="edit"
 									href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"><s:if
 									test="edit">View</s:if><s:else>Edit</s:else></a></li>
+								<pics:permission perm="InvoiceEdit">
+									<li><a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">System Edit</a></li>
+								</pics:permission>
 								<pics:permission perm="Billing" type="Delete">
 									<li><a class="void"
 										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
@@ -228,12 +231,6 @@ input[type=submit] {
 </s:form>
 
 <div style="font-style: italic; font-size: 10px;"></div>
-
-<pics:permission perm="InvoiceEdit">
-	<div class="noprint"><a class="edit"
-		href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">System
-	Edit</a></div>
-</pics:permission>
 
 </body>
 </html>
