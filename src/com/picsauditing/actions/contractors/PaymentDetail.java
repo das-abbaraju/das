@@ -187,7 +187,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					pr.setRefund(refund);
 					pr.setAmount(refund.getTotalAmount());
 					pr.setAuditColumns(getUser());
-					payment.getRefunds().add(pr);
+					payment.getApplied().add(pr);
 					refund.getPayments().add(pr);
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
@@ -196,7 +196,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			}
 
 			if (amountApplyMap.size() > 0) {
-				if ("Save".equals(button)) {
+				if ("Save".equals(button) || "Collect Payment".equals(button)) {
 					button = "apply";
 				}
 
@@ -235,7 +235,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 									pa.setInvoice(txn);
 									pa.setAmount(amountApplyMap.get(txnID));
 									pa.setAuditColumns(getUser());
-									payment.getInvoices().add(pa);
+									payment.getApplied().add(pa);
 								}
 							}
 							for (Refund txn : contractor.getRefunds()) {
@@ -245,7 +245,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 									pa.setRefund(txn);
 									pa.setAmount(amountApplyMap.get(txnID));
 									pa.setAuditColumns(getUser());
-									payment.getRefunds().add(pa);
+									payment.getApplied().add(pa);
 								}
 							}
 						}
