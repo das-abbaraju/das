@@ -72,7 +72,7 @@
 			<li><label>Current Balance:</label> $<s:property value="contractor.balance" /> USD <s:if
 				test="contractor.balance > 0">
 				<pics:permission perm="Billing" type="Edit">
-					<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Create Payment</a>
+					<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Make a Payment</a>
 				</pics:permission>
 			</s:if></li>
 			<li><label>Billing Status:</label> <s:property value="contractor.billingStatus" /></li>
@@ -122,24 +122,36 @@
 						<th>Date</th>
 						<th>Amount</th>
 						<th>Outstanding</th>
-						<th>Status</th>
 					</tr>
 				</thead>
 				<tbody>
 					<s:iterator value="transactions">
-						<tr class="clickable<s:if test="status.void"> inactive</s:if>"
-							<s:if test="class.simpleName.equals('Invoice')">onclick="window.location = 'InvoiceDetail.action?invoice.id=<s:property value="id"/>'"</s:if>
-							<s:elseif test="class.simpleName.equals('Payment')">onclick="window.location = 'PaymentDetail.action?payment.id=<s:property value="id"/>'"</s:elseif>>
+						<s:set name="url" value="" />
+						<s:if test="class.simpleName == 'Invoice'">
+							<s:set name="url" value="'InvoiceDetail.action?invoice.id='+id" />
+						</s:if>
+						<s:elseif test="class.simpleName == 'Payment'">
+							<pics:permission perm="Billing">
+								<s:set name="url" value="'PaymentDetail.action?payment.id='+id" />
+							</pics:permission>
+						</s:elseif>
+						<tr
+							<s:if test="#url.length() > 0">
+								class="clickable <s:if test="status.void"> inactive</s:if> " 
+								onclick="window.location = '<s:property value="#url"/>'"
+							</s:if>
+							>
 							<td><s:property value="class.simpleName" /></td>
-							<td><s:property value="id" /></td>
+							<td class="right"><s:if test="#url.length() > 0">
+								<a href="<s:property value="#url" />"><s:property value="id" /></a>
+							</s:if><s:else>
+								<s:property value="id" />
+							</s:else></td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
 							<td class="right">$<s:property value="totalAmount" /></td>
-							<td class="right">$
-								<s:if test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">
-								-</s:if>
-								<s:property value="balance" />
-							</td>
-							<td><s:property value="status" /></td>
+							<td class="right">$ <s:if
+								test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">
+								-</s:if> <s:property value="balance" /></td>
 						</tr>
 					</s:iterator>
 				</tbody>
@@ -149,7 +161,7 @@
 		</td>
 	</tr>
 </table>
-
+ 
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 </body>

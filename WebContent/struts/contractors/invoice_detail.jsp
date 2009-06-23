@@ -70,16 +70,14 @@ input[type=submit] {
 							<s:else>
 								<s:if test="invoice.status.unpaid">
 									<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
+									<li><a class="edit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=true">Edit</a></li>
+									<pics:permission perm="Billing" type="Delete">
+										<li><a class="void"
+											href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
+									</pics:permission>
 								</s:if>
-								<li><a class="edit"
-									href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"><s:if
-									test="edit">View</s:if><s:else>Edit</s:else></a></li>
 								<pics:permission perm="InvoiceEdit">
-									<li><a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">System Edit</a></li>
-								</pics:permission>
-								<pics:permission perm="Billing" type="Delete">
-									<li><a class="void"
-										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
+									<li><a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">Sys Edit</a></li>
 								</pics:permission>
 							</s:else>
 						</pics:permission>
@@ -149,23 +147,18 @@ input[type=submit] {
 						</s:if> </span></td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
-							(optional description)</td>
+							(optional description) <pics:permission perm="InvoiceEdit" type="Edit">
+								<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
+									<div class="buttons"><a
+										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
+										class="picsbutton positive">Change to: <s:property value="contractor.newMembershipLevel.fee" /></a></div>
+								</s:if>
+							</pics:permission></td>
 							<td class="right">$<s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" />
 							USD</td>
 						</s:if>
 						<s:else>
-							<td style="border-left: 0"><s:property value="description" /> <s:if test="refunded"> Refunded </s:if> <pics:permission
-								perm="InvoiceEdit" type="Edit">
-								<s:if test="invoiceFee.feeClass == 'Membership' && invoiceFee.fee != contractor.newMembershipLevel.fee">
-									<div class="buttons"><a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to" class="picsbutton positive">Change to: <s:property value="contractor.newMembershipLevel.fee" /></a></div>
-								</s:if>
-								<s:if test="invoice.status.paid && amount > 0 && !refunded">
-									<s:if test="@com.picsauditing.PICS.DateBean@isBeforeAWeek(invoice.paidDate)">
-										<s:hidden name="refundFeeId" value="%{id}" />
-										<input type="submit" class="picsbutton negative" name="button" value="Refund" />
-									</s:if>
-								</s:if>
-							</pics:permission></td>
+							<td style="border-left: 0"><s:property value="description" /></td>
 							<td class="right">$<s:property value="amount" /> USD</td>
 						</s:else>
 					</tr>
@@ -185,7 +178,13 @@ input[type=submit] {
 					<tr>
 						<th colspan="2" class="big right">Payment(s)</th>
 						<td class="right"><s:iterator value="invoice.payments">
-							<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />"><s:date name="payment.creationDate" format="MMM d, yyyy" /></a>
+							<pics:permission perm="Billing">
+								<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />"><s:date name="payment.creationDate" format="MMM d, yyyy" /></a>
+							</pics:permission>
+							<pics:permission perm="Billing" negativeCheck="true">
+								<s:date name="payment.creationDate" format="MMM d, yyyy" />
+							</pics:permission>
+							
 							<br />
 							<span class="big">($<s:property value="amount" />) USD</span>
 							<br />

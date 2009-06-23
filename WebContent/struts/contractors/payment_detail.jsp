@@ -49,7 +49,7 @@ fieldset.form ol {
 	<s:if test="payment != null && payment.id > 0">
 		<s:hidden name="payment.id" />
 		<fieldset class="form bottom">
-		<table><tr><td style="vertical-align: top;" valign="top">
+		<table width="100%"><tr><td style="vertical-align: top;" valign="top">
 		<ol>
 			<li><label>Payment #:</label><s:property value="payment.id" /></li>
 			<li><label>Date:</label><s:date name="payment.creationDate" format="M/d/yy" /></li>
