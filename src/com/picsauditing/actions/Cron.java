@@ -133,8 +133,11 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 			try {
-				startTask("\nActivating Pqf and Annual Updates Audits which are complete and verified...");
-				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1,11) AND percentComplete = 100 AND percentVerified = 100";
+				// TODO - we should seriously consider removing this all together and just Activating 100% verified PQFs on submission
+				// This is needed because CSRs can verify a safety manual before the PQF is submitted and when the contractor 
+				// finally submits the policy there's nothing to tell the CSR to activate it
+				startTask("\nActivating Pqf which are complete and verified...");
+				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1) AND percentComplete = 100 AND percentVerified = 100";
 				List<ContractorAudit> conList = contractorAuditDAO.findWhere(10, where, "creationDate");
 				for (ContractorAudit cAudit : conList) {
 					cAudit.changeStatus(AuditStatus.Active, system);
