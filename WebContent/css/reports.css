@@ -6,6 +6,7 @@ table.report {
 	color: #4C4D4D;
 	background: #f9f9f9;
 	clear: both;
+	margin-bottom: 10px;
 }
 table.report td, table.report th {
 	border: 1px solid #A84D10;

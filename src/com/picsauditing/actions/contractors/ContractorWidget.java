@@ -59,7 +59,7 @@ public class ContractorWidget extends ContractorActionSupport {
 							due = DateBean.toShowFormat(invoice.getDueDate());
 						} catch (Exception ignoreFormattingErrors) {
 						}
-						openTasks.add("You have an <a href=\"Invoice.action?invoice.id=" + invoice.getId()
+						openTasks.add("You have an <a href=\"InvoiceDetail.action?invoice.id=" + invoice.getId()
 								+ "\">invoice of <b>$" + invoice.getTotalAmount() + "</b></a> due " + due);
 					}
 				}

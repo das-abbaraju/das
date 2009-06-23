@@ -48,8 +48,13 @@
 			<ul style="float: right; list-style-type: disc;">
 				<s:iterator value="contractor.operators">
 					<s:if test="operatorAccount.activeB">
-						<li><a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property
-							value="operatorAccount.name" /></a></li>
+						<li><s:if test="permissions.admin">
+							<a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property
+								value="operatorAccount.name" /></a>
+						</s:if> <s:else>
+							<a href="ContractorFlag.action?opID=<s:property value="operatorAccount.id" />"><s:property
+								value="operatorAccount.name" /></a>
+						</s:else></li>
 					</s:if>
 				</s:iterator>
 			</ul>
@@ -66,14 +71,18 @@
 		<ol>
 			<li><label>Current Balance:</label> $<s:property value="contractor.balance" /> USD <s:if
 				test="contractor.balance > 0">
-				<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Create Payment</a>
+				<pics:permission perm="Billing" type="Edit">
+					<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Create Payment</a>
+				</pics:permission>
 			</s:if></li>
 			<li><label>Billing Status:</label> <s:property value="contractor.billingStatus" /></li>
 			<li><label>Must Pay:</label> <s:property value="contractor.mustPay" /></li>
-			<li><label>New Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> USD <br>
-			<s:property value="contractor.newMembershipLevel.fee" /></li>
 			<li><label>Current Level:</label> $<s:property value="contractor.membershipLevel.amount" /> USD <br>
 			<s:property value="contractor.membershipLevel.fee" /></li>
+			<s:if test="contractor.newMembershipLevel != contractor.membershipLevel">
+				<li><label>New Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> USD <br>
+				<s:property value="contractor.newMembershipLevel.fee" /></li>
+			</s:if>
 
 		</ol>
 		</fieldset>
