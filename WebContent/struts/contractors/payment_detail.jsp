@@ -70,9 +70,6 @@ fieldset.form ol {
 				<li><label>Type:</label><s:property value="payment.ccType" /></li>
 				<li><label>Number:</label><s:property value="payment.ccNumber" /></li>
 				<li><label>Status:</label><s:property value="transactionCondition" />
-					<s:if test="transactionCondition == 'pendingsettlement'">
-					<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=voidcc" class="remove">Void</a>
-					</s:if>
 				</li>
 			</s:if>
 		</ol>
@@ -105,21 +102,26 @@ fieldset.form ol {
 		</fieldset>
 	</s:else>
 	
-	<div style="float:right">
-		<div id="toolbox">
-			<ul>
-				<s:if test="payment == null">
-					<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Collect Payment</a></li>
-				</s:if>
-				<s:else>
-					<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
-					<s:if test="payment.qbListID == null">
-						<li><a class="cancel" href="PaymentDetail.action?payment.id=<s:property value="payment.id"/>&button=Delete">Delete</a></li>
+	<s:if test="!payment.status.void">
+		<div style="float:right">
+			<div id="toolbox">
+				<ul>
+					<s:if test="payment == null">
+						<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Collect Payment</a></li>
 					</s:if>
-				</s:else>
-			</ul>
+					<s:else>
+						<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
+						<s:if test="payment.qbListID == null">
+							<li><a class="cancel" href="PaymentDetail.action?payment.id=<s:property value="payment.id"/>&button=Delete">Delete</a></li>
+						</s:if>
+						<s:if test="transactionCondition == 'pendingsettlement'">
+							<li><a class="void" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=voidcc">Void</a></li>
+						</s:if>
+					</s:else>
+				</ul>
+			</div>
 		</div>
-	</div>
+	</s:if>
 
 	<s:if test="(payment.invoices.size + payment.refunds.size) > 0">
 		<table class="report" style="clear:none">
