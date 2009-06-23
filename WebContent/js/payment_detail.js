@@ -1,6 +1,17 @@
 function submitPayment(option) {
 	$('button').value = option;
+	cleanPaymentMethods();
 	$('PaymentDetail').submit();
+}
+
+function cleanPaymentMethods() {
+	function cleanUp(e) {
+		if (!e.visible())
+			e.remove();
+	}
+	$$('.method_check').each(cleanUp);
+	$$('.method_cc').each(cleanUp);
+	$$('.method_ccNew').each(cleanUp);
 }
 
 function isAutoApply() {

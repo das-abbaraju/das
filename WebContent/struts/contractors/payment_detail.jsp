@@ -43,7 +43,7 @@ fieldset.form ol {
 	<div id="alert">This payment was canceled.</div>
 </s:if>
 
-<s:form>
+<s:form onsubmit="cleanPaymentMethods()">
 	<s:hidden name="id" />
 	<s:hidden name="button" id="button"/>
 	<s:if test="payment != null && payment.id > 0">
