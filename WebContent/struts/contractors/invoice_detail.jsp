@@ -62,15 +62,15 @@ input[type=submit] {
 
 					<div id="toolbox" class="noprint" />
 					<ul>
-						<s:if test="invoice.status.unpaid">
-							<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
-						</s:if>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
 								<li><a class="save" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Save">Save</a></li>
 								<li><a class="exit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>">Return</a></li>
 							</s:if>
 							<s:else>
+								<s:if test="invoice.status.unpaid">
+									<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
+								</s:if>
 								<li><a class="edit"
 									href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=<s:property value="!edit"/>"><s:if
 									test="edit">View</s:if><s:else>Edit</s:else></a></li>
@@ -86,8 +86,8 @@ input[type=submit] {
 						<s:if test="!edit">
 							<li><a class="email"
 								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Email">Email</a></li>
+							<li><a class="print" href="javascript: window.print();">Print</a></li>
 						</s:if>
-						<li><a class="print" href="javascript: window.print();">Print</a></li>
 					</ul>
 					</div>
 					</td>
