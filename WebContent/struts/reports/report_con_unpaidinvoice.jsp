@@ -21,7 +21,7 @@
 	
 		<div class="filterOption">
 			Select a Contractor :
-			<s:textfield id="selected_contractor" cssClass="forms" name="filter.accountName" size="60" /> 
+			<s:textfield id="selected_contractor" cssClass="forms" name="filter.accountName" size="60" onfocus="clearText(this)"/> 
 			<div id="selected_contractor_choices" class="autocomplete"></div>
 			<script type="text/javascript">
 				new Ajax.Autocompleter('selected_contractor', 'selected_contractor_choices', 'ContractorSelectAjax.action', {
