@@ -707,6 +707,15 @@ public class ContractorAccount extends Account {
 				balance = balance.add(invoice.getBalance());
 		}
 
+		for(Refund refund : getRefunds()) {
+			balance = balance.add(refund.getBalance());
+		}
+		
+		for(Payment payment : getPayments()) {
+			if(payment.getStatus().isUnpaid())
+				balance = balance.subtract(payment.getBalance());
+		}
+		
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
