@@ -45,6 +45,7 @@ fieldset.form ol {
 
 <s:form>
 	<s:hidden name="id" />
+	<s:hidden name="button" id="button"/>
 	<s:if test="payment != null && payment.id > 0">
 		<s:hidden name="payment.id" />
 		<fieldset class="form bottom">
@@ -103,9 +104,25 @@ fieldset.form ol {
 		</td></tr></table>
 		</fieldset>
 	</s:else>
+	
+	<div style="float:right">
+		<div id="toolbox">
+			<ul>
+				<s:if test="payment == null">
+					<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Collect Payment</a></li>
+				</s:if>
+				<s:else>
+					<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
+					<s:if test="payment.qbListID == null">
+						<li><a class="cancel" href="#" onclick="submitPayment('Delete');return false;">Delete</a></li>
+					</s:if>
+				</s:else>
+			</ul>
+		</div>
+	</div>
 
 	<s:if test="(payment.invoices.size + payment.refunds.size) > 0">
-		<table class="report">
+		<table class="report" style="clear:none">
 			<thead>
 				<tr>
 					<th>Type</th>
@@ -141,7 +158,7 @@ fieldset.form ol {
 	</s:if>
 	<s:if test="hasUnpaidInvoices">
 		<h3>Unapplied Invoices</h3>
-		<table class="report">
+		<table class="report" style="clear:none">
 			<thead>
 				<tr>
 					<th>Invoice</th>
@@ -178,18 +195,6 @@ fieldset.form ol {
 			<div><input id="autoapply" type="checkbox" checked="checked" onchange="autoApply();"> <label for="autoapply">Auto Apply</label></div>
 		</s:if>
 	</s:if>
-	<div id="button_div" class="buttons">
-	<s:if test="payment == null">
-		<input type="submit" class="picsbutton positive" value="Collect Payment" name="button" />
-	</s:if>
-	<s:else>
-		<input type="submit" class="picsbutton positive" value="Save" name="button" />
-		<s:if test="payment.qbListID == null">
-			<input type="submit" class="picsbutton negative" value="Delete" name="button" onclick="return confirm('Are you sure you want to remove this payment?');" />
-		</s:if>
-	</s:else>
-	<br clear="all"/>
-	</div>
 </s:form>
 
 <s:if test="payment.balance > 0">

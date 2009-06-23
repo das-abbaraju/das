@@ -1,16 +1,38 @@
+function submitPayment(option) {
+	$('button').value = option;
+	$('PaymentDetail').submit();
+}
+
 function isAutoApply() {
 	return $('autoapply').checked;
+}
+
+function otherCreditCard() {
+	if($('newCreditCard').checked) {
+		$$('.method_check').invoke('hide');
+		$$('.method_cc').invoke('hide');
+		$$('.method_ccNew').invoke('show');
+	
+		for (var i=0; i<$('PaymentDetail')['method'].length; i++)
+			if($('PaymentDetail')['method'][i].value == 'CreditCard')
+				$('PaymentDetail')['method'][i].checked = true;
+	} else {
+		$$('.method_cc').invoke('show');
+		$$('.method_ccNew').invoke('hide');
+	}
 }
 
 function changePaymentMethod(method) {
 	if ('Check' == method) {
 		$$('.method_cc').invoke('hide');
 		$$('.method_check').invoke('show');
+		//$('newCreditCard').checked = false;
 	}
 	else if ('CreditCard' == method) {
 		$$('.method_cc').invoke('show');
 		$$('.method_check').invoke('hide');
 	}
+	$$('.method_ccNew').invoke('hide');
 }
 
 function setInvoiceApply(invoiceID) {
@@ -91,9 +113,9 @@ function updateRemainder() {
 	// hide save button if remainder < 0
 	var remainder = parseFloat($('payment_totalAmount').value) - parseFloat($('payment_amountApplied').innerHTML);
 	if (remainder < 0 || $('payment_totalAmount').value <= 0)
-		$('button_div').hide();
+		$('toolbox').hide();
 	else
-		$('button_div').show();
+		$('toolbox').show();
 
 	$('payment_balance').innerHTML = remainder.toFixed(2);
 }
