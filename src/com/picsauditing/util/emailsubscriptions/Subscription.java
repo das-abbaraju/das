@@ -1,4 +1,5 @@
-package com.picsauditing.jpa.entities;
+package com.picsauditing.util.emailsubscriptions;
+
 
 
 public enum Subscription {
