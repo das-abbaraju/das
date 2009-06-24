@@ -33,7 +33,6 @@ public class EmailSubscriptionDAOTest {
 		assertTrue(subscriptionList.contains(sub));
 
 		dao.remove(sub.getId());
-
 		assertNull(dao.find(sub.getId()));
 	}
 }
