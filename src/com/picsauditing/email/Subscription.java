@@ -1,4 +1,4 @@
-package com.picsauditing.util.emailsubscriptions;
+package com.picsauditing.email;
 
 public enum Subscription {
 	PICS_SYSTEM_NOTIFICATION("Temp Description", new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,

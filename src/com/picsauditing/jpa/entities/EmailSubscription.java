@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
-import com.picsauditing.util.emailsubscriptions.SubscriptionTimePeriod;
+import com.picsauditing.email.SubscriptionTimePeriod;
 
 @Entity
 @Table(name = "email_subscription")
