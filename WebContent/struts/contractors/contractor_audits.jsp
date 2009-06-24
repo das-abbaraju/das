@@ -19,7 +19,6 @@
 <s:push value="#subHeading='Contractor Forms, Audits & Evaluations'"/>
 <s:include value="conHeader.jsp" />
 
-<s:if test="upComingAudits.size() > 0">
 <h3>Up Coming Audits</h3>
 <table class="report">
 	<thead>
@@ -99,7 +98,7 @@
 		</s:form>	
 	</s:if>		
 </table>
-</s:if>
+
 <s:if test="currentAudits.size() > 0">
 <br/>
 <h3>Current Audits</h3>
