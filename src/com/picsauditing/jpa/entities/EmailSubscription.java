@@ -24,7 +24,7 @@ import com.picsauditing.email.SubscriptionTimePeriod;
 public class EmailSubscription extends BaseTable {
 	private User user;
 	private Subscription subscription;
-	private SubscriptionTimePeriod timePeriod;
+	private SubscriptionTimePeriod timePeriod = SubscriptionTimePeriod.None;
 	private Date lastSent;
 	private OpPerms permission;
 

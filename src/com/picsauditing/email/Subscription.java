@@ -1,8 +1,8 @@
 package com.picsauditing.email;
 
 public enum Subscription {
-	PICSSystemNotification("Temp Description"),
-	PICSAnnouncements("PICS System Notifications"),
+	PICSSystemNotification("PICS System Notification"),
+	PICSAnnouncements("PICS Announcements"),
 	ContractorRegistration("Contractor Registration",true,false),
 	ContractorFinished("When contractors completes the PICS process", true, false),
 	FlagChanges("FlagChanges",true,false),

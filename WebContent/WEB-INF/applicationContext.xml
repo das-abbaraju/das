@@ -57,7 +57,8 @@
 	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
 	<bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
-	
+	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
+
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
