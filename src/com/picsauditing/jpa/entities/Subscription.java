@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public enum Subscription {
 	PICS_SYSTEM_NOTIFICATION("Temp Description");
@@ -38,5 +36,21 @@ public enum Subscription {
 		this.supportedTimePeriods = supportedTimePeriods;
 		this.requiredForOperator = requiredForOperator;
 		this.requiredForContractor = requiredForContractor;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public SubscriptionTimePeriod[] getSupportedTimePeriods() {
+		return supportedTimePeriods;
+	}
+
+	public boolean isRequiredForOperator() {
+		return requiredForOperator;
+	}
+
+	public boolean isRequiredForContractor() {
+		return requiredForContractor;
 	}
 }
