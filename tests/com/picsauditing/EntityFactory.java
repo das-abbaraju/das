@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.PICS.AuditCriteriaAnswer;
+import com.picsauditing.email.Subscription;
+import com.picsauditing.email.SubscriptionTimePeriod;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -16,11 +18,13 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
@@ -179,5 +183,15 @@ public class EntityFactory {
 		fee.setAmount(new BigDecimal(amount));
 
 		return fee;
+	}
+	
+	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription) {
+		EmailSubscription sub = new EmailSubscription();
+		
+		sub.setUser(user);
+		sub.setSubscription(subscription);
+		sub.setTimePeriod(SubscriptionTimePeriod.Daily);
+		
+		return sub;
 	}
 }
