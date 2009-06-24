@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.email.Subscription;
 import com.picsauditing.email.SubscriptionTimePeriod;
 
@@ -25,7 +26,7 @@ public class EmailSubscription extends BaseTable {
 	private Subscription subscription;
 	private SubscriptionTimePeriod timePeriod;
 	private Date lastSent;
-	private String permission;
+	private OpPerms permission;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
@@ -64,11 +65,12 @@ public class EmailSubscription extends BaseTable {
 		this.lastSent = lastSent;
 	}
 
-	public String getPermission() {
+	@Enumerated(EnumType.STRING)
+	public OpPerms getPermission() {
 		return permission;
 	}
 
-	public void setPermission(String permission) {
+	public void setPermission(OpPerms permission) {
 		this.permission = permission;
 	}
 
