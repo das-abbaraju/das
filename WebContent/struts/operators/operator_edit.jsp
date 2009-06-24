@@ -69,6 +69,9 @@
 			<fieldset class="form"><legend><span>Admin Fields</span></legend>
 			<ol>
 				<li><label>Visible?</label> <s:radio list="#{'Y':'Yes','N':'No'}" name="operator.active" theme="pics" /></li>
+				<li><label>Reason:</label>
+					<s:textarea name="operator.reason" rows="3" cols="25"/>
+				</li>
 				<li><label>Receive contractor activation emails:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
 					name="operator.doSendActivationEmail" theme="pics" /></li>
 				<li><label>Approves Contractors:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
