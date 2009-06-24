@@ -3,7 +3,7 @@ package com.picsauditing.util.emailsubscriptions;
 
 
 public enum Subscription {
-	PICS_SYSTEM_NOTIFICATION("Temp Description");
+	PICS_SYSTEM_NOTIFICATION("Temp Description", new SubscriptionTimePeriod[] {SubscriptionTimePeriod.None, SubscriptionTimePeriod.Daily });
 
 	private String description;
 	private SubscriptionTimePeriod[] supportedTimePeriods;
