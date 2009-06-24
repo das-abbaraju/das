@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -11,6 +13,10 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
+import com.picsauditing.util.emailsubscriptions.SubscriptionTimePeriod;
 
 @Entity
 @Table(name = "email_subscription")
@@ -18,7 +24,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class EmailSubscription extends BaseTable {
 	private User user;
 	private String subscription;
-	private String timePeriod;
+	private SubscriptionTimePeriod timePeriod;
 	private Date lastSent;
 	private String permission;
 
@@ -40,11 +46,12 @@ public class EmailSubscription extends BaseTable {
 		this.subscription = subscription;
 	}
 
-	public String getTimePeriod() {
+	@Enumerated(EnumType.STRING)
+	public SubscriptionTimePeriod getTimePeriod() {
 		return timePeriod;
 	}
 
-	public void setTimePeriod(String timePeriod) {
+	public void setTimePeriod(SubscriptionTimePeriod timePeriod) {
 		this.timePeriod = timePeriod;
 	}
 
