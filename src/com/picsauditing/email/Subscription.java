@@ -1,16 +1,26 @@
 package com.picsauditing.email;
 
 public enum Subscription {
-	PICS_SYSTEM_NOTIFICATION("Temp Description", new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
-			SubscriptionTimePeriod.Daily });
+	PICSSystemNotification("Temp Description"),
+	PICSAnnouncements("PICS System Notifications"),
+	ContractorRegistration("Contractor Registration",true,false),
+	ContractorFinished("When contractors completes the PICS process", true, false),
+	FlagChanges("FlagChanges",true,false),
+	PendingInsuranceCerts("Pending Insurance Certs",true,false),
+	VerifiedInsuranceCerts("Verified Insurance Certs",true,false),
+	QuarterlyExecutiveReport("Quarterly Executive Report",new SubscriptionTimePeriod[] {SubscriptionTimePeriod.Quarterly},true,false),
+	ContractorInvoices("Contractor Invoices",false,true),
+	InsuranceExpiration("Insurance Expiration",false,true),
+	AuditOpenRequirements("Audit Open Requirements",false,true),
+	FinishPICSProcess("Contractor Completes the PICS process", false, true);
 
 	private String description;
-	private SubscriptionTimePeriod[] supportedTimePeriods;
+	private SubscriptionTimePeriod[] supportedTimePeriods = {SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Monthly, SubscriptionTimePeriod.Weekly };
 
 	// Whether or not contractor/operator account is required for this
 	// subscription
-	private boolean requiredForOperator;
-	private boolean requiredForContractor;
+	private boolean requiredForOperator = true;
+	private boolean requiredForContractor = true;
 
 	Subscription() {
 		this.supportedTimePeriods = SubscriptionTimePeriod.values();
