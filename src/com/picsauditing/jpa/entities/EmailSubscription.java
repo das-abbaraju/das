@@ -13,9 +13,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 
+import com.picsauditing.email.Subscription;
 import com.picsauditing.email.SubscriptionTimePeriod;
 
 @Entity
@@ -23,7 +22,7 @@ import com.picsauditing.email.SubscriptionTimePeriod;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class EmailSubscription extends BaseTable {
 	private User user;
-	private String subscription;
+	private Subscription subscription;
 	private SubscriptionTimePeriod timePeriod;
 	private Date lastSent;
 	private String permission;
@@ -38,11 +37,12 @@ public class EmailSubscription extends BaseTable {
 		this.user = user;
 	}
 
-	public String getSubscription() {
+	@Enumerated(EnumType.STRING)
+	public Subscription getSubscription() {
 		return subscription;
 	}
 
-	public void setSubscription(String subscription) {
+	public void setSubscription(Subscription subscription) {
 		this.subscription = subscription;
 	}
 
