@@ -80,7 +80,7 @@ public class SubscriptionBuilderTest extends TestCase {
 				assertTrue(entry.getKey() + " - failed for last week's date", builder.isSendEmail(entry.getValue()));
 		}
 
-		// Daily Test - only daily should be tru
+		// Daily Test - only daily should be true
 		cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 
@@ -92,7 +92,7 @@ public class SubscriptionBuilderTest extends TestCase {
 				assertTrue(entry.getKey() + " - failed for yesterday's date", builder.isSendEmail(entry.getValue()));
 		}
 
-		// All Should fail a date in the future
+		// All Should be false when given a date in the future
 		cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 
