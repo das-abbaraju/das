@@ -1,10 +1,15 @@
 package com.picsauditing.email;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.util.SpringUtils;
 
@@ -17,7 +22,6 @@ public abstract class SubscriptionBuilder {
 	public SubscriptionBuilder(Subscription subscription) {
 		subscriptionDAO = (EmailSubscriptionDAO) SpringUtils.getBean("EmailSubscriptionDAO");
 		this.subscription = subscription;
-		subscriptions = subscriptionDAO.findBySubscription(subscription);
 	}
 
 	public boolean isSendEmail(EmailSubscription sub) {
@@ -59,6 +63,31 @@ public abstract class SubscriptionBuilder {
 			subscriptionDAO.findBySubscription(subscription);
 		return subscriptions;
 	}
+
+	protected Set<String> getRecipients() {
+		Set<String> result = new HashSet<String>();
+
+		for (EmailSubscription sub : getSubscriptions()) {
+			result.add(sub.getUser().getEmail());
+		}
+
+		return result;
+	}
+
+	protected Map<Account, Set<String>> getRecipientsMap() {
+		Map<Account, Set<String>> result = new HashMap<Account, Set<String>>();
+
+		for (EmailSubscription sub : getSubscriptions()) {
+			if (result.get(sub.getUser().getAccount()) == null)
+				result.put(sub.getUser().getAccount(), new HashSet<String>());
+			
+			result.get(sub.getUser().getAccount()).add(sub.getUser().getEmail());
+		}
+
+		return result;
+	}
+	
+	protected abstract EmailQueue buildEmail(Map<String, ? extends Object> parameters);	
 
 	public abstract void process();
 }
