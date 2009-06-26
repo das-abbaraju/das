@@ -4,7 +4,7 @@ public enum Subscription {
 	PICSSystemNotification("PICS System Notification"),
 	PICSAnnouncements("PICS Announcements"),
 	ContractorRegistration("Contractor Registration",true,false),
-	ContractorFinished("When contractors completes the PICS process", true, false),
+	ContractorFinished("Contractors completes the PICS process", true, false),
 	FlagChanges("FlagChanges",true,false),
 	PendingInsuranceCerts("Pending Insurance Certs",true,false),
 	VerifiedInsuranceCerts("Verified Insurance Certs",true,false),

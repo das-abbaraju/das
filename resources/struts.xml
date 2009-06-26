@@ -870,6 +870,21 @@
 			<result>struts/users/profile_edit.jsp</result>
 		</action>
 
+		<action name="UserPermissions"
+			class="com.picsauditing.actions.users.ProfileEdit">
+			<result>struts/users/user_permissions.jsp</result>
+		</action>
+
+		<action name="UserEmailSubscription"
+			class="com.picsauditing.email.UserEmailSubscription">
+			<result>struts/email/user_email.jsp</result>
+		</action>
+
+		<action name="UserEmailSubscriptionAjax"
+			class="com.picsauditing.email.UserEmailSubscription">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<action name="UsersManage"
 			class="com.picsauditing.actions.users.UsersManage">
 			<result>struts/users/users_manage.jsp</result>
@@ -936,11 +951,10 @@
 			<result>struts/mail/mail_wizard.jsp</result>
 		</action>
 
-
-
-
-
-
+		<action name="ReportEmailSubscription"
+			class="com.picsauditing.actions.report.ReportEmailSubscription">
+			<result>struts/reports/report_email_user.jsp</result>
+		</action>
 
 		<!-- Charts and Graphs -->
 		<action name="ChartXMLFlagCount"
