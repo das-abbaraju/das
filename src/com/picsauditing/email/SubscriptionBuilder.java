@@ -1,7 +1,6 @@
 package com.picsauditing.email;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,7 @@ public abstract class SubscriptionBuilder {
 
 	protected EmailSubscriptionDAO subscriptionDAO;
 	protected Subscription subscription;
-	protected List<EmailSubscription> subscriptions;
+	private List<EmailSubscription> subscriptions;
 
 	protected SelectSQL sql;
 
@@ -38,14 +37,14 @@ public abstract class SubscriptionBuilder {
 
 	protected List<EmailSubscription> getSubscriptions() {
 		if (subscriptions == null)
-			subscriptionDAO.findBySubscription(subscription);
+			subscriptions = subscriptionDAO.findBySubscription(subscription);
 		return subscriptions;
 	}
 
-	protected Set<String> getRecipients() {
+	protected Set<String> getRecipients(Collection<EmailSubscription> subs) {
 		Set<String> result = new HashSet<String>();
 
-		for (EmailSubscription sub : getSubscriptions()) {
+		for (EmailSubscription sub : subs) {
 			result.add(sub.getUser().getEmail());
 		}
 
@@ -76,6 +75,8 @@ public abstract class SubscriptionBuilder {
 
 		return result;
 	}
+	
+	protected abstract void buildSql(Account a, SubscriptionTimePeriod timePeriod);
 
 	protected abstract List<BasicDynaBean> runSql();
 

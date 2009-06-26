@@ -27,14 +27,14 @@ public class SubscriptionBuilderTest extends TestCase {
 
 	@Test
 	public void testBuild() {
-		SubscriptionBuilder builder = new FlagChangesSubscription(Subscription.FlagChanges);
+		SubscriptionBuilder builder = new FlagChangesSubscription();
 
 		builder.process();
 	}
 
 	@Test
 	public void testIsSendEmail() {
-		SubscriptionBuilder builder = new FlagChangesSubscription(Subscription.FlagChanges);
+		SubscriptionBuilder builder = new FlagChangesSubscription();
 
 		Map<SubscriptionTimePeriod, EmailSubscription> timeMap = new HashMap<SubscriptionTimePeriod, EmailSubscription>();
 		for (SubscriptionTimePeriod stp : SubscriptionTimePeriod.values()) {
