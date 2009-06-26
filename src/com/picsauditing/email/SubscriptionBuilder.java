@@ -52,14 +52,26 @@ public abstract class SubscriptionBuilder {
 		return result;
 	}
 
-	protected Map<Account, Set<EmailSubscription>> getSubscriptionsByLastSentAndAccount() {
-		Map<Account, Set<EmailSubscription>> result = new HashMap<Account, Set<EmailSubscription>>();
+	/**
+	 * <p>This is used to separate the email subscriptions into smaller subsets.<p>
+	 * 
+	 * <p>
+	 * Since most of the email subscriptions are time based, (i.e. flag changes in the last week),
+	 * it makes send to split them up in order to generate an account and time specific email.
+	 * </p>
+	 * @return Account => SubscriptionTimePeriod => Set of EmailSubscriptions
+	 */
+	protected Map<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>> getSubscriptionsByLastSentAndAccount() {
+		Map<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>> result = new HashMap<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>>();
 
 		for (EmailSubscription sub : getSubscriptions()) {
 			if (result.get(sub.getUser().getAccount()) == null)
-				result.put(sub.getUser().getAccount(), new HashSet<EmailSubscription>());
+				result.put(sub.getUser().getAccount(), new HashMap<SubscriptionTimePeriod, Set<EmailSubscription>>());
 
-			result.get(sub.getUser().getAccount()).add(sub);
+			if (result.get(sub.getUser().getAccount()).get(sub.getTimePeriod()) == null)
+				result.get(sub.getUser().getAccount()).put(sub.getTimePeriod(), new HashSet<EmailSubscription>());
+			
+			result.get(sub.getUser().getAccount()).get(sub.getTimePeriod()).add(sub);
 		}
 
 		return result;
