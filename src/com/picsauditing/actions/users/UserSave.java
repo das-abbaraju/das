@@ -139,7 +139,10 @@ public class UserSave extends UsersManage {
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
-
+		
+		if(Strings.isEmpty(user.getPassword()) && Strings.isEmpty(password1))
+			addActionError("Please enter a password");
+		
 		if (!Strings.isEmpty(password1)) {
 			if (!password1.equals(password2) && !password1.equals(user.getPassword()))
 				addActionError("Passwords don't match");
