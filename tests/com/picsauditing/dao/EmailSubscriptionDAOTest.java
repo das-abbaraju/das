@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.email.Subscription;
+import com.picsauditing.email.SubscriptionTimePeriod;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 
@@ -25,7 +26,7 @@ public class EmailSubscriptionDAOTest {
 
 	@Test
 	public void testFindBySubscription() {
-		EmailSubscription sub = EntityFactory.makeEmailSubscription(new User(2357), Subscription.PICSAnnouncements);
+		EmailSubscription sub = EntityFactory.makeEmailSubscription(new User(2357), Subscription.PICSAnnouncements, SubscriptionTimePeriod.Daily);
 
 		sub = dao.save(sub);
 

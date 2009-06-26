@@ -185,12 +185,12 @@ public class EntityFactory {
 		return fee;
 	}
 	
-	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription) {
+	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription, SubscriptionTimePeriod timePeriod) {
 		EmailSubscription sub = new EmailSubscription();
 		
 		sub.setUser(user);
 		sub.setSubscription(subscription);
-		sub.setTimePeriod(SubscriptionTimePeriod.Daily);
+		sub.setTimePeriod(timePeriod);
 		
 		return sub;
 	}
