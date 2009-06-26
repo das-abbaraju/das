@@ -343,6 +343,10 @@
 			<param name="reportName">Unpaid Invoices Report</param>
 			<result>struts/reports/unpaid_invoice_report.jsp</result>
 		</action>
+		<action name="ReportExpiredCreditCards"
+			class="com.picsauditing.actions.report.ReportExpiredCreditCards">
+			<result>struts/reports/report_expired_creditcards.jsp</result>
+		</action>
 		<action name="BillingDetail"
 			class="com.picsauditing.actions.contractors.BillingDetail">
 			<result>struts/contractors/billing_detail.jsp</result>
