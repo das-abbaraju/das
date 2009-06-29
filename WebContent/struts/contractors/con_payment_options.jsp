@@ -52,6 +52,9 @@ function updateExpDate() {
 			As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
 		</div>
 </s:elseif>
+<s:if test="!contractor.paymentMethod.creditCard">
+	<div id="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
+</s:if>
 
 <s:form id="save" method="POST">
 	<s:hidden name="id" />
@@ -61,9 +64,6 @@ function updateExpDate() {
 <s:if test="contractor.newMembershipLevel.amount > 0">
 	<li><label>Payment Method:</label>
 		<s:property value="contractor.paymentMethod.description"/><br/>
-		<s:if test="!contractor.paymentMethod.creditCard">
-			<div id="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
-		</s:if>
 		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipLevel.amount < 500">
 			<i>Note: Credit Card payment is required for memberships under $500.</i>
 		</s:if>
