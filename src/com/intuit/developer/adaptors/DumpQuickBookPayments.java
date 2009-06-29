@@ -28,6 +28,11 @@ public class DumpQuickBookPayments extends PaymentAdaptor {
 		
 		query.setRequestID(new Long(System.currentTimeMillis()).toString());
 
+		query.setTxnDateRangeFilter(factory.createTxnDateRangeFilter());
+		query.getTxnDateRangeFilter().setFromTxnDate(getAppPropertyDao().find("DumpPayment.StartDate").getValue());
+		query.getTxnDateRangeFilter().setToTxnDate(getAppPropertyDao().find("DumpPayment.EndDate").getValue());
+		
+		
 		request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(query);
 		xml.setQBXMLMsgsRq(request);
 

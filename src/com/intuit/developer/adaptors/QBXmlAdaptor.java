@@ -7,8 +7,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import com.intuit.developer.QBSession;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.util.SpringUtils;
 
 public class QBXmlAdaptor {
@@ -20,6 +22,8 @@ public class QBXmlAdaptor {
 
 	private ContractorAccountDAO contractorDao;
 	private InvoiceDAO invoiceDao;
+	private InvoiceItemDAO invoiceItemDao;
+	private AppPropertyDAO appPropertyDao;
 
 	static {
 		try {
@@ -70,6 +74,20 @@ public class QBXmlAdaptor {
 		return invoiceDao;
 	}
 
+	protected InvoiceItemDAO getInvoiceItemDao() {
+		if( invoiceItemDao == null )
+			invoiceItemDao = (InvoiceItemDAO) SpringUtils.getBean("InvoiceItemDAO");
+		
+		return invoiceItemDao;
+	}
+	
+	protected AppPropertyDAO getAppPropertyDao() {
+		if( appPropertyDao == null )
+			appPropertyDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+		
+		return appPropertyDao;
+	}
+	
 	public boolean isProceed() {
 		return proceed;
 	}
