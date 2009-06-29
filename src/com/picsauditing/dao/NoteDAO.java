@@ -86,6 +86,9 @@ public class NoteDAO extends PicsDAO {
 		// Show all non-private notes to Admins
 		if (permissions.hasPermission(OpPerms.AllOperators))
 			permWhere += " OR (viewableBy.id > 2)";
+		
+		if(permissions.isOnlyAuditor()) 
+			permWhere += " OR (createdBy.id = :userID AND viewableBy.id = " + Account.PicsID + ")";
 
 		// Show intra-company notes users
 		if (permissions.isOperator() || permissions.isCorporate())
