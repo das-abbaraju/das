@@ -56,15 +56,12 @@ public class UpdatePayments extends PaymentAdaptor {
 			Payment paymentJPA = (Payment) thisPaymentParms.get("payment");
 			paymentJPA = paymentDao.find(paymentJPA.getId());
 
-			ReceivePaymentRet paymentRet = (ReceivePaymentRet) thisPaymentParms
-					.get("paymentRet");
+			ReceivePaymentRet paymentRet = (ReceivePaymentRet) thisPaymentParms.get("paymentRet");
 
-			ReceivePaymentModRqType modRequest = factory
-					.createReceivePaymentModRqType();
+			ReceivePaymentModRqType modRequest = factory.createReceivePaymentModRqType();
 			modRequest.setRequestID("update_payment_" + paymentJPA.getId());
 
-			request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq()
-					.add(modRequest);
+			request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(modRequest);
 
 			ReceivePaymentMod payment = factory.createReceivePaymentMod();
 			modRequest.setReceivePaymentMod(payment);
@@ -73,17 +70,14 @@ public class UpdatePayments extends PaymentAdaptor {
 			payment.setEditSequence(paymentRet.getEditSequence());
 
 			payment.setCustomerRef(factory.createCustomerRef());
-			payment.getCustomerRef().setListID(
-					paymentJPA.getAccount().getQbListID());
+			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
 
 			payment.setARAccountRef(factory.createARAccountRef());
 			payment.getARAccountRef().setFullName("Accounts Receivable");
 
-			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd")
-					.format(paymentJPA.getCreationDate()));
+			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
 
-			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2,
-					BigDecimal.ROUND_HALF_UP).toString());
+			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 			payment.setPaymentMethodRef(new PaymentMethodRef());
 
@@ -92,34 +86,25 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			if (paymentJPA.getPaymentMethod().equals(PaymentMethod.Check)) {
 				payment.getPaymentMethodRef().setFullName("Check");
-				payment.getDepositToAccountRef().setFullName(
-						"Undeposited Funds");
+				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
 				payment.setMemo("Check number: " + paymentJPA.getCheckNumber());
 
 			} else {
 
-				String cardType = new BrainTreeService.CreditCard(paymentJPA
-						.getCcNumber()).getCardType();
+				String cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
 
 				if (cardType.equals("") || cardType.equals("Unknown")) {
 					payment.getPaymentMethodRef().setFullName("Check");
-					payment.getDepositToAccountRef().setFullName(
-							"Undeposited Funds");
-				} else if (cardType.equals("Visa")
-						|| cardType.equals("Mastercard")) {
-					payment.getPaymentMethodRef().setFullName(
-							"Braintree VISA/MC");
-					payment.getDepositToAccountRef().setFullName(
-							"VISA/MC Merchant Account");
+					payment.getDepositToAccountRef().setFullName("Undeposited Funds");
+				} else if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
+					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
+					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
-					payment.getDepositToAccountRef().setFullName(
-							"Amex Merchant Account");
+					payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
 				} else if (cardType.equals("Discover")) {
-					payment.getPaymentMethodRef().setFullName(
-							"Braintree DISCOVER");
-					payment.getDepositToAccountRef().setFullName(
-							"Discover Merchant Account");
+					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
+					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
 
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
@@ -132,8 +117,8 @@ public class UpdatePayments extends PaymentAdaptor {
 
 				application.setTxnID(invoicePayment.getInvoice().getQbListID());
 
-				application.setPaymentAmount(invoicePayment.getAmount()
-						.setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
+						.toString());
 			}
 		}
 
@@ -146,8 +131,7 @@ public class UpdatePayments extends PaymentAdaptor {
 	}
 
 	@Override
-	public Object parseQbXml(QBSession currentSession, String qbXml)
-			throws Exception {
+	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -164,14 +148,11 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			ReceivePaymentModRsType thisQueryResponse = (ReceivePaymentModRsType) result;
 
-			ReceivePaymentRet receivePaymentRet = thisQueryResponse
-					.getReceivePaymentRet();
+			ReceivePaymentRet receivePaymentRet = thisQueryResponse.getReceivePaymentRet();
 
-			String thePk = currentSession.getCurrentBatch().get(
-					thisQueryResponse.getRequestID());
+			String thePk = currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID());
 
-			Map<String, Object> thisCustomerParms = currentSession
-					.getToUpdate().get(thePk);
+			Map<String, Object> thisCustomerParms = currentSession.getToUpdate().get(thePk);
 			currentSession.getToUpdate().remove(thePk);
 
 			Payment paymentJPA = (Payment) thisCustomerParms.get("payment");
@@ -190,13 +171,11 @@ public class UpdatePayments extends PaymentAdaptor {
 				}
 
 			} catch (Exception e) {
-				StringBuilder errorMessage = new StringBuilder(
-						"Problem updating payment\t");
+				StringBuilder errorMessage = new StringBuilder("Problem updating payment\t");
 
 				errorMessage.append(thisQueryResponse.getRequestID());
 				errorMessage.append("\t");
-				errorMessage.append(currentSession.getCurrentBatch().get(
-						thisQueryResponse.getRequestID()));
+				errorMessage.append(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID()));
 				errorMessage.append("\t");
 				errorMessage.append(thisQueryResponse.getStatusMessage());
 				errorMessage.append("\t");

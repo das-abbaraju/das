@@ -3,15 +3,10 @@ package com.intuit.developer.adaptors;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
-import java.util.Map;
 
 import javax.xml.bind.Marshaller;
 
 import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.quickbooks.qbxml.InvoiceQueryRqType;
-import com.picsauditing.quickbooks.qbxml.InvoiceRet;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;

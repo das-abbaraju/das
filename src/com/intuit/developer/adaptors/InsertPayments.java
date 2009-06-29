@@ -31,11 +31,9 @@ public class InsertPayments extends PaymentAdaptor {
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		List<Payment> payments = getPaymentDao()
-				.findWhere(
-						"p.account.qbListID is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-								+ "AND p.account.qbListID not like 'NOLOAD%'",
-						10);
+		List<Payment> payments = getPaymentDao().findWhere(
+				"p.account.qbListID is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
+						+ "AND p.account.qbListID not like 'NOLOAD%'", 10);
 
 		// no work to do
 		if (payments.size() == 0) {
@@ -54,65 +52,51 @@ public class InsertPayments extends PaymentAdaptor {
 
 		for (Payment paymentJPA : payments) {
 
-			ReceivePaymentAddRqType addRequest = factory
-					.createReceivePaymentAddRqType();
+			ReceivePaymentAddRqType addRequest = factory.createReceivePaymentAddRqType();
 			addRequest.setRequestID("insert_payment_" + paymentJPA.getId());
 
-			request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq()
-					.add(addRequest);
+			request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(addRequest);
 
 			ReceivePaymentAdd payment = factory.createReceivePaymentAdd();
 
 			addRequest.setReceivePaymentAdd(payment);
 
 			payment.setCustomerRef(factory.createCustomerRef());
-			payment.getCustomerRef().setListID(
-					paymentJPA.getAccount().getQbListID());
+			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
 
 			payment.setARAccountRef(factory.createARAccountRef());
 			payment.getARAccountRef().setFullName("Accounts Receivable");
 
-			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd")
-					.format(paymentJPA.getCreationDate()));
+			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
 
 			// payment.setRefNumber(invoiceJPA.getCheckNumber()); they're not
 			// using this field in quickbooks anymore
-			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2,
-					BigDecimal.ROUND_HALF_UP).toString());
+			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
 			payment.setDepositToAccountRef(factory.createDepositToAccountRef());
 
 			if (paymentJPA.getPaymentMethod().equals(PaymentMethod.Check)) {
 				payment.getPaymentMethodRef().setFullName("Check");
-				payment.getDepositToAccountRef().setFullName(
-						"Undeposited Funds");
+				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
 				payment.setMemo("Check number: " + paymentJPA.getCheckNumber());
 
 			} else {
 
-				String cardType = new BrainTreeService.CreditCard(paymentJPA
-						.getCcNumber()).getCardType();
+				String cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
 
 				if (cardType.equals("") || cardType.equals("Unknown")) {
 					payment.getPaymentMethodRef().setFullName("Check");
-					payment.getDepositToAccountRef().setFullName(
-							"Undeposited Funds");
-				} else if (cardType.equals("Visa")
-						|| cardType.equals("Mastercard")) {
-					payment.getPaymentMethodRef().setFullName(
-							"Braintree VISA/MC");
-					payment.getDepositToAccountRef().setFullName(
-							"VISA/MC Merchant Account");
+					payment.getDepositToAccountRef().setFullName("Undeposited Funds");
+				} else if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
+					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
+					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
-					payment.getDepositToAccountRef().setFullName(
-							"Amex Merchant Account");
+					payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
 				} else if (cardType.equals("Discover")) {
-					payment.getPaymentMethodRef().setFullName(
-							"Braintree DISCOVER");
-					payment.getDepositToAccountRef().setFullName(
-							"Discover Merchant Account");
+					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
+					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
 
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
@@ -125,21 +109,19 @@ public class InsertPayments extends PaymentAdaptor {
 				application.setTxnID(factory.createAppliedToTxnAddTxnID());
 				application.getTxnID().setValue(paymentJPA.getQbListID());
 
-				TxnLineDetail createTxnLineDetail = factory
-						.createTxnLineDetail();
+				TxnLineDetail createTxnLineDetail = factory.createTxnLineDetail();
 				application.getTxnLineDetail().add(createTxnLineDetail);
 
 				createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
-				createTxnLineDetail.setAmount(invoicePayment.getAmount()
-						.setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+				createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
+						.toString());
 
-				application.setPaymentAmount(invoicePayment.getAmount()
-						.setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
+						.toString());
 
 			}
 
-			currentSession.getCurrentBatch().put(addRequest.getRequestID(),
-					new Integer(paymentJPA.getId()).toString());
+			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
 		}
 
 		xml.setQBXMLMsgsRq(request);
@@ -152,8 +134,7 @@ public class InsertPayments extends PaymentAdaptor {
 	}
 
 	@Override
-	public Object parseQbXml(QBSession currentSession, String qbXml)
-			throws Exception {
+	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -170,11 +151,10 @@ public class InsertPayments extends PaymentAdaptor {
 
 			ReceivePaymentAddRsType thisQueryResponse = (ReceivePaymentAddRsType) result;
 
-			ReceivePaymentRet receivePaymentRet = thisQueryResponse
-					.getReceivePaymentRet();
+			ReceivePaymentRet receivePaymentRet = thisQueryResponse.getReceivePaymentRet();
 
-			int paymentId = new Integer(currentSession.getCurrentBatch().get(
-					thisQueryResponse.getRequestID())).intValue();
+			int paymentId = new Integer(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID()))
+					.intValue();
 			Payment connected = getPaymentDao().find(paymentId);
 
 			if (receivePaymentRet != null) {
@@ -189,13 +169,11 @@ public class InsertPayments extends PaymentAdaptor {
 				} catch (Exception e) {
 				}
 			} else {
-				StringBuilder errorMessage = new StringBuilder(
-						"Problem inserting payment\t");
+				StringBuilder errorMessage = new StringBuilder("Problem inserting payment\t");
 
 				errorMessage.append(thisQueryResponse.getRequestID());
 				errorMessage.append("\t");
-				errorMessage.append(currentSession.getCurrentBatch().get(
-						thisQueryResponse.getRequestID()));
+				errorMessage.append(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID()));
 				errorMessage.append("\t");
 				errorMessage.append(thisQueryResponse.getStatusMessage());
 				errorMessage.append("\t");

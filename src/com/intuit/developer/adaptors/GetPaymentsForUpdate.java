@@ -9,21 +9,18 @@ import com.picsauditing.jpa.entities.Payment;
 
 public class GetPaymentsForUpdate extends PaymentAdaptor {
 
-	
-	
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
-
 
 		String where = "p.account.qbListID is not null AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true";
 		List<Payment> payments = getPaymentDao().findWhere(where, 10);
 
 		if (payments.size() > 0) {
 			currentSession.getPossiblePaymentUpdates().addAll(payments);
-			
+
 			return getThesePayments(payments);
 		}
-		
+
 		return super.getQbXml(currentSession);
 	}
 
@@ -49,7 +46,5 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 
 		return null;
 	}
-	
-	
 
 }
