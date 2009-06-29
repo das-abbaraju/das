@@ -93,7 +93,7 @@ values (null, newWidgetID, 616, 1, 2,10, null);
 /*
  * Added a system message to the app_properties.
  */
- insert into app_properties values ('SYSTEM.MESSAGE', null);
+ insert into app_properties values ('SYSTEM.MESSAGE', '');
  
 delete from invoice where tableType = 'P';
 

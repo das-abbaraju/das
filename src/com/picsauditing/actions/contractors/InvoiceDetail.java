@@ -124,7 +124,13 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			if (button.startsWith("Email")) {
 				try {
 					EmailQueue email = emailInvoice();
-					String note = "Invoice emailed to " + email.getToAddresses();
+					String note = "";
+					if(invoice.getStatus().isPaid())
+						note += "Payment Receipt for Invoice";
+					else
+						note += "Invoice"; 
+						
+					note += " emailed to " + email.getToAddresses();
 					if (!Strings.isEmpty(email.getCcAddresses()))
 						note += " and cc'd " + email.getCcAddresses();
 					addNote(note);
