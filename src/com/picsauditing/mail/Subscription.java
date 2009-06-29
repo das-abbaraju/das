@@ -1,4 +1,4 @@
-package com.picsauditing.email;
+package com.picsauditing.mail;
 
 public enum Subscription {
 	PICSSystemNotification("PICS System Notification"),

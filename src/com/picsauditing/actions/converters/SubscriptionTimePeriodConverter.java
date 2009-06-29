@@ -1,6 +1,6 @@
 package com.picsauditing.actions.converters;
 
-import com.picsauditing.email.SubscriptionTimePeriod;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @SuppressWarnings("unchecked")
 public class SubscriptionTimePeriodConverter extends EnumConverter {

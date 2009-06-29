@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.PICS.AuditCriteriaAnswer;
-import com.picsauditing.email.Subscription;
-import com.picsauditing.email.SubscriptionTimePeriod;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -26,6 +24,8 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 
 /**
  * This generates jpa objects that we can then use in our unit testing

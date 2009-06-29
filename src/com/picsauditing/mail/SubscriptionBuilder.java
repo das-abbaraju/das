@@ -1,4 +1,4 @@
-package com.picsauditing.email;
+package com.picsauditing.mail;
 
 import java.util.Collection;
 import java.util.HashMap;

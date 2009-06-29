@@ -876,12 +876,12 @@
 		</action>
 
 		<action name="UserEmailSubscription"
-			class="com.picsauditing.email.UserEmailSubscription">
+			class="com.picsauditing.mail.UserEmailSubscription">
 			<result>struts/email/user_email.jsp</result>
 		</action>
 
 		<action name="UserEmailSubscriptionAjax"
-			class="com.picsauditing.email.UserEmailSubscription">
+			class="com.picsauditing.mail.UserEmailSubscription">
 			<result>struts/email/user_email.jsp</result>
 		</action>
 

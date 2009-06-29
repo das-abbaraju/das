@@ -6,9 +6,9 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.email.Subscription;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.Subscription;
 
 @Transactional
 public class EmailSubscriptionDAO extends PicsDAO {
