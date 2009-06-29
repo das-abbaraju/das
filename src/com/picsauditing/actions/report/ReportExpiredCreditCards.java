@@ -16,6 +16,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 
 		sql.addField("c.ccExpiration");
 		sql.addField("c.paymentExpires");
+		sql.addField("c.balance");
 	}
 
 	@Override

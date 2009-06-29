@@ -25,6 +25,7 @@
 	    <th>Active</th>
 	    <th>Payment Expires</th>
 	    <th>CC Expiration</th>
+	    <th>Balance</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -37,6 +38,7 @@
 			<td class="center"><s:property value="get('active')"/></td>
 			<td class="center"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('ccExpiration')" format="M/yy"/></td>
+			<td class="right">$<s:property value="get('balance')"/></td>
 		</tr>
 	</s:iterator>
 	</tbody>
