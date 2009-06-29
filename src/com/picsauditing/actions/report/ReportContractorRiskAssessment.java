@@ -5,9 +5,13 @@ import java.util.Date;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -17,10 +21,12 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected String auditorNotes;
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected AuditDataDAO auditDataDAO;
+	protected NoteDAO noteDAO;
 
-	public ReportContractorRiskAssessment(ContractorAccountDAO contractorAccountDAO, AuditDataDAO auditDataDAO) {
+	public ReportContractorRiskAssessment(ContractorAccountDAO contractorAccountDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.auditDataDAO = auditDataDAO;
+		this.noteDAO = noteDAO;
 	}
 
 	@Override
@@ -51,6 +57,11 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				cAccount.setRiskLevel(LowMedHigh.valueOf(aData.getAnswer()));
 				cAccount.setAuditColumns(permissions);
 				contractorAccountDAO.save(cAccount);
+				Note note = new Note(cAccount, getUser(), "RiskLevel adjusted to "+aData.getAnswer() + " for " + auditorNotes);
+				note.setNoteCategory(NoteCategory.General);
+				note.setCanContractorView(true);
+				note.setViewableById(Account.EVERYONE);
+				noteDAO.save(note);
 			}
 			aData.setDateVerified(new Date());
 			if(!Strings.isEmpty(auditorNotes))
