@@ -70,12 +70,12 @@ input[type=submit] {
 							<s:else>
 								<s:if test="invoice.status.unpaid">
 									<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
-									<li><a class="edit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=true">Edit</a></li>
-									<pics:permission perm="Billing" type="Delete">
-										<li><a class="void"
-											href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
-									</pics:permission>
 								</s:if>
+								<li><a class="edit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=true">Edit</a></li>
+								<pics:permission perm="Billing" type="Delete">
+									<li><a class="void"
+										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
+								</pics:permission>
 								<pics:permission perm="InvoiceEdit">
 									<li><a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">Sys Edit</a></li>
 								</pics:permission>
