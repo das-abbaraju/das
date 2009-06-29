@@ -23,7 +23,7 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a></td>
+			<td><s:property value="[0].get('name')"/></td>
 			<td><s:property value="get('username')"/></td>
 			<td class="right"><s:property value="get('subscription')"/></td>
 			<td><s:property value="get('timePeriod')"/></td>

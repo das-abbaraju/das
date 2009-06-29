@@ -128,7 +128,7 @@ public class PicsMenu {
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
 		}
 
-		if (permissions.seesAllContractors()) {
+		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			subMenu.addChild("Email Subscriptions", "ReportEmailSubscription.action");
 		}
 		

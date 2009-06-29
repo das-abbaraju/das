@@ -2,10 +2,7 @@ package com.picsauditing.actions.users;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
-import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -113,5 +110,4 @@ public class ProfileEdit extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(u.getUsername(), 10);
 	}
-
 }

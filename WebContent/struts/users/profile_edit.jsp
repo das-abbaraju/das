@@ -21,7 +21,8 @@
 </head>
 <body>
 <h1>Edit Profile</h1>
-<s:include value="../actionMessages.jsp" />
+
+<s:include value="userHeader.jsp" />
 
 <table style="width: 100%">
 	<tr>
@@ -57,64 +58,34 @@
 		<td style="width: 20px;">&nbsp;</td>
 		<td style="vertical-align:top;">
 		<s:if test="switchTos.size > 0">
-			<h3>Switch Accounts</h3>
-			<div>
 			<img src="images/beta.jpg" width="98" height="100" style="float: right;"
 				title="This is a new feature. Please send us your feedback or suggestions." />
-			<ol>
-				<li><a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property
-					value="u.account.name" /> - Primary</a></li>
-				<s:iterator value="switchTos">
-					<li><a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property
-						value="switchTo.account.name" /> - <s:property value="switchTo.name" /></a></li>
+			<h3>Switch Accounts</h3>
+			<table class="report">
+				<thead>
+					<tr>
+						<td>Account</td>
+						<td>User</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td>
+						<a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property
+						value="u.account.name" /></a>
+					</td>
+					<td>Primary</td>
+					</tr>
+					<s:iterator value="switchTos">
+					<tr>
+						<td><a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property
+						value="switchTo.account.name" /></a></td>
+						<td><s:property value="switchTo.name" /></td>
+					</tr>
 				</s:iterator>
-			</ol>
-			</div>
+				</tbody>
+			</table>
 		</s:if>
-		<h3>Recent Logins</h3>
-		<table class="report">
-		<thead>
-			<tr>
-				<th>Login Date/Time</th>
-				<th>IP Address</th>
-				<th>Notes</th>
-			</tr>
-		</thead>
-		<tbody>
-		<s:iterator value="recentLogins">
-			<tr>
-				<td><s:date name="loginDate"/></td>
-				<td><s:property value="remoteAddress"/></td>
-				<td>
-					<s:if test="admin.id > 0">Login by <s:property value="admin.name"/> from <s:property value="admin.account.name"/></s:if>
-					<s:if test="successful == 'N'">Incorrect password attempt</s:if>
-				</td>
-			</tr>
-		</s:iterator>
-		</tbody>
-		</table>
-		
-		<h3>Permissions</h3>
-		<table class="report" style="margin-top: 20px">
-			<s:iterator value="permissions.permissions">
-				<tr>
-					<td title="<s:property value="opPerm.helpText" />"><s:property value="opPerm.description" /></td>
-					<td><s:if test="viewFlag">View</s:if></td>
-					<td><s:if test="editFlag">Edit</s:if></td>
-					<td><s:if test="deleteFlag">Delete</s:if></td>
-				</tr>
-			</s:iterator>
-		</table>
-		<s:if test="permissions.operatorCorporate">
-			<h3>Visible Audit/Policy Types</h3>
-			<div>
-			<ul>
-				<s:iterator value="viewableAuditsList">
-					<li><s:property value="auditName" /></li>
-				</s:iterator>
-			</ul>
-			</div>
-		</s:if></td>
+	</td>
 	</tr>
 </table>
 

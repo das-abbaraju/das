@@ -882,7 +882,7 @@
 
 		<action name="UserEmailSubscriptionAjax"
 			class="com.picsauditing.email.UserEmailSubscription">
-			<result>struts/blank.jsp</result>
+			<result>struts/email/user_email.jsp</result>
 		</action>
 
 		<action name="UsersManage"
