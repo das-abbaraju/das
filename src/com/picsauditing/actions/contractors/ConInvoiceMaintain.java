@@ -72,8 +72,8 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 				if (removeMap.get(item.getId())) {
 					items.remove();
 					invoiceItemDAO.remove(item);
-					addActionMessage("Removed line item <strong>\"" + item.getInvoiceFee().getFee()
-							+ "\"</strong> for $" + item.getAmount());
+					addActionMessage("Removed line item <strong>" + item.getInvoiceFee().getFee()
+							+ "</strong> for $" + item.getAmount());
 				}
 			}
 
