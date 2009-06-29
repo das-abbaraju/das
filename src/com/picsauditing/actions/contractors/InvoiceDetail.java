@@ -156,6 +156,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			
 			invoiceDAO.save(invoice);
 			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit + (message == null ? "" : "&msg=" + message ));
+			
+			return BLANK;
 		}
 
 		updateTotals();
