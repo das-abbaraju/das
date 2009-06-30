@@ -123,10 +123,14 @@ function updateRemainder() {
 	// update the remainder (Payment Total - Invoice Total)
 	// hide save button if remainder < 0
 	var remainder = parseFloat($('payment_totalAmount').value) - parseFloat($('payment_amountApplied').innerHTML);
-	if (remainder < 0 || $('payment_totalAmount').value <= 0)
-		$('toolbox').hide();
-	else
-		$('toolbox').show();
+	if (remainder < 0 || $('payment_totalAmount').value <= 0) {
+		$$('#toolbox a.pay').invoke('hide');
+		$$('#toolbox a.save').invoke('hide');
+	}
+	else {
+		$$('#toolbox a.pay').invoke('show');
+		$$('#toolbox a.save').invoke('show');
+	}
 
 	$('payment_balance').innerHTML = remainder.toFixed(2);
 }

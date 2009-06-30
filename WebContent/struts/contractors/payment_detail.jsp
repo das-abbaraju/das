@@ -103,14 +103,16 @@ fieldset.form ol {
 	</s:else>
 	
 	<s:if test="payment == null || !payment.status.void">
-		<div style="float:right">
-			<div id="toolbox">
+		<div style="float:right; width: 390px; height: 30px">
+			<div id="toolbox" style="height: inherit">
 				<ul>
 					<s:if test="payment == null">
-						<li><a class="pay" href="#" onclick="submitPayment('Save');return false;">Collect Payment</a></li>
+						<li><a class="pay" href="#" onclick="submitPayment('Save');return false;">Pay</a></li>
 					</s:if>
 					<s:else>
-						<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
+						<s:if test="payment.balance > 0">
+							<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
+						</s:if>
 						<s:if test="payment.qbListID == null">
 							<li><a class="cancel" href="PaymentDetail.action?payment.id=<s:property value="payment.id"/>&button=Delete">Delete</a></li>
 						</s:if>
