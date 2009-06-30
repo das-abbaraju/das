@@ -93,10 +93,24 @@ fieldset.form ol {
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
-			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label><s:property value="creditCard.cardType" /></li>
-			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label><s:property value="creditCard.cardNumber" /></li>
-			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditCard.cardType" /></li>
-			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditCard.cardNumber" /></li>
+			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label>
+				<s:if test="creditCard == null">
+					N/A
+				</s:if>
+				<s:else>
+					<s:property value="creditCard.cardType" />
+				</s:else>
+			</li>
+			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label>
+				<s:if test="creditCard == null">
+					N/A
+				</s:if>
+				<s:else>
+					<s:property value="creditCard.cardNumber" />
+				</s:else>
+			</li>
+			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditCard.cardNumber" /></li>
+			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditCard.expirationDate" /></li>
 		</ol>
 		</td></tr></table>
 		</fieldset>
