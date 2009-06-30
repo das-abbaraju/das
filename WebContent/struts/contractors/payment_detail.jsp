@@ -188,7 +188,7 @@ fieldset.form ol {
 				</tr>
 			</thead>
 			<s:iterator value="contractor.invoices">
-				<s:if test="status.unpaid">
+				<s:if test="totalAmount > 0 && status.unpaid">
 					<tr>
 						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><span class="invoiceID"><s:property value="id" /></span></a></td>
 						<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
@@ -240,5 +240,6 @@ fieldset.form ol {
 	calculateTotalFromApplied();
 	</script>
 </s:if>
+<br clear="all"/>
 </body>
 </html>

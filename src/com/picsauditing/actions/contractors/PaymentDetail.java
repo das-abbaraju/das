@@ -299,7 +299,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return false;
 
 		for (Invoice invoice : contractor.getInvoices()) {
-			if (invoice.getStatus().isUnpaid())
+			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid())
 				return true;
 		}
 
