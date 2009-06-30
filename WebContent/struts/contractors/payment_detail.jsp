@@ -233,6 +233,9 @@ fieldset.form ol {
 
 <s:if test="payment == null">
 	<script>
+	<s:if test="contractor.paymentMethod.creditCard && contractor.balance > 0">
+		applyAll();
+	</s:if>	
 	calculateApplied();
 	calculateTotalFromApplied();
 	</script>

@@ -708,17 +708,18 @@ public class ContractorAccount extends Account {
 
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
-			if (invoice.getStatus().isUnpaid())
-				balance = balance.add(invoice.getBalance());
+			if(!invoice.getStatus().isVoid())
+				balance = balance.add(invoice.getTotalAmount());
 		}
 
 		for(Refund refund : getRefunds()) {
-			balance = balance.add(refund.getBalance());
+			if(!refund.getStatus().isVoid())
+				balance = balance.add(refund.getTotalAmount());
 		}
 		
 		for(Payment payment : getPayments()) {
-			if(payment.getStatus().isUnpaid())
-				balance = balance.subtract(payment.getBalance());
+			if(!payment.getStatus().isVoid())
+				balance = balance.subtract(payment.getTotalAmount());
 		}
 		
 		for (Invoice invoice : getSortedInvoices()) {
