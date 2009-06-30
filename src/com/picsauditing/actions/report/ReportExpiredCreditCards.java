@@ -1,11 +1,33 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
 public class ReportExpiredCreditCards extends ReportAccount {
 
-	public String[] sendMail;
+	private ContractorAccountDAO contractorAccountDAO;
+	private EmailBuilder emailBuilder;
+	private NoteDAO noteDAO;
+
+	private String[] sendMail;
+
+	public ReportExpiredCreditCards(ContractorAccountDAO contractorAccountDAO, EmailBuilder emailBuilder, NoteDAO noteDAO) {
+		sql = new SelectContractorAudit();
+		this.contractorAccountDAO = contractorAccountDAO;
+		this.emailBuilder = emailBuilder;
+		this.noteDAO = noteDAO;
+	}
 
 	public void buildQuery() {
 		super.buildQuery();
@@ -34,11 +56,30 @@ public class ReportExpiredCreditCards extends ReportAccount {
 	public String execute() throws Exception {
 		if ("SendEmail".equals(button)) {
 			if (sendMail.length > 0) {
-				StringBuffer sb = new StringBuffer("Contractors who should be emailed");
-				for (String conID : sendMail) {
-					sb.append(" - ").append(conID);
+				for (String conIDString : sendMail) {
+					try {
+						int conID = Integer.parseInt(conIDString);
+						ContractorAccount con = contractorAccountDAO.find(conID);
+						emailBuilder.setTemplate(59);
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.setContractor(con);
+						emailBuilder.setFromAddress("billing@picsauditing.com");
+						EmailQueue email = emailBuilder.build();
+						EmailSender.send(email);
+						
+						Note note = new Note();
+						note.setAccount(con);
+						note.setAuditColumns(permissions);
+						note.setSummary("Expired Credit Card email sent to " + email.getToAddresses());
+						note.setNoteCategory(NoteCategory.Billing);
+						note.setViewableById(Account.PicsID);
+						noteDAO.save(note);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 				}
-				addActionMessage(sb.toString());
 			}
 		}
 		return super.execute();
