@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
@@ -25,9 +22,9 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;

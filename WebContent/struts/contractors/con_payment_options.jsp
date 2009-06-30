@@ -55,7 +55,15 @@ function updateExpDate() {
 <s:if test="!contractor.paymentMethod.creditCard">
 	<div id="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
 </s:if>
-
+<s:if test="contractor.balance > 0">
+	<div id="alert">
+		<s:iterator value="contractor.invoices">
+			<s:if test="status.unpaid">
+			You have an <a href="InvoiceDetail.action?invoice.id=" + <s:property value="id"/>> invoice of <b>$ <s:property value="balance"/></b></a> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
+			</s:if>
+		</s:iterator>
+	</div>
+</s:if>
 <s:form id="save" method="POST">
 	<s:hidden name="id" />
 <fieldset class="form">

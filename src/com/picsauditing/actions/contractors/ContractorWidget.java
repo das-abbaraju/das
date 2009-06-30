@@ -60,7 +60,7 @@ public class ContractorWidget extends ContractorActionSupport {
 						} catch (Exception ignoreFormattingErrors) {
 						}
 						openTasks.add("You have an <a href=\"InvoiceDetail.action?invoice.id=" + invoice.getId()
-								+ "\">invoice of <b>$" + invoice.getTotalAmount() + "</b></a> due " + due);
+								+ "\">invoice of <b>$" + invoice.getBalance() + "</b></a> due " + due);
 					}
 				}
 			}
