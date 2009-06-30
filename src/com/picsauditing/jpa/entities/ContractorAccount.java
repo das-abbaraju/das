@@ -381,7 +381,12 @@ public class ContractorAccount extends Account {
 	public boolean isCcValid() {
 		if (!ccOnFile)
 			return false;
-
+		
+		return isCcExpired();
+	}
+	
+	@Transient
+	public boolean isCcExpired() {
 		if (ccExpiration == null)
 			// Because this is new, some haven't been loaded yet
 			// Assume it's fine for now

@@ -30,6 +30,9 @@ input[type=submit] {
 <s:elseif test="invoice.overdue && contractor.activeB">
 	<div id="alert" class="noprint">This invoice is currently OVERDUE!</div>
 </s:elseif>
+<s:if test="invoice.status.unpaid && !contractor.ccExpired">
+	<div id="alert" class="noprint">The Credit Card on file has Expired. Please enter a Valid Card.</div>
+</s:if>
 
 <s:form id="save" name="save" method="POST">
 	<s:hidden name="id"></s:hidden>
