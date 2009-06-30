@@ -32,6 +32,7 @@
 	    <th>Payment Expires</th>
 	    <th>CC Expiration</th>
 	    <th>Balance</th>
+	    <th>Email Sent</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -46,6 +47,7 @@
 			<td class="center"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('ccExpiration')" format="M/yy"/></td>
 			<td class="right">$<s:property value="get('balance')"/></td>
+			<td class="right"><s:date name="get('lastSent')" format="M/d/yy h:mm" /></td>
 		</tr>
 	</s:iterator>
 	</tbody>

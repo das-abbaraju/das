@@ -31,9 +31,14 @@ public class ReportExpiredCreditCards extends ReportAccount {
 
 	public void buildQuery() {
 		super.buildQuery();
+		
+		sql.addJoin("LEFT JOIN email_queue eq ON c.id = eq.conID AND eq.templateID = 59");
 
 		sql.addWhere("c.paymentMethod = 'CreditCard'");
 		sql.addWhere("c.ccExpiration < NOW()");
+		
+		sql.addGroupBy("c.id");
+		sql.addGroupBy("eq.templateID");
 
 		sql.addOrderBy("c.paymentExpires");
 		sql.addOrderBy("c.ccExpiration");
@@ -41,6 +46,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 		sql.addField("c.ccExpiration");
 		sql.addField("c.paymentExpires");
 		sql.addField("c.balance");
+		sql.addField("MAX(eq.creationDate) lastSent");
 
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
