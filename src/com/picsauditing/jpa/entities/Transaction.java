@@ -104,7 +104,7 @@ public abstract class Transaction extends BaseTable {
 	public void updateAmountApplied() {
 		if (status.equals(TransactionStatus.Void))
 			return;
-		if (getBalance().compareTo(BigDecimal.ZERO) == 0)
+		if (totalAmount.compareTo(BigDecimal.ZERO) != 0 && getBalance().compareTo(BigDecimal.ZERO) == 0)
 			status = TransactionStatus.Paid;
 		else
 			status = TransactionStatus.Unpaid;
