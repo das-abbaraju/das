@@ -213,7 +213,7 @@
 						<s:else>No - <a href="?id=<s:property value="id"/>&button=Reactivate">Reactivate</a></s:else>
 					</li>
 					<li><label>Reason:</label>
-						<s:textarea name="contractor.reason" rows="3" cols="25"/>
+						<s:select list="deactivationReasons" name="contractor.reason" headerKey=" " headerValue="- Deactivation Reason -"/>
 					</li>
 					<li><label>Risk Level:</label>
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />

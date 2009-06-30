@@ -320,4 +320,15 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 		return unpaidInvoices;
 	}
+	
+	public ArrayList<String> getDeactivationReasons() {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("No response");
+		list.add("Does not work for operator");
+		list.add("Operator exemption");
+		list.add("Payments not Current");
+		list.add("Lost Contract");
+		list.add("Did not Complete PICS process");
+		return list;
+	}
 }
