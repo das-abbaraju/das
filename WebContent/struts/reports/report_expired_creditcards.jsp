@@ -15,10 +15,16 @@
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
 	
+<s:form method="post" cssClass="forms">
+<div>
+	<button class="picsbutton positive" type="submit" name="button" value="SendEmail">Send Email</button>
+</div>
+
 <table class="report">
 	<thead>
 	<tr>
 		<td></td>
+		<td>Email</td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
 	    <th>Contact</th>
 	    <th>Phone Number</th>
@@ -32,6 +38,7 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+			<td align="center"><s:checkbox name="sendMail" fieldValue="%{get('id')}" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
 			<td class="right"><s:property value="get('billingContact')"/></td>
 			<td class="right"><s:property value="get('billingPhone')"/></td>
@@ -43,6 +50,11 @@
 	</s:iterator>
 	</tbody>
 </table>
+
+<div>
+	<button class="picsbutton positive" type="submit" name="button" value="SendEmail">Send Email</button>
+</div>
+</s:form>
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
