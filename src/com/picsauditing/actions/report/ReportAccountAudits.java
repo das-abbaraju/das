@@ -12,9 +12,15 @@ public class ReportAccountAudits extends ReportAccount {
 		super.buildQuery();
 
 		sql.addAudit(AuditType.PQF);
-		if (permissions.isOperator())
+		if (permissions.isOperator()) {
 			sql.addField("flags.waitingOn");
-
+			if(download) {
+				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
+				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID = "+ permissions.getAccountId());
+				sql.addField("ot.tag");
+			}
+		}	
+		
 		filteredDefault = true;
 
 		// Getting the certificate info per contractor is too difficult!
@@ -41,6 +47,7 @@ public class ReportAccountAudits extends ReportAccount {
 		
 		if (permissions.isOperator()) {
 			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On", ExcelCellType.Enum), 405);
+			excelSheet.addColumn(new ExcelColumn("tag", "Contractor Tag"));
 		}
 	}
 }
