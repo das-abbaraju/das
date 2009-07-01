@@ -109,6 +109,7 @@ public class UpdatePayments extends PaymentAdaptor {
 				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
 			}
 
+			payment.getAppliedToTxnMod();
 			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
 				AppliedToTxnMod application = factory.createAppliedToTxnMod();
 				payment.getAppliedToTxnMod().add(application);
