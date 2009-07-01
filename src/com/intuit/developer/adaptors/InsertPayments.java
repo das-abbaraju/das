@@ -127,9 +127,7 @@ public class InsertPayments extends PaymentAdaptor {
 //				createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 //						.toString());
 			}
-			if (paymentJPA.getInvoices().size() == 0) {
-				payment.setIsAutoApply("false");
-			}
+			payment.setIsAutoApply("false");
 
 			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
 		}
