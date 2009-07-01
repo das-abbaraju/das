@@ -14,6 +14,7 @@ import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.quickbooks.qbxml.AppliedToTxnAdd;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
@@ -69,26 +70,31 @@ public class InsertPayments extends PaymentAdaptor {
 
 			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
 
-			// payment.setRefNumber(invoiceJPA.getCheckNumber()); they're not
-			// using this field in quickbooks anymore
+			payment.setRefNumber(paymentJPA.getCheckNumber());
 			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
 			payment.setDepositToAccountRef(factory.createDepositToAccountRef());
 
-			if (paymentJPA.getPaymentMethod().equals(PaymentMethod.Check)) {
+			boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
+			String cardType = null;
+			if (!isCheck) {
+				cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
+				if (cardType == null || cardType.equals("") || cardType.equals("Unknown")) {
+					isCheck = true;
+				}
+			}
+			
+			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
 				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
+				payment.setRefNumber(paymentJPA.getCheckNumber());
 				payment.setMemo("Check number: " + paymentJPA.getCheckNumber());
-
+				
 			} else {
-
-				String cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
-
-				if (cardType.equals("") || cardType.equals("Unknown")) {
-					payment.getPaymentMethodRef().setFullName("Check");
-					payment.getDepositToAccountRef().setFullName("Undeposited Funds");
-				} else if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
+				payment.getPaymentMethodRef().setFullName("Braintree Credit");
+				
+				if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
 					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
 				} else if (cardType.equals("American Express")) {
@@ -99,15 +105,14 @@ public class InsertPayments extends PaymentAdaptor {
 					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
 
-				payment.getPaymentMethodRef().setFullName("Braintree Credit");
-				payment.setMemo(paymentJPA.getCcNumber());
+				payment.setMemo("CC number: " + paymentJPA.getCcNumber());
 			}
 
-			for (PaymentApplied invoicePayment : paymentJPA.getInvoices()) {
+			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
 				AppliedToTxnAdd application = factory.createAppliedToTxnAdd();
 				payment.getAppliedToTxnAdd().add(application);
 				application.setTxnID(factory.createAppliedToTxnAddTxnID());
-				application.getTxnID().setValue(paymentJPA.getQbListID());
+				application.getTxnID().setValue(invoicePayment.getInvoice().getQbListID());
 
 				TxnLineDetail createTxnLineDetail = factory.createTxnLineDetail();
 				application.getTxnLineDetail().add(createTxnLineDetail);
