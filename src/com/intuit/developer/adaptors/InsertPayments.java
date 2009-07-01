@@ -114,16 +114,17 @@ public class InsertPayments extends PaymentAdaptor {
 				application.setTxnID(factory.createAppliedToTxnAddTxnID());
 				application.getTxnID().setValue(invoicePayment.getInvoice().getQbListID());
 
-				TxnLineDetail createTxnLineDetail = factory.createTxnLineDetail();
-				application.getTxnLineDetail().add(createTxnLineDetail);
-
-				createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
-				createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
-						.toString());
-
 				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 						.toString());
 
+//				TxnLineDetail createTxnLineDetail = factory.createTxnLineDetail();
+//				application.getTxnLineDetail().add(createTxnLineDetail);
+//
+//				createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
+//				createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
+//						.toString());
+				
+				
 			}
 
 			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
