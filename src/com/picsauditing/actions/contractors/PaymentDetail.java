@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -230,22 +231,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
 							for (Invoice txn : contractor.getInvoices()) {
 								if (txn.getId() == txnID) {
-									PaymentAppliedToInvoice pa = new PaymentAppliedToInvoice();
-									pa.setPayment(payment);
-									pa.setInvoice(txn);
-									pa.setAmount(amountApplyMap.get(txnID));
-									pa.setAuditColumns(getUser());
-									payment.getApplied().add(pa);
+									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(), amountApplyMap
+											.get(txnID));
 								}
 							}
 							for (Refund txn : contractor.getRefunds()) {
 								if (txn.getId() == txnID) {
-									PaymentAppliedToRefund pa = new PaymentAppliedToRefund();
-									pa.setPayment(payment);
-									pa.setRefund(txn);
-									pa.setAmount(amountApplyMap.get(txnID));
-									pa.setAuditColumns(getUser());
-									payment.getApplied().add(pa);
+									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(), amountApplyMap
+											.get(txnID));
 								}
 							}
 						}
