@@ -98,6 +98,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 						// Only if the transaction succeeds
 						PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
+						payment.setQbSync(true);
 
 						paymentDAO.save(payment);
 						invoice.updateAmountApplied();

@@ -247,6 +247,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			}
 
 			payment.updateAmountApplied();
+			payment.setQbSync(true);
 			paymentDAO.save(payment);
 
 			String url = "PaymentDetail.action?payment.id=" + payment.getId();
