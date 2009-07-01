@@ -1,11 +1,19 @@
 package com.intuit.developer.adaptors;
 
+import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.Unmarshaller;
+
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.quickbooks.qbxml.QBXML;
+import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+import com.picsauditing.quickbooks.qbxml.ReceivePaymentQueryRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+import com.picsauditing.util.log.PicsLogger;
 
 public class GetPaymentsForUpdate extends PaymentAdaptor {
 
@@ -27,10 +35,31 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 	@Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
-		Map<String, ReceivePaymentRet> parsedResponses = parsePaymentQueryResponse(qbXml);
+		PicsLogger.log("Starting parseQbXml");
+		Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+		StringReader stringReader = new StringReader(qbXml);
+
+		QBXML xml = (QBXML) unmarshaller.unmarshal(stringReader);
+
+		QBXMLMsgsRs msgsRs = xml.getQBXMLMsgsRs();
+
+		List<Object> hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs = msgsRs
+				.getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
+
+		Map<String, ReceivePaymentRet> parsedResponses = new HashMap<String, ReceivePaymentRet>();
+		for (Object result : hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs) {
+
+			ReceivePaymentQueryRsType thisQueryResponse = (ReceivePaymentQueryRsType) result;
+
+			for (ReceivePaymentRet individualResponse : thisQueryResponse.getReceivePaymentRet()) {
+				String key = individualResponse.getTxnID();
+				parsedResponses.put(key, individualResponse);
+			}
+		}
+		PicsLogger.log("found " + parsedResponses.size() + " ReceivePaymentRet");
 
 		currentSession.getToUpdatePayment().clear();
-
 		for (String listId : parsedResponses.keySet()) {
 			ReceivePaymentRet qbPayment = parsedResponses.get(listId);
 			currentSession.getToUpdatePayment().put(listId, qbPayment);
@@ -47,6 +76,7 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 		}
 		
 		currentSession.getPossiblePaymentUpdates().clear();
+		PicsLogger.log("populated " + currentSession.getToUpdatePayment().size() + " getToUpdatePayment()");
 
 		return null;
 	}

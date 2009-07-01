@@ -25,6 +25,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentMod;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentModRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentModRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+import com.picsauditing.util.log.PicsLogger;
 
 public class UpdatePayments extends PaymentAdaptor {
 
@@ -32,10 +33,10 @@ public class UpdatePayments extends PaymentAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		if (currentSession.getToUpdatePayment().size() == 0) {
+			PicsLogger.log("no payments to process...exiting");
 			return super.getQbXml(currentSession);
 		}
 
-		Map<String, ReceivePaymentRet> data = currentSession.getToUpdatePayment();
 		currentSession.setCurrentBatch(new HashMap<String, String>());
 
 		Writer writer = makeWriter();
@@ -46,10 +47,11 @@ public class UpdatePayments extends PaymentAdaptor {
 		QBXMLMsgsRq request = factory.createQBXMLMsgsRq();
 		request.setOnError("continueOnError");
 
-		for (ReceivePaymentRet receivePaymentRet : data.values()) {
+		for (ReceivePaymentRet receivePaymentRet : currentSession.getToUpdatePayment().values()) {
 
 			Payment paymentJPA = paymentDao.findByListID(receivePaymentRet.getTxnID());
-
+			PicsLogger.log("Found Payment " + paymentJPA.getId() + " where txnID=" + receivePaymentRet.getTxnID());
+			
 			ReceivePaymentModRqType modRequest = factory.createReceivePaymentModRqType();
 			modRequest.setRequestID("update_payment_" + paymentJPA.getId());
 
