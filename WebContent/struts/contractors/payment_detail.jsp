@@ -45,7 +45,6 @@ fieldset.form ol {
 
 <s:form onsubmit="cleanPaymentMethods()">
 	<s:hidden name="id" />
-	<s:hidden name="button" id="button"/>
 	<s:if test="payment != null && payment.id > 0">
 		<s:hidden name="payment.id" />
 		<fieldset class="form bottom">
@@ -69,8 +68,10 @@ fieldset.form ol {
 				<li><label>Transaction ID:</label><s:property value="payment.transactionID" /></li>
 				<li><label>Type:</label><s:property value="payment.ccType" /></li>
 				<li><label>Number:</label><s:property value="payment.ccNumber" /></li>
-				<li><label>Status:</label><s:property value="transactionCondition" />
-				</li>
+				<li><label>Status:</label><s:property value="transactionCondition" /></li>
+				<s:if test="transactionCondition == 'pendingsettlement'">
+					<li><label>Void CC:</label><a class="remove" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=voidcc">Void</a></li>
+				</s:if>
 			</s:if>
 		</ol>
 		</td></tr></table>
@@ -93,22 +94,19 @@ fieldset.form ol {
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
-			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label>
-				<s:if test="creditCard == null">
-					N/A
-				</s:if>
-				<s:else>
+			<s:if test="creditCard == null">
+				<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>>
+					This contractor does not have a credit card on file. <a href="ContractorPaymentOptions.action?id=<s:property value="id"/>">Click here to enter a credit card</a>.
+				</li>
+			</s:if>
+			<s:else>
+				<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label>
 					<s:property value="creditCard.cardType" />
-				</s:else>
-			</li>
-			<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label>
-				<s:if test="creditCard == null">
-					N/A
-				</s:if>
-				<s:else>
+				</li>
+				<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label>
 					<s:property value="creditCard.cardNumber" />
-				</s:else>
-			</li>
+				</li>
+			</s:else>
 			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditCard.cardNumber" /></li>
 			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditCard.expirationDate" /></li>
 		</ol>
@@ -116,29 +114,6 @@ fieldset.form ol {
 		</fieldset>
 	</s:else>
 	
-	<s:if test="payment == null || !payment.status.void">
-		<div style="float:right; width: 390px; height: 30px">
-			<div id="toolbox" style="height: inherit">
-				<ul>
-					<s:if test="payment == null">
-						<li><a class="pay" href="#" onclick="submitPayment('Save');return false;">Pay</a></li>
-					</s:if>
-					<s:else>
-						<s:if test="payment.balance > 0">
-							<li><a class="save" href="#" onclick="submitPayment('Save');return false;">Save</a></li>
-						</s:if>
-						<s:if test="payment.qbListID == null">
-							<li><a class="cancel" href="PaymentDetail.action?payment.id=<s:property value="payment.id"/>&button=Delete">Delete</a></li>
-						</s:if>
-						<s:if test="transactionCondition == 'pendingsettlement'">
-							<li><a class="void" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=voidcc">Void</a></li>
-						</s:if>
-					</s:else>
-				</ul>
-			</div>
-		</div>
-	</s:if>
-
 	<s:if test="(payment.invoices.size + payment.refunds.size) > 0">
 		<table class="report" style="clear:none">
 			<thead>
@@ -213,6 +188,20 @@ fieldset.form ol {
 			<div><input id="autoapply" type="checkbox" checked="checked" onchange="autoApply();"> <label for="autoapply">Auto Apply</label></div>
 		</s:if>
 	</s:if>
+	
+	<div id="buttons" class="buttons">
+		<s:if test="payment == null">
+			<input type="submit" id="save_button" class="picsbutton positive" value="Collect Payment" name="button"/>
+		</s:if>
+		<s:else>
+			<s:if test="payment.balance > 0">
+				<input type="submit" id="save_button" class="picsbutton positive" value="Save" name="button"/>
+			</s:if>
+			<s:if test="payment.qbListID == null">
+				<a href="PaymentDetail.action?payment.id=<s:property value="payment.id"/>&button=Delete" class="picsbutton negative">Delete</a>
+			</s:if>
+		</s:else>
+	</div>
 </s:form>
 
 <s:if test="payment.balance > 0">

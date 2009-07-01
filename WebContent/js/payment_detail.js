@@ -1,9 +1,3 @@
-function submitPayment(option) {
-	$('button').value = option;
-	cleanPaymentMethods();
-	$('PaymentDetail').submit();
-}
-
 function cleanPaymentMethods() {
 	function cleanUp(e) {
 		if (!e.visible())
@@ -124,12 +118,10 @@ function updateRemainder() {
 	// hide save button if remainder < 0
 	var remainder = parseFloat($('payment_totalAmount').value) - parseFloat($('payment_amountApplied').innerHTML);
 	if (remainder < 0 || $('payment_totalAmount').value <= 0) {
-		$$('#toolbox a.pay').invoke('hide');
-		$$('#toolbox a.save').invoke('hide');
+		$('save_button').hide();
 	}
 	else {
-		$$('#toolbox a.pay').invoke('show');
-		$$('#toolbox a.save').invoke('show');
+		$('save_button').show();
 	}
 
 	$('payment_balance').innerHTML = remainder.toFixed(2);
