@@ -62,7 +62,6 @@ type = "<s:property value="type" />";
 <body
 	<s:if test="templateID != 0">onload="chooseTemplate(<s:property value="templateID"/>)"</s:if>
 >
-<img src="images/beta.jpg" width="98" height="100" style="float: right;" title="This is a new feature. Please send us your feedback or suggestions." />
 
 <h1>Email Wizard <span class="sub">Step 4: Write Email</span></h1>
 <div><a href="EmailWizard.action">&lt;&lt; Back to Steps 1-3 of the Email Wizard</a></div>
