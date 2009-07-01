@@ -37,7 +37,7 @@ display:none}
 	<s:set name="a" value="answerMap.get(#q.id)" />
 	<s:set name="paid" value="0" />
 	<s:set name="shaded" value="!#shaded" scope="action" />
-	<div id="node_<s:property value="#attr.paid"/>_<s:property value="#q.id"/>"
+	<div id="node_<s:property value="#q.id"/>"
 		class="question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
 </s:iterator>
 <h3 class="subCategory">Services Performed</h3>
