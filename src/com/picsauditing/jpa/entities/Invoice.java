@@ -74,7 +74,7 @@ public class Invoice extends Transaction {
 		this.notes = notes;
 	}
 
-	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE, CascadeType.MERGE })
+	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
 	public List<InvoiceItem> getItems() {
 		return items;
 	}
