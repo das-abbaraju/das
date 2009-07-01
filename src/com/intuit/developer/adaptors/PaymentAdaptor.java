@@ -27,10 +27,7 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 	protected PaymentDAO paymentDao = null;
 
 	
-	public Map<String, Map<String, Object>> parsePaymentQueryResponse(String qbXml,
-			Map<String, String> paymentTxnIdToInvoiceIdMap) throws Exception {
-
-		Map<String, Map<String, Object>> response = new HashMap<String, Map<String, Object>>();
+	public Map<String, ReceivePaymentRet> parsePaymentQueryResponse(String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -43,27 +40,14 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 		List<Object> hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs = msgsRs
 				.getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
 
+		Map<String, ReceivePaymentRet> response = new HashMap<String, ReceivePaymentRet>();
 		for (Object result : hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs) {
 
 			ReceivePaymentQueryRsType thisQueryResponse = (ReceivePaymentQueryRsType) result;
 
 			for (ReceivePaymentRet individualResponse : thisQueryResponse.getReceivePaymentRet()) {
-
-				Payment payment = new Payment();
-
-				try {
-					String paymentNumber = paymentTxnIdToInvoiceIdMap.get(individualResponse.getTxnID());
-
-					int refId = Integer.parseInt(paymentNumber);
-
-					payment.setId(refId);
-				} catch (Exception e) {
-					payment.setId(0);
-				}
-				response.put(new Integer(payment.getId()).toString(), new HashMap<String, Object>());
-				response.get(new Integer(payment.getId()).toString()).put("payment", payment);
-				response.get(new Integer(payment.getId()).toString()).put("TxnID", individualResponse.getTxnID());
-				response.get(new Integer(payment.getId()).toString()).put("paymentRet", individualResponse);
+				String key = individualResponse.getTxnID();
+				response.put(key, individualResponse);
 			}
 		}
 
@@ -82,7 +66,6 @@ public class PaymentAdaptor extends QBXmlAdaptor {
 
 		ReceivePaymentQueryRqType query = factory.createReceivePaymentQueryRqType();
 
-		// TODO add in the Payments
 		for (Payment payment : payments) {
 			query.getTxnID().add(payment.getQbListID());
 		}

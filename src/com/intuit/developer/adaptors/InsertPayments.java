@@ -10,6 +10,8 @@ import java.util.List;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.jboss.util.Strings;
+
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.PaymentApplied;
@@ -17,6 +19,7 @@ import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.quickbooks.qbxml.AppliedToTxnAdd;
+import com.picsauditing.quickbooks.qbxml.CreditCardTxnInfo;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
@@ -62,6 +65,7 @@ public class InsertPayments extends PaymentAdaptor {
 
 			addRequest.setReceivePaymentAdd(payment);
 
+			// Start Payment Insert/Update
 			payment.setCustomerRef(factory.createCustomerRef());
 			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
 
@@ -70,7 +74,6 @@ public class InsertPayments extends PaymentAdaptor {
 
 			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
 
-			payment.setRefNumber(paymentJPA.getCheckNumber());
 			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
@@ -85,11 +88,11 @@ public class InsertPayments extends PaymentAdaptor {
 				}
 			}
 			
+			payment.setMemo("PICS Payment# " + paymentJPA.getId());
 			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
 				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
 				payment.setRefNumber(paymentJPA.getCheckNumber());
-				payment.setMemo("Check number: " + paymentJPA.getCheckNumber());
 				
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
@@ -104,8 +107,8 @@ public class InsertPayments extends PaymentAdaptor {
 					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
 					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
-
-				payment.setMemo("CC number: " + paymentJPA.getCcNumber());
+				payment.setRefNumber(paymentJPA.getTransactionID());
+				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
 			}
 
 			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
@@ -123,8 +126,9 @@ public class InsertPayments extends PaymentAdaptor {
 //				createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
 //				createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 //						.toString());
-				
-				
+			}
+			if (paymentJPA.getInvoices().size() == 0) {
+				payment.setIsAutoApply("false");
 			}
 
 			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
@@ -168,9 +172,9 @@ public class InsertPayments extends PaymentAdaptor {
 				try {
 					String qbPaymentId = receivePaymentRet.getTxnID();
 
-					if (qbPaymentId != null && qbPaymentId.length() > 0) {
-						// TODO Update the Payment object
-						// connected.setQbPaymentListID(qbPaymentId);
+					if (!Strings.isEmpty(qbPaymentId)) {
+						connected.setQbListID(qbPaymentId);
+						connected.setQbSync(false);
 					}
 				} catch (Exception e) {
 				}
@@ -189,8 +193,7 @@ public class InsertPayments extends PaymentAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				// TODO Update the Payment object
-				// connected.setQbPaymentListID(null);
+				connected.setQbListID(null);
 			}
 
 			getPaymentDao().save(connected);

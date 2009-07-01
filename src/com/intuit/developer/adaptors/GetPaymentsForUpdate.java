@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
 
 public class GetPaymentsForUpdate extends PaymentAdaptor {
 
@@ -27,21 +27,25 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 	@Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
-		Map<String, Map<String, Object>> parsedResponses = parsePaymentQueryResponse(qbXml, currentSession
-				.getCurrentBatch());
+		Map<String, ReceivePaymentRet> parsedResponses = parsePaymentQueryResponse(qbXml);
 
-		currentSession.getToUpdate().clear();
+		currentSession.getToUpdatePayment().clear();
 
 		for (String listId : parsedResponses.keySet()) {
-			Map<String, Object> dataForThisListId = parsedResponses.get(listId);
-
-			Invoice invoice = (Invoice) dataForThisListId.get("invoice");
-
-			if (invoice != null && invoice.getId() != 0 && currentSession.getPossiblePaymentUpdates().contains(invoice)) {
-				currentSession.getToUpdate().put(listId, dataForThisListId);
-			}
+			ReceivePaymentRet qbPayment = parsedResponses.get(listId);
+			currentSession.getToUpdatePayment().put(listId, qbPayment);
 		}
-
+		
+		// It's possible that we may have a Payment that was deleted in QB but not in PICS
+		// We should notify someone so we can remove it from PICS or insert it in QB again
+		if(currentSession.getPossiblePaymentUpdates().size() != parsedResponses.size()) {
+			StringBuffer paymentIDs = new StringBuffer();
+			for(Payment payment : currentSession.getPossiblePaymentUpdates())
+				paymentIDs.append(payment.getId()).append(",");
+			
+			currentSession.getErrors().add("A PICS Payment was deleted from QuickBooks. Check these Payment IDS: " + paymentIDs.toString());
+		}
+		
 		currentSession.getPossiblePaymentUpdates().clear();
 
 		return null;

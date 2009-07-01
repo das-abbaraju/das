@@ -67,6 +67,13 @@ public class PaymentDAO extends PicsDAO {
 		return em.find(Payment.class, id);
 	}
 
+	public Payment findByListID(String listID) {
+		List<Payment> list = findWhere("qbListID = '" + listID + "'", 1);
+		if (list.size() > 0)
+			return list.get(0);
+		return null;
+	}
+
 	public List<Payment> findWhere(String where) {
 		return findWhere(where, 0);
 	}

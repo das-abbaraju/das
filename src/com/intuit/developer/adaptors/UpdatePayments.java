@@ -13,12 +13,11 @@ import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.quickbooks.qbxml.AppliedToTxnMod;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.PaymentMethodRef;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
@@ -32,11 +31,11 @@ public class UpdatePayments extends PaymentAdaptor {
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		if (currentSession.getToUpdate().size() == 0) {
+		if (currentSession.getToUpdatePayment().size() == 0) {
 			return super.getQbXml(currentSession);
 		}
 
-		Map<String, Map<String, Object>> data = currentSession.getToUpdate();
+		Map<String, ReceivePaymentRet> data = currentSession.getToUpdatePayment();
 		currentSession.setCurrentBatch(new HashMap<String, String>());
 
 		Writer writer = makeWriter();
@@ -47,16 +46,9 @@ public class UpdatePayments extends PaymentAdaptor {
 		QBXMLMsgsRq request = factory.createQBXMLMsgsRq();
 		request.setOnError("continueOnError");
 
-		Map<String, Object> thisPaymentParms = null;
+		for (ReceivePaymentRet receivePaymentRet : data.values()) {
 
-		for (String thePk : data.keySet()) {
-
-			thisPaymentParms = data.get(thePk);
-
-			Payment paymentJPA = (Payment) thisPaymentParms.get("payment");
-			paymentJPA = paymentDao.find(paymentJPA.getId());
-
-			ReceivePaymentRet paymentRet = (ReceivePaymentRet) thisPaymentParms.get("paymentRet");
+			Payment paymentJPA = paymentDao.findByListID(receivePaymentRet.getTxnID());
 
 			ReceivePaymentModRqType modRequest = factory.createReceivePaymentModRqType();
 			modRequest.setRequestID("update_payment_" + paymentJPA.getId());
@@ -66,9 +58,10 @@ public class UpdatePayments extends PaymentAdaptor {
 			ReceivePaymentMod payment = factory.createReceivePaymentMod();
 			modRequest.setReceivePaymentMod(payment);
 
-			payment.setTxnID(paymentRet.getTxnID());
-			payment.setEditSequence(paymentRet.getEditSequence());
+			payment.setTxnID(receivePaymentRet.getTxnID());
+			payment.setEditSequence(receivePaymentRet.getEditSequence());
 
+			// Start Payment Insert/Update
 			payment.setCustomerRef(factory.createCustomerRef());
 			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
 
@@ -79,24 +72,28 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
-			payment.setPaymentMethodRef(new PaymentMethodRef());
-
 			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
 			payment.setDepositToAccountRef(factory.createDepositToAccountRef());
 
-			if (paymentJPA.getPaymentMethod().equals(PaymentMethod.Check)) {
+			boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
+			String cardType = null;
+			if (!isCheck) {
+				cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
+				if (cardType == null || cardType.equals("") || cardType.equals("Unknown")) {
+					isCheck = true;
+				}
+			}
+			
+			payment.setMemo("PICS Payment# " + paymentJPA.getId());
+			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
 				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
-				payment.setMemo("Check number: " + paymentJPA.getCheckNumber());
+				payment.setRefNumber(paymentJPA.getCheckNumber());
 
 			} else {
-
-				String cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
-
-				if (cardType.equals("") || cardType.equals("Unknown")) {
-					payment.getPaymentMethodRef().setFullName("Check");
-					payment.getDepositToAccountRef().setFullName("Undeposited Funds");
-				} else if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
+				payment.getPaymentMethodRef().setFullName("Braintree Credit");
+				
+				if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
 					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
 				} else if (cardType.equals("American Express")) {
@@ -106,9 +103,8 @@ public class UpdatePayments extends PaymentAdaptor {
 					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
 					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
-
-				payment.getPaymentMethodRef().setFullName("Braintree Credit");
-				payment.setMemo(paymentJPA.getCcNumber());
+				payment.setRefNumber(paymentJPA.getTransactionID());
+				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
 			}
 
 			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
@@ -120,6 +116,7 @@ public class UpdatePayments extends PaymentAdaptor {
 				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 						.toString());
 			}
+			
 		}
 
 		xml.setQBXMLMsgsRq(request);
@@ -150,24 +147,16 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			ReceivePaymentRet receivePaymentRet = thisQueryResponse.getReceivePaymentRet();
 
-			String thePk = currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID());
-
-			Map<String, Object> thisCustomerParms = currentSession.getToUpdate().get(thePk);
-			currentSession.getToUpdate().remove(thePk);
-
-			Payment paymentJPA = (Payment) thisCustomerParms.get("payment");
-			paymentJPA = getPaymentDao().find(paymentJPA.getId());
+			currentSession.getToUpdatePayment().remove(receivePaymentRet.getTxnID());
 
 			try {
 				if (receivePaymentRet == null)
 					throw new Exception("no invoice object");
 
-				String paymentIdString = receivePaymentRet.getRefNumber();
-
-				int paymentId = Integer.parseInt(paymentIdString);
-
-				if (paymentId != 0) {
+				Payment paymentJPA = getPaymentDao().findByListID(receivePaymentRet.getTxnID());
+				if (paymentJPA != null) {
 					paymentJPA.setQbSync(false);
+					getPaymentDao().save(paymentJPA);
 				}
 
 			} catch (Exception e) {
@@ -187,8 +176,6 @@ public class UpdatePayments extends PaymentAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 			}
-
-			getPaymentDao().save(paymentJPA);
 		}
 
 		return null;

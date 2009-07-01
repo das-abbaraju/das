@@ -9,6 +9,7 @@ import java.util.Vector;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
 
 public class QBSession {
 
@@ -25,6 +26,7 @@ public class QBSession {
 	private List<Invoice> possibleInvoiceUpdates = new Vector<Invoice>();
 	private List<Payment> possiblePaymentUpdates = new Vector<Payment>();
 	private Map<String, Map<String, Object>> toUpdate = new HashMap<String, Map<String, Object>>();
+	private Map<String, ReceivePaymentRet> toUpdatePayment = new HashMap<String, ReceivePaymentRet>();
 
 	private Map<String, String> currentBatch = new HashMap<String, String>();
 
@@ -134,4 +136,13 @@ public class QBSession {
 	public void setPossiblePaymentUpdates(List<Payment> possiblePaymentUpdates) {
 		this.possiblePaymentUpdates = possiblePaymentUpdates;
 	}
+
+	public Map<String, ReceivePaymentRet> getToUpdatePayment() {
+		return toUpdatePayment;
+	}
+
+	public void setToUpdatePayment(Map<String, ReceivePaymentRet> toUpdatePayment) {
+		this.toUpdatePayment = toUpdatePayment;
+	}
+	
 }
