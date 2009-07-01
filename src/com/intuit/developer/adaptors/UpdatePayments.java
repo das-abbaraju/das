@@ -49,7 +49,7 @@ public class UpdatePayments extends PaymentAdaptor {
 
 		for (ReceivePaymentRet receivePaymentRet : currentSession.getToUpdatePayment().values()) {
 
-			Payment paymentJPA = paymentDao.findByListID(receivePaymentRet.getTxnID());
+			Payment paymentJPA = getPaymentDao().findByListID(receivePaymentRet.getTxnID());
 			PicsLogger.log("Found Payment " + paymentJPA.getId() + " where txnID=" + receivePaymentRet.getTxnID());
 			
 			ReceivePaymentModRqType modRequest = factory.createReceivePaymentModRqType();
