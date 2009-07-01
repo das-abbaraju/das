@@ -181,6 +181,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						refund.setCcNumber(payment.getCcNumber());
 						refund.setTransactionID(payment.getTransactionID());
 					}
+					refund.setQbSync(true);
 					paymentDAO.save(refund);
 
 					PaymentAppliedToRefund pr = new PaymentAppliedToRefund();
@@ -202,7 +203,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 
 				if (button.equals("unapply")) {
-					// Find the Invoice or Refind # passed through the
+					// Find the Invoice or Refund # passed through the
 					// amountApplyMap and remove it
 					for (int txnID : amountApplyMap.keySet()) {
 						Iterator<PaymentAppliedToInvoice> iterInvoice = payment.getInvoices().iterator();
