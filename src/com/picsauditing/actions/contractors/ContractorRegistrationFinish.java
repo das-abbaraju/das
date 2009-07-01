@@ -10,6 +10,7 @@ import java.util.List;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -18,6 +19,7 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -28,6 +30,8 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
@@ -39,6 +43,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 	private InvoiceDAO invoiceDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
+	private PaymentDAO paymentDAO;
 	private AppPropertyDAO appPropDAO;
 	private NoteDAO noteDAO;
 	private InvoiceItemDAO invoiceItemDAO;
@@ -50,11 +55,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private boolean complete = false;
 
 	public ContractorRegistrationFinish(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDAO, NoteDAO noteDAO,
-			InvoiceItemDAO invoiceItemDAO, AuditBuilder auditBuilder) {
+			InvoiceDAO invoiceDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO, AppPropertyDAO appPropDAO,
+			NoteDAO noteDAO, InvoiceItemDAO invoiceItemDAO, AuditBuilder auditBuilder) {
 		super(accountDao, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
+		this.paymentDAO = paymentDAO;
 		this.appPropDAO = appPropDAO;
 		this.noteDAO = noteDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
@@ -75,19 +81,36 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		if ("Complete My Registration".equals(button)) {
 			// should never be possible
-			if (invoice != null) {
+			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 				if (contractor.isCcOnFile()) {
 					paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 					paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
 					try {
 						// TODO BEFORE RELEASE TREVOR!!!
-						//paymentService.processPayment(invoice);
+						// paymentService.processPayment(invoice);
+						Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 
-						CreditCard cc = paymentService.getCreditCard(id);
-						// invoice.setCcNumber(cc.getCardNumber());
+						paymentService.processPayment(payment);
+						
+						CreditCard creditCard = paymentService.getCreditCard(id);
+						payment.setCcNumber(creditCard.getCardNumber());
 
-						payInvoice();
+						// Only if the transaction succeeds
+						PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
+
+						paymentDAO.save(payment);
+						invoice.updateAmountApplied();
+
+						// Activate the contractor
+						if (!contractor.isActiveB()) {
+							for (InvoiceItem item : invoice.getItems()) {
+								if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+									contractor.setActive('Y');
+									contractor.setAuditColumns(getUser());
+								}
+							}
+						}
 
 						contractor.syncBalance();
 
@@ -205,20 +228,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			invoice.setTotalAmount(BigDecimal.ZERO);
 			for (InvoiceItem item : invoice.getItems())
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
-		}
-	}
-
-	private void payInvoice() {
-		invoice.markPaid(getUser());
-		invoiceDAO.save(invoice);
-
-		if (!contractor.isActiveB()) {
-			for (InvoiceItem item : invoice.getItems()) {
-				if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
-					contractor.setActive('Y');
-					contractor.setAuditColumns(getUser());
-				}
-			}
 		}
 	}
 

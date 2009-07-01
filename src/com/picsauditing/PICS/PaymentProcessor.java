@@ -6,9 +6,9 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
+import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.quickbooks.qbxml.PayeeEntityRef;
 
 public class PaymentProcessor {
 	public static void ApplyPaymentToInvoice(Payment payment, Invoice invoice, User user, BigDecimal amount) {
@@ -18,8 +18,10 @@ public class PaymentProcessor {
 		pa.setAmount(amount);
 		pa.setAuditColumns(user);
 		payment.getApplied().add(pa);
+
+		payment.updateAmountApplied();
 	}
-	
+
 	public static void ApplyPaymentToRefund(Payment payment, Refund refund, User user, BigDecimal amount) {
 		PaymentAppliedToRefund pa = new PaymentAppliedToRefund();
 		pa.setPayment(payment);
@@ -27,15 +29,17 @@ public class PaymentProcessor {
 		pa.setAmount(amount);
 		pa.setAuditColumns(user);
 		payment.getApplied().add(pa);
+
+		payment.updateAmountApplied();
 	}
-	
-	public static Payment PayOffInvoice(Invoice invoice, User user) {
+
+	public static Payment PayOffInvoice(Invoice invoice, User user, PaymentMethod paymentMethod) {
 		Payment payment = new Payment();
-		payment.setAmountApplied(invoice.getBalance());
+		payment.setAccount(invoice.getAccount());
+		payment.setTotalAmount(invoice.getBalance());
+		payment.setPaymentMethod(paymentMethod);
 		payment.setAuditColumns(user);
-		
-		ApplyPaymentToInvoice(payment, invoice, user, invoice.getBalance());
-		
+
 		return payment;
 	}
 }
