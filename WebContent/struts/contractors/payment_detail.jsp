@@ -56,7 +56,7 @@ fieldset.form ol {
 			<li><label>Amount:</label>$<s:property value="payment.totalAmount" /><s:hidden id="payment_totalAmount" value="%{payment.totalAmount}"/></li>
 			<s:if test="payment.status.unpaid">
 				<li><label>Applied:</label>$<span id="payment_amountApplied"><s:property value="payment.amountApplied"/></span></li>
-				<li><label>Remainder:</label>$<span id="payment_balance"><s:property value="payment.balance"/></span>
+				<li><label>Credit:</label>$<span id="payment_balance"><s:property value="payment.balance"/></span>
 			</s:if>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
@@ -84,7 +84,7 @@ fieldset.form ol {
 			<li><label>Date:</label><s:date name="new java.util.Date()" format="M/d/yy" /></li>
 			<li><label>Payment Amount:</label>$<s:textfield id="payment_totalAmount" name="payment.totalAmount" value="0.00" size="7" onchange="changeTotal()"/></li>
 			<li><label>Applied:</label>$<span id="payment_amountApplied">0.00</span></li>
-			<li><label>Remainder:</label>$<span id="payment_balance">0.00</span>
+			<li><label>Credit:</label>$<span id="payment_balance">0.00</span>
 				<input type="button" value="Clear" onclick="calculateTotalFromApplied()"></li>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
