@@ -34,6 +34,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	private List<ContractorOperator> currentOperators = null;
 	private List<OperatorAccount> searchResults = null;
+	
+	private String msg = null;
 
 	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger,
@@ -162,6 +164,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 
 }

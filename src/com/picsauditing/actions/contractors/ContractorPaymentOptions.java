@@ -59,8 +59,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			if (contractor.getOperators().size() == 1) {
 				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
 			} else {
-				addActionError("Please select the operator that referred you to PICS before continuing.");
-				return "requested";
+				this.redirect("ContractorFacilities.action?id=" + contractor.getId() + "&msg=Please select the operator that referred you to PICS before continuing.");
+				return BLANK;
 			}
 		}
 

@@ -101,6 +101,9 @@
 </s:else>
 
 <s:if test="permissions.contractor && !contractor.activeB">
+	<s:if test="msg != null && msg.length() > 0">
+		<div class="error"><s:property value="msg"/></div>
+	</s:if>
 	<div id="next_button" class="buttons" style="float: left;">
 		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="picsbutton positive">Next &gt;&gt;</a>
 		<div class="clear"></div>
