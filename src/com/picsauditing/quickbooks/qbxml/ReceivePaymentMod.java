@@ -98,8 +98,8 @@ public class ReceivePaymentMod {
     protected DepositToAccountRef depositToAccountRef;
     @XmlElement(name = "CreditCardTxnInfoMod")
     protected CreditCardTxnInfoMod creditCardTxnInfoMod;
-    @XmlElement(name = "AppliedToTxnMod")
-    protected List<AppliedToTxnMod> appliedToTxnMod;
+    @XmlElement(name = "AppliedToTxnMod", nillable = false, required = true)
+    protected List<AppliedToTxnMod> appliedToTxnMod = new ArrayList<AppliedToTxnMod>();
 
     /**
      * Gets the value of the txnID property.
