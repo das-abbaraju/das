@@ -190,6 +190,14 @@ input[type=submit] {
 							</pics:permission>
 							
 							<br />
+							<span class="small">
+							<s:if test="payment.paymentMethod.creditCard">
+								<s:property value="payment.ccType"/>
+							</s:if>
+							<s:else>
+								Check #<s:property value="payment.checkNumber"/>
+							</s:else>
+							</span>
 							<span class="big">($<s:property value="amount" />) USD</span>
 							<br />
 						</s:iterator></td>
