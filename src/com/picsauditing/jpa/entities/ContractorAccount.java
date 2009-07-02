@@ -531,7 +531,7 @@ public class ContractorAccount extends Account {
 	@Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices())
-			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && !invoice.getStatus().isPaid()
+			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()
 					&& invoice.getDueDate() != null && invoice.getDueDate().before(new Date()))
 				return true;
 		return false;
