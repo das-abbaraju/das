@@ -35,7 +35,6 @@ display:none}
 <s:iterator value="infoQuestions">
 	<s:set name="q" value="[0]" />
 	<s:set name="a" value="answerMap.get(#q.id)" />
-	<s:set name="paid" value="0" />
 	<s:set name="shaded" value="!#shaded" scope="action" />
 	<div id="node_<s:property value="#q.id"/>"
 		class="question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
@@ -49,7 +48,6 @@ Please select the services your company performs<br>
 	<s:set name="q" value="[0]" />
 	<s:if test="#q.visible">
 		<s:set name="a" value="answerMap.get(#q.id)" />
-		<s:set name="paid" value="0" />
 		<s:set name="shaded" value="!#shaded" scope="action" />
 		<div id="node_<s:property value="#q.id"/>"
 			class="question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
