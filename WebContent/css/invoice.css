@@ -33,6 +33,10 @@ table.allborder th.big, table.allborder td.big, table.allborder span.big {
 	font-weight: bold;
 }
 
+table.allborder th.big, table.allborder td.big, table.allborder span.small {
+	font-size: 12px;
+}
+
 table.allborder th.center, table.allborder td.center {
 	text-align: center;
 }
