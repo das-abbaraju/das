@@ -17,6 +17,7 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.Payment;
@@ -87,6 +88,23 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.updateAmountApplied();
 			for (PaymentAppliedToInvoice ip : payment.getInvoices())
 				ip.getInvoice().updateAmountApplied();
+
+			// Activate the contractor if an activation invoice is fully applied
+			// (this will occur on the redirect)
+			if (!contractor.isActiveB()) {
+				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
+					if (ip.getInvoice().getStatus().isPaid()) {
+						for (InvoiceItem item : ip.getInvoice().getItems()) {
+							if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
+								contractor.setActive('Y');
+								contractor.setAuditColumns(getUser());
+								accountDao.save(contractor);
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 
 		if (button != null) {
@@ -114,25 +132,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					} catch (Exception e) {
 						addNote("Credit Card transaction failed: " + e.getMessage());
 						this.addActionError("Failed to charge credit card. " + e.getMessage());
+						return SUCCESS;
 					}
 
-				} else {
-					// Check
-
-				}
-
-				// if (invoice.getStatus().isPaid()) {
-				// if (!contractor.isActiveB()) {
-				// for (InvoiceItem item : invoice.getItems()) {
-				// if (item.getInvoiceFee().getFeeClass().equals("Membership"))
-				// {
-				// contractor.setActive('Y');
-				// contractor.setAuditColumns(getUser());
-				// }
-				// }
-				// }
-				// }
-
+				} // Do nothing for checks
 			}
 
 			String message = null;
