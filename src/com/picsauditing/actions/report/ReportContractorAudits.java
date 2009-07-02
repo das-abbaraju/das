@@ -124,7 +124,7 @@ public class ReportContractorAudits extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("percentComplete", "Percent Complete", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("percentVerified", "Percent Verified", ExcelCellType.Integer));
 		if (auditTypeClass.isPolicy() && permissions.isOperator()) {
-			excelSheet.addColumn(new ExcelColumn("CaoStatus", "Op Status"));
+			excelSheet.addColumn(new ExcelColumn("caoStatus", "Op Status"));
 			excelSheet.addColumn(new ExcelColumn("notes", "Notes"));
 		}
 
