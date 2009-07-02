@@ -80,16 +80,18 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		this.resetActiveAudits();
 
 		if ("Complete My Registration".equals(button)) {
-			// should never be possible
-			if (!contractor.getNewMembershipLevel().isFree()) {
+
+			if (contractor.getNewMembershipLevel().isFree()) {
+				// Free accounts should just be activated
+				contractor.setActive('Y');
+				contractor.setAuditColumns(getUser());
+			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcOnFile()) {
 						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
 						try {
-							// TODO BEFORE RELEASE TREVOR!!!
-							// paymentService.processPayment(invoice);
 							Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(),
 									PaymentMethod.CreditCard);
 
@@ -126,16 +128,13 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							return SUCCESS;
 						}
 					}
+
 					// Send a receipt to the contractor
 					try {
 						emailInvoice();
-					} catch (Exception e) {
-						// TODO: handle exception
+					} catch (Exception theyJustDontGetAnEmail) {
 					}
 				}
-
-			} else {
-				contractor.setActive('Y');
 			}
 
 			complete = true;
