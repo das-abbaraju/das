@@ -415,7 +415,7 @@ public class AuditBuilder {
 			if (conAudit.getAuditStatus().isExempt())
 				return;
 		} else if (conAudit.getAuditType().isAnnualAddendum()) {
-			if (!conAudit.getAuditStatus().isPending() || !conAudit.getAuditStatus().isIncomplete())
+			if (!conAudit.getAuditStatus().isPending() && !conAudit.getAuditStatus().isIncomplete())
 				return;
 		} else {
 			// Other Audits should only consider Pending
