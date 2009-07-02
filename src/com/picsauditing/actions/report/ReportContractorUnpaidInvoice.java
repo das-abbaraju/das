@@ -9,8 +9,8 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class ReportContractorUnpaidInvoice extends ReportAccount {
-	protected int invoiceID;
-	protected TransactionStatus transactionStatus;
+	protected Integer invoiceID;
+	protected String transactionStatus = "All";
 
 
 	@Override
@@ -20,7 +20,7 @@ public class ReportContractorUnpaidInvoice extends ReportAccount {
 
 	@Override
 	public void run(SelectSQL sql) throws SQLException, IOException {
-		if (filterOn(getFilter().getAccountName(), "- Name - ") || invoiceID > 0) {
+		if (filterOn(getFilter().getAccountName(), "- Name - ") || invoiceID != null) {
 			super.run(sql);
 		}
 	}
@@ -34,13 +34,12 @@ public class ReportContractorUnpaidInvoice extends ReportAccount {
 		sql.addField("ROUND(i.totalAmount) as totalAmount");
 		sql.addWhere("i.totalAmount > 0");
 		sql.addField("i.dueDate");
+		sql.addField("i.status");
 		sql.addJoin("JOIN invoice i ON i.accountID = c.id");
-		if(transactionStatus == null)
-			sql.addWhere("i.status = 'Unpaid'");
-		else
+		if(filterOn(transactionStatus, "All"))
 			sql.addWhere("i.status = '"+ transactionStatus +"'");
 		sql.addWhere("i.tableType = 'I'");
-		if (invoiceID > 0)
+		if (invoiceID != null)
 			sql.addWhere("i.id = " + invoiceID);
 
 		sql.addOrderBy("i.dueDate DESC");
@@ -54,11 +53,11 @@ public class ReportContractorUnpaidInvoice extends ReportAccount {
 		this.invoiceID = invoiceID;
 	}
 
-	public TransactionStatus getTransactionStatus() {
+	public String getTransactionStatus() {
 		return transactionStatus;
 	}
 
-	public void setTransactionStatus(TransactionStatus transactionStatus) {
+	public void setTransactionStatus(String transactionStatus) {
 		this.transactionStatus = transactionStatus;
 	}
 	

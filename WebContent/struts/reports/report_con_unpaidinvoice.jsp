@@ -35,11 +35,11 @@
 		<br clear="all"/>
 		<div class="filterOption">
 			Invoice ID :
-			<s:textfield cssClass="forms" name="invoiceID" size="15" /> 
+			<s:textfield cssClass="forms" name="invoiceID" size="15" onfocus="clearText(this)"/> 
 		</div>
 
 		<div class="filterOption">
-			<s:select list="transactionStatusList" name="transactionStatus" cssClass="forms"/> 
+			<s:radio list="#{'All':'All','Paid':'Paid','Unpaid':'Unpaid','Void':'Void'}" name="transactionStatus" cssClass="forms" theme="pics"/> 
 		</div>
 		<div>
 			<input type="submit" class="picsbutton positive" name="button" value="Search"/>
@@ -61,6 +61,7 @@
 		<th><a href="javascript: changeOrderBy('form1','totalAmount DESC');">Invoice Total</a></th>
 		<th>Balance</th>
 		<th><a href="javascript: changeOrderBy('form1','dueDate');">Due Date</a></th>
+		<th>Status</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -70,10 +71,22 @@
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
 			<td><s:property value="get('address')"/><br/>
 				<s:property value="get('city')"/>, <s:property value="get('state')"/> <s:property value="get('zip')"/></td>
-			<td class="center"><a href="PaymentDetail.action?id=<s:property value="get('id')"/>"><s:property value="get('invoiceId')"/></a></td>
+			<td class="center">
+			<s:if test="get('status') == 'Unpaid'">
+				<a href="PaymentDetail.action?id=<s:property value="get('id')"/>">
+					<s:property value="get('invoiceId')"/>
+				</a>
+			</s:if>
+			<s:else>
+				<a href="InvoiceDetail.action?invoice.id=<s:property value="get('invoiceId')"/>">
+					<s:property value="get('invoiceId')"/>
+				</a>
+			</s:else>
+			</td>
 			<td class="right">$<s:property value="get('totalAmount')"/></td>
 			<td class="right">$<s:property value="get('totalAmount')- get('amountApplied')"/></td>
 			<td class="right"><s:date name="get('dueDate')" format="M/d/yy"/></td>
+			<td><s:property value="get('status')"/></td>
 		</tr>
 	</s:iterator>
 	</tbody>
