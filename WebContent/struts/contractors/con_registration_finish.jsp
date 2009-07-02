@@ -77,19 +77,20 @@
 						</s:iterator>
 
 						<br clear="all"/>
-						
-						<h3>Invoice Summary</h3>
-						<br clear="all"/>
-						<s:set name="i" value="invoice"/>
-						<s:include value="con_invoice_embed.jsp"/>
-						<br clear="all"/>
-						<input type="submit" class="picsbutton positive" value="Complete My Registration" name="button"/>
-						<s:if test="contractor.paymentMethod.creditCard">
-							<div id="info">
-								Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be mailed to you.
-							</div>
+						<s:if test="!contractor.newMembershipLevel.free">
+							<h3>Invoice Summary</h3>
+							<br clear="all"/>
+							<s:set name="i" value="invoice"/>
+							<s:include value="con_invoice_embed.jsp"/>
+							<br clear="all"/>
+							<s:if test="contractor.paymentMethod.creditCard">
+								<div id="info">
+									Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be mailed to you.
+								</div>
+							</s:if>
 						</s:if>
 						
+						<input type="submit" class="picsbutton positive" value="Complete My Registration" name="button"/>
 					</div>
 				</s:form>
 			</div>

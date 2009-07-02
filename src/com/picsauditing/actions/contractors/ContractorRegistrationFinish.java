@@ -81,113 +81,122 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		if ("Complete My Registration".equals(button)) {
 			// should never be possible
-			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
-				if (contractor.isCcOnFile()) {
-					paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
-					paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
+			if (!contractor.getNewMembershipLevel().isFree()) {
+				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+					if (contractor.isCcOnFile()) {
+						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
+						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
-					try {
-						// TODO BEFORE RELEASE TREVOR!!!
-						// paymentService.processPayment(invoice);
-						Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
+						try {
+							// TODO BEFORE RELEASE TREVOR!!!
+							// paymentService.processPayment(invoice);
+							Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(),
+									PaymentMethod.CreditCard);
 
-						paymentService.processPayment(payment);
-						
-						CreditCard creditCard = paymentService.getCreditCard(id);
-						payment.setCcNumber(creditCard.getCardNumber());
+							paymentService.processPayment(payment);
 
-						// Only if the transaction succeeds
-						PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
-						payment.setQbSync(true);
+							CreditCard creditCard = paymentService.getCreditCard(id);
+							payment.setCcNumber(creditCard.getCardNumber());
 
-						paymentDAO.save(payment);
-						invoice.updateAmountApplied();
+							// Only if the transaction succeeds
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
+									.getTotalAmount());
+							payment.setQbSync(true);
 
-						// Activate the contractor
-						if (!contractor.isActiveB()) {
-							for (InvoiceItem item : invoice.getItems()) {
-								if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
-									contractor.setActive('Y');
-									contractor.setAuditColumns(getUser());
+							paymentDAO.save(payment);
+							invoice.updateAmountApplied();
+
+							// Activate the contractor
+							if (!contractor.isActiveB()) {
+								for (InvoiceItem item : invoice.getItems()) {
+									if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+										contractor.setActive('Y');
+										contractor.setAuditColumns(getUser());
+									}
 								}
 							}
+
+							contractor.syncBalance();
+
+							addNote("Credit Card transaction completed and emailed the receipt for $"
+									+ invoice.getTotalAmount());
+						} catch (Exception e) {
+							addNote("Credit Card transaction failed: " + e.getMessage());
+							this.addActionError("Failed to charge credit card. " + e.getMessage());
+							return SUCCESS;
 						}
-
-						contractor.syncBalance();
-
-						addNote("Credit Card transaction completed and emailed the receipt for $"
-								+ invoice.getTotalAmount());
+					}
+					// Send a receipt to the contractor
+					try {
+						emailInvoice();
 					} catch (Exception e) {
-						addNote("Credit Card transaction failed: " + e.getMessage());
-						this.addActionError("Failed to charge credit card. " + e.getMessage());
-						return SUCCESS;
+						// TODO: handle exception
 					}
 				}
 
-				complete = true;
-
-				// Send a receipt to the contractor
-				try {
-					emailInvoice();
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
+			} else {
+				contractor.setActive('Y');
 			}
+
+			complete = true;
+
 		} else if (!contractor.isActiveB()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			newFee = invoiceFeeDAO.find(newFee.getId());
 			contractor.setNewMembershipLevel(newFee);
 
-			// There are no unpaid invoices - we should create a new one
-			// (could be a re-activation)
-			if (invoice == null) {
-				invoice = new Invoice();
-				invoice.setStatus(TransactionStatus.Unpaid);
-				List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
-				invoice.setItems(items);
-				invoice.setAccount(contractor);
-				invoice.setAuditColumns(new User(User.SYSTEM));
-				invoice.setDueDate(new Date());
+			if (!contractor.getNewMembershipLevel().isFree()) {
+				// There are no unpaid invoices - we should create a new one
+				// (could be a re-activation)
+				if (invoice == null) {
+					invoice = new Invoice();
+					invoice.setStatus(TransactionStatus.Unpaid);
+					List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
+					invoice.setItems(items);
+					invoice.setAccount(contractor);
+					invoice.setAuditColumns(new User(User.SYSTEM));
+					invoice.setDueDate(new Date());
 
-				for (InvoiceItem item : items) {
-					item.setInvoice(invoice);
-					item.setAuditColumns(new User(User.SYSTEM));
-				}
+					for (InvoiceItem item : items) {
+						item.setInvoice(invoice);
+						item.setAuditColumns(new User(User.SYSTEM));
+					}
 
-				updateTotals();
-				this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
-						LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
-
-			} else {
-
-				if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
-					changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
 					updateTotals();
-					this.addNote(contractor, "Modified current invoice, changed to $" + invoice.getTotalAmount(),
-							NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+					this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
+							LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
 
+				} else {
+
+					if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
+						changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
+						updateTotals();
+						this.addNote(contractor, "Modified current invoice, changed to $" + invoice.getTotalAmount(),
+								NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+
+					}
 				}
-			}
 
-			if (invoice.getStatus().isUnpaid()) {
+				if (invoice.getStatus().isUnpaid()) {
 
-				if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
-					invoice.setQbSync(true);
+					if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
+						invoice.setQbSync(true);
 
-				String notes = "Thank you for your business.";
-				AppProperty prop = appPropDAO.find("invoice_comment");
-				if (prop != null) {
-					notes = prop.getValue();
+					String notes = "Thank you for your business.";
+					AppProperty prop = appPropDAO.find("invoice_comment");
+					if (prop != null) {
+						notes = prop.getValue();
+					}
+					invoice.setNotes(notes);
+
+					invoice = invoiceDAO.save(invoice);
+
+					if (!contractor.getInvoices().contains(invoice))
+						contractor.getInvoices().add(invoice);
+
+					contractor.syncBalance();
+					accountDao.save(contractor);
 				}
-				invoice.setNotes(notes);
-
-				invoice = invoiceDAO.save(invoice);
-
-				if (!contractor.getInvoices().contains(invoice))
-					contractor.getInvoices().add(invoice);
-
-				contractor.syncBalance();
-				accountDao.save(contractor);
 			}
 		}
 
