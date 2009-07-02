@@ -215,6 +215,7 @@ fieldset.form ol {
 	</ol>
 	<div>
 		<input type="submit" class="picsbutton" value="Refund" name="button" />
+		<input type="submit" class="picsbutton" value="Refund Without Charge" name="button" />
 	</div>
 	</fieldset>
 	</s:form>

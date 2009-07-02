@@ -161,7 +161,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 			}
-			if (button.equalsIgnoreCase("Refund")) {
+			if (button.startsWith("Refund")) {
 				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("You can't refund negative amounts");
 					return SUCCESS;
@@ -177,23 +177,18 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setAccount(contractor);
 					refund.setAuditColumns(getUser());
 					refund.setStatus(TransactionStatus.Paid);
-
-					if (payment.getPaymentMethod().isCreditCard()) {
-						paymentService.processRefund(payment.getTransactionID(), refundAmount);
-						message = "Successfully refunded credit card";
-						refund.setCcNumber(payment.getCcNumber());
-						refund.setTransactionID(payment.getTransactionID());
+					if (!button.equals("Refund Without Charge")) {
+						if (payment.getPaymentMethod().isCreditCard()) {
+							paymentService.processRefund(payment.getTransactionID(), refundAmount);
+							message = "Successfully refunded credit card";
+							refund.setCcNumber(payment.getCcNumber());
+							refund.setTransactionID(payment.getTransactionID());
+						}
 					}
 					refund.setQbSync(true);
+					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
 
-					PaymentAppliedToRefund pr = new PaymentAppliedToRefund();
-					pr.setPayment(payment);
-					pr.setRefund(refund);
-					pr.setAmount(refund.getTotalAmount());
-					pr.setAuditColumns(getUser());
-					payment.getApplied().add(pr);
-					refund.getPayments().add(pr);
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
