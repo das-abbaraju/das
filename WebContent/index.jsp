@@ -1,11 +1,32 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <%@page import="com.picsauditing.util.URLUtils"%>
+<%@page import="com.sun.syndication.io.XmlReader" %>
+<%@page import="com.sun.syndication.io.SyndFeedInput" %>
+<%@page import="com.sun.syndication.feed.synd.SyndFeed" %>
+<%@page import="com.sun.syndication.feed.synd.SyndEntry" %>
+<%@page import="com.sun.syndication.feed.synd.SyndContent"%>
+<%@page import="com.picsauditing.PICS.DateBean"%>
+<%@page import="java.net.URL" %>
 <%
 	String url = request.getRequestURL().toString();
 	if (url.startsWith("http://pics")) {
 		url = url.replaceFirst("http://pics", "http://www.pics");
 		response.sendRedirect(url);
 		return;
+	}
+	
+	SyndFeed feed = null;
+	boolean feedValid;
+	try {
+		URL feedUrl = new URL("http://blog.picsauditing.com/?feed=rss2");
+	
+		SyndFeedInput input = new SyndFeedInput();
+		feed = input.build(new XmlReader(feedUrl));
+	
+		feedValid = true;
+
+	} catch (Exception e) {
+		feedValid = false;
 	}
 %>
 <html>
@@ -71,6 +92,7 @@ AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macr
 		</table>
 		</td>
 		<td valign="top">
+		<% if(feedValid) { %>
 		<table width="200" border="0" align="right" cellpadding="0" cellspacing="0">
 			<tr>
 				<td colspan="3"><img src="images/header_homeNews.jpg" alt="News" width="200" height="24"></td>
@@ -79,36 +101,30 @@ AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macr
 				<td bgcolor="#CCCCCC"><img src="images/spacer.gif" width="1" height="1"></td>
 				<td valign="top" bgcolor="#FFFFFF">
 				<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-					<tr>
-						<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/09</span>BP
-						Cooper River joins PICS</span><br>
-						<br>
-						The BP Cooper River plant produces purified terephthalic acid (PTA), the preferred polymer used to manufacture
-						polyester. These polymers are most commonly used to produce products such plastic bottles and bags. They are also
-						used in other products ranging from motor oil additives, bulletproof vests and artificial limbs, to consumer
-						products. BP's Cooper River plant makes 2.76 billion pounds of product per year and is the largest
-						continuous-process PTA plant in the world.</td>
-					</tr>
-					<tr>
-						<td valign="top" class="homeNews"><span class="style1"><span class="homeNewsDates">05/01/09</span>Delta
-						Consultants joins PICS</span><br>
-						<br>
-						Delta Consultants have provided global leaders in need of sustainable strategies with environmental, health and
-						safety solutions for more than twenty years. With over 4,400 consultants and a global capacity that expands over
-						six continents, Delta offers clients the proven experience and strength of resources vital to developing realistic
-						solutions for a sustainable future.</td>
-					</tr>
-					<tr>
-					<tr>
-						<td valign="top" bgcolor="F8F8F8" class="homeNews"><span class="style1"><span class="homeNewsDates">12/01/08</span>BASF
-						Joins PICS</span><br>
-						<br>
-						BASF is the world's leading chemical company. Their portfolio ranges from oil and gas to chemicals, plastics,
-						performance products, agricultural products and fine chemicals. As a reliable partner BASF helps its customers in
-						virtually all industries to be more successful. With its high-value products and intelligent solutions, BASF plays
-						an important role in finding answers to global challenges such as climate protection, energy efficiency, nutrition
-						and mobility. BASF has more than 95,000 employees and posted sales of almost &euro;58 billion in 2007.</td>
-					</tr>
+					<% for (int i=0; i<3; i++) { 
+						SyndEntry syndEntry = (SyndEntry) feed.getEntries().get(i);
+					%>
+						<tr>
+							<td valign="top" bgcolor="F8F8F8" class="homeNews">
+								<span class="style1">
+									<span class="homeNewsDates"><%=DateBean.format(syndEntry.getPublishedDate(), "MM/dd/yy") %></span>
+									<%=syndEntry.getTitle() %>
+								</span>
+							
+							<br/>
+							<br/>
+							<% 
+								if (syndEntry.getDescription().getValue() != null || syndEntry.getDescription().getValue().length() > 0)
+									out.println(syndEntry.getDescription().getValue());
+								else
+									for (Object c : syndEntry.getContents()) {
+										SyndContent content = (SyndContent) c;
+										out.println(content.getValue());
+									}
+							%>
+						</tr>
+					<% } %>
+					
 					<tr>
 						<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img
 							src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
@@ -121,6 +137,7 @@ AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macr
 				<td height="7" colspan="3"><img src="images/footer_homeNews.gif" width="200" height="7"></td>
 			</tr>
 		</table>
+		<% } %>
 		</td>
 	</tr>
 </table>
