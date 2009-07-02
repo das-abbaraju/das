@@ -108,9 +108,8 @@ AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macr
 							<td valign="top" bgcolor="F8F8F8" class="homeNews">
 								<span class="style1">
 									<span class="homeNewsDates"><%=DateBean.format(syndEntry.getPublishedDate(), "MM/dd/yy") %></span>
-									<%=syndEntry.getTitle() %>
+									<a href="<%=syndEntry.getLink() %>"><%=syndEntry.getTitle() %></a>
 								</span>
-							
 							<br/>
 							<br/>
 							<% 
@@ -126,7 +125,7 @@ AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macr
 					<% } %>
 					
 					<tr>
-						<td align="center" class="blueHome">&nbsp;<a href="featured_newsarchive.jsp" target="_self"><img
+						<td align="center" class="blueHome">&nbsp;<a href="http://blog.picsauditing.com" target="_self"><img
 							src="images/NEWSARCHIVE_button3.gif" width="111" height="27" hspace="5" border="0"></a></td>
 					</tr>
 				</table>
