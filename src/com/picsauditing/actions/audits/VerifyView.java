@@ -122,7 +122,7 @@ public class VerifyView extends ContractorActionSupport {
 					}
 				}
 				for (AuditData auditData : conAudit.getData()) {
-					if (auditData.getQuestion().getId() != 2447 || auditData.getQuestion().getId() != 2448) {
+					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
 						if (!auditData.isVerified()) {
 							sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
 							sb.append(" : " + auditData.getComment());
@@ -235,7 +235,7 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					return t.getAuditStatus().isPendingSubmittedResubmitted()
+					return (t.getAuditStatus().isPendingSubmittedResubmitted() || t.getAuditStatus().isIncomplete())
 							&& (t.getAuditType().isAnnualAddendum() || t.getAuditType().isPqf());
 				}
 			}.grep(getActiveAudits());
