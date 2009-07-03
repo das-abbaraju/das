@@ -192,10 +192,15 @@ input[type=submit] {
 							<br />
 							<span class="small">
 							<s:if test="payment.paymentMethod.creditCard">
-								<s:property value="payment.ccType"/>
+								<s:if test="payment.ccType == null || payment.ccType.length() == 0">
+									Credit Card
+								</s:if>
+								<s:else>
+									<s:property value="payment.ccType"/>
+								</s:else>
 							</s:if>
 							<s:else>
-								Check #<s:property value="payment.checkNumber"/>
+								Check <s:if test="payment.checkNumber != null || payment.checkNumber.length() > 0">#<s:property value="payment.checkNumber"/></s:if>
 							</s:else>
 							</span>
 							<span class="big">($<s:property value="amount" />) USD</span>
