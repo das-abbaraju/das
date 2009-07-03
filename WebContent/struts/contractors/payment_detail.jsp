@@ -89,24 +89,11 @@ fieldset.form ol {
 				<input type="button" value="Clear" onclick="calculateTotalFromApplied()"></li>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
-		<ol>
+		<ol id="paymentMethodList">
 			<li><label>Method:</label><s:radio name="method" theme="pics" onclick="changePaymentMethod(this.value)"
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
-			<s:if test="creditCard == null">
-				<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>>
-					This contractor does not have a credit card on file. <a href="ContractorPaymentOptions.action?id=<s:property value="id"/>">Click here to enter a credit card</a>.
-				</li>
-			</s:if>
-			<s:else>
-				<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Type:</label>
-					<s:property value="creditCard.cardType" />
-				</li>
-				<li class="method_cc" <s:if test="!method.creditCard">style="display: none"</s:if>><label>Number:</label>
-					<s:property value="creditCard.cardNumber" />
-				</li>
-			</s:else>
 			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditCard.cardNumber" /></li>
 			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditCard.expirationDate" /></li>
 		</ol>
@@ -228,6 +215,9 @@ fieldset.form ol {
 	</s:if>	
 	calculateApplied();
 	calculateTotalFromApplied();
+	<s:if test="method.creditCard">
+		findCreditCard(<s:property value="id"/>);
+	</s:if>
 	</script>
 </s:if>
 <br clear="all"/>

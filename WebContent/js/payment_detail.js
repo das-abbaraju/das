@@ -1,3 +1,11 @@
+function findCreditCard(id) {
+	var pars = {'id':id, 'button':'findcc'};
+	new Ajax.Updater('paymentMethodList', 'PaymentDetailAjax.action', {
+		parameters: pars,
+		insertion: 'bottom'
+	});
+}
+
 function cleanPaymentMethods() {
 	function cleanUp(e) {
 		if (!e.visible())

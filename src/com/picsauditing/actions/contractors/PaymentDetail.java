@@ -68,19 +68,21 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		if (!forceLogin())
 			return LOGIN;
 
+		if ("findcc".equals(button)) {
+			paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+			paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+			creditCard = paymentService.getCreditCard(id);
+			method = PaymentMethod.CreditCard;
+			return SUCCESS;
+		}
+
 		if (contractor == null)
 			findContractor();
 
 		if (method == null)
 			method = contractor.getPaymentMethod();
 
-		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
 		if (payment == null || payment.getId() == 0) {
-			if (method.isCreditCard()) {
-				creditCard = paymentService.getCreditCard(id);
-			}
 			// Useful during development, we can remove this later
 			for (Invoice invoice : contractor.getInvoices())
 				invoice.updateAmountApplied();
@@ -121,6 +123,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
+						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+
 						if (creditCard == null || creditCard.getCardNumber() == null) {
 							creditCard = paymentService.getCreditCard(id);
 						}
