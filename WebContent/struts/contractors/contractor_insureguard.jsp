@@ -187,6 +187,9 @@
 </table>
 </s:if>
 </td>
+
+<td style="width:2em">&nbsp;</td>
+
 <td>
 	<h3>Certificates</h3>
 	<s:if test="certificates.size() > 0">
@@ -209,7 +212,7 @@
 						target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>
 					<td><s:if test="permissions.userId == createdBy.Id">
 						<a class="edit" href="#"
-							onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />)"
+							onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return false;"
 							title="Opens in new window (please disable your popup blocker)"">Edit</a>
 					</s:if></td>
 					<td>
