@@ -82,7 +82,7 @@ AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macr
 						<td><img src="images/featured_op_Huntsman.jpg" alt="Featured Operator Huntsman" width="215" height="195"
 							border="0" usemap="#Map"></td>
 						<td width="13"><img src="images/spacer.gif" width="13" height="1"></td>
-						<td><img src="images/feature_contractor.jpg" alt="Featured Contractor Bigge" width="215" height="195"
+						<td><img src="images/feature_contractor.jpg" alt="Featured Contractor PS Environmental" width="215" height="195"
 							border="0" usemap="#Map2"></td>
 						<td width="13"><img src="images/spacer.gif" width="1" height="1"></td>
 					</tr>
