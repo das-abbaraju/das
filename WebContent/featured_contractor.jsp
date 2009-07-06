@@ -9,65 +9,36 @@
 <table width="100%" border="0" cellpadding="13" cellspacing="0"
 	bgcolor="#FFFFFF">
 	<tr>
-		<td width="275" align="center"><img src="images/Bigge_logo.jpg"
-			width="150" height="81"></td>
-		<td bgcolor="#CBE5FE" class="blueSmall">"Bigge is able to provide
-		a consistent, quality audit to all our clients through
-		PICS."<br>
+		<td width="275" align="center"><img src="images/PSE_logo.jpg"
+			width="200" height="76"></td>
+		<td bgcolor="#CBE5FE" class="blueSmall">"We look to PICS as our partners in safety."<br>
 		<br>
-		<div align="right"><strong>Jim Coenen</strong> - Safety Manager</div>
+		<div align="right"><strong>Joe Gaglione </strong> - President &amp; Founder </div>
 		</td>
 	</tr>
 </table>
 <table width="100%" border="0" cellspacing="20" cellpadding="0">
 	<tr>
-		<td class="blueHome"><span class="blueMain"><strong>Bigge
-		</strong>| JULY 2007</span></td>
+		<td class="blueHome"><span class="blueMain"><strong>PS Environmental 
+		</strong>| JULY 2009</span></td>
 	</tr>
 </table>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="top">
 		<td width="627" class="blueHome">
 		<div align="justify" class="blueHome">
-		<p><strong>Bigge - An Industry Leader</strong><br>
-		<p>Founded in 1916, Bigge has developed and maintained a solid
-		tradition of excellence and quality in the heavy transport and lifting
-		industry. Today, Bigge is a diversified equipment and project services
-		company with a commitment to achieving customer success and leadership
-		in their industry.</p>
+		<p><strong>PS Environmental – Specialty Contractor</strong><br>
+		<p>Founded in 1981, PS Environmental (PSE) has risen to top of its class in Air Pollution Control.  With offices in Los Angeles and Seattle, PSE has made a significant impact helping thousands of firms reduce their pollution throughout the United States, including BASF, Dow Corning, Shell, CRI, BP and many others.  PS Environmental understands and responds to all baghouse and dustcollector issues.  One distinction that sets PSE’s technicians apart is that they match filter fabrics to the specific application of each individual baghouse.</p>
 
-		<p>Bigge operates throughout the United States, and in key
-		geographies worldwide, providing innovative solutions and quality
-		equipment for heavy transport, heavy lift and other customer needs.
-		Bigge has been richly involved in the development of California; they
-		hauled steel for the building of the Golden Gate Bridge and
-		transported Liberty ship sections during World War II. Bigge has
-		contributed to the erection of fossil and nuclear power stations and
-		every refinery in Northern California. Bigge recently installed the
-		1800-ton tub-girders on the transition section of the new San
-		Francisco – Oakland Bay Bridge, a Caltrans record!</p>
+<p>With 30 years of field experience, PSE’s range of air pollution control services include: </p> 
 
-		<p>Bigge has been recognized an unprecedented 22 times with the
-		Outstanding Rigging Job of the Year award by the Specialized Carriers
-		& Rigging Association. Jim Coenen, Bigge’s Safety Manager, attributes
-		this to a core set of values. <strong>“Safety First is not
-		just a slogan, but a value at Bigge. Values don’t change with the
-		daily business needs, they remain a constant. Our primary core values
-		are Safety, Productivity and Quality.”</strong> Coenen has over 20 years
-		experience in safety and health in the heavy lifting industry, and has
-		seen the safety industry grow and mature greatly. <strong>“No
-		longer can a contractor work for a sophisticated customer in a
-		competitive environment without emphasizing safety,”</strong> and safety is
-		what Bigge emphasizes, under Coenen’s direction.</p>
+<p>24-hour emergency response, preventative maintenance such as troubleshooting, inspections and engineering evaluation to correcting system-design flaws through modifying or re-engineering existing systems or completely overhauling dust collector or baghouse systems which will improve performance and reduce operating costs.</p>
 
-		<p>As a strong supporter of PICS, Bigge recognizes the value that
-		PICS brings to the industry, both the contractor and the operator.
-		Coenen is able to <strong>“provide a consistent, quality
-		audit to all our clients through PICS. We support the
-		consortium idea for owners and will continue to point new potential
-		consortium members to PICS. They are a leader in the
-		industry, and we are proud to be associated with
-		PICS.”</strong></p>
+<p>Joe Gaglione, president and founder, attributes the firm’s success to two elements:  complete customer satisfaction and technical expertise.  <strong>“Satisfied customers come from trust.  We focus on building trust by finding cost-efficient solutions to minimize production downtime, while insuring regulatory compliance and eliminating citations.”</strong>  During the recession, PSE has adjusted its business to remain competitive and a class-leader by offering payment plans, rate reductions and extended terms.  Sales reps also personally deliver product where possible, to eliminate freight charges and keep costs low.</p>
+
+<p>PICS noted PS Environmental positive safety culture during a scheduled audit on behalf of one of the consortium members and mutual customers.  PS Environmental showed management commitment to safety, health and environmental.  Gaglione stated, <strong>“Developing our strong safety culture has been a process of identifying hazards and then properly implementing the correct procedures and training to address those hazards.  Employee safety must be our number one concern.”</strong></p>
+
+<p>Gaglione recognized that innovations in safety are found by sharing, and solicited suggestions for improvement from PICS auditors.  <strong>“PICS has been a great resource for PS Environmental.  Their consortium model helps the owners and contractors in our industry constantly improve safety performance.  We recognize their expertise and look to PICS as our partners in safety.”</strong></p>
 
 		</div>
 		</td>
