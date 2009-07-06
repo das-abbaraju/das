@@ -31,8 +31,9 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 	public Invoice invoice;
 	public List<InvoiceFee> feeList = null;
 
-	private Map<Integer, Boolean> removeMap = new HashMap<Integer, Boolean>();
 	private Map<Integer, Integer> feeMap = new HashMap<Integer, Integer>();
+
+	private int itemID = 0;
 
 	private InvoiceDAO invoiceDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
@@ -67,16 +68,6 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		if ("Save".equals(button)) {
 			invoice.setAuditColumns(new User(User.SYSTEM));
 
-			for (Iterator<InvoiceItem> items = invoice.getItems().iterator(); items.hasNext();) {
-				InvoiceItem item = items.next();
-				if (removeMap.get(item.getId())) {
-					items.remove();
-					invoiceItemDAO.remove(item);
-					addActionMessage("Removed line item <strong>" + item.getInvoiceFee().getFee()
-							+ "</strong> for $" + item.getAmount());
-				}
-			}
-
 			for (InvoiceItem item : invoice.getItems()) {
 				int feeID = feeMap.get(item.getId());
 				if (item.getInvoiceFee().getId() != feeID)
@@ -87,6 +78,24 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 			invoice.setQbSync(true);
 			invoiceDAO.save(invoice);
 			addActionMessage("Successfully saved data");
+		}
+
+		if ("Remove".equals(button)) {
+			if (itemID > 0) {
+				for (Iterator<InvoiceItem> items = invoice.getItems().iterator(); items.hasNext();) {
+					InvoiceItem item = items.next();
+					if (itemID == item.getId()) {
+						items.remove();
+						invoiceItemDAO.remove(item);
+						addActionMessage("Removed line item <strong>" + item.getInvoiceFee().getFee()
+								+ "</strong> for $" + item.getAmount());
+					}
+				}
+
+				invoice.updateAmount();
+				invoice.setQbSync(true);
+				invoiceDAO.save(invoice);
+			}
 		}
 
 		if ("Delete".equals(button)) {
@@ -112,19 +121,19 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		return feeList;
 	}
 
-	public Map<Integer, Boolean> getRemoveMap() {
-		return removeMap;
-	}
-
-	public void setRemoveMap(Map<Integer, Boolean> removeMap) {
-		this.removeMap = removeMap;
-	}
-
 	public Map<Integer, Integer> getFeeMap() {
 		return feeMap;
 	}
 
 	public void setFeeMap(Map<Integer, Integer> feeMap) {
 		this.feeMap = feeMap;
+	}
+
+	public int getItemID() {
+		return itemID;
+	}
+
+	public void setItemID(int itemID) {
+		this.itemID = itemID;
 	}
 }

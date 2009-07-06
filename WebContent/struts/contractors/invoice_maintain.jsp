@@ -51,7 +51,7 @@
 			<s:textfield name="invoice.items[%{#item.index}].paymentExpires"/></li>
 		<li><label>Description:</label>
 			<s:textfield name="invoice.items[%{#item.index}].description" value="%{description}"/></li>
-		<li><label>Remove:</label><s:checkbox name="removeMap[%{id}]"/></li>
+		<li><label></label><a href="ConInvoiceMaintain.action?id=<s:property value="contractor.id"/>&invoiceId=<s:property value="invoice.id"/>&itemID=<s:property value="id"/>&button=Remove" class="remove">Remove Line Item</a></li>
 	</ol>
 </fieldset>
 </s:iterator>
