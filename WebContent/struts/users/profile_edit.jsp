@@ -16,6 +16,21 @@
 			parameters :pars
 		});
 	}
+
+	function save(id, status) {
+		var pars = $('eu'+id+'_'+status).serialize();
+
+		var divName = 'td'+id+'_'+status;
+		startThinking({'div':divName, 'message':'Saving email/Subscription data'});
+
+		var myAjax = new Ajax.Updater(divName, 'UserEmailSubscriptionSaveAjax.action', {
+			method: 'post', 
+			parameters: pars,
+			onSuccess: function(transport) {
+			new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+			}
+		});
+	}
 </script>
 
 </head>
@@ -90,5 +105,29 @@
 </table>
 
 <div class="clear"></div>
+
+<table class="report">
+	<thead><tr>
+		<th>Subscription</th>
+		<th>Time Period</th>
+		<th></th>
+	</tr></thead>
+	<tbody>
+		<s:iterator value="eList" status="num">
+			<tr>
+				<td><s:property value="subscription.description"/></td>
+				<td id="td<s:property value="id" />_<s:property value="#num.index" />">
+					<s:include value="../mail/user_email_subscription.jsp"></s:include>
+				</td>
+				<td>
+				<div class="buttons">
+					<button type="button" onclick="save('<s:property value="id"/>', '<s:property value="#num.index" />')">Save</button>
+					</div>
+				</td>
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
+
 </body>
 </html>

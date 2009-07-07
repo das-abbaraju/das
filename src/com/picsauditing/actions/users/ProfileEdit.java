@@ -1,21 +1,28 @@
 package com.picsauditing.actions.users;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -25,13 +32,16 @@ public class ProfileEdit extends PicsActionSupport {
 	protected UserDAO dao;
 	protected ContractorAccountDAO accountDao;
 	protected UserSwitchDAO userSwitchDao;
+	protected EmailSubscriptionDAO emailSubscriptionDAO;
 	protected String password1;
 	protected String password2;
+	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 
-	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao) {
+	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao, EmailSubscriptionDAO emailSubscriptionDAO) {
 		this.dao = dao;
 		this.accountDao = accountDao;
 		this.userSwitchDao = userSwitchDao;
+		this.emailSubscriptionDAO = emailSubscriptionDAO;
 	}
 
 	public String execute() throws Exception {
@@ -109,5 +119,41 @@ public class ProfileEdit extends PicsActionSupport {
 	public List<UserLoginLog> getRecentLogins() {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(u.getUsername(), 10);
+	}
+	
+	public List<EmailSubscription> getEList() {
+		List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
+		Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
+		for(EmailSubscription emailSubscription : userEmail) {
+			eMap.put(emailSubscription.getSubscription(), emailSubscription);
+		}
+		
+		for(Subscription subscription : requiredSubscriptionList(permissions)) {
+			EmailSubscription eSubscription = eMap.get(subscription);
+			if(eSubscription == null) {
+				eSubscription = new EmailSubscription();
+				eSubscription.setSubscription(subscription);
+			}
+			eList.add(eSubscription);
+		}
+		return eList;
+	}
+
+	public List<Subscription> requiredSubscriptionList(Permissions permissions) {
+		List<Subscription> subList = new ArrayList<Subscription>();
+		for (Subscription subscription : Subscription.values()) {
+			if (permissions.isOperatorCorporate() && subscription.isRequiredForOperator()) {
+				subList.add(subscription);
+			}
+			else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
+				subList.add(subscription);
+			} else if (subscription.isRequiredForOperator() && subscription.isRequiredForContractor())
+				subList.add(subscription);
+		}
+		return subList;
+	}
+
+	public SubscriptionTimePeriod[] getSubscriptionTimePeriods() {
+		return SubscriptionTimePeriod.values();
 	}
 }
