@@ -13,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import sun.security.util.PendingException;
+
 import com.picsauditing.EntityFactory;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
@@ -38,13 +40,21 @@ public class SubscriptionBuilderTest extends TestCase {
 	ContractorAuditOperatorDAO caoDAO;
 
 	@Test
-	public void testBuild() throws Exception {
-		// SubscriptionBuilder builder = new
-		// FlagChangesSubscription(SubscriptionTimePeriod.Weekly,
-		// subscriptionDAO,
-		// flagDAO);
+	public void testFlagChanges() throws Exception {
+		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO,
+				flagDAO);
+		
+		builder.process();
+	}
 
+	@Test
+	public void testInsuranceCerts() throws Exception {
 		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts,
+				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
+
+		builder.process();
+
+		builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts,
 				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
 
 		builder.process();
