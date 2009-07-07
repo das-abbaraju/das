@@ -14,11 +14,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.FlagChangesSubscription;
+import com.picsauditing.mail.InsuranceCertificateSubscription;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionBuilder;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -32,11 +34,18 @@ public class SubscriptionBuilderTest extends TestCase {
 	EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
 	ContractorOperatorFlagDAO flagDAO;
+	@Autowired
+	ContractorAuditOperatorDAO caoDAO;
 
 	@Test
 	public void testBuild() throws Exception {
-		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO,
-				flagDAO);
+		// SubscriptionBuilder builder = new
+		// FlagChangesSubscription(SubscriptionTimePeriod.Weekly,
+		// subscriptionDAO,
+		// flagDAO);
+
+		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts,
+				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
 
 		builder.process();
 	}

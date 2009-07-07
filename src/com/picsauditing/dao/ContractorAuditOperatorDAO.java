@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -46,7 +47,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 
 	public List<ContractorAuditOperator> findByContractorAccount(int conID, Permissions perm) {
 		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID "
-			+ " AND cao.visible = 1 ";
+				+ " AND cao.visible = 1 ";
 
 		if (perm.isOperatorCorporate())
 			query += "AND cao.operator.inheritInsurance.id = :opID";
@@ -61,6 +62,16 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+	public List<ContractorAuditOperator> find(int opID, CaoStatus status) {
+		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status";
+		
+		Query q = em.createQuery(query);
+		q.setParameter("opID", opID);
+		q.setParameter("status", status);
+		
+		return q.getResultList();
+	}
+
 	public void remove(int id) {
 		ContractorAuditOperator row = find(id);
 		remove(row);
@@ -71,7 +82,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 			em.remove(row);
 		}
 	}
-	
+
 	public void refresh(ContractorAuditOperator row) {
 		if (row != null && row.getId() != 0)
 			em.refresh(row);
