@@ -17,10 +17,10 @@
 		});
 	}
 
-	function save(id, status) {
-		var pars = $('eu'+id+'_'+status).serialize();
+	function save(subscription) {
+		var pars = $('eu'+subscription).serialize();
 
-		var divName = 'td'+id+'_'+status;
+		var divName = 'td'+subscription;
 		startThinking({'div':divName, 'message':'Saving email/Subscription data'});
 
 		var myAjax = new Ajax.Updater(divName, 'UserEmailSubscriptionSaveAjax.action', {
@@ -116,12 +116,12 @@
 		<s:iterator value="eList" status="num">
 			<tr>
 				<td><s:property value="subscription.description"/></td>
-				<td id="td<s:property value="id" />_<s:property value="#num.index" />">
+				<td id="td<s:property value="subscription.description"/>">
 					<s:include value="../mail/user_email_subscription.jsp"></s:include>
 				</td>
 				<td>
 				<div class="buttons">
-					<button type="button" onclick="save('<s:property value="id"/>', '<s:property value="#num.index" />')">Save</button>
+					<button type="button" onclick="save('<s:property value="subscription.description"/>')">Save</button>
 					</div>
 				</td>
 			</tr>
