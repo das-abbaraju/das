@@ -23,8 +23,7 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 
 	@Override
 	protected void setup() {
-		// TODO Auto-generated method stub
-
+		templateID = 60;
 	}
 
 	@Override
@@ -37,7 +36,7 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 		if (flags.size() > 0) {
 
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(60);
+			emailBuilder.setTemplate(templateID);
 			emailBuilder.addToken("flags", flags);
 			emailBuilder.setUser(new User(2357));
 

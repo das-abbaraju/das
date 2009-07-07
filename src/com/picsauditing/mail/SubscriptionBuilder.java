@@ -19,11 +19,13 @@ public abstract class SubscriptionBuilder {
 	protected EmailSubscriptionDAO subscriptionDAO;
 	protected Subscription subscription;
 	protected SubscriptionTimePeriod timePeriod;
+	protected int templateID;
 	private List<EmailSubscription> subscriptions;
 
 	protected SelectSQL sql;
 
-	public SubscriptionBuilder(Subscription subscription, SubscriptionTimePeriod timePeriod, EmailSubscriptionDAO subscriptionDAO) {
+	public SubscriptionBuilder(Subscription subscription, SubscriptionTimePeriod timePeriod,
+			EmailSubscriptionDAO subscriptionDAO) {
 		this.subscriptionDAO = subscriptionDAO;
 		this.subscription = subscription;
 		this.timePeriod = timePeriod;

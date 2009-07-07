@@ -14,26 +14,22 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 
 	private ContractorAuditOperatorDAO caoDAO;
 	private CaoStatus caoStatus;
-	private int templateID;
 
 	public InsuranceCertificateSubscription(Subscription subscription, SubscriptionTimePeriod timePeriod,
 			EmailSubscriptionDAO subscriptionDAO, ContractorAuditOperatorDAO caoDAO) {
 		super(subscription, timePeriod, subscriptionDAO);
 		this.caoDAO = caoDAO;
-		if (subscription.equals(Subscription.PendingInsuranceCerts)) {
-			this.caoStatus = CaoStatus.Pending;
-			this.templateID = 62;
-		}
-		if (subscription.equals(Subscription.VerifiedInsuranceCerts)) {
-			this.caoStatus = CaoStatus.Verified;
-			this.templateID = 61;
-		}
 	}
 
 	@Override
 	protected void setup() {
-		// TODO Auto-generated method stub
-
+		if (subscription.equals(Subscription.PendingInsuranceCerts)) {
+			caoStatus = CaoStatus.Pending;
+		}
+		if (subscription.equals(Subscription.VerifiedInsuranceCerts)) {
+			caoStatus = CaoStatus.Verified;
+		}
+		templateID = 61;
 	}
 
 	@Override
@@ -47,10 +43,10 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
 			emailBuilder.addToken("caos", caos);
+			emailBuilder.addToken("caoStatus", caoStatus);
 			emailBuilder.setUser(new User(2357));
 
 			email = emailBuilder.build();
-			System.out.println(email.getBody());
 		}
 
 		return email;
