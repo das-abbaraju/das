@@ -181,6 +181,10 @@ public class EmailBuilder {
 	public void addToken(String key, Object value) {
 		tokens.put(key, value);
 	}
+	
+	public void addAllTokens(Map<? extends String, ? extends Object> m) {
+		tokens.putAll(m);
+	}
 
 	public String getFromAddress() {
 		return fromAddress;

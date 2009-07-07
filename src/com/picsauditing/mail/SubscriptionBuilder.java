@@ -11,6 +11,7 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -20,6 +21,9 @@ public abstract class SubscriptionBuilder {
 	protected Subscription subscription;
 	protected SubscriptionTimePeriod timePeriod;
 	protected int templateID;
+
+	protected Map<String, Object> tokens = new HashMap<String, Object>();
+
 	private List<EmailSubscription> subscriptions;
 
 	protected SelectSQL sql;
@@ -41,6 +45,7 @@ public abstract class SubscriptionBuilder {
 	protected List<EmailSubscription> getSubscriptions() {
 		if (subscriptions == null)
 			subscriptions = subscriptionDAO.find(subscription, timePeriod);
+
 		return subscriptions;
 	}
 
@@ -67,27 +72,37 @@ public abstract class SubscriptionBuilder {
 		return result;
 	}
 
-	protected abstract void setup();
+	protected abstract void setup(Account a);
 
-	protected abstract EmailQueue buildEmail(Account a) throws Exception;
+	protected EmailQueue buildEmail(String recipients) throws Exception {
+		EmailQueue email = null;
+
+		if (tokens.size() > 0) {
+
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(templateID);
+			emailBuilder.addAllTokens(tokens);
+			emailBuilder.setCcAddresses(recipients);
+			emailBuilder.setUser(new User(2357));
+
+			email = emailBuilder.build();
+		}
+
+		return email;
+	}
 
 	public void process() throws Exception {
 		// TODO Auto-generated method stub
 		Map<Account, Set<EmailSubscription>> accountMap = getSubscriptionsByAccount();
 
 		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
-			System.out.println(entry.getKey().getName());
+			setup(entry.getKey()); // Send the account object to the sub-classes
 
-			setup();
-			EmailQueue emailToSend = buildEmail(entry.getKey());
+			// get the recipients
+			Set<String> recipients = getRecipients(entry.getValue());
+			EmailQueue emailToSend = buildEmail(Strings.implode(recipients, ","));
 
 			if (emailToSend != null) {
-				// get the recipients
-				Set<String> recipients = getRecipients(entry.getValue());
-
-				// All are from the same Account, so CC should be safe
-				emailToSend.setCcAddresses(Strings.implode(recipients, ","));
-
 				// Send the email
 				// EmailSender.send(emailToSend);
 			}
