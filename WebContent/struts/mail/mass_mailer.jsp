@@ -85,15 +85,15 @@ type = "<s:property value="type" />";
 			<input type="button" value="Remove Selected" onclick="removeSelected()" />
 	</td>
 	<td style="vertical-align: top; padding-left: 20px;">
-		<div class="buttons" id="menu_selector" style="display: none;">
+		<div id="menu_selector" style="display: none;">
 			<s:if test="emailTemplates.size > 0">
-				<button id="buttonPick" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
+				<button id="buttonPick" class="picsbutton" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
 			</s:if>
-			<button id="buttonPreview" type="button" onclick="previewEmail($('contractors'));" title="Preview the email with the selected contractor">Preview</button>
+			<button id="buttonPreview" class="picsbutton" type="button" onclick="previewEmail($('contractors'));" title="Preview the email with the selected contractor">Preview</button>
 			<pics:permission perm="EmailTemplates" type="Edit">
-				<button id="buttonSave" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save...</button>
+				<button id="buttonSave" class="picsbutton" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save...</button>
 			</pics:permission>
-			<button id="buttonEdit" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
+			<button id="buttonEdit" class="picsbutton" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
 			<button class="picsbutton positive" type="button" onclick="sendEmails();">Send	Emails</button>
 			<br clear="all">
 		</div>
