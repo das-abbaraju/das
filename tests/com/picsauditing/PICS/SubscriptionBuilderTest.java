@@ -8,11 +8,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.FlagChangesSubscription;
@@ -25,20 +28,28 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
 @Transactional
 public class SubscriptionBuilderTest extends TestCase {
 
+	@Autowired
+	EmailSubscriptionDAO subscriptionDAO;
+	@Autowired
+	ContractorOperatorFlagDAO flagDAO;
+
 	@Test
-	public void testBuild() {
-		SubscriptionBuilder builder = new FlagChangesSubscription();
+	public void testBuild() throws Exception {
+		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO,
+				flagDAO);
 
 		builder.process();
 	}
 
 	@Test
 	public void testIsSendEmail() {
-		SubscriptionBuilder builder = new FlagChangesSubscription();
+		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Daily, subscriptionDAO,
+				flagDAO);
 
 		Map<SubscriptionTimePeriod, EmailSubscription> timeMap = new HashMap<SubscriptionTimePeriod, EmailSubscription>();
 		for (SubscriptionTimePeriod stp : SubscriptionTimePeriod.values()) {
-			timeMap.put(stp, EntityFactory.makeEmailSubscription(new User(2357), Subscription.FlagChanges, stp));
+			if (!stp.equals(SubscriptionTimePeriod.Event))
+				timeMap.put(stp, EntityFactory.makeEmailSubscription(new User(2357), Subscription.FlagChanges, stp));
 		}
 
 		// Quarterly test - all should be True

@@ -30,7 +30,7 @@ public class EmailSubscriptionDAOTest {
 
 		sub = dao.save(sub);
 
-		List<EmailSubscription> subscriptionList = dao.findBySubscription(Subscription.PICSAnnouncements);
+		List<EmailSubscription> subscriptionList = dao.find(Subscription.PICSAnnouncements, SubscriptionTimePeriod.Daily);
 		assertTrue(subscriptionList.contains(sub));
 
 		dao.remove(sub.getId());

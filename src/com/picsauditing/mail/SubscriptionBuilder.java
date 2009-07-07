@@ -7,37 +7,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public abstract class SubscriptionBuilder {
 
 	protected EmailSubscriptionDAO subscriptionDAO;
 	protected Subscription subscription;
+	protected SubscriptionTimePeriod timePeriod;
 	private List<EmailSubscription> subscriptions;
 
 	protected SelectSQL sql;
 
-	public SubscriptionBuilder(Subscription subscription) {
-		subscriptionDAO = (EmailSubscriptionDAO) SpringUtils.getBean("EmailSubscriptionDAO");
+	public SubscriptionBuilder(Subscription subscription, SubscriptionTimePeriod timePeriod, EmailSubscriptionDAO subscriptionDAO) {
+		this.subscriptionDAO = subscriptionDAO;
 		this.subscription = subscription;
+		this.timePeriod = timePeriod;
 	}
 
 	public boolean isSendEmail(EmailSubscription sub) {
 		if (sub.getTimePeriod().equals(SubscriptionTimePeriod.None))
 			return false;
+
 		return !sub.getLastSent().after(sub.getTimePeriod().getCompaisonDate());
 	}
 
 	protected List<EmailSubscription> getSubscriptions() {
 		if (subscriptions == null)
-			subscriptions = subscriptionDAO.findBySubscription(subscription);
+			subscriptions = subscriptionDAO.find(subscription, timePeriod);
 		return subscriptions;
 	}
 
@@ -51,36 +52,43 @@ public abstract class SubscriptionBuilder {
 		return result;
 	}
 
-	/**
-	 * <p>This is used to separate the email subscriptions into smaller subsets.<p>
-	 * 
-	 * <p>
-	 * Since most of the email subscriptions are time based, (i.e. flag changes in the last week),
-	 * it makes send to split them up in order to generate an account and time specific email.
-	 * </p>
-	 * @return Account => SubscriptionTimePeriod => Set of EmailSubscriptions
-	 */
-	protected Map<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>> getSubscriptionsByLastSentAndAccount() {
-		Map<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>> result = new HashMap<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>>();
+	protected Map<Account, Set<EmailSubscription>> getSubscriptionsByAccount() {
+		Map<Account, Set<EmailSubscription>> result = new HashMap<Account, Set<EmailSubscription>>();
 
 		for (EmailSubscription sub : getSubscriptions()) {
 			if (result.get(sub.getUser().getAccount()) == null)
-				result.put(sub.getUser().getAccount(), new HashMap<SubscriptionTimePeriod, Set<EmailSubscription>>());
+				result.put(sub.getUser().getAccount(), new HashSet<EmailSubscription>());
 
-			if (result.get(sub.getUser().getAccount()).get(sub.getTimePeriod()) == null)
-				result.get(sub.getUser().getAccount()).put(sub.getTimePeriod(), new HashSet<EmailSubscription>());
-			
-			result.get(sub.getUser().getAccount()).get(sub.getTimePeriod()).add(sub);
+			result.get(sub.getUser().getAccount()).add(sub);
 		}
 
 		return result;
 	}
-	
-	protected abstract void buildSql(Account a, SubscriptionTimePeriod timePeriod);
 
-	protected abstract List<BasicDynaBean> runSql();
+	protected abstract void setup();
 
-	protected abstract EmailQueue buildEmail();
+	protected abstract EmailQueue buildEmail(Account a) throws Exception;
 
-	public abstract void process();
+	public void process() throws Exception {
+		// TODO Auto-generated method stub
+		Map<Account, Set<EmailSubscription>> accountMap = getSubscriptionsByAccount();
+
+		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
+			System.out.println(entry.getKey().getName());
+
+			setup();
+			EmailQueue emailToSend = buildEmail(entry.getKey());
+
+			if (emailToSend != null) {
+				// get the recipients
+				Set<String> recipients = getRecipients(entry.getValue());
+
+				// All are from the same Account, so CC should be safe
+				emailToSend.setCcAddresses(Strings.implode(recipients, ","));
+
+				// Send the email
+				// EmailSender.send(emailToSend);
+			}
+		}
+	}
 }

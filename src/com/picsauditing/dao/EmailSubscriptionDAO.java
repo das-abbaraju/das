@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @Transactional
 public class EmailSubscriptionDAO extends PicsDAO {
@@ -53,9 +54,10 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<EmailSubscription> findBySubscription(Subscription subscription) {
-		Query query = em.createQuery("FROM EmailSubscription es WHERE es.subscription = :sub");
+	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod) {
+		Query query = em.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time");
 		query.setParameter("sub", subscription);
+		query.setParameter("time", timePeriod);
 
 		return query.getResultList();
 

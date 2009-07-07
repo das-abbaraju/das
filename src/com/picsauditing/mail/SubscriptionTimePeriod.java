@@ -4,11 +4,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public enum SubscriptionTimePeriod {
-	None, Daily, Weekly, Monthly, Quarterly;
-	
+	None, Daily, Weekly, Monthly, Quarterly, Event;
+
 	public Date getCompaisonDate() {
 		Calendar calendar = Calendar.getInstance();
-		
+
 		switch (this) {
 		case Daily:
 			calendar.add(Calendar.DAY_OF_YEAR, -1);
@@ -23,7 +23,7 @@ public enum SubscriptionTimePeriod {
 			calendar.add(Calendar.MONTH, -3);
 			break;
 		}
-		
+
 		return calendar.getTime();
 	}
 }

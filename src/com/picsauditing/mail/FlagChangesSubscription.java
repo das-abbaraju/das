@@ -1,107 +1,49 @@
 package com.picsauditing.mail;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-
+import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.Strings;
+import com.picsauditing.jpa.entities.User;
 
 public class FlagChangesSubscription extends SubscriptionBuilder {
 
-	public FlagChangesSubscription() {
-		super(Subscription.FlagChanges);
+	private ContractorOperatorFlagDAO flagDAO;
+
+	public FlagChangesSubscription(SubscriptionTimePeriod timePeriod, EmailSubscriptionDAO subscriptionDAO,
+			ContractorOperatorFlagDAO flagDAO) {
+		super(Subscription.FlagChanges, timePeriod, subscriptionDAO);
+		this.flagDAO = flagDAO;
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected void buildSql(Account a, SubscriptionTimePeriod timePeriod) {
-		// select *
-		// from contractor_info c
-		// join flags f
-		// on c.id = f.conID
-		// where f.opID = a.id
-		// AND f.lastUpdate > timePeriod.comparisonDate
-
-		sql = new SelectSQL("contractor_info c");
-		sql.addJoin("JOIN accounts a ON c.id = a.id");
-		sql.addJoin("JOIN flags f ON f.conID = c.id");
-		sql.addWhere("f.opID = " + a.getId());
-		if (!timePeriod.equals(SubscriptionTimePeriod.None))
-			sql.addWhere("f.lastUpdate > " + timePeriod.getCompaisonDate());
-	}
-
-	@Override
-	protected List<BasicDynaBean> runSql() {
+	protected void setup() {
 		// TODO Auto-generated method stub
-		Database db = new Database();
 
-		try {
-			return db.select(sql.toString(), true);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return new ArrayList<BasicDynaBean>();
 	}
 
 	@Override
-	protected EmailQueue buildEmail() {
+	protected EmailQueue buildEmail(Account a) throws Exception {
 		EmailQueue email = null;
-		List<BasicDynaBean> data = runSql();
 
-		if (data.size() > 0) {
-			email = new EmailQueue();
-			// build the email based on the data
-			email.setSubject(subscription.getDescription());
+		List<ContractorOperatorFlag> flags = flagDAO.findFlagChangedByOperatorAndRange(a.getId(), timePeriod
+				.getCompaisonDate(), new Date());
 
-			// TODO build the body based on data. Maybe an email template would
-			// work here.
+		if (flags.size() > 0) {
+
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(60);
+			emailBuilder.addToken("flags", flags);
+			emailBuilder.setUser(new User(2357));
+
+			email = emailBuilder.build();
 		}
 
 		return email;
 	}
-
-	@Override
-	public void process() {
-		// TODO Auto-generated method stub
-		Map<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>> subMap = getSubscriptionsByLastSentAndAccount();
-
-		for (Map.Entry<Account, Map<SubscriptionTimePeriod, Set<EmailSubscription>>> accountMap : subMap.entrySet()) {
-			for (Map.Entry<SubscriptionTimePeriod, Set<EmailSubscription>> timeMap : accountMap.getValue().entrySet()) {
-				// this is the point where we can generate a unique email
-				// Hopefully this process can be abstracted to the super class
-				// if it is general enough.
-				System.out.println(accountMap.getKey().getName() + " - " + timeMap.getKey() + " - "
-						+ timeMap.getValue().size());
-				buildSql(accountMap.getKey(), timeMap.getKey());
-				EmailQueue emailToSend = buildEmail();
-
-				if (emailToSend != null) {
-					// get the recipients
-					// TODO Maybe change the value of the second map to be a set
-					// of
-					// email strings
-					Set<String> recipients = getRecipients(timeMap.getValue());
-
-					// All are from the same Account, so CC should be safe
-					emailToSend.setCcAddresses(Strings.implode(recipients, ","));
-
-					// Send the email
-					// EmailSender.send(emailToSend);
-				}
-			}
-		}
-
-	}
-
 }
