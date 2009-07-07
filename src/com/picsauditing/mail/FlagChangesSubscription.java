@@ -31,7 +31,7 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 		EmailQueue email = null;
 
 		List<ContractorOperatorFlag> flags = flagDAO.findFlagChangedByOperatorAndRange(a.getId(), timePeriod
-				.getCompaisonDate(), new Date());
+				.getComparisonDate(), new Date());
 
 		if (flags.size() > 0) {
 

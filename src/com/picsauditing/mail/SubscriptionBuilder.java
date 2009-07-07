@@ -35,7 +35,7 @@ public abstract class SubscriptionBuilder {
 		if (sub.getTimePeriod().equals(SubscriptionTimePeriod.None))
 			return false;
 
-		return !sub.getLastSent().after(sub.getTimePeriod().getCompaisonDate());
+		return !sub.getLastSent().after(sub.getTimePeriod().getComparisonDate());
 	}
 
 	protected List<EmailSubscription> getSubscriptions() {

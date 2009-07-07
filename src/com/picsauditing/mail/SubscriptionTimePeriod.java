@@ -6,7 +6,7 @@ import java.util.Date;
 public enum SubscriptionTimePeriod {
 	None, Daily, Weekly, Monthly, Quarterly, Event;
 
-	public Date getCompaisonDate() {
+	public Date getComparisonDate() {
 		Calendar calendar = Calendar.getInstance();
 
 		switch (this) {
