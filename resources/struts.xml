@@ -1033,6 +1033,10 @@
 		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">
 			<result>/struts/blank.jsp</result>
 		</action>
+		
+		<action name="SubscriptionCron" class="com.picsauditing.actions.SubscriptionCron">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<action name="HuntsmanSync" class="com.picsauditing.actions.cron.HuntsmanSync">
 			<result>/struts/blank.jsp</result>
