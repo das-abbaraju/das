@@ -44,7 +44,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		q.setParameter(1, userID);
 		return q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<User> findUsersBySubscription(Subscription subscription) {
 		Query query = em.createQuery("SELECT es.user FROM EmailSubscription es WHERE es.subscription = :sub");
@@ -60,6 +60,5 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		query.setParameter("time", timePeriod);
 
 		return query.getResultList();
-
 	}
 }
