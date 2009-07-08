@@ -59,7 +59,7 @@ function updateExpDate() {
 	<div id="alert">
 		<s:iterator value="contractor.invoices">
 			<s:if test="status.unpaid">
-			You have an <a href="InvoiceDetail.action?invoice.id=" + <s:property value="id"/>> invoice of <b>$ <s:property value="balance"/></b></a> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
+			You have an open <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"> invoice of <b>$ <s:property value="balance"/></b></a> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
 			</s:if>
 		</s:iterator>
 	</div>
