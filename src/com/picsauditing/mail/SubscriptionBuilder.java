@@ -21,7 +21,7 @@ public abstract class SubscriptionBuilder {
 	protected Subscription subscription;
 	protected SubscriptionTimePeriod timePeriod;
 	protected int templateID = 0;
-	
+
 	protected Date now = new Date();
 
 	protected Map<String, Object> tokens = new HashMap<String, Object>();
@@ -35,13 +35,6 @@ public abstract class SubscriptionBuilder {
 		this.subscriptionDAO = subscriptionDAO;
 		this.subscription = subscription;
 		this.timePeriod = timePeriod;
-	}
-
-	public boolean isSendEmail(EmailSubscription sub) {
-		if (sub.getTimePeriod().equals(SubscriptionTimePeriod.None))
-			return false;
-
-		return sub.getLastSent() == null || !sub.getLastSent().after(sub.getTimePeriod().getComparisonDate());
 	}
 
 	protected List<EmailSubscription> getSubscriptions() {
@@ -65,12 +58,10 @@ public abstract class SubscriptionBuilder {
 		Map<Account, Set<EmailSubscription>> result = new HashMap<Account, Set<EmailSubscription>>();
 
 		for (EmailSubscription sub : getSubscriptions()) {
-			if (isSendEmail(sub)) {
-				if (result.get(sub.getUser().getAccount()) == null)
-					result.put(sub.getUser().getAccount(), new HashSet<EmailSubscription>());
+			if (result.get(sub.getUser().getAccount()) == null)
+				result.put(sub.getUser().getAccount(), new HashSet<EmailSubscription>());
 
-				result.get(sub.getUser().getAccount()).add(sub);
-			}
+			result.get(sub.getUser().getAccount()).add(sub);
 		}
 
 		return result;
@@ -91,6 +82,7 @@ public abstract class SubscriptionBuilder {
 		if (tokens.size() > 0) {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
+			emailBuilder.setFromAddress("info@picsauditing.com");
 			emailBuilder.addAllTokens(tokens);
 			emailBuilder.setToAddresses(recipients);
 
@@ -112,10 +104,7 @@ public abstract class SubscriptionBuilder {
 
 			if (emailToSend != null) {
 				// TODO Send the email
-				// EmailSender.send(emailToSend);
-				System.out.println(emailToSend.getSubject());
-				System.out.println(emailToSend.getToAddresses());
-				System.out.println(emailToSend.getBody());
+				EmailSender.send(emailToSend);
 			}
 
 			tearDown(entry.getValue());
