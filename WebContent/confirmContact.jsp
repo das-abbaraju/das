@@ -19,8 +19,6 @@
 			toAddresses.add("jfazeli@picsauditing.com");
 		if (sendTo.equals("tech"))
 			toAddresses.add("jfazeli@picsauditing.com");
-		if (sendTo.equals("tech"))
-			toAddresses.add("tallred@picsauditing.com");
 		if (sendTo.equals("careers"))
 			toAddresses.add("careers@picsauditing.com");
 
