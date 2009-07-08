@@ -80,11 +80,17 @@
 			<td>TRIR '06</td>
 			<td>TRIR '05</td>
 		</s:if>
+		<s:if test="hasTrirAvg">
+			<td>TRIR AVG</td>
+		</s:if>
 		<s:if test="hasLwcr">
 			<td>LWCR '08</td>
 			<td>LWCR '07</td>
 			<td>LWCR '06</td>
 			<td>LWCR '05</td>
+		</s:if>
+		<s:if test="hasLwcrAvg">
+			<td>LWCR AVG</td>
 		</s:if>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
@@ -154,7 +160,7 @@
 								</td>
 							</s:elseif>
 							<s:elseif test="multiYearScope.description.equals('Three Year Average')">
-								<td><s:property value="@com.picsauditing.PICS.Utilities@getAverageEMR(get('answer2008'),get('answer2007'),get('answer2006'),get('answer2005'))"/></td>				
+								<td><s:property value="%{get('emrAverage')}"/></td>				
 							</s:elseif>
 						</s:if>
 						<s:else>
@@ -175,11 +181,17 @@
 				<td><s:property value="get('trir2006')"/></td>
 				<td><s:property value="get('trir2005')"/></td>
 			</s:if>
+			<s:if test="hasTrirAvg">
+				<td><s:property value="get('trirAverage')"/></td>
+			</s:if>
 			<s:if test="hasLwcr">
 				<td><s:property value="get('lwcr2008')"/></td>
 				<td><s:property value="get('lwcr2007')"/></td>
 				<td><s:property value="get('lwcr2006')"/></td>
 				<td><s:property value="get('lwcr2005')"/></td>
+			</s:if>
+			<s:if test="hasLwcrAvg">
+				<td><s:property value="get('lwcrAverage')"/></td>
 			</s:if>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>

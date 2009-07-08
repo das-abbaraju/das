@@ -66,6 +66,9 @@ public class ContractorAccount extends Account {
 	private User auditor;
 	private LowMedHigh riskLevel;
 	private Date viewedFacilities;
+	private Float emrAverage;
+	private Float trirAverage;
+	private Float lwcrAverage;
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 	private boolean ccOnFile = false;
 	private Date ccExpiration;
@@ -315,6 +318,33 @@ public class ContractorAccount extends Account {
 
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
+	}
+	
+	@Column(name = "emrAverage")
+	public Float getEmrAverage() {
+		return emrAverage;
+	}
+
+	public void setEmrAverage(Float emrAverage) {
+		this.emrAverage = emrAverage;
+	}
+
+	@Column(name = "trirAverage")
+	public Float getTrirAverage() {
+		return trirAverage;
+	}
+
+	public void setTrirAverage(Float trirAverage) {
+		this.trirAverage = trirAverage;
+	}
+
+	@Column(name = "lwcrAverage")
+	public Float getLwcrAverage() {
+		return lwcrAverage;
+	}
+
+	public void setLwcrAverage(Float lwcrAverage) {
+		this.lwcrAverage = lwcrAverage;
 	}
 
 	// //// BILLING/ACCOUNT - related columns //////

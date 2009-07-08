@@ -18,8 +18,8 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -33,6 +33,8 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
@@ -373,6 +375,16 @@ public class FlagCalculator2 {
 				}
 			}
 		}
+		// Calculating the 3 Year Avg for EMR and OSHA
+		OshaAudit oshaAvg = contractor.getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
+		AuditData emrAvg = contractor.getEmrs().get(OshaAudit.AVG);
+		if(emrAvg != null)
+			contractor.setEmrAverage(Float.valueOf(emrAvg.getAnswer()).floatValue());
+		if(oshaAvg != null) {
+			contractor.setTrirAverage(oshaAvg.getRecordableTotalRate());
+			contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate());
+		}
+		
 		contractor.setNeedsRecalculation(false);
 		contractor.setLastRecalculation(new Date());
 

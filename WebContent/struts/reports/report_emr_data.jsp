@@ -22,6 +22,7 @@
 	    <th><a href="?orderBy=a.name" >Contractor</a></th>
 	    <th>Year</th>
 	    <th><a href="?orderBy=d.answer" >Rate</a></th>
+	    <th><a href="?orderBy=c.emrAverage" >Average</a></th>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
 			<td>Phone</td>
@@ -48,6 +49,7 @@
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 			<td><s:property value="get('auditFor')"/></td>
 			<td class="right"><s:property value="get('answer')"/></td>
+			<td class="right"><s:property value="get('emrAverage')"/></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>

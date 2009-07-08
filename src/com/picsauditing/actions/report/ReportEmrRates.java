@@ -24,7 +24,7 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
 		sql.addField("d.answer");
-
+		sql.addField("c.emrAverage");
 		sql.addWhere("d.questionID = " + AuditQuestion.EMR);
 		sql.addWhere("d.answer >= " + getFilter().getMinEMR());
 		sql.addWhere("d.answer < " + getFilter().getMaxEMR());
@@ -37,5 +37,6 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		super.addExcelColumns();
 		excelSheet.addColumn(new ExcelColumn("auditFor", "Year", ExcelCellType.Integer), 30);
 		excelSheet.addColumn(new ExcelColumn("answer", "Rate", ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("emrAverage", "Average", ExcelCellType.Double));
 	}
 }

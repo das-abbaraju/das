@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -18,6 +19,8 @@ public class ReportFlagCriteria extends ReportAccount {
 	private boolean hasFatalities = false;
 	private boolean hasTrir = false;
 	private boolean hasLwcr = false;
+	private boolean hasTrirAvg = false;
+	private boolean hasLwcrAvg = false;
 	private OperatorAccount operatorAccount;
 	private int year;
 
@@ -57,6 +60,9 @@ public class ReportFlagCriteria extends ReportAccount {
 		sql.addField("a.email");
 		sql.addField("c.main_trade");
 		sql.addField("c.riskLevel");
+		sql.addField("c.emrAverage");
+		sql.addField("c.trirAverage");
+		sql.addField("c.lwcrAverage");
 
 		if (!permissions.isOperator()) {
 			operatorID = getFilter().getOperator()[0];
@@ -169,40 +175,49 @@ public class ReportFlagCriteria extends ReportAccount {
 					year = year - 1;
 					sql.addField("osha" + year + ".fatalities AS fatalities" + year);
 				}
-				if (!hasTrir && flagOshaCriteria.getTrir().isRequired()) {
-					hasTrir = true;
-					year = getYear();
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
-							+ year);
-					year = year - 1;
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
-							+ year);
-					year = year - 1;
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
-							+ year);
-					year = year - 1;
-					sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
-							+ year);
-
+				if (!hasTrir && !hasTrirAvg && flagOshaCriteria.getTrir().isRequired()) {
+					if(flagOshaCriteria.getTrir().isTimeAverage()) {
+						hasTrirAvg = true;
+					}
+					else {
+						hasTrir = true;
+						year = getYear();
+						sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+								+ year);
+						year = year - 1;
+						sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+								+ year);
+						year = year - 1;
+						sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+								+ year);
+						year = year - 1;
+						sql.addField("(osha" + year + ".recordableTotal * 200000 / osha" + year + ".manHours) AS trir"
+								+ year);
+						}
 				}
-				if (!hasLwcr && flagOshaCriteria.getLwcr().isRequired()) {
-					hasLwcr = true;
-					year = getYear();
-					sql
-							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
-									+ year);
-					year = year - 1;
-					sql
-							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
-									+ year);
-					year = year - 1;
-					sql
-							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
-									+ year);
-					year = year - 1;
-					sql
-							.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
-									+ year);
+				if (!hasLwcr && !hasLwcrAvg && flagOshaCriteria.getLwcr().isRequired()) {
+					if(flagOshaCriteria.getLwcr().isTimeAverage()) {
+						hasLwcrAvg = true;
+					}
+					else {
+						hasLwcr = true;
+						year = getYear();
+						sql
+								.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+										+ year);
+						year = year - 1;
+						sql
+								.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+										+ year);
+						year = year - 1;
+						sql
+								.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+										+ year);
+						year = year - 1;
+						sql
+								.addField("(osha" + year + ".lostWorkCases * 200000 / osha" + year + ".manHours) AS lwcr"
+										+ year);
+					}
 				}
 			}
 		}
@@ -243,6 +258,22 @@ public class ReportFlagCriteria extends ReportAccount {
 
 	public void setHasLwcr(boolean hasLwcr) {
 		this.hasLwcr = hasLwcr;
+	}
+
+	public boolean isHasTrirAvg() {
+		return hasTrirAvg;
+	}
+
+	public void setHasTrirAvg(boolean hasTrirAvg) {
+		this.hasTrirAvg = hasTrirAvg;
+	}
+
+	public boolean isHasLwcrAvg() {
+		return hasLwcrAvg;
+	}
+
+	public void setHasLwcrAvg(boolean hasLwcrAvg) {
+		this.hasLwcrAvg = hasLwcrAvg;
 	}
 
 	public OperatorAccount getOperatorAccount() {
@@ -312,14 +343,20 @@ public class ReportFlagCriteria extends ReportAccount {
 					&& !flagQuestionCriteria.getAuditQuestion().getAuditType().getClassType().isPolicy()) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
 				if (flagQuestionCriteria.getAuditQuestion().getId() == AuditQuestion.EMR) {
-					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
+					if(flagQuestionCriteria.getMultiYearScope().equals(MultiYearScope.ThreeYearAverage)) {
+						excelSheet.addColumn(new ExcelColumn("emrAverage", "EMR Average", ExcelCellType.Double), i++);
+					} else {	
+						year = getYear();
+						excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
+						if(flagQuestionCriteria.getMultiYearScope().equals(MultiYearScope.AllThreeYears)) {
+							year = year - 1;
+							excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
+							year = year - 1;
+							excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
+							year = year - 1;
+							excelSheet.addColumn(new ExcelColumn("answer" + year, "EMR" + year, ExcelCellType.String), i++);
+						}
+					}
 				} else {
 					excelSheet.addColumn(new ExcelColumn("answer" + questionID, flagQuestionCriteria.getAuditQuestion()
 							.getColumnHeaderOrQuestion(), ExcelCellType.String), i);
@@ -345,24 +382,34 @@ public class ReportFlagCriteria extends ReportAccount {
 							new ExcelColumn("fatalities" + year, "fatalities" + year, ExcelCellType.String), i++);
 				}
 				if (flagOshaCriteria.getTrir().isRequired()) {
-					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
+					if(flagOshaCriteria.getTrir().isTimeAverage()) {
+						excelSheet.addColumn(new ExcelColumn("trirAverage", "trir Average", ExcelCellType.Double), i++);
+					}
+					else {
+						year = getYear();
+						excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
+						year = year - 1;
+						excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
+						year = year - 1;
+						excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
+						year = year - 1;
+						excelSheet.addColumn(new ExcelColumn("trir" + year, "trir" + year, ExcelCellType.String), i++);
+					}
 				}
 				if (flagOshaCriteria.getLwcr().isRequired()) {
-					year = getYear();
-					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
-					year = year - 1;
-					excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
+					if(flagOshaCriteria.getLwcr().isTimeAverage()) {
+						excelSheet.addColumn(new ExcelColumn("lwcrAverage", "lwcr Average", ExcelCellType.Double), i++);
+					}
+					else {
+						year = getYear();
+						excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
+						year = year - 1;
+						excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
+						year = year - 1;
+						excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
+						year = year - 1;
+						excelSheet.addColumn(new ExcelColumn("lwcr" + year, "lwcr" + year, ExcelCellType.String), i++);
+					}
 				}
 			}
 		}

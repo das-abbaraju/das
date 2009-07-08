@@ -24,6 +24,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
+		sql.addField("c.trirAverage");
 		sql.addField("os.recordableTotal*200000/os.manHours AS incidenceRate");
 	}
 	
@@ -35,5 +36,6 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet.addColumn(new ExcelColumn("description", "Description"));
 		excelSheet.addColumn(new ExcelColumn("SHAType", "SHAType"));
 		excelSheet.addColumn(new ExcelColumn("incidenceRate", "Rate", ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("trirAverage", "Average", ExcelCellType.Double));
 	}
 }

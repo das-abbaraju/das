@@ -24,6 +24,7 @@
 			<td>Type</td>
 			<td>Rate</td>
 			<td>Year</td>
+		    <th><a href="?orderBy=c.trirAverage" >Average</a></th>
 			<s:if test="showContact">
 				<td>Primary Contact</td>
 				<td>Phone</td>
@@ -63,8 +64,8 @@
 			<td class="right"><s:property
 				value="%{new java.text.DecimalFormat('#,##0.00').format(get('incidenceRate'))}" />
 			</td>
-			<td><s:property value="get('auditFor')" />
-			</td>
+			<td><s:property value="get('auditFor')" /></td>
+			<td><s:property value="get('trirAverage')" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>
