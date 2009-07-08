@@ -11,7 +11,7 @@
 	<tr>
 		<td width="275" align="center"><img src="images/PSE_logo.jpg"
 			width="200" height="76"></td>
-		<td bgcolor="#CBE5FE" class="blueSmall">"We look to PICS as our partners in safety."<br>
+		<td bgcolor="#CBE5FE" class="blueSmall">"We look to PICS as our partner in safety."<br>
 		<br>
 		<div align="right"><strong>Joe Gaglione </strong> - President &amp; Founder </div>
 		</td>
@@ -30,7 +30,7 @@
 		<p><strong>PS Environmental – Specialty Contractor</strong><br>
 		<p>Founded in 1981, PS Environmental (PSE) has risen to top of its class in Air Pollution Control.  With offices in Los Angeles and Seattle, PSE has made a significant impact helping thousands of firms reduce their pollution throughout the United States, including BASF, Dow Corning, Shell, CRI, BP and many others.  PS Environmental understands and responds to all baghouse and dustcollector issues.  One distinction that sets PSE’s technicians apart is that they match filter fabrics to the specific application of each individual baghouse.</p>
 
-<p>With 30 years of field experience, PSE’s range of air pollution control services include: </p> 
+<p>With 30 years of field experience, PSE’s range of air pollution control services include the following: </p> 
 
 <p>24-hour emergency response, preventative maintenance such as troubleshooting, inspections and engineering evaluation to correcting system-design flaws through modifying or re-engineering existing systems or completely overhauling dust collector or baghouse systems which will improve performance and reduce operating costs.</p>
 
@@ -38,7 +38,7 @@
 
 <p>PICS noted PS Environmental positive safety culture during a scheduled audit on behalf of one of the consortium members and mutual customers.  PS Environmental showed management commitment to safety, health and environmental.  Gaglione stated, <strong>“Developing our strong safety culture has been a process of identifying hazards and then properly implementing the correct procedures and training to address those hazards.  Employee safety must be our number one concern.”</strong></p>
 
-<p>Gaglione recognized that innovations in safety are found by sharing, and solicited suggestions for improvement from PICS auditors.  <strong>“PICS has been a great resource for PS Environmental.  Their consortium model helps the owners and contractors in our industry constantly improve safety performance.  We recognize their expertise and look to PICS as our partners in safety.”</strong></p>
+<p>Gaglione recognized that innovations in safety are found by sharing, and solicited suggestions for improvement from PICS auditors.  <strong>“PICS has been a great resource for PS Environmental.  Their consortium model helps the owners and contractors in our industry constantly improve safety performance.  We recognize their expertise and look to PICS as our partner in safety.”</strong></p>
 
 		</div>
 		</td>
