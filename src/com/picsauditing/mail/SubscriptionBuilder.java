@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,6 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -20,7 +20,9 @@ public abstract class SubscriptionBuilder {
 	protected EmailSubscriptionDAO subscriptionDAO;
 	protected Subscription subscription;
 	protected SubscriptionTimePeriod timePeriod;
-	protected int templateID;
+	protected int templateID = 0;
+	
+	protected Date now = new Date();
 
 	protected Map<String, Object> tokens = new HashMap<String, Object>();
 
@@ -39,7 +41,7 @@ public abstract class SubscriptionBuilder {
 		if (sub.getTimePeriod().equals(SubscriptionTimePeriod.None))
 			return false;
 
-		return !sub.getLastSent().after(sub.getTimePeriod().getComparisonDate());
+		return sub.getLastSent() == null || !sub.getLastSent().after(sub.getTimePeriod().getComparisonDate());
 	}
 
 	protected List<EmailSubscription> getSubscriptions() {
@@ -63,10 +65,12 @@ public abstract class SubscriptionBuilder {
 		Map<Account, Set<EmailSubscription>> result = new HashMap<Account, Set<EmailSubscription>>();
 
 		for (EmailSubscription sub : getSubscriptions()) {
-			if (result.get(sub.getUser().getAccount()) == null)
-				result.put(sub.getUser().getAccount(), new HashSet<EmailSubscription>());
+			if (isSendEmail(sub)) {
+				if (result.get(sub.getUser().getAccount()) == null)
+					result.put(sub.getUser().getAccount(), new HashSet<EmailSubscription>());
 
-			result.get(sub.getUser().getAccount()).add(sub);
+				result.get(sub.getUser().getAccount()).add(sub);
+			}
 		}
 
 		return result;
@@ -74,16 +78,21 @@ public abstract class SubscriptionBuilder {
 
 	protected abstract void setup(Account a);
 
+	protected void tearDown(Set<EmailSubscription> subs) {
+		for (EmailSubscription sub : subs) {
+			sub.setLastSent(now);
+			subscriptionDAO.save(sub);
+		}
+	}
+
 	protected EmailQueue buildEmail(String recipients) throws Exception {
 		EmailQueue email = null;
 
 		if (tokens.size() > 0) {
-
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
 			emailBuilder.addAllTokens(tokens);
-			emailBuilder.setCcAddresses(recipients);
-			emailBuilder.setUser(new User(2357));
+			emailBuilder.setToAddresses(recipients);
 
 			email = emailBuilder.build();
 		}
@@ -92,7 +101,6 @@ public abstract class SubscriptionBuilder {
 	}
 
 	public void process() throws Exception {
-		// TODO Auto-generated method stub
 		Map<Account, Set<EmailSubscription>> accountMap = getSubscriptionsByAccount();
 
 		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
@@ -103,9 +111,14 @@ public abstract class SubscriptionBuilder {
 			EmailQueue emailToSend = buildEmail(Strings.implode(recipients, ","));
 
 			if (emailToSend != null) {
-				// Send the email
+				// TODO Send the email
 				// EmailSender.send(emailToSend);
+				System.out.println(emailToSend.getSubject());
+				System.out.println(emailToSend.getToAddresses());
+				System.out.println(emailToSend.getBody());
 			}
+
+			tearDown(entry.getValue());
 		}
 	}
 }

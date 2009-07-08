@@ -1,9 +1,11 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,12 +64,14 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<ContractorAuditOperator> find(int opID, CaoStatus status) {
-		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status";
+	public List<ContractorAuditOperator> find(int opID, CaoStatus status, Date start, Date end) {
+		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status AND statusChangedDate BETWEEN :start AND :end";
 		
 		Query q = em.createQuery(query);
 		q.setParameter("opID", opID);
 		q.setParameter("status", status);
+		q.setParameter("start", start, TemporalType.TIMESTAMP);
+		q.setParameter("end", end, TemporalType.TIMESTAMP);
 		
 		return q.getResultList();
 	}

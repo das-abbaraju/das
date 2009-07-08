@@ -1,6 +1,5 @@
 package com.picsauditing.mail;
 
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
@@ -16,15 +15,15 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 			ContractorOperatorFlagDAO flagDAO) {
 		super(Subscription.FlagChanges, timePeriod, subscriptionDAO);
 		this.flagDAO = flagDAO;
+		this.templateID = 60;
 	}
 
 	@Override
 	protected void setup(Account a) {
-		templateID = 60;
-		
 		List<ContractorOperatorFlag> flags = flagDAO.findFlagChangedByOperatorAndRange(a.getId(), timePeriod
-				.getComparisonDate(), new Date());
-		
-		tokens.put("flags", flags);
+				.getComparisonDate(), now);
+
+		if (flags.size() > 0)
+			tokens.put("flags", flags);
 	}
 }

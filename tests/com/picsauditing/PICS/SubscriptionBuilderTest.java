@@ -11,12 +11,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.FlagChangesSubscription;
@@ -27,6 +29,7 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = true)
 @Transactional
 public class SubscriptionBuilderTest extends TestCase {
 
@@ -36,6 +39,8 @@ public class SubscriptionBuilderTest extends TestCase {
 	ContractorOperatorFlagDAO flagDAO;
 	@Autowired
 	ContractorAuditOperatorDAO caoDAO;
+	@Autowired
+	OperatorAccountDAO opDAO;
 
 	@Test
 	public void testFlagChanges() throws Exception {
@@ -46,14 +51,17 @@ public class SubscriptionBuilderTest extends TestCase {
 	}
 
 	@Test
-	public void testInsuranceCerts() throws Exception {
+	public void testVerifiedInsuranceCerts() throws Exception {
 		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts,
-				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
+				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO, opDAO);
 
 		builder.process();
+	}
 
-		builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts,
-				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
+	@Test
+	public void testPendingInsuranceCerts() throws Exception {
+		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts,
+				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO, opDAO);
 
 		builder.process();
 	}
@@ -126,7 +134,7 @@ public class SubscriptionBuilderTest extends TestCase {
 
 		for (Map.Entry<SubscriptionTimePeriod, EmailSubscription> entry : timeMap.entrySet()) {
 			entry.getValue().setLastSent(cal.getTime());
-			assertFalse(entry.getKey() + " - failed for yesterday's date", builder.isSendEmail(entry.getValue()));
+			assertFalse(entry.getKey() + " - failed for future date", builder.isSendEmail(entry.getValue()));
 		}
 
 	}
