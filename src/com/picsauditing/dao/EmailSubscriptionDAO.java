@@ -12,6 +12,7 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @Transactional
+@SuppressWarnings("unchecked")
 public class EmailSubscriptionDAO extends PicsDAO {
 
 	public EmailSubscription save(EmailSubscription o) {
@@ -38,14 +39,12 @@ public class EmailSubscriptionDAO extends PicsDAO {
 			em.remove(row);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailSubscription> findByUserId(int userID) {
 		Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.user.id = ?");
 		q.setParameter(1, userID);
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<User> findUsersBySubscription(Subscription subscription) {
 		Query query = em.createQuery("SELECT es.user FROM EmailSubscription es WHERE es.subscription = :sub");
 		query.setParameter("sub", subscription);
@@ -53,7 +52,6 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod) {
 		Query query = em.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time");
 		query.setParameter("sub", subscription);
