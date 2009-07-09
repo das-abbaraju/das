@@ -103,7 +103,6 @@ public abstract class SubscriptionBuilder {
 			EmailQueue emailToSend = buildEmail(Strings.implode(recipients, ","));
 
 			if (emailToSend != null) {
-				// TODO Send the email
 				EmailSender.send(emailToSend);
 			}
 
