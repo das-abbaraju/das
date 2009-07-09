@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.EmailSubscription;
@@ -19,18 +21,24 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
 public class EmailSubscriptionDAOTest {
 
 	@Autowired
 	private EmailSubscriptionDAO dao;
+	@Autowired
+	private ContractorAccountDAO conDAO;
 
 	@Test
 	public void testFindBySubscription() {
-		EmailSubscription sub = EntityFactory.makeEmailSubscription(new User(2357), Subscription.PICSAnnouncements, SubscriptionTimePeriod.Daily);
+		EmailSubscription sub = EntityFactory.makeEmailSubscription(new User(2357), Subscription.PICSAnnouncements,
+				SubscriptionTimePeriod.Daily);
 
 		sub = dao.save(sub);
 
-		List<EmailSubscription> subscriptionList = dao.find(Subscription.PICSAnnouncements, SubscriptionTimePeriod.Daily);
+		List<EmailSubscription> subscriptionList = dao.find(Subscription.PICSAnnouncements,
+				SubscriptionTimePeriod.Daily);
 		assertTrue(subscriptionList.contains(sub));
 
 		dao.remove(sub.getId());
