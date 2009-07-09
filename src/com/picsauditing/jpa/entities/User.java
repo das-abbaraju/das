@@ -74,6 +74,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private List<UserAccess> ownedPermissions = new ArrayList<UserAccess>();
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
+	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 
 	public User() {
 	}
@@ -351,6 +352,15 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	public void setSwitchFroms(List<UserSwitch> switchFroms) {
 		this.switchFroms = switchFroms;
+	}
+
+	@OneToMany(mappedBy = "user")
+	public List<EmailSubscription> getSubscriptions() {
+		return subscriptions;
+	}
+
+	public void setSubscriptions(List<EmailSubscription> subscriptions) {
+		this.subscriptions = subscriptions;
 	}
 
 	// TODO: change this to a Set from a List

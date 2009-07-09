@@ -9,12 +9,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
 public class UserDaoTest extends TestCase {
 
 	@Autowired
@@ -24,16 +29,16 @@ public class UserDaoTest extends TestCase {
 	public final void testFind() {
 		try {
 			User row = dao.find(681);
-			OperatorAccount operator = (OperatorAccount)row.getAccount();
+			OperatorAccount operator = (OperatorAccount) row.getAccount();
 			System.out.println(row.getAccount().getName());
 			System.out.println(operator.getActivationEmails());
-			
+
 			assertEquals(2921, row.getAccount().getId());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public final void testFindAll() {
 		try {
@@ -72,5 +77,14 @@ public class UserDaoTest extends TestCase {
 	public void testFindByAccountID() {
 		List<User> user = dao.findByAccountID(1100, "Yes", "No");
 		assertTrue(user.size() > 0);
+	}
+
+	@Test
+	public void testEmailSubscriptions() {
+		User user = dao.find(1282);
+
+		assertEquals(user.getAccount().getId(), 4744);
+
+		assertTrue(user.getSubscriptions().size() > 0);
 	}
 }
