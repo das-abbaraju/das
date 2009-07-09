@@ -116,12 +116,12 @@
 		<s:iterator value="eList" status="num">
 			<tr>
 				<td><s:property value="subscription.description"/></td>
-				<td id="td<s:property value="subscription.description"/>">
+				<td id="td<s:property value="subscription"/>">
 					<s:include value="../mail/user_email_subscription.jsp"></s:include>
 				</td>
 				<td>
 				<div class="buttons">
-					<button type="button" onclick="save('<s:property value="subscription.description"/>')">Save</button>
+					<button type="button" onclick="save('<s:property value="subscription"/>')">Save</button>
 					</div>
 				</td>
 			</tr>
