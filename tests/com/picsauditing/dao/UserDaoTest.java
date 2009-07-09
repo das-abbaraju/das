@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -86,5 +88,14 @@ public class UserDaoTest extends TestCase {
 		assertEquals(user.getAccount().getId(), 4744);
 
 		assertTrue(user.getSubscriptions().size() > 0);
+
+		boolean hasConFinishedEvent = false;
+		for (EmailSubscription subscription : user.getSubscriptions()) {
+			if (subscription.getSubscription().equals(Subscription.ContractorFinished)
+					&& subscription.getTimePeriod().equals(SubscriptionTimePeriod.Event))
+				hasConFinishedEvent = true;
+		}
+
+		assertTrue(hasConFinishedEvent);
 	}
 }
