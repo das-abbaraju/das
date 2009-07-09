@@ -2,12 +2,21 @@
 <html>
 <head>
 <title>Multiple User Login</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<s:include value="../reports/reportHeader.jsp" />
+
 </head>
 <body>
 <h1>Multi-User Login</h1>
+
+<s:form id="form1">
+	<s:hidden name="filter.ajax" value="false"/>
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
+	<s:hidden name="showPage" value="1" />
+	<s:hidden name="filter.startsWith" />
+	<s:hidden name="orderBy" />
+</s:form>
+
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
