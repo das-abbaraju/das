@@ -59,4 +59,15 @@ public class EmailSubscriptionDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+
+	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod, int opID) {
+		Query query = em
+				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.id = :opID");
+		query.setParameter("sub", subscription);
+		query.setParameter("time", timePeriod);
+		query.setParameter("opID", opID);
+
+		return query.getResultList();
+	}
+
 }
