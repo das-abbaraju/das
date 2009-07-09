@@ -27,8 +27,6 @@ public class EmailSubscriptionDAOTest {
 
 	@Autowired
 	private EmailSubscriptionDAO dao;
-	@Autowired
-	private ContractorAccountDAO conDAO;
 
 	@Test
 	public void testFindBySubscription() {
