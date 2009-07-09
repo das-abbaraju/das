@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.mail;
 
 import junit.framework.TestCase;
 
