@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.mail.ContractorRegistrationSubscription;
 import com.picsauditing.mail.FlagChangesSubscription;
 import com.picsauditing.mail.InsuranceCertificateSubscription;
 import com.picsauditing.mail.Subscription;
@@ -21,13 +23,15 @@ public class SubscriptionCron extends PicsActionSupport {
 	private ContractorOperatorFlagDAO flagDAO;
 	private ContractorAuditOperatorDAO caoDAO;
 	private OperatorAccountDAO opDAO;
+	private ContractorAccountDAO conDAO;
 
 	public SubscriptionCron(EmailSubscriptionDAO subscriptionDAO, ContractorOperatorFlagDAO flagDAO,
-			ContractorAuditOperatorDAO caoDAO, OperatorAccountDAO opDAO) {
+			ContractorAuditOperatorDAO caoDAO, OperatorAccountDAO opDAO, ContractorAccountDAO conDAO) {
 		this.subscriptionDAO = subscriptionDAO;
 		this.flagDAO = flagDAO;
 		this.caoDAO = caoDAO;
 		this.opDAO = opDAO;
+		this.conDAO = conDAO;
 	}
 
 	@Override
@@ -59,6 +63,9 @@ public class SubscriptionCron extends PicsActionSupport {
 
 			builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts, timePeriod,
 					subscriptionDAO, caoDAO, opDAO);
+			builder.process();
+
+			builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
 			builder.process();
 		}
 

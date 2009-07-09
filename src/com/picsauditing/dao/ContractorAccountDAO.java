@@ -2,10 +2,12 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -164,8 +166,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	 * @return
 	 */
 	public List<Integer> findContractorsNeedingRecalculation() {
-		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.active = 'Y' AND (" + "c.lastRecalculation < :lastRunDate "
-				+ "OR c.lastRecalculation IS NULL) " + "ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
+		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.active = 'Y' AND ("
+				+ "c.lastRecalculation < :lastRunDate " + "OR c.lastRecalculation IS NULL) "
+				+ "ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(10);
 
@@ -208,5 +211,17 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql);
 		Object result = query.getSingleResult();
 		return Integer.parseInt(result.toString());
+	}
+
+	public List<ContractorAccount> findNewContractorsByOperator(int opID, Date start, Date end) {
+		String query = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount.id = "
+				+ ":opID AND co.contractorAccount.creationDate BETWEEN :start and :end";
+		
+		Query q = em.createQuery(query);
+		q.setParameter("opID", opID);
+		q.setParameter("start", start, TemporalType.TIMESTAMP);
+		q.setParameter("end", end, TemporalType.TIMESTAMP);
+		
+		return q.getResultList();
 	}
 }
