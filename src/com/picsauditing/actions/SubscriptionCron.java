@@ -73,6 +73,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			builder.process();
 
 			builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
+			builder.setServerName(serverName);
 			builder.process();
 		}
 

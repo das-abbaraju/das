@@ -126,9 +126,12 @@ public abstract class SubscriptionBuilder {
 	}
 	
 	public boolean isRequiresHTML(int templateID) {
-		if(templateID == 60 || templateID == 61) {
+		if(templateID == 60)
 			return true;
-		}
+		if(templateID == 61) 
+			return true;
+		if(templateID == 62)
+			return true;
 		return false;
 	}
 	

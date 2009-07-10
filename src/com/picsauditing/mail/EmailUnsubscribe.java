@@ -38,7 +38,7 @@ public class EmailUnsubscribe extends PicsActionSupport implements ServletReques
 		String userIDstring = request.getParameter("id");
 		String subString = request.getParameter("sub");
 		if (Strings.isEmpty(userIDstring) || Strings.isEmpty(subString)) {
-			addActionError("Cannot unsubscribe from this email. Please log in to your account and edit your email preferences");
+			addActionError("Cannot unsubscribe from " + subString +" email. Please log in to your account and edit your email preferences.");
 			return SUCCESS;
 		}
 		

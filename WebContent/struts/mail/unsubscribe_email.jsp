@@ -15,9 +15,8 @@
 </s:if>
 <s:else>
 	<div id=info>
-	You have successfully unsubscribed from this Email<br/><br/>
-	<a href="index.jsp" class="redMain">PICS Website</a> |
-	<a href="Login.action" class="redMain">Login</a>
+	You have successfully unsubscribed from this Email<br/>
+	Click Here to login to <a href="Login.action" class="redMain">PICS Website</a>
 	</div>
 </s:else>	
 </body>
