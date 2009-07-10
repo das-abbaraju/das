@@ -53,7 +53,8 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod) {
-		Query query = em.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.isActive = 'Yes'");
+		Query query = em
+				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.isActive = 'Yes' AND user.account.active = 'Y'");
 		query.setParameter("sub", subscription);
 		query.setParameter("time", timePeriod);
 
@@ -62,7 +63,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod, int opID) {
 		Query query = em
-				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.id = :opID AND user.isActive = 'Yes'");
+				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.id = :opID AND user.isActive = 'Yes' AND user.account.active = 'Y'");
 		query.setParameter("sub", subscription);
 		query.setParameter("time", timePeriod);
 		query.setParameter("opID", opID);
