@@ -65,7 +65,14 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	}
 
 	public List<ContractorAuditOperator> find(int opID, CaoStatus status, Date start, Date end) {
-		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status AND statusChangedDate BETWEEN :start AND :end";
+		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status AND ";
+		if(status.isPending()) {
+			query += "creationDate ";
+		}	
+		else {
+			query += "statusChangedDate ";
+		}
+		query += "BETWEEN :start AND :end";
 		
 		Query q = em.createQuery(query);
 		q.setParameter("opID", opID);

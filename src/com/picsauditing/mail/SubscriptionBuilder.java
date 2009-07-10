@@ -12,6 +12,7 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -21,6 +22,7 @@ public abstract class SubscriptionBuilder {
 	protected Subscription subscription;
 	protected SubscriptionTimePeriod timePeriod;
 	protected int templateID = 0;
+	protected String serverName = null;
 
 	protected Date now = new Date();
 
@@ -44,11 +46,11 @@ public abstract class SubscriptionBuilder {
 		return subscriptions;
 	}
 
-	protected Set<String> getRecipients(Collection<EmailSubscription> subs) {
-		Set<String> result = new HashSet<String>();
+	protected Set<User> getRecipients(Collection<EmailSubscription> subs) {
+		Set<User> result = new HashSet<User>();
 
 		for (EmailSubscription sub : subs) {
-			result.add(sub.getUser().getEmail());
+			result.add(sub.getUser());
 		}
 
 		return result;
@@ -76,15 +78,22 @@ public abstract class SubscriptionBuilder {
 		}
 	}
 
-	protected EmailQueue buildEmail(String recipients) throws Exception {
+	protected EmailQueue buildEmail(User user, String serverName) throws Exception {
 		EmailQueue email = null;
 
 		if (tokens.size() > 0) {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
 			emailBuilder.setFromAddress("info@picsauditing.com");
+			emailBuilder.addToken("username", user.getName());
+
+			String seed = "u" + user.getId() + "t" + templateID;
+			String confirmLink = serverName+"EmailUserUnsubscribe.action?id=" + user.getId() + "&sub="+subscription.getDescription()+ 
+				"&key="	+ Strings.hashUrlSafe(seed);
+			emailBuilder.addToken("confirmLink", confirmLink);
+			
 			emailBuilder.addAllTokens(tokens);
-			emailBuilder.setToAddresses(recipients);
+			emailBuilder.setToAddresses(user.getEmail());
 
 			email = emailBuilder.build();
 		}
@@ -94,19 +103,40 @@ public abstract class SubscriptionBuilder {
 
 	public void process() throws Exception {
 		Map<Account, Set<EmailSubscription>> accountMap = getSubscriptionsByAccount();
-
+		String serverName = getServerName();
 		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
 			setup(entry.getKey()); // Send the account object to the sub-classes
 
 			// get the recipients
-			Set<String> recipients = getRecipients(entry.getValue());
-			EmailQueue emailToSend = buildEmail(Strings.implode(recipients, ","));
-
-			if (emailToSend != null) {
-				EmailSender.send(emailToSend);
-			}
+			Set<User> recipients = getRecipients(entry.getValue());
+			for(User user : recipients) {
+				EmailQueue emailToSend = buildEmail(user, serverName);
+	
+				if (emailToSend != null) {
+					// TODO Send the email
+					if(isRequiresHTML(emailToSend.getEmailTemplate().getId())) {
+						emailToSend.setHtml(true);
+					}
+					EmailSender.send(emailToSend);
+				}
+			}	
 
 			tearDown(entry.getValue());
 		}
+	}
+	
+	public boolean isRequiresHTML(int templateID) {
+		if(templateID == 60 || templateID == 61) {
+			return true;
+		}
+		return false;
+	}
+	
+	public String getServerName() {
+		return serverName;
+	}
+	
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 }

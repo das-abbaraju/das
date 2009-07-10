@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.interceptor.ServletRequestAware;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
@@ -16,12 +21,13 @@ import com.picsauditing.mail.SubscriptionBuilder;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @SuppressWarnings("serial")
-public class SubscriptionCron extends PicsActionSupport {
+public class SubscriptionCron extends PicsActionSupport implements ServletRequestAware {
 
 	private EmailSubscriptionDAO subscriptionDAO;
 	private ContractorOperatorFlagDAO flagDAO;
 	private ContractorAuditOperatorDAO caoDAO;
 	private ContractorAccountDAO conDAO;
+	protected HttpServletRequest request;
 
 	public SubscriptionCron(EmailSubscriptionDAO subscriptionDAO, ContractorOperatorFlagDAO flagDAO,
 			ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO) {
@@ -34,6 +40,8 @@ public class SubscriptionCron extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		Calendar calendar = Calendar.getInstance();
+		String name = request.getRequestURL().toString();
+		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
 
 		List<SubscriptionTimePeriod> timePeriods = new ArrayList<SubscriptionTimePeriod>();
 
@@ -50,16 +58,18 @@ public class SubscriptionCron extends PicsActionSupport {
 
 		for (SubscriptionTimePeriod timePeriod : timePeriods) {
 			SubscriptionBuilder builder;
-
 			builder = new FlagChangesSubscription(timePeriod, subscriptionDAO, flagDAO);
+			builder.setServerName(serverName);
 			builder.process();
 
 			builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts, timePeriod,
 					subscriptionDAO, caoDAO);
+			builder.setServerName(serverName);
 			builder.process();
 
 			builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts, timePeriod,
 					subscriptionDAO, caoDAO);
+			builder.setServerName(serverName);
 			builder.process();
 
 			builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
@@ -67,5 +77,10 @@ public class SubscriptionCron extends PicsActionSupport {
 		}
 
 		return SUCCESS;
+	}
+	
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 }
