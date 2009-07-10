@@ -200,7 +200,7 @@ input[type=submit] {
 								</s:else>
 							</s:if>
 							<s:else>
-								Check <s:if test="payment.checkNumber != null || payment.checkNumber.length() > 0">#<s:property value="payment.checkNumber"/></s:if>
+								Check <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0">#<s:property value="payment.checkNumber"/></s:if>
 							</s:else>
 							</span>
 							<span class="big">($<s:property value="amount" />) USD</span>
