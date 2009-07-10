@@ -16,6 +16,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -38,6 +39,7 @@ import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -59,6 +61,7 @@ public class FlagCalculator2 {
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
 	private NoteDAO noteDAO;
+	private EmailSubscriptionDAO subscriptionDAO;
 
 	private AuditBuilder auditBuilder;
 	private CronMetricsAggregator cronMetrics;
@@ -71,7 +74,8 @@ public class FlagCalculator2 {
 
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
 			ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
-			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder, NoteDAO noteDAO) {
+			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder, NoteDAO noteDAO,
+			EmailSubscriptionDAO subscriptionDAO) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.conAuditDAO = conAuditDAO;
@@ -80,6 +84,7 @@ public class FlagCalculator2 {
 		this.caoDAO = caoDAO;
 		this.auditBuilder = auditBuilder;
 		this.noteDAO = noteDAO;
+		this.subscriptionDAO = subscriptionDAO;
 	}
 
 	public void runAll() {
@@ -154,10 +159,10 @@ public class FlagCalculator2 {
 
 			for (AuditOperator auditOperator : operator.getInheritInsurance().getAudits())
 				PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
-			
+
 			for (AuditOperator auditOperator : operator.getInheritAudits().getAudits())
 				PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
-			
+
 			for (AuditOperator auditOperator : operator.getVisibleAudits())
 				PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 
@@ -284,11 +289,11 @@ public class FlagCalculator2 {
 			for (ContractorAudit audit : contractor.getAudits()) {
 				if (audit.getAuditType().getClassType().isPolicy()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
-						if(cao.isVisible()) {
+						if (cao.isVisible()) {
 							if (cao.getOperator().equals(operator)
 									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
 								FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
-	
+
 								cao.setFlag(flagColor);
 								caoDAO.save(cao);
 							}
@@ -331,9 +336,12 @@ public class FlagCalculator2 {
 				contractor.getFlags().put(operator, coFlag);
 			} else {
 				boolean isLinked = false;
+				ContractorOperator co = null;
 				for (ContractorOperator cOperator : conOperators) {
-					if (cOperator.getOperatorAccount().equals(operator))
+					if (cOperator.getOperatorAccount().equals(operator)) {
 						isLinked = true;
+						co = cOperator;
+					}
 				}
 				if (isLinked) {
 					if (color == null || !color.equals(coFlag.getFlagColor())) {
@@ -369,6 +377,13 @@ public class FlagCalculator2 {
 							System.out.println("ERROR: failed to save note because - " + e.getMessage());
 						}
 
+						try {
+							if (waitingOn.equals(WaitingOn.None) && !coFlag.getWaitingOn().equals(WaitingOn.None))
+								EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
+						} catch (Exception e) {
+							System.out.println("ERROR: failed to send subscription email - " + e.getMessage());
+						}
+
 						coFlag.setWaitingOn(waitingOn);
 						coFlag.setLastUpdate(new Date());
 					}
@@ -378,13 +393,13 @@ public class FlagCalculator2 {
 		// Calculating the 3 Year Avg for EMR and OSHA
 		OshaAudit oshaAvg = contractor.getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
 		AuditData emrAvg = contractor.getEmrs().get(OshaAudit.AVG);
-		if(emrAvg != null)
+		if (emrAvg != null)
 			contractor.setEmrAverage(Float.valueOf(emrAvg.getAnswer()).floatValue());
-		if(oshaAvg != null) {
+		if (oshaAvg != null) {
 			contractor.setTrirAverage(oshaAvg.getRecordableTotalRate());
 			contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate());
 		}
-		
+
 		contractor.setNeedsRecalculation(false);
 		contractor.setLastRecalculation(new Date());
 
