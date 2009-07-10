@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -155,7 +156,10 @@ public class Cron extends PicsActionSupport {
 				for (ContractorAudit cAudit : conList) {
 					cAudit.changeStatus(AuditStatus.Submitted, system);
 					contractorAuditDAO.save(cAudit);
-					stampNote(cAudit.getContractorAccount(), "Submitted the "+cAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+					String text = "Submitted the "+cAudit.getAuditType().getAuditName();
+					if(!Strings.isEmpty(cAudit.getAuditFor()))
+						text += cAudit.getAuditFor();
+					stampNote(cAudit.getContractorAccount(), text, NoteCategory.Audits);
 				}
 				endTask();
 			} catch (Throwable t) {
