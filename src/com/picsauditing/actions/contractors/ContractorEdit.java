@@ -187,22 +187,27 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				this.addActionMessage("Successfully reactivated this contractor account. "
 						+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
 			} else if (button.equals("Cancel")) {
-				contractor.setRenew(false);
-				if (contractor.getNewMembershipLevel().isFree())
-					contractor.setActive('N');
-
-				String expiresMessage = "";
-				if (contractor.getPaymentExpires().after(new Date()))
-					expiresMessage = " This account will no longer be visible to operators after "
-							+ contractor.getPaymentExpires();
-				else {
-					expiresMessage = " This account is no longer visible to operators.";
-					contractor.setActive('N');
+				if(Strings.isEmpty(contractor.getReason())) {
+					addActionError("Please select a deactivation reason before you cancel the account");
 				}
-				accountDao.save(contractor);
-
-				this.addNote(contractor, "Closed contractor account." + expiresMessage);
-				this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
+				else {
+					contractor.setRenew(false);
+					if (contractor.getNewMembershipLevel().isFree())
+						contractor.setActive('N');
+	
+					String expiresMessage = "";
+					if (contractor.getPaymentExpires().after(new Date()))
+						expiresMessage = " This account will no longer be visible to operators after "
+								+ contractor.getPaymentExpires();
+					else {
+						expiresMessage = " This account is no longer visible to operators.";
+						contractor.setActive('N');
+					}
+					accountDao.save(contractor);
+	
+					this.addNote(contractor, "Closed contractor account." + expiresMessage);
+					this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
+				}
 			} else if (button.equals("SendDeactivationEmail")) {
 				permissions.tryPermission(OpPerms.EmailOperators);
 				Set<String> emailAddresses = new HashSet<String>();
@@ -323,12 +328,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	
 	public ArrayList<String> getDeactivationReasons() {
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("No response");
+		list.add("Did not Complete PICS process");
 		list.add("Does not work for operator");
+		list.add("Duplicate/Merged Account");
+		list.add("No response");
 		list.add("Operator exemption");
 		list.add("Payments not Current");
 		list.add("Lost Contract");
-		list.add("Did not Complete PICS process");
 		return list;
 	}
 }
