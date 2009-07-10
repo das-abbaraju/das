@@ -17,6 +17,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -28,6 +29,8 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -49,15 +52,18 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected boolean overrideAll = false;
 
 	private ContractorAuditOperatorDAO caoDAO;
+	private EmailSubscriptionDAO subscriptionDAO;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
-			ContractorOperatorFlagDAO contractorOperatorFlagDAO, ContractorAuditOperatorDAO caoDAO) {
+			ContractorOperatorFlagDAO contractorOperatorFlagDAO, ContractorAuditOperatorDAO caoDAO,
+			EmailSubscriptionDAO subscriptionDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDao = contractorOperatorFlagDAO;
 		this.caoDAO = caoDAO;
+		this.subscriptionDAO = subscriptionDAO;
 		this.noteCategory = NoteCategory.Flags;
 	}
 
@@ -97,7 +103,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		if (button != null) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
-			
+
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setAuditColumns(getUser());
@@ -105,7 +111,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			note.setViewableByOperator(co.getOperatorAccount());
 			note.setCanContractorView(true);
 			note.setBody(forceNote);
-			
+
 			String noteText = "";
 			if (button.equalsIgnoreCase("Force Flag")) {
 				if (forceFlag.equals(co.getForceFlag()))
@@ -114,7 +120,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					addActionError("You didn't specify an end date");
 				if (forceNote == null)
 					addActionError("You must enter a note when forcing a flag ");
-				
+
 				if (getActionErrors().size() > 0) {
 					PicsLogger.stop();
 					return SUCCESS;
@@ -126,7 +132,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 				if (overrideAll == true) {
 					for (ContractorOperator co2 : getOperators()) {
-						if (!co.equals(co2) &&  !forceFlag.equals(co2.getForceFlag())) {
+						if (!co.equals(co2) && !forceFlag.equals(co2.getForceFlag())) {
 							co2.setForceEnd(forceEnd);
 							co2.setForceFlag(forceFlag);
 							co2.setAuditColumns(permissions);
@@ -145,13 +151,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				if (overrideAll == true) {
 					for (ContractorOperator co2 : getOperators()) {
 						if (!co.equals(co2) && co2.getForceFlag() != null) {
-							// cancel the flag for all my other operators for this contractor
+							// cancel the flag for all my other operators for
+							// this contractor
 							contractor.setNeedsRecalculation(true);
 							co2.setForceEnd(null);
 							co2.setForceFlag(null);
 							co2.setAuditColumns(permissions);
 							contractorOperatorDao.save(co2);
-							
+
 							noteText += ", " + co.getOperatorAccount().getName();
 						}
 					}
@@ -160,7 +167,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			note.setSummary(noteText);
 			getNoteDao().save(note);
 		}
-		
+
 		if (co.getFlag() == null) {
 			// Add a new flag for the contractor
 			ContractorOperatorFlag newFlag = new ContractorOperatorFlag();
@@ -207,7 +214,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co.getFlag().setLastUpdate(new Date());
 			co.getFlag().setFlagColor(newColor);
 		}
-		co.getFlag().setWaitingOn(calculator.calculateWaitingOn());
+		WaitingOn waitingOn = calculator.calculateWaitingOn();
+		if (!co.getFlag().getWaitingOn().equals(WaitingOn.None) && waitingOn.equals(WaitingOn.None))
+			EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
+
+		co.getFlag().setWaitingOn(waitingOn);
 		co.setAuditColumns(permissions);
 		contractorOperatorDao.save(co);
 
