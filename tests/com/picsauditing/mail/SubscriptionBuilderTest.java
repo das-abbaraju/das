@@ -50,7 +50,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Test
 	public void testVerifiedInsuranceCerts() throws Exception {
 		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts,
-				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO, opDAO);
+				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
 
 		builder.process();
 	}
@@ -58,7 +58,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Test
 	public void testPendingInsuranceCerts() throws Exception {
 		SubscriptionBuilder builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts,
-				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO, opDAO);
+				SubscriptionTimePeriod.Weekly, subscriptionDAO, caoDAO);
 
 		builder.process();
 	}

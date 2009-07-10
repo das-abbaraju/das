@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -13,14 +12,12 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 
 	private ContractorAuditOperatorDAO caoDAO;
-	private OperatorAccountDAO opDAO;
 	private CaoStatus caoStatus;
 
 	public InsuranceCertificateSubscription(Subscription subscription, SubscriptionTimePeriod timePeriod,
-			EmailSubscriptionDAO subscriptionDAO, ContractorAuditOperatorDAO caoDAO, OperatorAccountDAO opDAO) {
+			EmailSubscriptionDAO subscriptionDAO, ContractorAuditOperatorDAO caoDAO) {
 		super(subscription, timePeriod, subscriptionDAO);
 		this.caoDAO = caoDAO;
-		this.opDAO = opDAO;
 		this.templateID = 61;
 	}
 
@@ -33,9 +30,10 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			caoStatus = CaoStatus.Verified;
 		}
 
-		OperatorAccount o = opDAO.find(a.getId());
+		// OperatorAccount o = opDAO.find(a.getId());
 
-		if (o != null) {
+		if (a instanceof OperatorAccount) {
+			OperatorAccount o = (OperatorAccount) a;
 			// We may need to use the inheritance for insurance
 			List<ContractorAuditOperator> caos = caoDAO.find(o.getInheritInsurance().getId(), caoStatus, timePeriod
 					.getComparisonDate(), now);

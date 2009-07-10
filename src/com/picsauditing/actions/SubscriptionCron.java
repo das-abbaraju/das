@@ -8,7 +8,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.mail.ContractorRegistrationSubscription;
 import com.picsauditing.mail.FlagChangesSubscription;
 import com.picsauditing.mail.InsuranceCertificateSubscription;
@@ -22,15 +21,13 @@ public class SubscriptionCron extends PicsActionSupport {
 	private EmailSubscriptionDAO subscriptionDAO;
 	private ContractorOperatorFlagDAO flagDAO;
 	private ContractorAuditOperatorDAO caoDAO;
-	private OperatorAccountDAO opDAO;
 	private ContractorAccountDAO conDAO;
 
 	public SubscriptionCron(EmailSubscriptionDAO subscriptionDAO, ContractorOperatorFlagDAO flagDAO,
-			ContractorAuditOperatorDAO caoDAO, OperatorAccountDAO opDAO, ContractorAccountDAO conDAO) {
+			ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO) {
 		this.subscriptionDAO = subscriptionDAO;
 		this.flagDAO = flagDAO;
 		this.caoDAO = caoDAO;
-		this.opDAO = opDAO;
 		this.conDAO = conDAO;
 	}
 
@@ -58,11 +55,11 @@ public class SubscriptionCron extends PicsActionSupport {
 			builder.process();
 
 			builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts, timePeriod,
-					subscriptionDAO, caoDAO, opDAO);
+					subscriptionDAO, caoDAO);
 			builder.process();
 
 			builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts, timePeriod,
-					subscriptionDAO, caoDAO, opDAO);
+					subscriptionDAO, caoDAO);
 			builder.process();
 
 			builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
