@@ -20,7 +20,7 @@ public enum Subscription {
 
 	private String description;
 	private SubscriptionTimePeriod[] supportedTimePeriods = { SubscriptionTimePeriod.None,
-			SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Monthly, SubscriptionTimePeriod.Weekly };
+			SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Weekly, SubscriptionTimePeriod.Monthly };
 	private boolean requiredForOperator = true;
 	private boolean requiredForContractor = true;
 
