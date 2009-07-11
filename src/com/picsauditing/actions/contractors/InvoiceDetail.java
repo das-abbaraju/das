@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -91,7 +92,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 		if (button != null) {
 			String message = null;
-			
+
 			if ("Save".equals(button)) {
 				edit = false;
 				if (newFeeId > 0) {
@@ -117,16 +118,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				addNote("Changed invoice " + invoice.getId() + " to " + contractor.getNewMembershipLevel().getFee());
 				message = "Changed Membership Level";
 			}
-			
+
 			if (button.startsWith("Email")) {
 				try {
-					EmailQueue email = emailInvoice();
+					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);// emailInvoice();
 					String note = "";
-					if(invoice.getStatus().isPaid())
+					if (invoice.getStatus().isPaid())
 						note += "Payment Receipt for Invoice";
 					else
-						note += "Invoice"; 
-						
+						note += "Invoice";
+
 					note += " emailed to " + email.getToAddresses();
 					if (!Strings.isEmpty(email.getCcAddresses()))
 						note += " and cc'd " + email.getCcAddresses();
@@ -150,10 +151,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						+ invoice.getTotalAmount().toString();
 				addNote(noteText);
 			}
-			
+
 			invoiceDAO.save(invoice);
-			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit + (message == null ? "" : "&msg=" + message ));
-			
+			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit
+					+ (message == null ? "" : "&msg=" + message));
+
 			return BLANK;
 		}
 
@@ -161,8 +163,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		invoiceDAO.save(invoice);
 
 		contractor.syncBalance();
-		if(contractor.isActiveB() 
-				&& contractor.getPaymentExpires().before(new Date())) {
+		if (contractor.isActiveB() && contractor.getPaymentExpires().before(new Date())) {
 			contractor.setActive('N');
 			addNote("Automatically inactivating account based on expired membership");
 		}
@@ -170,47 +171,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		accountDao.save(contractor);
 
 		return SUCCESS;
-	}
-
-	private EmailQueue emailInvoice() throws Exception {
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(45);
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
-		emailBuilder.addToken("invoice", invoice);
-		emailBuilder.setFromAddress("billing@picsauditing.com");
-
-		List<String> emailAddresses = new ArrayList<String>();
-
-		if (contractor.getPaymentMethod().isCreditCard()) {
-			if (!Strings.isEmpty(contractor.getCcEmail()))
-				emailAddresses.add(contractor.getCcEmail());
-		}
-		if (!Strings.isEmpty(contractor.getBillingEmail()))
-			emailAddresses.add(contractor.getBillingEmail());
-		if (!Strings.isEmpty(contractor.getEmail())) {
-			if (!emailAddresses.contains(contractor.getEmail()))
-				emailAddresses.add(contractor.getEmail());
-		}
-		if (!Strings.isEmpty(contractor.getSecondEmail())) {
-			if (!emailAddresses.contains(contractor.getSecondEmail()))
-				emailAddresses.add(contractor.getSecondEmail());
-		}
-
-		emailBuilder.setToAddresses(emailAddresses.get(0));
-
-		if (emailAddresses.size() > 1)
-			emailBuilder.setCcAddresses(emailAddresses.get(1));
-
-		emailBuilder.setBccAddresses("billing@picsauditing.com");
-
-		EmailQueue email = emailBuilder.build();
-		if (invoice.getStatus().isPaid())
-			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
-		email.setPriority(60);
-		email.setHtml(true);
-		EmailSender.send(email);
-		return email;
 	}
 
 	private void updateTotals() {

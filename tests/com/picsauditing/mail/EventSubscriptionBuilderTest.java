@@ -13,9 +13,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 
@@ -31,6 +33,8 @@ public class EventSubscriptionBuilderTest extends TestCase {
 	ContractorOperatorDAO coDAO;
 	@Autowired
 	EmailQueueDAO qDAO;
+	@Autowired
+	ContractorAccountDAO conDAO;
 
 	@Test
 	public void testContractorFinishedSubscription() throws Exception {
@@ -51,5 +55,12 @@ public class EventSubscriptionBuilderTest extends TestCase {
 		}
 
 		assertTrue("The email should have the same creationDate as today", justSent);
+	}
+
+	@Test
+	public void testContractorInvoiceEvent() throws Exception {
+		ContractorAccount con = conDAO.find(3);
+		
+		EventSubscriptionBuilder.contractorInvoiceEvent(con, con.getInvoices().get(0), null);
 	}
 }

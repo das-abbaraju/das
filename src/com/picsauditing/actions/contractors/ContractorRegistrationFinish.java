@@ -1,8 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,8 +20,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -34,9 +30,7 @@ import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.Strings;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationFinish extends ContractorActionSupport {
@@ -131,7 +125,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 					// Send a receipt to the contractor
 					try {
-						emailInvoice();
+						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
 					} catch (Exception theyJustDontGetAnEmail) {
 					}
 				}
@@ -246,69 +240,6 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
 		noteDAO.save(note);
-	}
-
-	private EmailQueue emailInvoice() throws Exception {
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(45);
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
-		emailBuilder.addToken("invoice", invoice);
-		emailBuilder.addToken("operators", getOperatorsString());
-		emailBuilder.addToken("ccType", getCcType());
-		emailBuilder.setFromAddress("billing@picsauditing.com");
-
-		List<String> emailAddresses = new ArrayList<String>();
-
-		if (contractor.getPaymentMethod().isCreditCard()) {
-			if (!Strings.isEmpty(contractor.getCcEmail()))
-				emailAddresses.add(contractor.getCcEmail());
-		}
-		if (!Strings.isEmpty(contractor.getBillingEmail()))
-			emailAddresses.add(contractor.getBillingEmail());
-		if (!Strings.isEmpty(contractor.getEmail())) {
-			if (!emailAddresses.contains(contractor.getEmail()))
-				emailAddresses.add(contractor.getEmail());
-		}
-		if (!Strings.isEmpty(contractor.getSecondEmail())) {
-			if (!emailAddresses.contains(contractor.getSecondEmail()))
-				emailAddresses.add(contractor.getSecondEmail());
-		}
-
-		emailBuilder.setToAddresses(emailAddresses.get(0));
-
-		if (emailAddresses.size() > 1)
-			emailBuilder.setCcAddresses(emailAddresses.get(1));
-
-		emailBuilder.setBccAddresses("billing@picsauditing.com");
-
-		EmailQueue email = emailBuilder.build();
-		if (invoice.getStatus().isPaid())
-			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
-		email.setPriority(60);
-		email.setHtml(true);
-		EmailSender.send(email);
-		return email;
-	}
-
-	public String getOperatorsString() {
-		List<String> operatorsString = new ArrayList<String>();
-
-		for (ContractorOperator co : contractor.getOperators()) {
-			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
-
-			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
-				operatorsString.add(co.getOperatorAccount().getName());
-		}
-
-		Collections.sort(operatorsString);
-
-		return "Your current list of Operators: " + Strings.implode(operatorsString, ", ");
-	}
-
-	public String getCcType() {
-		BrainTreeService.CreditCard cc = new BrainTreeService.CreditCard();
-		return cc.getCardType();
 	}
 
 	public Invoice getInvoice() {
