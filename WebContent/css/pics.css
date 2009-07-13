@@ -580,7 +580,7 @@ td.money,th.money {
 
 /* add to table elements representing money to have it right aligned */
 	/********************** BUTTONS ******************************/
-.picsbutton, div.buttons a.picsbutton, div.buttons button.picsbutton {
+.picsbutton, a.picsbutton:visited, a.picsbutton:link {
 	margin: 0 7px 0 0;
 	border-top: 1px;
 	border-left: 1px;
@@ -598,11 +598,11 @@ td.money,th.money {
 	background-color: #fff;
 }
 
-div.buttons a.picsbutton {
+a.picsbutton {
 	padding: 5px 11px 4px 12px; /* Links */
 }
 
-.picsbutton, div.buttons button.picsbutton {
+.picsbutton {
 	width: auto;
 	overflow: visible;
 	padding: 4px 10px 3px 7px; /* IE6 */
@@ -625,7 +625,7 @@ div.buttons a.picsbutton {
 }
 
 /* UTILITIES */
-.picsbutton:hover, div.buttons button.picsbutton:hover, div.buttons a:hover, div.buttons a:active, .picsbutton:active {
+.picsbutton:hover, .picsbutton:active, a.picsbutton:hover, a.picsbutton:active {
 	background-color: #dff4ff;
 	border-left: 2px;
 	border-right: 1px;
@@ -639,59 +639,51 @@ div.buttons a.picsbutton {
 	text-decoration: none;
 }
 
-.picsbutton:active, div.buttons a:active {
+.picsbutton:active, a.picsbutton:active {
 	background-color: #6299c5;
 	color: #fff;
 }
 
 /* POSITIVE */
-.positive, div.buttons a.positive {
+.positive, a.positive:visited, a.positive:link {
 	color: #529214;
 }
 
-.positive:hover, div.buttons a.positive:hover {
+.positive:hover, a.positive:hover {
 	background-color: #E6EFC2;
-	border: 2px solid #C6D880;
-	border-bottom: 1px solid #C6D880;
-	border-right: 1px solid #C6D880;
+	border-color: #C6D880;
 	color: #529214;
 	text-decoration: none;
 }
 
-.positive:active, div.buttons a.positive:active {
+.positive:active, a.positive:active {
 	background-color: #529214;
-	border: 2px solid #529214;
-	border-bottom: 1px solid #C6D880;
-	border-right: 1px solid #C6D880;
+	border-color: #C6D880;
 	color: #fff;
 }
 
 /* NEGATIVE */
-.negative, div.buttons a.negative {
+.negative, a.negative:visited, a.negative:link {
 	color: #d12f19;
 }
 
-.negative:hover, div.buttons a.negative:hover {
+.negative:hover, a.negative:hover {
 	background: #fbe3e4;
-	border: 2px solid #fbc2c4;
-	border-bottom: 1px solid #fbc2c4;
-	border-right: 1px solid #fbc2c4;
+	border-color: #fbc2c4;
 	color: #d12f19;
 }
 
-.negative:active, div.buttons a.negative:active {
+.negative:active, a.negative:active {
 	background-color: #d12f19;
-	border: 2px solid #d12f19;
-	border-bottom: 1px solid #d12f19;
-	border-right: 1px solid #d12f19;
+	border-color: #d12f19;
 	color: #fff;
 }
 
 .picsbutton[disabled], .picsbutton[disabled]:hover {
 	background: #dedede;
-	border: 2px solid #ababab;
-	border-top: 1px solid #ababab;
-	border-left: 1px solid #ababab;
+	border-width: 1px 2px 2px 1px;
+	margin-bottom: -1px;
+	border-color: #ababab;
 	cursor: default;
 	color: #ababab;
 }
