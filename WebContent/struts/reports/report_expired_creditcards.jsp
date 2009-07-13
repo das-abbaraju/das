@@ -17,7 +17,7 @@
 	
 <s:form method="post" cssClass="forms">
 <div>
-	<button class="picsbutton positive" type="submit" name="button" value="SendEmail">Send Email</button>
+	<input type="submit" class="picsbutton positive" name="button" value="Send Email"/>
 </div>
 
 <table class="report">
@@ -54,7 +54,7 @@
 </table>
 
 <div>
-	<button class="picsbutton positive" type="submit" name="button" value="SendEmail">Send Email</button>
+	<input type="submit" class="picsbutton positive" name="button" value="Send Email"/>
 </div>
 </s:form>
 

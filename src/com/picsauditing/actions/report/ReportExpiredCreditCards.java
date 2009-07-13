@@ -60,7 +60,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 
 	@Override
 	public String execute() throws Exception {
-		if ("SendEmail".equals(button)) {
+		if ("Send Email".equals(button)) {
 			if (sendMail.length > 0) {
 				for (String conIDString : sendMail) {
 					try {
