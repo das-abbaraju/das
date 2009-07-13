@@ -162,7 +162,7 @@ public class QBWebConnectorSvcSkeleton {
 		return response;
 	}
 
-	public SendRequestXMLResponse sendRequestXML(SendRequestXML sendRequestXML) {
+	public SendRequestXMLResponse sendRequestXML(SendRequestXML sendRequestXML) throws Exception {
 		SendRequestXMLResponse response = new SendRequestXMLResponse();
 
 		if (start(sendRequestXML.getTicket())) {
@@ -187,9 +187,15 @@ public class QBWebConnectorSvcSkeleton {
 
 						qbXml = currentAdaptor.getQbXml(currentSession);
 
+					} else {
+						PicsLogger.log("Skipping " + currentSession.getCurrentStep().name());
 					}
 				} catch (Exception e) {
+					PicsLogger.log("Error occurred while doing " + currentSession.getCurrentStep().name());
+					PicsLogger.log("shouldWeRunThisStep() = " + shouldWeRunThisStep());
+					PicsLogger.log("currentAdaptor = " + qbXml);
 					e.printStackTrace();
+					throw e;
 				}
 
 				PicsLogger.log(sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);

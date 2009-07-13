@@ -14,12 +14,10 @@ import org.jboss.util.Strings;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.quickbooks.qbxml.AppliedToTxnAdd;
-import com.picsauditing.quickbooks.qbxml.CreditCardTxnInfo;
 import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
@@ -28,7 +26,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentAdd;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
-import com.picsauditing.quickbooks.qbxml.TxnLineDetail;
+import com.picsauditing.util.log.PicsLogger;
 
 public class InsertPayments extends PaymentAdaptor {
 
@@ -41,9 +39,11 @@ public class InsertPayments extends PaymentAdaptor {
 
 		// no work to do
 		if (payments.size() == 0) {
+			PicsLogger.log("no payments to process...exiting");
 			return super.getQbXml(currentSession);
 		}
 
+		PicsLogger.start("InsertPayments", "Found " + payments.size() + " payments to insert");
 		currentSession.setCurrentBatch(new HashMap<String, String>());
 
 		Writer writer = makeWriter();
@@ -54,7 +54,9 @@ public class InsertPayments extends PaymentAdaptor {
 		QBXMLMsgsRq request = factory.createQBXMLMsgsRq();
 		request.setOnError("continueOnError");
 
+		PicsLogger.log(" created Writer, ObjectFactory, and QBXMLMsgsRq");
 		for (Payment paymentJPA : payments) {
+			PicsLogger.log("paymentID = " + paymentJPA.getId());
 
 			ReceivePaymentAddRqType addRequest = factory.createReceivePaymentAddRqType();
 			addRequest.setRequestID("insert_payment_" + paymentJPA.getId());
@@ -64,18 +66,23 @@ public class InsertPayments extends PaymentAdaptor {
 			ReceivePaymentAdd payment = factory.createReceivePaymentAdd();
 
 			addRequest.setReceivePaymentAdd(payment);
+			PicsLogger.log(" added payment to request");
 
 			// Start Payment Insert/Update
+			PicsLogger.log("   setCustomerRef");
 			payment.setCustomerRef(factory.createCustomerRef());
 			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
 
+			PicsLogger.log("   setARAccountRef");
 			payment.setARAccountRef(factory.createARAccountRef());
 			payment.getARAccountRef().setFullName("Accounts Receivable");
 
+			PicsLogger.log("   setTxnDate");
 			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
 
 			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
+			PicsLogger.log("   setPaymentMethodRef");
 			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
 			payment.setDepositToAccountRef(factory.createDepositToAccountRef());
 
@@ -88,6 +95,7 @@ public class InsertPayments extends PaymentAdaptor {
 				}
 			}
 
+			PicsLogger.log("   setMemo");
 			payment.setMemo("PICS Payment# " + paymentJPA.getId());
 			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
@@ -112,6 +120,7 @@ public class InsertPayments extends PaymentAdaptor {
 			}
 
 			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
+				PicsLogger.log("   add AppliedToTxnAdd for invoiceID = " + invoicePayment.getInvoice().getId());
 				AppliedToTxnAdd application = factory.createAppliedToTxnAdd();
 				payment.getAppliedToTxnAdd().add(application);
 				application.setTxnID(factory.createAppliedToTxnAddTxnID());
@@ -119,21 +128,13 @@ public class InsertPayments extends PaymentAdaptor {
 
 				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 						.toString());
-
-				// TxnLineDetail createTxnLineDetail =
-				// factory.createTxnLineDetail();
-				// application.getTxnLineDetail().add(createTxnLineDetail);
-				//
-				// createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
-				// createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2,
-				// BigDecimal.ROUND_HALF_UP)
-				// .toString());
 			}
 
 			if (paymentJPA.getInvoices().size() == 0)
 				payment.setIsAutoApply("false");
 
 			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
+			PicsLogger.log(" done with paymentID " + paymentJPA.getId());
 		}
 
 		xml.setQBXMLMsgsRq(request);
@@ -141,6 +142,8 @@ public class InsertPayments extends PaymentAdaptor {
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
+		PicsLogger.stop();
+		
 		return writer.toString();
 
 	}

@@ -37,6 +37,7 @@ public class UpdatePayments extends PaymentAdaptor {
 			return super.getQbXml(currentSession);
 		}
 
+		PicsLogger.start("InsertPayments", "Found " + currentSession.getToUpdatePayment().size() + " payments to update");
 		currentSession.setCurrentBatch(new HashMap<String, String>());
 
 		Writer writer = makeWriter();
@@ -109,6 +110,7 @@ public class UpdatePayments extends PaymentAdaptor {
 				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
 			}
 
+			PicsLogger.log("Adding getAppliedToTxnMod");
 			payment.getAppliedToTxnMod();
 			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
 				AppliedToTxnMod application = factory.createAppliedToTxnMod();
@@ -121,12 +123,15 @@ public class UpdatePayments extends PaymentAdaptor {
 			}
 			
 		}
+		PicsLogger.log("Finished creating XML");
 
 		xml.setQBXMLMsgsRq(request);
 
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
+		PicsLogger.stop();
+		
 		return writer.toString();
 	}
 
