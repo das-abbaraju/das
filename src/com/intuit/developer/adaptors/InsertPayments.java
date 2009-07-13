@@ -87,16 +87,16 @@ public class InsertPayments extends PaymentAdaptor {
 					isCheck = true;
 				}
 			}
-			
+
 			payment.setMemo("PICS Payment# " + paymentJPA.getId());
 			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
 				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
 				payment.setRefNumber(paymentJPA.getCheckNumber());
-				
+
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
-				
+
 				if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
 					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
@@ -108,7 +108,7 @@ public class InsertPayments extends PaymentAdaptor {
 					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
 				payment.setRefNumber(paymentJPA.getTransactionID());
-				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
+				// payment.setMemo("CC number: " + paymentJPA.getCcNumber());
 			}
 
 			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
@@ -120,14 +120,18 @@ public class InsertPayments extends PaymentAdaptor {
 				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 						.toString());
 
-//				TxnLineDetail createTxnLineDetail = factory.createTxnLineDetail();
-//				application.getTxnLineDetail().add(createTxnLineDetail);
-//
-//				createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
-//				createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
-//						.toString());
+				// TxnLineDetail createTxnLineDetail =
+				// factory.createTxnLineDetail();
+				// application.getTxnLineDetail().add(createTxnLineDetail);
+				//
+				// createTxnLineDetail.setTxnLineID(paymentJPA.getQbListID());
+				// createTxnLineDetail.setAmount(invoicePayment.getAmount().setScale(2,
+				// BigDecimal.ROUND_HALF_UP)
+				// .toString());
 			}
-			payment.setIsAutoApply("false");
+
+			if (paymentJPA.getInvoices().size() == 0)
+				payment.setIsAutoApply("false");
 
 			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
 		}
