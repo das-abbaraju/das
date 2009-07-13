@@ -88,10 +88,10 @@ public abstract class SubscriptionBuilder {
 			emailBuilder.addToken("username", user.getName());
 
 			String seed = "u" + user.getId() + "t" + templateID;
-			String confirmLink = serverName+"EmailUserUnsubscribe.action?id=" + user.getId() + "&sub="+subscription.getDescription()+ 
-				"&key="	+ Strings.hashUrlSafe(seed);
+			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub="
+					+ subscription.getDescription() + "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
-			
+
 			emailBuilder.addAllTokens(tokens);
 			emailBuilder.setToAddresses(user.getEmail());
 
@@ -109,36 +109,36 @@ public abstract class SubscriptionBuilder {
 
 			// get the recipients
 			Set<User> recipients = getRecipients(entry.getValue());
-			for(User user : recipients) {
+			for (User user : recipients) {
 				EmailQueue emailToSend = buildEmail(user, serverName);
-	
+
 				if (emailToSend != null) {
 					// TODO Send the email
-					if(isRequiresHTML(emailToSend.getEmailTemplate().getId())) {
+					if (isRequiresHTML(emailToSend.getEmailTemplate().getId())) {
 						emailToSend.setHtml(true);
 					}
 					EmailSender.send(emailToSend);
 				}
-			}	
+			}
 
 			tearDown(entry.getValue());
 		}
 	}
-	
+
 	public boolean isRequiresHTML(int templateID) {
-		if(templateID == 60)
+		if (templateID == 60)
 			return true;
-		if(templateID == 61) 
+		if (templateID == 61)
 			return true;
-		if(templateID == 62)
+		if (templateID == 62)
 			return true;
 		return false;
 	}
-	
+
 	public String getServerName() {
 		return serverName;
 	}
-	
+
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
