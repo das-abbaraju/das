@@ -11,13 +11,18 @@ import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -38,6 +43,8 @@ import com.picsauditing.util.log.PicsLogger;
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
 	protected AuditDataDAO auditDataDAO;
+	protected static AuditCategoryDataDAO auditCategoryDataDAO;
+	protected static AuditQuestionDAO auditQuestionDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -57,13 +64,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
 			ContractorOperatorFlagDAO contractorOperatorFlagDAO, ContractorAuditOperatorDAO caoDAO,
-			EmailSubscriptionDAO subscriptionDAO) {
+			EmailSubscriptionDAO subscriptionDAO, AuditCategoryDataDAO auditCategoryDataDAO, AuditQuestionDAO auditQuestionDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDao = contractorOperatorFlagDAO;
 		this.caoDAO = caoDAO;
 		this.subscriptionDAO = subscriptionDAO;
+		this.auditCategoryDataDAO = auditCategoryDataDAO;
+		this.auditQuestionDAO = auditQuestionDAO;
 		this.noteCategory = NoteCategory.Flags;
 	}
 
@@ -348,6 +357,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DAY_OF_YEAR, -1);
 		return DateBean.format(date.getTime(), "M/d/yyyy");
+	}
+	
+	static public AuditCatData getAuditCatData(int auditID, int questionID) {
+		AuditQuestion auditQuestion = auditQuestionDAO.find(questionID);
+		int catID = auditQuestion.getSubCategory().getCategory().getId();
+		List<AuditCatData> aList = auditCategoryDataDAO.findAllAuditCatData(auditID, catID);
+		if(aList != null && aList.size() > 0) {
+			return aList.get(0);
+		}
+		return null;
 	}
 
 }

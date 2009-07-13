@@ -335,6 +335,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		list.add("Operator exemption");
 		list.add("Payments not Current");
 		list.add("Lost Contract");
+		list.add("No Longer PICS Operator");
 		return list;
 	}
 }
