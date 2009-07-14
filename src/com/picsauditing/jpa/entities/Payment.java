@@ -26,6 +26,7 @@ public class Payment extends Transaction {
 
 	private List<PaymentApplied> applied = new ArrayList<PaymentApplied>();
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
