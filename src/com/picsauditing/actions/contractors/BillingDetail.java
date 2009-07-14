@@ -130,9 +130,10 @@ public class BillingDetail extends ContractorActionSupport {
 			contractor.syncBalance();
 			accountDao.save(contractor);
 
-			this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,
+			if(invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
+				this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,
 					false, Account.PicsID, this.getUser());
-
+			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}

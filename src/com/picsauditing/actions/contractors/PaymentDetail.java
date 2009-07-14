@@ -150,7 +150,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 				paymentDAO.remove(payment);
-				redirect("PaymentDetail.action?id=" + id + "&msg=" + "Successfully Deleted Payment");
+				redirect("BillingDetail.action?id=" + contractor.getId() + "&msg=" + "Successfully Deleted Payment");
 				return BLANK;
 			}
 
