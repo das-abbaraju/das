@@ -34,8 +34,14 @@ input[type=submit] {
 	<div id="alert" class="noprint">Our records show that you do not have a valid method of payment on file, 
 	or your credit card has expired. Please <a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id"/>"> update your payment information.</a></div>
 </s:if>
-<s:if test="permissions.admin && invoice.status.unpaid && invoice.totalAmount == 0">
+
+<s:if test="permissions.admin">
+	<s:if test="invoice.status.unpaid && invoice.totalAmount == 0">
 	<div id="alert" class="noprint">Please post a note after you have modified the invoice!</div>
+</s:if>
+<s:if test="invoice.qbSync">
+	<div id="alert" class="noprint">This invoice is still waiting to be synced with QuickBooks!</div>
+</s:if>
 </s:if>
 
 <s:form id="save" name="save" method="POST">

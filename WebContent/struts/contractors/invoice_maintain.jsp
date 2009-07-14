@@ -21,6 +21,8 @@
 			<s:textfield name="invoice.totalAmount" value="%{invoice.totalAmount}"/></li>
 		<li><label>Notes:</label>
 			<s:textarea name="invoice.notes" cols="30" rows="3"/></li>
+		<li><label>Creation Date:</label>
+			<s:textfield name="invoice.creationDate" /></li>
 		<li><label>Due Date:</label>
 			<s:textfield name="invoice.dueDate" /></li>
 		<li><label>Status:</label>

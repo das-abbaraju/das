@@ -29,6 +29,10 @@ fieldset.form ol {
 <body>
 <s:include value="conHeader.jsp"></s:include>
 
+<s:if test="permissions.admin && payment.qbSync">
+	<div id="alert" class="noprint">This payment is still waiting to be synced with QuickBooks!</div>
+</s:if>
+
 <s:if test="payment == null && method.creditCard">
 	<s:iterator value="contractor.payments">
 		<s:if test="status.unpaid">
