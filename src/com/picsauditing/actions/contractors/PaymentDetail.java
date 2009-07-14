@@ -351,6 +351,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return transactionCondition;
 
 		try {
+			paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+			paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 			return paymentService.getTransactionCondition(payment.getTransactionID());
 		} catch (Exception e) {
 			return null;
