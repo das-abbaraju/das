@@ -12,9 +12,12 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
@@ -99,6 +102,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		}
 
 		if ("Delete".equals(button)) {
+			addNote(contractor, "Removed Invoice #"+ invoiceId +" for "+ invoice.getTotalAmount(), NoteCategory.Billing, LowMedHigh.Low, false, Account.PicsID, this.getUser());
 			invoiceDAO.remove(invoiceId);
 			return "BillingDetail";
 		}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
@@ -16,6 +17,7 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -25,6 +27,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.PaymentApplied;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -37,7 +40,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	private InvoiceDAO invoiceDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
-	private InvoiceItemDAO invoiceItemDAO;
+	private PaymentDAO paymentDAO;
 	private NoteDAO noteDAO;
 
 	private int newFeeId;
@@ -49,14 +52,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	AppPropertyDAO appPropDao;
 
 	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
-			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO,
+			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO,
 			ContractorAuditDAO auditDao) {
 		super(conAccountDAO, auditDao);
 		this.invoiceDAO = invoiceDAO;
 		this.appPropDao = appPropDao;
+		this.paymentDAO = paymentDAO;
 		this.noteDAO = noteDAO;
 		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
 	}
 
 	@Override
@@ -139,7 +142,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				}
 			}
 			if (button.equalsIgnoreCase("Cancel")) {
-
+				Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
+				if(paIterator.hasNext()) {
+					PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
+					paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, this.getUser());
+				}
 				invoice.setStatus(TransactionStatus.Void);
 				invoice.setAuditColumns(permissions);
 				invoice.setQbSync(true);
