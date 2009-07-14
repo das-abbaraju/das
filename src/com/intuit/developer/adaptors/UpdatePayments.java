@@ -149,11 +149,11 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			ReceivePaymentRet receivePaymentRet = thisQueryResponse.getReceivePaymentRet();
 
-			currentSession.getToUpdatePayment().remove(receivePaymentRet.getTxnID());
-
 			try {
 				if (receivePaymentRet == null)
 					throw new Exception("no invoice object");
+
+				currentSession.getToUpdatePayment().remove(receivePaymentRet.getTxnID());
 
 				Payment paymentJPA = getPaymentDao().findByListID(receivePaymentRet.getTxnID());
 				if (paymentJPA != null) {
@@ -175,6 +175,8 @@ public class UpdatePayments extends PaymentAdaptor {
 				errorMessage.append(thisQueryResponse.getStatusCode());
 				errorMessage.append("\t");
 				errorMessage.append(e.getMessage());
+				
+				errorMessage.append(result.toString());
 
 				currentSession.getErrors().add(errorMessage.toString());
 			}
