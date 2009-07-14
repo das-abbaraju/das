@@ -33,6 +33,7 @@ import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
@@ -675,8 +676,10 @@ public class ContractorAccount extends Account {
 						// Store the EMR rates into a map for later use
 						for (AuditData answer : audit.getData())
 							if (answer.getQuestion().getId() == AuditQuestion.EMR) {
-								number++;
-								emrs.put(audit.getAuditFor(), answer);
+								if(answer != null && !Strings.isEmpty(answer.getAnswer())) {
+									number++;
+									emrs.put(audit.getAuditFor(), answer);
+								}
 							}
 					}
 				}
