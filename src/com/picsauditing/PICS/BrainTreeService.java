@@ -64,7 +64,6 @@ public class BrainTreeService {
 		return getValueFromDocument(document, "condition");
 	}
 
-
 	public boolean processPayment(Payment payment) throws Exception {
 		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=sale");
 		appendUsernamePassword(request);
@@ -77,7 +76,8 @@ public class BrainTreeService {
 			payment.setTransactionID(map.get("transactionid"));
 			return true;
 		} else {
-			throw new Exception(map.get("responsetext"));
+			String responseCode = map.get("response_code");
+			throw new Exception(map.get("responsetext") + " " + BrainTreeCodes.getTransactionResponse(responseCode));
 		}
 	}
 
