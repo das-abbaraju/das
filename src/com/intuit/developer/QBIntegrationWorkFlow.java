@@ -23,11 +23,11 @@ public enum QBIntegrationWorkFlow {
 	InsertContractors(InsertContractors.class),
 	DumpUnMappedInvoices(DumpUnMappedInvoices.class),
 	DumpPayments(DumpQuickBookPayments.class),
-	GetPaymentsForUpdate(GetPaymentsForUpdate.class),
-	UpdatePayments(UpdatePayments.class),
 	GetInvoicesForUpdate(GetInvoicesForUpdate.class),
 	UpdateInvoices(UpdateInvoices.class),
 	InsertInvoices(InsertInvoices.class),
+	GetPaymentsForUpdate(GetPaymentsForUpdate.class),
+	UpdatePayments(UpdatePayments.class),
 	InsertPayments(InsertPayments.class),
 	Finished(Finished.class);
 
