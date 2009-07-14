@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -37,7 +36,7 @@ public class UpdatePayments extends PaymentAdaptor {
 			return super.getQbXml(currentSession);
 		}
 
-		PicsLogger.start("InsertPayments", "Found " + currentSession.getToUpdatePayment().size() + " payments to update");
+		PicsLogger.start("UpdatePayments", "Found " + currentSession.getToUpdatePayment().size() + " payments to update");
 		currentSession.setCurrentBatch(new HashMap<String, String>());
 
 		Writer writer = makeWriter();
@@ -49,7 +48,7 @@ public class UpdatePayments extends PaymentAdaptor {
 		request.setOnError("continueOnError");
 
 		for (ReceivePaymentRet receivePaymentRet : currentSession.getToUpdatePayment().values()) {
-
+			
 			Payment paymentJPA = getPaymentDao().findByListID(receivePaymentRet.getTxnID());
 			PicsLogger.log("Found Payment " + paymentJPA.getId() + " where txnID=" + receivePaymentRet.getTxnID());
 			
@@ -68,15 +67,14 @@ public class UpdatePayments extends PaymentAdaptor {
 			payment.setCustomerRef(factory.createCustomerRef());
 			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID());
 
-			payment.setARAccountRef(factory.createARAccountRef());
-			payment.getARAccountRef().setFullName("Accounts Receivable");
+			payment.setARAccountRef(receivePaymentRet.getARAccountRef());
 
 			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
 
 			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
-			payment.setDepositToAccountRef(factory.createDepositToAccountRef());
+			payment.setDepositToAccountRef(receivePaymentRet.getDepositToAccountRef());
 
 			boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
 			String cardType = null;
@@ -90,7 +88,6 @@ public class UpdatePayments extends PaymentAdaptor {
 			payment.setMemo("PICS Payment# " + paymentJPA.getId());
 			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
-				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
 				payment.setRefNumber(paymentJPA.getCheckNumber());
 
 			} else {
@@ -98,13 +95,10 @@ public class UpdatePayments extends PaymentAdaptor {
 				
 				if (cardType.equals("Visa") || cardType.equals("Mastercard")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC");
-					payment.getDepositToAccountRef().setFullName("VISA/MC Merchant Account");
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
-					payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
 				} else if (cardType.equals("Discover")) {
 					payment.getPaymentMethodRef().setFullName("Braintree DISCOVER");
-					payment.getDepositToAccountRef().setFullName("Discover Merchant Account");
 				}
 				payment.setRefNumber(paymentJPA.getTransactionID());
 				//payment.setMemo("CC number: " + paymentJPA.getCcNumber());
