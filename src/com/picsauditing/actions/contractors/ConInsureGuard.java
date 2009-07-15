@@ -88,44 +88,46 @@ public class ConInsureGuard extends ContractorActionSupport {
 		}
 
 		if (button != null && button.equals("Add")) {
-			boolean alreadyExists = false;
-			// if (permissions.isOperator() || permissions.isCorporate())
-			// selectedOperator = permissions.getAccountId();
+			if (selectedAudit > 0) {
+				boolean alreadyExists = false;
+				// if (permissions.isOperator() || permissions.isCorporate())
+				// selectedOperator = permissions.getAccountId();
 
-			for (ContractorAudit conAudit : contractor.getAudits()) {
-				if (!conAudit.getAuditStatus().isExpired() && conAudit.getAuditType().getId() == selectedAudit
-						&& conAudit.getRequestingOpAccount() == null) {
-					alreadyExists = true;
-					break;
+				for (ContractorAudit conAudit : contractor.getAudits()) {
+					if (!conAudit.getAuditStatus().isExpired() && conAudit.getAuditType().getId() == selectedAudit
+							&& conAudit.getRequestingOpAccount() == null) {
+						alreadyExists = true;
+						break;
+					}
 				}
-			}
 
-			if (alreadyExists) {
-				addActionError("Policy already exists");
-			} else {
-				ContractorAudit conAudit = new ContractorAudit();
-				AuditType auditType = auditTypeDAO.find(selectedAudit);
+				if (alreadyExists) {
+					addActionError("Policy already exists");
+				} else {
+					ContractorAudit conAudit = new ContractorAudit();
+					AuditType auditType = auditTypeDAO.find(selectedAudit);
 
-				conAudit.setAuditType(auditType);
-				conAudit.setAuditFor(this.auditFor);
-				conAudit.setContractorAccount(contractor);
-				conAudit.changeStatus(AuditStatus.Pending, getUser());
-				if (selectedOperator != 0) {
-					conAudit.setRequestingOpAccount(new OperatorAccount());
-					conAudit.getRequestingOpAccount().setId(selectedOperator);
+					conAudit.setAuditType(auditType);
+					conAudit.setAuditFor(this.auditFor);
+					conAudit.setContractorAccount(contractor);
+					conAudit.changeStatus(AuditStatus.Pending, getUser());
+					if (selectedOperator != 0) {
+						conAudit.setRequestingOpAccount(new OperatorAccount());
+						conAudit.getRequestingOpAccount().setId(selectedOperator);
+					}
+					conAudit.setPercentComplete(0);
+					conAudit.setPercentVerified(0);
+					conAudit.setManuallyAdded(true);
+					conAudit = auditDao.save(conAudit);
+
+					addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
+							NoteCategory.Insurance);
+
+					contractor.getAudits().add(conAudit);
+					auditBuilder.setUser(getUser());
+					auditBuilder.buildAudits(contractor);
+					return "saved";
 				}
-				conAudit.setPercentComplete(0);
-				conAudit.setPercentVerified(0);
-				conAudit.setManuallyAdded(true);
-				conAudit = auditDao.save(conAudit);
-
-				addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
-						NoteCategory.Insurance);
-
-				contractor.getAudits().add(conAudit);
-				auditBuilder.setUser(getUser());
-				auditBuilder.buildAudits(contractor);
-				return "saved";
 			}
 		}
 		auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass);

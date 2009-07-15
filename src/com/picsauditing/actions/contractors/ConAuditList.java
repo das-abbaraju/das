@@ -54,7 +54,7 @@ public class ConAuditList extends ContractorActionSupport {
 							.isPqf())) {
 				if (!contractorAudit.getAuditType().isAnnualAddendum()) {
 
-					if (contractorAudit.getAuditStatus().isPendingSubmitted() 
+					if (contractorAudit.getAuditStatus().isPendingSubmitted()
 							|| contractorAudit.getAuditStatus().isIncomplete())
 						upComingAudits.add(contractorAudit);
 					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
@@ -110,46 +110,48 @@ public class ConAuditList extends ContractorActionSupport {
 		}
 
 		if (button != null && button.equals("Add")) {
-			boolean alreadyExists = false;
-			if (permissions.isOperator() || permissions.isCorporate())
-				selectedOperator = permissions.getAccountId();
+			if (selectedAudit > 0) {
+				boolean alreadyExists = false;
+				if (permissions.isOperator() || permissions.isCorporate())
+					selectedOperator = permissions.getAccountId();
 
-			if (auditClass != AuditTypeClass.IM) {
-				for (ContractorAudit conAudit : contractor.getAudits()) {
-					if (conAudit.getAuditType().getId() == selectedAudit && !conAudit.getAuditStatus().isExpired()) {
-						if ((selectedOperator == 0 && conAudit.getRequestingOpAccount() == null)
-								|| (conAudit.getRequestingOpAccount() != null && conAudit.getRequestingOpAccount()
-										.getId() == selectedOperator)) {
-							alreadyExists = true;
-							break;
+				if (auditClass != AuditTypeClass.IM) {
+					for (ContractorAudit conAudit : contractor.getAudits()) {
+						if (conAudit.getAuditType().getId() == selectedAudit && !conAudit.getAuditStatus().isExpired()) {
+							if ((selectedOperator == 0 && conAudit.getRequestingOpAccount() == null)
+									|| (conAudit.getRequestingOpAccount() != null && conAudit.getRequestingOpAccount()
+											.getId() == selectedOperator)) {
+								alreadyExists = true;
+								break;
+							}
 						}
 					}
 				}
-			}
 
-			if (alreadyExists) {
-				addActionError("Audit already exists");
-			} else {
-				ContractorAudit conAudit = new ContractorAudit();
-				AuditType auditType = auditTypeDAO.find(selectedAudit);
+				if (alreadyExists) {
+					addActionError("Audit already exists");
+				} else {
+					ContractorAudit conAudit = new ContractorAudit();
+					AuditType auditType = auditTypeDAO.find(selectedAudit);
 
-				conAudit.setAuditType(auditType);
-				conAudit.setAuditFor(this.auditFor);
-				conAudit.setContractorAccount(contractor);
-				conAudit.changeStatus(AuditStatus.Pending, getUser());
-				if (selectedOperator != 0) {
-					conAudit.setRequestingOpAccount(new OperatorAccount());
-					conAudit.getRequestingOpAccount().setId(selectedOperator);
+					conAudit.setAuditType(auditType);
+					conAudit.setAuditFor(this.auditFor);
+					conAudit.setContractorAccount(contractor);
+					conAudit.changeStatus(AuditStatus.Pending, getUser());
+					if (selectedOperator != 0) {
+						conAudit.setRequestingOpAccount(new OperatorAccount());
+						conAudit.getRequestingOpAccount().setId(selectedOperator);
+					}
+					conAudit.setPercentComplete(0);
+					conAudit.setPercentVerified(0);
+					conAudit.setManuallyAdded(true);
+					conAudit = auditDao.save(conAudit);
+
+					addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
+							NoteCategory.Audits);
+
+					return "saved";
 				}
-				conAudit.setPercentComplete(0);
-				conAudit.setPercentVerified(0);
-				conAudit.setManuallyAdded(true);
-				conAudit = auditDao.save(conAudit);
-
-				addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
-						NoteCategory.Audits);
-
-				return "saved";
 			}
 		}
 		auditTypeList = auditTypeDAO.findAll(permissions, true, auditClass);
