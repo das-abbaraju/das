@@ -48,7 +48,6 @@ public class ContractorAccount extends Account {
 	private String logoFile;
 	private String brochureFile;
 	private String description;
-	private Date accountDate;
 	private String mustPay = "Yes";
 	private OperatorAccount requestedBy;
 	private String secondContact;
@@ -448,19 +447,6 @@ public class ContractorAccount extends Account {
 	}
 
 	/**
-	 * The date this is first activated. This is never reset afterwards.
-	 */
-	@Temporal(TemporalType.DATE)
-	@Column(name = "accountDate", length = 10)
-	public Date getAccountDate() {
-		return this.accountDate;
-	}
-
-	public void setAccountDate(Date accountDate) {
-		this.accountDate = accountDate;
-	}
-
-	/**
 	 * The date the contractor paid their activation/reactivation fee
 	 * 
 	 * @return
@@ -473,8 +459,6 @@ public class ContractorAccount extends Account {
 
 	public void setMembershipDate(Date membershipDate) {
 		this.membershipDate = membershipDate;
-		if (this.accountDate == null)
-		    setAccountDate(this.membershipDate);
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -678,7 +662,7 @@ public class ContractorAccount extends Account {
 						// Store the EMR rates into a map for later use
 						for (AuditData answer : audit.getData())
 							if (answer.getQuestion().getId() == AuditQuestion.EMR) {
-								if(answer != null && !Strings.isEmpty(answer.getAnswer())) {
+								if (answer != null && !Strings.isEmpty(answer.getAnswer())) {
 									number++;
 									emrs.put(audit.getAuditFor(), answer);
 								}
