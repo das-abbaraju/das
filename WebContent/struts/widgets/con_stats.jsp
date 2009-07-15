@@ -11,7 +11,7 @@
 <p><label>Account Name:</label> <s:property value="contractor.name" /></p>
 <p><label>Address:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property value="contractor.zip" /></p>
-<p><label>Account Since:</label> <s:date name="contractor.accountDate" format="MMM d, yyyy" /></p>
+<p><label>Account Since:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
 <p><label>Primary Contact:</label> <s:property value="contractor.contact" /></p>
 <p><label>Primary Email:</label> <s:property value="contractor.email" /></p>
 <s:if test="contractor.auditor.name != null">
