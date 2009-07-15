@@ -7,7 +7,7 @@
 	width: 200px; 
 	text-align: center;
 "><a href="ContractorView.action">Show Details Page</a></div>
-<a href="ContractorEdit.action" class="edit" style="float: right">Edit Account Info</a>
+<a href="ContractorEdit.action" class="edit right">Edit Account Info</a>
 <p><label>Account Name:</label> <s:property value="contractor.name" /></p>
 <p><label>Address:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property value="contractor.zip" /></p>
@@ -23,12 +23,14 @@
 	$<s:property value="contractor.membershipLevel.amount" /> USD <br />
 	<s:property value="contractor.membershipLevel.fee" />
 </p>
-<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit" style="float: right">Edit Credit Card Info</a>
+<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right">Edit Credit Card Info</a>
 <p>
-	<label>Credit Card on File?</label>
-	<s:if test="contractor.ccOnFile">Yes</s:if>
+	<label>Credit Card:</label>
+	<s:if test="contractor.ccOnFile && creditCard != null">
+		<s:property value="creditCard.cardType"/> <s:property value="creditCard.cardNumber.substring(creditCard.cardNumber.length()-4)"/> exp <s:property value="creditCard.expirationDateFormatted"/>
+	</s:if>
 	<s:else>
-		No
+		No Credit Card on File
 	</s:else>
 </p>
 
