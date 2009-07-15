@@ -98,6 +98,7 @@ fieldset.form ol {
 				list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio></li>
 			<li class="method_check" <s:if test="!method.check">style="display: none"</s:if>><label>Check Number:</label><s:textfield
 				name="payment.checkNumber" /></li>
+			<li><div id="braintree"></div></li>
 			<li class="method_ccNew" style="display: none"><label>Number:</label><s:textfield name="creditCard.cardNumber" /></li>
 			<li class="method_ccNew" style="display: none"><label>Expires:</label><s:textfield name="creditCard.expirationDate" /></li>
 		</ol>

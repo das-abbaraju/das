@@ -1,8 +1,13 @@
 function findCreditCard(id) {
+	startThinking({div:'braintree', 'message':'Retrieving Credit Card Information'});
+
 	var pars = {'id':id, 'button':'findcc'};
 	new Ajax.Updater('paymentMethodList', 'PaymentDetailAjax.action', {
 		parameters: pars,
-		insertion: 'bottom'
+		insertion: 'bottom',
+		onComplete: function(transport) {
+			stopThinking( {div: 'braintree' } );
+		}
 	});
 }
 
