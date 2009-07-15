@@ -210,7 +210,7 @@
 					<td><a
 						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download"
 						target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>
-					<td><s:if test="permissions.userId == createdBy.Id">
+					<td><s:if test="permissions.userId == createdBy.Id || permissions.admin">
 						<a class="edit" href="#"
 							onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return false;"
 							title="Opens in new window (please disable your popup blocker)"">Edit</a>
@@ -221,7 +221,7 @@
 								<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
 								<tr>
 									<td style="font-size:10px"><nobr><s:property value="audit.auditType.auditName"/></nobr></td>
-									<td style="font-size:10px"><nobr><s:property value="operator.name"/></td>
+									<td style="font-size:10px"><nobr><s:property value="operator.name"/></nobr></td>
 									<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="M/d/yy"/></nobr></td>
 								</tr>
 								</s:if>
