@@ -108,7 +108,8 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Create a list of fees that this contractor should be charge for. The following contractor fields are used:
+	 * Create a list of fees that this contractor should be charge for. The
+	 * following contractor fields are used:
 	 * <ul>
 	 * <li>membershipDate</li>
 	 * <li>newMembershipLevel</li>
@@ -132,24 +133,27 @@ public class BillingCalculatorSingle {
 		if (billingStatus.equals("Current"))
 			return items;
 
-		if (contractor.getMembershipDate() == null) {
-			// This contractor has never paid their activation fee, make them now
-			// This applies regardless if this is a new reg or renewal
-			InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
+		if (contractor.getMembershipDate() == null || "Activation".equals(billingStatus)) {
+			if (contractor.getMembershipDate() == null) {
+				// This contractor has never paid their activation fee, make
+				// them now
+				// This applies regardless if this is a new reg or renewal
+				InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
 
-			// Activate effective today
-			items.add(new InvoiceItem(fee, new Date()));
-		}
+				// Activate effective today
+				items.add(new InvoiceItem(fee, new Date()));
+			}
 
-		// For Activation Fee and New Membership
-		if ("Activation".equals(billingStatus)) {
-			// Payment expires 12 months from today
-			Date paymentExpires = DateBean.addMonths(new Date(), 12);
-			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
+			// For Activation Fee and New Membership
+			if ("Activation".equals(billingStatus)) {
+				// Payment expires 12 months from today
+				Date paymentExpires = DateBean.addMonths(new Date(), 12);
+				items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
+			}
 		}
 
 		// For Reactivation Fee and Reactivating Membership
-		if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
+		else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
 			InvoiceFee fee = getFee(InvoiceFee.REACTIVATION, feeDAO);
 			// Reactivate effective today
 			items.add(new InvoiceItem(fee, new Date()));
@@ -160,8 +164,9 @@ public class BillingCalculatorSingle {
 		}
 
 		// For Renewals
-		if (billingStatus.startsWith("Renew")) {
-			// We could eventually customize the 12 months to support monthly/quarterly billing cycles
+		else if (billingStatus.startsWith("Renew")) {
+			// We could eventually customize the 12 months to support
+			// monthly/quarterly billing cycles
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
@@ -180,7 +185,8 @@ public class BillingCalculatorSingle {
 					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
 
 				} else if (DateBean.getDateDifference(contractor.getPaymentExpires()) < 0) {
-					// Their membership has already expired so we need to do a full renewal amount
+					// Their membership has already expired so we need to do a
+					// full renewal amount
 					upgradeAmount = contractor.getNewMembershipLevel().getAmount();
 					description = "Membership Level is: $" + contractor.getNewMembershipLevel().getAmount();
 
@@ -204,7 +210,7 @@ public class BillingCalculatorSingle {
 				invoiceItem.setInvoiceFee(contractor.getNewMembershipLevel());
 				invoiceItem.setAmount(upgradeAmount);
 				invoiceItem.setDescription(description);
-				//invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
+				// invoiceItem.setPaymentExpires(contractor.getPaymentExpires());
 				items.add(invoiceItem);
 			}
 		}
@@ -227,7 +233,8 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Return TRUE if any one of the items is for a Fee Class = "Membership" and the amount isn't prorated
+	 * Return TRUE if any one of the items is for a Fee Class = "Membership" and
+	 * the amount isn't prorated
 	 * 
 	 * @param items
 	 * @return
