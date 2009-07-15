@@ -143,7 +143,7 @@
 		</s:if>
 		<s:if test="conAudit.auditType.classType.policy">
 			<s:iterator value="conAudit.operators" status="rowStatus">
-				<s:if test="isVisibleTo(permissions)">
+				<s:if test="visible && isVisibleTo(permissions)">
 					<li>
 						<label>Op Status:</label>
 							<a href="#cao<s:property value="id"/>"><s:property value="status"/></a>

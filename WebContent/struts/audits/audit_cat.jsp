@@ -148,13 +148,33 @@ label.policy {
 	<s:if test="conAudit.operators.size() > 0">
 		<s:iterator value="conAudit.operators" id="cao">
 			<s:if test="#cao.isVisibleTo(permissions)">
-				<div class="caoGroup" id="cao<s:property value="id"/>">
-					<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
-					<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
-					<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
-						<s:include value="audit_cat_cao.jsp"/>
+				<s:if test="#cao.visible">
+					<div class="caoGroup" id="cao<s:property value="id"/>">
+						<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
+						<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
+						<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px; background-color: #F9F9F9;">
+							<s:include value="audit_cat_cao.jsp"/>
+						</div>
 					</div>
-				</div>
+				</s:if>
+				<s:else>
+					<div class="caoGroup" id="cao<s:property value="id"/>">
+						<h3 style="margin-left: 40px"><s:property value="#cao.operator.name" /></h3>
+						<div style="position: absolute; right: 0; top: 0; float: left;" id="thinking_<s:property value="#cao.id"/>"></div>
+						<div id="cao_<s:property value="#cao.id"/>" style="margin-left: 20px; margin-bottom: 20px;">
+							<div class="info">
+								This policy is not required for this operator.
+								<s:form id="cao_form%{#cao.id}">
+									<s:hidden name="auditID" value="%{#cao.audit.id}"/>
+									<s:hidden name="cao.id" value="%{#cao.id}"/>
+									<s:hidden name="mode"/>
+									<input type="submit" class="picsbutton positive" name="button" value="Make Required"
+										onclick="saveCao(cao_form<s:property value="#cao.id"/>, 'visible', 'cao_<s:property value="#cao.id"/>');return false;"/>
+								</s:form>
+							</div>
+						</div>
+					</div>
+				</s:else>
 			</s:if>
 		</s:iterator>
 	</s:if>

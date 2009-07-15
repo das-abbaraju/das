@@ -146,8 +146,8 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-		if (!visible)
-			return false;
+//		if (!visible)
+//			return false;
 
 		if (permissions.isOperatorCorporate() ) {
 			return permissions.getVisibleCAOs().contains(operator.getId());
