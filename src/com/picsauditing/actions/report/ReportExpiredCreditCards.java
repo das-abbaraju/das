@@ -51,6 +51,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowCcOnFile(false);
 	}
 
 	@Override

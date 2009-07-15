@@ -6,6 +6,14 @@
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript"
 	src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
+<script type="text/javascript">
+function setAllChecked(elm) {
+	$$('.massCheckable').each( function(ele) {
+		ele.checked = elm.checked;
+	});
+	return false;
+}
+</script>
 </head>
 <body>
 <h1><s:property value="reportName" /></h1>
@@ -24,7 +32,9 @@
 	<thead>
 	<tr>
 		<td></td>
-		<td>Email</td>
+		<td>Email <br/>
+			<input title="Check all" type="checkbox" onclick="setAllChecked(this);"/>
+		</td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
 	    <th>Contact</th>
 	    <th>Phone Number</th>
@@ -39,7 +49,7 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td align="center"><s:checkbox name="sendMail" fieldValue="%{get('id')}" /></td>
+			<td align="center"><s:checkbox name="sendMail" cssClass="massCheckable" fieldValue="%{get('id')}" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
 			<td class="right"><s:property value="get('billingContact')"/></td>
 			<td class="right"><s:property value="get('billingPhone')"/></td>

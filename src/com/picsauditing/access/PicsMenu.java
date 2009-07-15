@@ -103,7 +103,7 @@ public class PicsMenu {
 			subMenu.addChild("Billing Report", "ReportBilling.action");
 			subMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action");
 			subMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action");
-			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action");
+			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.visible=Y");
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
 		}
 
