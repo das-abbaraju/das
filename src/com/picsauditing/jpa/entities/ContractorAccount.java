@@ -473,6 +473,8 @@ public class ContractorAccount extends Account {
 
 	public void setMembershipDate(Date membershipDate) {
 		this.membershipDate = membershipDate;
+		if (this.accountDate == null)
+		    setAccountDate(this.membershipDate);
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
