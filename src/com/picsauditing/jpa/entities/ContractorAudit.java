@@ -31,6 +31,7 @@ import com.picsauditing.access.Permissions;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
@@ -347,9 +348,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		if (expiresDate == null)
 			return false;
 		Calendar cal1 = Calendar.getInstance();
-		cal1.add(cal1.WEEK_OF_YEAR, -2);
+		cal1.add(Calendar.WEEK_OF_YEAR, -2);
 		Calendar cal2 = Calendar.getInstance();
-		cal2.add(cal2.DATE, 26);
+		cal2.add(Calendar.DATE, 26);
 		if (expiresDate.after(cal1.getTime()) && expiresDate.before(cal2.getTime()))
 			return true;
 		return false;
@@ -493,14 +494,13 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		if (auditStatus.isResubmitted())
 			statusDescription = "Policy updated; pending approval of changes.";
-		
-		if(auditStatus.isIncomplete())
-			statusDescription = "Rejected "+ this.getAuditType().getClassType().toString() +" during verification";
+
+		if (auditStatus.isIncomplete())
+			statusDescription = "Rejected " + this.getAuditType().getClassType().toString() + " during verification";
 		return statusDescription;
 	}
 
 	@Transient
-	@SuppressWarnings("serial")
 	public String getPrintableScore() {
 		int tempScore = Math.round(score);
 
