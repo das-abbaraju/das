@@ -13,7 +13,7 @@ public class ReportContractorAssignment extends ReportAccount {
 		} else {
 			sql.addWhere("c.welcomeAuditor_id IS NULL");
 		}
-		sql.addField("c.accountDate");
+		sql.addField("a.creationDate");
 		sql.addField("c.welcomeAuditor_id");
 		orderByDefault = "a.creationDate DESC";
 	}

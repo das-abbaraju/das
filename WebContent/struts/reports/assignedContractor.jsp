@@ -37,7 +37,6 @@
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','a.creationDate DESC');">Registration</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','c.accountDate DESC');">Paid</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','c.welcomeAuditor_id DESC,a.name');">Auditor</a></td>
 				<td width="20"></td>
 				<s:if test="showContact">
@@ -67,8 +66,6 @@
 				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('creationDate')"
 					format="M/d/yy" /></td>
-				<td class="reportDate"><s:date name="[0].get('accountDate')"
-					format="M/d/yy" /></td>	
 				<td>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('welcomeAuditor_id')}"
