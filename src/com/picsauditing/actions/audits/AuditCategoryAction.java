@@ -32,8 +32,8 @@ import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * Viewing audit Data including one or more categories and their subcategories and data This handles View, Edit, and
- * Verify all at the same time
+ * Viewing audit Data including one or more categories and their subcategories
+ * and data This handles View, Edit, and Verify all at the same time
  * 
  * @author Trevor
  * 
@@ -157,8 +157,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				getCategories();
 			}
 
-			if (mode == null && conAudit.getAuditStatus().isPending() 
-					|| conAudit.getAuditStatus().isIncomplete())
+			if (mode == null && conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())
 				mode = EDIT;
 			if (mode == null && conAudit.getAuditStatus().isActiveSubmitted() && conAudit.getAuditType().isPqf()
 					&& conAudit.isAboutToExpire())
@@ -385,9 +384,19 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		if (activePendingEditableAudits == null) {
 			activePendingEditableAudits = new ArrayList<ContractorAudit>();
 			for (ContractorAudit ca : getActiveAudits()) {
-				if (ca.getAuditType().isCanContractorEdit() &&
-						(ca.getAuditStatus().isPending() || ca.getAuditStatus().isIncomplete()))
-					activePendingEditableAudits.add(ca);
+				if (ca.getAuditType().isCanContractorEdit()
+						&& (ca.getAuditStatus().isPending() || ca.getAuditStatus().isIncomplete()))
+					if (!ca.getAuditType().getClassType().isPolicy())
+						activePendingEditableAudits.add(ca);
+					else {
+						for (ContractorAuditOperator caOperator : ca.getCurrentOperators()) {
+							if (caOperator.getStatus().isPending()) {
+								activePendingEditableAudits.add(ca);
+								break;
+							}
+						}
+
+					}
 			}
 		}
 
