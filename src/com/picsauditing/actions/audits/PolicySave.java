@@ -18,12 +18,10 @@ import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
