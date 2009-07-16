@@ -44,13 +44,22 @@
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:else></td>
 		<td>
-		<s:if test="redOshaCriteria.lwcr.hurdleFlag.toString() == 'None'">
+		<s:if test="lwcr">
+			<s:set name="redhurdleFlag" value="redOshaCriteria.lwcr.hurdleFlag"/>
+		</s:if>
+		<s:elseif test="trir">
+			<s:set name="redhurdleFlag" value="redOshaCriteria.trir.hurdleFlag"/>
+		</s:elseif>
+		<s:else>
+			<s:set name="redhurdleFlag" value="redOshaCriteria.fatalities.hurdleFlag"/>
+		</s:else>
+		<s:if test="#redhurdleFlag.none">
 			<s:set name="show_redhurdle" value="'none'"/>
 		</s:if>
 		<s:else>
 			<s:set name="show_redhurdle" value="'inline'"/>
 		</s:else>
-		<s:if test="redOshaCriteria.lwcr.hurdleFlag.toString() == 'NAICS'">
+		<s:if test="#redhurdleFlag.naics">
 			<s:set name="show_redhurdlepercent" value="'inline'"/>
 		</s:if>
 		<s:else>
@@ -60,7 +69,7 @@
 		<span id="show_redhurdle" style="display: <s:property value="#attr.show_redhurdle"/>;">
 		<s:if test="lwcr">
 			<s:textfield name="redOshaCriteria.lwcr.hurdle" size="5"/>
-		</s:if> <s:elseif test="trir">
+		</s:if><s:elseif test="trir">
 			<s:textfield name="redOshaCriteria.trir.hurdle" size="5"/>
 		</s:elseif> <s:else>
 			<s:textfield name="redOshaCriteria.fatalities.hurdle" size="5"/>
@@ -91,13 +100,22 @@
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:else></td>		
 		<td>
-		<s:if test="amberOshaCriteria.lwcr.hurdleFlag.toString() == 'None'">
+		<s:if test="lwcr">
+			<s:set name="amberhurdleFlag" value="amberOshaCriteria.lwcr.hurdleFlag"/>
+		</s:if>
+		<s:elseif test="trir">
+			<s:set name="amberhurdleFlag" value="amberOshaCriteria.trir.hurdleFlag"/>
+		</s:elseif>
+		<s:else>
+			<s:set name="amberhurdleFlag" value="amberOshaCriteria.fatalities.hurdleFlag"/>
+		</s:else>
+		<s:if test="#amberhurdleFlag.none">
 			<s:set name="show_amberhurdle" value="'none'"/>
 		</s:if>
 		<s:else>
 			<s:set name="show_amberhurdle" value="'inline'"/>
 		</s:else>
-		<s:if test="amberOshaCriteria.lwcr.hurdleFlag.toString() == 'NAICS'">
+		<s:if test="#amberhurdleFlag.naics'">
 			<s:set name="show_amberhurdlepercent" value="'inline'"/>
 		</s:if>
 		<s:else>

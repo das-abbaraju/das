@@ -153,6 +153,25 @@
 </table>
 
 <s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed">
+
+	<s:iterator value="co.operatorAccount.flagOshaCriteria">
+		<s:if test="trir.required && trir.hurdleFlag.naics">
+			<div id="info">
+			The operator flags up to
+			<s:if test="trir.hurdle > 100">
+				<s:property value="trir.hurdle - 100" />% above
+			</s:if>
+			<s:elseif test="trir.hurdle < 100 ">
+				<s:property value="100 - trir.hurdle" />% below
+			</s:elseif>
+			<s:else>
+				100% 
+			</s:else>
+			of your NAICS industry average code <s:property value="co.contractorAccount.naics.code"/>				
+			</div>
+		</s:if>	
+	</s:iterator>
+
 <s:if test="oshas.size > 0">
 	<table class="report" style="clear: none">
 		<thead>
@@ -208,22 +227,23 @@
 							</s:iterator></td>
 						</s:if>
 						<s:if test="oshaTrirUsed">
-							<td class="right"><s:property
-								value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" /></td>
+							<td class="right">
+								<s:property
+									value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" />
+							</td>	
 							<td style="vertical-align: middle;"><s:iterator
 								value="co.operatorAccount.flagOshaCriteria">
 								<s:if test="trir.required">
 									<s:if
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
 	 									&gt; 
-	 									<s:if test="trir.hurdleFlag.toString().equals('NAICS')">
-	 										<s:property value="co.contractorAccount.naics.trir" />
+	 									<s:if test="trir.hurdleFlag.naics">
+	 										<s:property value="(co.contractorAccount.naics.trir * trir.hurdle) / 100" />(<s:property value="co.contractorAccount.naics.trir" /> * <s:property value="trir.hurdle" />)/100
 	 									</s:if>
 	 									<s:else>
 	 										<s:property value="trir.hurdle" />
 	 									</s:else>
 	 									= <s:property value="flagColor" />
-	 									<s:if test="trir.hurdleFlag.toString().equals('NAICS')"> (NAICS code:<s:property value="co.contractorAccount.naics.code"/>)</s:if>
 										<br />
 									</s:if>
 								</s:if>
