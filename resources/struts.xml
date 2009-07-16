@@ -336,8 +336,16 @@
 		<action name="ReportBilling"
 			class="com.picsauditing.actions.report.ReportBilling">
 			<param name="reportName">Billing Report</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
 			<result>struts/reports/report_billing.jsp</result>
 		</action>
+
+		<action name="ReportBillingAjax"
+			class="com.picsauditing.actions.report.ReportBilling">
+			<result>struts/reports/report_billing_data.jsp</result>
+		</action>
+
 		<action name="ReportUnpaidInvoices"
 			class="com.picsauditing.actions.report.ReportUnpaidInvoices">
 			<param name="reportName">Unpaid Invoices Report</param>

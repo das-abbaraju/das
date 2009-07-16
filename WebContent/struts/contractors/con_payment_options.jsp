@@ -129,6 +129,14 @@ function updateExpDate() {
 		</div>
 	</li>
 </s:if>
+<pics:permission perm="Billing">
+<s:if test="contractor.ccOnFile">	
+	<li><div>
+			<input type="submit" class="picsbutton negative" name="button" value="Mark this Credit Card Invalid"/>
+		</div>
+	</li>
+</s:if>		
+</pics:permission>
 </ol>
 </fieldset>
 </s:form>

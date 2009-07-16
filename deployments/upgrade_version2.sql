@@ -19,3 +19,5 @@ and pcd.catID = 151;
 
 
 **/
+
+alter table contractor_info drop column ccValid;
