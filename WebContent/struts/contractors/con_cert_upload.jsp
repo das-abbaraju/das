@@ -62,7 +62,7 @@ function closePage() {
 					</div>
 					<div>
 						<div>
-						<button class="picsbutton" onclick="closePage(); return false;">Close and Return to Page</button>
+							<button class="picsbutton" onclick="closePage(); return false;">Close and Return to Page</button>
 							<s:if test="file != null && file.exists()">
 								<s:if test="certificate.caos == null || certificate.caos.size() == 0">
 									<button class="picsbutton negative" name="button" value="Delete" type="submit" 
