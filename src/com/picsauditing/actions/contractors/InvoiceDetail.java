@@ -120,7 +120,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 			if (button.startsWith("Email")) {
 				try {
-					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);// emailInvoice();
+					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
 					String note = "";
 					if (invoice.getStatus().isPaid())
 						note += "Payment Receipt for Invoice";
