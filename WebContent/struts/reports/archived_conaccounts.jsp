@@ -49,7 +49,15 @@ with any of these contractors, please encourage them to renew their membership b
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><s:property value="get('name')" /></td>
+			<td>
+			<s:if test="permissions.admin">
+				<a href="ContractorView.action?id=<s:property value="get('id')"/>">
+				<s:property value="get('name')" /></a>
+			</s:if>
+			<s:else>
+				<s:property value="get('name')" />
+			</s:else>
+			</td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>
