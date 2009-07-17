@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 
@@ -54,7 +55,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod) {
 		Query query = em
-				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.isActive = 'Yes' AND user.account.active = 'Y'");
+				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.active = 'Y'");
 		query.setParameter("sub", subscription);
 		query.setParameter("time", timePeriod);
 
@@ -63,7 +64,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod, int opID) {
 		Query query = em
-				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.id = :opID AND user.isActive = 'Yes' AND user.account.active = 'Y'");
+				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.id = :opID AND user.account.active = 'Y'");
 		query.setParameter("sub", subscription);
 		query.setParameter("time", timePeriod);
 		query.setParameter("opID", opID);
