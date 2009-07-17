@@ -24,6 +24,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	protected String fileName = null;
 	private Certificate certificate = null;
 	protected int caoID;
+	private boolean changed = false;
 
 	public CertificateFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
@@ -105,6 +106,8 @@ public class CertificateFileUpload extends ContractorActionSupport {
 							extension, true);
 					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 				}
+				
+				changed = true;
 			}
 		}
 
@@ -184,5 +187,9 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 	public Certificate getCertificate() {
 		return certificate;
+	}
+
+	public boolean isChanged() {
+		return changed;
 	}
 }

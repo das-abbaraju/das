@@ -14,12 +14,14 @@
 var caoID  = '<s:property value="caoID"/>';
 var certID = '<s:property value="certID"/>';
 function closePage() {
+<s:if test="changed">
 	try {
 		if (caoID > 0 && certID > 0)
 			window.opener.saveCert(certID, caoID);
 		else
 			window.opener.location.reload(true);
 	} catch(err) {}
+</s:if>
 	self.close();
 }
 </script>
