@@ -72,6 +72,11 @@ function closePage() {
 							<button class="picsbutton positive" name="button" value="Save" type="submit">Save</button>
 						</div>
 					</div>
+					<s:if test="certificate.caos != null && certificate.caos.size() > 0">
+						<div class="alert">
+							This certificate has been attached to a policy, it cannot be deleted.
+						</div>
+					</s:if>
 				</div>
 			</s:form>
 			</div>
