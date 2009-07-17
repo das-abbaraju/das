@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.cron.CronMetricsAggregator;
@@ -251,6 +250,18 @@ public class FlagCalculator2 {
 
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits(contractor.getAudits(), questionIDs);
 		List<ContractorOperator> conOperators = contractor.getOperators();
+
+		
+		// Calculating the 3 Year Avg for EMR and OSHA
+		OshaAudit oshaAvg = contractor.getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
+		AuditData emrAvg = contractor.getEmrs().get(OshaAudit.AVG);
+		if(emrAvg != null && !Strings.isEmpty(emrAvg.getAnswer()))
+			contractor.setEmrAverage(Float.valueOf(emrAvg.getAnswer()).floatValue());
+		if (oshaAvg != null) {
+			contractor.setTrirAverage(oshaAvg.getRecordableTotalRate());
+			contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate());
+		}
+		
 		// //since the @Transactional annotation is on this method (and it seems
 		// for good reason), and not on the class
 		// //level, the runCalc method actually runs from within a different
@@ -391,15 +402,6 @@ public class FlagCalculator2 {
 					}
 				}
 			}
-		}
-		// Calculating the 3 Year Avg for EMR and OSHA
-		OshaAudit oshaAvg = contractor.getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
-		AuditData emrAvg = contractor.getEmrs().get(OshaAudit.AVG);
-		if(emrAvg != null && !Strings.isEmpty(emrAvg.getAnswer()))
-			contractor.setEmrAverage(Float.valueOf(emrAvg.getAnswer()).floatValue());
-		if (oshaAvg != null) {
-			contractor.setTrirAverage(oshaAvg.getRecordableTotalRate());
-			contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate());
 		}
 
 		contractor.setNeedsRecalculation(false);

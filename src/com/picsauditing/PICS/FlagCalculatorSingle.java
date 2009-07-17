@@ -1,10 +1,10 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -16,10 +16,8 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.log.PicsLogger;
