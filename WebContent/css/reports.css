@@ -235,15 +235,11 @@ a.clearLink {
 }
 
 #navListTop a:link, #navListTop a:visited {
-	background-color: rgb(168, 77, 16);
-}
-
-#navListTop a:hover, #navListTop a:active, #navListTop a.current {
 	background-color: #003768;
 }
 
-#navListTop a:active {
-	font-weight: bold;
+#navListTop a:hover, #navListTop a:active, #navListTop a.current {
+	background-color: rgb(168, 77, 16);
 }
 
 #navListTop a.inactive {
