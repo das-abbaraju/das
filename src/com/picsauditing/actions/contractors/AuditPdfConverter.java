@@ -63,28 +63,29 @@ public class AuditPdfConverter extends ContractorActionSupport {
 	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
 
-	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO, AuditCategoryDataDAO catDataDao) {
+	public AuditPdfConverter(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditDataDAO auditDataDAO,
+			AuditCategoryDataDAO catDataDao) {
 		super(accountDao, auditDao);
-		 this.auditDataDAO = auditDataDAO;
-		 this.catDataDao = catDataDao;
+		this.auditDataDAO = auditDataDAO;
+		this.catDataDao = catDataDao;
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		limitedView = true;
 		findContractor();
-		
+
 		String filename = contractor.getName();
 		filename += ".pdf";
-		
+
 		ServletActionContext.getResponse().setContentType("application/pdf");
 		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + filename);
 		Document document = new Document();
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 		PdfWriter pdfWriter = PdfWriter.getInstance(document, outstream);
-		
+
 		document.open();
 		createDocument(document, contractor);
 		showOshaLogs(document, pdfWriter);
@@ -93,7 +94,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 		ServletActionContext.getResponse().flushBuffer();
 		return null;
 	}
-	
+
 	private void createDocument(Document document, ContractorAccount contractor) throws Exception {
 		try {
 			Paragraph conName = new Paragraph(contractor.getName(), headerFont);
@@ -112,7 +113,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					name.setAlignment(Element.ALIGN_CENTER);
 					document.add(name);
 					AnswerMap answerMap = auditDataDAO.findAnswers(conAudit.getId());
-					if(conAudit.getAuditType().isPqf())
+					if (conAudit.getAuditType().isPqf())
 						aList = catDataDao.findByAudit(conAudit, permissions);
 					else
 						aList = conAudit.getCategories();
@@ -239,9 +240,9 @@ public class AuditPdfConverter extends ContractorActionSupport {
 						String extension = filename.substring(filename.lastIndexOf('.') + 1, filename.length());
 						if ("pdf".equalsIgnoreCase(extension)) {
 							String fileMD5 = FileUtils.getFileMD5(oshaFile);
-								if(fileMD5 == null || !attachments.containsKey(fileMD5)) {
-									attachments.put(fileMD5, oshaFile);
-								}	
+							if (fileMD5 == null || !attachments.containsKey(fileMD5)) {
+								attachments.put(fileMD5, oshaFile);
+							}
 							cells.add(new PdfPCell(new Phrase("See Attached", questionFont)));
 						} else {
 							Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
@@ -291,20 +292,18 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					questionAnswer.add(question);
 					if (answerMap.get(auditQuestion.getId()) != null) {
 						AuditData auditData = answerMap.get(auditQuestion.getId());
-						if(auditQuestion.getQuestionType().startsWith("File")) {
-							if(auditData.getAnswer().length() > 0) {
+						if (auditQuestion.getQuestionType().startsWith("File")) {
+							if (auditData.getAnswer().length() > 0) {
 								Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
 										Font.UNDERLINE, new Color(0, 0, 255)));
 								anchor.setReference("http://www.picsauditing.com/DownloadAuditData.action?auditID="
-										+ auditData.getAudit().getId()+"&answer.id="+auditData.getId());
+										+ auditData.getAudit().getId() + "&answer.id=" + auditData.getId());
 								anchor.setName("View File");
 								questionAnswer.add(anchor);
-							}
-							else {
+							} else {
 								questionAnswer.add(new Chunk("File Not Uploaded", answerFont));
 							}
-						}
-						else {
+						} else {
 							Chunk answer = new Chunk(auditData.getAnswer(), answerFont);
 							questionAnswer.add("   ");
 							questionAnswer.add(answer);
@@ -316,16 +315,15 @@ public class AuditPdfConverter extends ContractorActionSupport {
 		}
 	}
 
-	private void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException,
-			IOException {
+	private void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException, IOException {
 		for (File oshaFile : attachments.values()) {
 			try {
 				InputStream pdfs = new FileInputStream(oshaFile);
 				PdfReader pdfReader = new PdfReader(pdfs);
 				PdfContentByte cb = pdfWriter.getDirectContent();
-				for(int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
+				for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
 					Rectangle rec = pdfReader.getPageSizeWithRotation(i);
-					if(rec.getWidth() > rec.getHeight())
+					if (rec.getWidth() > rec.getHeight())
 						document.setPageSize(PageSize.A3.rotate());
 					else
 						document.setPageSize(PageSize.A4);
@@ -334,8 +332,11 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					cb.addTemplate(page, 0, 0);
 				}
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				continue;
 			}
+			catch (IOException e) {
+				continue;
+			}	
 		}
 	}
 
