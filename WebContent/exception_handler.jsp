@@ -4,7 +4,8 @@
 <%@page import="com.opensymphony.xwork2.ActionContext"%>
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <%@page import="com.picsauditing.mail.EmailSender"%>
-<html>
+
+<%@page import="com.picsauditing.mail.SendMail"%><html>
 <%
 /*
 	If the exception is coming from the non-struts world, ActionContext.getContext().getActionInvocation() will 
@@ -48,42 +49,41 @@
 	}//if
 
 	if (!debugging) {
+		StringBuilder email = new StringBuilder();
+		email.append("An error occurred on PICS\n\n");
+		email.append(message);
+		email.append("\n\nServerName: " + request.getServerName());
+		email.append("\nRequestURI: " + request.getRequestURI());
+		email.append("\nQueryString: " + request.getQueryString());
+		email.append("\nRemoteAddr: " + request.getRemoteAddr());
+		if (permissions.isLoggedIn()) {
+			email.append("\nName: " + permissions.getName());
+			email.append("\nUsername: " + permissions.getUsername());
+			email.append("\nAccountID: " + permissions.getAccountId());
+			if (permissions.getAdminID() > 0) email.append("\nAdmin: " + permissions.getAdminID());
+			email.append("\nType: " + permissions.getAccountType());
+		} else {
+			email.append("\nThe current user was NOT logged in.");
+		}
+
+		if (stacktrace.length() > 0) {
+			email.append("\n\nTrace:\n");
+			email.append(stacktrace);
+		}
+		email.append("\n\n");
+		for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
+		    String headerName = (String)e.nextElement();
+			email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
+		}
+		EmailQueue mail = new EmailQueue();
+		mail.setSubject("PICS Exception Error");
+		mail.setBody(email.toString());
+		mail.setToAddresses("errors@picsauditing.com");
 		try {
-			%>Debugging<%
-			StringBuilder email = new StringBuilder();
-			email.append("An error occurred on PICS\n\n");
-			email.append(message);
-			email.append("\n\nServerName: " + request.getServerName());
-			email.append("\nRequestURI: " + request.getRequestURI());
-			email.append("\nQueryString: " + request.getQueryString());
-			email.append("\nRemoteAddr: " + request.getRemoteAddr());
-			if (permissions.isLoggedIn()) {
-				email.append("\nName: " + permissions.getName());
-				email.append("\nUsername: " + permissions.getUsername());
-				email.append("\nAccountID: " + permissions.getAccountId());
-				if (permissions.getAdminID() > 0) email.append("\nAdmin: " + permissions.getAdminID());
-				email.append("\nType: " + permissions.getAccountType());
-			} else {
-				email.append("\nThe current user was NOT logged in.");
-			}
-	
-			if (stacktrace.length() > 0) {
-				email.append("\n\nTrace:\n");
-				email.append(stacktrace);
-			}
-			email.append("\n\n");
-			for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
-			    String headerName = (String)e.nextElement();
-				email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
-			}
-			EmailQueue mail = new EmailQueue();
-			mail.setSubject("PICS Exception Error");
-			mail.setBody(email.toString());
-			mail.setToAddresses("errors@picsauditing.com");
 			EmailSender.send(mail);
-			
 		} catch (Exception e) {
-			%>Failed to send email: <%= e.getMessage() %><%
+			SendMail sendMail = new SendMail();
+			sendMail.send(mail); 
 		}
 	}
 %>
