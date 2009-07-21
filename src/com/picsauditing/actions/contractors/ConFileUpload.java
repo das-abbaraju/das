@@ -1,6 +1,8 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -12,6 +14,7 @@ import com.picsauditing.util.FileUtils;
 
 public class ConFileUpload extends ContractorActionSupport {
 	private static final long serialVersionUID = 2438788697676816034L;
+	private InputStream inputStream;
 
 	public ConFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		super(accountDao, auditDao);
@@ -23,18 +26,31 @@ public class ConFileUpload extends ContractorActionSupport {
 		this.findContractor();
 
 		if (button != null) {
-			if (contractor.getId() > 0 && button.equals("download")) {
-				Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
-						.getServletContext());
-				try {
-					File[] files = getFiles(contractor.getId());
-					downloader.download(files[0], null);
-					return null;
-				} catch (Exception e) {
-					addActionError("Failed to download file: " + e.getMessage());
-					return BLANK;
+			if (contractor.getId() > 0) {
+				if (button.equals("download")) {
+					Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+							.getServletContext());
+					try {
+						File[] files = getFiles(contractor.getId());
+						downloader.download(files[0], null);
+						return null;
+					} catch (Exception e) {
+						addActionError("Failed to download file: " + e.getMessage());
+						return BLANK;
+					}
+				}
+				if (button.equals("logo")) {
+					try {
+						File[] files = getLogos(contractor.getId());
+						inputStream = new FileInputStream(files[0]);
+						return "logo";
+					} catch (Exception e) {
+						addActionError("Failed to download file: " + e.getMessage());
+						return BLANK;
+					}
 				}
 			}
+
 		}
 
 		return SUCCESS;
@@ -47,5 +63,14 @@ public class ConFileUpload extends ContractorActionSupport {
 	private File[] getFiles(int conID) {
 		File dir = new File(getFtpDir() + "/files/brochures/");
 		return FileUtils.getSimilarFiles(dir, getFileName(conID));
+	}
+
+	private File[] getLogos(int conID) {
+		File dir = new File(getFtpDir() + "/logos/");
+		return FileUtils.getSimilarFiles(dir, "logo_" + conID);
+	}
+
+	public InputStream getInputStream() {
+		return inputStream;
 	}
 }

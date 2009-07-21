@@ -272,6 +272,13 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		
+		<action name="ContractorLogo"
+			class="com.picsauditing.actions.contractors.ConFileUpload">
+			<param name="button">logo</param>
+			<result name="logo" type="stream"></result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+		
 		<action name="ContractorPaymentOptions"
 			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
 			<result>struts/contractors/con_payment_options.jsp</result>

@@ -61,7 +61,7 @@
 		<div class="left infobox">
 			<div class="vcard">
 				<div class="adr">
-					<s:if test="logoWidth > 0"><img src="logos/<s:property value="contractor.logoFile" />" 
+					<s:if test="logoWidth > 0"><img src="ContractorLogo.action?id=<s:property value="id" />" 
 						width="<s:property value="logoWidth" />" /></s:if>
 					<p class="fn org"><s:property value="contractor.name" /></p>
 					<s:if test="contractor.dbaName.length() > 0">
