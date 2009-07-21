@@ -32,7 +32,7 @@ public class EmailAttachmentDAOTest extends TestCase {
 		emailAttachment.getEmailQueue().setId(2787);
 		emailAttachment.setFileName("brochure_43.pdf");
 		emailAttachment.setFileSize(10);
-		File file = new File("M:/Development/ftp_dir/files/brochures/brochure_43.pdf");
+		File file = new File("P:/Development/ftp_dir/files/brochures/brochure_43.pdf");
 		String mimeType = new MimetypesFileTypeMap().getContentType(file);
 		System.out.println(mimeType);
 		//emailAttachment.setMimeType(mimeType);
