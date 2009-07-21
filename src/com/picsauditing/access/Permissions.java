@@ -80,7 +80,7 @@ public class Permissions implements Serializable {
 				throw new Exception("Missing User");
 
 			loggedIn = true;
-			active = user.isActive();
+			active = user.isActiveB();
 			username = user.getUsername();
 			name = user.getName();
 			email = user.getEmail();

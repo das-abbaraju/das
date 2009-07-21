@@ -145,7 +145,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Transient
-	public boolean isActive() {
+	public boolean isActiveB() {
 		return YesNo.Yes.equals(isActive);
 	}
 
