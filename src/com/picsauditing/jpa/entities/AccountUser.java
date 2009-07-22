@@ -3,16 +3,20 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.picsauditing.actions.users.UserAccountRole;
 
 @Entity
 @Table(name = "account_user")
 public class AccountUser extends BaseTable {
 	private Account account;
 	private User user;
-	private AccountRole role;
+	private UserAccountRole role;
 	private Date startDate;
 	private Date endDate;
 	private int ownerPercent;
@@ -37,13 +41,12 @@ public class AccountUser extends BaseTable {
 		this.user = user;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "roleID", nullable = false, updatable = false)
-	public AccountRole getRole() {
+	@Enumerated(EnumType.STRING)
+	public UserAccountRole getRole() {
 		return role;
 	}
 
-	public void setRole(AccountRole role) {
+	public void setRole(UserAccountRole role) {
 		this.role = role;
 	}
 

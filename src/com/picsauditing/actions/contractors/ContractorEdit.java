@@ -328,14 +328,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	
 	public ArrayList<String> getDeactivationReasons() {
 		ArrayList<String> list = new ArrayList<String>();
+		list.add("ChargeBack");
 		list.add("Did not Complete PICS process");
 		list.add("Does not work for operator");
 		list.add("Duplicate/Merged Account");
-		list.add("No response");
-		list.add("Operator exemption");
+		list.add("Operator Exemption");
 		list.add("Payments not Current");
-		list.add("Lost Contract");
-		list.add("No Longer PICS Operator");
 		return list;
 	}
 }
