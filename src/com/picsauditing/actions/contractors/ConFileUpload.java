@@ -41,8 +41,7 @@ public class ConFileUpload extends ContractorActionSupport {
 				}
 				if (button.equals("logo")) {
 					try {
-						File[] files = getLogos(contractor.getId());
-						inputStream = new FileInputStream(files[0]);
+						inputStream = new FileInputStream(new File(getFtpDir() + "/logos/" + contractor.getLogoFile()));
 						return "logo";
 					} catch (Exception e) {
 						addActionError("Failed to download file: " + e.getMessage());
@@ -63,11 +62,6 @@ public class ConFileUpload extends ContractorActionSupport {
 	private File[] getFiles(int conID) {
 		File dir = new File(getFtpDir() + "/files/brochures/");
 		return FileUtils.getSimilarFiles(dir, getFileName(conID));
-	}
-
-	private File[] getLogos(int conID) {
-		File dir = new File(getFtpDir() + "/logos/");
-		return FileUtils.getSimilarFiles(dir, "logo_" + conID);
 	}
 
 	public InputStream getInputStream() {

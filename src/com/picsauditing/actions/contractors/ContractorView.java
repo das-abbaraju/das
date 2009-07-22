@@ -21,6 +21,8 @@ public class ContractorView extends ContractorActionSupport {
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
+	private int logoWidth = 0;
+
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO) {
 		super(accountDao, auditDao);
@@ -57,8 +59,7 @@ public class ContractorView extends ContractorActionSupport {
 					operatorTags.remove(contractorTag.getTag());
 			}
 		}
-		if(contractor.getOperators() != null 
-				&& contractor.getOperators().size() > 0) {
+		if (contractor.getOperators() != null && contractor.getOperators().size() > 0) {
 			auditBuilder.setUser(getUser());
 			auditBuilder.buildAudits(this.contractor);
 		}
@@ -75,18 +76,19 @@ public class ContractorView extends ContractorActionSupport {
 		if (contractor.getLogoFile().equals("No"))
 			return 0;
 
-		String filename = getFtpDir() + "/logos/" + contractor.getLogoFile();
-		// System.out.println("filename = " + filename);
-		int width = 0;
-		try {
-			width = Images.getWidth(filename);
-		} catch (IOException e) {
-			System.out.println("failed to get logo width of " + filename + ": " + e.getMessage());
+		if (logoWidth == 0) {
+			String filename = getFtpDir() + "/logos/" + contractor.getLogoFile();
+			// System.out.println("filename = " + filename);
+			try {
+				logoWidth = Images.getWidth(filename);
+			} catch (IOException e) {
+				System.out.println("failed to get logo width of " + filename + ": " + e.getMessage());
+			}
+			// System.out.println("width = " + width);
+			if (logoWidth > 300)
+				logoWidth = 300;
 		}
-		// System.out.println("width = " + width);
-		if (width > 300)
-			return 300;
-		return width;
+		return logoWidth;
 	}
 
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
