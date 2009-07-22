@@ -73,7 +73,7 @@ input[type=submit] {
 						<s:set name="urlBase" value="InvoiceDetail.action?invoice.id={%invoice.id}" />
 						<s:property value="#urlBase"/>
 
-					<div id="toolbox" class="noprint" />
+					<div id="toolbox" class="noprint">
 					<ul>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
