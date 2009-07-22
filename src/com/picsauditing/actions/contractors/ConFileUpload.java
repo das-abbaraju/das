@@ -41,8 +41,12 @@ public class ConFileUpload extends ContractorActionSupport {
 				}
 				if (button.equals("logo")) {
 					try {
-						inputStream = new FileInputStream(new File(getFtpDir() + "/logos/" + contractor.getLogoFile()));
-						return "logo";
+						File logo = new File(getFtpDir() + "/logos/" + contractor.getLogoFile());
+						if (logo.exists()) {
+							inputStream = new FileInputStream(logo);
+							return "logo";
+						} else
+							return BLANK;
 					} catch (Exception e) {
 						addActionError("Failed to download file: " + e.getMessage());
 						return BLANK;
