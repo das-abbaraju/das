@@ -6,12 +6,12 @@
 <title>Manage Flag Criteria</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/modalbox.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/modalbox/modalbox.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
-<script type="text/javascript" src="js/modalbox.js"></script>
+<script type="text/javascript" src="js/modalbox/modalbox.js"></script>
 <script type="text/javascript" src="js/CalendarPopup.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript" src="js/notes.js"></script>
