@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -24,8 +27,10 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
+import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
@@ -46,6 +51,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private List<InvoiceFee> feeList = null;
 
 	AppPropertyDAO appPropDao;
+
+	private BrainTreeService paymentService = new BrainTreeService();
 
 	public InvoiceDetail(InvoiceDAO invoiceDAO, AppPropertyDAO appPropDao, NoteDAO noteDAO,
 			ContractorAccountDAO conAccountDAO, InvoiceFeeDAO invoiceFeeDAO, PaymentDAO paymentDAO,
@@ -120,7 +127,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 			if (button.startsWith("Email")) {
 				try {
-					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
+					EmailQueue email = EventSubscriptionBuilder
+							.contractorInvoiceEvent(contractor, invoice, permissions);
 					String note = "";
 					if (invoice.getStatus().isPaid())
 						note += "Payment Receipt for Invoice";
@@ -139,7 +147,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			}
 			if (button.equalsIgnoreCase("Cancel")) {
 				Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
-				if(paIterator.hasNext()) {
+				if (paIterator.hasNext()) {
 					PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
 					paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, this.getUser());
 				}
@@ -153,6 +161,47 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for $"
 						+ invoice.getTotalAmount().toString();
 				addNote(noteText);
+			}
+			if (button.equals("pay")) {
+				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+					if (contractor.isCcValid()) {
+						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+
+						try {
+							Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(),
+									PaymentMethod.CreditCard);
+
+							paymentService.processPayment(payment);
+
+							CreditCard creditCard = paymentService.getCreditCard(id);
+							payment.setCcNumber(creditCard.getCardNumber());
+
+							// Only if the transaction succeeds
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
+									.getTotalAmount());
+							payment.setQbSync(true);
+
+							paymentDAO.save(payment);
+							invoice.updateAmountApplied();
+
+							contractor.syncBalance();
+
+							addNote("Credit Card transaction completed and emailed the receipt for $"
+									+ invoice.getTotalAmount());
+						} catch (Exception e) {
+							addNote("Credit Card transaction failed: " + e.getMessage());
+							this.addActionError("Failed to charge credit card. " + e.getMessage());
+							return SUCCESS;
+						}
+					}
+
+					// Send a receipt to the contractor
+					try {
+						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
+					} catch (Exception theyJustDontGetAnEmail) {
+					}
+				}
 			}
 
 			invoiceDAO.save(invoice);

@@ -77,7 +77,7 @@ input[type=submit] {
 					<ul>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
-								<li><a class="save" href="#" onclick="document.save.submit(); return false;">Save</a></li>
+								<li><a class="save" href="#" onclick="document.forms['save'].submit(); return false;">Save</a></li>
 								<li><a class="exit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>">Return</a></li>
 							</s:if>
 							<s:else>
@@ -95,6 +95,9 @@ input[type=submit] {
 							</s:else>
 						</pics:permission>
 						<s:if test="!edit">
+							<s:if test="permissions.contractor && invoice.status.unpaid && contractor.ccValid">
+								<li><a class="pay" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=pay" onclick="this.disable()">Pay</a></li>
+							</s:if>
 							<li><a class="email"
 								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Email">Email</a></li>
 							<li><a class="print" href="javascript: window.print();">Print</a></li>

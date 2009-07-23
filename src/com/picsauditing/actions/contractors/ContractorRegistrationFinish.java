@@ -81,7 +81,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				contractor.setAuditColumns(getUser());
 			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
-					if (contractor.isCcOnFile()) {
+					if (contractor.isCcValid()) {
 						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
