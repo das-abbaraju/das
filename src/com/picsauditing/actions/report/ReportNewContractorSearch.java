@@ -26,15 +26,20 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	@Override
+	public void prepare() throws Exception {
+		super.prepare();
+		if (permissions.getCorporateParent().size() > 0)
+			getFilter().setShowInParentCorporation(true);
+	}
+
+	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.SearchContractors);
 	}
-	
+
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
-
-		getFilter().setShowInParentCorporation(true);
 
 		if (permissions.isOperator()) {
 			// Anytime we query contractor accounts as an operator,
@@ -61,7 +66,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 						+ ") ";
 			sql.addWhere(whereQuery);
 		}
-		
+
 		sql.addJoin("JOIN invoice_fee fee on fee.id = c.membershipLevelID");
 		sql.addField("a.contact");
 		sql.addField("a.city");
@@ -71,7 +76,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (button != null && id > 0) {
@@ -97,7 +102,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 			return SUCCESS;
 		}
-		
+
 		if ((getFilter().getAccountName() == null
 				|| ReportFilterAccount.DEFAULT_NAME.equals(getFilter().getAccountName()) || getFilter()
 				.getAccountName().length() < 3)
