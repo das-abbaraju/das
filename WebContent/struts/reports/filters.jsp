@@ -83,7 +83,7 @@
 	</s:if>
 
 	<s:if test="filter.showWaitingOn">
-		<div class="filterOption"><s:select list="filter.waitingOnList" headerKey="" headerValue="- Waiting On-"
+		<div class="filterOption"><s:select list="filter.waitingOnList" headerKey="" headerValue="- Waiting On -"
 			cssClass="forms" name="filter.waitingOn" /></div>
 	</s:if>
 
