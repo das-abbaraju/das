@@ -8,15 +8,29 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css" />
 <script type="text/javascript">
+var myTimer = null;
+
 function getQuestionList() {
 		var elm = escape($F('questionSelect'));
 		var pars = 'questionName='+ elm;
+		startThinking({div: 'thinking',message:'Finding matching questions...'});
 		var myAjax = new Ajax.Updater('selected_question','QuestionSelectAjax.action', 
 		{
 			method: 'post', 
-			parameters: pars
+			parameters: pars,
+			onComplete: function() {
+				stopThinking({div: 'thinking'});
+			}
 		}
 		);
+}
+
+function autoGetQuestion(ele) {
+	if (ele.value.length > 3) {
+		if (myTimer != null)
+			clearTimeout(myTimer);
+		myTimer = setTimeout("getQuestionList()",500);
+	}
 }
 
 function setId(Id) {
@@ -52,8 +66,8 @@ function setId(Id) {
 	<br clear="all"/>
 	<div class="filterOption">
 		Select a Question
-		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" /> 
-		<input type="button" value="Search" onclick="getQuestionList()"/><br/>
+		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" onkeyup="autoGetQuestion(this)" /> 
+		<input type="button" value="Search" onclick="getQuestionList()"/> <span id="thinking"></span><br/>
 		<div id="selected_question">&nbsp;</div>
 	</div>
 
