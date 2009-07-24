@@ -35,6 +35,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 				filter.setVisible("Y"); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Contractor);
+				filter.setShowInvoiceDueDate(true);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.Audit)) {
