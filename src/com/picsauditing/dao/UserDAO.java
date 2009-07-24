@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.jboss.util.Strings;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.User;
