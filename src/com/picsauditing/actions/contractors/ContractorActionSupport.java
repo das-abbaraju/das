@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,6 +25,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {
@@ -79,7 +82,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
-	
+
 	protected void resetActiveAudits() {
 		contractorNonExpiredAudits = null;
 	}
@@ -97,11 +100,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Build a Menu (List<MenuComponent>) with the following:<br> *
-	 * PQF<br> *
-	 * Annual Update<br> *
-	 * InsureGuard<br> *
-	 * Audits<br>
+	 * Build a Menu (List<MenuComponent>) with the following:<br>
+	 * * PQF<br>
+	 * * Annual Update<br>
+	 * * InsureGuard<br>
+	 * * Audits<br>
 	 * 
 	 * @return
 	 */
@@ -116,7 +119,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		{
 			// Add the PQF
 			List<ContractorAudit> pqfs = new ArrayList<ContractorAudit>();
-			
+
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
@@ -136,9 +139,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
 					String auditName = audit.getAuditType().getAuditName();
-					if(isShowCheckIcon(audit))
+					if (isShowCheckIcon(audit))
 						auditName = checkIcon + auditName;
-					subMenu.addChild(auditName, url + audit.getId(), audit.getId(), audit.getAuditStatus() + " - " + audit.getPercent() + "% Complete");
+					subMenu.addChild(auditName, url + audit.getId(), audit.getId(), audit.getAuditStatus() + " - "
+							+ audit.getPercent() + "% Complete");
 				}
 			}
 		}
@@ -151,12 +155,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().isAnnualAddendum()) {
 					String linkText = audit.getAuditFor() + " Update";
-					if(isShowCheckIcon(audit))
+					if (isShowCheckIcon(audit))
 						linkText = checkIcon + linkText;
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), "");
+					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), "", audit.getAuditFor());
 					iter.remove();
 				}
 			}
+
+			subMenu.sortChildren();
 		}
 
 		if (isRequiresInsurance()) {
@@ -186,9 +192,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.equals(AuditStatus.Exempt)) {
-					String linkText = audit.getAuditType().getAuditName() +
-						(audit.getAuditFor() == null ? "" : " " + audit.getAuditFor() );
-					if(isShowCheckIcon(audit))
+					String linkText = audit.getAuditType().getAuditName()
+							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
+					if (isShowCheckIcon(audit))
 						linkText = checkIcon + linkText;
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 					iter.remove();
@@ -205,7 +211,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
 						linkText = audit.getAuditFor() + " " + linkText;
-					if(isShowCheckIcon(audit))
+					if (isShowCheckIcon(audit))
 						linkText = checkIcon + linkText;
 					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
 				}
@@ -215,8 +221,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Only show the insurance link for contractors who are linked to an operator that collects insurance data. Also,
-	 * don't show the link to users who don't have the InsuranceCerts permission.
+	 * Only show the insurance link for contractors who are linked to an
+	 * operator that collects insurance data. Also, don't show the link to users
+	 * who don't have the InsuranceCerts permission.
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
@@ -242,8 +249,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Only show the Integrity Management link for contractors who are linked to an operator that subscribes to
-	 * Integrity Management
+	 * Only show the Integrity Management link for contractors who are linked to
+	 * an operator that subscribes to Integrity Management
 	 */
 	public boolean isRequiresIntegrityManagement() {
 		if (!accountDao.isContained(getOperators().iterator().next()))
@@ -336,7 +343,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public List<ContractorAudit> getAudits() {
 		// Why is this method so complicated? Seems like it could be simpler
 		// Like this: return contractor.getAudits()
-		
+
 		List<ContractorAudit> temp = new ArrayList<ContractorAudit>();
 		try {
 			if (!accountDao.isContained(contractor))
@@ -357,11 +364,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public boolean isShowCheckIcon(ContractorAudit conAudit) {
-		if(permissions.isContractor()) {
-			if(conAudit.getAuditStatus().isActiveSubmitted())
+		if (permissions.isContractor()) {
+			if (conAudit.getAuditStatus().isActiveSubmitted())
 				return true;
-		}
-		else if(conAudit.getAuditStatus().isActive())
+		} else if (conAudit.getAuditStatus().isActive())
 			return true;
 		return false;
 	}

@@ -3,18 +3,21 @@ package com.picsauditing.access;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MenuComponent implements Serializable {
+import edu.emory.mathcs.backport.java.util.Collections;
+
+public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	private static final long serialVersionUID = 923449569385839331L;
 
 	private String name;
 	private String url;
 	private String title;
 	private int id = 1;
+	private String sortField;
 
 	protected int auditId = 0;
-	
+
 	protected boolean current = false;
-	
+
 	private ArrayList<MenuComponent> children = new ArrayList<MenuComponent>();
 
 	public MenuComponent() {
@@ -28,7 +31,7 @@ public class MenuComponent implements Serializable {
 		this.name = name;
 		this.url = url;
 	}
-	
+
 	public boolean visible() {
 		return hasChildren() || hasUrl();
 	}
@@ -62,7 +65,7 @@ public class MenuComponent implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -74,7 +77,7 @@ public class MenuComponent implements Serializable {
 	public boolean hasChildren() {
 		return children.size() > 0;
 	}
-	
+
 	public ArrayList<MenuComponent> getChildren() {
 		return children;
 	}
@@ -82,16 +85,14 @@ public class MenuComponent implements Serializable {
 	public MenuComponent addChild(String name) {
 		MenuComponent child = new MenuComponent(name);
 		this.children.add(child);
-		child.setId(this.children.size() + (100*this.id));
+		child.setId(this.children.size() + (100 * this.id));
 		return child;
 	}
-	
-	
 
 	public MenuComponent addChild(String name, String url) {
 		MenuComponent child = new MenuComponent(name, url);
 		this.children.add(child);
-		child.setId(this.children.size() + (100*this.id));
+		child.setId(this.children.size() + (100 * this.id));
 		return child;
 	}
 
@@ -99,18 +100,29 @@ public class MenuComponent implements Serializable {
 		MenuComponent child = new MenuComponent(name, url);
 		this.children.add(child);
 		child.setTitle(title);
-		child.setId(this.children.size() + (100*this.id));
+		child.setId(this.children.size() + (100 * this.id));
 		child.setAuditId(childAuditId);
 		return child;
 	}
-	
+
+	public MenuComponent addChild(String name, String url, int childAuditId, String title, String sortField) {
+		MenuComponent child = new MenuComponent(name, url);
+		this.children.add(child);
+		child.setTitle(title);
+		child.setId(this.children.size() + (100 * this.id));
+		child.setAuditId(childAuditId);
+		child.setSortField(sortField);
+		return child;
+	}
+
 	public boolean isCurrent() {
-		
-		if( current ) return true;
-		
-		for( MenuComponent child : children ) {
-			
-			if( child.isCurrent() ) {
+
+		if (current)
+			return true;
+
+		for (MenuComponent child : children) {
+
+			if (child.isCurrent()) {
 				return true;
 			}
 		}
@@ -129,6 +141,21 @@ public class MenuComponent implements Serializable {
 		this.auditId = auditId;
 	}
 
-	
-	
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	@Override
+	public int compareTo(MenuComponent o) {
+		return sortField.compareTo(o.sortField);
+	}
+
+	public void sortChildren() {
+		Collections.sort(children);
+	}
+
 }
