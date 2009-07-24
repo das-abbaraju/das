@@ -45,5 +45,6 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowConWithPendingAudits(false);
 		getFilter().setShowAuditFor(false);
+		getFilter().setShowCcOnFile(false);
 	}
 }
