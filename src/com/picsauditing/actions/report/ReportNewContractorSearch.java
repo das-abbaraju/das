@@ -79,6 +79,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	public String execute() throws Exception {
+		getFilter().setPrimaryInformation(true);
+		getFilter().setTradeInformation(true);
+
 		if (button != null && id > 0) {
 			try {
 				ContractorAccount contractor = contractorAccountDAO.find(id);
@@ -99,7 +102,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 			} catch (Exception e) {
 				addActionError(e.getMessage());
 			}
-
 			return SUCCESS;
 		}
 
