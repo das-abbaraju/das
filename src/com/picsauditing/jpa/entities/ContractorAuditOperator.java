@@ -43,7 +43,8 @@ public class ContractorAuditOperator extends BaseTable {
 	}
 
 	/**
-	 * @return The "inherited" operator/corporate/division that is associated with this CAO
+	 * @return The "inherited" operator/corporate/division that is associated
+	 *         with this CAO
 	 */
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -146,16 +147,17 @@ public class ContractorAuditOperator extends BaseTable {
 
 	@Transient
 	public boolean isVisibleTo(Permissions permissions) {
-//		if (!visible)
-//			return false;
-
-		if (permissions.isOperatorCorporate() ) {
+		if (permissions.isOperatorCorporate()) {
 			return permissions.getVisibleCAOs().contains(operator.getId());
 		}
 
-		return true;
+		for (ContractorOperator co : audit.getContractorAccount().getOperators()) {
+			if (co.getOperatorAccount().getId() == operator.getId())
+				return true;
+		}
+		return false;
 	}
-	
+
 	@Transient
 	public boolean isCanContractorSubmit() {
 		return certificate != null && valid != null && (valid.isTrue() || !Strings.isEmpty(reason));
