@@ -152,7 +152,7 @@ public class ContractorAuditOperator extends BaseTable {
 		}
 
 		for (ContractorOperator co : audit.getContractorAccount().getOperators()) {
-			if (co.getOperatorAccount().getId() == operator.getId())
+			if (co.getOperatorAccount().getInheritInsurance().getId() == operator.getId())
 				return true;
 		}
 		return false;
