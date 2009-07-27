@@ -13,15 +13,19 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
-import com.picsauditing.util.SpringUtils;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -35,12 +39,20 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	protected FacilitiesDAO facilitiesDAO;
 	protected OperatorFormDAO formDAO;
+	protected AccountUserDAO accountUserDAO;
+	protected UserDAO userDAO;
+	protected Map<Integer,Integer> roleMap = new HashMap<Integer, Integer>();
+	protected UserAccountRole accountRole;
+	protected int userid = 0;
+	protected int percent = 100;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
-			OperatorFormDAO formDAO) {
+			OperatorFormDAO formDAO, AccountUserDAO accountUserDAO, UserDAO userDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.formDAO = formDAO;
+		this.accountUserDAO = accountUserDAO;
+		this.userDAO = userDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -56,7 +68,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				facilities[i] = fac.getOperator().getId();
 				i++;
 			}
-		} 
+		}
 	}
 
 	public String execute() throws Exception {
@@ -69,6 +81,28 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			subHeading = "Add " + type;
 
 		if (button != null) {
+			if(button.equalsIgnoreCase("Add Role")) {
+				AccountUser accountUser = new AccountUser();
+				accountUser.setAccount(operator);
+				accountUser.setUser(new User(userid));
+				accountUser.setOwnerPercent(percent);
+				accountUser.setRole(accountRole);
+				accountUser.setAuditColumns();
+				operator.getAccountUsers().add(accountUser);
+				operatorDao.save(operator);
+				int completePercent = 0;
+				for(AccountUser accountUser2 : operator.getAccountUsers()) {
+					if(accountUser2.getRole().equals(accountRole)) {
+						completePercent += accountUser2.getOwnerPercent(); 
+					}
+				}
+				if(completePercent != 100) {
+					addActionMessage(accountRole.getDescription() + " is not 100 percent");
+				}
+
+				return SUCCESS;
+			}
+			
 			if (button.equalsIgnoreCase("Save")) {
 				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
 
@@ -158,6 +192,12 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.setNaics(new Naics());
 				operator.getNaics().setCode("0");
 				operator.setNameIndex();
+
+				for(AccountUser accountUser : operator.getAccountUsers()) {
+					int userID = roleMap.get(accountUser.getId());
+					accountUser.setUser(new User(userID));
+				}
+				
 				if (id == 0) {
 					// Save so we can get the id and then update the NOLOAD with
 					// a unique id
@@ -188,8 +228,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(false, "active='Y'");
+		return operatorDao.findWhere(false, "active='Y'");
+	}
+	
+	public List<User> getUserList() throws Exception {
+		return userDAO.findWhere("isActive='Yes' AND isGroup = 'No' AND account.id = 1100");
 	}
 
 	public int[] getFacilities() {
@@ -268,5 +311,41 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
+	}
+	
+	public Map<Integer, Integer> getRoleMap() {
+		return roleMap;
+	}
+
+	public void setRoleMap(Map<Integer, Integer> roleMap) {
+		this.roleMap = roleMap;
+	}
+	
+	public UserAccountRole[] getRoleList() {
+		return UserAccountRole.values();
+	}
+
+	public UserAccountRole getAccountRole() {
+		return accountRole;
+	}
+
+	public void setAccountRole(UserAccountRole accountRole) {
+		this.accountRole = accountRole;
+	}
+
+	public int getUserid() {
+		return userid;
+	}
+
+	public void setUserid(int userid) {
+		this.userid = userid;
+	}
+
+	public int getPercent() {
+		return percent;
+	}
+
+	public void setPercent(int percent) {
+		this.percent = percent;
 	}
 }

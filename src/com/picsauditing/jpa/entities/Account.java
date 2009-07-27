@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -60,6 +61,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	// Other tables
 	// protected List<ContractorOperator> contractors;
 	protected List<User> users;
+	protected List<AccountUser> accountUsers;
 
 	@Transient
 	public String getIdString() {
@@ -313,6 +315,15 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setUsers(List<User> users) {
 		this.users = users;
+	}
+
+	@OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
+	public List<AccountUser> getAccountUsers() {
+		return accountUsers;
+	}
+
+	public void setAccountUsers(List<AccountUser> accountUsers) {
+		this.accountUsers = accountUsers;
 	}
 
 	@Transient
