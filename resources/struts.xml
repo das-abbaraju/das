@@ -672,6 +672,12 @@
 			class="com.picsauditing.actions.report.ReportContractorRiskAssessment">
 			<result>/struts/reports/report_con_risk.jsp</result>
 		</action>
+		
+		<action name="ReportSalesReps"
+			class="com.picsauditing.actions.report.ReportSalesRepresentatives">
+			<result>struts/reports/report_sales.jsp</result>
+		</action>
+		
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
