@@ -310,7 +310,7 @@ public class ReportFlagCriteria extends ReportAccount {
 				if (aOperator.getAuditType().getId() == 11) {
 					year = getYear();
 					name += year;
-					excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i);
+					excelSheet.addColumn(new ExcelColumn(name + " Status", name + " Status", ExcelCellType.String), i++);
 
 					year = year - 1;
 					name = "annual" + year;
