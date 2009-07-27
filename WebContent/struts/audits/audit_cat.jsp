@@ -146,7 +146,8 @@ label.policy {
 	</div>
  -->
 	<s:if test="conAudit.operators.size() > 0">
-		<s:iterator value="conAudit.operators" id="cao">
+		<s:sort source="conAudit.operators" comparator="caoComparator">
+		<s:iterator id="cao">
 			<s:if test="#cao.isVisibleTo(permissions)">
 				<s:if test="#cao.visible">
 					<div class="caoGroup" id="cao<s:property value="id"/>">
@@ -177,6 +178,7 @@ label.policy {
 				</s:else>
 			</s:if>
 		</s:iterator>
+		</s:sort>
 	</s:if>
 	<s:else>
 		<div id="alert">No operators are currently requesting your insurance.</div>

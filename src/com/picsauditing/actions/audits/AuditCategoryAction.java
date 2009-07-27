@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,6 @@ import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -401,5 +401,14 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 		}
 
 		return activePendingEditableAudits;
+	}
+
+	public Comparator<ContractorAuditOperator> getCaoComparator() {
+		return new Comparator<ContractorAuditOperator>() {
+			@Override
+			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
+				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
+			}
+		};
 	}
 }
