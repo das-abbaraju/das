@@ -92,7 +92,7 @@ public class ContractorAuditOperator extends BaseTable {
 		this.visible = visible;
 	}
 
-	@Column(length = 255)
+	@Column(length = 1000)
 	public String getNotes() {
 		return notes;
 	}
@@ -137,6 +137,7 @@ public class ContractorAuditOperator extends BaseTable {
 		this.flag = flag;
 	}
 
+	@Column(length = 500)
 	public String getReason() {
 		return reason;
 	}
