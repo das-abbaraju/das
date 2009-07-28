@@ -57,7 +57,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
-	protected double incidenceRate = 0.0;
+	protected double incidenceRate = -1;
 	
 
 	public boolean isShowAuditType() {
