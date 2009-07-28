@@ -196,7 +196,7 @@ fieldset.form ol {
 	</div>
 </s:form>
 
-<s:if test="payment.balance > 0">
+<s:if test="payment != null && payment.id > 0 && payment.balance > 0">
 	<s:form>
 	<s:hidden name="payment.id" />
 	<h3 style="margin-top: 50px">Refund</h3>
@@ -213,7 +213,7 @@ fieldset.form ol {
 	</s:form>
 </s:if>
 
-<s:if test="payment == null">
+<s:if test="payment == null || payment.id == 0">
 	<script>
 	<s:if test="contractor.paymentMethod.creditCard && contractor.balance > 0">
 		applyAll();
