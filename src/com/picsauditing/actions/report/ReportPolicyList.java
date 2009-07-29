@@ -3,9 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportPolicyList extends ReportInsuranceSupport {
@@ -27,7 +25,8 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 		if (permissions.hasPermission(OpPerms.AllContractors)) {
 			if (getFilter().getOperator() != null && getFilter().getOperator().length > 0) {
 				sql.addField("cao.status as caoStatus");
-				sql.addJoin("JOIN operators o ON o.inheritInsuranceCriteria = cao.opID AND o.id = " + getFilter().getOperator()[0]);
+				sql.addJoin("JOIN operators o ON o.inheritInsuranceCriteria = cao.opID AND o.id = "
+						+ getFilter().getOperator()[0]);
 			} else {
 				sql.addGroupBy("ca.id");
 			}
