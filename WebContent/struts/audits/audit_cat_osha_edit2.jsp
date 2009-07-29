@@ -59,10 +59,6 @@
 	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
 	<td><s:textfield name="osha.restrictedWorkCases" value="%{restrictedWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
-<tr>
-	<th class="label"><s:property value="getText('totalInjuriesAndIllnesses.'.concat(type))"/></th>
-	<td><s:textfield name="osha.recordableTotal" value="%{recordableTotal}" cssClass="osha"></s:textfield></td>
-</tr>
 <s:if test="category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>

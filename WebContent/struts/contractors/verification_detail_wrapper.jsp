@@ -58,9 +58,8 @@
 		var lwd = $F($('lwd_' + oshaId)); 
 		var imc = $F($('imc_' + oshaId)); 
 		var rwc = $F($('rwc_' + oshaId)); 
-		var tii = $F($('tii_' + oshaId)); 
 
-		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&osha.recordableTotal='+tii + '&button=toggleVerify';
+		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&button=toggleVerify';
 		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
 		{
 			method: 'post', 
@@ -244,6 +243,8 @@
 </div>
 
 <div id="verification_audit"></div>
+<br clear="all"/>
+<br clear="all"/>
 <div class="clear"></div>
 <table>
 	<tr class="blueMain">

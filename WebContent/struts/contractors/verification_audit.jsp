@@ -190,8 +190,7 @@
 					name="osha.injuryIllnessCases" cssClass="oshanum" /></li>
 				<li><label>Restricted Work Cases:</label> <s:textfield id="rwc_%{osha.id}"
 					name="osha.restrictedWorkCases" cssClass="oshanum" /></li>
-				<li><label>Total Injuries and Illnesses:</label> <s:textfield id="tii_%{osha.id}"
-					name="osha.recordableTotal" cssClass="oshanum" /></li>
+				<li><label>Total Injuries and Illnesses:</label><s:property	value="osha.recordableTotal"/></li>
 			</ol>
 		</s:div>
 	</fieldset>
