@@ -185,7 +185,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Contractor Risk Level", "ReportContractorRiskLevel.action");
 		if (permissions.hasPermission(OpPerms.EMRReport)) {
-			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action");
+			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action?years=2008");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2008&filter.auditStatus=Active");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
