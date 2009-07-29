@@ -173,7 +173,8 @@
 	<s:if test="filter.showOperator">
 		<div class="filterOption">
 		<s:if test="filter.showOperatorSingle">
-			<s:select list="filter.operatorList" cssClass="forms" name="filter.operator" listKey="id" listValue="name"/>
+			<s:select list="filter.operatorList" cssClass="forms" name="filter.operator" 
+				listKey="id" listValue="name" headerKey="" headerValue="- Operator -"/>
 		</s:if>
 		<s:else>
 		<a href="#"
