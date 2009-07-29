@@ -37,7 +37,7 @@ function closePage() {
 	value="answer.question.subCategory.category.number" />.<s:property
 	value="answer.question.subCategory.number" />.<s:property
 	value="answer.question.number" /></b> &nbsp;&nbsp;<s:property
-	value="answer.question.question" /></div>
+	value="answer.question.question" escape="false"/></div>
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="auditID" />
 	<s:hidden name="divId" />
