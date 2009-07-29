@@ -60,6 +60,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, Color.BLUE);
 	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
 	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
+	private Font questionTitleFont = FontFactory.getFont(FontFactory.HELVETICA, 13, new Color(0xa8, 0x4d, 0x10));
 	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
 
@@ -279,6 +280,12 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			document.add(subCategoryParagraph);
 			for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
 				if (auditQuestion.isValid()) {
+					if(!Strings.isEmpty(auditQuestion.getTitle())) {
+						Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle(),
+								questionTitleFont);
+						questionTitleParagraph.setIndentationLeft(30);
+						document.add(questionTitleParagraph);
+					}
 					Paragraph questionAnswer = new Paragraph();
 					questionAnswer.setIndentationLeft(30);
 					String questionLine = "";
