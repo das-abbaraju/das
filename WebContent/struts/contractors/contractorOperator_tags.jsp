@@ -11,7 +11,7 @@
 	</s:iterator>
 	<s:if test = "operatorTags.size() > 0 ">
 		<tr>
-			<td colspan="2"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" /><input
+			<td colspan="2"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -"/><input
 			type="button" onclick="javascript: return addTag();" value="Add"></td>
 		</tr>
 	</s:if>

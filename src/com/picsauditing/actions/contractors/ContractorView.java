@@ -38,13 +38,15 @@ public class ContractorView extends ContractorActionSupport {
 		findContractor();
 
 		if ("AddTag".equals(button)) {
-			ContractorTag cTag = new ContractorTag();
-			cTag.setContractor(contractor);
-			cTag.setTag(new OperatorTag());
-			cTag.getTag().setId(tagId);
-			cTag.setAuditColumns(permissions);
-			contractor.getOperatorTags().add(cTag);
-			accountDao.save(contractor);
+			if (tagId > 0) {
+				ContractorTag cTag = new ContractorTag();
+				cTag.setContractor(contractor);
+				cTag.setTag(new OperatorTag());
+				cTag.getTag().setId(tagId);
+				cTag.setAuditColumns(permissions);
+				contractor.getOperatorTags().add(cTag);
+				accountDao.save(contractor);
+			}
 		}
 
 		if ("RemoveTag".equals(button)) {
