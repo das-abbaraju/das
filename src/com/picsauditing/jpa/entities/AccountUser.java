@@ -19,7 +19,7 @@ public class AccountUser extends BaseTable {
 	private UserAccountRole role;
 	private Date startDate;
 	private Date endDate;
-	private int ownerPercent;
+	private int ownerPercent = 100;
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false, updatable = false)

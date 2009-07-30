@@ -44,7 +44,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected Map<Integer,Integer> roleMap = new HashMap<Integer, Integer>();
 	protected UserAccountRole accountRole;
 	protected int userid = 0;
-	protected int percent = 100;
+	protected int accountUserId;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
 			OperatorFormDAO formDAO, AccountUserDAO accountUserDAO, UserDAO userDAO) {
@@ -81,11 +81,16 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			subHeading = "Add " + type;
 
 		if (button != null) {
+			if(button.equalsIgnoreCase("Remove")) {
+				if(accountUserId > 0) {
+					accountUserDAO.remove(accountUserId);
+				}
+				return SUCCESS;
+			}
 			if(button.equalsIgnoreCase("Add Role")) {
 				AccountUser accountUser = new AccountUser();
 				accountUser.setAccount(operator);
 				accountUser.setUser(new User(userid));
-				accountUser.setOwnerPercent(percent);
 				accountUser.setRole(accountRole);
 				accountUser.setAuditColumns();
 				operator.getAccountUsers().add(accountUser);
@@ -341,11 +346,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		this.userid = userid;
 	}
 
-	public int getPercent() {
-		return percent;
+	public int getAccountUserId() {
+		return accountUserId;
 	}
 
-	public void setPercent(int percent) {
-		this.percent = percent;
+	public void setAccountUserId(int accountUserId) {
+		this.accountUserId = accountUserId;
 	}
 }

@@ -133,7 +133,7 @@
 					<li><label><nobr><s:property value="role.description"/>:</nobr></label><li>
 					<li><nobr><s:select name="roleMap[%{id}]" list="userList" value="%{user.id}" listKey="id" listValue="name"/>
 						<s:textfield name="operator.accountUsers[%{#role.index}].ownerPercent" value="%{ownerPercent}" size="3"/>%
-						&nbsp;&nbsp;</nobr>
+						&nbsp;<a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove" class="remove">Remove</a></nobr>
 					</li>
 				</s:iterator>
 			</ol>
@@ -141,8 +141,7 @@
 				<li><label>Add New:</label></li>
 				<li><s:select name="accountRole" list="roleList" listValue="description"/>
 					<s:select name="userid" list="userList" listKey="id" listValue="name" headerKey="0" headerValue="- Select a User -"/><br/>
-					<s:textfield name="percent" size="3"/>%<input type="submit" class="picsbutton positive" name="button" value="Add Role" />
-					
+					<input type="submit" class="picsbutton positive" name="button" value="Add Role" />
 				</li>
 			</ol>
 			</fieldset>
