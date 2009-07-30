@@ -13,21 +13,29 @@ public class ArchivedAccounts extends ReportAccount {
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.DelinquentAccounts);
 	}
-	
+
 	public void buildQuery() {
 		skipPermissions = true;
 		super.buildQuery();
-		
+
 		sql.addWhere("a.active = 'N'");
+
+		if (permissions.seesAllContractors()) {
+			sql.addField("a.reason");
+			sql.addField("c.paymentExpires");
+			sql.addAuditQuestion(69, 1, false);
+		}
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
 		qb.setActiveContractorsOnly(false);
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
-		
+
 		getFilter().setShowVisible(false);
+		if(permissions.seesAllContractors())
+			getFilter().setShowDeactivationReason(true);
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
@@ -39,7 +47,7 @@ public class ArchivedAccounts extends ReportAccount {
 			facilityChanger.setPermissions(permissions);
 			facilityChanger.remove();
 		}
-		
+
 		return super.execute();
 	}
 

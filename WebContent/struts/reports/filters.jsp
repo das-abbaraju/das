@@ -471,7 +471,7 @@
 			onclick="clearTextField('form1_registrationDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
-
+	
 	<s:if test="filter.showInvoiceDueDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_invoiceDueDate'); return false;">Invoice Due Date</a> 
 			<span id="form1_invoiceDueDate_query">= ALL</span><br /> 
@@ -489,6 +489,12 @@
 			type="text/javascript">textQuery('form1_invoiceDueDate');</script> <br />
 			<a class="clearLink" href="#"
 			onclick="clearTextField('form1_invoiceDueDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
+	<s:if test="filter.showDeactivationReason">
+		<div class="filterOption">
+			<s:select list="filter.deactivationReasons" name="contractor.reason" headerKey=" " headerValue="- Deactivation Reason -" cssClass="forms" name="filter.deactivationReason"/>
 		</div>
 	</s:if>
 

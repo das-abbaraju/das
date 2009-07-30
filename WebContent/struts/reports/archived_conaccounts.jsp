@@ -21,6 +21,13 @@ with any of these contractors, please encourage them to renew their membership b
 	<thead>
 	<tr>
 		<td colspan="2">Contractor Name</td>
+		<s:if test="permissions.admin">
+			<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Created On</a></td>
+			<td><a href="javascript: changeOrderBy('form1','c.paymentExpires');">Expired</a></td>
+			<td>Reason</td>
+			<td>RiskLevel</td>
+			<td># of Employees</td>
+		</s:if>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
 			<td>Phone</td>
@@ -58,6 +65,13 @@ with any of these contractors, please encourage them to renew their membership b
 				<s:property value="get('name')" />
 			</s:else>
 			</td>
+			<s:if test="permissions.admin">
+				<td><s:date name="get('creationDate')" format="M/d/yy"/></td>
+				<td><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
+				<td><s:property value="get('reason')" /></td>
+				<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('riskLevel'))" /></td>
+				<td><s:property value="get('answer69')" /></td>
+			</s:if>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>

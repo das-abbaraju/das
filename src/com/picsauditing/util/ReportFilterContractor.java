@@ -26,6 +26,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_RISK = "- Risk Level -";
 	public static final String DEFAULT_PERFORMED_BY = "- Performed By -";
+	public static final String[] DEACTIVATION_REASON = {"ChargeBack", "Did not Complete PICS process","Does not work for operator","Duplicate/Merged Account","Operator Exemption","Payments not Current"};
 
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;
@@ -48,6 +49,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOpertorTagName = false;
 	protected boolean showCcOnFile = false;
 	protected boolean showInvoiceDueDate = false;
+	protected boolean showDeactivationReason = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -74,6 +76,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int ccOnFile = 2; 
 	protected Date invoiceDueDate1;
 	protected Date invoiceDueDate2;
+	protected String deactivationReason;
 	
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
@@ -237,6 +240,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowInvoiceDueDate(boolean showInvoiceDueDate) {
 		this.showInvoiceDueDate = showInvoiceDueDate;
+	}
+
+	public boolean isShowDeactivationReason() {
+		return showDeactivationReason;
+	}
+
+	public void setShowDeactivationReason(boolean showDeactivationReason) {
+		this.showDeactivationReason = showDeactivationReason;
 	}
 
 	public String getPerformedBy() {
@@ -405,6 +416,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return dao.findByOperator(permissions.getAccountId());
 	}
 	
+	public String[] getDeactivationReasons() {
+		return ReportFilterContractor.DEACTIVATION_REASON;
+	}
+	
 	public boolean isShowAssignedCon() {
 		return showAssignedCon;
 	}
@@ -515,5 +530,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setInvoiceDueDate2(Date invoiceDueDate2) {
 		this.invoiceDueDate2 = invoiceDueDate2;
+	}
+
+	public String getDeactivationReason() {
+		return deactivationReason;
+	}
+
+	public void setDeactivationReason(String deactivationReason) {
+		this.deactivationReason = deactivationReason;
 	}
 }

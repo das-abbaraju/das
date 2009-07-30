@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -326,14 +327,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return unpaidInvoices;
 	}
 	
-	public ArrayList<String> getDeactivationReasons() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("ChargeBack");
-		list.add("Did not Complete PICS process");
-		list.add("Does not work for operator");
-		list.add("Duplicate/Merged Account");
-		list.add("Operator Exemption");
-		list.add("Payments not Current");
-		return list;
+	public String[] getDeactivationReasons() {
+		return ReportFilterContractor.DEACTIVATION_REASON;
 	}
 }

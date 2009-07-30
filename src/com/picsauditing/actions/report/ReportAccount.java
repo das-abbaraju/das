@@ -327,6 +327,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (f.getCcOnFile() < 2)
 			sql.addWhere("c.ccOnFile = " + f.getCcOnFile());
+		
+		if (filterOn(f.getDeactivationReason()))
+			report.addFilter(new SelectFilter("deactivationReason", "a.reason = '?'", f.getDeactivationReason()));
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

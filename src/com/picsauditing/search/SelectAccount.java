@@ -87,7 +87,7 @@ public class SelectAccount extends SelectSQL {
 		String name = "ca"+ questionID;
 		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 				+ ".auditTypeID = " + auditTypeID + " AND " + name
-				+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active')");
+				+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active','Resubmitted')");
 	
 		String join = "";
 		if (!require)
