@@ -167,7 +167,8 @@
 			<s:else>
 				100% 
 			</s:else>
-			of your NAICS industry average code <s:property value="co.contractorAccount.naics.code"/>				
+			of your NAICS industry average code <s:property value="co.contractorAccount.naics.code"/><br/>
+			Your industry average TRIR is <s:property value="co.contractorAccount.naics.trir"/>.				
 			</div>
 		</s:if>	
 	</s:iterator>
@@ -238,7 +239,7 @@
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
 	 									&gt; 
 	 									<s:if test="trir.hurdleFlag.naics">
-	 										<s:property value="(co.contractorAccount.naics.trir * trir.hurdle) / 100" />(<s:property value="co.contractorAccount.naics.trir" /> * <s:property value="trir.hurdle" />)/100
+	 										<s:property value="%{new java.text.DecimalFormat('#,##0.000').format((co.contractorAccount.naics.trir * trir.hurdle) / 100)}" />(<s:property value="co.contractorAccount.naics.trir" /> * <s:property value="trir.hurdle" />)/100
 	 									</s:if>
 	 									<s:else>
 	 										<s:property value="trir.hurdle" />
