@@ -206,6 +206,12 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				}
 
 				if (id == 0) {
+					operator.setInheritAuditCategories(operator);
+					operator.setInheritAudits(operator);
+					operator.setInheritFlagCriteria(operator);
+					operator.setInheritInsuranceCriteria(operator);
+					operator.setInheritInsurance(operator);
+
 					// Save so we can get the id and then update the NOLOAD with
 					// a unique id
 					operatorDao.save(operator);
@@ -282,22 +288,17 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		if (relatedFacilities == null) {
 			relatedFacilities = new TreeSet<OperatorAccount>();
 			// Add myself
+			relatedFacilities.add(operator);
 			if (operator.getId() > 0) {
-				relatedFacilities.add(operator);
 				// Add all my parents
 				if (operator.getCorporateFacilities() != null)
 					for (Facility parent : operator.getCorporateFacilities())
 						relatedFacilities.add(parent.getCorporate());
-				if(operator.getInheritAuditCategories() != null)
-					relatedFacilities.add(operator.getInheritAuditCategories());
-				if(operator.getInheritAudits() != null)
-					relatedFacilities.add(operator.getInheritAudits());
-				if(operator.getInheritFlagCriteria() != null)
-					relatedFacilities.add(operator.getInheritFlagCriteria());
-				if(operator.getInheritInsuranceCriteria() != null)
-					relatedFacilities.add(operator.getInheritInsuranceCriteria());
-				if(operator.getInheritInsurance() != null)
-					relatedFacilities.add(operator.getInheritInsurance());
+				relatedFacilities.add(operator.getInheritAuditCategories());
+				relatedFacilities.add(operator.getInheritAudits());
+				relatedFacilities.add(operator.getInheritFlagCriteria());
+				relatedFacilities.add(operator.getInheritInsuranceCriteria());
+				relatedFacilities.add(operator.getInheritInsurance());
 			}
 		}
 
