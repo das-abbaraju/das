@@ -29,7 +29,16 @@ function checkName(name) {
 	pars = 'companyName='+name;
 	var myAjax = new Ajax.Updater('name_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
 }
-	
+
+function changeState(state) {
+	if (state == 'USA' || state == 'Canada') {
+		$('state_sel').enable();
+		$('state_req').innerHTML = '*';
+	} else {
+		$('state_sel').disable();
+		$('state_req').innerHTML = '';
+	}
+}
 </script>	
 </head>
 <body>
@@ -69,10 +78,16 @@ function checkName(name) {
 						<li><label>Country:</label>
 							<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
 							name="contractor.country"
-							onchange="(this.value == 'USA' || this.value == 'Canada') ? $('state_li').show() : $('state_li').hide();"
+							onchange="changeState(this.value);"
 							/><span class="redMain">*</span></li>
-						<li id="state_li" style="display: none"><label>State/Province:</label>
-							<s:select list="StateList" name="contractor.state"/><span class="redMain">*</span></li>
+						<li id="state_li"><label>State/Province:</label>
+							<s:if test="contractor == null || (contractor.country != 'USA' && contractor.country != 'Canada')">
+								<s:select list="StateList" id="state_sel" name="contractor.state" disabled="true"/><span class="redMain" id="state_req"></span>
+							</s:if>
+							<s:else>
+								<s:select list="StateList" id="state_sel" name="contractor.state"/><span class="redMain" id="state_req">*</span>
+							</s:else>
+						</li>
 						<li><label>Zip:</label>
 							<s:textfield name="contractor.zip" size="35" /><span class="redMain">*</span></li>
 						<li><label>Phone:</label>
