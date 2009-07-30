@@ -41,13 +41,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected OperatorFormDAO formDAO;
 	protected AccountUserDAO accountUserDAO;
 	protected UserDAO userDAO;
-	protected Map<Integer,Integer> roleMap = new HashMap<Integer, Integer>();
+	protected Map<Integer, Integer> roleMap = new HashMap<Integer, Integer>();
 	protected UserAccountRole accountRole;
 	protected int userid = 0;
 	protected int accountUserId;
 
-	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO,
-			OperatorFormDAO formDAO, AccountUserDAO accountUserDAO, UserDAO userDAO) {
+	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
+			AccountUserDAO accountUserDAO, UserDAO userDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.formDAO = formDAO;
@@ -77,17 +77,17 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 		tryPermissions(OpPerms.ManageOperators);
 
-		if (id == 0) 
+		if (id == 0)
 			subHeading = "Add " + type;
 
 		if (button != null) {
-			if(button.equalsIgnoreCase("Remove")) {
-				if(accountUserId > 0) {
+			if (button.equalsIgnoreCase("Remove")) {
+				if (accountUserId > 0) {
 					accountUserDAO.remove(accountUserId);
 				}
 				return SUCCESS;
 			}
-			if(button.equalsIgnoreCase("Add Role")) {
+			if (button.equalsIgnoreCase("Add Role")) {
 				AccountUser accountUser = new AccountUser();
 				accountUser.setAccount(operator);
 				accountUser.setUser(new User(userid));
@@ -96,18 +96,18 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.getAccountUsers().add(accountUser);
 				operatorDao.save(operator);
 				int completePercent = 0;
-				for(AccountUser accountUser2 : operator.getAccountUsers()) {
-					if(accountUser2.getRole().equals(accountRole)) {
-						completePercent += accountUser2.getOwnerPercent(); 
+				for (AccountUser accountUser2 : operator.getAccountUsers()) {
+					if (accountUser2.getRole().equals(accountRole)) {
+						completePercent += accountUser2.getOwnerPercent();
 					}
 				}
-				if(completePercent != 100) {
+				if (completePercent != 100) {
 					addActionMessage(accountRole.getDescription() + " is not 100 percent");
 				}
 
 				return SUCCESS;
 			}
-			
+
 			if (button.equalsIgnoreCase("Save")) {
 				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
 
@@ -198,11 +198,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.getNaics().setCode("0");
 				operator.setNameIndex();
 
-				for(AccountUser accountUser : operator.getAccountUsers()) {
-					int userID = roleMap.get(accountUser.getId());
-					accountUser.setUser(new User(userID));
+				if (operator.getAccountUsers() != null) {
+					for (AccountUser accountUser : operator.getAccountUsers()) {
+						int userID = roleMap.get(accountUser.getId());
+						accountUser.setUser(new User(userID));
+					}
 				}
-				
+
 				if (id == 0) {
 					// Save so we can get the id and then update the NOLOAD with
 					// a unique id
@@ -235,7 +237,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		return operatorDao.findWhere(false, "active='Y'");
 	}
-	
+
 	public List<User> getUserList() throws Exception {
 		return userDAO.findWhere("isActive='Yes' AND isGroup = 'No' AND account.id = 1100");
 	}
@@ -286,11 +288,16 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				if (operator.getCorporateFacilities() != null)
 					for (Facility parent : operator.getCorporateFacilities())
 						relatedFacilities.add(parent.getCorporate());
-				relatedFacilities.add(operator.getInheritAuditCategories());
-				relatedFacilities.add(operator.getInheritAudits());
-				relatedFacilities.add(operator.getInheritFlagCriteria());
-				relatedFacilities.add(operator.getInheritInsuranceCriteria());
-				relatedFacilities.add(operator.getInheritInsurance());
+				if(operator.getInheritAuditCategories() != null)
+					relatedFacilities.add(operator.getInheritAuditCategories());
+				if(operator.getInheritAudits() != null)
+					relatedFacilities.add(operator.getInheritAudits());
+				if(operator.getInheritFlagCriteria() != null)
+					relatedFacilities.add(operator.getInheritFlagCriteria());
+				if(operator.getInheritInsuranceCriteria() != null)
+					relatedFacilities.add(operator.getInheritInsuranceCriteria());
+				if(operator.getInheritInsurance() != null)
+					relatedFacilities.add(operator.getInheritInsurance());
 			}
 		}
 
@@ -313,11 +320,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					+ "This is our main way of communicating with you so it must be valid.");
 		return errorMessages;
 	}
-	
+
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
 	}
-	
+
 	public Map<Integer, Integer> getRoleMap() {
 		return roleMap;
 	}
@@ -325,7 +332,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	public void setRoleMap(Map<Integer, Integer> roleMap) {
 		this.roleMap = roleMap;
 	}
-	
+
 	public UserAccountRole[] getRoleList() {
 		return UserAccountRole.values();
 	}
