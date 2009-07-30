@@ -101,7 +101,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 
 	public List<AuditQuestion> getQuestions() {
 		if (addableQuestions == null) {
-			addableQuestions = questionDao.findWhere("isRedFlagQuestion = 'Yes'");
+			addableQuestions = questionDao.findWhere("isRedFlagQuestion = 'Yes' AND isVisible = 'Yes'");
 
 			Iterator<AuditQuestion> questions = addableQuestions.iterator();
 			Set<AuditType> visibleAudits = new HashSet<AuditType>();
