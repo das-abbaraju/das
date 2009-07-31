@@ -156,6 +156,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			if (button.equalsIgnoreCase("voidcc")) {
 				try {
+					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+
 					paymentService.processCancellation(payment.getTransactionID());
 					message = "Successfully canceled credit card transaction";
 					payment.setStatus(TransactionStatus.Void);
