@@ -231,12 +231,12 @@ public class OperatorAccount extends Account {
 	public List<FlagQuestionCriteria> getFlagQuestionCriteriaInherited() {
 		List<FlagQuestionCriteria> criteriaList = new ArrayList<FlagQuestionCriteria>();
 		for (FlagQuestionCriteria c : getInheritFlagCriteria().getFlagQuestionCriteria()) {
-			if (!c.getClassType().isPolicy())
+			if (!c.getClassType().isPolicy() && c.getAuditQuestion().isVisible())
 				criteriaList.add(c);
 		}
 		if (canSeeInsurance.equals(YesNo.Yes)) {
 			for (FlagQuestionCriteria c : getInheritInsuranceCriteria().getFlagQuestionCriteria()) {
-				if (c.getClassType().isPolicy())
+				if (c.getClassType().isPolicy() && c.getAuditQuestion().isVisible())
 					criteriaList.add(c);
 			}
 		}
