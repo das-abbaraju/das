@@ -145,7 +145,7 @@
 					<li><label>Billing City:</label>
 						<s:textfield name="contractor.billingCity" size="35" /></li>
 					<li><label>Billing State:</label>
-						<s:textfield name="contractor.billingState" size="35" /></li>
+						<s:select list="StateList" name="contractor.billingState"/></li>
 					<li><label>Billing Zip:</label>
 						<s:textfield name="contractor.billingZip" size="35" /></li>
 					<li><label>Billing Phone:</label>

@@ -46,7 +46,16 @@
 			<ol>
 				<li><label>Address:</label> <s:textfield name="operator.address" size="35" /></li>
 				<li><label>City:</label> <s:textfield name="operator.city" size="20" /></li>
-				<li><label>State/Province:</label> <s:textfield name="operator.state" size="5" /></li>
+				<li><label>Country:</label>
+					<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
+					name="operator.country"
+					onchange="(this.value == 'USA' || this.value == 'Canada') ? $('state_li').show() : $('state_li').hide();"
+				/></li>
+				<li id="state_li" 
+					<s:if test="operator.country != 'USA' && operator.country != 'Canada'">style="display: none"</s:if>
+					><label>State/Province:</label>
+					<s:select list="StateList" name="operator.state"/>
+				</li>
 				<li><label>Zip:</label> <s:textfield name="operator.zip" size="7" /></li>
 				<li><label>Phone:</label> <s:textfield name="operator.phone" size="15" /></li>
 				<li><label>Phone 2:</label> <s:textfield name="operator.phone2" size="15" /></li>
