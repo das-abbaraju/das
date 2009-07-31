@@ -105,6 +105,7 @@ public class PicsMenu {
 			subMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action");
 			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.visible=Y");
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
+			subMenu.addChild("QuickBooks Sync", "QBSyncList.action");
 		}
 
 		subMenu = menu.addChild("InsureGuard&trade;");

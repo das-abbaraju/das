@@ -397,6 +397,10 @@
 			<param name="reportName">Invoice Search Report</param>
 			<result>struts/reports/report_con_unpaidinvoice.jsp</result>
 		</action>
+		<action name="QBSyncList"
+			class="com.picsauditing.actions.report.ReportQBSyncList">
+			<result>struts/reports/report_qb_sync_list.jsp</result>
+		</action>
 
 		<!-- User List -->
 		<action name="UserList"
