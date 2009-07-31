@@ -178,19 +178,19 @@
 						href="AuditCat.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
 						target="_BLANK">Upload New Files</a>
 				</s:else></li>
-				<li><label>Man Hours Worked:</label> <s:textfield id="manHours_%{osha.id}"
+				<li><label>Total Man Hours:</label> <s:textfield id="manHours_%{osha.id}"
 					name="osha.manHours" cssClass="oshanum" /></li>
-				<li><label>Number of Fatalities:</label> <s:textfield id="fatalities_%{osha.id}"
+				<li><label>Fatalities:</label> <s:textfield id="fatalities_%{osha.id}"
 					name="osha.fatalities" cssClass="oshanum" /></li>
-				<li><label>Number of Lost Work Cases:</label> <s:textfield id="lwc_%{osha.id}"
+				<li><label>LWD Cases:</label> <s:textfield id="lwc_%{osha.id}"
 					name="osha.lostWorkCases" cssClass="oshanum" /></li>
-				<li><label>Number of Lost Workdays:</label> <s:textfield id="lwd_%{osha.id}"
+				<li><label>Lost Days:</label> <s:textfield id="lwd_%{osha.id}"
 					name="osha.lostWorkDays" cssClass="oshanum" /></li>
-				<li><label>Injury &amp; Illnesses Medical Cases:</label> <s:textfield id="imc_%{osha.id}"
+				<li><label>Other Injuries:</label> <s:textfield id="imc_%{osha.id}"
 					name="osha.injuryIllnessCases" cssClass="oshanum" /></li>
-				<li><label>Restricted Work Cases:</label> <s:textfield id="rwc_%{osha.id}"
+				<li><label>Restricted Cases:</label> <s:textfield id="rwc_%{osha.id}"
 					name="osha.restrictedWorkCases" cssClass="oshanum" /></li>
-				<li><label>Total Injuries and Illnesses:</label><s:property	value="osha.recordableTotal"/></li>
+				<li><label>Total Injuries:</label><s:property	value="osha.recordableTotal"/></li>
 			</ol>
 		</s:div>
 	</fieldset>
