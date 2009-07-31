@@ -6,9 +6,11 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 
@@ -26,15 +28,19 @@ public class ReportQBSyncList extends PicsActionSupport {
 
 	private List<Payment> paymentInsert;
 	private List<Payment> paymentUpdate;
+	
+	private EmailQueue lastError;
 
 	private ContractorAccountDAO contractorAccountDAO;
 	private InvoiceDAO invoiceDAO;
 	private PaymentDAO paymentDAO;
+	private EmailQueueDAO emailQueueDAO;
 	
-	public ReportQBSyncList(ContractorAccountDAO contractorAccountDAO, InvoiceDAO invoiceDAO, PaymentDAO paymentDAO) {
+	public ReportQBSyncList(ContractorAccountDAO contractorAccountDAO, InvoiceDAO invoiceDAO, PaymentDAO paymentDAO, EmailQueueDAO emailQueueDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.invoiceDAO = invoiceDAO;
 		this.paymentDAO = paymentDAO;
+		this.emailQueueDAO = emailQueueDAO;
 	}
 	
 	public String execute() throws NoRightsException {
@@ -47,18 +53,24 @@ public class ReportQBSyncList extends PicsActionSupport {
 			if (type.equals("C")) {
 				ContractorAccount obj = contractorAccountDAO.find(id);
 				obj.setQbSync(false);
+				if (obj.getQbListID() == null)
+					obj.setQbListID("NOLOAD" + id);
 				contractorAccountDAO.save(obj);
 			}
 			
 			if (type.equals("I")) {
 				Invoice obj = invoiceDAO.find(id);
 				obj.setQbSync(false);
+				if (obj.getQbListID() == null)
+					obj.setQbListID("NOLOAD" + id);
 				invoiceDAO.save(obj);
 			}
 			
 			if (type.equals("P")) {
 				Payment obj = paymentDAO.find(id);
 				obj.setQbSync(false);
+				if (obj.getQbListID() == null)
+					obj.setQbListID("NOLOAD" + id);
 				paymentDAO.save(obj);
 			}
 			try {
@@ -92,6 +104,8 @@ public class ReportQBSyncList extends PicsActionSupport {
 		paymentUpdate = paymentDAO.findWhere(
 				"p.account.qbListID is not null AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true", 10);
 
+		lastError = emailQueueDAO.getQuickbooksError();
+		
 		return SUCCESS;
 	}
 
@@ -127,6 +141,9 @@ public class ReportQBSyncList extends PicsActionSupport {
 		this.type = type;
 	}
 
+	public EmailQueue getLastError() {
+		return lastError;
+	}
 	
 	
 }

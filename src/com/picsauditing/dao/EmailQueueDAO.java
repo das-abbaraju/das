@@ -54,6 +54,17 @@ public class EmailQueueDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
+	public EmailQueue getQuickbooksError() {
+		Query query = em.createQuery("FROM EmailQueue t WHERE t.subject = 'QBWebConnector Errors'"
+				+ " ORDER BY t.id DESC");
+		query.setMaxResults(1);
+		List<EmailQueue> list = query.getResultList();
+		if (list == null || list.size() < 1)
+			return null;
+		return list.get(0);
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<EmailQueue> findByContractorId(int id) {
 		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id"
 				+ " ORDER BY sentDate DESC");

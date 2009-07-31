@@ -8,6 +8,15 @@
 <body>
 <h1>QuickBooks Sync</h1>
 
+<div>
+Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
+
+<pre style="width: 100%; overflow: scroll; background-color: infobackground;">
+<s:property value="lastError.body" />
+</pre>
+
+</div>
+
 <h3>Contractors to Insert</h3>
 <table class="report">
 	<thead>
@@ -113,7 +122,7 @@
 	</thead>
 	<s:iterator value="paymentInsert">
 		<tr>
-			<td><a href="QBSyncList.action?type=R&id=<s:property value="id" />" class="remove">Skip</a></td>
+			<td><a href="QBSyncList.action?type=P&id=<s:property value="id" />" class="remove">Skip</a></td>
 			<td><s:property value="account.name" /></td>
 			<td><a href="PaymentDetail.action?payment.id=<s:property value="id" />"><s:property
 				value="id" /></a></td>
@@ -137,7 +146,7 @@
 	</thead>
 	<s:iterator value="paymentUpdate">
 		<tr>
-			<td><a href="QBSyncList.action?type=R&id=<s:property value="id" />" class="remove">Skip</a></td>
+			<td><a href="QBSyncList.action?type=P&id=<s:property value="id" />" class="remove">Skip</a></td>
 			<td><s:property value="account.name" /></td>
 			<td><a href="PaymentDetail.action?payment.id=<s:property value="id" />"><s:property
 				value="id" /></a></td>
