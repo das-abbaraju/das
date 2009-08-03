@@ -93,8 +93,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				accountUser.setUser(new User(userid));
 				accountUser.setRole(accountRole);
 				accountUser.setAuditColumns();
-				operator.getAccountUsers().add(accountUser);
-				operatorDao.save(operator);
+				accountUserDAO.save(accountUser);
 				int completePercent = 0;
 				for (AccountUser accountUser2 : operator.getAccountUsers()) {
 					if (accountUser2.getRole().equals(accountRole)) {
