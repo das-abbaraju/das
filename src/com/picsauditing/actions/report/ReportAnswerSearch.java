@@ -10,7 +10,6 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
