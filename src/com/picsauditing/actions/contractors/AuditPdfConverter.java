@@ -280,7 +280,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			document.add(subCategoryParagraph);
 			for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
 				if (auditQuestion.isValid()) {
-					if(!Strings.isEmpty(auditQuestion.getTitle())) {
+					if (!Strings.isEmpty(auditQuestion.getTitle())) {
 						Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle(),
 								questionTitleFont);
 						questionTitleParagraph.setIndentationLeft(30);
@@ -299,21 +299,23 @@ public class AuditPdfConverter extends ContractorActionSupport {
 					questionAnswer.add(question);
 					if (answerMap.get(auditQuestion.getId()) != null) {
 						AuditData auditData = answerMap.get(auditQuestion.getId());
-						if (auditQuestion.getQuestionType().startsWith("File")) {
-							if (auditData.getAnswer().length() > 0) {
-								Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
-										Font.UNDERLINE, new Color(0, 0, 255)));
-								anchor.setReference("http://www.picsauditing.com/DownloadAuditData.action?auditID="
-										+ auditData.getAudit().getId() + "&answer.id=" + auditData.getId());
-								anchor.setName("View File");
-								questionAnswer.add(anchor);
+						if (!Strings.isEmpty(auditData.getAnswer())) {
+							if (auditQuestion.getQuestionType().startsWith("File")) {
+								if (auditData.getAnswer().length() > 0) {
+									Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER,
+											10, Font.UNDERLINE, new Color(0, 0, 255)));
+									anchor.setReference("http://www.picsauditing.com/DownloadAuditData.action?auditID="
+											+ auditData.getAudit().getId() + "&answer.id=" + auditData.getId());
+									anchor.setName("View File");
+									questionAnswer.add(anchor);
+								} else {
+									questionAnswer.add(new Chunk("File Not Uploaded", answerFont));
+								}
 							} else {
-								questionAnswer.add(new Chunk("File Not Uploaded", answerFont));
+								Chunk answer = new Chunk(auditData.getAnswer(), answerFont);
+								questionAnswer.add("   ");
+								questionAnswer.add(answer);
 							}
-						} else {
-							Chunk answer = new Chunk(auditData.getAnswer(), answerFont);
-							questionAnswer.add("   ");
-							questionAnswer.add(answer);
 						}
 					}
 					document.add(questionAnswer);
@@ -340,10 +342,9 @@ public class AuditPdfConverter extends ContractorActionSupport {
 				}
 			} catch (FileNotFoundException e) {
 				continue;
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				continue;
-			}	
+			}
 		}
 	}
 
