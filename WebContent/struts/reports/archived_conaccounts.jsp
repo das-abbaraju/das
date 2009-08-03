@@ -12,8 +12,8 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-<div class="helpOnRight">
-These contractors have allowed their PICS membership to lapse. If you expect to do additional work
+<div class="info">
+These contractors have allowed their PICS membership to lapse, or they have decided to discontinue their PICS membership.<br>If you expect to do additional work
 with any of these contractors, please encourage them to renew their membership by contacting PICS.
 </div>
 
