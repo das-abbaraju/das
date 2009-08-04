@@ -72,6 +72,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	protected List<AuditQuestionOption> options;
 	private String criteria;
 	private String criteriaAnswer;
+	private String helpPage;
 
 	@Transient
 	public AuditType getAuditType() {
@@ -401,6 +402,15 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	public void setColumnHeader(String columnHeader) {
 		this.columnHeader = columnHeader;
+	}
+	
+	@Column(length = 100)
+	public String getHelpPage() {
+		return helpPage;
+	}
+
+	public void setHelpPage(String helpPage) {
+		this.helpPage = helpPage;
 	}
 
 	@Transient

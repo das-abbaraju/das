@@ -96,6 +96,13 @@
 		<li><label>Show Comments:</label>
 			<s:checkbox name="question.showComment" value="question.showComment"/>
 		</li>
+		<li><label>Help Page:</label>
+			<div>
+				<s:textfield name="question.helpPage" size="30" maxlength="100" />
+				<s:if test="question.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="question.helpPage"/>">Help Center</a></s:if>
+				<s:else>help.picsauditing.com/wiki/???</s:else>
+			</div>
+		</li>
 	</ol>
 	</fieldset>
 	<fieldset class="form">

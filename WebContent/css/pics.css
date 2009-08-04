@@ -400,6 +400,12 @@ a.view {
 	background: url('../images/edit_pencil.png') no-repeat left center;
 }
 
+a.help {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/help.gif') no-repeat left center;
+}
+
 a.insurance span{
 	float: left;
 	clear:both;
