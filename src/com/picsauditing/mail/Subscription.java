@@ -65,4 +65,8 @@ public enum Subscription {
 	public boolean isRequiredForContractor() {
 		return requiredForContractor;
 	}
+	
+	public String getAppPropertyKey() {
+		return "subscription." + this.toString();
+	}
 }

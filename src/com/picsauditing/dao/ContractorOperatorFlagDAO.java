@@ -46,7 +46,7 @@ public class ContractorOperatorFlagDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorOperatorFlag> findWhere(String where) {
-		String query = "FROM ContractorOperatorFlag WHERE " + where;
+		String query = "FROM ContractorOperatorFlag WHERE " + where + " ORDER BY contractorAccount.name";
 
 		Query q = em.createQuery(query);
 		return q.getResultList();
