@@ -132,6 +132,8 @@ public abstract class SubscriptionBuilder {
 			return true;
 		if (templateID == 62)
 			return true;
+		if (templateID == 65)
+			return true;
 		return false;
 	}
 

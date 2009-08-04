@@ -15,12 +15,6 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.mail.ContractorRegistrationSubscription;
-import com.picsauditing.mail.FlagChangesSubscription;
-import com.picsauditing.mail.InsuranceCertificateSubscription;
-import com.picsauditing.mail.Subscription;
-import com.picsauditing.mail.SubscriptionBuilder;
-import com.picsauditing.mail.SubscriptionTimePeriod;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
@@ -67,6 +61,14 @@ public class SubscriptionBuilderTest extends TestCase {
 	public void testContractorRegistration() throws Exception {
 		SubscriptionBuilder builder = new ContractorRegistrationSubscription(SubscriptionTimePeriod.Weekly,
 				subscriptionDAO, conDAO);
+
+		builder.process();
+	}
+
+	@Test
+	public void testFlagColor() throws Exception {
+		SubscriptionBuilder builder = new FlagColorSubscription(Subscription.GreenFlags, SubscriptionTimePeriod.Weekly,
+				subscriptionDAO, flagDAO);
 
 		builder.process();
 	}

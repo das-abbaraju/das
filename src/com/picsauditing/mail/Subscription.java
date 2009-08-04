@@ -9,6 +9,9 @@ public enum Subscription {
 	ContractorFinished("Contractors completes the PICS process", new SubscriptionTimePeriod[] {
 			SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, true, false),
 	FlagChanges("FlagChanges", true, false),
+	RedFlags("Red Flags", true, false),
+	AmberFlags("Amber Flags", true, false),
+	GreenFlags("Green Flags", true, false),
 	PendingInsuranceCerts("Pending Insurance Certs", true, false),
 	VerifiedInsuranceCerts("Verified Insurance Certs", true, false),
 	QuarterlyExecutiveReport("Quarterly Executive Report", new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,

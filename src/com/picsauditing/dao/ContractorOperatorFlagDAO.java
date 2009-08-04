@@ -44,4 +44,12 @@ public class ContractorOperatorFlagDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ContractorOperatorFlag> findWhere(String where) {
+		String query = "FROM ContractorOperatorFlag WHERE " + where;
+
+		Query q = em.createQuery(query);
+		return q.getResultList();
+	}
+
 }
