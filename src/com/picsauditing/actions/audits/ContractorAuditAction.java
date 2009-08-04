@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
@@ -129,5 +130,19 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 		}
 
 		return menu;
+	}
+	
+	public String getAuditorNotes() {
+		AuditData auditData = null;
+		if(conAudit.getAuditType().isDesktop()) {
+			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 1461);
+		}
+		if(conAudit.getAuditType().getId() == 3) {
+			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2432);
+		}
+		if(auditData != null)
+			return auditData.getAnswer();
+
+		return null;	
 	}
 }

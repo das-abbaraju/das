@@ -85,6 +85,11 @@
 		</s:if>
 	</s:iterator>
 </table>
+<s:if test="!@com.picsauditing.util.Strings@isEmpty(auditorNotes)">
+	<div id="info">
+		<b>Auditor Notes:</b> <s:property value="auditorNotes"/>
+	</div>
+</s:if>
 <s:if test="conAudit.auditType.pqf">
 	<div id="info">
 		The OSHA and EMR categories have been moved to the Annual Update.
