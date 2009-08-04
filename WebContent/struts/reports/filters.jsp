@@ -519,6 +519,13 @@
 		Show Trade Info</label>
 		</div>
 	</s:if>
+	
+	<pics:permission perm="DevelopmentEnvironment">
+		<div class="filterOption">
+		<label>Query API</label>
+			<s:textfield name="filter.customAPI" />
+		</div>
+	</pics:permission>
 
 	<br clear="all" />
 	<div class="alphapaging"><s:property

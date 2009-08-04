@@ -330,6 +330,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		
 		if (filterOn(f.getDeactivationReason()))
 			report.addFilter(new SelectFilter("deactivationReason", "a.reason = '?'", f.getDeactivationReason()));
+		
+		if (filterOn(f.getCustomAPI()) && permissions.hasPermission(OpPerms.DevelopmentEnvironment))
+			sql.addWhere(f.getCustomAPI());
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

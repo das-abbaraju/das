@@ -12,6 +12,7 @@ public class ReportFilter implements Serializable {
 	protected boolean ajax = false;
 	protected boolean allowCollapsed = true;
 	protected boolean allowMailMerge = false;
+	protected String customAPI;
 
 	public boolean isAllowMailMerge() {
 		return allowMailMerge;
@@ -50,4 +51,13 @@ public class ReportFilter implements Serializable {
 	public void setPermissions(Permissions permissions) {
 
 	}
+
+	public String getCustomAPI() {
+		return customAPI;
+	}
+
+	public void setCustomAPI(String customAPI) {
+		this.customAPI = customAPI;
+	}
+
 }
