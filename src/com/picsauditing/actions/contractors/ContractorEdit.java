@@ -60,7 +60,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
-			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO, NoteDAO noteDAO) {
+			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
+			NoteDAO noteDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -182,20 +183,19 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setRenew(true);
 				if (contractor.getNewMembershipLevel().isFree())
 					contractor.setActive('Y');
-				
+
 				accountDao.save(contractor);
 				this.addNote(contractor, "Reactivated account");
 				this.addActionMessage("Successfully reactivated this contractor account. "
 						+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
 			} else if (button.equals("Cancel")) {
-				if(Strings.isEmpty(contractor.getReason())) {
+				if (Strings.isEmpty(contractor.getReason())) {
 					addActionError("Please select a deactivation reason before you cancel the account");
-				}
-				else {
+				} else {
 					contractor.setRenew(false);
 					if (contractor.getNewMembershipLevel().isFree())
 						contractor.setActive('N');
-	
+
 					String expiresMessage = "";
 					if (contractor.getPaymentExpires().after(new Date()))
 						expiresMessage = " This account will no longer be visible to operators after "
@@ -205,7 +205,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						contractor.setActive('N');
 					}
 					accountDao.save(contractor);
-	
+
 					this.addNote(contractor, "Closed contractor account." + expiresMessage);
 					this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
 				}
@@ -219,7 +219,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					}
 
 					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(51); // Deactivation Email for operators
+					emailBuilder.setTemplate(51); // Deactivation Email for
+					// operators
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor);
 					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
@@ -228,7 +229,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					EmailQueue email = emailBuilder.build();
 					email.setPriority(50);
 					emailQueueDAO.save(email);
-					
+
 					Note note = new Note();
 					note.setAccount(contractor);
 					note.setAuditColumns(new User(permissions.getUserId()));
@@ -242,6 +243,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 					this.addActionMessage("Successfully sent the email to operators");
 				}
+			} else if (button.equals("copyPrimary")) {
+				contractor.setBillingAddress(contractor.getAddress());
+				contractor.setBillingCity(contractor.getCity());
+				contractor.setBillingState(contractor.getState());
+				contractor.setBillingZip(contractor.getZip());
+				accountDao.save(contractor);
 			} else {
 				// Because there are anomalies between browsers and how they
 				// pass
@@ -313,20 +320,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setOperatorIds(int[] operatorIds) {
 		this.operatorIds = operatorIds;
 	}
-	
+
 	public List<Invoice> getUnpaidInvoices() {
 		List<Invoice> unpaidInvoices = new ArrayList<Invoice>();
-		if(!contractor.isRenew()) {
-			for(Invoice item : contractor.getSortedInvoices()) {
-				if(item.getStatus().isUnpaid()) {
+		if (!contractor.isRenew()) {
+			for (Invoice item : contractor.getSortedInvoices()) {
+				if (item.getStatus().isUnpaid()) {
 					unpaidInvoices.add(item);
 				}
 			}
-			
+
 		}
 		return unpaidInvoices;
 	}
-	
+
 	public String[] getDeactivationReasons() {
 		return ReportFilterContractor.DEACTIVATION_REASON;
 	}

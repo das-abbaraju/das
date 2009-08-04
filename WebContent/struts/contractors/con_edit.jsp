@@ -140,6 +140,7 @@
 					<li><label>Billing Contact:</label>
 						<s:textfield name="contractor.billingContact" size="20" />
 					</li>
+					<li><label></label><a href="?id=<s:property value="id"/>&button=copyPrimary">Same As Primary Address</a></li>
 					<li><label>Billing Address:</label> 
 						<s:textfield name="contractor.billingAddress" size="35" /></li>
 					<li><label>Billing City:</label>
