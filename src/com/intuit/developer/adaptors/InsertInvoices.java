@@ -25,6 +25,7 @@ import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+import com.picsauditing.util.Strings;
 
 public class InsertInvoices extends CustomerAdaptor {
 
@@ -53,7 +54,6 @@ public class InsertInvoices extends CustomerAdaptor {
 		for (Invoice invoiceJPA : invoices) {
 
 			if (invoiceJPA != null) {
-
 				InvoiceAddRqType invoiceAddRequest = factory.createInvoiceAddRqType();
 				invoiceAddRequest.setRequestID("insert_invoice_" + invoiceJPA.getId());
 
@@ -80,13 +80,28 @@ public class InsertInvoices extends CustomerAdaptor {
 
 				invoice.setBillAddress(factory.createBillAddress());
 
-				invoice.getBillAddress().setAddr1(nullSafeSubString(invoiceJPA.getAccount().getName(), 0, 41));
-				invoice.getBillAddress().setAddr2(
-						nullSafeSubString(((ContractorAccount) invoiceJPA.getAccount()).getBillingContact(), 0, 41));
-				invoice.getBillAddress().setAddr3(nullSafeSubString(invoiceJPA.getAccount().getAddress(), 0, 41));
-				invoice.getBillAddress().setCity(invoiceJPA.getAccount().getCity());
-				invoice.getBillAddress().setState(invoiceJPA.getAccount().getState());
-				invoice.getBillAddress().setPostalCode(invoiceJPA.getAccount().getZip());
+				ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
+				
+				invoice.getBillAddress().setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
+				invoice.getBillAddress().setAddr2( "c/o " +
+						nullSafeSubString(contractor.getBillingContact(), 0, 39));
+				
+				String address = contractor.getBillingAddress();
+				String city = contractor.getBillingCity();
+				String state = contractor.getBillingState();
+				String zip = contractor.getBillingZip();
+				
+				if (Strings.isEmpty(address)) {
+					address = contractor.getAddress();
+					city = contractor.getCity();
+					state = contractor.getState();
+					zip = contractor.getZip();
+				}
+				invoice.getBillAddress().setAddr3(nullSafeSubString(address, 0, 41));
+				invoice.getBillAddress().setCity(city);
+				invoice.getBillAddress().setState(state);
+				invoice.getBillAddress().setPostalCode(zip);
+				
 				invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry());
 
 				invoice.setIsPending("false");

@@ -122,9 +122,18 @@ input[type=submit] {
 					<s:if test="contractor.billingContact.length() > 0">
 						c/o <s:property value="contractor.billingContact" />
 						<br />
-					</s:if> <s:property value="contractor.address" /><br />
-					<s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property
-						value="contractor.zip" /></td>
+					</s:if>
+					<s:if test="contractor.billingAddress.length() > 0">
+						<s:property value="contractor.billingAddress" /><br />
+						<s:property value="contractor.billingCity" />, <s:property value="contractor.billingState" />
+						<s:property	value="contractor.billingZip" />
+					</s:if>
+					<s:else>
+						<s:property value="contractor.address" /><br />
+						<s:property value="contractor.city" />, <s:property value="contractor.state" />
+						<s:property	value="contractor.zip" />
+					</s:else>
+					</td>
 					<td><s:if test="edit">
 						<s:textfield name="invoice.poNumber" size="20" />
 					</s:if> <s:else>
