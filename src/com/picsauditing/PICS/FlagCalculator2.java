@@ -31,6 +31,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -379,7 +380,8 @@ public class FlagCalculator2 {
 						try {
 							Note note = new Note();
 							note.setAccount(contractor);
-							note.setNoteCategory(NoteCategory.General);
+							note.setNoteCategory(NoteCategory.Other);
+							note.setPriority(LowMedHigh.Low);
 							note.setAuditColumns(new User(User.SYSTEM));
 							note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn + " for "
 									+ operator.getName());
