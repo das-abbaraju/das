@@ -36,8 +36,8 @@ public class CertificateFileUpload extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		this.findContractor();
-		
-		if(certID > 0) {
+
+		if (certID > 0) {
 			certificate = certificateDAO.find(certID);
 		}
 		if (button != null) {
@@ -55,7 +55,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 			}
 
 			if (certID > 0 && button.startsWith("Delete")) {
-				if(certificate.getCaos().size() > 0) {
+				if (certificate.getCaos().size() > 0) {
 					addActionError("Failed to remove the file attached to a Policy.");
 					return SUCCESS;
 				}
@@ -74,7 +74,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 			}
 
 			if (button.startsWith("Save")) {
-				if(certID == 0) {
+				if (certID == 0) {
 					if (file == null || file.length() == 0) {
 						addActionError("File was missing or empty");
 						return SUCCESS;
@@ -83,7 +83,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					certificate.setContractor(contractor);
 				}
 				String extension = null;
-				if(file != null && file.length() > 0) {
+				if (file != null && file.length() > 0) {
 					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 					if (!FileUtils.checkFileExtension(extension)) {
 						file = null;
@@ -91,22 +91,23 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						return SUCCESS;
 					}
 					certificate.setFileType(extension);
-					if(Strings.isEmpty(fileName))
+					certificate.setFileHash(FileUtils.getFileMD5(file));
+					if (Strings.isEmpty(fileName))
 						certificate.setDescription(fileFileName.substring(0, fileFileName.lastIndexOf(".")));
-				}	
+				}
 
-				if(!Strings.isEmpty(fileName))
+				if (!Strings.isEmpty(fileName))
 					certificate.setDescription(fileName);
 				certificate.setAuditColumns(permissions);
 				certificate = certificateDAO.save(certificate);
 				certID = certificate.getId();
-				
-				if(file != null && file.length() > 0) {
-					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID), getFileName(certID),
-							extension, true);
+
+				if (file != null && file.length() > 0) {
+					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID),
+							getFileName(certID), extension, true);
 					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 				}
-				
+
 				changed = true;
 			}
 		}
