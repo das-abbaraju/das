@@ -42,17 +42,34 @@ public class CertificateDAO extends PicsDAO {
 		q.setParameter(1, conID);
 		return q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Certificate> findByConId(int conID, Permissions permissions) {
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
-		if(permissions.isOperatorCorporate()) {
-			query +=  " AND (c.createdBy = " + permissions.getUserId()
-					+" OR c IN (SELECT cao.certificate FROM c.caos cao WHERE cao.operator = " +
-					"(SELECT o.inheritInsurance FROM OperatorAccount o WHERE o.id = "+ permissions.getAccountId() + ")))";
+		if (permissions.isOperatorCorporate()) {
+			query += " AND (c.createdBy = " + permissions.getUserId()
+					+ " OR c IN (SELECT cao.certificate FROM c.caos cao WHERE cao.operator = "
+					+ "(SELECT o.inheritInsurance FROM OperatorAccount o WHERE o.id = " + permissions.getAccountId()
+					+ ")))";
 		}
 		Query q = em.createQuery(query);
 		q.setParameter(1, conID);
+		return q.getResultList();
+	}
+
+	public Certificate findByFileHash(String fileHash) {
+		Query q = em.createQuery("FROM Certificate c WHERE fileHash = :fileHash");
+		q.setParameter("fileHash", fileHash);
+		return (Certificate) q.getSingleResult();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Certificate> findWhere(String where, int limit) {
+		String query = "FROM Certificate c WHERE " + where;
+
+		Query q = em.createQuery(query);
+		q.setMaxResults(limit);
+
 		return q.getResultList();
 	}
 }

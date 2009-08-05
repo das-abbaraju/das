@@ -1184,6 +1184,10 @@
 		</action>
 
 		<!--  Development struts mappings -->
+		
+		<action name="CertDataConvert" class="com.picsauditing.actions.contractors.CertDataConvert">
+			<result>struts/contractors/cert_convert.jsp</result>
+		</action>
 		<!-- 
 
 		-->
