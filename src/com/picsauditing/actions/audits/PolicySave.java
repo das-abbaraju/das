@@ -147,13 +147,14 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 				
 				if ("visible".equals(button)) {
 				    cao.setVisible(true);
-				    if (cao.getStatus().isNotApplicable())
+				    if (cao.getStatus().isNotApplicable()) {
 				        cao.setStatus(CaoStatus.Pending);
+				        statusChanged = true;
+				    }
 				    
 				    if (cao.getCertificate() != null)
 				        certificate = cao.getCertificate();
 
-				    statusChanged = true;
 				    button = "Save";
 				}
 
