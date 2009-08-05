@@ -110,43 +110,21 @@ p {
 	text-decoration: none;
 }
 
-/*
-#boxbody {
-	background: url('../images/3dsquare-left.jpg') no-repeat bottom left;
-	height: 30px
-}
-*/ /********************  SMALL NAV STYLES  ************************/
-	/*#smallnav {
-	width: 260px;
-	margin-top: 10px;
-	padding-top: 8px;
-	padding-left: 15px;
-	height: 30px;
-	background: url(../images/3dsquare2.jpg) no-repeat;
-	float: right;
-}
-/*
-#smallnav p {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10px;
-	color: #eeeeee;
-}
-
-#smallnav a {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10px;
-	color: #eeeeee;
-	padding: 5px;
-}
-
-#smallnav a:hover {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10px;
+#profile_summary {
 	color: #1B3665;
-	padding: 10px 5px;
 	background-color: #eeeeee;
-	text-decoration: none;
-}*/ /********************  Main body Styles  ************************/
+	position: absolute;
+	top: 38px;
+	right: 100px;
+	padding: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	padding: 5px;
+	border: white 1px solid;
+}
+
+
+/********************  Main body Styles  ************************/
 #bodyholder {
 	margin: 0 auto;
 	background-color: white;
