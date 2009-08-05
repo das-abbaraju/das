@@ -31,81 +31,149 @@
 			}
 		});
 	}
+
+	function showTab(tabName) {
+		$('tab_profile').hide();
+		$('link_tab_profile').removeClassName('current');
+		$('tab_permissions').hide();
+		$('link_tab_permissions').removeClassName('current');
+		$('tab_subscriptions').hide();
+		$('link_tab_subscriptions').removeClassName('current');
+		<s:if test="switchTos.size > 0">
+		$('tab_switch').hide();
+		$('link_tab_switch').removeClassName('current');
+		</s:if>
+		
+		$(tabName).show();
+		$('link_'+tabName).addClassName('current');
+	}
 </script>
 
 </head>
 <body>
 <h1>Edit Profile</h1>
 
-<s:include value="userHeader.jsp" />
+<div id="internalnavcontainer">
+<ul id="navlist">
+	<li><a id="link_tab_profile" href="#" class="current" onclick="showTab('tab_profile'); return false;">Edit</a></li>
+	<s:if test="switchTos.size > 0">
+	<li><a id="link_tab_switch" href="#" onclick="showTab('tab_switch'); return false;">Switch Accounts</a></li>
+	</s:if>
+	<li><a id="link_tab_subscriptions" href="#" onclick="showTab('tab_subscriptions'); return false;">Email Subscriptions</a></li>
+	<li><a id="link_tab_permissions" href="#" onclick="showTab('tab_permissions'); return false;">Permissions</a></li>
+</ul>
+</div>
 
+<s:include value="../actionMessages.jsp"></s:include>
+
+<div id="tab_profile">
 <table style="width: 100%">
 	<tr>
-		<td><s:form cssStyle="width: 500px">
-			<s:hidden name="u.id" />
-			<fieldset class="form"><legend><span>Profile</span></legend>
-			<ol>
-				<li><label>Assigned to account:</label> <s:property value="u.account.name" /></li>
-				<li><label for="u.name">Display name:</label> <s:textfield name="u.name" /></li>
-				<li><label for="u.email">Email address:</label> <s:textfield name="u.email" size="30" /></li>
-				<li><label for="u.phone">Phone:</label> <s:textfield name="u.phone" size="20" /></li>
-				<li><label for="u.fax">Fax:</label> <s:textfield name="u.fax" size="20" /></li>
-				<li><label>Created:</label> <s:date name="u.creationDate" /></li>
-				<li><label>Last login:</label> <s:date name="u.lastLogin" /></li>
-			</ol>
-			</fieldset>
-			<fieldset class="form"><legend><span>Username &amp; Password</span></legend>
-			<ol>
-				<li><label for="u.username">Username:</label> <s:textfield name="u.username"
-					onchange="checkUsername(this.value);" />
-				<div id="username_status">&nbsp;</div>
-				</li>
-				<li><label for="password1">Password:</label> <s:password name="password1" value="" /></li>
-				<li><label for="password2">Confirm Password:</label> <s:password name="password2" value="" /></li>
-			</ol>
-			</fieldset>
-			<fieldset class="form submit">
-			<div>
-			<button id="saveButton" class="picsbutton positive" value="Save Profile" name="button" type="submit">Save Profile</button>
-			</div>
-			</fieldset>
-		</s:form></td>
+		<td><s:include value="profile_edit_save.jsp" /></td>
 		<td style="width: 20px;">&nbsp;</td>
 		<td style="vertical-align:top;">
-		<s:if test="switchTos.size > 0">
-			<img src="images/beta.jpg" width="98" height="100" style="float: right;"
-				title="This is a new feature. Please send us your feedback or suggestions." />
-			<h3>Switch Accounts</h3>
-			<table class="report">
-				<thead>
-					<tr>
-						<td>Account</td>
-						<td>User</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr><td>
-						<a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property
-						value="u.account.name" /></a>
-					</td>
-					<td>Primary</td>
-					</tr>
-					<s:iterator value="switchTos">
-					<tr>
-						<td><a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property
-						value="switchTo.account.name" /></a></td>
-						<td><s:property value="switchTo.name" /></td>
-					</tr>
-				</s:iterator>
-				</tbody>
-			</table>
-		</s:if>
+		
+		<h3>Recent Logins</h3>
+		<table class="report">
+		<thead>
+			<tr>
+				<th>Login Date/Time</th>
+				<th>IP Address</th>
+				<th>Notes</th>
+			</tr>
+		</thead>
+		<tbody>
+		<s:iterator value="recentLogins">
+			<tr>
+				<td><s:date name="loginDate"/></td>
+				<td><s:property value="remoteAddress"/></td>
+				<td>
+					<s:if test="admin.id > 0">Login by <s:property value="admin.name"/> from <s:property value="admin.account.name"/></s:if>
+					<s:if test="successful == 'N'">Incorrect password attempt</s:if>
+				</td>
+			</tr>
+		</s:iterator>
+		</tbody>
+		</table>
 	</td>
 	</tr>
 </table>
 
-<div class="clear"></div>
+</div>
 
+<div id="tab_switch" style="display: none;">
+	<h3>Switch Accounts</h3>
+	<table class="report">
+		<thead>
+			<tr>
+				<td>Account</td>
+				<td>User/Role</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td>
+				<a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property
+				value="u.account.name" /></a>
+			</td>
+			<td>Primary</td>
+			</tr>
+			<s:iterator value="switchTos">
+			<tr>
+				<td><a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property
+				value="switchTo.account.name" /></a></td>
+				<td><s:property value="switchTo.name" /></td>
+			</tr>
+		</s:iterator>
+		</tbody>
+	</table>
+</div>
+
+<div id="tab_permissions" style="display: none;">
+<table style="width: 100%">
+	<tr>
+		<td>
+		<h3>Permissions</h3>
+		<table class="report">
+			<thead>
+				<tr>
+					<th>Permission Name</th>
+					<th>View</th>
+					<th>Edit</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+			<s:iterator value="permissions.permissions">
+				<tr>
+					<td title="<s:property value="opPerm.helpText" />"><s:property value="opPerm.description" /></td>
+					<td><s:if test="viewFlag">View</s:if></td>
+					<td><s:if test="editFlag">Edit</s:if></td>
+					<td><s:if test="deleteFlag">Delete</s:if></td>
+				</tr>
+			</s:iterator>
+			</tbody>
+		</table>
+		</td>
+		<td>
+			<h3>Visible Audit &amp; Policy Types</h3>
+			<div>
+			<s:if test="permissions.operatorCorporate">
+			<ul>
+				<s:iterator value="viewableAuditsList">
+					<li><s:property value="auditName" /></li>
+				</s:iterator>
+			</ul>
+			</s:if>
+			<s:else>
+				You are a PICS Employee and have access to all Audit Types.
+			</s:else>
+			</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<div id="tab_subscriptions" style="display: none;">
 <table class="report">
 	<thead><tr>
 		<th>Subscription</th>
@@ -128,6 +196,7 @@
 		</s:iterator>
 	</tbody>
 </table>
+</div>
 
 </body>
 </html>

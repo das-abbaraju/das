@@ -899,11 +899,6 @@
 			<result>struts/users/profile_edit.jsp</result>
 		</action>
 
-		<action name="UserPermissions"
-			class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/users/user_permissions.jsp</result>
-		</action>
-
 		<action name="UserEmailSubscriptionSaveAjax"
 			class="com.picsauditing.mail.EmailSubscriptionSave">
 			<result>struts/mail/email_subscription_save.jsp</result>
