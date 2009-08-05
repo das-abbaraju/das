@@ -350,7 +350,8 @@ public class AuditBuilder {
 				} else {
 					// This cao might be required (if the operator manually
 					// requested it)
-					cao.setVisible(false);
+					if (cao.getStatus().isPending())
+						cao.setVisible(false);
 				}
 
 				if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
