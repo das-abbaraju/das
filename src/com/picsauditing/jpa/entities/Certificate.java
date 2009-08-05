@@ -1,12 +1,11 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -22,7 +21,9 @@ public class Certificate extends BaseTable {
 	private ContractorAccount contractor;
 	private String fileType;
 	private String description;
-	
+	private String fileHash;
+	private Date expirationDate;
+
 	private List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
 
 	@ManyToOne
@@ -51,6 +52,22 @@ public class Certificate extends BaseTable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getFileHash() {
+		return fileHash;
+	}
+
+	public void setFileHash(String fileHash) {
+		this.fileHash = fileHash;
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
 	}
 
 	@OneToMany(mappedBy = "certificate")
