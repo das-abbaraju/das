@@ -43,18 +43,20 @@ function closePage() {
 <div id="content">
 <div style="width:45%;float:left; border-right:1px solid #eee; margin-top:0px; text-align:center">
 <h3 style="margin-top:0px;">Upload a New File</h3>
+This will replace an existing file.
+<br>
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="auditID" />
 	<s:hidden name="divId" />
 	<s:hidden name="answer.question.id" />
 	<s:file name="file" size="15%"></s:file>
 	<div>
-	<br>
+	
 	<button class="picsbutton positive" name="button" value="Save" type="submit">Upload File</button>
 	</div>
 	</div>
 <div style="width:50%; float:right;text-align:center"/>	
-<h3 style="margin-top:0px;">Edit Existing File</h3>
+<h3 style="margin-top:0px;">View Existing File</h3>
 	<div>
 	<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
 		target="_BLANK">Open Existing <s:property value="fileSize" />
