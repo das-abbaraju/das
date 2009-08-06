@@ -44,7 +44,8 @@ public class CertDataConvert extends ContractorActionSupport {
 
 			for (ContractorAuditOperator cao : cert.getCaos()) {
 				if (cert.getExpirationDate() == null
-						|| cert.getExpirationDate().before(cao.getAudit().getExpiresDate()))
+						|| (cao.getAudit().getExpiresDate() != null && cert.getExpirationDate().before(
+								cao.getAudit().getExpiresDate())))
 					cert.setExpirationDate(cao.getAudit().getExpiresDate());
 			}
 
