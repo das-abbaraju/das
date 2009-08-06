@@ -37,32 +37,47 @@ function closePage() {
 	value="answer.question.subCategory.category.number" />.<s:property
 	value="answer.question.subCategory.number" />.<s:property
 	value="answer.question.number" /></b> &nbsp;&nbsp;<s:property
-	value="answer.question.question" escape="false"/></div>
+	value="answer.question.question" escape="false"/>
+</div>
+
+<div id="content">
+<div style="width:45%;float:left; border-right:1px solid #eee; margin-top:0px; text-align:center">
+<h3 style="margin-top:0px;">Upload a New File</h3>
 <s:form enctype="multipart/form-data" method="POST">
 	<s:hidden name="auditID" />
 	<s:hidden name="divId" />
 	<s:hidden name="answer.question.id" />
-	<br />
-	<s:file name="file" size="50"></s:file>
-	<br />
-
-	<div><a href="javascript: closePage();">Close
-	and Return to Form</a> <s:if test="file != null && file.exists()">
-		<button class="picsbutton negative" name="button" value="Delete" type="submit"
-			onclick="return confirm('Are you sure you want to delete this file?');">Delete
-		File</button>
-	</s:if>
-	<button class="picsbutton positive right" name="button" value="Save"
-		type="submit">Save</button>
+	<s:file name="file" size="15%"></s:file>
+	<div>
+	<br>
+	<button class="picsbutton positive" name="button" value="Save" type="submit">Upload File</button>
 	</div>
+	</div>
+<div style="width:50%; float:right;text-align:center"/>	
+<h3 style="margin-top:0px;">Edit Existing File</h3>
+	<div>
+	<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
+		target="_BLANK">Open Existing <s:property value="fileSize" />
+	File</a>
+	<br/><br>
+	<s:if test="file != null && file.exists()">
+	<button class="picsbutton negative" name="button" value="Delete" type="submit"
+			onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
+	</s:if>
+	</div>
+	</div>
+	
 </s:form> <br clear="all" />
 <s:if test="file != null && file.exists()">
-	<div><a
-		href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
-		target="_BLANK">Open Existing <s:property value="fileSize" />
-	File</a></div>
-</s:if></div>
+</s:if>
+</div>
+
+<div style="text-align:center; width:100%;>
+<div style="text-align:center;>
+<button style="text-align:center; width:100%" class="picsbutton" name="button" value="Close" OnClick="javascript: closePage()">Close & Return</button>
 </div>
 </div>
+</div>	
+</div></div>
 </body>
 </html>
