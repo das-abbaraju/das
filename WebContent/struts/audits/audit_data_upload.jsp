@@ -78,7 +78,7 @@ function closePage() {
 
 <div style="text-align:center; width:100%;">
 	<div style="text-align:center;">
-		<button style="text-align:center; width:100%" class="picsbutton" name="button" value="Close" OnClick="javascript: closePage()">Close & Return</button>
+		<button style="text-align:center; width:100%" class="picsbutton" name="button" value="Close" onclick="javascript: closePage()">Close & Return</button>
 	</div>
 </div>
 
