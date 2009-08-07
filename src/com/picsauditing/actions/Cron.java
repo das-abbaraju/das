@@ -149,22 +149,22 @@ public class Cron extends PicsActionSupport {
 			} catch (Throwable t) {
 				handleException(t);
 			}
-			try {
-				startTask("\nSubmitting Pqf and Annual Updates Audits which are complete...");
-				String where = "auditStatus = 'Pending' AND auditTypeID IN (1,11) AND percentComplete = 100";
-				List<ContractorAudit> conList = contractorAuditDAO.findWhere(40, where, "creationDate");
-				for (ContractorAudit cAudit : conList) {
-					cAudit.changeStatus(AuditStatus.Submitted, system);
-					contractorAuditDAO.save(cAudit);
-					String text = "Submitted the "+cAudit.getAuditType().getAuditName();
-					if(!Strings.isEmpty(cAudit.getAuditFor()))
-						text += cAudit.getAuditFor();
-					stampNote(cAudit.getContractorAccount(), text, NoteCategory.Audits);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
+//			try {
+//				startTask("\nSubmitting Pqf and Annual Updates Audits which are complete...");
+//				String where = "auditStatus = 'Pending' AND auditTypeID IN (1,11) AND percentComplete = 100";
+//				List<ContractorAudit> conList = contractorAuditDAO.findWhere(40, where, "creationDate");
+//				for (ContractorAudit cAudit : conList) {
+//					cAudit.changeStatus(AuditStatus.Submitted, system);
+//					contractorAuditDAO.save(cAudit);
+//					String text = "Submitted the "+cAudit.getAuditType().getAuditName();
+//					if(!Strings.isEmpty(cAudit.getAuditFor()))
+//						text += cAudit.getAuditFor();
+//					stampNote(cAudit.getContractorAccount(), text, NoteCategory.Audits);
+//				}
+//				endTask();
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
 			try {
 				startTask("\nRecalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
