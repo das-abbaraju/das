@@ -17,11 +17,18 @@
 		});
 	}
 
-	function save(subscription) {
-		var pars = $('eu'+subscription).serialize();
+	function save(subscription, id, timeperiod) {
+	    var pars = "eu.id="+id+"&eu.subscription="+subscription;
+	    if($('add'+subscription).checked)
+		    pars += "&addsubscription=true";
+	    else
+		    pars += "&addsubscription=false";
 
-		var divName = 'td'+subscription;
-		startThinking({'div':divName, 'message':'Saving email/Subscription data'});
+		if(timeperiod != null) {
+			pars += '&sPeriod='+$(timeperiod).value;	
+		}	
+	    var divName = 'td'+subscription;
+		startThinking({'div':divName});
 
 		var myAjax = new Ajax.Updater(divName, 'UserEmailSubscriptionSaveAjax.action', {
 			method: 'post', 
@@ -174,28 +181,24 @@
 </div>
 
 <div id="tab_subscriptions" style="display: none;">
-<table class="report">
-	<thead><tr>
-		<th>Subscription</th>
-		<th>Time Period</th>
-		<th></th>
-	</tr></thead>
-	<tbody>
-		<s:iterator value="eList" status="num">
+	<s:iterator value="eList">
+		<table>
 			<tr>
-				<td><s:property value="subscription.description"/></td>
-				<td id="td<s:property value="subscription"/>">
-					<s:include value="../mail/user_email_subscription.jsp"></s:include>
+				<td>
+					<input id="add<s:property value="subscription"/>" type="checkbox" onclick="save('<s:property value="subscription"/>', <s:property value="id"/>, null)" <s:if test="timePeriod.toString() != 'None'">checked</s:if>/>
 				</td>
 				<td>
-				<div class="buttons">
-					<button type="button" onclick="save('<s:property value="subscription"/>')">Save</button>
-					</div>
+					<b><u><s:property value="subscription.description"/></u></b>
+					<br/><s:property value="subscription.longDescription"/>
+					<br/>
+					<span id="td<s:property value="subscription"/>">
+						<s:include value="../mail/user_email_subscription.jsp"></s:include>
+					</span>
 				</td>
 			</tr>
-		</s:iterator>
-	</tbody>
-</table>
+		</table>
+		<br/>
+	</s:iterator>
 </div>
 
 </body>

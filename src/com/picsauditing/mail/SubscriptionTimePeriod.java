@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,5 +26,17 @@ public enum SubscriptionTimePeriod {
 		}
 
 		return calendar.getTime();
+	}
+	
+	public static ArrayList<SubscriptionTimePeriod> getValuesWithDefault(Subscription subscription) {
+		ArrayList<SubscriptionTimePeriod> values = new ArrayList<SubscriptionTimePeriod>();
+		SubscriptionTimePeriod[] sTimePeriods = subscription.getSupportedTimePeriods();
+		if(sTimePeriods.length > 2) {
+			for(SubscriptionTimePeriod sPeriod : sTimePeriods) {
+				if(sPeriod.compareTo(SubscriptionTimePeriod.None) > 0)
+					values.add(sPeriod);
+			}
+		}
+		return values;
 	}
 }

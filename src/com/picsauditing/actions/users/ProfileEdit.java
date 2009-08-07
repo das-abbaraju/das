@@ -22,7 +22,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -37,7 +36,8 @@ public class ProfileEdit extends PicsActionSupport {
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 
-	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao, EmailSubscriptionDAO emailSubscriptionDAO) {
+	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
+			EmailSubscriptionDAO emailSubscriptionDAO) {
 		this.dao = dao;
 		this.accountDao = accountDao;
 		this.userSwitchDao = userSwitchDao;
@@ -120,17 +120,17 @@ public class ProfileEdit extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(u.getUsername(), 10);
 	}
-	
+
 	public List<EmailSubscription> getEList() {
 		List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
 		Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
-		for(EmailSubscription emailSubscription : userEmail) {
+		for (EmailSubscription emailSubscription : userEmail) {
 			eMap.put(emailSubscription.getSubscription(), emailSubscription);
 		}
-		
-		for(Subscription subscription : requiredSubscriptionList(permissions)) {
+
+		for (Subscription subscription : requiredSubscriptionList(permissions)) {
 			EmailSubscription eSubscription = eMap.get(subscription);
-			if(eSubscription == null) {
+			if (eSubscription == null) {
 				eSubscription = new EmailSubscription();
 				eSubscription.setSubscription(subscription);
 			}
@@ -144,16 +144,11 @@ public class ProfileEdit extends PicsActionSupport {
 		for (Subscription subscription : Subscription.values()) {
 			if (permissions.isOperatorCorporate() && subscription.isRequiredForOperator()) {
 				subList.add(subscription);
-			}
-			else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
+			} else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
 				subList.add(subscription);
 			} else if (subscription.isRequiredForOperator() && subscription.isRequiredForContractor())
 				subList.add(subscription);
 		}
 		return subList;
-	}
-
-	public SubscriptionTimePeriod[] getSubscriptionTimePeriods() {
-		return SubscriptionTimePeriod.values();
 	}
 }
