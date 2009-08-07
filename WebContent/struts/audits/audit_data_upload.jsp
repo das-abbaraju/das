@@ -41,36 +41,39 @@ function closePage() {
 </div>
 
 <s:form enctype="multipart/form-data" method="POST">
-<div id="content" style="text-align:center;">
+<div style="text-align:center;">
 	<s:hidden name="auditID" />
 	<s:hidden name="divId" />
 	<s:hidden name="answer.question.id" />
-	<div style="width: 45%; height:175px; text-align:center; float: left;">
-		<h3 style="margin-top:0px;">Upload a New File</h3>
-			<s:if test="file != null && file.exists()">
-				<p>This will replace an existing file.</p>
-			</s:if>
-		<s:file name="file" size="15%"></s:file>
-		<div>
-			<button class="picsbutton positive" name="button" value="Save" type="submit">Upload File</button>
-		</div>
-	</div>
-	
-	<s:if test="file != null && file.exists()">	
-		<div style="width:50%; float:right;text-align:center; border-left:1px solid #eee; ">	
-			<h3 style="margin-top:0px;">View Existing File</h3>
-			<div>
-				<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
-					target="_BLANK">Open Existing <s:property value="fileSize" />
-				File</a>
-				<br/><br/>
+	<table style="margin-left: auto; margin-right: auto;">
+		<tr>
+			<td style="text-align:center;vertical-align:top;width: 45%">
+				<h3 style="margin-top:0px;">Upload a New File</h3>
+				<s:if test="file != null && file.exists()">
+					<p>This will replace an existing file.</p>
+				</s:if>
+				<s:file name="file" size="15%"></s:file>
+				<div>
+					<button class="picsbutton positive" name="button" value="Save" type="submit">Upload File</button>
+				</div>
+			</td>
 			
-				<button class="picsbutton negative" name="button" value="Delete" type="submit"
-						onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
-				<br clear="all" />
-			</div>
-		</div>
-	</s:if>
+			<s:if test="file != null && file.exists()">	
+				<!--<td style="width: 25px; border-right: 1px solid #eee;"></td>  -->
+				<td style="text-align:center;vertical-align:top; width: 45%;border-left: 1px solid #eee;">
+					<h3 style="margin-top:0px;">View Existing File</h3>
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
+						target="_BLANK">Open Existing <s:property value="fileSize" />
+					File</a>
+					<br/><br/>
+				
+					<button class="picsbutton negative" name="button" value="Delete" type="submit"
+							onclick="return confirm('Are you sure you want to delete this file?');">Delete File</button>
+					<br clear="all" />
+				</td>
+			</s:if>
+		</tr>
+	</table>
 </div> 
 </s:form>
 
