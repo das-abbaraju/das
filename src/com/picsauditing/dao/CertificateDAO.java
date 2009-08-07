@@ -57,19 +57,42 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public Certificate findByFileHash(String fileHash) {
-		Query q = em.createQuery("FROM Certificate c WHERE fileHash = :fileHash");
+	public Certificate findByFileHash(String fileHash, int conID) {
+		Query q = em.createQuery("FROM Certificate c WHERE fileHash = :fileHash AND contractor.id = :conID");
 		q.setParameter("fileHash", fileHash);
+		q.setParameter("conID", conID);
 		return (Certificate) q.getSingleResult();
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<Certificate> findWhere(String where) {
+		String query = "FROM Certificate c WHERE " + where;
+
+		Query q = em.createQuery(query);
+
+		return q.getResultList();
+	}
+
 	public List<Certificate> findWhere(String where, int limit) {
+		return findWhere(where, limit, 0);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Certificate> findWhere(String where, int limit, int start) {
 		String query = "FROM Certificate c WHERE " + where;
 
 		Query q = em.createQuery(query);
 		q.setMaxResults(limit);
+		q.setFirstResult(start);
 
+		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<String> findDupeHashes(int limit) {
+		Query q = em
+				.createQuery("SELECT fileHash FROM Certificate WHERE fileHash IS NOT NULL GROUP BY fileHash HAVING COUNT(*) > 1 ORDER BY fileHash");
+		q.setMaxResults(limit);
 		return q.getResultList();
 	}
 }

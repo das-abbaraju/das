@@ -288,6 +288,11 @@
 			</result>
 		</action>
 		
+		<action name="CertificateUtility"
+			class="com.picsauditing.actions.contractors.CertificateUtility">
+			<result>/struts/blank.jsp</result>
+		</action>
+		
 		<!--  NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes"
 			class="com.picsauditing.actions.notes.OperatorNotes">
