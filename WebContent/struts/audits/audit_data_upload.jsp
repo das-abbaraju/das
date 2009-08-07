@@ -59,7 +59,6 @@ function closePage() {
 			</td>
 			
 			<s:if test="file != null && file.exists()">	
-				<!--<td style="width: 25px; border-right: 1px solid #eee;"></td>  -->
 				<td style="text-align:center;vertical-align:top; width: 45%;border-left: 1px solid #eee;">
 					<h3 style="margin-top:0px;">View Existing File</h3>
 					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&answer.question.id=<s:property value="answer.question.id"/>"
