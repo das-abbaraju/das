@@ -36,11 +36,12 @@ public class CertDataConvert extends ContractorActionSupport {
 		certs = certificateDAO.findWhere("fileHash IS NULL", num);
 		for (Certificate cert : certs) {
 			File[] files = getFiles(cert.getId());
-			File file = files[0];
 
-			if (file != null) {
-				cert.setFileHash(FileUtils.getFileMD5(file));
-			}
+			File file = null;
+			if (files.length > 0)
+				file = files[0];
+
+			cert.setFileHash(FileUtils.getFileMD5(file));
 
 			for (ContractorAuditOperator cao : cert.getCaos()) {
 				if (cert.getExpirationDate() == null
