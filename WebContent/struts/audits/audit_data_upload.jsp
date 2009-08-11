@@ -54,7 +54,7 @@ function closePage() {
 				</s:if>
 				<s:file name="file" size="15%"></s:file>
 				<div>
-					<button class="picsbutton positive" name="button" value="Save" type="submit">Upload File</button>
+					<button class="picsbutton positive" name="button" value="Save" type="submit">Save</button>
 				</div>
 			</td>
 			
