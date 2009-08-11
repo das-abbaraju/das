@@ -1,12 +1,20 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@page language="java" errorPage="../../exception_handler.jsp"%>
+<%@page import="com.picsauditing.PICS.DateBean"%>
 <html>
 <head>
 <title><s:property value="operator.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
+<script language="JavaScript" SRC="js/CalendarPopup.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+	var cal1 = new CalendarPopup('caldiv1');
+	cal1.offsetY = -110;
+	cal1.setCssPrefix("PICS");
+</SCRIPT>
 </head>
 <body>
 <s:if test="operator == null">
@@ -138,20 +146,94 @@
 			</fieldset>
 			<pics:permission perm="UserRolePicsOperator" type="Edit">
 			<fieldset class="form"><legend><span>Manage Representatives</span></legend>
-			<ol><s:iterator value="operator.accountUsers" status="role">
-					<li><label><nobr><s:property value="role.description"/>:</nobr></label><li>
-					<li><nobr><s:select name="roleMap[%{id}]" list="userList" value="%{user.id}" listKey="id" listValue="name"/>
-						<s:textfield name="operator.accountUsers[%{#role.index}].ownerPercent" value="%{ownerPercent}" size="3"/>%
-						&nbsp;<a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove" class="remove">Remove</a></nobr>
-					</li>
-				</s:iterator>
-			</ol>
-			<ol>
-				<li><label>Add New:</label></li>
-				<li><s:select name="accountRole" list="roleList" listValue="description"/>
-					<s:select name="userid" list="userList" listKey="id" listValue="name" headerKey="0" headerValue="- Select a User -"/><br/>
-					<input type="submit" class="picsbutton positive" name="button" value="Add Role" />
-				</li>
+				<ol><li><nobr><label>Sales Representatives :</label></nobr></li>
+					<table class="report">
+					<thead>
+						<tr><td>User</td>
+							<td>Percent</td>
+							<td>Start</td>
+							<td>End</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						<s:iterator value="operator.accountUsers" status="role">
+							<s:hidden value="%{role}" name="accountRole"/>
+							<s:if test="role.description == 'Sales Representative'">
+							<tr>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="startDate" format="MM/dd/yyyy"/></td>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="endDate" format="MM/dd/yyyy"/></td>
+								<td><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove" class="remove">Remove</a></td>
+							</tr>
+							<tr id="show_<s:property value="id"/>" style="display: none;">
+								<td colspan="4"><nobr><s:textfield name="operator.accountUsers[%{#role.index}].ownerPercent" value="%{ownerPercent}" size="3"/>%&nbsp;&nbsp;
+								<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].startDate"
+									id="startDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yy')}"/>
+									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
+									onclick="cal1.select($('startDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
+									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+								&nbsp;&nbsp;<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].endDate"
+									id="endDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yy')}"/>
+									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
+									onclick="cal1.select($('endDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
+									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a></nobr>						
+								</td>
+								<td><input type="submit" class="picsbutton positive" name="button" value="Save Role" /></td>
+							</tr>
+							</s:if>
+						</s:iterator>
+						<tr><td colspan="4">
+							<s:select name="salesRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0" headerValue="- Select a User -"/></td>
+							<td><s:hidden value="PICSSalesRep" name="salesRep.role"/><input type="submit" class="picsbutton positive" name="button" value="Add Role" /></td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<li><nobr><label>Account Representatives : </label></nobr></li>
+					<table class="report">
+					<thead>
+						<tr><td>User</td>
+							<td>Percent</td>
+							<td>Start</td>
+							<td>End</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						<s:iterator value="operator.accountUsers" status="role">
+							<s:if test="role.description == 'Account Representative'">
+							<tr>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="startDate" format="MM/dd/yyyy"/></td>
+								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="endDate" format="MM/dd/yyyy"/></td>
+								<td><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove" class="remove">Remove</a></td>
+							</tr>
+							<tr id="show_<s:property value="id"/>" style="display: none;">
+								<td colspan="4"><nobr><s:textfield name="operator.accountUsers[%{#role.index}].ownerPercent" value="%{ownerPercent}" size="3"/>%&nbsp;&nbsp;
+								<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].startDate"
+									id="startDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yy')}"/>
+									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
+									onclick="cal1.select($('startDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
+									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+								&nbsp;&nbsp;<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].endDate"
+									id="endDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yy')}"/>
+									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
+									onclick="cal1.select($('endDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
+									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a></nobr>						
+								</td>
+								<td><input type="submit" class="picsbutton positive" name="button" value="Save Role" /></td>
+							</tr>
+							</s:if>
+						</s:iterator>
+						<tr><td colspan="4">
+							<s:select name="accountRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0" headerValue="- Select a User -"/></td>
+							<td><s:hidden value="PICSAccountRep" name="accountRep.role"/><input type="submit" class="picsbutton positive" name="button" value="Add Role" /></td>
+						</tr>
+					</tbody>
+				</table>
 			</ol>
 			</fieldset>
 			</pics:permission>
@@ -161,7 +243,6 @@
 	<br clear="all">
 	<div><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 </s:form>
-<div id="caldiv1"
-	style="position: absolute; visibility: hidden; background-color: white; layer-background-color: white;"></div>
+<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 </body>
 </html>

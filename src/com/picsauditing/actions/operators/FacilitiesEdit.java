@@ -1,6 +1,8 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,10 +43,9 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected OperatorFormDAO formDAO;
 	protected AccountUserDAO accountUserDAO;
 	protected UserDAO userDAO;
-	protected Map<Integer, Integer> roleMap = new HashMap<Integer, Integer>();
-	protected UserAccountRole accountRole;
-	protected int userid = 0;
 	protected int accountUserId;
+	protected AccountUser salesRep = null;
+	protected AccountUser accountRep = null;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
 			AccountUserDAO accountUserDAO, UserDAO userDAO) {
@@ -85,26 +86,36 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				if (accountUserId > 0) {
 					accountUserDAO.remove(accountUserId);
 				}
-				return SUCCESS;
 			}
-			if (button.equalsIgnoreCase("Add Role")) {
+			if (button.startsWith("Add Role")) {
 				AccountUser accountUser = new AccountUser();
+				if (accountRep.getUser().getId() > 0)
+					accountUser = accountRep;
+				else
+					accountUser = salesRep;
 				accountUser.setAccount(operator);
-				accountUser.setUser(new User(userid));
-				accountUser.setRole(accountRole);
-				accountUser.setAuditColumns();
-				accountUserDAO.save(accountUser);
+				accountUser.setStartDate(new Date());
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(calendar.YEAR, 10);
+				accountUser.setEndDate(calendar.getTime());
+				accountUser.setAuditColumns(permissions);
+				operator.getAccountUsers().add(accountUser);
+				operatorDao.save(operator);
 				int completePercent = 0;
 				for (AccountUser accountUser2 : operator.getAccountUsers()) {
-					if (accountUser2.getRole().equals(accountRole)) {
+					if (accountUser2.getRole().equals(accountUser.getRole())) {
 						completePercent += accountUser2.getOwnerPercent();
 					}
 				}
 				if (completePercent != 100) {
-					addActionMessage(accountRole.getDescription() + " is not 100 percent");
+					addActionMessage(accountUser.getRole().getDescription() + " is not 100 percent");
 				}
+				accountRep = null;
+				salesRep = null;
+			}
 
-				return SUCCESS;
+			if (button.equalsIgnoreCase("Save Role")) {
+				operatorDao.save(operator);
 			}
 
 			if (button.equalsIgnoreCase("Save")) {
@@ -197,13 +208,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.getNaics().setCode("0");
 				operator.setNameIndex();
 
-				if (operator.getAccountUsers() != null) {
-					for (AccountUser accountUser : operator.getAccountUsers()) {
-						int userID = roleMap.get(accountUser.getId());
-						accountUser.setUser(new User(userID));
-					}
-				}
-
 				if (id == 0) {
 					operator.setInheritAuditCategories(operator);
 					operator.setInheritAudits(operator);
@@ -219,8 +223,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator = operatorDao.save(operator);
 
 				addActionMessage("Successfully saved " + operator.getName());
-			} else {
-				throw new Exception("no button action found called " + button);
 			}
 		}
 
@@ -325,32 +327,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		this.operator = operator;
 	}
 
-	public Map<Integer, Integer> getRoleMap() {
-		return roleMap;
-	}
-
-	public void setRoleMap(Map<Integer, Integer> roleMap) {
-		this.roleMap = roleMap;
-	}
-
 	public UserAccountRole[] getRoleList() {
 		return UserAccountRole.values();
-	}
-
-	public UserAccountRole getAccountRole() {
-		return accountRole;
-	}
-
-	public void setAccountRole(UserAccountRole accountRole) {
-		this.accountRole = accountRole;
-	}
-
-	public int getUserid() {
-		return userid;
-	}
-
-	public void setUserid(int userid) {
-		this.userid = userid;
 	}
 
 	public int getAccountUserId() {
@@ -359,5 +337,21 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	public void setAccountUserId(int accountUserId) {
 		this.accountUserId = accountUserId;
+	}
+
+	public AccountUser getSalesRep() {
+		return salesRep;
+	}
+
+	public void setSalesRep(AccountUser salesRep) {
+		this.salesRep = salesRep;
+	}
+
+	public AccountUser getAccountRep() {
+		return accountRep;
+	}
+
+	public void setAccountRep(AccountUser accountRep) {
+		this.accountRep = accountRep;
 	}
 }

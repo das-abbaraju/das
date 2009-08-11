@@ -317,7 +317,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.users = users;
 	}
 
-	@OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
 	public List<AccountUser> getAccountUsers() {
 		return accountUsers;
 	}
