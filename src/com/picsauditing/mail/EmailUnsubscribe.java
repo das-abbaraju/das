@@ -49,7 +49,7 @@ public class EmailUnsubscribe extends PicsActionSupport implements ServletReques
 			Iterator<EmailSubscription> eIterator = emList.iterator();
 			while(eIterator.hasNext()) {
 				EmailSubscription eSubscription = eIterator.next();
-				if(eSubscription.getSubscription().getDescription().equals(subString)) {
+				if(eSubscription.getSubscription().toString().equals(subString)) {
 					emailSubscriptionDAO.remove(eSubscription);
 				}
 			}

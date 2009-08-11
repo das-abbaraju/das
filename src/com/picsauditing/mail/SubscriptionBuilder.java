@@ -89,7 +89,7 @@ public abstract class SubscriptionBuilder {
 
 			String seed = "u" + user.getId() + "t" + templateID;
 			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub="
-					+ subscription.getDescription() + "&key=" + Strings.hashUrlSafe(seed);
+					+ subscription + "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			
 			emailBuilder.addToken("subscription", subscription);
