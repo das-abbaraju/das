@@ -87,7 +87,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					accountUserDAO.remove(accountUserId);
 				}
 			}
-			if (button.startsWith("Add Role")) {
+			if (button.equalsIgnoreCase("Add Role")) {
 				AccountUser accountUser = new AccountUser();
 				if (accountRep.getUser().getId() > 0)
 					accountUser = accountRep;
