@@ -19,10 +19,3 @@ and pcd.catID = 151;
 
 
 **/
-
-alter table contractor_info drop column ccValid;
-
-update note set noteCategory = 'Other' and priority = 1
-where summary like 'Now waiting on%' 
-and noteCategory = 'General' 
-and priority = 2; 
