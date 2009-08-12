@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +22,7 @@ public class CertCleanUp extends ContractorActionSupport {
 	private int num = 10;
 	private int count = 0;
 
-	List<Integer> deleted = new ArrayList<Integer>();
-
-	public CertCleanUp(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			CertificateDAO certificateDAO) {
+	public CertCleanUp(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
 		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 	}
@@ -36,35 +32,40 @@ public class CertCleanUp extends ContractorActionSupport {
 			return LOGIN;
 
 		tryPermissions(OpPerms.DevelopmentEnvironment);
-
-		PicsLogger.start("CertCleanUp", "start certificate cleanup");
+		PicsLogger.start("CertCleanUp", "Starting certificate clean up");
 
 		List<String> dupeHashes = certificateDAO.findDupeHashes(num);
 		for (String hash : dupeHashes) {
 
-			PicsLogger.log(" start hash " + hash);
+			PicsLogger.log("For hash " + hash + ":");
 
 			Map<ContractorAccount, List<Certificate>> conCerts = certificateDAO.findConCertMap(hash);
 
 			if (conCerts.size() > 1)
 				PicsLogger.log(" found " + conCerts.size() + " different contractors that use this file");
 
-			for (List<Certificate> certsList : conCerts.values()) {
-				PicsLogger.log(" this contractor has " + certsList.size() + " certificates");
-				Certificate keeper = certsList.get(0);
+			for (Map.Entry<ContractorAccount, List<Certificate>> entry : conCerts.entrySet()) {
+				List<Certificate> certs = entry.getValue();
+				PicsLogger.log(" Contractor.id=" + entry.getKey().getId() + " has " + certs.size()
+						+ " duplicate certificates");
+
+				Certificate keeper = certs.get(0);
 				PicsLogger.log(" keeping the certificate with id=" + keeper.getId());
-				for (int i = 1; i < certsList.size(); i++) {
-					PicsLogger.log(" start removal for certificate with id=" + certsList.get(i).getId());
-					for (ContractorAuditOperator cao : certsList.get(i).getCaos()) {
-						PicsLogger.log("  reassigning cao for " + cao.getOperator().getName());
+
+				for (int i = 1; i < certs.size(); i++) {
+					PicsLogger.log(" For cert id=" + certs.get(i).getId());
+					for (ContractorAuditOperator cao : certs.get(i).getCaos()) {
+						PicsLogger.log("  change cao cert for cao id=" + cao.getId() + " - opName= "
+								+ cao.getOperator().getName());
 						cao.setCertificate(keeper);
 					}
-					File[] files = getFiles(certsList.get(i).getId());
-					PicsLogger.log(" found " + files.length + " files for certificate id=" + certsList.get(i).getId());
+
+					File[] files = getFiles(certs.get(i).getId());
+					PicsLogger.log(" found " + files.length + " files for certificate id=" + certs.get(i).getId());
 					for (File file : files)
 						FileUtils.deleteFile(file);
-					deleted.add(certsList.get(i).getId());
-					certificateDAO.remove(certsList.get(i));
+
+					certificateDAO.remove(certs.get(i));
 					count++;
 				}
 			}
@@ -72,6 +73,10 @@ public class CertCleanUp extends ContractorActionSupport {
 		}
 
 		addActionMessage("Deleted " + count + " certificates");
+
+		PicsLogger.log("Deleted " + count + " certificates");
+		PicsLogger.stop();
+
 		return SUCCESS;
 	}
 
