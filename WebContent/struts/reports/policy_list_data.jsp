@@ -26,7 +26,7 @@
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
 	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Policy Type</a></td>
-		<s:if test="permissions.operator">
+		<s:if test="permissions.operator || permissions.corporate">
 			<td>Status</td>
 		</s:if>
 	    <td><a href="javascript: changeOrderBy('form1','ca.creationDate DESC');" >Effective</a></td>
