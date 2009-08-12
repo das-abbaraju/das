@@ -65,7 +65,7 @@ public class CertificateDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public Map<ContractorAccount, List<Certificate>> findConCertMap(String fileHash) {
 		Query q = em.createQuery("FROM Certificate WHERE fileHash = :fileHash");
-		q.setParameter("ileHash", fileHash);
+		q.setParameter("fileHash", fileHash);
 
 		Map<ContractorAccount, List<Certificate>> conCertMap = new HashMap<ContractorAccount, List<Certificate>>();
 		List<Certificate> certificates = q.getResultList();
