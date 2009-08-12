@@ -14,14 +14,14 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
-public class CertDataConvert extends ContractorActionSupport {
+public class CertHashUtil extends ContractorActionSupport {
 	private CertificateDAO certificateDAO;
 
 	List<Certificate> certs;
 	int num = 10;
 	int count = 0;
 
-	public CertDataConvert(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
+	public CertHashUtil(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
 		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 	}

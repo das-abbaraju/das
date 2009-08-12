@@ -17,7 +17,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
-public class CertificateUtility extends ContractorActionSupport {
+public class CertCleanUp extends ContractorActionSupport {
 	private CertificateDAO certificateDAO;
 
 	private int num = 10;
@@ -25,7 +25,7 @@ public class CertificateUtility extends ContractorActionSupport {
 
 	List<Integer> deleted = new ArrayList<Integer>();
 
-	public CertificateUtility(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+	public CertCleanUp(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			CertificateDAO certificateDAO) {
 		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
@@ -37,7 +37,7 @@ public class CertificateUtility extends ContractorActionSupport {
 
 		tryPermissions(OpPerms.DevelopmentEnvironment);
 
-		PicsLogger.start("CertificateConvert", "start certificate cleanup");
+		PicsLogger.start("CertCleanUp", "start certificate cleanup");
 
 		List<String> dupeHashes = certificateDAO.findDupeHashes(num);
 		for (String hash : dupeHashes) {

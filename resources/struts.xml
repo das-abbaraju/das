@@ -288,11 +288,6 @@
 			</result>
 		</action>
 		
-		<action name="CertificateUtility"
-			class="com.picsauditing.actions.contractors.CertificateUtility">
-			<result>/struts/blank.jsp</result>
-		</action>
-		
 		<!--  NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes"
 			class="com.picsauditing.actions.notes.OperatorNotes">
@@ -1189,8 +1184,13 @@
 		</action>
 
 		<!--  Development struts mappings -->
-		
-		<action name="CertDataConvert" class="com.picsauditing.actions.contractors.CertDataConvert">
+
+		<action name="CertCleanUp"
+			class="com.picsauditing.actions.contractors.CertCleanUp">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="CertHashUtil" class="com.picsauditing.actions.contractors.CertHashUtil">
 			<result>struts/contractors/cert_convert.jsp</result>
 		</action>
 		<!-- 

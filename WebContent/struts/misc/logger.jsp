@@ -29,7 +29,7 @@
 	<li><a class="edit" href="?button=add&rule.name=AuditCriteriaAnswerBuilder.build">AuditCriteriaAnswerBuilder.build</a></li>
 	<li><a class="edit" href="?button=add&rule.name=CaoStatus">CaoStatus</a></li>
 	<li><a class="edit" href="?button=add&rule.name=CC_Hash_Errors">CC_Hash_Errors</a></li>
-	<li><a class="edit" href="?button=add&rule.name=CertificateConvert">CertificateConvert</a></li>
+	<li><a class="edit" href="?button=add&rule.name=CertCleanUp">CertCleanUp</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ContractorCron">ContractorCron</a></li>
 	<li><a class="edit" href="?button=add&rule.name=ContractorFlagAction">ContractorFlagAction</a></li>
 	<li><a class="edit" href="?button=add&rule.name=cron_ebix">cron_ebix</a></li>
