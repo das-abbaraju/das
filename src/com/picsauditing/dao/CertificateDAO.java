@@ -1,13 +1,18 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 @Transactional
 public class CertificateDAO extends PicsDAO {
@@ -57,11 +62,33 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public Map<ContractorAccount, List<Certificate>> findConCertMap(String fileHash) {
+		Query q = em.createQuery("FROM Certificate WHERE fileHash = :fileHash");
+		q.setParameter("ileHash", fileHash);
+
+		Map<ContractorAccount, List<Certificate>> conCertMap = new HashMap<ContractorAccount, List<Certificate>>();
+		List<Certificate> certificates = q.getResultList();
+		for (Certificate c : certificates) {
+			if (conCertMap.get(c.getContractor()) == null)
+				conCertMap.put(c.getContractor(), new ArrayList<Certificate>());
+			
+			conCertMap.get(c.getContractor()).add(c);
+		}
+		
+		return conCertMap;
+	}
+
 	public Certificate findByFileHash(String fileHash, int conID) {
-		Query q = em.createQuery("FROM Certificate c WHERE fileHash = :fileHash AND contractor.id = :conID");
+		Query q = em.createQuery("FROM Certificate WHERE fileHash = :fileHash AND contractor.id = :conID");
 		q.setParameter("fileHash", fileHash);
 		q.setParameter("conID", conID);
-		return (Certificate) q.getSingleResult();
+
+		try {
+			return (Certificate) q.getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -73,17 +100,12 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<Certificate> findWhere(String where, int limit) {
-		return findWhere(where, limit, 0);
-	}
-
 	@SuppressWarnings("unchecked")
-	public List<Certificate> findWhere(String where, int limit, int start) {
+	public List<Certificate> findWhere(String where, int limit) {
 		String query = "FROM Certificate c WHERE " + where;
 
 		Query q = em.createQuery(query);
 		q.setMaxResults(limit);
-		q.setFirstResult(start);
 
 		return q.getResultList();
 	}

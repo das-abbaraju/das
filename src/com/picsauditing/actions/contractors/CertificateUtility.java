@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
@@ -10,8 +11,10 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.Certificate;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class CertificateUtility extends ContractorActionSupport {
@@ -34,32 +37,41 @@ public class CertificateUtility extends ContractorActionSupport {
 
 		tryPermissions(OpPerms.DevelopmentEnvironment);
 
+		PicsLogger.start("CertificateConvert", "Beggining certificate cleanup");
+
 		List<String> dupeHashes = certificateDAO.findDupeHashes(num);
 		for (String hash : dupeHashes) {
-			List<Certificate> certs = certificateDAO.findWhere("fileHash = '" + hash + "'");
 
-			Certificate keeper = certs.get(0);
-			for (int i = 1; i < certs.size(); i++) {
-				for (ContractorAuditOperator cao : certs.get(i).getCaos()) {
-					cao.setCertificate(keeper);
+			PicsLogger.log(" start hash " + hash);
+
+			Map<ContractorAccount, List<Certificate>> conCerts = certificateDAO.findConCertMap(hash);
+
+			if (conCerts.size() > 1)
+				PicsLogger.log(" found " + conCerts.size() + " different contractors that use this file");
+
+			for (List<Certificate> certsList : conCerts.values()) {
+				PicsLogger.log(" this contractor has " + certsList.size() + " certificates");
+				Certificate keeper = certsList.get(0);
+				PicsLogger.log(" keeping the certificate with id=" + keeper.getId());
+				for (int i = 1; i < certsList.size(); i++) {
+					PicsLogger.log(" start removal for certificate with id=" + certsList.get(i).getId());
+					for (ContractorAuditOperator cao : certsList.get(i).getCaos()) {
+						PicsLogger.log("  reassigning cao for " + cao.getOperator().getName());
+						cao.setCertificate(keeper);
+					}
+					File[] files = getFiles(certsList.get(i).getId());
+					PicsLogger.log(" found " + files.length + " files for certificate id=" + certsList.get(i).getId());
+					for (File file : files)
+						FileUtils.deleteFile(file);
+					deleted.add(certsList.get(i).getId());
+					certificateDAO.remove(certsList.get(i));
+					count++;
 				}
-				File[] files = getFiles(certs.get(i).getId());
-				for (File file : files)
-					FileUtils.deleteFile(file);
-				deleted.add(certs.get(i).getId());
-				certificateDAO.remove(certs.get(i));
-				count++;
 			}
+
 		}
 
-		addActionMessage("The folling hashes have been fixed");
-		for (String s : dupeHashes)
-			addActionMessage(s);
-
-		addActionMessage(count + " certificates have been removed:");
-		for (Integer i : deleted)
-			addActionMessage(i.toString());
-
+		addActionMessage("Deleted " + count + " certificates");
 		return SUCCESS;
 	}
 
