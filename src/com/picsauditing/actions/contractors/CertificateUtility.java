@@ -37,7 +37,7 @@ public class CertificateUtility extends ContractorActionSupport {
 
 		tryPermissions(OpPerms.DevelopmentEnvironment);
 
-		PicsLogger.start("CertificateConvert", "Beggining certificate cleanup");
+		PicsLogger.start("CertificateConvert", "start certificate cleanup");
 
 		List<String> dupeHashes = certificateDAO.findDupeHashes(num);
 		for (String hash : dupeHashes) {
