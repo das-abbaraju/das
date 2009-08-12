@@ -113,7 +113,7 @@ public class CertificateDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<String> findDupeHashes(int limit) {
 		Query q = em
-				.createQuery("SELECT fileHash FROM Certificate WHERE fileHash IS NOT NULL GROUP BY fileHash HAVING COUNT(*) > 1 ORDER BY fileHash");
+				.createQuery("SELECT DISTINCT fileHash FROM Certificate WHERE fileHash IS NOT NULL GROUP BY fileHash, contractor.id HAVING COUNT(*) > 1 ORDER BY fileHash");
 		q.setMaxResults(limit);
 		return q.getResultList();
 	}
