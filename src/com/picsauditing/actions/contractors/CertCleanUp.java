@@ -50,18 +50,18 @@ public class CertCleanUp extends ContractorActionSupport {
 						+ " duplicate certificates");
 
 				Certificate keeper = certs.get(0);
-				PicsLogger.log(" keeping the certificate with id=" + keeper.getId());
+				PicsLogger.log("  keeping the certificate with id=" + keeper.getId());
 
 				for (int i = 1; i < certs.size(); i++) {
-					PicsLogger.log(" For cert id=" + certs.get(i).getId());
+					PicsLogger.log("  For cert id=" + certs.get(i).getId());
 					for (ContractorAuditOperator cao : certs.get(i).getCaos()) {
-						PicsLogger.log("  change cao cert for cao id=" + cao.getId() + " - opName= "
+						PicsLogger.log("   change cao cert for cao id=" + cao.getId() + " - opName= "
 								+ cao.getOperator().getName());
 						cao.setCertificate(keeper);
 					}
 
 					File[] files = getFiles(certs.get(i).getId());
-					PicsLogger.log(" found " + files.length + " files for certificate id=" + certs.get(i).getId());
+					PicsLogger.log("  found " + files.length + " files for certificate id=" + certs.get(i).getId());
 					for (File file : files)
 						FileUtils.deleteFile(file);
 
@@ -69,7 +69,6 @@ public class CertCleanUp extends ContractorActionSupport {
 					count++;
 				}
 			}
-
 		}
 
 		addActionMessage("Deleted " + count + " certificates");
