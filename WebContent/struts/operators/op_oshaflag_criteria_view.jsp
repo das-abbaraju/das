@@ -70,7 +70,12 @@
 		<s:if test="lwcr">
 			<s:textfield name="redOshaCriteria.lwcr.hurdle" size="5"/>
 		</s:if><s:elseif test="trir">
-			<s:textfield name="redOshaCriteria.trir.hurdle" size="5"/>
+			<s:if test="#redhurdleFlag.naics">
+				<s:textfield name="redOshaCriteria.trir.hurdle" size="5" value="format(redOshaCriteria.trir.hurdle, '#')"/>
+			</s:if>
+			<s:else>
+				<s:textfield name="redOshaCriteria.trir.hurdle" size="5"/>
+			</s:else>		
 		</s:elseif> <s:else>
 			<s:textfield name="redOshaCriteria.fatalities.hurdle" size="5"/>
 		</s:else>
@@ -126,7 +131,12 @@
 		<s:if test="lwcr">
 			<s:textfield name="amberOshaCriteria.lwcr.hurdle" size="5"/>
 		</s:if> <s:elseif test="trir">
-			<s:textfield name="amberOshaCriteria.trir.hurdle" size="5"/>
+			<s:if test="#amberhurdleFlag.naics">
+				<s:textfield name="amberOshaCriteria.trir.hurdle" size="5" value="format(amberOshaCriteria.trir.hurdle, '#')"/>
+			</s:if>
+			<s:else>
+				<s:textfield name="amberOshaCriteria.trir.hurdle" size="5"/>
+			</s:else>		
 		</s:elseif> <s:else>
 			<s:textfield name="amberOshaCriteria.fatalities.hurdle" size="5"/>
 		</s:else>
