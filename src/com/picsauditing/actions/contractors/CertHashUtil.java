@@ -12,6 +12,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.log.LoggingRule;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -21,7 +22,8 @@ public class CertHashUtil extends ContractorActionSupport {
 	List<Certificate> certs;
 	int num = 10;
 
-	public CertHashUtil(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
+	public CertHashUtil(ContractorAccountDAO accountDao,
+			ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
 		super(accountDao, auditDao);
 		this.certificateDAO = certificateDAO;
 	}
@@ -32,7 +34,9 @@ public class CertHashUtil extends ContractorActionSupport {
 			return LOGIN;
 
 		tryPermissions(OpPerms.DevelopmentEnvironment);
-		PicsLogger.start("CertCleanUp", "Starting certificate hash data conversion");
+		PicsLogger.getRules().add(new LoggingRule("CertCleanUp", true));
+		PicsLogger.start("CertCleanUp",
+				"Starting certificate hash data conversion");
 
 		certs = certificateDAO.findWhere("fileHash IS NULL", num);
 		for (Certificate cert : certs) {
@@ -46,7 +50,8 @@ public class CertHashUtil extends ContractorActionSupport {
 			for (File f : files) {
 				if (f.getName().endsWith(cert.getFileType())) {
 					file = f;
-					PicsLogger.log(" found the matching file extension - " + file.getName());
+					PicsLogger.log(" found the matching file extension - "
+							+ file.getName());
 				} else {
 					PicsLogger.log(" found file with different extension - moving " + f.getName());
 					FileUtils.moveFile(f, getFtpDir() + "/cert_cleanup/");
@@ -60,24 +65,29 @@ public class CertHashUtil extends ContractorActionSupport {
 			// Try to find an expirationDate
 			for (ContractorAuditOperator cao : cert.getCaos()) {
 				if (cert.getExpirationDate() == null
-						|| (cao.getAudit().getExpiresDate() != null && cert.getExpirationDate().before(
-								cao.getAudit().getExpiresDate())))
+						|| (cao.getAudit().getExpiresDate() != null && cert
+								.getExpirationDate().before(
+										cao.getAudit().getExpiresDate())))
 					cert.setExpirationDate(cao.getAudit().getExpiresDate());
 			}
 
 			if (cert.getExpirationDate() == null) {
-				PicsLogger.log(" expirationDate not found - setting to 6 months in the future");
+				PicsLogger
+						.log(" expirationDate not found - setting to 6 months in the future");
 				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.MONTH, 6);
 				cert.setExpirationDate(cal.getTime());
 			} else
-				PicsLogger.log(" expirationDate set to " + cert.getExpirationDate());
+				PicsLogger.log(" expirationDate set to "
+						+ cert.getExpirationDate());
 
 			certificateDAO.save(cert);
 		}
 
-		addActionMessage("Successfully updated " + certs.size() + " certificates");
+		addActionMessage("Successfully updated " + certs.size()
+				+ " certificates");
 		PicsLogger.stop();
+		PicsLogger.getRules().remove(new LoggingRule("CertCleanUp", true));
 		return SUCCESS;
 	}
 
@@ -86,7 +96,8 @@ public class CertHashUtil extends ContractorActionSupport {
 	}
 
 	private File[] getFiles(int certID) {
-		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(certID));
+		File dir = new File(getFtpDir() + "/files/"
+				+ FileUtils.thousandize(certID));
 		return FileUtils.getSimilarFiles(dir, getFileName(certID));
 	}
 
