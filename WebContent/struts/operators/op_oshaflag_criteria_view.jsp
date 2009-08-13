@@ -132,7 +132,7 @@
 			<s:textfield name="amberOshaCriteria.lwcr.hurdle" size="5"/>
 		</s:if> <s:elseif test="trir">
 			<s:if test="#amberhurdleFlag.naics">
-				<s:textfield name="amberOshaCriteria.trir.hurdle" size="5" value="format(amberOshaCriteria.trir.hurdle, '#')"/>
+				<s:textfield name="amberOshaCriteria.trir.hurdle" size="5" value="%{format(amberOshaCriteria.trir.hurdle, '#')}"/>
 			</s:if>
 			<s:else>
 				<s:textfield name="amberOshaCriteria.trir.hurdle" size="5"/>
