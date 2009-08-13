@@ -36,6 +36,11 @@ public class FileUtils {
 			throw new Exception("Could not move file to " + theNewFile.getAbsolutePath());
 	}
 
+	static public void moveFile(File f, String path) throws Exception {
+		if (!f.renameTo(new File(path + f.getName())))
+			throw new Exception("Could not move file to " + path);
+	}
+
 	static public void copyFile(File f, String ftpDir, String partialPath, String fileName, String extension,
 			boolean deleteDuplicates) throws Exception {
 
@@ -121,7 +126,8 @@ public class FileUtils {
 	}
 
 	static public boolean checkFileExtension(String extension) {
-		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png", "docx", "xlsx", "zip", "tif", "tiff"};
+		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png", "docx", "xlsx", "zip", "tif",
+				"tiff" };
 		return checkFileExtension(extension, validExtensions);
 	}
 
@@ -150,11 +156,11 @@ public class FileUtils {
 		if (length == 0)
 			return "empty or missing";
 		if (length > 1000000000)
-			return Math.round(length / 100000000f)/10f + " GB";
+			return Math.round(length / 100000000f) / 10f + " GB";
 		if (length > 1000000)
-			return Math.round(length / 100000f)/10f + " MB";
+			return Math.round(length / 100000f) / 10f + " MB";
 		if (length > 1000)
-			return Math.round(length / 100f)/10f + " KB";
+			return Math.round(length / 100f) / 10f + " KB";
 		return length + " Bytes";
 	}
 
@@ -215,21 +221,56 @@ public class FileUtils {
 
 	/**
 	 * This method will take and int and convert it into a folder structure
-	 * where each folder contains up to a thousand subfolders and a thousand 
-	 * child files.  This is designed to be used as part of other algorithms
-	 * which build the whole path of a file.  <br/><br/><strong>Some examples:</strong><br/>
-	 * <table border="1"><tr><th>id</th><th>Expected Result</th></tr>
-	 * <tr><td>100</td><td>&nbsp;</td></tr>
-	 * <tr><td>1000</td><td>100/</td></tr>
-	 * <tr><td>10000</td><td>100/</td></tr> 
-	 * <tr><td>100000</td><td>100/</td></tr> 
-	 * <tr><td>100001</td><td>100/</td></tr>
-	 * <tr><td>100999</td><td>100/</td></tr> 
-	 * <tr><td>101000</td><td>101/</td></tr> 
-	 * <tr><td>1000000</td><td>100/000/</td></tr> 
-	 * <tr><td>2215356</td><td>221/535/</td></tr> 
+	 * where each folder contains up to a thousand subfolders and a thousand
+	 * child files. This is designed to be used as part of other algorithms
+	 * which build the whole path of a file. <br/>
+	 * <br/>
+	 * <strong>Some examples:</strong><br/>
+	 * <table border="1">
+	 * <tr>
+	 * <th>id</th>
+	 * <th>Expected Result</th>
+	 * </tr>
+	 * <tr>
+	 * <td>100</td>
+	 * <td>&nbsp;</td>
+	 * </tr>
+	 * <tr>
+	 * <td>1000</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>10000</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>100000</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>100001</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>100999</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>101000</td>
+	 * <td>101/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>1000000</td>
+	 * <td>100/000/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>2215356</td>
+	 * <td>221/535/</td>
+	 * </tr>
 	 * </table>
-	 * @param id the number to be converted into a path
+	 * 
+	 * @param id
+	 *            the number to be converted into a path
 	 * @return String that represents the number converted into a path.
 	 */
 	public static String thousandize(int id) {

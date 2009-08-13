@@ -68,7 +68,7 @@ public class CertCleanUp extends ContractorActionSupport {
 					File[] files = getFiles(certs.get(i).getId());
 					PicsLogger.log("  found " + files.length + " files for certificate id=" + certs.get(i).getId());
 					for (File file : files)
-						FileUtils.deleteFile(file);
+						FileUtils.moveFile(file, getFtpDir() + "/cert_cleanup/");
 
 					certificateDAO.remove(certs.get(i));
 					count++;
