@@ -85,7 +85,9 @@ public abstract class SubscriptionBuilder {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
 			emailBuilder.setFromAddress("info@picsauditing.com");
+			// TODO remove this after we update the templates from username to user.name
 			emailBuilder.addToken("username", user.getName());
+			emailBuilder.addToken("user", user);
 
 			String seed = "u" + user.getId() + "t" + templateID;
 			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub="
