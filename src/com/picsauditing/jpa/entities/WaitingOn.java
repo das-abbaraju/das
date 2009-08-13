@@ -25,6 +25,10 @@ public enum WaitingOn {
 		return null;
 	}
 
+	public boolean isNone() {
+		return this.equals(None);
+	}
+	
 	@Override
 	public String toString() {
 		if (this.equals(WaitingOn.None))
