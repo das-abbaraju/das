@@ -239,7 +239,7 @@
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
 	 									&gt; 
 	 									<s:if test="trir.hurdleFlag.naics">
-	 										<s:property value="%{new java.text.DecimalFormat('#,##0.000').format((co.contractorAccount.naics.trir * trir.hurdle) / 100)}" />(<s:property value="co.contractorAccount.naics.trir" /> * <s:property value="trir.hurdle" />)/100
+	 										<s:property value="%{new java.text.DecimalFormat('#,##0.000').format((co.contractorAccount.naics.trir * trir.hurdle) / 100)}" />(<s:property value="co.contractorAccount.naics.trir" /> * <s:property value="format(trir.hurdle,'#')" />)/100
 	 									</s:if>
 	 									<s:else>
 	 										<s:property value="trir.hurdle" />

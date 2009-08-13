@@ -22,15 +22,13 @@
 		<td>
 			Lost Workdays Case Rate 
 		</td>
-		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.lwcr.hurdleFlag.toString() != 'None'">
-			<s:if test="oshaRedFlagCriteria.lwcr.hurdleFlag.toString() == 'NAICS'"><s:property value="oshaRedFlagCriteria.lwcr.hurdleFlag"/></s:if>
+		<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.lwcr.hurdleFlag.none">
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.lwcr.time)"/>
 			> <s:property value="oshaRedFlagCriteria.lwcr.hurdle"/>
 			</s:if>
 			<s:else>N/A</s:else>
 		</nobr></td>
-		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.lwcr.hurdleFlag.toString() != 'None'">
-			<s:if test="oshaAmberFlagCriteria.lwcr.hurdleFlag.toString() == 'NAICS'"><s:property value="oshaAmberFlagCriteria.lwcr.hurdleFlag"/></s:if>
+		<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.lwcr.hurdleFlag.none">
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.lwcr.time)"/>
 			> <s:property value="oshaAmberFlagCriteria.lwcr.hurdle"/>
 			</s:if>
@@ -47,17 +45,27 @@
 		<td>
 			Total Recordable Incident Rate 
 		</td>
-		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.trir.hurdleFlag.toString() != 'None'">
-			<s:if test="oshaRedFlagCriteria.trir.hurdleFlag.toString() == 'NAICS'"><s:property value="oshaRedFlagCriteria.trir.hurdleFlag"/></s:if>
+		<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.trir.hurdleFlag.none">
+			<s:if test="oshaRedFlagCriteria.trir.hurdleFlag.naics"><s:property value="oshaRedFlagCriteria.trir.hurdleFlag"/></s:if>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.trir.time)"/>
-			> <s:property value="oshaRedFlagCriteria.trir.hurdle"/>
+			> <s:if test="oshaRedFlagCriteria.trir.hurdleFlag.naics">
+				<s:property value="format(oshaRedFlagCriteria.trir.hurdle, '#')"/>
+			  </s:if>
+			  <s:else>
+			  	<s:property value="oshaRedFlagCriteria.trir.hurdle"/>
+			  </s:else>
 			</s:if>
 			<s:else>N/A</s:else>
 		</nobr></td>
-		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.trir.hurdleFlag.toString() != 'None'">
-			<s:if test="oshaAmberFlagCriteria.trir.hurdleFlag.toString() == 'NAICS'"><s:property value="oshaAmberFlagCriteria.trir.hurdleFlag"/></s:if>
+		<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.trir.hurdleFlag.none">
+			<s:if test="oshaAmberFlagCriteria.trir.hurdleFlag.naics"><s:property value="oshaAmberFlagCriteria.trir.hurdleFlag"/></s:if>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.trir.time)"/>
-			> <s:property value="oshaAmberFlagCriteria.trir.hurdle"/>
+			>  <s:if test="oshaAmberFlagCriteria.trir.hurdleFlag.naics">
+				<s:property value="format(oshaAmberFlagCriteria.trir.hurdle, '#')"/>
+			  </s:if>
+			  <s:else>
+			  	<s:property value="oshaAmberFlagCriteria.trir.hurdle"/>
+			  </s:else>
 			</s:if>
 			<s:else>N/A</s:else>
 		</nobr></td>
@@ -72,15 +80,13 @@
 		<td>
 			Fatalities
 		</td>
-		<td><nobr><s:if test="oshaRedFlagCriteria != null && oshaRedFlagCriteria.fatalities.hurdleFlag.toString() != 'None'">
-			<s:if test="oshaRedFlagCriteria.fatalities.hurdleFlag.toString() == 'NAICS'"><s:property value="oshaRedFlagCriteria.fatalities.hurdleFlag"/></s:if>
+		<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.fatalities.hurdleFlag.none">
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.fatalities.time)"/>
 			> <s:property value="oshaRedFlagCriteria.fatalities.hurdle"/>
 			</s:if>
 			<s:else>N/A</s:else>
 		</nobr></td>
-		<td><nobr><s:if test="oshaAmberFlagCriteria != null && oshaAmberFlagCriteria.fatalities.hurdleFlag.toString() != 'None'">
-			<s:if test="oshaAmberFlagCriteria.fatalities.hurdleFlag.toString() == 'NAICS'"><s:property value="oshaAmberFlagCriteria.fatalities.hurdleFlag"/></s:if>
+		<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.fatalities.hurdleFlag.none">
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.fatalities.time)"/>
 			> <s:property value="oshaAmberFlagCriteria.fatalities.hurdle"/>
 			</s:if>
