@@ -9,6 +9,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -17,13 +18,16 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class CertCleanUp extends ContractorActionSupport {
+	private ContractorAuditOperatorDAO caoDAO;
 	private CertificateDAO certificateDAO;
 
 	private int num = 10;
 	private int count = 0;
 
-	public CertCleanUp(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, CertificateDAO certificateDAO) {
+	public CertCleanUp(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
+			CertificateDAO certificateDAO) {
 		super(accountDao, auditDao);
+		this.caoDAO = caoDAO;
 		this.certificateDAO = certificateDAO;
 	}
 
@@ -58,6 +62,7 @@ public class CertCleanUp extends ContractorActionSupport {
 						PicsLogger.log("   change cao cert for cao id=" + cao.getId() + " - opName= "
 								+ cao.getOperator().getName());
 						cao.setCertificate(keeper);
+						caoDAO.save(cao);
 					}
 
 					File[] files = getFiles(certs.get(i).getId());
@@ -68,6 +73,11 @@ public class CertCleanUp extends ContractorActionSupport {
 					certificateDAO.remove(certs.get(i));
 					count++;
 				}
+
+				PicsLogger.log("    keeper's old expiration date=" + keeper.getExpirationDate());
+				keeper.updateExpirationDate();
+				PicsLogger.log("    keeper's new expiration date=" + keeper.getExpirationDate());
+				certificateDAO.save(keeper);
 			}
 		}
 
