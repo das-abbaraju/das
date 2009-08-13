@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -72,7 +73,7 @@ public class Certificate extends BaseTable {
 		this.expirationDate = expirationDate;
 	}
 
-	@OneToMany(mappedBy = "certificate")
+	@OneToMany(mappedBy = "certificate", fetch = FetchType.LAZY)
 	public List<ContractorAuditOperator> getCaos() {
 		return caos;
 	}
