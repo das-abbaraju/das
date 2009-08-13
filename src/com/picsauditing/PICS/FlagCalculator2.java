@@ -383,8 +383,16 @@ public class FlagCalculator2 {
 							note.setNoteCategory(NoteCategory.Other);
 							note.setPriority(LowMedHigh.Low);
 							note.setAuditColumns(new User(User.SYSTEM));
-							note.setSummary("Now waiting on " + coFlag.getWaitingOn() + " to " + waitingOn + " for "
-									+ operator.getName());
+							if (waitingOn.isNone()) {
+								note.setSummary("We are no longer \"Waiting On\" " + coFlag.getWaitingOn() + 
+									". All required information has been gathered for " + operator.getName() + ".");
+							} else if (coFlag.getWaitingOn().isNone()) {
+								note.setSummary("The \"Waiting On\" status for " + operator.getName() +
+										" has changed to \"" + waitingOn + "\"");
+							} else {
+								note.setSummary("The \"Waiting On\" status for " + operator.getName() +
+										" has changed from \"" + coFlag.getWaitingOn() + "\" to \"" + waitingOn + "\"");
+							}
 							note.setCanContractorView(true);
 							note.setViewableById(operator.getId());
 							noteDAO.save(note);
