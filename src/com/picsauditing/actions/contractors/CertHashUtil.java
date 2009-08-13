@@ -48,7 +48,7 @@ public class CertHashUtil extends ContractorActionSupport {
 					file = f;
 					PicsLogger.log(" found the matching file extension - " + file.getName());
 				} else {
-					PicsLogger.log(" found file with different extension - deleting " + f.getName());
+					PicsLogger.log(" found file with different extension - moving " + f.getName());
 					FileUtils.moveFile(f, getFtpDir() + "/cert_cleanup/");
 				}
 			}
