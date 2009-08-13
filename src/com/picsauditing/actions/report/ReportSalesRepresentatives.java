@@ -1,10 +1,13 @@
 package com.picsauditing.actions.report;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.DynaBean;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
@@ -28,6 +31,8 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	protected UserAccountRole responsibility;
 	protected OperatorAccountDAO operatorAccountDAO = null;
 	protected UserDAO userDAO = null;
+	protected Map<String, Object> summaryData = null;
+	protected boolean showSummary = false;
 
 	public ReportSalesRepresentatives(OperatorAccountDAO operatorAccountDAO, UserDAO userDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
@@ -53,7 +58,11 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			String userlist = Strings.implode(getAccountUser(), ",");
 			where += " AND userID IN (" + userlist + ")";
 		}
-
+		
+		if(accountUser != null && accountUser.length == 1) {
+			showSummary = true;
+		}
+		
 		if (filterOn(operator)) {
 			Set<Integer> operatorsIds = new HashSet<Integer>();
 			for (int opID : operator) {
@@ -114,7 +123,8 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 				+ " WHERE (auditTypeID IN (2,3,6) OR at.classType = 'IM') AND minRiskLevel > 0 AND canSee = 1) audited "
 				+ " ON audited.opID = accountID "
 				+ " JOIN operators o on o.id = accountID "
-				+ " WHERE " + where
+				+ " WHERE "
+				+ where
 				+ " GROUP BY requestedbyid, auID " + " ORDER BY userName, role, accountName";
 
 		Database db = new Database();
@@ -123,8 +133,91 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	public Map<String, Object> getSummaryData() {
+		if (summaryData == null) {
+			summaryData = new HashMap<String, Object>();
+			
+			int auAccountReps = 0;
+			int naAccountReps = 0;
+			int auSalesReReps = 0;
+			int naSalesReps = 0;
+
+			int auAccThisMonth = 0;
+			int naAccThisMonth = 0;
+			int auSalThisMonth = 0;
+			int naSalThisMonth = 0;
+
+			int auAccLastMonth = 0;
+			int naAccLastMonth = 0;
+			int auSalLastMonth = 0;
+			int naSalLastMonth = 0;
+			
+			int auAccTotal = 0;
+			int naAccTotal = 0;
+			int auSalTotal = 0;
+			int naSalTotal = 0;
+			
+
+			summaryData.put("userName", data.get(0).get("userName"));
+			for (DynaBean bean : data) {
+				if(bean.get("role").toString().equals(UserAccountRole.PICSAccountRep.toString())) {
+					if(bean.get("doContractorsPay").toString().equals("Yes") && bean.get("audited") != null) {
+						auAccountReps++;
+						auAccThisMonth += Integer.parseInt(bean.get("regisThisMonth").toString());
+						auAccLastMonth += Integer.parseInt(bean.get("regisLastMonth").toString());
+						auAccTotal += Integer.parseInt(bean.get("totalCons").toString());
+					}
+					else {
+						naAccountReps ++;
+						naAccThisMonth += Integer.parseInt(bean.get("regisThisMonth").toString());
+						naAccLastMonth += Integer.parseInt(bean.get("regisLastMonth").toString());
+						naAccTotal += Integer.parseInt(bean.get("totalCons").toString());
+					}
+				}
+				else {
+					if(bean.get("doContractorsPay").toString().equals("Yes") && bean.get("audited") != null) {
+						auSalesReReps++;
+						auSalThisMonth += Integer.parseInt(bean.get("regisThisMonth").toString());
+						auSalLastMonth += Integer.parseInt(bean.get("regisLastMonth").toString());
+						auSalTotal += Integer.parseInt(bean.get("totalCons").toString());
+					}
+					else {
+						naSalesReps ++;
+						naSalThisMonth += Integer.parseInt(bean.get("regisThisMonth").toString());
+						naSalLastMonth += Integer.parseInt(bean.get("regisLastMonth").toString());
+						naSalTotal += Integer.parseInt(bean.get("totalCons").toString());
+					}
+				}
+			}
+			summaryData.put("AuditedAccountReps", auAccountReps);
+			summaryData.put("NonAuditedAccountReps", naAccountReps);
+			summaryData.put("AuditedSalesReps", auSalesReReps);
+			summaryData.put("NonAuditedSalesReps", naSalesReps);
+			
+			summaryData.put("auAccThisMonth", auAccThisMonth);
+			summaryData.put("naAccThisMonth", naAccThisMonth);
+			summaryData.put("auSalThisMonth", auSalThisMonth);
+			summaryData.put("naSalThisMonth", naSalThisMonth);
+
+			summaryData.put("auAccLastMonth", auAccLastMonth);
+			summaryData.put("naAccLastMonth", naAccLastMonth);
+			summaryData.put("auSalLastMonth", auSalLastMonth);
+			summaryData.put("naSalLastMonth", naSalLastMonth);
+
+			summaryData.put("auAccTotal", auAccTotal);
+			summaryData.put("naAccTotal", naAccTotal);
+			summaryData.put("auSalTotal", auSalTotal);
+			summaryData.put("naSalTotal", naSalTotal);
+		}
+		return summaryData;
+	}	
+
 	public List<BasicDynaBean> getData() {
 		return data;
+	}
+
+	public boolean isShowSummary() {
+		return showSummary;
 	}
 
 	public int getYear() {

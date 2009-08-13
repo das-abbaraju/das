@@ -56,7 +56,49 @@
 </div>
 
 <br clear="all"/>
+<s:if test="showSummary">
+	<table class="report">
+		<thead><tr><td>Summary For <s:property value="summaryData.get('userName')"/></td>
+				<td></td>
+				<td>Accounts Managed</td>
+				<td>This Month</td>
+				<td>Last Month</td>
+				<td>Total</td>
+		</tr></thead>
+		<tbody>
+			<tr><th rowspan="2">Account Representatives</th>
+				<td>Audited</td>
+				<td><s:property value="summaryData.get('AuditedAccountReps')"/></td>
+				<td><s:property value="summaryData.get('auAccThisMonth')"/></td>
+				<td><s:property value="summaryData.get('auAccLastMonth')"/></td>
+				<td><s:property value="summaryData.get('auAccTotal')"/></td>
+			</tr>		
+			<tr>
+				<td>Non-Audited</td>
+				<td><s:property value="summaryData.get('NonAuditedAccountReps')"/></td>
+				<td><s:property value="summaryData.get('naAccThisMonth')"/></td>
+				<td><s:property value="summaryData.get('naAccLastMonth')"/></td>
+				<td><s:property value="summaryData.get('naAccTotal')"/></td>
+			</tr>
+			<tr><th rowspan="2">Sales Representatives</th>
+				<td>Audited</td>
+				<td><s:property value="summaryData.get('AuditedSalesReps')"/></td>
+				<td><s:property value="summaryData.get('auSalThisMonth')"/></td>
+				<td><s:property value="summaryData.get('auSalLastMonth')"/></td>
+				<td><s:property value="summaryData.get('auSalTotal')"/></td>
+			</tr>
+			<tr>
+				<td>Non-Audited</td>
+				<td><s:property value="summaryData.get('NonAuditedSalesReps')"/></td>
+				<td><s:property value="summaryData.get('naSalThisMonth')"/></td>
+				<td><s:property value="summaryData.get('naSalLastMonth')"/></td>
+				<td><s:property value="summaryData.get('naSalTotal')"/></td>
+			</tr>		
+		</tbody>
+	</table>
+</s:if>
 
+<br clear="all"/>
 <table class="report">
 	<thead>
 		<tr>
