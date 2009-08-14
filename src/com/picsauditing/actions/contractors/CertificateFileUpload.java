@@ -115,10 +115,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				certificate.setAuditColumns(permissions);
 				certificate = certificateDAO.save(certificate);
 
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.MONTH, 6);
-				certificate.setExpirationDate(cal.getTime());
-
 				certID = certificate.getId();
 
 				if (file != null && file.length() > 0) {
