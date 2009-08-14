@@ -86,6 +86,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					} else {
 						certID = certificate.getId();
 						addActionMessage("This file has already been uploaded.");
+						changed = true;
 						return SUCCESS;
 					}
 				}
