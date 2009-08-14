@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
-import java.util.Calendar;
 
 import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
