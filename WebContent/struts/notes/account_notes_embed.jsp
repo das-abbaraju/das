@@ -26,7 +26,7 @@
 			<td class="priority"><img src="images/star<s:property value="priority" />.gif" 
 				height="25" width="25" title="<s:property value="priority" /> Priority" /></td>
 			<td>
-				<s:property value="summary" /><br />
+				<s:property value="noteCategory" />:<s:property value="summary" /><br />
 				<s:property value="bodyHtml" escape="false" />
 			</td>
 		</tr>

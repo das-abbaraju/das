@@ -45,12 +45,10 @@
 		<tr>
 			<td class="center">
 				<nobr><s:date name="creationDate" format="M/d/yy h:mm a" /></nobr><br />
-				<a class="filter" href="#" onclick="filter('notes', 'filter.userID', '<s:property value="createdBy.id" />'); return false;"><s:property 
-					value="createdBy.name" /></a><br />
+				<nobr><a class="filter" href="#" onclick="filter('notes', 'filter.userID', '<s:property value="createdBy.id" />'); return false;"><s:property 
+					value="createdBy.name" /></a> - 
 				<a class="filter" href="#" onclick="filter('notes', 'filter.userAccountID', '<s:property value="createdBy.account.id" />'); return false;"><s:property 
-					value="createdBy.account.name" /></a><br />
-				<a class="filter" href="#" onclick="filter('notes', 'filter.viewableBy', '<s:property value="viewableBy.id" />'); return false;"><s:property 
-					value="viewableBy.name" /></a><br />
+					value="createdBy.account.name" /></a></nobr>
 			</td>
 			<td class="priority"><a href="#" onclick="filter('notes', 'filter.priority', '<s:property value="priority" />'); return false;"><img src="images/star<s:property value="priority" />.gif" 
 				height="25" width="25" title="<s:property value="priority" /> Priority" /></a></td>
@@ -58,7 +56,7 @@
 				<a href="#view" style="float: right; padding: 5px" 
 					onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','view')">Show Details</a>
 				<a class="filter" href="#" onclick="filter('notes', 'filter.category', '<s:property value="noteCategory" />'); return false;"><s:property value="noteCategory" /></a>:
-					<s:property value="summary" /><s:if test="body != null && body.length() > 0"><br />...more notes in detail</s:if><br /><br />
+					<s:property value="summary" /><s:if test="body != null && body.length() > 0"><br /><s:property value="bodyHtml.substring(0,150)" escape="false"/>...more notes in detail</s:if><br /><br />
 				<s:if test="updateDate != null && updateDate.after(creationDate)">
 					<b>Edited:</b> by <s:property value="updatedBy.name" /> at <s:date name="updateDate" format="M/d/yy h:mm a" />
 				</s:if>
