@@ -47,7 +47,7 @@
 					<s:if test="permissions.corporate">
 						<s:checkbox name="overrideAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label><br/>
 					</s:if>
-					Reason:<br><s:textarea name="forceNote" value=""></s:textarea>
+					Reason:<br><s:textarea name="forceNote" value="" rows="4" cols="15"></s:textarea>
 					<div>
 						<button class="picsbutton positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
 					</div>
@@ -71,7 +71,9 @@
 						<s:if test="permissions.corporate">
 							<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
 						</s:if>
-						<s:textarea name="forceNote" value=""></s:textarea><br />
+						Reason: <s:textarea name="forceNote" value="" rows="4" cols="15"></s:textarea><br />
+						<span class="redMain">* All Fields are required</span>
+						
 						<div>
 							<button class="picsbutton positive" type="submit" name="button" value="Force Flag" onclick="return checkForce();">Force Flag</button>
 						</div>

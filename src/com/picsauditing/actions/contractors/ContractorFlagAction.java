@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+
 import com.picsauditing.PICS.AuditCriteriaAnswer;
 import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
@@ -36,6 +37,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.AnswerMapByAudits;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -126,7 +128,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					addActionError("You didn't change the flag color");
 				if (forceEnd == null)
 					addActionError("You didn't specify an end date");
-				if (forceNote == null)
+				if (Strings.isEmpty(forceNote))
 					addActionError("You must enter a note when forcing a flag ");
 
 				if (getActionErrors().size() > 0) {
