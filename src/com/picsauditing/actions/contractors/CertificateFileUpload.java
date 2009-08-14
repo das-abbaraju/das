@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
+import java.util.Calendar;
 
 import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
@@ -79,8 +80,15 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						addActionError("File was missing or empty");
 						return SUCCESS;
 					}
-					certificate = new Certificate();
-					certificate.setContractor(contractor);
+					certificate = certificateDAO.findByFileHash(FileUtils.getFileMD5(file), contractor.getId());
+					if (certificate == null) {
+						certificate = new Certificate();
+						certificate.setContractor(contractor);
+					} else {
+						certID = certificate.getId();
+						addActionMessage("This file has already been uploaded.");
+						return SUCCESS;
+					}
 				}
 				String extension = null;
 				if (file != null && file.length() > 0) {
@@ -89,6 +97,12 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						file = null;
 						addActionError("Bad File Extension");
 						return SUCCESS;
+					}
+					if (certificate.getId() > 0) {
+						// delete older files
+						File[] files = getFiles(certificate.getId());
+						for (File f : files)
+							FileUtils.deleteFile(f);
 					}
 					certificate.setFileType(extension);
 					certificate.setFileHash(FileUtils.getFileMD5(file));
@@ -100,6 +114,11 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					certificate.setDescription(fileName);
 				certificate.setAuditColumns(permissions);
 				certificate = certificateDAO.save(certificate);
+
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MONTH, 6);
+				certificate.setExpirationDate(cal.getTime());
+
 				certID = certificate.getId();
 
 				if (file != null && file.length() > 0) {
