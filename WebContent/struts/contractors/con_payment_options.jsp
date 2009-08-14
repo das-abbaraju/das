@@ -59,7 +59,7 @@ function updateExpDate() {
 	<div id="alert">
 		<s:iterator value="contractor.invoices">
 			<s:if test="status.unpaid">
-			You have an open <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"> invoice of <b>$ <s:property value="balance"/></b></a> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
+			You have an <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>">unpaid invoice</a> for $<s:property value="balance"/> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
 			</s:if>
 		</s:iterator>
 	</div>
@@ -73,7 +73,7 @@ function updateExpDate() {
 	<li><label>Payment Method:</label>
 		<s:property value="contractor.paymentMethod.description"/><br/>
 		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipLevel.amount < 500">
-			<i>Note: Credit Card payment is required for memberships under $500.</i>
+			<i>Please Note: Credit Card payment is required for memberships under $500.</i>
 		</s:if>
 	</li>
 
@@ -197,7 +197,6 @@ function updateExpDate() {
 				<input type="submit" class="picsbutton positive" name="button" value="Submit"/>
 				<br clear="all">
 			</div>
-			<div id="info">The card will NOT being charged at this time.</div>
 			</li>
 		</ol>
 		</fieldset>
