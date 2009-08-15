@@ -253,7 +253,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 	
 	public List<Certificate> getCertificates() {
-		return certificateDao.findByConId(contractor.getId(), permissions);
+		return certificateDao.findByConId(contractor.getId(), permissions, false);
 	}
 
 	public boolean isHasPendingCaos() {

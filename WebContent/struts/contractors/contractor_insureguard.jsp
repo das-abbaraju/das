@@ -197,7 +197,7 @@
 			<thead>
 				<tr>
 					<th>FileName</th>
-					<th>CreatedDate</th>
+					<th>Expiration Date</th>
 					<th>View</th>
 					<th>Edit</th>
 					<th>Used By</th>
@@ -206,7 +206,7 @@
 			<s:iterator value="certificates">
 				<tr>
 					<td><s:property value="description" /></td>
-					<td><s:date name="creationDate" format="M/d/yy" /></td>
+					<td><s:date name="expirationDate" format="M/d/yy" /></td>
 					<td><a
 						href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download"
 						target="_BLANK"><img src="images/icon_insurance.gif" /></a></td>

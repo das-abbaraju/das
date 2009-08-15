@@ -49,13 +49,16 @@ public class CertificateDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Certificate> findByConId(int conID, Permissions permissions) {
+	public List<Certificate> findByConId(int conID, Permissions permissions, boolean showExpired) {
 		String query = "SELECT c FROM Certificate c WHERE c.contractor.id = ? ";
 		if (permissions.isOperatorCorporate()) {
 			query += " AND (c.createdBy = " + permissions.getUserId()
 					+ " OR c IN (SELECT cao.certificate FROM c.caos cao WHERE cao.operator = "
 					+ "(SELECT o.inheritInsurance FROM OperatorAccount o WHERE o.id = " + permissions.getAccountId()
 					+ ")))";
+		}
+		if (!showExpired) {
+			query += " AND expirationDate > NOW()";
 		}
 		Query q = em.createQuery(query);
 		q.setParameter(1, conID);

@@ -226,6 +226,6 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 	}
 
 	public List<Certificate> getCertificates() {
-		return certificateDao.findByConId(contractor.getId(), permissions);
+		return certificateDao.findByConId(contractor.getId(), permissions, false);
 	}
 }

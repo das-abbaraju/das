@@ -209,7 +209,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	}
 
 	public List<Certificate> getCertificates() {
-		return certificateDAO.findByConId(contractor.getId(), permissions);
+		return certificateDAO.findByConId(contractor.getId(), permissions, false);
 	}
 
 	public Map<ContractorAudit, List<ContractorAuditOperator>> getRequested() {
