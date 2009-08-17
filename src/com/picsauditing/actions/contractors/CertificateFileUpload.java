@@ -64,6 +64,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					for (File oldFile : getFiles(certID))
 						FileUtils.deleteFile(oldFile);
 					certID = 0;
+					changed = true;
 				} catch (Exception e) {
 					addActionError("Failed to save file: " + e.getMessage());
 					e.printStackTrace();
@@ -71,7 +72,6 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				}
 				certificateDAO.remove(certificate);
 				addActionMessage("Successfully removed file");
-				changed = true;
 				return SUCCESS;
 			}
 
