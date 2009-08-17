@@ -60,6 +60,8 @@ public class CertificateDAO extends PicsDAO {
 		if (!showExpired) {
 			query += " AND expirationDate > NOW()";
 		}
+
+		query += " ORDER BY expirationDate";
 		Query q = em.createQuery(query);
 		q.setParameter(1, conID);
 		return q.getResultList();
@@ -75,10 +77,10 @@ public class CertificateDAO extends PicsDAO {
 		for (Certificate c : certificates) {
 			if (conCertMap.get(c.getContractor()) == null)
 				conCertMap.put(c.getContractor(), new ArrayList<Certificate>());
-			
+
 			conCertMap.get(c.getContractor()).add(c);
 		}
-		
+
 		return conCertMap;
 	}
 
