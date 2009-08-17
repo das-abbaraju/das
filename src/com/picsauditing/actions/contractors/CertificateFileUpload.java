@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
+import java.util.Calendar;
 
 import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
@@ -70,6 +71,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				}
 				certificateDAO.remove(certificate);
 				addActionMessage("Successfully removed file");
+				changed = true;
 				return SUCCESS;
 			}
 
@@ -83,6 +85,9 @@ public class CertificateFileUpload extends ContractorActionSupport {
 					if (certificate == null) {
 						certificate = new Certificate();
 						certificate.setContractor(contractor);
+						Calendar cal = Calendar.getInstance();
+						cal.add(Calendar.MONTH, 6);
+						certificate.setExpirationDate(cal.getTime());
 					} else {
 						certID = certificate.getId();
 						addActionMessage("This file has already been uploaded.");
