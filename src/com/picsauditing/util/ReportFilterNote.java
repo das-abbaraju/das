@@ -13,6 +13,8 @@ public class ReportFilterNote extends ReportFilter {
 	protected int[] userID;
 	protected int[] userAccountID;
 	protected int[] viewableBy;
+	protected int limit = 50;
+	protected int firstResult = 0;
 
 	public String getKeyword() {
 		return keyword;
@@ -83,4 +85,19 @@ public class ReportFilterNote extends ReportFilter {
 		this.viewableBy = viewableBy;
 	}
 
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	public int getFirstResult() {
+		return firstResult;
+	}
+
+	public void setFirstResult(int firstResult) {
+		this.firstResult = firstResult;
+	}
 }

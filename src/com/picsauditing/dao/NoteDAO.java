@@ -72,7 +72,7 @@ public class NoteDAO extends PicsDAO {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Note> getNotes(int accountID, Permissions permissions, String where, int limit) {
+	public List<Note> getNotes(int accountID, Permissions permissions, String where, int firstResult, int limit) {
 		if (Strings.isEmpty(where))
 			where = "1";
 
@@ -100,6 +100,7 @@ public class NoteDAO extends PicsDAO {
 				+ " ORDER BY creationDate DESC");
 		query.setParameter("accountID", accountID);
 		query.setParameter("userID", permissions.getUserId());
+		query.setFirstResult(firstResult);
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}

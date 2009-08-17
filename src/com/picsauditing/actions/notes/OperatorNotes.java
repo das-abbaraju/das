@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.operators.OperatorActionSupport;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -15,15 +14,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OperatorNotes extends OperatorActionSupport {
-	private List<Note> notes = null;
 	private String returnType = SUCCESS;
 	private ReportFilterNote filter = new ReportFilterNote();
 
-	private NoteDAO noteDAO;
-
-	public OperatorNotes(OperatorAccountDAO operatorDao, NoteDAO noteDAO) {
+	public OperatorNotes(OperatorAccountDAO operatorDao) {
 		super(operatorDao);
-		this.noteDAO = noteDAO;
 		this.subHeading = "Notes";
 	}
 
@@ -33,12 +28,19 @@ public class OperatorNotes extends OperatorActionSupport {
 			return LOGIN;
 
 		findOperator();
+		if("hasNext".equals(button)) {
+			filter.setFirstResult(filter.getFirstResult()+filter.getLimit());
+		}
+		
+		if("hasPrevious".equals(button)) {
+			filter.setFirstResult(filter.getFirstResult()-filter.getLimit());
+		}
 
 		return returnType;
 	}
 
 	public List<Note> getNotes() {
-		return super.getNotes(getFilters(), 25);
+		return super.getNotes(getFilters(), filter.getFirstResult(), filter.getLimit());
 	}
 
 	private String getFilters() {
@@ -70,6 +72,27 @@ public class OperatorNotes extends OperatorActionSupport {
 		return filterString;
 	}
 
+	public boolean isNext() {
+		List<Note> noteList = getNotes(getFilters(), filter.getFirstResult()+filter.getLimit(), 100000);
+		notes = null;
+		if(noteList.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isPrevious() {
+		if(filter.getFirstResult() > 0)
+			return true;
+		return false;
+	}
+	
+	public int getCountRows() {
+		List<Note> noteList = getNotes(getFilters(), 0, 100000);
+		notes = null;
+		return  noteList.size();
+	}
+	
 	public String getReturnType() {
 		return returnType;
 	}

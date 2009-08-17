@@ -41,6 +41,15 @@ function runNoteSearch(returnType) {
 	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
 }
 
+function updateNotePage(accountID,button,returnType,result) {
+	var divName = returnType + 'List';
+
+	var pars = 'id='+accountID+'&button='+button+'&returnType='+returnType+'&filter.firstResult='+result;
+
+	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
+	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
+}
+
 function noteEditor(accountID, noteID, mode, defaultCategory) {
 	var day = new Date();
 	var id = day.getTime();

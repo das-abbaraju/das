@@ -40,12 +40,20 @@ public class ContractorNotes extends ContractorActionSupport {
 		if ("addFilter".equals(button)) {
 			return "tasks";
 		}
-
+		
+		if("hasNext".equals(button)) {
+			filter.setFirstResult(filter.getFirstResult()+filter.getLimit());
+		}
+		
+		if("hasPrevious".equals(button)) {
+			filter.setFirstResult(filter.getFirstResult()-filter.getLimit());
+		}
+		
 		return returnType;
 	}
 
 	public List<Note> getNotes() {
-		return super.getNotes(getFilters(), 25);
+		return super.getNotes(getFilters(), filter.getFirstResult(), filter.getLimit());
 	}
 
 	public List<EmailQueue> getEmailList() {
@@ -54,6 +62,22 @@ public class ContractorNotes extends ContractorActionSupport {
 
 		return emailList;
 	}
+	
+	public boolean isNext() {
+		List<Note> noteList = getNotes(getFilters(), filter.getFirstResult()+filter.getLimit(), 100000);
+		notes = null;
+		if(noteList.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isPrevious() {
+		if(filter.getFirstResult() > 0)
+			return true;
+		return false;
+	}
+
 
 	private String getFilters() {
 		String filterString = "";
@@ -96,4 +120,9 @@ public class ContractorNotes extends ContractorActionSupport {
 		return filter;
 	}
 
+	public int getCountRows() {
+		List<Note> noteList = getNotes(getFilters(), 0, 100000);
+		notes = null;
+		return  noteList.size();
+	}
 }

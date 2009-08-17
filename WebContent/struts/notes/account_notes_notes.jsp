@@ -20,6 +20,21 @@
 					<s:select list="filter.categoryList" headerKey="" headerValue="- Category -"
 						onchange="runNoteSearch('notes')" cssClass="forms" name="filter.category" />
 					<s:textfield onchange="runNoteSearch('notes')" cssClass="forms" name="filter.keyword" size="10"></s:textfield>
+					<s:if test="countRows > 0">
+						<span style="color :#FFFFFF;">
+							<s:if test="previous">
+								<a href="#" onclick="updateNotePage(<s:property value="id"/>,'hasPrevious','notes', <s:property value="filter.firstResult"/>); return false;" style="color:#FFFFFF">Newer</a>
+								<
+							</s:if>
+							Showing <s:property value="filter.firstResult + 1"/> - 
+							<s:if test="!next"><s:property value="countRows"/></s:if>
+							<s:else><s:property value="filter.limit + filter.firstResult"/></s:else>
+							<s:if test="next">
+								>
+								<a href="#" onclick="updateNotePage(<s:property value="id"/>,'hasNext','notes', <s:property value="filter.firstResult"/>); return false;" style="color:#FFFFFF">Older</a>
+							</s:if>
+						</span>
+					</s:if> 
 				</s:form>
 				<ul class="filters">
 					<s:if test="filter.userID.length > 0">
