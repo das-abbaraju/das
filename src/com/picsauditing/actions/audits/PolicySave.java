@@ -193,6 +193,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							cao.setFlag(flagColor);
 						}
 						caoDAO.save(cao);
+						
+						if (certificate != null) {
+							certificate.updateExpirationDate();
+							certificateDao.save(certificate);
+						}
 					}
 				}
 			}
