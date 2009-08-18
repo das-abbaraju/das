@@ -22,7 +22,7 @@ function closePage() {
 <body>
 <s:include value="../actionMessages.jsp"></s:include>
 
-<s:form id="editNotes">
+<s:form id="editNotes" enctype="multipart/form-data" method="POST">
 <s:hidden name="id"/>
 <s:hidden name="note.id"/>
 <s:hidden name="embedded"/>
@@ -58,6 +58,10 @@ function closePage() {
 	</li>
 	<li id="liAdditionalText"><label>Additional Text (optional):</label>
 		<s:textarea name="note.body" cols="50" rows="6"></s:textarea>
+	</li>
+	<li><label>File Attachment:</label>
+		<s:file name="file"></s:file>
+		<s:if test="note.attachment != null"><a href="NoteEditor.action?note.id=<s:property value="note.id"/>&button=attachment" target="_BLANK">Click here to view attachment.</a> <a href="NoteEditor.action?note.id=<s:property value="note.id"/>&button=remove" class="remove">Remove</a></s:if>
 	</li>
 </ol>
 </fieldset>

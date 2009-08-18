@@ -221,52 +221,19 @@ public class FileUtils {
 
 	/**
 	 * This method will take and int and convert it into a folder structure
-	 * where each folder contains up to a thousand subfolders and a thousand
-	 * child files. This is designed to be used as part of other algorithms
-	 * which build the whole path of a file. <br/>
-	 * <br/>
-	 * <strong>Some examples:</strong><br/>
-	 * <table border="1">
-	 * <tr>
-	 * <th>id</th>
-	 * <th>Expected Result</th>
-	 * </tr>
-	 * <tr>
-	 * <td>100</td>
-	 * <td>&nbsp;</td>
-	 * </tr>
-	 * <tr>
-	 * <td>1000</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>10000</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>100000</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>100001</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>100999</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>101000</td>
-	 * <td>101/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>1000000</td>
-	 * <td>100/000/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>2215356</td>
-	 * <td>221/535/</td>
-	 * </tr>
+	 * where each folder contains up to a thousand subfolders and a thousand 
+	 * child files.  This is designed to be used as part of other algorithms
+	 * which build the whole path of a file.  <br/><br/><strong>Some examples:</strong><br/>
+	 * <table border="1"><tr><th>id</th><th>Expected Result</th></tr>
+	 * <tr><td>100</td><td>&nbsp;</td></tr>
+	 * <tr><td>1000</td><td>100/</td></tr>
+	 * <tr><td>10000</td><td>100/</td></tr> 
+	 * <tr><td>100000</td><td>100/</td></tr> 
+	 * <tr><td>100001</td><td>100/</td></tr>
+	 * <tr><td>100999</td><td>100/</td></tr> 
+	 * <tr><td>101000</td><td>101/</td></tr> 
+	 * <tr><td>1000000</td><td>100/000/</td></tr> 
+	 * <tr><td>2215356</td><td>221/535/</td></tr> 
 	 * </table>
 	 * 
 	 * @param id
@@ -307,5 +274,35 @@ public class FileUtils {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public static byte[] getBytesFromFile(File file) throws IOException {
+		InputStream is = new FileInputStream(file);
+
+		// Get the size of the file
+		long length = file.length();
+
+		if (length > Integer.MAX_VALUE) {
+			// File is too large
+		}
+
+		// Create the byte array to hold the data
+		byte[] bytes = new byte[(int) length];
+
+		// Read in the bytes
+		int offset = 0;
+		int numRead = 0;
+		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			offset += numRead;
+		}
+
+		// Ensure all the bytes have been read in
+		if (offset < bytes.length) {
+			throw new IOException("Could not completely read file " + file.getName());
+		}
+
+		// Close the input stream and return bytes
+		is.close();
+		return bytes;
 	}
 }

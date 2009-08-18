@@ -62,6 +62,8 @@ div.auditHeader fieldset {
 
 <div><s:property value="note.bodyHtml" escape="false"/></div>
 
+<div><a href="NoteEditor.action?note.id=<s:property value="note.id"/>&button=attachment" target="_BLANK">Click here to view attachment.</a></div>
+
 <div><button name="button" class="picsbutton" type="button" value="cancel" onclick="window.close();">Close</button></div>
 </body>
 </html>
