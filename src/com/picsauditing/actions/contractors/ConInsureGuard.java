@@ -126,6 +126,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 					contractor.getAudits().add(conAudit);
 					auditBuilder.setUser(getUser());
 					auditBuilder.buildAudits(contractor);
+
+					if (permissions.isOperatorCorporate() && conAudit.getId() > 0) {
+						boolean hasCao = false;
+						for (ContractorAuditOperator cao : conAudit.getOperators()) {
+							if (cao.isVisibleTo(permissions)) {
+								cao.setVisible(true);
+								caoDao.save(cao);
+								hasCao = true;
+							}
+						}
+						if (hasCao) {
+							redirect("AuditCat.action?auditID=" + conAudit.getId());
+							return BLANK;
+						}
+					}
 					return "saved";
 				}
 			}

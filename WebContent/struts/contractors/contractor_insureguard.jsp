@@ -88,14 +88,8 @@
 						<input class="picsbutton positive" name="button" type="submit" value="Add"/>
 					</div>
 					<s:hidden name="id" value="%{id}"/>
-					<s:if test="permissions.admin">
-						<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
-							headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
-					</s:if>
-					<s:else>
-						<s:select list="requiredAuditTypeNames" name="selectedAudit" cssClass="pics"
-							headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
-					</s:else>
+					<s:select list="auditTypeName" name="selectedAudit" cssClass="pics"
+						headerKey="" headerValue="- Select Policy Type -" listKey="id" listValue="auditName" />
 				</td>
 			</s:form>
 		</tr>
