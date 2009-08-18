@@ -162,13 +162,13 @@
 			<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
 				<s:if test="requestURI.contains('audit_maintain.jsp')">class="current"</s:if>>System Edit</a></li>
 		</pics:permission>
-		<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted && (conAudit.auditType.Pqf || conAudit.auditType.AnnualAddendum)">
+		<s:if test="conAudit.auditStatus.pendingSubmittedResubmitted || conAudit.auditStatus.incomplete && (conAudit.auditType.Pqf || conAudit.auditType.AnnualAddendum)">
 			<pics:permission perm="AuditVerification">
 				<li><a href="VerifyView.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('verif')">class="current"</s:if>>Verify</a></li>
 			</pics:permission>
 		</s:if>
-		<s:if test="conAudit.auditStatus.toString() == 'Pending'">
+		<s:if test="conAudit.auditStatus.pending">
 			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&mode=ViewQ">Preview
 			Questions</a></li>
 		</s:if>
