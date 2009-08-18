@@ -78,14 +78,16 @@ function setId(Id) {
 </div>
 <div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
-<pics:permission perm="ContractorDetails">
-<div class="right"><a 
-	class="excel" 
-	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-	href="javascript: download('QuestionAnswerSearch');" 
-	title="Download all <s:property value="report.allRows"/> results to a CSV file"
-	>Download</a></div>
-</pics:permission>
+<s:if test="data.size > 0">
+	<pics:permission perm="ContractorDetails">
+		<div class="right"><a 
+		class="excel" 
+		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('QuestionAnswerSearch');" 
+		title="Download all <s:property value="report.allRows"/> results to a CSV file"
+		>Download</a></div>
+	</pics:permission>
+</s:if>
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
