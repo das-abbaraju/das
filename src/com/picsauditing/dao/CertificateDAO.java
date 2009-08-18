@@ -58,7 +58,7 @@ public class CertificateDAO extends PicsDAO {
 					+ ")))";
 		}
 		if (!showExpired) {
-			query += " (AND expirationDate > NOW() or expirationDate IS NULL)";
+			query += " AND expirationDate > NOW()";
 		}
 
 		query += " ORDER BY expirationDate";
