@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -16,6 +18,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterNote;
 
@@ -102,8 +105,10 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		}
 
 		if ("attachment".equals(button)) {
-			inputStream = new FileInputStream(note.getAttachment());
-			return "attachment";
+			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
+					.getServletContext());
+			downloader.download(note.getAttachment(), null);
+			return null;
 		}
 
 		if (viewableBy == 0)

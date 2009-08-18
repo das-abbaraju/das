@@ -314,7 +314,6 @@
 			class="com.picsauditing.actions.notes.NoteEditor">
 			<result name="edit">struts/notes/account_notes_edit.jsp</result>
 			<result name="view">struts/notes/account_notes_view.jsp</result>
-			<result name="attachment" type="stream"></result>
 		</action>
 
 		<!-- REPORTS Primary Search Pages (Contractor/Audit/User lists) -->
