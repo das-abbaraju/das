@@ -28,18 +28,18 @@ public class EmailSubscriptionDAOTest {
 	@Autowired
 	private EmailSubscriptionDAO dao;
 
-	@Test
-	public void testFindBySubscription() {
-		EmailSubscription sub = EntityFactory.makeEmailSubscription(new User(2357), Subscription.PICSAnnouncements,
-				SubscriptionTimePeriod.Daily);
-
-		sub = dao.save(sub);
-
-		List<EmailSubscription> subscriptionList = dao.find(Subscription.PICSAnnouncements,
-				SubscriptionTimePeriod.Daily);
-		assertTrue(subscriptionList.contains(sub));
-
-		dao.remove(sub.getId());
-		assertNull(dao.find(sub.getId()));
-	}
+//	@Test
+//	public void testFindBySubscription() {
+//		EmailSubscription sub = EntityFactory.makeEmailSubscription(new User(2357), Subscription.PICSAnnouncements,
+//				SubscriptionTimePeriod.Daily);
+//
+//		sub = dao.save(sub);
+//
+//		List<EmailSubscription> subscriptionList = dao.find(Subscription.PICSAnnouncements,
+//				SubscriptionTimePeriod.Daily);
+//		assertTrue(subscriptionList.contains(sub));
+//
+//		dao.remove(sub.getId());
+//		assertNull(dao.find(sub.getId()));
+//	}
 }
