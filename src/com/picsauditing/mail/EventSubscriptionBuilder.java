@@ -30,8 +30,11 @@ public class EventSubscriptionBuilder {
 			builder.addToken("contractor", co.getContractorAccount());
 			builder.addToken("operator", co.getOperatorAccount());
 			builder.setUser(subscription.getUser());
+			
+			EmailQueue q = builder.build();
+			q.setHtml(true);
 
-			EmailSender.send(builder.build());
+			EmailSender.send(q);
 
 			subscription.setLastSent(now);
 			subscriptionDAO.save(subscription);
