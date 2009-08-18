@@ -32,6 +32,8 @@ public class ArchivedAccounts extends ReportAccount {
 		sql.addWhere("1 " + qb.toString());
 
 		getFilter().setShowVisible(false);
+		getFilter().setShowFlagStatus(false);
+		getFilter().setShowWaitingOn(false);
 		if(permissions.seesAllContractors())
 			getFilter().setShowDeactivationReason(true);
 	}
