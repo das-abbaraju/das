@@ -93,7 +93,14 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 			note.setAuditColumns(getUser());
 
 			if (file != null) {
-				String filename = noteCategory + " Note" + fileFileName.substring(fileFileName.indexOf("."));
+				if (fileFileName.indexOf(".") != -1) {
+					if (!FileUtils.checkFileExtension(fileFileName.substring(fileFileName.lastIndexOf(".")))) {
+						addActionError("File type not supported.");
+						return mode;
+					}
+				}
+
+				String filename = noteCategory + " Note" + fileFileName.substring(fileFileName.lastIndexOf("."));
 				File saveFile = new File(filename);
 				FileUtils.copyFile(file, saveFile);
 
