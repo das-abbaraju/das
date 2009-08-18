@@ -16,8 +16,7 @@
 <s:else>
 	<div id=info>
 	You have successfully unsubscribed from this Email<br/>
-	Click Here to <a href="ProfileEdit.action">Edit your Email Subscriptions</a><br/>  
-	Click Here to login to <a href="Login.action" class="redMain">PICS Website</a>
+	Click Here to <a href="ProfileEdit.action">Edit your Email Subscriptions</a> or here to login to <a href="Login.action" class="redMain">PICS Website</a>.<br/>  
 	</div>
 </s:else>	
 </body>
