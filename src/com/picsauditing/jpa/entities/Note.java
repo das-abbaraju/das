@@ -38,12 +38,13 @@ public class Note extends BaseTable implements java.io.Serializable {
 	private NoteStatus status = NoteStatus.Closed;
 	private Date followupDate;
 	private String body = null;
-	private File attachment;
+	private byte[] attachment;
 	private String originalText = null;
 	private String userName = null;
 
-	public Note() {}
-	
+	public Note() {
+	}
+
 	public Note(Account account, User user, String summary) {
 		super(user);
 		this.account = account;
@@ -146,7 +147,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 	public String getBody() {
 		return body;
 	}
-	
+
 	@Transient
 	public String getBodyHtml() {
 		return Utilities.escapeHTML(body);
@@ -156,16 +157,15 @@ public class Note extends BaseTable implements java.io.Serializable {
 		this.body = body;
 	}
 
-	public File getAttachment() {
+	public byte[] getAttachment() {
 		return attachment;
 	}
 
-	public void setAttachment(File attachment) {
+	public void setAttachment(byte[] attachment) {
 		this.attachment = attachment;
 	}
 
-	
-	@Column( name="username")
+	@Column(name = "username")
 	public String getUserName() {
 		return userName;
 	}
@@ -204,127 +204,114 @@ public class Note extends BaseTable implements java.io.Serializable {
 	public void setOriginalText(String originalText) {
 		this.originalText = originalText;
 	}
-	
-	
+
 	public boolean matchesFormat() {
 		String expression = "^([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\\(]*(.*?)[\\)]*: (.*)";
 		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
 		Matcher matcher = pattern.matcher(getOriginalText());
 		return matcher.find();
 	}
-	
-	
-	
-	
+
 	public boolean convertNote() {
-		// ([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\(]*(.*?)[\)]*: (.*)
-		//System.out.println(oldNote);
-		 
+		// ([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)?
+		// [\(]*(.*?)[\)]*: (.*)
+		// System.out.println(oldNote);
+
 		String expression = "^([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\\(]*(.*?)[\\)]*: (.*)";
 		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
 		Matcher matcher = pattern.matcher(getOriginalText());
 		if (matcher.find()) {
-			
+
 			String date = matcher.group(1);
 			String time = matcher.group(2);
 			String who = matcher.group(3);
 			String what = matcher.group(4);
-			
+
 			Date noteDate = null;
-			
+
 			String tempDate = "";
-			
-			if( date != null && date.trim().length() > 0 ) {
+
+			if (date != null && date.trim().length() > 0) {
 				tempDate += date.trim();
 			}
-			
+
 			try {
 
-				if( time != null && time.trim().length() > 0 ) {
+				if (time != null && time.trim().length() > 0) {
 					tempDate += " " + time.trim();
 					noteDate = DateBean.parseDateTime(tempDate);
-				}
-				else {
-					
-					if( who.indexOf(":") != -1 ) {
+				} else {
+
+					if (who.indexOf(":") != -1) {
 						return false;
 					}
 					noteDate = DateBean.parseDate(tempDate);
 				}
 
-				if( noteDate == null ) {
+				if (noteDate == null) {
 					return false;
 				}
-				
+
 				setCreationDate(noteDate);
-			}
-			catch( Exception e ) {
+			} catch (Exception e) {
 				return false;
 			}
-			
-			
-			if( who != null && who.trim().length() > 0 ) {
+
+			if (who != null && who.trim().length() > 0) {
 				setUserName(who);
 			}
-			
-			
-			if( what == null || what.trim().length() == 0 ) {
+
+			if (what == null || what.trim().length() == 0) {
 				return false;
 			}
-			
+
 			StringBuilder summaryBuilder = new StringBuilder();
-			StringBuilder bodyBuilder = new StringBuilder();  //couldn't resist
+			StringBuilder bodyBuilder = new StringBuilder(); // couldn't resist
 			StringReader originalReader = new StringReader(what);
-			
+
 			try {
-				
-				
+
 				char c;
 				int charInt;
 				int position = 0;
 				boolean flippedToBody = false;
-				while( ( charInt = originalReader.read() ) != -1 ) {
+				while ((charInt = originalReader.read()) != -1) {
 					position++;
 					c = (char) charInt;
-					
-					if( !flippedToBody ) {
-						if( position == 99 ) {
+
+					if (!flippedToBody) {
+						if (position == 99) {
 							flippedToBody = true;
 						}
-						if( c == '\n' ) {
+						if (c == '\n') {
 							flippedToBody = true;
 							continue;
 						}
 						summaryBuilder.append(c);
-					}
-					else {
+					} else {
 						bodyBuilder.append(c);
 					}
 				}
-			}
-			catch( Exception e ) {
+			} catch (Exception e) {
 				return false;
 			}
-			
+
 			setSummary(summaryBuilder.toString());
-			setBody( bodyBuilder.toString() );
-		}
-		else {
+			setBody(bodyBuilder.toString());
+		} else {
 			throw new RuntimeException("could not parse note");
 		}
 		return true;
 	}
-	
+
 	public static void main(String[] args) {
-		
-		
-		
+
 		String expression = "^([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\\(]*(.*?)[\\)]*: (.*)";
 		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
-		
+
 		Matcher matcher = pattern.matcher("5/19/04 3:00 PM PDT: sent welcome email");
 		if (matcher.find()) {
-			
+
 			String date = matcher.group(1);
 			String time = matcher.group(2);
 			String who = matcher.group(3);
@@ -333,9 +320,9 @@ public class Note extends BaseTable implements java.io.Serializable {
 			System.out.println("what: " + what);
 			System.out.println("date: " + date);
 			System.out.println("time: " + time);
-			
+
 		}
 
 	}
-	
+
 }
