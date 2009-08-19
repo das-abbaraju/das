@@ -100,8 +100,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 					}
 				}
 
-				String filename = noteCategory + " Note" + fileFileName.substring(fileFileName.lastIndexOf("."));
-				File saveFile = new File(filename);
+				File saveFile = new File(fileFileName);
 				FileUtils.copyFile(file, saveFile);
 
 				note.setAttachment(saveFile);
