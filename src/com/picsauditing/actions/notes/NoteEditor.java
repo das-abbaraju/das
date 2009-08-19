@@ -100,10 +100,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 					}
 				}
 
-				File saveFile = new File(fileFileName);
-				FileUtils.copyFile(file, saveFile);
-
-				note.setAttachment(saveFile);
+				note.setAttachment(FileUtils.getBytesFromFile(file));
 			}
 
 			noteDAO.save(note);
@@ -113,7 +110,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		if ("attachment".equals(button)) {
 			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
 					.getServletContext());
-			downloader.download(note.getAttachment(), null);
+			downloader.download(FileUtils.getFileFromBytes(note.getAttachment()), null);
 			return null;
 		}
 
