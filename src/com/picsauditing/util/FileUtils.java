@@ -221,19 +221,52 @@ public class FileUtils {
 
 	/**
 	 * This method will take and int and convert it into a folder structure
-	 * where each folder contains up to a thousand subfolders and a thousand 
-	 * child files.  This is designed to be used as part of other algorithms
-	 * which build the whole path of a file.  <br/><br/><strong>Some examples:</strong><br/>
-	 * <table border="1"><tr><th>id</th><th>Expected Result</th></tr>
-	 * <tr><td>100</td><td>&nbsp;</td></tr>
-	 * <tr><td>1000</td><td>100/</td></tr>
-	 * <tr><td>10000</td><td>100/</td></tr> 
-	 * <tr><td>100000</td><td>100/</td></tr> 
-	 * <tr><td>100001</td><td>100/</td></tr>
-	 * <tr><td>100999</td><td>100/</td></tr> 
-	 * <tr><td>101000</td><td>101/</td></tr> 
-	 * <tr><td>1000000</td><td>100/000/</td></tr> 
-	 * <tr><td>2215356</td><td>221/535/</td></tr> 
+	 * where each folder contains up to a thousand subfolders and a thousand
+	 * child files. This is designed to be used as part of other algorithms
+	 * which build the whole path of a file. <br/>
+	 * <br/>
+	 * <strong>Some examples:</strong><br/>
+	 * <table border="1">
+	 * <tr>
+	 * <th>id</th>
+	 * <th>Expected Result</th>
+	 * </tr>
+	 * <tr>
+	 * <td>100</td>
+	 * <td>&nbsp;</td>
+	 * </tr>
+	 * <tr>
+	 * <td>1000</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>10000</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>100000</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>100001</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>100999</td>
+	 * <td>100/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>101000</td>
+	 * <td>101/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>1000000</td>
+	 * <td>100/000/</td>
+	 * </tr>
+	 * <tr>
+	 * <td>2215356</td>
+	 * <td>221/535/</td>
+	 * </tr>
 	 * </table>
 	 * 
 	 * @param id
@@ -304,5 +337,15 @@ public class FileUtils {
 		// Close the input stream and return bytes
 		is.close();
 		return bytes;
+	}
+
+	public static File getFileFromBytes(byte[] data) throws IOException {
+		File file = new File("Attachment");
+		FileOutputStream os = new FileOutputStream(file);
+
+		os.write(data);
+		os.flush();
+		os.close();
+		return file;
 	}
 }
