@@ -94,7 +94,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 			if (file != null) {
 				if (fileFileName.indexOf(".") != -1) {
-					if (!FileUtils.checkFileExtension(fileFileName.substring(fileFileName.lastIndexOf(".")))) {
+					if (!FileUtils.checkFileExtension(fileFileName.substring(fileFileName.lastIndexOf(".") + 1))) {
 						addActionError("File type not supported.");
 						return mode;
 					}
