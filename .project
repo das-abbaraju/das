@@ -35,4 +35,11 @@
 		<nature>com.google.gwt.eclipse.core.gwtNature</nature>
 		<nature>com.google.gdt.eclipse.core.webAppNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>war</name>
+			<type>2</type>
+			<locationURI>DEPLOY_DIR</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
