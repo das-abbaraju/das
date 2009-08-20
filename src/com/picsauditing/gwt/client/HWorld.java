@@ -8,6 +8,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class HWorld implements EntryPoint {
 	public void onModuleLoad() {
-		RootPanel.get().add(new HTML("Hello World from GWT at " + new Date().toString()));
+		RootPanel.get().add(new HTML("Hello World yoyoyoy from GWT at " + new Date().toString()));
 	}
 }
