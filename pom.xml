@@ -418,6 +418,24 @@
 		    <artifactId>rome</artifactId>
 		    <version>0.9</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>1.7.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>1.7.0</version>
+			<classifier>windows</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>1.7.0</version>
+		</dependency>
 
 	</dependencies>
 </project>
