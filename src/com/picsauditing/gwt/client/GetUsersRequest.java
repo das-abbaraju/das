@@ -8,4 +8,6 @@ public class GetUsersRequest implements IsSerializable{
 	public String name;
 	public String email;
 	
+	public int limit = -1;
+	
 }

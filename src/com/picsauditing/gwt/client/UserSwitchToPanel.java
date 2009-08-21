@@ -48,6 +48,7 @@ public class UserSwitchToPanel extends Composite {
 			vpanel.clear();
 			if (picsModel.getCurrentUser().isGroup()) {
 				vpanel.add(suggestBox = new SuggestBox(new UserSuggestOracle()));
+				suggestBox.setLimit(10);
 				suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
 
 					@SuppressWarnings("unchecked")

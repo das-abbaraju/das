@@ -39,14 +39,25 @@ public class GwtServlet extends RemoteServiceServlet implements PicsService {
 
 	public List<UserDto> getUsers(GetUsersRequest request) {
 		PicsLogger.start("GwtServlet");
-		
+
 		ArrayList<UserDto> users = new ArrayList<UserDto>();
 
-		List<User> usersJPA = userDAO.findByAccountID(request.accountId, "", "");
-		for (User user : usersJPA) {
-			users.add(user.toDTO());
+		if (request.accountId > 0) {
+			List<User> usersJPA = userDAO.findByAccountID(request.accountId, "", "");
+			for (User user : usersJPA) {
+				users.add(user.toDTO());
+			}
+		} else if (request.name != null) {
+			List<User> usersJPA;
+			if (request.limit > 0)
+				usersJPA = userDAO.findWhere("isGroup = 'No' AND isActive = 'Yes' AND name LIKE '" + request.name + "%'", request.limit);
+			else
+				usersJPA = userDAO.findWhere("isGroup = 'No' AND isActive = 'Yes' AND name LIKE '" + request.name + "%'");
+			for (User user : usersJPA) {
+				users.add(user.toDTO());
+			}
 		}
-		
+
 		PicsLogger.stop();
 		return users;
 	}

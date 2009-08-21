@@ -46,6 +46,16 @@ public class UserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<User> findWhere(String where, int limit) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		Query query = em.createQuery("SELECT u FROM User u " + where + " ORDER BY u.account.name, u.name");
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
 	public List<User> findByEmail(String email) {
 		Query query = em.createQuery("SELECT u FROM User u WHERE email = ?");
 		query.setParameter(1, email);
@@ -73,9 +83,9 @@ public class UserDAO extends PicsDAO {
 	public boolean duplicateUsername(String uName, int uID) {
 		try {
 			User user = findName(uName);
-			if(user == null)
+			if (user == null)
 				return false;
-			
+
 			int id = user.getId();
 			if (id > 0) {
 				// found a user with this username
@@ -136,12 +146,12 @@ public class UserDAO extends PicsDAO {
 		query.setParameter(1, id);
 		return query.getResultList();
 	}
-	
+
 	public boolean canRemoveUser(String table, int userID, String where) {
-		if(where == null)
+		if (where == null)
 			where = "t.updatedBy.id = :userID OR t.createdBy.id = :userID";
 		try {
-			Query query = em.createQuery("SELECT t FROM "+ table +" t WHERE " + where);
+			Query query = em.createQuery("SELECT t FROM " + table + " t WHERE " + where);
 			query.setParameter("userID", userID);
 			query.setMaxResults(1);
 			query.getSingleResult();

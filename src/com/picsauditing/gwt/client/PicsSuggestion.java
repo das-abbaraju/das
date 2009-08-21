@@ -11,13 +11,11 @@ public class PicsSuggestion<T> implements Suggestion {
 	}
 
 	public String getDisplayString() {
-		// TODO Auto-generated method stub
 		return entity.toString();
 	}
 
 	public String getReplacementString() {
-		// TODO Auto-generated method stub
-		return entity.toString();
+		return "";
 	}
 
 	public T getEntity() {
