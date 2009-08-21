@@ -1,18 +1,17 @@
 package com.picsauditing.gwt.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.gwt.client.GetLoginLogRequest;
 import com.picsauditing.gwt.client.GetUsersRequest;
 import com.picsauditing.gwt.client.PicsService;
-import com.picsauditing.gwt.shared.UserDetailDto;
+import com.picsauditing.gwt.shared.LoginLogDTO;
 import com.picsauditing.gwt.shared.UserDto;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.log.LoggingRule;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -47,5 +46,9 @@ public class GwtServlet extends RemoteServiceServlet implements PicsService {
 		PicsLogger.stop();
 		return users;
 	}
-
+	
+	public List<LoginLogDTO> getUserLoginLog(GetLoginLogRequest request) {
+		ArrayList<LoginLogDTO> loginList = new ArrayList<LoginLogDTO>();
+		return loginList;
+	}
 }

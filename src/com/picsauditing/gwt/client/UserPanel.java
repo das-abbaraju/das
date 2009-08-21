@@ -37,7 +37,7 @@ public class UserPanel extends Composite {
 		tabPanel.add(new UserGroupPanel(picsModel), "Groups", false);
 		tabPanel.add(new HTML("Members"), "Members", false);
 		tabPanel.add(new UserSwitchToPanel(picsModel), "Switching", false);
-		tabPanel.add(new HTML("Past Logins"), "Past Logins", false);
+		tabPanel.add(new UserLoginLogList(picsModel), "Past Logins", false);
 		tabPanel.add(new HTML("Subscriptions"), "Subscriptions", false);
 
 		tabPanel.selectTab(0);
