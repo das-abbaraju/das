@@ -26,6 +26,8 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.gwt.shared.UserDetailDto;
+import com.picsauditing.gwt.shared.UserDto;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -499,5 +501,36 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		}
 		// Then sort by name
 		return this.name.compareToIgnoreCase(o.name);
+	}
+
+	@Transient
+	public UserDto toDTO() {
+		UserDto u = new UserDto();
+		u.setId(id);
+		u.setAccountID(account.id);
+		u.setAccountName(account.name);
+		u.setActive(isActiveB());
+		u.setGroup(isGroup());
+		u.setName(name);
+		return u;
+	}
+
+	@Transient
+	public UserDetailDto toDetail() {
+		UserDetailDto d = new UserDetailDto();
+		d.setDateCreated(this.creationDate);
+		d.setEmail(this.email);
+		d.setFax(this.fax);
+		d.setLastLogin(this.lastLogin);
+		d.setPhone(this.phone);
+		d.setUsername(this.username);
+		
+		List<UserDto> dtoGroups = new ArrayList<UserDto>();
+		d.setGroups(dtoGroups);
+		for (UserGroup userGroup : groups) {
+			dtoGroups.add(userGroup.getGroup().toDTO());
+		}
+		
+		return d;
 	}
 }
