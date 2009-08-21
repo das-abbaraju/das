@@ -1,6 +1,8 @@
 package com.picsauditing.gwt.client;
 
-public interface ModelChangeListener<T> {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public interface ModelChangeListener<T extends IsSerializable> extends IsSerializable{
 	
 	void onChange(T eventSource);
 

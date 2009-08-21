@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -40,6 +40,11 @@ public class UserSwitchToPanel extends Composite {
 
 	public void load() {
 		if (picsModel.getCurrentUser().getId() > 0) {
+			picsModel.getCurrentUser().getUserDetail().addModelChangeListener(new ModelChangeListener<UserDetailDto>() {
+				public void onChange(UserDetailDto eventSource) {
+					refreshTable();
+				}
+			});
 			vpanel.clear();
 			if (picsModel.getCurrentUser().isGroup()) {
 				vpanel.add(suggestBox = new SuggestBox(new UserSuggestOracle()));
@@ -48,14 +53,18 @@ public class UserSwitchToPanel extends Composite {
 					@SuppressWarnings("unchecked")
 					public void onSelection(SelectionEvent<Suggestion> event) {
 						PicsSuggestion<UserDto> selectedItem = (PicsSuggestion<UserDto>) event.getSelectedItem();
-						picsModel.getCurrentUser().getUserDetail().getSwitchTos().add(selectedItem.getEntity());
+						service.getUserDetail(selectedItem.getEntity().getId(), new AsyncCallback<UserDto>() {
 
-						String out = "";
-						for (UserDto userDto : picsModel.getCurrentUser().getUserDetail().getSwitchTos()) {
-							out += userDto.toString() + "\n";
-						}
+							@Override
+							public void onSuccess(UserDto result) {
+								picsModel.getCurrentUser().getUserDetail().addSwitchTo(result);
+							}
 
-						Window.alert(picsModel.getCurrentUser() + " has the current switch to users: \n" + out);
+							@Override
+							public void onFailure(Throwable caught) {
+
+							}
+						});
 					}
 				});
 			}
@@ -79,15 +88,16 @@ public class UserSwitchToPanel extends Composite {
 			table.setWidget(rowIndex, 1, new Label(user.getUserDetail().getUsername()));
 			table.setWidget(rowIndex, 2, new Label(user.getAccountName()));
 
-			Label removeLabel = new Label("Remove");
-			removeLabel.addStyleName("remove");
-			removeLabel.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					picsModel.getCurrentUser().getUserDetail().getSwitchTos().remove(user);
-					Window.alert("removed " + user);
-				}
-			});
-			table.setWidget(rowIndex, 3, removeLabel);
+			if (picsModel.getCurrentUser().isGroup()) {
+				Label removeLabel = new Label("Remove");
+				removeLabel.addStyleName("remove");
+				removeLabel.addClickHandler(new ClickHandler() {
+					public void onClick(ClickEvent event) {
+						picsModel.getCurrentUser().getUserDetail().removeSwitchTo(user);
+					}
+				});
+				table.setWidget(rowIndex, 3, removeLabel);
+			}
 		}
 	}
 
