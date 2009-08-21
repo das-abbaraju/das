@@ -7,10 +7,10 @@
 try {
 	if (!permissions.isLoggedIn()) {
 		%>Not Logged in Anymore<%
-		return;
+	return;
 	}
 	if (!permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) {
-		%>Edit ContractorApproval Permission required<%
+%>Edit ContractorApproval Permission required<%
 		return;
 	}
 	

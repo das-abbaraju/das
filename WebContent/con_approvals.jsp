@@ -95,7 +95,9 @@ form.smallform {
 		<td><a href="ContractorView.action?id=<%=rowID%>"><%=row.get("name")%></a></td>
 		<td><%=DateBean.toShowFormat(row.get("creationDate"))%></td>
 		<td>
-		<% if (permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) { %>
+		<%
+			if (permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit)) {
+		%>
 			<form class="smallform">
 				<label><input type="radio" name="workStatus" onClick="saveApproval(<%=rowID%>, 'Y')"
 					value="Y"<%="Y".equals(row.get("workStatus"))?" checked ":""%>>Yes</label>

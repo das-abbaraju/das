@@ -18,8 +18,8 @@
 	int auditYear = Integer.parseInt(whichYear);
 	if (!(null == request.getParameter("blockedDate")))
 		calBean.writeBlockedDatetoDB(request.getParameter("blockedDate"), request.getParameter("description"),
-				request.getParameter("startHour"), request.getParameter("startAmPm"), request
-						.getParameter("endHour"), request.getParameter("endAmPm"));
+		request.getParameter("startHour"), request.getParameter("startAmPm"), request
+				.getParameter("endHour"), request.getParameter("endAmPm"));
 	if (!(null == request.getParameter("unblock")))
 		calBean.deleteBlockedDate(request.getParameter("unblock"));
 	calBean.setPermissions(permissions);
