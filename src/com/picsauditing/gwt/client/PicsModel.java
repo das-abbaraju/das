@@ -50,6 +50,17 @@ public class PicsModel {
 			fetchUserDetail();
 		}
 	}
+	
+	public List<UserDto> getActiveGroupsNotSelected() {
+		List<UserDto> groups = new ArrayList<UserDto>();
+		for (UserDto user : users) {
+			if (user.isGroup() && user.isActive()) {
+				if (currentUserIndex > 0 && !getCurrentUser().getUserDetail().getGroups().contains(user))
+					groups.add(user);
+			}
+		}
+		return groups;
+	}
 
 	private void fetchUserDetail() {
 		System.out.println("Loading...");
@@ -95,6 +106,16 @@ public class PicsModel {
 		for (PicsModelChangeListener listener : listeners) {
 			listener.onChange(this);
 		}
+	}
+
+	public void addCurrentUserToGroup(UserDto group) {
+		getCurrentUser().getUserDetail().getGroups().add(group);
+		fireChangeEvent();
+	}
+
+	public void removeCurrentUserFromGroup(UserDto group) {
+		getCurrentUser().getUserDetail().getGroups().remove(group);
+		fireChangeEvent();
 	}
 
 }

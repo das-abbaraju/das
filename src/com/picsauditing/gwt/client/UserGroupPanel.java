@@ -2,8 +2,10 @@ package com.picsauditing.gwt.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -42,26 +44,41 @@ public class UserGroupPanel extends Composite {
 		leftTable.setWidget(1, 0, new Label("Account"));
 		leftTable.setWidget(1, 1, new Label("Groups"));
 		
-		for (final UserDto user : picsModel.getUsers()) {
+		for (final UserDto group : picsModel.getActiveGroupsNotSelected()) {
 			final int rowIndex = leftTable.getRowCount();
-			leftTable.setWidget(rowIndex, 0, new Hyperlink(user.getAccountName(), "0"));
+			leftTable.setWidget(rowIndex, 0, new HTML(group.getAccountName()));
 			
-			final Hyperlink userLink = new Hyperlink(user.getName(), "user="+user.getId());
+			final Hyperlink userLink = new Hyperlink(group.getName(), "user="+group.getId());
 			userLink.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					picsModel.setCurrentUserIndex(user.getId());
+					picsModel.setCurrentUserIndex(group.getId());
 				}
 			});
 			leftTable.setWidget(rowIndex, 1, userLink);
+			
+			
+			final Button addButton = new Button("Add", new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					picsModel.addCurrentUserToGroup(group);
+				}
+			});
+			leftTable.setWidget(rowIndex, 2, addButton);
 		}
 		
 		rightTable.setWidget(1, 0, new Label("Account"));
 		rightTable.setWidget(1, 1, new Label("Groups"));
 		
-		for (UserDto user : picsModel.getCurrentUser().getUserDetail().getGroups()) {
+		for (final UserDto group : picsModel.getCurrentUser().getUserDetail().getGroups()) {
 			final int rowIndex = rightTable.getRowCount();
-			rightTable.setWidget(rowIndex, 0, new Hyperlink(user.getAccountName(), "0"));
-			rightTable.setWidget(rowIndex, 1, new Hyperlink(user.getName(), "user="+user.getId()));
+			rightTable.setWidget(rowIndex, 0, new HTML(group.getAccountName()));
+			rightTable.setWidget(rowIndex, 1, new Hyperlink(group.getName(), "user="+group.getId()));
+
+			final Button removeButton = new Button("Remove", new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					picsModel.removeCurrentUserFromGroup(group);
+				}
+			});
+			rightTable.setWidget(rowIndex, 2, removeButton);
 		}
 	}
 

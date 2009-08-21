@@ -11,14 +11,14 @@ import com.picsauditing.gwt.client.ModelChangeListenerList;
 
 public class UserDetailDto implements IsSerializable {
 
-	private Date dateCreated = new Date();
-	private String password = "abc";
-	private Date lastLogin = new Date();
+	private Date dateCreated;
+	private String password;
+	private Date lastLogin;
 
-	private String email = "jblow@ss.com";
-	private String username = "jblow";
-	private String phone = "333 333 3333";
-	private String fax = "333 333 3333";
+	private String email;
+	private String username;
+	private String phone;
+	private String fax;
 
 	private List<UserDto> groups = new ArrayList<UserDto>();
 	private List<UserDto> members = new ArrayList<UserDto>();
