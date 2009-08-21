@@ -16,36 +16,36 @@ public class LoginLogDTO implements IsSerializable {
 		return loginDate;
 	}
 	
-	public String getRemoteAddress() {
-		return remoteAddress;
-	}
-	
-	public String getAdminName() {
-		return adminName;
-	}
-	
-	public String getAdminAccountName() {
-		return adminAccountName;
-	}
-	
-	public char getSuccessful() {
-		return successful;
-	}
-
 	public void setLoginDate(Date loginDate) {
 		this.loginDate = loginDate;
 	}
 
+	public String getRemoteAddress() {
+		return remoteAddress;
+	}
+	
 	public void setRemoteAddress(String remoteAddress) {
 		this.remoteAddress = remoteAddress;
 	}
 
+	public String getAdminName() {
+		return adminName;
+	}
+	
 	public void setAdminName(String adminName) {
 		this.adminName = adminName;
 	}
 
+	public String getAdminAccountName() {
+		return adminAccountName;
+	}
+	
 	public void setAdminAccountName(String adminAccountName) {
 		this.adminAccountName = adminAccountName;
+	}
+
+	public char getSuccessful() {
+		return successful;
 	}
 
 	public void setSuccessful(char successful) {

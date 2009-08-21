@@ -10,9 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.gwt.shared.LoginLogDTO;
+import com.picsauditing.gwt.shared.UserDto;
 
 @Entity
 @Table(name = "loginlog")
@@ -113,6 +117,19 @@ public class UserLoginLog {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+	
+	@Transient
+	public LoginLogDTO toDTO() {
+		LoginLogDTO l = new LoginLogDTO();
+		l.setLoginDate(loginDate);
+		if(admin != null) {
+			l.setAdminName(admin.getUsername());
+			l.setAdminAccountName(admin.getAccount().getName());
+		}
+		l.setRemoteAddress(remoteAddress);
+		l.setSuccessful(successful);
+		return l;
 	}
 
 	@Override

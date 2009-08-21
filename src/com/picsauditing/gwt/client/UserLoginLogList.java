@@ -22,14 +22,17 @@ public class UserLoginLogList extends Composite {
 	
 	public UserLoginLogList(PicsModel newVal) {
 		this.picsModel = newVal;
-		fetchLogins();
-		refresh();
+		
+		if(picsModel.getCurrentUser().getId() > 0) {
+			load();
+			refresh();
+		}
 
 		initWidget(table);
 
 		picsModel.addChangeListener(new PicsModelChangeListener() {
 			public void onChange(PicsModel eventSource) {
-				refresh();
+				load();
 			}
 		});
 	}
@@ -45,7 +48,7 @@ public class UserLoginLogList extends Composite {
 
 			table.setWidget(rowIndex, 1, new Label(userDto.getRemoteAddress()));
 			String note = "";
-			if (userDto.getAdminName() != null && userDto.getAdminName().length() > 0) {
+			if (!GwtStrings.isEmpty(userDto.getAdminName())) {
 				note = "Login from " + userDto.getAdminName() + " from " + userDto.getAdminAccountName();
 			}
 			if (userDto.getSuccessful() == 'N')
@@ -55,7 +58,7 @@ public class UserLoginLogList extends Composite {
 		}
 	}
 
-	private void fetchLogins() {
+	public void load() {
 		GetLoginLogRequest r = new GetLoginLogRequest();
 		r.startIndex = 0;
 		r.username = picsModel.getCurrentUser().getUserDetail().getUsername();
@@ -69,5 +72,6 @@ public class UserLoginLogList extends Composite {
 				Window.alert("service.getUserLoginLog.onFailure: [" + caught.toString() + "]");
 			}
 		});
+		refresh();
 	}
 }
