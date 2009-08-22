@@ -2,6 +2,8 @@ package com.picsauditing.gwt.shared;
 
 import java.io.Serializable;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * This is the main class that is stored for each user containing information if
  * they are logged in, which groups they're in, and what permission(s) they have
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * Warning: this class is stored in the session Make sure you keep the footprint
  * very small
  */
-public class PermissionsGWT implements Serializable {
+public class PermissionsGWT implements IsSerializable {
 
 	private int userID;
 	private boolean loggedIn = false;

@@ -2,8 +2,10 @@ package com.picsauditing.gwt.shared;
 
 import java.util.Date;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class UserPermissionDto {
+
+public class UserPermissionDto implements IsSerializable {
 	
 	//private OpPerms opPerm;
 	private Boolean viewFlag;
