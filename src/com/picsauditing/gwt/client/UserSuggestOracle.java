@@ -16,6 +16,12 @@ public class UserSuggestOracle extends SuggestOracle {
 
 	private final PicsServiceAsync service = (PicsServiceAsync) GWT.create(PicsService.class);
 
+	private final PicsModel picsModel;
+
+	public UserSuggestOracle(PicsModel picsModel) {
+		this.picsModel = picsModel;
+	}
+
 	@Override
 	public void requestSuggestions(final Request request, final Callback callback) {
 		if (request.getQuery().length() < 3)
@@ -32,6 +38,7 @@ public class UserSuggestOracle extends SuggestOracle {
 				getUserRequest.limit = request.getLimit();
 				service.getUsers(getUserRequest, new AsyncCallback<List<UserDto>>() {
 					public void onSuccess(List<UserDto> result) {
+						result.removeAll(picsModel.getCurrentUser().getUserDetail().getSwitchTos());
 						List<Suggestion> suggestList = new ArrayList<Suggestion>();
 						for (UserDto userDto : result)
 							suggestList.add(new PicsSuggestion<UserDto>(userDto));
