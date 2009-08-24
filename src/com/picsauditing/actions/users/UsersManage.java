@@ -169,6 +169,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public List<User> getAddableMembers() {
 		List<User> list = new ArrayList<User>();
+
+		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
+			return list;
+
 		if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(user.getId())) {
 			// I'm an admin or I'm a member of this group
 
