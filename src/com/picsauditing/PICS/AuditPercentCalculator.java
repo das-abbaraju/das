@@ -136,7 +136,8 @@ public class AuditPercentCalculator {
 			if (percentCompleted >= 100)
 				percentCompleted = 100;
 			if (catData.getAudit().getAuditType().isAnnualAddendum()
-					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
+					&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
+					&& catData.getNumRequired() > 2) {
 				requiredCount = requiredCount - 2;
 			}
 			int percentVerified = (int) Math.floor((100 * verifiedCount) / requiredCount);
