@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.File;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.regex.Matcher;

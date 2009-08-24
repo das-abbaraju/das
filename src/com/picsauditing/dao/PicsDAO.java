@@ -8,8 +8,6 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.InvoiceFee;
-
 @Transactional
 abstract public class PicsDAO {
 	protected EntityManager em;

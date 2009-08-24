@@ -1,7 +1,6 @@
 package com.picsauditing.actions.notes;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;

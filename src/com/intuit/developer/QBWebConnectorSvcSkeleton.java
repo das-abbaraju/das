@@ -6,26 +6,18 @@
  */
 package com.intuit.developer;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.util.id.GUID;
 
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.SendMail;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 

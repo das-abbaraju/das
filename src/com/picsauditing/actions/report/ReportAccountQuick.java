@@ -6,8 +6,6 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.search.SelectAccount;
-import com.picsauditing.search.SelectFilter;
-import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;

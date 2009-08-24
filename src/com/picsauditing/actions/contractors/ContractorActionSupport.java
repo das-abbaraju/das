@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,8 +24,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {

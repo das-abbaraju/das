@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 

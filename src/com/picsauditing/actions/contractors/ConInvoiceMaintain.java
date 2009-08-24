@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.Strings;
 
 /**
  * Class used to edit a Invoice and Invoice Item record with virtually no

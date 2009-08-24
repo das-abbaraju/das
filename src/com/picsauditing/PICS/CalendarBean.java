@@ -1,7 +1,6 @@
 package com.picsauditing.PICS;
 
 import java.sql.ResultSet;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 

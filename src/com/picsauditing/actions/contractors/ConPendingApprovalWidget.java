@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 
 @SuppressWarnings("serial")

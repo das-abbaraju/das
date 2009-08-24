@@ -2,9 +2,6 @@ package com.picsauditing.actions.chart;
 
 import java.util.List;
 
-import org.apache.commons.beanutils.LazyDynaBean;
-
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.chart.ChartSingleSeries;

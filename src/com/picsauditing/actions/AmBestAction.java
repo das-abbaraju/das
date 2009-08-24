@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AmBestAction extends PicsActionSupport {
