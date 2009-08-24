@@ -41,7 +41,7 @@ public class FlagColorSubscription extends SubscriptionBuilder {
 		}
 
 		List<ContractorOperatorFlag> flags = flagDAO.findWhere("operatorAccount.id = " + a.getId()
-				+ "AND contractorAccount.id IN (" + Strings.implode(conIds, ",") + ") AND flagColor = '" + flagColor
+				+ " AND contractorAccount.id IN (" + Strings.implode(conIds, ",") + ") AND flagColor = '" + flagColor
 				+ "'");
 		if (flags.size() > 0) {
 			tokens.put("flags", flags);
