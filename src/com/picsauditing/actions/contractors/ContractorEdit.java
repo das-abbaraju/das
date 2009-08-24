@@ -215,7 +215,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				if (operatorIds != null) {
 					for (int operatorID : operatorIds) {
 						OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
-						emailAddresses.addAll(Strings.findUniqueEmailAddresses(operatorAccount.getActivationEmails()));
+						Set<String> email = Strings.findUniqueEmailAddresses(operatorAccount.getActivationEmails());
+						if(email.size() > 0)
+							emailAddresses.addAll(email);
 					}
 
 					EmailBuilder emailBuilder = new EmailBuilder();
