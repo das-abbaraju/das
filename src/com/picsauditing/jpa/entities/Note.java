@@ -37,7 +37,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 	private NoteStatus status = NoteStatus.Closed;
 	private Date followupDate;
 	private String body = null;
-	private byte[] attachment;
+	private String attachment;
 	private String originalText = null;
 	private String userName = null;
 
@@ -156,11 +156,11 @@ public class Note extends BaseTable implements java.io.Serializable {
 		this.body = body;
 	}
 
-	public byte[] getAttachment() {
+	public String getAttachment() {
 		return attachment;
 	}
 
-	public void setAttachment(byte[] attachment) {
+	public void setAttachment(String attachment) {
 		this.attachment = attachment;
 	}
 
