@@ -1,5 +1,7 @@
 package com.picsauditing.PICS;
 
 public enum PICSFileType {
-	osha, data, brochure, logos, certs;
+	osha, data, brochure, logos, certs, note_attachment;
+	
+	public String filename(int id) { return this + "_" + id; }
 }

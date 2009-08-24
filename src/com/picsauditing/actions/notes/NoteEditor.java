@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
@@ -42,7 +43,6 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		this.noteDAO = noteDAO;
 	}
 
-	@Override
 	public void prepare() throws Exception {
 		// TODO Auto-generated method stub
 		int noteID = this.getParameter("note.id");
@@ -75,6 +75,10 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		}
 
 		if ("remove".equals(button)) {
+			permissions.tryPermission(OpPerms.EditNotes, OpType.Edit);
+			File[] files = getFiles(note.getId());
+			for (File file : files)
+				FileUtils.deleteFile(file);
 			note.setAttachment(null);
 			button = "save";
 		}
@@ -91,26 +95,43 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 				note.setViewableById(viewableBy);
 			note.setAuditColumns(getUser());
 
+			noteDAO.save(note);
+
 			if (file != null) {
+				String extension = "";
 				if (fileFileName.indexOf(".") != -1) {
-					if (!FileUtils.checkFileExtension(fileFileName.substring(fileFileName.lastIndexOf(".") + 1))) {
-						addActionError("File type not supported.");
-						return mode;
-					}
+					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 				}
 
-				note.setAttachment(FileUtils.getBytesFromFile(file));
+				// will fail for "" too
+				if (!FileUtils.checkFileExtension(extension)) {
+					addActionError("File type not supported.");
+					return mode;
+				}
+				// delete old files
+				File[] files = getFiles(note.getId());
+				for (File file : files)
+					FileUtils.deleteFile(file);
+
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(note.getId()),
+						PICSFileType.note_attachment.filename(note.getId()), extension, true);
+
+				note.setAttachment(fileFileName);
 			}
 
-			noteDAO.save(note);
 			addActionMessage("Successfully saved Note");
 		}
 
 		if ("attachment".equals(button)) {
 			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
 					.getServletContext());
-			downloader.download(FileUtils.getFileFromBytes(note.getAttachment()), null);
-			return null;
+			File[] files = getFiles(note.getId());
+			if (files[0] != null) {
+				downloader.download(files[0], note.getAttachment());
+				return null;
+			} else {
+				addActionError("File not found");
+			}
 		}
 
 		if (viewableBy == 0)
@@ -121,6 +142,11 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 		}
 
 		return mode;
+	}
+
+	private File[] getFiles(int noteID) {
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(noteID));
+		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
 	}
 
 	// ///////////////////////////
