@@ -347,7 +347,7 @@ public class AuditBuilder {
 					// This cao is always required so add it if it doesn't
 					// exist and then calculate the recommended status
 					cao.setVisible(true);
-				} else {
+				} else if (!conAudit.isManuallyAdded()) {
 					// This cao might be required (if the operator manually
 					// requested it)
 					if (cao.getStatus().isPending())
