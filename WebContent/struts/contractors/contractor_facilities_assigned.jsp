@@ -2,7 +2,9 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="currentOperators.size() == 0">
-	<div id="alert" style="width: 80%;">This account is not linked to any operators. Use the search tool to the right to find all of the facilities at which <s:property value="contractor.name"/> works or will work.</div>
+	<div id="alert" style="width: 80%;">This account is not linked to any operators. Use the search tool to the right to find all of the facilities at which <s:property value="contractor.name"/> works or will work. 
+	<br/>
+	<a href="http://help.picsauditing.com/wiki/Facilities_List_Maintenance#Adding_Facilities" class="help" target="_BLANK">Click here for help.</a></div>
 </s:if>
 <s:else>
 <label># of Linked Facilities:</label> <s:property value="currentOperators.size()" /><br />
