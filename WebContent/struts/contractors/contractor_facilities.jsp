@@ -114,8 +114,9 @@
 <table width="100%">
 <tr>
 	<td style="width: 45%; vertical-align: top;">
+	<h3>Selected Facilities</h3>
 		<div id="thinkingDiv"></div>
-		
+
 		<div id="facilities" >
 			<s:include value="contractor_facilities_assigned.jsp"/>
 		</div>
@@ -127,6 +128,7 @@
 		</pics:permission>
 	</td>
 	<td style="width: 45%; vertical-align: top;">
+	<h3>Add Facilities</h3>
 		<s:if test="permissions.contractor || permissions.admin">
 			<div id="info">Please specify all facilities at which you work.<br/>
 			The pricing is based on the number of facilities you select below.
