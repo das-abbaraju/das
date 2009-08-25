@@ -27,7 +27,9 @@
 <table class="report" style="clear: none;">
 	<thead>
 		<tr>
+		<s:if test="!conAudit.auditType.pqf">
 			<th>Num</th>
+		</s:if>
 			<th>Category</th>
 		<s:if test="conAudit.auditStatus.pending || conAudit.auditStatus.incomplete || conAudit.auditType.pqf">
 			<th colspan="2">Complete</th>
@@ -46,7 +48,9 @@
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="appliesB">
 			<tr>
+			<s:if test="!conAudit.auditType.pqf">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
+				</s:if>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 			<s:if test="conAudit.auditStatus.pending || conAudit.auditStatus.incomplete || conAudit.auditType.pqf">
 				<td class="right"><s:property value="percentCompleted" />%</td>
@@ -68,7 +72,9 @@
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="!appliesB && permissions.picsEmployee">
 			<tr class="notapp">
+			<s:if test="!conAudit.auditType.pqf">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
+				</s:if>
 				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<s:if test="conAudit.auditStatus.pending || conAudit.auditType.pqf">
 					<td class="center" colspan="2">N/A</td>
