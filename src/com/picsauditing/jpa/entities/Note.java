@@ -39,7 +39,6 @@ public class Note extends BaseTable implements java.io.Serializable {
 	private String body = null;
 	private String attachment;
 	private String originalText = null;
-	private String userName = null;
 
 	public Note() {
 	}
@@ -164,15 +163,6 @@ public class Note extends BaseTable implements java.io.Serializable {
 		this.attachment = attachment;
 	}
 
-	@Column(name = "username")
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -256,9 +246,9 @@ public class Note extends BaseTable implements java.io.Serializable {
 				return false;
 			}
 
-			if (who != null && who.trim().length() > 0) {
-				setUserName(who);
-			}
+//			if (who != null && who.trim().length() > 0) {
+//				setUserName(who);
+//			}
 
 			if (what == null || what.trim().length() == 0) {
 				return false;
