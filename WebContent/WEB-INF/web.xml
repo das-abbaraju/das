@@ -159,7 +159,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>picsService</servlet-name>
-        <url-pattern>/gwt/picsService</url-pattern>
+        <url-pattern>/gwtUsers/picsService</url-pattern>
     </servlet-mapping>
 	
 	<resource-ref>
