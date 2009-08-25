@@ -425,6 +425,15 @@
 			<param name="filter.destinationAction">ReportAuditList</param>
 			<result>struts/reports/audit_list.jsp</result>
 		</action>
+		
+		<action name="ReportCloseAuditAssignments"
+			class="com.picsauditing.actions.report.ReportCloseAuditAssignments">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportCloseAuditAssignments</param>
+			<result>struts/reports/close_audit_assignments.jsp</result>
+		</action>
+		
+				
 		<action name="ReportAuditListCSV"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<param name="download">true</param>
