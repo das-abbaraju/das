@@ -84,6 +84,8 @@ public class PicsMenu {
 							"ReportAuditList.action?filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.visible=Y");
+		if (permissions.hasPermission(OpPerms.AssignAudits))
+			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
