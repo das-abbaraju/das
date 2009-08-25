@@ -221,7 +221,7 @@
 						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
 					</li>
 					<li><label>Password:</label>
-						<s:property value="user.password" />
+						<a href="?id=<s:property value="id"/>&button=PasswordReminder">Password Reminder</a>
 					</li>
 					<li><label>Tax ID:</label>
 						<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)

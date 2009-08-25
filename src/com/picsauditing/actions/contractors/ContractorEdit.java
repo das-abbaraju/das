@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -251,7 +252,19 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setBillingState(contractor.getState());
 				contractor.setBillingZip(contractor.getZip());
 				accountDao.save(contractor);
-			} else {
+			} else if (button.equals("PasswordReminder")){
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(24); // Password Reminder
+				emailBuilder.setUser(user);
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(100);
+				
+				EmailSender sender = new EmailSender();
+				sender.sendNow(email);
+				this.addActionMessage("An email has been sent to this address: <b>" + user.getEmail() + "</b> "
+						+ " with login information");
+			}
+			else {
 				// Because there are anomalies between browsers and how they
 				// pass
 				// in the button values, this is a catch all so we can get
