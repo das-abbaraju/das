@@ -186,10 +186,10 @@
 					name="osha.lostWorkCases" cssClass="oshanum" /></li>
 				<li><label>Lost Days:</label> <s:textfield id="lwd_%{osha.id}"
 					name="osha.lostWorkDays" cssClass="oshanum" /></li>
-				<li><label>Other Injuries:</label> <s:textfield id="imc_%{osha.id}"
-					name="osha.injuryIllnessCases" cssClass="oshanum" /></li>
 				<li><label>Restricted Cases:</label> <s:textfield id="rwc_%{osha.id}"
 					name="osha.restrictedWorkCases" cssClass="oshanum" /></li>
+				<li><label>Other Injuries:</label> <s:textfield id="imc_%{osha.id}"
+					name="osha.injuryIllnessCases" cssClass="oshanum" /></li>
 				<li><label>Total Injuries:</label><s:property	value="osha.recordableTotal"/></li>
 			</ol>
 		</s:div>
