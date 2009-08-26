@@ -34,7 +34,10 @@
 			<a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a>
 		</td>
 		<td>
-			<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>" title="<s:property value="[0].get('auditName')"/> for <s:property value="[0].get('caoName')"/>"><s:property value="[0].get('auditName')"/></a> 
+			<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>" title="<s:property value="[0].get('auditName')"/> for <s:property value="[0].get('caoName')"/>"><s:property value="[0].get('auditName')"/></a>
+			<s:if test="permissions.corporate">
+				<br><s:property value="get('caoOperatorName')"/>
+			</s:if>
 		</td>
 		<s:if test="requiresActivePolicy">
 			<td><s:property value="get('auditStatus')"/></td>
