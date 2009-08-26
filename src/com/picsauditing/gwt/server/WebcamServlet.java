@@ -29,4 +29,28 @@ public class WebcamServlet extends RemoteServiceServlet implements WebcamService
 		return webcamDTOs;
 	}
 
+	public void deleteWebcam(int id) {
+		webcamDAO.remove(id);
+	}
+
+	public WebcamDTO getWebcam(int id) {
+		Webcam webcam = webcamDAO.find(id);
+		if (webcam != null)
+			return webcam.toDTO();
+		return null;
+	}
+
+	public WebcamDTO saveWebcam(WebcamDTO webcamDTO) {
+		Webcam webcam = webcamDAO.find(webcamDTO.getId());
+		if (webcam == null)
+			webcam = new Webcam();
+
+		webcam.fromDTO(webcamDTO);
+		webcam = webcamDAO.save(webcam);
+		if (webcam != null)
+			return webcam.toDTO();
+
+		return null;
+	}
+
 }
