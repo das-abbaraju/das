@@ -108,12 +108,27 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 		webcamDTO.setMake(make);
 		webcamDTO.setModel(model);
 		webcamDTO.setActive(active);
-		webcamDTO.setConID(contractor.getId());
-		webcamDTO.setContractorName(contractor.getName());
+
+		if (contractor == null)
+			webcamDTO.setConID(0);
+		else {
+			webcamDTO.setConID(contractor.getId());
+			webcamDTO.setContractorName(contractor.getName());
+		}
+
 		webcamDTO.setReceivedDate(receivedDate);
 		webcamDTO.setSentDate(sentDate);
-		webcamDTO.setReceivedById(receivedBy.getId());
-		webcamDTO.setSendById(sendBy.getId());
+
+		if (receivedBy == null)
+			webcamDTO.setReceivedById(0);
+		else
+			webcamDTO.setReceivedById(receivedBy.getId());
+
+		if (sendBy == null)
+			webcamDTO.setSendById(0);
+		else
+			webcamDTO.setSendById(sendBy.getId());
+
 		return webcamDTO;
 	}
 
