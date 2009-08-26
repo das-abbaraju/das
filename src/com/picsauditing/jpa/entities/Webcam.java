@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -194,13 +193,14 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 		this.active = webcamDTO.isActive();
 		this.receivedDate = webcamDTO.getReceivedDate();
 		this.sentDate = webcamDTO.getSentDate();
-		this.receivedBy = new User(webcamDTO.getReceivedById());
-		this.sendBy = new User(webcamDTO.getSendById());
+		if (webcamDTO.getReceivedById() > 0)
+			this.receivedBy = new User(webcamDTO.getReceivedById());
+		if (webcamDTO.getSendById() > 0)
+			this.sendBy = new User(webcamDTO.getSendById());
 		this.serialNumber = webcamDTO.getSerialNumber();
 		this.carrier = webcamDTO.getCarrier();
 		this.shippingMethod = webcamDTO.getShippingMethod();
 		this.trackingNumber = webcamDTO.getTrackingNumber();
 		this.replacementCost = webcamDTO.getReplacementCost();
 	}
-
 }
