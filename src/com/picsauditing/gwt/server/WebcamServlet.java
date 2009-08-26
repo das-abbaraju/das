@@ -24,7 +24,7 @@ public class WebcamServlet extends RemoteServiceServlet implements WebcamService
 		List<Webcam> webcams = webcamDAO.findWhere(null);
 		List<WebcamDTO> webcamDTOs = new ArrayList<WebcamDTO>();
 		for (Webcam webcam : webcams) {
-			webcamDTOs.add(webcam.toDto());
+			webcamDTOs.add(webcam.toDTO());
 		}
 		return webcamDTOs;
 	}

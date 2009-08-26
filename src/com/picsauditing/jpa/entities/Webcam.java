@@ -103,7 +103,7 @@ public class Webcam {
 	}
 
 	@Transient
-	public WebcamDTO toDto() {
+	public WebcamDTO toDTO() {
 		WebcamDTO webcamDTO = new WebcamDTO();
 		webcamDTO.setId(id);
 		webcamDTO.setMake(make);
@@ -119,7 +119,7 @@ public class Webcam {
 	}
 
 	@Transient
-	public void fromDto(WebcamDTO webcamDTO) {
+	public void fromDTO(WebcamDTO webcamDTO) {
 		this.id = webcamDTO.getId();
 		this.make = webcamDTO.getMake();
 		this.model = webcamDTO.getModel();
