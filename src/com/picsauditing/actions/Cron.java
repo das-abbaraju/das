@@ -5,10 +5,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
 
@@ -16,7 +19,10 @@ import org.apache.commons.net.ftp.FTPClient;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -24,11 +30,13 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -36,6 +44,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -84,8 +93,10 @@ public class Cron extends PicsActionSupport {
 			try {
 				// TODO - Move this to the db.picsauditing.com cron bash script
 				/*
-				 * OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions,certificates,contractor_info,"
-				 * + "forms,generalContractors,loginLog,users;
+				 * OPTIMIZE TABLE
+				 * OSHA,accounts,auditCategories,auditData,auditQuestions
+				 * ,certificates,contractor_info," +
+				 * "forms,generalContractors,loginLog,users;
 				 */
 			} catch (Throwable t) {
 				handleException(t);
@@ -109,15 +120,18 @@ public class Cron extends PicsActionSupport {
 
 			try {
 				startTask("\nExpiring Audits...");
-				// TODO do mass update statements rather than query for loop update
+				// TODO do mass update statements rather than query for loop
+				// update
 				/*
-				 * update contractor_audit set auditStatus = 'Expired' where auditStatus IN
-				 * ('Submitted','Exempt','Active') and auditTypeID = 11 and expiresDate < NOW();
+				 * update contractor_audit set auditStatus = 'Expired' where
+				 * auditStatus IN ('Submitted','Exempt','Active') and
+				 * auditTypeID = 11 and expiresDate < NOW();
 				 * 
 				 * 
-				 * update contractor_audit set auditStatus = 'Pending', closedDate = null, completedDate = null,
-				 * expiresDate = null where auditStatus IN ('Submitted','Exempt','Active') and auditTypeID = 1 and
-				 * expiresDate < NOW();
+				 * update contractor_audit set auditStatus = 'Pending',
+				 * closedDate = null, completedDate = null, expiresDate = null
+				 * where auditStatus IN ('Submitted','Exempt','Active') and
+				 * auditTypeID = 1 and expiresDate < NOW();
 				 */
 				String where = "expiresDate < NOW() AND auditStatus IN ('Submitted','Exempt','Active')";
 				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
@@ -133,37 +147,25 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 			try {
-				// TODO - we should seriously consider removing this all together and just Activating 100% verified PQFs on submission
-				// This is needed because CSRs can verify a safety manual before the PQF is submitted and when the contractor 
-				// finally submits the policy there's nothing to tell the CSR to activate it
+				// TODO - we should seriously consider removing this all
+				// together and just Activating 100% verified PQFs on submission
+				// This is needed because CSRs can verify a safety manual before
+				// the PQF is submitted and when the contractor
+				// finally submits the policy there's nothing to tell the CSR to
+				// activate it
 				startTask("\nActivating Pqf which are complete and verified...");
 				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1) AND percentComplete = 100 AND percentVerified = 100";
 				List<ContractorAudit> conList = contractorAuditDAO.findWhere(10, where, "creationDate");
 				for (ContractorAudit cAudit : conList) {
 					cAudit.changeStatus(AuditStatus.Active, system);
 					contractorAuditDAO.save(cAudit);
-					stampNote(cAudit.getContractorAccount(), "Activated the "+cAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+					stampNote(cAudit.getContractorAccount(), "Activated the " + cAudit.getAuditType().getAuditName(),
+							NoteCategory.Audits);
 				}
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);
 			}
-//			try {
-//				startTask("\nSubmitting Pqf and Annual Updates Audits which are complete...");
-//				String where = "auditStatus = 'Pending' AND auditTypeID IN (1,11) AND percentComplete = 100";
-//				List<ContractorAudit> conList = contractorAuditDAO.findWhere(40, where, "creationDate");
-//				for (ContractorAudit cAudit : conList) {
-//					cAudit.changeStatus(AuditStatus.Submitted, system);
-//					contractorAuditDAO.save(cAudit);
-//					String text = "Submitted the "+cAudit.getAuditType().getAuditName();
-//					if(!Strings.isEmpty(cAudit.getAuditFor()))
-//						text += cAudit.getAuditFor();
-//					stampNote(cAudit.getContractorAccount(), text, NoteCategory.Audits);
-//				}
-//				endTask();
-//			} catch (Throwable t) {
-//				handleException(t);
-//			}
 			try {
 				startTask("\nRecalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
@@ -190,9 +192,18 @@ public class Cron extends PicsActionSupport {
 				contractor.syncBalance();
 				contractor.setAuditColumns(system);
 				contractorAccountDAO.save(contractor);
-				
-				stampNote(contractor, "Automatically inactivating account based on expired membership", NoteCategory.Billing);
+
+				stampNote(contractor, "Automatically inactivating account based on expired membership",
+						NoteCategory.Billing);
 			}
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("\nSending Email to Delinquent Contractors ...");
+			sendDelinquentContractorsEmail();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -267,7 +278,7 @@ public class Cron extends PicsActionSupport {
 		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
 
 		for (ContractorAudit cAudit : cList) {
-			if(cAudit.getCurrentOperators().size() > 0)
+			if (cAudit.getCurrentOperators().size() > 0)
 				policies.add(cAudit.getContractorAccount());
 		}
 		for (ContractorAccount policy : policies) {
@@ -279,7 +290,7 @@ public class Cron extends PicsActionSupport {
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-			
+
 			stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
 		}
 	}
@@ -308,13 +319,13 @@ public class Cron extends PicsActionSupport {
 
 		ftp.connect(server);
 		ftp.enterLocalPassiveMode();
-		
+
 		ftp.login(username, password);
 
 		ftp.changeWorkingDirectory(folder);
 
 		String[] names = ftp.listNames();
-		
+
 		if (names != null) {
 
 			for (String fileName : names) {
@@ -342,9 +353,10 @@ public class Cron extends PicsActionSupport {
 							try {
 								contractorId = Integer.parseInt(data[0]);
 							} catch (Exception ignoreStrings) {
-								// Sometimes we get ids that are strings like HC00000629
+								// Sometimes we get ids that are strings like
+								// HC00000629
 							}
-							
+
 							if (data.length == 2 && contractorId > 0) {
 
 								// the other field. comes in as a Y/N.
@@ -401,7 +413,7 @@ public class Cron extends PicsActionSupport {
 
 		PicsLogger.stop();
 	}
-	
+
 	public void stampNote(ContractorAccount cAccount, String text, NoteCategory noteCategory) {
 		Note note = new Note(cAccount, system, text);
 		note.setCanContractorView(true);
@@ -410,5 +422,51 @@ public class Cron extends PicsActionSupport {
 		note.setAuditColumns(system);
 		note.setViewableById(Account.PicsID);
 		noteDAO.save(note);
+	}
+
+	public void sendDelinquentContractorsEmail() throws Exception {
+		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		AuditDataDAO auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
+		EmailBuilder emailBuilder = new EmailBuilder();
+		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
+		List<Integer> questions = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
+
+		for (Invoice invoice : invoices) {
+			Set<String> emailAddresses = new HashSet<String>();
+			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
+
+			if (!Strings.isEmpty(cAccount.getBillingEmail()))
+				emailAddresses.add(cAccount.getBillingEmail());
+			if (!Strings.isEmpty(cAccount.getCcEmail()))
+				emailAddresses.add(cAccount.getCcEmail());
+
+			if (DateBean.getDateDifference(invoice.getDueDate()) < 0) {
+				if (!Strings.isEmpty(cAccount.getSecondEmail()))
+					emailAddresses.add(cAccount.getSecondEmail());
+			}
+			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
+				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questions);
+				for (AuditData auditData : aList) {
+					if (!Strings.isEmpty(auditData.getAnswer()) && Utilities.isValidEmail(auditData.getAnswer()))
+						emailAddresses.add(auditData.getAnswer());
+				}
+			}
+			cMap.put(cAccount, emailAddresses);
+		}
+
+		for (ContractorAccount cAccount : cMap.keySet()) {
+			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
+			emailBuilder.clear();
+			emailBuilder.setTemplate(48); // **Your PICS account is will be
+											// deactivated**
+			emailBuilder.setContractor(cAccount);
+			emailBuilder.setCcAddresses(emailAddress);
+			EmailQueue email = emailBuilder.build();
+			email.setPriority(30);
+			emailQueueDAO.save(email);
+
+			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
+		}
 	}
 }

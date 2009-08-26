@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,9 +12,11 @@ import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -216,12 +219,47 @@ public class ContractorAccountDAO extends PicsDAO {
 	public List<ContractorAccount> findNewContractorsByOperator(int opID, Date start, Date end) {
 		String query = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount.id = "
 				+ ":opID AND co.contractorAccount.creationDate BETWEEN :start and :end AND co.contractorAccount.active = 'Y'";
-		
+
 		Query q = em.createQuery(query);
 		q.setParameter("opID", opID);
 		q.setParameter("start", start, TemporalType.TIMESTAMP);
 		q.setParameter("end", end, TemporalType.TIMESTAMP);
-		
+
 		return q.getResultList();
+	}
+
+	public List<Invoice> findDelinquentContractors() {
+		List<String> dates = new ArrayList<String>();
+		Calendar calendar1 = Calendar.getInstance();
+		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		calendar1.add(calendar1.WEEK_OF_YEAR, 1);
+		dates.add(DBFormat.format(calendar1.getTime()));// Before7Days
+
+		calendar1.add(calendar1.DATE, -12);
+		dates.add(DBFormat.format(calendar1.getTime()));// Before5Days
+
+		calendar1.add(calendar1.MONTH, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// After30Days
+
+		calendar1.add(calendar1.MONTH, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// After60Days
+
+		calendar1.add(calendar1.MONTH, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// After90Days
+
+		calendar1.add(calendar1.MONTH, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// After120Days
+
+		calendar1.add(calendar1.MONTH, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// After150Days
+
+		calendar1.add(calendar1.MONTH, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// After180Days
+
+		String hql = "FROM Invoice i WHERE i.status = 'Unpaid' AND i.totalAmount > 0" + " AND i.dueDate IN ("
+				+ Strings.implodeForDB(dates, ",") + ") " + " AND i.account.active = 'Y' ORDER BY i.dueDate ";
+		Query query = em.createQuery(hql);
+		return query.getResultList();
 	}
 }

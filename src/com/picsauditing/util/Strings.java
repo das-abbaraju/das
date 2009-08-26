@@ -86,6 +86,20 @@ public class Strings {
 		return buffer.toString();
 	}
 
+	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
+		if (collection == null)
+			return "";
+		StringBuffer buffer = new StringBuffer();
+		for (Object o : collection) {
+			if (buffer.length() > 0)
+				buffer.append(delimiter);
+			buffer.append("'");
+			buffer.append(o);
+			buffer.append("'");
+		}
+		return buffer.toString();
+	}
+	
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";

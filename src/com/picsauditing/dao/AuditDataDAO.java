@@ -335,4 +335,15 @@ public class AuditDataDAO extends PicsDAO {
 			indexedResult.add(row);
 		return indexedResult;
 	}
+	
+	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {
+		Query query = em.createQuery("SELECT d FROM AuditData d " +
+				"WHERE d.audit.contractorAccount.id = ? " +
+				"AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') " +
+				"AND d.question.id IN (" + glue(questionIds) + ") " +
+				"ORDER BY d.audit.auditStatus DESC");
+		query.setParameter(1, conID);
+		return query.getResultList();
+	}
+
 }
