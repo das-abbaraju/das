@@ -4,17 +4,20 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.gwt.shared.WebcamDTO;
 
+@SuppressWarnings("serial")
 @Entity
-public class Webcam {
-	private int id;
+@Table(name = "webcam")
+public class Webcam extends BaseTable implements java.io.Serializable {
 	private String make;
 	private String model;
 	private boolean active;
@@ -23,15 +26,6 @@ public class Webcam {
 	private Date sentDate;
 	private User receivedBy;
 	private User sendBy;
-
-	@Id
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@Column(length = 100)
 	public String getMake() {
@@ -59,6 +53,7 @@ public class Webcam {
 		this.active = active;
 	}
 
+	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractor() {
 		return contractor;
@@ -86,7 +81,8 @@ public class Webcam {
 		this.sentDate = sentDate;
 	}
 
-	@JoinColumn(name = "receivedById")
+	@ManyToOne
+	@JoinColumn(name = "receivedBy")
 	public User getReceivedBy() {
 		return receivedBy;
 	}
@@ -95,7 +91,8 @@ public class Webcam {
 		this.receivedBy = receivedBy;
 	}
 
-	@JoinColumn(name = "sendById")
+	@ManyToOne
+	@JoinColumn(name = "sendBy")
 	public User getSendBy() {
 		return sendBy;
 	}
