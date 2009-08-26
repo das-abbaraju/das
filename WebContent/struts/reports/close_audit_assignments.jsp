@@ -72,8 +72,10 @@
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Submitted</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Closing Auditor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Auditor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','closingAuditorID DESC,name');">Closing Auditor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
+				<td align="center">Notes</td>
 				<td></td>
 			</tr>
 		</thead>
@@ -84,6 +86,7 @@
 				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditName')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('completedDate')"format="M/d/yy" /></td>
+				<td><s:property value="%{[0].get('auditorID')}"/></a></td>
 				<td><nobr>
 				<s:if test="[0].get('hasAuditor')">
 					<s:select onchange="javascript: saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
@@ -92,14 +95,16 @@
 					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">
 						<span class="redMain">*</span>
 					</s:if>	
-				</s:if></nobr>
-				</td>
+				</s:if>
+				</nobr></td>
 				<td class="center" id="assignDate_<s:property value="[0].get('auditID')"/>">
 					<nobr>
 					<s:property value="%{getBetterDate( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
-					<s:property	value="%{getBetterTime( [0].get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" />
 					</nobr>
 				</td>
+				<td>
+					<input type="text" size="25"/>
+				</td>				
 				
 				<td>
 					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>

@@ -41,6 +41,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private AuditStatus auditStatus = AuditStatus.Pending;
 	private Date expiresDate;
 	private User auditor;
+	private User closingAuditor;
 	private Date assignedDate;
 	private Date scheduledDate;
 	private Date completedDate;
@@ -160,6 +161,16 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "closingAuditorID")
+	public User getClosingAuditor() {
+		return closingAuditor;
+	}
+
+	public void setClosingAuditor(User closingAuditor) {
+		this.closingAuditor = closingAuditor;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
