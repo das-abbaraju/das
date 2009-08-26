@@ -57,6 +57,7 @@
 	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
 	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
 	<bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO"/>
+	<bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
