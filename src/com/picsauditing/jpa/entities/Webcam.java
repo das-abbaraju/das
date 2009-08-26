@@ -30,7 +30,7 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 	private String carrier;
 	private String shippingMethod;
 	private String trackingNumber;
-	private int replacementCost;
+	private int replacementCost = 0;
 
 	@Column(length = 100)
 	public String getMake() {
