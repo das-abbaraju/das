@@ -26,6 +26,11 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 	private Date sentDate;
 	private User receivedBy;
 	private User sendBy;
+	private String serialNumber;
+	private String carrier;
+	private String shippingMethod;
+	private String trackingNumber;
+	private int replacementCost;
 
 	@Column(length = 100)
 	public String getMake() {
@@ -101,6 +106,50 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 		this.sendBy = sendBy;
 	}
 
+	@Column(length = 100)
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	@Column(length = 50)
+	public String getCarrier() {
+		return carrier;
+	}
+
+	public void setCarrier(String carrier) {
+		this.carrier = carrier;
+	}
+
+	@Column(length = 30)
+	public String getShippingMethod() {
+		return shippingMethod;
+	}
+
+	public void setShippingMethod(String shippingMethod) {
+		this.shippingMethod = shippingMethod;
+	}
+
+	@Column(length = 100)
+	public String getTrackingNumber() {
+		return trackingNumber;
+	}
+
+	public void setTrackingNumber(String trackingNumber) {
+		this.trackingNumber = trackingNumber;
+	}
+
+	public int getReplacementCost() {
+		return replacementCost;
+	}
+
+	public void setReplacementCost(int replacementCost) {
+		this.replacementCost = replacementCost;
+	}
+
 	@Transient
 	public WebcamDTO toDTO() {
 		WebcamDTO webcamDTO = new WebcamDTO();
@@ -128,6 +177,12 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 			webcamDTO.setSendById(0);
 		else
 			webcamDTO.setSendById(sendBy.getId());
+
+		webcamDTO.setSerialNumber(serialNumber);
+		webcamDTO.setCarrier(carrier);
+		webcamDTO.setShippingMethod(shippingMethod);
+		webcamDTO.setTrackingNumber(trackingNumber);
+		webcamDTO.setReplacementCost(replacementCost);
 
 		return webcamDTO;
 	}
