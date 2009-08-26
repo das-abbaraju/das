@@ -189,15 +189,18 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public void fromDTO(WebcamDTO webcamDTO) {
-		this.id = webcamDTO.getId();
 		this.make = webcamDTO.getMake();
 		this.model = webcamDTO.getModel();
 		this.active = webcamDTO.isActive();
-		this.contractor = new ContractorAccount(webcamDTO.getConID());
 		this.receivedDate = webcamDTO.getReceivedDate();
 		this.sentDate = webcamDTO.getSentDate();
 		this.receivedBy = new User(webcamDTO.getReceivedById());
 		this.sendBy = new User(webcamDTO.getSendById());
+		this.serialNumber = webcamDTO.getSerialNumber();
+		this.carrier = webcamDTO.getCarrier();
+		this.shippingMethod = webcamDTO.getShippingMethod();
+		this.trackingNumber = webcamDTO.getTrackingNumber();
+		this.replacementCost = webcamDTO.getReplacementCost();
 	}
 
 }
