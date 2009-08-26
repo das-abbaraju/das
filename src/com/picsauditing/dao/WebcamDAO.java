@@ -1,14 +1,11 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Webcam;
 
 @Transactional

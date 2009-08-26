@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Temporal;
@@ -11,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.gwt.shared.WebcamDTO;
 
+@Entity
 public class Webcam {
 	private int id;
 	private String make;
