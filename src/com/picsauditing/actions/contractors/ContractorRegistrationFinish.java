@@ -192,7 +192,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				}
 			}
 		}
-
+		
+		if(!contractor.isRenew()) {
+			contractor.setRenew(true);
+			accountDao.save(contractor);
+		}
+		
 		return SUCCESS;
 	}
 

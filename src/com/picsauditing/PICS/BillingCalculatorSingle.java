@@ -132,23 +132,13 @@ public class BillingCalculatorSingle {
 		if (billingStatus.equals("Current"))
 			return items;
 
-		if (contractor.getMembershipDate() == null || "Activation".equals(billingStatus)) {
-			if (contractor.getMembershipDate() == null) {
-				// This contractor has never paid their activation fee, make
-				// them now
-				// This applies regardless if this is a new reg or renewal
-				InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
+		if (contractor.getMembershipDate() == null) {
+			// This contractor has never paid their activation fee, make
+			// them now this applies regardless if this is a new reg or renewal
+			InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
 
-				// Activate effective today
-				items.add(new InvoiceItem(fee, new Date()));
-			}
-
-			// For Activation Fee and New Membership
-			if ("Activation".equals(billingStatus)) {
-				// Payment expires 12 months from today
-				Date paymentExpires = DateBean.addMonths(new Date(), 12);
-				items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
-			}
+			// Activate effective today
+			items.add(new InvoiceItem(fee, new Date()));
 		}
 
 		// For Reactivation Fee and Reactivating Membership
@@ -156,20 +146,16 @@ public class BillingCalculatorSingle {
 			InvoiceFee fee = getFee(InvoiceFee.REACTIVATION, feeDAO);
 			// Reactivate effective today
 			items.add(new InvoiceItem(fee, new Date()));
-
-			// Payment expires 12 months from today
-			Date paymentExpires = DateBean.addMonths(new Date(), 12);
-			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
 
-		// For Renewals
-		else if (billingStatus.startsWith("Renew")) {
-			// We could eventually customize the 12 months to support
-			// monthly/quarterly billing cycles
+		if("Activation".equals(billingStatus) 
+				|| "Reactivation".equals(billingStatus) 
+				|| "Membership Canceled".equals(billingStatus) 
+				|| billingStatus.startsWith("Renew")) {
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
-
+		
 		// For Upgrades
 		// Calculate a prorated amount depending on when the upgrade happens
 		// and when the actual membership expires
