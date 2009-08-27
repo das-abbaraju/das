@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +63,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");
 		sql.addField("cao.id as caoId");
+		sql.addField("caoaccount.name as caoOperatorName");
 		sql.addField("cao.flag as caoRecommendedFlag");
 		sql.addField("cao.reason");
 	}
