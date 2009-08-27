@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -26,7 +27,7 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ProfileEdit extends PicsActionSupport {
+public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected User u;
 	protected UserDAO dao;
 	protected ContractorAccountDAO accountDao;
@@ -43,6 +44,11 @@ public class ProfileEdit extends PicsActionSupport {
 		this.userSwitchDao = userSwitchDao;
 		this.emailSubscriptionDAO = emailSubscriptionDAO;
 	}
+	
+	public void prepare() throws Exception {
+		getPermissions();
+		u = dao.find(permissions.getUserId());
+	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -50,7 +56,7 @@ public class ProfileEdit extends PicsActionSupport {
 
 		permissions.tryPermission(OpPerms.EditProfile);
 
-		u = dao.find(permissions.getUserId());
+		//u = dao.find(permissions.getUserId());
 
 		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
 			addActionError("Another user is already using the username: " + u.getUsername());
