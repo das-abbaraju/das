@@ -367,4 +367,9 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		return obj;
 	}
 	
+	@Override
+	public void fromJSON(JSONObject obj) {
+		super.fromJSON(obj);
+		name = (String)obj.get("name");
+	}
 }

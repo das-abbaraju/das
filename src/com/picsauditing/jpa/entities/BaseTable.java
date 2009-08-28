@@ -22,7 +22,7 @@ import com.picsauditing.access.Permissions;
 
 @Entity
 @MappedSuperclass
-public abstract class BaseTable {
+public abstract class BaseTable implements JSONable {
 	protected int id;
 	protected User createdBy;
 	protected User updatedBy;
@@ -106,7 +106,7 @@ public abstract class BaseTable {
 	}
 
 	@Transient
-	public JSONObject getJSON() {
+	public JSONObject toJSON() {
 		return toJSON(false);
 	}
 	
@@ -136,7 +136,7 @@ public abstract class BaseTable {
 		
 //		if (id == 0)
 //			id = (Integer)obj.get("id");
-		//createdBy = (User)obj.get("createdBy");
+		//createdBy = new User(obj.get("createdBy"));
 	}
 	
 	public boolean equals(Object obj) {

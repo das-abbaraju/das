@@ -541,11 +541,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
-		obj.put("id", id);
 		obj.put("name", name);
 		if (account != null) {
-			obj.put("accountID", account.getId());
-			obj.put("accountName", account.getName());
+			obj.put("account", account.toJSON());
 		}
 		obj.put("group", isGroup());
 		obj.put("active", isActiveB());
@@ -562,7 +560,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 		JSONArray dtoGroups = new JSONArray();
 		for (UserGroup userGroup : groups) {
-			dtoGroups.add(userGroup.getGroup().toJSON(false));
+			dtoGroups.add(userGroup.getGroup().toJSON());
 		}
 		obj.put("groups", dtoGroups);
 

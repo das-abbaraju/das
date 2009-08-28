@@ -214,13 +214,13 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 		obj.put("model", model);
 		obj.put("active", active);
 		if (contractor != null)
-			obj.put("contractor", contractor.getJSON());
+			obj.put("contractor", contractor.toJSON());
 		obj.put("receivedDate", receivedDate);
 		obj.put("sentDate", sentDate);
 		if (receivedBy != null)
-			obj.put("receivedBy", receivedBy.getJSON());
+			obj.put("receivedBy", receivedBy.toJSON());
 		if (sendBy != null)
-			obj.put("sendBy", sendBy.getJSON());
+			obj.put("sendBy", sendBy.toJSON());
 		obj.put("serialNumber", serialNumber);
 		obj.put("carrier", carrier);
 		obj.put("shippingMethod", shippingMethod);

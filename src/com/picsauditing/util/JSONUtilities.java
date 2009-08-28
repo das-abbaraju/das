@@ -3,6 +3,7 @@ package com.picsauditing.util;
 import java.util.List;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 
@@ -16,4 +17,6 @@ public class JSONUtilities {
 
 		return jsonArray;
 	}
+	
+	//static public E convertObject(JSONValue)
 }

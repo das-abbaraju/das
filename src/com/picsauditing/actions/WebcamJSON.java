@@ -3,13 +3,16 @@ package com.picsauditing.actions;
 import java.util.List;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 import com.picsauditing.dao.WebcamDAO;
 import com.picsauditing.jpa.entities.Webcam;
+import com.picsauditing.util.JSONCallback;
 
 @SuppressWarnings("serial")
 public class WebcamJSON extends PicsActionSupport {
 	private String json;
+	private JSONCallback callback;
 
 	@SuppressWarnings("unchecked")
 	public WebcamJSON(WebcamDAO webcamDAO) {
@@ -21,11 +24,12 @@ public class WebcamJSON extends PicsActionSupport {
 			jsonArray.add(obj.toJSON(false));
 
 		json = jsonArray.toJSONString();
+		callback = new JSONCallback(jsonArray);
 
 	}
 
-	public String getJson() {
-		return json;
+	public String toJSON() {
+		return callback.toString();
 	}
 
 	public void setJson(String json) {
