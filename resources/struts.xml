@@ -117,7 +117,7 @@
 			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
 			<result>/struts/widgets/operators_logged.jsp</result>
 		</action>
-
+		
 		<action name="DelinquentAccountsAjax"
 			class="com.picsauditing.actions.contractors.DelinquentAccountsWidget">
 			<result>/struts/widgets/delinquent_account.jsp</result>
@@ -137,6 +137,11 @@
 			class="com.picsauditing.actions.operators.OperatorFlagsWidget">
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
+		
+		<action name="OperatorFlagHistoryAjax"
+			class="com.picsauditing.actions.operators.OperatorFlagHistoryWidget">
+			<result>/struts/widgets/op_flag_history.jsp</result>
+		</action>			
 		
 		<action name="ContractorPendingApprovalAjax"
 			class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
