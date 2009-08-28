@@ -278,4 +278,10 @@ public class Strings {
 			return input;
 		return input.substring(0, maxlength-3) + "...";
 	}
+	
+	public static boolean validUserName(String username) {
+		String regex = "^[a-zA-Z0-9+._@-]{3,24}$";
+		
+		return username.matches(regex);
+	}
 }
