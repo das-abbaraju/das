@@ -321,7 +321,7 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.username = username.trim();
 	}
 
 	public void setPassword(String password) {
