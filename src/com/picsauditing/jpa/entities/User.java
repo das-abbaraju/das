@@ -24,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.gwt.shared.UserDetailDto;
@@ -532,5 +534,41 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		}
 		
 		return d;
+	}
+	
+	@Transient
+	@SuppressWarnings("unchecked")
+	public JSONObject getJSON(boolean full) {
+		JSONObject obj = new JSONObject();
+		obj.put("id", id);
+		obj.put("name", name);
+		if (account != null) {
+			obj.put("accountID", account.getId());
+			obj.put("accountName", account.getName());
+		}
+		obj.put("group", isGroup());
+		obj.put("active", isActiveB());
+		obj.put("email", email);
+		
+		if (!full)
+			return obj;
+		
+		obj.put("creationDate", creationDate);
+		obj.put("fax", fax);
+		obj.put("phone", phone);
+		obj.put("lastLogin", lastLogin);
+		obj.put("username", username);
+		if (createdBy != null)
+			obj.put("createdBy", createdBy.getJSON(false));
+		if (updatedBy != null)
+			obj.put("updatedBy", updatedBy.getJSON(false));
+
+		JSONArray dtoGroups = new JSONArray();
+		for (UserGroup userGroup : groups) {
+			dtoGroups.add(userGroup.getGroup().getJSON(false));
+		}
+		obj.put("groups", dtoGroups);
+
+		return obj;
 	}
 }

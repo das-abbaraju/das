@@ -11,6 +11,7 @@
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
 		<pattern>/*ajax*</pattern>
+		<pattern>/json.jsp</pattern>
 		<pattern>/*CSV.action</pattern>
 		<pattern>/*download*</pattern>
 		<pattern>/Download*</pattern>

@@ -414,9 +414,9 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>rome</groupId>
-		    <artifactId>rome</artifactId>
-		    <version>0.9</version>
+			<groupId>rome</groupId>
+			<artifactId>rome</artifactId>
+			<version>0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -427,6 +427,11 @@
 			<groupId>com.picsauditing</groupId>
 			<artifactId>picsCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
 		</dependency>
 	</dependencies>
 </project>
