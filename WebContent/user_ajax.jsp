@@ -5,17 +5,21 @@
 <%@ page language="java" import="com.picsauditing.dao.UserDAO"%>
 <%
 	try {
-		String username = request.getParameter("username");
+		String username = request.getParameter("username".trim());
 		String taxId = request.getParameter("taxId");
 		String companyName = request.getParameter("companyName");
 		if (!Strings.isEmpty(username)) {
+			if (!Strings.validUserName(username)) {
+				%> <%=username%> is NOT a valid Username. Please reenter. <%
+				return;
+			}
+
 			int userID = 0;
 			try {
-				userID = Integer.parseInt(request
-						.getParameter("userID"));
+				userID = Integer.parseInt(request.getParameter("userID"));
 				UserDAO ud = (UserDAO) SpringUtils.getBean("UserDAO");
 				if (ud.duplicateUsername(username, userID)) {
-					%><%=username%> is NOT available. Please choose a different username.<%
+					%><%=username%> is NOT available. Please choose a different Username.<%
 				} else {
 					%><%=username%> is available<%
 				}
