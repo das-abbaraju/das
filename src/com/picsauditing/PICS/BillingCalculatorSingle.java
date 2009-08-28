@@ -150,12 +150,17 @@ public class BillingCalculatorSingle {
 
 		if("Activation".equals(billingStatus) 
 				|| "Reactivation".equals(billingStatus) 
-				|| "Membership Canceled".equals(billingStatus) 
-				|| billingStatus.startsWith("Renew")) {
+				|| "Membership Canceled".equals(billingStatus)) {
+			Date paymentExpires = DateBean.addMonths(new Date(), 12);
+			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
+		}
+
+		if(billingStatus.startsWith("Renew")) {
+			// We could eventually customize the 12 months to support
+			// monthly/quarterly billing cycles
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);
 			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
-		
 		// For Upgrades
 		// Calculate a prorated amount depending on when the upgrade happens
 		// and when the actual membership expires
