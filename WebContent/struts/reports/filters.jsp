@@ -158,6 +158,18 @@
 			onclick="clearSelected('form1_auditorId'); return false;">Clear</a></span></div>
 	</s:if>
 
+	<s:if test="filter.showClosingAuditor">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_closingAuditorId'); return false;">Closing Auditors</a> = <span
+			id="form1_closingAuditorId_query">ALL</span><br />
+		<span id="form1_closingAuditorId_select" style="display: none" class="clearLink">
+		<s:select name="filter.closingAuditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
+        multiple="true" size="5" id="form1_closingAuditorId" />
+		<script type="text/javascript">updateQuery('form1_closingAuditorId');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_closingAuditorId'); return false;">Clear</a></span></div>
+	</s:if>
+
 	<s:if test="filter.showConAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_conAuditorId'); return false;">CSR</a> = <span

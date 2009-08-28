@@ -431,14 +431,6 @@
 			<result>struts/reports/audit_list.jsp</result>
 		</action>
 		
-		<action name="ReportCloseAuditAssignments"
-			class="com.picsauditing.actions.report.ReportCloseAuditAssignments">
-			<param name="filter.ajax">true</param>
-			<param name="filter.destinationAction">ReportCloseAuditAssignments</param>
-			<result>struts/reports/close_audit_assignments.jsp</result>
-		</action>
-		
-				
 		<action name="ReportAuditListCSV"
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<param name="download">true</param>
@@ -510,7 +502,17 @@
 			class="com.picsauditing.actions.report.AuditAssignmentUpdate">
 			<result>struts/blank.jsp</result>
 		</action>
+		
+		<action name="ReportCloseAuditAssignments"
+			class="com.picsauditing.actions.report.ReportCloseAuditAssignments">
+			<result>struts/reports/close_audit_assignments.jsp</result>
+		</action>
 
+		<action name="AuditCloseUpdateAjax"
+			class="com.picsauditing.actions.report.ReportCloseAuditAssignments">
+			<result>struts/blank.jsp</result>
+		</action>
+		
 		<action name="GraphEmrRates"
 			class="com.picsauditing.actions.chart.GraphEmrRates">
 			<result>struts/reports/graph_emr.jsp</result>

@@ -92,7 +92,10 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (!permissions.isPicsEmployee())
 			getFilter().setShowAuditor(true);
-
+		
+		if(permissions.isPicsEmployee())
+			getFilter().setShowClosingAuditor(true);
+		
 		getFilter().setShowAuditFor(true);
 
 	}
@@ -161,6 +164,12 @@ public class ReportContractorAudits extends ReportAccount {
 		String auditorIdList = Strings.implode(f.getAuditorId(), ",");
 		if (filterOn(auditorIdList)) {
 			sql.addWhere("ca.auditorID IN (" + auditorIdList + ")");
+			setFiltered(true);
+		}
+
+		String closingAuditorIdList = Strings.implode(f.getClosingAuditorId(), ",");
+		if (filterOn(closingAuditorIdList)) {
+			sql.addWhere("ca.closingAuditorID IN (" + auditorIdList + ")");
 			setFiltered(true);
 		}
 

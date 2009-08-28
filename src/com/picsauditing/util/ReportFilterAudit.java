@@ -18,6 +18,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showCaoStatus = false;
 	protected boolean showRecommendedFlag = false;
 	protected boolean showAuditor = true;
+	protected boolean showClosingAuditor = false;
 	protected boolean showCreatedDate = true;
 	protected boolean showCompletedDate = true;
 	protected boolean showClosedDate = true;
@@ -40,6 +41,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected CaoStatus[] caoStatus;
 	protected String recommendedFlag;
 	protected int[] auditorId;
+	protected int[] closingAuditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
 	protected Date completedDate1;
@@ -179,8 +181,15 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setShowHasClosedDate(boolean showHasClosedDate) {
 		this.showHasClosedDate = showHasClosedDate;
 	}
-
 	
+	public boolean isShowClosingAuditor() {
+		return showClosingAuditor;
+	}
+
+	public void setShowClosingAuditor(boolean showClosingAuditor) {
+		this.showClosingAuditor = showClosingAuditor;
+	}
+
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -427,5 +436,13 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setPqfTypeID(int[] pqfTypeID) {
 		this.pqfTypeID = pqfTypeID;
+	}
+
+	public int[] getClosingAuditorId() {
+		return closingAuditorId;
+	}
+
+	public void setClosingAuditorId(int[] closingAuditorId) {
+		this.closingAuditorId = closingAuditorId;
 	}
 }
