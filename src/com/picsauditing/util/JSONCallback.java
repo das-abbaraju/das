@@ -42,6 +42,6 @@ public class JSONCallback {
 	}
 	
 	public void setCallbackFunction(String callback) {
-		
+		callbackFunction = callback;
 	}
 }
