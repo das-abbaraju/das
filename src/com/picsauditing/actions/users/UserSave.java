@@ -136,6 +136,9 @@ public class UserSave extends UsersManage {
 		// Users only after this point
 		if (user.getUsername() == null || user.getUsername().length() < 5)
 			addActionError("Please choose a Username at least 5 characters long.");
+		
+		if (!Strings.validUserName(user.getUsername().trim()))
+			addActionError("Please enter a valid Username.");
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
