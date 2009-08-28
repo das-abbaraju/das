@@ -19,7 +19,7 @@ import com.picsauditing.gwt.shared.WebcamDTO;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "webcam")
-public class Webcam extends BaseTable implements java.io.Serializable, JSONable {
+public class Webcam extends BaseTable implements java.io.Serializable, Jsonable {
 	private String make;
 	private String model;
 	private boolean active;
