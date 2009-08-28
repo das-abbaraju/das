@@ -10,13 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.picsauditing.gwt.shared.LoginLogDTO;
-import com.picsauditing.gwt.shared.UserDto;
 
 @Entity
 @Table(name = "loginlog")
@@ -63,7 +59,7 @@ public class UserLoginLog {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	@Column(name = "id")
 	public int getUserID() {
 		return userID;
@@ -81,7 +77,7 @@ public class UserLoginLog {
 	public void setLoginDate(Date date) {
 		this.loginDate = date;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "adminID")
 	public User getAdmin() {
@@ -109,27 +105,14 @@ public class UserLoginLog {
 	public char getSuccessful() {
 		return successful;
 	}
-	
-	@Column( name= "sessionID" )
+
+	@Column(name = "sessionID")
 	public String getSessionId() {
 		return sessionId;
 	}
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
-	}
-	
-	@Transient
-	public LoginLogDTO toDTO() {
-		LoginLogDTO l = new LoginLogDTO();
-		l.setLoginDate(loginDate);
-		if(admin != null) {
-			l.setAdminName(admin.getUsername());
-			l.setAdminAccountName(admin.getAccount().getName());
-		}
-		l.setRemoteAddress(remoteAddress);
-		l.setSuccessful(successful);
-		return l;
 	}
 
 	@Override

@@ -11,10 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
-
-import com.picsauditing.gwt.shared.WebcamDTO;
 
 @SuppressWarnings("serial")
 @Entity
@@ -153,60 +150,6 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 	}
 
 	@Transient
-	public WebcamDTO toDTO() {
-		WebcamDTO webcamDTO = new WebcamDTO();
-		webcamDTO.setId(id);
-		webcamDTO.setMake(make);
-		webcamDTO.setModel(model);
-		webcamDTO.setActive(active);
-
-		if (contractor == null)
-			webcamDTO.setConID(0);
-		else {
-			webcamDTO.setConID(contractor.getId());
-			webcamDTO.setContractorName(contractor.getName());
-		}
-
-		webcamDTO.setReceivedDate(receivedDate);
-		webcamDTO.setSentDate(sentDate);
-
-		if (receivedBy == null)
-			webcamDTO.setReceivedById(0);
-		else
-			webcamDTO.setReceivedById(receivedBy.getId());
-
-		if (sendBy == null)
-			webcamDTO.setSendById(0);
-		else
-			webcamDTO.setSendById(sendBy.getId());
-
-		webcamDTO.setSerialNumber(serialNumber);
-		webcamDTO.setCarrier(carrier);
-		webcamDTO.setShippingMethod(shippingMethod);
-		webcamDTO.setTrackingNumber(trackingNumber);
-		webcamDTO.setReplacementCost(replacementCost);
-
-		return webcamDTO;
-	}
-
-	@Transient
-	public void fromDTO(WebcamDTO webcamDTO) {
-		this.make = webcamDTO.getMake();
-		this.model = webcamDTO.getModel();
-		this.active = webcamDTO.isActive();
-		this.receivedDate = webcamDTO.getReceivedDate();
-		this.sentDate = webcamDTO.getSentDate();
-		if (webcamDTO.getReceivedById() > 0)
-			this.receivedBy = new User(webcamDTO.getReceivedById());
-		if (webcamDTO.getSendById() > 0)
-			this.sendBy = new User(webcamDTO.getSendById());
-		this.serialNumber = webcamDTO.getSerialNumber();
-		this.carrier = webcamDTO.getCarrier();
-		this.shippingMethod = webcamDTO.getShippingMethod();
-		this.trackingNumber = webcamDTO.getTrackingNumber();
-		this.replacementCost = webcamDTO.getReplacementCost();
-	}
-	@Transient
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
@@ -215,8 +158,8 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 		obj.put("active", active);
 		if (contractor != null)
 			obj.put("contractor", contractor.toJSON());
-		//obj.put("receivedDate", receivedDate);
-		//obj.put("sentDate", sentDate);
+		// obj.put("receivedDate", receivedDate);
+		// obj.put("sentDate", sentDate);
 		if (receivedBy != null)
 			obj.put("receivedBy", receivedBy.toJSON());
 		if (sendBy != null)
@@ -226,13 +169,13 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 		obj.put("shippingMethod", shippingMethod);
 		obj.put("trackingNumber", trackingNumber);
 		obj.put("replacementCost", replacementCost);
-		
+
 		return obj;
 	}
 
 	public void fromJSON(JSONObject o) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

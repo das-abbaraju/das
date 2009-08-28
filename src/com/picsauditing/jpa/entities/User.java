@@ -20,7 +20,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -29,8 +28,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.gwt.shared.UserDetailDto;
-import com.picsauditing.gwt.shared.UserDto;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -56,7 +53,8 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String username;
 	private YesNo isGroup;
 	private String email;
-	// TODO - read GMail to see if emails are bouncing and auto update this field
+	// TODO - read GMail to see if emails are bouncing and auto update this
+	// field
 	private Date emailConfirmedDate;
 	private String name;
 	private YesNo isActive;
@@ -345,7 +343,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public List<UserSwitch> getSwitchTos() {
 		return switchTos;
 	}
-	
+
 	public void setSwitchTos(List<UserSwitch> switchTos) {
 		this.switchTos = switchTos;
 	}
@@ -507,37 +505,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Transient
-	public UserDto toDTO() {
-		UserDto u = new UserDto();
-		u.setId(id);
-		u.setAccountID(account.id);
-		u.setAccountName(account.name);
-		u.setActive(isActiveB());
-		u.setGroup(isGroup());
-		u.setName(name);
-		return u;
-	}
-
-	@Transient
-	public UserDetailDto toDetail() {
-		UserDetailDto d = new UserDetailDto();
-		d.setDateCreated(this.creationDate);
-		d.setEmail(this.email);
-		d.setFax(this.fax);
-		d.setLastLogin(this.lastLogin);
-		d.setPhone(this.phone);
-		d.setUsername(this.username);
-		
-		List<UserDto> dtoGroups = new ArrayList<UserDto>();
-		d.setGroups(dtoGroups);
-		for (UserGroup userGroup : groups) {
-			dtoGroups.add(userGroup.getGroup().toDTO());
-		}
-		
-		return d;
-	}
-	
-	@Transient
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
@@ -548,10 +515,10 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		obj.put("group", isGroup());
 		obj.put("active", isActiveB());
 		obj.put("email", email);
-		
+
 		if (!full)
 			return obj;
-		
+
 		obj.put("creationDate", creationDate);
 		obj.put("fax", fax);
 		obj.put("phone", phone);
@@ -568,9 +535,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	public void fromJSON(JSONObject o) {
-		name = (String)o.get("name");
+		name = (String) o.get("name");
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

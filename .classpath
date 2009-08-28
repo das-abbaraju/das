@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/picsCore"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry excluding="canoo*|canoo/" kind="src" output="target/test-classes" path="tests"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER">
