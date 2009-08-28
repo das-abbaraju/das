@@ -62,6 +62,12 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			addActionError("Another user is already using the username: " + u.getUsername());
 			return SUCCESS;
 		}
+		
+		if (!Strings.validUserName(u.getUsername().trim())) {
+			addActionError("This username is not valid.  Please enter a valid Username.");
+			return SUCCESS;
+		}
+
 		if (button != null) {
 			if (!Strings.isEmpty(password1)) {
 				if (!password1.equals(password2) && !password1.equals(u.getPassword()))
