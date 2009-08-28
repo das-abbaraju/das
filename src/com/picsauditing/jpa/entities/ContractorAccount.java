@@ -41,7 +41,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 @Table(name = "contractor_info")
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorAccount extends Account {
+public class ContractorAccount extends Account implements JSONable {
 
 	private String taxId;
 	private String mainTrade;

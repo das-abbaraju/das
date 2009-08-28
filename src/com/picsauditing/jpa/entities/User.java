@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -37,7 +38,7 @@ import com.picsauditing.util.log.PicsLogger;
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class User extends BaseTable implements java.io.Serializable, Comparable<User> {
+public class User extends BaseTable implements java.io.Serializable, Comparable<User>, JSONable {
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int SYSTEM = 1;
 	public static int GROUP_ADMIN = 10;
@@ -539,7 +540,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	@Transient
 	@SuppressWarnings("unchecked")
 	public JSONObject getJSON(boolean full) {
-		JSONObject obj = new JSONObject();
+		JSONObject obj = super.getJSON(full);
 		obj.put("id", id);
 		obj.put("name", name);
 		if (account != null) {
@@ -558,10 +559,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		obj.put("phone", phone);
 		obj.put("lastLogin", lastLogin);
 		obj.put("username", username);
-		if (createdBy != null)
-			obj.put("createdBy", createdBy.getJSON(false));
-		if (updatedBy != null)
-			obj.put("updatedBy", updatedBy.getJSON(false));
 
 		JSONArray dtoGroups = new JSONArray();
 		for (UserGroup userGroup : groups) {
@@ -571,4 +568,11 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 		return obj;
 	}
+
+	public void setJSON(JSONObject o) {
+		name = (String)o.get("name");
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -11,12 +11,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
 import com.picsauditing.gwt.shared.WebcamDTO;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "webcam")
-public class Webcam extends BaseTable implements java.io.Serializable {
+public class Webcam extends BaseTable implements java.io.Serializable, JSONable {
 	private String make;
 	private String model;
 	private boolean active;
@@ -203,4 +206,33 @@ public class Webcam extends BaseTable implements java.io.Serializable {
 		this.trackingNumber = webcamDTO.getTrackingNumber();
 		this.replacementCost = webcamDTO.getReplacementCost();
 	}
+	@Transient
+	@SuppressWarnings("unchecked")
+	public JSONObject getJSON(boolean full) {
+		JSONObject obj = super.getJSON(full);
+		obj.put("make", make);
+		obj.put("model", model);
+		obj.put("active", active);
+		if (contractor != null)
+			obj.put("contractor", contractor.getJSON());
+		obj.put("receivedDate", receivedDate);
+		obj.put("sentDate", sentDate);
+		if (receivedBy != null)
+			obj.put("receivedBy", receivedBy.getJSON());
+		if (sendBy != null)
+			obj.put("sendBy", sendBy.getJSON());
+		obj.put("serialNumber", serialNumber);
+		obj.put("carrier", carrier);
+		obj.put("shippingMethod", shippingMethod);
+		obj.put("trackingNumber", trackingNumber);
+		obj.put("replacementCost", replacementCost);
+		
+		return obj;
+	}
+
+	public void setJSON(JSONObject o) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

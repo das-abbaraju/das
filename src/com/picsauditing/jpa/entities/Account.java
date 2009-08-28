@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.json.simple.JSONObject;
 
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
@@ -26,7 +27,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Account extends BaseTable implements java.io.Serializable, Comparable<Account> {
+public class Account extends BaseTable implements java.io.Serializable, Comparable<Account>, JSONable {
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
@@ -348,4 +349,22 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		return name.compareToIgnoreCase(o.getName());
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transient
+	public JSONObject getJSON(boolean full) {
+		JSONObject obj = super.getJSON(full);
+		obj.put("name", name);
+		obj.put("contact", contact);
+		obj.put("active", isActiveB());
+		obj.put("type", type.toString());
+		
+		if (!full)
+			return obj;
+		
+		// TODO full out the optional fields for account
+		
+		return obj;
+	}
+	
 }

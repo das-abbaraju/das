@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Permissions;
 
@@ -102,6 +105,40 @@ public abstract class BaseTable {
 		setAuditColumns(new User(permissions.getUserId()));
 	}
 
+	@Transient
+	public JSONObject getJSON() {
+		return getJSON(false);
+	}
+	
+	@Transient
+	@SuppressWarnings("unchecked")
+	public JSONObject getJSON(boolean full) {
+		JSONObject obj = new JSONObject();
+		obj.put("id", id);
+		if (!full)
+			return obj;
+		
+		obj.put("id", id);
+		if (createdBy != null)
+			obj.put("createdBy", createdBy.getJSON(false));
+		if (updatedBy != null)
+			obj.put("updatedBy", updatedBy.getJSON(false));
+		if (creationDate != null)
+			obj.put("creationDate", creationDate);
+		if (updateDate != null)
+			obj.put("updateDate", updateDate);
+		
+		return obj;
+	}
+
+	public void setJSON(JSONObject obj) {
+		// TODO write this!!
+		
+//		if (id == 0)
+//			id = (Integer)obj.get("id");
+		//createdBy = (User)obj.get("createdBy");
+	}
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

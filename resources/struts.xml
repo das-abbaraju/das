@@ -1191,6 +1191,13 @@
 			<result name="success">struts/contractors/con_cert_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
+		<!-- JSON Stuff -->
+		
+		<action name="WebcamJSON"
+			class="com.picsauditing.actions.WebcamJSON">
+			<result>/struts/json.jsp</result>
+		</action>
 
 		<!--  Development struts mappings -->
 
