@@ -27,7 +27,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Account extends BaseTable implements java.io.Serializable, Comparable<Account>, Jsonable {
+public class Account extends BaseTable implements java.io.Serializable, Comparable<Account>, JSONable {
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
