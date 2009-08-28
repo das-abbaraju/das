@@ -539,8 +539,8 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	
 	@Transient
 	@SuppressWarnings("unchecked")
-	public JSONObject getJSON(boolean full) {
-		JSONObject obj = super.getJSON(full);
+	public JSONObject toJSON(boolean full) {
+		JSONObject obj = super.toJSON(full);
 		obj.put("id", id);
 		obj.put("name", name);
 		if (account != null) {
@@ -562,14 +562,14 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 		JSONArray dtoGroups = new JSONArray();
 		for (UserGroup userGroup : groups) {
-			dtoGroups.add(userGroup.getGroup().getJSON(false));
+			dtoGroups.add(userGroup.getGroup().toJSON(false));
 		}
 		obj.put("groups", dtoGroups);
 
 		return obj;
 	}
 
-	public void setJSON(JSONObject o) {
+	public void fromJSON(JSONObject o) {
 		name = (String)o.get("name");
 		// TODO Auto-generated method stub
 		

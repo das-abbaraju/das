@@ -208,8 +208,8 @@ public class Webcam extends BaseTable implements java.io.Serializable, Jsonable 
 	}
 	@Transient
 	@SuppressWarnings("unchecked")
-	public JSONObject getJSON(boolean full) {
-		JSONObject obj = super.getJSON(full);
+	public JSONObject toJSON(boolean full) {
+		JSONObject obj = super.toJSON(full);
 		obj.put("make", make);
 		obj.put("model", model);
 		obj.put("active", active);
@@ -230,7 +230,7 @@ public class Webcam extends BaseTable implements java.io.Serializable, Jsonable 
 		return obj;
 	}
 
-	public void setJSON(JSONObject o) {
+	public void fromJSON(JSONObject o) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -352,8 +352,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	@Override
 	@SuppressWarnings("unchecked")
 	@Transient
-	public JSONObject getJSON(boolean full) {
-		JSONObject obj = super.getJSON(full);
+	public JSONObject toJSON(boolean full) {
+		JSONObject obj = super.toJSON(full);
 		obj.put("name", name);
 		obj.put("contact", contact);
 		obj.put("active", isActiveB());

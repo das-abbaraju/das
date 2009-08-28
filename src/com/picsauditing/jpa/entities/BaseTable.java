@@ -107,12 +107,12 @@ public abstract class BaseTable {
 
 	@Transient
 	public JSONObject getJSON() {
-		return getJSON(false);
+		return toJSON(false);
 	}
 	
 	@Transient
 	@SuppressWarnings("unchecked")
-	public JSONObject getJSON(boolean full) {
+	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", id);
 		if (!full)
@@ -120,9 +120,9 @@ public abstract class BaseTable {
 		
 		obj.put("id", id);
 		if (createdBy != null)
-			obj.put("createdBy", createdBy.getJSON(false));
+			obj.put("createdBy", createdBy.toJSON(false));
 		if (updatedBy != null)
-			obj.put("updatedBy", updatedBy.getJSON(false));
+			obj.put("updatedBy", updatedBy.toJSON(false));
 		if (creationDate != null)
 			obj.put("creationDate", creationDate);
 		if (updateDate != null)
@@ -131,7 +131,7 @@ public abstract class BaseTable {
 		return obj;
 	}
 
-	public void setJSON(JSONObject obj) {
+	public void fromJSON(JSONObject obj) {
 		// TODO write this!!
 		
 //		if (id == 0)

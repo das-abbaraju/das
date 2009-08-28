@@ -12,7 +12,7 @@ public class JSONUtilities {
 	static public JSONArray convertFromList(List<Jsonable> list) {
 		JSONArray jsonArray = new JSONArray();
 		for (Jsonable obj : list)
-			jsonArray.add(obj.getJSON(false));
+			jsonArray.add(obj.toJSON(false));
 
 		return jsonArray;
 	}

@@ -18,7 +18,7 @@ public class WebcamJSON extends PicsActionSupport {
 
 		JSONArray jsonArray = new JSONArray();
 		for (Webcam obj : list)
-			jsonArray.add(obj.getJSON(false));
+			jsonArray.add(obj.toJSON(false));
 
 		json = jsonArray.toJSONString();
 
