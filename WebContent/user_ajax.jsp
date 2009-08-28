@@ -10,7 +10,7 @@
 		String companyName = request.getParameter("companyName");
 		if (!Strings.isEmpty(username)) {
 			if (!Strings.validUserName(username)) {
-				%> <%=username%> is NOT a valid Username. Please reenter. <%
+				%> Username cannot contain spaces. <%
 				return;
 			}
 
