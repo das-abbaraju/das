@@ -4,16 +4,16 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class JSONCallback {
-	final public String CALLBACK = "callback";
 	final public String STATUS = "status";
 	final public String TOTALPROPERTY = "rowCount";
+	final public String ROOT = "root";
 	
 	private Integer recordCount = 0;
 	private String callbackFunction = null;
 	private JSONArray result;
-	private String status = "success";
+	private boolean status = true;
 	
-	public JSONCallback(String status) {
+	public JSONCallback(boolean status) {
 		this.status = status;
 	}
 	
@@ -24,24 +24,17 @@ public class JSONCallback {
 	
 	public String toString() {
 		JSONObject json = new JSONObject();
-		json.put(TOTALPROPERTY, recordCount);
-		json.put("root", result);
 		json.put(STATUS, status);
+		json.put(TOTALPROPERTY, recordCount);
+		json.put(ROOT, result);
 		if (callbackFunction == null)
 			return json.toString();
 		
 		return callbackFunction + "(" + json.toString() + ");";
 	}
 	
-	public void setStatus(String status) {
-		this.status = status;
+	public void setCallbackFunction(String callbackFunction) {
+		this.callbackFunction = callbackFunction;
 	}
 	
-	public void setCallbackFunction() {
-		setCallbackFunction(CALLBACK);
-	}
-	
-	public void setCallbackFunction(String callback) {
-		callbackFunction = callback;
-	}
 }

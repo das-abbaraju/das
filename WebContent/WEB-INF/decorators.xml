@@ -12,6 +12,7 @@
 		<pattern>/*Ajax.action</pattern>
 		<pattern>/*ajax*</pattern>
 		<pattern>/*JSON.action</pattern>
+		<pattern>/*json*</pattern>
 		<pattern>/*CSV.action</pattern>
 		<pattern>/*download*</pattern>
 		<pattern>/Download*</pattern>

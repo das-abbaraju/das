@@ -1,24 +1,8 @@
-<%@page import="com.picsauditing.util.JSONCallback"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.picsauditing.jpa.entities.Webcam"%>
-<%@page import="java.util.List"%>
-<%@page import="org.json.simple.JSONArray"%><%@page import="java.io.Writer"%>
-<%
-JSONArray dataBlock = new JSONArray();
-
-List<Webcam> list = new ArrayList<Webcam>();
-list.add(new Webcam());
-list.get(0).setMake("Trevor");
-list.get(0).setModel("Kyle");
-
-JSONArray jsonArray = new JSONArray();
-for (Webcam obj : list)
-	jsonArray.add(obj.toJSON(false));
-
-JSONCallback callback = new JSONCallback(jsonArray);
-callback.setCallbackFunction();
-
-response.setContentType("text/javascript");
-Writer writer = response.getWriter();
-writer.write(callback.toString());
-%>
+stcCallback1001(
+{"root":[
+{"id":4,"model":"htc","trackingNumber":null,"contractor":{"id":3,"name":"Ancon Marine","active":true,"type":"Contractor","contact":"Don Couch"},"replacementCost":255,"sentDate":2009-08-11 00:00:00.0,"carrier":null,"serialNumber":"123 ","active":true,"shippingMethod":null,"make":"DELL","receivedDate":null},
+{"id":16,"model":"iSight","trackingNumber":null,"replacementCost":234,"sentDate":2009-08-18 00:00:00.0,"carrier":null,"serialNumber":"1234","active":false,"shippingMethod":null,"make":"Apple","receivedDate":null},
+{"id":17,"model":"L321","trackingNumber":null,"replacementCost":55,"sentDate":2009-08-28 00:00:00.0,"carrier":null,"serialNumber":"123D","active":false,"shippingMethod":null,"make":"L123","receivedDate":null},
+{"id":15,"model":"Touch","trackingNumber":null,"contractor":{"id":756,"name":"Repcon, Inc.","active":true,"type":"Contractor","contact":"Beverly Jonas"},"replacementCost":12,"sentDate":2009-08-04 00:00:00.0,"carrier":null,"serialNumber":"1234144","active":false,"shippingMethod":null,"make":"HTC","receivedDate":null},
+{"id":14,"model":"VT 8000","make":"Dell"}
+],"status":true,"rowCount":5});
