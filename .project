@@ -3,7 +3,6 @@
 	<name>picsWeb2</name>
 	<comment></comment>
 	<projects>
-		<project>picsCore</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
