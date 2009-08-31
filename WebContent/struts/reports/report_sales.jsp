@@ -66,7 +66,7 @@
 				<td>Total</td>
 		</tr></thead>
 		<tbody>
-			<tr><th rowspan="2">Account Representatives</th>
+			<tr><th rowspan="2">Account Managers</th>
 				<td>Audited</td>
 				<td><s:property value="summaryData.get('AuditedAccountReps')"/></td>
 				<td><s:property value="summaryData.get('auAccThisMonth')"/></td>

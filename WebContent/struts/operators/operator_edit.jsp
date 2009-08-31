@@ -191,7 +191,7 @@
 					</tbody>
 				</table>
 				
-				<li><nobr><label>Account Representatives : </label></nobr></li>
+				<li><nobr><label>Account Managers : </label></nobr></li>
 					<table class="report">
 					<thead>
 						<tr><td>User</td>

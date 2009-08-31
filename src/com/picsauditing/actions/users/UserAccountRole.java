@@ -3,7 +3,7 @@ package com.picsauditing.actions.users;
 
 public enum UserAccountRole {
 	PICSSalesRep("Sales Representative"), 
-	PICSAccountRep("Account Representative");
+	PICSAccountRep("Account Manager");
 
 	private String description;
 
