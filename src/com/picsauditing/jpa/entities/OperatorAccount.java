@@ -49,6 +49,7 @@ public class OperatorAccount extends Account {
 	private YesNo approvesRelationships = YesNo.No;
 	private boolean verifiedByPics = true;
 	private OshaType oshaType = OshaType.OSHA;
+	private boolean primaryCorporate = false;
 
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
@@ -159,6 +160,14 @@ public class OperatorAccount extends Account {
 
 	public void setOshaType(OshaType oshaType) {
 		this.oshaType = oshaType;
+	}
+	
+	public boolean isPrimaryCorporate() {
+		return primaryCorporate;
+	}
+
+	public void setPrimaryCorporate(boolean primaryCorporate) {
+		this.primaryCorporate = primaryCorporate;
 	}
 
 	@ManyToOne

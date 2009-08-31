@@ -89,6 +89,10 @@
 				<li><label>Reason:</label>
 					<s:textarea name="operator.reason" rows="3" cols="25"/>
 				</li>
+				<s:if test="operator.corporate">
+					<li><label>Primary Corporate:</label> 
+						<s:checkbox name="operator.primaryCorporate"></s:checkbox></li>
+				</s:if>
 				<li><label>Receive contractor activation emails:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
 					name="operator.doSendActivationEmail" theme="pics" /></li>
 				<li><label>Approves Contractors:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
@@ -203,7 +207,7 @@
 					</thead>
 					<tbody>
 						<s:iterator value="operator.accountUsers" status="role">
-							<s:if test="role.description == 'Account Representative'">
+							<s:if test="role.description == 'Account Manager'">
 							<tr>
 								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
 								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>

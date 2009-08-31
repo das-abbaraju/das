@@ -496,4 +496,9 @@ outerLoop:
 		calendar.add(Calendar.DAY_OF_YEAR, -5);
 		return calendar.getTime().before(startDate);
 	}
+	
+	public static String getCurrentMonthName() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
+		return dateFormat.format(new Date());
+	}
 }
