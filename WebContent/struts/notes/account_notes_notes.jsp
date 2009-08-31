@@ -72,6 +72,9 @@
 					onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','view')">Show Details</a>
 				<a class="filter" href="#" onclick="filter('notes', 'filter.category', '<s:property value="noteCategory" />'); return false;"><s:property value="noteCategory" /></a>:
 					<s:property value="summary" /><s:if test="body != null && body.length() > 0"><br /><s:property value="bodyHtml.substring(0,150)" escape="false"/>...more notes in detail</s:if><br /><br />
+				<s:if test="attachment != null">
+					<a href="NoteEditor.action?note.id=<s:property value="id"/>&button=attachment" target="_BLANK">Click here to view attachment.</a><br /><br />
+				</s:if>
 				<s:if test="updateDate != null && updateDate.after(creationDate)">
 					<b>Edited:</b> by <s:property value="updatedBy.name" /> at <s:date name="updateDate" format="M/d/yy h:mm a" />
 				</s:if>
