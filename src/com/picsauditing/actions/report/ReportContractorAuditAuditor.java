@@ -15,7 +15,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 	public void buildQuery() {
 		super.buildQuery();
 		
-		sql.addWhere("ca.auditorID=" + permissions.getUserId());
+		sql.addWhere("(ca.auditorID=" + permissions.getUserId()+" OR ca.closingAuditorID=" + permissions.getUserId()+")");
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");
 		sql.addWhere("a.active = 'Y'");
 		
