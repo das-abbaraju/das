@@ -396,34 +396,34 @@
 		</dependency>
 
 		<dependency>
+			<!-- WSDL 2.0 processor -->
 			<groupId>org.apache.woden</groupId>
 			<artifactId>woden-api</artifactId>
 			<version>1.0M8</version>
 		</dependency>
 
 		<dependency>
+			<!-- Excel Creator -->
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.2-FINAL</version>
 		</dependency>
 
 		<dependency>
+			<!-- PDF Creator -->
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
 			<version>2.1.4</version>
 		</dependency>
 
 		<dependency>
+			<!-- Atom/RSS Java utilities -->
 			<groupId>rome</groupId>
 			<artifactId>rome</artifactId>
 			<version>0.9</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-servlet</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-		<dependency>
+			<!-- Basic JSON utilities -->
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1</version>
