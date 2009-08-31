@@ -152,25 +152,6 @@
 		<servlet-name>AxisAdminServlet</servlet-name>
 		<url-pattern>/axis2-admin/*</url-pattern>
 	</servlet-mapping>
-	
-    <servlet>
-        <servlet-name>servletUser</servlet-name>
-        <servlet-class>com.picsauditing.gwt.server.GwtServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>servletUser</servlet-name>
-        <url-pattern>/gwtUsers/servletUser</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>servletWebcam</servlet-name>
-        <servlet-class>com.picsauditing.gwt.server.WebcamServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>servletWebcam</servlet-name>
-        <url-pattern>/gwtWebcam/servletWebcam</url-pattern>
-    </servlet-mapping>
-	
 	<resource-ref>
 		<description>DB Connection</description>
 		<res-ref-name>jdbc/pics</res-ref-name>
