@@ -24,6 +24,7 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private String body;
 	private ListType listType;
 	private boolean allowsVelocity = false;
+	private boolean html = false;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -88,26 +89,12 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 		this.allowsVelocity = allowsVelocity;
 	}
 
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
+	public boolean isHtml() {
+		return html;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final EmailTemplate other = (EmailTemplate) obj;
-		if (id != other.id)
-			return false;
-		return true;
+	public void setHtml(boolean html) {
+		this.html = html;
 	}
 
 }
