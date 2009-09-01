@@ -51,6 +51,10 @@
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
 	</div>
+	
+	<div class="filterOption">
+		<s:select list="monthsList" cssClass="forms" name="month" value="%{month}"/>
+	</div>
 	<br clear="all"/>
 </s:form>
 </div>
@@ -110,8 +114,8 @@
 			<td>Class</td>
 			<td>Start Date</td>
 			<td>End Date</td>
-			<td>Weighted Registrations This Month</td>
-			<td>Weighted Registrations Last Month</td>
+			<td>Weighted Registrations In <s:property value="month"/></td>
+			<td>Weighted Registrations Previous Month</td>
 			<td>Total Registrations</td>
 		</tr>
 	</thead>
