@@ -85,15 +85,16 @@ public abstract class SubscriptionBuilder {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
 			emailBuilder.setFromAddress("info@picsauditing.com");
-			// TODO remove this after we update the templates from username to user.name
+			// TODO remove this after we update the templates from username to
+			// user.name
 			emailBuilder.addToken("username", user.getName());
 			emailBuilder.addToken("user", user);
 
 			String seed = "u" + user.getId() + "t" + templateID;
-			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub="
-					+ subscription + "&key=" + Strings.hashUrlSafe(seed);
+			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub=" + subscription
+					+ "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
-			
+
 			emailBuilder.addToken("subscription", subscription);
 
 			emailBuilder.addAllTokens(tokens);
@@ -117,28 +118,12 @@ public abstract class SubscriptionBuilder {
 				EmailQueue emailToSend = buildEmail(user, serverName);
 
 				if (emailToSend != null) {
-					// TODO Send the email
-					if (isRequiresHTML(emailToSend.getEmailTemplate().getId())) {
-						emailToSend.setHtml(true);
-					}
 					EmailSender.send(emailToSend);
 				}
 			}
 
 			tearDown(entry.getValue());
 		}
-	}
-
-	public boolean isRequiresHTML(int templateID) {
-		if (templateID == 60)
-			return true;
-		if (templateID == 61)
-			return true;
-		if (templateID == 62)
-			return true;
-		if (templateID == 65)
-			return true;
-		return false;
 	}
 
 	public String getServerName() {
