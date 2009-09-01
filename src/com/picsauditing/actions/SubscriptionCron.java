@@ -24,6 +24,7 @@ import com.picsauditing.mail.InsuranceCertificateSubscription;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionBuilder;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class SubscriptionCron extends PicsActionSupport implements ServletRequestAware {
@@ -118,6 +119,9 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 				builder.process();
 			}
 		}
+
+		addActionMessage("Finished " + Strings.implode(subs, ", ") + " subscriptions for the time periods "
+				+ Strings.implode(timePeriods, ", "));
 
 		return SUCCESS;
 	}
