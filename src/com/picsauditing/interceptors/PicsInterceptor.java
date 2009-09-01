@@ -91,30 +91,10 @@ public class PicsInterceptor extends AbstractInterceptor {
 		return url;
 	}
 
-	
 	private String run(ActionInvocation arg0, String uri) throws Exception {
-		
-//		boolean found = false;
-//		for( String publicPage : publicPages ) {
-//			if( uri.equals(publicPage)) {
-//				found = true;
-//			}
-//		}
-//
-//		if( !found ) {
-//			protectedPages.add(uri);
-//		}
-//		else {
-//			unprotectedPages.add(uri);
-//		}
-		
-//		
-//		Object action = arg0.getAction();
-//		if( !found && action instanceof PicsActionSupport) {
-//			if ( ! ( ( ( PicsActionSupport ) action ).forceLogin() ) )
-//				return Action.LOGIN;
-//		}
 		PicsLogger.log( "executing next in chain" );
+		ServletActionContext.getResponse().setHeader("Cache-Control", "private, max-age=0");
+		
 		return arg0.invoke();
 	}
 }
