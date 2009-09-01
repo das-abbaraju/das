@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-<script language="JavaScript">
+<script type="text/javascript">
 
 function deleteEmail(id) {
 	var deleteMe = confirm('Are you sure you want to delete this email ?');
