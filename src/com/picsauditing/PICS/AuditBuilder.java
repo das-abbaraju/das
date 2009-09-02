@@ -242,7 +242,12 @@ public class AuditBuilder {
 				// Since this would probably never happen, we won't add it
 				for (AuditType auditType : auditTypeList) {
 					if (conAudit.getAuditType().equals(auditType)) {
-						needed = true;
+						if (conAudit.getAuditType().getId() == AuditType.DA 
+								&& !"Yes".equals(contractor.getOqEmployees())) {
+							needed = false;
+						}
+						else
+							needed = true;
 					}
 				}
 

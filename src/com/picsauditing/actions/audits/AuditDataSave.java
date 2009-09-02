@@ -149,12 +149,17 @@ public class AuditDataSave extends AuditActionSupport {
 				ContractorAccount contractor = tempAudit.getContractorAccount();
 				contractor.setNeedsRecalculation(true);
 				if (tempAudit.getAuditType().isPqf()) {
-					if(auditData.getQuestion().getId() == 894) {
-						// Question : Does your company have employees who are covered 
+					if (auditData.getQuestion().getId() == 894) {
+						// Question : Does your company have employees who are
+						// covered
 						// under DOT OQ requirements?
-						contractor.setOqEmployees(auditData.getAnswer());
+						if (auditData.getAnswer().equals("Yes")) {
+							contractor.setOqEmployees("Yes");
+						} else {
+							contractor.setOqEmployees("No");
+						}
 						contractor.setAuditColumns(getUser());
-					}	
+					}
 					if (auditData.getQuestion().getId() == 57) {
 						if (isValidNAICScode(auditData.getAnswer())) {
 							contractor.setNaics(new Naics());
@@ -184,8 +189,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 					auditDao.save(tempAudit);
 				}
-				if(tempAudit.getAuditType().isAnnualAddendum() 
-						&& tempAudit.getAuditStatus().isActive()) {
+				if (tempAudit.getAuditType().isAnnualAddendum() && tempAudit.getAuditStatus().isActive()) {
 					tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
 					auditDao.save(tempAudit);
 				}
@@ -211,7 +215,7 @@ public class AuditDataSave extends AuditActionSupport {
 				conAudit = auditDao.find(auditData.getAudit().getId());
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
-			
+
 			List<Integer> questionIds = new ArrayList<Integer>();
 			questionIds.add(auditData.getQuestion().getId());
 			if (auditData.getQuestion().getIsRequired().equals("Depends"))
