@@ -35,8 +35,7 @@ public class SubscriptionBuilderTest extends TestCase {
 
 	@Test
 	public void testFlagChanges() throws Exception {
-		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO,
-				flagDAO);
+		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO);
 
 		builder.process();
 	}
