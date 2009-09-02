@@ -2,11 +2,9 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 
-import javax.mail.internet.AddressException;
+import junit.framework.TestCase;
 
 import com.picsauditing.jpa.entities.EmailQueue;
-
-import junit.framework.TestCase;
 
 public class EmailSenderTest extends TestCase {
 	public EmailSenderTest(String name) {
