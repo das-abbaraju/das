@@ -331,7 +331,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getDeactivationReason()))
 			report.addFilter(new SelectFilter("deactivationReason", "a.reason = '?'", f.getDeactivationReason()));
 		
-		if (filterOn(f.getCustomAPI()) && permissions.hasPermission(OpPerms.DevelopmentEnvironment))
+		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
 			sql.addWhere(f.getCustomAPI());
 	}
 

@@ -64,10 +64,14 @@ public class UserDAO extends PicsDAO {
 	}
 
 	public List<User> findAuditors() {
+		return findByGroup(User.GROUP_AUDITOR);
+	}
+
+	public List<User> findByGroup(int groupID) {
 		List<User> userList = new ArrayList<User>();
 
 		Query query = em.createQuery("FROM User u " + "WHERE u.isActive = 'Yes' " + "AND u.isGroup = 'No' "
-				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + User.GROUP_AUDITOR + ") "
+				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + groupID + ") "
 				+ "ORDER BY u.name");
 		userList.addAll(query.getResultList());
 

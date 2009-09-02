@@ -62,41 +62,45 @@
 <br clear="all"/>
 <s:if test="showSummary">
 	<table class="report">
-		<thead><tr><td>Summary For <s:property value="summaryData.get('userName')"/></td>
+		<thead><tr><td>Summary For <s:property value="data.get(0).get('userName')"/></td>
 				<td></td>
 				<td>Accounts Managed</td>
-				<td>This Month</td>
-				<td>Last Month</td>
-				<td>Total</td>
+				<td><s:property value="currentMonthName"/></td>
+				<td><s:property value="previousMonthName"/></td>
+				<td>Registrations to Date</td>
 		</tr></thead>
 		<tbody>
 			<tr><th rowspan="2">Account Managers</th>
 				<td>Audited</td>
-				<td><s:property value="summaryData.get('AuditedAccountReps')"/></td>
-				<td><s:property value="summaryData.get('auAccThisMonth')"/></td>
-				<td><s:property value="summaryData.get('auAccLastMonth')"/></td>
-				<td><s:property value="summaryData.get('auAccTotal')"/></td>
+				<td class="right"><s:property value="summaryData.accountManager.audited.cappedOperatorCount"/> Credited<br /> 
+					(<s:property value="summaryData.accountManager.audited.accountsManaged"/> Total)</td>
+				<td class="right"><s:property value="summaryData.accountManager.audited.thisMonth"/></td>
+				<td class="right"><s:property value="summaryData.accountManager.audited.lastMonth"/></td>
+				<td class="right"><s:property value="summaryData.accountManager.audited.toDate"/></td>
 			</tr>		
 			<tr>
 				<td>Non-Audited</td>
-				<td><s:property value="summaryData.get('NonAuditedAccountReps')"/></td>
-				<td><s:property value="summaryData.get('naAccThisMonth')"/></td>
-				<td><s:property value="summaryData.get('naAccLastMonth')"/></td>
-				<td><s:property value="summaryData.get('naAccTotal')"/></td>
+				<td class="right"><s:property value="summaryData.accountManager.nonAudited.cappedOperatorCount"/> Credited<br /> 
+					(<s:property value="summaryData.accountManager.nonAudited.accountsManaged"/> Total)</td>
+				<td class="right"><s:property value="summaryData.accountManager.nonAudited.thisMonth"/></td>
+				<td class="right"><s:property value="summaryData.accountManager.nonAudited.lastMonth"/></td>
+				<td class="right"><s:property value="summaryData.accountManager.nonAudited.toDate"/></td>
 			</tr>
 			<tr><th rowspan="2">Sales Representatives</th>
 				<td>Audited</td>
-				<td><s:property value="summaryData.get('AuditedSalesReps')"/></td>
-				<td><s:property value="summaryData.get('auSalThisMonth')"/></td>
-				<td><s:property value="summaryData.get('auSalLastMonth')"/></td>
-				<td><s:property value="summaryData.get('auSalTotal')"/></td>
-			</tr>
+				<td class="right"><s:property value="summaryData.salesRep.audited.cappedOperatorCount"/> Credited<br /> 
+					(<s:property value="summaryData.salesRep.audited.accountsManaged"/> Total)</td>
+				<td class="right"><s:property value="summaryData.salesRep.audited.thisMonth"/></td>
+				<td class="right"><s:property value="summaryData.salesRep.audited.lastMonth"/></td>
+				<td class="right"><s:property value="summaryData.salesRep.audited.toDate"/></td>
+			</tr>		
 			<tr>
 				<td>Non-Audited</td>
-				<td><s:property value="summaryData.get('NonAuditedSalesReps')"/></td>
-				<td><s:property value="summaryData.get('naSalThisMonth')"/></td>
-				<td><s:property value="summaryData.get('naSalLastMonth')"/></td>
-				<td><s:property value="summaryData.get('naSalTotal')"/></td>
+				<td class="right"><s:property value="summaryData.salesRep.nonAudited.cappedOperatorCount"/> Credited<br /> 
+					(<s:property value="summaryData.salesRep.nonAudited.accountsManaged"/> Total)</td>
+				<td class="right"><s:property value="summaryData.salesRep.nonAudited.thisMonth"/></td>
+				<td class="right"><s:property value="summaryData.salesRep.nonAudited.lastMonth"/></td>
+				<td class="right"><s:property value="summaryData.salesRep.nonAudited.toDate"/></td>
 			</tr>		
 		</tbody>
 	</table>
@@ -106,43 +110,56 @@
 <table class="report">
 	<thead>
 		<tr>
-			<td>User</td>
-			<td>Account</td>
+			<td>Employee</td>
+			<td>Operator Account</td>
 			<td>Renew <br/>Date</td>
 			<td>Role</td>
 			<td>Weight(%)</td>
 			<td>Class</td>
 			<td>Start Date</td>
 			<td>End Date</td>
-			<td>Weighted Registrations In <s:property value="month"/></td>
-			<td>Weighted Registrations Previous Month</td>
-			<td>Total Registrations</td>
+			<td>Weighted Registrations in <s:property value="currentMonthName"/></td>
+			<td>Weighted Registrations in <s:property value="previousMonthName"/></td>
+			<td>Registrations to Date</td>
 		</tr>
 	</thead>
+	
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td><s:property value="get('userName')" /></td>
 			<td><a href="FacilitiesEdit.action?id=<s:property value="get('accountID')"/>&type=<s:property value="get('type')"/>"><s:property value="get('accountName')" /></a></td>
-			<td><s:date name="get('creationDate')" format="MM/dd"/></td>
+			<td class="center"><s:date name="get('creationDate')" format="MM/dd"/></td>
 			<td><s:property value="@com.picsauditing.actions.users.UserAccountRole@getDesc(get('role'))"/></td>
-			<td><s:property value="get('ownerPercent')" /></td>
+			<td class="right"><s:property value="get('ownerPercent')" /></td>
 			<td><s:if test="get('doContractorsPay').toString() == 'Yes'">
 					<s:if test="get('audited') == 1">Audited</s:if>
 				</s:if>
 				<s:else>Free</s:else>
 				<s:if test="get('audited') == null">Non-Audited</s:if>
 			</td>
-			<td><s:date name="get('startDate')" format="MM/dd/yy"/></td>
-			<td><s:date name="get('endDate')" format="MM/dd/yy"/></td>
-			<td><s:property value="@java.lang.Math@round((get('regisThisMonth')*get('ownerPercent'))/100)" /> Credited 
-			 <br/>(<s:property value="get('regisThisMonth')" /> Total) </td>
-			<td><s:property value="@java.lang.Math@round((get('regisLastMonth')*get('ownerPercent'))/100)" /> Credited 
-			 <br/>(<s:property value="get('regisLastMonth')" /> Total)</td>
-			<td><s:property value="get('totalCons')" /></td>
+			<td class="center"><s:date name="get('startDate')" format="MM/dd/yy"/></td>
+			<td class="center"><s:date name="get('endDate')" format="MM/dd/yy"/></td>
+			<td class="right"><s:property value="@java.lang.Math@round((get('regisThisMonth')*get('ownerPercent'))/100)" /> Credited
+			 <br/>(<a href=""><s:property value="get('regisThisMonth')" /> Total</a>)
+			 1<s:property value="urlCurrentMonth(data)" escape="false"/>
+			 2<s:property value="getUrlCurrentMonth(data)" />
+			 3<s:property value="%{getUrlCurrentMonth(data)}" escape="false"/>
+			 
+			 </td>
+			<td class="right"><s:property value="@java.lang.Math@round((get('regisLastMonth')*get('ownerPercent'))/100)" /> Credited 
+			 <br/>(<a href="<s:property value="getUrlCurrentMonth(data)" escape="false"/>"><s:property value="get('regisLastMonth')" /> Total</a>)</td>
+			<td class="right"><a href=""><s:property value="get('totalCons')" /></a></td>
 		</tr>
 	</s:iterator>
+	<tr>
+		<td colspan="8" class="right" style="font-weight: bold;">Totals</td>
+		<td class="right" style="font-weight: bold;"><s:property value="dataTotals.thisMonthCredited" /> Credited 
+		 <br/>(<s:property value="dataTotals.thisMonthTotal" /> Total) </td>
+		<td class="right" style="font-weight: bold;"><s:property value="dataTotals.lastMonthCredited" /> Credited 
+		 <br/>(<s:property value="dataTotals.lastMonthTotal" /> Total)</td>
+		<td class="right" style="font-weight: bold;"><s:property value="dataTotals.toDate" /></td>
+	</tr>
+	
 </table>
 </body>
 </html>
-<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
-

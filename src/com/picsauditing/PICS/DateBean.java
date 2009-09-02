@@ -63,22 +63,28 @@ public class DateBean {
 		if (dateString == null)
 			return null;
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String temp = "";
 		if ("".equals(dateString) || NULL_DATE.equals(dateString))
 			return NULL_DATE_DB;
 		try {
 			java.util.Date tempDate = showFormat.parse(dateString);
-			temp = DBFormat.format(tempDate);
+			return toDBFormat(tempDate);
 		} catch (Exception e) {
-			System.out.println("Invalid DB Date format in DateBean.toDBformat(): failed converting " + dateString
-					+ " to " + temp);
-			temp = NULL_DATE_DB;
-		}// catch
-		// System.out.println("Valid DB Date format in DateBean.toDBformat():
-		// "+dateString+" to "+temp);
-		return temp;
-	}// toDBFormat
+			return null;
+		}
+	}
+	
+	public static String toDBFormat(Date fromDate) throws Exception {
+		if (fromDate == null)
+			return null;
+		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			return DBFormat.format(fromDate);
+		} catch (Exception e) {
+			System.out.println("Invalid DB Date format in DateBean.toDBformat(): failed converting " + fromDate);
+			return null;
+		}
+	}
+	
 
 	public static String toShowFormat(Object date) throws Exception {
 		if (date == null)

@@ -1,11 +1,15 @@
 package com.picsauditing.actions.report;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
@@ -21,22 +25,31 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportSalesRepresentatives extends PicsActionSupport {
+	/**
+	 * The operator cap a sales rep/AM gets credit for each corporate account
+	 */
+	static private Double MAX_ACCOUNTS = 20d;
+	
 	Database db = new Database();
 	private List<BasicDynaBean> data;
-	private List<BasicDynaBean> summary;
-	protected String where = "1";
+	private String where = "1";
 	protected int[] operator;
 	protected int[] accountUser;
 	protected UserAccountRole responsibility;
+	protected SummaryData summaryData = null;
+	protected boolean showSummary = false;
+	protected DataTotals dataTotals;
+	private int month = 0;
+	private Calendar calCurrent = Calendar.getInstance();
+	private Calendar calPrevious = Calendar.getInstance();
+	
 	protected OperatorAccountDAO operatorAccountDAO = null;
 	protected UserDAO userDAO = null;
-	protected Map<String, Object> summaryData = null;
-	protected boolean showSummary = false;
-	protected String month = null;
 
 	public ReportSalesRepresentatives(OperatorAccountDAO operatorAccountDAO, UserDAO userDAO) {
 		this.operatorAccountDAO = operatorAccountDAO;
@@ -81,215 +94,164 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			}
 			where += " AND accountID IN (" + Strings.implode(operatorsIds, ",") + ")";
 		}
+		
+		OperatorSalesSQL sqlAllOperators = new OperatorSalesSQL(calCurrent.getTime(), "0", "0", "0");
+		
+		// TODO pass in the new Date() effectiveDate
+		OperatorContractorSalesSQL sqlRegistrationsThisMonth = new OperatorContractorSalesSQL(calCurrent.getTime(), "count(*)", "0", "0");
+		sqlRegistrationsThisMonth.addWhere("c.membershipDate >= au.startDate");
+		sqlRegistrationsThisMonth.addWhere("MONTH(c.membershipDate) = " + (calCurrent.get(Calendar.MONTH) + 1));
+		sqlRegistrationsThisMonth.addWhere("YEAR(c.membershipDate) = " + calCurrent.get(Calendar.YEAR));
 
-		String sql = " SELECT accountID, type, userID, userName, accountName, audited.audited, o.doContractorsPay ,creationDate, role, ownerPercent, startDate, endDate, SUM(regisThisMonth) regisThisMonth, SUM(regisLastMonth) regisLastMonth, SUM(totalCons) totalCons, auID"
-				+ " FROM ("
+		// TODO change this to previous month!
+		OperatorContractorSalesSQL sqlRegistrationsLastMonth = new OperatorContractorSalesSQL(calPrevious.getTime(), "0", "count(*)", "0");
+		sqlRegistrationsLastMonth.addWhere("c.membershipDate >= au.startDate");
+		sqlRegistrationsLastMonth.addWhere("MONTH(c.membershipDate) = " + (calPrevious.get(Calendar.MONTH) + 1));
+		sqlRegistrationsLastMonth.addWhere("YEAR(c.membershipDate) = " + calPrevious.get(Calendar.YEAR));
 
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, 0 regisThisMonth, 0 regisLastMonth, 0 totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " UNION "
-
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, count(*) AS regisThisMonth, 0 regisLastMonth, 0 totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " JOIN contractor_info c ON c.requestedbyid = a.id "
-				+ " JOIN accounts con ON con.id = c.id "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " AND con.active = 'Y' "
-				+ " AND c.membershipDate > au.startDate " + " AND MONTHNAME(c.membershipDate) = '"
-				+ getMonth()
-				+ "'"
-				+ " AND YEAR(c.membershipDate) = "
-				+ getYear()
-				+ " GROUP BY a.id, au.id "
-				+
-
-				" UNION "
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, 0 regisThisMonth, count(*) AS regisLastMonth, 0 totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " JOIN contractor_info c ON c.requestedbyid = a.id "
-				+ " JOIN accounts con ON con.id = c.id "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " AND con.active = 'Y' "
-				+ " AND c.membershipDate > au.startDate "
-				+ " AND MONTHNAME(c.membershipDate) = '"
-				+ getMonth()
-				+ "'"
-				+ " AND YEAR(c.membershipDate) = "
-				+ getYear()
-				+ " GROUP BY a.id, au.id "
-				+
-
-				" UNION "
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, 0 regisThisMonth, 0 regisLastMonth, COUNT(*) AS totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " JOIN contractor_info c ON c.requestedbyid = a.id "
-				+ " JOIN accounts con ON con.id = c.id "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " AND con.active = 'Y' "
-				+ " AND c.membershipDate BETWEEN au.startDate AND au.endDate "
-				+ " GROUP BY a.id, au.id ) t "
-
+		OperatorContractorSalesSQL sqlRegistrationsToDate = new OperatorContractorSalesSQL(calCurrent.getTime(), "0", "0", "count(*)");
+		sqlRegistrationsToDate.addWhere("c.membershipDate BETWEEN au.startDate AND au.endDate");
+		
+		// TODO consider putting the dynamic "where" into the OperatorSalesSQL object
+		String sql = " SELECT accountID, type, userID, userName, accountName, audited.audited, o.doContractorsPay, " +
+					"creationDate, role, ownerPercent, startDate, endDate, SUM(regisThisMonth) regisThisMonth, " +
+					"SUM(regisLastMonth) regisLastMonth, SUM(totalCons) totalCons, auID, corp.id AS corporateID "
+				+ " FROM (" + sqlAllOperators
+				+ " UNION " + sqlRegistrationsThisMonth
+				+ " UNION " + sqlRegistrationsLastMonth
+				+ " UNION " + sqlRegistrationsToDate
+				+ " ) t "
 				+ " LEFT JOIN (SELECT distinct opID, 1 audited FROM audit_operator "
 				+ " JOIN audit_type at on at.id = audittypeid "
 				+ " WHERE (auditTypeID IN (2,3,6) OR at.classType = 'IM') AND minRiskLevel > 0 AND canSee = 1) audited "
 				+ " ON audited.opID = accountID "
 				+ " JOIN operators o on o.id = accountID "
-				+ " WHERE "
-				+ where
-				+ " GROUP BY accountID, auID " + " ORDER BY userName, role, accountName";
+				+ " LEFT JOIN (SELECT f.opID, c.id FROM facilities f JOIN operators c ON f.corporateID = c.id AND c.primaryCorporate = 1) corp ON o.id = corp.opID "
+				+ " WHERE "	+ where
+				+ " GROUP BY accountID, auID " 
+				+ " ORDER BY userName, role, accountName";
 
 		data = db.select(sql, true);
+		
+		dataTotals = new DataTotals();
+		for(DynaBean bean : data) {
+			dataTotals.thisMonthCredited += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
+			dataTotals.thisMonthTotal += parse(bean.get("regisThisMonth"));
+			dataTotals.lastMonthCredited += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
+			dataTotals.lastMonthTotal += parse(bean.get("regisLastMonth"));
+			dataTotals.toDate += parse(bean.get("totalCons"));
+		}
 
 		return SUCCESS;
 	}
 
-	public Map<String, Object> getSummaryData() throws SQLException {
+	public class DataTotals {
+		public double thisMonthCredited = 0;
+		public double lastMonthCredited = 0;
+		public double thisMonthTotal = 0;
+		public double lastMonthTotal = 0;
+		public int toDate = 0;
+	}
+
+	public SummaryData getSummaryData() {
 		if (summaryData == null) {
-			summary = db.select(getSummarySql(), false);
-
-			summaryData = new HashMap<String, Object>();
-
-			Map<Integer, Double> auAccCap = new HashMap<Integer, Double>();
-			Map<Integer, Double> naAccountCap = new HashMap<Integer, Double>();
-			Map<Integer, Double> auSalesCap = new HashMap<Integer, Double>();
-			Map<Integer, Double> naSalesCap = new HashMap<Integer, Double>();
-
-			double auAccountReps = 0;
-			double naAccountReps = 0;
-			double auSalesReps = 0;
-			double naSalesReps = 0;
-
-			double auAccThisMonth = 0;
-			double naAccThisMonth = 0;
-			double auSalThisMonth = 0;
-			double naSalThisMonth = 0;
-
-			double auAccLastMonth = 0;
-			double naAccLastMonth = 0;
-			double auSalLastMonth = 0;
-			double naSalLastMonth = 0;
-
-			double auAccTotal = 0;
-			double naAccTotal = 0;
-			double auSalTotal = 0;
-			double naSalTotal = 0;
-
-			summaryData.put("userName", summary.get(0).get("userName"));
-			for (DynaBean bean : summary) {
-				if (bean.get("role").toString().equals(UserAccountRole.PICSAccountRep.toString())) {
-					if (bean.get("doContractorsPay").toString().equals("Yes")) {
+			summaryData = new SummaryData();
+			
+			for (DynaBean bean : data) {
+				if (bean.get("doContractorsPay").toString().equals("Yes")) {
+					// Ignore all free operator accounts
+					if (bean.get("role").toString().equals(UserAccountRole.PICSAccountRep.toString())) {
 						if (bean.get("audited") != null) {
-							if (bean.get("isCorporate") == null) {
-								auAccCap.put((Integer) bean.get("accountID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							} else if (bean.get("isCorporate").toString().equals("1")) {
-								auAccCap.put((Integer) bean.get("corporateID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							}
-							auAccountReps += calcPercentage(1, bean.get("ownerPercent"));
-							auAccThisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
-							auAccLastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
-							auAccTotal += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
+							summaryData.accountManager.audited.setBean(bean);
 						} else {
-							if (bean.get("isCorporate") == null) {
-								naAccountCap.put((Integer) bean.get("accountID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							} else if (bean.get("isCorporate").equals("1")) {
-								naAccountCap.put((Integer) bean.get("corporateID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							}
-							naAccountReps += calcPercentage(1, bean.get("ownerPercent"));
-							naAccThisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
-							naAccLastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
-							naAccTotal += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
+							// Non-audited
+							summaryData.accountManager.nonAudited.setBean(bean);
 						}
-					}
-				} else {
-					if (bean.get("doContractorsPay").toString().equals("Yes")) {
+					} else {
+						// Sales Reps
 						if (bean.get("audited") != null) {
-							if (bean.get("isCorporate") == null) {
-								auSalesCap.put((Integer) bean.get("accountID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							} else if (bean.get("isCorporate").equals("1")) {
-								auSalesCap.put((Integer) bean.get("corporateID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							}
-							auSalesReps += calcPercentage(1, bean.get("ownerPercent"));
-							auSalThisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
-							auSalLastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
-							auSalTotal += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
+							summaryData.salesRep.audited.setBean(bean);
 						} else {
-							if (bean.get("isCorporate") == null) {
-								naSalesCap.put((Integer) bean.get("accountID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							} else if (bean.get("isCorporate").equals("1")) {
-								naSalesCap.put((Integer) bean.get("corporateID"), calcPercentage(1, bean
-										.get("ownerPercent")));
-							}
-							naSalesReps += calcPercentage(1, bean.get("ownerPercent"));
-							naSalThisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
-							naSalLastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
-							naSalTotal += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
+							// Non-audited
+							summaryData.salesRep.nonAudited.setBean(bean);
 						}
 					}
 				}
 			}
-
-			summaryData.put("AuditedAccountReps", auAccountReps);
-			summaryData.put("NonAuditedAccountReps", naAccountReps);
-			summaryData.put("AuditedSalesReps", auSalesReps);
-			summaryData.put("NonAuditedSalesReps", naSalesReps);
-
-//			summaryData.put("AuditedAccountCapReps", auAccountReps);
-//			summaryData.put("NonAuditedAccountCapReps", naAccountReps);
-//			summaryData.put("AuditedSalesCapsReps", auSalesReps);
-//			summaryData.put("NonAuditedSalesCapsReps", naSalesReps);
-
-			summaryData.put("auAccThisMonth", auAccThisMonth);
-			summaryData.put("naAccThisMonth", naAccThisMonth);
-			summaryData.put("auSalThisMonth", auSalThisMonth);
-			summaryData.put("naSalThisMonth", naSalThisMonth);
-
-			summaryData.put("auAccLastMonth", auAccLastMonth);
-			summaryData.put("naAccLastMonth", naAccLastMonth);
-			summaryData.put("auSalLastMonth", auSalLastMonth);
-			summaryData.put("naSalLastMonth", naSalLastMonth);
-
-			summaryData.put("auAccTotal", auAccTotal);
-			summaryData.put("naAccTotal", naAccTotal);
-			summaryData.put("auSalTotal", auSalTotal);
-			summaryData.put("naSalTotal", naSalTotal);
 		}
 		return summaryData;
+	}
+	
+	public class SummaryData {
+		public UserRoleType accountManager = new UserRoleType();
+		public UserRoleType salesRep = new UserRoleType();
+		
+		public class UserRoleType {
+			public AuditType audited = new AuditType();
+			public AuditType nonAudited = new AuditType();
+			
+			public class AuditType {
+				public double accountsManaged = 0;
+				public double thisMonth = 0;
+				public double lastMonth = 0;
+				public double toDate = 0;
+				
+				private Map<Integer, List<Double>> corporateMap = new HashMap<Integer, List<Double>>();
+				private double singleOperators;
+				
+				public void setBean(DynaBean bean) {
+					if (bean.get("corporateID") == null) {
+						singleOperators += calcPercentage(1, bean.get("ownerPercent"));
+					} else {
+						double value = calcPercentage(1, bean.get("ownerPercent"));
+						int corporateID = (Integer) bean.get("corporateID");
+						if (!corporateMap.containsKey(corporateID))
+							corporateMap.put(corporateID, new ArrayList<Double>());
+						corporateMap.get(corporateID).add(value);
+					}
+					
+					accountsManaged += calcPercentage(1, bean.get("ownerPercent"));
+					thisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
+					lastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
+					toDate += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
+				}
+				
+				public double getCappedOperatorCount() {
+					
+					double total = singleOperators;
+					
+					for(Integer corporateID : corporateMap.keySet()) {
+						int rawCount = corporateMap.get(corporateID).size();
+						double totalPercent = 0;
+						for(Double ownerPercent : corporateMap.get(corporateID)) {
+							totalPercent += ownerPercent;
+						}
+						if (rawCount > 20)
+							total += 20 * totalPercent / rawCount;
+						else {
+							// rawCount factors out
+							// total += rawCount * totalPercent / rawCount;
+							total += totalPercent;
+						}
+					}
+
+					return total;
+				}
+
+			}
+		}
+	}
+	
+	public DataTotals getDataTotals() {
+		return dataTotals;
 	}
 
 	public List<BasicDynaBean> getData() {
 		return data;
 	}
 
-	public List<BasicDynaBean> getSummary() {
-		return summary;
-	}
-
 	public boolean isShowSummary() {
 		return showSummary;
-	}
-
-	public int getYear() {
-		return DateBean.getCurrentYear();
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
@@ -297,7 +259,8 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	}
 
 	public List<User> getUserList() throws Exception {
-		return userDAO.findWhere("isActive='Yes' AND isGroup = 'No' AND account.id = 1100");
+		// Get PICS Sales Reps
+		return userDAO.findByGroup(10801);
 	}
 
 	public UserAccountRole[] getRoleList() {
@@ -328,6 +291,58 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 		this.responsibility = responsibility;
 	}
 
+	public Map<Integer, String> getMonthsList() {
+		Map<Integer, String> list = new TreeMap<Integer, String>();
+		Calendar cal = Calendar.getInstance();
+		for(int m=0; m < 6; m++) {
+			list.put(m, cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US) + " " + cal.get(Calendar.YEAR));
+			cal.add(Calendar.MONTH, -1);
+		}
+		return list;
+	}
+
+	public int getMonth() {
+		return month;
+	}
+	
+	public String getCurrentMonthName() {
+		return calCurrent.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
+	}
+
+	public String getPreviousMonthName() {
+		return calPrevious.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
+	}
+	
+	public final String getUrlCurrentMonth(DynaBean bean) {
+		return getContractorListUrl(bean) + 
+			" AND c.membershipDate >= '" + bean.get("startDate") + "'" +
+			" AND MONTH(c.membershipDate) = " + (calCurrent.get(Calendar.MONTH) + 1) +
+			" AND YEAR(c.membershipDate) = " + calCurrent.get(Calendar.YEAR);
+	}
+
+	public final String getUrlPreviousMonth(DynaBean bean) {
+		return getContractorListUrl(bean) + 
+			" AND c.membershipDate >= '" + bean.get("startDate") + "'" +
+			" AND MONTH(c.membershipDate) = " + (calPrevious.get(Calendar.MONTH) + 1) +
+			" AND YEAR(c.membershipDate) = " + calPrevious.get(Calendar.YEAR);
+	}
+
+	public final String getUrlToDate(DynaBean bean) {
+		return getContractorListUrl(bean) + 
+			" AND c.membershipDate BETWEEN '" + bean.get("startDate") + "' AND '" + bean.get("endDate") + "'";
+	}
+	
+	private String getContractorListUrl(DynaBean bean) {
+		return "ContractorList.action?filter.visible=Y&filter.customAPI=c.mustPay='Yes'" + 
+			" AND c.requestedbyid=" + bean.get("accountID");
+	}
+
+	public void setMonth(int month) {
+		this.month = month;
+		calCurrent.add(Calendar.MONTH, -1 * month);
+		calPrevious.add(Calendar.MONTH, -1 * (month + 1));
+	}
+
 	public boolean filterOn(int[] value) {
 		if (value == null)
 			return false;
@@ -339,95 +354,55 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	}
 
 	public double calcPercentage(Object total, Object percent) {
-		return (Double.parseDouble(total.toString()) * Double.parseDouble(percent.toString())) / 100;
+		return parse(total) * parse(percent) / 100;
+	}
+	
+	private double parse(Object value) {
+		return Double.parseDouble(value.toString());
 	}
 
-	public String getMonth() {
-		if (month == null) {
-			return DateBean.getCurrentMonthName();
+	private class OperatorSalesSQL extends SelectSQL {
+		public OperatorSalesSQL(Date effectiveDate, String regisThisMonth, String regisLastMonth, String totalCons) {
+			super("users u");
+			addJoin("JOIN account_user au ON au.userid = u.id");
+			addJoin("JOIN accounts a ON a.id = au.accountid");
+			addWhere("a.active = 'Y'");
+			
+			String effectiveDateString;
+			try {
+				effectiveDateString = "'" + DateBean.toDBFormat(effectiveDate) + "'";
+			} catch (Exception e) {
+				effectiveDateString = "NOW()";
+			}
+			addWhere("au.startDate IS NULL OR au.startDate <= " + effectiveDateString);
+			addWhere("au.endDate IS NULL OR au.endDate >= " + effectiveDateString);
+			addField("a.id as accountID");
+			addField("a.type");
+			addField("u.id AS userID");
+			addField("u.name AS userName");
+			addField("a.name AS accountName");
+			addField("a.creationDate");
+			addField("au.role");
+			addField("au.ownerPercent");
+			addField("au.startDate");
+			addField("au.endDate");
+			addField("au.id as auID");
+			addField(regisThisMonth + " AS regisThisMonth");
+			addField(regisLastMonth + " AS regisLastMonth");
+			addField(totalCons + " AS totalCons");
 		}
-		return month;
 	}
-
-	public void setMonth(String month) {
-		this.month = month;
+	
+	private class OperatorContractorSalesSQL extends OperatorSalesSQL {
+		public OperatorContractorSalesSQL(Date effectiveDate, String regisThisMonth, String regisLastMonth, String totalCons) {
+			super(effectiveDate, regisThisMonth, regisLastMonth, totalCons);
+			addJoin("JOIN contractor_info c ON c.requestedbyid = a.id");
+			addJoin("JOIN accounts con ON con.id = c.id");
+			addWhere("con.active = 'Y'");
+			addWhere("c.mustPay = 'Yes'");
+			addGroupBy("a.id");
+			addGroupBy("au.id");
+		}
 	}
-
-	public String[] getMonthsList() {
-		return DateBean.MonthNames;
-	}
-
-	private String getSummarySql() {
-		String sql = " SELECT accountID, type, userID, userName, accountName, audited.audited, o.doContractorsPay ,creationDate, role, ownerPercent, startDate, endDate, SUM(regisThisMonth) regisThisMonth, SUM(regisLastMonth) regisLastMonth, SUM(totalCons) totalCons, auID, corporate.id corporateID, corporate.primarycorporate isCorporate"
-				+ " FROM ("
-
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, 0 regisThisMonth, 0 regisLastMonth, 0 totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " UNION "
-
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, count(*) AS regisThisMonth, 0 regisLastMonth, 0 totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " JOIN contractor_info c ON c.requestedbyid = a.id "
-				+ " JOIN accounts con ON con.id = c.id "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " AND con.active = 'Y' "
-				+ " AND c.membershipDate > au.startDate " + " AND MONTHNAME(c.membershipDate) = '"
-				+ getMonth()
-				+ "'"
-				+ " AND YEAR(c.membershipDate) = "
-				+ getYear()
-				+ " GROUP BY a.id, au.id "
-				+
-
-				" UNION "
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, 0 regisThisMonth, count(*) AS regisLastMonth, 0 totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " JOIN contractor_info c ON c.requestedbyid = a.id "
-				+ " JOIN accounts con ON con.id = c.id "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " AND con.active = 'Y' "
-				+ " AND c.membershipDate > au.startDate "
-				+ " AND MONTHNAME(c.membershipDate) = '"
-				+ getMonth()
-				+ "'"
-				+ " AND YEAR(c.membershipDate) = "
-				+ getYear()
-				+ " GROUP BY a.id, au.id "
-				+
-
-				" UNION "
-				+ "Select a.id as accountID, a.type, u.id AS userID, u.name AS userName, a.name AS accountName, a.creationDate, au.role, au.ownerPercent, au.startDate, au.endDate, 0 regisThisMonth, 0 regisLastMonth, COUNT(*) AS totalCons, au.id AS auID"
-				+ " FROM Users u JOIN account_user au ON au.userid = u.id "
-				+ " JOIN accounts a ON a.id = au.accountid "
-				+ " JOIN contractor_info c ON c.requestedbyid = a.id "
-				+ " JOIN accounts con ON con.id = c.id "
-				+ " AND a.active = 'Y' "
-				+ " AND (au.startDate IS NULL OR au.startDate <= Now()) "
-				+ " AND (au.endDate IS NULL OR au.endDate >= NOW()) "
-				+ " AND con.active = 'Y' "
-				+ " AND c.membershipDate BETWEEN au.startDate AND au.endDate "
-				+ " GROUP BY a.id, au.id ) t "
-
-				+ " LEFT JOIN (SELECT distinct opID, 1 audited FROM audit_operator "
-				+ " JOIN audit_type at on at.id = audittypeid "
-				+ " WHERE (auditTypeID IN (2,3,6) OR at.classType = 'IM') AND minRiskLevel > 0 AND canSee = 1) audited "
-				+ " ON audited.opID = accountID "
-				+ " JOIN operators o on o.id = accountID "
-				+ " LEFT JOIN operators corporate on corporate.id = o.parentid "
-				+ " WHERE "
-				+ where
-				+ " GROUP BY accountID, auID " + " ORDER BY userName, role, accountName";
-
-		return sql;
-	}
+	
 }
