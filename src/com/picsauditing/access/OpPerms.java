@@ -72,10 +72,13 @@ public enum OpPerms {
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails"),
 	EmailQueue("Email Queue","Allow PICS Employees to view the report for Email Queue"),
 	SwitchUser("Switch to User", "Can auto login as another user", false, false),
-	
+
+	ManageWebcam("Webcam Management", "Can view and edit PICS' inventory of web cameras"),
+
 	//Manage User Account Roles
 	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true);
 
+	
 	private String description;
 	private String helpText;
 	private boolean usesView=true;

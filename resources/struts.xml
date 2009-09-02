@@ -1149,6 +1149,12 @@
 			class="com.picsauditing.actions.operators.FlagOshaCriteriaAction">
 			<result>struts/operators/op_oshaflag_criteria_view.jsp</result>
 		</action>
+		
+		<action name="ManageWebcams"
+			class="com.picsauditing.actions.customerservice.ManageWebcams">
+			<result>struts/customerservice/manage_webcams.jsp</result>
+		</action>
+		
 
 		<action name="Trevor"
 			class="com.picsauditing.actions.Trevor">

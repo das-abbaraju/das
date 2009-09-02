@@ -95,6 +95,9 @@ public class PicsMenu {
 		if (permissions.isAdmin()) {
 			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");
 		}
+		
+		if (permissions.hasPermission(OpPerms.ManageWebcam))
+			subMenu.addChild("Manage Webcams", "ManageWebcams.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
