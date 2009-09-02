@@ -74,7 +74,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 	
 	@Transient
-	public Address getFromAddress2() throws AddressException {
+	public InternetAddress getFromAddress2() throws AddressException {
 		if (Strings.isEmpty(fromAddress))
 			return null;
 		return new InternetAddress(fromAddress);

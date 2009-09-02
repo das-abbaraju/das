@@ -46,23 +46,27 @@ public class GMailSender extends javax.mail.Authenticator {
 
 	public synchronized void sendMail(EmailQueue email) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
-		
-		DataHandler handler = new DataHandler(new ByteArrayDataSource(email.getBody()
-				.getBytes(), email.isHtml() ? "text/html" : "text/plain"));
+
+		DataHandler handler = new DataHandler(new ByteArrayDataSource(email.getBody().getBytes(),
+				email.isHtml() ? "text/html" : "text/plain"));
 
 		message.setSentDate(email.getCreationDate());
-		message.setSender(email.getFromAddress2());
-		
-		InternetAddress[] replyTo = {new InternetAddress(email.getFromAddress())};
-		message.setReplyTo(replyTo);
-		
+		//message.setSender(new InternetAddress(user));
+		message.setFrom(email.getFromAddress2());
+
+		if (!email.getFromAddress2().getAddress().equals(user)) {
+			InternetAddress[] replyTo = { new InternetAddress(email.getFromAddress()) };
+			message.setReplyTo(replyTo);
+		}
+
 		message.setRecipients(RecipientType.TO, email.getToAddresses2());
 		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
 		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
 
 		message.setSubject(email.getSubject());
 		message.setDataHandler(handler);
-		// DataSource ds = new ByteArrayDataSource(email.getBody().getBytes(), email.isHtml() ? "text/html" : "text/plain");
+		// DataSource ds = new ByteArrayDataSource(email.getBody().getBytes(), email.isHtml() ? "text/html" :
+		// "text/plain");
 		// message.setDataHandler(new DataHandler(ds));
 		Transport.send(message);
 	}
