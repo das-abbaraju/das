@@ -18,11 +18,13 @@ public class ManageWebcams extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
+		loadPermissions();
+		
 		tryPermissions(OpPerms.ManageWebcam);
 
 		list = webcamDAO.findWhere("");
 
-		return super.execute();
+		return SUCCESS;
 	}
 	
 	public List<Webcam> getList() {
