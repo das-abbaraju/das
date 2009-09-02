@@ -974,6 +974,13 @@
 		<action name="EmailQueueList"
 			class="com.picsauditing.mail.EmailQueueList">
 			<result>struts/mail/email_queue_list.jsp</result>
+			<result name="preview">struts/mail/email_queue_preview.jsp</result>
+		</action>
+
+		<action name="EmailQueueListAjax"
+			class="com.picsauditing.mail.EmailQueueList">
+			<result>struts/mail/email_queue_list.jsp</result>
+			<result name="preview">struts/mail/email_queue_preview.jsp</result>
 		</action>
 
 		<action name="EmailTemplateSaveAjax"

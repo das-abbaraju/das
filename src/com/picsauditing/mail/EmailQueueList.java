@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 public class EmailQueueList extends PicsActionSupport {
 	protected List<EmailQueue> emails = null;
 	protected List<EmailQueue> emailsInQueue = new ArrayList<EmailQueue>();
+	protected EmailQueue preview;
 	protected int id;
 	protected EmailQueueDAO emailQueueDAO;
 
@@ -27,6 +28,12 @@ public class EmailQueueList extends PicsActionSupport {
 		if ("delete".equals(button)) {
 			permissions.tryPermission(OpPerms.EmailQueue, OpType.Delete);
 			emailQueueDAO.remove(id);
+			return BLANK;
+		}
+		if ("preview".equals(button)) {
+			permissions.tryPermission(OpPerms.EmailQueue);
+			preview = emailQueueDAO.find(id);
+			return "preview";
 		}
 		if (permissions.hasPermission(OpPerms.AllContractors) && permissions.hasPermission(OpPerms.AllOperators))
 			emails = emailQueueDAO.getPendingEmails("", 50);
@@ -45,6 +52,14 @@ public class EmailQueueList extends PicsActionSupport {
 
 	public List<EmailQueue> getEmailsInQueue() {
 		return emailsInQueue;
+	}
+
+	public EmailQueue getPreview() {
+		return preview;
+	}
+
+	public void setPreview(EmailQueue preview) {
+		this.preview = preview;
 	}
 
 	public int getId() {
