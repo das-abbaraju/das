@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
@@ -118,7 +119,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			note.setAccount(co.getContractorAccount());
 			note.setAuditColumns(getUser());
 			note.setNoteCategory(noteCategory);
-			note.setViewableByOperator(co.getOperatorAccount());
+			note.setViewableByOperator(permissions);
 			note.setCanContractorView(true);
 			note.setBody(forceNote);
 

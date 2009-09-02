@@ -118,7 +118,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		Note note = new Note();
 		note.setAuditColumns(permissions);
 		note.setAccount(cao.getAudit().getContractorAccount());
-		note.setViewableByOperator(cao.getOperator());
+		note.setViewableByOperator(permissions);
 		note.setCanContractorView(true);
 		note.setNoteCategory(NoteCategory.Insurance);
 		note.setSummary(cao.getAudit().getAuditType().getAuditName() + " status changed to " + cao.getStatus()

@@ -22,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.Permissions;
 
 @SuppressWarnings("serial")
 @Entity
@@ -95,11 +96,8 @@ public class Note extends BaseTable implements java.io.Serializable {
 		return viewableBy;
 	}
 
-	public void setViewableByOperator(OperatorAccount operator) {
-		if (operator != null && operator.getParent() != null)
-			setViewableByOperator(operator.getParent());
-		else
-			this.viewableBy = operator;
+	public void setViewableByOperator(Permissions permissions) {
+		setViewableById(permissions.getTopAccountID());
 	}
 
 	public void setViewableBy(Account viewableBy) {

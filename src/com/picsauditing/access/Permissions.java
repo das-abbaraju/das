@@ -40,6 +40,7 @@ public class Permissions implements Serializable {
 	private String username;
 	private String name;
 	private int accountID;
+	private int topAccountID;
 	private String accountName;
 	private String accountType;
 	private String email;
@@ -62,6 +63,7 @@ public class Permissions implements Serializable {
 		approvesRelationships = false;
 
 		adminID = 0;
+		topAccountID = 0;
 
 		permissions.clear();
 		groups.clear();
@@ -97,6 +99,7 @@ public class Permissions implements Serializable {
 	public void setAccountPerms(User user) throws Exception {
 		try {
 			accountID = user.getAccount().getId();
+			topAccountID = accountID;
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			accountActive = user.getAccount().isActiveB();
@@ -105,9 +108,16 @@ public class Permissions implements Serializable {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				
 				if (isOperator()) {
+					if(operator.getParent() != null)
+						topAccountID = operator.getParent().getId();
+					
 					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
-					for (Facility facility : operator.getCorporateFacilities())
+					for (Facility facility : operator.getCorporateFacilities()) {
 						corporateParent.add(facility.getCorporate().getId());
+						if(facility.getCorporate().isPrimaryCorporate()) {
+							topAccountID = facility.getCorporate().getId();
+						}	
+					}
 					
 					if (operator.getCanSeeInsurance().isTrue())
 						visibleCAOs.add(operator.getInheritInsuranceCriteria().getId());
@@ -121,7 +131,6 @@ public class Permissions implements Serializable {
 						if (facility.getOperator().getCanSeeInsurance().isTrue())
 							visibleCAOs.add(facility.getOperator().getInheritInsuranceCriteria().getId());
 
-						
 						/* NOTE!!! There is a big hole here with this logic
 						 * If corporate has two operators A & B
 						 * A uses PQF only
@@ -185,6 +194,10 @@ public class Permissions implements Serializable {
 
 	public String getAccountIdString() {
 		return Integer.toString(accountID);
+	}
+
+	public int getTopAccountID() {
+		return topAccountID;
 	}
 
 	public String getAccountType() {
@@ -410,8 +423,10 @@ public class Permissions implements Serializable {
 		visibleAccounts.add(accountID);
 		if (isCorporate())
 			visibleAccounts.addAll(operatorChildren);
-		if (isOperator())
+		if (isOperator()) {
+			visibleAccounts.add(topAccountID);
 			visibleAccounts.addAll(corporateParent);
+		}	
 		return visibleAccounts;
 	}
 
