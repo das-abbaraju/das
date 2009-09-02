@@ -44,7 +44,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		this.userSwitchDao = userSwitchDao;
 		this.emailSubscriptionDAO = emailSubscriptionDAO;
 	}
-	
+
 	public void prepare() throws Exception {
 		getPermissions();
 		u = dao.find(permissions.getUserId());
@@ -56,13 +56,13 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 		permissions.tryPermission(OpPerms.EditProfile);
 
-		//u = dao.find(permissions.getUserId());
+		// u = dao.find(permissions.getUserId());
 
 		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
 			addActionError("Another user is already using the username: " + u.getUsername());
 			return SUCCESS;
 		}
-		
+
 		if (!Strings.validUserName(u.getUsername().trim())) {
 			addActionError("This username is not valid.  Please enter a valid Username.");
 			return SUCCESS;
@@ -134,19 +134,21 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public List<EmailSubscription> getEList() {
-		List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
-		Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
-		for (EmailSubscription emailSubscription : userEmail) {
-			eMap.put(emailSubscription.getSubscription(), emailSubscription);
-		}
-
-		for (Subscription subscription : requiredSubscriptionList(permissions)) {
-			EmailSubscription eSubscription = eMap.get(subscription);
-			if (eSubscription == null) {
-				eSubscription = new EmailSubscription();
-				eSubscription.setSubscription(subscription);
+		if (!permissions.isCorporate()) {
+			List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
+			Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
+			for (EmailSubscription emailSubscription : userEmail) {
+				eMap.put(emailSubscription.getSubscription(), emailSubscription);
 			}
-			eList.add(eSubscription);
+
+			for (Subscription subscription : requiredSubscriptionList(permissions)) {
+				EmailSubscription eSubscription = eMap.get(subscription);
+				if (eSubscription == null) {
+					eSubscription = new EmailSubscription();
+					eSubscription.setSubscription(subscription);
+				}
+				eList.add(eSubscription);
+			}
 		}
 		return eList;
 	}
