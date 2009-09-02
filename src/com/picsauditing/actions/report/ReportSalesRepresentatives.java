@@ -193,7 +193,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			public AuditType nonAudited = new AuditType();
 			
 			public class AuditType {
-				public double accountsManaged = 0;
+				public int accountsManaged = 0;
 				public double thisMonth = 0;
 				public double lastMonth = 0;
 				public double toDate = 0;
@@ -212,7 +212,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 						corporateMap.get(corporateID).add(value);
 					}
 					
-					accountsManaged += calcPercentage(1, bean.get("ownerPercent"));
+					accountsManaged ++;
 					thisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
 					lastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
 					toDate += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
