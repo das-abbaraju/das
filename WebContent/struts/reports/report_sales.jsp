@@ -142,7 +142,7 @@
 			<td class="right">
 				<s:if test="get('regisLastMonth') > 0">
 					<s:if test="get('ownerPercent') < 100">
-						<s:property value="@java.lang.Math@round((get('regisLastMonth')*get('ownerPercent'))/1000)*10" /> Credited<br/>
+						<nobr><s:property value="calcPercentage(@java.lang.Math@round(get('regisLastMonth')*get('ownerPercent')/10),10)" /> Credited</nobr><br/>
 					</s:if>
 					<a href="<s:property value="getUrlPreviousMonth(get('accountID').toString(), get('startDate').toString())" escape="false" />" 
 					 	target="_BLANK"><s:property value="get('regisLastMonth')" /> Total</a>
@@ -151,9 +151,11 @@
 			</td>
 			<td class="right">
 				<s:if test="get('regisThisMonth') > 0">
-					<s:property value="@java.lang.Math@round((get('regisThisMonth')*get('ownerPercent'))/100)" /> Credited<br/>
-					(<a href="<s:property value="getUrlCurrentMonth(get('accountID').toString(), get('startDate').toString())" escape="false" />" 
-					 	target="_BLANK"><s:property value="get('regisThisMonth')" /> Total</a>)
+					<s:if test="get('ownerPercent') < 100">
+						<nobr><s:property value="calcPercentage(@java.lang.Math@round(get('regisThisMonth')*get('ownerPercent')/10),10)" /> Credited</nobr><br/>
+					</s:if>
+					<a href="<s:property value="getUrlCurrentMonth(get('accountID').toString(), get('startDate').toString())" escape="false" />" 
+					 	target="_BLANK"><s:property value="get('regisThisMonth')" /> Total</a>
 				</s:if>
 				<s:else>none</s:else>
 			</td>
@@ -178,3 +180,4 @@
 </table>
 </body>
 </html>
+						

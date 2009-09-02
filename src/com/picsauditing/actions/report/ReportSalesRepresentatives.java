@@ -33,8 +33,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	/**
 	 * The operator cap a sales rep/AM gets credit for each corporate account
 	 */
-	static private Double MAX_ACCOUNTS = 20d;
-	
+
 	Database db = new Database();
 	private List<BasicDynaBean> data;
 	private String where = "1";
@@ -94,6 +93,9 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			}
 			where += " AND accountID IN (" + Strings.implode(operatorsIds, ",") + ")";
 		}
+		
+		calCurrent.add(Calendar.MONTH, -1 * month);
+		calPrevious.add(Calendar.MONTH, -1 * (month + 1));
 		
 		OperatorSalesSQL sqlAllOperators = new OperatorSalesSQL(calCurrent.getTime(), "0", "0", "0");
 		
@@ -339,8 +341,6 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 
 	public void setMonth(int month) {
 		this.month = month;
-		calCurrent.add(Calendar.MONTH, -1 * month);
-		calPrevious.add(Calendar.MONTH, -1 * (month + 1));
 	}
 
 	public boolean filterOn(int[] value) {
@@ -360,7 +360,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	private double parse(Object value) {
 		return Double.parseDouble(value.toString());
 	}
-
+	
 	private class OperatorSalesSQL extends SelectSQL {
 		public OperatorSalesSQL(Date effectiveDate, String regisThisMonth, String regisLastMonth, String totalCons) {
 			super("users u");
