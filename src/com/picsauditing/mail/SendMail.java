@@ -6,7 +6,6 @@ import javax.activation.DataHandler;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
@@ -25,25 +24,20 @@ public class SendMail {
 
 	public void send(EmailQueue email) throws Exception {
 		MimeMessage message = new MimeMessage(session);
-		
-		DataHandler handler = new DataHandler(new ByteArrayDataSource(email.getBody()
-				.getBytes(), email.isHtml() ? "text/html" : "text/plain"));
+
+		DataHandler handler = new DataHandler(new ByteArrayDataSource(email.getBody().getBytes(),
+				email.isHtml() ? "text/html" : "text/plain"));
 
 		message.setSentDate(email.getCreationDate());
-		message.setSender(email.getFromAddress2());
-		
-		InternetAddress[] replyTo = {new InternetAddress(email.getFromAddress())};
-		message.setReplyTo(replyTo);
-		
+		message.setFrom(email.getFromAddress2());
+
 		message.setRecipients(RecipientType.TO, email.getToAddresses2());
 		message.setRecipients(RecipientType.CC, email.getCcAddresses2());
 		message.setRecipients(RecipientType.BCC, email.getBccAddresses2());
 
 		message.setSubject(email.getSubject());
 		message.setDataHandler(handler);
-
 		Transport.send(message);
-		// message.writeTo(System.out);
 	}
 
 }
