@@ -142,9 +142,18 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			dataTotals.lastMonthCredited += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
 			dataTotals.lastMonthTotal += parse(bean.get("regisLastMonth"));
 			dataTotals.toDate += parse(bean.get("totalCons"));
+//			System.out.println("thisMonthCredited = " + dataTotals.thisMonthCredited + " ------ " + bean.get("accountName"));
+//			System.out.println("lastMonthCredited = " + dataTotals.lastMonthCredited + " ------ " + bean.get("accountName"));
 		}
+		
+		dataTotals.thisMonthCredited = roundMe(dataTotals.thisMonthCredited);
+		dataTotals.lastMonthCredited = roundMe(dataTotals.lastMonthCredited);
 
 		return SUCCESS;
+	}
+	
+	private double roundMe(double value) {
+		return ((double)Math.round(value*10))/10;
 	}
 
 	public class DataTotals {
@@ -180,6 +189,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 					}
 				}
 			}
+			
 		}
 		return summaryData;
 	}
@@ -216,6 +226,10 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 					thisMonth += calcPercentage(bean.get("regisThisMonth"), bean.get("ownerPercent"));
 					lastMonth += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
 					toDate += calcPercentage(bean.get("totalCons"), bean.get("ownerPercent"));
+					
+					thisMonth = roundMe(thisMonth);
+					lastMonth = roundMe(lastMonth);
+					toDate = roundMe(toDate);
 				}
 				
 				public double getCappedOperatorCount() {
@@ -237,7 +251,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 						}
 					}
 
-					return total;
+					return roundMe(total);
 				}
 
 			}
@@ -354,7 +368,9 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	}
 
 	public double calcPercentage(Object total, Object percent) {
-		return parse(total) * parse(percent) / 100;
+		double out = parse(total) * parse(percent) / 100;
+		// System.out.println("calcPercentage: " + parse(total) + " * " + parse(percent) + " / 100 = " + out);
+		return out;
 	}
 	
 	private double parse(Object value) {
