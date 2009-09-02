@@ -76,7 +76,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			SubscriptionBuilder builder;
 
 			if (subs.contains(Subscription.FlagChanges)) {
-				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO, flagDAO);
+				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
 				builder.setServerName(serverName);
 				builder.process();
 			}
