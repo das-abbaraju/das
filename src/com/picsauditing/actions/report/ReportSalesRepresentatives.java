@@ -313,28 +313,28 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 		return calPrevious.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
 	}
 	
-	public final String getUrlCurrentMonth(DynaBean bean) {
-		return getContractorListUrl(bean) + 
-			" AND c.membershipDate >= '" + bean.get("startDate") + "'" +
+	public final String getUrlCurrentMonth(String accountID, String startDate) {
+		return getContractorListUrl(accountID) + 
+			" AND c.membershipDate >= '" + startDate + "'" +
 			" AND MONTH(c.membershipDate) = " + (calCurrent.get(Calendar.MONTH) + 1) +
 			" AND YEAR(c.membershipDate) = " + calCurrent.get(Calendar.YEAR);
 	}
 
-	public final String getUrlPreviousMonth(DynaBean bean) {
-		return getContractorListUrl(bean) + 
-			" AND c.membershipDate >= '" + bean.get("startDate") + "'" +
+	public final String getUrlPreviousMonth(String accountID, String startDate) {
+		return getContractorListUrl(accountID) + 
+			" AND c.membershipDate >= '" + startDate + "'" +
 			" AND MONTH(c.membershipDate) = " + (calPrevious.get(Calendar.MONTH) + 1) +
 			" AND YEAR(c.membershipDate) = " + calPrevious.get(Calendar.YEAR);
 	}
 
-	public final String getUrlToDate(DynaBean bean) {
-		return getContractorListUrl(bean) + 
-			" AND c.membershipDate BETWEEN '" + bean.get("startDate") + "' AND '" + bean.get("endDate") + "'";
+	public final String getUrlToDate(String accountID, String startDate, String endDate) {
+		return getContractorListUrl(accountID) + 
+			" AND c.membershipDate BETWEEN '" + startDate + "' AND '" + endDate + "'";
 	}
 	
-	private String getContractorListUrl(DynaBean bean) {
+	private String getContractorListUrl(String accountID) {
 		return "ContractorList.action?filter.visible=Y&filter.customAPI=c.mustPay='Yes'" + 
-			" AND c.requestedbyid=" + bean.get("accountID");
+			" AND c.requestedbyid=" + accountID;
 	}
 
 	public void setMonth(int month) {
