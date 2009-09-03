@@ -13,7 +13,7 @@ import com.picsauditing.util.chart.Set;
  * 
  * @author Trevor
  */
-public class ChartOpFlagHistory extends ChartSSAction {
+public class ChartOpFlagHistory extends ChartMSAction {
 
 	@Override
 	public ChartMultiSeries buildChart() throws Exception {
