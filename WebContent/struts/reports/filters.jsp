@@ -49,8 +49,8 @@
 		<div class="filterOption"><s:textfield name="filter.taxID"
 			cssClass="forms" size="9" onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
-	<br /><br />
 	<s:if test="filter.showIndustry">
+		<br clear="all"/>
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_industry'); return false;">Industry</a> = <span
 			id="form1_industry_query">ALL</span><br />
@@ -181,8 +181,9 @@
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_conAuditorId'); return false;">Clear</a> </span></div>
 	</s:if>
-	<br clear="all"/>
+
 	<s:if test="filter.showOperator">
+		<br clear="all"/>
 		<div class="filterOption">
 		<s:if test="filter.showOperatorSingle">
 			<s:select list="filter.operatorList" cssClass="forms" name="filter.operator" 
@@ -208,15 +209,16 @@
 			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="filter.riskLevel"/></div>
 	</s:if>
 
-	<br clear="all"/>
 
 	<s:if test="filter.showOpertorTagName && filter.operatorTagNamesList.size() > 0">
+		<br clear="all"/>
 		<div class="filterOption">
 			<s:select list="filter.operatorTagNamesList" cssClass="forms" name="filter.operatorTagName" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -"/>
 		</div>	
 	</s:if>
 
 	<s:if test="filter.showLicensedIn">
+		<br clear="all"/>
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
 		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
@@ -369,7 +371,6 @@
 	</s:if>
 
 	<s:if test="filter.showAssignedCon">
-		<br clear="all" />
 		<div class="filterOption">
 		<label><s:checkbox name="filter.assignedCon" />
 		Check to Search on Assigned Contractors</label>
@@ -406,6 +407,7 @@
 	</s:if>
 	
 	<s:if test="filter.showEmrRange">
+		<br clear="all" />
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_emr'); return false;">EMR</a> 
 			<span id="form1_emr_query">= ALL</span><br /> 
 			<span id="form1_emr" style="display: none" class="clearLink"><s:textfield name="filter.minEMR"
@@ -464,7 +466,6 @@
 	</s:if>
 	
 	<s:if test="filter.showRegistrationDate">
-		<br clear="all">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_registrationDate'); return false;">Registration Date</a> 
 			<span id="form1_registrationDate_query">= ALL</span><br /> 
 			<span id="form1_registrationDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
@@ -485,6 +486,7 @@
 	</s:if>
 	
 	<s:if test="filter.showInvoiceDueDate">
+		<br clear="all">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_invoiceDueDate'); return false;">Invoice Due Date</a> 
 			<span id="form1_invoiceDueDate_query">= ALL</span><br /> 
 			<span id="form1_invoiceDueDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 

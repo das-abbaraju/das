@@ -17,7 +17,6 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		super.buildQuery();
 
 		getFilter().setShowIncidenceRate(true);
-		getFilter().setShowAuditFor(true);
 
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours > " + getFilter().getIncidenceRate() + ")");

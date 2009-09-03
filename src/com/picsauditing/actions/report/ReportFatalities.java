@@ -26,8 +26,6 @@ public class ReportFatalities extends ReportAnnualAddendum {
 		sql.addWhere("os.fatalities > 0");
 		sql.addField("os.fatalities");
 		sql.addField("os.SHAType");
-		
-		getFilter().setPendingPqfAnnualUpdate(false);
 	}
 	
 	@Override

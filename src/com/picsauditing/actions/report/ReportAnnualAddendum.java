@@ -22,6 +22,26 @@ public class ReportAnnualAddendum extends ReportAccount {
 		String auditFor = Strings.implodeForDB(getFilter().getAuditFor(), ",");
 		if (!Strings.isEmpty(auditFor))
 			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");
+		
+		getFilter().setShowAuditFor(true);
+
+
+		getFilter().setShowAddress(false);
+		getFilter().setShowTaxID(false);
+		getFilter().setShowIndustry(false);
+		getFilter().setShowWaitingOn(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowAuditStatus(false);
+		getFilter().setShowAuditor(false);
+		getFilter().setShowLicensedIn(false);
+		getFilter().setShowWorksIn(false);
+		getFilter().setShowOfficeIn(false);
+		getFilter().setShowCreatedDate(false);
+		getFilter().setShowCompletedDate(false);
+		getFilter().setShowClosedDate(false);
+		getFilter().setShowExpiredDate(false);
+		getFilter().setShowPercentComplete(false);
+		getFilter().setPendingPqfAnnualUpdate(false);
 	}
 
 	@Override
