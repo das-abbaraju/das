@@ -41,7 +41,7 @@ public class EmailSender {
 				} else {
 					// Use the default info@picsauditing.com address
 					PicsLogger.log("using Gmail to send email from " + getDefaultSender());
-					gmailSender = new GMailSender(getDefaultSender(), defaultPassword);
+					gmailSender = new GMailSender(getGmailUsername(), defaultPassword);
 				}
 				gmailSender.sendMail(email);
 			} else {
@@ -111,11 +111,18 @@ public class EmailSender {
 		}
 	}
 	
-	private static String getDefaultSender() {
+	private static String getGmailUsername() {
 		if (EmailSender.currentDefaultSender >= 2)
 			return "info" + currentDefaultSender + "@picsauditing.com";
 		else
 			return "info@picsauditing.com";
+	}
+	
+	private static String getDefaultSender() {
+		if (EmailSender.currentDefaultSender >= 2)
+			return "PICS Mailer <info" + currentDefaultSender + "@picsauditing.com>";
+		else
+			return "PICS Mailer <info@picsauditing.com>";
 	}
 
 	private static void changeDefaultSender() {
