@@ -40,12 +40,15 @@ public class FlagColorSubscription extends SubscriptionBuilder {
 			conIds.add(co.getContractorAccount().getId());
 		}
 
-		List<ContractorOperatorFlag> flags = flagDAO.findWhere("contractorAccount.active = 'Y' AND operatorAccount.id = " + a.getId()
-				+ " AND contractorAccount.id IN (" + Strings.implode(conIds, ",") + ") AND flagColor = '" + flagColor
-				+ "'");
-		if (flags.size() > 0) {
-			tokens.put("flags", flags);
-			tokens.put("flagColor", flagColor);
+		if (conIds.size() > 0) {
+			List<ContractorOperatorFlag> flags = flagDAO
+					.findWhere("contractorAccount.active = 'Y' AND operatorAccount.id = " + a.getId()
+							+ " AND contractorAccount.id IN (" + Strings.implode(conIds, ",") + ") AND flagColor = '"
+							+ flagColor + "'");
+			if (flags.size() > 0) {
+				tokens.put("flags", flags);
+				tokens.put("flagColor", flagColor);
+			}
 		}
 	}
 }
