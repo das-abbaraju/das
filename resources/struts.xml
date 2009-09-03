@@ -1003,6 +1003,11 @@
 			class="com.picsauditing.actions.chart.ChartFlagCount">
 			<result>struts/chart_xml.jsp</result>
 		</action>
+		
+		<action name="ChartXMLOpFlagHistory"
+			class="com.picsauditing.actions.chart.ChartOpFlagHistory">
+			<result>struts/chart_xml.jsp</result>
+		</action>		
 
 		<action name="ChartXMLTradeCount"
 			class="com.picsauditing.actions.chart.ChartTradeCount">
