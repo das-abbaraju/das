@@ -11,12 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.ContractorRegistrationSubscription;
 import com.picsauditing.mail.FlagChangesSubscription;
 import com.picsauditing.mail.FlagColorSubscription;
@@ -28,30 +32,46 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class SubscriptionCron extends PicsActionSupport implements ServletRequestAware {
-
+	
+	private int userID = 0;
+	private int accountID = 0;
+	private SubscriptionTimePeriod timePeriod = SubscriptionTimePeriod.Weekly;
+	
 	private AppPropertyDAO appPropDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
 	private ContractorOperatorFlagDAO flagDAO;
 	private ContractorAuditOperatorDAO caoDAO;
 	private ContractorAccountDAO conDAO;
+	private UserDAO userDAO;
+	private AccountDAO accountDAO;
+	
 	protected HttpServletRequest request;
 
 	Set<Subscription> subs = new HashSet<Subscription>();
+	private String serverName;
 
 	public SubscriptionCron(AppPropertyDAO appPropDAO, EmailSubscriptionDAO subscriptionDAO,
-			ContractorOperatorFlagDAO flagDAO, ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO) {
+			ContractorOperatorFlagDAO flagDAO, ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO, 
+			UserDAO userDAO, AccountDAO accountDAO) {
 		this.appPropDAO = appPropDAO;
 		this.subscriptionDAO = subscriptionDAO;
 		this.flagDAO = flagDAO;
 		this.caoDAO = caoDAO;
 		this.conDAO = conDAO;
+		this.userDAO = userDAO;
+		this.accountDAO = accountDAO;
 	}
 
 	@Override
 	public String execute() throws Exception {
 		Calendar calendar = Calendar.getInstance();
 		String name = request.getRequestURL().toString();
-		String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
+		serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
+		
+		if (userID > 0) {
+			runSubscriptions(timePeriod);
+			return SUCCESS;
+		}
 
 		for (Subscription subscription : Subscription.values()) {
 			AppProperty app = appPropDAO.find(subscription.getAppPropertyKey());
@@ -73,51 +93,7 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			timePeriods.add(SubscriptionTimePeriod.Monthly);
 
 		for (SubscriptionTimePeriod timePeriod : timePeriods) {
-			SubscriptionBuilder builder;
-
-			if (subs.contains(Subscription.FlagChanges)) {
-				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
-
-			if (subs.contains(Subscription.PendingInsuranceCerts)) {
-				builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts, timePeriod,
-						subscriptionDAO, caoDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
-
-			if (subs.contains(Subscription.VerifiedInsuranceCerts)) {
-				builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts, timePeriod,
-						subscriptionDAO, caoDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
-
-			if (subs.contains(Subscription.ContractorRegistration)) {
-				builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
-
-			if (subs.contains(Subscription.RedFlags)) {
-				builder = new FlagColorSubscription(Subscription.RedFlags, timePeriod, subscriptionDAO, flagDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
-
-			if (subs.contains(Subscription.AmberFlags)) {
-				builder = new FlagColorSubscription(Subscription.AmberFlags, timePeriod, subscriptionDAO, flagDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
-
-			if (subs.contains(Subscription.GreenFlags)) {
-				builder = new FlagColorSubscription(Subscription.GreenFlags, timePeriod, subscriptionDAO, flagDAO);
-				builder.setServerName(serverName);
-				builder.process();
-			}
+			runSubscriptions(timePeriod);
 		}
 
 		addActionMessage("Finished " + Strings.implode(subs, ", ") + " subscriptions for the time periods "
@@ -126,6 +102,83 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 		return SUCCESS;
 	}
 
+	private void runSubscriptions(SubscriptionTimePeriod timePeriod) throws Exception {
+		User user = null;
+		Account account = null;
+		if (userID > 0) {
+			user = userDAO.find(userID);
+			if (user == null) {
+				addActionError("Failed to find userID = " + userID);
+				return;
+			}
+			
+			if (accountID > 0) {
+				account = accountDAO.find(accountID);
+				if (account == null) {
+					addActionError("Failed to find accountID = " + accountID);
+				}
+			}
+		}
+		
+		for(Subscription subscription : subs) {
+			SubscriptionBuilder builder = null;
+			
+			if (subscription.equals(Subscription.FlagChanges)) {
+				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
+			}
+
+			if (subscription.equals(Subscription.PendingInsuranceCerts)) {
+				builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts, timePeriod,
+						subscriptionDAO, caoDAO);
+				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
+			}
+
+			if (subscription.equals(Subscription.VerifiedInsuranceCerts)) {
+				builder = new InsuranceCertificateSubscription(Subscription.VerifiedInsuranceCerts, timePeriod,
+						subscriptionDAO, caoDAO);
+			}
+
+			if (subscription.equals(Subscription.ContractorRegistration)) {
+				builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
+			}
+
+			if (subscription.equals(Subscription.RedFlags)) {
+				builder = new FlagColorSubscription(Subscription.RedFlags, timePeriod, subscriptionDAO, flagDAO);
+			}
+
+			if (subscription.equals(Subscription.AmberFlags)) {
+				builder = new FlagColorSubscription(Subscription.AmberFlags, timePeriod, subscriptionDAO, flagDAO);
+			}
+
+			if (subscription.equals(Subscription.GreenFlags)) {
+				builder = new FlagColorSubscription(Subscription.GreenFlags, timePeriod, subscriptionDAO, flagDAO);
+			}
+
+			if (builder != null) {
+				builder.setServerName(serverName);
+				builder.setUser(user);
+				builder.setAccount(account);
+				builder.process();
+			}
+		}
+	}
+
+	public void setSubs(Set<Subscription> subs) {
+		this.subs = subs;
+	}
+	
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
+	}
+	
+	public void setTimePeriod(SubscriptionTimePeriod timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+	
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;

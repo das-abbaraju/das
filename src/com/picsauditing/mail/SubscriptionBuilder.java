@@ -17,6 +17,9 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public abstract class SubscriptionBuilder {
+	
+	private User user;
+	private Account account;
 
 	protected EmailSubscriptionDAO subscriptionDAO;
 	protected Subscription subscription;
@@ -107,8 +110,22 @@ public abstract class SubscriptionBuilder {
 	}
 
 	public void process() throws Exception {
-		Map<Account, Set<EmailSubscription>> accountMap = getSubscriptionsByAccount();
 		String serverName = getServerName();
+		if (user != null) {
+			// For Ad hoc Testing
+			// http://localhost:8080/picsWeb2/SubscriptionCron.action?userID=941&accountID=16&timePeriod=Monthly&subs=ContractorRegistration
+			if (account == null)
+				account = user.getAccount();
+			
+			setup(account); // Send the account object to the sub-classes
+			EmailQueue emailToSend = buildEmail(user, serverName);
+
+			if (emailToSend != null) {
+				EmailSender.send(emailToSend);
+			}
+			return;
+		}
+		Map<Account, Set<EmailSubscription>> accountMap = getSubscriptionsByAccount();
 		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
 			setup(entry.getKey()); // Send the account object to the sub-classes
 
@@ -132,5 +149,13 @@ public abstract class SubscriptionBuilder {
 
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
+	}
+	
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
