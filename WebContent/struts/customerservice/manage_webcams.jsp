@@ -8,7 +8,7 @@
 <body>
 <h1>Manage Webcams</h1>
 
-<div class="left">
+<div class="left" id="webcam_list">
 <table class="report">
 <thead>
 	<tr>
@@ -28,10 +28,10 @@
 
 </div>
 
-<div class="left" style="width:40%">
+<div class="left" style="width:40%" id="webcam_edit">
 <s:form>
 	<fieldset class="form">
-		<legend><span>Webcam</span></legend>
+		<legend><span>Webcam Edit</span></legend>
 		<ol>
 			<li><label>ID:</label><s:textfield name="webcam.id" disabled="true"/></li>
 			<li><label>Make:</label><s:textfield name="webcam.make"/></li>
