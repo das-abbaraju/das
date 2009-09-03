@@ -4,21 +4,31 @@
 <title>Manage Webcams</title>
 <link rel="stylesheet" href="css/reports.css"/>
 <link rel="stylesheet" href="css/forms.css"/>
+<script type="text/javascript" src="js/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript">
+
+function loadForm(id) {
+	$('#webcam_edit').load('ManageWebcamsAjax.action', {'webcam.id': id, button: 'load'});
+}
+
+</script>
 </head>
 <body>
 <h1>Manage Webcams</h1>
+
+<s:include value="../actionMessages.jsp"/>
 
 <div class="left" id="webcam_list">
 <table class="report">
 <thead>
 	<tr>
-		<td>Make</td>
+		<td>Make 123</td>
 		<td>Model</td>
 		<td>Active?</td>
 	</tr>
 </thead>
 	<s:iterator value="list">
-		<tr>
+		<tr class="clickable" onclick="loadForm(<s:property value="id"/>)">
 			<td><s:property value="make" /></td>
 			<td><s:property value="model" /></td>
 			<td><s:property value="active" /></td>
@@ -28,20 +38,8 @@
 
 </div>
 
-<div class="left" style="width:40%" id="webcam_edit">
-<s:form>
-	<fieldset class="form">
-		<legend><span>Webcam Edit</span></legend>
-		<ol>
-			<li><label>ID:</label><s:textfield name="webcam.id" disabled="true"/></li>
-			<li><label>Make:</label><s:textfield name="webcam.make"/></li>
-			<li><label>Model:</label><s:textfield name="webcam.model"/></li>
-			<li><label>Active:</label><s:checkbox name="webcam.active"/></li>
-			<li><label>Serial Number:</label><s:textfield name="webcam.serialNumber"/></li>
-			<li><label>Replacement Cost:</label><s:textfield name="webcam.replacementCost"/></li>
-		</ol>
-	</fieldset>
-</s:form>
+<div class="left" id="webcam_edit">
+<s:include value="manage_webcams_form.jsp"/>
 </div>
 
 <br clear="all"/>

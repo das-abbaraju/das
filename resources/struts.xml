@@ -1154,6 +1154,11 @@
 			class="com.picsauditing.actions.customerservice.ManageWebcams">
 			<result>struts/customerservice/manage_webcams.jsp</result>
 		</action>
+
+		<action name="ManageWebcamsAjax"
+			class="com.picsauditing.actions.customerservice.ManageWebcams">
+			<result>struts/customerservice/manage_webcams_form.jsp</result>
+		</action>
 		
 
 		<action name="Trevor"
