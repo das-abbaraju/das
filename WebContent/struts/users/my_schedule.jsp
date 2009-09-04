@@ -51,6 +51,7 @@ $(document).ready(function(){
 	<li><a href="#aschedule"><span>Audit Schedule</span></a></li>
 	<li><a href="#vacation"><span>Vacation</span></a></li>
 	<li><a href="#holidays"><span>Holidays</span></a></li>
+	<li><a href="#preview"><span>Availability Preview</span></a></li>
 </ul>
 <div id="aschedule">
 <div id="calendar_wrapper">
@@ -70,6 +71,11 @@ laoreet dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
 consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
 laoreet dolore magna aliquam erat volutpat.</div>
 </div>
+<div id="preview">Lorem ipsum dolor sit amet, consectetuer
+adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
+laoreet dolore magna aliquam erat volutpat.</div>
 
 </body>
 </html>
