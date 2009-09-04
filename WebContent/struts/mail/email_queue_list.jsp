@@ -6,7 +6,7 @@
 <title>Email Queue List</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox.css"/>
-<script type="text/javascript" src="js/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.2.1.pack.js"></script>
 <script type="text/javascript">
 function deleteEmail(id) {
