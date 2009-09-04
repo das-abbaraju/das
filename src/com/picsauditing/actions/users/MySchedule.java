@@ -27,6 +27,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private AuditorVacationDAO auditorVacationDAO;
 	private JSONObject json;
 
+	private CalEvent calEvent;
+
 	public MySchedule(AuditorAvailabilityDAO auditorAvailabilityDAO, AuditorScheduleDAO auditorScheduleDAO,
 			AuditorVacationDAO auditorVacationDAO) {
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
@@ -38,6 +40,10 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		int id = this.getParameter("schedule.id");
 		if (id > 0)
 			auditorScheduleDAO.find(id);
+
+		int calId = this.getParameter("calEvent.id");
+		if (calId > -1)
+			calEvent = new CalEvent(calId);
 	}
 
 	public String execute() throws Exception {
@@ -72,14 +78,22 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equalsIgnoreCase("save")) {
-				if (schedule == null) {
+				if (calEvent == null) {
 					addActionError("No schedule to save");
 					return SUCCESS;
 				}
+				schedule = auditorScheduleDAO.find(calEvent.id);
+				if (schedule == null)
+					schedule = new AuditorSchedule();
+
+				schedule.setStartTime(calEvent.start);
+				schedule.setEndTime(calEvent.end);
+
 				if (schedule.getUser() == null)
 					schedule.setUser(getUser());
 				schedule.setAuditColumns(permissions);
 				auditorScheduleDAO.save(schedule);
+				addActionMessage("Successfully Saved Timeslot " + schedule.getId());
 			}
 
 		}
@@ -122,5 +136,23 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public void setJson(JSONObject json) {
 		this.json = json;
+	}
+
+	public CalEvent getCalEvent() {
+		return calEvent;
+	}
+
+	public void setCalEvent(CalEvent calEvent) {
+		this.calEvent = calEvent;
+	}
+
+	public class CalEvent {
+		public int id;
+		public long start;
+		public long end;
+
+		public CalEvent(int id) {
+			this.id = id;
+		}
 	}
 }

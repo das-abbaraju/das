@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -67,14 +68,36 @@ public class AuditorSchedule extends BaseTable {
 		this.duration = duration;
 	}
 
+	@Transient
+	public void setStartTime(long startTime) {
+		// convert from milliseconds to minutes
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(startTime);
+		this.startTime = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+	}
+
+	@Transient
+	public void setEndTime(long endTime) {
+		// convert from milliseconds to minutes
+		// subtract to find duration
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(endTime);
+		this.duration = ((cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)) - startTime);
+	}
+
 	@Override
 	public void fromJSON(JSONObject obj) {
 		super.fromJSON(obj);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON() {
+		return toJSON(true);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", id);
 
@@ -88,11 +111,6 @@ public class AuditorSchedule extends BaseTable {
 		obj.put("end", cal.getTimeInMillis());
 
 		return obj;
-	}
-
-	@Override
-	public JSONObject toJSON(boolean full) {
-		return super.toJSON(full);
 	}
 
 }
