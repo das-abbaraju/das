@@ -27,12 +27,12 @@
 
 <div style="text-align: center; width: 100%">
 <s:if test="co.flag.waitingOn.ordinal() > 0"><div id="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.flag.waitingOn"/></b></div></s:if>
-
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
 			value="co.flag.flagColor.bigIcon" escape="false" /></td>
-		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b></td>
+		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b>
+		<br/><a href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status" class="help">Click here</a> to review the meaning of of each flag color.</td>
 	</tr>
 	<tr>
 		<td>
