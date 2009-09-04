@@ -437,10 +437,10 @@ div.message_info {
 }
 
 /******************** Internal Page Navigation  ************************/
-#content #internalnavcontainer { //
+#content #internalnavcontainer {
 	display: block;
 	height: 30px;
-	width: 100%; //
+	width: 100%;
 	position: relative;
 }
 
