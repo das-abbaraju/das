@@ -1036,6 +1036,12 @@
 			<result>struts/users/my_schedule.jsp</result>
 		</action>
 
+		<action name="MyScheduleJSON"
+			class="com.picsauditing.actions.users.MySchedule">
+			<param name="button">json</param>
+			<result>struts/json.jsp</result>
+		</action>
+
 		<action name="ScheduleAudit"
 			class="com.picsauditing.actions.audits.ScheduleAudit">
 			<result>struts/audits/schedule_audit.jsp</result>

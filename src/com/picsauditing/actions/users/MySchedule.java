@@ -2,6 +2,9 @@ package com.picsauditing.actions.users;
 
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
@@ -22,6 +25,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 	private AuditorScheduleDAO auditorScheduleDAO;
 	private AuditorVacationDAO auditorVacationDAO;
+	private JSONObject json;
 
 	public MySchedule(AuditorAvailabilityDAO auditorAvailabilityDAO, AuditorScheduleDAO auditorScheduleDAO,
 			AuditorVacationDAO auditorVacationDAO) {
@@ -39,8 +43,20 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	public String execute() throws Exception {
 		loadPermissions();
 		auditorID = permissions.getUserId();
-		
+
 		if (button != null) {
+			if (button.equals("json")) {
+				json = new JSONObject();
+				JSONArray events = new JSONArray();
+				json.put("events", events);
+
+				for (AuditorSchedule sch : getSchedules()) {
+					events.add(sch.toJSON());
+				}
+
+				return SUCCESS;
+			}
+
 			if (button.equals("deleteSchedule")) {
 				if (schedule == null || schedule.getId() == 0) {
 					addActionError("No schedule found");
@@ -49,10 +65,10 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("deleteVacation")) {
-//				if (vacation == null || vacation.getId() == 0) {
-//					addActionError("No vacation found");
-//					return SUCCESS;
-//				}
+				// if (vacation == null || vacation.getId() == 0) {
+				// addActionError("No vacation found");
+				// return SUCCESS;
+				// }
 			}
 
 			if (button.equalsIgnoreCase("save")) {
@@ -92,11 +108,19 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		}
 		return vacations;
 	}
-	
+
 	public List<AuditorAvailability> getAvailability() {
 		if (availability == null) {
 			availability = auditorAvailabilityDAO.findByAuditorID(auditorID);
 		}
 		return availability;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
 	}
 }
