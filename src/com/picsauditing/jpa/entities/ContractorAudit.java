@@ -43,20 +43,29 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private User auditor;
 	private User closingAuditor;
 	private Date assignedDate;
-	private Date scheduledDate;
 	private Date completedDate;
 	private Date closedDate;
 	private OperatorAccount requestingOpAccount;
-	private String auditLocation;
 	private int percentComplete;
 	private int percentVerified;
 	private float score;
-	private Date contractorConfirm;
-	private Date auditorConfirm;
 	private boolean manuallyAdded;
 	private String auditFor;
-	private String statusDescription;
 	private Date lastRecalculation;
+
+	private Date contractorConfirm;
+	private Date auditorConfirm;
+	private Date scheduledDate;
+	private String auditLocation;
+	private String address;
+	private String address2;
+	private String city;
+	private String state;
+	private String zip;
+	private float latitude;
+	private float longitute;
+	private String phone;
+	private String phone2;
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
@@ -162,7 +171,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "closingAuditorID")
 	public User getClosingAuditor() {
@@ -398,28 +407,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return currentCaos;
 	}
 
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final ContractorAudit other = (ContractorAudit) obj;
-		if (id != other.getId())
-			return false;
-		return true;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
@@ -447,8 +434,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
-	 * for "John Doe"
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM for "John Doe"
 	 * 
 	 * @return
 	 */
@@ -468,32 +454,89 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.lastRecalculation = lastRecalculation;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getAddress2() {
+		return address2;
+	}
+
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPhone2() {
+		return phone2;
+	}
+
+	public void setPhone2(String phone2) {
+		this.phone2 = phone2;
+	}
+
 	@Transient
 	public String getStatusDescription() {
+		String statusDescription = "";
 		if (auditStatus.isActive())
 			if (auditType.isMustVerify())
 				if (auditType.isPqf() || auditType.isAnnualAddendum())
 					statusDescription = "Annual requirements have been verified. "
-							+ this.getAuditType().getClassType().toString() + " is closed.";
+							+ this.getAuditType().getClassType() + " is closed.";
 				else
-					statusDescription = this.getAuditType().getClassType().toString() + " has been verified.";
+					statusDescription = this.getAuditType().getClassType() + " has been verified.";
 			else if (auditType.isHasRequirements())
 				statusDescription = "All the requirements for this " + this.getAuditType().getClassType().toString()
-						+ " have been met. " + this.getAuditType().getClassType().toString() + " closed.";
+						+ " have been met. " + this.getAuditType().getClassType() + " closed.";
 			else
-				statusDescription = this.getAuditType().getClassType().toString() + " closed.";
+				statusDescription = this.getAuditType().getClassType() + " closed.";
 
 		if (auditStatus.isExempt())
-			statusDescription = this.getAuditType().getClassType().toString() + " is not required.";
+			statusDescription = this.getAuditType().getClassType() + " is not required.";
 
 		if (auditStatus.isExpired())
-			statusDescription = this.getAuditType().getClassType().toString() + " is no longer active.";
+			statusDescription = this.getAuditType().getClassType() + " is no longer active.";
 
 		if (auditStatus.isPending())
 			if (auditType.isMustVerify())
-				statusDescription = this.getAuditType().getClassType().toString() + " has not been submitted.";
+				statusDescription = this.getAuditType().getClassType() + " has not been submitted.";
 			else
-				statusDescription = this.getAuditType().getClassType().toString() + " has not been started.";
+				statusDescription = this.getAuditType().getClassType() + " has not been started.";
 
 		if (auditStatus.isSubmitted())
 			if (auditType.isMustVerify())
@@ -507,7 +550,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			statusDescription = "Policy updated; pending approval of changes.";
 
 		if (auditStatus.isIncomplete())
-			statusDescription = "Rejected " + this.getAuditType().getClassType().toString() + " during verification";
+			statusDescription = "Rejected " + this.getAuditType().getClassType() + " during verification";
 		return statusDescription;
 	}
 
