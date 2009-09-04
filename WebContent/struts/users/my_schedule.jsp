@@ -10,12 +10,14 @@
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 <script type="text/javascript">
 $(function(){
-	$('#calendar').weekCalendar({
+	$cal = $('#calendar').weekCalendar({
 			firstDayOfWeek: 1,
 			timeslotHeight: 40,
 			timeslotsPerHour: 2,
-			defaultEventLength: 4
-			
+			defaultEventLength: 4,
+			buttons: false,
+			newEventText: 'Timeslot',
+			data: 'MyScheduleJSON.action'
 		});
 });
 </script>
