@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -36,5 +38,12 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 
 	public AuditorAvailability find(int id) {
 		return em.find(AuditorAvailability.class, id);
+	}
+
+	public List<AuditorAvailability> findByAuditorID(int auditorID) {
+		Query query = em.createQuery("SELECT t FROM AuditorAvailability t "
+				+ "WHERE t.user.id = ? ORDER BY startDate");
+		query.setParameter(1, auditorID);
+		return query.getResultList();
 	}
 }
