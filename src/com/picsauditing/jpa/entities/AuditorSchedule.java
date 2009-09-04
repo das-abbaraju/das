@@ -45,6 +45,13 @@ public class AuditorSchedule extends BaseTable {
 	public void setWeekDay(int weekDay) {
 		this.weekDay = weekDay;
 	}
+	
+	public void setWeekDay(long time) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(time);
+		
+		this.weekDay = cal.get(Calendar.DAY_OF_WEEK);
+	}
 
 	/**
 	 * Minutes into the day

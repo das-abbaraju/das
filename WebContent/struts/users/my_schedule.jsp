@@ -30,7 +30,12 @@ $(function(){
 			buttons: false,
 			newEventText: 'Timeslot',
 			data: 'MyScheduleJSON.action',
-			eventResize: saveEvent
+			eventResize: saveEvent,
+			eventDrop: saveEvent,
+			eventNew: function(calEvent, element) {
+					calEvent.id = 0;
+					saveEvent(calEvent, element);
+				}
 		});
 
 });

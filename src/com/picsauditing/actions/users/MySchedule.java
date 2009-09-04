@@ -88,6 +88,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 				schedule.setStartTime(calEvent.start);
 				schedule.setEndTime(calEvent.end);
+				schedule.setWeekDay(calEvent.start);
 
 				if (schedule.getUser() == null)
 					schedule.setUser(getUser());
