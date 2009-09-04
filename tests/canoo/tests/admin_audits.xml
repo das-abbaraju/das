@@ -26,13 +26,15 @@
 				<group description="Set Filter">
 					<clickLink label="Assign" href="AuditAssignments.action"/>
 					<clickLink label="Audit Type"/>
+					<sleep seconds="3"/>
 					<setSelectField name="filter.auditTypeID" text="Office Audit"/>
 					<clickButton label="Search"/>
 					<clickLink label="Scheduled"/>
 					</group>
+					<sleep seconds="3"/>
 					<group description="Schedule Audit, complete Office Audit">
-					<setSelectField optionIndex="9"/>
-					<setInputField htmlId="auditor_73460" value="4/29/2009"/>
+					<setSelectField xpath=""/>
+					<setInputField htmlId="scheduled_date" value="4/29/2009"/>
 					<setRadioButton forLabel="Web"/>
 					<clickButton label="Save"/>
 					<clickLink href="Audit.action" label="Office Audit"/>
