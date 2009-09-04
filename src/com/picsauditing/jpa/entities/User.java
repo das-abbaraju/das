@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
@@ -71,6 +72,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String passwordHistory;
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
+	private String timezone;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -78,6 +80,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
+//	TimeZone.getAvailableIDs();
 
 	public User() {
 	}
@@ -208,6 +211,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Transient
 	public List<String> getPasswordHistoryList() {
+		
 		List<String> list = new ArrayList<String>();
 
 		if (passwordHistory != null) {
@@ -376,7 +380,15 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setOwnedPermissions(List<UserAccess> ownedPermissions) {
 		this.ownedPermissions = ownedPermissions;
 	}
+	
+	public String getTimezone() {
+		return timezone;
+	}
 
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+	
 	@Transient
 	public Set<UserAccess> getPermissions() {
 		// Our permissions are empty, so go get some

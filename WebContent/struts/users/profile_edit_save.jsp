@@ -14,6 +14,11 @@
 			name="u.phone" size="20" /></li>
 		<li><label for="u.fax">Fax:</label> <s:textfield name="u.fax"
 			size="20" /></li>
+		<li><label for="u.timezone">Timezone:</label>
+				<s:select name="u.timezone" 
+				list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()"></s:select>
+				<br />* Automatically adjusts for Daylight Savings
+		</li>
 		<li><label>Created:</label> <s:date name="u.creationDate" /></li>
 	</ol>
 	</fieldset>

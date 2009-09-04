@@ -7,7 +7,7 @@ public class LuhnTest extends TestCase {
 	public LuhnTest(String name) {
 		super(name);
 	}
-	
+
 	public final void testIsValidNumber2() {
 		assertTrue(Luhn.isValidNumber("19463"));
 	}
