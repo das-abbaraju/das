@@ -160,9 +160,15 @@ public class PicsMenu {
 		if(permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
 			subMenu.addChild("Sales Report", "ReportSalesReps.action");			
 		}
-		if (permissions.hasPermission(OpPerms.EditProfile))
+		if (permissions.hasPermission(OpPerms.EditProfile)) {
 			subMenu.addChild("Edit Profile", "ProfileEdit.action");
-
+		}
+		
+		// Add a new permission for this
+		if(permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+			subMenu.addChild("My Schedule", "MySchedule.action");
+		}
+		
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			subMenu = menu.addChild("Dev");
 			subMenu.addChild("System Logging", "LoggerConfig.action");
@@ -171,6 +177,7 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Cron", "ContractorCron.action");
 			subMenu.addChild("Mail Cron", "MailCron.action");
 			subMenu.addChild("Subscription Cron", "SubscriptionCron.action");
+			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilder.action");
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action");
 			subMenu.addChild("CSS Style Guide", "css.jsp");
 		}

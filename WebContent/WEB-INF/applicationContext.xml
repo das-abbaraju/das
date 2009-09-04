@@ -16,6 +16,9 @@
 	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
+	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO"/>
+	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>
+	<bean id="AuditorVacationDAO" class="com.picsauditing.dao.AuditorVacationDAO"/>
 	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO"/>
 	<bean id="AuditSubCategoryDAO" class="com.picsauditing.dao.AuditSubCategoryDAO"/>
 	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO"/>

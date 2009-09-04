@@ -1024,7 +1024,22 @@
 			<result>struts/chart_xml.jsp</result>
 		</action>
 
+		<!-- Office Audit Scheduling -->
 
+		<action name="AuditScheduleBuilder"
+			class="com.picsauditing.actions.users.AuditScheduleBuilder">
+			<result>struts/users/audit_schedule_builder.jsp</result>
+		</action>
+
+		<action name="MySchedule"
+			class="com.picsauditing.actions.users.MySchedule">
+			<result>struts/users/my_schedule.jsp</result>
+		</action>
+
+		<action name="ScheduleAudit"
+			class="com.picsauditing.actions.audits.ScheduleAudit">
+			<result>struts/audits/schedule_audit.jsp</result>
+		</action>
 
 		<!-- Ajax Snippets -->
 
