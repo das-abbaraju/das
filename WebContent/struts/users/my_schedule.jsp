@@ -4,11 +4,9 @@
 <html>
 <head>
 <title>My Schedule</title>
+<s:include value="../jquery.jsp" />
 
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
 <script type="text/javascript">
@@ -41,6 +39,12 @@ $(function(){
 });
 $(document).ready(function(){
 	$("#schedule_tabs").tabs();
+
+	$.gritter.add({
+		title: 'Welcome to PICS',
+		text: 'This is a new notification tool that Trevor, Kyle, and Arwen thought up while Keerthi was on vacation.'
+	});
+	
 });
 
 </script>
