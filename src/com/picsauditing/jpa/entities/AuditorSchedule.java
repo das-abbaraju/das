@@ -45,6 +45,10 @@ public class AuditorSchedule extends BaseTable {
 		this.weekDay = weekDay;
 	}
 
+	/**
+	 * Minutes into the day
+	 * @return
+	 */
 	@Column(nullable = false)
 	public int getStartTime() {
 		return startTime;
