@@ -21,7 +21,7 @@ public class ChartOpFlagHistory extends ChartMSAction {
 	public ChartMultiSeries buildChart() throws Exception {
 		chart.setRotateLabels(true);
 
-		String sqlString;
+		String sqlString ="";
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addField("substring(c.main_trade,1,20) as label");
