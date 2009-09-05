@@ -57,6 +57,13 @@ public class PicsLogger {
 		start(stopWatchName, "");
 	}
 
+	static public void start(String stopWatchName, boolean autostart) {
+		if (autostart)
+			addRuntimeRule(stopWatchName);
+		
+		start(stopWatchName, "");
+	}
+
 	static public void start(String stopWatchName, String message) {
 		MyLogger logger = getLogger();
 
@@ -134,4 +141,10 @@ public class PicsLogger {
 		PicsLogger.outputOn = outputOn;
 		getOutput(); // Clear the log
 	}
+	
+	public static void addRuntimeRule(String rule) {
+		LoggingRule ruleObject = new LoggingRule(rule, true);
+		PicsLogger.getRules().add(ruleObject );
+	}
+
 }
