@@ -1043,7 +1043,6 @@
 
 		<action name="MyScheduleJSON"
 			class="com.picsauditing.actions.users.MySchedule">
-			<param name="button">json</param>
 			<result>struts/json.jsp</result>
 		</action>
 

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import org.json.simple.JSONObject;
 
 @Entity
 @Table(name = "auditor_availability")
@@ -106,6 +109,23 @@ public class AuditorAvailability extends BaseTable {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject obj = new JSONObject();
+		obj.put("id", id);
+		obj.put("title", "Empty Slot");
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		obj.put("start", cal.getTimeInMillis());
+
+		cal.add(Calendar.MINUTE, duration);
+		obj.put("end", cal.getTimeInMillis());
+
+		return obj;
 	}
 
 }

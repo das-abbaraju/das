@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +11,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
+
+import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "auditor_vacation")
@@ -53,6 +57,23 @@ public class AuditorVacation extends BaseTable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject obj = new JSONObject();
+		obj.put("id", id);
+		obj.put("title", Strings.isEmpty(description) ? "Vacation" : description);
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		obj.put("start", cal.getTimeInMillis());
+
+		cal.setTime(endDate);
+		obj.put("end", cal.getTimeInMillis());
+
+		return obj;
 	}
 
 }

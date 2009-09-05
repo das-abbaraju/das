@@ -51,15 +51,27 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		auditorID = permissions.getUserId();
 
 		if (button != null) {
-			if (button.equals("json")) {
+			if (button.startsWith("json")) {
 				json = new JSONObject();
 				JSONArray events = new JSONArray();
 				json.put("events", events);
-
-				for (AuditorSchedule sch : getSchedules()) {
-					events.add(sch.toJSON());
+				if (button.equals("jsonSchedule")) {
+					for (AuditorSchedule row : getSchedules()) {
+						events.add(row.toJSON());
+					}
 				}
+				if (button.equals("jsonVacation")) {
 
+					for (AuditorVacation row : getVacations()) {
+						events.add(row.toJSON());
+					}
+				}
+				if (button.equals("jsonAvailability")) {
+
+					for (AuditorAvailability row : getAvailability()) {
+						events.add(row.toJSON());
+					}
+				}
 				return SUCCESS;
 			}
 

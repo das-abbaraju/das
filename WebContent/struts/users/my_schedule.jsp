@@ -27,14 +27,14 @@ function saveEvent(calEvent, element) {
 $(function(){
 	$calendar = $('#cal_sched').weekCalendar({
 		height: function(calendar){return 600;},
-		businessHours: {start: 6, end: 20, limitDisplay: true},
+		businessHours: {start: 7, end: 17, limitDisplay: true},
 		dateFormat: '',
-		timeslotHeight: 40,
+		timeslotHeight: 30,
 		timeslotsPerHour: 2,
 		defaultEventLength: 4,
 		buttons: false,
 		newEventText: '',
-		data: 'MyScheduleJSON.action',
+		data: 'MyScheduleJSON.action?button=jsonSchedule',
 		eventResize: saveEvent,
 		eventDrop: saveEvent,
 		eventNew: function(calEvent, element) {
@@ -54,21 +54,42 @@ $(function(){
 });
 
 $(function(){
+	$calendar = $('#cal_vacat').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		timeslotHeight: 40,
+		timeslotsPerHour: 1,
+		defaultEventLength: 4,
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonVacation'
+	});
+
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+});
+
+$(function(){
+	$calendar = $('#cal_holid').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		timeslotHeight: 40,
+		timeslotsPerHour: 1,
+		defaultEventLength: 4,
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonAvailability'
+	});
+
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+});
+
+$(function(){
 	$calendar = $('#cal_avail').weekCalendar({
 		height: function(calendar){return 600;},
-		businessHours: {start: 6, end: 20, limitDisplay: true},
-		timeslotHeight: 40,
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		timeslotHeight: 30,
 		timeslotsPerHour: 2,
 		defaultEventLength: 4,
-		buttons: false,
-		newEventText: '',
-		data: 'MyScheduleJSON.action',
-		eventResize: saveEvent,
-		eventDrop: saveEvent,
-		eventNew: function(calEvent, element) {
-				calEvent.id = 0;
-				saveEvent(calEvent, element);
-			}
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonAvailability'
 	});
 
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
@@ -104,18 +125,16 @@ $(document).ready(function(){
 <div id="cal_sched"></div>
 </div>
 </div>
-<div id="vacation">Lorem ipsum dolor sit amet, consectetuer
-adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
-dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
-consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-laoreet dolore magna aliquam erat volutpat.</div>
-<div id="holidays">Lorem ipsum dolor sit amet, consectetuer
-adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
-dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
-consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-laoreet dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
-consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-laoreet dolore magna aliquam erat volutpat.</div>
+<div id="vacation">
+<div id="calendar_wrapper">
+<div id="cal_vacat"></div>
+</div>
+</div>
+<div id="holidays">
+<div id="calendar_wrapper">
+<div id="cal_holid"></div>
+</div>
+</div>
 <div id="preview">
 <div id="calendar_wrapper">
 <div id="cal_avail"></div>
