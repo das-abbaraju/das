@@ -11,32 +11,48 @@
 
 <script type="text/javascript">
 function saveEvent(calEvent, element) {
-	$('#message').load('MyScheduleAjax.action', {
-			button:'save',
-			'calEvent.id':calEvent.id, 
-			'calEvent.start':calEvent.start.getTime(), 
-			'calEvent.end': calEvent.end.getTime()
-		});
+	$.ajax({
+		data: { button:'save',
+				'calEvent.id':calEvent.id, 
+				'calEvent.start':calEvent.start.getTime(), 
+				'calEvent.end': calEvent.end.getTime()
+			},
+		url: 'MyScheduleAjax.action',
+		success: function(text) {
+				$.gritter.add({title: 'Calendar Event', text:text})
+			}
+	});
 }
 
 $(function(){
 	$calendar = $('#calendar').weekCalendar({
-			firstDayOfWeek: 1,
-			timeslotHeight: 40,
-			timeslotsPerHour: 2,
-			defaultEventLength: 4,
-			buttons: false,
-			newEventText: 'Timeslot',
-			data: 'MyScheduleJSON.action',
-			eventResize: saveEvent,
-			eventDrop: saveEvent,
-			eventNew: function(calEvent, element) {
-					calEvent.id = 0;
-					saveEvent(calEvent, element);
-				}
-		});
+		height: function(calendar){return 600;},
+		businessHours: {start: 6, end: 20, limitDisplay: true},
+		dateFormat: '',
+		timeslotHeight: 40,
+		timeslotsPerHour: 2,
+		defaultEventLength: 4,
+		buttons: false,
+		newEventText: '',
+		data: 'MyScheduleJSON.action',
+		eventResize: saveEvent,
+		eventDrop: saveEvent,
+		eventNew: function(calEvent, element) {
+				calEvent.id = 0;
+				saveEvent(calEvent, element);
+			}
+	});
 
+//	$calendar.find('.day-6, .day-7').remove();
+//	for (var i=1; i<=5; i++)
+//		$calendar.find('.week-calendar-time-slots .day-'+i).css({width: 'auto'});
+//	$calendar.find('.week-calendar-time-slots td[colspan=7]').attr('colspan', 5);
+//	$('.day-column-header br').remove();
+
+	$calendar.find('.today').removeClass('today');
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 });
+
 $(document).ready(function(){
 	$("#schedule_tabs").tabs();
 
