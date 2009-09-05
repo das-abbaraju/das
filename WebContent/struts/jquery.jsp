@@ -7,5 +7,5 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
 
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="js/jquery/jquery-ui-1.7.2.custom.css">
 <link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
