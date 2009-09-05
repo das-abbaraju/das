@@ -25,7 +25,7 @@ function saveEvent(calEvent, element) {
 }
 
 $(function(){
-	$calendar = $('#calendar').weekCalendar({
+	$calendar = $('#cal_sched').weekCalendar({
 		height: function(calendar){return 600;},
 		businessHours: {start: 6, end: 20, limitDisplay: true},
 		dateFormat: '',
@@ -50,6 +50,27 @@ $(function(){
 //	$('.day-column-header br').remove();
 
 	$calendar.find('.today').removeClass('today');
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+});
+
+$(function(){
+	$calendar = $('#cal_avail').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 6, end: 20, limitDisplay: true},
+		timeslotHeight: 40,
+		timeslotsPerHour: 2,
+		defaultEventLength: 4,
+		buttons: false,
+		newEventText: '',
+		data: 'MyScheduleJSON.action',
+		eventResize: saveEvent,
+		eventDrop: saveEvent,
+		eventNew: function(calEvent, element) {
+				calEvent.id = 0;
+				saveEvent(calEvent, element);
+			}
+	});
+
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 });
 
@@ -80,7 +101,7 @@ $(document).ready(function(){
 </ul>
 <div id="aschedule">
 <div id="calendar_wrapper">
-<div id="calendar"></div>
+<div id="cal_sched"></div>
 </div>
 </div>
 <div id="vacation">Lorem ipsum dolor sit amet, consectetuer
@@ -95,11 +116,11 @@ consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
 laoreet dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
 consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
 laoreet dolore magna aliquam erat volutpat.</div>
-<div id="preview">Lorem ipsum dolor sit amet, consectetuer
-adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
-dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
-consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-laoreet dolore magna aliquam erat volutpat.</div>
+<div id="preview">
+<div id="calendar_wrapper">
+<div id="cal_avail"></div>
+</div>
+</div>
 </div>
 
 </body>
