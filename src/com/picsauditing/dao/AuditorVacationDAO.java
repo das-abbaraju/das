@@ -35,6 +35,11 @@ public class AuditorVacationDAO extends PicsDAO {
 		return em.find(AuditorVacation.class, id);
 	}
 
+	public List<AuditorVacation> findAll() {
+		Query query = em.createQuery("SELECT t FROM AuditorVacation t");
+		return query.getResultList();
+	}
+	
 	public List<AuditorVacation> findByAuditorID(int auditorID) {
 		Query query = em.createQuery("SELECT t FROM AuditorVacation t " +
 				"WHERE t.user.id = ? OR t.user IS NULL ORDER BY startDate");

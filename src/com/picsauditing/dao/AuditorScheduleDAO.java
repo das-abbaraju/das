@@ -40,4 +40,9 @@ public class AuditorScheduleDAO extends PicsDAO {
 		query.setParameter(1, userID);
 		return query.getResultList();
 	}
+
+	public List<AuditorSchedule> findAll() {
+		Query query = em.createQuery("SELECT t FROM AuditorSchedule t");
+		return query.getResultList();
+	}
 }

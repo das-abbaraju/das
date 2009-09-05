@@ -23,7 +23,7 @@ public class AuditorAvailability extends BaseTable {
 	private Date startDate;
 	private int duration;
 	private String restrictions;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
 	public User getUser() {

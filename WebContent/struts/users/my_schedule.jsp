@@ -95,12 +95,12 @@ consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
 laoreet dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
 consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
 laoreet dolore magna aliquam erat volutpat.</div>
-</div>
 <div id="preview">Lorem ipsum dolor sit amet, consectetuer
 adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
 dolore magna aliquam erat volutpat. Lorem ipsum dolor sit amet,
 consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
 laoreet dolore magna aliquam erat volutpat.</div>
+</div>
 
 </body>
 </html>
