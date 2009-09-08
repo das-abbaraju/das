@@ -13,6 +13,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.DateBean;
+
 @Entity
 @Table(name = "auditor_schedule")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
@@ -45,16 +47,17 @@ public class AuditorSchedule extends BaseTable {
 	public void setWeekDay(int weekDay) {
 		this.weekDay = weekDay;
 	}
-	
+
 	public void setWeekDay(long time) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(time);
-		
+
 		this.weekDay = cal.get(Calendar.DAY_OF_WEEK);
 	}
 
 	/**
 	 * Minutes into the day
+	 * 
 	 * @return
 	 */
 	@Column(nullable = false)
@@ -118,6 +121,20 @@ public class AuditorSchedule extends BaseTable {
 		obj.put("end", cal.getTimeInMillis());
 
 		return obj;
+	}
+
+	@Override
+	public String toString() {
+		String s = "";
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_WEEK, weekDay);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, startTime);
+		s += DateBean.format(cal.getTime(), "E h:mm a") + " to ";
+
+		cal.add(Calendar.MINUTE, duration);
+		s += DateBean.format(cal.getTime(), "E h:mm a");
+		return s;
 	}
 
 }

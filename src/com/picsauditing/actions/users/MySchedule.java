@@ -106,7 +106,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 					schedule.setUser(getUser());
 				schedule.setAuditColumns(permissions);
 				auditorScheduleDAO.save(schedule);
-				output = "Successfully Saved Timeslot " + schedule.getId();
+				output = "Successfully Saved Timeslot " + schedule.getId() + ". " + schedule;
 
 				return BLANK;
 			}
