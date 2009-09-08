@@ -44,8 +44,10 @@
 		$('link_tab_profile').removeClassName('current');
 		$('tab_permissions').hide();
 		$('link_tab_permissions').removeClassName('current');
+		<s:if test="eList.size > 0">
 		$('tab_subscriptions').hide();
 		$('link_tab_subscriptions').removeClassName('current');
+		</s:if>
 		<s:if test="switchTos.size > 0">
 		$('tab_switch').hide();
 		$('link_tab_switch').removeClassName('current');
