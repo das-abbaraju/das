@@ -86,7 +86,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 				output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
 
-				return SUCCESS;
+				return BLANK;
 			}
 
 			if (button.equals("deleteVacation")) {
@@ -98,8 +98,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 			if (button.equalsIgnoreCase("save")) {
 				if (calEvent == null) {
-					addActionError("No schedule to save");
-					return SUCCESS;
+					output = "No schedule to save";
+					return BLANK;
 				}
 				schedule = auditorScheduleDAO.find(calEvent.id);
 				if (schedule == null)

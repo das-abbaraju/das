@@ -20,9 +20,17 @@ function saveEvent(calEvent, element, $cal) {
 		url: 'MyScheduleAjax.action',
 		success: function(text) {
 				$.gritter.add({title: 'Calendar Event Saved', text:text})
-				$cal.weekCalendar("refresh");
+				if ($cal) {
+					$cal.weekCalendar('refresh');
+					styleCal($cal);
+				}
 			}
 	});
+}
+
+function styleCal(cal) {
+	$(cal).find('.today').removeClass('today');
+	$(cal).find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 }
 
 $(function(){
@@ -58,14 +66,7 @@ $(function(){
 			}
 	});
 
-//	$calendar.find('.day-6, .day-7').remove();
-//	for (var i=1; i<=5; i++)
-//		$calendar.find('.week-calendar-time-slots .day-'+i).css({width: 'auto'});
-//	$calendar.find('.week-calendar-time-slots td[colspan=7]').attr('colspan', 5);
-//	$('.day-column-header br').remove();
-
-	$calendar.find('.today').removeClass('today');
-	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+	styleCal($calendar);
 });
 
 $(function(){
