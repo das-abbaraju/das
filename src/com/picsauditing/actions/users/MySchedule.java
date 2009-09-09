@@ -83,9 +83,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				}
 
 				auditorScheduleDAO.remove(schedule);
-
 				output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
-
 				return BLANK;
 			}
 
