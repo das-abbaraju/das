@@ -315,8 +315,8 @@ div.autocomplete ul li {
 				</li>
 			</ol>
 			</fieldset>
-			<s:if test="user.id > 0 && !user.group">
-			<fieldset class="form">
+			<s:if test="user.id > 0 && !user.group && user.account.id != 1100">
+			<fieldset class="form bottom">
 			<div>
 				<pics:permission perm="SwitchUser">
 					<a href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a> | 
