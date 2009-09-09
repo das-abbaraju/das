@@ -1,7 +1,9 @@
 package com.picsauditing.actions.chart;
 
+import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.chart.ChartMultiSeries;
@@ -21,27 +23,8 @@ public class ChartOpFlagHistory extends ChartMSAction {
 	public ChartMultiSeries buildChart() throws Exception {
 		chart.setRotateLabels(true);
 
-		String sqlString ="";
-		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-		sql.addField("substring(c.main_trade,1,20) as label");
-		sql.addField("count(*) as value");
-		sql.addGroupBy("label");
-		sql.addOrderBy("value DESC");
-		sql.addWhere("c.main_trade > ''");
-		
-		sql.addGroupBy("flag");
-		
-		
-/*
- * select creationDate, flag, count(*) from flag_archive where opID = 2475 and creationDate = '2009-04-29' group by flag
-Union
-select creationDate, flag, count(*) from flag_archive where opID = 2475 and creationDate = '2009-03-29' group by flag
-Union
-select creationDate, flag, count(*) from flag_archive where opID = 2475 and creationDate = '2009-02-28' group by flag
-Union
-select creationDate, flag, count(*) from flag_archive where opID = 2475 and creationDate = '2009-01-29' group by flag		
- */
+		String sqlString = createSQL(0) + " UNION " + createSQL(30) + " UNION " + createSQL(60) + " UNION "
+				+ createSQL(90);
 
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sqlString);
@@ -50,5 +33,21 @@ select creationDate, flag, count(*) from flag_archive where opID = 2475 and crea
 		converter.setChart(chart);
 		converter.addData(data);
 		return chart;
+	}
+
+	private String createSQL(int daysAgo) {
+		SelectSQL sql = new SelectSQL("flag_archive");
+		sql.addField("creationDate as label");
+		sql.addField("flag as series");
+		sql.addField("count(*) as value");
+		sql.addGroupBy("series, label");
+		sql.addWhere("opID = " + permissions.getAccountId());
+		Date creationDate = DateBean.addDays(new Date(), daysAgo * -1);
+		try {
+			sql.addWhere("creationDate = '" + DateBean.toDBFormat(creationDate) + "'");
+		} catch (Exception doNotShowAnything) {
+			sql.addWhere("creationDate IS NULL");
+		}
+		return sql.toString();
 	}
 }

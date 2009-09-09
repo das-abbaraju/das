@@ -13,7 +13,7 @@ import com.picsauditing.util.chart.DataRow;
 public class ChartDAO {
 	/**
 	 * 
-	 * @param sql valid column names are label, value, series, link
+	 * @param sql valid column names are label, value, sortBy, series, link
 	 * @return
 	 * @throws SQLException
 	 */
