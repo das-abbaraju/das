@@ -27,16 +27,20 @@ function loadForm(id) {
 <table class="report">
 	<thead>
 		<tr>
+			<td>#</td>
 			<td>Active</td>
 			<td>Make</td>
 			<td>Model</td>
+			<td>Contractor</td>
 		</tr>
 	</thead>
 	<s:iterator value="list">
 		<tr class="clickable" onclick="loadForm(<s:property value="id"/>)">
+			<td><s:property value="id" /></td>
 			<td class="center"><s:property value="%{active ? 'Y' : 'N'}" /></td>
 			<td><s:property value="make" /></td>
 			<td><s:property value="model" /></td>
+			<td><s:property value="contractor.name" /></td>
 		</tr>
 	</s:iterator>
 </table>

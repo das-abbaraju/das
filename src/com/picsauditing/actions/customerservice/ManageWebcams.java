@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.WebcamDAO;
 import com.picsauditing.jpa.entities.Webcam;
@@ -33,20 +34,23 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 
 		if (button != null) {
 			if ("load".equals(button)) {
-				if (webcam == null)
-					webcam = new Webcam();
 
 				return SUCCESS;
 			}
 
 			if ("Delete".equals(button)) {
+				tryPermissions(OpPerms.ManageWebcam, OpType.Delete);
+				
 				webcamDAO.remove(webcam);
 				addActionMessage("Deleted webcam " + webcam.getId());
 				webcam = new Webcam();
 			}
 
 			if ("Save".equals(button)) {
+				tryPermissions(OpPerms.ManageWebcam, OpType.Edit);
+				
 				webcamDAO.save(webcam);
+				webcam.setAuditColumns(permissions);
 				addActionMessage("Saved webcam " + webcam.getId());
 				webcam = new Webcam();
 			}
