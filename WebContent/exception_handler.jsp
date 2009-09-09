@@ -83,6 +83,7 @@
 			EmailSender.send(mail);
 		} catch (Exception e) {
 			SendMail sendMail = new SendMail();
+			mail.setFromAddress("PICS Exception Handler <info@picsauditing.com>");
 			sendMail.send(mail); 
 		}
 	}
