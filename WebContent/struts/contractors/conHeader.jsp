@@ -161,7 +161,7 @@
 	</fieldset>
 	<div class="clear"></div>
 </div>
-<div class="auditHeaderNav noprint">
+<div id="auditHeaderNav" class="auditHeaderNav noprint">
 	<ul>
 		<pics:permission perm="AuditEdit">
 			<li><a href="ConAuditMaintain.action?auditID=<s:property value="auditID" />"
