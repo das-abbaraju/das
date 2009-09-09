@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
 <script type="text/javascript">
-function saveEvent(calEvent, element) {
+function saveEvent(calEvent, element, $cal) {
 	$.ajax({
 		data: { button:'save',
 				'calEvent.id':calEvent.id, 
@@ -19,7 +19,8 @@ function saveEvent(calEvent, element) {
 			},
 		url: 'MyScheduleAjax.action',
 		success: function(text) {
-				$.gritter.add({title: 'Calendar Event', text:text})
+				$.gritter.add({title: 'Calendar Event Saved', text:text})
+				$cal.weekCalendar("refresh");
 			}
 	});
 }
@@ -39,7 +40,21 @@ $(function(){
 		eventDrop: saveEvent,
 		eventNew: function(calEvent, element) {
 				calEvent.id = 0;
-				saveEvent(calEvent, element);
+				saveEvent(calEvent, element, $('#cal_sched'));
+			},
+		eventClick: function(calEvent, element) {
+				if (confirm("Do you want to delete this timeslot?")){
+					$.ajax({
+						data: { button:'deleteSchedule',
+								'calEvent.id':calEvent.id
+							},
+						url: 'MyScheduleAjax.action',
+						success: function(text) {
+								$.gritter.add({title: 'Calendar Event Removed', text:text});
+								$('#cal_sched').weekCalendar('removeEvent',calEvent.id);
+							}
+					});
+				}
 			}
 	});
 

@@ -76,10 +76,17 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("deleteSchedule")) {
+				schedule = auditorScheduleDAO.find(calEvent.id);
 				if (schedule == null || schedule.getId() == 0) {
-					addActionError("No schedule found");
+					output = "No schedule found.";
 					return SUCCESS;
 				}
+
+				auditorScheduleDAO.remove(schedule);
+
+				output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
+
+				return SUCCESS;
 			}
 
 			if (button.equals("deleteVacation")) {
