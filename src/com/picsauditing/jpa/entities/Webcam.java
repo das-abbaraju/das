@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 public class Webcam extends BaseTable implements java.io.Serializable, JSONable {
 	private String make;
 	private String model;
-	private boolean active;
+	private boolean active = true;
 	private ContractorAccount contractor;
 	private Date receivedDate;
 	private Date sentDate;
