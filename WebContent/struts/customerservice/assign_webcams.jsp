@@ -5,6 +5,11 @@
 <link rel="stylesheet" href="css/reports.css" />
 <link rel="stylesheet" href="css/forms.css" />
 <s:include value="../jquery.jsp" />
+<script type="text/javascript">
+$(function(){
+	$.gritter.add({title:'Webcam Notification',text:'The following <s:property value="audits.size"/> audits require webcams.'});
+});
+</script>
 </head>
 <body>
 <h1>Assign Webcams</h1>

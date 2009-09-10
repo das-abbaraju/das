@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 public class AssignWebcams extends PicsActionSupport {
 
 	private ContractorAuditDAO auditDAO;
+	private List<ContractorAudit> audits;
 
 	public AssignWebcams(ContractorAuditDAO auditDAO) {
 		this.auditDAO = auditDAO;
@@ -23,6 +24,8 @@ public class AssignWebcams extends PicsActionSupport {
 	}
 
 	public List<ContractorAudit> getAudits() {
-		return auditDAO.findAuditsNeedingWebcams();
+		if (audits == null)
+			audits = auditDAO.findAuditsNeedingWebcams();
+		return audits;
 	}
 }
