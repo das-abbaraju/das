@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	
+	<target name="test">
+		<webtest name="Admin Webcams">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+				<group description="Manage Webcams">
+					<group description="Create Webcam">
+						<invoke url="ManageWebcams.action"/>
+						<setInputField name="webcam.make" value="Logitech"/>
+						<setInputField htmlId="webcam_form_webcam_make" value="Logitech"/>
+						<setInputField name="webcam.model" value="v-ubb39"/>
+						<setInputField htmlId="webcam_form_webcam_model" value="v-ubb39"/>
+						<setInputField name="webcam.serialNumber" value="none"/>
+						<setInputField htmlId="webcam_form_webcam_serialNumber" value="none"/>
+						<clickButton label="Save"/>
+						<verifyText text="Saved Webcam"/>
+					</group>
+
+					<group description="Edit Webcam">
+					<invoke url="ManageWebcams.action?webcam.id=4"/>
+						<setInputField name="webcam.make" value="Samsung"/>
+						<clickButton label="Save"/>
+						<invoke url="ManageWebcams.action?webcam.id=4"/>
+						<verifyText text="Samsung"/>
+						<setInputField name="webcam.make" value="Logitech"/>
+						<clickButton label="Save"/>
+					</group>	
+				</group>
+			</steps>
+		</webtest>
+	</target>
+</project>
