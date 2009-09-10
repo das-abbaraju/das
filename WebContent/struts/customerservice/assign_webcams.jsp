@@ -37,6 +37,23 @@ $(function(){
 </table>
 </div>
 
+<s:if test="audit != null">
+<div>
+	<s:form>
+		<fieldset class="form">
+			<legend><span>Contact Info</span></legend>
+			<ol>
+				<li><label>Contact Name:</label><s:textfield name="audit.contractorContact"/></li>
+				<li><label>Address:</label><s:textfield name="address"/></li>
+				<li><label>City:</label><s:textfield name="city"/></li>
+				<li><label>State:</label><s:textfield name="state"/></li>
+				<li><label>Zip:</label><s:textfield name="zip"/></li>
+			</ol>
+		</fieldset>
+	</s:form>
+</div>
+</s:if>
+
 <br clear="all" />
 </body>
 </html>
