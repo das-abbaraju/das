@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -14,8 +15,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 public class ReportPolicyVerification extends ReportInsuranceSupport {
 
 	public ReportPolicyVerification(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO);
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 		orderByDefault = "MIN(cao.updateDate), a.name";
 	}
 

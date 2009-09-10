@@ -33,7 +33,8 @@
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expiration</a></td>
 	    <s:if test="permissions.operator || permissions.corporate">
 	        <td>File(s)</td>
-	   	</s:if> 
+	   	</s:if>
+	   	<td>AMBest</td> 
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -55,6 +56,11 @@
 			<s:else></s:else>
 			</td>
 		</s:if>
+	   	<td>
+			<s:iterator value="getDataForAudit(get('auditID'),'AMBest')">
+				<s:property value="getAMBestRatings(comment)" escape="false"/>
+			</s:iterator>
+	   	</td> 
 	</tr>
 	</s:iterator>
 </table>

@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.DynaBean;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -36,9 +37,9 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 	protected Set<String> updatedContractors = new HashSet<String>();
 	
 	public ReportInsuranceApproval(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao, ContractorAccountDAO contractorAccountDAO) {
+			OperatorAccountDAO operatorAccountDAO, ContractorAuditOperatorDAO conAuditOperatorDAO, NoteDAO noteDao, ContractorAccountDAO contractorAccountDAO, AmBestDAO amBestDAO) {
 		// sql = new SelectContractorAudit();
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO);
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 		this.conAuditOperatorDAO = conAuditOperatorDAO;
 		this.noteDao = noteDao;
 		this.contractorAccountDAO = contractorAccountDAO;

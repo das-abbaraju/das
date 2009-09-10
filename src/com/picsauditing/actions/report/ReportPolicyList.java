@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -9,8 +10,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 public class ReportPolicyList extends ReportInsuranceSupport {
 
 	public ReportPolicyList(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO) {
-		super(auditDataDao, auditQuestionDao, operatorAccountDAO);
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
+		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
 	}
 
 	@Override

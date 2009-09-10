@@ -17,6 +17,7 @@
 		</s:if>
 		<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 		<td>Limits</td>
+		<td>AMBest</td>
 		<td title="Additional Requirements">Add'l</td>
 		<td>Cert</td>
 		<td>Admin Notes</td>
@@ -57,6 +58,11 @@
 			<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
 				<nobr><s:property value="getFormattedDollarAmount(answer)"/> = <span style="font-size: 9px;"><s:property value="question.columnHeader"/></span></nobr>
 				<br/>
+			</s:iterator>
+		</td>
+		<td>
+			<s:iterator value="getDataForAudit(get('auditID'),'AMBest')">
+				<s:property value="getAMBestRatings(comment)" escape="false"/>
 			</s:iterator>
 		</td>
 		<td class="center">

@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.Vector;
 import org.apache.commons.beanutils.DynaBean;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.Strings;
@@ -22,6 +25,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 	protected AuditDataDAO auditDataDao = null;
 	protected AuditQuestionDAO auditQuestionDao = null;
 	protected OperatorAccountDAO operatorAccountDAO = null;
+	protected AmBestDAO amBestDAO = null;
 
 	/**
 	 * Map of Purpose, AuditID, then List of Answers
@@ -29,11 +33,12 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 	protected Map<String, Map<Integer, List<AuditData>>> questionData = null;
 
 	public ReportInsuranceSupport(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
-			OperatorAccountDAO operatorAccountDAO) {
+			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
 		// sql = new SelectContractorAudit();
 		this.auditDataDao = auditDataDao;
 		this.auditQuestionDao = auditQuestionDao;
 		this.operatorAccountDAO = operatorAccountDAO;
+		this.amBestDAO = amBestDAO;
 	}
 
 	@Override
@@ -118,6 +123,10 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 					if (answer.getQuestion().getSubCategory().getSubCategory().equals("Policy Limits"))
 						uniqueCode = "Limits";
 
+					if (answer.getQuestion().getQuestionType().equals("AMBest")) {
+						uniqueCode = "AMBest";
+					}
+
 					if (!Strings.isEmpty(uniqueCode)) {
 						int auditID = answer.getAudit().getId();
 						if (questionData.get(uniqueCode) == null)
@@ -135,5 +144,23 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		} catch (Exception e) {
 			return new ArrayList<AuditData>();
 		}
+	}
+
+	public String getAMBestRatings(String comment) {
+		String value = "";
+		if (!Strings.isEmpty(comment)) {
+			AmBest amBest = amBestDAO.findByNaic(comment);
+			if (amBest != null) {
+				if (!Strings.isEmpty(amBest.getRatingAlpha())) {
+					value = "<nobr> Ratings: " + amBest.getRatingAlpha() + "</nobr><br/>";
+				}
+				if (!Strings.isEmpty(amBest.getFinancialAlpha())) {
+					value += "Class: " + amBest.getFinancialAlpha();
+				}
+			}
+		}
+		if (!Strings.isEmpty(value))
+			return value;
+		return "N/A";
 	}
 }
