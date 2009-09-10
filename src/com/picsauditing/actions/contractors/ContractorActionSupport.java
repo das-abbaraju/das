@@ -170,7 +170,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
-						&& !audit.equals(AuditStatus.Exempt)) {
+						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 
@@ -188,7 +188,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.equals(AuditStatus.Exempt)) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
 					String linkText = audit.getAuditType().getAuditName()
 							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
 					if (isShowCheckIcon(audit))
