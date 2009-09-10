@@ -58,6 +58,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 
 		getFilter().setShowVisible(false);
 		getFilter().setShowRecommendedFlag(true);
+		getFilter().setShowAMBest(true);
 
 		sql.addWhere("a.active = 'Y'");
 

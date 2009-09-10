@@ -439,6 +439,16 @@
 		</span></div>
 	</s:if>
 
+	<s:if test="filter.showAMBest">
+		<br clear="all"/>
+		<div class="filterOption">
+			<s:select list="filter.aMBestRatingsList" cssClass="forms" name="filter.amBestRating" 
+				headerKey="0" headerValue="- Rating -"/>
+			<s:select list="filter.aMBestClassList" cssClass="forms" name="filter.amBestClass" 
+				headerKey="0" headerValue="- Class -"/>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showRecommendedFlag">
 		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Policy Compliance -"
 			cssClass="forms" name="filter.recommendedFlag" /></div>

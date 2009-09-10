@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +67,18 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 		}
 
 		sql.addWhere("ca.auditStatus != 'Expired'");
-
+		
+		if(getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
+			sql.addJoin("JOIN pqfdata am ON am.auditid = ca.id");
+			sql.addJoin("JOIN pqfquestions pq ON pq.id = am.questionid");
+			sql.addJoin("JOIN ambest ambest ON ambest.naic = am.comment and ambest.companyName = am.answer");
+			sql.addWhere("pq.questionType = 'AMBest'");
+			if(getFilter().getAmBestRating() > 0)
+				sql.addWhere("ambest.ratingcode = " + getFilter().getAmBestRating());
+			if(getFilter().getAmBestClass() > 0)
+				sql.addWhere("ambest.financialCode =" + getFilter().getAmBestClass());
+		}
+		
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowTrade(false);

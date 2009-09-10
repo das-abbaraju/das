@@ -34,6 +34,7 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 		}
 
 		getFilter().setShowOperatorSingle(true);
+		getFilter().setShowAMBest(true);
 
 	}
 }

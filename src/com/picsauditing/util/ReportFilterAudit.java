@@ -2,8 +2,10 @@ package com.picsauditing.util;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.CaoStatus;
@@ -31,6 +33,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
 	protected boolean showIncidenceRate = false;
+	protected boolean showAMBest = false;
 	
 
 	// Filter values
@@ -60,7 +63,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = -1;
-	
+	protected int amBestRating;
+	protected int amBestClass;
 
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -188,6 +192,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowClosingAuditor(boolean showClosingAuditor) {
 		this.showClosingAuditor = showClosingAuditor;
+	}
+
+	public boolean isShowAMBest() {
+		return showAMBest;
+	}
+
+	public void setShowAMBest(boolean showAMBest) {
+		this.showAMBest = showAMBest;
 	}
 
 	public int[] getAuditID() {
@@ -374,6 +386,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return CaoStatus.values();
 	}
 	
+	public Map<Integer, String> getAMBestClassList() {
+		return AmBest.financialMap;
+	}
+
+	public Map<Integer, String> getAMBestRatingsList() {
+		return AmBest.ratingMap;
+	}
+
 	public boolean isShowAuditFor() {
 		return showAuditFor;
 	}
@@ -444,5 +464,21 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setClosingAuditorId(int[] closingAuditorId) {
 		this.closingAuditorId = closingAuditorId;
+	}
+
+	public int getAmBestRating() {
+		return amBestRating;
+	}
+
+	public void setAmBestRating(int amBestRating) {
+		this.amBestRating = amBestRating;
+	}
+
+	public int getAmBestClass() {
+		return amBestClass;
+	}
+
+	public void setAmBestClass(int amBestClass) {
+		this.amBestClass = amBestClass;
 	}
 }
