@@ -23,7 +23,7 @@
 	</target>
 	
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="admin_webcams.xml"/>
+		<ant antfile="admin_audits.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
