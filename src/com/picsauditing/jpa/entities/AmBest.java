@@ -14,7 +14,8 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 public class AmBest {
-	static Map<Integer, String> financialMap = new HashMap<Integer, String>() {
+
+	public static Map<Integer, String> financialMap = new HashMap<Integer, String>() {
 		{
 			put(1, "I");
 			put(2, "II");
@@ -34,7 +35,7 @@ public class AmBest {
 		}
 	};
 
-	static Map<Integer, String> ratingMap = new HashMap<Integer, String>() {
+	public static Map<Integer, String> ratingMap = new HashMap<Integer, String>() {
 		{
 			put(10, "A++");
 			put(11, "A+");

@@ -67,6 +67,16 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 		if (button != null) {
 			if ("save".equals(button)) {
 				if (red != null) {
+					if(question.getQuestionType().equals("AMBest")) {
+						if(red.getAmRatings() == 0 && red.getAmClass() == 0) {
+							red.setComparison(null);
+							red.setValue(null);
+						}
+						if(red.getAmRatings() > 0 || red.getAmClass() > 0) {
+							red.setComparison("<");
+							red.setValue(red.getAmRatings()+"|"+red.getAmClass());
+						}
+					}
 					if (Strings.isEmpty(red.getComparison()) && Strings.isEmpty(red.getValue())) {
 						if (red.getId() != 0) {
 							criteriaDao.remove(red);
@@ -80,6 +90,16 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 						criteriaDao.refresh(red);
 				}
 				if (amber != null) {
+					if(question.getQuestionType().equals("AMBest")) {
+						if(amber.getAmRatings() == 0 && amber.getAmClass() == 0) {
+							amber.setComparison(null);
+							amber.setValue(null);
+						}
+						if(amber.getAmRatings() > 0 || amber.getAmClass() > 0) {
+							amber.setComparison("<");
+							amber.setValue(red.getAmRatings()+"|"+amber.getAmClass());
+						}	
+					}
 					if (Strings.isEmpty(amber.getComparison()) && Strings.isEmpty(amber.getValue())) {
 						if (amber.getId() != 0) {
 							criteriaDao.remove(amber);
@@ -208,7 +228,7 @@ public class FlagCriteriaAction extends OperatorActionSupport implements Prepara
 	public void setTestResult(FlagColor testResult) {
 		this.testResult = testResult;
 	}
-	
+
 	public MultiYearScope[] getMultiYearScopeList() {
 		return MultiYearScope.values();
 	}

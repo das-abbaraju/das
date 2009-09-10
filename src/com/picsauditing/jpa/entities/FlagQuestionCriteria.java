@@ -30,7 +30,10 @@ public class FlagQuestionCriteria extends BaseTable {
 	protected String value;
 	protected boolean validationRequired;
 	protected MultiYearScope multiYearScope;
-
+	
+	protected int amRatings;
+	protected int amClass;
+	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "opID", nullable = false)
 	public OperatorAccount getOperatorAccount() {
@@ -110,6 +113,40 @@ public class FlagQuestionCriteria extends BaseTable {
 	}
 
 	@Transient
+	public int getAmRatings() {
+		return amRatings;
+	}
+
+	public void setAmRatings(int amRatings) {
+		this.amRatings = amRatings;
+	}
+
+	@Transient
+	public int getAmClass() {
+		return amClass;
+	}
+
+	public void setAmClass(int amClass) {
+		this.amClass = amClass;
+	}
+	
+	@Transient
+	public int getAMBestRatings() {
+		if(!Strings.isEmpty(value)) {
+			return Integer.parseInt(value.substring(0, value.indexOf('|')));
+		}
+		return 0;
+	}
+
+	@Transient
+	public int getAMBestClass() {
+		if(!Strings.isEmpty(value)) {
+			return Integer.parseInt(value.substring(value.indexOf('|')+ 1,value.length()));
+		}
+		return 0;
+	}
+
+	@Transient
 	public boolean isFlagged(String answer) {
 		String questionType = auditQuestion.getQuestionType();
 		if ("Check Box".equals(questionType))
@@ -185,6 +222,12 @@ public class FlagQuestionCriteria extends BaseTable {
 			else
 				buf.append("<i>after</i> ");
 			buf.append(this.value);
+		} else if ("AMBest".equals(auditQuestion.getQuestionType())) {
+			buf.append("<i>Less than</i>");
+			if(getAMBestRatings() > 0)
+				buf.append(" Ratings:" + AmBest.ratingMap.get(getAMBestRatings()));
+			if(getAMBestClass() > 0)
+				buf.append(" Class:" + AmBest.financialMap.get(getAMBestClass()));
 		} else {
 			if (multiYearScope != null)
 				buf.append(multiYearScope + " ");
@@ -200,5 +243,4 @@ public class FlagQuestionCriteria extends BaseTable {
 		result = PRIME * result + id;
 		return result;
 	}
-
 }

@@ -40,7 +40,7 @@
 	</s:if></div>
 </s:if>
 <s:if test="operator != operator.inheritInsuranceCriteria">
-	<div id="info">The InsureGuard&trade; Criteria for this account inherits the configuration from <s:property
+	<div id="info">The InsureGUARD&trade; Criteria for this account inherits the configuration from <s:property
 		value="operator.inheritInsuranceCriteria.name" />. Please login to that account to modify the criteria. <s:if
 		test="permissions.admin">
 		<a href="OperatorFlagCriteria.action?id=<s:property
@@ -76,7 +76,7 @@
 <s:if test="operator.canSeeInsurance.toString().equals('Yes')">
 	<ul id="navListTop">
 		<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="!classType.policy">current</s:if>">PQF/Audits</a></li>
-		<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.policy">current</s:if>">InsureGuard&trade;</a></li>
+		<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.policy">current</s:if>">InsureGUARD&trade;</a></li>
 	</ul>
 </s:if>
 

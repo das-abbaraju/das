@@ -61,8 +61,18 @@ function calendarReturn(y, m, d) {
 }
 
 function clearRow(row) {
-	$(row+'_comparison').value = '';
-	$(row+'_value').value = '';
+	var comparision = $(row+'_comparison');
+	if(comparision != null)
+		comparision.value = '';
+	var amBest = $(row+'_amRatings');
+	if(amBest != null)
+		amBest.value = 0;
+	var amBestClass = $(row+'_amClass');
+	if(amBestClass != null)
+		amBestClass.value = 0;
+	var value = $(row+'_value');
+	if(value != null)
+	  value.value = '';
 	$(row+'_clear').hide();
 }
 

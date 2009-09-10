@@ -37,8 +37,10 @@
 	class="picsbutton negative"
 	onclick="closeCriteriaEdit(); return false;" value="Close" /></div>
 
-<div class="test">Test: <input type="text" id="test" size="10">
-<input type="button" onclick="testCriteria();return false;" value="Test" />
-<span id="test_output"></span></div>
+<s:if test="question.questionType != 'AMBest'">
+	<div class="test">Test: <input type="text" id="test" size="10">
+	<input type="button" onclick="testCriteria();return false;" value="Test" />
+	<span id="test_output"></span></div>
+</s:if>
 </form>
 </div>

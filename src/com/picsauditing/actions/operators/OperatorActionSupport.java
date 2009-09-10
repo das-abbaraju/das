@@ -1,9 +1,11 @@
 package com.picsauditing.actions.operators;
 
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class OperatorActionSupport extends AccountActionSupport {
@@ -78,5 +80,12 @@ public class OperatorActionSupport extends AccountActionSupport {
 		}
 		return inheritsInsurance;
 	}
+	
+	public Map<Integer, String> getAMBestClassList() {
+		return AmBest.financialMap;
+	}
 
+	public Map<Integer, String> getAMBestRatingsList() {
+		return AmBest.ratingMap;
+	}
 }

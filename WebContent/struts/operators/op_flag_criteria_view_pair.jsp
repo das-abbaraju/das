@@ -34,3 +34,8 @@
 	<s:select list="#{'<':'<','=':'=','>':'>'}" headerKey="" headerValue="" name="%{criteria}.comparison" onchange="$('%{criteria}_clear').show()"></s:select>
 	<s:textfield name="%{criteria}.value" size="10" onchange="$('%{criteria}_clear').show()"/>
 </s:if>
+<s:if test="question.questionType == 'AMBest'">
+	<nobr>
+	<s:select list="aMBestRatingsList" headerKey="0" headerValue="-Ratings-" name="%{criteria}.amRatings" value="%{value.aMBestRatings}" onchange="$('%{criteria}_clear').show()"></s:select>
+	<s:select list="aMBestClassList" headerKey="0" headerValue="-Class-" name="%{criteria}.amClass" value="%{value.aMBestClass}" onchange="$('%{criteria}_clear').show()"></s:select></nobr>
+</s:if>
