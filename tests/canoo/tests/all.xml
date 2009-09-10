@@ -6,6 +6,7 @@
 		<ant antfile="login.xml"/>
 		<ant antfile="auditor.xml"/>
 		<ant antfile="admin_billing.xml"/>
+		<ant antfile="admin_webcams.xml"/>
 		<ant antfile="corporate.xml"/>
 		<ant antfile="contractor.xml"/>
 		<ant antfile="operator_users.xml"/>
@@ -22,7 +23,7 @@
 	</target>
 	
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="admin_verification.xml"/>
+		<ant antfile="admin_webcams.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
