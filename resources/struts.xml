@@ -1175,6 +1175,8 @@
 			<result>struts/operators/op_oshaflag_criteria_view.jsp</result>
 		</action>
 		
+		<!-- Customer Service -->
+		
 		<action name="ManageWebcams"
 			class="com.picsauditing.actions.customerservice.ManageWebcams">
 			<result>struts/customerservice/manage_webcams.jsp</result>
@@ -1185,6 +1187,10 @@
 			<result>struts/customerservice/manage_webcams_form.jsp</result>
 		</action>
 		
+		<action name="AssignWebcams"
+			class="com.picsauditing.actions.customerservice.AssignWebcams">
+			<result>struts/customerservice/assign_webcams.jsp</result>
+		</action>
 
 		<action name="Trevor"
 			class="com.picsauditing.actions.Trevor">
