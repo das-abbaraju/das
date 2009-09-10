@@ -22,23 +22,24 @@
 				<storeProperty name="report_link" value="PQF Verification" />
 				&click_report;-->
 				
-				<group description="Scheduling Audits">
-				<group description="Set Filter">
-					<clickLink label="Assign" href="AuditAssignments.action"/>
-					<clickLink label="Audit Type"/>
-					<sleep seconds="3"/>
-					<setSelectField name="filter.auditTypeID" text="Office Audit"/>
-					<clickButton label="Search"/>
-					<clickLink label="Scheduled"/>
-					</group>
-					<sleep seconds="3"/>
-					<group description="Schedule Audit, complete Office Audit">
-					<setSelectField xpath=""/>
-					<setInputField htmlId="scheduled_date" value="4/29/2009"/>
-					<setRadioButton forLabel="Web"/>
-					<clickButton label="Save"/>
-					<clickLink href="Audit.action" label="Office Audit"/>
+				<group description="Login as Jesse">
+					<invoke url="Login.action"/>
+					<setInputField htmlId="login_username" value="opman"/>
+					<setInputField htmlId="login_password" value="bigboy11"/>
+					<clickButton label="Login"/>
 				</group>
+
+				<group description="Close Assigned Audits">
+					<invoke url="ReportCloseAuditAssignments.action"/>
+					<setSelectField htmlId="auditor_98262" text="Jesse Cota"/>
+					<setInputField htmlId="notes_98262" value="I wrote a note"/>
+					<clickButton label="Save"/>
+					<clickLink label="Desktop Audit" href="Audit.action?auditID=98262"/>
+					<verifyText text="Dennis Dooly"/>
+					<verifyText text="Jesse Cota"/>
+					<clickLink label="My Audits"/>
+					<clickLink label="P"/>
+					<verifyText text="Praxair Distribution Inc."/>
 				</group>
 			</steps>
 		</webtest>
