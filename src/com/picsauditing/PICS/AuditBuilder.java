@@ -205,55 +205,51 @@ public class AuditBuilder {
 							insertNow = false;
 					}
 					if (insertNow) {
-						System.out.println("Adding: " + auditType.getId() + auditType.getAuditName());
+						PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
 						ContractorAudit pendingToInsert = createAudit(auditType);
 						cAuditDAO.save(pendingToInsert);
 						currentAudits.add(pendingToInsert);
 
 					} else
-						System.out.println("Skipping: " + auditType.getId() + auditType.getAuditName());
+						PicsLogger.log("Skipping: " + auditType.getId() + auditType.getAuditName());
 				}
 			}
 		}
 
 		/** ** Remove unneeded audits *** */
-		// We can't delete until we're done reading all data from DB (lazy
-		// loading)
+		// We can't delete until we're done reading all data from DB (lazy loading)
 		Set<Integer> auditsToRemove = new HashSet<Integer>();
 
-		// You have to use while iterator instead of a for loop
-		// because we're removing an entry from the list
+		// You have to use while iterator instead of a for loop because we're removing an entry from the list
 		Iterator<ContractorAudit> iter = currentAudits.iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
+			PicsLogger.log("checking to see if we still need existing " + conAudit.getAuditType().getAuditName()
+					+ " - #" + conAudit.getId());
 			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0
 					&& !conAudit.isManuallyAdded()) {
-				// This auto audit hasn't been started yet, double check to make
-				// sure
-				// it's still needed
+				// This auto audit hasn't been started yet, double check to make sure it's still needed
 				boolean needed = false;
 
 				if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().getId() == AuditType.WELCOME
 						|| conAudit.getAuditType().isAnnualAddendum())
 					needed = true;
 
-				// this doesn't handle one rare case: when a
-				// contractor changes their OQ employees from Yes to No
+				// this doesn't handle one rare case: when a contractor changes their OQ employees from Yes to No
 				// Since this would probably never happen, we won't add it
 				for (AuditType auditType : auditTypeList) {
 					if (conAudit.getAuditType().equals(auditType)) {
-						if (conAudit.getAuditType().getId() == AuditType.DA 
+						if (conAudit.getAuditType().getId() == AuditType.DA
 								&& !"Yes".equals(contractor.getOqEmployees())) {
 							needed = false;
-						}
-						else
+						} else
 							needed = true;
 					}
 				}
 
 				if (!needed) {
 					if (conAudit.getData().size() == 0) {
-						System.out.println("removing unneeded audit " + conAudit.getAuditType().getAuditName());
+						PicsLogger.log("removing unneeded audit " + conAudit.getAuditType().getAuditName());
 						auditsToRemove.add(conAudit.getId());
 						iter.remove();
 					}
@@ -281,8 +277,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGuard and
-	 * automatically require this policy, based on riskLevel
+	 * For each audit (policy), get a list of operators who have InsureGuard and automatically require this policy,
+	 * based on riskLevel
 	 * 
 	 * @param conAudit
 	 */
@@ -406,8 +402,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that
-	 * aren't there and remove ones that shouldn't be there
+	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
+	 * shouldn't be there
 	 * 
 	 * @param conAudit
 	 */
@@ -604,8 +600,7 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Business engine designed to find audits that are about to expire and
-	 * rebuild them
+	 * Business engine designed to find audits that are about to expire and rebuild them
 	 */
 	public void addAuditRenewals() {
 		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();
@@ -644,7 +639,7 @@ public class AuditBuilder {
 		if (!found) {
 			Calendar startDate = Calendar.getInstance();
 			startDate.set(year, 11, 31);
-			System.out.println("Adding: " + auditType.getId() + auditType.getAuditName());
+			PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
 			ContractorAudit annualAudit = createAudit(auditType);
 			annualAudit.setAuditFor(Integer.toString(year));
 			annualAudit.setCreationDate(startDate.getTime());
