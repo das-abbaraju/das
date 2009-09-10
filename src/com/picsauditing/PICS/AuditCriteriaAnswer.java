@@ -67,7 +67,7 @@ public class AuditCriteriaAnswer {
 					AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
 					AmBest amBest = amBestDAO.findByNaic(answer.getComment());
 					if(amBest != null) {
-						if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()));
+						if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()))
 							isFlagged = true;
 					}
 				}
