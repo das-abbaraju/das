@@ -2,10 +2,13 @@ package com.picsauditing.PICS;
 
 import java.util.Map;
 
+import com.picsauditing.dao.AmBestDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.util.SpringUtils;
 
 /**
  * A simple POJO that evaluates an Audit answer based against a given set of criteria and returns a flag color
@@ -59,11 +62,20 @@ public class AuditCriteriaAnswer {
 				if (criteria.isValidationRequired() && !answer.isVerified()) {
 					isFlagged = true;
 				}
-	
-				if (criteria.isFlagged(answer.getAnswer())) {
-					isFlagged = true;
+				
+				if(criteria.getAuditQuestion().getQuestionType().equals("AMBest")) {
+					AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+					AmBest amBest = amBestDAO.findByNaic(answer.getComment());
+					if(amBest != null) {
+						if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()));
+							isFlagged = true;
+					}
 				}
-	
+				else {
+					if (criteria.isFlagged(answer.getAnswer())) {
+						isFlagged = true;
+					}
+				}
 				if (isFlagged) {
 					resultColor = FlagColor.getWorseColor(resultColor, criteria.getFlagColor());
 				}

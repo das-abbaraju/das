@@ -43,8 +43,17 @@ public class AmBestDAO extends PicsDAO {
 		q.setParameter(1, naic);
 
 		List<AmBest> list = (List<AmBest>) q.getResultList();
-		if (list != null && list.size() > 0)
-			return list.get(0);
+		if (list != null && list.size() > 0) {
+			if(list.size() == 1)
+				return list.get(0);
+			else {
+				for(AmBest amBest : list) {
+					if(amBest.getRatingCode() < 70) {
+						return amBest;
+					}
+				}
+			}
+		}	
 		return null;
 	}
 
