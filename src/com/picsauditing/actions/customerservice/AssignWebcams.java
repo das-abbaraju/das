@@ -23,6 +23,6 @@ public class AssignWebcams extends PicsActionSupport {
 	}
 
 	public List<ContractorAudit> getAudits() {
-		return auditDAO.findUpcoming(15, permissions);
+		return auditDAO.findAuditsNeedingWebcams();
 	}
 }

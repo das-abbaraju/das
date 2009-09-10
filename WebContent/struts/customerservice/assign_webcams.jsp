@@ -18,13 +18,15 @@
 			<td>id</td>
 			<td>Contractor</td>
 			<td>Type</td>
+			<td>Scheduled Date</td>
 		</tr>
 	</thead>
-	<s:iterator value="audits">
+	<s:iterator value="audits" status="stat">
 		<tr>
 			<td><s:property value="id" /></td>
 			<td><s:property value="contractorAccount.name" /></td>
 			<td><s:property value="auditType.auditName" /></td>
+			<td><s:date name="scheduledDate" format="MM/dd/yyyy hh:mm a"/></td>
 		</tr>
 	</s:iterator>
 </table>

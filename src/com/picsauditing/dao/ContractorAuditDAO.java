@@ -147,6 +147,13 @@ public class ContractorAuditDAO extends PicsDAO {
 				"closedDate DESC");
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ContractorAudit> findAuditsNeedingWebcams() {
+		Query q = em.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW()");
+
+		return q.getResultList();
+	}
+
 	private String getAuditWhere(Permissions permissions) {
 		if (permissions.isPicsEmployee())
 			return "";
