@@ -1048,7 +1048,15 @@
 
 		<action name="ScheduleAudit"
 			class="com.picsauditing.actions.audits.ScheduleAudit">
-			<result>struts/audits/schedule_audit.jsp</result>
+			<result name="address">struts/audits/schedule_audit_address.jsp</result>
+			<result name="select">struts/audits/schedule_audit_select.jsp</result>
+			<result name="confirm">struts/audits/schedule_audit_confirm.jsp</result>
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="ScheduleAuditAjax"
+			class="com.picsauditing.actions.audits.ScheduleAudit">
+			<result>struts/json.jsp</result>
 		</action>
 
 		<!-- Ajax Snippets -->

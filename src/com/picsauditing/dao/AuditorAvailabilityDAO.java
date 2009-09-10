@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -40,10 +41,24 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		return em.find(AuditorAvailability.class, id);
 	}
 
+	public List<AuditorAvailability> findAvailable() {
+		Query query = em.createQuery("SELECT t FROM AuditorAvailability t "
+				+ "ORDER BY startDate");
+		return query.getResultList();
+	}
+	
 	public List<AuditorAvailability> findByAuditorID(int auditorID) {
 		Query query = em.createQuery("SELECT t FROM AuditorAvailability t "
 				+ "WHERE t.user.id = ? ORDER BY startDate");
 		query.setParameter(1, auditorID);
 		return query.getResultList();
 	}
+
+	public List<AuditorAvailability> findByTime(Date timeSelected) {
+		Query query = em.createQuery("SELECT t FROM AuditorAvailability t "
+				+ "WHERE t.startDate = ? ORDER BY restrictions");
+		query.setParameter(1, timeSelected);
+		return query.getResultList();
+	}
+
 }

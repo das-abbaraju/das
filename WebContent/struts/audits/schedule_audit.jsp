@@ -2,66 +2,9 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
-<head>
-<title>Schedule Audit</title>
-<meta name="help" content="Scheduling_Audits">
-
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
-<style type="text/css">
-#auditHeader,#auditHeaderNav {
-	display: none;
-}
-</style>
-
-</head>
 <body>
-<s:include value="../contractors/conHeader.jsp" />
 
 <s:form>
-	<s:hidden name="auditID" />
-	<fieldset class="form"><legend><span>Contact
-	Person</span></legend>
-	<ol>
-		<li>Please tell us who will be the primary contact for this
-		audit.</li>
-		<li><label for="u.name">Name:</label> <s:textfield name="u.name" /></li>
-		<li><label for="u.email">Phone:</label> <s:textfield
-			name="u.email" size="30" /></li>
-		<li><label for="u.email">Email:</label> <s:textfield
-			name="u.email" size="30" /></li>
-	</ol>
-	</fieldset>
-	<fieldset class="form"><legend><span>Enter
-	the Audit Location</span></legend>
-	<ol>
-		<li>Please tell us the location at which you wish to conduct the
-		audit.</li>
-		<li><label for="u.name">Use Existing:</label> <s:checkbox
-			name="auditID"></s:checkbox></li>
-		<li><label for="u.name">Address:</label> <s:textfield
-			name="u.name" /></li>
-		<li><label for="u.email">Address 2:</label> <s:textfield
-			name="u.email" size="30" /></li>
-		<li><label for="u.email">City:</label> <s:textfield
-			name="u.email" size="30" /></li>
-		<li><label for="u.phone">Country:</label> <s:textfield
-			name="u.phone" size="20" /></li>
-		<li><label for="u.phone">State:</label> <s:textfield
-			name="u.phone" size="20" /></li>
-		<li><label for="u.fax">Zip:</label> <s:textfield name="u.fax"
-			size="20" /></li>
-	</ol>
-	</fieldset>
-	<fieldset class="form submit">
-	<div>
-	<button id="saveButton" class="picsbutton positive"
-		value="Save Profile" name="button" type="submit">Verify
-	Address</button>
-	</div>
-	</fieldset>
 	<fieldset class="form"><legend><span>Select
 	the Audit Time</span></legend>
 	<ol>

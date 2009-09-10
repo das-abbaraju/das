@@ -19,6 +19,9 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.util.Geo;
+import com.picsauditing.util.log.PicsLogger;
+
 @Entity
 @Table(name = "auditor_availability")
 public class AuditorAvailability extends BaseTable {
@@ -59,6 +62,14 @@ public class AuditorAvailability extends BaseTable {
 
 	public void setDuration(int duration) {
 		this.duration = duration;
+	}
+	
+	@Transient
+	public Date getEndDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(Calendar.MINUTE, duration);
+		return cal.getTime();
 	}
 
 	/**
@@ -126,6 +137,49 @@ public class AuditorAvailability extends BaseTable {
 		obj.put("end", cal.getTimeInMillis());
 
 		return obj;
+	}
+
+	@Transient
+	public boolean isOkFor(ContractorAudit conAudit) {
+		PicsLogger.log("is auditID " + conAudit.getId() + " OK");
+		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
+		String[] states = aRestrictions.getOnlyInStates();
+		if (states != null && states.length > 0) {
+			boolean matchedState = false;
+			for(String state : aRestrictions.getOnlyInStates()) {
+				if (state.equals(conAudit.getState())) {
+					PicsLogger.log("found matching state");
+					matchedState = true;
+				}
+			}
+			if (!matchedState) {
+				PicsLogger.log(conAudit.getState() + "not in " + states);
+				return false;
+			}
+		}
+		if (aRestrictions.isWebOnly()) {
+			if (conAudit.isConductedOnsite()) {
+				PicsLogger.log("onsite audits can't be conducted on webOnly slots");
+				return false;
+			}
+		} else {
+			if (aRestrictions.getNearLatitude() != 0 && aRestrictions.getNearLongitude() != 0) {
+				if (conAudit.getLatitude() == 0 || conAudit.getLongitude() == 0)
+					return false;
+				
+				double distance = Geo.distance(aRestrictions.getNearLatitude(), aRestrictions.getNearLongitude(), conAudit.getLatitude(), conAudit.getLongitude());
+				PicsLogger.log("Audit is about " + Math.round(distance) + " km away");
+				if (distance > 30)
+					return false;
+			}
+		}
+		PicsLogger.log("Audit is OK for this timeslot");
+		return true;
+	}
+	
+	@Transient
+	public boolean isConductedOnsite(ContractorAudit conAudit) {
+		return true;
 	}
 
 }

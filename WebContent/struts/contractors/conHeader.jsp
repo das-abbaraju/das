@@ -1,6 +1,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<s:set name="auditMenu" value="auditMenu"></s:set>
+
 <h1><s:property value="contractor.name" /><span class="sub">
 <s:if test="auditID > 0">
 	<s:property value="conAudit.auditType.auditName" />
@@ -30,7 +32,7 @@
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms & Docs</a></li>
 	</s:if>
-	<s:iterator value="auditMenu">
+	<s:iterator value="#auditMenu">
 		<li>
 		<s:if test="children.size() > 0">
 			<a class="dropdown <s:if test="current == true"> current</s:if>" href="<s:property value="url" />" 
@@ -215,7 +217,7 @@
 </ul>
 </div>
 
-<s:iterator value="auditMenu">
+<s:iterator value="#auditMenu">
 <s:if test="children.size() > 0">
 	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
 	<ul>

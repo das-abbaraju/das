@@ -28,6 +28,7 @@ import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -57,13 +58,16 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private Date auditorConfirm;
 	private Date scheduledDate;
 	private String auditLocation;
+	private boolean needsCamera;
+	private String contractorContact;
 	private String address;
 	private String address2;
 	private String city;
 	private String state;
 	private String zip;
+	private String country;
 	private float latitude;
-	private float longitute;
+	private float longitude;
 	private String phone;
 	private String phone2;
 
@@ -228,12 +232,30 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.requestingOpAccount = requestingOpAccount;
 	}
 
+	@Transient
+	public boolean isConductedOnsite() {
+		// we should save auditLocation as a boolean in the DB
+		if (auditLocation == null)
+			return false;
+		if (auditLocation.equals("Web"))
+			return false;
+		return true;
+	}
+
 	public String getAuditLocation() {
 		return auditLocation;
 	}
 
 	public void setAuditLocation(String auditLocation) {
 		this.auditLocation = auditLocation;
+	}
+
+	public boolean isNeedsCamera() {
+		return needsCamera;
+	}
+
+	public void setNeedsCamera(boolean needsCamera) {
+		this.needsCamera = needsCamera;
 	}
 
 	public int getPercentComplete() {
@@ -454,6 +476,25 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.lastRecalculation = lastRecalculation;
 	}
 
+	@Transient
+	public String getFullAddress() {
+		// We may want to extract this out and create a String address formatter
+		StringBuffer full = new StringBuffer();
+		full.append(address);
+		if (!Strings.isEmpty(address2))
+			full.append(" ").append(address2);
+		if (!Strings.isEmpty(city))
+			full.append(", ").append(city);
+		if (!Strings.isEmpty(state))
+			full.append(", ").append(state);
+		if (!Strings.isEmpty(country) && !country.equals("US") && !country.startsWith("United"))
+			full.append(", ").append(country);
+		if (!Strings.isEmpty(zip))
+			full.append(" ").append(zip);
+
+		return full.toString();
+	}
+
 	public String getAddress() {
 		return address;
 	}
@@ -494,6 +535,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.zip = zip;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 	public String getPhone() {
 		return phone;
 	}
@@ -510,14 +559,38 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.phone2 = phone2;
 	}
 
+	public String getContractorContact() {
+		return contractorContact;
+	}
+
+	public void setContractorContact(String contractorContact) {
+		this.contractorContact = contractorContact;
+	}
+
+	public float getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(float latitude) {
+		this.latitude = latitude;
+	}
+
+	public float getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(float longitude) {
+		this.longitude = longitude;
+	}
+
 	@Transient
 	public String getStatusDescription() {
 		String statusDescription = "";
 		if (auditStatus.isActive())
 			if (auditType.isMustVerify())
 				if (auditType.isPqf() || auditType.isAnnualAddendum())
-					statusDescription = "Annual requirements have been verified. "
-							+ this.getAuditType().getClassType() + " is closed.";
+					statusDescription = "Annual requirements have been verified. " + this.getAuditType().getClassType()
+							+ " is closed.";
 				else
 					statusDescription = this.getAuditType().getClassType() + " has been verified.";
 			else if (auditType.isHasRequirements())
@@ -568,5 +641,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		};
 
 		return map.get(tempScore);
+	}
+
+	public void setConductedOnsite(boolean conductedOnsite) {
+		auditLocation = conductedOnsite ? "Onsite" : "Web";
 	}
 }

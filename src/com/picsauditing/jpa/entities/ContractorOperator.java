@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -31,7 +32,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private Date forceEnd;
 	private ContractorOperatorFlag flag;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
@@ -41,7 +42,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.operatorAccount = operator;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subID", nullable = false, updatable = false)
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
@@ -116,7 +117,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return true;
 	}
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumns( { @JoinColumn(name = "genID", referencedColumnName = "opID", insertable = false, updatable = false),
 			@JoinColumn(name = "subID", referencedColumnName = "conID", insertable = false, updatable = false) })
@@ -126,28 +127,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setFlag(ContractorOperatorFlag flag) {
 		this.flag = flag;
-	}
-
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final ContractorOperator other = (ContractorOperator) obj;
-		if (id != other.id)
-			return false;
-		return true;
 	}
 
 }
