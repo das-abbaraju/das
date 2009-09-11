@@ -30,38 +30,73 @@
 				&body_verify;
 				<group description="Register and Save">
 					<!-- Register Correctly -->
-					<setInputField name="contractor.name" value="Canoo's Test Contractor" />
-					<setInputField name="contractor.doingBusinessAsName" value="Canoo's DBA" />
-					<setInputField name="contractor.taxId" value="789456123" />
-					<setInputField name="contractor.contact" value="John Doe" />
-					<setInputField name="contractor.address" value="123 Main Street" />
-					<setInputField name="contractor.city" value="Tester" />
-					<setSelectField name="contractor.state" text="Wyoming" />
-					<setInputField name="contractor.zip" value="54321" />
-					<setInputField name="contractor.phone" value="(949) 123-4567" />
-					<setInputField name="contractor.phone2" value="(949) 123-4568" />
-					<setInputField name="contractor.fax" value="(949) 123-4569" />
-					<setInputField name="contractor.email" value="${mail.username}" />
-					<setInputField name="contractor.secondContact" value="secondContact" />
-					<setInputField name="contractor.secondPhone" value="(949) 123-4570" />
-					<setInputField name="contractor.secondEmail" value="secondEmail@picsauditing.com" />
-					<setInputField name="contractor.billingContact" value="billingContact" />
-					<setInputField name="contractor.billingPhone" value="(949) 123-4571" />
-					<setInputField name="contractor.billingEmail" value="billingEmail@picsauditing.com" />
-					<setInputField name="contractor.webUrl" value="http://www.picsauditing.com/canoo/" />
-					<setSelectField name="contractor.industry" text="Power" />
-					<setSelectField name="contractor.mainTrade" text="Boiler Repair" />
-					<setSelectField name="contractor.requestedById" value="1197" />
-					<setRadioButton name="contractor.riskLevel" value="Low" />
-					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me." />
-					<setInputField name="user.username" value="${register.username}" />
-					<setInputField name="user.password" value="${login.password}" />
-					<setInputField name="confirmPassword" value="${login.password}" />
-					
-					<clickButton description="Click Register" name="button" />
+					<invoke url="http://alpha.picsauditing.com/ContractorRegistration.action"/>
+					<setInputField name="contractor.name" value="Canoo's Test Contractor"/>
+					<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
+					<setInputField name="contractor.contact" value="John Doe"/>
+					<setInputField name="contractor.webUrl" value="www,picsauditing.com/canoo"/>
+					<setInputField name="contractor.taxId" value="789456123"/>
+					<setInputField name="contractor.address" value="123 Main Street"/>
+					<setInputField name="contractor.city" value="Tester"/>
+					<setSelectField name="contractor.country" text="USA"/>
+					<setSelectField name="contractor.state" text="Wyoming"/>
+					<setInputField name="contractor.zip" value="54321"/>
+					<setInputField name="contractor.phone" value="949-123-4567"/>
+					<setInputField name="contractor.phone2" value="949-123-4567"/>
+					<setInputField name="contractor.fax" value="949-123-4568"/>
+					<setInputField name="contractor.email" value="tester@picsauditing.com"/>
+					<setInputField name="contractor.secondContact" value="Second Contact"/>
+					<setInputField name="contractor.secondPhone" value="949-123-4567"/>
+					<setInputField name="contractor.secondEmail" value="tester@picsauditing.com"/>
+					<setInputField name="contractor.billingContact" value="Billing Contact"/>
+					<setInputField name="contractor.billingPhone" value="949-123-4567"/>
+					<setInputField name="contractor.billingEmail" value="tester@picsauditing.com"/>
+					<setSelectField name="contractor.industry" text="Power"/>
+					<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
+					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me."/>
+					<setInputField name="user.username" value="canoo_contractor1"/>
+					<setInputField description="Set password field password: bigboy11" name="password" value="bigboy11"/>
+					<setInputField description="Set password field confirmPassword: bigboy11" name="confirmPassword" value="bigboy11"/>
+					<clickButton label="Create Account"/>
 					&body_verify;
 				</group>
-					
+				<group description="Services Performed">
+					<setRadioButton description="Works with heavy machinery" htmlId="answerq2442Yes"/>
+					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
+					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
+					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
+					<setRadioButton description="DOT OQ" htmlId="answerq894Yes"/>
+					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
+					<clickLink label="Next >>"/>
+				</group>
+				<group description="Add Facilities">
+					<setSelectField name="state" text="Colorado"/>
+					<sleep seconds="5"/>
+					<clickLink description="Click link: Add" htmlId="facility_5901"/>
+					<clickLink description="Click link: Add" htmlId="facility_5891"/>
+					<clickLink description="Click link: Add" htmlId="facility_5147"/>
+					<sleep seconds="5"/>
+					<setSelectField htmlId="requestedBySelector" text="BASF Brighton Colorado"/>
+					<verifyText description="Verify that text is contained in the page" text="# of Linked Facilities: 3"/>
+					<verifyText description="Verify that text is contained in the page" text="New Membership Level: $699.00 per year"/>
+					<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators "/>
+					<clickLink label="Next >>"/>
+				</group>
+				<group description="Add Payment Options">
+					<verifyText description="Verify that text is contained in the page" text="$699.00 USD"/>
+					<verifyText description="Verify that text is contained in the page" text="$99.00 USD"/>
+					<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
+					<clickButton label="Change Payment Method to Check" name="button"/>
+					<clickLink label="Next >>"/>
+				</group>
+				<group description="Add Payment Options">
+					<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
+					<clickButton label="Complete My Registration" name="button"/>
+				</group>
+				<group description="Confirmation Page">
+					<verifyText description="Verify that text is contained in the page" 
+						        text="Your account has been registered successfully."/>
+				</group>
 				<!-- Login inactive -->
 				<storeProperty description="Login inactive"
 					name="login.username"
