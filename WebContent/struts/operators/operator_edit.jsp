@@ -102,7 +102,7 @@
 					Safety Organization:</label> <s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" name="operator.oshaType"
 						theme="pics" /></li>
 				</s:if>
-				<li><label>InsureGuard&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
+				<li><label>InsureGUARD&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 					theme="pics" /></li>
 
 				<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"

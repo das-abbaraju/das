@@ -175,7 +175,7 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	public void setClassType(AuditTypeClass classType) {
 		this.classType = classType;
 		if (this.classType.isPolicy())
-			this.subHeading = "Manage Flag Criteria - InsureGuard&trade;";
+			this.subHeading = "Manage Flag Criteria - InsureGUARD&trade;";
 		else
 			this.subHeading = "Manage Flag Criteria - PQF/Audits";
 	}

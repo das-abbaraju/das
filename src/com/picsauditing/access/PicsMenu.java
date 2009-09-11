@@ -115,7 +115,7 @@ public class PicsMenu {
 			subMenu.addChild("QuickBooks Sync", "QBSyncList.action");
 		}
 
-		subMenu = menu.addChild("InsureGuard&trade;");
+		subMenu = menu.addChild("InsureGUARD&trade;");
 		if (permissions.hasPermission(OpPerms.InsuranceCerts))
 			subMenu
 					.addChild(

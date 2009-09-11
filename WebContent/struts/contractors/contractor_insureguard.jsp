@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>InsureGuard&trade; for <s:property value="contractor.name" /></title>
+<title>InsureGUARD&trade; for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
@@ -24,7 +24,7 @@
 </script>
 </head>
 <body>
-<s:push value="#subHeading='InsureGuard&trade;'"/>
+<s:push value="#subHeading='InsureGUARD&trade;'"/>
 <s:include value="conHeader.jsp" />
 
 <table>

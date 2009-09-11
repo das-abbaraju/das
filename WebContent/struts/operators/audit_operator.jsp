@@ -45,7 +45,7 @@ function save(id) {
 		</s:if>
 		<s:if test="inheritsInsurance.size > 0">
 			<td style="padding: 10px;">
-			<h3>Companies that inherit the InsureGuard&trade; configuration</h3>
+			<h3>Companies that inherit the InsureGUARD&trade; configuration</h3>
 			<ul>
 				<s:iterator value="inheritsInsurance">
 					<li><a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="name" /></a></li>

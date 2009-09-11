@@ -164,7 +164,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (isRequiresInsurance()) {
 			// Add InsureGuard
-			MenuComponent subMenu = new MenuComponent("InsureGuard&trade;", "ConInsureGuard.action?id=" + id);
+			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ConInsureGuard.action?id=" + id);
 			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {

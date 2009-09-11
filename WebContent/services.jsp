@@ -23,7 +23,7 @@
 		PICS collects relevant prequalification information and verifies it
 		against public records. This includes financial, safety and other
 		client-specific information.</p>
-		<p><span class="goldSubheadServices">InsureGuard&trade;</span> &ndash; We
+		<p><span class="goldSubheadServices">InsureGUARD&trade;</span> &ndash; We
 		manage your contractors' insurance certificates according to your
 		facility&rsquo;s insurance requirements.</p>
 		<p><span class="goldSubheadServices">Desktop Audit</span> &ndash;
