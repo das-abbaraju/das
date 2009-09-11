@@ -217,34 +217,35 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					for (int operatorID : operatorIds) {
 						OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
 						Set<String> email = Strings.findUniqueEmailAddresses(operatorAccount.getActivationEmails());
-						if(email.size() > 0)
+						if (email.size() > 0)
 							emailAddresses.addAll(email);
 					}
 
-					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(51); // Deactivation Email for
-					// operators
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setContractor(contractor);
-					emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
-					emailBuilder.setCcAddresses("");
-					emailBuilder.setToAddresses("aharker@picsauditing.com");
-					EmailQueue email = emailBuilder.build();
-					email.setPriority(50);
-					emailQueueDAO.save(email);
+					if (emailAddresses.size() > 0) {
+						EmailBuilder emailBuilder = new EmailBuilder();
+						emailBuilder.setTemplate(51); // Deactivation Email for operators
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.setContractor(contractor);
+						emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
+						emailBuilder.setCcAddresses("");
+						emailBuilder.setToAddresses("aharker@picsauditing.com");
+						EmailQueue email = emailBuilder.build();
+						email.setPriority(50);
+						emailQueueDAO.save(email);
 
-					Note note = new Note();
-					note.setAccount(contractor);
-					note.setAuditColumns(new User(permissions.getUserId()));
-					note.setSummary("Deactivation Email Sent to " + emailAddresses);
-					note.setPriority(LowMedHigh.Med);
-					note.setNoteCategory(NoteCategory.General);
-					note.setViewableById(Account.PicsID);
-					note.setCanContractorView(false);
-					note.setStatus(NoteStatus.Closed);
-					noteDAO.save(note);
+						Note note = new Note();
+						note.setAccount(contractor);
+						note.setAuditColumns(new User(permissions.getUserId()));
+						note.setSummary("Deactivation Email Sent to " + emailAddresses);
+						note.setPriority(LowMedHigh.Med);
+						note.setNoteCategory(NoteCategory.General);
+						note.setViewableById(Account.PicsID);
+						note.setCanContractorView(false);
+						note.setStatus(NoteStatus.Closed);
+						noteDAO.save(note);
 
-					this.addActionMessage("Successfully sent the email to operators");
+						this.addActionMessage("Successfully sent the email to operators");
+					}
 				}
 			} else if (button.equals("copyPrimary")) {
 				contractor.setBillingAddress(contractor.getAddress());
@@ -252,19 +253,18 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setBillingState(contractor.getState());
 				contractor.setBillingZip(contractor.getZip());
 				accountDao.save(contractor);
-			} else if (button.equals("PasswordReminder")){
+			} else if (button.equals("PasswordReminder")) {
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(24); // Password Reminder
 				emailBuilder.setUser(user);
 				EmailQueue email = emailBuilder.build();
 				email.setPriority(100);
-				
+
 				EmailSender sender = new EmailSender();
 				sender.sendNow(email);
 				this.addActionMessage("An email has been sent to this address: <b>" + user.getEmail() + "</b> "
 						+ " with login information");
-			}
-			else {
+			} else {
 				// Because there are anomalies between browsers and how they
 				// pass
 				// in the button values, this is a catch all so we can get
