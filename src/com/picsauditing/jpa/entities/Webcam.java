@@ -6,12 +6,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
+
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -57,7 +60,7 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 		this.active = active;
 	}
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractor() {
 		return contractor;
@@ -176,6 +179,19 @@ public class Webcam extends BaseTable implements java.io.Serializable, JSONable 
 	public void fromJSON(JSONObject o) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+
+		s.append(id);
+		if (!Strings.isEmpty(make))
+			s.append(" - ").append(make);
+		if (!Strings.isEmpty(model))
+			s.append(" - ").append(model);
+
+		return s.toString();
 	}
 
 }

@@ -456,7 +456,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM for "John Doe"
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
+	 * for "John Doe"
 	 * 
 	 * @return
 	 */

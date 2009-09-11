@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -72,6 +73,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 	private boolean ccOnFile = false;
 	private Date ccExpiration;
+	private Webcam webcam;
 
 	private String oqEmployees;
 
@@ -430,6 +432,15 @@ public class ContractorAccount extends Account implements JSONable {
 		expires.add(Calendar.DAY_OF_MONTH, -1);
 
 		return expires.getTime().after(new Date());
+	}
+
+	@OneToOne(mappedBy = "contractor")
+	public Webcam getWebcam() {
+		return webcam;
+	}
+
+	public void setWebcam(Webcam webcam) {
+		this.webcam = webcam;
 	}
 
 	/**

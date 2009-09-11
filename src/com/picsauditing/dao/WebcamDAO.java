@@ -35,6 +35,11 @@ public class WebcamDAO extends PicsDAO {
 		return em.find(Webcam.class, id);
 	}
 
+	public List<Webcam> findActiveUnused() {
+		Query q = em.createQuery("FROM Webcam WHERE active = true AND contractor IS NULL ORDER BY id, make, model");
+		return q.getResultList();
+	}
+
 	public List<Webcam> findWhere(String where) {
 		if (where == null)
 			where = "";
