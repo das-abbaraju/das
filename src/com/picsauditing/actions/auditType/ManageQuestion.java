@@ -59,7 +59,7 @@ public class ManageQuestion extends ManageSubCategory {
 				}
 				question.setNumber(maxID + 1);
 			}
-			question.setAuditColumns(getUser());
+			question.setAuditColumns(permissions);
 
 			if (question.getEffectiveDate() == null)
 				question.setEffectiveDate(question.getCreationDate());

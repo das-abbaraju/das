@@ -127,7 +127,7 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			auditID = auditData.getAudit().getId();
-			auditData.setAuditColumns(getUser());
+			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
 				return SUCCESS;
 			}

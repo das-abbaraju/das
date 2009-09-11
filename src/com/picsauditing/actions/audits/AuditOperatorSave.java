@@ -31,7 +31,7 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 		
 		cAccountDAO.updateContractorByOperator(ao.getOperatorAccount());
 
-		ao.setAuditColumns(getUser());
+		ao.setAuditColumns(permissions);
 		ao = dao.save(ao);
 
 		return SUCCESS;

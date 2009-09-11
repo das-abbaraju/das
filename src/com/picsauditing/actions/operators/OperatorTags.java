@@ -46,7 +46,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 							// Add a new tag
 							tag.setActive(true);
 							tag.setOperator(operator);
-							tag.setAuditColumns(getUser());
+							tag.setAuditColumns(permissions);
 							operatorTagDAO.save(tag);
 						}
 					} else {
@@ -54,7 +54,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 							addActionError("Tag names cannot be blank");
 						} else {
 							// Update existing tag
-							tag.setAuditColumns(getUser());
+							tag.setAuditColumns(permissions);
 							operatorTagDAO.save(tag);
 						}
 					}

@@ -116,7 +116,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 							break;
 					}
 					contractor.setRiskLevel(riskLevel);
-					contractor.setAuditColumns(getUser());
+					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
 					redirect("ContractorFacilities.action?id=" + contractor.getId());
 					return BLANK;

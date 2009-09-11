@@ -102,9 +102,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		boolean canContractorView, int viewableBy, User user) throws Exception {
 		Note note = new Note();
 		note.setAccount(account);
-		if(user == null)
-			user = this.getUser();
-		note.setAuditColumns(user);
+		note.setAuditColumns(permissions);
 		note.setSummary(newNote);
 		note.setPriority(priority);
 		note.setNoteCategory(category);

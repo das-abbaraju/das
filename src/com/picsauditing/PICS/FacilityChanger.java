@@ -59,7 +59,7 @@ public class FacilityChanger {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-		co.setAuditColumns(user);
+		co.setAuditColumns(permissions);
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 		

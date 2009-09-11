@@ -22,7 +22,7 @@ public class EmailSubscriptionSave extends PicsActionSupport {
 		if (eu.getId() == 0)
 			eu.setUser(new User(permissions.getUserId()));
 
-		eu.setAuditColumns(getUser());
+		eu.setAuditColumns(permissions);
 		if (addsubscription) {
 			if (sPeriod == null) {
 				SubscriptionTimePeriod[] sPeriods = eu.getSubscription().getSupportedTimePeriods();

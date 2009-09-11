@@ -93,7 +93,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 				note.setViewableById(viewableByOther);
 			else
 				note.setViewableById(viewableBy);
-			note.setAuditColumns(getUser());
+			note.setAuditColumns(permissions);
 
 			noteDAO.save(note);
 

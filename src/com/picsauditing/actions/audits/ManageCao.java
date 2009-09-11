@@ -54,7 +54,7 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 					cao = caoDao.find(cao.getId());
 					return SUCCESS;
 				}
-				cao.setAuditColumns(getUser());
+				cao.setAuditColumns(permissions);
 				cao = caoDao.save(cao);
 
 				if (caoBefore != cao.getStatus())

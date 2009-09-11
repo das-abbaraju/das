@@ -106,7 +106,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 						}
 						else {
 							existing.setStatus(newStatus);
-							existing.setAuditColumns(getUser());
+							existing.setAuditColumns(permissions);
 							existing.setStatusChangedBy(getUser());
 							existing.setStatusChangedDate(new Date());
 							dirty = true;

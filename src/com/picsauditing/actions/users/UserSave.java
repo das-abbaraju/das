@@ -57,7 +57,7 @@ public class UserSave extends UsersManage {
 			if (!Strings.isEmpty(password1) && !password1.equals(user.getPassword()))
 				user.setPassword(password1);
 
-			user.setAuditColumns(this.getUser());
+			user.setAuditColumns(permissions);
 
 			if (user.getAccount() == null) {
 				user.setAccount(new Account());

@@ -33,9 +33,9 @@ public class ChartFlagCount extends ChartSSAction {
 		sql.addWhere("a.active = 'Y'");
 
 		sql.addWhere("gc.genID = " + permissions.getAccountId());
-		if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+		if (permissions.isApprovesRelationships()) {
 			sql.addWhere("gc.workStatus = 'Y'");
-		}	
+		}
 
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());

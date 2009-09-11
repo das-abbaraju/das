@@ -63,7 +63,7 @@ public class ReportCloseAuditAssignments extends ReportContractorAudits {
 			User user = userDAO.find(closeAuditor);
 			Note note = new Note();
 			note.setAccount(cAudit.getContractorAccount());
-			note.setAuditColumns(this.getUser());
+			note.setAuditColumns(permissions);
 			note.setSummary("Assigned "+ user.getName() +" as Closing Auditor for " + cAudit.getAuditType().getAuditName());
 			note.setBody(notes);
 			note.setNoteCategory(NoteCategory.Audits);

@@ -116,7 +116,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					if (item.getInvoiceFee().equals(contractor.getMembershipLevel())) {
 						item.setInvoiceFee(contractor.getNewMembershipLevel());
 						item.setAmount(contractor.getNewMembershipLevel().getAmount());
-						item.setAuditColumns(getUser());
+						item.setAuditColumns(permissions);
 					}
 				}
 
@@ -247,7 +247,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		newItem.setInvoiceFee(newFee);
 		newItem.setAmount(newFee.getAmount());
 		newItem.setInvoice(invoice);
-		newItem.setAuditColumns(getUser());
+		newItem.setAuditColumns(permissions);
 
 		invoice.getItems().add(newItem);
 	}

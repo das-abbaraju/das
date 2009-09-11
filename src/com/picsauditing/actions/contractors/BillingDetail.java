@@ -77,7 +77,7 @@ public class BillingDetail extends ContractorActionSupport {
 			invoice.setStatus(TransactionStatus.Unpaid);
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
-			invoice.setAuditColumns(getUser());
+			invoice.setAuditColumns(permissions);
 			
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
 				invoice.setQbSync(true);
@@ -120,7 +120,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 			for (InvoiceItem item : invoiceItems) {
 				item.setInvoice(invoice);
-				item.setAuditColumns(getUser());
+				item.setAuditColumns(permissions);
 			}
 			invoice = invoiceDAO.save(invoice);
 

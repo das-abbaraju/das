@@ -32,7 +32,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			auditDao.clear();
 			if (conAudit.getAuditor().getId() == 0)
 				conAudit.setAuditor(null);
-			conAudit.setAuditColumns(this.getUser());
+			conAudit.setAuditColumns(permissions);
 			auditDao.save(conAudit);
 			findConAudit();
 			addActionMessage("Successfully saved data");

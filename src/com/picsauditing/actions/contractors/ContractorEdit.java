@@ -235,7 +235,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 						Note note = new Note();
 						note.setAccount(contractor);
-						note.setAuditColumns(new User(permissions.getUserId()));
+						note.setAuditColumns(permissions);
 						note.setSummary("Deactivation Email Sent to " + emailAddresses);
 						note.setPriority(LowMedHigh.Med);
 						note.setNoteCategory(NoteCategory.General);

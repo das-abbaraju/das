@@ -147,7 +147,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 			Note note = new Note();
 			note.setAccount(contractorAudit.getContractorAccount());
-			note.setAuditColumns(this.getUser());
+			note.setAuditColumns(permissions);
 			note.setSummary("Audit Schedule updated");
 			note.setNoteCategory(NoteCategory.Audits);
 			note.setViewableById(Account.EVERYONE);

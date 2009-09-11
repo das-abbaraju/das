@@ -78,7 +78,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			if (contractor.getNewMembershipLevel().isFree()) {
 				// Free accounts should just be activated
 				contractor.setActive('Y');
-				contractor.setAuditColumns(getUser());
+				contractor.setAuditColumns(permissions);
 			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {

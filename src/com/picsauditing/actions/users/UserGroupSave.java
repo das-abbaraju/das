@@ -50,7 +50,7 @@ public class UserGroupSave extends UsersManage {
 
 				uGroup.setGroup(newGroup);
 				uGroup.setUser(user);
-				uGroup.setAuditColumns(this.getUser());
+				uGroup.setAuditColumns(permissions);
 				userGroupDAO.save(uGroup);
 				user.getGroups().add(uGroup);
 			}
@@ -76,7 +76,7 @@ public class UserGroupSave extends UsersManage {
 
 				uGroup.setUser(newUser);
 				uGroup.setGroup(user);
-				uGroup.setAuditColumns(getUser());
+				uGroup.setAuditColumns(permissions);
 				userGroupDAO.save(uGroup);
 				user.getMembers().add(uGroup);
 			}
@@ -98,7 +98,7 @@ public class UserGroupSave extends UsersManage {
 					userSwitch = new UserSwitch();
 					userSwitch.setUser(member);
 					userSwitch.setSwitchTo(user);
-					userSwitch.setAuditColumns(getUser());
+					userSwitch.setAuditColumns(permissions);
 					userSwitchDAO.save(userSwitch);
 				}
 			}

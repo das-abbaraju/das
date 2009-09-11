@@ -99,7 +99,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						for (InvoiceItem item : ip.getInvoice().getItems()) {
 							if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
 								contractor.setActive('Y');
-								contractor.setAuditColumns(getUser());
+								contractor.setAuditColumns(permissions);
 								accountDao.save(contractor);
 								break;
 							}
@@ -114,7 +114,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				// If we have a button but no payment, then we're creating a new
 				// payment
 				payment.setAccount(contractor);
-				payment.setAuditColumns(getUser());
+				payment.setAuditColumns(permissions);
 				payment.setPaymentMethod(method);
 
 				if (payment.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
@@ -183,7 +183,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					Refund refund = new Refund();
 					refund.setTotalAmount(refundAmount);
 					refund.setAccount(contractor);
-					refund.setAuditColumns(getUser());
+					refund.setAuditColumns(permissions);
 					refund.setStatus(TransactionStatus.Paid);
 					if (!button.equals("Refund Without Charge")) {
 						if (payment.getPaymentMethod().isCreditCard()) {

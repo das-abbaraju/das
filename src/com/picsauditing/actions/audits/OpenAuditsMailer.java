@@ -60,7 +60,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 
 					Note note = new Note();
 					note.setAccount(conAudit.getContractorAccount());
-					note.setAuditColumns(this.getUser());
+					note.setAuditColumns(permissions);
 					note.setSummary("Sent Open Requirements Reminder email to " + emailBuilder.getSentTo());
 					note.setNoteCategory(NoteCategory.Audits);
 					note.setViewableById(Account.EVERYONE);

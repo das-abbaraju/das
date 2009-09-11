@@ -158,7 +158,7 @@ public class AuditDataUpload extends AuditActionSupport {
 
 				answer.setAnswer(extension);
 
-				answer.setAuditColumns(getUser());
+				answer.setAuditColumns(permissions);
 				auditDataDao.save(answer);
 				dataID = answer.getId();
 

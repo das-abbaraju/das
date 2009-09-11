@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.math.BigDecimal;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;

@@ -102,14 +102,17 @@ public abstract class BaseTable implements JSONable {
 	}
 
 	public void setAuditColumns(Permissions permissions) {
-		setAuditColumns(new User(permissions.getUserId()));
+		int userID = permissions.getUserId();
+		if (permissions.getAdminID() > 0)
+			userID = permissions.getAdminID();
+		setAuditColumns(new User(userID));
 	}
 
 	@Transient
 	public JSONObject toJSON() {
 		return toJSON(false);
 	}
-	
+
 	@Transient
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
@@ -117,7 +120,7 @@ public abstract class BaseTable implements JSONable {
 		obj.put("id", id);
 		if (!full)
 			return obj;
-		
+
 		obj.put("id", id);
 		if (createdBy != null)
 			obj.put("createdBy", createdBy.toJSON(false));
@@ -127,18 +130,18 @@ public abstract class BaseTable implements JSONable {
 			obj.put("creationDate", creationDate);
 		if (updateDate != null)
 			obj.put("updateDate", updateDate);
-		
+
 		return obj;
 	}
 
 	public void fromJSON(JSONObject obj) {
 		// TODO write this!!
-		
-//		if (id == 0)
-//			id = (Integer)obj.get("id");
-		//createdBy = new User(obj.get("createdBy"));
+
+		// if (id == 0)
+		// id = (Integer)obj.get("id");
+		// createdBy = new User(obj.get("createdBy"));
 	}
-	
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

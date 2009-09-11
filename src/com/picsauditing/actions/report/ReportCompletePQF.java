@@ -83,7 +83,7 @@ public class ReportCompletePQF extends ReportContractorAudits {
 						
 						Note note = new Note();
 						note.setAccount(conAudit.getContractorAccount());
-						note.setAuditColumns(this.getUser());
+						note.setAuditColumns(permissions);
 						note.setSummary("Pending PQF email sent to " + email.getToAddresses());
 						note.setNoteCategory(NoteCategory.Audits);
 						note.setViewableById(Account.EVERYONE);

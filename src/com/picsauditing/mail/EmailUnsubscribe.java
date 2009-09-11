@@ -57,7 +57,7 @@ public class EmailUnsubscribe extends PicsActionSupport implements ServletReques
 			String newNote = user.getName() + " unsubscribed from " + subString;
 			Note note = new Note();
 			note.setAccount(user.getAccount());
-			note.setAuditColumns(user);
+			note.setAuditColumns(permissions);
 			note.setSummary(newNote);
 			note.setNoteCategory(NoteCategory.Other);
 			note.setViewableById(Account.EVERYONE);
