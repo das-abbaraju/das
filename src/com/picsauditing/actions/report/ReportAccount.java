@@ -327,12 +327,26 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (f.getCcOnFile() < 2)
 			sql.addWhere("c.ccOnFile = " + f.getCcOnFile());
-		
+
 		if (filterOn(f.getDeactivationReason()))
 			report.addFilter(new SelectFilter("deactivationReason", "a.reason = '?'", f.getDeactivationReason()));
-		
+
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
 			sql.addWhere(f.getCustomAPI());
+
+		if (filterOn(getFilter().getMinorityQuestion(), 0)) {
+			sql.addJoin("JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
+			if (getFilter().getMinorityQuestion() != 3) {
+				sql.addJoin("JOIN pqfdata pdsd on casd.id = pdsd.auditID AND pdsd.questionID = "
+						+ getFilter().getMinorityQuestion());
+				sql.addWhere("pdsd.answer = 'Yes'");
+			} else {
+				sql.addJoin("JOIN pqfdata pd2340 on casd.id = pd2340.auditID AND pd2340.questionID = 2340");
+				sql.addJoin("JOIN pqfdata pd2354 on casd.id = pd2354.auditID AND pd2354.questionID = 2354");
+				sql.addJoin("JOIN pqfdata pd2373 on casd.id = pd2373.auditID AND pd2373.questionID = 2373");
+				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes'");
+			}
+		}
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {

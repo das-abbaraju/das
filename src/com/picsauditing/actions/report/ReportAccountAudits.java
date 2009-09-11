@@ -13,6 +13,8 @@ public class ReportAccountAudits extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 
+		getFilter().setShowMinorityOwned(true);
+		
 		if (filterOn(getFilter().getInvoiceDueDate1()) || filterOn(getFilter().getInvoiceDueDate2())) {
 			sql.addJoin("JOIN invoice i ON a.id = i.accountID AND status = 'Unpaid' AND i.tableType = 'I'");
 			if (filterOn(getFilter().getInvoiceDueDate1())) {

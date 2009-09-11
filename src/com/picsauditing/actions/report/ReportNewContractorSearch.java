@@ -81,6 +81,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	public String execute() throws Exception {
 		getFilter().setPrimaryInformation(true);
 		getFilter().setTradeInformation(true);
+		getFilter().setShowMinorityOwned(true);
 
 		if (button != null && id > 0) {
 			try {

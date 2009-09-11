@@ -76,6 +76,12 @@
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_trade'); return false;">Clear</a> </span></div>
 	</s:if>
+	
+	<s:if test="filter.showMinorityOwned">
+		<div class="filterOption">
+			<s:select cssClass="forms" list="#{2340:'Small Business',2354:'Minority Owned',2373:'Women-Owned',3:'All the Above'}" name="filter.minorityQuestion" headerKey="0" headerValue="- Supplier Diversity -" />
+		</div>
+	</s:if>
 
 	<s:if test="filter.showFlagStatus">
 		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Flag Status -"
