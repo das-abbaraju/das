@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
@@ -135,20 +134,22 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public List<EmailSubscription> getEList() {
-		if (!permissions.isCorporate()) {
-			List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
-			Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
-			for (EmailSubscription emailSubscription : userEmail) {
-				eMap.put(emailSubscription.getSubscription(), emailSubscription);
-			}
-
-			for (Subscription subscription : requiredSubscriptionList(permissions)) {
-				EmailSubscription eSubscription = eMap.get(subscription);
-				if (eSubscription == null) {
-					eSubscription = new EmailSubscription();
-					eSubscription.setSubscription(subscription);
+		if (eList.size() == 0) {
+			if (!permissions.isCorporate()) {
+				List<EmailSubscription> userEmail = emailSubscriptionDAO.findByUserId(permissions.getUserId());
+				Map<Subscription, EmailSubscription> eMap = new HashMap<Subscription, EmailSubscription>();
+				for (EmailSubscription emailSubscription : userEmail) {
+					eMap.put(emailSubscription.getSubscription(), emailSubscription);
 				}
-				eList.add(eSubscription);
+
+				for (Subscription subscription : requiredSubscriptionList(permissions)) {
+					EmailSubscription eSubscription = eMap.get(subscription);
+					if (eSubscription == null) {
+						eSubscription = new EmailSubscription();
+						eSubscription.setSubscription(subscription);
+					}
+					eList.add(eSubscription);
+				}
 			}
 		}
 		return eList;
@@ -166,5 +167,5 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		}
 		return subList;
 	}
-	
+
 }
