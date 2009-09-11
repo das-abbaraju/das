@@ -47,16 +47,26 @@ public class TimeZoneUtil {
 		return out.toString();
 	}
 
-	static public Map<String, String> getTimeZoneSelector() {
-		Map<String, String> timezones = new HashMap<String, String>();
+	static public List<TimeZoneOption> getTimeZoneSelector() {
+		List<TimeZoneOption> timezones = new ArrayList<TimeZoneOption>();
 		
 		Date today = new Date();
 		for(TimeZone tz : getTimeZones()) {
-			timezones.put(tz.getID(), getDisplayName(tz, today));
+			timezones.add(new TimeZoneOption(tz.getID(), getDisplayName(tz, today)));
 		}
 		
 		return timezones;
 		
+	}
+	
+	static public class TimeZoneOption {
+		public String key;
+		public String value;
+		
+		public TimeZoneOption(String tzShort, String tzLong) {
+			this.key = tzShort;
+			this.value = tzLong;
+		}
 	}
 
 }

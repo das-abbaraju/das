@@ -16,8 +16,7 @@
 			size="20" /></li>
 		<li><label for="u.timezone">Timezone:</label>
 				<s:select name="u.timezone" 
-				list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()"></s:select>
-				<br />* Automatically adjusts for Daylight Savings
+				list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select>
 		</li>
 		<li><label>Created:</label> <s:date name="u.creationDate" /></li>
 	</ol>
