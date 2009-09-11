@@ -195,15 +195,18 @@ public class FlagQuestionCriteria extends BaseTable {
 			return (tempRate == tempCutoff);
 		}
 		if("AMBest".equals(questionType)) {
-			boolean flag = false;
+			boolean flag1 = false;
+			boolean flag2 = false;
 			int ratings = Integer.parseInt(answer.substring(0, answer.indexOf('|')));
 			int bestClass = Integer.parseInt(answer.substring(value.indexOf('|')+ 1,answer.length()));
 			if(getAMBestRatings() > 0)
-				flag = ratings < getAMBestRatings();
+				flag1 = ratings > getAMBestRatings();
 			if(getAMBestClass() > 0)
-				flag = bestClass < getAMBestClass();
-			
-			return flag;
+				flag2 = bestClass < getAMBestClass();
+			if(flag1 || flag2)
+				return true;
+						
+			return false;
 		}
 		return false;
 	}
