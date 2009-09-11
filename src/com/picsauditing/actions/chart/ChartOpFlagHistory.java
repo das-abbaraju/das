@@ -2,13 +2,16 @@ package com.picsauditing.actions.chart;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.chart.ChartMultiSeries;
 import com.picsauditing.util.chart.ChartSingleSeries;
 import com.picsauditing.util.chart.DataRow;
+import com.picsauditing.util.chart.DataSet;
 import com.picsauditing.util.chart.MultiSeriesConverter;
 import com.picsauditing.util.chart.Set;
 
@@ -32,6 +35,17 @@ public class ChartOpFlagHistory extends ChartMSAction {
 		MultiSeriesConverter converter = new MultiSeriesConverter();
 		converter.setChart(chart);
 		converter.addData(data);
+		
+		Map<String, DataSet> dataSet = converter.getChart().getDataSets();
+		for (DataSet row : dataSet.values()) {
+			row.setShowValues(false);
+			for(Set set : row.getSets().values()) {
+				set.setColor(FlagColor.valueOf(row.getSeriesName()).getHex());
+				
+			}
+			chart.addDataSet(row);
+		}
+		
 		return chart;
 	}
 
@@ -48,6 +62,7 @@ public class ChartOpFlagHistory extends ChartMSAction {
 		} catch (Exception doNotShowAnything) {
 			sql.addWhere("creationDate IS NULL");
 		}
+		
 		return sql.toString();
 	}
 }
