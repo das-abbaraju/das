@@ -59,17 +59,18 @@
 			            name="operators" value="1813" />
 					<verifySelectField description="check Med Risk"
 			            name="riskLevels" value="2" />
-					<setCheckbox description="Check 36. MOTOROLA USA SPECIFIC - Med Risk for BP Carson Refinery"
-					        name="incoming['16_108_Med']" />
+					<setCheckbox description="Check 25. Upload Files"
+					        name="incoming['16_33_Low']" />
+					<clickButton description="Save" label="Save"/>
+					<verifyText description="Verify that text is contained in the page" text="Added UPLOAD FILES for BP Carson Refinery - Low"/>
+					<verifyCheckbox description="Verify saved checkbox"
+				        name="incoming['16_33_Low']" checked="true" />
+					<setCheckbox description="Uncheck 25. Upload Files"
+				        name="incoming['16_33_Low']" checked="false" />
 					<clickButton description="Save" label="Save"/>
 					<verifyCheckbox description="Verify saved checkbox"
-					            name="incoming['16_108_Med']" checked="true" />
-
-					<setCheckbox description="Uncheck 36. MOTOROLA USA SPECIFIC - Med Risk for BP Carson Refinery"
-					        name="incoming['16_108_Med']" checked="false" />
-					<clickButton description="Save" label="Save"/>
-					<verifyCheckbox description="Verify saved checkbox"
-					            name="incoming['16_108_Med']" checked="false" />
+				        name="incoming['16_33_Low']" checked="false" />
+					<verifyText description="Verify that text is contained in the page" text="Removed UPLOAD FILES for BP Carson Refinery - Low"/>
 				</group>
 
 				<storeProperty name="report_link" value="Desktop Matrix" />
