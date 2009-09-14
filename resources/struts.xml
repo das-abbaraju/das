@@ -1052,7 +1052,7 @@
 			<result name="address">struts/audits/schedule_audit_address.jsp</result>
 			<result name="select">struts/audits/schedule_audit_select.jsp</result>
 			<result name="confirm">struts/audits/schedule_audit_confirm.jsp</result>
-			<result>struts/blank.jsp</result>
+			<result name="summary">struts/audits/schedule_audit_summary.jsp</result>
 		</action>
 
 		<action name="ScheduleAuditAjax"

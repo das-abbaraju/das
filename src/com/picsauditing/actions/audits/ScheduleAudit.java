@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -14,7 +15,16 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditorAvailability;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
@@ -48,8 +58,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
 
-		if (button == null)
-			return "address";
+		if (button == null) {
+			if (conAudit.getScheduledDate() == null) {
+				return "address";
+
+			} else
+				return "summary";
+		}
 
 		if (button.equals("address")) {
 			auditDao.save(conAudit);
@@ -79,14 +94,64 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (button.equals("confirm")) {
 			availabilitySelected = auditorAvailabilityDAO.find(availabilitySelectedID);
 
+			if (availabilitySelected == null) {
+				addActionError("The time slot you selected is no longer available. Please choose a different time.");
+				return "select";
+			}
+
+			if (!confirmed) {
+				addActionError("You must agree to the terms by checking the box below.");
+				return "confirm";
+			}
+
 			conAudit.setScheduledDate(availabilitySelected.getStartDate());
 			conAudit.setAuditor(availabilitySelected.getUser());
 			conAudit.setContractorConfirm(new Date());
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 			auditDao.save(conAudit);
 			auditorAvailabilityDAO.remove(availabilitySelected);
+
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "");
+
+			if (conAudit.getContractorConfirm() == null) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				emailBuilder.setTemplate(15);
+
+				String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
+				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
+						+ "&key=" + Strings.hashUrlSafe(seed);
+				emailBuilder.addToken("confirmLink", confirmLink);
+
+				EmailQueue email = emailBuilder.build();
+				EmailSender.send(email);
+			}
+			if (conAudit.getAuditorConfirm() == null) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				emailBuilder.setTemplate(14);
+
+				String seed = "a" + conAudit.getAuditor().getId() + "id" + conAudit.getId();
+				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId()
+						+ "&key=" + Strings.hashUrlSafe(seed);
+				emailBuilder.addToken("confirmLink", confirmLink);
+
+				EmailQueue email = emailBuilder.build();
+				email.setToAddresses(conAudit.getAuditor().getEmail());
+				email.setCcAddresses(null);
+				EmailSender.send(email);
+			}
+
+			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
+			addNote(contractor, conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate,
+					NoteCategory.Audits);
+
+			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
+			return "summary";
 		}
-		return SUCCESS;
+		return "address";
 	}
 
 	public NextAvailable getNextAvailable() {
