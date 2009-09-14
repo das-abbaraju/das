@@ -9,9 +9,6 @@
 <link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
-<link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
-<script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
-
 <script type="text/javascript">
 $(function(){
 	function saveEvent(calEvent, element, $cal) {
@@ -36,7 +33,6 @@ $(function(){
 	}
 
 	var $calendar = $('#cal_sched').weekCalendar({
-		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: true},
 		dateFormat: '',
 		timeslotHeight: 30,
