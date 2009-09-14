@@ -10,25 +10,29 @@
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
 <script type="text/javascript">
-function saveEvent(calEvent, element, $cal) {
-	$.getJSON('MyScheduleAjax.action', { button:'save',
-			'calEvent.id':calEvent.id, 
-			'calEvent.start':calEvent.start.getTime(), 
-			'calEvent.end': calEvent.end.getTime()
-		},
-		function(response) {
-			console.log(response);
-			$.gritter.add({title: 'Calendar Event Saved', text:response.output})
-			if (response.calEvent) {
-				$cal.weekCalendar("removeUnsavedEvents");
-				$cal.weekCalendar("updateEvent", response.calEvent);
-			}
-		}
-	);
-}
-
 $(function(){
-	$calendar = $('#cal_sched').weekCalendar({
+	function saveEvent(calEvent, element, $cal) {
+		console.log(calEvent.id);
+		$.post('MyScheduleAjax.action', 
+			{ 
+				button:'save',
+				'calEvent.id': calEvent.id == null ? 0 : calEvent.id, 
+				'calEvent.start':calEvent.start.getTime(), 
+				'calEvent.end': calEvent.end.getTime()
+			},
+			function(response) {
+				$.gritter.add({title: 'Calendar Event Saved', text:response.output})
+				if (response.calEvent) {
+					$calendar.weekCalendar("removeUnsavedEvents");
+					$calendar.weekCalendar("updateEvent", response.calEvent);
+					console.log($calendar);
+				}
+			},
+			'json'
+		);
+	}
+
+	var $calendar = $('#cal_sched').weekCalendar({
 		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: true},
 		dateFormat: '',
@@ -41,10 +45,7 @@ $(function(){
 		data: 'MyScheduleJSON.action?button=jsonSchedule',
 		eventResize: saveEvent,
 		eventDrop: saveEvent,
-		eventNew: function(calEvent, element) {
-				calEvent.id = 0;
-				saveEvent(calEvent, element, $('#cal_sched'));
-			},
+		eventNew: saveEvent,
 		eventClick: function(calEvent, element) {
 				if (confirm("Do you want to delete this timeslot?")){
 					$.ajax({
