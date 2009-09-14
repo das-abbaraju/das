@@ -20,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -73,14 +72,6 @@ public class AuditBuilder {
 		okStatuses.add(AuditStatus.Exempt);
 		okStatuses.add(AuditStatus.Resubmitted);
 		okStatuses.add(AuditStatus.Incomplete);
-
-		List<Integer> requiresSafetyManual = new ArrayList<Integer>();
-		requiresSafetyManual.add(AuditType.DESKTOP);
-		requiresSafetyManual.add(AuditType.OFFICE);
-		// I think Jesse said to go
-		// ahead and create the
-		// office audit right away
-		requiresSafetyManual.add(AuditType.DA);
 
 		/** *** Welcome Call *** */
 		if (DateBean.getDateDifference(contractor.getCreationDate()) > -90) {
@@ -143,18 +134,9 @@ public class AuditBuilder {
 				}
 			}
 		}
-		AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.MANUAL_PQF);
 
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
-			if (auditType.getId() == AuditType.DA && !"Yes".equals(contractor.getOqEmployees())) {
-				// Don't add the D&A audit because this contractor
-				// doesn't have employees subject OQ requirements
-				// Note: we could also just add a place holder "Exempt" audit
-				// just as well
-				continue;
-			}
-
 			if (auditType.getId() == AuditType.ANNUALADDENDUM) {
 				addAnnualAddendum(currentAudits, year - 1, auditType);
 				addAnnualAddendum(currentAudits, year - 2, auditType);
@@ -186,22 +168,24 @@ public class AuditBuilder {
 					// The audit wasn't found, figure out if we should
 					// create it now or wait until later
 					boolean insertNow = true;
-					if (pqfAudit.getAuditStatus().isPending() || pqfAudit.getAuditStatus().isIncomplete()) {
-						// The current PQF is stilling pending, does this audit
-						// require a PDF? (Desktop, Office, or D&A)
-						if (requiresSafetyManual.contains(auditType.getId()))
+					switch (auditType.getId()) {
+					case AuditType.DESKTOP:
+						if (!pqfAudit.getAuditStatus().isActive())
 							insertNow = false;
+						break;
+					case AuditType.OFFICE:
+						if (!pqfAudit.getAuditStatus().isActiveSubmitted())
+							insertNow = false;
+						break;
+					case AuditType.DA:
+						if (!pqfAudit.getAuditStatus().isActiveSubmitted()
+								&& !"Yes".equals(contractor.getOqEmployees()))
+							insertNow = false;
+						break;
+					default:
+						break;
 					}
 
-					if (auditType.getId() == AuditType.DESKTOP && pqfAudit.getAuditStatus().isSubmitted()) {
-						// The current PQF has been submitted, but we need to
-						// know
-						// if the Safety Manual is there first before creating
-						// the desktop
-						// TODO add field to the contractorAccount
-						if (safetyManual == null || !safetyManual.isVerified())
-							insertNow = false;
-					}
 					if (insertNow) {
 						PicsLogger.log("Adding: " + auditType.getId() + auditType.getAuditName());
 						ContractorAudit pendingToInsert = createAudit(auditType);
@@ -238,17 +222,8 @@ public class AuditBuilder {
 
 				for (AuditType auditType : auditTypeList) {
 					if (conAudit.getAuditType().equals(auditType)) {
-						if (conAudit.getAuditType().isScheduled() && conAudit.getScheduledDate() == null) {
-							needed = false;
-						}
-						else if (requiresSafetyManual.contains(auditType.getId())
-								&& (pqfAudit.getAuditStatus().isPending() || pqfAudit.getAuditStatus().isIncomplete())) {
-							needed = false;
-						} else if (conAudit.getAuditType().getId() == AuditType.DA
+						if (conAudit.getAuditType().getId() == AuditType.DA
 								&& !"Yes".equals(contractor.getOqEmployees())) {
-							needed = false;
-						} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
-								&& (safetyManual == null || safetyManual.isUnverified())) {
 							needed = false;
 						} else
 							needed = true;
