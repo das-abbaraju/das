@@ -256,7 +256,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (permissions.isOperator()) {
 			for (ContractorOperator insurContractors : getOperators()) {
 				OperatorAccount op = insurContractors.getOperatorAccount();
-				for (AuditOperator audit : op.getAudits()) {
+				for (AuditOperator audit : op.getVisibleAudits()) {
 					if (audit.getAuditType().getClassType() == AuditTypeClass.IM
 							&& permissions.getAccountId() == op.getId()) {
 						return true;
@@ -271,7 +271,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		// facilities
 		for (ContractorOperator insurContractors : getOperators()) {
 			OperatorAccount op = insurContractors.getOperatorAccount();
-			for (AuditOperator audit : op.getAudits()) {
+			for (AuditOperator audit : op.getVisibleAudits()) {
 				if (audit.getAuditType().getClassType() == AuditTypeClass.IM) {
 					return true;
 				}
