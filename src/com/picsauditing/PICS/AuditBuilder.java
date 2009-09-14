@@ -143,6 +143,7 @@ public class AuditBuilder {
 				}
 			}
 		}
+		AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.MANUAL_PQF);
 
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
@@ -185,22 +186,19 @@ public class AuditBuilder {
 					// The audit wasn't found, figure out if we should
 					// create it now or wait until later
 					boolean insertNow = true;
-					if (pqfAudit.getAuditStatus().equals(AuditStatus.Pending)) {
+					if (pqfAudit.getAuditStatus().isPending() || pqfAudit.getAuditStatus().isIncomplete()) {
 						// The current PQF is stilling pending, does this audit
 						// require a PDF? (Desktop, Office, or D&A)
 						if (requiresSafetyManual.contains(auditType.getId()))
 							insertNow = false;
 					}
 
-					if (auditType.getId() == AuditType.DESKTOP
-							&& pqfAudit.getAuditStatus().equals(AuditStatus.Submitted)) {
+					if (auditType.getId() == AuditType.DESKTOP && pqfAudit.getAuditStatus().isSubmitted()) {
 						// The current PQF has been submitted, but we need to
 						// know
 						// if the Safety Manual is there first before creating
 						// the desktop
 						// TODO add field to the contractorAccount
-						AuditData safetyManual = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(),
-								AuditQuestion.MANUAL_PQF);
 						if (safetyManual == null || !safetyManual.isVerified())
 							insertNow = false;
 					}
@@ -217,10 +215,12 @@ public class AuditBuilder {
 		}
 
 		/** ** Remove unneeded audits *** */
-		// We can't delete until we're done reading all data from DB (lazy loading)
+		// We can't delete until we're done reading all data from DB (lazy
+		// loading)
 		Set<Integer> auditsToRemove = new HashSet<Integer>();
 
-		// You have to use while iterator instead of a for loop because we're removing an entry from the list
+		// You have to use while iterator instead of a for loop because we're
+		// removing an entry from the list
 		Iterator<ContractorAudit> iter = currentAudits.iterator();
 		while (iter.hasNext()) {
 			ContractorAudit conAudit = iter.next();
@@ -228,19 +228,27 @@ public class AuditBuilder {
 					+ " - #" + conAudit.getId());
 			if (conAudit.getAuditStatus().equals(AuditStatus.Pending) && conAudit.getPercentComplete() == 0
 					&& !conAudit.isManuallyAdded()) {
-				// This auto audit hasn't been started yet, double check to make sure it's still needed
+				// This auto audit hasn't been started yet, double check to make
+				// sure it's still needed
 				boolean needed = false;
 
 				if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().getId() == AuditType.WELCOME
 						|| conAudit.getAuditType().isAnnualAddendum())
 					needed = true;
 
-				// this doesn't handle one rare case: when a contractor changes their OQ employees from Yes to No
-				// Since this would probably never happen, we won't add it
 				for (AuditType auditType : auditTypeList) {
 					if (conAudit.getAuditType().equals(auditType)) {
-						if (conAudit.getAuditType().getId() == AuditType.DA
+						if (conAudit.getAuditType().isScheduled() && conAudit.getScheduledDate() == null) {
+							needed = false;
+						}
+						else if (requiresSafetyManual.contains(auditType.getId())
+								&& (pqfAudit.getAuditStatus().isPending() || pqfAudit.getAuditStatus().isIncomplete())) {
+							needed = false;
+						} else if (conAudit.getAuditType().getId() == AuditType.DA
 								&& !"Yes".equals(contractor.getOqEmployees())) {
+							needed = false;
+						} else if (conAudit.getAuditType().getId() == AuditType.DESKTOP
+								&& (safetyManual == null || safetyManual.isUnverified())) {
 							needed = false;
 						} else
 							needed = true;
@@ -277,8 +285,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGuard and automatically require this policy,
-	 * based on riskLevel
+	 * For each audit (policy), get a list of operators who have InsureGuard and
+	 * automatically require this policy, based on riskLevel
 	 * 
 	 * @param conAudit
 	 */
@@ -402,8 +410,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
-	 * shouldn't be there
+	 * Determine which categories should be on a given audit and add ones that
+	 * aren't there and remove ones that shouldn't be there
 	 * 
 	 * @param conAudit
 	 */
@@ -600,7 +608,8 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * Business engine designed to find audits that are about to expire and rebuild them
+	 * Business engine designed to find audits that are about to expire and
+	 * rebuild them
 	 */
 	public void addAuditRenewals() {
 		List<ContractorAccount> contractors = cAuditDAO.findContractorsWithExpiringAudits();
