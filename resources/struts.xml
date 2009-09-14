@@ -52,6 +52,7 @@
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="blank">/struts/blank.jsp</result>
+			<result name="json">/struts/json.jsp</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"

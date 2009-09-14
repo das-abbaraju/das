@@ -11,26 +11,20 @@
 
 <script type="text/javascript">
 function saveEvent(calEvent, element, $cal) {
-	$.ajax({
-		data: { button:'save',
-				'calEvent.id':calEvent.id, 
-				'calEvent.start':calEvent.start.getTime(), 
-				'calEvent.end': calEvent.end.getTime()
-			},
-		url: 'MyScheduleAjax.action',
-		success: function(text) {
-				$.gritter.add({title: 'Calendar Event Saved', text:text})
-				if ($cal) {
-					$cal.weekCalendar('refresh');
-					styleCal($cal);
-				}
+	$.getJSON('MyScheduleAjax.action', { button:'save',
+			'calEvent.id':calEvent.id, 
+			'calEvent.start':calEvent.start.getTime(), 
+			'calEvent.end': calEvent.end.getTime()
+		},
+		function(response) {
+			console.log(response);
+			$.gritter.add({title: 'Calendar Event Saved', text:response.output})
+			if (response.calEvent) {
+				$cal.weekCalendar("removeUnsavedEvents");
+				$cal.weekCalendar("updateEvent", response.calEvent);
 			}
-	});
-}
-
-function styleCal(cal) {
-	$(cal).find('.today').removeClass('today');
-	$(cal).find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+		}
+	);
 }
 
 $(function(){
@@ -42,6 +36,7 @@ $(function(){
 		timeslotsPerHour: 2,
 		defaultEventLength: 4,
 		buttons: false,
+		allowCalEventOverlap : true,
 		newEventText: '',
 		data: 'MyScheduleJSON.action?button=jsonSchedule',
 		eventResize: saveEvent,
@@ -66,7 +61,8 @@ $(function(){
 			}
 	});
 
-	styleCal($calendar);
+	$calendar.find('.today').removeClass('today');
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 });
 
 $(function(){

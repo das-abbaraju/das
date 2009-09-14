@@ -97,7 +97,9 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			if (button.equalsIgnoreCase("save")) {
 				if (calEvent == null) {
 					output = "No schedule to save";
-					return BLANK;
+					json = new JSONObject();
+					json.put("output", output);
+					return JSON;
 				}
 				schedule = auditorScheduleDAO.find(calEvent.id);
 				if (schedule == null)
@@ -113,7 +115,11 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				auditorScheduleDAO.save(schedule);
 				output = "Successfully Saved Timeslot " + schedule.getId() + ". " + schedule;
 
-				return BLANK;
+				json = new JSONObject();
+				json.put("output", output);
+				json.put("calEvent", schedule.toJSON());
+
+				return JSON;
 			}
 
 		}

@@ -30,6 +30,7 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected static String LOGIN_AJAX = "LoginAjax";
 	protected static String BLANK = "blank";
+	protected static String JSON = "json";
 
 	protected String requestURL = null;
 	
