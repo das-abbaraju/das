@@ -58,43 +58,47 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 		// u = dao.find(permissions.getUserId());
 
-		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
-			addActionError("Another user is already using the username: " + u.getUsername());
-			return SUCCESS;
-		}
-
-		if (!Strings.validUserName(u.getUsername().trim())) {
-			addActionError("This username is not valid.  Please enter a valid Username.");
-			return SUCCESS;
-		}
-
 		if (button != null) {
-			if (!Strings.isEmpty(password1)) {
-				if (!password1.equals(password2) && !password1.equals(u.getPassword()))
-					addActionError("Passwords don't match");
-
-				if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail()))
-					addActionError("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
-
-				if (getActionErrors().size() > 0)
+			if (button.equals("Save Profile")) {
+				dao.clear();
+				
+				if (dao.duplicateUsername(u.getUsername(), u.getId())) {
+					addActionError("Another user is already using the username: " + u.getUsername());
 					return SUCCESS;
-				int maxHistory = 0;
-				// u.getAccount().getPasswordPreferences().getMaxHistory()
-				u.addPasswordToHistory(password1, maxHistory);
-				u.setPassword(password1);
-			}
-			u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
-			u = dao.save(u);
+				}
 
-			if (u.getAccount().isContractor()) {
-				ContractorAccount contractor = (ContractorAccount) u.getAccount();
-				contractor.setContact(u.getName());
-				contractor.setEmail(u.getEmail());
-				contractor.setPhone(u.getPhone());
-				accountDao.save(contractor);
-			}
+				if (!Strings.validUserName(u.getUsername().trim())) {
+					addActionError("This username is not valid.  Please enter a valid Username.");
+					return SUCCESS;
+				}
 
-			addActionMessage("Your profile was saved successfully");
+				if (!Strings.isEmpty(password1)) {
+					if (!password1.equals(password2) && !password1.equals(u.getPassword()))
+						addActionError("Passwords don't match");
+
+					if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail()))
+						addActionError("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
+
+					if (getActionErrors().size() > 0)
+						return SUCCESS;
+					int maxHistory = 0;
+					// u.getAccount().getPasswordPreferences().getMaxHistory()
+					u.addPasswordToHistory(password1, maxHistory);
+					u.setPassword(password1);
+				}
+				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
+				u = dao.save(u);
+
+				if (u.getAccount().isContractor()) {
+					ContractorAccount contractor = (ContractorAccount) u.getAccount();
+					contractor.setContact(u.getName());
+					contractor.setEmail(u.getEmail());
+					contractor.setPhone(u.getPhone());
+					accountDao.save(contractor);
+				}
+
+				addActionMessage("Your profile was saved successfully");
+			}
 		}
 
 		return SUCCESS;

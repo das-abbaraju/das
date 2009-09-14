@@ -36,8 +36,7 @@
 	</fieldset>
 	<fieldset class="form submit">
 	<div>
-	<button id="saveButton" class="picsbutton positive"
-		value="Save Profile" name="button" type="submit">Save Profile</button>
+		<input type="submit" class="picsbutton positive" name="button" value="Save Profile"/>
 	</div>
 	</fieldset>
 </s:form>
