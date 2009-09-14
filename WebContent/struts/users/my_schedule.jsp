@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
+<link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
+<script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
+
 <script type="text/javascript">
 $(function(){
 	function saveEvent(calEvent, element, $cal) {
@@ -21,7 +24,7 @@ $(function(){
 				'calEvent.end': calEvent.end.getTime()
 			},
 			function(response) {
-				$.gritter.add({title: 'Calendar Event Saved', text:response.output})
+				$.gritter.add({title: 'Calendar Event Saved', text:response.output});
 				if (response.calEvent) {
 					$calendar.weekCalendar("removeUnsavedEvents");
 					$calendar.weekCalendar("updateEvent", response.calEvent);
