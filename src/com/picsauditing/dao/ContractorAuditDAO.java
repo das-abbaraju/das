@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -255,6 +256,19 @@ public class ContractorAuditDAO extends PicsDAO {
 		
 		calendar.add(Calendar.DAY_OF_YEAR, -90);
 		query.setParameter("threeMonthsAgo", calendar.getTime());
+		
+		return query.getResultList();
+	}
+
+	public List<ContractorAudit> findScheduledAudits(Date startDate, Date endDate) {
+		
+		String hql = "SELECT ca FROM ContractorAudit ca " +
+			" WHERE ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate" +
+			" ORDER BY ca.scheduledDate, ca.id";
+		Query query = em.createQuery(hql);
+		
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
 		
 		return query.getResultList();
 	}

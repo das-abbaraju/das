@@ -12,28 +12,38 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.AuditorScheduleDAO;
 import com.picsauditing.dao.AuditorVacationDAO;
-import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.AuditorSchedule;
 import com.picsauditing.jpa.entities.AuditorVacation;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.log.PicsLogger;
 
+/**
+ * This class should ignore all timezone information and calculate everything based on the server time
+ * 
+ * @author Trevor
+ * 
+ */
 @SuppressWarnings("serial")
 public class AuditScheduleBuilder extends PicsActionSupport {
 	private Map<User, Auditor> auditors = new HashMap<User, Auditor>();
 	private List<AuditorVacation> holidays = new ArrayList<AuditorVacation>();
+	private List<ContractorAudit> scheduledAudits = new ArrayList<ContractorAudit>();
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 	private AuditorScheduleDAO auditorScheduleDAO;
 	private AuditorVacationDAO auditorVacationDAO;
 	private AppPropertyDAO appPropertyDAO;
+	private ContractorAuditDAO contractorAuditDAO;
 
 	public AuditScheduleBuilder(AuditorAvailabilityDAO auditorAvailabilityDAO, AuditorScheduleDAO auditorScheduleDAO,
-			AuditorVacationDAO auditorVacationDAO, AppPropertyDAO appPropertyDAO) {
+			AuditorVacationDAO auditorVacationDAO, ContractorAuditDAO contractorAuditDAO, AppPropertyDAO appPropertyDAO) {
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
 		this.auditorScheduleDAO = auditorScheduleDAO;
 		this.auditorVacationDAO = auditorVacationDAO;
+		this.contractorAuditDAO = contractorAuditDAO;
 		this.appPropertyDAO = appPropertyDAO;
 	}
 
@@ -65,6 +75,9 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 		startDate.add(Calendar.DAY_OF_YEAR, minDaysAway);
 		Calendar endDate = Calendar.getInstance();
 		endDate.add(Calendar.DAY_OF_YEAR, maxDaysAway);
+
+		scheduledAudits = contractorAuditDAO.findScheduledAudits(startDate.getTime(), endDate.getTime());
+		PicsLogger.log("Found " + scheduledAudits.size() + " already scheduled audits");
 
 		PicsLogger.log("Building schedules for " + auditors.size() + " auditors between " + startDate.getTime()
 				+ " and " + endDate.getTime());
@@ -143,11 +156,33 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 						boolean available = true;
 
 						for (AuditorVacation vacation : vacations) {
-							if (vacation.getStartDate().before(proposedEndTime.getTime())
-									&& vacation.getEndDate().after(proposedStartTime.getTime())) {
-								PicsLogger.log("Conflicting event " + vacation.getStartDate() + " to "
-										+ vacation.getEndDate() + " " + vacation.getDescription());
-								available = false;
+							if (vacation.getStartDate().before(proposedEndTime.getTime())) {
+								Calendar tempEndtime = Calendar.getInstance();
+								if (vacation.getEndDate() == null) {
+									tempEndtime.setTime(vacation.getStartDate());
+									tempEndtime.add(Calendar.DAY_OF_YEAR, 1);
+								} else {
+									tempEndtime.setTime(vacation.getStartDate());
+								}
+								if (tempEndtime.getTime().after(proposedStartTime.getTime())) {
+									PicsLogger.log("Conflicting event " + vacation.getStartDate() + " to "
+											+ vacation.getEndDate() + " " + vacation.getDescription());
+									available = false;
+								}
+							}
+						}
+
+						for (ContractorAudit audit : scheduledAudits) {
+							if (audit.getScheduledDate().before(proposedEndTime.getTime())) {
+								Calendar scheduledEndtime = Calendar.getInstance();
+								scheduledEndtime.setTime(audit.getScheduledDate());
+								scheduledEndtime.add(Calendar.MINUTE, 120);
+								if (scheduledEndtime.getTime().after(proposedStartTime.getTime())) {
+									PicsLogger.log("Conflicting event " + audit.getScheduledDate() + " to "
+											+ scheduledEndtime.getTime() + " " + audit.getAuditType().getAuditName()
+											+ " for " + audit.getContractorAccount().getName());
+									available = false;
+								}
 							}
 						}
 
