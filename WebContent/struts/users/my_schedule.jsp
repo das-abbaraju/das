@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
 <script type="text/javascript">
-$(function(){
+$(function() {
 	function saveEvent(calEvent, element, $cal) {
 		console.log(calEvent.id);
 		$.post('MyScheduleAjax.action', 
