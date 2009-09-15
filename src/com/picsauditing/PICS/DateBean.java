@@ -181,28 +181,6 @@ public class DateBean {
 	}// getCur
 
 	/**
-	 * This allows old data to remain valid during the grace period of the new
-	 * year. To set the grace period, update currentYearGrace in web.xml.
-	 * 
-	 * @param strCurrentYearGrace
-	 * @return
-	 * @throws Exception
-	 */
-	public static int getCurrentYearGrace(ServletContext context) throws Exception {
-		String strCurrentYearGrace = context.getInitParameter("currentYearGrace");
-		if (isDuringGrace(strCurrentYearGrace))
-			return getCurrentYear() - 1;
-		else
-			return getCurrentYear();
-
-	}// getCur
-
-	public static boolean isDuringGrace(String strCurrentYearGrace) throws Exception {
-		String curYearGrace = strCurrentYearGrace + "/" + String.valueOf(getCurrentYear());
-		return isAfterToday(curYearGrace);
-	}// getCur
-
-	/**
 	 * @return the month (1-12) of today's date
 	 */
 	public static int getCurrentMonth() {
@@ -257,37 +235,6 @@ public class DateBean {
 		return yearAgo.before(testDate);
 	}// isLessThanOneYearAgo
 
-	public static boolean isAuditExpired(String auditDate) throws Exception {
-		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		if ("".equals(auditDate))
-			auditDate = NULL_DATE;
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.YEAR, -3);
-		java.util.Date threeYearsAgo = cal.getTime();
-		java.util.Date testAuditDate = showFormat.parse(auditDate);
-		return testAuditDate.before(threeYearsAgo);
-	}// isAuditExpired
-
-	// public static boolean isAuditClosed(String auditClosedDate) throws
-	// Exception {
-	// if ("".equals(auditClosedDate) || NULL_DATE.equals(auditClosedDate))
-	// return false;
-	// Calendar cal = Calendar.getInstance();
-	// java.util.Date today = cal.getTime();
-	// java.util.Date testDate = showFormat.parse(auditClosedDate);
-	// return testDate.before(today);
-	// }//isAuditClosed
-
-	public static boolean isPrequalExpired(String testDateString) throws Exception {
-		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
-		if ("".equals(testDateString))
-			testDateString = NULL_DATE;
-		java.util.Date pqfCutOffDate = DBFormat.parse(PQF_EXPIRED_CUTOFF);
-		java.util.Date testPqfSubmittedDate = showFormat.parse(testDateString);
-		return testPqfSubmittedDate.before(pqfCutOffDate);
-	}// isPrequalExpired
-
 	public static boolean isAfterToday(String testDateString) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 		if ("".equals(testDateString))
@@ -296,24 +243,7 @@ public class DateBean {
 		java.util.Date today = cal.getTime();
 		java.util.Date testDate = showFormat.parse(testDateString);
 		return today.before(testDate);
-	}// isAfterToday
-
-	public static boolean isBeforeToday(String testDateString) throws Exception {
-		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		if ("".equals(testDateString))
-			testDateString = NULL_DATE;
-		Calendar cal = Calendar.getInstance();
-		java.util.Date today = cal.getTime();
-		java.util.Date testDate = showFormat.parse(testDateString);
-		return today.after(testDate);
-	}// isAfterToday
-
-	public static boolean isFirstBeforeSecond(String dateString1, String dateString2) throws Exception {
-		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		java.util.Date date1 = showFormat.parse(dateString1);
-		java.util.Date date2 = showFormat.parse(dateString2);
-		return date1.before(date2);
-	}// isFirstBeforeSecond
+	}
 
 	public static boolean isNullDate(Date dt) {
 		if (dt == null || dt.toString().equals(""))

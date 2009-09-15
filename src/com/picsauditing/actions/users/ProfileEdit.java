@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -87,6 +88,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					u.setPassword(password1);
 				}
 				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
+				permissions.setTimeZone(u);
+				ActionContext.getContext().getSession().put("permissions", permissions);
 				u = dao.save(u);
 
 				if (u.getAccount().isContractor()) {

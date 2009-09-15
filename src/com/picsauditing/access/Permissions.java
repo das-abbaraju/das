@@ -2,8 +2,10 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
 import javax.servlet.http.Cookie;
@@ -44,6 +46,8 @@ public class Permissions implements Serializable {
 	private String accountName;
 	private String accountType;
 	private String email;
+	private TimeZone timezone = null;
+
 	private int adminID;
 	private boolean approvesRelationships = false;
 	private boolean active = false;
@@ -56,6 +60,7 @@ public class Permissions implements Serializable {
 		username = "";
 		name = "";
 		email = "";
+		timezone = null;
 		accountID = 0;
 		accountName = "";
 		accountType = "";
@@ -86,7 +91,9 @@ public class Permissions implements Serializable {
 			username = user.getUsername();
 			name = user.getName();
 			email = user.getEmail();
-
+			
+			setTimeZone(user);
+			
 			setAccountPerms(user);
 
 		} catch (Exception ex) {
@@ -94,6 +101,10 @@ public class Permissions implements Serializable {
 			clear();
 			throw ex;
 		}
+	}
+
+	public void setTimeZone(User user) {
+		timezone = TimeZone.getTimeZone(user.getTimezone());
 	}
 
 	public void setAccountPerms(User user) throws Exception {
@@ -416,6 +427,10 @@ public class Permissions implements Serializable {
 	
 	public Set<Integer> getCanSeeAudits() {
 		return canSeeAudits;
+	}
+	
+	public TimeZone getTimezone() {
+		return timezone;
 	}
 
 	public Set<Integer> getVisibleAccounts() {

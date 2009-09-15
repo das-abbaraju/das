@@ -11,19 +11,23 @@
 #auditHeader,#auditHeaderNav {
 	display: none;
 }
+
 table.cal_availability {
 	width: 100%;
 	border-collapse: separate;
 	border-spacing: 10px;
 }
+
 table.cal_availability td {
 	padding: 10px;
 	border: 1px dashed #999;
 }
+
 table.cal_availability td:hover {
 	border: 1px solid #002240;
 	background-color: white;
 }
+
 table.cal_availability a {
 	margin-left: 20px;
 	padding: 5px;
@@ -32,6 +36,7 @@ table.cal_availability a {
 	text-decoration: none;
 	line-height: 35px;
 }
+
 table.cal_availability a:hover {
 	background-color: #ffffbb;
 }
@@ -41,7 +46,7 @@ table.cal_availability a:hover {
 <s:include value="../contractors/conHeader.jsp" />
 
 <s:form>
-	<fieldset class="form"><legend><span>Choose an Audit Time</span></legend>
+	<fieldset class="form bottom"><legend><span>Choose an Audit Time</span></legend>
 	<ol>
 		<li>Please choose one of the available time blocks below for your audit.</li>
 		<li>
@@ -49,27 +54,23 @@ table.cal_availability a:hover {
 			<s:iterator value="nextAvailable.rows">
 				<tr>
 					<s:iterator value="days">
-						<td><h4><s:date name="key" format="EEEE, MMM d"/></h4>
+						<td>
+						<h4><s:date name="key" format="EEEE, MMM d" /></h4>
 						<s:iterator value="value">
-							<br /><a href="ScheduleAudit.action?auditID=99949&button=select&timeSelected=<s:date name="startDate" format="MM/dd/yyyy hh:mm a z" />"><s:date name="startDate" format="h:mm a" />
-							to <s:date name="endDate" format="h:mm a z" /></a>
-						</s:iterator>
-						</td>
+							<br /><a 
+								href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>&button=select&timeSelected=<s:date 
+									name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"><s:property value="formatDate(startDate, 'h:mm a')" /> to 
+								<s:property value="formatDate(endDate, 'h:mm a z')" /></a>
+						</s:iterator></td>
 					</s:iterator>
 				</tr>
 			</s:iterator>
 			<tr>
-			<td colspan="4"><a href="">Show me more available time slots</a></td>
+				<td colspan="4"><a href="">Show me more available time slots</a></td>
 			</tr>
 		</table>
 		</li>
 	</ol>
-	</fieldset>
-	<fieldset class="form submit">
-	<div>
-	<button id="saveButton" class="picsbutton positive" value="Save Profile" name="button" type="submit">Verify
-	Address</button>
-	</div>
 	</fieldset>
 </s:form>
 

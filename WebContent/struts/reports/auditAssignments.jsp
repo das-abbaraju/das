@@ -88,6 +88,7 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate,a.name');">Scheduled</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
 				<td></td>
+				<td></td>
 				<s:if test="showContact">
 					<td>Primary Contact</td>
 					<td>Phone</td>
@@ -166,6 +167,9 @@
 				</td>
 				<td>
 					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
+				</td>
+				<td>
+					<a href="ScheduleAudit.action?auditID=<s:property value="get('auditID')"/>" target="scheduleAudit">Beta</a>
 				</td>
 				<s:if test="showContact">
 					<td><s:property value="get('contact')"/></td>

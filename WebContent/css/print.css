@@ -35,16 +35,49 @@ div.footer {
 	display: none;
 }
 
-/** Audits **/
-div.auditHeader fieldset {
-	float: left;
+.sub { /* used as a sub-header title */
+	font-size: 18px;
+	display: block;
+	padding-left: 10px;
+	color: #555;
+}
+
+#content div.clear {
+	float: none;
+	clear: both;
+	height: 0px;
+	margin: 0px;
+	padding: 0px;
+}
+
+/** Audit Header ***/
+#content div.auditHeader {
+	border-top: 2px solid #BBB;
+	border-bottom: 2px solid #BBB;
+	margin-bottom: 10px;
+}
+
+div.auditHeader fieldset{
+	line-height: 20px;
+	border: 0;
 	width: 30%;
+	float: left;
 }
 
 div.auditHeader ul {
+	padding: 0;
+	margin: 0;
 	list-style-type: none;
-	margin-left: 0;
 }
+
+label{
+	font-weight: bold;
+	color: #555;
+	padding-right: 5px;
+}
+
+
+/** Audits **/
 
 table.audit {
 	width: 100%;
@@ -151,29 +184,12 @@ span.printrequired {
 	display: inline;
 }
 
-/** Audit Header ***/
-#content div.auditHeader {
-	border-top: 2px solid #C3C3C3;
-	border-bottom: 2px solid #C3C3C3;
-	height: 150px;
+/** Forms **/
+fieldset.form ol {
+	padding-left: 10px;
+	list-style: none;
 }
 
-div.auditHeader li {
-	float: left;
-	clear: left;
-	width: 100%;
+fieldset.form li {
+	padding-bottom: 5px;
 }
-
-div.auditHeader label{
-	float: left;
-	text-align: right;
-	font-weight: bold;
-	color: #003768;
-}
-
-div.auditHeader fieldset{
-	line-height: 26px;
-	width: 15em;
-	border: 0px;
-}
-/** END Audit Header ***/

@@ -1,12 +1,15 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
@@ -160,6 +163,23 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		} catch (Exception e) {
 			return new Permissions();
 		}
+	}
+	
+	public String formatDate(Date serverDate) {
+		return formatDate(serverDate, "MMMMM d, yyyy, h:mm a");
+	}
+	
+	public String formatDate(Date serverDate, String format) {
+		loadPermissions();
+
+		DateFormat dateFormat = new SimpleDateFormat(format);
+		
+		if (permissions == null || permissions.getTimezone() == null)
+			return dateFormat.format(serverDate);
+		
+		dateFormat.setTimeZone(permissions.getTimezone());
+		
+		return dateFormat.format(serverDate);
 	}
 
 	public String getRequestURI() {

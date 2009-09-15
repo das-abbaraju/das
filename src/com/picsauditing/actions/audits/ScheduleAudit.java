@@ -1,5 +1,7 @@
 package com.picsauditing.actions.audits;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,23 +17,21 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
+	
+	static final public String DATE_FORMAT = "yyyyMMddhhmm";
 
 	private NextAvailable nextAvailable = new NextAvailable();
 	private Date timeSelected;
-	private AuditorAvailability availabilitySelected;
+	private AuditorAvailability availabilitySelected = null;
 	private int availabilitySelectedID;
 	private boolean confirmed = false;
 
@@ -176,7 +176,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public Date getLastCancellationTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(availabilitySelected.getStartDate());
+		if (availabilitySelected != null)
+			cal.setTime(availabilitySelected.getStartDate());
+		else if (conAudit.getScheduledDate() != null)
+			cal.setTime(conAudit.getScheduledDate());
+		else
+			// Something is probably wrong here
+			return cal.getTime();
+		
 		cal.add(Calendar.DAY_OF_YEAR, -2);
 
 		while (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
@@ -185,8 +192,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return cal.getTime();
 	}
 
-	public void setTimeSelected(String timeSelected) {
-		this.timeSelected = DateBean.parseDateTime(timeSelected);
+	public void setTimeSelected(String dateString) throws ParseException {
+		SimpleDateFormat df = new SimpleDateFormat();
+		df.setLenient(false);
+		df.applyPattern(DATE_FORMAT);
+		this.timeSelected = df.parse(dateString);
 	}
 
 	public class NextAvailable {
