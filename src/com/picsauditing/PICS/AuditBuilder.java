@@ -558,6 +558,7 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.Yes);
 			catData.setOverride(false);
+			catData.setAuditColumns(new User(User.SYSTEM));
 			if (category.getNumRequired() == 0)
 				catData.setNumRequired(1);
 			else
@@ -572,6 +573,7 @@ public class AuditBuilder {
 			catData.setAudit(conAudit);
 			catData.setApplies(YesNo.No);
 			catData.setOverride(false);
+			catData.setAuditColumns(new User(User.SYSTEM));
 			if (category.getNumRequired() == 0)
 				catData.setNumRequired(1);
 			else
