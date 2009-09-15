@@ -9,8 +9,11 @@
 <link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
+<link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
+<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.js"></script>
+
 <script type="text/javascript">
-$(function() {
+function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
 		console.log(calEvent.id);
 		$.post('MyScheduleAjax.action', 
@@ -61,9 +64,9 @@ $(function() {
 
 	$calendar.find('.today').removeClass('today');
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
-});
+}
 
-$(function(){
+function loadVacat() {
 	$calendar = $('#cal_vacat').weekCalendar({
 		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: true},
@@ -75,23 +78,35 @@ $(function(){
 	});
 
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
-});
+}
 
-$(function(){
-	$calendar = $('#cal_holid').weekCalendar({
-		height: function(calendar){return 600;},
-		businessHours: {start: 7, end: 17, limitDisplay: true},
-		timeslotHeight: 40,
-		timeslotsPerHour: 1,
-		defaultEventLength: 4,
-		readonly: true,
-		data: 'MyScheduleJSON.action?button=jsonAvailability'
+function loadHolid(){
+	function fixEvent(k, event) {
+		event.start = new Date(event.start);
+		var message = "start: " + event.start;
+		if (event.end) {
+			event.end = new Date(event.end);
+			message += "\nend: " + event.end;
+		}
+		event.url = 'javascript:alert("'+message+'")';
+	}
+
+	$calendar = $('#cal_holid').fullCalendar({
+		fixedWeeks: false,
+		events: 
+			function (start, end, callback) {
+				$.getJSON('MyScheduleJSON.action', {button: 'jsonVacation', start: start.getTime(), end: end.getTime()}, 
+					function(json) { 
+						var events = new Array(json.events.length); 
+						$.each(json.events, fixEvent);
+						callback(json.events); 
+					} 
+				);
+			}
 	});
+}
 
-	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
-});
-
-$(function(){
+function loadAvail(){
 	$calendar = $('#cal_avail').weekCalendar({
 		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: true},
@@ -103,18 +118,25 @@ $(function(){
 	});
 
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
-});
+}
 
-$(document).ready(function(){
-	$("#schedule_tabs").tabs();
+$(function(){
+	var tabMap = {
+		aschedule: {loaded: false, load: loadSched},
+		vacation: {loaded: false, load: loadVacat},
+		holidays: {loaded: false, load: loadHolid},
+		preview: {loaded: false, load: loadAvail}
+	};
 
-	$.gritter.add({
-		title: 'Welcome to PICS',
-		text: 'This is a new notification tool that Trevor, Kyle, and Arwen thought up while Keerthi was on vacation.'
+	$('#schedule_tabs').bind('tabsshow', function(event, ui) {
+	    if (!tabMap[ui.panel.id].loaded) {
+	    	tabMap[ui.panel.id].load();
+	    	tabMap[ui.panel.id].loaded = true;
+	    }
 	});
-	
-});
 
+	$("#schedule_tabs").tabs();
+});
 </script>
 </head>
 <body>

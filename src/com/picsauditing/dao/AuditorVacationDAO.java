@@ -1,8 +1,10 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +41,21 @@ public class AuditorVacationDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT t FROM AuditorVacation t");
 		return query.getResultList();
 	}
-	
+
 	public List<AuditorVacation> findByAuditorID(int auditorID) {
-		Query query = em.createQuery("SELECT t FROM AuditorVacation t " +
-				"WHERE t.user.id = ? OR t.user IS NULL ORDER BY startDate");
+		Query query = em.createQuery("SELECT t FROM AuditorVacation t "
+				+ "WHERE t.user.id = ? OR t.user IS NULL ORDER BY startDate");
 		query.setParameter(1, auditorID);
+		return query.getResultList();
+	}
+
+	public List<AuditorVacation> findByAuditorID(int auditorID, Date start, Date end) {
+		Query query = em
+				.createQuery("SELECT t FROM AuditorVacation t "
+						+ "WHERE t.user.id = :auditorID OR t.user IS NULL AND startDate BETWEEN :start AND :end ORDER BY startDate");
+		query.setParameter("auditorID", auditorID);
+		query.setParameter("start", start, TemporalType.TIMESTAMP);
+		query.setParameter("end", end, TemporalType.TIMESTAMP);
 		return query.getResultList();
 	}
 }

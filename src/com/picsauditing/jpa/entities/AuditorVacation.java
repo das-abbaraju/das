@@ -70,8 +70,10 @@ public class AuditorVacation extends BaseTable {
 		cal.setTime(startDate);
 		obj.put("start", cal.getTimeInMillis());
 
-		cal.setTime(endDate);
-		obj.put("end", cal.getTimeInMillis());
+		if (endDate != null) {
+			cal.setTime(endDate);
+			obj.put("end", cal.getTimeInMillis());
+		}
 
 		return obj;
 	}

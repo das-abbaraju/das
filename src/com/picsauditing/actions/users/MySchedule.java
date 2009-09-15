@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -26,6 +27,9 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private AuditorScheduleDAO auditorScheduleDAO;
 	private AuditorVacationDAO auditorVacationDAO;
 	private JSONObject json;
+
+	private long start;
+	private long end;
 
 	private CalEvent calEvent;
 
@@ -164,7 +168,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public List<AuditorVacation> getVacations() {
 		if (vacations == null) {
-			vacations = auditorVacationDAO.findByAuditorID(auditorID);
+			vacations = auditorVacationDAO.findByAuditorID(auditorID, new Date(start), new Date(end));
 		}
 		return vacations;
 	}
@@ -182,6 +186,22 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public void setJson(JSONObject json) {
 		this.json = json;
+	}
+
+	public long getStart() {
+		return start;
+	}
+
+	public void setStart(long start) {
+		this.start = start;
+	}
+
+	public long getEnd() {
+		return end;
+	}
+
+	public void setEnd(long end) {
+		this.end = end;
 	}
 
 	public CalEvent getCalEvent() {
