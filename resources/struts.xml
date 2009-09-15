@@ -232,13 +232,13 @@
 			</result>
 		</action>
 
-		<action name="ConInsureGuard"
+		<action name="ConInsureGUARD"
 			class="com.picsauditing.actions.contractors.ConInsureGuard">
 			<param name="auditClass">Policy</param>
 			<param name="noteCategory">Insurance</param>
 			<result>struts/contractors/contractor_insureguard.jsp</result>
 			<result name="saved" type="redirect-action">
-				<param name="actionName">ConInsureGuard</param>
+				<param name="actionName">ConInsureGUARD</param>
 				<param name="id">${id}</param>
 			</result>
 		</action>
@@ -769,7 +769,7 @@
 				<param name="id">${contractor.id}</param>
 			</result>
 			<result name="PolicyList" type="redirect-action">
-				<param name="actionName">ConInsureGuard</param>
+				<param name="actionName">ConInsureGUARD</param>
 				<param name="id">${contractor.id}</param>
 			</result>
 		</action>

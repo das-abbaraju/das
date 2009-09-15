@@ -260,7 +260,7 @@ public class AuditBuilder {
 	}
 
 	/**
-	 * For each audit (policy), get a list of operators who have InsureGuard and
+	 * For each audit (policy), get a list of operators who have InsureGUARD and
 	 * automatically require this policy, based on riskLevel
 	 * 
 	 * @param conAudit
@@ -279,7 +279,7 @@ public class AuditBuilder {
 		}
 
 		for (OperatorAccount operator : operatorSet) {
-			PicsLogger.log(operator.getName() + " subscribes to InsureGuard");
+			PicsLogger.log(operator.getName() + " subscribes to InsureGUARD");
 			// For this auditType (General Liability) and
 			// this contractor's associated operator (BP Cherry Point)
 

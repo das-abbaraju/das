@@ -4,7 +4,7 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="eorozco" />
 	<target name="test">
-		<webtest name="Admin InsureGuard">
+		<webtest name="Admin InsureGUARD">
 			&config;
 			<steps>
 				&login;

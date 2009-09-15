@@ -100,7 +100,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * Build a Menu (List<MenuComponent>) with the following:<br>
 	 * * PQF<br>
 	 * * Annual Update<br>
-	 * * InsureGuard<br>
+	 * * InsureGUARD<br>
 	 * * Audits<br>
 	 * 
 	 * @return
@@ -163,8 +163,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (isRequiresInsurance()) {
-			// Add InsureGuard
-			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ConInsureGuard.action?id=" + id);
+			// Add InsureGUARD
+			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ConInsureGUARD.action?id=" + id);
 			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
