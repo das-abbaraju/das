@@ -31,7 +31,7 @@ public class ReportCloseAuditAssignments extends ReportContractorAudits {
 
 	@Override
 	protected void checkPermissions() throws Exception {
-		permissions.tryPermission(OpPerms.ManageAudits);
+		permissions.tryPermission(OpPerms.AssignAudits);
 	}
 
 	@Override
