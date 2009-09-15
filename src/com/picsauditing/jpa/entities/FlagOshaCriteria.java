@@ -22,6 +22,8 @@ public class FlagOshaCriteria extends BaseTable {
 	protected FlagOshaCriterion lwcr;
 	protected FlagOshaCriterion trir;
 	protected FlagOshaCriterion fatalities;
+	protected FlagOshaCriterion cad7;
+	protected FlagOshaCriterion neer;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "opID", nullable = false)
@@ -79,9 +81,33 @@ public class FlagOshaCriteria extends BaseTable {
 		this.fatalities = fatalities;
 	}
 
+	@Embedded
+	@AttributeOverrides( { @AttributeOverride(name = "hurdleFlag", column = @Column(name = "cad7HurdleType")),
+			@AttributeOverride(name = "hurdle", column = @Column(name = "cad7Hurdle")),
+			@AttributeOverride(name = "time", column = @Column(name = "cad7Time")) })
+	public FlagOshaCriterion getCad7() {
+		return cad7;
+	}
+
+	public void setCad7(FlagOshaCriterion cad7) {
+		this.cad7 = cad7;
+	}
+
+	@Embedded
+	@AttributeOverrides( { @AttributeOverride(name = "hurdleFlag", column = @Column(name = "neerHurdleType")),
+			@AttributeOverride(name = "hurdle", column = @Column(name = "neerHurdle")),
+			@AttributeOverride(name = "time", column = @Column(name = "neerTime")) })
+	public FlagOshaCriterion getNeer() {
+		return neer;
+	}
+
+	public void setNeer(FlagOshaCriterion neer) {
+		this.neer = neer;
+	}
+
 	@Transient
 	public boolean isRequired() {
-		return lwcr.isRequired() || trir.isRequired() || fatalities.isRequired();
+		return lwcr.isRequired() || trir.isRequired() || fatalities.isRequired() || cad7.isRequired() || neer.isRequired();
 	}
 
 }

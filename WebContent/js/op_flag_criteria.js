@@ -35,7 +35,7 @@ function showOshaCriteria(type) {
 	Modalbox.show('FlagOshaCriteriaActionAjax.action', {
 		method : 'post', 
 		params: pars, 
-		title: 'Edit Criteria - OSHA',
+		title: 'Edit Criteria - ' + shaType,
 		slideDownDuration: .5,
 		slideUpDuration: 0,
 		resizeDuration: .2,

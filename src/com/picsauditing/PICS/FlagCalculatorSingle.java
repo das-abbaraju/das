@@ -208,6 +208,16 @@ public class FlagCalculatorSingle {
 							if (criteria.getFatalities().isFlagged(contractor.getNaics(), osha.getFatalities()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
+						if ((key.equals(OshaAudit.AVG) && criteria.getCad7().isTimeAverage())
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getCad7().isTimeAverage())) {
+							if (criteria.getCad7().isFlagged(contractor.getNaics(), osha.getCad7()))
+								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+						}
+						if ((key.equals(OshaAudit.AVG) && criteria.getNeer().isTimeAverage())
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getNeer().isTimeAverage())) {
+							if (criteria.getNeer().isFlagged(contractor.getNaics(), osha.getNeer()))
+								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+						}
 						flagColor = setFlagColor(flagColor, osha.getFlagColor());
 					}
 				} else {
@@ -296,22 +306,22 @@ public class FlagCalculatorSingle {
 											&& cao.isVisible()) {
 
 										// This policy is already approved by operator
-										if (CaoStatus.Approved.equals(cao.getStatus()))
+										if (cao.getStatus().isApproved())
 											return WaitingOn.None;
 
-										if (cao.getStatus() == CaoStatus.Pending) {
+										if (cao.getStatus().isPending()) {
 											return WaitingOn.Contractor;
 										}
 
-										if (cao.getStatus() == CaoStatus.Submitted) {
+										if (cao.getStatus().isSubmitted()) {
 											waitingOnPics = true;
 										}
 
-										if (cao.getStatus() == CaoStatus.Verified) {
+										if (cao.getStatus().isVerified()) {
 											waitingOnOperator = true;
 										}
 
-										if (CaoStatus.Rejected.equals(cao.getStatus()))
+										if (cao.getStatus().isRejected())
 											// The operator rejected their certificate,
 											// they should fix it and resubmit it
 											return WaitingOn.Contractor;

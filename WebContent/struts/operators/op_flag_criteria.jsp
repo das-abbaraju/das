@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/notes.js"></script>
 <script type="text/javascript">
 	var opID = '<s:property value="operator.id" />';
+	var shaType = '<s:property value="operator.oshaType" />';
 </script>
 
 </head>

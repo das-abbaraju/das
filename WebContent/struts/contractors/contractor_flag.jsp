@@ -154,7 +154,7 @@
 	</pics:permission>
 </table>
 
-<s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed">
+<s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed || oshaCad7Used || oshaNeerUsed">
 
 	<s:iterator value="co.operatorAccount.flagOshaCriteria">
 		<s:if test="trir.required && trir.hurdleFlag.naics">
@@ -191,6 +191,14 @@
 				</s:if>
 				<s:if test="oshaTrirUsed">
 					<td>TRIR</td>
+					<td>Criteria</td>
+				</s:if>
+				<s:if test="oshaCad7Used">
+					<td>Cad7</td>
+					<td>Criteria</td>
+				</s:if>
+				<s:if test="oshaNeerUsed">
+					<td>Neer</td>
 					<td>Criteria</td>
 				</s:if>
 				<td></td>
@@ -252,10 +260,34 @@
 								</s:if>
 							</s:iterator></td>
 						</s:if>
+						<s:if test="oshaCad7Used">
+							<td class="right"><s:property value="value.cad7" /></td>
+							<td style="vertical-align: middle;"><s:iterator
+								value="co.operatorAccount.flagOshaCriteria">
+								<s:if
+									test="cad7.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
+								&gt; <s:property value="cad7.hurdle" /> = <s:property
+										value="flagColor" />
+									<br />
+								</s:if>
+							</s:iterator></td>
+						</s:if>
+						<s:if test="oshaNeerUsed">
+							<td class="right"><s:property value="value.neer" /></td>
+							<td style="vertical-align: middle;"><s:iterator
+								value="co.operatorAccount.flagOshaCriteria">
+								<s:if
+									test="neer.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
+								&gt; <s:property value="neer.hurdle" /> = <s:property
+										value="flagColor" />
+									<br />
+								</s:if>
+							</s:iterator></td>
+						</s:if>
 						<td><s:if
 							test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
 							<a
-								href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=151">Show</a>
+								href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=<s:property value="shaTypeID"/>">Show</a>
 						</s:if></td>
 					</tr>
 				</s:iterator>

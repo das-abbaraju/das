@@ -22,6 +22,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -34,6 +35,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -278,6 +280,22 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
+	public boolean isOshaCad7Used() {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
+			if (criteria.getCad7().isRequired())
+				return true;
+		}
+		return false;
+	}
+
+	public boolean isOshaNeerUsed() {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
+			if (criteria.getNeer().isRequired())
+				return true;
+		}
+		return false;
+	}
+
 	public boolean isOshaAveragesUsed() {
 		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
@@ -370,5 +388,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return null;
 	}
-
+	
+	public int getShaTypeID() {
+		OshaType shaType = co.getOperatorAccount().getOshaType();
+		if(shaType.equals(OshaType.COHS))
+			return AuditCategory.CANADIAN_STATISTICS;
+		if(shaType.equals(OshaType.MSHA))
+			return AuditCategory.MSHA;
+		else
+			return AuditCategory.OSHA_AUDIT;
+	}
 }

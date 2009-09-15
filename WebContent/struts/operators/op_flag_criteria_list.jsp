@@ -93,6 +93,54 @@
 			<s:else>N/A</s:else>
 		</nobr></td>
 	</tr>
+	<s:if test="operator.oshaType.toString() == 'COHS'">
+		<tr 
+			<s:if test="operator == operator.inheritFlagCriteria">
+				onclick="showOshaCriteria('4');" class="clickable" title="Click to open"
+				</s:if>
+		>
+			<td><s:property value="operator.oshaType"/></td>
+			<td class="right">Cad7</td>
+			<td>
+				Cad7
+			</td>
+			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.cad7.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.cad7.time)"/>
+				> <s:property value="oshaRedFlagCriteria.cad7.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+			<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.cad7.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.cad7.time)"/>
+				> <s:property value="oshaAmberFlagCriteria.cad7.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+		</tr>
+		<tr 
+			<s:if test="operator == operator.inheritFlagCriteria">
+				onclick="showOshaCriteria('5');" class="clickable" title="Click to open"
+				</s:if>
+		>
+			<td><s:property value="operator.oshaType"/></td>
+			<td class="right">Neer</td>
+			<td>
+				Neer
+			</td>
+			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.neer.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.neer.time)"/>
+				> <s:property value="oshaRedFlagCriteria.neer.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+			<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.neer.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.neer.time)"/>
+				> <s:property value="oshaAmberFlagCriteria.neer.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+		</tr>
+	</s:if>
 	</s:if>
 	<s:if test="questionList.size() == 0">
 		<tr><td colspan="5">No flag criteria has been defined for this type</td></tr>
