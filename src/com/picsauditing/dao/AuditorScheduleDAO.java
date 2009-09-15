@@ -31,6 +31,11 @@ public class AuditorScheduleDAO extends PicsDAO {
 		}
 	}
 
+	public void refresh(AuditorSchedule schedule) {
+		if (schedule != null && schedule.getId() > 0)
+			em.refresh(schedule);
+	}
+
 	public AuditorSchedule find(int id) {
 		return em.find(AuditorSchedule.class, id);
 	}

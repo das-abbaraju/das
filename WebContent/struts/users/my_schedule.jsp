@@ -21,12 +21,9 @@ $(function(){
 				'calEvent.end': calEvent.end.getTime()
 			},
 			function(response) {
-				$.gritter.add({title: 'Calendar Event Saved', text:response.output});
-				if (response.calEvent) {
-					$calendar.weekCalendar("removeUnsavedEvents");
-					$calendar.weekCalendar("updateEvent", response.calEvent);
-					console.log($calendar);
-				}
+				$.gritter.add({title: 'Calendar Event', text:response.output});
+				$calendar.weekCalendar("removeUnsavedEvents");
+				$calendar.weekCalendar("updateEvent", response.calEvent);
 			},
 			'json'
 		);
@@ -39,9 +36,10 @@ $(function(){
 		timeslotsPerHour: 2,
 		defaultEventLength: 4,
 		buttons: false,
-		allowCalEventOverlap : true,
 		newEventText: '',
 		data: 'MyScheduleJSON.action?button=jsonSchedule',
+		resizable: function(calEvent, eventElement) {return false;},
+		draggable: function(calEvent, eventElement) {return false;},
 		eventResize: saveEvent,
 		eventDrop: saveEvent,
 		eventNew: saveEvent,

@@ -46,6 +46,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			calEvent = new CalEvent(calId);
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		loadPermissions();
 		auditorID = permissions.getUserId();
@@ -105,20 +106,39 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				if (schedule == null)
 					schedule = new AuditorSchedule();
 
-				schedule.setStartTime(calEvent.start);
-				schedule.setEndTime(calEvent.end);
 				schedule.setWeekDay(calEvent.start);
-
+				schedule.setStartTime(calEvent.start);
+				// schedule.setEndTime(calEvent.end);
+				schedule.setDuration(120);
 				if (schedule.getUser() == null)
 					schedule.setUser(getUser());
-				schedule.setAuditColumns(permissions);
-				auditorScheduleDAO.save(schedule);
-				output = "Successfully Saved Timeslot " + schedule.getId() + ". " + schedule;
+
+				List<AuditorSchedule> otherSchedules = auditorScheduleDAO.findByAuditorID(schedule.getUser().getId());
+				boolean overlap = false;
+				for (AuditorSchedule auditorSchedule : otherSchedules) {
+					if (schedule.overlaps(auditorSchedule)) {
+						overlap = true;
+						break;
+					}
+				}
+
+				if (overlap) {
+					if (schedule.getId() > 0)
+						auditorScheduleDAO.refresh(schedule);
+					else
+						schedule = null;
+
+					output = "That time overlaps with another timeslot. It will not be saved";
+				} else {
+					schedule.setAuditColumns(permissions);
+					auditorScheduleDAO.save(schedule);
+					output = "Successfully Saved Timeslot " + schedule.getId() + ". " + schedule;
+				}
 
 				json = new JSONObject();
 				json.put("output", output);
-				json.put("calEvent", schedule.toJSON());
-
+				if (schedule != null)
+					json.put("calEvent", schedule.toJSON());
 				return JSON;
 			}
 

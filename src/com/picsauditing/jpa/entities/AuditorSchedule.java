@@ -137,4 +137,12 @@ public class AuditorSchedule extends BaseTable {
 		return s;
 	}
 
+	@Transient
+	public boolean overlaps(AuditorSchedule otherSchedule) {
+		boolean thisOverlap = otherSchedule.startTime <= this.startTime
+				&& this.startTime < otherSchedule.startTime + otherSchedule.duration;
+		boolean otherOverlap = this.startTime <= otherSchedule.startTime
+				&& otherSchedule.startTime < this.startTime + this.duration;
+		return this.id != otherSchedule.id && this.weekDay == otherSchedule.weekDay && (thisOverlap || otherOverlap);
+	}
 }
