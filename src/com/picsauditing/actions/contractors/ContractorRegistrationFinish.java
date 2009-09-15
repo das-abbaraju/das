@@ -105,7 +105,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							// Activate the contractor
 							if (!contractor.isActiveB()) {
 								for (InvoiceItem item : invoice.getItems()) {
-									if (item.getInvoiceFee().getFeeClass().equals("Membership")) {
+									if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
 										contractor.setActive('Y');
 										contractor.setAuditColumns(getUser());
 									}
@@ -142,22 +142,24 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				// There are no unpaid invoices - we should create a new one
 				// (could be a re-activation)
 				if (invoice == null) {
-					invoice = new Invoice();
-					invoice.setStatus(TransactionStatus.Unpaid);
 					List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
-					invoice.setItems(items);
-					invoice.setAccount(contractor);
-					invoice.setAuditColumns(new User(User.SYSTEM));
-					invoice.setDueDate(new Date());
+					if (items.size() > 0) {
+						invoice = new Invoice();
+						invoice.setStatus(TransactionStatus.Unpaid);
+						invoice.setItems(items);
+						invoice.setAccount(contractor);
+						invoice.setAuditColumns(new User(User.SYSTEM));
+						invoice.setDueDate(new Date());
 
-					for (InvoiceItem item : items) {
-						item.setInvoice(invoice);
-						item.setAuditColumns(new User(User.SYSTEM));
+						for (InvoiceItem item : items) {
+							item.setInvoice(invoice);
+							item.setAuditColumns(new User(User.SYSTEM));
+						}
+
+						updateTotals();
+						this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(),
+								NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
 					}
-
-					updateTotals();
-					this.addNote(contractor, "Created invoice for $" + invoice.getTotalAmount(), NoteCategory.Billing,
-							LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
 
 				} else {
 
@@ -170,7 +172,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 					}
 				}
 
-				if (invoice.getStatus().isUnpaid()) {
+				if (invoice != null && invoice.getStatus().isUnpaid()) {
 
 					if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0)
 						invoice.setQbSync(true);
@@ -192,12 +194,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				}
 			}
 		}
-		
-		if(!contractor.isRenew()) {
+
+		if (!contractor.isRenew()) {
 			contractor.setRenew(true);
 			accountDao.save(contractor);
 		}
-		
+
 		return SUCCESS;
 	}
 
