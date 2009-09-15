@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
 
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
-<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.js"></script>
+<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
 <script type="text/javascript">
 function loadSched() {
