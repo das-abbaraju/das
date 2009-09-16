@@ -101,6 +101,11 @@
 		The OSHA and EMR categories have been moved to the Annual Update.
 	</div>
 </s:if>
+
+<pics:permission perm="AllContractors">
+	<a href="?button=recalculate">Recalculate Categories</a>
+</pics:permission>
+
 <br clear="both"/>
 </body>
 </html>

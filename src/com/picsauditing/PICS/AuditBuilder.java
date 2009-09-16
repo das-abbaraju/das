@@ -253,7 +253,7 @@ public class AuditBuilder {
 			/** Generate Categories * */
 			for (ContractorAudit conAudit : currentAudits) {
 				fillAuditOperators(conAudit);
-				fillAuditCategories(conAudit);
+				fillAuditCategories(conAudit, false);
 			}
 		}
 		PicsLogger.stop();
@@ -390,25 +390,27 @@ public class AuditBuilder {
 	 * 
 	 * @param conAudit
 	 */
-	public void fillAuditCategories(ContractorAudit conAudit) {
-		if (conAudit.getAuditType().isPqf()) {
-			// Only Active and Pending PQFs should be recalculated
-			if (conAudit.getAuditStatus().isSubmitted())
-				return;
-			if (conAudit.getAuditStatus().isResubmitted())
-				return;
-			if (conAudit.getAuditStatus().isExpired())
-				return;
-			if (conAudit.getAuditStatus().isExempt())
-				return;
-		} else if (conAudit.getAuditType().isAnnualAddendum()) {
-			if (!conAudit.getAuditStatus().isPending() && !conAudit.getAuditStatus().isIncomplete())
-				return;
-		} else {
-			// Other Audits should only consider Pending
-			if (!conAudit.getAuditStatus().isPending()
-					&& conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
-				return;
+	public void fillAuditCategories(ContractorAudit conAudit, boolean forceRecalculation) {
+		if (!forceRecalculation) {
+			if (conAudit.getAuditType().isPqf()) {
+				// Only Active and Pending PQFs should be recalculated
+				if (conAudit.getAuditStatus().isSubmitted())
+					return;
+				if (conAudit.getAuditStatus().isResubmitted())
+					return;
+				if (conAudit.getAuditStatus().isExpired())
+					return;
+				if (conAudit.getAuditStatus().isExempt())
+					return;
+			} else if (conAudit.getAuditType().isAnnualAddendum()) {
+				if (!conAudit.getAuditStatus().isPending() && !conAudit.getAuditStatus().isIncomplete())
+					return;
+			} else {
+				// Other Audits should only consider Pending
+				if (!conAudit.getAuditStatus().isPending()
+						&& conAudit.getAuditType().getClassType() == AuditTypeClass.Audit)
+					return;
+			}
 		}
 
 		PicsLogger.start("AuditCategories", "auditID=" + conAudit.getId() + " type="

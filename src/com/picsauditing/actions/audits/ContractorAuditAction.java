@@ -51,7 +51,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 
 		// Some stuff like rebuilding categories and percentages doesn't have to
 		// be done everytime
-		auditBuilder.fillAuditCategories(conAudit);
+		auditBuilder.fillAuditCategories(conAudit, "recalculate".equals(button));
 
 		if (isSingleCat())
 			ServletActionContext.getResponse().sendRedirect(
