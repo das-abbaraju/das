@@ -13,6 +13,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -74,8 +75,16 @@ public class AuditorVacation extends BaseTable {
 			cal.setTime(endDate);
 			obj.put("end", cal.getTimeInMillis());
 		}
+		
+		if (user == null)
+			obj.put("className", "monthly-company");
 
 		return obj;
+	}
+	
+	@Override
+	public String toString() {
+		return id + " " + description + " " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " " + DateBean.format(endDate, "MM/dd/yyyy hh:mm a");
 	}
 
 }

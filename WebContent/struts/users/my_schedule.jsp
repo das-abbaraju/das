@@ -66,21 +66,7 @@ function loadSched() {
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 }
 
-function loadVacat() {
-	$calendar = $('#cal_vacat').weekCalendar({
-		height: function(calendar){return 600;},
-		businessHours: {start: 7, end: 17, limitDisplay: true},
-		timeslotHeight: 40,
-		timeslotsPerHour: 1,
-		defaultEventLength: 4,
-		readonly: true,
-		data: 'MyScheduleJSON.action?button=jsonVacation'
-	});
-
-	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
-}
-
-function loadHolid(){
+function loadVacat(){
 	function fixEvent(k, event) {
 		event.start = new Date(event.start);
 		if (event.end)
@@ -90,9 +76,52 @@ function loadHolid(){
 	$dialog = $('#vacation_form').dialog({
 		title:'Vacation Entry', 
 		autoOpen:false,
+		modal: true,
 		buttons: {
-			Save: function() { 
-				alert($dialog.serialize());
+			Save: function() {
+				var start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
+				var end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
+				var data = {
+					'calEvent.id': $dialog.find('[name=id]').val(),
+					'calEvent.title':$dialog.find('[name=title]').val(),
+					'button': 'saveVacation'
+				};
+
+				if (!isNaN(start))
+					data['calEvent.start'] = start.getTime();
+				if (!isNaN(end))
+					data['calEvent.end'] = end.getTime();
+
+				$.getJSON('MyScheduleJSON.action', data,
+					function(json) {
+						$.gritter.add({title: json.title, text: json.output});
+						if (json.calEvent) {
+							fixEvent(null, json.calEvent);
+							if (json.update){
+								var event = $calendar.fullCalendar('getEventsById', json.calEvent.id)[0];
+								event.start = json.calEvent.start;
+								event.end = json.calEvent.end;
+								$calendar.fullCalendar('updateEvent', event);
+							}
+							else
+								$calendar.fullCalendar('addEvent', json.calEvent);
+						}
+							
+						$dialog.dialog('close');
+					}
+				);
+			},
+			Delete: function() {
+				var calID = $dialog.find('[name=id]').val();
+				$.getJSON('MyScheduleJSON.action',
+					{button: 'deleteVacation', 'calEvent.id': calID},
+					function(json) {
+						$.gritter.add({title: json.title, text: json.output});
+						if (json.deleted)
+							$calendar.fullCalendar('removeEvent', json.calEvent);
+						$dialog.dialog('close');
+					}
+				);
 			},
 			Cancel: function() { $dialog.dialog('close'); }
 		},
@@ -101,16 +130,25 @@ function loadHolid(){
 		}
 	});
 
-	$calendar = $('#cal_holid').fullCalendar({
+	$calendar = $('#cal_vacat').fullCalendar({
 		fixedWeeks: false,
+		eventClick: function(calEvent, jsEvent) {
+				$dialog.dialog('open');
+				$dialog.find('[name=id]').val(calEvent.id);
+				$dialog.find('[name=title]').val(calEvent.title);
+				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.start));
+				$dialog.find('[name=startTime]').val($.fullCalendar.formatDate(calEvent.start, 'h:i A'));
+				$dialog.find('[name=endDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.end));
+				$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'h:i A'));
+			},
 		dayClick: function(dayDate) {
-				$('#vacation_form').dialog('open');
-				$('#vacation_form [name=id]').val(0);
-				$('#vacation_form [name=reason]').val('');
-				$('#vacation_form [name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
-				$('#vacation_form [name=startTime]').val('');
-				$('#vacation_form [name=endDate]').val('');
-				$('#vacation_form [name=endTime]').val('');
+				$dialog.dialog('open');
+				$dialog.find('[name=id]').val(0);
+				$dialog.find('[name=title]').val('');
+				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
+				$dialog.find('[name=startTime]').val('');
+				$dialog.find('[name=endDate]').val('');
+				$dialog.find('[name=endTime]').val('');
 			},
 		events: 
 			function (start, end, callback) {
@@ -123,6 +161,20 @@ function loadHolid(){
 				);
 			}
 	});
+}
+
+function loadHolid() {
+	$calendar = $('#cal_holid').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		timeslotHeight: 40,
+		timeslotsPerHour: 1,
+		defaultEventLength: 4,
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonVacation'
+	});
+
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 }
 
 function loadAvail(){
@@ -157,6 +209,11 @@ $(function(){
 	$("#schedule_tabs").tabs();
 });
 </script>
+<style>
+.monthly-company {
+	color: #f00;
+}
+</style>
 </head>
 <body>
 <h1>My Schedule</h1>
@@ -192,16 +249,16 @@ $(function(){
 </div>
 </div>
 </div>
-
-<s:form id="vacation_form" cssStyle="display:none">
+<div id="vacation_form" style="display:none">
+<s:form>
 	<fieldset>
 		<s:hidden name="id"/>
-		<label>Reason:</label><s:textfield name="reason"/> <br/>
+		<label>Title:</label><s:textfield name="title"/> <br/>
 		<label>When:</label>
 		<s:textfield name="startDate" cssClass="datepicker"/> <s:textfield name="startTime"/> to
 		<s:textfield name="endDate" cssClass="datepicker"/> <s:textfield name="endTime"/>
 	</fieldset>
 </s:form>
-
+</div>
 </body>
 </html>

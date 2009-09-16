@@ -92,11 +92,78 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				return BLANK;
 			}
 
+			if (button.equals("saveVacation")) {
+				if (calEvent != null) {
+					boolean update = true;
+					AuditorVacation vacation = auditorVacationDAO.find(calEvent.id);
+					if (vacation == null) {
+						vacation = new AuditorVacation();
+						update = false;
+					} else if (vacation.getUser() == null) {
+						// TODO make a permission for editing global holidays
+						json = new JSONObject();
+						json.put("title", "Event Not Saved");
+						json.put("output", "You do not have permission to edit company level holidays.");
+						return SUCCESS;
+					}
+
+					vacation.setDescription(calEvent.title);
+
+					if (calEvent.start > 0)
+						vacation.setStartDate(new Date(calEvent.start));
+
+					if (calEvent.end > 0)
+						vacation.setEndDate(new Date(calEvent.end));
+
+					// TODO change to currentUser
+					vacation.setUser(getUser());
+
+					auditorVacationDAO.save(vacation);
+
+					output = vacation.toString();
+
+					json = new JSONObject();
+					if (update)
+						json.put("title", "Vacation Modified");
+					else
+						json.put("title", "New Vacation Added");
+
+					json.put("output", output);
+					json.put("calEvent", vacation.toJSON());
+					json.put("update", update);
+					return SUCCESS;
+				}
+			}
+
 			if (button.equals("deleteVacation")) {
 				// if (vacation == null || vacation.getId() == 0) {
 				// addActionError("No vacation found");
 				// return SUCCESS;
 				// }
+				AuditorVacation vacation = auditorVacationDAO.find(calEvent.id);
+				String title = "Vacation not removed";
+				boolean deleted = false;
+				if (vacation != null) {
+					if (vacation.getUser() != null) {
+						auditorVacationDAO.remove(calEvent.id);
+						title = "Vacation item removed";
+						output = "Successfully removed " + calEvent.id;
+						deleted = true;
+					} else {
+						output = "Cannot remove corporate level events";
+					}
+				} else {
+					output = "Vacation does not exist";
+				}
+
+				json = new JSONObject();
+				json.put("title", title);
+				json.put("output", output);
+				json.put("deleted", deleted);
+				if (vacation != null)
+					json.put("calEvent", vacation.toJSON());
+
+				return SUCCESS;
 			}
 
 			if (button.equalsIgnoreCase("save")) {
@@ -214,8 +281,12 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public class CalEvent {
 		public int id;
-		public long start;
-		public long end;
+
+		// UTC timestamps
+		public long start = 0l;
+		public long end = 0l;
+
+		public String title;
 
 		public CalEvent(int id) {
 			this.id = id;
