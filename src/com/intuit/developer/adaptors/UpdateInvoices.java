@@ -60,7 +60,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 		
 		//easy way to rollback changes in the live environment
-		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useNewVoidLogic");
+		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useOldVoidLogic");
 		String useOldVoidLogic = "N";
 		if( lookup != null )
 		{
@@ -347,7 +347,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 		
 		//easy way to rollback changes in the live environment
-		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useNewVoidLogic");
+		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useOldVoidLogic");
 		String useOldVoidLogic = "N";
 		if( lookup != null )
 		{
