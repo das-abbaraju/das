@@ -23,6 +23,7 @@
 	    <th>Year</th>
 	    <th><a href="?orderBy=d.answer" >Rate</a></th>
 	    <th><a href="?orderBy=c.emrAverage" >Average</a></th>
+	    <td>Verified</td>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
 			<td>Phone</td>
@@ -50,6 +51,9 @@
 			<td><s:property value="get('auditFor')"/></td>
 			<td class="right"><s:property value="get('answer')"/></td>
 			<td class="right"><s:property value="get('emrAverage')"/></td>
+		    <td><s:if test="get('dateVerified') != null">
+		    	<span class="verified" style="font-size: 16px;"></span></s:if>
+		    </td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>

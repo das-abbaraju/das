@@ -19,7 +19,8 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		super.buildQuery();
 		
 		getFilter().setShowEmrRange(true);
-
+		getFilter().setShowVerifiedAnnualUpdates(true);
+		
 		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
 		sql.addField("d.answer");
 		sql.addField("c.emrAverage");
@@ -27,6 +28,9 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		sql.addWhere("d.answer >= " + getFilter().getMinEMR());
 		sql.addWhere("d.answer < " + getFilter().getMaxEMR());
 		sql.addWhere("d.answer > ''");
+		sql.addField("d.dateVerified");
+		
+		setVerifiedAnnualUpdateFilter("dateVerified");
 	}
 	
 	@Override

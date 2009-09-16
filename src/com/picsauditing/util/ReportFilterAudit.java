@@ -34,6 +34,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showEmrRange = false;
 	protected boolean showIncidenceRate = false;
 	protected boolean showAMBest = false;
+	protected boolean showVerifiedAnnualUpdates = false;
 	
 
 	// Filter values
@@ -65,7 +66,9 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected double incidenceRate = -1;
 	protected int amBestRating;
 	protected int amBestClass;
-
+	protected int verifiedAnnualUpdate = 1;
+	
+	
 	public boolean isShowAuditType() {
 		return showAuditType;
 	}
@@ -200,6 +203,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowAMBest(boolean showAMBest) {
 		this.showAMBest = showAMBest;
+	}
+	
+	public boolean isShowVerifiedAnnualUpdates() {
+		return showVerifiedAnnualUpdates;
+	}
+
+	public void setShowVerifiedAnnualUpdates(boolean showVerifiedAnnualUpdates) {
+		this.showVerifiedAnnualUpdates = showVerifiedAnnualUpdates;
 	}
 
 	public int[] getAuditID() {
@@ -480,5 +491,13 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setAmBestClass(int amBestClass) {
 		this.amBestClass = amBestClass;
+	}
+
+	public int getVerifiedAnnualUpdate() {
+		return verifiedAnnualUpdate;
+	}
+
+	public void setVerifiedAnnualUpdate(int verifiedAnnualUpdate) {
+		this.verifiedAnnualUpdate = verifiedAnnualUpdate;
 	}
 }

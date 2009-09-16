@@ -412,6 +412,11 @@
 		</span></div>
 	</s:if>
 	
+	<s:if test="filter.showVerifiedAnnualUpdates">
+		<div class="filterOption"><s:select list="#{'1':'Verified','2':'UnVerified'}" headerKey="0" headerValue="- Verified Stats -"
+			cssClass="forms" name="filter.verifiedAnnualUpdate" /></div>
+	</s:if>
+	
 	<s:if test="filter.showEmrRange">
 		<br clear="all" />
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_emr'); return false;">EMR</a> 

@@ -48,4 +48,14 @@ public class ReportAnnualAddendum extends ReportAccount {
 	public ReportFilterAudit getFilter() {
 		return filter;
 	}
+	
+	public void setVerifiedAnnualUpdateFilter(String columnName) {
+		if(getFilter().getVerifiedAnnualUpdate() > 0) {
+			if(getFilter().getVerifiedAnnualUpdate() == 1) {
+				sql.addWhere(columnName + " IS NOT NULL");
+			}
+			else
+				sql.addWhere(columnName +" IS NULL");
+		}
+	}
 }
