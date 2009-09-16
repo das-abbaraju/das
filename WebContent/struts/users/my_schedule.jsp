@@ -83,16 +83,35 @@ function loadVacat() {
 function loadHolid(){
 	function fixEvent(k, event) {
 		event.start = new Date(event.start);
-		var message = "start: " + event.start;
-		if (event.end) {
+		if (event.end)
 			event.end = new Date(event.end);
-			message += "\nend: " + event.end;
-		}
-		event.url = 'javascript:alert("'+message+'")';
 	}
+
+	$dialog = $('#vacation_form').dialog({
+		title:'Vacation Entry', 
+		autoOpen:false,
+		buttons: {
+			Save: function() { 
+				alert($dialog.serialize());
+			},
+			Cancel: function() { $dialog.dialog('close'); }
+		},
+		open: function() {
+			$('.datepicker').datepicker();
+		}
+	});
 
 	$calendar = $('#cal_holid').fullCalendar({
 		fixedWeeks: false,
+		dayClick: function(dayDate) {
+				$('#vacation_form').dialog('open');
+				$('#vacation_form [name=id]').val(0);
+				$('#vacation_form [name=reason]').val('');
+				$('#vacation_form [name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
+				$('#vacation_form [name=startTime]').val('');
+				$('#vacation_form [name=endDate]').val('');
+				$('#vacation_form [name=endTime]').val('');
+			},
 		events: 
 			function (start, end, callback) {
 				$.getJSON('MyScheduleJSON.action', {button: 'jsonVacation', start: start.getTime(), end: end.getTime()}, 
@@ -123,9 +142,9 @@ function loadAvail(){
 $(function(){
 	var tabMap = {
 		aschedule: {loaded: false, load: loadSched},
-		vacation: {loaded: false, load: loadVacat},
-		holidays: {loaded: false, load: loadHolid},
-		preview: {loaded: false, load: loadAvail}
+		vacation:  {loaded: false, load: loadVacat},
+		holidays:  {loaded: false, load: loadHolid},
+		preview:   {loaded: false, load: loadAvail}
 	};
 
 	$('#schedule_tabs').bind('tabsshow', function(event, ui) {
@@ -173,6 +192,16 @@ $(function(){
 </div>
 </div>
 </div>
+
+<s:form id="vacation_form" cssStyle="display:none">
+	<fieldset>
+		<s:hidden name="id"/>
+		<label>Reason:</label><s:textfield name="reason"/> <br/>
+		<label>When:</label>
+		<s:textfield name="startDate" cssClass="datepicker"/> <s:textfield name="startTime"/> to
+		<s:textfield name="endDate" cssClass="datepicker"/> <s:textfield name="endTime"/>
+	</fieldset>
+</s:form>
 
 </body>
 </html>
