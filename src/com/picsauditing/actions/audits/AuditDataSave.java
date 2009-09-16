@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -20,6 +21,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -38,17 +40,19 @@ public class AuditDataSave extends AuditActionSupport {
 	private NaicsDAO naicsDAO;
 	private int catDataID = 0;
 	private AuditPercentCalculator auditPercentCalculator;
+	private AuditBuilder auditBuilder;
 	private String mode;
 
 	private boolean toggleVerify = false;
 
 	public AuditDataSave(ContractorAccountDAO accountDAO, AuditDataDAO dao, AuditCategoryDataDAO catDataDao,
 			AuditPercentCalculator auditPercentCalculator, AuditQuestionDAO questionDao, ContractorAuditDAO auditDao,
-			OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO) {
+			OshaAuditDAO oshaAuditDAO, NaicsDAO naicsDAO, AuditBuilder auditBuilder) {
 		super(accountDAO, auditDao, catDataDao, dao);
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.questionDao = questionDao;
 		this.naicsDAO = naicsDAO;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public String execute() throws Exception {
@@ -189,9 +193,14 @@ public class AuditDataSave extends AuditActionSupport {
 
 					auditDao.save(tempAudit);
 				}
-				if (tempAudit.getAuditType().isAnnualAddendum() && tempAudit.getAuditStatus().isActive()) {
-					tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
-					auditDao.save(tempAudit);
+				if (tempAudit.getAuditType().isAnnualAddendum()) {
+					if (auditData.getQuestion().getSubCategory().getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
+						auditBuilder.fillAuditCategories(tempAudit, true);
+					}
+					if (tempAudit.getAuditStatus().isActive()) {
+						tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+						auditDao.save(tempAudit);
+					}
 				}
 			}
 

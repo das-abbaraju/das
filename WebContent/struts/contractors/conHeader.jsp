@@ -190,6 +190,9 @@
 		<s:if test="!singleCat">
 			<li><a href="Audit.action?auditID=<s:property value="auditID" />"
 				<s:if test="requestURI.contains('con_audit.jsp')">class="current"</s:if>>Categories</a></li>
+			<pics:permission perm="AllContractors">
+				<li><a href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
+			</pics:permission>
 		</s:if>
 	</ul>
 </div>
