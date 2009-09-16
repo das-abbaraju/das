@@ -10,7 +10,7 @@ public class ReportMyAuditHistory extends ReportContractorAudits {
 		skipPermissions = true;
 		super.buildQuery();
 
-		sql.addWhere("ca.auditorID=" + permissions.getUserId());
+		sql.addWhere("(ca.auditorID=" + permissions.getUserId()+" OR ca.closingAuditorID=" + permissions.getUserId()+")");
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Active + "')");
 		orderByDefault = "ca.closedDate DESC";
 		
