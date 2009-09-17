@@ -65,7 +65,7 @@ table.modal_form .title {
 </div>
 </div>
 <div id="vacation_form" style="display:none">
-<s:set name="vacationTimes" value="#{'12:00 AM':'', '12:00 PM':'12:00 PM', '02:00 PM':'02:00 PM', '04:00 PM':'04:00 PM'}"/>
+<s:set name="vacationTimes" value="#{'12:00 AM':'', '12:00 PM':'12:00 PM', '02:00 PM':'02:00 PM', '04:00 PM':'04:00 PM', '06:00 PM':'06:00 PM'}"/>
 <s:form>
 	<fieldset>
 		<s:hidden name="id"/>

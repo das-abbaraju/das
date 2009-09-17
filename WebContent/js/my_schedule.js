@@ -60,6 +60,17 @@ function loadVacat(){
 	}
 
 	function isAllDay(event) {
+		if (!event)
+			return false;
+		if (!event.end)
+			return true;
+		var one_day=1000*60*60*24;
+		if (((event.end.getTime() - event.start.getTime()) / one_day) == 1 
+				&& event.start.getHours() == 0 && event.start.getMinutes() == 0) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	$dialog = $('#vacation_form').dialog({
@@ -130,28 +141,37 @@ function loadVacat(){
 	$calendar = $('#cal_vacat').fullCalendar({
 		fixedWeeks: false,
 		eventClick: function(calEvent, jsEvent) {
-				$dialog.dialog('open');
+		console.log($dialog.find('#all-day:unchecked'));
+				var allDay = isAllDay(calEvent);
+				var allDayCB = $dialog.find('#all-day:unchecked');
+				if (allDay && !allDayCB.is(':checked')) 
+					allDayCB.click();
+				else if (!allDay && allDayCB.is(':checked'))
+					allDayCB.click();
+
 				$dialog.find('[name=id]').val(calEvent.id);
 				$dialog.find('[name=title]').val(calEvent.title);
 				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.start));
 				$dialog.find('[name=startTime]').val($.fullCalendar.formatDate(calEvent.start, 'h:i A'));
-				$dialog.find('[name=endDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.end));
-				$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'h:i A'));
+				if (!allDay) {
+					$dialog.find('[name=endDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.end));
+					$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'h:i A'));
+				}
+				$dialog.dialog('open');
 			},
 		dayClick: function(dayDate) {
-				$dialog.dialog('open');
 				$dialog.find('[name=id]').val(0);
 				$dialog.find('[name=title]').val('');
 				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
 				$dialog.find('[name=startTime]').val('');
 				$dialog.find('[name=endDate]').val('');
 				$dialog.find('[name=endTime]').val('');
+				$dialog.dialog('open');
 			},
 		events: 
 			function (start, end, callback) {
 				$.getJSON('MyScheduleJSON.action', {button: 'jsonVacation', start: start.getTime(), end: end.getTime()}, 
 					function(json) { 
-						var events = new Array(json.events.length); 
 						$.each(json.events, fixEvent);
 						callback(json.events); 
 					} 
