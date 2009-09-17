@@ -17,7 +17,7 @@ function loadSched() {
 	}
 
 	var $calendar = $('#cal_sched').weekCalendar({
-		businessHours: {start: 7, end: 17, limitDisplay: true},
+		businessHours: {start: 7, end: 17, limitDisplay: false},
 		dateFormat: '',
 		timeslotHeight: 30,
 		timeslotsPerHour: 2,
@@ -184,7 +184,7 @@ function loadVacat(){
 function loadHolid() {
 	$calendar = $('#cal_holid').weekCalendar({
 		height: function(calendar){return 600;},
-		businessHours: {start: 7, end: 17, limitDisplay: true},
+		businessHours: {start: 7, end: 17, limitDisplay: false},
 		timeslotHeight: 40,
 		timeslotsPerHour: 1,
 		defaultEventLength: 4,
@@ -198,7 +198,7 @@ function loadHolid() {
 function loadAvail(){
 	$calendar = $('#cal_avail').weekCalendar({
 		height: function(calendar){return 600;},
-		businessHours: {start: 7, end: 17, limitDisplay: true},
+		businessHours: {start: 7, end: 17, limitDisplay: false},
 		timeslotHeight: 30,
 		timeslotsPerHour: 2,
 		defaultEventLength: 4,
