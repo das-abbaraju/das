@@ -381,6 +381,13 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		this.ownedPermissions = ownedPermissions;
 	}
 	
+	@Transient
+	public TimeZone getTimezoneObject() {
+		if (timezone == null)
+			return TimeZone.getDefault();
+		return TimeZone.getTimeZone(timezone);
+	}
+	
 	public String getTimezone() {
 		return timezone;
 	}

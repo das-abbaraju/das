@@ -1,6 +1,8 @@
 package com.picsauditing.PICS;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
@@ -34,6 +36,14 @@ public class DateBeanTest extends TestCase {
 		assertEquals(expected, actual);
 		actual = DateBean.parseDate("02/03/01");
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testTimeZone() throws Exception {
+		Calendar cal = Calendar.getInstance();
+		System.out.println(cal.getTimeInMillis());
+		cal.setTimeZone(TimeZone.getTimeZone("US/Eastern"));
+		System.out.println(cal.getTimeInMillis());
 	}
 
 }

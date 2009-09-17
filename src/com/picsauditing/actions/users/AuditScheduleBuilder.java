@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -82,7 +83,9 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 		PicsLogger.log("Building schedules for " + auditors.size() + " auditors between " + startDate.getTime()
 				+ " and " + endDate.getTime());
 		for (Auditor auditor : auditors.values()) {
-			for (AuditorAvailability availiability : auditor.buildAvailability(startDate.getTime(), endDate.getTime())) {
+			List<AuditorAvailability> list = auditor.buildAvailability(startDate.getTime(), endDate.getTime());
+			PicsLogger.log("Saving " + list.size() + " timeslots");
+			for (AuditorAvailability availiability : list) {
 				auditorAvailabilityDAO.save(availiability);
 			}
 		}
@@ -102,9 +105,11 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 		private Map<Integer, WeekDays> schedules = new HashMap<Integer, WeekDays>();
 		private List<AuditorVacation> vacations = new ArrayList<AuditorVacation>();
 		private User user;
+		private TimeZone userTimeZone;
 
 		public Auditor(User user, List<AuditorVacation> holidays) {
 			this.user = user;
+			this.userTimeZone = user.getTimezoneObject();
 			this.vacations.addAll(holidays);
 		}
 
@@ -123,12 +128,23 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 			vacations.add(vacation);
 		}
 
+		/**
+		 * For a this user (auditor) create their available time blocks to do audits between the dates (startDate and
+		 * endDate) ie between 7 and 60 days from today
+		 * 
+		 * @param startDate
+		 * @param endDate
+		 * @return
+		 */
 		public List<AuditorAvailability> buildAvailability(Date startDate, Date endDate) {
+			PicsLogger.start("buildAvailability", "for " + user.getName());
 			List<AuditorAvailability> list = new ArrayList<AuditorAvailability>();
 
 			Calendar nextDate = Calendar.getInstance();
+			// Start 7 days from today (or whatever the startDate is)
 			nextDate.setTime(startDate);
 			while (nextDate.getTime().before(endDate)) {
+				// For each day during the time period
 				// Running Sample: Today is Monday September 21, 2009
 				nextDate.add(Calendar.DAY_OF_YEAR, 1);
 				PicsLogger.log("nextDate = " + nextDate.getTime());
@@ -144,15 +160,17 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 						// Set the day
 						proposedStartTime.setTime(nextDate.getTime());
 						// Set the time
+						proposedStartTime.setTimeZone(userTimeZone);
 						proposedStartTime.set(Calendar.HOUR_OF_DAY, schedule.getStartTime() / 60);
 						proposedStartTime.set(Calendar.MINUTE, schedule.getStartTime() % 60);
 						proposedStartTime.set(Calendar.SECOND, 0);
 						// Set the end time
 						Calendar proposedEndTime = Calendar.getInstance();
 						proposedEndTime.setTime(proposedStartTime.getTime());
+						proposedEndTime.setTimeZone(userTimeZone);
 						proposedEndTime.add(Calendar.MINUTE, schedule.getDuration());
 
-						PicsLogger.log("Proposed " + proposedStartTime.getTime() + " to " + proposedEndTime.getTime());
+						PicsLogger.log("Proposed " + proposedStartTime.getTime() + " to " + proposedEndTime.getTime() + " for " + user.getName());
 						boolean available = true;
 
 						for (AuditorVacation vacation : vacations) {
@@ -165,7 +183,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 									tempEndtime.setTime(vacation.getStartDate());
 								}
 								if (tempEndtime.getTime().after(proposedStartTime.getTime())) {
-									PicsLogger.log("Conflicting event " + vacation.getStartDate() + " to "
+									PicsLogger.log("Conflicting vacation " + vacation.getStartDate() + " to "
 											+ vacation.getEndDate() + " " + vacation.getDescription());
 									available = false;
 								}
@@ -178,7 +196,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 								scheduledEndtime.setTime(audit.getScheduledDate());
 								scheduledEndtime.add(Calendar.MINUTE, 120);
 								if (scheduledEndtime.getTime().after(proposedStartTime.getTime())) {
-									PicsLogger.log("Conflicting event " + audit.getScheduledDate() + " to "
+									PicsLogger.log("Conflicting audit #" + audit.getId() + " " + audit.getScheduledDate() + " to "
 											+ scheduledEndtime.getTime() + " " + audit.getAuditType().getAuditName()
 											+ " for " + audit.getContractorAccount().getName());
 									available = false;
@@ -190,6 +208,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							AuditorAvailability availability = new AuditorAvailability();
 							availability.setUser(schedule.getUser());
 							availability.setAuditColumns(new User(User.SYSTEM));
+							proposedStartTime.setTimeZone(userTimeZone);
 							availability.setStartDate(proposedStartTime.getTime());
 							availability.setDuration(schedule.getDuration());
 							list.add(availability);
@@ -199,6 +218,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 				}
 
 			}
+			PicsLogger.stop();
 			return list;
 		}
 	}

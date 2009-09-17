@@ -14,10 +14,11 @@ import com.picsauditing.dao.AuditorVacationDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.AuditorSchedule;
 import com.picsauditing.jpa.entities.AuditorVacation;
+import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class MySchedule extends PicsActionSupport implements Preparable {
-	private int auditorID;
+	private int currentUserID;
 	private AuditorSchedule schedule = null;
 	private List<AuditorSchedule> schedules = null;
 	private List<AuditorVacation> vacations = null;
@@ -32,6 +33,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private long end;
 
 	private CalEvent calEvent;
+	
+	private User currentUser;
 
 	public MySchedule(AuditorAvailabilityDAO auditorAvailabilityDAO, AuditorScheduleDAO auditorScheduleDAO,
 			AuditorVacationDAO auditorVacationDAO) {
@@ -52,9 +55,16 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-		loadPermissions();
-		auditorID = permissions.getUserId();
-
+		if (!forceLogin())
+			return LOGIN;
+		
+		if (currentUserID > 0) {
+			currentUser = this.getUser(currentUserID);
+		} else {
+			currentUser = super.getUser();
+			currentUserID = currentUser.getId();
+		}
+		
 		if (button != null) {
 			if (button.startsWith("json")) {
 				json = new JSONObject();
@@ -228,21 +238,21 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public List<AuditorSchedule> getSchedules() {
 		if (schedules == null) {
-			schedules = auditorScheduleDAO.findByAuditorID(auditorID);
+			schedules = auditorScheduleDAO.findByAuditorID(currentUser.getId());
 		}
 		return schedules;
 	}
 
 	public List<AuditorVacation> getVacations() {
 		if (vacations == null) {
-			vacations = auditorVacationDAO.findByAuditorID(auditorID, new Date(start), new Date(end));
+			vacations = auditorVacationDAO.findByAuditorID(currentUser.getId(), new Date(start), new Date(end));
 		}
 		return vacations;
 	}
 
 	public List<AuditorAvailability> getAvailability() {
 		if (availability == null) {
-			availability = auditorAvailabilityDAO.findByAuditorID(auditorID);
+			availability = auditorAvailabilityDAO.findByAuditorID(currentUser.getId());
 		}
 		return availability;
 	}
@@ -292,4 +302,13 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			this.id = id;
 		}
 	}
+
+	public User getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUserID(int currentUserID) {
+		this.currentUserID = currentUserID;
+	}
+
 }

@@ -69,6 +69,7 @@ public class AuditorVacation extends BaseTable {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
+		cal.setTimeZone(user.getTimezoneObject());
 		obj.put("start", cal.getTimeInMillis());
 
 		if (endDate != null) {
