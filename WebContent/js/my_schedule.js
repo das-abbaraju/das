@@ -1,6 +1,5 @@
 function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
-		console.log(calEvent.id);
 		$.post('MyScheduleAjax.action', 
 			{ 
 				button:'save',
@@ -141,7 +140,6 @@ function loadVacat(){
 	$calendar = $('#cal_vacat').fullCalendar({
 		fixedWeeks: false,
 		eventClick: function(calEvent, jsEvent) {
-		console.log($dialog.find('#all-day:unchecked'));
 				var allDay = isAllDay(calEvent);
 				var allDayCB = $dialog.find('#all-day:unchecked');
 				if (allDay && !allDayCB.is(':checked')) 
