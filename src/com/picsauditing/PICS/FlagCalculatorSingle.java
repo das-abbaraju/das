@@ -210,12 +210,14 @@ public class FlagCalculatorSingle {
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getCad7().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getCad7().isTimeAverage())) {
-							if (criteria.getCad7().isFlagged(contractor.getNaics(), osha.getCad7()))
+							if (osha.getCad7() != null && 
+									criteria.getCad7().isFlagged(contractor.getNaics(), osha.getCad7()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getNeer().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getNeer().isTimeAverage())) {
-							if (criteria.getNeer().isFlagged(contractor.getNaics(), osha.getNeer()))
+							if (osha.getNeer() != null && 
+									criteria.getNeer().isFlagged(contractor.getNaics(), osha.getNeer()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 						}
 						flagColor = setFlagColor(flagColor, osha.getFlagColor());
