@@ -1,0 +1,207 @@
+function loadSched() {
+	function saveEvent(calEvent, element, $cal) {
+		console.log(calEvent.id);
+		$.post('MyScheduleAjax.action', 
+			{ 
+				button:'save',
+				'calEvent.id': calEvent.id == null ? 0 : calEvent.id, 
+				'calEvent.start':calEvent.start.getTime(), 
+				'calEvent.end': calEvent.end.getTime()
+			},
+			function(response) {
+				$.gritter.add({title: 'Calendar Event', text:response.output});
+				$calendar.weekCalendar("removeUnsavedEvents");
+				$calendar.weekCalendar("updateEvent", response.calEvent);
+			},
+			'json'
+		);
+	}
+
+	var $calendar = $('#cal_sched').weekCalendar({
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		dateFormat: '',
+		timeslotHeight: 30,
+		timeslotsPerHour: 2,
+		defaultEventLength: 4,
+		buttons: false,
+		newEventText: '',
+		data: 'MyScheduleJSON.action?button=jsonSchedule',
+		resizable: function(calEvent, eventElement) {return false;},
+		draggable: function(calEvent, eventElement) {return false;},
+		eventResize: saveEvent,
+		eventDrop: saveEvent,
+		eventNew: saveEvent,
+		eventClick: function(calEvent, element) {
+				if (confirm("Do you want to delete this timeslot?")){
+					$.ajax({
+						data: { button:'deleteSchedule',
+								'calEvent.id':calEvent.id
+							},
+						url: 'MyScheduleAjax.action',
+						success: function(text) {
+								$.gritter.add({title: 'Calendar Event Removed', text:text});
+								$('#cal_sched').weekCalendar('removeEvent',calEvent.id);
+							}
+					});
+				}
+			}
+	});
+
+	$calendar.find('.today').removeClass('today');
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+}
+
+function loadVacat(){
+	function fixEvent(k, event) {
+		event.start = new Date(event.start);
+		if (event.end)
+			event.end = new Date(event.end);
+		isAllDay(event);
+	}
+
+	function isAllDay(event) {
+	}
+
+	$dialog = $('#vacation_form').dialog({
+		title:'Vacation Entry', 
+		autoOpen:false,
+		modal: true,
+		buttons: {
+			Save: function() {
+				var start;
+				var end;
+
+				if ($('#all-day').is(':checked')) {
+					start = new Date($dialog.find('[name=startDate]').val());
+					end = NaN;
+				} else {
+					start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
+					end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
+				}
+				var data = {
+					'calEvent.id': $dialog.find('[name=id]').val(),
+					'calEvent.title':$dialog.find('[name=title]').val(),
+					'button': 'saveVacation'
+				};
+
+				if (!isNaN(start))
+					data['calEvent.start'] = start.getTime();
+				if (!isNaN(end))
+					data['calEvent.end'] = end.getTime();
+
+				$.getJSON('MyScheduleJSON.action', data,
+					function(json) {
+						$.gritter.add({title: json.title, text: json.output});
+						if (json.calEvent) {
+							fixEvent(null, json.calEvent);
+							if (json.update){
+								var event = $calendar.fullCalendar('getEventsById', json.calEvent.id)[0];
+								event.start = json.calEvent.start;
+								event.end = json.calEvent.end;
+								$calendar.fullCalendar('updateEvent', event);
+							}
+							else
+								$calendar.fullCalendar('addEvent', json.calEvent);
+						}
+							
+						$dialog.dialog('close');
+					}
+				);
+			},
+			Delete: function() {
+				var calID = $dialog.find('[name=id]').val();
+				$.getJSON('MyScheduleJSON.action',
+					{button: 'deleteVacation', 'calEvent.id': calID},
+					function(json) {
+						$.gritter.add({title: json.title, text: json.output});
+						if (json.deleted)
+							$calendar.fullCalendar('removeEvent', json.calEvent);
+						$dialog.dialog('close');
+					}
+				);
+			},
+			Cancel: function() { $dialog.dialog('close'); }
+		},
+		open: function() {
+			$('.datepicker').datepicker();
+		}
+	});
+
+	$calendar = $('#cal_vacat').fullCalendar({
+		fixedWeeks: false,
+		eventClick: function(calEvent, jsEvent) {
+				$dialog.dialog('open');
+				$dialog.find('[name=id]').val(calEvent.id);
+				$dialog.find('[name=title]').val(calEvent.title);
+				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.start));
+				$dialog.find('[name=startTime]').val($.fullCalendar.formatDate(calEvent.start, 'h:i A'));
+				$dialog.find('[name=endDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.end));
+				$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'h:i A'));
+			},
+		dayClick: function(dayDate) {
+				$dialog.dialog('open');
+				$dialog.find('[name=id]').val(0);
+				$dialog.find('[name=title]').val('');
+				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
+				$dialog.find('[name=startTime]').val('');
+				$dialog.find('[name=endDate]').val('');
+				$dialog.find('[name=endTime]').val('');
+			},
+		events: 
+			function (start, end, callback) {
+				$.getJSON('MyScheduleJSON.action', {button: 'jsonVacation', start: start.getTime(), end: end.getTime()}, 
+					function(json) { 
+						var events = new Array(json.events.length); 
+						$.each(json.events, fixEvent);
+						callback(json.events); 
+					} 
+				);
+			}
+	});
+}
+
+function loadHolid() {
+	$calendar = $('#cal_holid').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		timeslotHeight: 40,
+		timeslotsPerHour: 1,
+		defaultEventLength: 4,
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonVacation'
+	});
+
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+}
+
+function loadAvail(){
+	$calendar = $('#cal_avail').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 7, end: 17, limitDisplay: true},
+		timeslotHeight: 30,
+		timeslotsPerHour: 2,
+		defaultEventLength: 4,
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonAvailability'
+	});
+
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+}
+
+$(function(){
+	var tabMap = {
+		aschedule: {loaded: false, load: loadSched},
+		vacation:  {loaded: false, load: loadVacat},
+		holidays:  {loaded: false, load: loadHolid},
+		preview:   {loaded: false, load: loadAvail}
+	};
+
+	$('#schedule_tabs').bind('tabsshow', function(event, ui) {
+	    if (!tabMap[ui.panel.id].loaded) {
+	    	tabMap[ui.panel.id].load();
+	    	tabMap[ui.panel.id].loaded = true;
+	    }
+	});
+
+	$("#schedule_tabs").tabs();
+});
