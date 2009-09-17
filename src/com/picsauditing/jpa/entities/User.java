@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -29,8 +30,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.Geo;
+import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 @SuppressWarnings("serial")
 @Entity
@@ -80,7 +84,8 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
-//	TimeZone.getAvailableIDs();
+
+	// TimeZone.getAvailableIDs();
 
 	public User() {
 	}
@@ -211,7 +216,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Transient
 	public List<String> getPasswordHistoryList() {
-		
+
 		List<String> list = new ArrayList<String>();
 
 		if (passwordHistory != null) {
@@ -380,14 +385,14 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setOwnedPermissions(List<UserAccess> ownedPermissions) {
 		this.ownedPermissions = ownedPermissions;
 	}
-	
+
 	@Transient
 	public TimeZone getTimezoneObject() {
 		if (timezone == null)
 			return TimeZone.getDefault();
 		return TimeZone.getTimeZone(timezone);
 	}
-	
+
 	public String getTimezone() {
 		return timezone;
 	}
@@ -395,7 +400,31 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
 	}
-	
+
+	/**
+	 * This is a total HACK!! But we can add it to the DB later or something
+	 * 
+	 * @return
+	 */
+	@Transient
+	public Location getLocation() {
+		if (account.getId() != Account.PicsID)
+			return null;
+
+		switch (id) {
+		case 9556: // Austin Hatch
+		case 938: // Jake Fazeli
+		case 9615: // Rick McGee
+		case 1725: // Royce Burnett
+		case 9463: // Tiffany Homayounshad
+			// Houston Employees
+			return new Location(37.0625f, -95.677068f);
+		default:
+			// Irvine Employees
+			return new Location(29.759944f, -95.36253f);
+		}
+	}
+
 	@Transient
 	public Set<UserAccess> getPermissions() {
 		// Our permissions are empty, so go get some
@@ -448,11 +477,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of
-	 *            user.permissions)
+	 *            The new set of permission for this user (transient version of user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user
-	 *            or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */

@@ -2,37 +2,38 @@ package com.picsauditing.jpa.entities;
 
 import java.io.Serializable;
 
+import com.picsauditing.util.Location;
+
 public class AvailabilityRestrictions implements Serializable {
 	private static final long serialVersionUID = -5298244671418832612L;
 
-	private float nearLatitude = 0;
-	private float nearLongitude = 0;
+	private Location location;
+
 	private boolean webOnly = false;
 	private String[] onlyInStates = null;
-	public float getNearLatitude() {
-		return nearLatitude;
+
+	public Location getLocation() {
+		return location;
 	}
-	public void setNearLatitude(float nearLatitude) {
-		this.nearLatitude = nearLatitude;
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
-	public float getNearLongitude() {
-		return nearLongitude;
-	}
-	public void setNearLongitude(float nearLongitude) {
-		this.nearLongitude = nearLongitude;
-	}
+
 	public boolean isWebOnly() {
 		return webOnly;
 	}
+
 	public void setWebOnly(boolean webOnly) {
 		this.webOnly = webOnly;
 	}
+
 	public String[] getOnlyInStates() {
 		return onlyInStates;
 	}
+
 	public void setOnlyInStates(String[] onlyInStates) {
 		this.onlyInStates = onlyInStates;
 	}
-	
-	
+
 }

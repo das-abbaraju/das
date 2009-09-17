@@ -17,8 +17,10 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.AuditorSchedule;
 import com.picsauditing.jpa.entities.AuditorVacation;
+import com.picsauditing.jpa.entities.AvailabilityRestrictions;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Location;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -50,7 +52,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		PicsLogger.start("AuditScheduleBuilder", true);
-
+		
 		PicsLogger.log("Get all my data into RAM");
 		List<AuditorSchedule> schedules = auditorScheduleDAO.findAll();
 		for (AuditorSchedule schedule : schedules) {
@@ -148,6 +150,8 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 				// Running Sample: Today is Monday September 21, 2009
 				nextDate.add(Calendar.DAY_OF_YEAR, 1);
 				PicsLogger.log("nextDate = " + nextDate.getTime());
+				
+				Location location = user.getLocation();
 
 				// Running Sample: It's a Monday
 				int weekDay = nextDate.get(Calendar.DAY_OF_WEEK);
@@ -211,6 +215,9 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							proposedStartTime.setTimeZone(userTimeZone);
 							availability.setStartDate(proposedStartTime.getTime());
 							availability.setDuration(schedule.getDuration());
+							AvailabilityRestrictions ar = new AvailabilityRestrictions();
+							availability.setRestrictionsObject(ar);
+							ar.setLocation(user.getLocation());
 							list.add(availability);
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());
 						}
