@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.Inputs;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Industry;
@@ -125,5 +126,11 @@ public class AccountActionSupport extends PicsActionSupport {
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}
-
+	
+	public boolean isShowMoreNotes() {
+		if(account.getType().equals("Contractor")) {
+			return permissions.hasPermission(OpPerms.ContractorDetails);
+		}
+		return true;
+	}
 }
