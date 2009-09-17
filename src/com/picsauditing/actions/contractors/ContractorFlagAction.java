@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-
 import com.picsauditing.PICS.AuditCriteriaAnswer;
 import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
@@ -33,7 +32,6 @@ import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
@@ -47,8 +45,8 @@ import com.picsauditing.util.log.PicsLogger;
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
 	protected AuditDataDAO auditDataDAO;
-	protected static AuditCategoryDataDAO auditCategoryDataDAO;
-	protected static AuditQuestionDAO auditQuestionDAO;
+	protected AuditCategoryDataDAO auditCategoryDataDAO;
+	protected AuditQuestionDAO auditQuestionDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -379,8 +377,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return DateBean.format(date.getTime(), "M/d/yyyy");
 	}
 	
-	static public AuditCatData getAuditCatData(int auditID, int questionID) {
+	public AuditCatData getAuditCatData(int auditID, int questionID) {
 		AuditQuestion auditQuestion = auditQuestionDAO.find(questionID);
+		if(permissions.isContractor()) {
+			if(!auditQuestion.getAuditType().isCanContractorView())
+				return null;
+		}
 		int catID = auditQuestion.getSubCategory().getCategory().getId();
 		List<AuditCatData> aList = auditCategoryDataDAO.findAllAuditCatData(auditID, catID);
 		if(aList != null && aList.size() > 0) {

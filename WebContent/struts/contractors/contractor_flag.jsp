@@ -312,7 +312,7 @@
 			<td class="center"><s:property value="answer.answer" /></td>
 			<td><s:property value="answer.audit.auditType.auditName" /> <s:property value="answer.audit.auditFor" /></td>
 			<td>
-				<s:set name="auditCatData" value="@com.picsauditing.actions.contractors.ContractorFlagAction@getAuditCatData(answer.audit.id,answer.question.id)"/>
+				<s:set name="auditCatData" value="getAuditCatData(answer.audit.id,answer.question.id)"/>
 				<s:if test="#auditCatData != null">
 					<a href="AuditCat.action?auditID=<s:property value="answer.audit.id"/>&catDataID=<s:property value="#auditCatData.id"/>&mode=View#node_<s:property value="answer.question.id"/>"><s:property value="answer.question.question" /></a>
 				</s:if>
