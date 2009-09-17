@@ -57,6 +57,10 @@ function loadVacat(){
 			event.end = new Date(event.end);
 		isAllDay(event);
 	}
+	
+	function clearForm() {
+		$dialog.find(':input').val('');
+	}
 
 	function isAllDay(event) {
 		if (!event)
@@ -148,6 +152,7 @@ function loadVacat(){
 				else if (!allDay && allDayCB.is(':checked'))
 					allDayCB.click();
 
+				clearForm();
 				$dialog.find('[name=id]').val(calEvent.id);
 				$dialog.find('[name=title]').val(calEvent.title);
 				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.start));
@@ -159,12 +164,9 @@ function loadVacat(){
 				$dialog.dialog('open');
 			},
 		dayClick: function(dayDate) {
+				clearForm();
 				$dialog.find('[name=id]').val(0);
-				$dialog.find('[name=title]').val('');
 				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
-				$dialog.find('[name=startTime]').val('');
-				$dialog.find('[name=endDate]').val('');
-				$dialog.find('[name=endTime]').val('');
 				$dialog.dialog('open');
 			},
 		events: 
