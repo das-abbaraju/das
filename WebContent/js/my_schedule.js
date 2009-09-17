@@ -83,7 +83,8 @@ function loadVacat(){
 
 				if ($('#all-day').is(':checked')) {
 					start = new Date($dialog.find('[name=startDate]').val());
-					end = NaN;
+					end = new Date(start);
+					end.setDate(end.getDate() + 1);
 				} else {
 					start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
 					end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
