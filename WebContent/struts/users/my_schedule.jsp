@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
 <title>My Schedule</title>
@@ -73,14 +73,25 @@ function loadVacat(){
 			event.end = new Date(event.end);
 	}
 
+	function isAllDay(event) {
+	}
+
 	$dialog = $('#vacation_form').dialog({
 		title:'Vacation Entry', 
 		autoOpen:false,
 		modal: true,
 		buttons: {
 			Save: function() {
-				var start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
-				var end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
+				var start;
+				var end;
+
+				if ($('#all-day').is(':checked')) {
+					start = new Date($dialog.find('[name=startDate]').val());
+					end = NaN;
+				} else {
+					start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
+					end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
+				}
 				var data = {
 					'calEvent.id': $dialog.find('[name=id]').val(),
 					'calEvent.title':$dialog.find('[name=title]').val(),
@@ -213,6 +224,17 @@ $(function(){
 .monthly-company {
 	color: #f00;
 }
+table.modal_form {
+	font-size: 14px;
+}
+table.modal_form td {
+	padding: 4px;
+	margin: 4px;
+}
+table.modal_form .title {
+	font-weight: bold;
+	text-align: right;
+}
 </style>
 </head>
 <body>
@@ -250,13 +272,29 @@ $(function(){
 </div>
 </div>
 <div id="vacation_form" style="display:none">
+<s:set name="vacationTimes" value="#{'12:00 AM':'', '12:00 PM':'12:00 PM', '02:00 PM':'02:00 PM', '04:00 PM':'04:00 PM'}"/>
 <s:form>
 	<fieldset>
 		<s:hidden name="id"/>
-		<label>Title:</label><s:textfield name="title"/> <br/>
-		<label>When:</label>
-		<s:textfield name="startDate" cssClass="datepicker"/> <s:textfield name="startTime"/> to
-		<s:textfield name="endDate" cssClass="datepicker"/> <s:textfield name="endTime"/>
+		<table class="modal_form">
+		<tr>
+			<td class="title" rowspan="2">Title</td>
+			<td><s:textfield name="title"/></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" id="all-day" onclick="if(this.checked) $('.not-all-day').hide(); else $('.not-all-day').show();"/> All Day</td>
+		</tr>
+		<tr>
+			<td class="title" rowspan="3">When</td>
+			<td><s:textfield name="startDate" cssClass="datepicker" size="10"/> <s:select list="#vacationTimes" name="startTime" cssClass="not-all-day"/></td>
+		</tr>
+		<tr>
+			<td class="title not-all-day" style="text-align:center">to</td>
+		</tr>
+		<tr>
+			<td><s:textfield name="endDate" cssClass="datepicker not-all-day" size="10"/> <s:select list="#vacationTimes" name="endTime" cssClass="not-all-day"/></td>
+		</tr>
+		</table>
 	</fieldset>
 </s:form>
 </div>
