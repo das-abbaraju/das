@@ -23,8 +23,13 @@
 			<td>Location</td>
 			<td>Type</td>
 			<td>Rate</td>
+			<s:if test="filter.shaType.toString().equals('COHS')">
+				<td>Cad7</td>
+				<td>Neer</td>
+			</s:if>
 			<td>Year</td>
 		    <th><a href="?orderBy=c.trirAverage" >Average</a></th>
+			<td>Verified</td>
 			<s:if test="showContact">
 				<td>Primary Contact</td>
 				<td>Phone</td>
@@ -61,11 +66,19 @@
 			</s:else></td>
 			<td><s:property value="[0].get('SHAType')" /></td>
 			<!--Need to fix this before the year end-->
-			<td class="right"><s:property
-				value="%{new java.text.DecimalFormat('#,##0.00').format(get('incidenceRate'))}" />
+			<td class="right">
+				<s:property
+					value="%{new java.text.DecimalFormat('#,##0.00').format(get('incidenceRate'))}" />
 			</td>
+			<s:if test="get('SHAType').toString().equals('COHS')">
+				<td><s:property value="%{new java.text.DecimalFormat('#,##0.00').format(get('cad7'))}"/></td>
+				<td><s:property value="%{new java.text.DecimalFormat('#,##0.00').format(get('neer'))}"/></td>
+			</s:if>
 			<td><s:property value="get('auditFor')" /></td>
 			<td><s:property value="get('trirAverage')" /></td>
+			<td><s:if test="get('verifiedDate') != null">
+		    	<span class="verified" style="font-size: 16px;"></span></s:if>
+		    </td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>

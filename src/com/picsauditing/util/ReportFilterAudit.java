@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.CaoStatus;
+import com.picsauditing.jpa.entities.OshaType;
 
 @SuppressWarnings("serial")
 public class ReportFilterAudit extends ReportFilterContractor {
@@ -35,7 +36,9 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showIncidenceRate = false;
 	protected boolean showAMBest = false;
 	protected boolean showVerifiedAnnualUpdates = false;
-	
+	protected boolean showShaType = false;
+	protected boolean showShaLocation = false;
+	protected boolean showCohsStats = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -67,7 +70,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected int amBestRating;
 	protected int amBestClass;
 	protected int verifiedAnnualUpdate = 1;
-	
+	protected OshaType shaType;
+	protected String shaLocation;
+	protected float cad7 = 0;
+	protected float neer = 0;
 	
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -211,6 +217,30 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowVerifiedAnnualUpdates(boolean showVerifiedAnnualUpdates) {
 		this.showVerifiedAnnualUpdates = showVerifiedAnnualUpdates;
+	}
+
+	public boolean isShowShaType() {
+		return showShaType;
+	}
+
+	public void setShowShaType(boolean showShaType) {
+		this.showShaType = showShaType;
+	}
+
+	public boolean isShowShaLocation() {
+		return showShaLocation;
+	}
+
+	public void setShowShaLocation(boolean showShaLocation) {
+		this.showShaLocation = showShaLocation;
+	}
+
+	public boolean isShowCohsStats() {
+		return showCohsStats;
+	}
+
+	public void setShowCohsStats(boolean showCohsStats) {
+		this.showCohsStats = showCohsStats;
 	}
 
 	public int[] getAuditID() {
@@ -405,6 +435,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return AmBest.ratingMap;
 	}
 
+	public OshaType[] getOshaTypesList() {
+		return OshaType.values();
+	}
+	
 	public boolean isShowAuditFor() {
 		return showAuditFor;
 	}
@@ -499,5 +533,37 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setVerifiedAnnualUpdate(int verifiedAnnualUpdate) {
 		this.verifiedAnnualUpdate = verifiedAnnualUpdate;
+	}
+
+	public OshaType getShaType() {
+		return shaType;
+	}
+
+	public void setShaType(OshaType shaType) {
+		this.shaType = shaType;
+	}
+
+	public String getShaLocation() {
+		return shaLocation;
+	}
+
+	public void setShaLocation(String shaLocation) {
+		this.shaLocation = shaLocation;
+	}
+
+	public float getCad7() {
+		return cad7;
+	}
+
+	public void setCad7(float cad7) {
+		this.cad7 = cad7;
+	}
+
+	public float getNeer() {
+		return neer;
+	}
+
+	public void setNeer(float neer) {
+		this.neer = neer;
 	}
 }

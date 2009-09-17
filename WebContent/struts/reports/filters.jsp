@@ -412,6 +412,19 @@
 		</span></div>
 	</s:if>
 	
+	<s:if test="filter.showShaType">
+		<br clear="all"/>
+		<div class="filterOption">
+			<s:select list="filter.oshaTypesList" cssClass="forms" name="filter.shaType" 
+				headerKey="" headerValue="- Osha Type -"/>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showShaLocation">
+		<div class="filterOption"><s:select list="#{'Corporate':'Corporate', 'Division':'Division','Region':'Region','Site':'Site'}"  
+			headerKey="" headerValue="- Osha Location -" cssClass="forms" name="filter.shaLocation"/></div>
+	</s:if>
+	
 	<s:if test="filter.showVerifiedAnnualUpdates">
 		<div class="filterOption"><s:select list="#{'1':'Verified','2':'UnVerified'}" headerKey="0" headerValue="- Verified Stats -"
 			cssClass="forms" name="filter.verifiedAnnualUpdate" /></div>
@@ -435,6 +448,14 @@
 	<s:if test="filter.showIncidenceRate">
 		<div class="filterOption">Incidence Rate <s:textfield name="filter.incidenceRate"
 			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
+	</s:if>
+	
+	<s:if test="filter.showCohsStats">
+		<div class="filterOption">Cad7 <s:textfield name="filter.cad7"
+			cssClass="forms" size="10" onfocus="clearText(this)" />
+			Neer <s:textfield name="filter.neer"
+			cssClass="forms" size="10" onfocus="clearText(this)" />			
+		</div>
 	</s:if>
 
 	<s:if test="filter.showCaoStatus">

@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
 
@@ -23,8 +24,16 @@ public class ReportAnnualAddendum extends ReportAccount {
 		if (!Strings.isEmpty(auditFor))
 			sql.addWhere("ca.auditFor IN ("+ auditFor + ")");
 		
+		if (filterOn(getFilter().getShaType())) {
+			sql.addWhere("os.SHAType = '"+ getFilter().getShaType() +"'");
+		}
+		
+		if(filterOn(getFilter().getShaLocation())) {
+			sql.addWhere("os.location = '" + getFilter().getShaLocation() + "'");
+		}
+		
 		getFilter().setShowAuditFor(true);
-
+		getFilter().setShowVerifiedAnnualUpdates(true);
 
 		getFilter().setShowAddress(false);
 		getFilter().setShowTaxID(false);

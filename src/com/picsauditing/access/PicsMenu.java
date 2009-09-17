@@ -210,7 +210,7 @@ public class PicsMenu {
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
 			subMenu.addChild("Incidence Rates",
-					"ReportIncidenceRate.action?filter.auditFor=2008&filter.auditStatus=Active");
+					"ReportIncidenceRate.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate");
 		if (permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
