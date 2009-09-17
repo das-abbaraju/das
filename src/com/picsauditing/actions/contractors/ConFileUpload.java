@@ -23,6 +23,7 @@ public class ConFileUpload extends ContractorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		limitedView = true;
 		this.findContractor();
 
 		if (button != null) {
