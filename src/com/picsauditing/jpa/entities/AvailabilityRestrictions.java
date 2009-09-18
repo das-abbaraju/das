@@ -7,7 +7,7 @@ import com.picsauditing.util.Location;
 public class AvailabilityRestrictions implements Serializable {
 	private static final long serialVersionUID = -5298244671418832612L;
 
-	private Location location;
+	private Location location = null;
 
 	private boolean webOnly = false;
 	private String[] onlyInStates = null;

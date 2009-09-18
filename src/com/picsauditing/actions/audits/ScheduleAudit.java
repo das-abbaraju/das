@@ -58,12 +58,26 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
 
+		if (!conAudit.getAuditStatus().isPending())
+			// This audit has already been completed. No reason to schedule it now
+			return "summary";
+		
 		if (button == null) {
-			if (conAudit.getScheduledDate() == null) {
+			
+			if (conAudit.getScheduledDate() == null)
+				// We need to schedule this audit
 				return "address";
-
-			} else
-				return "summary";
+			
+			if (conAudit.getScheduledDate().after(new Date()))
+				// This audit has already passed (and we missed it?)
+				return "address";
+			
+			if (permissions.isAdmin())
+				// Let the admin reschedule the audit
+				return "edit";
+			
+			// Contractors can't change upcoming scheduled audits
+			return "summary";
 		}
 
 		if (button.equals("address")) {

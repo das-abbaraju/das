@@ -28,6 +28,7 @@ import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -568,6 +569,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		this.contractorContact = contractorContact;
 	}
 
+	@Transient
+	public Location getLocation() {
+		return new Location(latitude, longitude);
+	}
+	
 	public float getLatitude() {
 		return latitude;
 	}

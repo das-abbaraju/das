@@ -163,15 +163,13 @@ public class AuditorAvailability extends BaseTable {
 				return false;
 			}
 		} else {
-			if (aRestrictions.getNearLatitude() != 0 && aRestrictions.getNearLongitude() != 0) {
-				if (conAudit.getLatitude() == 0 || conAudit.getLongitude() == 0)
-					return false;
+			if (aRestrictions.getLocation() == null)
+				return false;
 				
-				double distance = Geo.distance(aRestrictions.getNearLatitude(), aRestrictions.getNearLongitude(), conAudit.getLatitude(), conAudit.getLongitude());
-				PicsLogger.log("Audit is about " + Math.round(distance) + " km away");
-				if (distance > 30)
-					return false;
-			}
+			double distance = Geo.distance(aRestrictions.getLocation(), conAudit.getLocation());
+			PicsLogger.log("Audit is about " + Math.round(distance) + " km away");
+			if (distance > 30)
+				return false;
 		}
 		PicsLogger.log("Audit is OK for this timeslot");
 		return true;
