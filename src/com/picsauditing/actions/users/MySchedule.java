@@ -95,18 +95,6 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				return SUCCESS;
 			}
 
-			if (button.equals("deleteSchedule")) {
-				schedule = auditorScheduleDAO.find(schedEvent.id);
-				if (schedule == null || schedule.getId() == 0) {
-					output = "No schedule found.";
-					return SUCCESS;
-				}
-
-				auditorScheduleDAO.remove(schedule);
-				output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
-				return BLANK;
-			}
-
 			if (button.equals("saveVacation")) {
 				if (calEvent != null) {
 					boolean update = true;
@@ -230,6 +218,18 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 					json.put("title", "Schedule saved successfully");
 				}
 				return JSON;
+			}
+
+			if (button.equals("deleteSchedule")) {
+				schedule = auditorScheduleDAO.find(schedEvent.id);
+				if (schedule == null || schedule.getId() == 0) {
+					output = "No schedule found.";
+					return SUCCESS;
+				}
+
+				auditorScheduleDAO.remove(schedule);
+				output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
+				return BLANK;
 			}
 
 		}
