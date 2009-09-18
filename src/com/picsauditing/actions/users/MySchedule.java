@@ -33,7 +33,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private long end;
 
 	private CalEvent calEvent;
-	
+	private ScheduleEvent schedEvent;
+
 	private User currentUser;
 
 	public MySchedule(AuditorAvailabilityDAO auditorAvailabilityDAO, AuditorScheduleDAO auditorScheduleDAO,
@@ -51,20 +52,24 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		int calId = this.getParameter("calEvent.id");
 		if (calId > -1)
 			calEvent = new CalEvent(calId);
+
+		int schedID = this.getParameter("schedEvent.id");
+		if (schedID > -1)
+			schedEvent = new ScheduleEvent(schedID);
 	}
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		if (currentUserID > 0) {
 			currentUser = this.getUser(currentUserID);
 		} else {
 			currentUser = super.getUser();
 			currentUserID = currentUser.getId();
 		}
-		
+
 		if (button != null) {
 			if (button.startsWith("json")) {
 				json = new JSONObject();
@@ -91,7 +96,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("deleteSchedule")) {
-				schedule = auditorScheduleDAO.find(calEvent.id);
+				schedule = auditorScheduleDAO.find(schedEvent.id);
 				if (schedule == null || schedule.getId() == 0) {
 					output = "No schedule found.";
 					return SUCCESS;
@@ -176,21 +181,21 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				return SUCCESS;
 			}
 
-			if (button.equalsIgnoreCase("save")) {
-				if (calEvent == null) {
+			if (button.equalsIgnoreCase("saveSchedule")) {
+				if (schedEvent == null) {
 					output = "No schedule to save";
 					json = new JSONObject();
 					json.put("output", output);
 					return JSON;
 				}
-				schedule = auditorScheduleDAO.find(calEvent.id);
+				schedule = auditorScheduleDAO.find(schedEvent.id);
 				if (schedule == null)
 					schedule = new AuditorSchedule();
 
-				schedule.setWeekDay(calEvent.start);
-				schedule.setStartTime(calEvent.start);
-				// schedule.setEndTime(calEvent.end);
-				schedule.setDuration(120);
+				schedule.setWeekDay(schedEvent.weekDay);
+				schedule.setStartTime(schedEvent.startTime);
+				// schedule.setDuration(schedEvent.duration);
+				// schedule.setDuration(120);
 				if (schedule.getUser() == null)
 					schedule.setUser(getUser());
 
@@ -219,7 +224,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				json = new JSONObject();
 				json.put("output", output);
 				if (schedule != null)
-					json.put("calEvent", schedule.toJSON());
+					json.put("schedEvent", schedule.toJSON());
 				return JSON;
 			}
 
@@ -289,6 +294,14 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		this.calEvent = calEvent;
 	}
 
+	public ScheduleEvent getSchedEvent() {
+		return schedEvent;
+	}
+
+	public void setSchedEvent(ScheduleEvent schedEvent) {
+		this.schedEvent = schedEvent;
+	}
+
 	public class CalEvent {
 		public int id;
 
@@ -299,6 +312,17 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		public String title;
 
 		public CalEvent(int id) {
+			this.id = id;
+		}
+	}
+
+	public class ScheduleEvent {
+		public int id;
+		public int weekDay;
+		public int startTime;
+		public int duration;
+
+		public ScheduleEvent(int id) {
 			this.id = id;
 		}
 	}

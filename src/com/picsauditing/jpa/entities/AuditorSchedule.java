@@ -111,14 +111,18 @@ public class AuditorSchedule extends BaseTable {
 		JSONObject obj = new JSONObject();
 		obj.put("id", id);
 
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_WEEK, weekDay);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, startTime);
-		obj.put("start", cal.getTimeInMillis());
+		// Calendar cal = Calendar.getInstance();
+		// cal.set(Calendar.DAY_OF_WEEK, weekDay);
+		// cal.set(Calendar.HOUR_OF_DAY, 0);
+		// cal.set(Calendar.MINUTE, startTime);
+		// obj.put("start", cal.getTimeInMillis());
+		//
+		// cal.add(Calendar.MINUTE, duration);
+		// obj.put("end", cal.getTimeInMillis());
 
-		cal.add(Calendar.MINUTE, duration);
-		obj.put("end", cal.getTimeInMillis());
+		obj.put("weekDay", weekDay);
+		obj.put("startTime", startTime);
+		obj.put("duration", duration);
 
 		return obj;
 	}
@@ -127,7 +131,7 @@ public class AuditorSchedule extends BaseTable {
 	public String toString() {
 		String s = "";
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_WEEK, weekDay);
+		cal.set(Calendar.DAY_OF_WEEK, weekDay + 1);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, startTime);
 		s += DateBean.format(cal.getTime(), "E h:mm a") + " to ";

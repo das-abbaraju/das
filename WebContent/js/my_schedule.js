@@ -1,22 +1,38 @@
 function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
+		var one_minute = 1000*60;
 		$.post('MyScheduleAjax.action', 
 			{ 
-				button:'save',
-				'calEvent.id': calEvent.id == null ? 0 : calEvent.id, 
-				'calEvent.start':calEvent.start.getTime(), 
-				'calEvent.end': calEvent.end.getTime()
+				button:'saveSchedule',
+				'schedEvent.id': calEvent.id == null ? 0 : calEvent.id, 
+				'schedEvent.weekDay': calEvent.start.getDay(),
+				'schedEvent.startTime': calEvent.start.getHours() * 60 + calEvent.start.getMinutes(), 
+				'schedEvent.duration': (calEvent.end.getTime() - calEvent.start.getTime()) / one_minute
 			},
 			function(response) {
 				$.gritter.add({title: 'Calendar Event', text:response.output});
 				$calendar.weekCalendar("removeUnsavedEvents");
-				$calendar.weekCalendar("updateEvent", response.calEvent);
+				if (response.schedEvent)
+					$calendar.weekCalendar("updateEvent", fixEvent(response.schedEvent));
 			},
 			'json'
 		);
 	}
 
+	function fixEvent(v) {
+		var start = new Date();
+		start.setDate(start.getDate() - (start.getDay() - v.weekDay));
+		start.setHours(0);
+		start.setMinutes(0);
+		start.setSeconds(0);
+		start.setMinutes(v.startTime);
+		var end = new Date(start);
+		end.setMinutes(start.getMinutes() + v.duration);
+		return { id:v.id, start:start, end:end };
+	}
+
 	var $calendar = $('#cal_sched').weekCalendar({
+		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: false},
 		dateFormat: '',
 		timeslotHeight: 30,
@@ -24,18 +40,26 @@ function loadSched() {
 		defaultEventLength: 4,
 		buttons: false,
 		newEventText: '',
-		data: 'MyScheduleJSON.action?button=jsonSchedule',
+		data: function(start, end, callback) {
+			$.getJSON('MyScheduleJSON.action',
+					{button:'jsonSchedule'},
+					function(json) {
+						events = new Array(json.events.length);
+						$.each(json.events, function(k,v){
+							events[k] = fixEvent(v);
+						});
+						callback(events);
+					}
+			);
+		},
 		resizable: function(calEvent, eventElement) {return false;},
 		draggable: function(calEvent, eventElement) {return false;},
-		eventResize: saveEvent,
-		eventDrop: saveEvent,
 		eventNew: saveEvent,
 		eventClick: function(calEvent, element) {
 				if (confirm("Do you want to delete this timeslot?")){
 					$.ajax({
 						data: { button:'deleteSchedule',
-								'calEvent.id':calEvent.id
-							},
+								'schedEvent.id':calEvent.id},
 						url: 'MyScheduleAjax.action',
 						success: function(text) {
 								$.gritter.add({title: 'Calendar Event Removed', text:text});
