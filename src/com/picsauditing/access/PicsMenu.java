@@ -204,7 +204,7 @@ public class PicsMenu {
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2008");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Fatalities", "ReportFatalities.action?filter.auditStatus=Active");
+			subMenu.addChild("Fatalities", "ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate");
 		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action?filter.flagStatus=Red");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");

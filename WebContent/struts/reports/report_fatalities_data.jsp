@@ -24,6 +24,7 @@
 			<td><a href="?orderBy=ca.auditFor DESC">For</a></td>
 			<td><a href="?orderBy=os.SHAType DESC">SHAType</a></td>
 			<td>Fatalities</td>
+			<td>Verified</td>
 			<s:if test="showContact">
 				<td>Primary Contact</td>
 				<td>Phone</td>
@@ -61,6 +62,9 @@
 			<td class="center"><s:property value="get('auditFor')" /></td>
 			<td><s:property value="get('SHAType')"/></td>
 			<td class="center"><s:property value="get('fatalities')" /></td>
+			<td><s:if test="get('verifiedDate') != null">
+		    	<span class="verified" style="font-size: 16px;"></span></s:if>
+		    </td>
 			<s:if test="showContact">
 				<td><s:property value="get('contact')"/></td>
 				<td><s:property value="get('phone')"/></td>

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
 

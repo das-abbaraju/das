@@ -15,6 +15,11 @@ public class ReportFatalities extends ReportAnnualAddendum {
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
+		
+		getFilter().setShowShaType(true);
+		getFilter().setShowShaLocation(true);
+		setVerifiedAnnualUpdateFilter("verifiedDate");
+
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
 		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
 
@@ -26,6 +31,7 @@ public class ReportFatalities extends ReportAnnualAddendum {
 		sql.addWhere("os.fatalities > 0");
 		sql.addField("os.fatalities");
 		sql.addField("os.SHAType");
+		sql.addField("os.verifiedDate");
 	}
 	
 	@Override

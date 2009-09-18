@@ -3,6 +3,7 @@
 <head>
 <title>Fatalities</title>
 <s:include value="reportHeader.jsp" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 </head>
 <body>
 <h1>Fatalities Report</h1>
