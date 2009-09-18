@@ -28,14 +28,36 @@
 				<group description="Sort by billing level, click on contractor"/>
 				<clickLink label="Billing Report"/>
 				<clickLink href="ContractorView.action"/>
-							
-				<group description="Make Check Payment Method, Adjust Risk-Level to High">
-				<clickLink label="Edit Account"/>
-				<setRadioButton description="Change Payment Method to Check" name="contractor.paymentMethod" value="Check"/>
-				<setRadioButton description="Make High-Risk" name="contractor.riskLevel" value="High"/>
-				<clickButton label="Save"/>
+				<group description="Add some facilities">
+					
+					<group description="Make Check Payment Method, Adjust Risk-Level to High">
+						<ifStep description="Swich the payment method to check if CC">
+						<condition>
+							<clickLink label="Facilities"/>
+							<verifyText description="Verify that text is contained in the page" text="This account is not linked to any operators."/>
+						</condition>
+							<sleep seconds="5"/>
+							<clickLink description="Click link: Add" label="Add"/>
+							<clickLink description="Click link: Add" label="Add"/>
+							<sleep seconds="5"/>
+							<setSelectField htmlId="requestedBySelector" optionIndex="0"/>
+						</ifStep>
+					
 				</group>
-				
+					</group>
+				<group description="Make Check Payment Method, Adjust Risk-Level to High">
+					<ifStep description="Swich the payment method to check if CC">
+						<condition>
+							<clickLink label="Payment Options"/>
+							<verifyText description="Verify that text is contained in the page" text="Payment Method: Credit Card"/>
+						</condition>
+					<clickButton label="Change Payment Method to Check"/>
+					</ifStep>
+					<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+					<setRadioButton description="Check radio button contractor.riskLevel: High" name="contractor.riskLevel" value="High"/>
+					<clickButton label="Save"/>
+
+				</group>
 	            <group description="Create an Invoice">
 				<clickLink label="Billing Details"/>
 				<clickButton label="Create"/>
@@ -46,37 +68,38 @@
 				<group description="Add 20 facilities">
 				<clickLink label="Facilities"/>				
 				<sleep seconds="10"/>
-					<clickLink description="Click link: Add" htmlId="facility_6418"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_6403"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_2723"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5922"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5910"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5909"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5908"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5907"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5906"/>
 					<clickLink label="Add"/>
-					<clickLink description="Click link: Add" htmlId="facility_5949"/>					
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
+					<clickLink label="Add"/>
 				</group>
 				
 				<group description="Adjust Invoice to New Tier">
 				<clickLink href="BillingDetail.action" label="Billing Details"/>
 				<clickLink href="InvoiceDetail.action"/>
-				<clickLink xpath="/html/body/div[@id='main']/div[@id='bodyholder']/div[@id='content']/form[@id='save']/table/tbody/tr[1]/td/table/tbody/tr/td[3]/div/a[1]"/>
-				<clickButton name="button" fieldIndex="1"/>
+					<clickLink label="Edit"/>
+					<clickLink label="Change to: PICS Membership for 9-12 Operators"/>
 				</group>
 			    
 				<group description="Collect a Check">
-				<setInputField name="invoice.checkNumber" value="1111"/>
-				<clickButton description="Collect a check" htmlId="collectCheck"/>
+					<clickLink label="Pay"/>
+					<clickButton label="Collect Payment"/>
 				</group>
 				</group>
 				
