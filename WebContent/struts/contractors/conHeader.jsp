@@ -4,13 +4,15 @@
 <s:set name="auditMenu" value="auditMenu"></s:set>
 
 <h1><s:property value="contractor.name" /><span class="sub">
-<s:if test="auditID > 0">
+<s:if test="subHeading.length > 0">
+	<s:property value="subHeading" escape="false" />
+</s:if>
+<s:elseif test="auditID > 0">
 	<s:property value="conAudit.auditType.auditName" />
 	<s:if test="conAudit.auditFor != null">for <s:property value="conAudit.auditFor"/></s:if>
 	<s:else>- <s:date name="conAudit.effectiveDate" format="MMM yyyy" /></s:else>
-</s:if> <s:else>
-	<s:property value="subHeading" escape="false" />
-</s:else></span></h1>
+</s:elseif>
+</span></h1>
 <s:if test="showHeader">
 <div id="internalnavcontainer">
 <ul id="navlist">

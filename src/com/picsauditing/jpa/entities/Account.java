@@ -168,6 +168,23 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public void setZip(String zip) {
 		this.zip = zip;
 	}
+	
+	@Transient
+	public String getFullAddress() {
+		// We may want to extract this out and create a String address formatter
+		StringBuffer full = new StringBuffer();
+		full.append(address);
+		if (!Strings.isEmpty(city))
+			full.append(", ").append(city);
+		if (!Strings.isEmpty(state))
+			full.append(", ").append(state);
+		if (!Strings.isEmpty(country) && !country.equals("US") && !country.startsWith("United"))
+			full.append(", ").append(country);
+		if (!Strings.isEmpty(zip))
+			full.append(" ").append(zip);
+
+		return full.toString();
+	}
 
 	@Column(length = 25)
 	public String getPhone() {

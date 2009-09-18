@@ -7,11 +7,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
@@ -34,6 +37,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private AuditorAvailability availabilitySelected = null;
 	private int availabilitySelectedID;
 	private boolean confirmed = false;
+	
+	private String scheduledDateDay;
+	private String scheduledDateTime;
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 
@@ -78,6 +84,20 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			
 			// Contractors can't change upcoming scheduled audits
 			return "summary";
+		}
+		
+		if (button.equals("save")) {
+			if (!permissions.isAdmin())
+				throw new NoRightsException("ScheduleAudits");
+			
+			Calendar scheduledDate = Calendar.getInstance();
+			scheduledDate.setTimeZone(permissions.getTimezone());
+			scheduledDate.setTime(DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime));
+			scheduledDate.setTimeZone(TimeZone.getDefault());
+			conAudit.setScheduledDate(scheduledDate.getTime());
+			
+			addActionMessage("Saved Audit");
+			return "edit";
 		}
 
 		if (button.equals("address")) {
@@ -186,6 +206,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
+	}
+	
+	public void setScheduledDateDay(String scheduledDateDay) {
+		this.scheduledDateDay = scheduledDateDay;
+	}
+	
+	public void setScheduledDateTime(String scheduledDateTime) {
+		this.scheduledDateTime = scheduledDateTime;
 	}
 
 	public Date getLastCancellationTime() {

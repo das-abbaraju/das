@@ -59,7 +59,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private Date auditorConfirm;
 	private Date scheduledDate;
 	private String auditLocation;
-	private boolean needsCamera;
+	private boolean needsCamera = true;
 	private String contractorContact;
 	private String address;
 	private String address2;
@@ -480,6 +480,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public String getFullAddress() {
+		if (Strings.isEmpty(address))
+			return contractorAccount.getFullAddress();
+		
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
 		full.append(address);
