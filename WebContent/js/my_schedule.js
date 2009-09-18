@@ -79,7 +79,6 @@ function loadVacat(){
 		event.start = new Date(event.start);
 		if (event.end)
 			event.end = new Date(event.end);
-		isAllDay(event);
 	}
 	
 	function clearForm() {
