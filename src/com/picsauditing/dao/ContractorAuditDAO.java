@@ -150,7 +150,7 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsNeedingWebcams() {
-		Query q = em.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() ORDER BY scheduledDate");
+		Query q = em.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE ORDER BY scheduledDate");
 
 		return q.getResultList();
 	}
