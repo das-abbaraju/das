@@ -10,7 +10,7 @@ function loadSched() {
 				'schedEvent.duration': (calEvent.end.getTime() - calEvent.start.getTime()) / one_minute
 			},
 			function(response) {
-				$.gritter.add({title: 'Calendar Event', text:response.output});
+				$.gritter.add({title: response.title, text:response.output});
 				$calendar.weekCalendar("removeUnsavedEvents");
 				if (response.schedEvent)
 					$calendar.weekCalendar("updateEvent", fixEvent(response.schedEvent));

@@ -185,7 +185,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				if (schedEvent == null) {
 					output = "No schedule to save";
 					json = new JSONObject();
-					json.put("output", output);
+					json.put("gritter.text", output);
+					json.put("gritter.title", "Schedule not Found");
 					return JSON;
 				}
 				schedule = auditorScheduleDAO.find(schedEvent.id);
@@ -223,8 +224,11 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 				json = new JSONObject();
 				json.put("output", output);
-				if (schedule != null)
+				json.put("title", "Schedule Save Unsuccessful");
+				if (schedule != null) {
 					json.put("schedEvent", schedule.toJSON());
+					json.put("title", "Schedule saved successfully");
+				}
 				return JSON;
 			}
 
