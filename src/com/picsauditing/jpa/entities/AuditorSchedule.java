@@ -120,7 +120,7 @@ public class AuditorSchedule extends BaseTable {
 		// cal.add(Calendar.MINUTE, duration);
 		// obj.put("end", cal.getTimeInMillis());
 
-		obj.put("weekDay", weekDay);
+		obj.put("weekDay", weekDay - 1);
 		obj.put("startTime", startTime);
 		obj.put("duration", duration);
 
@@ -131,7 +131,7 @@ public class AuditorSchedule extends BaseTable {
 	public String toString() {
 		String s = "";
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_WEEK, weekDay + 1);
+		cal.set(Calendar.DAY_OF_WEEK, weekDay);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, startTime);
 		s += DateBean.format(cal.getTime(), "E h:mm a") + " to ";

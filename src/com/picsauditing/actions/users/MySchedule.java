@@ -181,7 +181,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				if (schedule == null)
 					schedule = new AuditorSchedule();
 
-				schedule.setWeekDay(schedEvent.weekDay);
+				schedule.setWeekDay(schedEvent.weekDay + 1);
 				schedule.setStartTime(schedEvent.startTime);
 				// schedule.setDuration(schedEvent.duration);
 				// schedule.setDuration(120);
