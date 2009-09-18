@@ -2,6 +2,8 @@ package com.picsauditing.access;
 
 import java.util.Iterator;
 
+import com.picsauditing.util.Strings;
+
 public class PicsMenu {
 
 	/**
@@ -19,12 +21,12 @@ public class PicsMenu {
 
 		for (MenuComponent subMenu : menu.getChildren()) {
 			url = subMenu.getUrl();
-			if (url != null && url.length() > 0)
+			if (!Strings.isEmpty(url))
 				return url;
 
 			for (MenuComponent subSubMenu : subMenu.getChildren()) {
 				url = subSubMenu.getUrl();
-				if (url != null && url.length() > 0)
+				if (!Strings.isEmpty(url))
 					return url;
 			}
 		}
@@ -48,6 +50,7 @@ public class PicsMenu {
 				subMenu = menu.addChild("Home", "Home.action");
 			else
 				subMenu = menu.addChild("Edit Account", "ContractorEdit.action");
+			addSupportLink(menu, subMenu);
 			return menu;
 		}
 
@@ -215,7 +218,10 @@ public class PicsMenu {
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search", "UserList.action");
-
+		
+		if(permissions.isOperatorCorporate()) {
+			addSupportLink(menu, subMenu);
+		}
 		// Convert the first submenu into a menu if only one exists
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
 		while (iterator.hasNext()) {
@@ -229,4 +235,12 @@ public class PicsMenu {
 
 		return menu;
 	}
-}
+	
+	static public MenuComponent addSupportLink(MenuComponent menu, MenuComponent subMenu) {
+		subMenu = menu.addChild("Support");
+		subMenu.addChild("Help Center", "http://help.picsauditing.com/wiki/Help_Center");
+		subMenu.addChild("Contact Us", "contact.jsp");
+		subMenu.addChild("Online Chat","Online Chat");
+		return menu;
+	}
+}	
