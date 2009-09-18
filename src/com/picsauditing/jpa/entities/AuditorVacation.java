@@ -69,23 +69,25 @@ public class AuditorVacation extends BaseTable {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
-		cal.setTimeZone(user.getTimezoneObject());
+		if (user != null)
+			cal.setTimeZone(user.getTimezoneObject());
 		obj.put("start", cal.getTimeInMillis());
 
 		if (endDate != null) {
 			cal.setTime(endDate);
 			obj.put("end", cal.getTimeInMillis());
 		}
-		
+
 		if (user == null)
 			obj.put("className", "monthly-company");
 
 		return obj;
 	}
-	
+
 	@Override
 	public String toString() {
-		return id + " " + description + " " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " " + DateBean.format(endDate, "MM/dd/yyyy hh:mm a");
+		return id + " " + description + " " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " "
+				+ DateBean.format(endDate, "MM/dd/yyyy hh:mm a");
 	}
 
 }
