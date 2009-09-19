@@ -29,4 +29,7 @@ public class Geo {
 		return distance(location1.getLatitude(), location1.getLongitude(), location2.getLatitude(), location2.getLongitude());
 	}
 
+	public static Location middle(Location location1, Location location2) {
+		return new Location((location1.getLatitude() - location2.getLatitude())/2, (location1.getLongitude() - location2.getLongitude())/2);
+	}
 }

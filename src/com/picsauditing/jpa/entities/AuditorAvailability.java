@@ -140,11 +140,11 @@ public class AuditorAvailability extends BaseTable {
 	}
 
 	@Transient
-	public boolean isOkFor(ContractorAudit conAudit) {
-		PicsLogger.log("is auditID " + conAudit.getId() + " OK");
+	public boolean isOkFor(ContractorAudit conAudit, boolean strict) {
+		PicsLogger.log("is auditID " + conAudit.getId() + " OK" + (strict ? " using Strict" : ""));
 		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
 		String[] states = aRestrictions.getOnlyInStates();
-		if (states != null && states.length > 0) {
+		if (strict && states != null && states.length > 0) {
 			boolean matchedState = false;
 			for(String state : aRestrictions.getOnlyInStates()) {
 				if (state.equals(conAudit.getState())) {
@@ -157,27 +157,65 @@ public class AuditorAvailability extends BaseTable {
 				return false;
 			}
 		}
+		
+		boolean onSite = isConductedOnsite(conAudit);
+		
 		if (aRestrictions.isWebOnly()) {
-			if (conAudit.isConductedOnsite()) {
+			if (onSite) {
 				PicsLogger.log("onsite audits can't be conducted on webOnly slots");
 				return false;
 			}
-		} else {
-			if (aRestrictions.getLocation() == null)
-				return false;
-				
-			double distance = Geo.distance(aRestrictions.getLocation(), conAudit.getLocation());
-			PicsLogger.log("Audit is about " + Math.round(distance) + " km away");
-			if (distance > 30)
-				return false;
 		}
+		
+		if (aRestrictions.isOnsiteOnly()) {
+			if (!onSite) {
+				PicsLogger.log("web audits can't be conducted on onSite only slots");
+				return false;
+			}
+		}
+		
 		PicsLogger.log("Audit is OK for this timeslot");
 		return true;
 	}
 	
+	/**
+	 * If the audit is close enough, then assume it will be onsite
+	 * @param conAudit
+	 * @return
+	 */
 	@Transient
 	public boolean isConductedOnsite(ContractorAudit conAudit) {
-		return true;
+		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
+		
+		double distanceApart = Geo.distance(aRestrictions.getLocation(), conAudit.getLocation());
+		
+		// If the audit is close enough, then assume it will be onsite
+		return (distanceApart < aRestrictions.getMaxDistance());
+	}
+	
+	@Transient
+	public int rank(ContractorAudit conAudit) {
+		int rank = 0;
+		
+		if (isConductedOnsite(conAudit)) {
+			rank += 100;
+		}
+		
+		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
+		String[] states = aRestrictions.getOnlyInStates();
+		if (states != null && states.length > 0) {
+			boolean matchedState = false;
+			for(String state : aRestrictions.getOnlyInStates()) {
+				if (state.equals(conAudit.getState())) {
+					rank += 25;
+				}
+			}
+			if (!matchedState) {
+				rank -= 10;
+			}
+		}
+		
+		return rank;
 	}
 
 }

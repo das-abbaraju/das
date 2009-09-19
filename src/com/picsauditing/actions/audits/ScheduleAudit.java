@@ -104,7 +104,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			auditDao.save(conAudit);
 			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable();
 			for (AuditorAvailability timeslot : timeslots) {
-				if (timeslot.isOkFor(conAudit)) {
+				if (timeslot.isOkFor(conAudit, true)) {
 					nextAvailable.add(timeslot);
 					if (nextAvailable.rows.size() > 3) {
 						nextAvailable.rows.remove(3);
@@ -112,16 +112,39 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					}
 				}
 			}
+			
+			if (nextAvailable.rows.size() < 2) {
+				// I had only 4 available days to choose from
+				// go back through the list with less strict requirements
+				nextAvailable = new NextAvailable();
+				for (AuditorAvailability timeslot : timeslots) {
+					if (timeslot.isOkFor(conAudit, false)) {
+						nextAvailable.add(timeslot);
+						if (nextAvailable.rows.size() > 3) {
+							nextAvailable.rows.remove(3);
+							return "select";
+						}
+					}
+				}
+			}
+
 			return "select";
 		}
 		if (button.equals("select")) {
 			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
+			int maxRank = 0;
 			for (AuditorAvailability timeslot : timeslots) {
-				availabilitySelected = timeslot;
-				availabilitySelectedID = availabilitySelected.getId();
+				int rank = timeslot.rank(conAudit);
+				if (rank > maxRank) {
+					rank = maxRank;
+					availabilitySelected = timeslot;
+					availabilitySelectedID = availabilitySelected.getId();
+				}
 			}
-			if (availabilitySelectedID > 0)
+			if (availabilitySelectedID > 0) {
+				conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 				return "confirm";
+			}
 			addActionError("Failed to select time");
 			return "select";
 		}

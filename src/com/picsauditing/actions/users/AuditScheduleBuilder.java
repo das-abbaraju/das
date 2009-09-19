@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditorVacation;
 import com.picsauditing.jpa.entities.AvailabilityRestrictions;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -52,7 +53,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		PicsLogger.start("AuditScheduleBuilder", true);
-		
+
 		PicsLogger.log("Get all my data into RAM");
 		List<AuditorSchedule> schedules = auditorScheduleDAO.findAll();
 		for (AuditorSchedule schedule : schedules) {
@@ -150,8 +151,6 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 				// Running Sample: Today is Monday September 21, 2009
 				nextDate.add(Calendar.DAY_OF_YEAR, 1);
 				PicsLogger.log("nextDate = " + nextDate.getTime());
-				
-				Location location = user.getLocation();
 
 				// Running Sample: It's a Monday
 				int weekDay = nextDate.get(Calendar.DAY_OF_WEEK);
@@ -174,7 +173,8 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 						proposedEndTime.setTimeZone(userTimeZone);
 						proposedEndTime.add(Calendar.MINUTE, schedule.getDuration());
 
-						PicsLogger.log("Proposed " + proposedStartTime.getTime() + " to " + proposedEndTime.getTime() + " for " + user.getName());
+						PicsLogger.log("Proposed " + proposedStartTime.getTime() + " to " + proposedEndTime.getTime()
+								+ " for " + user.getName());
 						boolean available = true;
 
 						for (AuditorVacation vacation : vacations) {
@@ -194,15 +194,47 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							}
 						}
 
+						ContractorAudit previousAudit = null;
+						ContractorAudit nextAudit = null;
+
+						boolean webOnly = false; // gets set to true only if we have a web audit scheduled that day
+						boolean onsiteOnly = false; // gets set to true only if we have an onsite audit scheduled that day
+						
 						for (ContractorAudit audit : scheduledAudits) {
-							if (audit.getScheduledDate().before(proposedEndTime.getTime())) {
+							Calendar scheduledStarttime = Calendar.getInstance();
+							scheduledStarttime.setTime(audit.getScheduledDate());
+
+							if (scheduledStarttime.get(Calendar.DAY_OF_YEAR) == proposedStartTime
+									.get(Calendar.DAY_OF_YEAR)) {
+								
+								if (audit.isConductedOnsite())
+									onsiteOnly = true;
+								else
+									webOnly = true;
+								
 								Calendar scheduledEndtime = Calendar.getInstance();
 								scheduledEndtime.setTime(audit.getScheduledDate());
 								scheduledEndtime.add(Calendar.MINUTE, 120);
-								if (scheduledEndtime.getTime().after(proposedStartTime.getTime())) {
-									PicsLogger.log("Conflicting audit #" + audit.getId() + " " + audit.getScheduledDate() + " to "
-											+ scheduledEndtime.getTime() + " " + audit.getAuditType().getAuditName()
-											+ " for " + audit.getContractorAccount().getName());
+
+								long millisStartsAfterProposal = audit.getScheduledDate().getTime()
+										- proposedEndTime.getTimeInMillis();
+								long millisEndingBeforeProposal = proposedStartTime.getTimeInMillis()
+										- scheduledEndtime.getTimeInMillis();
+
+								if (millisStartsAfterProposal >= 0) {
+									if (millisStartsAfterProposal < (60 * 60 * 1000))
+										// This audit starts within 60 minutes of the proposed finishing
+										nextAudit = audit;
+								} else if (millisEndingBeforeProposal >= 0) {
+									if (millisEndingBeforeProposal < (60 * 60 * 1000))
+										// This audit ends within 60 minutes of the proposed beginning
+										previousAudit = audit;
+								} else {
+									// This audit overlaps my proposal
+									PicsLogger.log("Conflicting audit #" + audit.getId() + " "
+											+ audit.getScheduledDate() + " to " + scheduledEndtime.getTime() + " "
+											+ audit.getAuditType().getAuditName() + " for "
+											+ audit.getContractorAccount().getName());
 									available = false;
 								}
 							}
@@ -217,7 +249,27 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							availability.setDuration(schedule.getDuration());
 							AvailabilityRestrictions ar = new AvailabilityRestrictions();
 							availability.setRestrictionsObject(ar);
-							ar.setLocation(user.getLocation());
+							
+							if (nextAudit == null && previousAudit == null) {
+								ar.setLocation(user.getLocation());
+								ar.setMaxDistance(100);
+							} else if (nextAudit == null) {
+								ar.setLocation(previousAudit.getLocation());
+							} else if (previousAudit == null) {
+								ar.setLocation(nextAudit.getLocation());
+							} else {
+								ar.setLocation(Geo.middle(previousAudit.getLocation(), nextAudit.getLocation()));
+							}
+							
+							ar.setOnsiteOnly(onsiteOnly);
+							ar.setWebOnly(webOnly);
+							
+							if (user.getId() == 9615) {
+								// Hi, I'm Rick McGee
+								String[] gulfCoastStates = {"TX","AL","LA","MS"};
+								ar.setOnlyInStates(gulfCoastStates);
+							}
+							
 							list.add(availability);
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());
 						}

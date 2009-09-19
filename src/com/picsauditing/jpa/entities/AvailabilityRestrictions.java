@@ -8,7 +8,9 @@ public class AvailabilityRestrictions implements Serializable {
 	private static final long serialVersionUID = -5298244671418832612L;
 
 	private Location location = null;
+	private int maxDistance = 30; // km
 
+	private boolean onsiteOnly = false;
 	private boolean webOnly = false;
 	private String[] onlyInStates = null;
 
@@ -18,6 +20,14 @@ public class AvailabilityRestrictions implements Serializable {
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+
+	public boolean isOnsiteOnly() {
+		return onsiteOnly;
+	}
+
+	public void setOnsiteOnly(boolean onsiteOnly) {
+		this.onsiteOnly = onsiteOnly;
 	}
 
 	public boolean isWebOnly() {
@@ -34,6 +44,14 @@ public class AvailabilityRestrictions implements Serializable {
 
 	public void setOnlyInStates(String[] onlyInStates) {
 		this.onlyInStates = onlyInStates;
+	}
+
+	public int getMaxDistance() {
+		return maxDistance;
+	}
+
+	public void setMaxDistance(int maxDistance) {
+		this.maxDistance = maxDistance;
 	}
 
 }
