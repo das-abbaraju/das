@@ -187,6 +187,10 @@ public class AuditorAvailability extends BaseTable {
 	public boolean isConductedOnsite(ContractorAudit conAudit) {
 		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
 		
+		if (aRestrictions.getLocation() == null || conAudit.getLocation() == null)
+			// If you don't know where you are, you can't measure distance!
+			return false;
+		
 		double distanceApart = Geo.distance(aRestrictions.getLocation(), conAudit.getLocation());
 		
 		// If the audit is close enough, then assume it will be onsite
@@ -195,7 +199,7 @@ public class AuditorAvailability extends BaseTable {
 	
 	@Transient
 	public int rank(ContractorAudit conAudit) {
-		int rank = 0;
+		int rank = 1;
 		
 		if (isConductedOnsite(conAudit)) {
 			rank += 100;
