@@ -141,7 +141,7 @@ function loadPreview() {
 				}
 				$dialog.dialog('open');
 			},
-		dayClick: function(dayDate) {
+		dayClick: function(dayDate, view) {
 				clearForm();
 				$dialog.find('[name=id]').val(0);
 				$dialog.find('[name=startDate]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
