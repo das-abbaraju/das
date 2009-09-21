@@ -175,8 +175,12 @@ function loadSched() {
 		end.setMinutes(start.getMinutes() + v.duration);
 		return { id:v.id, start:start, end:end };
 	}
+	
+	var date = new Date();
+	date.setHours(7);
 
 	var $calendar = $('#cal_sched').weekCalendar({
+		date: date,
 		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: false},
 		dateFormat: '',
