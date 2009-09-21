@@ -52,12 +52,17 @@ function verifyAddress() {
 							throw("Address (" + address + ") could not be found accurately");
 						}
 
-						$("#conAudit_address").val(detail.Country.AdministrativeArea.Locality.Thoroughfare.ThoroughfareName);
-						$("#conAudit_country").val(detail.Country.CountryNameCode);
-						$("#conAudit_state").val(detail.Country.AdministrativeArea.AdministrativeAreaName);
-						$("#conAudit_city").val(detail.Country.AdministrativeArea.Locality.LocalityName);
 						$("#conAudit_latitude").val(latlong[0]);
 						$("#conAudit_longitude").val(latlong[1]);
+						$("#conAudit_country").val(detail.Country.CountryNameCode);
+						$("#conAudit_state").val(detail.Country.AdministrativeArea.AdministrativeAreaName);
+						var city = null;
+						if (detail.Country.AdministrativeArea.SubAdministrativeArea != null)
+							city = detail.Country.AdministrativeArea.SubAdministrativeArea.Locality;
+						else
+							city = detail.Country.AdministrativeArea.Locality;
+						$("#conAudit_city").val(city.LocalityName);
+						$("#conAudit_address").val(city.Thoroughfare.ThoroughfareName);
 
 						$("#unverifiedLI").hide();
 						$("#submitButton").show();

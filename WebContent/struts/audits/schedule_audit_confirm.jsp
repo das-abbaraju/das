@@ -42,8 +42,8 @@ will be made.</div>
 		</s:else>
 
 		<li><label>Primary Contact:</label> <s:property value="conAudit.contractorContact" /></li>
+		<li><label>Email:</label> <s:property value="conAudit.phone2" /></li>
 		<li><label>Phone:</label> <s:property value="conAudit.phone" /></li>
-		<li><label>Phone2/Email:</label> <s:property value="conAudit.phone2" /></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
