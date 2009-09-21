@@ -97,6 +97,13 @@
 	</div>
 </s:if>
 <s:if test="conAudit.auditType.pqf">
+	<s:if test="permissions.operatorCorporate && conAudit.auditStatus.active && conAudit.percentComplete < 100">
+		<div id="info">
+			The PQF is not complete as some categories or questions have been added 
+			during the course of the year which are not yet answered. This will 
+			not affect their flag color until the beginning of next year.
+		</div>
+	</s:if>
 	<div id="info">
 		The OSHA and EMR categories have been moved to the Annual Update.
 	</div>
