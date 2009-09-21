@@ -38,11 +38,16 @@ table.modal_form .title {
 
 <div id="schedule_tabs">
 <ul>
+	<li><a href="#preview"><span>Availability Preview</span></a></li>
 	<li><a href="#aschedule"><span>Audit Schedule</span></a></li>
 	<li><a href="#vacation"><span>Vacation</span></a></li>
 	<li><a href="#holidays"><span>Holidays</span></a></li>
-	<li><a href="#preview"><span>Availability Preview</span></a></li>
 </ul>
+<div id="preview">
+<div id="calendar_wrapper">
+<div id="cal_avail"></div>
+</div>
+</div>
 <div id="aschedule">
 <div id="calendar_wrapper">
 <div id="cal_sched"></div>
@@ -56,11 +61,6 @@ table.modal_form .title {
 <div id="holidays">
 <div id="calendar_wrapper">
 <div id="cal_holid"></div>
-</div>
-</div>
-<div id="preview">
-<div id="calendar_wrapper">
-<div id="cal_avail"></div>
 </div>
 </div>
 </div>

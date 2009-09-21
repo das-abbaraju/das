@@ -1,3 +1,17 @@
+function loadAvail(){
+	$calendar = $('#cal_avail').weekCalendar({
+		height: function(calendar){return 600;},
+		businessHours: {start: 7, end: 17, limitDisplay: false},
+		timeslotHeight: 30,
+		timeslotsPerHour: 2,
+		defaultEventLength: 4,
+		readonly: true,
+		data: 'MyScheduleJSON.action?button=jsonAvailability'
+	});
+
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+}
+
 function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
 		var one_minute = 1000*60;
@@ -218,26 +232,12 @@ function loadHolid() {
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 }
 
-function loadAvail(){
-	$calendar = $('#cal_avail').weekCalendar({
-		height: function(calendar){return 600;},
-		businessHours: {start: 7, end: 17, limitDisplay: false},
-		timeslotHeight: 30,
-		timeslotsPerHour: 2,
-		defaultEventLength: 4,
-		readonly: true,
-		data: 'MyScheduleJSON.action?button=jsonAvailability'
-	});
-
-	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
-}
-
 $(function(){
 	var tabMap = {
+		preview:   {loaded: false, load: loadAvail},
 		aschedule: {loaded: false, load: loadSched},
 		vacation:  {loaded: false, load: loadVacat},
-		holidays:  {loaded: false, load: loadHolid},
-		preview:   {loaded: false, load: loadAvail}
+		holidays:  {loaded: false, load: loadHolid}
 	};
 
 	$('#schedule_tabs').bind('tabsshow', function(event, ui) {
