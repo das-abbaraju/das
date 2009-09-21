@@ -50,12 +50,17 @@ public class AuditorVacationDAO extends PicsDAO {
 	}
 
 	public List<AuditorVacation> findByAuditorID(int auditorID, Date start, Date end) {
-		Query query = em
-				.createQuery("SELECT t FROM AuditorVacation t "
-						+ "WHERE t.user.id = :auditorID OR t.user IS NULL AND startDate BETWEEN :start AND :end ORDER BY startDate");
-		query.setParameter("auditorID", auditorID);
-		query.setParameter("start", start, TemporalType.TIMESTAMP);
-		query.setParameter("end", end, TemporalType.TIMESTAMP);
-		return query.getResultList();
+		String query = "SELECT t FROM AuditorVacation t " + "WHERE";
+		if (auditorID == 0)
+			query += " t.user IS NULL";
+		else
+			query += " t.user.id = :auditorID";
+		query += " AND startDate BETWEEN :start AND :end ORDER BY startDate";
+		Query q = em.createQuery(query);
+		if (auditorID > 0)
+			q.setParameter("auditorID", auditorID);
+		q.setParameter("start", start, TemporalType.TIMESTAMP);
+		q.setParameter("end", end, TemporalType.TIMESTAMP);
+		return q.getResultList();
 	}
 }

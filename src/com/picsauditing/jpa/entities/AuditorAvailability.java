@@ -29,7 +29,7 @@ public class AuditorAvailability extends BaseTable {
 	private Date startDate;
 	private int duration;
 	private String restrictions;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
 	public User getUser() {
@@ -63,7 +63,7 @@ public class AuditorAvailability extends BaseTable {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	
+
 	@Transient
 	public Date getEndDate() {
 		Calendar cal = Calendar.getInstance();
@@ -89,7 +89,7 @@ public class AuditorAvailability extends BaseTable {
 	public AvailabilityRestrictions getRestrictionsObject() {
 		if (restrictions == null)
 			return new AvailabilityRestrictions();
-		
+
 		ByteArrayInputStream byteStream = null;
 		ObjectInputStream objectStream = null;
 		try {
@@ -126,7 +126,7 @@ public class AuditorAvailability extends BaseTable {
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
-		obj.put("id", id);
+		obj.put("id", "Availability_" + id);
 		obj.put("title", "Empty Slot");
 
 		Calendar cal = Calendar.getInstance();
@@ -135,6 +135,11 @@ public class AuditorAvailability extends BaseTable {
 
 		cal.add(Calendar.MINUTE, duration);
 		obj.put("end", cal.getTimeInMillis());
+		
+		obj.put("allDay", false);
+		obj.put("editable", false);
+
+		obj.put("className", "cal-availability");
 
 		return obj;
 	}
@@ -146,7 +151,7 @@ public class AuditorAvailability extends BaseTable {
 		String[] states = aRestrictions.getOnlyInStates();
 		if (strict && states != null && states.length > 0) {
 			boolean matchedState = false;
-			for(String state : aRestrictions.getOnlyInStates()) {
+			for (String state : aRestrictions.getOnlyInStates()) {
 				if (state.equals(conAudit.getState())) {
 					PicsLogger.log("found matching state");
 					matchedState = true;
@@ -157,59 +162,60 @@ public class AuditorAvailability extends BaseTable {
 				return false;
 			}
 		}
-		
+
 		boolean onSite = isConductedOnsite(conAudit);
-		
+
 		if (aRestrictions.isWebOnly()) {
 			if (onSite) {
 				PicsLogger.log("onsite audits can't be conducted on webOnly slots");
 				return false;
 			}
 		}
-		
+
 		if (aRestrictions.isOnsiteOnly()) {
 			if (!onSite) {
 				PicsLogger.log("web audits can't be conducted on onSite only slots");
 				return false;
 			}
 		}
-		
+
 		PicsLogger.log("Audit is OK for this timeslot");
 		return true;
 	}
-	
+
 	/**
 	 * If the audit is close enough, then assume it will be onsite
+	 * 
 	 * @param conAudit
 	 * @return
 	 */
 	@Transient
 	public boolean isConductedOnsite(ContractorAudit conAudit) {
 		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
-		
+
 		if (aRestrictions.getLocation() == null || conAudit.getLocation() == null)
 			// If you don't know where you are, you can't measure distance!
 			return false;
-		
+
 		double distanceApart = Geo.distance(aRestrictions.getLocation(), conAudit.getLocation());
-		
+
 		// If the audit is close enough, then assume it will be onsite
 		return (distanceApart < aRestrictions.getMaxDistance());
 	}
-	
+
 	@Transient
 	public int rank(ContractorAudit conAudit) {
 		int rank = 1;
-		
+
 		if (isConductedOnsite(conAudit)) {
 			rank += 100;
 		}
-		
+
 		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
 		String[] states = aRestrictions.getOnlyInStates();
 		if (states != null && states.length > 0) {
 			boolean matchedState = false;
-			for(String state : aRestrictions.getOnlyInStates()) {
+			for (String state : aRestrictions.getOnlyInStates()) {
 				if (state.equals(conAudit.getState())) {
 					rank += 25;
 				}
@@ -218,7 +224,7 @@ public class AuditorAvailability extends BaseTable {
 				rank -= 10;
 			}
 		}
-		
+
 		return rank;
 	}
 

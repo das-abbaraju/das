@@ -28,6 +28,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private AuditorScheduleDAO auditorScheduleDAO;
 	private AuditorVacationDAO auditorVacationDAO;
 	private JSONObject json;
+	private String type = "Schedule";
 
 	private long start;
 	private long end;
@@ -75,18 +76,24 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				json = new JSONObject();
 				JSONArray events = new JSONArray();
 				json.put("events", events);
-				if (button.equals("jsonSchedule")) {
+				if (type.equals("Schedule")) {
 					for (AuditorSchedule row : getSchedules()) {
 						events.add(row.toJSON());
 					}
 				}
-				if (button.equals("jsonVacation")) {
+				if (type.equals("Vacation")) {
 
 					for (AuditorVacation row : getVacations()) {
 						events.add(row.toJSON());
 					}
 				}
-				if (button.equals("jsonAvailability")) {
+				if (type.equals("Holiday")) {
+
+					for (AuditorVacation row : getHolidays()) {
+						events.add(row.toJSON());
+					}
+				}
+				if (type.equals("Availability")) {
 
 					for (AuditorAvailability row : getAvailability()) {
 						events.add(row.toJSON());
@@ -95,47 +102,54 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				return SUCCESS;
 			}
 
-			if (button.equals("saveVacation")) {
-				if (calEvent != null) {
-					boolean update = true;
-					AuditorVacation vacation = auditorVacationDAO.find(calEvent.id);
-					if (vacation == null) {
-						vacation = new AuditorVacation();
-						update = false;
-					} else if (vacation.getUser() == null) {
-						// TODO make a permission for editing global holidays
+			if (button.equals("save")) {
+				if ("Vacation".equals(type)) {
+					if (calEvent != null) {
+						boolean update = true;
+						AuditorVacation vacation = auditorVacationDAO.find(calEvent.id);
+						if (vacation == null) {
+							vacation = new AuditorVacation();
+							update = false;
+						} else if (vacation.getUser() == null) {
+							// TODO make a permission for editing global
+							// holidays
+							json = new JSONObject();
+							json.put("title", "Event Not Saved");
+							json.put("output", "You do not have permission to edit company level holidays.");
+							return SUCCESS;
+						}
+
+						vacation.setDescription(calEvent.title);
+
+						if (calEvent.start > 0)
+							vacation.setStartDate(new Date(calEvent.start));
+
+						if (calEvent.end > 0)
+							vacation.setEndDate(new Date(calEvent.end));
+
+						// TODO change to currentUser
+						vacation.setUser(getUser());
+
+						auditorVacationDAO.save(vacation);
+
+						output = vacation.toString();
+
 						json = new JSONObject();
-						json.put("title", "Event Not Saved");
-						json.put("output", "You do not have permission to edit company level holidays.");
+						if (update)
+							json.put("title", "Vacation Modified");
+						else
+							json.put("title", "New Vacation Added");
+
+						json.put("output", output);
+						json.put("calEvent", vacation.toJSON());
+						json.put("update", update);
 						return SUCCESS;
 					}
-
-					vacation.setDescription(calEvent.title);
-
-					if (calEvent.start > 0)
-						vacation.setStartDate(new Date(calEvent.start));
-
-					if (calEvent.end > 0)
-						vacation.setEndDate(new Date(calEvent.end));
-
-					// TODO change to currentUser
-					vacation.setUser(getUser());
-
-					auditorVacationDAO.save(vacation);
-
-					output = vacation.toString();
-
-					json = new JSONObject();
-					if (update)
-						json.put("title", "Vacation Modified");
-					else
-						json.put("title", "New Vacation Added");
-
-					json.put("output", output);
-					json.put("calEvent", vacation.toJSON());
-					json.put("update", update);
-					return SUCCESS;
 				}
+			}
+
+			if (button.equals("saveVacation")) {
+
 			}
 
 			if (button.equals("deleteVacation")) {
@@ -259,6 +273,13 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		return vacations;
 	}
 
+	public List<AuditorVacation> getHolidays() {
+		if (vacations == null) {
+			vacations = auditorVacationDAO.findByAuditorID(0, new Date(start), new Date(end));
+		}
+		return vacations;
+	}
+
 	public List<AuditorAvailability> getAvailability() {
 		if (availability == null) {
 			availability = auditorAvailabilityDAO.findByAuditorID(currentUser.getId());
@@ -272,6 +293,14 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public void setJson(JSONObject json) {
 		this.json = json;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public long getStart() {

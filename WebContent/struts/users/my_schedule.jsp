@@ -6,16 +6,26 @@
 <title>My Schedule</title>
 <s:include value="../jquery.jsp" />
 
-<link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
-<script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
-
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
 <script type="text/javascript" src="js/my_schedule.js"></script>
 <style>
-#calendar_wrapper .monthly-company {
-	color: #f00 !important;
+.cal-availability, .cal-availability a {
+	border-color: #f22;
+	background-color: #f22;
+}
+.cal-vacation, .cal-vacation a {
+	border-color: #606;
+	background-color: #606;
+}
+.cal-holiday, .cal-holiday a {
+	border-color: #063;
+	background-color: #063;
+}
+.cal-schedule, .cal-schedule a {
+	border-color: #00f;
+	background-color: #00f;
 }
 table.modal_form {
 	font-size: 14px;
@@ -36,40 +46,30 @@ table.modal_form .title {
 
 <div id="message"></div>
 
-<div id="schedule_tabs">
-<ul>
-	<li><a href="#preview"><span>Availability Preview</span></a></li>
-	<li><a href="#aschedule"><span>Audit Schedule</span></a></li>
-	<li><a href="#vacation"><span>Vacation</span></a></li>
-	<li><a href="#holidays"><span>Holidays</span></a></li>
-</ul>
-<div id="preview">
-<div id="calendar_wrapper">
-<div id="cal_avail"></div>
-</div>
-</div>
-<div id="aschedule">
-<div id="calendar_wrapper">
-<div id="cal_sched"></div>
-</div>
-</div>
-<div id="vacation">
+<table>
+	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Availability':'cal-availability'}">
+	<tr>
+		<td><s:property value="key"/></td>
+		<td class="<s:property value="value"/>" width="20"></td>
+	</tr>
+	</s:iterator>
+</table>
+
+
 <div id="calendar_wrapper">
 <div id="cal_vacat"></div>
 </div>
-</div>
-<div id="holidays">
-<div id="calendar_wrapper">
-<div id="cal_holid"></div>
-</div>
-</div>
-</div>
+
 <div id="vacation_form" style="display:none">
 <s:set name="vacationTimes" value="#{'12:00 AM':'', '12:00 PM':'12:00 PM', '02:00 PM':'02:00 PM', '04:00 PM':'04:00 PM', '06:00 PM':'06:00 PM'}"/>
 <s:form>
 	<fieldset>
 		<s:hidden name="id"/>
 		<table class="modal_form">
+		<tr>
+			<td class="title">Type</td>
+			<td><s:select list="{'Availability','Vacation','Holiday'}" name="type"/></td>
+		</tr>
 		<tr>
 			<td class="title" rowspan="2">Title</td>
 			<td><s:textfield name="title"/></td>

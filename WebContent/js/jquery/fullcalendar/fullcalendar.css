@@ -394,4 +394,8 @@ table.fc-header {
 .fc-rtl .fc-grid .fc-event-time {
 	float: right;
 	}
-	
+
+/* PICS ADDED */
+#calendar_wrapper div {
+	padding: 0;
+	}
