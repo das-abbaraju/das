@@ -25,11 +25,12 @@
 	<s:else>
 		<li><label>Location:</label> Internet <a href="http://help.picsauditing.com/wiki/Office_Audit" class="help">What
 		is this?</a></li>
-		<li><label>Video Camera:</label> <s:radio name="conAudit.needsCamera" theme="pics"
-			list="#{false: 'I have my own webcam that I can use for this audit', true: 'Please mail me a webcam for my computer. Use this address: ' + conAudit.fullAddress}" />
+		<li><label>Video Camera:</label>
+			<s:if test="conAudit.needsCamera">Please mail me a webcam for my computer to: <s:property value="conAudit.fullAddress"/></s:if>
+			<s:else>I have my own webcam that I can use for this audit</s:else>
 		</li>
 	</s:else>
-	<li>Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $150 rescheduling fee.</li>
+	<li><div class="alert">Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $150 rescheduling fee.</div></li>
 </ol>
 </fieldset>
 <fieldset class="form"><legend><span>PICS Auditor</span></legend>

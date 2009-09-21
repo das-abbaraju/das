@@ -72,7 +72,7 @@ public class DateBean {
 			return null;
 		}
 	}
-	
+
 	public static String toDBFormat(Date fromDate) throws Exception {
 		if (fromDate == null)
 			return null;
@@ -84,7 +84,6 @@ public class DateBean {
 			return null;
 		}
 	}
-	
 
 	public static String toShowFormat(Object date) throws Exception {
 		if (date == null)
@@ -158,8 +157,8 @@ public class DateBean {
 	}// getCurrentYear
 
 	/**
-	 * This allows setting the new year rollover before jan 1. To set the
-	 * rollover date, update currentYearStart in web.xml.
+	 * This allows setting the new year rollover before jan 1. To set the rollover date, update currentYearStart in
+	 * web.xml.
 	 * 
 	 * @param strCurrentYearStart
 	 * @return
@@ -267,8 +266,9 @@ public class DateBean {
 	}
 
 	/**
-	 * SecondDate - FirstDate <br/> Example: 1/1/08 and 2/1/08 = 31 <br/> 1/1/08
-	 * and 12/31/07 = -1
+	 * SecondDate - FirstDate <br/>
+	 * Example: 1/1/08 and 2/1/08 = 31 <br/>
+	 * 1/1/08 and 12/31/07 = -1
 	 * 
 	 * @param firstDate
 	 * @param secondDate
@@ -280,8 +280,7 @@ public class DateBean {
 	}
 
 	/**
-	 * Calculate the number of days until the date Positive numbers are in the
-	 * future. Negative numbers are in the past.
+	 * Calculate the number of days until the date Positive numbers are in the future. Negative numbers are in the past.
 	 * 
 	 * @param firstDate
 	 * @return
@@ -292,10 +291,10 @@ public class DateBean {
 	}
 
 	public static Date parseDate(String dateString) {
-		//System.out.println("Attempting to parse " + dateString);
+		// System.out.println("Attempting to parse " + dateString);
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
-		
+
 		List<String> patterns = new ArrayList<String>();
 		patterns.add("MM-dd-yy");
 		patterns.add("MM/dd/yy");
@@ -304,26 +303,27 @@ public class DateBean {
 		patterns.add("MM-dd-yyyy");
 		patterns.add("MM/dd/yyyy");
 		Date d = null;
-		for(String pattern : patterns) {
+		for (String pattern : patterns) {
 			try {
 				df.applyPattern(pattern);
 				d = df.parse(dateString);
-//				System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
+				// System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d,
+				// "yyyy-MM-dd"));
 				break;
 			} catch (ParseException e) {
-				//System.out.println(e.getMessage() + " using pattern: " + pattern);
+				// System.out.println(e.getMessage() + " using pattern: " + pattern);
 			}
 		}
 		if (d == null)
 			System.out.println("parseDate (FAILED): " + dateString);
 		return d;
 	}
-	
+
 	public static Date parseDateTime(String dateString) {
-		//System.out.println("Attempting to parse " + dateString);
+		// System.out.println("Attempting to parse " + dateString);
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
-		
+
 		List<String> datePatterns = new ArrayList<String>();
 		datePatterns.add("MM-dd-yy");
 		datePatterns.add("MM/dd/yy");
@@ -332,22 +332,22 @@ public class DateBean {
 		datePatterns.add("MM-dd-yyyy");
 		datePatterns.add("MM/dd/yyyy");
 
-		
 		List<String> timePatterns = new ArrayList<String>();
 		timePatterns.add("hh:mm a z");
-		timePatterns.add("HH:mm z");
-		
+		timePatterns.add("hh:mm a");
+		timePatterns.add("HH:mm a");
+
 		Date d = null;
-outerLoop:		
-		for(String pattern : datePatterns) {
-			for( String timePattern : timePatterns ) {
+		outerLoop: for (String pattern : datePatterns) {
+			for (String timePattern : timePatterns) {
 				try {
 					df.applyPattern(pattern + " " + timePattern);
 					d = df.parse(dateString);
-//					System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d, "yyyy-MM-dd"));
+					// System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d,
+					// "yyyy-MM-dd"));
 					break outerLoop;
 				} catch (ParseException e) {
-					//System.out.println(e.getMessage() + " using pattern: " + pattern);
+					// System.out.println(e.getMessage() + " using pattern: " + pattern);
 				}
 			}
 		}
@@ -355,29 +355,30 @@ outerLoop:
 			System.out.println("parseDate (FAILED): " + dateString);
 		return d;
 	}
-	
+
 	public static Date addMonths(Date startDate, int months) {
 		if (startDate == null || months == 0)
 			return null;
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
 		cal.add(Calendar.MONTH, months);
 		return cal.getTime();
 	}
-	
+
 	public static Date addDays(Date startDate, int days) {
 		if (startDate == null || days == 0)
 			return null;
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
 		cal.add(Calendar.DATE, days);
 		return cal.getTime();
-	}	
+	}
 
 	/**
 	 * Get the first date of a month before
+	 * 
 	 * @param startDate
 	 * @param months
 	 * @return
@@ -385,7 +386,7 @@ outerLoop:
 	public static Date getFirstofMonth(Date startDate, int months) {
 		if (startDate == null || months == 0)
 			return null;
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
 		cal.add(Calendar.MONTH, months);
@@ -394,47 +395,65 @@ outerLoop:
 	}
 
 	/**
-	 * this will not roll to the next march.  it will increment by a year
-	 * and then go to march.  Jan 1 2009 will return March 1 2010
-	 */ 
-	
+	 * this will not roll to the next march. it will increment by a year and then go to march. Jan 1 2009 will return
+	 * March 1 2010
+	 */
+
 	public static Date getMarchOfNextYear(Date startDate) {
 		if (startDate == null)
 			return null;
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
 		cal.add(Calendar.YEAR, 1);
-		
+
 		cal.set(Calendar.MONTH, Calendar.MARCH);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.set(Calendar.HOUR, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-		
+
 		return cal.getTime();
 	}
-	
+
 	public static String getBrainTreeDate() {
 		Date d = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddkkmmss");
-		sdf.setTimeZone( TimeZone.getTimeZone("GMT"));
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return sdf.format(d);
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println(parseDateTime("3/10/08 6:56 AM PDT"));
 	}
-	
+
 	public static boolean isBeforeAWeek(Date startDate) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, -5);
 		return calendar.getTime().before(startDate);
 	}
-	
+
 	public static String getCurrentMonthName() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
 		return dateFormat.format(new Date());
+	}
+
+	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone) {
+		return convertTime(sourceDate, sourceTimeZone, TimeZone.getDefault());
+	}
+
+	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone, TimeZone destinationTimeZone) {
+		Calendar c1 = Calendar.getInstance();
+		c1.setTime(sourceDate);
+
+		Calendar c2 = Calendar.getInstance();
+		c2.setTimeZone(sourceTimeZone);
+		c2.set(c1.get(Calendar.YEAR), c1.get(Calendar.MONTH), c1.get(Calendar.DAY_OF_MONTH), c1
+				.get(Calendar.HOUR_OF_DAY), c1.get(Calendar.MINUTE), c1.get(Calendar.SECOND));
+		// For some reason, this next line is required or the conversion won't work.
+		c2.get(Calendar.HOUR_OF_DAY);
+		c2.setTimeZone(destinationTimeZone);
+		return c2.getTime();
 	}
 }

@@ -61,6 +61,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		if (conAudit == null) {
+			addActionError("Missing auditID");
+			return BLANK;
+		}
 
 		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
 
@@ -74,9 +79,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				// We need to schedule this audit
 				return "address";
 			
-			if (conAudit.getScheduledDate().after(new Date()))
+			if (conAudit.getScheduledDate().before(new Date())) {
 				// This audit has already passed (and we missed it?)
+				addActionMessage("This audit's scheduled appointment has already passed. ");
 				return "address";
+			}
 			
 			if (permissions.isAdmin())
 				// Let the admin reschedule the audit
@@ -90,12 +97,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (!permissions.isAdmin())
 				throw new NoRightsException("ScheduleAudits");
 			
-			Calendar scheduledDate = Calendar.getInstance();
-			scheduledDate.setTimeZone(permissions.getTimezone());
-			scheduledDate.setTime(DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime));
-			scheduledDate.setTimeZone(TimeZone.getDefault());
-			conAudit.setScheduledDate(scheduledDate.getTime());
-			
+			Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
+			if (scheduledDateInUserTime == null) {
+				addActionError(scheduledDateTime + " is not a valid time");
+				return "edit";
+			}
+			Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
+			conAudit.setScheduledDate(scheduledDateInServerTime);
 			addActionMessage("Saved Audit");
 			return "edit";
 		}

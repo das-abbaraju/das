@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.AvailabilityRestrictions;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Geo;
-import com.picsauditing.util.Location;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -87,7 +86,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 				+ " and " + endDate.getTime());
 		for (Auditor auditor : auditors.values()) {
 			List<AuditorAvailability> list = auditor.buildAvailability(startDate.getTime(), endDate.getTime());
-			PicsLogger.log("Saving " + list.size() + " timeslots");
+			PicsLogger.log("Saving " + list.size() + " timeslots for " + auditor.getUser().getName());
 			for (AuditorAvailability availiability : list) {
 				auditorAvailabilityDAO.save(availiability);
 			}
@@ -129,6 +128,10 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 
 		public void addVacation(AuditorVacation vacation) {
 			vacations.add(vacation);
+		}
+
+		public User getUser() {
+			return user;
 		}
 
 		/**
@@ -198,20 +201,22 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 						ContractorAudit nextAudit = null;
 
 						boolean webOnly = false; // gets set to true only if we have a web audit scheduled that day
-						boolean onsiteOnly = false; // gets set to true only if we have an onsite audit scheduled that day
-						
+						boolean onsiteOnly = false; // gets set to true only if we have an onsite audit scheduled that
+													// day
+
 						for (ContractorAudit audit : scheduledAudits) {
 							Calendar scheduledStarttime = Calendar.getInstance();
 							scheduledStarttime.setTime(audit.getScheduledDate());
 
 							if (scheduledStarttime.get(Calendar.DAY_OF_YEAR) == proposedStartTime
-									.get(Calendar.DAY_OF_YEAR)) {
-								
+									.get(Calendar.DAY_OF_YEAR)
+									&& audit.getAuditor().equals(user)) {
+
 								if (audit.isConductedOnsite())
 									onsiteOnly = true;
 								else
 									webOnly = true;
-								
+
 								Calendar scheduledEndtime = Calendar.getInstance();
 								scheduledEndtime.setTime(audit.getScheduledDate());
 								scheduledEndtime.add(Calendar.MINUTE, 120);
@@ -249,7 +254,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							availability.setDuration(schedule.getDuration());
 							AvailabilityRestrictions ar = new AvailabilityRestrictions();
 							availability.setRestrictionsObject(ar);
-							
+
 							if (nextAudit == null && previousAudit == null) {
 								ar.setLocation(user.getLocation());
 								ar.setMaxDistance(100);
@@ -260,16 +265,16 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							} else {
 								ar.setLocation(Geo.middle(previousAudit.getLocation(), nextAudit.getLocation()));
 							}
-							
+
 							ar.setOnsiteOnly(onsiteOnly);
 							ar.setWebOnly(webOnly);
-							
+
 							if (user.getId() == 9615) {
 								// Hi, I'm Rick McGee
-								String[] gulfCoastStates = {"TX","AL","LA","MS"};
+								String[] gulfCoastStates = { "TX", "AL", "LA", "MS" };
 								ar.setOnlyInStates(gulfCoastStates);
 							}
-							
+
 							list.add(availability);
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());
 						}

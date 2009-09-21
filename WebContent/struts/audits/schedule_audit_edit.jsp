@@ -24,6 +24,10 @@ $(function() {
 
 <h2>Reschedule <s:property value="conAudit.auditType.auditName"/></h2>
 
+<div>
+<a href="MySchedule.action" class="picsbutton" target="_BLANK" title="opens in new window">Open My Schedule</a>
+</div>
+
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
 	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />
@@ -47,6 +51,7 @@ $(function() {
 	<fieldset class="form"><legend><span>Location</span></legend>
 	<ol>
 		<li>Please enter the address at which this audit will be conducted.</li>
+		<li><button onclick="defaultAddress();">Use my company address</button></li>
 		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
 		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
 		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>

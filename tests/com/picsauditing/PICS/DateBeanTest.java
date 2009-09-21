@@ -40,10 +40,9 @@ public class DateBeanTest extends TestCase {
 	
 	@Test
 	public void testTimeZone() throws Exception {
-		Calendar cal = Calendar.getInstance();
-		System.out.println(cal.getTimeInMillis());
-		cal.setTimeZone(TimeZone.getTimeZone("US/Eastern"));
-		System.out.println(cal.getTimeInMillis());
+		Date sourceDate = new Date(999999);
+		Date destDate = DateBean.convertTime(sourceDate, TimeZone.getTimeZone("US/Eastern"), TimeZone.getTimeZone("US/Pacific"));
+		assertEquals(sourceDate.getHours() - 3, destDate.getHours());
 	}
 
 }
