@@ -17,7 +17,26 @@
 	display: none;
 }
 </style>
+<s:if test="conAudit != null">
+<script type="text/javascript">
+var contractor = {
+	'conAudit.contractorContact': '<s:property value="conAudit.contractorAccount.contact"/>',
+	'conAudit.phone2': '<s:property value="conAudit.contractorAccount.phone"/>',
+	'conAudit.phone': '<s:property value="conAudit.contractorAccount.phone2"/>',
+	'conAudit.address': '<s:property value="conAudit.contractorAccount.address"/>',
+	'conAudit.city': '<s:property value="conAudit.contractorAccount.city"/>',
+	'conAudit.state': '<s:property value="conAudit.contractorAccount.state"/>',
+	'conAudit.zip': '<s:property value="conAudit.contractorAccount.zip"/>',
+	'conAudit.country': '<s:property value="conAudit.contractorAccount.country"/>'
+};
 
+function useContractor() {
+	$.each(contractor, function(k,v) {
+		$('form [name='+k+']').val(v);
+	});
+}
+</script>
+</s:if>
 <s:include value="../jquery.jsp"></s:include>
 
 <script type="text/javascript"
@@ -33,6 +52,7 @@
 	<fieldset class="form"><legend><span>Contact Person</span></legend>
 	<ol>
 		<li>Please enter your company's primary representative for this audit.</li>
+		<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/></li>
 		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" /></li>
 		<li><label>Email:</label> <s:textfield name="conAudit.phone2" /></li>
 		<li><label>Phone:</label> <s:textfield name="conAudit.phone" /></li>

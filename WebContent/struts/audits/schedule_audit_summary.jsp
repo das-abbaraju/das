@@ -45,7 +45,7 @@
 <fieldset class="form bottom"><legend><span>Primary Contact</span></legend>
 <ol>
 	<li><label>Name:</label> <s:property value="conAudit.contractorContact" /></li>
-	<li><label>Email:</label> <s:property value="conAudit.phone2" /></li>
+	<li><label>Email:</label> <s:property value="conAudit.contractorAccount.email" /></li>
 	<li><label>Phone:</label> <s:property value="conAudit.phone" /></li>
 </ol>
 </fieldset>
