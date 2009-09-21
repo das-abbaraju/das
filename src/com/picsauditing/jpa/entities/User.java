@@ -76,7 +76,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private String passwordHistory;
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
-	private String timezone;
+	private String timezone = "US/Central";
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
