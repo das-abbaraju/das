@@ -51,26 +51,25 @@ table.modal_form .title {
 
 
 
-<div id="schedule_tabs">
+<div id="schedule_tabs" class="ui-tabs">
 <ul>
 	<li><a href="#preview"><span>Availability Preview</span></a></li>
 	<li><a href="#aschedule"><span>Audit Schedule</span></a></li>
 </ul>
 
-<div id="preview">
-<table>
-	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Availability':'cal-availability'}">
-	<tr>
-		<td class="<s:property value="value"/>" width="20"></td>
-		<td><s:property value="key"/></td>
-	</tr>
-	</s:iterator>
-</table>
+<div id="preview" class="ui-tabs-hide">
 <div id="calendar_wrapper">
 <div id="cal_vacat"></div>
 </div>
+<table>
+	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Availability':'cal-availability'}">
+	<tr>
+		<td class="<s:property value="value"/>" style="color:white;padding:2px;"><s:property value="key"/></td>
+	</tr>
+	</s:iterator>
+</table>
 </div>
-<div id="aschedule">
+<div id="aschedule" class="ui-tabs-hide">
 <div id="calendar_wrapper">
 <div id="cal_sched"></div>
 </div>
@@ -84,7 +83,7 @@ table.modal_form .title {
 		<table class="modal_form">
 		<tr>
 			<td class="title">Type</td>
-			<td><s:select list="{'Availability','Vacation','Holiday'}" name="type"/></td>
+			<td><s:select list="{'Vacation','Holiday'}" name="type"/></td>
 		</tr>
 		<tr>
 			<td class="title" rowspan="2">Title</td>

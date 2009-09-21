@@ -35,14 +35,6 @@ function loadPreview() {
 					);
 			},
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Schedule', start: start.getTime(), end: end.getTime()}, 
-						function(json) { 
-							$.each(json.events, fixEvent);
-							callback(json.events); 
-						} 
-					);				
-			},
-			function(start, end, callback) {
 				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Availability', start: start.getTime(), end: end.getTime()}, 
 						function(json) { 
 							$.each(json.events, fixEvent);
