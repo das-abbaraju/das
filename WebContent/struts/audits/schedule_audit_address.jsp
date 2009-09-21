@@ -21,8 +21,8 @@
 <script type="text/javascript">
 var contractor = {
 	'conAudit.contractorContact': '<s:property value="conAudit.contractorAccount.contact"/>',
-	'conAudit.phone2': '<s:property value="conAudit.contractorAccount.phone"/>',
-	'conAudit.phone': '<s:property value="conAudit.contractorAccount.phone2"/>',
+	'conAudit.phone2': '<s:property value="conAudit.contractorAccount.email"/>',
+	'conAudit.phone': '<s:property value="conAudit.contractorAccount.phone"/>',
 	'conAudit.address': '<s:property value="conAudit.contractorAccount.address"/>',
 	'conAudit.city': '<s:property value="conAudit.contractorAccount.city"/>',
 	'conAudit.state': '<s:property value="conAudit.contractorAccount.state"/>',
