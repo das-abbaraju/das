@@ -55,6 +55,7 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 							audit.getContractorAccount().getWebcam().setContractor(null);
 
 						webcam.setContractor(audit.getContractorAccount());
+						webcam.setAuditColumns(permissions);
 						audit.getContractorAccount().setWebcam(webcam);
 
 						webcamDAO.save(webcam);
