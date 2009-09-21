@@ -109,21 +109,11 @@ public class AuditorSchedule extends BaseTable {
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
-		obj.put("id", "Schedule_"+id);
-
-		// Calendar cal = Calendar.getInstance();
-		// cal.set(Calendar.DAY_OF_WEEK, weekDay);
-		// cal.set(Calendar.HOUR_OF_DAY, 0);
-		// cal.set(Calendar.MINUTE, startTime);
-		// obj.put("start", cal.getTimeInMillis());
-		//
-		// cal.add(Calendar.MINUTE, duration);
-		// obj.put("end", cal.getTimeInMillis());
+		obj.put("id", id);
 
 		obj.put("weekDay", weekDay - 1);
 		obj.put("startTime", startTime);
 		obj.put("duration", duration);
-		obj.put("className", "cal-schedule");
 
 		return obj;
 	}

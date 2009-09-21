@@ -6,6 +6,9 @@
 <title>My Schedule</title>
 <s:include value="../jquery.jsp" />
 
+<link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
+<script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
+
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
@@ -46,20 +49,33 @@ table.modal_form .title {
 
 <div id="message"></div>
 
+
+
+<div id="schedule_tabs">
+<ul>
+	<li><a href="#preview"><span>Availability Preview</span></a></li>
+	<li><a href="#aschedule"><span>Audit Schedule</span></a></li>
+</ul>
+
+<div id="preview">
 <table>
 	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Availability':'cal-availability'}">
 	<tr>
-		<td><s:property value="key"/></td>
 		<td class="<s:property value="value"/>" width="20"></td>
+		<td><s:property value="key"/></td>
 	</tr>
 	</s:iterator>
 </table>
-
-
 <div id="calendar_wrapper">
 <div id="cal_vacat"></div>
 </div>
-
+</div>
+<div id="aschedule">
+<div id="calendar_wrapper">
+<div id="cal_sched"></div>
+</div>
+</div>
+</div>
 <div id="vacation_form" style="display:none">
 <s:set name="vacationTimes" value="#{'12:00 AM':'', '12:00 PM':'12:00 PM', '02:00 PM':'02:00 PM', '04:00 PM':'04:00 PM', '06:00 PM':'06:00 PM'}"/>
 <s:form>
