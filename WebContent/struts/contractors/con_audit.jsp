@@ -99,9 +99,8 @@
 <s:if test="conAudit.auditType.pqf">
 	<s:if test="permissions.operatorCorporate && conAudit.auditStatus.active && conAudit.percentComplete < 100">
 		<div id="info">
-			The PQF is not complete as some categories or questions have been added 
-			during the course of the year which are not yet answered. This will 
-			not affect their flag color until the beginning of next year.
+ 			This PQF was Completed and Active as of <s:date name="conAudit.completedDate" format="MMM d, yyyy" />. 
+ 			Some sections have been added since this date and will be addressed in January.
 		</div>
 	</s:if>
 	<div id="info">
