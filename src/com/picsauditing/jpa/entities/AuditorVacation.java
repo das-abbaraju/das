@@ -67,19 +67,30 @@ public class AuditorVacation extends BaseTable {
 		obj.put("id", id);
 		obj.put("title", Strings.isEmpty(description) ? "Vacation" : description);
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
+		Calendar start = Calendar.getInstance();
+		Calendar end = null;
+		start.setTime(startDate);
 		if (user != null)
-			cal.setTimeZone(user.getTimezoneObject());
-		obj.put("start", cal.getTimeInMillis());
+			start.setTimeZone(user.getTimezoneObject());
+
+		obj.put("start", start.getTimeInMillis());
 
 		if (endDate != null) {
-			cal.setTime(endDate);
-			obj.put("end", cal.getTimeInMillis());
+			end = Calendar.getInstance();
+			end.setTime(endDate);
+			obj.put("end", end.getTimeInMillis());
 		}
+
+		if (start.get(Calendar.HOUR_OF_DAY) == 0 && start.get(Calendar.MINUTE) == 0
+				&& (end == null || (end.get(Calendar.HOUR_OF_DAY) == 0 && end.get(Calendar.MINUTE) == 0)))
+			obj.put("allDay", true);
+		else
+			obj.put("allDay", false);
 
 		if (user == null)
 			obj.put("className", "monthly-company");
+
+		obj.put("editable", false);
 
 		return obj;
 	}

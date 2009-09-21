@@ -1,15 +1,7 @@
 function loadAvail(){
-	$calendar = $('#cal_avail').weekCalendar({
-		height: function(calendar){return 600;},
-		businessHours: {start: 7, end: 17, limitDisplay: false},
-		timeslotHeight: 30,
-		timeslotsPerHour: 2,
-		defaultEventLength: 4,
-		readonly: true,
-		data: 'MyScheduleJSON.action?button=jsonAvailability'
+	$calendar = $('#cal_avail').fullCalendar({
+		
 	});
-
-	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
 }
 
 function loadSched() {
@@ -99,33 +91,17 @@ function loadVacat(){
 		$dialog.find(':input').val('');
 	}
 
-	function isAllDay(event) {
-		if (!event)
-			return false;
-		if (!event.end)
-			return true;
-		var one_day=1000*60*60*24;
-		if (((event.end.getTime() - event.start.getTime()) / one_day) == 1 
-				&& event.start.getHours() == 0 && event.start.getMinutes() == 0) {
-			return true;
-		}
-		
-		return false;
-	}
-
 	$dialog = $('#vacation_form').dialog({
 		title:'Vacation Entry', 
 		autoOpen:false,
 		modal: true,
 		buttons: {
 			Save: function() {
-				var start;
-				var end;
+				var start = NaN;
+				var end = NaN;
 
 				if ($('#all-day').is(':checked')) {
 					start = new Date($dialog.find('[name=startDate]').val());
-					end = new Date(start);
-					end.setDate(end.getDate() + 1);
 				} else {
 					start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
 					end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
@@ -147,13 +123,13 @@ function loadVacat(){
 						if (json.calEvent) {
 							fixEvent(null, json.calEvent);
 							if (json.update){
-								var event = $calendar.fullCalendar('getEventsById', json.calEvent.id)[0];
+								var event = $calendar.fullCalendar('clientEvents', json.calEvent.id)[0];
 								event.start = json.calEvent.start;
 								event.end = json.calEvent.end;
 								$calendar.fullCalendar('updateEvent', event);
 							}
 							else
-								$calendar.fullCalendar('addEvent', json.calEvent);
+								$calendar.fullCalendar('renderEvent', json.calEvent);
 						}
 							
 						$dialog.dialog('close');
@@ -180,30 +156,31 @@ function loadVacat(){
 	});
 
 	$calendar = $('#cal_vacat').fullCalendar({
-		fixedWeeks: false,
-		eventClick: function(calEvent, jsEvent) {
-				var allDay = isAllDay(calEvent);
+		weekMode: 'liquid',
+		header: { left:'title', center:'', right:'today,prev,next, ,month,basicWeek,basicDay' },
+		eventClick: function(calEvent, jsEvent, view) { console.log(calEvent);
+		console.log(view);
 				var allDayCB = $dialog.find('#all-day:unchecked');
-				if (allDay && !allDayCB.is(':checked')) 
+				if (calEvent.allDay && !allDayCB.is(':checked')) 
 					allDayCB.click();
-				else if (!allDay && allDayCB.is(':checked'))
+				else if (!calEvent.allDay && allDayCB.is(':checked'))
 					allDayCB.click();
 
 				clearForm();
 				$dialog.find('[name=id]').val(calEvent.id);
 				$dialog.find('[name=title]').val(calEvent.title);
-				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.start));
-				$dialog.find('[name=startTime]').val($.fullCalendar.formatDate(calEvent.start, 'h:i A'));
-				if (!allDay) {
-					$dialog.find('[name=endDate]').val($.datepicker.formatDate('mm/dd/yy',calEvent.end));
-					$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'h:i A'));
+				$dialog.find('[name=startDate]').val($.fullCalendar.formatDate(calEvent.start,'MM/dd/yyyy'));
+				$dialog.find('[name=startTime]').val($.fullCalendar.formatDate(calEvent.start, 'hh:mm TT'));
+				if (!calEvent.allDay) {
+					$dialog.find('[name=endDate]').val($.fullCalendar.formatDate(calEvent.end,'MM/dd/yyyy'));
+					$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'hh:mm TT'));
 				}
 				$dialog.dialog('open');
 			},
 		dayClick: function(dayDate) {
 				clearForm();
 				$dialog.find('[name=id]').val(0);
-				$dialog.find('[name=startDate]').val($.datepicker.formatDate('mm/dd/yy',dayDate));
+				$dialog.find('[name=startDate]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
 				$dialog.dialog('open');
 			},
 		events: 
@@ -248,4 +225,5 @@ $(function(){
 	});
 
 	$("#schedule_tabs").tabs();
+	$("#schedule_tabs").tabs('select', 2);
 });

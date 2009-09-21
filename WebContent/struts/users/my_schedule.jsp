@@ -14,8 +14,8 @@
 
 <script type="text/javascript" src="js/my_schedule.js"></script>
 <style>
-.monthly-company {
-	color: #f00;
+#calendar_wrapper .monthly-company {
+	color: #f00 !important;
 }
 table.modal_form {
 	font-size: 14px;
