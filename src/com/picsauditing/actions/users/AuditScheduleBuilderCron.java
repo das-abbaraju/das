@@ -36,7 +36,7 @@ public class AuditScheduleBuilderCron extends PicsActionSupport {
 	}
 
 	/**
-	 * Usage: AuditScheduleBuilderCron.rerun(ActionContext.getContext());
+	 * Usage: AuditScheduleBuilderCron.rerun();
 	 * @param context
 	 */
 	public static void rerun() {
