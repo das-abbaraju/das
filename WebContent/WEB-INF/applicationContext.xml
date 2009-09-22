@@ -15,6 +15,7 @@
 	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
 	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
 	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
+	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
 	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO"/>
 	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>

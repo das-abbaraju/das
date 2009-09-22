@@ -1027,9 +1027,9 @@
 
 		<!-- Office Audit Scheduling -->
 
-		<action name="AuditScheduleBuilder"
-			class="com.picsauditing.actions.users.AuditScheduleBuilder">
-			<result>struts/users/audit_schedule_builder.jsp</result>
+		<action name="AuditScheduleBuilderCron"
+			class="com.picsauditing.actions.users.AuditScheduleBuilderCron">
+			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="MySchedule"

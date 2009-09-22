@@ -182,7 +182,7 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Cron", "ContractorCron.action");
 			subMenu.addChild("Mail Cron", "MailCron.action");
 			subMenu.addChild("Subscription Cron", "SubscriptionCron.action");
-			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilder.action");
+			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilderCron.action");
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action");
 			subMenu.addChild("CSS Style Guide", "css.jsp");
 		}

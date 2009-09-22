@@ -1,4 +1,4 @@
-package com.picsauditing.actions.users;
+package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.AuditorScheduleDAO;
@@ -29,8 +28,7 @@ import com.picsauditing.util.log.PicsLogger;
  * @author Trevor
  * 
  */
-@SuppressWarnings("serial")
-public class AuditScheduleBuilder extends PicsActionSupport {
+public class AuditScheduleBuilder {
 	private Map<User, Auditor> auditors = new HashMap<User, Auditor>();
 	private List<AuditorVacation> holidays = new ArrayList<AuditorVacation>();
 	private List<ContractorAudit> scheduledAudits = new ArrayList<ContractorAudit>();
@@ -50,7 +48,7 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 		this.appPropertyDAO = appPropertyDAO;
 	}
 
-	public String execute() throws Exception {
+	public void build() {
 		PicsLogger.start("AuditScheduleBuilder", true);
 
 		PicsLogger.log("Get all my data into RAM");
@@ -93,7 +91,6 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 		}
 
 		PicsLogger.stop();
-		return SUCCESS;
 	}
 
 	private Auditor getAuditor(User user) {
