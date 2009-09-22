@@ -1,16 +1,20 @@
 package com.picsauditing.actions.customerservice;
 
+import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.WebcamDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.Webcam;
 
 @SuppressWarnings("serial")
-public class AssignWebcams extends PicsActionSupport implements Preparable {
+public class AssignWebcams extends AccountActionSupport implements Preparable {
 
 	private ContractorAuditDAO auditDAO;
 	private List<ContractorAudit> audits;
@@ -23,6 +27,8 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 	public AssignWebcams(ContractorAuditDAO auditDAO, WebcamDAO webcamDAO) {
 		this.auditDAO = auditDAO;
 		this.webcamDAO = webcamDAO;
+
+		this.noteCategory = noteCategory.Other;
 	}
 
 	@Override
@@ -57,6 +63,15 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 						webcam.setContractor(audit.getContractorAccount());
 						webcam.setAuditColumns(permissions);
 						audit.getContractorAccount().setWebcam(webcam);
+
+						// set the sent information
+						webcam.setSentDate(new Date());
+						webcam.setSendBy(getUser());
+
+						// stamp the notes
+						this.addNote(webcam.getContractor(), "Sent webcam " + webcam.getId() + " to " + webcam.getContractor().getName()
+								+ " via shipping method: " + webcam.getShippingMethod() + " with tracking number: "
+								+ webcam.getTrackingNumber());
 
 						webcamDAO.save(webcam);
 					}
