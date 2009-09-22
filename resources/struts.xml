@@ -1056,6 +1056,11 @@
 			<result name="edit">struts/audits/schedule_audit_edit.jsp</result>
 		</action>
 
+		<action name="ScheduleAuditPickerAjax"
+			class="com.picsauditing.actions.audits.ScheduleAudit">
+			<result name="select">struts/audits/schedule_audit_select_content.jsp</result>
+		</action>
+
 		<action name="ScheduleAuditAjax"
 			class="com.picsauditing.actions.audits.ScheduleAudit">
 			<result>struts/json.jsp</result>

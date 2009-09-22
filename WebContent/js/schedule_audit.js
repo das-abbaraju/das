@@ -91,3 +91,14 @@ function submitForm() {
 	}
 	return true;
 }
+
+function showNextAvailable() {
+	var startDate = $("#ScheduleAudit_availabilityStartDate").val(); 
+	$.ajax({
+		 url:'ScheduleAuditPickerAjax.action',
+		 data:{button:'address',availabilityStartDate:startDate,auditID:auditID},
+		 success: function(text, textStatus) {
+		   $('#li_availability').html(text);
+		 }
+		})
+}

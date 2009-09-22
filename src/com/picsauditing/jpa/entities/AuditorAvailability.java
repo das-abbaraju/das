@@ -149,45 +149,6 @@ public class AuditorAvailability extends BaseTable {
 		return obj;
 	}
 
-	@Transient
-	public boolean isOkFor(ContractorAudit conAudit, boolean strict) {
-		PicsLogger.log("is auditID " + conAudit.getId() + " OK" + (strict ? " using Strict" : ""));
-		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
-		String[] states = aRestrictions.getOnlyInStates();
-		if (strict && states != null && states.length > 0) {
-			boolean matchedState = false;
-			for (String state : aRestrictions.getOnlyInStates()) {
-				if (state.equals(conAudit.getState())) {
-					PicsLogger.log("found matching state");
-					matchedState = true;
-				}
-			}
-			if (!matchedState) {
-				PicsLogger.log(conAudit.getState() + "not in " + states);
-				return false;
-			}
-		}
-
-		boolean onSite = isConductedOnsite(conAudit);
-
-		if (aRestrictions.isWebOnly()) {
-			if (onSite) {
-				PicsLogger.log("onsite audits can't be conducted on webOnly slots");
-				return false;
-			}
-		}
-
-		if (aRestrictions.isOnsiteOnly()) {
-			if (!onSite) {
-				PicsLogger.log("web audits can't be conducted on onSite only slots");
-				return false;
-			}
-		}
-
-		PicsLogger.log("Audit is OK for this timeslot");
-		return true;
-	}
-
 	/**
 	 * If the audit is close enough, then assume it will be onsite
 	 * 

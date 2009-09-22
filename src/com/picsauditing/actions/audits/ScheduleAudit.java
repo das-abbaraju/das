@@ -7,14 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
@@ -29,7 +27,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
-	
+
 	static final public String DATE_FORMAT = "yyyyMMddhhmm";
 
 	private NextAvailable nextAvailable = new NextAvailable();
@@ -37,9 +35,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private AuditorAvailability availabilitySelected = null;
 	private int availabilitySelectedID;
 	private boolean confirmed = false;
-	
+
 	private String scheduledDateDay;
 	private String scheduledDateTime;
+	private Date availabilityStartDate;
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 
@@ -61,7 +60,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		if (conAudit == null) {
 			addActionError("Missing auditID");
 			return BLANK;
@@ -70,33 +69,34 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
 
 		if (!conAudit.getAuditStatus().isPending())
-			// This audit has already been completed. No reason to schedule it now
+			// This audit has already been completed. No reason to schedule it
+			// now
 			return "summary";
-		
+
 		if (button == null) {
-			
+
 			if (conAudit.getScheduledDate() == null)
 				// We need to schedule this audit
 				return "address";
-			
+
 			if (conAudit.getScheduledDate().before(new Date())) {
 				// This audit has already passed (and we missed it?)
 				addActionMessage("This audit's scheduled appointment has already passed. ");
 				return "address";
 			}
-			
+
 			if (permissions.isAdmin())
 				// Let the admin reschedule the audit
 				return "edit";
-			
+
 			// Contractors can't change upcoming scheduled audits
 			return "summary";
 		}
-		
+
 		if (button.equals("save")) {
 			if (!permissions.isAdmin())
 				throw new NoRightsException("ScheduleAudits");
-			
+
 			Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
 			if (scheduledDateInUserTime == null) {
 				addActionError(scheduledDateTime + " is not a valid time");
@@ -110,29 +110,25 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		if (button.equals("address")) {
 			auditDao.save(conAudit);
-			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable();
+			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
 			for (AuditorAvailability timeslot : timeslots) {
-				if (timeslot.isOkFor(conAudit, true)) {
+				if (timeslot.isConductedOnsite(conAudit)) {
 					nextAvailable.add(timeslot);
-					if (nextAvailable.rows.size() > 3) {
-						nextAvailable.rows.remove(3);
+					if (nextAvailable.size() >= 12) {
 						return "select";
 					}
 				}
 			}
 			
-			if (nextAvailable.rows.size() < 2) {
-				// I had only 4 available days to choose from
-				// go back through the list with less strict requirements
-				nextAvailable = new NextAvailable();
-				for (AuditorAvailability timeslot : timeslots) {
-					if (timeslot.isOkFor(conAudit, false)) {
-						nextAvailable.add(timeslot);
-						if (nextAvailable.rows.size() > 3) {
-							nextAvailable.rows.remove(3);
-							return "select";
-						}
-					}
+			if (nextAvailable.rows.size() > 0) {
+				return "select";
+			}
+			
+			nextAvailable = new NextAvailable();
+			for (AuditorAvailability timeslot : timeslots) {
+				nextAvailable.add(timeslot);
+				if (nextAvailable.size() >= 12) {
+					return "select";
 				}
 			}
 
@@ -151,7 +147,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			if (availabilitySelectedID > 0) {
 				conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-				conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
+				conAudit.setNeedsCamera(true); // Assume yes until they say
+												// otherwise
 				return "confirm";
 			}
 			addActionError("Failed to select time");
@@ -239,11 +236,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
 	}
-	
+
 	public void setScheduledDateDay(String scheduledDateDay) {
 		this.scheduledDateDay = scheduledDateDay;
 	}
-	
+
 	public void setScheduledDateTime(String scheduledDateTime) {
 		this.scheduledDateTime = scheduledDateTime;
 	}
@@ -257,7 +254,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		else
 			// Something is probably wrong here
 			return cal.getTime();
-		
+
 		cal.add(Calendar.DAY_OF_YEAR, -2);
 
 		while (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
@@ -276,11 +273,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public class NextAvailable {
 		public final List<AvailableSet> rows = new ArrayList<AvailableSet>();
 		private final int MAX_COLUMNS = 4;
+		private int size = 0;
 
 		void add(AuditorAvailability timeslot) {
 			for (AvailableSet row : rows) {
 				if (row.contains(timeslot)) {
 					row.add(timeslot);
+					size ++;
 					return;
 				}
 				if (row.size() < MAX_COLUMNS) {
@@ -310,7 +309,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 				for (AuditorAvailability existingTimeSlot : days.get(day)) {
 					if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate()))
-						// We don't need to add more than one time slot per starting time
+						// We don't need to add more than one time slot per
+						// starting time
 						return;
 				}
 				days.get(day).add(timeslot);
@@ -343,5 +343,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 
 		}
+		
+		public int size() {
+			return size;
+		}
+	}
+
+	public void setAvailabilityStartDate(Date availabilityStartDate) {
+		this.availabilityStartDate = availabilityStartDate;
 	}
 }
