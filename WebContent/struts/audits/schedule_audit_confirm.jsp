@@ -38,6 +38,7 @@ will be made.</div>
 			is a Web Audit?</a></li>
 			<li><label>Video Camera:</label> <s:radio name="conAudit.needsCamera" theme="pics"
 				list="#{false: 'I have my own webcam that I can use for this audit', true: 'Please mail me a webcam for my computer. Use this address: ' + conAudit.fullAddress}" />
+				<a class="edit" href="ScheduleAudit.action?auditID=<s:property value="conAudit.id" />">Change Address</a>
 			</li>
 		</s:else>
 

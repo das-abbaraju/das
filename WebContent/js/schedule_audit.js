@@ -52,8 +52,8 @@ function verifyAddress() {
 							throw("Address (" + address + ") could not be found accurately");
 						}
 
-						$("#conAudit_latitude").val(latlong[0]);
-						$("#conAudit_longitude").val(latlong[1]);
+						$("#conAudit_latitude").val(latlong[1]);
+						$("#conAudit_longitude").val(latlong[0]);
 						$("#conAudit_country").val(detail.Country.CountryNameCode);
 						$("#conAudit_state").val(detail.Country.AdministrativeArea.AdministrativeAreaName);
 						var city = null;

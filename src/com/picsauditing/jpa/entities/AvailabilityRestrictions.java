@@ -5,9 +5,10 @@ import java.io.Serializable;
 import com.picsauditing.util.Location;
 
 public class AvailabilityRestrictions implements Serializable {
-	private static final long serialVersionUID = -5298244671418832612L;
-
-	private Location location = null;
+	private static final long serialVersionUID = -8383954239800310895L;
+	
+	private float latitude = 0;
+	private float longitude = 0;
 	private int maxDistance = 30; // km
 
 	private boolean onsiteOnly = false;
@@ -15,11 +16,12 @@ public class AvailabilityRestrictions implements Serializable {
 	private String[] onlyInStates = null;
 
 	public Location getLocation() {
-		return location;
+		return new Location(latitude, longitude);
 	}
 
 	public void setLocation(Location location) {
-		this.location = location;
+		this.latitude = location.getLatitude();
+		this.longitude = location.getLongitude();
 	}
 
 	public boolean isOnsiteOnly() {

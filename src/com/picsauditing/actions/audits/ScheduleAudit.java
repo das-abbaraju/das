@@ -151,6 +151,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			if (availabilitySelectedID > 0) {
 				conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
+				conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
 				return "confirm";
 			}
 			addActionError("Failed to select time");

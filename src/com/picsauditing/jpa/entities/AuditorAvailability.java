@@ -108,6 +108,11 @@ public class AuditorAvailability extends BaseTable {
 		}
 	}
 
+	/**
+	 * One time conversion from object to bytestream (this.restrictions)
+	 * If you change the AvailabilityRestrictions, you MUST call setRestrictionsObject(restrictions) again!
+	 * @param restrictions
+	 */
 	public void setRestrictionsObject(AvailabilityRestrictions restrictions) {
 		ByteArrayOutputStream byteStream = null;
 		ObjectOutputStream objectStream = null;

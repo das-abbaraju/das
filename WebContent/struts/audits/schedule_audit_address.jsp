@@ -61,8 +61,8 @@ function useContractor() {
 	<fieldset class="form"><legend><span>Enter the Audit Location</span></legend>
 	<ol>
 		<li>Please enter the address at which this audit will be conducted.</li>
-		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
-		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
+		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" /> No PO Boxes</li>
+		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /> Suite/Apartment</li>
 		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
 		<li class="calculatedAddress"><label>State/Province:</label> <s:textfield id="conAudit_state"
 			name="conAudit.state" size="6" /></li>

@@ -253,7 +253,6 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 							availability.setStartDate(proposedStartTime.getTime());
 							availability.setDuration(schedule.getDuration());
 							AvailabilityRestrictions ar = new AvailabilityRestrictions();
-							availability.setRestrictionsObject(ar);
 
 							if (nextAudit == null && previousAudit == null) {
 								ar.setLocation(user.getLocation());
@@ -274,9 +273,10 @@ public class AuditScheduleBuilder extends PicsActionSupport {
 								String[] gulfCoastStates = { "TX", "AL", "LA", "MS" };
 								ar.setOnlyInStates(gulfCoastStates);
 							}
-
-							list.add(availability);
+							availability.setRestrictionsObject(ar);
+							
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());
+							list.add(availability);
 						}
 					}
 				}
