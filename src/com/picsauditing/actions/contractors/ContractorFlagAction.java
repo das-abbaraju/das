@@ -23,6 +23,7 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -66,7 +67,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
 			ContractorOperatorFlagDAO contractorOperatorFlagDAO, ContractorAuditOperatorDAO caoDAO,
-			EmailSubscriptionDAO subscriptionDAO, AuditCategoryDataDAO auditCategoryDataDAO, AuditQuestionDAO auditQuestionDAO) {
+			EmailSubscriptionDAO subscriptionDAO, AuditCategoryDataDAO auditCategoryDataDAO,
+			AuditQuestionDAO auditQuestionDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.auditDataDAO = auditDataDAO;
@@ -376,28 +378,35 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		date.add(Calendar.DAY_OF_YEAR, -1);
 		return DateBean.format(date.getTime(), "M/d/yyyy");
 	}
-	
+
 	public AuditCatData getAuditCatData(int auditID, int questionID) {
 		AuditQuestion auditQuestion = auditQuestionDAO.find(questionID);
-		if(permissions.isContractor()) {
-			if(!auditQuestion.getAuditType().isCanContractorView())
-				return null;
-		}
-		int catID = auditQuestion.getSubCategory().getCategory().getId();
-		List<AuditCatData> aList = auditCategoryDataDAO.findAllAuditCatData(auditID, catID);
-		if(aList != null && aList.size() > 0) {
-			return aList.get(0);
+		if(isCanSeeAudit(auditQuestion.getAuditType())) {
+			int catID = auditQuestion.getSubCategory().getCategory().getId();
+			List<AuditCatData> aList = auditCategoryDataDAO.findAllAuditCatData(auditID, catID);
+			if (aList != null && aList.size() > 0) {
+				return aList.get(0);
+			}
 		}
 		return null;
 	}
-	
+
 	public int getShaTypeID() {
 		OshaType shaType = co.getOperatorAccount().getOshaType();
-		if(shaType.equals(OshaType.COHS))
+		if (shaType.equals(OshaType.COHS))
 			return AuditCategory.CANADIAN_STATISTICS;
-		if(shaType.equals(OshaType.MSHA))
+		if (shaType.equals(OshaType.MSHA))
 			return AuditCategory.MSHA;
 		else
 			return AuditCategory.OSHA_AUDIT;
+	}
+	
+	public boolean isCanSeeAudit(AuditType auditType) {
+		if(permissions.isContractor() 
+				&& auditType.isCanContractorView())
+			return true;
+		if(permissions.hasPermission(OpPerms.ContractorDetails))
+			return true;
+		return false;	
 	}
 }

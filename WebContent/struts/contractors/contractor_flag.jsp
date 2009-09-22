@@ -114,37 +114,39 @@
 	</thead>
 	<s:iterator id="op" value="co.operatorAccount.visibleAudits">
 		<s:if test="contractorFlag != null">
-			<s:if test="(permissions.contractor && auditType.canContractorView) || !permissions.contractor">
-				<tr class="<s:property value="contractorFlag" />">
-					<td class="center"><s:property value="contractorFlag.smallIcon"
-						escape="false" />
-						</td>
-					<td><s:property value="auditType.auditName" /></td>
-					<td>
-					<s:iterator id="con" value="contractor.audits">
-						<s:if test="#op.auditType == #con.auditType">
-							<s:if test="#op.auditType.classType.policy && !(#con.auditStatus.expired)">
-								<s:iterator value="#con.operators">
-									<s:if test="visible && (#op.operatorAccount == operator)">
-										<s:if test="!status.approved && !status.notApplicable">
+			<tr class="<s:property value="contractorFlag" />">
+				<td class="center"><s:property value="contractorFlag.smallIcon"
+					escape="false" />
+					</td>
+				<td><s:property value="auditType.auditName" /></td>
+				<td>
+				<s:iterator id="con" value="contractor.audits">
+					<s:if test="#op.auditType == #con.auditType">
+						<s:if test="#op.auditType.classType.policy && !(#con.auditStatus.expired)">
+							<s:iterator value="#con.operators">
+								<s:if test="visible && (#op.operatorAccount == operator)">
+									<s:if test="!status.approved && !status.notApplicable">
+										<s:if test="isCanSeeAudit(auditType)">
 											<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
 											<s:property value="status"/><br/>
 										</s:if>
 									</s:if>
-								</s:iterator>
-							</s:if>
-							<s:else>
-								<s:if test="#con.auditStatus.pendingSubmitted || #con.auditStatus.incomplete">
-									<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
-									<s:property value="auditStatus" /><br />
 								</s:if>
-							</s:else>
+							</s:iterator>
 						</s:if>
-					</s:iterator>
-					</td>
-				</tr>
+						<s:else>
+							<s:if test="#con.auditStatus.pendingSubmitted || #con.auditStatus.incomplete">
+								<s:if test="isCanSeeAudit(auditType)">
+									<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
+								</s:if>
+								<s:property value="auditStatus" /><br />
+							</s:if>
+						</s:else>
+					</s:if>
+				</s:iterator>
+				</td>
+			</tr>
 			</s:if>
-		</s:if>
 	</s:iterator>
 	
 	<pics:permission perm="ManageOperators">
@@ -286,10 +288,12 @@
 								</s:if>
 							</s:iterator></td>
 						</s:if>
-						<td><s:if
+						<td><s:if test="isCanSeeAudit(value.conAudit.auditType)">
+							<s:if
 							test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
 							<a
 								href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=<s:property value="shaTypeID"/>">Show</a>
+							</s:if>
 						</s:if></td>
 					</tr>
 				</s:iterator>
