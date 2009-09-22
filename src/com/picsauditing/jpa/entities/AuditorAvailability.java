@@ -132,7 +132,7 @@ public class AuditorAvailability extends BaseTable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", "Availability_" + id);
-		obj.put("title", "Empty Slot");
+		obj.put("title", user.getName());
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);

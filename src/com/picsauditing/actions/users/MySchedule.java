@@ -11,22 +11,26 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.AuditorScheduleDAO;
 import com.picsauditing.dao.AuditorVacationDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.AuditorSchedule;
 import com.picsauditing.jpa.entities.AuditorVacation;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class MySchedule extends PicsActionSupport implements Preparable {
 	private int currentUserID;
-	private AuditorSchedule schedule = null;
 	private List<AuditorSchedule> schedules = null;
 	private List<AuditorVacation> vacations = null;
 	private List<AuditorAvailability> availability = null;
+	private List<ContractorAudit> scheduledAudits = null;
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 	private AuditorScheduleDAO auditorScheduleDAO;
 	private AuditorVacationDAO auditorVacationDAO;
+	private ContractorAuditDAO contractorAuditDAO;
+
 	private JSONObject json;
 	private String type = "Schedule";
 
@@ -39,10 +43,11 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private User currentUser;
 
 	public MySchedule(AuditorAvailabilityDAO auditorAvailabilityDAO, AuditorScheduleDAO auditorScheduleDAO,
-			AuditorVacationDAO auditorVacationDAO) {
+			AuditorVacationDAO auditorVacationDAO, ContractorAuditDAO contractorAuditDAO) {
 		this.auditorAvailabilityDAO = auditorAvailabilityDAO;
 		this.auditorScheduleDAO = auditorScheduleDAO;
 		this.auditorVacationDAO = auditorVacationDAO;
+		this.contractorAuditDAO = contractorAuditDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -77,8 +82,14 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				JSONArray events = new JSONArray();
 				json.put("events", events);
 				if (type.equals("Schedule")) {
-					for (AuditorSchedule row : getSchedules()) {
-						events.add(row.toJSON());
+					for (ContractorAudit row : getScheduledAudits()) {
+						JSONObject scheduledAudit = new JSONObject();
+
+						scheduledAudit.put("id", "Schedule" + row.getId());
+						scheduledAudit.put("title", row.getContractorAccount().getName());
+						scheduledAudit.put("start", row.getScheduledDate().getTime());
+						scheduledAudit.put("allDay", false);
+						events.add(scheduledAudit);
 					}
 				}
 				if (type.equals("Vacation")) {
@@ -187,11 +198,11 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				if (schedEvent == null) {
 					output = "No schedule to save";
 					json = new JSONObject();
-					json.put("gritter.text", output);
-					json.put("gritter.title", "Schedule not Found");
+					json.put("output", output);
+					json.put("title", "Schedule not Found");
 					return JSON;
 				}
-				schedule = auditorScheduleDAO.find(schedEvent.id);
+				AuditorSchedule schedule = auditorScheduleDAO.find(schedEvent.id);
 				if (schedule == null)
 					schedule = new AuditorSchedule();
 
@@ -235,7 +246,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("deleteSchedule")) {
-				schedule = auditorScheduleDAO.find(schedEvent.id);
+				AuditorSchedule schedule = auditorScheduleDAO.find(schedEvent.id);
 				if (schedule == null || schedule.getId() == 0) {
 					output = "No schedule found.";
 					return SUCCESS;
@@ -249,14 +260,6 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		}
 
 		return SUCCESS;
-	}
-
-	public AuditorSchedule getSchedule() {
-		return schedule;
-	}
-
-	public void setSchedule(AuditorSchedule schedule) {
-		this.schedule = schedule;
 	}
 
 	public List<AuditorSchedule> getSchedules() {
@@ -285,6 +288,14 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			availability = auditorAvailabilityDAO.findByAuditorID(currentUser.getId());
 		}
 		return availability;
+	}
+
+	public List<ContractorAudit> getScheduledAudits() {
+		if (scheduledAudits == null) {
+			scheduledAudits = contractorAuditDAO.findScheduledAudits(currentUserID, new Date(start), new Date(end));
+		}
+
+		return scheduledAudits;
 	}
 
 	public JSONObject getJson() {

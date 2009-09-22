@@ -23,7 +23,8 @@ import com.picsauditing.util.Geo;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * This class should ignore all timezone information and calculate everything based on the server time
+ * This class should ignore all timezone information and calculate everything
+ * based on the server time
  * 
  * @author Trevor
  * 
@@ -77,7 +78,7 @@ public class AuditScheduleBuilder {
 		Calendar endDate = Calendar.getInstance();
 		endDate.add(Calendar.DAY_OF_YEAR, maxDaysAway);
 
-		scheduledAudits = contractorAuditDAO.findScheduledAudits(startDate.getTime(), endDate.getTime());
+		scheduledAudits = contractorAuditDAO.findScheduledAudits(0, startDate.getTime(), endDate.getTime());
 		PicsLogger.log("Found " + scheduledAudits.size() + " already scheduled audits");
 
 		PicsLogger.log("Building schedules for " + auditors.size() + " auditors between " + startDate.getTime()
@@ -132,8 +133,9 @@ public class AuditScheduleBuilder {
 		}
 
 		/**
-		 * For a this user (auditor) create their available time blocks to do audits between the dates (startDate and
-		 * endDate) ie between 7 and 60 days from today
+		 * For a this user (auditor) create their available time blocks to do
+		 * audits between the dates (startDate and endDate) ie between 7 and 60
+		 * days from today
 		 * 
 		 * @param startDate
 		 * @param endDate
@@ -158,7 +160,8 @@ public class AuditScheduleBuilder {
 				if (schedules.get(weekDay) != null) {
 					// Running Sample: This auditor works on Mondays
 					for (AuditorSchedule schedule : schedules.get(weekDay).schedules) {
-						// Running Sample: This auditor works at 7 AM, 9 AM, 1 PM and 3 PM
+						// Running Sample: This auditor works at 7 AM, 9 AM, 1
+						// PM and 3 PM
 						Calendar proposedStartTime = Calendar.getInstance();
 						// Set the day
 						proposedStartTime.setTime(nextDate.getTime());
@@ -197,9 +200,13 @@ public class AuditScheduleBuilder {
 						ContractorAudit previousAudit = null;
 						ContractorAudit nextAudit = null;
 
-						boolean webOnly = false; // gets set to true only if we have a web audit scheduled that day
-						boolean onsiteOnly = false; // gets set to true only if we have an onsite audit scheduled that
-													// day
+						boolean webOnly = false; // gets set to true only if we
+													// have a web audit
+													// scheduled that day
+						boolean onsiteOnly = false; // gets set to true only if
+													// we have an onsite audit
+													// scheduled that
+						// day
 
 						for (ContractorAudit audit : scheduledAudits) {
 							Calendar scheduledStarttime = Calendar.getInstance();
@@ -225,11 +232,13 @@ public class AuditScheduleBuilder {
 
 								if (millisStartsAfterProposal >= 0) {
 									if (millisStartsAfterProposal < (60 * 60 * 1000))
-										// This audit starts within 60 minutes of the proposed finishing
+										// This audit starts within 60 minutes
+										// of the proposed finishing
 										nextAudit = audit;
 								} else if (millisEndingBeforeProposal >= 0) {
 									if (millisEndingBeforeProposal < (60 * 60 * 1000))
-										// This audit ends within 60 minutes of the proposed beginning
+										// This audit ends within 60 minutes of
+										// the proposed beginning
 										previousAudit = audit;
 								} else {
 									// This audit overlaps my proposal
@@ -271,7 +280,7 @@ public class AuditScheduleBuilder {
 								ar.setOnlyInStates(gulfCoastStates);
 							}
 							availability.setRestrictionsObject(ar);
-							
+
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());
 							list.add(availability);
 						}

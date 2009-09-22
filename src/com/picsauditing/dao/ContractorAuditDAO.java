@@ -260,15 +260,19 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorAudit> findScheduledAudits(Date startDate, Date endDate) {
-		
+	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate) {
 		String hql = "SELECT ca FROM ContractorAudit ca " +
-			" WHERE ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate" +
-			" ORDER BY ca.scheduledDate, ca.id";
+			" WHERE ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
+		if (auditorID > 0)
+			hql += " AND ca.auditor.id = :auditorID";
+		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
 		
 		query.setParameter("startDate", startDate);
 		query.setParameter("endDate", endDate);
+		
+		if (auditorID > 0)
+			query.setParameter("auditorID", auditorID);
 		
 		return query.getResultList();
 	}
