@@ -47,7 +47,7 @@ function loadPreview() {
 
 
 	$dialog = $('#vacation_form').dialog({
-		title:'Vacation Entry', 
+		title:'Calendar Entry', 
 		autoOpen:false,
 		modal: true,
 		buttons: {
