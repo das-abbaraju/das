@@ -56,6 +56,7 @@ public class AssignWebcams extends AccountActionSupport implements Preparable {
 							audit.getContractorAccount().getWebcam().setContractor(null);
 
 						audit.getContractorAccount().setWebcam(null);
+						addActionMessage("Webcam removed from " + audit.getContractorAccount().getName());
 					} else {
 						if (audit.getContractorAccount().getWebcam() != null)
 							audit.getContractorAccount().getWebcam().setContractor(null);
@@ -69,7 +70,11 @@ public class AssignWebcams extends AccountActionSupport implements Preparable {
 						webcam.setSendBy(getUser());
 
 						// stamp the notes
-						this.addNote(webcam.getContractor(), "Sent webcam " + webcam.getId() + " to " + webcam.getContractor().getName()
+						this.addNote(webcam.getContractor(), "Sent webcam " + webcam.getId() + " to "
+								+ webcam.getContractor().getName() + " via shipping method: "
+								+ webcam.getShippingMethod() + " with tracking number: " + webcam.getTrackingNumber());
+
+						addActionMessage("Sent webcam " + webcam.getId() + " to " + webcam.getContractor().getName()
 								+ " via shipping method: " + webcam.getShippingMethod() + " with tracking number: "
 								+ webcam.getTrackingNumber());
 
