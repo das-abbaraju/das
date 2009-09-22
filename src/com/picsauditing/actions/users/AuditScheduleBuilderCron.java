@@ -43,7 +43,11 @@ public class AuditScheduleBuilderCron extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public static void rerun(Map session) {
-		session.remove(LAST_RUN_KEY);
+	/**
+	 * Usage: AuditScheduleBuilderCron.rerun(ActionContext.getContext());
+	 * @param context
+	 */
+	public static void rerun(ActionContext context) {
+		context.getSession().remove(LAST_RUN_KEY);
 	}
 }
