@@ -71,7 +71,6 @@ $(function(){
 		<tr>
 			<td>id</td>
 			<td>Contractor</td>
-			<td>Type</td>
 			<td>Scheduled Date</td>
 			<td>Webcam</td>
 		</tr>
@@ -80,7 +79,6 @@ $(function(){
 		<tr class="clickable" onclick="location.href='?audit.id=<s:property value="id"/>'">
 			<td><a href="?audit.id=<s:property value="id"/>"><s:property value="id"/></a></td>
 			<td><s:property value="contractorAccount.name" /></td>
-			<td><s:property value="auditType.auditName" /></td>
 			<td><s:date name="scheduledDate" format="MM/dd/yyyy hh:mm a"/></td>
 			<td class="center"><s:if test="contractorAccount.webcam != null"><img src="images/icon_webcam.png"/></s:if></td>
 		</tr>
@@ -89,11 +87,11 @@ $(function(){
 </div>
 
 <s:if test="audit != null">
-<div>
+<div style="float:left">
 	<s:form>
 		<s:hidden name="audit.id"/>
 		<fieldset class="form">
-			<legend><span>Contact Info</span></legend>
+			<legend><span>Contact Info - <s:property value="audit.contractorAccount.name"/></span></legend>
 			<ol>
 				<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/>
 					<input type="button" value="Show Contractor Contact Info" onclick="showContractor()"/></li>
@@ -103,10 +101,10 @@ $(function(){
 				<li><label>City:</label><s:textfield name="audit.city"/></li>
 				<li>
 					<label>Country:</label>
-					<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" name="audit.country"
+					<s:select list="countryList" name="audit.country"
 							onchange="changeState(this.value);"/>
 				</li>
-				<li <s:if test="audit.country == null || audit.country.length == 0">style="display:none"</s:if> id="state_sel"><label>State:</label><s:select list="@com.picsauditing.jpa.entities.State@getStates(true)" name="audit.state"/></li>
+				<li <s:if test="audit.country == null || audit.country.length == 0">style="display:none"</s:if> id="state_sel"><label>State:</label><s:select list="stateList" name="audit.state"/></li>
 				<li><label>Zip:</label><s:textfield name="audit.zip"/></li>
 				<li><label>Phone:</label><s:textfield name="audit.phone"/></li>
 				<li><label>Email:</label><s:textfield name="audit.phone2"/></li>
