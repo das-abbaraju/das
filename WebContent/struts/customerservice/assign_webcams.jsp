@@ -11,16 +11,44 @@
 var contractor = {
 	'audit.contractorContact': '<s:property value="audit.contractorAccount.contact"/>',
 	'audit.address': '<s:property value="audit.contractorAccount.address"/>',
+	'audit.address2': '<s:property value="audit.contractorAccount.address2"/>',
 	'audit.city': '<s:property value="audit.contractorAccount.city"/>',
+	'audit.country': '<s:property value="audit.contractorAccount.country"/>',
 	'audit.state': '<s:property value="audit.contractorAccount.state"/>',
-	'audit.zip': '<s:property value="audit.contractorAccount.zip"/>'
+	'audit.zip': '<s:property value="audit.contractorAccount.zip"/>',
+	'audit.phone': '<s:property value="audit.contractorAccount.phone"/>',
+	'audit.phone2': '<s:property value="audit.contractorAccount.email"/>'
 };
 
 function useContractor() {
 	$.each(contractor, function(k,v) {
+		$('form [name='+k+']').parent().find('span').fadeOut().remove();
 		$('form [name='+k+']').val(v);
 	});
+	changeState(contractor['audit.country']);
 }
+
+function showContractor() {
+	$.each(contractor, function(k,v) {
+		$('form [name='+k+']').parent().find('span').fadeOut().remove();
+		$('form [name='+k+']').parent().append($('<span>'+v+'</span>').hide()).find('span').fadeIn();
+	});
+}
+
+function changeState(state) {
+	if (state == 'USA' || state == 'Canada') {
+		$('#state_sel').show('slow');
+	} else {
+		$('#state_sel').hide('slow');
+	}
+}
+
+<s:if test="audit != null">
+$(function(){
+	if ('<s:property value="audit.country"/>' == 'US')
+		$('[name=audit.country]').val('USA');
+});
+</s:if>
 </script>
 </s:if>
 
@@ -49,7 +77,7 @@ function useContractor() {
 		</tr>
 	</thead>
 	<s:iterator value="audits" status="stat">
-		<tr>
+		<tr class="clickable" onclick="location.href='?audit.id=<s:property value="id"/>'">
 			<td><a href="?audit.id=<s:property value="id"/>"><s:property value="id"/></a></td>
 			<td><s:property value="contractorAccount.name" /></td>
 			<td><s:property value="auditType.auditName" /></td>
@@ -67,12 +95,21 @@ function useContractor() {
 		<fieldset class="form">
 			<legend><span>Contact Info</span></legend>
 			<ol>
-				<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/></li>
+				<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/>
+					<input type="button" value="Show Contractor Contact Info" onclick="showContractor()"/></li>
 				<li><label>Contact Name:</label><s:textfield name="audit.contractorContact"/></li>
 				<li><label>Address:</label><s:textfield name="audit.address"/></li>
+				<li><label>Address2:</label><s:textfield name="audit.address2"/></li>
 				<li><label>City:</label><s:textfield name="audit.city"/></li>
-				<li><label>State:</label><s:select list="@com.picsauditing.jpa.entities.State@getStates(true)" name="audit.state"/></li>
+				<li>
+					<label>Country:</label>
+					<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" name="audit.country"
+							onchange="changeState(this.value);"/>
+				</li>
+				<li <s:if test="audit.country == null || audit.country.length == 0">style="display:none"</s:if> id="state_sel"><label>State:</label><s:select list="@com.picsauditing.jpa.entities.State@getStates(true)" name="audit.state"/></li>
 				<li><label>Zip:</label><s:textfield name="audit.zip"/></li>
+				<li><label>Phone:</label><s:textfield name="audit.phone"/></li>
+				<li><label>Email:</label><s:textfield name="audit.phone2"/></li>
 			</ol>
 		</fieldset>
 		<fieldset class="form">
@@ -82,6 +119,8 @@ function useContractor() {
 					<label>Webcam:</label>
 					<s:select name="webcam.id" list="webcams" listKey="id" headerKey="0" headerValue="- Select a Webcam -"/>
 				</li>
+				<li><label>Shipping Method:</label><s:select list="{'Ground','Two Day','Express Saver','Overnight'}" name="webcam.shippingMethod"/></li>
+				<li><label>Tracking Number:</label><s:textfield name="webcam.trackingNumber"/></li>
 			</ol>
 		</fieldset>
 		<fieldset class="form submit">
