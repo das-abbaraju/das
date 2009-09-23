@@ -83,7 +83,7 @@ function loadPreview() {
 					data['calEvent.end'] = end.getTime();
 
 				$.getJSON('MyScheduleJSON.action', data,
-					function(json) { console.log(json);
+					function(json) {
 						$.gritter.add({title:json.title, text:json.output});
 						if (json.calEvent) {
 							fixEvent(null, json.calEvent);
