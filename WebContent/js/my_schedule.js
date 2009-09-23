@@ -154,7 +154,7 @@ function loadPreview() {
 			},
 		eventRender: function (calEvent, element, view) {
 				$(element)
-					.attr({title: calEvent.owner+': '+getType(calEvent)+' '+$.fullCalendar.formatDates(calEvent.start,calEvent.end,"'['h:mma{'-'h:mma}']'")})
+					.attr({title: calEvent.owner+': '+getType(calEvent)+' '+$.fullCalendar.formatDates(calEvent.start,calEvent.end,"'['h:mmt{'-'h:mmt}']'")})
 					.tooltip({track: true, delay:0});
 			},
 		dayClick: function(dayDate, view) {
