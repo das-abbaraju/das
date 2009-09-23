@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
@@ -203,9 +204,13 @@ public class LoginController extends PicsActionSupport {
 		if (user.getIsActive() != YesNo.Yes)
 			return "This account for " + user.getAccount().getName() + " is no longer active.<br>Please contact your administrator to reactivate it.";
 
-		if (user.getLockUntil() != null && user.getLockUntil().after(new Date()))
-			return "This account is locked because of too many failed attempts";
-
+		if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
+			return "This account is locked because of too many failed attempts. " +
+					"You will be able to try again in " + DateBean.prettyDate(user.getLockUntil());
+		}
+		if (Strings.isEmpty(password)) {
+			return "You must enter a password";
+		}
 		if (!user.getPassword().equals(password)) {
 			user.setFailedAttempts(user.getFailedAttempts() + 1);
 			// TODO parameterize this 7 here
@@ -217,7 +222,8 @@ public class LoginController extends PicsActionSupport {
 				user.setLockUntil(calendar.getTime());
 				return "The password is not correct and the account has now been locked";
 			}
-			return "The password is not correct";
+			return "The password is not correct. You have " + (8 - user.getFailedAttempts()) 
+				+ " attempts remaining before your account will be locked for one hour.";
 		}
 		user.setFailedAttempts(0);
 		user.setLockUntil(null); // it's no longer locked

@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.AuditorScheduleDAO;
@@ -68,6 +69,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		tryPermissions(OpPerms.MyCalendar);
 
 		if (currentUserID > 0) {
 			currentUser = this.getUser(currentUserID);

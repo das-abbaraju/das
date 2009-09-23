@@ -170,7 +170,7 @@ public class PicsMenu {
 		}
 		
 		// Add a new permission for this
-		if(permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+		if(permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
 		}
 		

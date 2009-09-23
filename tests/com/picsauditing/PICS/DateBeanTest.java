@@ -44,5 +44,11 @@ public class DateBeanTest extends TestCase {
 		Date destDate = DateBean.convertTime(sourceDate, TimeZone.getTimeZone("US/Eastern"), TimeZone.getTimeZone("US/Pacific"));
 		assertEquals(sourceDate.getHours() - 3, destDate.getHours());
 	}
-
+	
+	@Test
+	public void testPrettyDate() throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		assertEquals("", DateBean.prettyDate(cal.getTime()));
+	}
 }

@@ -456,4 +456,40 @@ public class DateBean {
 		c2.setTimeZone(destinationTimeZone);
 		return c2.getTime();
 	}
+	
+	public static String prettyDate(Date dateValue) {
+		long msToUnlock = dateValue.getTime() - new Date().getTime();
+		
+		String ago = (msToUnlock < 0) ? " ago" : "";
+		msToUnlock = Math.abs(msToUnlock);
+		
+		String period = "";
+		int value = Math.round(msToUnlock / 1000);
+		if (value <= 70) {
+			period = "second";
+		} else {
+			value = Math.round(value / 60);
+			if (value <= 70) {
+				period = "minute";
+			} else {
+				value = Math.round(value / 60);
+				if (value <= 24) {
+					period = "hour";
+				} else {
+					value = Math.round(value / 24);
+					if (value <= 31) {
+						period = "day";
+					} else {
+						value = Math.round(value * 12 / 365);
+						period = "month";
+					}
+				}
+			}
+		}
+
+		if (value != 1)
+			period += "s";
+		return value + " " + period + ago;
+	}
+	
 }
