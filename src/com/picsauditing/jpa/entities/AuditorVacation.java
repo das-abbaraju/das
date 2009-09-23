@@ -71,7 +71,7 @@ public class AuditorVacation extends BaseTable {
 			obj.put("id", "Holiday_" + id);
 			obj.put("owner", "All Users");
 		}
-		obj.put("title", Strings.isEmpty(description) ? "Vacation" : description);
+		obj.put("title", Strings.isEmpty(description) ? (user == null ? "Holiday" : "Vacation") : description);
 
 		Calendar start = Calendar.getInstance();
 		Calendar end = null;

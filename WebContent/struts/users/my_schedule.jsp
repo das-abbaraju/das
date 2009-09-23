@@ -12,6 +12,13 @@
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
+<script type="text/javascript">
+var hasHoliday = false;
+<pics:permission perm="Holidays">
+	hasHoliday = true;
+</pics:permission>
+</script>
+"
 <script type="text/javascript" src="js/my_schedule.js"></script>
 <style>
 .cal-availability, .cal-availability a {
@@ -81,10 +88,15 @@ table.modal_form .title {
 	<fieldset>
 		<s:hidden name="id"/>
 		<table class="modal_form">
+		<pics:permission perm="Holidays">
 		<tr>
 			<td class="title">Type</td>
 			<td><s:select list="{'Vacation','Holiday'}" name="type"/></td>
 		</tr>
+		</pics:permission>
+		<pics:permission perm="Holidays" negativeCheck="true">
+			<s:hidden name="type" value="'Vacation'"/>
+		</pics:permission>
 		<tr>
 			<td class="title" rowspan="2">Title</td>
 			<td><s:textfield name="title"/></td>

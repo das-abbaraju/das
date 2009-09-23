@@ -7,6 +7,7 @@ function loadPreview() {
 	
 	function clearForm() {
 		$dialog.find(':input').val('');
+		$dialog.find('[name=type]').val('Vacation');
 	}
 	
 	function getType(calEvent) {
@@ -19,7 +20,7 @@ function loadPreview() {
 
 	var sources = [
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Vacation', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
+				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Holiday', start: start.getTime(), end: end.getTime()}, 
 					function(json) { 
 						$.each(json.events, fixEvent);
 						callback(json.events); 
@@ -27,12 +28,12 @@ function loadPreview() {
 				);
 			},
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Holiday', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
-						function(json) { 
-							$.each(json.events, fixEvent);
-							callback(json.events); 
-						} 
-					);
+				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Vacation', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
+					function(json) { 
+						$.each(json.events, fixEvent);
+						callback(json.events); 
+					} 
+				);
 			},
 			function(start, end, callback) {
 				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Audit', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
@@ -72,7 +73,8 @@ function loadPreview() {
 					'calEvent.id': $dialog.find('[name=id]').val(),
 					'calEvent.title':$dialog.find('[name=title]').val(),
 					'type': $dialog.find('[name=type]').val(),
-					'button': 'save'
+					'button': 'save',
+					'currentUserID': $('#currentUserID').val()
 				};
 
 				if (!isNaN(start))
@@ -81,14 +83,17 @@ function loadPreview() {
 					data['calEvent.end'] = end.getTime();
 
 				$.getJSON('MyScheduleJSON.action', data,
-					function(json) {
-						$.gritter.add({title: json.title, text: json.output});
+					function(json) { console.log(json);
+						$.gritter.add({title:json.title, text:json.output});
 						if (json.calEvent) {
 							fixEvent(null, json.calEvent);
 							if (json.update){
 								var event = $calendar.fullCalendar('clientEvents', json.calEvent.id)[0];
 								event.start = json.calEvent.start;
 								event.end = json.calEvent.end;
+								event.title = json.calEvent.title;
+								event.className = json.calEvent.className;
+								event.owner = json.calEvent.owner;
 								$calendar.fullCalendar('updateEvent', event);
 							}
 							else
@@ -101,12 +106,15 @@ function loadPreview() {
 			},
 			Delete: function() {
 				var calID = $dialog.find('[name=id]').val();
+				var type = $dialog.find('[name=type]').val();
 				$.getJSON('MyScheduleJSON.action',
-					{button: 'deleteVacation', 'calEvent.id': calID},
+					{button: 'delete',type: type, 'calEvent.id': calID, 'currentUserID': $('#currentUserID').val()},
 					function(json) {
-						$.gritter.add({title: json.title, text: json.output});
-						if (json.deleted)
-							$calendar.fullCalendar('removeEvents', json.calEvent.id);
+						$.gritter.add({title:json.title, text:json.output});
+						if (json.calEvent) {
+							if (json.deleted)
+								$calendar.fullCalendar('removeEvents', json.calEvent.id);
+						}
 						$dialog.dialog('close');
 					}
 				);
@@ -134,6 +142,8 @@ function loadPreview() {
 		eventClick: function(calEvent, jsEvent, view) {
 				if (getType(calEvent) == 'Availability' || getType(calEvent) == 'Audit')
 					return;
+				if (!hasHoliday && getType(calEvent) == 'Holiday')
+					return;
 				var allDayCB = $dialog.find('#all-day:unchecked');
 				if (calEvent.allDay && !allDayCB.is(':checked')) 
 					allDayCB.click();
@@ -154,7 +164,7 @@ function loadPreview() {
 			},
 		eventRender: function (calEvent, element, view) {
 				$(element)
-					.attr({title: calEvent.owner+': '+getType(calEvent)+' '+$.fullCalendar.formatDates(calEvent.start,calEvent.end,"'['h:mmt{'-'h:mmt}']'")})
+					.attr({title: getType(calEvent)+' '+$.fullCalendar.formatDates(calEvent.start,calEvent.end,"'['[MM/dd ]h:mmt{'-'[MM/dd ]h:mmt}']'")})
 					.tooltip({track: true, delay:0});
 			},
 		dayClick: function(dayDate, view) {
