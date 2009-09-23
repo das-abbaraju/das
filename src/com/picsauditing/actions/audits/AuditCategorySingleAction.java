@@ -58,6 +58,10 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					AuditTypeClass.IM));
 
 		if ("Submit".equals(button)) {
+			if(conAudit.getPercentComplete() < 100) {
+				addActionError("Please complete the audit before you submit");
+				return SUCCESS;
+			}
 			if (conAudit.getAuditType().isPqf()) {
 				if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
 					auditStatus = AuditStatus.Active;
