@@ -120,7 +120,11 @@ function loadPreview() {
 
 	$calendar = $('#cal_vacat').fullCalendar({
 		weekMode: 'liquid',
-		header: { left:'title', center:'', right:'today, ,prev,next, ,month,basicWeek,basicDay' },
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'month,basicWeek,basicDay'
+		},
 		loading: function(isLoading, view) {
 				if(isLoading)
 					$.gritter.add({title:'Loading...', text: 'Fetching calendar events', time: 2000});
@@ -149,7 +153,9 @@ function loadPreview() {
 				$dialog.dialog('open');
 			},
 		eventRender: function (calEvent, element, view) {
-				$(element).attr({title: calEvent.owner}).tooltip({track: true, delay:0});
+				$(element)
+					.attr({title: calEvent.owner+': '+getType(calEvent)+' '+$.fullCalendar.formatDates(calEvent.start,calEvent.end,"'['h:mma{'-'h:mma}']'")})
+					.tooltip({track: true, delay:0});
 			},
 		dayClick: function(dayDate, view) {
 				clearForm();
