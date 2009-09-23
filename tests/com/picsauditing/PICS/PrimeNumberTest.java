@@ -5,20 +5,24 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 public class PrimeNumberTest extends TestCase {
+	@Test
 	public void testPrimeNumber() {
-		assertEquals(true, isPrime(3));
-		assertEquals(false, isPrime(4));
-		assertEquals(true, isPrime(5));
-		assertEquals(true, isPrime(11));
-		assertEquals(false, isPrime(12));
-		assertEquals(true, isPrime(13));
-		assertEquals(false, isPrime(27));
-		assertEquals(true, isPrime(29));
-		assertEquals(false, isPrime(30));
+		int i = 2;
+		long starttime = System.currentTimeMillis();
+		while( i < 100000) {
+			if(isPrime(i))
+				System.out.println(i);
+			i++;
+		}
+		long endtime = System.currentTimeMillis();
+		System.out.println("Time Taken :" + (endtime-starttime));
 	}
 	
 	private boolean isPrime(int candidate) {
-		// TODO write
+		for(int i=2; i<=  Math.ceil(Math.sqrt(candidate)); i++) {
+			if(candidate%i == 0)
+				return false;
+		}
 		return true;
 	}
 
