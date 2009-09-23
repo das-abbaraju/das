@@ -19,7 +19,7 @@ function loadPreview() {
 
 	var sources = [
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Vacation', start: start.getTime(), end: end.getTime()}, 
+				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Vacation', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
 					function(json) { 
 						$.each(json.events, fixEvent);
 						callback(json.events); 
@@ -27,7 +27,7 @@ function loadPreview() {
 				);
 			},
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Holiday', start: start.getTime(), end: end.getTime()}, 
+				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Holiday', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
 						function(json) { 
 							$.each(json.events, fixEvent);
 							callback(json.events); 
@@ -35,7 +35,7 @@ function loadPreview() {
 					);
 			},
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Schedule', start: start.getTime(), end: end.getTime()}, 
+				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Audit', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
 						function(json) { 
 							$.each(json.events, fixEvent);
 							callback(json.events); 
@@ -43,14 +43,13 @@ function loadPreview() {
 					);				
 			},
 			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Availability', start: start.getTime(), end: end.getTime()}, 
+				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Availability', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
 						function(json) { 
 							$.each(json.events, fixEvent);
 							callback(json.events); 
 						} 
 					);				
-			}
-	
+			}	
 	];
 
 
@@ -122,8 +121,14 @@ function loadPreview() {
 	$calendar = $('#cal_vacat').fullCalendar({
 		weekMode: 'liquid',
 		header: { left:'title', center:'', right:'today, ,prev,next, ,month,basicWeek,basicDay' },
+		loading: function(isLoading, view) {
+				if(isLoading)
+					$.gritter.add({title:'Loading...', text: 'Fetching calendar events', time: 2000});
+				else
+					$.gritter.add({title:'Loading Finished', text: 'Finished fetching calendar events', time: 2000});
+			},
 		eventClick: function(calEvent, jsEvent, view) {
-				if (getType(calEvent) == 'Availability' || getType(calEvent) == 'Scheduled')
+				if (getType(calEvent) == 'Availability' || getType(calEvent) == 'Audit')
 					return;
 				var allDayCB = $dialog.find('#all-day:unchecked');
 				if (calEvent.allDay && !allDayCB.is(':checked')) 
@@ -143,6 +148,9 @@ function loadPreview() {
 				}
 				$dialog.dialog('open');
 			},
+		eventRender: function (calEvent, element, view) {
+				$(element).attr({title: calEvent.owner}).tooltip({track: true, delay:0});
+			},
 		dayClick: function(dayDate, view) {
 				clearForm();
 				$dialog.find('[name=id]').val(0);
@@ -150,6 +158,10 @@ function loadPreview() {
 				$dialog.dialog('open');
 			},
 		eventSources: sources
+	});
+	
+	$('#currentUserID').change(function(){
+		$calendar.fullCalendar('refetchEvents');
 	});
 }
 
@@ -201,7 +213,7 @@ function loadSched() {
 		newEventText: '',
 		data: function(start, end, callback) {
 			$.getJSON('MyScheduleJSON.action',
-					{button:'jsonSchedule'},
+					{button:'json', type:'weekly', currentUserID: $('#currentUserID').val()},
 					function(json) {
 						events = new Array(json.events.length);
 						$.each(json.events, function(k,v){
@@ -231,19 +243,24 @@ function loadSched() {
 
 	$calendar.find('.today').removeClass('today');
 	$calendar.find('.day-column.day-1, .day-column.day-7').css({'background-color':'#dedede'});
+	
+	$('#currentUserID').change(function(){
+		$calendar.weekCalendar('refresh');
+	});
 }
 
 $(function(){
 	var tabMap = {
-		preview:   {loaded: false, load: loadPreview},
-		aschedule: {loaded: false, load: loadSched}
+		preview:   {loaded: false, load: loadPreview, refresh: function(){$('#cal_vacat').fullCalendar('refetchEvents')}},
+		aschedule: {loaded: false, load: loadSched, refresh: function(){$('#cal_sched').weekCalendar('refresh');}}
 	};
 
 	$('#schedule_tabs').bind('tabsshow', function(event, ui) {
 	    if (!tabMap[ui.panel.id].loaded) {
 	    	tabMap[ui.panel.id].load();
 	    	tabMap[ui.panel.id].loaded = true;
-	    }
+	    } else
+	    	tabMap[ui.panel.id].refresh();
 	});
 
 	$("#schedule_tabs").tabs();

@@ -109,8 +109,10 @@ public class AuditorAvailability extends BaseTable {
 	}
 
 	/**
-	 * One time conversion from object to bytestream (this.restrictions)
-	 * If you change the AvailabilityRestrictions, you MUST call setRestrictionsObject(restrictions) again!
+	 * One time conversion from object to bytestream (this.restrictions) If you
+	 * change the AvailabilityRestrictions, you MUST call
+	 * setRestrictionsObject(restrictions) again!
+	 * 
 	 * @param restrictions
 	 */
 	public void setRestrictionsObject(AvailabilityRestrictions restrictions) {
@@ -132,7 +134,8 @@ public class AuditorAvailability extends BaseTable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", "Availability_" + id);
-		obj.put("title", user.getName());
+		obj.put("title", "Open Timeslot");
+		obj.put("owner", user.getName());
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
@@ -140,7 +143,7 @@ public class AuditorAvailability extends BaseTable {
 
 		cal.add(Calendar.MINUTE, duration);
 		obj.put("end", cal.getTimeInMillis());
-		
+
 		obj.put("allDay", false);
 		obj.put("editable", false);
 

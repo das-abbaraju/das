@@ -64,10 +64,13 @@ public class AuditorVacation extends BaseTable {
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
-		if (user != null)
+		if (user != null) {
 			obj.put("id", "Vacation_" + id);
-		else
+			obj.put("owner", user.getName());
+		} else {
 			obj.put("id", "Holiday_" + id);
+			obj.put("owner", "All Users");
+		}
 		obj.put("title", Strings.isEmpty(description) ? "Vacation" : description);
 
 		Calendar start = Calendar.getInstance();
