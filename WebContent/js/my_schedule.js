@@ -246,9 +246,11 @@ function loadSched() {
 		eventClick: function(calEvent, element) {
 				if (confirm("Do you want to delete this timeslot?")){
 					$.getJSON('MyScheduleJSON.action',
-						{ button:'deleteSchedule',
+						{	
+							button:'deleteSchedule',
 							'schedEvent.id':calEvent.id,
-							currentUserID: $('#currentUserID').val()},
+							currentUserID: $('#currentUserID').val()
+						},
 						function(json) { console.log(json);
 								$.gritter.add({title: json.title, text:json.output});
 								if (json.deleted)
