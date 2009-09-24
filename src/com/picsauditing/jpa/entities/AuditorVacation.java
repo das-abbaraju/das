@@ -105,7 +105,7 @@ public class AuditorVacation extends BaseTable {
 
 	@Override
 	public String toString() {
-		return id + " " + description + " " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " "
+		return "\"" + description + "\" " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " "
 				+ DateBean.format(endDate, "MM/dd/yyyy hh:mm a");
 	}
 
