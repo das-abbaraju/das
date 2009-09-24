@@ -156,6 +156,15 @@ public class DateBean {
 		return cal.get(Calendar.YEAR);
 	}// getCurrentYear
 
+	public static Date getNextDayMidnight(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.add(Calendar.DAY_OF_YEAR, 1);
+		return cal.getTime();
+	}
 	/**
 	 * This allows setting the new year rollover before jan 1. To set the rollover date, update currentYearStart in
 	 * web.xml.

@@ -184,10 +184,9 @@ public class AuditScheduleBuilder {
 							if (vacation.getStartDate().before(proposedEndTime.getTime())) {
 								Calendar tempEndtime = Calendar.getInstance();
 								if (vacation.getEndDate() == null) {
-									tempEndtime.setTime(vacation.getStartDate());
-									tempEndtime.add(Calendar.DAY_OF_YEAR, 1);
+									tempEndtime.setTime(DateBean.getNextDayMidnight(vacation.getStartDate()));
 								} else {
-									tempEndtime.setTime(vacation.getStartDate());
+									tempEndtime.setTime(vacation.getEndDate());
 								}
 								if (tempEndtime.getTime().after(proposedStartTime.getTime())) {
 									PicsLogger.log("Conflicting vacation " + vacation.getStartDate() + " to "
@@ -201,11 +200,11 @@ public class AuditScheduleBuilder {
 						ContractorAudit nextAudit = null;
 
 						boolean webOnly = false; // gets set to true only if we
-													// have a web audit
-													// scheduled that day
+						// have a web audit
+						// scheduled that day
 						boolean onsiteOnly = false; // gets set to true only if
-													// we have an onsite audit
-													// scheduled that
+						// we have an onsite audit
+						// scheduled that
 						// day
 
 						for (ContractorAudit audit : scheduledAudits) {
