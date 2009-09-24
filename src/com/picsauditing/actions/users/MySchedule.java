@@ -323,8 +323,6 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	public List<User> getAuditors() {
 		List<User> auditors = userDAO.findAuditors();
-		auditors.add(userDAO.find(941));
-		auditors.add(userDAO.find(2357));
 		return auditors;
 	}
 
