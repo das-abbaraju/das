@@ -17,6 +17,14 @@ var hasHoliday = false;
 <pics:permission perm="Holidays">
 	hasHoliday = true;
 </pics:permission>
+
+$.ajaxSetup( 
+	{
+	error : function(XMLHttpRequest, textStatus, errorThrown){
+			$.gritter.add({title:'Unexpected Error Occurred', text: 'Connection with PICS failed. If this continues, try refreshing or logging out.'})
+		}
+	}
+);
 </script>
 "
 <script type="text/javascript" src="js/my_schedule.js"></script>
