@@ -126,7 +126,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("save")) {
-				if (currentUserID != getUser().getId()) {
+				if (currentUserID != getUser().getId() && !"Holiday".equals(type)) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
@@ -183,20 +183,10 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						return SUCCESS;
 					}
 				}
-				if ("Holiday".equals(type)) {
-					if (permissions.hasPermission(OpPerms.Holidays)) {
-
-					} else {
-						json = new JSONObject();
-						json.put("title", "User Access Error");
-						json.put("output", "You do not have permission to modify vacations.");
-						return SUCCESS;
-					}
-				}
 			}
 
 			if (button.equals("delete")) {
-				if (currentUserID != getUser().getId()) {
+				if (currentUserID != getUser().getId() && !"Holiday".equals(type)) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
