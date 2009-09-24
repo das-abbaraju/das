@@ -25,6 +25,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private int currentUserID;
 	private List<AuditorSchedule> schedules = null;
 	private List<AuditorVacation> vacations = null;
+	private List<AuditorVacation> holidays = null;
 	private List<AuditorAvailability> availability = null;
 	private List<ContractorAudit> scheduledAudits = null;
 
@@ -331,10 +332,10 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	}
 
 	public List<AuditorVacation> getHolidays() {
-		if (vacations == null) {
-			vacations = auditorVacationDAO.findByAuditorID(0, new Date(start), new Date(end));
+		if (holidays == null) {
+			holidays = auditorVacationDAO.findByAuditorID(0, new Date(start), new Date(end));
 		}
-		return vacations;
+		return holidays;
 	}
 
 	public List<AuditorAvailability> getAvailability() {
