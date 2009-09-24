@@ -19,3 +19,26 @@ and pcd.catID = 151;
 
 
 **/
+
+/** Added the Email, Fax and Phone tokens for the Email **/
+insert into token 
+values
+(null, "MyPhone", "ALL", "Tel: ${permissions.phone}");
+
+insert into token 
+values
+(null, "MyEmail", "ALL", "Email: ${permissions.email}");
+
+insert into token 
+values
+(null, "MyFax", "ALL", "Fax: ${permissions.fax}");
+
+/** update the signature on the verification email to 
+<MyName>,
+PICS 
+P.O. Box 51387
+Irvine CA 92619-1387
+<MyPhone>
+<MyFax>
+<MyEmail>
+**/

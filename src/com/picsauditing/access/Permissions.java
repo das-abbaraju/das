@@ -2,7 +2,6 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
@@ -46,6 +45,8 @@ public class Permissions implements Serializable {
 	private String accountName;
 	private String accountType;
 	private String email;
+	private String phone;
+	private String fax;
 	private TimeZone timezone = null;
 
 	private int adminID;
@@ -60,6 +61,8 @@ public class Permissions implements Serializable {
 		username = "";
 		name = "";
 		email = "";
+		phone = "";
+		fax = "";
 		timezone = null;
 		accountID = 0;
 		accountName = "";
@@ -91,7 +94,9 @@ public class Permissions implements Serializable {
 			username = user.getUsername();
 			name = user.getName();
 			email = user.getEmail();
-			
+			phone = user.getPhone();
+			fax = user.getFax();
+		
 			setTimeZone(user);
 			
 			setAccountPerms(user);
@@ -225,6 +230,14 @@ public class Permissions implements Serializable {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public String getFax() {
+		return fax;
 	}
 
 	public int getAdminID() {
