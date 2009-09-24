@@ -31,16 +31,15 @@ public class UserLoginLogDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserLoginLog> findRecentLogins(String username, int startIndex, int maxResults) {
-		Query query = em.createQuery("FROM UserLoginLog t WHERE t.username = :username ORDER BY t.loginDate DESC");
-		query.setParameter("username", username);
+	public List<UserLoginLog> findRecentLogins(int userID, int startIndex, int maxResults) {
+		Query query = em.createQuery("FROM UserLoginLog t WHERE t.user.id = :userID ORDER BY t.loginDate DESC");
+		query.setParameter("userID", userID);
 		query.setFirstResult(startIndex);
 		query.setMaxResults(maxResults);
-		List<UserLoginLog> list = query.getResultList();
-		return list;
+		return  query.getResultList();
 	}
 	
-	public List<UserLoginLog> findRecentLogins(String username, int maxResults) {
-		return findRecentLogins(username, 0, maxResults);
+	public List<UserLoginLog> findRecentLogins(int userID, int maxResults) {
+		return findRecentLogins(userID, 0, maxResults);
 	}
 }

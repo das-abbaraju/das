@@ -189,7 +189,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public List<UserLoginLog> getRecentLogins() {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
-		return loginLogDao.findRecentLogins(user.getUsername(), 10);
+		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
 
 	@Override

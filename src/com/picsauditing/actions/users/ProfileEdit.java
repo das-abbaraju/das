@@ -137,7 +137,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public List<UserLoginLog> getRecentLogins() {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
-		return loginLogDao.findRecentLogins(u.getUsername(), 10);
+		return loginLogDao.findRecentLogins(u.getId(), 10);
 	}
 
 	public List<EmailSubscription> getEList() {

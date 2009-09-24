@@ -278,26 +278,22 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private void logAttempt() throws Exception {
-		if (Strings.isEmpty(username))
+		if (user == null)
 			return;
 
 		String remoteAddress = getRequest().getRemoteAddr();
 
 		char successful = 'N';
 		if (permissions.isLoggedIn()) {
-			password = "*";
 			successful = 'Y';
 		}
 
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
-		loginLog.setUsername(username);
-		loginLog.setPassword(password);
 		loginLog.setRemoteAddress(remoteAddress);
 		loginLog.setSuccessful(successful);
 		loginLog.setSessionId(getRequest().getSession().getId());
-		if (permissions.getUserId() > 0)
-			loginLog.setUserID(permissions.getUserId());
+		loginLog.setUser(user);
 		if (permissions.getAdminID() > 0)
 			loginLog.setAdmin(new User(permissions.getAdminID()));
 
@@ -337,7 +333,4 @@ public class LoginController extends PicsActionSupport {
 	public void setSwitchToUser(int switchToUser) {
 		this.switchToUser = switchToUser;
 	}
-	
-	
-
 }

@@ -19,9 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class UserLoginLog {
 	private int id = 0;
-	private String username = "";
-	private String password = "";
-	private int userID;
+	private User user;
 	private char successful;
 	private Date loginDate;
 	private String remoteAddress;
@@ -42,31 +40,14 @@ public class UserLoginLog {
 		this.id = id;
 	}
 
-	@Column(name = "username", nullable = false, length = 50)
-	public String getUsername() {
-		return username;
+	@ManyToOne
+	@JoinColumn(name = "id")
+	public User getUser() {
+		return user;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	@Column(name = "password", length = 50)
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	@Column(name = "id")
-	public int getUserID() {
-		return userID;
-	}
-
-	public void setUserID(int userID) {
-		this.userID = userID;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Column(name = "date", nullable = true)

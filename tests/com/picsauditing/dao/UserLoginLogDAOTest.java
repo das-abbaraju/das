@@ -23,8 +23,7 @@ public class UserLoginLogDAOTest {
 	@Test
 	public void testSave() {
 		UserLoginLog loginLog = new UserLoginLog();
-		loginLog.setUsername("Test");
-		loginLog.setPassword("Test");
+		loginLog.setUser(new User(1098));
 		loginLog.setAdmin(new User(941));
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress("70.12.12.23");
@@ -32,7 +31,6 @@ public class UserLoginLogDAOTest {
 		userLoginLogDAO.save(loginLog);
 		int id = loginLog.getId();
 		loginLog = userLoginLogDAO.find(id);
-		assertEquals("Test", loginLog.getUsername());
 		assertEquals("70.12.12.23", loginLog.getRemoteAddress());
 		userLoginLogDAO.remove(id);
 	}
