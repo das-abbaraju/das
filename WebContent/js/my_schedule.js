@@ -275,7 +275,7 @@ function loadSched() {
 
 $(function(){
 	var tabMap = {
-		preview:   {loaded: false, load: loadPreview, refresh: function(){$('#cal_vacat').fullCalendar('refetchEvents')}},
+		preview:   {loaded: false, load: loadPreview, refresh: function(){$('#cal_vacat').fullCalendar('refetchEvents');}},
 		aschedule: {loaded: false, load: loadSched, refresh: function(){$('#cal_sched').weekCalendar('refresh');}}
 	};
 
