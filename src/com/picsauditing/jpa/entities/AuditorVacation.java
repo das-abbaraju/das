@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -71,7 +72,7 @@ public class AuditorVacation extends BaseTable {
 			obj.put("id", "Holiday_" + id);
 			obj.put("owner", "All Users");
 		}
-		obj.put("title", Strings.isEmpty(description) ? (user == null ? "Holiday" : "Vacation") : description);
+		obj.put("title", getDescriptionClean());
 
 		Calendar start = Calendar.getInstance();
 		Calendar end = null;
@@ -103,9 +104,14 @@ public class AuditorVacation extends BaseTable {
 		return obj;
 	}
 
+	@Transient
+	public String getDescriptionClean() {
+		return Strings.isEmpty(description) ? (user == null ? "Holiday" : "Vacation") : description;
+	}
+
 	@Override
 	public String toString() {
-		return "\"" + description + "\" " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " "
+		return "\"" + getDescriptionClean() + "\" " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " "
 				+ DateBean.format(endDate, "MM/dd/yyyy hh:mm a");
 	}
 
