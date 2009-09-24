@@ -61,6 +61,11 @@ public class AuditorVacation extends BaseTable {
 		this.description = description;
 	}
 
+	@Transient
+	public String getDescriptionClean() {
+		return Strings.isEmpty(description) ? (user == null ? "Holiday" : "Vacation") : description;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -102,11 +107,6 @@ public class AuditorVacation extends BaseTable {
 		obj.put("editable", false);
 
 		return obj;
-	}
-
-	@Transient
-	public String getDescriptionClean() {
-		return Strings.isEmpty(description) ? (user == null ? "Holiday" : "Vacation") : description;
 	}
 
 	@Override
