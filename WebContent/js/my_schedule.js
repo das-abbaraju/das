@@ -269,6 +269,7 @@ function loadSched() {
 	
 	$('#currentUserID').change(function(){
 		$calendar.weekCalendar('refresh');
+		$calendar.find('.today').removeClass('today');
 	});
 }
 
