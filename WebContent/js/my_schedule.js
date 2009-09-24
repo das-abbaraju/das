@@ -37,19 +37,19 @@ function loadPreview() {
 			},
 			function(start, end, callback) {
 				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Audit', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
-						function(json) { 
-							$.each(json.events, fixEvent);
-							callback(json.events); 
-						} 
-					);				
+					function(json) { 
+						$.each(json.events, fixEvent);
+						callback(json.events); 
+					} 
+				);				
 			},
 			function(start, end, callback) {
 				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Availability', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
-						function(json) { 
-							$.each(json.events, fixEvent);
-							callback(json.events); 
-						} 
-					);				
+					function(json) { 
+						$.each(json.events, fixEvent);
+						callback(json.events); 
+					} 
+				);				
 			}	
 	];
 
