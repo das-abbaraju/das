@@ -126,11 +126,18 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("save")) {
+				if (currentUserID != getUser().getId()) {
+					json = new JSONObject();
+					json.put("title", "User Access Error");
+					json.put("output", "You do not have permission to modify this account.");
+					return SUCCESS;
+				}
+
 				if ("Vacation".equals(type) || "Holiday".equals(type)) {
 					if ("Holiday".equals(type) && !permissions.hasPermission(OpPerms.Holidays)) {
 						json = new JSONObject();
 						json.put("title", "User Access Error");
-						json.put("output", "You do not have permission to modify vacations.");
+						json.put("output", "You do not have permission to modify holidays.");
 						return SUCCESS;
 					}
 					if (calEvent != null) {
@@ -188,11 +195,13 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				}
 			}
 
-			if (button.equals("saveVacation")) {
-
-			}
-
 			if (button.equals("delete")) {
+				if (currentUserID != getUser().getId()) {
+					json = new JSONObject();
+					json.put("title", "User Access Error");
+					json.put("output", "You do not have permission to modify this account.");
+					return SUCCESS;
+				}
 				if ("Vacation".equals(type) || "Holiday".equals(type)) {
 					AuditorVacation vacation = auditorVacationDAO.find(calEvent.id);
 					String title = type + " not removed";
@@ -221,15 +230,13 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				}
 			}
 
-			if (button.equals("deleteVacation")) {
-				// if (vacation == null || vacation.getId() == 0) {
-				// addActionError("No vacation found");
-				// return SUCCESS;
-				// }
-
-			}
-
-			if (button.equalsIgnoreCase("saveSchedule")) {
+			if (button.equals("saveSchedule")) {
+				if (currentUserID != getUser().getId()) {
+					json = new JSONObject();
+					json.put("title", "User Access Error");
+					json.put("output", "You do not have permission to modify this account.");
+					return SUCCESS;
+				}
 				if (schedEvent == null) {
 					output = "No schedule to save";
 					json = new JSONObject();
@@ -281,15 +288,32 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("deleteSchedule")) {
-				AuditorSchedule schedule = auditorScheduleDAO.find(schedEvent.id);
-				if (schedule == null || schedule.getId() == 0) {
-					output = "No schedule found.";
+				if (currentUserID != getUser().getId()) {
+					json = new JSONObject();
+					json.put("title", "User Access Error");
+					json.put("output", "You do not have permission to modify this account.");
 					return SUCCESS;
 				}
+				AuditorSchedule schedule = auditorScheduleDAO.find(schedEvent.id);
+				String title = "";
+				boolean deleted = true;
+				if (schedule == null || schedule.getId() == 0) {
+					title = "No schedule found.";
+					output = "The selected schedule item does not exist.";
+					deleted = false;
+				} else {
+					auditorScheduleDAO.remove(schedule);
+					title = "Schedule Item Deleted";
+					output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
+				}
 
-				auditorScheduleDAO.remove(schedule);
-				output = "Successfully removed schedule " + schedule.getId() + ". " + schedule;
-				return BLANK;
+				json = new JSONObject();
+				json.put("title", title);
+				json.put("output", output);
+				json.put("deleted", deleted);
+				if (deleted)
+					json.put("schedEvent", schedule.toJSON());
+				return SUCCESS;
 			}
 
 		}

@@ -184,9 +184,10 @@ function loadPreview() {
 function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
 		var one_minute = 1000*60;
-		$.post('MyScheduleAjax.action', 
+		$.post('MyScheduleJSON.action', 
 			{ 
 				button:'saveSchedule',
+				currentUserID: $('#currentUserID').val(),
 				'schedEvent.id': calEvent.id == null ? 0 : calEvent.id, 
 				'schedEvent.weekDay': calEvent.start.getDay(),
 				'schedEvent.startTime': calEvent.start.getHours() * 60 + calEvent.start.getMinutes(), 
@@ -244,15 +245,16 @@ function loadSched() {
 		eventNew: saveEvent,
 		eventClick: function(calEvent, element) {
 				if (confirm("Do you want to delete this timeslot?")){
-					$.ajax({
-						data: { button:'deleteSchedule',
-								'schedEvent.id':calEvent.id},
-						url: 'MyScheduleAjax.action',
-						success: function(text) {
-								$.gritter.add({title: 'Calendar Event Removed', text:text});
-								$('#cal_sched').weekCalendar('removeEvent',calEvent.id);
+					$.getJSON('MyScheduleJSON.action',
+						{ button:'deleteSchedule',
+							'schedEvent.id':calEvent.id,
+							currentUserID: $('#currentUserID').val()},
+						function(json) { console.log(json);
+								$.gritter.add({title: json.title, text:json.output});
+								if (json.deleted)
+									$('#cal_sched').weekCalendar('removeEvent',calEvent.id);
 							}
-					});
+					);
 				}
 			}
 	});
