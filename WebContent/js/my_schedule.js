@@ -106,6 +106,8 @@ function loadPreview() {
 			},
 			Delete: function() {
 				var calID = $dialog.find('[name=id]').val();
+				if (calID == 0)
+					return;
 				var type = $dialog.find('[name=type]').val();
 				$.getJSON('MyScheduleJSON.action',
 					{button: 'delete',type: type, 'calEvent.id': calID, 'currentUserID': $('#currentUserID').val()},
