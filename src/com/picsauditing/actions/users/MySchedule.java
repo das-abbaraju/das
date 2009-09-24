@@ -298,7 +298,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 				String title = "";
 				boolean deleted = true;
 				if (schedule == null || schedule.getId() == 0) {
-					title = "No schedule found.";
+					title = "No schedule found";
 					output = "The selected schedule item does not exist.";
 					deleted = false;
 				} else {

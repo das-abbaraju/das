@@ -184,7 +184,7 @@ function loadPreview() {
 function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
 		var one_minute = 1000*60;
-		$.post('MyScheduleJSON.action', 
+		$.getJSON('MyScheduleJSON.action', 
 			{ 
 				button:'saveSchedule',
 				currentUserID: $('#currentUserID').val(),
@@ -198,8 +198,7 @@ function loadSched() {
 				$calendar.weekCalendar("removeUnsavedEvents");
 				if (response.schedEvent)
 					$calendar.weekCalendar("updateEvent", fixEvent(response.schedEvent));
-			},
-			'json'
+			}
 		);
 	}
 
