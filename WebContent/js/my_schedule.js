@@ -53,58 +53,55 @@ function loadPreview() {
 			}	
 	];
 
+	function getButtons(useDelete) {
+		var buttons = {};
+		buttons['Save'] = function() {
+			var start = NaN;
+			var end = NaN;
 
-	$dialog = $('#vacation_form').dialog({
-		title:'Calendar Entry', 
-		autoOpen:false,
-		modal: true,
-		buttons: {
-			Save: function() {
-				var start = NaN;
-				var end = NaN;
+			if ($('#all-day').is(':checked')) {
+				start = new Date($dialog.find('[name=startDate]').val());
+			} else {
+				start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
+				end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
+			}
+			var data = {
+				'calEvent.id': $dialog.find('[name=id]').val(),
+				'calEvent.title':$dialog.find('[name=title]').val(),
+				'type': $dialog.find('[name=type]').val(),
+				'button': 'save',
+				'currentUserID': $('#currentUserID').val()
+			};
 
-				if ($('#all-day').is(':checked')) {
-					start = new Date($dialog.find('[name=startDate]').val());
-				} else {
-					start = new Date($dialog.find('[name=startDate]').val() + " " + $dialog.find('[name=startTime]').val());
-					end = new Date($dialog.find('[name=endDate]').val() + " " + $dialog.find('[name=endTime]').val());
-				}
-				var data = {
-					'calEvent.id': $dialog.find('[name=id]').val(),
-					'calEvent.title':$dialog.find('[name=title]').val(),
-					'type': $dialog.find('[name=type]').val(),
-					'button': 'save',
-					'currentUserID': $('#currentUserID').val()
-				};
+			if (!isNaN(start))
+				data['calEvent.start'] = start.getTime();
+			if (!isNaN(end))
+				data['calEvent.end'] = end.getTime();
 
-				if (!isNaN(start))
-					data['calEvent.start'] = start.getTime();
-				if (!isNaN(end))
-					data['calEvent.end'] = end.getTime();
-
-				$.getJSON('MyScheduleJSON.action', data,
-					function(json) {
-						$.gritter.add({title:json.title, text:json.output});
-						if (json.calEvent) {
-							fixEvent(null, json.calEvent);
-							if (json.update){
-								var event = $calendar.fullCalendar('clientEvents', json.calEvent.id)[0];
-								event.start = json.calEvent.start;
-								event.end = json.calEvent.end;
-								event.title = json.calEvent.title;
-								event.className = json.calEvent.className;
-								event.owner = json.calEvent.owner;
-								$calendar.fullCalendar('updateEvent', event);
-							}
-							else
-								$calendar.fullCalendar('renderEvent', json.calEvent);
+			$.getJSON('MyScheduleJSON.action', data,
+				function(json) {
+					$.gritter.add({title:json.title, text:json.output});
+					if (json.calEvent) {
+						fixEvent(null, json.calEvent);
+						if (json.update){
+							var event = $calendar.fullCalendar('clientEvents', json.calEvent.id)[0];
+							event.start = json.calEvent.start;
+							event.end = json.calEvent.end;
+							event.title = json.calEvent.title;
+							event.className = json.calEvent.className;
+							event.owner = json.calEvent.owner;
+							$calendar.fullCalendar('updateEvent', event);
 						}
-							
-						$dialog.dialog('close');
+						else
+							$calendar.fullCalendar('renderEvent', json.calEvent);
 					}
-				);
-			},
-			Delete: function() {
+						
+					$dialog.dialog('close');
+				}
+			);
+		};
+		if (useDelete) {
+			buttons['Delete'] = function() {
 				var calID = $dialog.find('[name=id]').val();
 				if (calID == 0)
 					return;
@@ -120,9 +117,16 @@ function loadPreview() {
 						$dialog.dialog('close');
 					}
 				);
-			},
-			Cancel: function() { $dialog.dialog('close'); }
-		},
+			};
+		}
+		buttons['Cancel'] = function() { $dialog.dialog('close'); };
+		return buttons;
+	}
+
+	$dialog = $('#vacation_form').dialog({
+		title:'Calendar Entry', 
+		autoOpen:false,
+		modal: true,
 		open: function() {
 			$('.datepicker').datepicker();
 		}
@@ -162,6 +166,7 @@ function loadPreview() {
 					$dialog.find('[name=endDate]').val($.fullCalendar.formatDate(calEvent.end,'MM/dd/yyyy'));
 					$dialog.find('[name=endTime]').val($.fullCalendar.formatDate(calEvent.end, 'hh:mm TT'));
 				}
+				$dialog.dialog('option', 'buttons', getButtons(true));
 				$dialog.dialog('open');
 			},
 		eventRender: function (calEvent, element, view) {
@@ -173,6 +178,7 @@ function loadPreview() {
 				clearForm();
 				$dialog.find('[name=id]').val(0);
 				$dialog.find('[name=startDate]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
+				$dialog.dialog('option', 'buttons', getButtons(false));
 				$dialog.dialog('open');
 			},
 		eventSources: sources
