@@ -36,6 +36,7 @@ public class FlagCalculatorSingle {
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
 	protected List<AuditCriteriaAnswer> acaList;
+	protected boolean hasOqEmployees = false;
 
 	/**
 	 * 1) Check to see all required audits are there 2) OSHA Data 3) AuditQuestions
@@ -165,6 +166,10 @@ public class FlagCalculatorSingle {
 				if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
 					// Make sure we have atleast three annual addendums
 					audit.setContractorFlag(FlagColor.Green);
+				}
+				if(audit.getAuditType().getId() == AuditType.DA && !isHasOqEmployees()) {
+					audit.setContractorFlag(null);
+					debug(" ---- found D/A but OQ not required");
 				}
 				debug(" ---- flagColor=" + audit.getContractorFlag());
 				flagColor = setFlagColor(flagColor, audit.getContractorFlag());
@@ -468,5 +473,13 @@ public class FlagCalculatorSingle {
 
 	public void setAcaList(List<AuditCriteriaAnswer> acaList) {
 		this.acaList = acaList;
+	}
+
+	public boolean isHasOqEmployees() {
+		return hasOqEmployees;
+	}
+
+	public void setHasOqEmployees(boolean hasOqEmployees) {
+		this.hasOqEmployees = hasOqEmployees;
 	}
 }

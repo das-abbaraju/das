@@ -22,6 +22,7 @@ import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -199,7 +200,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				.getOperatorAccount().getFlagQuestionCriteriaInherited());
 		acaList = acaBuilder.getAuditCriteriaAnswers();
 		calculator.setAcaList(acaList);
-
+		calculator.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
+		
 		PicsLogger.start("CaoStatus");
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getClassType().isPolicy()) {

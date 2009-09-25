@@ -248,6 +248,7 @@ public class FlagCalculator2 {
 		calcSingle.setContractor(contractor);
 
 		calcSingle.setConAudits(contractor.getAudits());
+		calcSingle.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
 
 		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits(contractor.getAudits(), questionIDs);
 		List<ContractorOperator> conOperators = contractor.getOperators();

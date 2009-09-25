@@ -345,5 +345,4 @@ public class AuditDataDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
-
 }

@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -114,7 +115,7 @@ public class AuditBuilder {
 		}
 
 		//Get the answer for DOT employees from Pqfdata
-		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 894);
+		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES);
 		
 		/** Add other Audits and Policy Types **/
 		// Get a distinct list of AuditTypes that attached operators require

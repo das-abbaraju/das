@@ -34,6 +34,7 @@ import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
@@ -909,5 +910,18 @@ public class ContractorAccount extends Account implements JSONable {
 			return "Renewal";
 
 		return "Current";
+	}
+	
+	@Transient
+	public boolean isOqEmployees(AuditDataDAO auditDataDAO) {
+		List<Integer> questions = new ArrayList<Integer>();
+		questions.add(AuditQuestion.OQ_EMPLOYEES);
+		List<AuditData> auditDataList = auditDataDAO.findAnswerByConQuestions(getId(), questions);
+		if(auditDataList != null && auditDataList.size() > 0) {
+			AuditData auditData = auditDataList.get(0);
+			if(auditData != null && "Yes".equals(auditData.getAnswer()))
+				return true;
+		}
+		return false;
 	}
 }
