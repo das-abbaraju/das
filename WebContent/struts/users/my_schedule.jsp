@@ -66,6 +66,7 @@ table.modal_form .title {
 
 
 <s:select list="auditors" name="currentUserID" id="currentUserID" listKey="id" listValue="name"/>
+<div id="thinkingDiv" style="float:right"></div>
 <div id="schedule_tabs" class="ui-tabs">
 <ul>
 	<li><a href="#preview"><span>Availability Preview</span></a></li>
@@ -73,6 +74,9 @@ table.modal_form .title {
 </ul>
 
 <div id="preview" class="ui-tabs-hide">
+<div id="calendar_wrapper">
+<div id="cal_vacat"></div>
+</div>
 <table>
 	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Availability':'cal-availability'}">
 	<tr>
@@ -80,9 +84,6 @@ table.modal_form .title {
 	</tr>
 	</s:iterator>
 </table>
-<div id="calendar_wrapper">
-<div id="cal_vacat"></div>
-</div>
 </div>
 <div id="aschedule" class="ui-tabs-hide">
 <div id="calendar_wrapper">

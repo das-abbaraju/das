@@ -137,9 +137,9 @@ function loadPreview() {
 		},
 		loading: function(isLoading, view) {
 				if(isLoading)
-					$.gritter.add({title:'Loading...', text: 'Fetching calendar events', time: 2000});
+					startThinking( {div: 'thinkingDiv', message: 'Fetching Calendar Events' } );
 				else
-					$.gritter.add({title:'Loading Finished', text: 'Finished fetching calendar events', time: 2000});
+					stopThinking ( {div: 'thinkingDiv' } );
 			},
 		eventClick: function(calEvent, jsEvent, view) {
 				if (getType(calEvent) == 'Availability' || getType(calEvent) == 'Audit')
@@ -254,7 +254,7 @@ function loadSched() {
 							'schedEvent.id':calEvent.id,
 							currentUserID: $('#currentUserID').val()
 						},
-						function(json) { console.log(json);
+						function(json) {
 								$.gritter.add({title: json.title, text:json.output});
 								if (json.deleted)
 									$('#cal_sched').weekCalendar('removeEvent',calEvent.id);
