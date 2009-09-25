@@ -11,27 +11,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @Entity
 @Table(name = "loginlog")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class UserLoginLog {
-	private int id = 0;
+	private int id;
 	private User user;
-	private char successful;
+	private boolean successful;
 	private Date loginDate;
 	private String remoteAddress;
 	private User admin;
-	private String sessionId;
 
 	public UserLoginLog() {
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "logID", nullable = false)
+	@Column(nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -41,7 +36,7 @@ public class UserLoginLog {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "userID", nullable = false)
 	public User getUser() {
 		return user;
 	}
@@ -50,7 +45,7 @@ public class UserLoginLog {
 		this.user = user;
 	}
 
-	@Column(name = "date", nullable = true)
+	@Column(nullable = false)
 	public Date getLoginDate() {
 		return loginDate;
 	}
@@ -69,7 +64,7 @@ public class UserLoginLog {
 		this.admin = admin;
 	}
 
-	@Column(name = "remoteAddress", length = 100)
+	@Column(name = "remoteAddress", length = 15)
 	public String getRemoteAddress() {
 		return remoteAddress;
 	}
@@ -78,22 +73,12 @@ public class UserLoginLog {
 		this.remoteAddress = remoteAddress;
 	}
 
-	public void setSuccessful(char successful) {
-		this.successful = successful;
-	}
-
-	@Column(name = "successful", nullable = true)
-	public char getSuccessful() {
+	public boolean isSuccessful() {
 		return successful;
 	}
 
-	@Column(name = "sessionID")
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
+	public void setSuccessful(boolean successful) {
+		this.successful = successful;
 	}
 
 	@Override

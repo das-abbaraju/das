@@ -283,16 +283,10 @@ public class LoginController extends PicsActionSupport {
 
 		String remoteAddress = getRequest().getRemoteAddr();
 
-		char successful = 'N';
-		if (permissions.isLoggedIn()) {
-			successful = 'Y';
-		}
-
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(remoteAddress);
-		loginLog.setSuccessful(successful);
-		loginLog.setSessionId(getRequest().getSession().getId());
+		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
 		if (permissions.getAdminID() > 0)
 			loginLog.setAdmin(new User(permissions.getAdminID()));

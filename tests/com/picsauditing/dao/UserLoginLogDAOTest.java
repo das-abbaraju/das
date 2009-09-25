@@ -27,7 +27,7 @@ public class UserLoginLogDAOTest {
 		loginLog.setAdmin(new User(941));
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress("70.12.12.23");
-		loginLog.setSuccessful('Y');
+		loginLog.setSuccessful(true);
 		userLoginLogDAO.save(loginLog);
 		int id = loginLog.getId();
 		loginLog = userLoginLogDAO.find(id);

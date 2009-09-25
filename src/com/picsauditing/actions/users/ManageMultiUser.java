@@ -22,11 +22,11 @@ public class ManageMultiUser extends ReportActionSupport {
 		sql.addField("u.name as contact");
 		sql.setFromTable("loginlog l");
 		sql.addField("count(DISTINCT l.remoteAddress) as count");
-		sql.addField("u.id as userId");
+		sql.addField("u.userID");
 		sql.addJoin("join users u using (username)");
 		sql.addJoin("join accounts a on u.accountID = a.id");
-		sql.addWhere("l.date > SUBDATE(now(), INTERVAL 3 MONTH )");
-		sql.addWhere("l.adminId is NULL");
+		sql.addWhere("l.loginDate > SUBDATE(now(), INTERVAL 3 MONTH )");
+		sql.addWhere("l.adminID is NULL");
 		sql.addGroupBy("u.id");
 		sql.setHavingClause("count(DISTINCT l.remoteAddress) > 3");
 
