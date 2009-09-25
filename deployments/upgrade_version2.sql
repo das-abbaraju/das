@@ -42,3 +42,10 @@ Irvine CA 92619-1387
 <MyFax>
 <MyEmail>
 **/
+
+
+/**
+Waiting on Widget
+*/
+insert into widget 
+values(21,'Waiting On Totals','Chart',0,'ChartXMLWaitingOnCount.action',null,'Pie2D');
