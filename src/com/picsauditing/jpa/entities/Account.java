@@ -58,6 +58,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected boolean qbSync;
 	protected String qbListID;
 	protected String reason;
+	protected boolean acceptsBids; 
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -324,6 +325,14 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public boolean isAcceptsBids() {
+		return acceptsBids;
+	}
+
+	public void setAcceptsBids(boolean acceptsBids) {
+		this.acceptsBids = acceptsBids;
 	}
 
 	@OneToMany(mappedBy = "account")
