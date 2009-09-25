@@ -94,7 +94,7 @@ public class AuditorVacation extends BaseTable {
 		}
 
 		if (start.get(Calendar.HOUR_OF_DAY) == 0 && start.get(Calendar.MINUTE) == 0
-				&& (end == null || (end.get(Calendar.HOUR_OF_DAY) == 0 && end.get(Calendar.MINUTE) == 0)))
+				&& (end == null || end.getTime().equals(DateBean.getNextDayMidnight(startDate))))
 			obj.put("allDay", true);
 		else
 			obj.put("allDay", false);

@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.AuditorScheduleDAO;
@@ -127,7 +128,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("save")) {
-				if (currentUserID != getUser().getId() && !"Holiday".equals(type)) {
+				if (!permissions.hasPermission(OpPerms.ManageCalendars, OpType.Edit) && currentUserID != getUser().getId()
+						&& !"Holiday".equals(type)) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
@@ -187,7 +189,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("delete")) {
-				if (currentUserID != getUser().getId() && !"Holiday".equals(type)) {
+				if (!permissions.hasPermission(OpPerms.ManageCalendars, OpType.Delete) && currentUserID != getUser().getId()
+						&& !"Holiday".equals(type)) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
@@ -201,7 +204,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						if (vacation.getUser() != null || permissions.hasPermission(OpPerms.Holidays)) {
 							auditorVacationDAO.remove(calEvent.id);
 							title = type + " item removed";
-							output = "Successfully removed " + calEvent.id;
+							output = "Successfully removed " + calEvent.id + ". " + vacation.toString();
 							deleted = true;
 						} else {
 							output = "You do not have permission to modify Holidays.";
@@ -222,7 +225,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("saveSchedule")) {
-				if (currentUserID != getUser().getId()) {
+				if (!permissions.hasPermission(OpPerms.ManageCalendars) && currentUserID != getUser().getId()) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
@@ -279,7 +282,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("deleteSchedule")) {
-				if (currentUserID != getUser().getId()) {
+				if (!permissions.hasPermission(OpPerms.ManageCalendars) && currentUserID != getUser().getId()) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");

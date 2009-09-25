@@ -55,6 +55,7 @@ public enum OpPerms {
 	AuditCopy("Audit Copy","Can Copy Audit from one Contractor to another Contractor",false,false),
 	MyCalendar("My Calendar", "View and Edit your Calendar"),
 	Holidays("Holidays", "Manage the Holiday schedule for PICS", false, false),
+	ManageCalendars("Manage Auditor Calendars", "Allows user to edit all auditor calendars"), 
 	
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates"),
