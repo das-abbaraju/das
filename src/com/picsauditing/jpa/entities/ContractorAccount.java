@@ -75,8 +75,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date ccExpiration;
 	private Webcam webcam;
 
-	private String oqEmployees;
-
 	private Date paymentExpires;
 	private boolean renew = true;
 	private Date lastUpgradeDate;
@@ -311,15 +309,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setRiskLevel(LowMedHigh riskLevel) {
 		this.riskLevel = riskLevel;
-	}
-
-	@Column(name = "oqEmployees")
-	public String getOqEmployees() {
-		return oqEmployees;
-	}
-
-	public void setOqEmployees(String oqEmployees) {
-		this.oqEmployees = oqEmployees;
 	}
 
 	@Column(name = "emrAverage")

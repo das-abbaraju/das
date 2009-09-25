@@ -36,7 +36,7 @@ public class CalculateFee extends PicsActionSupport {
 			
 			ContractorAccount contractor = new ContractorAccount();
 			contractor.setRiskLevel(LowMedHigh.getMap().get(riskLevel));
-			contractor.setOqEmployees(oqEmployees);
+			//contractor.setOqEmployees(oqEmployees);
 			
 			List<Integer> selectedFacilities = new ArrayList<Integer>();
 			String[] facilityArray = facilities.split(",");;

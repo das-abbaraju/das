@@ -113,6 +113,9 @@ public class AuditBuilder {
 			currentAudits.add(pqfAudit);
 		}
 
+		//Get the answer for DOT employees from Pqfdata
+		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 894);
+		
 		/** Add other Audits and Policy Types **/
 		// Get a distinct list of AuditTypes that attached operators require
 		// Note: this is a lot of iterating over JPA Entities, my assumption
@@ -178,8 +181,9 @@ public class AuditBuilder {
 							insertNow = false;
 						break;
 					case AuditType.DA:
-						if (!pqfAudit.getAuditStatus().isActiveSubmitted()
-								&& !"Yes".equals(contractor.getOqEmployees()))
+						if(!pqfAudit.getAuditStatus().isActiveSubmitted()
+								|| oqEmployees == null 
+								|| !"Yes".equals(oqEmployees.getAnswer()))
 							insertNow = false;
 						break;
 					default:
@@ -223,7 +227,7 @@ public class AuditBuilder {
 				for (AuditType auditType : auditTypeList) {
 					if (conAudit.getAuditType().equals(auditType)) {
 						if (conAudit.getAuditType().getId() == AuditType.DA
-								&& !"Yes".equals(contractor.getOqEmployees())) {
+								&& (oqEmployees == null || !"Yes".equals(oqEmployees.getAnswer()))) {
 							needed = false;
 						} else
 							needed = true;

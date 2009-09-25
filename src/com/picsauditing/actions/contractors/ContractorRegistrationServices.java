@@ -62,7 +62,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			addActionError("PQF Category for Services Performed hasn't been created yet");
 
 		Set<Integer> questionIds = new HashSet<Integer>();
-		infoQuestions = auditQuestionDAO.findWhere("subCategory.id = 269 OR id = 894");
+		infoQuestions = auditQuestionDAO.findWhere("subCategory.id = 269");
 		for (AuditQuestion q : infoQuestions)
 			questionIds.add(q.getId());
 		serviceQuestions = auditQuestionDAO.findBySubCategory(40);

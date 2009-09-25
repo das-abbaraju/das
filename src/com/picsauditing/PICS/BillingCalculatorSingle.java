@@ -72,8 +72,6 @@ public class BillingCalculatorSingle {
 				for (AuditOperator audit : operator.getAudits()) {
 					if (audit.isRequiredFor(contractor)) {
 						// This operator requires this audit and can see it
-						if (audit.getAuditType().getId() == AuditType.DA && "Yes".equals(contractor.getOqEmployees()))
-							return true;
 
 						if (audit.getAuditType().getId() == AuditType.DESKTOP
 								|| audit.getAuditType().getId() == AuditType.OFFICE
