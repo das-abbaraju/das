@@ -160,7 +160,7 @@
 
 <s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed || oshaCad7Used || oshaNeerUsed">
 
-	<s:iterator value="co.operatorAccount.flagOshaCriteria">
+	<s:iterator value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 		<s:if test="trir.required && trir.hurdleFlag.naics">
 			<div id="info">
 			The operator flags up to
@@ -217,7 +217,7 @@
 						<s:if test="oshaFatalitiesUsed">
 							<td class="right"><s:property value="value.fatalities" /></td>
 							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.flagOshaCriteria">
+								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 								<s:if
 									test="fatalities.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
 								&gt; <s:property value="fatalities.hurdle" /> = <s:property
@@ -230,7 +230,7 @@
 							<td class="right"><s:property
 								value="%{new java.text.DecimalFormat('#,##0.000').format(value.lostWorkCasesRate)}" /></td>
 							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.flagOshaCriteria">
+								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 								<s:if test="lwcr.required">
 									<s:if
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && lwcr.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !lwcr.timeAverage)">
@@ -247,7 +247,7 @@
 									value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" />
 							</td>	
 							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.flagOshaCriteria">
+								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 								<s:if test="trir.required">
 									<s:if
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
@@ -267,7 +267,7 @@
 						<s:if test="oshaCad7Used">
 							<td class="right"><s:property value="value.cad7" /></td>
 							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.flagOshaCriteria">
+								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 								<s:if
 									test="cad7.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
 								&gt; <s:property value="cad7.hurdle" /> = <s:property
@@ -279,7 +279,7 @@
 						<s:if test="oshaNeerUsed">
 							<td class="right"><s:property value="value.neer" /></td>
 							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.flagOshaCriteria">
+								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 								<s:if
 									test="neer.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
 								&gt; <s:property value="neer.hurdle" /> = <s:property

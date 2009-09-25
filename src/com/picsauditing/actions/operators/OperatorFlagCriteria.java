@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,18 +65,23 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	}
 
 	public FlagOshaCriteria getOshaRedFlagCriteria() {
-		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Red'");
+		return flagOshaCriteriaDAO.findByOperatorFlag(operator.getInheritFlagCriteria(), "t.flagColor = 'Red'");
 	}
 
 	public FlagOshaCriteria getOshaAmberFlagCriteria() {
-		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Amber'");
+		return flagOshaCriteriaDAO.findByOperatorFlag(operator.getInheritFlagCriteria(), "t.flagColor = 'Amber'");
 	}
 
 	public Collection<QuestionCriteria> getQuestionList() {
 		if (questionList == null) {
 			Map<AuditQuestion, QuestionCriteria> map = new TreeMap<AuditQuestion, QuestionCriteria>();
-
-			List<FlagQuestionCriteria> criteriaList = criteriaDao.findByOperator(operator);
+			List<FlagQuestionCriteria> criteriaList = new ArrayList<FlagQuestionCriteria>();
+			
+			if(classType.isPolicy())
+			  criteriaList = criteriaDao.findByOperator(operator.getInheritInsuranceCriteria());
+			else
+				criteriaList = criteriaDao.findByOperator(operator.getInheritFlagCriteria());
+			
 			for (FlagQuestionCriteria criteria : criteriaList) {
 				AuditQuestion q = criteria.getAuditQuestion();
 				if (q.isVisible()) {
