@@ -676,13 +676,23 @@ span.block {
 	margin: 0;
 	position:relative;
 }
+
+span.block span.whatsthis{
+	text-decoration:underline;
+	color: rgb(0, 55, 104);
+	}
+
+span.block span.whatsthis:hover{
+	color: rgb(168, 77, 16);
+	}
+	
 span.hoverhelp {
 	text-align: left;
-	width: 180px;
+	width: 190px;
 	height:120px;
-	padding: 10px;
+	padding: 15px;
 	position: absolute;
-	bottom:11px;
+	bottom:5px;
 	left:-80px;
 	display: none;
 	margin:0 auto;
@@ -692,7 +702,7 @@ span.hoverhelp {
 	line-height:20px;
 }
 span.hoverhelp a{
-	width:100%;
+	width:90%;
 	display:block;
 	text-align:right;}
 	
