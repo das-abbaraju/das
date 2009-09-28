@@ -26,8 +26,8 @@
 				<invoke
 					description="Get Featured Contractor page"
 					url="featured_contractor.jsp" />
-				<verifyText  description="Make sure PS Environmental text is there"
-				      text="PS Environmental" />
+				<verifyText  description="Make sure International Cooling Tower text is there"
+				      text="International Cooling Tower" />
 				&body_verify;
 				
 				<invoke
