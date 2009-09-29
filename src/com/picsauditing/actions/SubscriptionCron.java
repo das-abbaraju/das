@@ -130,7 +130,6 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			if (subscription.equals(Subscription.PendingInsuranceCerts)) {
 				builder = new InsuranceCertificateSubscription(Subscription.PendingInsuranceCerts, timePeriod,
 						subscriptionDAO, caoDAO);
-				builder = new FlagChangesSubscription(timePeriod, subscriptionDAO);
 			}
 
 			if (subscription.equals(Subscription.VerifiedInsuranceCerts)) {
