@@ -19,28 +19,27 @@
 </style>
 <s:if test="conAudit != null">
 <script type="text/javascript">
-var contractor = {
-	'conAudit.contractorContact': '<s:property value="conAudit.contractorAccount.contact"/>',
-	'conAudit.phone2': '<s:property value="conAudit.contractorAccount.email"/>',
-	'conAudit.phone': '<s:property value="conAudit.contractorAccount.phone"/>',
-	'conAudit.address': '<s:property value="conAudit.contractorAccount.address"/>',
-	'conAudit.city': '<s:property value="conAudit.contractorAccount.city"/>',
-	'conAudit.state': '<s:property value="conAudit.contractorAccount.state"/>',
-	'conAudit.zip': '<s:property value="conAudit.contractorAccount.zip"/>',
-	'conAudit.country': '<s:property value="conAudit.contractorAccount.country"/>'
-};
-
+var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 function useContractor() {
-	$.each(contractor, function(k,v) {
-		$('form [name='+k+']').val(v);
-	});
+	$.getJSON("ContractorJson.action?id=" + conID,
+		function(data){
+			$.each(data.root, function(i,con){
+				$('form [name=conAudit.contractorContact]').val(con.contact);
+				$('form [name=conAudit.phone]').val(con.phone);
+				$('form [name=conAudit.phone2]').val(con.email);
+				$('form [name=conAudit.address]').val(con.address);
+				$('form [name=conAudit.city]').val(con.city);
+				$('form [name=conAudit.state]').val(con.state);
+				$('form [name=conAudit.zip]').val(con.zip);
+				$('form [name=conAudit.country]').val(con.country);
+			});
+		});
 }
 </script>
 </s:if>
 <s:include value="../jquery.jsp"></s:include>
 
-<script type="text/javascript"
-	src="http://maps.google.com/maps?file=api&v=2.x&key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"></script>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="GOOGLE_API_KEY"/>"></script>
 <script type="text/javascript" src="js/schedule_audit.js"></script>
 
 </head>

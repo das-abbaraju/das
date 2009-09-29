@@ -9,14 +9,59 @@
 
 <s:include value="../jquery.jsp"></s:include>
 
-<script type="text/javascript"
-	src="http://maps.google.com/maps?file=api&v=2.x&key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"></script>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="GOOGLE_API_KEY"/>"></script>
 <script type="text/javascript" src="js/schedule_audit.js"></script>
+<style type="text/css">
+#mappreview {
+	float: right;
+	width: 350px;
+	height: 350px;
+	border: 2px solid #003768;
+}
+
+#mappreview div {
+	color: auto;
+	font-family: Arial,sans-serif;
+	font-size: 100%;
+	line-height: 1;
+	margin: 0;
+	padding: 0;
+}
+</style>
 <script type="text/javascript">
+var map;
 $(function() {
 	$("#ScheduleAudit_scheduledDateDay").datepicker({ minDate: new Date(), numberOfMonths: [1, 2] });
 	$('.selector').datepicker();
+
+	if (GBrowserIsCompatible()) {
+		map = new GMap2(document.getElementById("mappreview"));
+		map.setUIToDefault();
+		recenterMap();
+	}
 });
+
+function recenterMap() {
+	map.clearOverlays();
+	var point = new GLatLng($('#conAudit_latitude').val(), $('#conAudit_longitude').val());
+	map.setCenter(point, 11);
+	map.addOverlay(new GMarker(point));
+}
+
+var conID = '<s:property value="conAudit.contractorAccount.id"/>';
+function useContractor() {
+	$.getJSON("ContractorJson.action", {id: conID}, 
+		function(con){
+			$('form [name=conAudit.contractorContact]').val(con.contact);
+			$('form [name=conAudit.phone]').val(con.phone);
+			$('form [name=conAudit.phone2]').val(con.email);
+			$('form [name=conAudit.address]').val(con.address);
+			$('form [name=conAudit.city]').val(con.city);
+			$('form [name=conAudit.state]').val(con.state);
+			$('form [name=conAudit.zip]').val(con.zip);
+			$('form [name=conAudit.country]').val(con.country);
+		});
+}
 </script>
 </head>
 <body>
@@ -30,8 +75,6 @@ $(function() {
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
-	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />
-	<s:hidden id="conAudit_longitude" name="conAudit.longitude" />
 	<fieldset class="form"><legend><span>Date &amp; Time</span></legend>
 	<ol>
 		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay"
@@ -44,14 +87,15 @@ $(function() {
 			<li><label>Current Webcam:</label> <s:property value="conAudit.contractorAccount.webcam" /></li>
 		</s:if>
 		<s:else>
-			<li><label>Webcam:</label> <s:checkbox name="conAudit.needsCamera" /> Ship webcam to address below (if Location = Web)</li>
+			<li><label>Webcam:</label> <s:checkbox name="conAudit.needsCamera" /> 
+			<label class="input" for="ScheduleAudit_conAudit_needsCamera">Ship webcam to address below (if Location = Web)</label></li>
 		</s:else>
 	</ol>
 	</fieldset>
 	<fieldset class="form"><legend><span>Location</span></legend>
-	<ol>
+	<ol style="float: left;">
 		<li>Please enter the address at which this audit will be conducted.</li>
-		<li><button onclick="defaultAddress();">Use my company address</button></li>
+		<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/></li>
 		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
 		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
 		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
@@ -60,9 +104,12 @@ $(function() {
 		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
 		<li class="calculatedAddress"><label>Country:</label> <s:textfield id="conAudit_country" name="conAudit.country"
 			size="6" /></li>
+		<li class="calculatedAddress"><label>Latitude:</label> <s:textfield id="conAudit_latitude" name="conAudit.latitude" size="10" /></li>
+		<li class="calculatedAddress"><label>Longitude:</label> <s:textfield id="conAudit_longitude" name="conAudit.longitude" size="10" /></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
 			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> This address is correct</li>
 	</ol>
+	<div id="mappreview"></div>
 	</fieldset>
 	<fieldset class="form"><legend><span>Contact Person</span></legend>
 	<ol>
@@ -75,7 +122,7 @@ $(function() {
 	<fieldset class="form submit">
 	<div id="mainThinkingDiv"></div>
 	<div>
-	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()">Verify Address</button>
+	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress(); recenterMap();">Verify Address</button>
 	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="save">Save</button>
 	</div>
 	</fieldset>

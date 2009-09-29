@@ -388,7 +388,30 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		if (!full)
 			return obj;
 		
-		// TODO full out the optional fields for account
+		if (address != null)
+			obj.put("address", address);
+		if (dbaName != null)
+			obj.put("dbaName", dbaName);
+		if (contact != null)
+			obj.put("contact", contact);
+		if (city != null)
+			obj.put("city", city);
+		if (state != null)
+			obj.put("state", state);
+		if (country != null)
+			obj.put("country", country);
+		if (zip != null)
+			obj.put("zip", zip);
+		if (phone != null)
+			obj.put("phone", phone);
+		if (phone2 != null)
+			obj.put("phone2", phone2);
+		if (fax != null)
+			obj.put("fax", fax);
+		if (email != null)
+			obj.put("email", email);
+		if (industry != null)
+			obj.put("industry", industry.toString());
 		
 		return obj;
 	}

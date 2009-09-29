@@ -20,7 +20,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "webcam")
 public class Webcam extends BaseTable implements java.io.Serializable, JSONable {
-	private String make;
+	private String make = "Logitech";
 	private String model;
 	private boolean active = true;
 	private ContractorAccount contractor;

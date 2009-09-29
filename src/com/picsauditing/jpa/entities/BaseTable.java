@@ -127,9 +127,9 @@ public abstract class BaseTable implements JSONable {
 		if (updatedBy != null)
 			obj.put("updatedBy", updatedBy.toJSON(false));
 		if (creationDate != null)
-			obj.put("creationDate", creationDate);
+			obj.put("creationDate", creationDate.getTime());
 		if (updateDate != null)
-			obj.put("updateDate", updateDate);
+			obj.put("updateDate", updateDate.getTime());
 
 		return obj;
 	}

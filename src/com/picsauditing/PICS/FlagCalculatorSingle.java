@@ -190,7 +190,6 @@ public class FlagCalculatorSingle {
 			}
 		}
 
-	
 		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
@@ -202,28 +201,38 @@ public class FlagCalculatorSingle {
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
 							if (criteria.getLwcr().isFlagged(contractor.getNaics(), osha.getLostWorkCasesRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+							debug(" --- checking LWCR " + criteria.getLwcr() + " against value = "
+									+ osha.getLostWorkCasesRate() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())) {
 							if (criteria.getTrir().isFlagged(contractor.getNaics(), osha.getRecordableTotalRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+							debug(" --- checking TRIR " + criteria.getTrir() + " against value = "
+									+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
 							if (criteria.getFatalities().isFlagged(contractor.getNaics(), osha.getFatalities()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+							debug(" --- checking Fatalities " + criteria.getFatalities() + " against value = "
+									+ osha.getFatalities() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getCad7().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getCad7().isTimeAverage())) {
-							if (osha.getCad7() != null && 
-									criteria.getCad7().isFlagged(contractor.getNaics(), osha.getCad7()))
+							if (osha.getCad7() != null
+									&& criteria.getCad7().isFlagged(contractor.getNaics(), osha.getCad7()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+							debug(" --- checking Cad7 " + criteria.getCad7() + " against value = " + osha.getCad7()
+									+ " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getNeer().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getNeer().isTimeAverage())) {
-							if (osha.getNeer() != null && 
-									criteria.getNeer().isFlagged(contractor.getNaics(), osha.getNeer()))
+							if (osha.getNeer() != null
+									&& criteria.getNeer().isFlagged(contractor.getNaics(), osha.getNeer()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+							debug(" --- checking Neer " + criteria.getNeer() + " against value = " + osha.getNeer()
+									+ " color = " + osha.getFlagColor());
 						}
 						flagColor = setFlagColor(flagColor, osha.getFlagColor());
 					}
@@ -309,8 +318,7 @@ public class FlagCalculatorSingle {
 
 								// This is a Policy, find the CAO for this operator
 								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator)
-											&& cao.isVisible()) {
+									if (cao.getOperator().equals(operator) && cao.isVisible()) {
 
 										// This policy is already approved by operator
 										if (cao.getStatus().isApproved())
@@ -342,10 +350,9 @@ public class FlagCalculatorSingle {
 								// We found a matching pending or submitted audit still not finished
 								// Whose fault is it??
 								debug(" ---- still required");
-								if (conAudit.getAuditType().getClassType().isPqf() 
+								if (conAudit.getAuditType().getClassType().isPqf()
 										|| conAudit.getAuditType().isAnnualAddendum()) {
-									if (auditStatus.isPending() 
-											|| auditStatus.isIncomplete())
+									if (auditStatus.isPending() || auditStatus.isIncomplete())
 										// The contractor still needs to submit their PQF
 										return WaitingOn.Contractor;
 									waitingOnPics = true;
@@ -386,8 +393,8 @@ public class FlagCalculatorSingle {
 		debug(" calculateCaoRecommendedFlag");
 
 		FlagColor flagColor = null;
-		
-		if(cao.getValid() != null && !cao.getValid().isTrue()) 
+
+		if (cao.getValid() != null && !cao.getValid().isTrue())
 			return FlagColor.Red;
 
 		for (AuditCriteriaAnswer aca : acaList) {
@@ -400,10 +407,10 @@ public class FlagCalculatorSingle {
 
 		if (flagColor.equals(FlagColor.Red))
 			return FlagColor.Red;
-		
-		if(flagColor.equals(FlagColor.Amber))
+
+		if (flagColor.equals(FlagColor.Amber))
 			return FlagColor.Amber;
-		
+
 		if (flagColor.equals(FlagColor.Green))
 			return FlagColor.Green;
 

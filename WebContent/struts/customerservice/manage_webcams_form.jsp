@@ -10,7 +10,6 @@
 		<li><label>Make:</label><s:textfield name="webcam.make" /></li>
 		<li><label>Model:</label><s:textfield name="webcam.model" /></li>
 		<li><label>Active:</label><s:checkbox name="webcam.active" /></li>
-		<li><label>Serial Number:</label><s:textfield name="webcam.serialNumber" size="30" /></li>
 		<li><label>Replacement Cost:</label> $<s:textfield name="webcam.replacementCost" size="6" /></li>
 	</ol>
 	</fieldset>
