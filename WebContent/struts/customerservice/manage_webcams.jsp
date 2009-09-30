@@ -24,23 +24,23 @@ function loadForm(id) {
 <s:include value="../actionMessages.jsp" />
 
 <div class="left" id="webcam_list">
-<table class="report">
+<table class="report" style="height: 100%; overflow: scroll;">
 	<thead>
 		<tr>
 			<td>#</td>
 			<td>Active</td>
-			<td>Make</td>
-			<td>Model</td>
 			<td>Contractor</td>
+			<td>Sent</td>
+			<td>Received</td>
 		</tr>
 	</thead>
 	<s:iterator value="list">
 		<tr class="clickable" onclick="loadForm(<s:property value="id"/>)">
-			<td><s:property value="id" /></td>
+			<td style="font-size-adjust: 120%; font-weight: bold;"><s:property value="id" /></td>
 			<td class="center"><s:property value="%{active ? 'Y' : 'N'}" /></td>
-			<td><s:property value="make" /></td>
-			<td><s:property value="model" /></td>
 			<td><s:property value="contractor.name" /></td>
+			<td><s:date name="sentDate" nice="true" /></td>
+			<td><s:date name="receivedDate" nice="true" /></td>
 		</tr>
 	</s:iterator>
 </table>
