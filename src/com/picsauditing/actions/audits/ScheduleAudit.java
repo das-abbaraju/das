@@ -31,7 +31,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	static final public String GOOGLE_API_KEY = "ABQIAAAAgozVvI8r_S5nN6njMJJ7aBTo4w3vXkjMqCEUz4-xpKEfhElFUxRwXE2trWXRBXZPHCY8N1AgoRkSBw";
 	static final public String DATE_FORMAT = "yyyyMMddhhmm";
 
-	private NextAvailable nextAvailable = new NextAvailable();
+	private AvailableSet availableSet = new AvailableSet();
 	private Date timeSelected;
 	private AuditorAvailability availabilitySelected = null;
 	private int availabilitySelectedID;
@@ -39,7 +39,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	private String scheduledDateDay;
 	private String scheduledDateTime;
-	private Date availabilityStartDate;
+	private Date availabilityStartDate = new Date();
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 
@@ -114,23 +114,23 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
 			for (AuditorAvailability timeslot : timeslots) {
 				if (timeslot.isConductedOnsite(conAudit)) {
-					nextAvailable.add(timeslot);
-					if (nextAvailable.size() >= 12) {
-						return "select";
+					if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
+						break;
 					}
+					availableSet.add(timeslot);
 				}
 			}
-			
-			if (nextAvailable.rows.size() > 0) {
+
+			if (availableSet.size() > 0) {
 				return "select";
 			}
-			
-			nextAvailable = new NextAvailable();
+
+			availableSet = new AvailableSet();
 			for (AuditorAvailability timeslot : timeslots) {
-				nextAvailable.add(timeslot);
-				if (nextAvailable.size() >= 12) {
-					return "select";
+				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
+					break;
 				}
+				availableSet.add(timeslot);
 			}
 
 			return "select";
@@ -149,7 +149,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (availabilitySelectedID > 0) {
 				conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 				conAudit.setNeedsCamera(true); // Assume yes until they say
-												// otherwise
+				// otherwise
 				return "confirm";
 			}
 			addActionError("Failed to select time");
@@ -218,12 +218,16 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return "address";
 	}
 
-	public NextAvailable getNextAvailable() {
-		return nextAvailable;
-	}
-
 	public AuditorAvailability getAvailabilitySelected() {
 		return availabilitySelected;
+	}
+
+	public AvailableSet getAvailableSet() {
+		return availableSet;
+	}
+
+	public void setAvailableSet(AvailableSet availableSet) {
+		this.availableSet = availableSet;
 	}
 
 	public int getAvailabilitySelectedID() {
@@ -271,82 +275,59 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.timeSelected = df.parse(dateString);
 	}
 
-	public class NextAvailable {
-		public final List<AvailableSet> rows = new ArrayList<AvailableSet>();
-		private final int MAX_COLUMNS = 4;
-		private int size = 0;
+	public class AvailableSet {
+		public final Map<Date, List<AuditorAvailability>> days = new TreeMap<Date, List<AuditorAvailability>>();
+		private Date latest;
+
+		int size() {
+			return days.size();
+		}
 
 		void add(AuditorAvailability timeslot) {
-			for (AvailableSet row : rows) {
-				if (row.contains(timeslot)) {
-					row.add(timeslot);
-					size ++;
-					return;
-				}
-				if (row.size() < MAX_COLUMNS) {
-					row.add(timeslot);
-					return;
-				}
+			final Date day = stripTimes(timeslot.getStartDate());
+			if (days.get(day) == null)
+				days.put(day, new ArrayList<AuditorAvailability>());
 
+			for (AuditorAvailability existingTimeSlot : days.get(day)) {
+				if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate()))
+					// We don't need to add more than one time slot per
+					// starting time
+					return;
 			}
-			rows.add(new AvailableSet(timeslot));
+			days.get(day).add(timeslot);
+			latest = DateBean.getLatestDate(getLatest(), timeslot.getEndDate());
 		}
 
-		public class AvailableSet {
-			public final Map<Date, List<AuditorAvailability>> days = new TreeMap<Date, List<AuditorAvailability>>();
-
-			AvailableSet(AuditorAvailability starter) {
-				add(starter);
-			}
-
-			int size() {
-				return days.size();
-			}
-
-			void add(AuditorAvailability timeslot) {
-				final Date day = stripTimes(timeslot.getStartDate());
-				if (days.get(day) == null)
-					days.put(day, new ArrayList<AuditorAvailability>());
-
-				for (AuditorAvailability existingTimeSlot : days.get(day)) {
-					if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate()))
-						// We don't need to add more than one time slot per
-						// starting time
-						return;
-				}
-				days.get(day).add(timeslot);
-			}
-
-			@SuppressWarnings("deprecation")
-			private boolean isSameTime(Date time1, Date time2) {
-				if (time1.getHours() != time2.getHours())
-					return false;
-				if (time1.getMinutes() != time2.getMinutes())
-					return false;
-				if (time1.getSeconds() != time2.getSeconds())
-					return false;
-				return true;
-			}
-
-			boolean contains(AuditorAvailability timeslot) {
-				final Date day = stripTimes(timeslot.getStartDate());
-				return days.get(day) != null;
-			}
-
-			private Date stripTimes(Date value) {
-				final Calendar cal = Calendar.getInstance();
-				cal.setTime(value);
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				return cal.getTime();
-			}
-
+		@SuppressWarnings("deprecation")
+		private boolean isSameTime(Date time1, Date time2) {
+			if (time1.getHours() != time2.getHours())
+				return false;
+			if (time1.getMinutes() != time2.getMinutes())
+				return false;
+			if (time1.getSeconds() != time2.getSeconds())
+				return false;
+			return true;
 		}
-		
-		public int size() {
-			return size;
+
+		boolean contains(AuditorAvailability timeslot) {
+			final Date day = stripTimes(timeslot.getStartDate());
+			return days.get(day) != null;
+		}
+
+		private Date stripTimes(Date value) {
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(value);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			return cal.getTime();
+		}
+
+		public Date getLatest() {
+			if (latest == null)
+				return null;
+			return DateBean.getNextDayMidnight(latest);
 		}
 	}
 

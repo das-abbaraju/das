@@ -165,6 +165,20 @@ public class DateBean {
 		cal.add(Calendar.DAY_OF_YEAR, 1);
 		return cal.getTime();
 	}
+	
+	public static Date getLatestDate(Date d1, Date d2) {
+		if (d1 == null)
+			return d2;
+		
+		if (d2 == null)
+			return d1;
+		
+		if (d1.after(d1))
+			return d1;
+		
+		return d2;
+	}
+	
 	/**
 	 * This allows setting the new year rollover before jan 1. To set the rollover date, update currentYearStart in
 	 * web.xml.

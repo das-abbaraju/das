@@ -10,33 +10,41 @@
 <script type="text/javascript" src="js/schedule_audit.js"></script>
 <script type="text/javascript">
 var auditID = <s:property value="conAudit.id"/>;
-$(function() {
-	var ss = $("#ScheduleAudit_availabilityStartDate").datepicker({ minDate: new Date(), numberOfMonths: [1, 2] });
-});
+var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
 </script>
 <style type="text/css">
 #auditHeader,#auditHeaderNav {
 	display: none;
 }
 
-table.cal_availability {
+li#li_availability {
 	width: 100%;
-	border-collapse: separate;
-	border-spacing: 10px;
+	margin: 5px;
+	padding: 5px;
 }
 
-table.cal_availability td {
-	padding: 10px;
+li#li_availability div.cal_day {
+	float: left;
+	padding: 10px 20px;
+	margin: 10px;
 	border: 1px dashed #999;
+	width: 14em;
+	height: 10em;
 }
 
-table.cal_availability td:hover {
+li#li_availability div.cal_day div.cal_times {
+	height:80%;
+	overflow:auto;
+	padding: 0;
+	margin: 0;
+}
+
+li#li_availability div.cal_day:hover {
 	border: 1px solid #002240;
 	background-color: white;
 }
 
-table.cal_availability a {
-	margin-left: 20px;
+li#li_availability a {
 	padding: 5px;
 	border: 1px solid #4686BF;
 	white-space: nowrap;
@@ -44,7 +52,7 @@ table.cal_availability a {
 	line-height: 35px;
 }
 
-table.cal_availability a:hover {
+li#li_availability a:hover {
 	background-color: #ffffbb;
 }
 </style>
@@ -55,11 +63,12 @@ table.cal_availability a:hover {
 <s:form>
 	<fieldset class="form bottom"><legend><span>Choose an Audit Time</span></legend>
 	<ol>
-		<li>Please choose one of the available time blocks below for your audit.<br/>
-			<s:textfield name="availabilityStartDate" onchange="showNextAvailable()"/> 
-		</li>
+		<li>Please choose one of the available time blocks below for your audit.</li>
 		<li id="li_availability">
 			<s:include value="schedule_audit_select_content.jsp"/>
+		</li>
+		<li>
+			<input type="button" id="show_next" class="picsbutton" value="Show More Timeslots" onclick="showNextAvailable()"/>
 		</li>
 	</ol>
 	</fieldset>
