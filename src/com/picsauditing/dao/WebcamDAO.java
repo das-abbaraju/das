@@ -45,7 +45,7 @@ public class WebcamDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("FROM Webcam  " + where + " ORDER BY active DESC, make, model");
+		Query query = em.createQuery("FROM Webcam  " + where + " ORDER BY id");
 		return query.getResultList();
 	}
 

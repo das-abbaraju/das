@@ -60,6 +60,7 @@ function useContractor() {
 			$('form [name=conAudit.state]').val(con.state);
 			$('form [name=conAudit.zip]').val(con.zip);
 			$('form [name=conAudit.country]').val(con.country);
+			recenterMap();
 		});
 }
 </script>
@@ -122,7 +123,7 @@ function useContractor() {
 	<fieldset class="form submit">
 	<div id="mainThinkingDiv"></div>
 	<div>
-	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress(); recenterMap();">Verify Address</button>
+	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()">Verify Address</button>
 	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="save">Save</button>
 	</div>
 	</fieldset>
