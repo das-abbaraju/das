@@ -245,10 +245,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 				schedule.setWeekDay(schedEvent.weekDay + 1);
 				schedule.setStartTime(schedEvent.startTime);
-				// schedule.setDuration(schedEvent.duration);
-				// schedule.setDuration(120);
-				if (schedule.getUser() == null)
-					schedule.setUser(getUser());
+				schedule.setUser(currentUser);
 
 				List<AuditorSchedule> otherSchedules = auditorScheduleDAO.findByAuditorID(schedule.getUser().getId());
 				boolean overlap = false;
