@@ -173,11 +173,15 @@ public class AuditDataSave extends AuditActionSupport {
 
 					if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						tempAudit.setExpiresDate(DateBean.parseDate(auditData.getAnswer()));
+						Date expiresDate = DateBean.parseDate(auditData.getAnswer());
+						if(!DateBean.isNullDate(expiresDate))
+							tempAudit.setExpiresDate(expiresDate);
 					}
 					if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
-						tempAudit.setCreationDate(DateBean.parseDate(auditData.getAnswer()));
+						Date creationDate = DateBean.parseDate(auditData.getAnswer());
+						if(!DateBean.isNullDate(creationDate))
+							tempAudit.setCreationDate(creationDate);
 					}
 
 					auditDao.save(tempAudit);

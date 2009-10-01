@@ -47,7 +47,7 @@
 			<li>Cooling tower engineering services</li>
 			<li>New cooling towers &amp; erection services</li>
 			<li>Reconstruction</li>
-			<li>Cold weather climate</li>
+			<li>Cold weather climate expertise</li>
 			<li>System evaluation and performance testing</li>
 			<li>Preventative maintenance, inspections, online repairs and upgrades</li>
 			<li>24 hour emergency service</li>
