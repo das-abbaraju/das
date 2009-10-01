@@ -16,7 +16,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.AuditorSchedule;
 import com.picsauditing.jpa.entities.AuditorVacation;
-import com.picsauditing.jpa.entities.AvailabilityRestrictions;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Geo;
@@ -257,28 +256,27 @@ public class AuditScheduleBuilder {
 							proposedStartTime.setTimeZone(userTimeZone);
 							availability.setStartDate(proposedStartTime.getTime());
 							availability.setDuration(schedule.getDuration());
-							AvailabilityRestrictions ar = new AvailabilityRestrictions();
 
 							if (nextAudit == null && previousAudit == null) {
-								ar.setLocation(user.getLocation());
-								ar.setMaxDistance(100);
+								availability.setLocation(user.getLocation());
+								availability.setMaxDistance(100);
 							} else if (nextAudit == null) {
-								ar.setLocation(previousAudit.getLocation());
+								availability.setLocation(previousAudit.getLocation());
 							} else if (previousAudit == null) {
-								ar.setLocation(nextAudit.getLocation());
+								availability.setLocation(nextAudit.getLocation());
 							} else {
-								ar.setLocation(Geo.middle(previousAudit.getLocation(), nextAudit.getLocation()));
+								availability.setLocation(Geo.middle(previousAudit.getLocation(), nextAudit
+										.getLocation()));
 							}
 
-							ar.setOnsiteOnly(onsiteOnly);
-							ar.setWebOnly(webOnly);
+							availability.setOnsiteOnly(onsiteOnly);
+							availability.setWebOnly(webOnly);
 
 							if (user.getId() == 9615) {
 								// Hi, I'm Rick McGee
 								String[] gulfCoastStates = { "TX", "AL", "LA", "MS" };
-								ar.setOnlyInStates(gulfCoastStates);
+								availability.setOnlyInStates(gulfCoastStates);
 							}
-							availability.setRestrictionsObject(ar);
 
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());
 							list.add(availability);

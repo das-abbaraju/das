@@ -12,14 +12,18 @@ public class AuditScheduleBuilderCron extends PicsActionSupport {
 
 	private static Date lastRun = null;
 	private static final int MINUTES_TO_WAIT = 30;
-	
+
 	private AuditScheduleBuilder auditScheduleBuilder;
+	private boolean rerun;
 
 	public AuditScheduleBuilderCron(AuditScheduleBuilder auditScheduleBuilder, AppPropertyDAO appPropertyDAO) {
 		this.auditScheduleBuilder = auditScheduleBuilder;
 	}
 
 	public String execute() throws Exception {
+		if (rerun)
+			rerun();
+
 		if (lastRun != null) {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.MINUTE, -1 * MINUTES_TO_WAIT);
@@ -37,9 +41,18 @@ public class AuditScheduleBuilderCron extends PicsActionSupport {
 
 	/**
 	 * Usage: AuditScheduleBuilderCron.rerun();
+	 * 
 	 * @param context
 	 */
 	public static void rerun() {
 		lastRun = null;
+	}
+
+	public boolean isRerun() {
+		return rerun;
+	}
+
+	public void setRerun(boolean rerun) {
+		this.rerun = rerun;
 	}
 }

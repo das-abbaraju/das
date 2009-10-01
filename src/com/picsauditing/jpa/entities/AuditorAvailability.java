@@ -1,10 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,7 +15,10 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.util.Geo;
-import com.picsauditing.util.log.PicsLogger;
+import com.picsauditing.util.Location;
+import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Entity
 @Table(name = "auditor_availability")
@@ -28,7 +26,14 @@ public class AuditorAvailability extends BaseTable {
 	private User user;
 	private Date startDate;
 	private int duration;
-	private String restrictions;
+
+	private float latitude = 0;
+	private float longitude = 0;
+	private int maxDistance = 30; // km
+
+	private boolean onsiteOnly = false;
+	private boolean webOnly = false;
+	private String onlyInStates = null;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
@@ -63,7 +68,6 @@ public class AuditorAvailability extends BaseTable {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-
 	@Transient
 	public Date getEndDate() {
 		Calendar cal = Calendar.getInstance();
@@ -71,62 +75,76 @@ public class AuditorAvailability extends BaseTable {
 		cal.add(Calendar.MINUTE, duration);
 		return cal.getTime();
 	}
-
-	/**
-	 * Serialized version of an AvailabilityRestrictions object
-	 * 
-	 * @return
-	 */
-	public String getRestrictions() {
-		return restrictions;
+	public float getLatitude() {
+		return latitude;
 	}
 
-	public void setRestrictions(String restrictions) {
-		this.restrictions = restrictions;
+	public void setLatitude(float latitude) {
+		this.latitude = latitude;
+	}
+
+	public float getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(float longitude) {
+		this.longitude = longitude;
 	}
 
 	@Transient
-	public AvailabilityRestrictions getRestrictionsObject() {
-		if (restrictions == null)
-			return new AvailabilityRestrictions();
-
-		ByteArrayInputStream byteStream = null;
-		ObjectInputStream objectStream = null;
-		try {
-			AvailabilityRestrictions availabilityRestrictions = null;
-			byteStream = new ByteArrayInputStream(restrictions.getBytes());
-			objectStream = new ObjectInputStream(byteStream);
-			availabilityRestrictions = (AvailabilityRestrictions) objectStream.readObject();
-			objectStream.close();
-			return availabilityRestrictions;
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			return new AvailabilityRestrictions();
-		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
-			return new AvailabilityRestrictions();
-		}
+	public Location getLocation() {
+		return new Location(latitude, longitude);
 	}
 
-	/**
-	 * One time conversion from object to bytestream (this.restrictions) If you
-	 * change the AvailabilityRestrictions, you MUST call
-	 * setRestrictionsObject(restrictions) again!
-	 * 
-	 * @param restrictions
-	 */
-	public void setRestrictionsObject(AvailabilityRestrictions restrictions) {
-		ByteArrayOutputStream byteStream = null;
-		ObjectOutputStream objectStream = null;
-		try {
-			byteStream = new ByteArrayOutputStream();
-			objectStream = new ObjectOutputStream(byteStream);
-			objectStream.writeObject(restrictions);
-			objectStream.close();
-			this.restrictions = byteStream.toString();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+	@Transient
+	public void setLocation(Location location) {
+		this.latitude = location.getLatitude();
+		this.longitude = location.getLongitude();
+	}
+
+	public boolean isOnsiteOnly() {
+		return onsiteOnly;
+	}
+
+	public void setOnsiteOnly(boolean onsiteOnly) {
+		this.onsiteOnly = onsiteOnly;
+	}
+
+	public boolean isWebOnly() {
+		return webOnly;
+	}
+
+	public void setWebOnly(boolean webOnly) {
+		this.webOnly = webOnly;
+	}
+
+	public String getOnlyInStates() {
+		return onlyInStates;
+	}
+
+	public void setOnlyInStates(String onlyInStates) {
+		this.onlyInStates = onlyInStates;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setOnlyInStates(String[] onlyInStates) {
+		this.onlyInStates = Strings.implode(Arrays.asList(onlyInStates), ",");
+	}
+
+	@Transient
+	public String[] getOnlyInStatesArray() {
+		if (onlyInStates == null)
+			return null;
+
+		return onlyInStates.split(",");
+	}
+
+	public int getMaxDistance() {
+		return maxDistance;
+	}
+
+	public void setMaxDistance(int maxDistance) {
+		this.maxDistance = maxDistance;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -160,16 +178,14 @@ public class AuditorAvailability extends BaseTable {
 	 */
 	@Transient
 	public boolean isConductedOnsite(ContractorAudit conAudit) {
-		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
-
-		if (aRestrictions.getLocation() == null || conAudit.getLocation() == null)
+		if (getLocation() == null || conAudit.getLocation() == null)
 			// If you don't know where you are, you can't measure distance!
 			return false;
 
-		double distanceApart = Geo.distance(aRestrictions.getLocation(), conAudit.getLocation());
+		double distanceApart = Geo.distance(getLocation(), conAudit.getLocation());
 
 		// If the audit is close enough, then assume it will be onsite
-		return (distanceApart < aRestrictions.getMaxDistance());
+		return (distanceApart < getMaxDistance());
 	}
 
 	@Transient
@@ -180,11 +196,10 @@ public class AuditorAvailability extends BaseTable {
 			rank += 100;
 		}
 
-		AvailabilityRestrictions aRestrictions = getRestrictionsObject();
-		String[] states = aRestrictions.getOnlyInStates();
+		String[] states = getOnlyInStatesArray();
 		if (states != null && states.length > 0) {
 			boolean matchedState = false;
-			for (String state : aRestrictions.getOnlyInStates()) {
+			for (String state : states) {
 				if (state.equals(conAudit.getState())) {
 					rank += 25;
 				}
