@@ -103,6 +103,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						scheduledAudit.put("start", row.getScheduledDate().getTime());
 						scheduledAudit.put("allDay", false);
 						scheduledAudit.put("owner", currentUser.getName());
+						scheduledAudit.put("url", "ScheduleAudit.action?auditID=" + row.getId());
 						events.add(scheduledAudit);
 					}
 				}
@@ -128,8 +129,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("save")) {
-				if (!permissions.hasPermission(OpPerms.ManageCalendars, OpType.Edit) && currentUserID != getUser().getId()
-						&& !"Holiday".equals(type)) {
+				if (!permissions.hasPermission(OpPerms.ManageCalendars, OpType.Edit)
+						&& currentUserID != getUser().getId() && !"Holiday".equals(type)) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
@@ -189,8 +190,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 			}
 
 			if (button.equals("delete")) {
-				if (!permissions.hasPermission(OpPerms.ManageCalendars, OpType.Delete) && currentUserID != getUser().getId()
-						&& !"Holiday".equals(type)) {
+				if (!permissions.hasPermission(OpPerms.ManageCalendars, OpType.Delete)
+						&& currentUserID != getUser().getId() && !"Holiday".equals(type)) {
 					json = new JSONObject();
 					json.put("title", "User Access Error");
 					json.put("output", "You do not have permission to modify this account.");
