@@ -8,15 +8,10 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
-<style type="text/css">
-#auditHeader,#auditHeaderNav {
-	display: none;
-}
+<s:include value="../jquery.jsp"></s:include>
 
-.calculatedAddress {
-	display: none;
-}
-</style>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
+<script type="text/javascript" src="js/schedule_audit.js"></script>
 <s:if test="conAudit != null">
 <script type="text/javascript">
 var conID = '<s:property value="conAudit.contractorAccount.id"/>';
@@ -37,10 +32,15 @@ function useContractor() {
 }
 </script>
 </s:if>
-<s:include value="../jquery.jsp"></s:include>
+<style type="text/css">
+#auditHeader,#auditHeaderNav {
+	display: none;
+}
 
-<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="GOOGLE_API_KEY"/>"></script>
-<script type="text/javascript" src="js/schedule_audit.js"></script>
+.calculatedAddress {
+	display: none;
+}
+</style>
 
 </head>
 <body>

@@ -9,7 +9,7 @@
 
 <s:include value="../jquery.jsp"></s:include>
 
-<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="GOOGLE_API_KEY"/>"></script>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 <script type="text/javascript" src="js/schedule_audit.js"></script>
 <style type="text/css">
 #mappreview {
