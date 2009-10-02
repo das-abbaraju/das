@@ -173,7 +173,7 @@ public class DateBean {
 		if (d2 == null)
 			return d1;
 		
-		if (d1.after(d1))
+		if (d1.after(d2))
 			return d1;
 		
 		return d2;
