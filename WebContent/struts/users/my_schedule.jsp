@@ -45,6 +45,11 @@ $.ajaxSetup(
 	border-color: #00f;
 	background-color: #00f;
 }
+.cal-webcam a {
+	background-image: url('images/icon_webcam.png');
+	background-repeat: no-repeat;
+	text-indent: 24px;
+}
 table.modal_form {
 	font-size: 14px;
 }
