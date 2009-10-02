@@ -169,7 +169,7 @@
 					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
 				</td>
 				<td>
-					<s:if test="get('auditTypeID') == 3">
+					<s:if test="get('auditTypeID') == 3 || get('auditTypeID') == 5">
 					<a href="ScheduleAudit.action?auditID=<s:property value="get('auditID')"/>" target="scheduleAudit">Schedule</a>
 					</s:if>
 				</td>
