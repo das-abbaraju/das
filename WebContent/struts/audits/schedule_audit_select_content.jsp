@@ -17,7 +17,7 @@
 </s:iterator>
 <s:if test="availableSet.days.size() == 0">
 <div class="info">
-	`There are no available timeslots left, please select one from above or contact customer service.
+	There are no available timeslots left, please select one from above or contact customer service.
 </div>
 </s:if>
 <s:if test="availableSet.latest != null">
