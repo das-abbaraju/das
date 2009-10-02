@@ -43,8 +43,11 @@
 					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 						<verifyText description="Active:Yes" text="Yes"/>
 						<verifyText description="Verify that text is contained in the page" text="$0.00 USD"/>
+						<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
+						<clickLink label="Edit Account"/>
+						<clickButton label="Delete"/>
 				</group>
-		    </steps>		
+		    </steps>
 		</webtest>
 	</target>
 </project>
