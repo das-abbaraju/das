@@ -176,23 +176,5 @@
 				
 			</steps>
 		</webtest>-->
-		
-		<webtest name="Contractor Registration - Post Cleanup">
-			&config;
-			<steps>
-				<storeProperty description="Change login to Admin" 
-					name="login.username" 
-					propertyType="ant"
-					value="${admin.username}"/>
-				&login;
-				<group description="Delete Contractor">
-					<setInputField name="filter.accountName" value="Canoo"/>
-					<clickButton label="Search"/>
-					<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
-					<clickElement htmlId="conEditLink"/>
-					<clickButton label="Delete"/>
-				</group>
-			</steps>
-		</webtest>
 	</target>
 </project>
