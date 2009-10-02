@@ -65,7 +65,6 @@
 					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
 					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
 					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
-					<setRadioButton description="DOT OQ" htmlId="answerq894Yes"/>
 					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
 					<clickLink label="Next >>"/>
 				</group>
@@ -77,9 +76,7 @@
 					<clickLink description="Click link: Add" htmlId="facility_5147"/>
 					<sleep seconds="5"/>
 					<setSelectField htmlId="requestedBySelector" text="BASF Brighton Colorado"/>
-					<verifyText description="Verify that text is contained in the page" text="# of Linked Facilities: 3"/>
-					<verifyText description="Verify that text is contained in the page" text="New Membership Level: $699.00 per year"/>
-					<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators "/>
+					<sleep seconds="3"/>
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Payment Options">
@@ -188,7 +185,13 @@
 					propertyType="ant"
 					value="${admin.username}"/>
 				&login;
-				&contractor_delete;
+				<group description="Delete Contractor">
+					<setInputField name="filter.accountName" value="Canoo"/>
+					<clickButton label="Search"/>
+					<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+					<clickElement htmlId="conEditLink"/>
+					<clickButton label="Delete"/>
+				</group>
 			</steps>
 		</webtest>
 	</target>
