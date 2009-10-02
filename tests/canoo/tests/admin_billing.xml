@@ -23,113 +23,26 @@
 				&click_report;
 				</group>
 				
-				<!--Invoicing-->
-				<group description="Invoicing">
-				<group description="Sort by billing level, click on contractor"/>
-				<clickLink label="Billing Report"/>
-				<clickLink href="ContractorView.action"/>
-				<group description="Add some facilities">
-					
-					<group description="Make Check Payment Method, Adjust Risk-Level to High">
-						<ifStep description="Swich the payment method to check if CC">
-						<condition>
-							<clickLink label="Facilities"/>
-							<verifyText description="Verify that text is contained in the page" text="This account is not linked to any operators."/>
-						</condition>
-							<sleep seconds="5"/>
-							<clickLink description="Click link: Add" label="Add"/>
-							<clickLink description="Click link: Add" label="Add"/>
-							<sleep seconds="5"/>
-							<setSelectField htmlId="requestedBySelector" optionIndex="0"/>
-						</ifStep>
-					
-				</group>
-					</group>
-				<group description="Make Check Payment Method, Adjust Risk-Level to High">
-					<ifStep description="Swich the payment method to check if CC">
-						<condition>
-							<clickLink label="Payment Options"/>
-							<verifyText description="Verify that text is contained in the page" text="Payment Method: Credit Card"/>
-						</condition>
-					<clickButton label="Change Payment Method to Check"/>
-					</ifStep>
-					<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
-					<setRadioButton description="Check radio button contractor.riskLevel: High" name="contractor.riskLevel" value="High"/>
-					<clickButton label="Save"/>
-
-				</group>
-	            <group description="Create an Invoice">
-				<clickLink label="Billing Details"/>
-				<clickButton label="Create"/>
-	            <clickLink label="Edit" href="InvoiceDetail.action?"/>
-				<setSelectField description="Add Expedite Fee" name="newFeeId" text="Expedite Fee"/>
-	            </group>
-				
-				<group description="Add 20 facilities">
-				<clickLink label="Facilities"/>				
-				<sleep seconds="10"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-					<clickLink label="Add"/>
-				</group>
-				
-				<group description="Adjust Invoice to New Tier">
-				<clickLink href="BillingDetail.action" label="Billing Details"/>
-				<clickLink href="InvoiceDetail.action"/>
-					<clickLink label="Edit"/>
-					<clickLink label="Change to: PICS Membership for 9-12 Operators"/>
-				</group>
-			    
-				<group description="Collect a Check">
-					<clickLink label="Pay"/>
-					<clickButton label="Collect Payment"/>
-				</group>
-				</group>
-				
-				<!--Deactivating Contactors-->
-				<group description="Deactivating Contractors">
-                <invoke url="ContractorEdit.action?id=2396" description="Go to Contractor 2396"/>
-				<clickLink label="Cancel Account"/>
-				<verifyText text="Successfully closed this contractor account."/>	
-				</group>
-				
-				<!--Reactivating Contactors-->
-				<group description="Reactivating Contractors">
-				<group description="Reactivate Account">
-				<clickLink label="Reactivate"/>
-				<clickLink label="Click to Create their invoice"/>
-				</group>
-				<group description="Create Invoice">
-				<clickButton label="Create"/>
-				<clickLink href="InvoiceDetail.action"/>
-				<clickLink label="View"/>
-				<verifyText text="Reactivation Fee"/>
-				<verifyText text="$199"/>
-				</group>
-				<group description="Zero out fees, mark paid">
-				<clickLink label="Edit" href="InvoiceDetail.action?"/>
-				<setInputField name="invoice.items[0].amount" value="0"/>
-				<setInputField name="invoice.items[1].amount" value="0"/>				
-				<clickButton label="Save"/>	
-				<clickButton label="Mark Paid"/>
-				</group>
+				<group description="Activations">
+					<setInputField name="filter.accountName" value="Canoo"/>
+					<clickButton label="Search"/>
+						<verifyText description="Verify that text is contained in the page" text="This contractor is not active."/>
+					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
+					<clickLink href="InvoiceDetail.action"/>
+						<verifyText description="Verify that text is contained in the page" text="Activation Fee"/>
+						<verifyText description="Verify that text is contained in the page" text="$99.00 USD"/>
+						<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators"/>
+						<verifyText description="Verify that text is contained in the page" text="$699.00 USD"/>
+						<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
+					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
+						<verifyText description="Verify Payment Method: Check" text="Check"/>
+					<clickLink label="Make a Payment"/>
+						<setInputField name="payment.checkNumber" value="1111"/>
+						<clickButton label="Apply All"/>
+						<clickButton label="Collect Payment"/>
+					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
+						<verifyText description="Active:Yes" text="Yes"/>
+						<verifyText description="Verify that text is contained in the page" text="$0.00 USD"/>
 				</group>
 		    </steps>		
 		</webtest>
