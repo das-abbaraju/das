@@ -17,17 +17,15 @@
 var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 function useContractor() {
 	$.getJSON("ContractorJson.action?id=" + conID,
-		function(data){
-			$.each(data.root, function(i,con){
-				$('form [name=conAudit.contractorContact]').val(con.contact);
-				$('form [name=conAudit.phone]').val(con.phone);
-				$('form [name=conAudit.phone2]').val(con.email);
-				$('form [name=conAudit.address]').val(con.address);
-				$('form [name=conAudit.city]').val(con.city);
-				$('form [name=conAudit.state]').val(con.state);
-				$('form [name=conAudit.zip]').val(con.zip);
-				$('form [name=conAudit.country]').val(con.country);
-			});
+		function(con){
+			$('form [name=conAudit.contractorContact]').val(con.contact);
+			$('form [name=conAudit.phone]').val(con.phone);
+			$('form [name=conAudit.phone2]').val(con.email);
+			$('form [name=conAudit.address]').val(con.address);
+			$('form [name=conAudit.city]').val(con.city);
+			$('form [name=conAudit.state]').val(con.state);
+			$('form [name=conAudit.zip]').val(con.zip);
+			$('form [name=conAudit.country]').val(con.country);
 		});
 }
 </script>
