@@ -5,7 +5,6 @@
 		<ant antfile="marketingPages.xml"/>
 		<ant antfile="login.xml"/>
 		<ant antfile="auditor.xml"/>
-		<ant antfile="admin_billing.xml"/>
 		<ant antfile="admin_webcams.xml"/>
 		<ant antfile="corporate.xml"/>
 		<ant antfile="contractor.xml"/>
@@ -19,11 +18,15 @@
 		<ant antfile="contractor_search.xml"/>
 		
 		<ant antfile="operator.xml"/>
+		<ant antfile="admin_billing.xml"/>
 		<ant antfile="contractor_registration.xml"/>
+		<ant antfile="contractor_delete.xml"/>
 	</target>
 	
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="admin_audits.xml"/>
+		<ant antfile="contractor_registration.xml"/>
+		<ant antfile="admin_billing.xml"/>
+		<ant antfile="contractor_delete.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
