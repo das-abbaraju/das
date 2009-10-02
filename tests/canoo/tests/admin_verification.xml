@@ -19,12 +19,11 @@
 						<setSelectField name="filter.visible" text="Y"/>
 						<clickButton label="Search"/>
 						<sleep seconds="3"/>
-						<clickLink label="Contractor"/>
-						<clickLink label="Annual Update"/>
+						<clickLink href="Audit.action"/>
 						<clickLink label="Verify"/>
 						<sleep seconds="2"/>
 						<clickButton label="Verify"/>
-						<sleep seconds="5"/>
+						<sleep seconds="10"/>
 				</group>
 						<group description="Verification Detail"/>
 							<ifStep>
@@ -85,20 +84,16 @@
 					
 							<verifyText description="Verify CSR Stamp" text="Trevor Allred"/>
 							
-							<ifStep>
+							<ifStep description="Check if approve btn present. Approve if so.">
 								<condition>
-									<verifyText description="Check if Approve button present" text="Approve"/>
+									<verifyElementText description="Check if Approve button present" type="button" text="Approve"/>
 								</condition>
-								<then>
-									<clickButton label="Approve"/>
-								</then>
 								<else>
 									<clickButton label="Reject"/>
-								</else>
+									</else>
+									<clickButton label="Approve"/>
 								<sleep seconds="2"/>
 							</ifStep>
-					
-							<clickButton label="Approve"/>
 						</group>
 						<verifyText text="Trevor Allred"/>
 						<clickLink label="Annual Update"/>
