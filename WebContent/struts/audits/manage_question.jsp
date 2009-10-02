@@ -32,7 +32,7 @@
 			</s:else>
 		</li>
 		<li><label>Question:</label>
-			<s:textarea name="question.question" rows="2" cols="50" />
+			<s:textarea name="question.question" rows="10" cols="100" />
 		</li>		
 		<li><label>Effective Date:</label>
 			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>

@@ -7,9 +7,9 @@
 		value="%{webcam.id > 0 ? 'Edit' : 'Create'}" /> Webcam</span></legend>
 	<ol>
 		<li><label>ID:</label> <s:property value="%{webcam.id > 0 ? webcam.id : 'NEW'}" /></li>
-		<li><label>Make:</label><s:textfield name="webcam.make" /></li>
-		<li><label>Model:</label><s:textfield name="webcam.model" /></li>
 		<li><label>Active:</label><s:checkbox name="webcam.active" /></li>
+		<li><label>Comment:</label><s:textfield name="webcam.model" /></li>
+		<li><label>Make/Model:</label><s:textfield name="webcam.make" /></li>
 		<li><label>Replacement Cost:</label> $<s:textfield name="webcam.replacementCost" size="6" /></li>
 	</ol>
 	</fieldset>
@@ -40,11 +40,14 @@
 		<fieldset class="form submit">
 			<input type="submit" class="picsbutton positive" name="button" value="Save" /> 
 			<s:if test="webcam.id > 0">
-				<pics:permission perm="ManageWebcam" type="Edit">
-					<s:if test="webcam.contractor == null">
+				<s:if test="webcam.contractor == null">
+					<pics:permission perm="ManageWebcam" type="Delete">
 						<input type="submit" class="picsbutton negative" name="button" value="Delete" />
-					</s:if>
-				</pics:permission>
+					</pics:permission>
+				</s:if>
+				<s:else>
+					<input type="submit" class="picsbutton" name="button" value="Receive" />
+				</s:else>
 				<input type="button" class="picsbutton" name="button" value="Add New" onclick="loadForm(0); return false;" />
 			</s:if>
 		</fieldset>

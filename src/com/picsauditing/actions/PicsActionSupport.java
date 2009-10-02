@@ -278,8 +278,9 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		return requestURL;
 	}
 
-	public void redirect(String url) throws IOException {
+	public String redirect(String url) throws IOException {
 		ServletActionContext.getResponse().sendRedirect(url);
+		return BLANK;
 	}
 	
 	public void setMsg(String message) {

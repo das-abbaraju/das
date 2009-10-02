@@ -309,6 +309,7 @@
 			<td>Answer</td>
 			<td>For</td>
 			<td>Question</td>
+			<td></td>
 		</tr>
 	</thead>
 	<s:iterator value="acaListAudits">
@@ -318,18 +319,17 @@
 			<td class="center"><s:property value="answer.answer" /></td>
 			<td><s:property value="answer.audit.auditType.auditName" /> <s:property value="answer.audit.auditFor" /></td>
 			<td>
-				<s:set name="auditCatData" value="getAuditCatData(answer.audit.id,answer.question.id)"/>
-				<s:if test="#auditCatData != null">
-					<a href="AuditCat.action?auditID=<s:property value="answer.audit.id"/>&catDataID=<s:property value="#auditCatData.id"/>&mode=View#node_<s:property value="answer.question.id"/>"><s:property value="answer.question.question" /></a>
+				<s:property value="answer.question.question" escape="false" />
+			</td>
+			<td>
+				<s:if test="getAuditCatData(answer.audit.id,answer.question.id) != null">
+					<a href="AuditCat.action?auditID=<s:property value="answer.audit.id"/>&catDataID=<s:property value="#auditCatData.id"/>&mode=View#node_<s:property value="answer.question.id"/>">Show</a>
 				</s:if>
-				<s:else>
-					<s:property value="answer.question.question" />
-				</s:else>
 			</td>
 		</tr>
 	</s:iterator>
 	<pics:permission perm="EditFlagCriteria">
-		<tr><td colspan="4" class="center"><a 
+		<tr><td colspan="5" class="center"><a 
 			href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.id" />">Edit Flag Criteria</a></td></tr>
 	</pics:permission>
 </table>

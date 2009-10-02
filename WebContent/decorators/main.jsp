@@ -117,6 +117,7 @@
 </div>
 <!-- !begin content -->
 <decorator:body />
+<div><br clear="both"></br></div>
 <!-- !end content -->
 </div>
 </div>

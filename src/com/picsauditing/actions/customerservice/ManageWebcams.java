@@ -1,5 +1,6 @@
 package com.picsauditing.actions.customerservice;
 
+import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
@@ -34,7 +35,8 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 
 		if (button != null) {
 			if ("load".equals(button)) {
-
+				// Return back a single webcam
+				// Should have already been loaded during the prepare
 				return SUCCESS;
 			}
 
@@ -42,21 +44,55 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 				tryPermissions(OpPerms.ManageWebcam, OpType.Delete);
 				
 				webcamDAO.remove(webcam);
-				addActionMessage("Deleted webcam " + webcam.getId());
+				addActionMessage("Deleted webcam #" + webcam.getId());
 				webcam = new Webcam();
 			}
 
 			if ("Save".equals(button)) {
 				tryPermissions(OpPerms.ManageWebcam, OpType.Edit);
 				
-				webcamDAO.save(webcam);
 				webcam.setAuditColumns(permissions);
-				addActionMessage("Saved webcam " + webcam.getId());
+				webcamDAO.save(webcam);
+
+				String url = "ManageWebcams.action?";
+				if (!webcam.isActive())
+					url += "button=all&";
+				return redirect(url + "webcam.id=" + webcam.getId() + "&msg=Saved webcam");
+			}
+			
+			if ("Receive".equals(button)) {
+				tryPermissions(OpPerms.ManageWebcam, OpType.Edit);
+				webcam.setContractor(null);
+				webcam.setReceivedBy(getUser());
+				webcam.setReceivedDate(new Date());
+				
+				webcam.setAuditColumns(permissions);
+				webcamDAO.save(webcam);
+				String url = "ManageWebcams.action?button=out&msg=Received camera #" +
+						webcam.getId() + " into Inventory";
 				webcam = new Webcam();
+
+				return redirect(url);
+			}
+			
+			
+			if ("all".equals(button)) {
+				list = webcamDAO.findWhere("");
+				return SUCCESS;
+			}
+
+			if ("out".equals(button)) {
+				list = webcamDAO.findWhere("contractor.id > 0");
+				return SUCCESS;
+			}
+
+			if ("in".equals(button)) {
+				list = webcamDAO.findWhere("contractor IS NULL");
+				return SUCCESS;
 			}
 		}
 
-		list = webcamDAO.findWhere("");
+		list = webcamDAO.findWhere("active = 1");
 
 		return SUCCESS;
 	}
