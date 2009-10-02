@@ -32,6 +32,10 @@ function unVerify() {
 }
 
 function verifyAddress() {
+	if (!$("#conAudit_address").val().trim() || !$("#conAudit_zip").val().trim()) {
+		$.gritter.add({title:'Error Finding Location', text:'You must enter an address and a zip code'});
+		return false;
+	}
 	if (GBrowserIsCompatible()) {
 		var geocoder = new GClientGeocoder();
 		if (geocoder) {
