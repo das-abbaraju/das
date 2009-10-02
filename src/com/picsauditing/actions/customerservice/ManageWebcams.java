@@ -68,7 +68,7 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 				
 				webcam.setAuditColumns(permissions);
 				webcamDAO.save(webcam);
-				String url = "ManageWebcams.action?button=out&msg=Received camera #" +
+				String url = "ManageWebcams.action?button=out&msg=Received camera %23" +
 						webcam.getId() + " into Inventory";
 				webcam = new Webcam();
 
