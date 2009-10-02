@@ -110,6 +110,19 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		if (button.equals("address")) {
+			List<String> errors = new ArrayList<String>();
+			if (Strings.isEmpty(conAudit.getContractorContact()))
+				errors.add("Contact Name is a required field");
+			if (Strings.isEmpty(conAudit.getPhone2()))
+				errors.add("Email is a required field");
+			if (Strings.isEmpty(conAudit.getPhone()))
+				errors.add("Phone Number is a required field");
+			if (errors.size() > 0) {
+				addActionError("The following errors exist:");
+				for (String e : errors)
+					addActionError(e);
+				return "address";
+			}
 			auditDao.save(conAudit);
 			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
 			for (AuditorAvailability timeslot : timeslots) {
