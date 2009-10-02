@@ -49,7 +49,7 @@ function useContractor() {
 	<fieldset class="form"><legend><span>Contact Person</span></legend>
 	<ol>
 		<li>Please enter your company's primary representative for this audit.</li>
-		<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/></li>
+		<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/></li>
 		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" /></li>
 		<li><label>Email:</label> <s:textfield name="conAudit.phone2" /></li>
 		<li><label>Phone:</label> <s:textfield name="conAudit.phone" /></li>
