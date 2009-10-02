@@ -58,7 +58,7 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 
 	public List<AuditorAvailability> findByTime(Date timeSelected) {
 		Query query = em.createQuery("SELECT t FROM AuditorAvailability t "
-				+ "WHERE t.startDate = ? ORDER BY restrictions");
+				+ "WHERE t.startDate = ?");
 		query.setParameter(1, timeSelected);
 		return query.getResultList();
 	}
