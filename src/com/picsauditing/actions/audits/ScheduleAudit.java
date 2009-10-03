@@ -29,7 +29,7 @@ import com.picsauditing.util.Strings;
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	static final public String GOOGLE_API_KEY = "ABQIAAAAgozVvI8r_S5nN6njMJJ7aBTo4w3vXkjMqCEUz4-xpKEfhElFUxRwXE2trWXRBXZPHCY8N1AgoRkSBw";
-	static final public String DATE_FORMAT = "yyyyMMddhhmm";
+	static final public String DATE_FORMAT = "yyyyMMddHHmm";
 
 	private AvailableSet availableSet = new AvailableSet();
 	private Date timeSelected;
