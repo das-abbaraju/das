@@ -93,8 +93,8 @@ $(function(){
 		<fieldset class="form">
 			<legend><span>Contact Info - <s:property value="audit.contractorAccount.name"/></span></legend>
 			<ol>
-				<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/>
-					<input type="button" value="Show Contractor Contact Info" onclick="showContractor()"/></li>
+				<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/>
+					<input type="button" value="Show Primary Info" onclick="showContractor()"/></li>
 				<li><label>Contact Name:</label><s:textfield name="audit.contractorContact"/></li>
 				<li><label>Address:</label><s:textfield name="audit.address"/></li>
 				<li><label>Address2:</label><s:textfield name="audit.address2"/></li>
