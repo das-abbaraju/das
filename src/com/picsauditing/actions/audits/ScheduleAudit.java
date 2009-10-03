@@ -124,28 +124,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return "address";
 			}
 			auditDao.save(conAudit);
-			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
-			for (AuditorAvailability timeslot : timeslots) {
-				if (timeslot.isConductedOnsite(conAudit)) {
-					if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
-						break;
-					}
-					availableSet.add(timeslot);
-				}
-			}
-
-			if (availableSet.size() > 0) {
-				return "select";
-			}
-
-			availableSet = new AvailableSet();
-			for (AuditorAvailability timeslot : timeslots) {
-				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
-					break;
-				}
-				availableSet.add(timeslot);
-			}
-
+			findTimeslots();
 			return "select";
 		}
 		if (button.equals("select")) {
@@ -166,6 +145,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return "confirm";
 			}
 			addActionError("Failed to select time");
+			findTimeslots();
 			return "select";
 		}
 		if (button.equals("confirm")) {
@@ -229,6 +209,32 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return "summary";
 		}
 		return "address";
+	}
+
+	private void findTimeslots() {
+		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
+		for (AuditorAvailability timeslot : timeslots) {
+			if (timeslot.isConductedOnsite(conAudit)) {
+				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
+					break;
+				}
+				availableSet.add(timeslot);
+			}
+		}
+
+		if (availableSet.size() > 0) {
+			return;
+		}
+
+		availableSet = new AvailableSet();
+		for (AuditorAvailability timeslot : timeslots) {
+			if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
+				break;
+			}
+			availableSet.add(timeslot);
+		}
+
+		return;
 	}
 
 	public AuditorAvailability getAvailabilitySelected() {
