@@ -91,7 +91,7 @@ $(function(){
 	<s:form>
 		<s:hidden name="audit.id"/>
 		<fieldset class="form">
-			<legend><span>Contact Info - <s:property value="audit.contractorAccount.name"/></span></legend>
+			<legend><span><s:property value="audit.contractorAccount.name"/></span></legend>
 			<ol>
 				<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/>
 					<input type="button" value="Show Primary Info" onclick="showContractor()"/></li>
