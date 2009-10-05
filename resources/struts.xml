@@ -799,6 +799,11 @@
 			class="com.picsauditing.actions.customerservice.AuditorInvoices">
 			<result>struts/customerservice/auditor_invoices.jsp</result>
 		</action>
+
+		<action name="AuditorInvoicesAjax"
+			class="com.picsauditing.actions.customerservice.AuditorInvoices">
+			<result>struts/customerservice/auditor_invoices_detail.jsp</result>
+		</action>
 		
 
 

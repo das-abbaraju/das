@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
@@ -277,4 +278,24 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List findAuditorBatches(int auditorID, Date startDate) {
+		String hql = "SELECT NEW MAP(ca.paidDate as paidDate, ca.auditor as auditor, COUNT(*) as total) FROM ContractorAudit ca WHERE ";
+		if (auditorID > 0) {
+			hql += "ca.auditor.id = :ID AND ";
+		} else {
+			hql += "ca.auditor IN (SELECT user FROM UserGroup WHERE group.id = :ID) AND ";
+		}
+
+		hql += "ca.paidDate > :startDate " + "GROUP BY ca.paidDate, ca.auditor.id "
+				+ "ORDER BY ca.paidDate, ca.auditor.name";
+
+		Query q = em.createQuery(hql);
+		if (auditorID > 0)
+			q.setParameter("ID", auditorID);
+		else
+			q.setParameter("ID", User.INDEPENDENT_CONTRACTOR);
+		q.setParameter("startDate", startDate);
+		return q.getResultList();
+	}
 }
