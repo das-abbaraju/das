@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Contractor Search</title>
@@ -20,12 +21,14 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-<s:if test="data.size() == 0">
-	<s:if test="permissions.operator || permissions.corporate">
-		<div id="info">No matching contractors were found linked to <s:property value="permissions.accountName"/>.
-		Click here to expand your <a href="NewContractorSearch.action?filter.accountName=<s:property value="filter.accountName"/>&filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true"> search to include any contractors in the global PICS database.</a></div>
+<pics:permission perm="SearchContractors">
+	<s:if test="data.size() == 0">
+		<s:if test="permissions.operator || permissions.corporate">
+			<div id="info">No matching contractors were found linked to <s:property value="permissions.accountName"/>.
+			Click here to expand your <a href="NewContractorSearch.action?filter.accountName=<s:property value="filter.accountName"/>&filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true"> search to include any contractors in the global PICS database.</a></div>
+		</s:if>
 	</s:if>
-</s:if>
+</pics:permission>
 <table class="report">
 	<thead>
 	<tr>
