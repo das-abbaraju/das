@@ -38,7 +38,7 @@ public class CreateAuditorInvoices extends PicsActionSupport {
 
 		if (button != null) {
 			permissions.tryPermission(OpPerms.AuditorPayments, OpType.Edit);
-			if (listCount != list.size()) {
+			if (listCount == list.size()) {
 				Date paidDate = new Date();
 				for (ContractorAudit conAudit : list) {
 					conAudit.setPaidDate(paidDate);
