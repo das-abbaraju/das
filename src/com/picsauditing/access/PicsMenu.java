@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import java.util.Iterator;
 
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class PicsMenu {
@@ -81,6 +82,11 @@ public class PicsMenu {
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
 
+		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR)) {
+			subMenu.addChild("Auditor Invoices", "AuditorInvoices.action");
+			subMenu.addChild("Create Auditor Invoices", "CreateAuditorInvoices.action");
+		}
+
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu
 					.addChild("Audit List",
@@ -98,7 +104,7 @@ public class PicsMenu {
 		if (permissions.isAdmin()) {
 			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.ManageWebcam)) {
 			subMenu.addChild("Manage Webcams", "ManageWebcams.action");
 			subMenu.addChild("Assign Webcams", "AssignWebcams.action");
@@ -161,19 +167,19 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
 			subMenu.addChild("Flag Criteria", "OperatorFlagCriteria.action");
 		}
-		
-		if(permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
-			subMenu.addChild("Sales Report", "ReportSalesReps.action");			
+
+		if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
+			subMenu.addChild("Sales Report", "ReportSalesReps.action");
 		}
 		if (permissions.hasPermission(OpPerms.EditProfile)) {
 			subMenu.addChild("Edit Profile", "ProfileEdit.action");
 		}
-		
+
 		// Add a new permission for this
-		if(permissions.hasPermission(OpPerms.MyCalendar)) {
+		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			subMenu = menu.addChild("Dev");
 			subMenu.addChild("System Logging", "LoggerConfig.action");
@@ -207,7 +213,8 @@ public class PicsMenu {
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2008");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Fatalities", "ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate");
+			subMenu.addChild("Fatalities",
+					"ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate");
 		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action?filter.flagStatus=Red");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
@@ -218,8 +225,8 @@ public class PicsMenu {
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search", "UserList.action");
-		
-		if(permissions.isOperatorCorporate()) {
+
+		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu, subMenu, permissions);
 		}
 		// Convert the first submenu into a menu if only one exists
@@ -235,17 +242,17 @@ public class PicsMenu {
 
 		return menu;
 	}
-	
+
 	static public MenuComponent addSupportLink(MenuComponent menu, MenuComponent subMenu, Permissions permissions) {
 		subMenu = menu.addChild("Support");
 		String url = "http://help.picsauditing.com/wiki/";
-		if(permissions.isContractor())
+		if (permissions.isContractor())
 			url += "User_Manual_for_Contractors";
 		else
 			url += "User_Manual_for_Operators";
 		subMenu.addChild("Help Center", url);
 		subMenu.addChild("Contact Us", "contact.jsp");
-		subMenu.addChild("Online Chat","Online Chat");
+		subMenu.addChild("Online Chat", "Online Chat");
 		return menu;
 	}
-}	
+}
