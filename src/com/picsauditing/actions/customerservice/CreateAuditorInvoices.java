@@ -1,4 +1,4 @@
-package com.picsauditing.actions.audits;
+package com.picsauditing.actions.customerservice;
 
 import com.picsauditing.actions.PicsActionSupport;
 

@@ -791,13 +791,13 @@
 		<!-- Track Auditor Payments -->
 
 		<action name="CreateAuditorInvoices"
-			class="com.picsauditing.actions.audits.CreateAuditorInvoices">
-			<result>struts/audits/auditor_invoices_create.jsp</result>
+			class="com.picsauditing.actions.customerservice.CreateAuditorInvoices">
+			<result>struts/customerservice/auditor_invoices_create.jsp</result>
 		</action>
 
 		<action name="AuditorInvoices"
-			class="com.picsauditing.actions.audits.AuditorInvoices">
-			<result>struts/audits/auditor_invoices.jsp</result>
+			class="com.picsauditing.actions.customerservice.AuditorInvoices">
+			<result>struts/customerservice/auditor_invoices.jsp</result>
 		</action>
 		
 
