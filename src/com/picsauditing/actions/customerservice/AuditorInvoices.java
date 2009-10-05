@@ -32,7 +32,7 @@ public class AuditorInvoices extends PicsActionSupport {
 		if (button != null) {
 			if ("detail".equals(button)) {
 				String where = "auditor.id = " + auditorID + " AND paidDate = '" + paidDate + "'";
-				auditList = auditDAO.findWhere(1000, where, "id");
+				auditList = auditDAO.findWhere(1000, where, "contractorAccount.name");
 
 				return SUCCESS;
 			}
