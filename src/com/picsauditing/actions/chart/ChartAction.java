@@ -21,22 +21,22 @@ public class ChartAction extends PicsActionSupport {
 		loadPermissions();
 		if (!permissions.isLoggedIn()) {
 			error("Not Logged In");
-			return SUCCESS;
+			return CHART_XML;
 		}
 		Chart chart;
 		try {
 			chart = buildChart();
 		} catch (Exception e) {
 			error("Error Getting Data");
-			return SUCCESS;
+			return CHART_XML;
 		}
 		
 		if (chart.hasData()) {
 			output = chart.toString();
-			return SUCCESS;
+			return CHART_XML;
 		} else {
 			error("No Data");
-			return SUCCESS;
+			return CHART_XML;
 		}
 	}
 	

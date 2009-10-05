@@ -53,6 +53,7 @@
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="blank">/struts/blank.jsp</result>
 			<result name="json">/struts/json.jsp</result>
+			<result name="chartXML">struts/chart_xml.jsp</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
@@ -138,7 +139,7 @@
 			class="com.picsauditing.actions.operators.OperatorFlagsWidget">
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
-		
+
 		<action name="ContractorPendingApprovalAjax"
 			class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
 			<result>struts/widgets/con_pendingapproval.jsp</result>
@@ -1024,33 +1025,32 @@
 		<!-- Charts and Graphs -->
 		<action name="ChartXMLFlagCount"
 			class="com.picsauditing.actions.chart.ChartFlagCount">
-			<result>struts/chart_xml.jsp</result>
 		</action>
 		
 		<action name="ChartXMLOpFlagHistory"
 			class="com.picsauditing.actions.chart.ChartOpFlagHistory">
-			<result>struts/chart_xml.jsp</result>
 		</action>		
 
 		<action name="ChartXMLTradeCount"
 			class="com.picsauditing.actions.chart.ChartTradeCount">
-			<result>struts/chart_xml.jsp</result>
 		</action>
 
 		<action name="ChartXMLAuditsClosed"
 			class="com.picsauditing.actions.chart.ChartAuditsClosed">
-			<result>struts/chart_xml.jsp</result>
 		</action>
 
 		<action name="CorporateFlagByFacilityAjax"
 			class="com.picsauditing.actions.chart.ChartFlagCountCorp">
-			<result>struts/chart_xml.jsp</result>
 		</action>
 		
 		<action name="ChartXMLWaitingOnCount"
 			class="com.picsauditing.actions.chart.ChartWaitingOnCount">
-			<result>struts/chart_xml.jsp</result>
 		</action>
+
+		<action name="ChartXMLCorporateFlags"
+			class="com.picsauditing.actions.chart.ChartCorporateFlags">
+		</action>
+		
 
 		<!-- Office Audit Scheduling -->
 
