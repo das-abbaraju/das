@@ -59,10 +59,8 @@ public class PicsMenu {
 		subMenu.addChild("Contractor List", "ContractorList.action");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
-			subMenu
-					.addChild(
-							"Search For New",
-							"NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true");
+			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
+			subMenu.addChild("Search For New", url);
 		}
 
 		if (permissions.isCorporate())
@@ -87,10 +85,10 @@ public class PicsMenu {
 			subMenu.addChild("Create Auditor Invoices", "CreateAuditorInvoices.action");
 		}
 
-		if (permissions.hasPermission(OpPerms.ContractorDetails))
-			subMenu
-					.addChild("Audit List",
-							"ReportAuditList.action?filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active");
+		if (permissions.hasPermission(OpPerms.ContractorDetails)) {
+			final String url = "ReportAuditList.action?filter.auditStatus=Submitted&filter.auditStatus=Resubmitted&filter.auditStatus=Active";
+			subMenu.addChild("Audit List", url);
+		}
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.visible=Y");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
@@ -125,11 +123,10 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("InsureGUARD&trade;");
-		if (permissions.hasPermission(OpPerms.InsuranceCerts))
-			subMenu
-					.addChild(
-							"Contractor Policies",
-							"ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.caoStatus=Verified&filter.caoStatus=Submitted");
+		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
+			final String url = "ReportPolicyList.action?filter.caoStatus=Approved&filter.caoStatus=Rejected&filter.caoStatus=Verified&filter.caoStatus=Submitted";
+			subMenu.addChild("Contractor Policies", url);
+		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
 			subMenu.addChild("Policy Verification", "PolicyVerification.action");
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
@@ -212,15 +209,17 @@ public class PicsMenu {
 			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action?years=2008");
 			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2008");
 		}
-		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Fatalities",
-					"ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate");
+		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
+			final String url = "ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			subMenu.addChild("Fatalities", url);
+		}
 		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action?filter.flagStatus=Red");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
-		if (permissions.hasPermission(OpPerms.FatalitiesReport))
-			subMenu.addChild("Incidence Rates",
-					"ReportIncidenceRate.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate");
+		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
+			final String url = "ReportIncidenceRate.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			subMenu.addChild("Incidence Rates", url);
+		}
 		if (permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
