@@ -13,13 +13,16 @@ function getDetail(auditorID, paidDate) {
 	);
 }
 </script>
+
 </head>
 <body>
 <h1>Auditor Invoices</h1>
 
 <s:include value="../actionMessages.jsp" />
 
-<table class="report left noprint">
+<div id="batch_list" class="left noprint">
+<h3>Auditor Batches</h3>
+<table class="report">
 <thead>
 <tr>
 	<td>Paid Date</td>
@@ -41,6 +44,7 @@ function getDetail(auditorID, paidDate) {
 </tr>
 </s:iterator>
 </table>
+</div>
 
 <div id="audit_detail" class="left" style="display:none"></div>
 </body>
