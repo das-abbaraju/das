@@ -10,8 +10,6 @@ public class IntConverter extends EnumConverter {
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		
 		return (String) performFallbackConversion(arg0, arg1, String.class);
 	}
 	
