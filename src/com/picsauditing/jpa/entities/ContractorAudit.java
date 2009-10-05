@@ -47,6 +47,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private Date assignedDate;
 	private Date completedDate;
 	private Date closedDate;
+	private Date paidDate;
 	private OperatorAccount requestingOpAccount;
 	private int percentComplete;
 	private int percentVerified;
@@ -221,6 +222,15 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setClosedDate(Date closedDate) {
 		this.closedDate = closedDate;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	public Date getPaidDate() {
+		return paidDate;
+	}
+
+	public void setPaidDate(Date paidDate) {
+		this.paidDate = paidDate;
 	}
 
 	@ManyToOne

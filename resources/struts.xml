@@ -788,6 +788,21 @@
 		</action>
 
 
+		<!-- Track Auditor Payments -->
+
+		<action name="CreateAuditorInvoices"
+			class="com.picsauditing.actions.audits.CreateAuditorInvoices">
+			<result>struts/audits/auditor_invoices_create.jsp</result>
+		</action>
+
+		<action name="AuditorInvoices"
+			class="com.picsauditing.actions.audits.AuditorInvoices">
+			<result>struts/audits/auditor_invoices.jsp</result>
+		</action>
+		
+
+
+
 		<!-- PQF Verify -->
 		<action name="PqfVerification"
 			class="com.picsauditing.actions.report.ReportPQFVerification">
@@ -899,8 +914,6 @@
 			class="com.picsauditing.actions.auditType.ManageDesktopMatrix">
 			<result>struts/audits/desktop_matrix.jsp</result>
 		</action>
-
-
 
 
 
