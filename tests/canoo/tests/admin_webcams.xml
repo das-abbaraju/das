@@ -19,18 +19,14 @@
 						<sleep seconds="5"/>
 						<setInputField htmlId="webcam_form_webcam_model" value="Canoo Test Cam"/>
 						<setInputField htmlId="webcam_form_webcam_replacementCost" value="50"/>
-						<sleep description="wait for jQuery to load" seconds="2"/>
 						<clickButton label="Save"/>
-						<sleep description="wait for jQuery to load" seconds="1"/>
 						<verifyText text="Saved webcam"/>
 					</group>
 
 					<group description="Edit Webcam">
 					<invoke url="ManageWebcams.action?webcam.id=4"/>
 						<setInputField name="webcam.make" value="Samsung"/>
-						<sleep description="wait for jQuery to load" seconds="1"/>
 						<clickButton label="Save"/>
-						<sleep description="wait for jQuery to load" seconds="1"/>
 						<invoke url="ManageWebcams.action?webcam.id=4"/>
 						<verifyText text="Samsung"/>
 						<setInputField name="webcam.make" value="Logitech"/>
