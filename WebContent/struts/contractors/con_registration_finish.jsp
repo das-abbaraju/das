@@ -51,31 +51,55 @@
 					<s:hidden name="id" value="%{contractor.id}"/>
 					<div>
 						Based on the information provided your level of risk for the the work your company performs is <strong><s:property value="contractor.riskLevel"/></strong>.	<br/>
-						
-						Based on the Operators that you have selected:
+						<s:if test="contractor.acceptsBids">
+							To Bid at a facility you need to complete the following Audits, <br clear="all"/>
+							<ul>
+								<li>Company Information</li>
+								<s:iterator value="contractor.audits">
+									<s:if test="!auditType.pqf">
+										<li><s:property value="auditType.auditName"/> <s:property value="auditFor"/></li>
+									</s:if>
+								</s:iterator>
+							</ul>
+							If you are approved to work at the Operators you have selected 
 							<s:iterator value="contractor.operators" status="stat">
 								<s:if test="#stat.last">
 									and
 								</s:if>
 								<s:property value="operatorAccount.name"/>,
 							</s:iterator>
-						the following audits will apply: 
-
-						<br clear="all"/>
-
-						<s:iterator value="auditMenu">
-							<s:if test="children.size() > 0">
-								<div style="float:left;width: <s:property value="100 / auditMenu.size() * 0.9"/>%">
-									<strong style="font-size:16px"><s:property value="name" escape="false"/></strong>
-									<ul>
-										<s:iterator value="children">
-											<li><s:property value="name" escape="false"/></li>
-										</s:iterator>
-									</ul>
-								</div>
-							</s:if>
-						</s:iterator>
-
+							the following audits will apply:
+							<ul>
+								<s:iterator value="requiredAudits" id="value">
+									<li><s:property value="#value"/></li>									
+								</s:iterator>
+							</ul> 
+						</s:if>
+						<s:else>
+							Based on the Operators that you have selected:
+								<s:iterator value="contractor.operators" status="stat">
+									<s:if test="#stat.last">
+										and
+									</s:if>
+									<s:property value="operatorAccount.name"/>,
+								</s:iterator>
+							the following audits will apply: 
+	
+							<br clear="all"/>
+	
+							<s:iterator value="auditMenu">
+								<s:if test="children.size() > 0">
+									<div style="float:left;width: <s:property value="100 / auditMenu.size() * 0.9"/>%">
+										<strong style="font-size:16px"><s:property value="name" escape="false"/></strong>
+										<ul>
+											<s:iterator value="children">
+												<li><s:property value="name" escape="false"/></li>
+											</s:iterator>
+										</ul>
+									</div>
+								</s:if>
+							</s:iterator>
+						</s:else>
 						<br clear="all"/>
 						<s:if test="!contractor.newMembershipLevel.free">
 							<h3>Invoice Summary</h3>
@@ -100,3 +124,4 @@
 
 </body>
 </html>
+									

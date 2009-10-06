@@ -49,6 +49,9 @@
 	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 	</div>
 </s:if>
+<s:if test="contractor.acceptsBids">
+	<div id="alert">This is a Bid Only Contractor.</div>
+</s:if>
 <s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
 	<div id="alert">This contractor has an outstanding invoice due</div>
 </s:elseif>

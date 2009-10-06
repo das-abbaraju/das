@@ -2,8 +2,10 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -20,6 +22,8 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -105,7 +109,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							// Activate the contractor
 							if (!contractor.isActiveB()) {
 								for (InvoiceItem item : invoice.getItems()) {
-									if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
+									if (item.getInvoiceFee().getFeeClass().equals("Activation")
+											|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
 										contractor.setActive('Y');
 										contractor.setAuditColumns(getUser());
 									}
@@ -163,7 +168,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 				} else {
 
-					if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
+					if (!contractor.isAcceptsBids() && !contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
 						changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
 						updateTotals();
 						this.addNote(contractor, "Modified current invoice, changed to $" + invoice.getTotalAmount(),
@@ -195,7 +200,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			}
 		}
 
-		if (!contractor.isRenew()) {
+		if (!contractor.isAcceptsBids() && !contractor.isRenew()) {
 			contractor.setRenew(true);
 			accountDao.save(contractor);
 		}
@@ -259,5 +264,18 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 	public boolean isComplete() {
 		return complete;
+	}
+	
+	public Set<String> getRequiredAudits() {
+		Set<String> auditTypeList = new HashSet<String>();
+		for(ContractorOperator cOperator : contractor.getOperators()) {
+			for(AuditOperator aOperator : cOperator.getOperatorAccount().getVisibleAudits()) {
+				if(aOperator.isRequiredFor(contractor) 
+						&& !aOperator.getAuditType().isAnnualAddendum()) {
+					auditTypeList.add(aOperator.getAuditType().getAuditName());
+				}
+			}
+		}
+		return auditTypeList;
 	}
 }

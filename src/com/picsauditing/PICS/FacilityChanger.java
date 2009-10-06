@@ -5,19 +5,24 @@ import java.util.Iterator;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.SpringUtils;
 
 /**
  * Adds and removed contractors from operator accounts
@@ -62,7 +67,7 @@ public class FacilityChanger {
 		co.setAuditColumns(permissions);
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
-		
+
 		addNote("Linked contractor to " + operator.getName());
 
 		if (!permissions.isContractor()) {
@@ -75,17 +80,34 @@ public class FacilityChanger {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			EmailSender.send(emailQueue);
+			setContractorToUpgrade();
 		}
-		
-		if (permissions.isContractor())
-			// If the contractor logs in and adds a facility, 
-			// then let's assume they want to be part of PICS
-			contractor.setRenew(true);
-		
+
+		if (permissions.isContractor()) {
+			if (contractor.isAcceptsBids()) {
+				if (contractor.isActiveB()) {
+					boolean onlyBids = true;
+					for (ContractorOperator conOperator : contractor.getOperators()) {
+						if (!conOperator.getOperatorAccount().isAcceptsBids()) {
+							onlyBids = false;
+							break;
+						}
+					}
+					if (!onlyBids) {
+						setContractorToUpgrade();
+					}
+				}
+			} else {
+				// If the contractor logs in and adds a facility,
+				// then let's assume they want to be part of PICS
+				contractor.setRenew(true);
+			}
+		}
+
 		contractor.setLastUpgradeDate(new Date());
-		
+
 		contractor.setNeedsRecalculation(true);
-		
+
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -97,17 +119,17 @@ public class FacilityChanger {
 
 		// TODO: Start using SearchContractors.Delete instead
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
-		//if (!permissions.hasPermission(OpPerms.RemoveContractors))
-		//	return false;
+		// if (!permissions.hasPermission(OpPerms.RemoveContractors))
+		// return false;
 		Iterator<ContractorOperator> iterator = contractor.getOperators().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			ContractorOperator co = iterator.next();
 			if (co.getOperatorAccount().equals(operator)) {
 				contractorOperatorDAO.remove(co);
 				contractor.getOperators().remove(co);
-				
-				addNote("Unlinked " + co.getContractorAccount().getName()
-						+ " from " + co.getOperatorAccount().getName() + "'s db");
+
+				addNote("Unlinked " + co.getContractorAccount().getName() + " from "
+						+ co.getOperatorAccount().getName() + "'s db");
 
 				contractor.setNeedsRecalculation(true);
 
@@ -118,15 +140,15 @@ public class FacilityChanger {
 
 		return false;
 	}
-	
+
 	private void addNote(String summary) {
-		// TODO I think we should add a new column on 
+		// TODO I think we should add a new column on
 		// operator table that is the viewableBy default
 		OperatorAccount viewableBy = operator;
-		for(Facility f : operator.getCorporateFacilities()) {
+		for (Facility f : operator.getCorporateFacilities()) {
 			viewableBy = f.getCorporate();
 		}
-		
+
 		Note note = new Note(contractor, user, summary);
 		note.setNoteCategory(NoteCategory.OperatorChanges);
 		note.setCanContractorView(true);
@@ -166,6 +188,20 @@ public class FacilityChanger {
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		user = new User(permissions.getUserId());
+	}
+
+	public void setContractorToUpgrade() {
+		contractor.setAcceptsBids(false);
+		contractor.setRenew(true);
+		for (ContractorAudit cAudit : contractor.getAudits()) {
+			if (cAudit.getAuditType().isPqf() && !cAudit.getAuditStatus().isPending()) {
+				ContractorAuditDAO contractorAuditDAO = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
+				cAudit.setAuditStatus(AuditStatus.Pending);
+				cAudit.setAuditColumns(permissions);
+				contractorAuditDAO.save(cAudit);
+				break;
+			}
+		}
 	}
 
 }

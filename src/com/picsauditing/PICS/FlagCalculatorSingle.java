@@ -56,10 +56,11 @@ public class FlagCalculatorSingle {
 		// Start positive and see if there are any violations
 		FlagColor flagColor = FlagColor.Green;
 		FlagColor overrideColor = null;
-
+		boolean worksForOperator = false;
 		// First see if there are any forced flags for this operator
 		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().equals(operator)) {
+				worksForOperator = true;
 				// Found the operator, is it forced?
 				debug(" isForcedFlag=" + co.isForcedFlag() + " " + co.getForceFlag());
 				if (co.isForcedFlag())
@@ -104,16 +105,31 @@ public class FlagCalculatorSingle {
 				// make sure they have an active one
 				// If an active audit doesn't exist, then set
 				// the contractor's flag to the required color
-				audit.setContractorFlag(audit.getRequiredForFlag());
+				
+				if(!hasAudit 
+						&& (contractor.isAcceptsBids() || !worksForOperator)) {
+					audit.setContractorFlag(null);
+				}
+				else
+					audit.setContractorFlag(audit.getRequiredForFlag());
 
 				int annualAuditCount = 0;
 				for (ContractorAudit conAudit : conAudits) {
 					if (conAudit.getAuditType().equals(audit.getAuditType())) {
 						if (conAudit.getAuditType().getClassType().isPolicy()) {
 							// For Policies
+							if(!worksForOperator) {
+								audit.setContractorFlag(null);
+							}
 							if (!conAudit.getAuditStatus().isExpired()) {
 								for (ContractorAuditOperator cao : conAudit.getOperators()) {
 									if (cao.getOperator().equals(operator.getInheritInsurance())) {
+										// If the policies does not need verification
+										if(audit.getRequiredAuditStatus().isSubmitted() 
+												&& cao.getStatus().isSubmitted() ) {
+											audit.setContractorFlag(FlagColor.Green);
+											debug(" ---- does not verification");
+										}
 										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 											audit.setContractorFlag(null);
 											debug(" ---- found N/A");
@@ -129,28 +145,27 @@ public class FlagCalculatorSingle {
 							// For PQF, Audit, IM
 							boolean statusOK = false;
 							boolean typeOK = false;
-							if (conAudit.getAuditStatus() == AuditStatus.Active)
+							if (conAudit.getAuditStatus().isActiveResubmittedExempt())
 								statusOK = true;
-							if (conAudit.getAuditStatus() == AuditStatus.Resubmitted)
-								statusOK = true;
-							if (conAudit.getAuditStatus() == AuditStatus.Exempt)
-								statusOK = true;
-							if (conAudit.getAuditStatus() == AuditStatus.Submitted
-									&& audit.getRequiredAuditStatus() == AuditStatus.Submitted)
+							if (conAudit.getAuditStatus().isSubmitted()
+									&& audit.getRequiredAuditStatus().isSubmitted())
 								statusOK = true;
 							if (conAudit.getAuditType().equals(audit.getAuditType()))
 								typeOK = true;
 							if (conAudit.getAuditType().getId() == AuditType.NCMS
-									&& audit.getAuditType().getId() == AuditType.DESKTOP)
+									&& audit.getAuditType().isDesktop())
 								typeOK = true;
-
+							if(contractor.isAcceptsBids() 
+									&& conAudit.getAuditStatus().isSubmitted()) {
+								statusOK = true;
+							}
 							if (typeOK) {
 								if (statusOK) {
 									// We found a matching "valid" audit for this
 									// contractor audit requirement
 									debug(" ---- found");
 
-									if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+									if (audit.getAuditType().isAnnualAddendum()) {
 										// We actually require THREE annual addendums
 										// before we consider this requirement complete
 										annualAuditCount++;
@@ -163,7 +178,7 @@ public class FlagCalculatorSingle {
 						}
 					} // end if auditType
 				} // end for conAudit
-				if (audit.getAuditType().getId() == AuditType.ANNUALADDENDUM && annualAuditCount >= 3) {
+				if (audit.getAuditType().isAnnualAddendum() && annualAuditCount >= 3) {
 					// Make sure we have atleast three annual addendums
 					audit.setContractorFlag(FlagColor.Green);
 				}
@@ -280,6 +295,11 @@ public class FlagCalculatorSingle {
 		if (!contractor.isActiveB())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
+		// If Trial Account
+		if(contractor.isAcceptsBids()) {
+			return WaitingOn.Operator;
+		}
+		
 		// Operator Relationship Approval
 		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
 			if (co.isWorkStatusPending())

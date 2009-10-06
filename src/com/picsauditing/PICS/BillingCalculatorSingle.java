@@ -41,9 +41,20 @@ public class BillingCalculatorSingle {
 	}
 
 	static public InvoiceFee calculateAnnualFee(ContractorAccount contractor) {
-		setPayingFacilities(contractor);
-
 		InvoiceFee fee = new InvoiceFee();
+		if (!contractor.isAcceptsBids()) {
+
+			fee = calculateAnnualFeeForContractor(contractor, fee);
+		} else {
+	
+			fee.setId(InvoiceFee.BIDONLY);
+		}
+
+		return fee;
+	}
+
+	static public InvoiceFee calculateAnnualFeeForContractor(ContractorAccount contractor, InvoiceFee fee) {
+		setPayingFacilities(contractor);
 
 		if (contractor.getPayingFacilities() == 0) {
 			// Contractors with no paying facilities are free
@@ -56,9 +67,7 @@ public class BillingCalculatorSingle {
 			fee.setId(calculatePriceTier(contractor.getPayingFacilities()));
 		else
 			fee.setId(InvoiceFee.PQFONLY); // $99
-
 		return fee;
-
 	}
 
 	static private boolean isAudited(ContractorAccount contractor) {
@@ -130,6 +139,13 @@ public class BillingCalculatorSingle {
 		if (billingStatus.equals("Current"))
 			return items;
 
+		if (billingStatus.equals("BidOnly")) {
+			Date paymentExpires = DateBean.addMonths(new Date(), 3);
+			InvoiceFee fee = getFee(InvoiceFee.BIDONLY, feeDAO);
+			items.add(new InvoiceItem(fee, paymentExpires));
+			return items;
+		}
+
 		if (contractor.getMembershipDate() == null) {
 			// This contractor has never paid their activation fee, make
 			// them now this applies regardless if this is a new reg or renewal
@@ -146,14 +162,13 @@ public class BillingCalculatorSingle {
 			items.add(new InvoiceItem(fee, new Date()));
 		}
 
-		if("Activation".equals(billingStatus) 
-				|| "Reactivation".equals(billingStatus) 
+		if ("Activation".equals(billingStatus) || "Reactivation".equals(billingStatus)
 				|| "Membership Canceled".equals(billingStatus)) {
 			Date paymentExpires = DateBean.addMonths(new Date(), 12);
 			items.add(new InvoiceItem(contractor.getNewMembershipLevel(), paymentExpires));
 		}
 
-		if(billingStatus.startsWith("Renew")) {
+		if (billingStatus.startsWith("Renew")) {
 			// We could eventually customize the 12 months to support
 			// monthly/quarterly billing cycles
 			Date paymentExpires = DateBean.addMonths(contractor.getPaymentExpires(), 12);

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.cron.CronMetricsAggregator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -58,7 +57,6 @@ public class FlagCalculator2 {
 
 	private OperatorAccountDAO operatorDAO;
 	private ContractorAccountDAO contractorDAO;
-	private ContractorAuditDAO conAuditDAO;
 	private ContractorAuditOperatorDAO caoDAO;
 	private AuditDataDAO auditDataDAO;
 	private ContractorOperatorFlagDAO coFlagDAO;
@@ -75,12 +73,11 @@ public class FlagCalculator2 {
 	private List<Integer> contractorIDs = new ArrayList<Integer>();
 
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
-			ContractorAuditDAO conAuditDAO, AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
+			AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
 			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
-		this.conAuditDAO = conAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.coFlagDAO = coFlagDAO;
 		this.caoDAO = caoDAO;
@@ -339,7 +336,7 @@ public class FlagCalculator2 {
 			}
 
 			if (coFlag == null) {
-				// Add a new flag
+				// For New Contractors
 				coFlag = new ContractorOperatorFlag();
 				coFlag.setFlagColor(color);
 				coFlag.setWaitingOn(waitingOn);
@@ -350,6 +347,7 @@ public class FlagCalculator2 {
 				coFlagDAO.save(coFlag);
 				contractor.getFlags().put(operator, coFlag);
 			} else {
+				// For Existing Contractors
 				boolean isLinked = false;
 				ContractorOperator co = null;
 				for (ContractorOperator cOperator : conOperators) {
@@ -358,8 +356,8 @@ public class FlagCalculator2 {
 						co = cOperator;
 					}
 				}
-				if (isLinked) {
-					if (color == null || !color.equals(coFlag.getFlagColor())) {
+				if (color == null || !color.equals(coFlag.getFlagColor())) {
+					if (isLinked) {
 						try {
 							Note note = new Note();
 							note.setAccount(contractor);
@@ -373,11 +371,12 @@ public class FlagCalculator2 {
 						} catch (Exception e) {
 							System.out.println("ERROR: failed to save note because - " + e.getMessage());
 						}
-
-						coFlag.setFlagColor(color);
-						coFlag.setLastUpdate(new Date());
 					}
-					if (waitingOn == null || !waitingOn.equals(coFlag.getWaitingOn())) {
+					coFlag.setFlagColor(color);
+					coFlag.setLastUpdate(new Date());
+				}
+				if (waitingOn == null || !waitingOn.equals(coFlag.getWaitingOn())) {
+					if (isLinked) {
 						try {
 							Note note = new Note();
 							note.setAccount(contractor);
@@ -407,12 +406,17 @@ public class FlagCalculator2 {
 						} catch (Exception e) {
 							System.out.println("ERROR: failed to send subscription email - " + e.getMessage());
 						}
-
-						coFlag.setWaitingOn(waitingOn);
-						coFlag.setLastUpdate(new Date());
 					}
+					coFlag.setWaitingOn(waitingOn);
+					coFlag.setLastUpdate(new Date());
+					
+					// End of Waiting On
 				}
+				
+				// End of Existing Contractors
 			}
+			
+			// End of this Operator
 		}
 
 		contractor.setNeedsRecalculation(false);

@@ -13,12 +13,14 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -173,5 +175,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-
+	
+	public InvoiceFee getCurrentMembership() {
+		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
+		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
+		return invoiceFeeDAO.find(invoiceFee.getId());
+	}
 }

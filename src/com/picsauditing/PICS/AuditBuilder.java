@@ -14,6 +14,7 @@ import java.util.Vector;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -51,14 +52,16 @@ public class AuditBuilder {
 	private AuditCategoryDAO auditCategoryDAO;
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	private AuditCategoryDataDAO auditCategoryDataDAO;
+	private AuditTypeDAO auditTypeDAO;
 
 	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO) {
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO, AuditTypeDAO auditTypeDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.auditCategoryDataDAO = auditCategoryDataDAO;
+		this.auditTypeDAO = auditTypeDAO;
 	}
 
 	public void buildAudits(ContractorAccount con) {
@@ -66,6 +69,16 @@ public class AuditBuilder {
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
+		if(contractor.isAcceptsBids()) {
+			int year = DateBean.getCurrentYear();
+			AuditType auditType = auditTypeDAO.find(AuditType.ANNUALADDENDUM);
+			addAnnualAddendum(currentAudits, year-1, auditType);
+			addAnnualAddendum(currentAudits, year-2, auditType);
+			addAnnualAddendum(currentAudits, year-3, auditType);
+			return;
+		}
+		
+		
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
 		okStatuses.add(AuditStatus.Active);
 		okStatuses.add(AuditStatus.Pending);
@@ -396,6 +409,12 @@ public class AuditBuilder {
 	 * @param conAudit
 	 */
 	public void fillAuditCategories(ContractorAudit conAudit, boolean forceRecalculation) {
+		// If Bidding Contractor recalculate only for Annual Update
+		if(!conAudit.getAuditType().isAnnualAddendum() 
+				&& conAudit.getContractorAccount().isAcceptsBids()) { 
+			return;
+		}	
+
 		if (!forceRecalculation) {
 			if (conAudit.getAuditType().isPqf()) {
 				// Only Active and Pending PQFs should be recalculated

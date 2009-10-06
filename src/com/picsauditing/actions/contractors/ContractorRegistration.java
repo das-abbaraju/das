@@ -88,6 +88,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setNaics(new Naics());
 			contractor.getNaics().setCode("0");
 			contractor.setNaicsValid(false);
+			if(contractor.isAcceptsBids())
+				contractor.setRenew(false);
 			contractor = accountDao.save(contractor);
 			user.setIsActive(YesNo.Yes);
 			user.setAccount(contractor);
@@ -106,7 +108,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 			audit.setAuditColumns(new User(User.SYSTEM));
 			addAuditCategories(audit, 2); // COMPANY INFORMATION
 			addAuditCategories(audit, 8); // GENERAL INFORMATION
-			addAuditCategories(audit, 20); // DOT PIPELINE OPERATOR QUALIFICATION
 			addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
 			auditDao.save(audit);
 			

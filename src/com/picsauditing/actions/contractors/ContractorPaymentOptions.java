@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -10,6 +11,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.BrainTree;
@@ -67,6 +69,22 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				this.redirect("ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + msg);
 				return BLANK;
 			}
+		}
+		
+		if(contractor.isAcceptsBids()) {
+			boolean onlyBids = true;
+			for(ContractorOperator conOperator : contractor.getOperators()) {
+				if(!conOperator.getOperatorAccount().isAcceptsBids()) {
+					onlyBids = false;
+					break;
+				}	
+			}
+			if(!onlyBids) {
+				contractor.setAcceptsBids(false);
+				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+				newFee = invoiceFeeDAO.find(newFee.getId());
+				contractor.setNewMembershipLevel(newFee);
+			}	
 		}
 
 		// The payment method has changed.

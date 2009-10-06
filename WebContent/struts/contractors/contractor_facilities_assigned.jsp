@@ -12,8 +12,14 @@
 	<s:if test="contractor.membershipLevel.amount > 0"> 
 		<label>Current Membership Level:</label> $<s:property value="contractor.membershipLevel.amount" /> per year<br />
 	</s:if>
-	<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> per year<br />
-	<s:property value="contractor.newMembershipLevel.fee" />
+	<s:if test="contractor.acceptsBids">
+		<label><s:property value="contractor.newMembershipLevel.fee" /> :</label> $25
+		<br/>If you are approved to work at these facilities your new membership fee will be $<s:property value="currentMembership.amount"/>.	
+	</s:if>
+	<s:else>
+		<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> per year<br />
+		<s:property value="contractor.newMembershipLevel.fee" />
+	</s:else>
 </s:if>
 
 <s:if test="currentOperators.size() > 1 && !contractor.activeB">

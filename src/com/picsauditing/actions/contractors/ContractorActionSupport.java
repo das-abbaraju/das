@@ -224,6 +224,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
+		if(contractor.isAcceptsBids())
+			return false;
+		
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
 
@@ -250,6 +253,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * an operator that subscribes to Integrity Management
 	 */
 	public boolean isRequiresIntegrityManagement() {
+		if(contractor.isAcceptsBids())
+			return false;
+
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
 

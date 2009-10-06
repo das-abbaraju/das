@@ -17,6 +17,9 @@
 <s:if test="contractor.qbListID.startsWith('NOLOAD')">
 	<div id="alert">This contractor is NOT set to sync with QuickBooks</div>
 </s:if>
+<s:if test="contractor.acceptsBids">
+	<div id="alert">This is a Bid Only Contractor.</div>
+</s:if>
 
 <table width="100%">
 	<tr>

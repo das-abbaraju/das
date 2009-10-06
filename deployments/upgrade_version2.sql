@@ -18,10 +18,17 @@ and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
 
+/** bidding Contractors
+ * 
+ */
 
+update invoice_fee set feeClass = "Membership", fee = "Trial Account Fee", qbFullName="Trial Account Fee" where id = 100;
 
-/**
-Waiting on Widget
-*/
 insert into widget 
-values(21,'Waiting On Totals','Chart',0,'ChartXMLWaitingOnCount.action',null,'Pie2D');
+values
+(null, "Bidding Contractors", "Html", 0,
+"BiddingContractorsApprovalAjax.action","ViewBiddingOnly",null);
+
+insert into widget_user 
+values
+(null, newID, 616, 1, 0,20,null);

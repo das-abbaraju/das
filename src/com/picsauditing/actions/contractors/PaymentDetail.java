@@ -17,6 +17,7 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -97,7 +98,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
 					if (ip.getInvoice().getStatus().isPaid()) {
 						for (InvoiceItem item : ip.getInvoice().getItems()) {
-							if (item.getInvoiceFee().getFeeClass().equals("Activation")) {
+							if (item.getInvoiceFee().getFeeClass().equals("Activation") 
+									|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
 								contractor.setActive('Y');
 								contractor.setAuditColumns(permissions);
 								accountDao.save(contractor);

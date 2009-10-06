@@ -97,6 +97,9 @@ function updateExpDate() {
 				</s:iterator>
 			</li>
 		</s:if>
+		<s:elseif test="contractor.acceptsBids">
+			<li><label>Total:</label> $<s:property value="contractor.newMembershipLevel.amount"/> USD </li>
+		</s:elseif>
 		<s:else>
 			<li><label>Annual Membership:</label> $<s:property
 				value="contractor.newMembershipLevel.amount" /> USD

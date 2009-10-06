@@ -193,7 +193,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return Utilities.escapeNewLines(this.description);
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "requestedByID")
 	public OperatorAccount getRequestedBy() {
 		return requestedBy;
@@ -760,7 +760,8 @@ public class ContractorAccount extends Account implements JSONable {
 							foundPaymentExpires = true;
 						}
 					}
-					if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
+					if (!foundMembershipDate 
+							&& invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
 						if (invoiceItem.getPaymentExpires() != null)
 							membershipDate = invoiceItem.getPaymentExpires();
 						else
@@ -873,7 +874,14 @@ public class ContractorAccount extends Account implements JSONable {
 	public String getBillingStatus() {
 		if (!isMustPayB())
 			return "Current";
-
+		
+		if(acceptsBids) {
+			if(isActiveB()) {
+				return "Current";
+			}	
+			return "BidOnly";
+		}	
+		
 		if (newMembershipLevel == null)
 			return "Not Calculated";
 
@@ -897,7 +905,10 @@ public class ContractorAccount extends Account implements JSONable {
 					return "Reactivation";
 			}
 		}
-
+		
+		if(membershipLevel.getId() == InvoiceFee.BIDONLY) {
+			return "Renewal";
+		}
 		if (newMembershipLevel.getAmount().compareTo(membershipLevel.getAmount()) > 0)
 			return "Upgrade";
 

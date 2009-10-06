@@ -5,6 +5,7 @@
 <title><s:property value="contractor.name" /> Billing Detail</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 
 <script src="js/prototype.js" type="text/javascript"></script>
 
@@ -28,7 +29,13 @@
 		
 		return false;
 	}
-	function addOperator( conId, opId ) {
+	function addOperator( conId, opId, acceptsBids ) {
+		var conAcceptBid = <s:property value="contractor.acceptsBids"/>;
+		if(conAcceptBid && !acceptsBids) {
+			var r = confirm("This operator requires a full membership. If you add them, you will be subject to the full annual membership.")
+			if(r == false)
+				return false;
+		}
 		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
 		var pars= 'id=' + conId + '&button=addOperator&operator.id=' + opId; 
 		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 

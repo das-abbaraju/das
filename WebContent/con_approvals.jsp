@@ -14,6 +14,7 @@ sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID="+ permi
 sql.addField("gc.creationDate");
 sql.addField("gc.workStatus");
 sql.addWhere("active='Y'");
+sql.addWhere("acceptsBids = 0");
 
 Report report = new Report();
 report.setSql(sql);

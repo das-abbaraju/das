@@ -20,7 +20,8 @@ public enum OpPerms {
 	// Approving Contractors
 	ContractorApproval("Approve Contractors", "Allows a user to change a Contractor's work status", true, false),
 	ViewUnApproved("View UnApproved Contractors", "Allows users to view contractors who are NOT yet approved for work for a facility. Note: the facility must track that information for this option to apply", false, false),
-
+	ViewBiddingOnly("View Bidding Contractors", "Allows users to approve or reject contractors who are bidding for work at their facility.", true, false),
+	
 	// Red Flag
 	EditFlagCriteria("Red Flag Criteria", "Allows users to edit the criteria for flagging contractors as Red or Amber. Read access grants the ability to Edit the criteria", false, false),
 	EditForcedFlags("Force Flag Color", "Allows users to force a contractor's flag color for a given period of time. Only Read access is used currently", true, false),

@@ -145,6 +145,11 @@
 			<result>struts/widgets/con_pendingapproval.jsp</result>
 		</action>
 
+		<action name="BiddingContractorsApprovalAjax"
+			class="com.picsauditing.actions.contractors.BiddingConApprovalWidget">
+			<result>struts/widgets/con_biddingapproval.jsp</result>
+		</action>
+
 		<!-- Contractor Information -->
 		<action name="ConHeader"
 			class="com.picsauditing.actions.contractors.ConHeader">
@@ -343,6 +348,10 @@
 		<action name="ContractorListAjax"
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_list_data.jsp</result>
+		</action>
+		<action name="BiddingContractorSearch"
+			class="com.picsauditing.actions.report.ReportBiddingContractors">
+			<result>struts/reports/report_biddingcontractors.jsp</result>
 		</action>
 		
 		<!-- Billing -->

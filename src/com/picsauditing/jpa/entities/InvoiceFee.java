@@ -22,6 +22,7 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int FACILITIES9 = 8;
 	public final static int FACILITIES13 = 9;
 	public final static int FACILITIES20 = 10;
+	public final static int BIDONLY = 100;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;

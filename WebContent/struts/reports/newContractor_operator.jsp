@@ -26,6 +26,10 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
+<div id="info">
+	Green flagged contractors have completed the PQF and Annual Updates. If your facility has more requirements, their flag will change once you add them. 
+</div>
+
 <table class="report">
 	<thead>
 	<tr>

@@ -209,6 +209,14 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
+		try {
+			startTask("\nSending No Action Email to Trial Accounts ...");
+			sendNoActionEmailToTrialAccounts();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
 
@@ -469,4 +477,22 @@ public class Cron extends PicsActionSupport {
 			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
 		}
 	}
+	
+	public void sendNoActionEmailToTrialAccounts() throws Exception {
+		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		EmailBuilder emailBuilder = new EmailBuilder();
+
+		for (ContractorAccount cAccount : conList) {
+			emailBuilder.clear();
+			emailBuilder.setTemplate(70); // No Action Email Notification - Contractor 
+			emailBuilder.setContractor(cAccount);
+			EmailQueue email = emailBuilder.build();
+			email.setPriority(30);
+			emailQueueDAO.save(email);
+
+			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getEmail(), NoteCategory.General);
+		}
+	}
+
 }

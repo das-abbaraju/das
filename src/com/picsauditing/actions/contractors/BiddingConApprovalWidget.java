@@ -7,10 +7,10 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
 
 @SuppressWarnings("serial")
-public class ConPendingApprovalWidget extends PicsActionSupport {
+public class BiddingConApprovalWidget extends PicsActionSupport {
 	ContractorOperatorDAO contractorOperatorDAO;
 
-	public ConPendingApprovalWidget(ContractorOperatorDAO contractorOperatorDAO) {
+	public BiddingConApprovalWidget(ContractorOperatorDAO contractorOperatorDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 	}
 
@@ -22,7 +22,7 @@ public class ConPendingApprovalWidget extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<ContractorOperator> getPendingApprovalContractors() {
-		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), false);
+	public List<ContractorOperator> getPendingApprovalBiddingContractors() {
+		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), true);
 	}
 }

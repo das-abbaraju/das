@@ -8,6 +8,11 @@
 		</tr>	
 	</thead>
 	<tr>
+		<td>Trial Account</td>
+		<td class="center">-</td>
+		<td>$25</td>
+	</tr>
+	<tr>
 		<td>1</td>
 		<td>$399</td>
 		<td>$99</td>

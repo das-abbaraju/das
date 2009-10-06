@@ -262,4 +262,22 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		return query.getResultList();
 	}
+	
+	public List<ContractorAccount> findBidOnlyContractors() {
+		List<String> dates = new ArrayList<String>();
+		Calendar calendar1 = Calendar.getInstance();
+		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		calendar1.add(calendar1.WEEK_OF_YEAR, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// Before7Days
+
+		calendar1.add(calendar1.WEEK_OF_YEAR, -1);
+		dates.add(DBFormat.format(calendar1.getTime()));// Before14Days
+
+		String hql = "SELECT c FROM ContractorAccount c WHERE c.active = 'Y' AND c.acceptsBids = 1 AND "
+			+ " c.paymentExpires IN (" + Strings.implodeForDB(dates, ",") + ")";
+
+		Query query = em.createQuery(hql);
+		return query.getResultList();
+	}
 }
