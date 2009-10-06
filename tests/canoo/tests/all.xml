@@ -9,7 +9,8 @@
 		<ant antfile="corporate.xml"/>
 		<ant antfile="contractor.xml"/>
 		<ant antfile="operator_users.xml"/>
-
+		<ant antfile="contractor_registration.xml"/>
+		
 		<ant antfile="admin.xml"/>
 		<ant antfile="admin_verification.xml"/>
 		<ant antfile="audit_definitions.xml"/>
@@ -19,14 +20,12 @@
 		
 		<ant antfile="operator.xml"/>
 		<ant antfile="admin_billing.xml"/>
-		<ant antfile="contractor_registration.xml"/>
 		<ant antfile="contractor_delete.xml"/>
 	</target>
 	
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="contractor_registration.xml"/>
-		<ant antfile="admin_billing.xml"/>
-		<ant antfile="contractor_delete.xml"/>
+		<ant antfile="admin_webcams.xml"/>
+
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
