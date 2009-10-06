@@ -288,7 +288,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		}
 
 		hql += "ca.paidDate > :startDate " + "GROUP BY ca.paidDate, ca.auditor.id "
-				+ "ORDER BY ca.paidDate, ca.auditor.name";
+				+ "ORDER BY ca.paidDate DESC, ca.auditor.name";
 
 		Query q = em.createQuery(hql);
 		if (auditorID > 0)

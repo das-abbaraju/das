@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.User;
 public class AuditorInvoices extends PicsActionSupport {
 	private ContractorAuditDAO auditDAO;
 
-	private List<Map> list;
+	private List list;
 	private List<ContractorAudit> auditList;
 
 	private int auditorID = 0;
@@ -56,11 +56,11 @@ public class AuditorInvoices extends PicsActionSupport {
 		list = auditDAO.findAuditorBatches(auditorID, cal.getTime());
 	}
 
-	public List<Map> getList() {
+	public List getList() {
 		return list;
 	}
 
-	public void setList(List<Map> list) {
+	public void setList(List list) {
 		this.list = list;
 	}
 
