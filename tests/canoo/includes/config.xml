@@ -3,4 +3,4 @@
 	port="${host.port}"
 	protocol="http"
 	basepath="${host.basepath}"
-	easyAjax="true" />
+	 />
