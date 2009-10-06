@@ -170,7 +170,7 @@ label.policy {
 									<s:hidden name="cao.id" value="%{#cao.id}"/>
 									<s:hidden name="mode"/>
 									<input type="submit" class="picsbutton positive" name="button" value="Make Required"
-										onclick="saveCao(cao_form<s:property value="#cao.id"/>, 'visible', 'cao_<s:property value="#cao.id"/>');return false;"/>
+										onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'visible', 'cao_<s:property value="#cao.id"/>');return false;"/>
 								</s:form>
 							</div>
 						</div>
