@@ -3,6 +3,7 @@ package com.picsauditing.actions.chart;
 import java.util.List;
 
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.chart.ChartSingleSeries;
 import com.picsauditing.util.chart.DataRow;
@@ -23,13 +24,15 @@ public class ChartWaitingOnCount extends ChartSSAction {
 
 		SelectSQL sql = new SelectSQL("generalcontractors gc");
 		sql.addJoin("JOIN flags f ON gc.genID = f.opID AND gc.subID = f.conID");
+		sql.addJoin("JOIN accounts a ON a.id = f.conID");
+		
+		sql.addWhere("a.active = 'Y'");
+		
 		sql.addGroupBy("waitingOn");
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addWhere("f.opID = " + permissions.getAccountId());
 		}
-
-		sql.addGroupBy("waitingOn");
 
 		sql.addField("waitingOn AS label");
 		sql.addField("count(*) AS value");
