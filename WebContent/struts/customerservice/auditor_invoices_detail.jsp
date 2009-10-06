@@ -11,9 +11,9 @@
 	</thead>
 	<s:iterator value="auditList">
 	<tr>
-		<td><s:property value="id"/></td>
+		<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="id"/></a></td>
 		<td><s:property value="auditType.auditName"/></td>
-		<td><s:property value="contractorAccount.name"/></td>
+		<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
 		<td><s:date name="completedDate" format="MM/dd/yyyy hh:mm a"/></td>
 	</tr>
 	</s:iterator>
