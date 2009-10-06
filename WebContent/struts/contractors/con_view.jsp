@@ -50,7 +50,12 @@
 	</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div id="alert">This is a Bid Only Contractor.</div>
+	<div id="alert">This is a Trial Contractor Account.</div>
+	<br clear="all"/>
+	<s:if test="canUpgrade">
+		<div id="info">This Account is a Trial Only Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
+		Click <a href="ContractorView.action?id=<s:property value="id" />" class="picsbutton positive">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
+	</s:if>
 </s:if>
 <s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
 	<div id="alert">This contractor has an outstanding invoice due</div>

@@ -26,8 +26,8 @@ update invoice_fee set feeClass = "Membership", fee = "Trial Account Fee", qbFul
 
 insert into widget 
 values
-(null, "Bidding Contractors", "Html", 0,
-"BiddingContractorsApprovalAjax.action","ViewBiddingOnly",null);
+(null, "Trial Account Contractors", "Html", 0,
+"BiddingContractorsApprovalAjax.action","ViewTrialAccounts",null);
 
 insert into widget_user 
 values

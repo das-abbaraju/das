@@ -62,9 +62,8 @@ public class PicsMenu {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild("Search For New", url);
 		}
-		if(permissions.seesAllContractors() ||
-				permissions.hasPermission(OpPerms.ViewBiddingOnly)) {
-			subMenu.addChild("Bidding Contractors", "BiddingContractorSearch.action");
+		if(permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
+			subMenu.addChild("Trial Accounts", "BiddingContractorSearch.action");
 		}
 		if (permissions.isCorporate())
 			subMenu.addChild("By Flag", "ReportContractorOperatorFlag.action");

@@ -60,7 +60,20 @@ public class ContractorWidget extends ContractorActionSupport {
     public List<String> getOpenTasks() {
         if (openTasks == null) {
             openTasks = new ArrayList<String>();
-
+            
+            if(contractor.isAcceptsBids()) {
+                String due = null;
+                try {
+                    due = DateBean.toShowFormat(contractor.getPaymentExpires());
+                } catch (Exception ignoreFormattingErrors) {
+                }
+                openTasks
+                .add("Your Account is a Trial Only Account and will expire on " + due +". To continue working at your selected facilities" +
+                		" please <a href=\"ContractorView.action?id="
+                        + contractor.getId()
+                        + "&button=Upgrade to Full Membership\"> upgrade your account to a full membership</a>");
+            }
+            
             if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
                 for (Invoice invoice : contractor.getInvoices()) {
                     if (invoice.getStatus().isUnpaid()) {

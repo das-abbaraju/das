@@ -14,7 +14,7 @@
 	</s:if>
 	<s:if test="contractor.acceptsBids">
 		<label><s:property value="contractor.newMembershipLevel.fee" /> :</label> $25
-		<br/>If you are approved to work at these facilities your new membership fee will be $<s:property value="currentMembership.amount"/>.	
+		<br/>If you are approved to work at one of these facilities your new membership fee will be $<s:property value="currentMembership.amount"/>.	
 	</s:if>
 	<s:else>
 		<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> per year<br />
@@ -29,6 +29,14 @@
 			<s:select list="currentOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" 
 				headerKey="" headerValue="- Select An Operator -" value="contractor.requestedBy.id" 
 				onchange="setRequestedBy(%{contractor.id}, this.value)" id="requestedBySelector"/>
+	</div>
+</s:if>
+
+<s:if test="trialContractor">
+	<div id="info" style="80%">
+		<a href="#" class="picsbutton"
+			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Trial Account</a><br/>
+			Click the button if you plan on working temporarily at one these facilities.		
 	</div>
 </s:if>
 

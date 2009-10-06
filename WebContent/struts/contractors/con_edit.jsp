@@ -37,7 +37,7 @@
 	<div id="alert" class="noprint">This contractor is still waiting to be synced with QuickBooks!</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div id="alert">This is a Bid Only Contractor.</div>
+	<div id="alert">This is a Trial Contractor Account.</div>
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
@@ -217,7 +217,7 @@
 						<s:if test="contractor.renew">Yes - <a href="?id=<s:property value="id"/>&button=Cancel">Cancel Account</a></s:if>
 						<s:else>No - <a href="?id=<s:property value="id"/>&button=Reactivate">Reactivate</a></s:else>
 					</li>
-					<li><label>Accepts Bids:</label>
+					<li><label>Trial Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey=" " headerValue="- Deactivation Reason -"/>

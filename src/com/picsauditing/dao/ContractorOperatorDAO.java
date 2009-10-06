@@ -72,7 +72,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 	
 	public List<ContractorOperator> findPendingApprovalContractors(int opID, boolean includeBidding) {
 		String where = "FROM ContractorOperator WHERE operatorAccount.id = "
-				+ opID + " AND workStatus = 'P' ";
+				+ opID + " AND workStatus = 'P'";
 		if(includeBidding) {
 			where += " AND contractorAccount.acceptsBids = 1";
 		}

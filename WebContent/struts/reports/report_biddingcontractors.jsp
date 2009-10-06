@@ -2,11 +2,11 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Bidding Contractors List</title>
+<title>Trial Contractor Accounts </title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Bidding Contractors List</h1>
+<h1>Trial Contractor Accounts List</h1>
 
 <s:include value="filters.jsp" />
 
@@ -28,7 +28,7 @@
 				href="?orderBy=flag DESC">Flag</a></td>
 			<td>Waiting On</td>
 		</s:if>
-		<pics:permission perm="ViewBiddingOnly">
+		<pics:permission perm="ViewTrialAccounts" type="Edit">
 			<td>Notes</td>
 			<td></td>
 			<td></td>
@@ -69,7 +69,7 @@
 				</td>
 				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/></a></td>
 			</s:if>
-			<pics:permission perm="ViewBiddingOnly">
+			<pics:permission perm="ViewTrialAccounts" type="Edit">
 				<s:form action="BiddingContractorSearch" method="POST">
 					<s:hidden value="%{get('id')}" name="conID"/>
 					<td><s:textarea name="operatorNotes" cols="15" rows="4"/></td>

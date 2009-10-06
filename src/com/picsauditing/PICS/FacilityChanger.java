@@ -80,28 +80,13 @@ public class FacilityChanger {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			EmailSender.send(emailQueue);
-			setContractorToUpgrade();
 		}
 
-		if (permissions.isContractor()) {
-			if (contractor.isAcceptsBids()) {
-				if (contractor.isActiveB()) {
-					boolean onlyBids = true;
-					for (ContractorOperator conOperator : contractor.getOperators()) {
-						if (!conOperator.getOperatorAccount().isAcceptsBids()) {
-							onlyBids = false;
-							break;
-						}
-					}
-					if (!onlyBids) {
-						setContractorToUpgrade();
-					}
-				}
-			} else {
+		if (permissions.isContractor() 
+				&& !contractor.isAcceptsBids()) {
 				// If the contractor logs in and adds a facility,
 				// then let's assume they want to be part of PICS
 				contractor.setRenew(true);
-			}
 		}
 
 		contractor.setLastUpgradeDate(new Date());
@@ -189,19 +174,4 @@ public class FacilityChanger {
 		this.permissions = permissions;
 		user = new User(permissions.getUserId());
 	}
-
-	public void setContractorToUpgrade() {
-		contractor.setAcceptsBids(false);
-		contractor.setRenew(true);
-		for (ContractorAudit cAudit : contractor.getAudits()) {
-			if (cAudit.getAuditType().isPqf() && !cAudit.getAuditStatus().isPending()) {
-				ContractorAuditDAO contractorAuditDAO = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
-				cAudit.setAuditStatus(AuditStatus.Pending);
-				cAudit.setAuditColumns(permissions);
-				contractorAuditDAO.save(cAudit);
-				break;
-			}
-		}
-	}
-
 }

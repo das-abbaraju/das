@@ -29,13 +29,7 @@
 		
 		return false;
 	}
-	function addOperator( conId, opId, acceptsBids ) {
-		var conAcceptBid = <s:property value="contractor.acceptsBids"/>;
-		if(conAcceptBid && !acceptsBids) {
-			var r = confirm("This operator requires a full membership. If you add them, you will be subject to the full annual membership.")
-			if(r == false)
-				return false;
-		}
+	function addOperator( conId, opId) {
 		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
 		var pars= 'id=' + conId + '&button=addOperator&operator.id=' + opId; 
 		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
@@ -96,6 +90,28 @@
 		});
 		return false;
 	}
+
+	function changeToTrialAccount(conId) {
+		var r = confirm("Are you sure you want to switch your account to a Trial Account. By doing so you will be limited to work at these facilties for a limited period of time.")
+		if(r == false) {
+			return false;
+		}
+		startThinking( {div: 'thinkingDiv', message: 'Switching to Trial Account' } );
+		var pars= 'id=' + conId + '&button=SwitchToTrialAccount'; 
+		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
+		{
+			method: 'post', 
+			parameters: pars,
+			onComplete: function(transport) {
+				stopThinking( {div: 'thinkingDiv' } );
+				reloadOperators( conId );
+				runSearch();
+			}
+		});
+		return false;
+			
+		
+	}	
 </script>
 
 </head>

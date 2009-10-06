@@ -632,7 +632,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				statusDescription = this.getAuditType().getClassType() + " has not been started.";
 
 		if (auditStatus.isSubmitted())
-			if (auditType.isMustVerify())
+			if(contractorAccount.isAcceptsBids()) {
+				statusDescription = this.getAuditType().getClassType().toString()
+				+ " has been submitted.";
+			}
+			else if (auditType.isMustVerify())
 				statusDescription = this.getAuditType().getClassType().toString()
 						+ " has been sent.  Awaiting verification.";
 			else

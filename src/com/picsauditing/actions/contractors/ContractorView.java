@@ -5,30 +5,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Images;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorView extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
 	private int logoWidth = 0;
 
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO) {
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, ContractorOperatorDAO contractorOperatorDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
+		this.contractorOperatorDAO = contractorOperatorDAO;
 	}
 
 	public String execute() throws Exception {
@@ -47,12 +58,41 @@ public class ContractorView extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				accountDao.save(contractor);
 			}
+			
 		}
 
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
 		}
+		
+		if("Upgrade to Full Membership".equals(button)) {
+			contractor.setAcceptsBids(false);
+			contractor.setRenew(true);
+			for (ContractorAudit cAudit : contractor.getAudits()) {
+				if (cAudit.getAuditType().isPqf() && !cAudit.getAuditStatus().isPending()) {
+					cAudit.changeStatus(AuditStatus.Pending, getUser());
+					auditDao.save(cAudit);
+					break;
+				}
+			}
+			if(permissions.isOperator()) {
+				for(ContractorOperator cOperator : contractor.getOperators()) {
+					if(cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
+						cOperator.setWorkStatus("Y");
+						cOperator.setAuditColumns(permissions);
+						contractorOperatorDAO.save(cOperator);
+						break;
+					}
+				}
+			}
 
+			contractor.setNeedsRecalculation(true);
+			contractor.setAuditColumns(permissions);
+			accountDao.save(contractor);
+			
+			addNote(contractor, "Upgraded the Trial account to a full membership.", NoteCategory.General);
+		}
+		
 		if (permissions.isOperator()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -114,5 +154,17 @@ public class ContractorView extends ContractorActionSupport {
 
 	public void setOperatorTags(List<OperatorTag> operatorTags) {
 		this.operatorTags = operatorTags;
+	}
+	
+	public boolean isCanUpgrade() {
+		if(permissions.isContractor())
+			return true;
+		if(permissions.seesAllContractors())
+			return true;
+		if(permissions.isOperator() 
+				&& permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
+			return true;
+		
+		return false;
 	}
 }

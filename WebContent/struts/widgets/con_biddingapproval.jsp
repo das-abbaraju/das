@@ -8,7 +8,7 @@
 	</thead>
 	<s:iterator value="pendingApprovalBiddingContractors">
 		<tr>
-			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name" /></a></td>
+			<td><a href="BiddingContractorSearch.action"><s:property value="contractorAccount.name" /></a></td>
 			<td class="center"><s:date name="creationDate" format="MMM d HH:mm" /></td>
 		</tr>
 	</s:iterator>

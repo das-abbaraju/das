@@ -39,6 +39,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		if (permissions.isOperator()) {
 			sql.addField("flags.waitingOn");
 		}
+		sql.addWhere("a.acceptsBids = 1");
 
 		filteredDefault = true;
 	}
@@ -67,7 +68,7 @@ public class ReportBiddingContractors extends ReportAccount {
 						break;
 					}
 				}
-				summary = "Approved the bid for " + permissions.getAccountName();
+				summary = "Approved the Trial Account for " + permissions.getAccountName();
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
@@ -80,7 +81,7 @@ public class ReportBiddingContractors extends ReportAccount {
 						break;
 					}	
 				}
-				summary = "Rejected the bid for " + permissions.getAccountName();
+				summary = "Rejected the Trial Account for " + permissions.getAccountName();
 			}
 			cAccount.setNeedsRecalculation(true);
 			cAccount.setAuditColumns(permissions);

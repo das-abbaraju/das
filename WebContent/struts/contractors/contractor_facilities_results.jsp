@@ -13,7 +13,7 @@
 			<th>Operator Name</th>
 			<th>Add Operator</th>
 			<s:if test="#conAcceptBid.equals('true')">
-				<th>Accepts Bids</th>
+				<th>Accepts Trial Accounts</th>
 			</s:if>
 		</tr>
 	</thead>
@@ -21,7 +21,7 @@
 	<s:iterator value="searchResults">
 		<tr id="results_<s:property value="id"/>">
 			<td><s:property value="name"/></td>
-			<td class="center"><a id="facility_<s:property value="id"/>" href="#" onclick="javascript: return addOperator( <s:property value="#conID"/>, <s:property value="id"/>, <s:property value="acceptsBids"/> );">Add</a></td>
+			<td class="center"><a id="facility_<s:property value="id"/>" href="#" onclick="javascript: return addOperator( <s:property value="#conID"/>, <s:property value="id"/>);">Add</a></td>
 			<s:if test="#conAcceptBid.equals('true')">
 			<td class="center"><s:if test="acceptsBids">
 				<span class="verified" style="font-size: 16px;"></span>

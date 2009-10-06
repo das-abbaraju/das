@@ -67,7 +67,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 		}
 		
 		if (button != null) {
-
 			if (button.equals("search")) {
 
 				String where = "";
@@ -107,6 +106,15 @@ public class ContractorFacilities extends ContractorActionSupport {
 					contractor.setRequestedBy(operator);
 					accountDao.save(contractor);
 				}
+				return SUCCESS;
+			}
+			
+			if(button.equals("SwitchToTrialAccount")) {
+				contractor.setAcceptsBids(true);
+				contractor.setRenew(false);
+				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+				contractor.setNewMembershipLevel(fee);
+				accountDao.save(contractor);
 				return SUCCESS;
 			}
 
@@ -180,5 +188,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
 		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
 		return invoiceFeeDAO.find(invoiceFee.getId());
+	}
+	
+	public boolean isTrialContractor() {
+		if(!contractor.isActiveB() 
+				&& contractor.isRenew() 
+				&& contractor.getRequestedBy().isAcceptsBids()) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -11,7 +11,6 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.BrainTree;
@@ -70,23 +69,16 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-		
+
 		if(contractor.isAcceptsBids()) {
-			boolean onlyBids = true;
-			for(ContractorOperator conOperator : contractor.getOperators()) {
-				if(!conOperator.getOperatorAccount().isAcceptsBids()) {
-					onlyBids = false;
-					break;
-				}	
-			}
-			if(!onlyBids) {
+			if(!contractor.getRequestedBy().isAcceptsBids()) {
 				contractor.setAcceptsBids(false);
 				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 				newFee = invoiceFeeDAO.find(newFee.getId());
 				contractor.setNewMembershipLevel(newFee);
 			}	
 		}
-
+		
 		// The payment method has changed.
 		if ("Change Payment Method to Check".equalsIgnoreCase(button)) {
 			contractor.setPaymentMethod(PaymentMethod.Check);

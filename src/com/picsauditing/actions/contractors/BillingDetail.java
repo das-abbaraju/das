@@ -138,7 +138,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 		if ("Activate".equals(button)) {
 			contractor.setActive('Y');
-			this.addNote(contractor, "Activated free account", NoteCategory.Billing, LowMedHigh.High, true,
+			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
 					Account.PicsID, this.getUser());
 		}
 
