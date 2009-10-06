@@ -25,6 +25,12 @@ public class ChartWaitingOnCount extends ChartSSAction {
 		sql.addJoin("JOIN flags f ON gc.genID = f.opID AND gc.subID = f.conID");
 		sql.addGroupBy("waitingOn");
 
+		if (permissions.isOperatorCorporate()) {
+			sql.addWhere("f.opID = " + permissions.getAccountId());
+		}
+
+		sql.addGroupBy("waitingOn");
+
 		sql.addField("waitingOn AS label");
 		sql.addField("count(*) AS value");
 
@@ -35,6 +41,8 @@ public class ChartWaitingOnCount extends ChartSSAction {
 			WaitingOn waitingOn = WaitingOn.valueOf(Integer.parseInt(row.getLabel()));
 			String wait = waitingOn.isNone() ? "None" : waitingOn.toString();
 			set.setLabel(wait);
+			if (permissions.isOperatorCorporate())
+				set.setLink("ContractorList.action?filter.waitingOn=" + waitingOn.ordinal());
 			chart.addSet(set);
 		}
 		return chart;
