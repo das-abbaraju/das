@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<h3><s:property value="paidDate"/> - <s:property value="auditList.get(0).auditor.name"/> - <s:property value="auditList.size()"/> Audits</h3>
+<h3><s:date name="auditList.get(0).paidDate" format="M/d/yy"/> - <s:property value="auditList.get(0).auditor.name"/></h3>
 <table class="report">
 	<thead>
 		<tr>
