@@ -58,7 +58,14 @@
 				<td rowspan="<s:property value="value.size"/>"><s:date name="key.creationDate" format="M/d/yy" /></td>
 				<td rowspan="<s:property value="value.size"/>"><s:date name="key.expiresDate" format="M/d/yy"/></td>
 			</s:if>
-			<td><s:property value="operator.name"/></td>
+			<td>
+				<pics:permission perm="ManageOperators">
+					<a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>"><s:property value="operator.name"/></a>
+				</pics:permission>
+				<pics:permission perm="ManageOperators" negativeCheck="true">
+					<s:property value="operator.name"/>
+				</pics:permission>
+			</td>
 			<td class="Amber"><s:property value="status"/></td>
 			<td style="height:30px">
 				<s:if test="certificate != null">
