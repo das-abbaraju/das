@@ -1,15 +1,8 @@
 package com.picsauditing.mail;
 
+import com.picsauditing.access.OpPerms;
+
 public enum Subscription {
-//	PICSAnnouncements(
-//			"PICS Announcements",
-//			"This email notifies users of important PICS announcements. We recommend all active users subscribe to this email.",
-//			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
-//					SubscriptionTimePeriod.Event }), 
-//	PICSSystemNotification(
-//			"PICS System Notification",
-//			"This email notifies users of important website changes and upgrades. All account administrators should subscribe to this email, which will only be sent a few times a month.",
-//			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event }), 
 	ContractorRegistration(
 			"Contractor Registration",
 			"This email includes a list of contractors who have recently registered at PICS with your account. You can choose to receive this daily, weekly or monthly. If no contractor registers, then you will not receive an email.",
@@ -38,15 +31,15 @@ public enum Subscription {
 	PendingInsuranceCerts(
 			"Pending Insurance Certs",
 			"This email notifies users of all the contractors with pending Insurance Certificates for their account. You can choose to receive this daily, weekly or monthly.",
-			true, false), 
+			OpPerms.InsuranceCerts, true, false), 
 	VerifiedInsuranceCerts(
 			"Verified Insurance Certs",
 			"This email notifies users of all the contractors with verified Insurance Certificates for their account. You can choose to receive this daily, weekly or monthly.",
-			true, false), 
-//	QuarterlyExecutiveReport(
-//			"Quarterly Executive Report",
-//			"This email notifies users of the Quarterly Executive Report.",
-//			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Quarterly }, true, false), 
+			 OpPerms.InsuranceApproval, true, false), 
+	TrialContractorAccounts(
+			"Trial Contractor Accounts",
+			"This email includes a list of trial contractor accounts who have recently registered at PICS with your account and are awaiting Approval. You can choose to receive this daily, weekly or monthly.",
+			OpPerms.ViewTrialAccounts, true, false), 
 	ContractorInvoices(
 			"Contractor Invoices",
 			"This email notifies the contractor about the PICS Invoices.",
@@ -71,6 +64,7 @@ public enum Subscription {
 			SubscriptionTimePeriod.Weekly, SubscriptionTimePeriod.Monthly };
 	private boolean requiredForOperator = true;
 	private boolean requiredForContractor = true;
+	private OpPerms requiredPerms = null;
 
 	Subscription(String description, String longDescription) {
 		this.description = description;
@@ -88,6 +82,15 @@ public enum Subscription {
 			boolean requiredForOperator, boolean requiredForContractor) {
 		this.description = description;
 		this.longDescription = longDescription;
+		this.requiredForOperator = requiredForOperator;
+		this.requiredForContractor = requiredForContractor;
+	}
+	
+	Subscription(String description, String longDescription,
+			OpPerms requiredPerms, boolean requiredForOperator, boolean requiredForContractor) {
+		this.description = description;
+		this.longDescription = longDescription;
+		this.requiredPerms = requiredPerms;
 		this.requiredForOperator = requiredForOperator;
 		this.requiredForContractor = requiredForContractor;
 	}
@@ -120,6 +123,10 @@ public enum Subscription {
 
 	public boolean isRequiredForContractor() {
 		return requiredForContractor;
+	}
+	
+	public OpPerms getRequiredPerms() {
+		return requiredPerms;
 	}
 
 	public String getAppPropertyKey() {

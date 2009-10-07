@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;

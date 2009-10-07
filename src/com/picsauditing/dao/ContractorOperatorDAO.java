@@ -71,15 +71,15 @@ public class ContractorOperatorDAO extends PicsDAO {
 	}
 	
 	public List<ContractorOperator> findPendingApprovalContractors(int opID, boolean includeBidding) {
-		String where = "FROM ContractorOperator WHERE operatorAccount.id = "
-				+ opID + " AND workStatus = 'P'";
+		String where = "SELECT co FROM ContractorOperator co WHERE co.operatorAccount.id = "
+				+ opID + " AND co.workStatus = 'P' AND co.contractorAccount.active = 'Y'";
 		if(includeBidding) {
-			where += " AND contractorAccount.acceptsBids = 1";
+			where += " AND co.contractorAccount.acceptsBids = 1";
 		}
 		else {
-			where += " AND contractorAccount.acceptsBids = 0";
+			where += " AND co.contractorAccount.acceptsBids = 0";
 		}
-		where += " ORDER BY creationDate DESC";
+		where += " ORDER BY co.creationDate DESC";
 		Query query = em.createQuery(where);
 		query.setMaxResults(10);
 		return query.getResultList();

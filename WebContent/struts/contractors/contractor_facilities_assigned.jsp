@@ -14,7 +14,7 @@
 	</s:if>
 	<s:if test="contractor.acceptsBids">
 		<label><s:property value="contractor.newMembershipLevel.fee" /> :</label> $25
-		<br/>If you are approved to work at one of these facilities your new membership fee will be $<s:property value="currentMembership.amount"/>.	
+		<br/><b>If you are approved to work at one of these facilities, your new membership fee will be $<s:property value="currentMembership.amount"/></b>.	
 	</s:if>
 	<s:else>
 		<label>New Membership Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> per year<br />
@@ -35,8 +35,17 @@
 <s:if test="trialContractor">
 	<div id="info" style="80%">
 		<a href="#" class="picsbutton"
-			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Trial Account</a><br/>
-			Click the button if you plan on working temporarily at one these facilities.		
+			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Trial Account</a> 
+			<span class="block" style="position: relative;">
+				<a class="whatsthis" href="#"><img src="images/help.gif" height="15" width="15">
+					<span class="hoverhelp" style="bottom: 20px; left: -100px;">
+					By Switching to a Trial Account, you will only 
+					be able to complete a portion of the Pre-Qualification process for your selected facilities. 
+					Your account will only be valid for 90 days. 			
+			</span></a></span><br/>
+					By Switching to a Trial Account, you will only 
+					be able to complete a portion of the Pre-Qualification process for your selected facilities. 
+					Your account will only be valid for 90 days. 			
 	</div>
 </s:if>
 

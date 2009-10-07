@@ -92,7 +92,7 @@
 	}
 
 	function changeToTrialAccount(conId) {
-		var r = confirm("Are you sure you want to switch your account to a Trial Account. By doing so you will be limited to work at these facilties for a limited period of time.")
+		var r = confirm("Are you sure that you want to switch to a Trial Account? With only a Trial Account, you will not complete the full audit process for your facilities, and the account will only be valid for 90 days.")
 		if(r == false) {
 			return false;
 		}

@@ -61,11 +61,15 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (permissions.isOperator())
 			throw new NoPermissionException("Operators can't view this page");
 
-		if (permissions.isContractor() && permissions.getAdminID() == 0) {
+		if (permissions.isContractor()) {
 			contractor.setViewedFacilities(new Date());
 			accountDao.save(contractor);
 		}
 		
+		if(contractor.getOperators().size() == 1) {
+			contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
+			accountDao.save(contractor);
+		}
 		if (button != null) {
 			if (button.equals("search")) {
 

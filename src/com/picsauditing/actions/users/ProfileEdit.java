@@ -62,7 +62,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 		if (button != null) {
 			if (button.equals("Save Profile")) {
 				dao.clear();
-				
+
 				if (dao.duplicateUsername(u.getUsername(), u.getId())) {
 					addActionError("Another user is already using the username: " + u.getUsername());
 					return SUCCESS;
@@ -165,12 +165,15 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	public List<Subscription> requiredSubscriptionList(Permissions permissions) {
 		List<Subscription> subList = new ArrayList<Subscription>();
 		for (Subscription subscription : Subscription.values()) {
-			if (permissions.isOperatorCorporate() && subscription.isRequiredForOperator()) {
-				subList.add(subscription);
-			} else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
-				subList.add(subscription);
-			} else if (subscription.isRequiredForOperator() && subscription.isRequiredForContractor())
-				subList.add(subscription);
+			if (subscription.getRequiredPerms() == null 
+					|| permissions.hasPermission(subscription.getRequiredPerms())) {
+				if (permissions.isOperatorCorporate() && subscription.isRequiredForOperator()) {
+					subList.add(subscription);
+				} else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
+					subList.add(subscription);
+				} else if (subscription.isRequiredForOperator() && subscription.isRequiredForContractor())
+					subList.add(subscription);
+			}
 		}
 		return subList;
 	}
