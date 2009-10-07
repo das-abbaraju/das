@@ -69,7 +69,7 @@
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Facilities">
-					<setSelectField name="state" text="Colorado"/>
+					<setSelectField htmlId="state" text="Colorado"/>
 					<sleep seconds="5"/>
 					<clickLink description="Click link: Add" htmlId="facility_5901"/>
 					<clickLink description="Click link: Add" htmlId="facility_5891"/>
