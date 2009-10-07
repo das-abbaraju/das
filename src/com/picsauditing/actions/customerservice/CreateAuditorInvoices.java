@@ -66,7 +66,11 @@ public class CreateAuditorInvoices extends PicsActionSupport {
 			where += " AND auditor IN (SELECT user FROM UserGroup WHERE group.id = " + User.INDEPENDENT_CONTRACTOR
 					+ ")";
 		}
-		list = auditDAO.findWhere(10, where, "auditor.name, completedDate");
+		list = auditDAO.findWhere(50, where, "auditor.name, completedDate");
+		if (list.size() == 50)
+			addActionMessage("Showing first 50 audits. Invoice these audits to see the remaining ones.");
+		if (list.size() == 0)
+			addActionMessage("No more audits remaining to invoice");
 	}
 
 	public List<ContractorAudit> getList() {

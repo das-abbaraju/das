@@ -4,31 +4,34 @@ import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.WebcamDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Webcam;
 
 @SuppressWarnings("serial")
-public class AssignWebcams extends AccountActionSupport implements Preparable {
+public class AssignWebcams extends PicsActionSupport implements Preparable {
 
-	private ContractorAuditDAO auditDAO;
 	private List<ContractorAudit> audits;
 	private ContractorAudit audit;
 
-	private WebcamDAO webcamDAO;
 	private List<Webcam> webcams;
 	private Webcam webcam;
 
-	public AssignWebcams(ContractorAuditDAO auditDAO, WebcamDAO webcamDAO) {
+	private ContractorAuditDAO auditDAO;
+	private WebcamDAO webcamDAO;
+	private NoteDAO noteDAO;
+
+	public AssignWebcams(ContractorAuditDAO auditDAO, WebcamDAO webcamDAO, NoteDAO noteDAO) {
 		this.auditDAO = auditDAO;
 		this.webcamDAO = webcamDAO;
-
-		this.noteCategory = noteCategory.Other;
+		this.noteDAO = noteDAO;
 	}
 
 	@Override
@@ -50,13 +53,7 @@ public class AssignWebcams extends AccountActionSupport implements Preparable {
 			if (button.equals("Save")) {
 				if (audit != null) {
 					if (webcam == null || webcam.getId() == 0) {
-						webcam = null;
-
-						if (audit.getContractorAccount().getWebcam() != null)
-							audit.getContractorAccount().getWebcam().setContractor(null);
-
-						audit.getContractorAccount().setWebcam(null);
-						addActionMessage("Webcam removed from " + audit.getContractorAccount().getName());
+						addActionError("Webcam was missing");
 					} else {
 						if (audit.getContractorAccount().getWebcam() != null)
 							audit.getContractorAccount().getWebcam().setContractor(null);
@@ -68,21 +65,20 @@ public class AssignWebcams extends AccountActionSupport implements Preparable {
 						// set the sent information
 						webcam.setSentDate(new Date());
 						webcam.setSendBy(getUser());
+						webcamDAO.save(webcam);
 
 						// stamp the notes
-						this.addNote(webcam.getContractor(), "Sent webcam " + webcam.getId() + " to "
-								+ webcam.getContractor().getName() + " via shipping method: "
-								+ webcam.getShippingMethod() + " with tracking number: " + webcam.getTrackingNumber());
-
-						addActionMessage("Sent webcam " + webcam.getId() + " to " + webcam.getContractor().getName()
+						String body = "Sent webcam #" + webcam.getId() + " to " + webcam.getContractor().getName()
 								+ " via shipping method: " + webcam.getShippingMethod() + " with tracking number: "
-								+ webcam.getTrackingNumber());
+								+ webcam.getTrackingNumber();
+						Note note = new Note(webcam.getContractor(), new User(User.SYSTEM), body);
+						note.setCanContractorView(true);
+						note.setNoteCategory(NoteCategory.Audits);
+						note.setViewableById(Account.PicsID);
+						noteDAO.save(note);
 
-						webcamDAO.save(webcam);
+						addActionMessage(body);
 					}
-
-					// audit has been set via form submit
-					auditDAO.save(audit);
 				}
 			}
 

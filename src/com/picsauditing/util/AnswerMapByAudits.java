@@ -1,6 +1,7 @@
 package com.picsauditing.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,12 +11,15 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.util.log.PicsLogger;
@@ -58,7 +62,7 @@ public class AnswerMapByAudits {
 		// check that they can see it
 		
 		for (AuditOperator auditOperator : operator.getVisibleAudits())
-			PicsLogger.log(" operator can see" + auditOperator.getAuditType().getAuditName());
+			PicsLogger.log(" operator can see " + auditOperator.getAuditType().getAuditName());
 
 		for (ContractorAudit audit : auditSet) {
 			PicsLogger.log("- conAudit " + audit.getId() + " " + audit.getAuditType().getAuditName());
@@ -111,7 +115,9 @@ public class AnswerMapByAudits {
 					int thisScore = scoreAudit(thisAudit, operator);
 
 					if (thisScore > biggest) {
+						PicsLogger.log("-- " + thisAudit.getAuditType().getAuditName() + "-" + thisAudit.getId() + " scored " + thisScore);
 						if (bestAudit != null) {
+							PicsLogger.log("--- but was less than best, so IGNORING");
 							remove(bestAudit);
 						}
 
@@ -125,21 +131,35 @@ public class AnswerMapByAudits {
 	}
 
 	private int scoreAudit(ContractorAudit audit, OperatorAccount operator) {
+		if (audit.getAuditStatus().isExpired())
+			return 0;
 
 		AuditOperator auditOperator = null;
 
 		int score = 0;
-
-		for (AuditOperator ao : operator.getAudits()) {
+		
+		for (AuditOperator ao : operator.getVisibleAudits() ) {
 			if (ao.getAuditType() == audit.getAuditType()) {
 				auditOperator = ao;
 			}
 		}
 
+		AuditStatus requiredAuditStatus = null;
+		
 		if (auditOperator != null) {
-			if (auditOperator.getRequiredAuditStatus() != null
-					&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
-					&& audit.getAuditStatus() == AuditStatus.Submitted) {
+			requiredAuditStatus = auditOperator.getRequiredAuditStatus();
+		} else {
+			PicsLogger.log("Warning: this Operator doesn't require " + audit.getAuditType().getAuditName());
+		}
+		
+		if (audit.getAuditType().getClassType().isPolicy()) {
+			// Add 1000 to make sure the number is always positive since creation dates 
+			// are always in the past and this DateDifference will be negative
+			return DateBean.getDateDifference(audit.getCreationDate()) + 1000;
+		} else {
+			if (requiredAuditStatus != null
+					&& requiredAuditStatus.isSubmitted()
+					&& audit.getAuditStatus().isSubmitted()) {
 				score = 100;
 			} else if (audit.getAuditStatus() == AuditStatus.Active)
 				score = 90;
@@ -147,19 +167,18 @@ public class AnswerMapByAudits {
 				score = 80;
 			else if (audit.getAuditStatus() == AuditStatus.Exempt)
 				score = 70;
-			else if (auditOperator.getRequiredAuditStatus() != null
-					&& auditOperator.getRequiredAuditStatus() == AuditStatus.Submitted
+			else if (requiredAuditStatus != null
+					&& requiredAuditStatus == AuditStatus.Submitted
 					&& audit.getAuditStatus() != AuditStatus.Submitted) {
 				score = 60;
 			} else if (audit.getAuditStatus() == AuditStatus.Pending)
 				score = 50;
-
-			if (audit.getRequestingOpAccount() != null && audit.getRequestingOpAccount().equals(operator)) {
-				score += 101;
-			}
-		} else {
-			score = 1;
+	
 		}
+		if (audit.getRequestingOpAccount() != null && audit.getRequestingOpAccount().equals(operator)) {
+			score += 101;
+		}
+		
 		return score;
 	}
 

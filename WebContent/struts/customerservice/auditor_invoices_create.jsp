@@ -24,11 +24,12 @@
 	</tr>
 	<s:iterator value="list">
 		<tr>
-			<td><s:property value="auditor.name"/></td>
-			<td><a href=""><s:property value="contractorAccount.name"/></a></td>
-			<td><a href="Audit.action?id=<s:property value="id"/>"><s:property value="id"/></a></td>
-			<td><s:property value="auditType.auditName"/></td>
-			<td><s:date name="completedDate" format="MMM d"/></td>
+			<td><s:property value="auditor.name" /></td>
+			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>" target="_BLANK"><s:property
+				value="contractorAccount.name" /></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="id"/>" target="_BLANK"><s:property value="id" /></a></td>
+			<td><s:property value="auditType.auditName" /></td>
+			<td><s:date name="completedDate" format="MMM d" /></td>
 		</tr>
 	</s:iterator>
 </table>

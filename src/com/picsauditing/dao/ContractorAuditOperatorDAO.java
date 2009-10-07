@@ -52,7 +52,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				+ " AND cao.visible = 1 ";
 
 		if (perm.isOperatorCorporate())
-			query += "AND cao.operator.inheritInsurance.id = :opID";
+			query += "AND cao.operator IN (SELECT inheritInsurance FROM OperatorAccount WHERE id = :opID)";
 
 		Query q = em.createQuery(query);
 

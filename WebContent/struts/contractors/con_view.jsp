@@ -105,7 +105,7 @@
 <!--		<div class="right" id="vcardimage"><a -->
 <!--			href="http://suda.co.uk/projects/X2V/get-vcard.php?uri=http://www.albumcreative.com/picscss/index.html"><img -->
 <!--			src="images/vcard.jpg" alt="image" width="130" height="38" /></a></div>-->
-		PICS Contractor ID: <strong><s:property value="contractor.luhnId" /></strong><br />
+		PICS Contractor ID: <strong><s:property value="contractor.id" /></strong><br />
 		Member Since: <strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong><br />
 		PICS CSR: <strong><s:property value="contractor.auditor.name" /></strong><br />
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
