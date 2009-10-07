@@ -66,6 +66,7 @@
 					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
 					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
 					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
+					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Facilities">
