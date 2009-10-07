@@ -61,7 +61,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
 			} else {
 				String msg;
-				if (contractor.getOperators().size() == 0 )
+				if (contractor.getOperators().size() == 0)
 					msg = "Please select the facilities that you work or will work at.";
 				else
 					msg = "Please select the operator that referred you to PICS before continuing.";
@@ -78,7 +78,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setNewMembershipLevel(newFee);
 			}	
 		}
-		
+
 		// The payment method has changed.
 		if ("Change Payment Method to Check".equalsIgnoreCase(button)) {
 			contractor.setPaymentMethod(PaymentMethod.Check);
@@ -89,10 +89,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if ("copyBillingEmail".equals(button)) {
 			contractor.setCcEmail(contractor.getBillingEmail());
 		}
-		if("Mark this Credit Card Invalid".equals(button)) {
+		if ("Mark this Credit Card Invalid".equals(button)) {
 			contractor.setCcOnFile(false);
 		}
-		
+
 		accountDao.save(contractor);
 		activationFee = null;
 		if (!contractor.isActiveB()) {
@@ -101,7 +101,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			else
 				activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 		}
-		
+
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
 
@@ -170,7 +170,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcExpiration(null);
 		} else {
 			contractor.setCcExpiration(cc.getExpirationDate2());
-//			contractor.setCcOnFile(true);
+			// contractor.setCcOnFile(true);
 			// The card must be valid if BrainTree is accepting it and it hasn't
 			// expired yet.
 		}

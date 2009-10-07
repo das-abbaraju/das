@@ -104,6 +104,7 @@
 			parameters: pars,
 			onComplete: function(transport) {
 				stopThinking( {div: 'thinkingDiv' } );
+				$('next_button').show();
 				reloadOperators( conId );
 				runSearch();
 			}
