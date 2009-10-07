@@ -314,7 +314,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					return;
 			}
 			days.get(day).add(timeslot);
-			latest = DateBean.getLatestDate(getLatest(), timeslot.getEndDate());
+			latest = DateBean.getLatestDate(latest, timeslot.getEndDate());
 		}
 
 		@SuppressWarnings("deprecation")
