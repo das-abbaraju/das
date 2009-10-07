@@ -293,7 +293,7 @@ public class AuditBuilder {
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getCanSeeInsurance().isTrue())
-				operatorSet.add(co.getOperatorAccount().getInheritInsuranceCriteria());
+				operatorSet.add(co.getOperatorAccount().getInheritInsurance());
 		}
 
 		for (OperatorAccount operator : operatorSet) {
