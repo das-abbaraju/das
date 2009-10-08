@@ -21,6 +21,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -43,6 +44,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 
+	private User auditor = null;
+
 	public ScheduleAudit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
 			AuditDataDAO auditDataDao, AuditorAvailabilityDAO auditorAvailabilityDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
@@ -56,6 +59,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			loadPermissions();
 			findConAudit();
 		}
+		int auditorID = getParameter("auditor.id");
+		if (auditorID > 0)
+			auditor = getUser(auditorID);
 	}
 
 	public String execute() throws Exception {
@@ -105,6 +111,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
 			conAudit.setScheduledDate(scheduledDateInServerTime);
+			if (auditor != null)
+				conAudit.setAuditor(auditor);
 			addActionMessage("Saved Audit");
 			return "edit";
 		}
@@ -352,6 +360,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public void setAvailabilityStartDate(Date availabilityStartDate) {
 		this.availabilityStartDate = availabilityStartDate;
+	}
+
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
+	}
+
+	public User getAuditor() {
+		return auditor;
 	}
 
 }
