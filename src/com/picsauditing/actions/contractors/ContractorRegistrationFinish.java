@@ -168,7 +168,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 				} else {
 
-					if (!contractor.isAcceptsBids() && !contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
+					if (!contractor.getMembershipLevel().equals(contractor.getNewMembershipLevel())) {
 						changeInvoiceItem(contractor.getMembershipLevel(), contractor.getNewMembershipLevel());
 						updateTotals();
 						this.addNote(contractor, "Modified current invoice, changed to $" + invoice.getTotalAmount(),

@@ -108,6 +108,13 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if("request".equals(button)) {
 				if (operator.getId() > 0 ) {
 					contractor.setRequestedBy(operator);
+					if(contractor.isAcceptsBids() && 
+							!contractor.getRequestedBy().isAcceptsBids()) {
+						contractor.setAcceptsBids(false);
+						contractor.setRenew(true);
+						InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+						contractor.setNewMembershipLevel(fee);
+					}
 					accountDao.save(contractor);
 				}
 				return SUCCESS;
