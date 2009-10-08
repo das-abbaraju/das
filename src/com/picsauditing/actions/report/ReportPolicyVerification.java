@@ -39,6 +39,7 @@ public class ReportPolicyVerification extends ReportInsuranceSupport {
 		sql.addGroupBy("ca.id");
 
 		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.acceptsBids = 0");
 
 		getFilter().setShowVisible(false);
 		getFilter().setShowCaoStatus(false);

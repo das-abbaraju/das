@@ -41,6 +41,7 @@ public class ReportPQFVerification extends ReportAccount {
 		sql.addJoin("JOIN contractor_audit ca1 on ca1.conID = a.id");
 		sql.addWhere("ca1.auditTypeID = 1");
 		sql.addField("ca1.completedDate");
+		sql.addWhere("a.acceptsBids = 0");
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowPrimaryInformation(false);
 	}

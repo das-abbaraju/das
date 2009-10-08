@@ -45,6 +45,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		sql.addWhere("a.acceptsBids = 1");
 
 		filteredDefault = true;
+		getFilter().setShowConWithPendingAudits(false);
 	}
 
 	@Override
