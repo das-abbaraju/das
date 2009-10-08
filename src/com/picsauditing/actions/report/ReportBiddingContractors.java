@@ -10,8 +10,11 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -68,7 +71,17 @@ public class ReportBiddingContractors extends ReportAccount {
 						break;
 					}
 				}
-				summary = "Approved the Trial Account for " + permissions.getAccountName();
+				summary = "Upgraded and Approved the Trial Account for " + permissions.getAccountName();
+				
+				// Sending a Email to the contractor for upgrade
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(73); // Trial Contractor Account Approval
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(cAccount);
+				emailBuilder.addToken("permissions", permissions);
+				EmailQueue emailQueue = emailBuilder.build();
+				emailQueue.setPriority(60);
+				EmailSender.send(emailQueue);
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);

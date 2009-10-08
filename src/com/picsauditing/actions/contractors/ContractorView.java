@@ -16,11 +16,12 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Images;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorView extends ContractorActionSupport {
@@ -91,6 +92,16 @@ public class ContractorView extends ContractorActionSupport {
 			accountDao.save(contractor);
 			
 			addNote(contractor, "Upgraded the Trial account to a full membership.", NoteCategory.General);
+			
+			// Sending a Email to the contractor for upgrade
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(73); // Trial Contractor Account Approval 
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setContractor(contractor);
+			emailBuilder.addToken("permissions", permissions);
+			EmailQueue emailQueue = emailBuilder.build();
+			emailQueue.setPriority(60);
+			EmailSender.send(emailQueue);
 		}
 		
 		if (permissions.isOperator()) {
