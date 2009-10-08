@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
@@ -189,7 +190,7 @@ public class AuditorAvailability extends BaseTable {
 	}
 
 	@Transient
-	public int rank(ContractorAudit conAudit) {
+	public int rank(ContractorAudit conAudit, Permissions permissions) {
 		int rank = 1;
 
 		if (isConductedOnsite(conAudit)) {
@@ -208,6 +209,9 @@ public class AuditorAvailability extends BaseTable {
 				rank -= 10;
 			}
 		}
+		
+		if (permissions.isAuditor() && user.getId() == permissions.getUserId())
+			rank += 1000;
 
 		return rank;
 	}

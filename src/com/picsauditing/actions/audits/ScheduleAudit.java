@@ -131,7 +131,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
 			int maxRank = -999;
 			for (AuditorAvailability timeslot : timeslots) {
-				int rank = timeslot.rank(conAudit);
+				int rank = timeslot.rank(conAudit, permissions);
 				if (rank > maxRank) {
 					rank = maxRank;
 					availabilitySelected = timeslot;
@@ -212,7 +212,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	private void findTimeslots() {
-		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
+		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate, permissions);
 		for (AuditorAvailability timeslot : timeslots) {
 			if (timeslot.isConductedOnsite(conAudit)) {
 				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {

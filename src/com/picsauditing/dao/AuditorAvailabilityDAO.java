@@ -7,7 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 
 @Transactional
@@ -42,10 +42,16 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		return em.find(AuditorAvailability.class, id);
 	}
 
-	public List<AuditorAvailability> findAvailable(Date startDate) {
-		Query query = em.createQuery("SELECT t FROM AuditorAvailability t WHERE t.startDate >= :startDate "
-				+ "ORDER BY startDate");
+	public List<AuditorAvailability> findAvailable(Date startDate, Permissions permissions) {
+		String hql = "SELECT t FROM AuditorAvailability t WHERE t.startDate >= :startDate ";
+		if (permissions.isAuditor())
+			hql += "AND user.id = :userID ";
+		hql += "ORDER BY startDate";
+		
+		Query query = em.createQuery(hql);
 		query.setParameter("startDate", startDate);
+		if (permissions.isAuditor())
+			query.setParameter("userID", permissions.getUserId());
 		return query.getResultList();
 	}
 	
