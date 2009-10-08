@@ -61,15 +61,8 @@
 									</s:if>
 								</s:iterator>
 							</ul>
-							If you are approved to work at the Operators you have selected 
-							<s:iterator value="contractor.operators" status="stat">
-								<s:if test="#stat.last">
-									and
-								</s:if>
-								<s:property value="operatorAccount.name"/>,
-							</s:iterator>
-							the following audits will apply:
-							<ul>
+							Once you have upgraded to a full membership or approved by a 
+							facility, the following audits will apply:							<ul>
 								<s:iterator value="requiredAudits" id="value">
 									<li><s:property value="#value"/></li>									
 								</s:iterator>
