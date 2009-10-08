@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -68,15 +67,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				this.redirect("ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + msg);
 				return BLANK;
 			}
-		}
-
-		if(contractor.isAcceptsBids()) {
-			if(!contractor.getRequestedBy().isAcceptsBids()) {
-				contractor.setAcceptsBids(false);
-				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-				newFee = invoiceFeeDAO.find(newFee.getId());
-				contractor.setNewMembershipLevel(newFee);
-			}	
 		}
 
 		// The payment method has changed.
