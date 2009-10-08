@@ -21,12 +21,29 @@
 					<clickButton label="Delete"/>
 				</group>
 				<group description="Delete Canoo's Test Contractor - Trial Account">
-									<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
-									<clickButton label="Search"/>
-									<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
-									<clickElement htmlId="conEditLink"/>
-									<clickButton label="Delete"/>
-								</group>
+					<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
+					<clickButton label="Search"/>
+					
+					<group description="Delete Audits">
+						<clickLink label="PQF"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>
+						<clickLink label="2006 Update"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>
+						<clickLink label="2007 Update"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>
+						<clickLink label="2008 Update"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>	
+					</group>	
+					<group description="Delete Contractor">
+						<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+						<clickElement htmlId="conEditLink"/>
+							<clickButton label="Delete"/>
+					</group>
+				</group>
 			</steps>
 		</webtest>
 	</target>
