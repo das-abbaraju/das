@@ -124,12 +124,6 @@ public class FlagCalculatorSingle {
 							if (!conAudit.getAuditStatus().isExpired()) {
 								for (ContractorAuditOperator cao : conAudit.getOperators()) {
 									if (cao.getOperator().equals(operator.getInheritInsurance())) {
-										// If the policies does not need verification
-										if(audit.getRequiredAuditStatus().isSubmitted() 
-												&& cao.getStatus().isSubmitted() ) {
-											audit.setContractorFlag(FlagColor.Green);
-											debug(" ---- does not verification");
-										}
 										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
 											audit.setContractorFlag(null);
 											debug(" ---- found N/A");
