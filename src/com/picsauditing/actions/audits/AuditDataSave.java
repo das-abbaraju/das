@@ -176,6 +176,10 @@ public class AuditDataSave extends AuditActionSupport {
 						Date expiresDate = DateBean.parseDate(auditData.getAnswer());
 						if(!DateBean.isNullDate(expiresDate))
 							tempAudit.setExpiresDate(expiresDate);
+						// In case the answer is not a valid date we add 1 year to the policy's creation date.
+						if(tempAudit.getExpiresDate() == null) {
+							tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+						}
 					}
 					if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
