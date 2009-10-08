@@ -16,7 +16,7 @@
 				&contractor_delete;
 			</steps>
 		</webtest>
-		<webtest name="Contractor Registration - Register">
+		<webtest name="Contractor Registration - Trial Account">
 			&config;
 			<steps>
 				<invoke url="Login.action" />
@@ -81,7 +81,7 @@
 				<group description="Add Payment Options">
 						<verifyText description="Verify that text is contained in the page" text="$25.00"/>
 				</group>
-				<group description="Login as an Admin, switch to check">
+				<group description="Set payment to check, switch back">
 						<clickLink label="Logout"/>
 						<setInputField name="username" value="tallred"/>
 						<setInputField name="password" value="bigboy11"/>
@@ -101,7 +101,73 @@
 							<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
 							<clickButton label="Complete My Registration" name="button"/>
 							<verifyText description="Verify that text is contained in the page" text="Your account has been registered successfully."/>
+							<clickLink label="Logout"/>
 				</group>
+			</steps>
+		</webtest>
+		<webtest name="Trial Account Audits">
+
+				&config;
+				<steps>
+				<invoke url="Login.action" />
+				<group description="Login as Admin, process check">
+					<setInputField name="username" value="tallred"/>
+					<setInputField name="password" value="bigboy11"/>
+					<clickButton label="Login"/>
+					<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
+					<clickButton label="Search"/>
+					<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+					<clickLink href="InvoiceDetail.action"/>
+					<verifyText description="Verify that text is contained in the page" text="Trial Account Fee"/>
+					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+					<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+					<clickLink label="Make a Payment"/>
+					<clickButton label="Apply All"/>
+					<clickButton label="Collect Payment"/>
+				</group>
+				<group description="System Edit">
+					<clickLink label="PQF"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save" name="button"/>
+					<clickLink label="2006 Update"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save"/>
+					<clickLink label="2007 Update"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save"/>
+					<clickLink label="2008 Update"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save" name="button"/>
+				</group>
+				<group description="Switch to Contractor">
+					<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
+					<clickLink label="Edit Account"/>
+					<clickLink label="Switch User"/>	
+				</group>
+				<group description="Verify Tasks, PQF Categories">
+					<sleep seconds="3"/>
+					<clickLink label="PQF"/>
+					<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
+					<verifyText description="Verify that text is contained in the page" text="0%"/>
+					<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
+					<verifyText description="Verify that text is contained in the page" text="17%"/>
+					<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
+					<verifyText description="Verify that text is contained in the page" text="100%"/>
+				</group>
+				<group description="Verify Flag Page">
+					<clickLink label="Facilities"/>
+					<clickLink label="AES Alamitos"/>
+					<verifyText description="Verify that text is contained in the page" text="Flag color has been now updated from Red to Green"/>
+				</group>	
 			</steps>
 		</webtest>
 	</target>
