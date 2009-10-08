@@ -52,7 +52,7 @@
 					<div>
 						Based on the information provided your level of risk for the the work your company performs is <strong><s:property value="contractor.riskLevel"/></strong>.	<br/>
 						<s:if test="contractor.acceptsBids">
-							To temporarily work at a facility you need to complete the following Audits, <br clear="all"/>
+							With a Trial Account, you will only be able to complete the following Audits, <br clear="all"/>
 							<ul>
 								<li>Company Information</li>
 								<s:iterator value="contractor.audits">
