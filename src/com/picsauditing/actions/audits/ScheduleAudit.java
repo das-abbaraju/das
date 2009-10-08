@@ -133,7 +133,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			for (AuditorAvailability timeslot : timeslots) {
 				int rank = timeslot.rank(conAudit, permissions);
 				if (rank > maxRank) {
-					rank = maxRank;
+					maxRank = rank;
 					availabilitySelected = timeslot;
 					availabilitySelectedID = availabilitySelected.getId();
 				}
