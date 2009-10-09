@@ -189,4 +189,23 @@ public class StringsTest extends TestCase {
 	public void testMd5() {
 		assertEquals("593b069af7c100f8ee335184c763fad1", Strings.md5("e4d909c290d0fb1ca068ffaddf22cbd0|20080516190549"));
 	}
+	
+	public void testFormat() {
+		assertEquals("0", Strings.formatShort(0.000001234f));
+		assertEquals("0.001", Strings.formatShort(0.001235678f));
+		assertEquals("0.123", Strings.formatShort(0.123456789f));
+		assertEquals("0.124", Strings.formatShort(0.12356789f));
+		assertEquals("1", Strings.formatShort(1f));
+		assertEquals("1.2", Strings.formatShort(1.2f));
+		assertEquals("1.23", Strings.formatShort(1.23f));
+		assertEquals("1.23", Strings.formatShort(1.234f));
+		assertEquals("12.3", Strings.formatShort(12.34567f));
+		assertEquals("123", Strings.formatShort(123.4567f));
+		assertEquals("1.23K", Strings.formatShort(1234.567f));
+		assertEquals("12.3K", Strings.formatShort(12345.67f));
+		assertEquals("123K", Strings.formatShort(123456.7f));
+		assertEquals("1.23M", Strings.formatShort(1234567f));
+		assertEquals("1.23B", Strings.formatShort(1234567890f));
+	}
+	
 }

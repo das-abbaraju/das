@@ -284,4 +284,43 @@ public class Strings {
 		
 		return username.matches(regex);
 	}
+	
+	public static String formatShort(float value) {
+		if (value < 0)
+			return "-" + formatShort(value * -1);
+		if (value < 0.001) {
+			return "0";
+		}
+		if (value < 1) {
+			return trimTrailingZeros(String.format("%.3f", value));
+		}
+		if (value < 10) {
+			return trimTrailingZeros(String.format("%.2f", value));
+		}
+		if (value < 100) {
+			return trimTrailingZeros(String.format("%.1f", value));
+		}
+		if (value < 1000) {
+			return trimTrailingZeros(String.format("%.0f", value));
+		}
+		if (value < 1000000) {
+			return formatShort(value/1000)+"K";
+		}
+		if (value < 1000000000) {
+			return formatShort(value/1000000)+"M";
+		}
+		return formatShort(value/1000000000)+"B";
+	}
+	
+	private static String trimTrailingZeros(String number) {
+	    if(!number.contains(".")) {
+	        return number;
+	    }
+
+	    number = number.replaceAll("0*$", "");
+	    if(number.charAt(number.length() - 1) == '.') {
+	        number = number.substring(0, number.length() - 1);
+	    }
+	    return number;
+	}
 }

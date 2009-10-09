@@ -31,7 +31,7 @@ public class ChartDAO {
 				} catch (SQLException e) { }
 				try {row.setSeries(rs.getString("series"));
 				} catch (SQLException e) { }
-				try {row.setSeries(rs.getString("link"));
+				try {row.setLink(rs.getString("link"));
 				} catch (SQLException e) { }
 				data.add(row);
 			}

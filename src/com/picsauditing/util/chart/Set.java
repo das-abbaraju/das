@@ -4,6 +4,7 @@ public class Set extends AbstractElement {
 	protected String index;
 	protected String label;
 	protected float value = 0;
+	protected String displayValue;
 
 	protected String borderColor;
 	protected String borderAlpha;
@@ -11,8 +12,9 @@ public class Set extends AbstractElement {
 	protected String color;
 	protected String link;
 	protected String toolText;
-	protected boolean dashed = false;
+	protected Boolean dashed;
 	protected String alpha;
+	protected Boolean showValue;
 
 	public Set() {
 	}
@@ -22,6 +24,9 @@ public class Set extends AbstractElement {
 		value = row.getValue();
 		link = row.getLink();
 		index = row.getIndex();
+		toolText = row.getToolText();
+		displayValue = row.getDisplayValue();
+		showValue = row.getShowValue();
 	}
 
 	public String toString() {
@@ -30,10 +35,12 @@ public class Set extends AbstractElement {
 		xml.append("<set");
 		append(xml, "label", label);
 		append(xml, "value", value);
+		append(xml, "displayValue", displayValue);
 		append(xml, "color", color);
 		append(xml, "toolText", toolText);
 		append(xml, "dashed", dashed);
 		append(xml, "link", link);
+		append(xml, "showValue", showValue);
 		xml.append(" />");
 		return xml.toString();
 	}
@@ -128,4 +135,21 @@ public class Set extends AbstractElement {
 		this.index = index;
 	}
 
+	public String getDisplayValue() {
+		return displayValue;
+	}
+
+	public void setDisplayValue(String displayValue) {
+		this.displayValue = displayValue;
+	}
+
+	public Boolean getShowValue() {
+		return showValue;
+	}
+
+	public void setShowValue(Boolean showValue) {
+		this.showValue = showValue;
+	}
+
+	
 }

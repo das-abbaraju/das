@@ -10,18 +10,23 @@ abstract public class Chart extends AbstractElement {
 	protected String yAxisName;
 
 	// Functional Attributes
-	protected boolean showValues = false;
-	protected boolean showPercentageValues = false;
-	protected boolean animation = true;
-	protected int palette = 1;
-	protected boolean connectNullData = true;
-	protected boolean showLabels = true;
-	protected boolean rotateLabels = false;
+	protected Boolean showValues = false;
+	protected Boolean showPercentageValues = false;
+	protected Boolean animation = true;
+	protected Integer palette = 1;
+	protected Boolean connectNullData = true;
+	protected Boolean showLabels = true;
+	protected Boolean rotateLabels = false;
 	protected String clickURL;
-	protected boolean defaultAnimation = true;
-	protected boolean showLegend;
+	protected Boolean defaultAnimation = true;
+	protected Boolean showLegend;
+	protected Integer yAxisMinValue;
+	protected Integer yAxisMaxValue;
+	protected Integer yAxisNameWidth;
 
+	// Formatting Attibutes
 	protected String numberPrefix;
+	protected String numberSuffix;
 	
 	protected boolean empty = true;
 
@@ -41,7 +46,12 @@ abstract public class Chart extends AbstractElement {
 		append(xml, "animation", animation);
 		append(xml, "palette", palette);
 
+		append(xml, "yAxisMinValue", yAxisMinValue);
+		append(xml, "yAxisMaxValue", yAxisMaxValue);
+		append(xml, "yAxisNameWidth", yAxisNameWidth);
+
 		append(xml, "numberPrefix", numberPrefix);
+		append(xml, "numberSuffix", numberSuffix);
 
 		xml.append(">");
 
@@ -64,11 +74,11 @@ abstract public class Chart extends AbstractElement {
 		this.caption = caption;
 	}
 
-	public boolean isShowPercentageValues() {
+	public Boolean isShowPercentageValues() {
 		return showPercentageValues;
 	}
 
-	public void setShowPercentageValues(boolean showPercentageValues) {
+	public void setShowPercentageValues(Boolean showPercentageValues) {
 		this.showPercentageValues = showPercentageValues;
 	}
 
@@ -96,43 +106,43 @@ abstract public class Chart extends AbstractElement {
 		yAxisName = axisName;
 	}
 
-	public boolean isAnimation() {
+	public Boolean isAnimation() {
 		return animation;
 	}
 
-	public void setAnimation(boolean animation) {
+	public void setAnimation(Boolean animation) {
 		this.animation = animation;
 	}
 
-	public int getPalette() {
+	public Integer getPalette() {
 		return palette;
 	}
 
-	public void setPalette(int palette) {
+	public void setPalette(Integer palette) {
 		this.palette = palette;
 	}
 
-	public boolean isConnectNullData() {
+	public Boolean isConnectNullData() {
 		return connectNullData;
 	}
 
-	public void setConnectNullData(boolean connectNullData) {
+	public void setConnectNullData(Boolean connectNullData) {
 		this.connectNullData = connectNullData;
 	}
 
-	public boolean isShowLabels() {
+	public Boolean isShowLabels() {
 		return showLabels;
 	}
 
-	public void setShowLabels(boolean showLabels) {
+	public void setShowLabels(Boolean showLabels) {
 		this.showLabels = showLabels;
 	}
 
-	public boolean isRotateLabels() {
+	public Boolean isRotateLabels() {
 		return rotateLabels;
 	}
 
-	public void setRotateLabels(boolean rotateLabels) {
+	public void setRotateLabels(Boolean rotateLabels) {
 		this.rotateLabels = rotateLabels;
 	}
 
@@ -144,11 +154,11 @@ abstract public class Chart extends AbstractElement {
 		this.clickURL = clickURL;
 	}
 
-	public boolean isDefaultAnimation() {
+	public Boolean isDefaultAnimation() {
 		return defaultAnimation;
 	}
 
-	public void setDefaultAnimation(boolean defaultAnimation) {
+	public void setDefaultAnimation(Boolean defaultAnimation) {
 		this.defaultAnimation = defaultAnimation;
 	}
 
@@ -160,11 +170,11 @@ abstract public class Chart extends AbstractElement {
 		this.numberPrefix = numberPrefix;
 	}
 
-	public boolean isShowValues() {
+	public Boolean isShowValues() {
 		return showValues;
 	}
 
-	public void setShowValues(boolean showValues) {
+	public void setShowValues(Boolean showValues) {
 		this.showValues = showValues;
 	}
 
@@ -172,12 +182,60 @@ abstract public class Chart extends AbstractElement {
 		return empty;
 	}
 
-	public boolean isShowLegend() {
+	public Boolean isShowLegend() {
 		return showLegend;
 	}
 
-	public void setShowLegend(boolean showLegend) {
+	public void setShowLegend(Boolean showLegend) {
 		this.showLegend = showLegend;
+	}
+
+	public String getxAxisName() {
+		return xAxisName;
+	}
+
+	public void setxAxisName(String xAxisName) {
+		this.xAxisName = xAxisName;
+	}
+
+	public String getyAxisName() {
+		return yAxisName;
+	}
+
+	public void setyAxisName(String yAxisName) {
+		this.yAxisName = yAxisName;
+	}
+
+	public Integer getyAxisMinValue() {
+		return yAxisMinValue;
+	}
+
+	public void setyAxisMinValue(Integer yAxisMinValue) {
+		this.yAxisMinValue = yAxisMinValue;
+	}
+
+	public Integer getyAxisMaxValue() {
+		return yAxisMaxValue;
+	}
+
+	public void setyAxisMaxValue(Integer yAxisMaxValue) {
+		this.yAxisMaxValue = yAxisMaxValue;
+	}
+
+	public Integer getyAxisNameWidth() {
+		return yAxisNameWidth;
+	}
+
+	public void setyAxisNameWidth(Integer yAxisNameWidth) {
+		this.yAxisNameWidth = yAxisNameWidth;
+	}
+
+	public String getNumberSuffix() {
+		return numberSuffix;
+	}
+
+	public void setNumberSuffix(String numberSuffix) {
+		this.numberSuffix = numberSuffix;
 	}
 
 }

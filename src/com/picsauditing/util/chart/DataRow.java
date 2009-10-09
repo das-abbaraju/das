@@ -5,7 +5,10 @@ public class DataRow {
 	private String label;
 	private String index;
 	private float value;
+	private String displayValue;
 	private String link;
+	private String toolText;
+	private Boolean showValue;
 
 	public DataRow() {
 	}
@@ -59,6 +62,30 @@ public class DataRow {
 
 	public void setIndex(String index) {
 		this.index = index;
+	}
+
+	public String getDisplayValue() {
+		return displayValue;
+	}
+
+	public void setDisplayValue(String displayValue) {
+		this.displayValue = displayValue;
+	}
+
+	public String getToolText() {
+		return toolText;
+	}
+
+	public void setToolText(String toolText) {
+		this.toolText = toolText;
+	}
+
+	public Boolean getShowValue() {
+		return showValue;
+	}
+
+	public void setShowValue(Boolean b) {
+		showValue = b;
 	}
 
 }

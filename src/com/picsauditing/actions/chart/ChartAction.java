@@ -27,6 +27,7 @@ public class ChartAction extends PicsActionSupport {
 		try {
 			chart = buildChart();
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			error("Error Getting Data");
 			return CHART_XML;
 		}

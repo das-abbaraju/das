@@ -17,10 +17,13 @@ public class ChartFlagCountCorp extends ChartMSAction {
 	public ChartMultiSeries buildChart() throws Exception {
 		chart.setShowLegend(false);
 		chart.setShowValues(false);
+		chart.setAnimation(false);
+		
 		SelectSQL sql = new SelectSQL("accounts a");
 		sql.addField("flag as series");
 		sql.addField("op.name as label");
 		sql.addField("count(*) as value");
+		sql.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search&filter.flagStatus=',f.flag,'&filter.operator=',op.id) as link");
 		sql.addGroupBy("series, label");
 		sql.addOrderBy("series, label");
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");

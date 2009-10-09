@@ -3,7 +3,7 @@ package com.picsauditing.util.chart;
 public class Category extends AbstractElement {
 	protected String index;
 	protected String label;
-	protected boolean showLabels = true;
+	protected Boolean showLabels;
 	protected String toolText;
 	
 	public String toString() {
@@ -34,11 +34,11 @@ public class Category extends AbstractElement {
 		this.label = label;
 	}
 
-	public boolean isShowLabel() {
+	public Boolean isShowLabel() {
 		return showLabels;
 	}
 
-	public void setShowLabel(boolean showLabel) {
+	public void setShowLabel(Boolean showLabel) {
 		this.showLabels = showLabel;
 	}
 

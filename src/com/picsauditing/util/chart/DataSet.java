@@ -11,9 +11,9 @@ public class DataSet extends AbstractElement {
 	protected String color;
 	protected String alpha;
 	protected String ratio;
-	protected boolean showValues = true;
-	protected boolean dashed;
-	protected boolean includeInLegend = true;
+	protected Boolean showValues = true;
+	protected Boolean dashed;
+	protected Boolean includeInLegend = true;
 	
 	protected Map<String, Category> categories;
 	protected Map<String, Set> sets = new HashMap<String, Set>();
@@ -95,27 +95,27 @@ public class DataSet extends AbstractElement {
 		this.ratio = ratio;
 	}
 
-	public boolean isShowValues() {
+	public Boolean isShowValues() {
 		return showValues;
 	}
 
-	public void setShowValues(boolean showValues) {
+	public void setShowValues(Boolean showValues) {
 		this.showValues = showValues;
 	}
 
-	public boolean isDashed() {
+	public Boolean isDashed() {
 		return dashed;
 	}
 
-	public void setDashed(boolean dashed) {
+	public void setDashed(Boolean dashed) {
 		this.dashed = dashed;
 	}
 
-	public boolean isIncludeInLegend() {
+	public Boolean isIncludeInLegend() {
 		return includeInLegend;
 	}
 
-	public void setIncludeInLegend(boolean includeInLegend) {
+	public void setIncludeInLegend(Boolean includeInLegend) {
 		this.includeInLegend = includeInLegend;
 	}
 }
