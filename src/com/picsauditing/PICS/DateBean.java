@@ -399,6 +399,16 @@ public class DateBean {
 		return cal.getTime();
 	}
 
+	public static Date addField(Date startDate, int field, int amount) {
+		if (startDate == null || amount == 0)
+			return null;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(field, amount);
+		return cal.getTime();
+	}	
+
 	/**
 	 * Get the first date of a month before
 	 * 

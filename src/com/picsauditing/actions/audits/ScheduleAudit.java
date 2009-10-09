@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -19,6 +20,7 @@ import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
@@ -113,7 +115,22 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			conAudit.setScheduledDate(scheduledDateInServerTime);
 			if (auditor != null)
 				conAudit.setAuditor(auditor);
-			addActionMessage("Saved Audit");
+			addActionMessage("Audit Saved Successfully");
+			// check for a time overlap here
+			List<ContractorAudit> conflicts = auditDao.findScheduledAudits(conAudit.getAuditor().getId(), DateBean
+					.addField(conAudit.getScheduledDate(), Calendar.MINUTE, -120), DateBean.addField(conAudit
+					.getScheduledDate(), Calendar.MINUTE, 120));
+			if (conflicts.size() > 1) {
+				addActionMessage("This audit may overlap with the following audits:");
+				for (ContractorAudit cAudit : conflicts) {
+					if (!cAudit.equals(conAudit)) {
+						addActionMessage(cAudit.getContractorAccount().getName()
+								+ " at "
+								+ DateBean.format(DateBean.convertTime(cAudit.getScheduledDate(),
+										TimeZone.getDefault(), permissions.getTimezone()), "h:mm a"));
+					}
+				}
+			}
 			return "edit";
 		}
 
