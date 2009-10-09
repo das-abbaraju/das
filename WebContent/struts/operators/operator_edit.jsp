@@ -47,7 +47,7 @@
 			<ol>
 				<li><label>Name:</label> <s:textfield name="operator.name" size="35" /></li>
 				<li><label>Primary Contact:</label> <s:textfield name="operator.contact" /></li>
-				<li><label>Industry:</label> <s:select list="industryList" name="operator.industry" /></li>
+				<li><label>Industry:</label> <s:select list="industryList" name="operator.industry" listValue="description" /></li>
 			</ol>
 			</fieldset>
 			<fieldset class="form"><legend><span>Primary Address</span></legend>

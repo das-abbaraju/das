@@ -56,7 +56,7 @@
 			id="form1_industry_query">ALL</span><br />
 		<span id="form1_industry_select" style="display: none"
 			class="clearLink"> <s:select id="form1_industry" name="filter.industry"
-			list="filter.industryList" cssClass="forms" multiple="true" size="5" /> <script
+			list="filter.industryList" listValue="description" cssClass="forms" multiple="true" size="5" /> <script
 			type="text/javascript">updateQuery('form1_industry');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_industry'); return false;">Clear</a> </span></div>
