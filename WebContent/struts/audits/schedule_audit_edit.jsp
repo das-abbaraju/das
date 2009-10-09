@@ -82,7 +82,6 @@ $(function(){
 	<s:hidden name="auditID" />
 	<fieldset class="form"><legend><span>Date &amp; Time</span></legend>
 	<ol>
-		<li><label></label> <a href="?auditID=<s:property value="conAudit.id"/>&button=address">Reschedule Audit</a></li>
 		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay"
 			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
 		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime"
