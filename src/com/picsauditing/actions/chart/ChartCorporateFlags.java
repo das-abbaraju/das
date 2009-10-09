@@ -137,7 +137,7 @@ public class ChartCorporateFlags extends ChartMSAction {
 				if (flag.equals("Red"))
 					tooltip += " contractors with mostly Red Flags";
 				if (flag.equals("Amber"))
-					tooltip += " contractors with a mixed of flags";
+					tooltip += " contractors with mixed flags";
 				if (flag.equals("Green"))
 					tooltip += " contractors with mostly Green Flags";
 			} else if (dataRow.getLabel().equals("Detailed")) {
