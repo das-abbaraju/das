@@ -1,8 +1,9 @@
 $.fn.timepicker = function() {
 	function parse(time) {
-		var hour = time.substr(0,time.indexOf(':'));
-		var minute = time.substr(time.indexOf(':')+1, time.indexOf(' '));
-		var a = time.substr(time.indexOf(' ')+1);
+		var t = time.split(':');
+		var hour = t[0];
+		var minute = t[1].split(' ')[0];
+		var a = t[1].split(' ')[1];
 		return {hour:hour, minute:minute, a:a};
 	}
 	var timepicker=$(this);
