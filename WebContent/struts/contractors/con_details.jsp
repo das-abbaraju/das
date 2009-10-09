@@ -57,7 +57,6 @@ div.contractor_block {
 }
 div.contractor_info {
 	float: left;
-	clear: right;
 }
 div.contractor_info ul {
 	list-style: none;
@@ -67,6 +66,8 @@ div.contractor_info ul {
 	background-color:#797B7A;
 	color:#F7F7F7;
 	padding:5px 10px;
+	clear: left;
+	width: 100%
 }
 img.contractor_logo {
 	float: left;
