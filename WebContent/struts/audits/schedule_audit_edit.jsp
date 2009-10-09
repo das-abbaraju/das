@@ -75,7 +75,7 @@ $(function(){
 <h2>Reschedule <s:property value="conAudit.auditType.auditName"/></h2>
 
 <div>
-<a href="MySchedule.action" class="picsbutton" target="_BLANK" title="opens in new window">Open My Schedule</a>
+<a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="opens in new window">Open <s:property value="conAudit.auditor.name"/>'s Schedule</a>
 </div>
 
 <s:form onsubmit="return submitForm();">
