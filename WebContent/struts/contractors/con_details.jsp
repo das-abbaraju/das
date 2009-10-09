@@ -67,7 +67,7 @@ div.contractor_info ul {
 	color:#F7F7F7;
 	padding:5px 10px;
 	clear: left;
-	width: 100%
+	width: 96%;
 }
 img.contractor_logo {
 	float: left;
