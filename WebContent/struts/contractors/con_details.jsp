@@ -7,39 +7,49 @@
 
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript">
-	function removeTag(tagId) {
-		var pars = "button=RemoveTag&tagId=" + tagId+'&id='+<s:property value="id"/>;
-		var divName ='conoperator_tags';
-		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'TagNameEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
-		return false;
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
+<script>
+var map;
+$(
+function () {
+	if (GBrowserIsCompatible()) {
+		var geocoder = new GClientGeocoder();
+		if (geocoder) {
+			var address = '<s:property value="contractor.address+', '+contractor.zip"/>';
+			geocoder.getLocations(
+				address,
+				function(matches) {
+					try {
+						if (matches.Placemark.length == 0) {
+							throw("Address (" + address + ") could not be found");
+						}
+						var detail = matches.Placemark[0].AddressDetails;
+						var latlong = matches.Placemark[0].Point.coordinates;
+						if (detail.Accuracy < 8) {
+							throw("Address (" + address + ") could not be found accurately");
+						}
+						if (GBrowserIsCompatible()) {
+							map = new GMap2(document.getElementById("mappreview"));
+							map.setUIToDefault();
+							map.clearOverlays();
+							var point = new GLatLng(latlong[1], latlong[0]);
+							map.setCenter(point, 11);
+							map.addOverlay(new GMarker(point));
+						}
+					} catch(err) {
+						$.gritter.add({title: 'Address Verification', text: err});
+					}
+				}
+			);
+			return false;
+		}
+	} else {
+		$(".calculatedAddress").show("slow");
+		$("#submitButton").show();
 	}
-	
-	function addTag() {
-		var tagId = $('tagName').value;
-		var pars = "button=AddTag&tagId=" + tagId+'&id='+<s:property value="id"/>;
-		var divName ='conoperator_tags';
-		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'TagNameEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				
-				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
-		return false;
-	}
+}
+);
 </script>
 <style>
 #content div.column {
@@ -75,6 +85,19 @@ img.contractor_logo {
 	/* IE Image max-width */
 	width: expression(this.width > 225 ? '45%' : true);
 }
+#mappreview {
+	width: 95%;
+	height: 300px;
+}
+#mappreview div {
+	color: auto;
+	font-family: Arial,sans-serif;
+	font-size: 100%;
+	line-height: 1;
+	margin: 0;
+	padding: 0;
+}
+
 </style>
 </head>
 <body>
@@ -124,7 +147,11 @@ img.contractor_logo {
 		<div class="contractor_info contractor_description"><s:property value="contractor.descriptionHTML" escape="false" /></div>
 	</div>
 </div>
-<div class="column"></div>
+<div class="column">
+	<div class="contractor_block">
+		<div id="mappreview"></div>
+	</div>
+</div>
 
 <br clear="all" />
 
