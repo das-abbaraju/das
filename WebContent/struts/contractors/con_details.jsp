@@ -72,7 +72,7 @@ img.contractor_logo {
 	float: left;
 	max-width: 45%;
 	/* IE Image max-width */
-	width: expression(this.width > 225 ? 225 : true);
+	width: expression(this.width > 225 ? '45%' : true);
 }
 </style>
 </head>
