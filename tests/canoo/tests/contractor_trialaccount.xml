@@ -3,7 +3,7 @@
 
 <project name="PICS" default="test">
 	<property name="register.username" value="canoo_trialaccount1" />
-	<property name="admin.username" value="jfazeli" />
+	<property name="admin.username" value="opman" />
 	<target name="test">
 		<webtest name="Contractor Registration - Pre Cleanup">
 			&config;
@@ -35,7 +35,7 @@
 					<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
 					<setInputField name="contractor.contact" value="John Doe"/>
 					<setInputField name="contractor.webUrl" value="www,picsauditing.com/canoo"/>
-					<setInputField name="contractor.taxId" value="789456124"/>
+					<setInputField name="contractor.taxId" value="789456179"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>
 					<setSelectField name="contractor.country" text="USA"/>
@@ -54,7 +54,7 @@
 					<setSelectField name="contractor.industry" text="Power"/>
 					<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
 					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me."/>
-					<setInputField name="user.username" value="canoo_trialaccount1"/>
+					<setInputField name="user.username" value="canoo_trialaccount"/>
 					<setInputField description="Set password field password: bigboy11" name="password" value="bigboy11"/>
 					<setInputField description="Set password field confirmPassword: bigboy11" name="confirmPassword" value="bigboy11"/>
 					<clickButton label="Create Account"/>
@@ -83,7 +83,7 @@
 				</group>
 				<group description="Set payment to check, switch back">
 						<clickLink label="Logout"/>
-						<setInputField name="username" value="tallred"/>
+						<setInputField name="username" value="opman"/>
 						<setInputField name="password" value="bigboy11"/>
 						<clickButton label="Login"/>
 						<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
@@ -111,7 +111,7 @@
 				<steps>
 				<invoke url="Login.action" />
 				<group description="Login as Admin, process check">
-					<setInputField name="username" value="tallred"/>
+					<setInputField name="username" value="opman"/>
 					<setInputField name="password" value="bigboy11"/>
 					<clickButton label="Login"/>
 					<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
