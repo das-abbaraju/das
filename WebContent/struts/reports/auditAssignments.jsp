@@ -87,6 +87,7 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate,a.name');">Scheduled</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
+				<td>Safety Manual</td>
 				<td></td>
 				<td></td>
 				<s:if test="showContact">
@@ -164,6 +165,13 @@
 						id="auditlocation_%{[0].get('auditID')}_"
 						value="%{[0].get('auditLocation')}" theme="pics" />
 				</s:if>
+				</td>
+				<td><s:if test="get('manswer') != null">
+					<nobr>Size:<s:property value="getFileSize(get('mid').toString())"/></nobr><br/>
+						<s:if test="get('mcomment') != null && get('mcomment').toString().length() > 0">
+						Comments:<s:property value="get('mcomment')"/>
+						</s:if>
+					</s:if>
 				</td>
 				<td>
 					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>

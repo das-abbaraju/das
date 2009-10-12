@@ -1,14 +1,17 @@
 package com.picsauditing.actions.report;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
 //TODO make some logic in a cron job or something that creates the DA audits
@@ -40,7 +43,11 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		} else {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
 		}
-
+		sql.addJoin("LEFT JOIN pqfdata manual ON manual.auditID = ca.id AND manual.questionID= 1331");
+		sql.addField("manual.answer AS manswer");
+		sql.addField("manual.comment AS mcomment");
+		sql.addField("manual.id AS mid");
+		
 		orderByDefault = "ca.creationDate";
 
 		getFilter().setShowAuditStatus(false);
@@ -64,5 +71,16 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DAY_OF_YEAR, -1);
 		return DateBean.format(date.getTime(), "M/d/yyyy");
+	}
+	
+	public String getFileSize(String dataID) {
+		int fileID = Integer.parseInt(dataID);
+		File dir = new File(getFtpDir() + "/files/"
+				+ FileUtils.thousandize(fileID));
+		File[] files = FileUtils.getSimilarFiles(dir, PICSFileType.data + "_" + fileID);
+		File file = files[0];
+		if(file != null)
+			return FileUtils.size(file);
+		return "";
 	}
 }
