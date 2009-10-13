@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -28,6 +30,9 @@ public class AuditorInvoices extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
+		if (!permissions.hasPermission(OpPerms.AuditorPayments) && !permissions.hasGroup(User.INDEPENDENT_CONTRACTOR)) {
+			throw new NoRightsException(OpPerms.AuditorPayments, OpType.View);
+		}
 
 		if (button != null) {
 			if ("detail".equals(button)) {
