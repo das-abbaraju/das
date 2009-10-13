@@ -666,6 +666,20 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		return map.get(tempScore);
 	}
+	
+	@Transient
+	public int getAuditorPayment() {
+		if (auditType.isDesktop())
+			return 75;
+		if (auditType.getId() == AuditType.OFFICE) {
+			if (isConductedOnsite())
+				return 225;
+			else
+				return 175;
+		}
+		return 0;
+	}
+	
 
 	public void setConductedOnsite(boolean conductedOnsite) {
 		auditLocation = conductedOnsite ? "Onsite" : "Web";

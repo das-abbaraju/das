@@ -3,24 +3,23 @@
 <head>
 <title>Auditor Invoices</title>
 <link rel="stylesheet" href="css/reports.css" />
-<link rel="stylesheet" href="css/print.css" media="print" />
 <s:include value="../jquery.jsp"/>
 
 <script type="text/javascript">
 function getDetail(auditorID, paidDate) {
-	$('#audit_detail').fadeOut().load('AuditorInvoicesAjax.action', 
+	startThinking({type: "large", message: "retrieving Invoice Batch"});
+	$('#invoicedetail').fadeTo("slow", 0.33);
+	$('#audit_detail').load('AuditorInvoicesAjax.action', 
 			{button: 'detail', auditorID: auditorID, paidDate: paidDate},
-			function() { $('#audit_detail').fadeIn();}
+			function() { $('#invoicedetail').fadeIn();}
 	);
 }
 </script>
 </head>
 <body>
-<h1>Auditor Invoices</h1>
-
 <s:include value="../actionMessages.jsp" />
 <div class="left noprint">
-	<h3>Auditor Batches</h3>
+	<h4>Click to see Batch</h4>
 	<table class="report" style="line-height:12px;">
 	<thead>
 	<tr>
@@ -44,7 +43,7 @@ function getDetail(auditorID, paidDate) {
 	</s:iterator>
 	</table>
 </div>
-<div id="audit_detail" class="right"></div>
+<div id="audit_detail" class="right"><div id="mainThinkingDiv"></div></div>
 
 </body>
 </html>

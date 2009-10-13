@@ -55,7 +55,15 @@ public class AuditorInvoices extends PicsActionSupport {
 		cal.add(Calendar.MONTH, -7);
 		list = auditDAO.findAuditorBatches(auditorID, cal.getTime());
 	}
-
+	
+	public int getTotal() {
+		int total = 0;
+		for (ContractorAudit conAudit : auditList) {
+			total += conAudit.getAuditorPayment();
+		}
+		return total;
+	}
+	
 	public List getList() {
 		return list;
 	}
