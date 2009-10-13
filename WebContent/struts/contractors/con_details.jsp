@@ -44,9 +44,6 @@ function () {
 			);
 			return false;
 		}
-	} else {
-		$(".calculatedAddress").show("slow");
-		$("#submitButton").show();
 	}
 }
 );
