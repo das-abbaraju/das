@@ -64,6 +64,7 @@ div.contractor_block {
 	border: 1px solid #000;
 	float: left;
 	width: 98%;
+	position: relative;
 }
 div.contractor_info {
 	float: left;
@@ -81,7 +82,7 @@ div.contractor_info ul {
 }
 img.contractor_logo {
 	float: left;
-	max-width: 45%;
+	max-width: 40%;
 	/* IE Image max-width */
 	width: expression(this.width > 225 ? '45%' : true);
 }
@@ -128,8 +129,17 @@ img.contractor_logo {
 	<div class="contractor_block">
 		<img src="ContractorLogo.action?id=<s:property value="id"/>" class="contractor_logo" />
 		<div class="contractor_info">
-			<div><h4><s:property value="contractor.name"/></h4></div>
-			<div><s:property value="contractor.address"/>, <s:property value="contractor.city"/>, <s:property value="contractor.state"/>, <s:property value="contractor.zip"/></div>
+			<h4><s:property value="contractor.name"/></h4>
+			<div>
+				<ul>
+					<li><s:property value="contractor.address"/></li>
+					<li>
+						<s:property value="contractor.city"/>,
+						<s:property value="contractor.state"/>,
+						<s:property value="contractor.zip"/>
+					</li>
+				</ul>
+			</div>
 			<div>
 				<ul>
 					<li>Contact: <span class="value"><s:property value="contractor.contact" /></span></li>
