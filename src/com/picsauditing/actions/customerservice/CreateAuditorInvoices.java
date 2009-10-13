@@ -57,7 +57,7 @@ public class CreateAuditorInvoices extends PicsActionSupport {
 
 	private void fillList() {
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MONTH, -6);
+		cal.add(Calendar.MONTH, -3);
 		String startDate = DateBean.format(cal.getTime(), "yyyy-MM-dd");
 		String where = "paidDate IS NULL AND auditType.classType = 'Audit' AND completedDate > '" + startDate + "'";
 		if (auditorID > 0) {
@@ -66,9 +66,9 @@ public class CreateAuditorInvoices extends PicsActionSupport {
 			where += " AND auditor IN (SELECT user FROM UserGroup WHERE group.id = " + User.INDEPENDENT_CONTRACTOR
 					+ ")";
 		}
-		list = auditDAO.findWhere(50, where, "auditor.name, completedDate");
+		list = auditDAO.findWhere(100, where, "auditor.name, completedDate");
 		if (list.size() == 50)
-			addActionMessage("Showing first 50 audits. Invoice these audits to see the remaining ones.");
+			addActionMessage("Showing first 100 audits. Invoice these audits to see the remaining ones.");
 		if (list.size() == 0)
 			addActionMessage("No more audits remaining to invoice");
 	}
