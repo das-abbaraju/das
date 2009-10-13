@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
@@ -13,6 +14,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
@@ -34,8 +36,11 @@ public class ContractorDetails extends ContractorActionSupport {
 
 	private int logoWidth = 0;
 
+	private List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();
+
 	public ContractorDetails(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, ContractorOperatorDAO contractorOperatorDAO) {
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
+			ContractorOperatorDAO contractorOperatorDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
@@ -49,69 +54,33 @@ public class ContractorDetails extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
-		if ("AddTag".equals(button)) {
-			if (tagId > 0) {
-				ContractorTag cTag = new ContractorTag();
-				cTag.setContractor(contractor);
-				cTag.setTag(new OperatorTag());
-				cTag.getTag().setId(tagId);
-				cTag.setAuditColumns(permissions);
-				contractor.getOperatorTags().add(cTag);
-				accountDao.save(contractor);
-			}
-			
-		}
-
-		if ("RemoveTag".equals(button)) {
-			contractorTagDAO.remove(tagId);
-		}
-		
-		if("Upgrade to Full Membership".equals(button)) {
-			contractor.setAcceptsBids(false);
-			contractor.setRenew(true);
-			for (ContractorAudit cAudit : contractor.getAudits()) {
-				if (cAudit.getAuditType().isPqf() && !cAudit.getAuditStatus().isPending()) {
-					cAudit.changeStatus(AuditStatus.Pending, getUser());
-					auditDao.save(cAudit);
-					break;
-				}
-			}
-			if(permissions.isOperator()) {
-				for(ContractorOperator cOperator : contractor.getOperators()) {
-					if(cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
-						cOperator.setWorkStatus("Y");
-						cOperator.setAuditColumns(permissions);
-						contractorOperatorDAO.save(cOperator);
-						break;
+		if (button != null) {
+			if (button.equals("upcoming")) {
+				for (ContractorAudit contractorAudit : getAudits()) {
+					// Only show Insurance policies or all of them
+					if (!contractorAudit.getAuditType().isAnnualAddendum()
+							&& !contractorAudit.getAuditType().getClassType().isPolicy()) {
+						if (contractorAudit.getAuditStatus().isPendingSubmitted()
+								|| contractorAudit.getAuditStatus().isIncomplete())
+							auditList.add(contractorAudit);
 					}
 				}
+				return "audits";
 			}
-
-			contractor.setNeedsRecalculation(true);
-			contractor.setAuditColumns(permissions);
-			accountDao.save(contractor);
-			
-			addNote(contractor, "Upgraded the Trial account to a full membership.", NoteCategory.General);
-			
-			// Sending a Email to the contractor for upgrade
-			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(73); // Trial Contractor Account Approval 
-			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(contractor);
-			emailBuilder.addToken("permissions", permissions);
-			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setPriority(60);
-			EmailSender.send(emailQueue);
-		}
-		
-		if (permissions.isOperator()) {
-			operatorTags = getOperatorTagNamesList();
-
-			for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-				if (operatorTags.contains(contractorTag.getTag()))
-					operatorTags.remove(contractorTag.getTag());
+			if (button.equals("current")) {
+				for (ContractorAudit contractorAudit : getAudits()) {
+					// Only show Insurance policies or all of them
+					if (!contractorAudit.getAuditType().isAnnualAddendum()
+							&& !contractorAudit.getAuditType().getClassType().isPolicy()) {
+						if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+							auditList.add(contractorAudit);
+					}
+				}
+				return "audits";
 			}
+			return SUCCESS;
 		}
+
 		if (contractor.getOperators() != null && contractor.getOperators().size() > 0) {
 			auditBuilder.setUser(getUser());
 			auditBuilder.buildAudits(this.contractor);
@@ -166,16 +135,23 @@ public class ContractorDetails extends ContractorActionSupport {
 	public void setOperatorTags(List<OperatorTag> operatorTags) {
 		this.operatorTags = operatorTags;
 	}
-	
+
 	public boolean isCanUpgrade() {
-		if(permissions.isContractor())
+		if (permissions.isContractor())
 			return true;
-		if(permissions.seesAllContractors())
+		if (permissions.seesAllContractors())
 			return true;
-		if(permissions.isOperator() 
-				&& permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
+		if (permissions.isOperator() && permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
 			return true;
-		
+
 		return false;
+	}
+
+	public List<ContractorAudit> getAuditList() {
+		return auditList;
+	}
+
+	public void setAuditList(List<ContractorAudit> audits) {
+		this.auditList = audits;
 	}
 }

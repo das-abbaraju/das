@@ -166,9 +166,15 @@
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
 		
-			<action name="ContractorDetails"
+		<action name="ContractorDetails"
 			class="com.picsauditing.actions.contractors.ContractorDetails">
 			<result>struts/contractors/con_details.jsp</result>
+		</action>
+
+		<action name="ContractorDetailsAjax"
+			class="com.picsauditing.actions.contractors.ContractorDetails">
+			<result>struts/blank.jsp</result>
+			<result name="audits">struts/contractors/con_details_audits.jsp</result>
 		</action>
 		
 

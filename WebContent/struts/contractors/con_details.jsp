@@ -47,6 +47,9 @@ function () {
 	}
 }
 );
+$(function(){
+	$('#audit_tabs').tabs();
+});
 </script>
 <style>
 #content div.column {
@@ -54,14 +57,13 @@ function () {
 	margin: 0px 5px;
 	padding: 5px;
 	float: left;
-	border: 1px solid #000;
 	position: relative;
 }
-div.contractor_block {
-	border: 1px solid #000;
+#content div.contractor_block {
 	float: left;
 	width: 98%;
 	position: relative;
+	margin-bottom: 5px;
 }
 div.contractor_info {
 	float: left;
@@ -86,6 +88,7 @@ img.contractor_logo {
 #mappreview {
 	width: 95%;
 	height: 300px;
+	border: 1px solid #000;
 }
 #mappreview div {
 	color: auto;
@@ -95,7 +98,9 @@ img.contractor_logo {
 	margin: 0;
 	padding: 0;
 }
-
+#content div.audit_tab {
+	line-height: normal;
+}
 </style>
 </head>
 <body>
@@ -151,7 +156,17 @@ img.contractor_logo {
 				</ul>
 			</div>
 		</div>
-		<div class="contractor_info contractor_description"><s:property value="contractor.descriptionHTML" escape="false" /></div>
+		
+	</div>
+	<div class="contractor_block">
+		<div id="audit_tabs">
+		     <ul>
+		         <li><a href="ContractorDetailsAjax.action?id=<s:property value="id"/>&button=upcoming" title="upcoming"><span>Upcoming Audits</span></a></li>
+		         <li><a href="ContractorDetailsAjax.action?id=<s:property value="id"/>&button=current" title="current"><span>Current Audits</span></a></li>
+		     </ul>
+		     <div id="upcoming" class="audit_tab"></div>
+		     <div id="current" class="audit_tab"></div>
+		</div>
 	</div>
 </div>
 <div class="column">
