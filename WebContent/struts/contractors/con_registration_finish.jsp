@@ -55,6 +55,8 @@
 							With a Trial Account, you will only be able to complete the following Audits: <br clear="all"/>
 							<ul>
 								<li>Company Information</li>
+								<li>General Information</li>
+								<li>Services Performed</li>
 								<s:iterator value="contractor.audits">
 									<s:if test="!auditType.pqf">
 										<li><s:property value="auditType.auditName"/> <s:property value="auditFor"/></li>

@@ -187,6 +187,10 @@ public class Cron extends PicsActionSupport {
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
 				contractor.setActive('N');
+				// Setting a deactivation report 
+				if(contractor.isAcceptsBids()) {
+					contractor.setReason("Trial Account");
+				}	
 				// Leave the PaymentExpires in the past
 				// conAcct.setPaymentExpires(null);
 				contractor.syncBalance();

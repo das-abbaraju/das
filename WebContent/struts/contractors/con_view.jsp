@@ -52,7 +52,7 @@
 <s:if test="contractor.acceptsBids">
 	<s:if test="canUpgrade">
 		<div id="info">This is a Trial Only Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
-		Click <a href="ContractorView.action?id=<s:property value="id" />" class="picsbutton positive">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
+		Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
 	</s:if>
 	<s:else>
 		<div id="alert">This is a Trial Contractor Account.</div>

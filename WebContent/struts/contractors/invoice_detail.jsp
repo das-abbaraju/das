@@ -96,7 +96,7 @@ input[type=submit] {
 						</pics:permission>
 						<s:if test="!edit">
 							<s:if test="permissions.contractor && invoice.status.unpaid && contractor.ccValid">
-								<li><a class="pay" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=pay" onclick="this.disable()">Pay</a></li>
+								<li><a class="pay" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=pay" onclick="return confirm('The credit card on file (<s:property value="ccNumber" />) will be charged. Do you wish to continue?'); this.disable()">Pay</a></li>
 							</s:if>
 							<li><a class="email"
 								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Email">Email</a></li>

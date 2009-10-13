@@ -1,16 +1,21 @@
 package com.picsauditing.actions.report;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
@@ -26,13 +31,16 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected NoteDAO noteDAO;
 	protected ContractorOperatorDAO contractorOperatorDAO;
 	protected ContractorAuditDAO contractorAuditDAO;
+	protected InvoiceItemDAO invoiceItemDAO;
 
 	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO, NoteDAO noteDAO,
-			ContractorOperatorDAO contractorOperatorDAO, ContractorAuditDAO contractorAuditDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, ContractorAuditDAO contractorAuditDAO,
+			InvoiceItemDAO invoiceItemDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.contractorAuditDAO = contractorAuditDAO;
+		this.invoiceItemDAO = invoiceItemDAO;
 	}
 
 	@Override
@@ -54,7 +62,8 @@ public class ReportBiddingContractors extends ReportAccount {
 		if (button != null) {
 			ContractorAccount cAccount = contractorAccountDAO.find(conID);
 			String summary = "";
-			if ("Approve".equals(button)) {
+			int templateId = 0;
+			if ("Upgrade".equals(button)) {
 				cAccount.setAcceptsBids(false);
 				cAccount.setRenew(true);
 				for (ContractorAudit cAudit : cAccount.getAudits()) {
@@ -64,19 +73,60 @@ public class ReportBiddingContractors extends ReportAccount {
 						break;
 					}
 				}
-				for(ContractorOperator cOperator : cAccount.getOperators()) {
-					if(cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
+
+				// Setting the payment Expires date to today
+				for (Invoice invoice : cAccount.getInvoices()) {
+					for (InvoiceItem invoiceItem : invoice.getItems()) {
+						if (invoiceItem.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
+							invoiceItem.setPaymentExpires(new Date());
+							invoiceItemDAO.save(invoiceItem);
+						}
+					}
+				}
+
+				for (ContractorOperator cOperator : cAccount.getOperators()) {
+					if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
 						cOperator.setWorkStatus("Y");
 						cOperator.setAuditColumns(permissions);
 						contractorOperatorDAO.save(cOperator);
 						break;
 					}
 				}
+				templateId = 73; //Trial Contractor Account Approval
 				summary = "Upgraded and Approved the Trial Account for " + permissions.getAccountName();
-				
-				// Sending a Email to the contractor for upgrade
+			}
+			if ("Reject".equals(button)) {
+				cAccount.setRenew(false);
+				Iterator<ContractorOperator> cIterator = cAccount.getOperators().iterator();
+				while (cIterator.hasNext()) {
+					ContractorOperator co = cIterator.next();
+					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
+						contractorOperatorDAO.remove(co);
+						cAccount.getOperators().remove(co);
+						break;
+					}
+				}
+				templateId = 75;// Trial Contractor Account Rejection
+				summary = "Rejected the Trial Account for " + permissions.getAccountName();
+			}
+
+			cAccount.setNeedsRecalculation(true);
+			cAccount.setAuditColumns(permissions);
+			contractorAccountDAO.save(cAccount);
+
+			Note note = new Note(cAccount, getUser(), summary);
+			if (!Strings.isEmpty(operatorNotes)) {
+				note.setBody(operatorNotes);
+			}
+			note.setNoteCategory(NoteCategory.OperatorChanges);
+			note.setCanContractorView(true);
+			note.setViewableById(permissions.getAccountId());
+			noteDAO.save(note);
+
+			if (templateId > 0) {
+				// Sending a Email to the contractor for upgrade/rejection
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(73); // Trial Contractor Account Approval
+				emailBuilder.setTemplate(templateId); 
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(cAccount);
 				emailBuilder.addToken("permissions", permissions);
@@ -84,31 +134,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				emailQueue.setPriority(60);
 				EmailSender.send(emailQueue);
 			}
-			if ("Reject".equals(button)) {
-				cAccount.setRenew(false);
-				Iterator<ContractorOperator> cIterator = cAccount.getOperators().iterator();
-				while(cIterator.hasNext()) {
-					ContractorOperator co = cIterator.next();
-					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
-						contractorOperatorDAO.remove(co);
-						cAccount.getOperators().remove(co);
-						break;
-					}	
-				}
-				summary = "Rejected the Trial Account for " + permissions.getAccountName();
-			}
-			cAccount.setNeedsRecalculation(true);
-			cAccount.setAuditColumns(permissions);
-			contractorAccountDAO.save(cAccount);
 
-			Note note = new Note(cAccount, getUser(), summary);
-			if(!Strings.isEmpty(operatorNotes)) {
-				note.setBody(operatorNotes);
-			}
-			note.setNoteCategory(NoteCategory.OperatorChanges);
-			note.setCanContractorView(true);
-			note.setViewableById(permissions.getAccountId());
-			noteDAO.save(note);
 			operatorNotes = "";
 		}
 		return super.execute();

@@ -73,7 +73,7 @@
 				<s:form action="BiddingContractorSearch" method="POST">
 					<s:hidden value="%{get('id')}" name="conID"/>
 					<td><s:textarea name="operatorNotes" cols="15" rows="4"/></td>
-					<td><input type="submit" class="picsbutton positive" name="button" value="Approve"/></td>
+					<td><input type="submit" class="picsbutton positive" name="button" value="Upgrade"/></td>
 					<td><input type="submit" class="picsbutton negative" name="button" value="Reject"/></td>
 				</s:form>
 			</pics:permission>

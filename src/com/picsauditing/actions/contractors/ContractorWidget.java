@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -24,6 +25,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.util.Strings;
 
 /**
@@ -61,7 +63,18 @@ public class ContractorWidget extends ContractorActionSupport {
         if (openTasks == null) {
             openTasks = new ArrayList<String>();
             
-            if(contractor.isAcceptsBids()) {
+    		String billingStatus = contractor.getBillingStatus();
+            if("Upgrade".equals(billingStatus) || 
+    				("Renewal".equals(billingStatus) 
+    						&& contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
+                openTasks
+                .add("Your Account is upgraded to " + contractor.getNewMembershipLevel().getFee() +". To continue working at your selected facilities" +
+                		" please <a href=\"BillingDetail.action?id="
+                        + contractor.getId()
+                        + "&button=Create\"> generate and pay the invoice </a>");
+    		}
+            
+    		if(contractor.isAcceptsBids()) {
                 String due = null;
                 try {
                     due = DateBean.toShowFormat(contractor.getPaymentExpires());

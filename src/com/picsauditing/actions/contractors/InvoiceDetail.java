@@ -295,4 +295,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		return true;
 	}
 
+	public String getCcNumber() {
+		String ccNumber = "";
+		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
+		try {
+			CreditCard creditCard = paymentService.getCreditCard(id);
+			ccNumber = creditCard.getCardNumber();
+		} catch (Exception e) {}
+		return ccNumber;
+	}
 }

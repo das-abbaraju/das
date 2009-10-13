@@ -2,7 +2,10 @@ package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
@@ -11,12 +14,16 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.mail.EmailBuilder;
@@ -29,18 +36,20 @@ public class ContractorView extends ContractorActionSupport {
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
+	private InvoiceItemDAO invoiceItemDAO;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
 	private int logoWidth = 0;
 
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, ContractorOperatorDAO contractorOperatorDAO) {
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
+		this.invoiceItemDAO = invoiceItemDAO;
 	}
 
 	public String execute() throws Exception {
@@ -76,6 +85,16 @@ public class ContractorView extends ContractorActionSupport {
 					break;
 				}
 			}
+			// Setting the payment Expires date to today
+			for(Invoice invoice : contractor.getInvoices()) {
+				for(InvoiceItem invoiceItem : invoice.getItems()) {
+					if(invoiceItem.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
+						invoiceItem.setPaymentExpires(new Date());
+						invoiceItemDAO.save(invoiceItem);
+					}
+				}
+			}
+			
 			if(permissions.isOperator()) {
 				for(ContractorOperator cOperator : contractor.getOperators()) {
 					if(cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
@@ -102,6 +121,11 @@ public class ContractorView extends ContractorActionSupport {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			EmailSender.send(emailQueue);
+			
+			if(permissions.isContractor()) {
+				ServletActionContext.getResponse().sendRedirect("BillingDetail.action?id=" + contractor.getId()+"&button=Create");
+				return BLANK;
+			}
 		}
 		
 		if (permissions.isOperator()) {
