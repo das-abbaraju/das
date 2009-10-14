@@ -13,6 +13,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Images;
@@ -31,6 +33,7 @@ public class ContractorDetails extends ContractorActionSupport {
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
+	private TransactionDAO transactionDAO;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
@@ -40,12 +43,13 @@ public class ContractorDetails extends ContractorActionSupport {
 
 	public ContractorDetails(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
-			ContractorOperatorDAO contractorOperatorDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, TransactionDAO transactionDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
+		this.transactionDAO = transactionDAO;
 	}
 
 	public String execute() throws Exception {
@@ -154,4 +158,12 @@ public class ContractorDetails extends ContractorActionSupport {
 	public void setAuditList(List<ContractorAudit> audits) {
 		this.auditList = audits;
 	}
+
+	public List<Transaction> getTransactions() {
+		List<Transaction> transactionList = transactionDAO.findWhere("t.account.id = " + contractor.getId());
+		if (transactionList == null)
+			return new ArrayList<Transaction>();
+		return transactionList;
+	}
+
 }

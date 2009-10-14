@@ -7,6 +7,10 @@
 
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/notes.css" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/audit.css" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 <script>
@@ -49,6 +53,8 @@ function () {
 );
 $(function(){
 	$('#audit_tabs').tabs();
+
+	$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
 });
 </script>
 <style>
@@ -98,8 +104,15 @@ img.contractor_logo {
 	margin: 0;
 	padding: 0;
 }
-#content div.audit_tab {
+#content div.shorttable {
 	line-height: normal;
+}
+#content div.scroll {
+	max-height: 300px;
+	/* IE Image max-width */
+	height: expression(this.width > 300 ? '300' : true);
+	overflow-y: scroll;
+	float: left;
 }
 </style>
 </head>
@@ -164,17 +177,131 @@ img.contractor_logo {
 		         <li><a href="ContractorDetailsAjax.action?id=<s:property value="id"/>&button=upcoming" title="upcoming"><span>Upcoming Audits</span></a></li>
 		         <li><a href="ContractorDetailsAjax.action?id=<s:property value="id"/>&button=current" title="current"><span>Current Audits</span></a></li>
 		     </ul>
-		     <div id="upcoming" class="audit_tab"></div>
-		     <div id="current" class="audit_tab"></div>
+		     <div id="upcoming" class="shorttable scroll"></div>
+		     <div id="current" class="shorttable scroll"></div>
+			<br clear="all"/>
 		</div>
 	</div>
+	<div class="contractor_block" id="con_tasks"></div>
+	<div class="contractor_block shorttable">
+		<s:iterator value="contractor.oshas">
+			<s:iterator value="value">
+				<s:iterator value="value">
+					<s:include value="../audits/audit_cat_osha2.jsp"/>
+				</s:iterator>
+			</s:iterator>
+		</s:iterator>
+	</div>
+	<div class="contractor_block shorttable">
+		<table class="report">
+		<thead>
+			<tr>
+				<td>Year</td>
+				<td>EMR</td>
+			</tr>
+		</thead>
+		<s:iterator value="contractor.emrs">
+			<tr>
+				<td><s:property value="key"/></td>
+				<td><s:property value="value.answer"/></td>
+			</tr>
+		</s:iterator>
+		</table>
+	</div>
 </div>
+
 <div class="column">
 	<div class="contractor_block">
 		<div id="mappreview"></div>
 	</div>
+	<div class="contractor_block">
+		<div class="shorttable scroll">
+			<table class="report">
+				<thead>
+					<tr>
+						<td>Flag</td>
+						<td>Operator</td>
+						<td>Waiting On</td>
+					</tr>	
+				</thead>
+			<s:iterator value="activeOperators">
+				<tr>
+					<td>
+						<s:if test="flag != null">
+							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flag.flagColor.smallIcon" escape="false" /></a>
+						</s:if>
+						<s:else>
+							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></a>
+						</s:else>
+					</td>
+					<td>
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
+					</td>
+					<td>
+						<s:property value="flag.waitingOn"/>
+					</td>
+				</tr>
+			</s:iterator>
+			</table>
+		</div>
+	</div>
+	<div class="contractor_block">
+		<div class="shorttable scroll">
+			<table class="report">
+				<thead>
+					<tr>
+						<th>Transaction</th>
+						<th>#</th>
+						<th>Date</th>
+						<th>Amount</th>
+						<th>Outstanding</th>
+						<s:if test="permissions.admin">
+							<th>Status</th>
+						</s:if>	
+					</tr>
+				</thead>
+				<tbody>
+					<s:iterator value="transactions">
+						<s:set name="url" value="" />
+						<s:if test="class.simpleName == 'Invoice'">
+							<s:set name="url" value="'InvoiceDetail.action?invoice.id='+id" />
+						</s:if>
+						<s:elseif test="class.simpleName == 'Payment'">
+							<pics:permission perm="Billing">
+								<s:set name="url" value="'PaymentDetail.action?payment.id='+id" />
+							</pics:permission>
+						</s:elseif>
+						<tr
+							<s:if test="#url.length() > 0">
+								class="clickable <s:if test="status.void"> inactive</s:if> " 
+								onclick="window.location = '<s:property value="#url"/>'"
+							</s:if>
+							>
+							<td><s:property value="class.simpleName" /></td>
+							<td class="right"><s:if test="#url.length() > 0">
+								<a href="<s:property value="#url" />"><s:property value="id" /></a>
+							</s:if><s:else>
+								<s:property value="id" />
+							</s:else></td>
+							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
+							<td class="right">$<s:property value="totalAmount" /></td>
+							<td class="right">$ <s:if
+								test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">
+								-</s:if> <s:property value="balance" /></td>
+							<s:if test="permissions.admin">
+								<td><s:property value="status"/></td>
+							</s:if>
+						</tr>
+					</s:iterator>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 
+<div class="contractor_block">
+	<s:include value="../notes/account_notes_embed.jsp"/>
+</div>
 <br clear="all" />
 
 </body>
