@@ -99,7 +99,10 @@ public class PicsMenu {
 			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Answer Updates", "AuditDataUpdates.action");
-
+		if(permissions.isAuditor()) {
+			subMenu.addChild("Close Open Reqs", "ReportOpenRequirements.action");
+		}
+		
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
 			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");

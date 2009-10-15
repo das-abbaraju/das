@@ -29,6 +29,7 @@
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
+	<bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
 	<bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
 	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
 	<bean id="ContractorNoteDAO" class="com.picsauditing.dao.ContractorNoteDAO"/>

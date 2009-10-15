@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -38,8 +37,6 @@ public class ContractorWidget extends ContractorActionSupport {
     private AppPropertyDAO appPropDAO;
 
     protected boolean reminderTask = false;
-
-    protected boolean openReq = false;
 
     public ContractorWidget(ContractorAccountDAO accountDao,
             ContractorAuditDAO auditDao, AppPropertyDAO appPropDAO) {
@@ -81,7 +78,7 @@ public class ContractorWidget extends ContractorActionSupport {
                 } catch (Exception ignoreFormattingErrors) {
                 }
                 openTasks
-                .add("Your Account is a Trial Only Account and will expire on " + due +". To continue working at your selected facilities" +
+                .add("Your Account is a Trial Only Account and will expire on " + due +". To continue with the audit process" +
                 		" please <a href=\"ContractorView.action?id="
                         + contractor.getId()
                         + "&button=Upgrade to Full Membership\"> upgrade your account to a full membership</a>");
@@ -204,11 +201,8 @@ public class ContractorWidget extends ContractorActionSupport {
                     String text = "You have <a href=\"Audit.action?auditID="
                             + conAudit.getId()
                             + "\">open requirements from your recent "
-                            + conAudit.getAuditType().getAuditName() + "</a>";
-                    if (!openReq) {
-                        text += "<br/>NOTE: Open requirements cannot be closed online. You must submit these items to audits@picsauditing.com or fax to 949-269-9165 for further review. Please attach a cover sheet to all submitted information.";
-                        openReq = true;
-                    }
+                            + conAudit.getAuditType().getAuditName() + "</a>. " 
+                            +" Please use Additional Attachments section to close the open requirements online";
                     openTasks.add(text);
                 }
 

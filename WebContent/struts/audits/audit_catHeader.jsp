@@ -1,4 +1,14 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<script type="text/javascript">
+	function showFileUpload(auditID) {
+		url = 'ContractorAuditFileUpload.action?auditID='+auditID;
+		title = 'Upload';
+		pars = 'scrollbars=yes,resizable=yes,width=700,height=650,toolbar=0,directories=0,menubar=0';
+		fileUpload = window.open(url,title,pars);
+		fileUpload.focus();
+	}
+</script>
+
 <s:if test="auditID > 0">
 	<s:include value="../contractors/conHeader.jsp" />
 	
@@ -51,6 +61,14 @@
 		<div id="info">Before you will be able to submit your information for review, you must <a href="ContractorPaymentOptions.action?id=<s:property value="conAudit.contractorAccount.id"/>"> update your payment method</a>.</div>		
 	</s:if>
 </s:if>
+
+<s:if test="!conAudit.auditType.classType.policy">
+	<div id="info">
+		Please use  
+		<input type="button" class="picsbutton positive" value="Additional Attachments" onclick="showFileUpload(<s:property value="auditID" />)" title="Opens in new window (please disable your popup blocker)"/>
+		to upload any additional documents that your client's require.	
+	</div>	
+</s:if>	
 
 <s:form>
 	<s:hidden name="auditID" />

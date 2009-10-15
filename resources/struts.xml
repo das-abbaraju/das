@@ -462,7 +462,11 @@
 			class="com.picsauditing.actions.report.ReportContractorAudits">
 			<result>struts/reports/audit_list_data.jsp</result>
 		</action>
-
+		
+		<action name="ReportOpenRequirements"
+			class="com.picsauditing.actions.report.ReportAuditOpenReqs">
+			<result>struts/reports/audit_openrequirements.jsp</result>
+		</action>
 
 		<!-- Operator List -->
 		<action name="ReportAccountList"
@@ -809,6 +813,10 @@
 			</result>
 		</action>
 
+		<action name="ContractorAuditFileUpload"
+			class="com.picsauditing.actions.audits.ContractorAuditFileUpload">
+			<result>struts/audits/con_audit_files.jsp</result>
+		</action>
 
 		<!-- Track Auditor Payments -->
 
