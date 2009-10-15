@@ -30,4 +30,6 @@ $.fn.timepicker = function() {
 	var s = $('<span>').append(h).append(m).append(a);
 	
 	timepicker.after(s).hide();
+	
+	return $;
 }
