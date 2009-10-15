@@ -25,13 +25,13 @@
 			<li><label>Op Status:</label>
 				<span id="op_status<s:property value="#cao.id"/>"
 					<s:if test="!permissions.contractor && #editable">
-						style="cursor: pointer;" onclick="$('cao_form<s:property value="#cao.id"/>_cao_status').show(); $('op_status<s:property value="#cao.id"/>').hide();"
+						style="cursor: pointer;" onclick="$('#cao_form<s:property value="#cao.id"/>_cao_status').show(); $('#op_status<s:property value="#cao.id"/>').hide();"
 					</s:if>
 					>
 					<s:property value="#cao.status" />
 				</span>
 				<s:if test="!permissions.contractor && #editable">
-					<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('cao_form%{#cao.id}', 'Status')"
+					<s:select name="cao.status" value="#cao.status" cssStyle="display: none;" onchange="saveCao('#cao_form%{#cao.id}', 'Status')"
 						 list="@com.picsauditing.jpa.entities.CaoStatus@values()" ></s:select>
 				</s:if>   
 			</li>
@@ -128,7 +128,7 @@
 		</span>
 		<div class="answer">
 			<s:if test="#editable">
-				<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onclick="saveCao('cao_form%{#cao.id}', 'Save', 'caoValid%{#cao.id}')"/>
+				<s:radio list="#{'Yes':'Yes', 'No':'No'}" name="cao.valid" value="%{#cao.valid}" onclick="saveCao('#cao_form%{#cao.id}', 'Save', '#caoValid%{#cao.id}')"/>
 			</s:if>
 			<s:else>
 				<s:property value="#cao.valid"/>
@@ -145,7 +145,7 @@
 			<div class="answer">
 				<s:if test="#editable">
 					<s:textarea name="cao.reason" value="%{#cao.reason}" cols="60" rows="3"
-						onchange="saveCao('cao_form%{#cao.id}', 'Save', 'remarks%{#cao.id}')" />
+						onchange="saveCao('#cao_form%{#cao.id}', 'Save', '#remarks%{#cao.id}')" />
 				</s:if>
 				<s:else>
 					<s:if test="#cao.reason != null">
@@ -171,15 +171,15 @@
 						value="Resubmit" 
 					</s:else>
 					
-					onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"
+					onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"
 				/>
 				<br clear="all"/>
 			</div>
 		</s:if> 
 		<s:if test="permissions.admin">
 			<div>
-				<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 			</div>
 			<br clear="all"/>
 			<label class="policy">Administrative Notes:</label><br/>
@@ -188,13 +188,13 @@
 		<s:if test="permissions.operatorCorporate">
 			<div>
 				<s:if test="!#cao.status.approved">
-					<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" class="picsbutton positive" value="Approve" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 				</s:if>
 				<s:if test="!#cao.status.rejected">
-					<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" class="picsbutton negative" value="Reject" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
 				</s:if>
 				<s:if test="!#cao.status.notApplicable">
-					<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
+					<input type="button" class="picsbutton" value="Not Applicable" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', 'NotApplicable');return false;"/>
 				</s:if>
 			</div>
 			<br clear="all"/>

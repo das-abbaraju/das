@@ -8,7 +8,7 @@ import com.picsauditing.jpa.entities.AmBest;
 
 @SuppressWarnings("serial")
 public class AmBestAction extends PicsActionSupport {
-	private String search;
+	private String q;
 	private List<AmBest> results;
 	private AmBestDAO amBestDao;
 
@@ -18,18 +18,18 @@ public class AmBestAction extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		results = new ArrayList<AmBest>();
-		
-		if (search == null || search.length() < 3)
+
+		if (q == null || q.length() < 3)
 			return SUCCESS;
-		
-		results = amBestDao.findByCompanyName(search);
+
+		results = amBestDao.findByCompanyName(q);
 
 		if (results == null)
 			results = new ArrayList<AmBest>();
-		
+
 		if (results.size() == 0)
-			results.add(newItem("UNKNOWN", search));
-		
+			results.add(newItem("UNKNOWN", q));
+
 		return SUCCESS;
 	}
 
@@ -40,12 +40,12 @@ public class AmBestAction extends PicsActionSupport {
 		return o;
 	}
 
-	public String getSearch() {
-		return search;
+	public String getQ() {
+		return q;
 	}
 
-	public void setSearch(String search) {
-		this.search = search;
+	public void setQ(String search) {
+		this.q = search;
 	}
 
 	public List<AmBest> getResults() {

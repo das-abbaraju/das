@@ -76,16 +76,16 @@
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No'}" name="answer%{#divID}" value="%{#a.answer}" 
-			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"></s:radio>
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No/NA'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#divID}" value="%{#a.answer}" 
-			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"></s:radio>
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Office Location'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
 			name="answer%{#divID}" value="%{#a.answer}"
-			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"></s:radio>
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'State'">
 		<s:select list="stateList" value="%{#a.answer}" name="answer%{#divID}" 
@@ -112,22 +112,26 @@
 	<s:if test="#q.questionType == 'Radio'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
 			value="#a.answer" name="answer%{#divID}" 
-			onclick="$A($$('.question_%{#q.id}')).each(function(abc){abc.disable();}); saveAnswer('%{#divID}', this);"/>
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'AMBest'">
 		<input type="hidden" id="ambest_naic_code" />
 		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" size="75" />
-		<div id="ambest_autocomplete_choices" class="autocomplete"></div>
 		
-		<script type="text/javascript">
-			new Ajax.Autocompleter("ambest_autocomplete", "ambest_autocomplete_choices", "AmBestSuggestAjax.action", {tokens: ',', paramName: "search", select: "companyName", minChars: 3, afterUpdateElement : saveNaic});
-			function saveNaic(text, li) {
-				if (li.id != "NEW")
-				    $('ambest_naic_code').value = li.id;
-				else
-					$('ambest_naic_code').value = "";
-				saveAnswerComment('<s:property value="%{#divID}" />', $('ambest_autocomplete'), $('ambest_naic_code'));
-			}
+		<script type="text/javascript"> 
+			$('#ambest_autocomplete').autocomplete('AmBestSuggestAjax.action',
+			{
+				minChars: 3,
+				formatResult: function(data,i,count) {
+					return data[1];
+				}
+			}).result(function(event, data){
+					if (data[2]!="UNKNOWN")
+						$('#ambest_naic_code').val(data[2]);
+					else
+						$('#ambest_naic_code').val("");
+					saveAnswerComment('<s:property value="%{#divID}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code')[0]);
+				});
 		</script>
 		
 		<s:if test="#a.commentLength">

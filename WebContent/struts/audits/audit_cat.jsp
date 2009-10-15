@@ -11,9 +11,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+
 <script type="text/javascript" src="js/validateForms.js"></script>
 <script type="text/javascript" src="js/audit_cat_edit.js"></script>
 
