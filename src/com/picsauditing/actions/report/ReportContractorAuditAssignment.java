@@ -14,11 +14,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
-//TODO make some logic in a cron job or something that creates the DA audits
-//according to the criteria below, ie they answered yes on question 894
-//sql.addPQFQuestion(894, false, "requiredAnswer"); //q318.answer
-//sql.addWhere("q894.answer = 'Yes' OR c.daRequired IS NULL OR c.daRequired = 'Yes'");
-
 @SuppressWarnings("serial")
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
 
@@ -43,7 +38,8 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		} else {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
 		}
-		sql.addJoin("LEFT JOIN pqfdata manual ON manual.auditID = ca.id AND manual.questionID= 1331");
+		sql.addJoin("LEFT JOIN Contractor_audit pqf ON pqf.conid = ca.conid AND pqf.audittypeid = 1 AND ca.audittypeid = 2");
+		sql.addJoin("LEFT JOIN pqfdata manual ON manual.auditID = pqf.id AND manual.questionID = 1331");
 		sql.addField("manual.answer AS manswer");
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
