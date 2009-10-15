@@ -145,15 +145,13 @@ public class Widget {
 		}
 		
 		if (widgetType.equals("Html"))
-			return "<div class=\"inprogress\"></div><script>new Ajax.Updater('panel" + widgetID + "_content', '" + url
+			return "<div class=\"inprogress\"></div><script>$('#panel" + widgetID + "_content').load('" + url
 			+ "');</script>";
 
 		if (widgetType.equals("Rss"))
-			return "<div class=\"inprogress\"></div><script>new Ajax.Updater('panel" + widgetID + "_content', '" + url
+			return "<div class=\"inprogress\"></div><script$('#panel" + widgetID + "_content').load('" + url
 			+ "');</script>";
 
 		return "Unknown Widget Type "+widgetType;
 	}
-
-	
 }

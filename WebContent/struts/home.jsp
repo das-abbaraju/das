@@ -3,24 +3,23 @@
 <html>
 <head>
 <title>Home</title>
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
+<s:include value="jquery.jsp"/>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css" />
 <script type="text/javascript">
 function hidePanel(panel) {
-	$(panel+"_hide").hide();
-	$(panel+"_show").show();
+	$('#'+panel+"_hide").hide();
+	$('#'+panel+"_show").show();
 	
-	$(panel+"_content").hide();
+	$('#'+panel+"_content").hide();
 }
 
 function showPanel(panel) {
-	$(panel+"_hide").show();
-	$(panel+"_show").hide();
+	$('#'+panel+"_hide").show();
+	$('#'+panel+"_show").hide();
 
-	$(panel+"_content").show();
+	$('#'+panel+"_content").show();
 }
 </script>
 </head>
