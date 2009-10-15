@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript">
-	function showFileUpload() {
+	function showAuditUpload() {
 		$('show_files').show();
 	}
 </script>
@@ -45,7 +45,7 @@
 				target="_BLANK"><img src="images/icon_DA.gif" /></a></td>
 			<td><s:if
 				test="permissions.admin || (!reviewed && permissions.userId == createdBy.Id)">
-				<a class="edit" href="#" onclick="showFileUpload();">Edit</a>
+				<a class="edit" href="#" onclick="showAuditUpload();">Edit</a>
 			</s:if></td>
 			<s:if test="permissions.admin">
 				<td class="center"><s:if test="reviewed">
@@ -62,7 +62,7 @@
 <br clear="all" />
 <s:if test="!permissions.operatorCorporate">
 	<div><input type="button" class="picsbutton positive"
-		value="Add File" onclick="showFileUpload('show_files')" /></div>
+		value="Add File" onclick="showAuditUpload()" /></div>
 </s:if> <br clear="all" />
 <s:include value="../actionMessages.jsp" /> <br clear="all" />
 <div id="show_files" style="display: none;"><s:include
