@@ -9,6 +9,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.WebcamDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
@@ -75,6 +76,8 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 				note.setAuditColumns(new User(User.SYSTEM));
 				note.setSummary("Received webcam #" + webcam.getId());
 				note.setCanContractorView(true);
+				note.setViewableById(Account.EVERYONE);
+				noteDAO.save(note);
 
 				webcam.setContractor(null);
 				webcam.setReceivedBy(getUser());
@@ -83,8 +86,6 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 				webcam.setAuditColumns(permissions);
 				webcamDAO.save(webcam);
 				webcam = new Webcam();
-
-				noteDAO.save(note);
 				
 				String url = String.format("ManageWebcams.action?button=out&msg=Received camera %23%1 into Inventory", webcam.getId());
 				return redirect(url);
