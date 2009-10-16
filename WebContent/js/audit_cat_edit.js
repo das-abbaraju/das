@@ -21,7 +21,6 @@ function verifyAnswer(questionid, answerid) {
 	
 	$.getJSON('AuditToggleVerifyAjax.action', data, function(json, status) {
 		$('#verify_details_' + questionid).toggle();
-		var json = transport.responseText.evalJSON();
 		
 		if( json.who ) {
 			$('#verifyButton_' + questionid ).val('Unverify');
