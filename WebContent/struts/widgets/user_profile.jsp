@@ -17,7 +17,12 @@
 <p><label>Email address:</label> <s:property value="u.email" /></p>
 
 <p><label>Username:</label> <s:property value="u.username" /></p>
-
+<label>Phone:</label> <s:property value="u.phone" />
+<s:if test="u.fax != null">
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<label>Fax:</label> <s:property value="u.fax" />
+</s:if>
+<p><label>TimeZone:</label> <s:property value="u.timezone" /></p>
 <a href="ProfileEdit.action">Edit Profile</a>
 </body>
 </html>

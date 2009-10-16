@@ -10,7 +10,7 @@
 	<s:iterator value="recentlyClosed">
 		<tr>
 			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
-			<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/></a></td>
+			<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/><s:if test="auditFor != null"> - <s:property value="auditFor"/></s:if></a></td>
 			<td class="center"><s:date name="closedDate" format="M/d/yy" /></td>
 		</tr>
 	</s:iterator>
