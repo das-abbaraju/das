@@ -5,24 +5,20 @@ import java.util.Iterator;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.SpringUtils;
 
 /**
  * Adds and removed contractors from operator accounts
@@ -34,6 +30,7 @@ public class FacilityChanger {
 	private ContractorAccountDAO contractorAccountDAO;
 	private OperatorAccountDAO operatorAccountDAO;
 	private NoteDAO noteDAO;
+	private AuditBuilder auditBuilder;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -41,11 +38,12 @@ public class FacilityChanger {
 	private User user;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.noteDAO = noteDAO;
+		this.auditBuilder = auditBuilder;
 	}
 
 	public void add() throws Exception {
@@ -82,11 +80,17 @@ public class FacilityChanger {
 			EmailSender.send(emailQueue);
 		}
 
-		if (permissions.isContractor() 
-				&& !contractor.isAcceptsBids()) {
+		if (!contractor.isAcceptsBids()) {
+			if (permissions.isContractor()) {
 				// If the contractor logs in and adds a facility,
 				// then let's assume they want to be part of PICS
 				contractor.setRenew(true);
+			}
+			for (ContractorAudit cAudit : contractor.getAudits()) {
+				if (cAudit.getAuditType().isPqf()) {
+					auditBuilder.fillAuditCategories(cAudit, true);
+				}
+			}
 		}
 
 		contractor.setLastUpgradeDate(new Date());
