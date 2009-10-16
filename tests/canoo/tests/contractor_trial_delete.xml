@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="register.username" value="canoo_contractor1" />
+	<property name="admin.username" value="jfazeli" />
+	<target name="test">
+		<webtest name="Contractor Registration - Post Cleanup">
+			&config;
+			<steps>
+				<storeProperty description="Change login to Admin" 
+					name="login.username" 
+					propertyType="ant"
+					value="${admin.username}"/>
+				&login;
+				<group description="Delete Canoo's Test Contractor - Trial Account">
+					<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
+					<clickButton label="Search"/>
+					
+					<group description="Delete Audits">
+						<clickLink label="PQF"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>
+						<clickLink label="2006 Update"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>
+						<clickLink label="2007 Update"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>
+						<clickLink label="2008 Update"/>
+						<clickLink label="System Edit"/>
+						<clickButton label="Delete"/>	
+					</group>	
+					<group description="Delete Contractor">
+						<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+						<clickElement htmlId="conEditLink"/>
+							<clickButton label="Delete"/>
+					</group>
+				</group>
+			</steps>
+		</webtest>
+	</target>
+</project>
