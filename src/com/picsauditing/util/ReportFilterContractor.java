@@ -24,7 +24,6 @@ import com.picsauditing.jpa.entities.WaitingOn;
 public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
-	public static final String DEFAULT_RISK = "- Risk Level -";
 	public static final String DEFAULT_PERFORMED_BY = "- Performed By -";
 	public static final String[] DEACTIVATION_REASON = {"ChargeBack", "Did not Complete PICS process","Does not work for operator","Duplicate/Merged Account","Operator Exemption","Payments not Current", "Trial Account"};
 
@@ -59,10 +58,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] stateLicensedIn;
 	protected int[] worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
-	protected String flagStatus;
+	protected String[] flagStatus;
 	protected int[] officeIn;
 	protected int[] conAuditorId;
-	protected int riskLevel;
+	protected int[] riskLevel;
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
 	protected String waitingOn;
@@ -308,11 +307,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.taxID = taxID;
 	}
 
-	public String getFlagStatus() {
+	public String[] getFlagStatus() {
 		return flagStatus;
 	}
 
-	public void setFlagStatus(String flagStatus) {
+	public void setFlagStatus(String[] flagStatus) {
 		this.flagStatus = flagStatus;
 	}
 
@@ -332,11 +331,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.conAuditorId = conAuditorId;
 	}
 
-	public int getRiskLevel() {
+	public int[] getRiskLevel() {
 		return riskLevel;
 	}
 
-	public void setRiskLevel(int riskLevel) {
+	public void setRiskLevel(int[] riskLevel) {
 		this.riskLevel = riskLevel;
 	}
 

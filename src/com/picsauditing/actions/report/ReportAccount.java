@@ -277,8 +277,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID))
 			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", f.getTaxID()));
 
-		if (filterOn(f.getFlagStatus()))
-			report.addFilter(new SelectFilter("flagStatus", "flags.flag = '?'", f.getFlagStatus()));
+		if (filterOn(f.getFlagStatus())) {
+			String list = Strings.implodeForDB(f.getFlagStatus(), ",");
+			sql.addWhere("flags.flag IN (" + list + ")");
+			setFiltered(true);
+		}	
 
 		if (filterOn(f.getWaitingOn()))
 			report.addFilter(new SelectFilter("waitingOn", "flags.waitingOn = '?'", f.getWaitingOn()));
@@ -290,8 +293,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		}
 
-		if (filterOn(f.getRiskLevel(), 0))
-			report.addFilter(new SelectFilterInteger("riskLevel", "c.riskLevel = '?'", f.getRiskLevel()));
+		if (filterOn(f.getRiskLevel())) {
+			String list = Strings.implode(f.getRiskLevel(), ",");
+			sql.addWhere("c.riskLevel IN (" + list + ")");
+			setFiltered(true);
+		}	
 
 		if (f.getEmailTemplate() > 0) {
 			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "

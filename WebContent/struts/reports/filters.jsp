@@ -84,8 +84,18 @@
 	</s:if>
 
 	<s:if test="filter.showFlagStatus">
-		<div class="filterOption"><s:select list="filter.flagStatusList" headerKey="" headerValue="- Flag Status -"
-			cssClass="forms" name="filter.flagStatus" /></div>
+		<div class="filterOption">
+		<a href="#"
+			onclick="toggleBox('form1_flagStatus'); return false;">Flag Status</a> =
+		<span id="form1_flagStatus_query">ALL</span><br />
+		<span id="form1_flagStatus_select" style="display: none"
+			class="clearLink"> <s:select id="form1_flagStatus" list="filter.flagStatusList"
+			cssClass="forms" name="filter.flagStatus"
+			multiple="true" size="3" /> <script type="text/javascript">updateQuery('form1_flagStatus');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_flagStatus'); return false;">Clear</a> </span>
+		</div>
 	</s:if>
 
 	<s:if test="filter.showWaitingOn">
@@ -211,8 +221,18 @@
 	</s:if>
 
 	<s:if test="filter.showRiskLevel">
-		<div class="filterOption"><s:select list="#{'1':'Low', '2':'Med', '3':'High'}"  
-			headerKey="0" headerValue="- Risk Level -" cssClass="forms" name="filter.riskLevel"/></div>
+		<div class="filterOption">
+		<a href="#"
+			onclick="toggleBox('form1_risklevel'); return false;">Risk Level</a> =
+		<span id="form1_risklevel_query">ALL</span><br />
+		<span id="form1_risklevel_select" style="display: none"
+			class="clearLink"> <s:select id="form1_risklevel" list="#{'1':'Low', '2':'Med', '3':'High'}"
+			cssClass="forms" name="filter.riskLevel"
+			multiple="true" size="3" /> <script type="text/javascript">updateQuery('form1_risklevel');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_risklevel'); return false;">Clear</a> </span>
+		</div>
 	</s:if>
 
 
