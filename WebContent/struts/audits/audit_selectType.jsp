@@ -24,6 +24,5 @@
 </s:iterator>
 <tr><td></td><td class="center" colspan="2"><a href="?button=Add New">Add New</a></td></tr>
 </table>
-</div>
 </body>
 </html>

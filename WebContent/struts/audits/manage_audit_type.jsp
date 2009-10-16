@@ -6,8 +6,19 @@
 <title>Manage Audit Types</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects,dragdrop,controls" type="text/javascript"></script>
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+$(function(){
+	var sortList = $('#list').sortable({
+		update: function() {
+			$('#list-info').load('OrderAuditChildrenAjax.action?id=<s:property value="auditType.id"/>&type=AuditType', 
+				sortList.sortable('serialize'), 
+				function() {sortList.effect('highlight', {color: '#FFFF11'}, 1000);}
+			);
+		}
+	});
+});
+</script>
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
@@ -88,12 +99,6 @@
 				</ul>
 				
 				<a href="ManageCategory.action?button=AddNew&parentID=<s:property value="auditType.id"/>&category.auditType.id=<s:property value="auditType.id"/>">Add New Category</a>
-				<script type="text/javascript">
-				//<![CDATA[
-				Sortable.create("list", 
-					{onUpdate:function(){new Ajax.Updater('list-info', 'OrderAuditChildrenAjax.action?id=<s:property value="auditType.id"></s:property>&type=AuditType', {asynchronous:true, evalScripts:true, onComplete:function(request){new Effect.Highlight("list",{});}, parameters:Sortable.serialize("list")})}})
-				//]]>
-				</script>
 				<div id="list-info"></div>
 			</div>
 			<s:if test="auditType.categories.size > 1">

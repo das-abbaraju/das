@@ -35,7 +35,7 @@ public class OrderAuditChildren extends PicsActionSupport {
 		if (type==null)
 			return SUCCESS;
 		
-		String[] listString = (String[]) ActionContext.getContext().getParameters().get("list[]");
+		String[] listString = (String[]) ActionContext.getContext().getParameters().get("item[]");
 		for(int i=0; i < listString.length; i++) {
 
 			try {
