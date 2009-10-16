@@ -28,7 +28,7 @@
 				<td>Neer</td>
 			</s:if>
 			<td>Year</td>
-		    <th><a href="?orderBy=c.trirAverage" >Average</a></th>
+		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');">Average</a></th>
 			<td>Verified</td>
 			<s:if test="showContact">
 				<td>Primary Contact</td>

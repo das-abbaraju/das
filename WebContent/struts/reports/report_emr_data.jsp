@@ -21,8 +21,8 @@
 	    <th></th>
 	    <th><a href="?orderBy=a.name" >Contractor</a></th>
 	    <th>Year</th>
-	    <th><a href="?orderBy=d.answer" >Rate</a></th>
-	    <th><a href="?orderBy=c.emrAverage" >Average</a></th>
+	    <th><a href="javascript: changeOrderBy('form1','d.answer');">Rate</a></th>
+	    <th><a href="javascript: changeOrderBy('form1','c.emrAverage');">Average</a></th>
 	    <td>Verified</td>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
