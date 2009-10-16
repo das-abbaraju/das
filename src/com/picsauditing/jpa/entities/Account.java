@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	// Other tables
 	// protected List<ContractorOperator> contractors;
 	protected List<User> users;
-	protected List<AccountUser> accountUsers;
+	protected List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 
 	@Transient
 	public String getIdString() {

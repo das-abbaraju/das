@@ -221,6 +221,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
 				operator = operatorDao.save(operator);
+				id = operator.getId();
 
 				addActionMessage("Successfully saved " + operator.getName());
 			}

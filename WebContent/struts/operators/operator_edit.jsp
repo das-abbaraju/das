@@ -150,6 +150,7 @@
 
 			</ol>
 			</fieldset>
+			<s:if test="operator.id > 0">
 			<pics:permission perm="UserRolePicsOperator" type="Edit">
 			<fieldset class="form"><legend><span>Manage Representatives</span></legend>
 				<ol><li><nobr><label>Sales Representatives :</label></nobr></li>
@@ -243,6 +244,7 @@
 			</ol>
 			</fieldset>
 			</pics:permission>
+			</s:if>
 			</td>
 		</tr>
 	</table>
