@@ -3,85 +3,93 @@ var dirty = false;
 var type = "";
 
 function dirtyOn() {
-	$('buttonSave').removeClassName('disabled');
+	$('#buttonSave').removeAttr('disabled');
 	dirty = true;
 }
 
 function showTemplateList() {
 	refreshList();
-	$('previewEmail').hide();
-	$('draftEmail').hide();
-	$('menu_selector').hide();
-	$('chooseEmail').show();
+	$('#previewEmail').hide();
+	$('#draftEmail').hide();
+	$('#menu_selector').hide();
+	$('#chooseEmail').show();
 }
 
 function sendEmails() {
 	// Select all of the contractors left in the box, then submit the form
-	var contractors = $('contractors');
-	for (var i = 0; i < contractors.length; i++)
-		contractors.options[i].selected = true;
+	var contractors = $('#contractors option').attr('selected', 'selected');
 	
-	$('form1').submit();
+	$('#form1').submit();
 }
 
 function addToken(tokens) {
-	$('templateBody').value += " <" + tokens.value + ">";
+	$('#templateBody').val($('#templateBody').val()+"<"+tokens.value+">");
 	tokens.value = 0;
 	dirtyOn();
-	$('templateBody').focus();
+	$('#templateBody').focus();
 }
 
 function editEmail() {
-	$('draftEdit').show();
-	$('buttonEdit').hide();
-	$('buttonSave').show();
-	$('previewEmail').hide();
-	Effect.Appear('draftEmail');
+	$('#draftEdit').show();
+	$('#buttonEdit').hide();
+	$('#buttonSave').show();
+	$('#previewEmail').hide();
+	$('#draftEmail').fadeIn();
 }
 
-function previewEmail(item) {
+function previewEmail() {
 	if (templateID == 0) {
 		alert("Select an email template to use first");
 		return;
 	}
-	var id = item.value;
+	var id = $('#contractors').val();
 	if (id > 0) {
-		$('buttonSave').hide();
-		$('buttonEdit').show();
+		$('#buttonSave').hide();
+		$('#buttonEdit').show();
 		
-		if ($('draftEmail').visible())
-			Effect.SlideUp('draftEmail', {duration: 0.5});
-		Effect.Appear('previewEmail');
+		if ($('#draftEmail').is(':visible'))
+			$('#draftEmail').slideUp(500);
+		$('#previewEmail').fadeIn();
 		
-		var pars = "button=MailPreviewAjax&previewID=" + id + "&type=" + type;
-		pars += "&templateSubject=" + escape($('templateSubject').value);
-		pars += "&templateBody=" + escape($('templateBody').value);
+		var data = {
+				button:'MailPreviewAjax',
+				previewID: id,
+				type: type,
+				templateSubject: $('#templateSubject').val(),
+				templateBody: $('#templateBody').val()
+		};
+		$('#previewEmail').html('<img src="images/ajax_process2.gif" />');
+		$('#previewEmail').load('MailPreviewAjax.action', data);
 		
-		$('previewEmail').innerHTML = '<img src="images/ajax_process2.gif" />';
-		var myAjax = new Ajax.Updater('previewEmail','MailPreviewAjax.action',
-						 {method: 'post',parameters: pars});
 	} else {
 		alert("You must select record to preview");
 	}
 }
 
 function chooseTemplate(id) {
-	$('messages').innerHTML = "";
+	$('#messages').html("");
 	
 	templateID = id;
 	editEmail();
 	
-	$('buttonSave').addClassName('disabled');
+	$('#buttonSave').attr({'disabled':'disabled'});
+	$('#chooseEmail').hide();
 	
-	$('chooseEmail').hide();
-	Effect.Appear('menu_selector');
-	Effect.Appear('draftEdit', {duration: 1});
+	$('#menu_selector').fadeIn();
+	$('draftEdit').fadeIn(1000);
 	
-	var pars = "button=MailEditorAjax&templateID=" + id + "&type=" + type;
+	var data = {
+			button: 'MailEditorAjax',
+			templateID: id,
+			type: type
+	};
 
-	$('draftEmail').innerHTML = '<img src="images/ajax_process2.gif" />';
-	var myAjax = new Ajax.Updater('draftEmail','MailEditorAjax.action',
-					 {method: 'post',parameters: pars});
+	$('#draftEmail').html('<img src="images/ajax_process2.gif" />');
+	$('#draftEmail').load('MailEditorAjax.action', data);
+}
+
+function saveClick() {
+	$('#div_saveEmail').fadeIn();
 }
 
 function deleteTemplate(id) {
@@ -89,57 +97,53 @@ function deleteTemplate(id) {
 	if (!deleteMe)
 		return;
 	
-	$('messages').innerHTML = "";
+	$('#messages').html('');
 	
-	var pars = "button=delete&id=" + id;
+	var data = {
+			button: 'delete',
+			id: id
+	};
 
-	var myAjax = new Ajax.Updater('messages','EmailTemplateSaveAjax.action',
-		{
-			method: 'post',
-			parameters: pars,
-			onSuccess: function(transport) {
-				Effect.Fade('li_template'+id);
+	$('#messages').load('EmailTemplateSaveAjax.action', data, 
+			function(response, status) {
+				if (status=='success')
+					$('#li_template'+id).fadeOut();
 			}
-		});
+	);
 }
 
 function addTemplate(id) {
-	$('messages').innerHTML = "";
+	$('#messages').html('');
 	
-	var name = $('templateName').value;
-	var pars = "button=save&id=" + id + "&template.listType=" + type + "&template.templateName=" + name;
-	pars += "&template.subject=" + escape($('templateSubject').value);
-	pars += "&template.body=" + escape($('templateBody').value);
+	var data = {
+			button: 'save',
+			id: id,
+			'template.listType': type,
+			'template.templateName': $('#templateName').val(),
+			'template.subject': $('#templateSubject').val(),
+			'template.body': $('#templateBody').val()
+	};
 	
-	var myAjax = new Ajax.Updater('messages','EmailTemplateSaveAjax.action',
-		{
-			method: 'post',
-			parameters: pars,
-			onSuccess: function(transport) {
-				Effect.Fade('div_saveEmail');
-				$('buttonSave').addClassName('disabled');
-				dirty = false;
-				refreshList();
+	$('#messages').load('EmailTemplateSaveAjax.action', data,
+			function(response, status) {
+				if (status=='success') {
+					$('#div_saveEmail').fadeOut();
+					$('#buttonSave').attr({'disabled':'disabled'});
+					dirty = false;
+					refreshList();
+				}
 			}
-		});
+	);
 }
 
 function removeSelected() {
-	var item = $('contractors');
 	var deleteMe = confirm('Are you sure you want to delete the selected items?');
 	if (!deleteMe)
 		return;
 	
-	for (i=item.length-1;i>=0;i--) {
-   		if (item[i].selected) {
-			 item.remove(i);
-		}
-	}
+	$('#contractors :selected').remove();
 }
 
 function refreshList() {
-	var pars = "template.listType=" + type;
-	var myAjax = new Ajax.Updater('templateChooser','EmailTemplateSaveAjax.action',
-		{ method: 'post', parameters: pars});
-	
+	$('#templateChooser').load('EmailTemplateSaveAjax.action', {'template.listType': type});
 }

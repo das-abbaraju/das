@@ -3,14 +3,18 @@
 <html>
 <head>
 <title>Mass Emailer</title>
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/mass_mailer.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 
-<script language="JavaScript">
+<script type="text/javascript">
 type = "<s:property value="type" />";
+<s:if test="templateID != 0">
+$(function(){
+	chooseTemplate(<s:property value="templateID"/>);
+});
+</s:if>
 </script>
 <style type="text/css">
 #templateBody {
@@ -59,9 +63,7 @@ type = "<s:property value="type" />";
 
 </style>
 </head>
-<body
-	<s:if test="templateID != 0">onload="chooseTemplate(<s:property value="templateID"/>)"</s:if>
->
+<body>
 
 <h1>Email Wizard <span class="sub">Step 4: Write Email</span></h1>
 <div><a href="EmailWizard.action">&lt;&lt; Back to Steps 1-3 of the Email Wizard</a></div>
@@ -78,7 +80,7 @@ type = "<s:property value="type" />";
 		<h3><s:property value="type" /> (<s:property value="list.size()"/> entries)</h3>
 		<s:select id="contractors" cssClass="forms"
 			name="ids" size="%{list.size() < 40 ? list.size() : 40}" multiple="true" list="list" listKey="key"
-			listValue="value" ondblclick="previewEmail(this);" title="Double click a row to preview email" cssStyle="width: 300px;" />
+			listValue="value" ondblclick="previewEmail();" title="Double click a row to preview email" cssStyle="width: 300px;" />
 			<div>* Double click to preview</div>
 			<div><a href="MassMailer.action" class="refresh">Refresh this Page</a></div>
 			
@@ -89,9 +91,9 @@ type = "<s:property value="type" />";
 			<s:if test="emailTemplates.size > 0">
 				<button id="buttonPick" class="picsbutton" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
 			</s:if>
-			<button id="buttonPreview" class="picsbutton" type="button" onclick="previewEmail($('contractors'));" title="Preview the email with the selected contractor">Preview</button>
+			<button id="buttonPreview" class="picsbutton" type="button" onclick="previewEmail();" title="Preview the email with the selected contractor">Preview</button>
 			<pics:permission perm="EmailTemplates" type="Edit">
-				<button id="buttonSave" class="picsbutton" type="button" onclick="Effect.Appear('div_saveEmail');" title="Save this email as a template for future use">Save...</button>
+				<button id="buttonSave" class="picsbutton" type="button" onclick="saveClick();" title="Save this email as a template for future use">Save...</button>
 			</pics:permission>
 			<button id="buttonEdit" class="picsbutton" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
 			<button class="picsbutton positive" type="button" onclick="sendEmails();">Send	Emails</button>

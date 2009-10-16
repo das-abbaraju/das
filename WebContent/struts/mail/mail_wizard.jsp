@@ -6,38 +6,50 @@
 
 <s:include value="../reports/reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css" />
-
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+jQuery.noConflict();
+</script>
 <script type="text/javascript">
 function selectList(listType) {
-	$('filter_recipients').show();
-	$('filter_recipients').innerHTML = "<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s";
-	$('report_data').innerHTML = "";
-	var pars = "listType="+listType;
-	var myAjax = new Ajax.Updater('filter_recipients','ReportFilterAjax.action', 
-	{
-		method: 'get', 
-		parameters: pars,
-		onSuccess: function(transport) {
-			Effect.Shrink('target_recipients');
-			$('back_to_step1').show();
-			$('selectedListType').innerHTML = listType + " List";
+	jQuery('#filter_recipients').show();
+	jQuery('#filter_recipients').html("<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s");
+	jQuery('#report_data').empty();
+	jQuery('#target_recipients').hide('normal');
+	jQuery('#back_to_step1').show();
+	jQuery('#filter_recipients').load('ReportFilterAjax.action', {listType:listType}, 
+			function(response, status){ 
+				if (status=='success') {
+					jQuery('#selectedListType').html(listType + " List").fadeIn('normal');
+				}
+			}
+	);
+}
+function showLists() {
+	jQuery('#back_to_step1').hide();
+	jQuery('#target_recipients').show('normal');
+	jQuery('#filter_recipients').fadeOut('normal');
+	jQuery('#report_data').hide('normal');
+	jQuery('#selectedListType').hide();
+
+	jQuery.ajax({
+		url: 'ReportFilterAjax.action',
+		data: {
+			clear: true
 		}
 	});
 }
-function showLists() {
-	Effect.Grow('target_recipients');
-	$('back_to_step1').hide();
-	$('filter_recipients').innerHTML = "<div id='caldiv2'><!-- This is here so we don't get a JS error when clicking on the body --></div>";
-	$('report_data').innerHTML = "";
-	$('selectedListType').innerHTML = "";
-	
-	var myAjax = new Ajax.Updater('','ReportFilterAjax.action?clear=true');
-}
+<s:if test="type != null">
+jQuery(function(){
+	selectList('<s:property value="type"/>');
+});
+</s:if>
 </script>
 </head>
-<body <s:if test="type != null">onload="selectList('<s:property value="type"/>')"</s:if> >
+<body>
 
 <h1>Email Wizard</h1>
+<div id="caldiv2"><!-- This is here so we don't get a JS error when clicking on the body --></div>
 
 <s:if test="listSize > 0">
 	<div id="alert">You already have <s:property value="listSize"/> records in your mailing list. 
@@ -49,7 +61,7 @@ function showLists() {
 <div class="target_sample">
 	<div class="instructions">Choose a method to find your recipients</div>
 	<span class="step_number">1</span>
-	<div id="back_to_step1" style="display: none" onclick="showLists();" class="back_to_step" title="Start Over">Start Over</div>
+	<div id="back_to_step1" style="display: none" onclick="showLists();return false;" class="back_to_step" title="Start Over">Start Over</div>
 	<h2 id="selectedListType" style="text-align: center"></h2>
 	<div id="target_recipients">
 		<div class="target_recipient" onclick="selectList('Contractor');">
@@ -94,9 +106,7 @@ function showLists() {
 <div class="target_sample">
 	<div class="instructions">Find recipients by specifying search criteria</div>
 	<span class="step_number">2</span>
-	<div id="filter_recipients">
-		<div id="caldiv2"><!-- This is here so we don't get a JS error when clicking on the body --></div>
-	</div>
+	<div id="filter_recipients"></div>
 </div>
 
 <!--Step 3-->
@@ -104,11 +114,8 @@ function showLists() {
 	<div class="instructions">Review your recipient list</div>
 	<span class="step_number">3</span>
 	<div id="report_data"></div>
-	</div>
 </div>
 
-</div>
-</div>
 <span id="email_previousSTP"><a href="#">Previous step</a></span>
 </body>
 </html>

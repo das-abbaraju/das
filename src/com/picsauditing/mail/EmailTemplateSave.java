@@ -89,7 +89,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 				WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 				wizardSession.setTemplateID(template.getId());
 			} catch (EntityExistsException e) {
-				addActionError("Each template must have a unique name <a href='#' onclick=\"dirtyOn(); $('div_saveEmail').show(); return false;\">Click to Try Again</a>");
+				addActionError("Each template must have a unique name <a href='#' onclick=\"dirtyOn(); $('#div_saveEmail').show(); return false;\">Click to Try Again</a>");
 			} catch (Exception e) {
 				addActionError("Failed saved email template: " + e.getMessage());
 			}
