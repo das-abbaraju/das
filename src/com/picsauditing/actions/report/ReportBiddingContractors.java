@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -83,16 +84,18 @@ public class ReportBiddingContractors extends ReportAccount {
 						}
 					}
 				}
-
-				for (ContractorOperator cOperator : cAccount.getOperators()) {
-					if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
-						cOperator.setWorkStatus("Y");
-						cOperator.setAuditColumns(permissions);
-						contractorOperatorDAO.save(cOperator);
-						break;
+				
+				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
+					for (ContractorOperator cOperator : cAccount.getOperators()) {
+						if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
+							cOperator.setWorkStatus("Y");
+							cOperator.setAuditColumns(permissions);
+							contractorOperatorDAO.save(cOperator);
+							break;
+						}
 					}
 				}
-				templateId = 73; //Trial Contractor Account Approval
+				templateId = 73; // Trial Contractor Account Approval
 				summary = "Upgraded and Approved the Trial Account for " + permissions.getAccountName();
 			}
 			if ("Reject".equals(button)) {
@@ -126,7 +129,7 @@ public class ReportBiddingContractors extends ReportAccount {
 			if (templateId > 0) {
 				// Sending a Email to the contractor for upgrade/rejection
 				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(templateId); 
+				emailBuilder.setTemplate(templateId);
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(cAccount);
 				emailBuilder.addToken("permissions", permissions);
