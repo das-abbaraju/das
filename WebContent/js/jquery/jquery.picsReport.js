@@ -6,19 +6,18 @@
 			    
 			    obj.tabSlideOut({
 			        tabHandle: '.handle',
+			        fixedPosition: true,
 			        //onLoadSlideOut: true,
-			        pathToTabImage: 'images/button_continue.gif',
-			        imageHeight: '23px',
-			        imageWidth: '90px',
+			        pathToTabImage: 'images/filter_button.gif',
+			        imageHeight: '150px',
+			        imageWidth: '35px',
 			        tabLocation: 'left',
 			        speed: 300,
 			        action: 'click',
-			        //fixedPosition: true,
-			        topPos: '115px'
+			        topPos: '0px',
+			        tabHandleOffset: 350
 			    });
 
-			    $("#filterAccordion").accordion({autoHeight: false});
-			    
 		    	var search = obj.find("form");
 		    	var showPage = 1;
 		    	var startsWith = "";
@@ -91,6 +90,23 @@
 					summary.val(queryText);
 				}
 				
+				obj.children("a.handle").click(
+						function () {
+							var kids = obj.children(".content");
+							if (kids.length == 0) {
+								alert("Error creating report filters: reports should have a div content class");
+							}
+							var content = kids[0];
+							
+				            if (!$(content).hasClass('loaded')) {
+				            	$(content).addClass('loaded');
+				            	$(content).load("ReportFilterAjax.action", {listType: 'Contractor'}, function(){
+				    			    $("#filterAccordion").accordion({autoHeight: false});
+								});
+				            }
+						}
+					);
+
 			    // private function for debugging
 			    function runSearch() {
 			    	if (!ajax) {

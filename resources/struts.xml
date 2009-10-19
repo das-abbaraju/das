@@ -69,7 +69,7 @@
 			<result>struts/users/login.jsp</result>
 			<result name="forgot">struts/users/forgot_password.jsp</result>
 		</action>
-
+		
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>
@@ -291,6 +291,11 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		
+		<action name="ContractorQuickAjax"
+			class="com.picsauditing.actions.contractors.ContractorView">
+			<result>/struts/contractors/contractor_quick.jsp</result>
+		</action>
+
 		<action name="ContractorJson"
 			class="com.picsauditing.actions.contractors.ContractorJson">
 		</action>
@@ -491,6 +496,10 @@
 			<result>/struts/operators/operator_names.jsp</result>
 		</action>
 
+		<action name="OperatorQuickAjax"
+			class="com.picsauditing.actions.operators.OperatorActionSupport">
+			<result>/struts/operators/operator_quick.jsp</result>
+		</action>
 
 		<!-- REPORTS Other -->
 		<action name="NewContractorSearch"
@@ -1155,7 +1164,7 @@
 
 		<action name="ReportFilterAjax"
 			class="com.picsauditing.actions.report.ReportFilterAjax">
-			<result>struts/reports/filters.jsp</result>
+			<result>struts/reports/filters2.jsp</result>
 			<result name="userfilters">
 				struts/reports/userfilters.jsp
 			</result>
@@ -1245,7 +1254,7 @@
 			class="com.picsauditing.actions.operators.FlagOshaCriteriaAction">
 			<result>struts/operators/op_oshaflag_criteria_view.jsp</result>
 		</action>
-		
+
 		<!-- Customer Service -->
 		
 		<action name="ManageWebcams"

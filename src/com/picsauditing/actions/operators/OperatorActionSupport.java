@@ -20,6 +20,11 @@ public class OperatorActionSupport extends AccountActionSupport {
 	public OperatorActionSupport(OperatorAccountDAO operatorDao) {
 		this.operatorDao = operatorDao;
 	}
+	
+	public String execute() throws Exception {
+		findOperator();
+		return SUCCESS;
+	}
 
 	protected void findOperator() throws Exception {
 		loadPermissions();

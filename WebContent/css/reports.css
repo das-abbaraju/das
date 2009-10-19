@@ -1,5 +1,4 @@
 /******************** Primary Table class="report"  ************************/
-
 table.report {
 	border-collapse: collapse;
 	border: 2px solid #003768;
@@ -8,47 +7,55 @@ table.report {
 	clear: both;
 	margin-bottom: 10px;
 }
-table.report td, table.report th {
+
+table.report td,table.report th {
 	border: 1px solid #A84D10;
 	vertical-align: middle;
 	padding: 4px;
 	font-size: 13px;
 }
-table.report thead th, table.report thead td {
+
+table.report thead th,table.report thead td {
 	border: 1px solid #e0e0e0;
 	text-align: center;
 	font-weight: bold;
 	background: #003768;
 	color: #FFF;
 }
+
 table.report thead a {
 	color: #FFF;
 	text-decoration: none;
 	background: url('../images/arrow.gif') no-repeat right center;
-	padding-left:0;
-	padding-right:12px;
-	padding-top:0;
-	padding-bottom:0;
+	padding-left: 0;
+	padding-right: 12px;
+	padding-top: 0;
+	padding-bottom: 0;
 }
+
 table.report thead a:hover {
 	text-decoration: underline;
 }
+
 table.report tbody td a {
 	text-decoration: none;
 }
+
 table.report tbody td a:hover {
 	text-decoration: underline;
 }
+
 table.report tbody tr:hover {
 	background: #EEE;
 	color: #A84D10;
 }
 
-table.report td.center, table.report th.center {
+table.report td.center,table.report th.center {
 	text-align: center;
 	float: none;
 }
-table.report td.right, table.report th.right {
+
+table.report td.right,table.report th.right {
 	text-align: right;
 	float: none;
 }
@@ -59,7 +66,6 @@ table.noshade tbody tr:hover {
 }
 
 /******************** Primary Table class="tablestyle"  ************************/
-
 table.tablestyle {
 	border-collapse: collapse;
 	border: none;
@@ -68,12 +74,14 @@ table.tablestyle {
 	clear: both;
 	margin: 10px;
 }
-table.tablestyle td, table.tablestyle th {
+
+table.tablestyle td,table.tablestyle th {
 	border-right: thin solid #D8D8D8;
 	padding: 10px;
 	font-size: 13px;
 }
-table.tablestyle thead th, table.tablestyle thead td {
+
+table.tablestyle thead th,table.tablestyle thead td {
 	border-right: 1px solid #A3A3A3;
 	text-align: center;
 	font-weight: bold;
@@ -82,33 +90,36 @@ table.tablestyle thead th, table.tablestyle thead td {
 	background-repeat: repeat-x;
 	color: #333333;
 }
+
 table.tablestyle thead a {
 	color: #8C8C8C;
 	text-decoration: none;
 }
+
 table.tablestyle thead a:hover {
 	text-decoration: underline;
 	color: #003366;
 }
-table.tablestyle tr{
+
+table.tablestyle tr {
 	background-color: white;
 }
 
 table.tablestyle tr.odd {
 	background-color: #F1F5FA;
-
 }
 
 table.tablestyle tbody td a {
 	text-decoration: none;
 	color: #8C8C8C;
-
 }
+
 table.tablestyle tbody td a:hover {
 	text-decoration: underline;
 	color: #003366;
 }
-table.tablestyle tbody tr:hover, table.tablestyle tbody td:hover {
+
+table.tablestyle tbody tr:hover,table.tablestyle tbody td:hover {
 	background: #C7E5F7;
 	color: #003366;
 }
@@ -117,69 +128,71 @@ table.tablestyle td.center {
 	text-align: center;
 	float: none;
 }
+
 table.tablestyle td.right {
 	text-align: right;
 	float: none;
 }
 
 /******************** Inner Table Class="inner"  ************************/
-table.inner, table.inner tr, table.inner td {
-	border: none;	
+table.inner,table.inner tr,table.inner td {
+	border: none;
 	padding: 0px 2px 0px 2px;
 }
 
-
 /******************** Paging and Alpha Search  ************************/
-
 ul.alpha {
-	display:block;
-	white-space:nowrap;
+	display: block;
+	white-space: nowrap;
 	vertical-align: middle;
 	margin-left: 0px;
 }
+
 ul.paging {
-	display:block;
-	white-space:nowrap;
+	display: block;
+	white-space: nowrap;
 	vertical-align: middle;
 	margin-left: 5px;
 }
-ul.alpha li, ul.paging li {
-	display:inline;
-	list-style-type:none;
+
+ul.alpha li,ul.paging li {
+	display: inline;
+	list-style-type: none;
 }
-ul.alpha li a, ul.paging li a {
-	margin:1px;
-	padding:2px;
+
+ul.alpha li a,ul.paging li a {
+	margin: 1px;
+	padding: 2px;
 	border: 1px solid #003768;
-	font-size:14px;
+	font-size: 14px;
 	font-weight: bold;
 	text-decoration: none;
 	color: #003768;
 }
-ul.alpha li a:hover, ul.paging li a:hover {
-	margin:1px;
-	padding:2px;
-	font-size:14px;
+
+ul.alpha li a:hover,ul.paging li a:hover {
+	margin: 1px;
+	padding: 2px;
+	font-size: 14px;
 	font-weight: bold;
 	text-decoration: none;
 	color: #FFF;
 	background-color: #A84D10;
-	border:1px solid #A84D10;
+	border: 1px solid #A84D10;
 }
 
-ul.alpha li a.current, ul.paging li a.current {
-	margin:1px;
-	padding:2px;
-	font-size:14px;
+ul.alpha li a.current,ul.paging li a.current {
+	margin: 1px;
+	padding: 2px;
+	font-size: 14px;
 	font-weight: bold;
 	text-decoration: none;
 	color: #FFF;
 	background-color: #A84D10;
-	border:1px solid #A84D10;
+	border: 1px solid #A84D10;
 }
 
 /** other */
-
 table.report tr.notapp {
 	color: #999;
 	font-style: italic;
@@ -196,12 +209,13 @@ div.filterOption {
 	float: left;
 	border: 1px #EFEFEF solid;
 }
+
 div.filterOption:hover {
 	background-color: white;
 	border: 1px black dotted;
 }
 
-div.filterOption a, div.filterOption span {
+div.filterOption a,div.filterOption span {
 	font-size: 11px;
 }
 
@@ -234,14 +248,22 @@ a.clearLink {
 	text-decoration: none;
 }
 
-#navListTop a:link, #navListTop a:visited {
+#navListTop a:link,#navListTop a:visited {
 	background-color: #003768;
 }
 
-#navListTop a:hover, #navListTop a:active, #navListTop a.current {
+#navListTop a:hover,#navListTop a:active,#navListTop a.current {
 	background-color: rgb(168, 77, 16);
 }
 
 #navListTop a.inactive {
-	background-color: rgb(192,192,192);
+	background-color: rgb(192, 192, 192);
+}
+
+/************** New Filter Flyout Box **************/
+#content #reportFilters {
+	border-right: 6px solid #4686BF;
+	color: #4C4D4D;
+	background-color: white;
+	width: 400px;
 }

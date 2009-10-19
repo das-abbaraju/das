@@ -25,6 +25,7 @@
     $.fn.tabSlideOut = function(callerSettings) {
         var settings = $.extend({
             tabHandle: '.handle',
+            tabHandleOffset: 0,
             speed: 300, 
             action: 'click',
             tabLocation: 'left',
@@ -86,7 +87,7 @@
         //set calculated css
         if(settings.tabLocation === 'top' || settings.tabLocation === 'bottom') {
             obj.css({'left' : settings.leftPos});
-            settings.tabHandle.css({'right' : 0});
+            settings.tabHandle.css({'right' : settings.tabHandleOffset});
         }
         
         if(settings.tabLocation === 'top') {
@@ -97,7 +98,6 @@
         if(settings.tabLocation === 'bottom') {
             obj.css({'bottom' : '-' + properties.containerHeight, 'position' : 'fixed'});
             settings.tabHandle.css({'top' : '-' + properties.tabHeight});
-            
         }
         
         if(settings.tabLocation === 'left' || settings.tabLocation === 'right') {
@@ -106,7 +106,7 @@
                 'top' : settings.topPos
             });
             
-            settings.tabHandle.css({'top' : 0});
+            settings.tabHandle.css({'top' : settings.tabHandleOffset});
         }
         
         if(settings.tabLocation === 'left') {

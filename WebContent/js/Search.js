@@ -1,31 +1,31 @@
 /** function with searching, sorting, and page changing **/
 function download(url) {
-	newurl = url + "CSV.action?" + $('form1').serialize();
+	newurl = url + "CSV.action?" + $('#form1').serialize();
 	popupWin = window.open(newurl, url, '');
 }
 
 function changePage( formid, pageNum ) {
-	var search = $(formid);
+	var search = $("#"+formid);
 	search['showPage'].value = pageNum;
 	runSearch(search);
 }
 
 function changeOrderBy( formid, orderBy ) {
-	var search = $(formid);
+	var search = $("#"+formid);
 	search['showPage'].value = "1";
 	search['orderBy'].value = orderBy;
 	runSearch(search);
 }
 
 function changeStartsWith( formid, v ) {
-	var search = $(formid);
+	var search = $("#"+formid);
 	search['showPage'].value = "1";
 	search['filter.startsWith'].value = v;
 	runSearch(search);
 }
 
 function clickSearch( formid ) {
-	var search = $(formid);
+	var search = $("#"+formid);
 	search['showPage'].value = "1";
 	search['filter.startsWith'].value = "";
 	runSearch(search);
@@ -35,7 +35,7 @@ function clickSearch( formid ) {
 }
 
 function clickSearchSubmit( formid ) {
-	var search = $(formid);
+	var search = $("#"+formid);
 	search['showPage'].value = "1";
 	search['filter.startsWith'].value = "";
 }
@@ -63,12 +63,6 @@ function runSearch(search) {
 	}
 }
 
-/*** FILTER STUFF ****/
-var cal2 = new CalendarPopup('caldiv2');
-cal2.offsetY = -110;
-cal2.setCssPrefix("PICS");
-//cal2.showNavigationDropdowns();
-
 function toggleBox(name) {
 	var box = $(name+'_select');
 	var result = $(name+'_query');
@@ -94,17 +88,17 @@ function showTextBox(name) {
 }
 
 function clearSelected(name) {
-	var box = $(name);
+	var box = $("#"+name);
 	for(i=0; i < box.length; i++)
 		box.options[i].selected = false
 	updateQuery(name);
 }
 
 function updateQuery(name) {
-	var box = $(name);
-	var result = $(name+'_query');
+	var box = $("#"+name);
+	var result = $("#"+name+'_query');
 	var queryText = '';
-	var values = $F(box);
+	var values = box.val();
 	for(i=0; i < box.length; i++) {
 		if (box.options[i].selected) {
 			if (queryText != '') queryText = queryText + ", ";
@@ -119,9 +113,9 @@ function updateQuery(name) {
 }
 
 function textQuery(name) {
-	var startField = $(name+'1');
-	var endField = $(name+'2');
-	var result = $(name+'_query');
+	var startField = $("#"+name+'1');
+	var endField = $("#"+name+'2');
+	var result = $("#"+name+'_query');
 	var queryText = '';
 	if(startField.value != '' && endField.value != '')
 		queryText = 'between '+startField.value+' and '+ endField.value;
@@ -133,13 +127,13 @@ function textQuery(name) {
 	if (queryText == '') {
 		queryText = '= ALL';
 	}
-	result.update(queryText);
+	result.html(queryText);
 }
 
 function clearTextField(name) {
-	var box = $(name);
-	var startField = $(name+'1');
-	var endField = $(name+'2');
+	var box = $("#"+name);
+	var startField = $("#"+name+'1');
+	var endField = $("#"+name+'2');
 	startField.value = "";
 	endField.value = ""; 
 	textQuery(name);
@@ -147,16 +141,16 @@ function clearTextField(name) {
 
 function showSearch()
 {
-	$('showSearch').hide();
-	$('hideSearch').show();
-	Effect.SlideDown('form1',{duration:.3});
+	$('#showSearch').hide();
+	$('#hideSearch').show();
+	$("#form1").slideDown();
 	return false;
 }
 
 function hideSearch()
 {
-	$('hideSearch').hide();
-	$('showSearch').show();
-	Effect.SlideUp('form1',{duration:.5});
+	$('#hideSearch').hide();
+	$('#showSearch').show();
+	$("#form1").slideUp();
 	return false;
 }

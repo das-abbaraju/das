@@ -217,5 +217,10 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
+
+<div class="info">This report may contain the same contractor more than once if they  
+	have duplicate audits or insurance certificates. This usually occurs when the contractor 
+	has an existing audit that about to expire along with an audit that is nearly complete.</div>
+
 </body>
 </html>
