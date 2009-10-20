@@ -8,16 +8,25 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/address/jquery.address-1.0.min.js"></script>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript" src="js/notes.js"></script>
 <script type="text/javascript">
 var opID = '<s:property value="operator.id" />';
 var shaType = '<s:property value="operator.oshaType" />';
+var $tabs, $dialog;
 $(function(){
 	$dialog = $('#dialog');
-	$tabs = $('#questions_tab').tabs({
-		cache: true
-	});
+	
+	$.address.init(function() {
+		$tabs = $('#questions_tab').tabs({
+			cache: true
+		});
+	}).change(function(event) {
+		var selection = $('a[rel=address:' + event.value + ']');
+		$tabs.tabs('select', selection.attr('href'));
+		$.address.title($.address.title().split(' | ')[0] + ' | ' + selection.text());
+    });
 });
 </script>
 
@@ -77,9 +86,9 @@ $(function(){
 </div>
 <div id="questions_tab">
 	<ul>
-		<li><a href="OperatorFlagCriteriaAjax.action?id=<s:property value="id"/>&classType=Audit&button=criteria" title="Audit">PQF/Audits</a></li>
+		<li><a href="OperatorFlagCriteriaAjax.action?id=<s:property value="id"/>&classType=Audit&button=criteria" title="audit" rel="address:/audit">PQF/Audits</a></li>
 		<s:if test="operator.canSeeInsurance.isTrue()">
-			<li><a href="OperatorFlagCriteriaAjax.action?id=<s:property value="id"/>&classType=Policy&button=criteria" title="Policy">InsureGUARD&trade;</a></li>
+			<li><a href="OperatorFlagCriteriaAjax.action?id=<s:property value="id"/>&classType=Policy&button=criteria" title="policy" rel="address:/policy">InsureGUARD&trade;</a></li>
 		</s:if>
 	</ul>
 </div>
