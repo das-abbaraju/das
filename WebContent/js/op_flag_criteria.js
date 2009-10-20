@@ -64,14 +64,14 @@ function clearRow(row) {
 }
 
 function testCriteria(criteria) {
-	if (!$('#test').val().blank()) {
+	if (!$('#test').blank()) {
 		startThinking({div:'test_output', message:''});
 		var data = {};
 		$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
 			data[e.name] = e.value;
 		});
 		data.button = 'test';
-		data.testValue = $('#test').val().capitalize();
+		data.testValue = $('#test').capitalize();
 		$('#test_output').load('FlagCriteriaActionAjax.action', data);
 	}
 }
