@@ -6,6 +6,8 @@
 <meta name="flashName" content="CLIENTS" />
 <meta name="iconName" content="clients" />
 <script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.cycle.all.min.js"></script>
 </head>
 <body>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -27,13 +29,17 @@
 						BASF<br />
 						Big West of California<br />
 						Big West Oil, LLC<br />
+						Boise Inc.<br />
 						BP Cherry Point Refinery<br />
 						BP Carson Refinery<br />
 						BP Cooper River<br />
+						BP Lubricants<br />
 						BP Pipelines &amp; Logistics<br />
 						BP Coke Marketing<br />
 						BP Toledo Refinery<br />
 						BP Whiting Refinery<br />
+						BP Wind Energy<br />
+						ChevronPhillips<br />
 						ConocoPhillips Billings Refinery<br />
 						ConocoPhillips Carson Refinery<br />
 						ConocoPhillips Ferndale<br />
@@ -44,28 +50,17 @@
 						CRI<br />
 						Delta Consultants<br />
 						Empire Southwest (CAT)<br />
+						Firestone Polymers<br />
 						Flying J<br />
 						Frontier Oil El Dorado<br>
 						Frontier Refining Inc. Cheyenne<br>
 						Huntsman International<br />
-						Huntsman Auburn Hills<br />
 						</nobr></td>
-						<td valign="top" class="blueClientList"><script
-							type="text/javascript">
-AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','title','Clients','src','flash/client_logoflash','quality','high','pluginspage','<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' ); //end AC code
-</script>
-						<noscript><object
-							classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-							codebase="<%= URLUtils.getProtocol( request ) %>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
-							width="145" height="130" title="Clients">
-							<param name="movie" value="flash/client_logoflash.swf">
-							<param name="quality" value="high">
-							<embed src="flash/client_logoflash.swf" quality="high"
-								pluginspage="<%= URLUtils.getProtocol( request ) %>://www.macromedia.com/go/getflashplayer"
-								type="application/x-shockwave-flash" width="145" height="130"></embed>
-						</object></noscript>
-						<script type="text/javascript" src="js/ieupdate.js"></script><br>
+						<td valign="top" class="blueClientList">
+						<jsp:include page="includes/client_slideshow.jsp"></jsp:include>
+						
 						<br>
+						Huntsman Auburn Hills<br />
 						Huntsman Conroe<br />
 						Huntsman Charlotte<br />
 						Huntsman Dayton<br />
@@ -79,7 +74,9 @@ AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.
 						Huntsman Port Neches<br>
 						Huntsman Ringwood (Chicago)<br>
 						Huntsman Woodlands<br>
+						Hydrogen Energy<br />
 						IDS Real Estate<br>
+						Inserv<br>
 						LISI Aerospace<br>
 						March Point Cogeneration Company<br>
 						Martinez Catalyst Plant<br>
@@ -93,6 +90,7 @@ AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.
 						Motorola USA<br>
 						New Belgium Brewing Co.<br/>
 						Paramount Petroleum<br>
+						PSC<br>
 						Roquette America<br>
 						Shell Chemical Geismar<br>
 						Shell Chemical Mobile<br>
@@ -107,7 +105,8 @@ AC_FL_RunContent( 'codebase','<%= URLUtils.getProtocol( request ) %>://download.
 						Shell Retail<br>
 						Sikorsky Aircraft Corporation<br>
 						Suncor Energy Commerce City<br>
-						Square D By Schneider Electric<br/>
+						Square D<br>
+						Schneider Electric<br/>
 						Tesoro Anacortes Refinery<br>
 						Tesoro Kapolei Refinery<br>
 						Tesoro Kenai Alaska Refinery<br>

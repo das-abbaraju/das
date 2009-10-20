@@ -35,33 +35,14 @@
 <meta name="color" content="#003366" />
 <meta name="flashName" content="HOME" />
 
+<script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.cycle.all.min.js"></script>
-<script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
-<script type="text/javascript">
-
-$(document).ready(function() {
-	$("#logoShow").cycle({
-   		fx: 'scrollRight',
-   		speed: 700,
-   		timeout: 1800,
-   		random: 1,
-   		pause:  1
-   	});
-});
-
-</script>
-
-<style type="text/css">
-<!--
+<style>
 .style1 {
 	font-size: 11px;
 	font-weight: bold;
 }
--->
-#logoShow { height: 150px; width: 150px; text-align: center; vertical-align: middle; position: relative; overflow: hidden; background-color: #FFFFFF; border: 1px solid #6699CC;}
-#logoShow img { padding: 5px; }
-#logoShow img:hover { }
 </style>
 </head>
 <body>
@@ -74,20 +55,7 @@ $(document).ready(function() {
 				<table border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td>
-							<div id="logoShow">
-								<img src="images/operators/client1.gif" />
-								<img src="images/operators/client2.gif" />
-								<img src="images/operators/client3.gif" />
-								<img src="images/operators/client4.gif" />
-								<img src="images/operators/client5.gif" />
-								<img src="images/operators/client6.gif" />
-								<img src="images/operators/client7.gif" />
-								<img src="images/operators/client8.gif" />
-								<img src="images/operators/client9.gif" />
-								<img src="images/operators/client10.gif" />
-								<img src="images/operators/client11.gif" />
-								<img src="images/operators/client12.gif" />
-							</div>
+						<jsp:include page="includes/client_slideshow.jsp"></jsp:include>
 						</td>
 						<td class="blueHome">PICS was established to assist companies with a thorough audit program for all
 						contractors working at their facilities. PICS sets the highest standards possible in regard to contractor
