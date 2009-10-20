@@ -66,51 +66,34 @@ function clearRow(row) {
 function testCriteria(criteria) {
 	if (!$('#test').blank()) {
 		startThinking({div:'test_output', message:''});
-		var data = {};
-		$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
-			data[e.name] = e.value;
-		});
+		var data = $('#criteriaEditForm').toObj();
 		data.button = 'test';
 		data.testValue = $('#test').capitalize();
 		$('#test_output').load('FlagCriteriaActionAjax.action', data);
 	}
 }
 
-function closeCriteriaEdit() {
-	Modalbox.hide();
-}
-
-function deactivateModal() {
-	Modalbox.show("<div style='text-align:center'><img src='images/ajax_process2.gif' /></div>");
-	Modalbox.deactivate();
-}
-
 function saveCriteria() {
-	var data = {};
-	$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
-		data[e.name] = e.value;
-	});
+	var data = $('#criteriaEditForm').toObj();
 	data.button = 'save';
 	$.ajax({
 		url: 'FlagCriteriaActionAjax.action',
 		data: data,
 		complete: function() {
-			$dialog.dialog('close');
 			$tabs.tabs('load', $tabs.tabs('option', 'selected'));
+			$dialog.dialog('close');
 		}
 	});
 }
 
 function saveOshaCriteria() {
-	var data = {};
-	$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
-		data[e.name] = e.value;
-	});
+	var data = $('#criteriaEditForm').toObj();
 	data.button = 'save';
 	$.ajax({
 		url: 'FlagOshaCriteriaActionAjax.action',
 		data: data,
 		complete: function() {
+			$tabs.tabs('load', $tabs.tabs('option', 'selected'));
 			$dialog.dialog('close');
 		}
 	});
@@ -141,7 +124,7 @@ function showOtherAccounts() {
 }
 
 function showHudleType(elm, criteria) {
-	var option =  $('#'+elm).val();
+	var option =  $(elm).val();
 	if(option == 'None') {
 		$('#show_'+criteria+'hurdle').hide();
 		$('#show_'+criteria+'hurdlepercent').hide();
