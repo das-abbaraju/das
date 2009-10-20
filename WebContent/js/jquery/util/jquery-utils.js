@@ -1,10 +1,11 @@
 (function($){ 
   $.fn.blank = function(){ 
-    return $.trim(this[0]).length == 0; 
-  };
+    return $.trim($(this).val()).length == 0; 
+  }
   $.fn.capitalize = function(){
-	return this[0].substr(1).toUpperCase()+this[0].substr(1, this[0].length);  
-  };
+	var val= $(this).val();
+	return val.substr(1).toUpperCase()+val.substr(1, val.length);  
+  }
   $.fn.toObj = function(){
 	var data = {};
 	$.each($(this).find(':input[name]').serializeArray(), function(i, e) {
