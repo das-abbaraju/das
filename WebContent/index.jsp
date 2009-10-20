@@ -35,8 +35,23 @@
 <meta name="color" content="#003366" />
 <meta name="flashName" content="HOME" />
 
-<script SRC="js/ImageSwap.js" language="JavaScript"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.cycle.all.min.js"></script>
 <script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$("#logoShow").cycle({
+   		fx: 'scrollRight',
+   		speed: 700,
+   		timeout: 1800,
+   		random: 1,
+   		pause:  1
+   	});
+});
+
+</script>
+
 <style type="text/css">
 <!--
 .style1 {
@@ -44,6 +59,9 @@
 	font-weight: bold;
 }
 -->
+#logoShow { height: 150px; width: 150px; text-align: center; vertical-align: middle; position: relative; overflow: hidden; background-color: #FFFFFF; border: 1px solid #6699CC;}
+#logoShow img { padding: 5px; }
+#logoShow img:hover { }
 </style>
 </head>
 <body>
@@ -56,17 +74,20 @@
 				<table border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td>
-<script type="text/javascript">
-AC_FL_RunContent( 'codebase','<%=URLUtils.getProtocol(request)%>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0','width','145','height','130','src','flash/client_logoflash','quality','high','pluginspage','<%=URLUtils.getProtocol(request)%>://www.macromedia.com/go/getflashplayer','movie','flash/client_logoflash' );
-</script>
-						<noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-							codebase="<%=URLUtils.getProtocol(request)%>://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
-							width="145" height="130">
-							<param name="movie" value="flash/client_logoflash.swf">
-							<param name="quality" value="high">
-							<embed src="flash/client_logoflash.swf" quality="high"
-								pluginspage="<%=URLUtils.getProtocol(request)%>://www.macromedia.com/go/getflashplayer"
-								type="application/x-shockwave-flash" width="145" height="130"></embed> </object></noscript>
+							<div id="logoShow">
+								<img src="images/operators/client1.gif" />
+								<img src="images/operators/client2.gif" />
+								<img src="images/operators/client3.gif" />
+								<img src="images/operators/client4.gif" />
+								<img src="images/operators/client5.gif" />
+								<img src="images/operators/client6.gif" />
+								<img src="images/operators/client7.gif" />
+								<img src="images/operators/client8.gif" />
+								<img src="images/operators/client9.gif" />
+								<img src="images/operators/client10.gif" />
+								<img src="images/operators/client11.gif" />
+								<img src="images/operators/client12.gif" />
+							</div>
 						</td>
 						<td class="blueHome">PICS was established to assist companies with a thorough audit program for all
 						contractors working at their facilities. PICS sets the highest standards possible in regard to contractor
