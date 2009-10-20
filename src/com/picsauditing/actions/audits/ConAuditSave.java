@@ -3,15 +3,20 @@ package com.picsauditing.actions.audits;
 import java.util.Date;
 import java.util.List;
 
+import org.jboss.util.Strings;
+
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -33,13 +38,15 @@ public class ConAuditSave extends AuditActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
+		
 		findConAudit();
+		String note = "";
 		if (auditStatus.equals(AuditStatus.Active.toString())) {
 			if(conAudit.getPercentComplete() < 100) 
 				return SUCCESS;
 			
 			conAudit.changeStatus(AuditStatus.Active, getUser());
+			note = "Verified and Activated the " + conAudit.getAuditType().getAuditName();
 		}
 		// TODO add a column to auditData to keep track when the contractor has
 		// changed the answer.
@@ -76,12 +83,20 @@ public class ConAuditSave extends AuditActionSupport {
 				conAudit.setLastRecalculation(new Date());
 				auditDao.save(conAudit);
 			}
+			note = "Rejected " + conAudit.getAuditType().getAuditName();
 		}
 		conAudit = contractorAuditDAO.save(conAudit);
 		ContractorAccount contractorAccount = conAudit.getContractorAccount();
 		contractor.setNeedsRecalculation(true);
 		accountDao.save(contractorAccount);
-
+		
+		if(!Strings.isEmpty(note)) {
+			if(!Strings.isEmpty(conAudit.getAuditFor())) 
+				note += " " + conAudit.getAuditFor();
+			addNote(contractor, note, NoteCategory.Audits, LowMedHigh.Low, true, Account.PicsID, getUser());
+		}
+		
+		
 		return SUCCESS;
 	}
 
