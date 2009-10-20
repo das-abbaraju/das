@@ -8,7 +8,7 @@
   }
   $.fn.toObj = function(){
 	var data = {};
-	$.each($(this).find(':input[name]').serializeArray(), function(i, e) {
+	$.each($(this).find(':input').serializeArray(), function(i, e) {
 		data[e.name] = e.value;
 	});
 	return data;
