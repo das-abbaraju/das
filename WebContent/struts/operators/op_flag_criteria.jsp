@@ -16,8 +16,8 @@ var shaType = '<s:property value="operator.oshaType" />';
 $(function(){
 	$dialog = $('#dialog');
 	$tabs = $('#questions_tab').tabs({
-			cache: true,
-		});
+		cache: true
+	});
 });
 </script>
 
