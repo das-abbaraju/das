@@ -302,7 +302,7 @@ public class FlagCalculator2 {
 				if (audit.getAuditType().getClassType().isPolicy()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.isVisible()) {
-							if (cao.getOperator().equals(operator)
+							if (cao.getOperator().equals(operator.getInheritInsurance())
 									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
 								FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
 
