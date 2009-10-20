@@ -12,6 +12,9 @@
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
+<script type="text/javascript" src="js/jquery/tooltip/jquery.tooltip.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/jquery/tooltip/jquery.tooltip.css" />
+
 <script type="text/javascript">
 var hasHoliday = false;
 <pics:permission perm="Holidays">
