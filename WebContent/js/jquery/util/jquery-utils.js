@@ -4,7 +4,7 @@
   }
   $.fn.capitalize = function(){
 	var val= $(this).val();
-	return val.substr(1).toUpperCase()+val.substr(1, val.length);  
+	return val.substr(0,1).toUpperCase()+val.substr(1, val.length);  
   }
   $.fn.toObj = function(){
 	var data = {};
