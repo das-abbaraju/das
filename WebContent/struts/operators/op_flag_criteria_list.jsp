@@ -150,7 +150,7 @@
 		<tr 
 			<s:if test="(operator == operator.inheritFlagCriteria && !question.subCategory.category.auditType.classType.policy) 
 						|| (operator == operator.inheritInsuranceCriteria && question.subCategory.category.auditType.classType.policy)">
-				onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>', <s:property value="question.questionType=='Date'"/>);" 
+				onclick="showCriteria('<s:property value="question.id" />', '<s:property value="question.subCategory.category.auditType.auditName"/>');" 
 				class="clickable" title="Click to open"
 			</s:if>	
 		>
@@ -174,3 +174,7 @@
 		</tr>
 	</s:iterator>
 </table>
+
+<a href="#" onclick="getAddQuestions('<s:property value="classType"/>');return false;">[+] Add New Criteria</a>
+<span id="<s:property value="classType"/>_thinking"></span>
+<div id="<s:property value="classType"/>_questions" style="display:none"></div>

@@ -6,23 +6,25 @@
 <title>Manage Flag Criteria</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/modalbox/modalbox.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
-<script type="text/javascript" src="js/modalbox/modalbox.js"></script>
-<script type="text/javascript" src="js/CalendarPopup.js"></script>
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/op_flag_criteria.js"></script>
 <script type="text/javascript" src="js/notes.js"></script>
 <script type="text/javascript">
-	var opID = '<s:property value="operator.id" />';
-	var shaType = '<s:property value="operator.oshaType" />';
+var opID = '<s:property value="operator.id" />';
+var shaType = '<s:property value="operator.oshaType" />';
+$(function(){
+	$dialog = $('#dialog');
+	$tabs = $('#questions_tab').tabs({
+			cache: true,
+		});
+});
 </script>
 
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
+<div id="dialog" style="display:none"></div>
 
 <s:if test="contractorsNeedingRecalculation > 10">
 	<div id="alert">
@@ -73,54 +75,15 @@
 </div>
 </s:if>
 </div>
-
-<s:if test="operator.canSeeInsurance.toString().equals('Yes')">
-	<ul id="navListTop">
-		<li><a href="?id=<s:property value="id"/>&classType=Audit" class="<s:if test="!classType.policy">current</s:if>">PQF/Audits</a></li>
-		<li><a href="?id=<s:property value="id"/>&classType=Policy" class="<s:if test="classType.policy">current</s:if>">InsureGUARD&trade;</a></li>
+<div id="questions_tab">
+	<ul>
+		<li><a href="OperatorFlagCriteriaAjax.action?id=<s:property value="id"/>&classType=Audit&button=criteria" title="Audit">PQF/Audits</a></li>
+		<s:if test="operator.canSeeInsurance.isTrue()">
+			<li><a href="OperatorFlagCriteriaAjax.action?id=<s:property value="id"/>&classType=Policy&button=criteria" title="Policy">InsureGUARD&trade;</a></li>
+		</s:if>
 	</ul>
-</s:if>
+</div>
 
-<div id="criteriaList"><s:include value="op_flag_criteria_list.jsp"></s:include></div>
-<s:if test="questions.size > 0">
-	<s:if test="(operator == operator.inheritFlagCriteria && !classType.policy) 
-							|| (operator == operator.inheritInsuranceCriteria && classType.policy)">
-		<div>
-			<input id="addQuestionButton" type="button" class="picsbutton positive" value="Add Question" onclick="toggleQuestionList();return false;"/>
-			<input id="hideQuestionButton" type="button" class="picsbutton positive" value="Hide Questions" onclick="toggleQuestionList();return false;" style="display:none"/>
-		</div>
-		<div id="questionList" style="display:none;margin-top:35px">
-			<h2>Add Flag Criteria Questions</h2>
-			<table class="report" id="questionTable">
-				<thead>
-					<tr>
-						<th> Type </th>
-						<th> # </th>
-						<th> Question </th>
-						<th></th>
-					</tr>
-				</thead>
-				<s:iterator value="questions">
-					<tr id="addRow<s:property value="id"/>">
-						<td>
-							<s:property value="subCategory.category.auditType.auditName"/>
-						</td>
-						<td>
-							<s:property value="expandedNumber"/>
-						</td>
-						<td>
-							<s:property value="question" escape="false"/>
-						</td>
-						<td><a href="#" class="add" onclick="showCriteria(<s:property value="id"/>,'<s:property value="subCategory.category.auditType.auditName"/>'); return false;">Add</a></td>
-					</tr>
-				</s:iterator>
-			</table>
-		</div>
-	</s:if>
-</s:if>
-
-<br />
-<br />
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 </body>

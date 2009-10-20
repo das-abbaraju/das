@@ -181,10 +181,6 @@
 		</td>
 	</tr>
 	</table>
-	<div>
-		<input type="button" id="save_button" class="picsbutton positive" onclick="saveOshaCriteria(); return false;" value="Save"/>
-		<input type="button" id="close_button" class="picsbutton negative" onclick="closeCriteriaEdit(); return false;" value="Close" />
-	</div>
 </form>
 <br clear="all"/>
 <s:if test="trir">

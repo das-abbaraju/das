@@ -31,12 +31,6 @@
 </table>
 </div>
 
-<div><input type="button" id="save_button"
-	class="picsbutton positive" onclick="saveCriteria(); return false;"
-	value="Save" /> <input type="button" id="close_button"
-	class="picsbutton negative"
-	onclick="closeCriteriaEdit(); return false;" value="Close" /></div>
-
 <s:if test="question.questionType != 'AMBest'">
 	<div class="test">Test: <input type="text" id="test" size="10">
 	<input type="button" onclick="testCriteria();return false;" value="Test" />

@@ -60,6 +60,10 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 		tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
+		
+		if(button != null) {
+			return button;
+		}
 
 		return SUCCESS;
 	}

@@ -1,29 +1,32 @@
-var cal2;
-function showCriteria(questionID, auditName, requiresCal) {
-	if(requiresCal) {
-		if (typeof(cal2) == 'undefined') {
-			cal2 = new CalendarPopup('caldiv2');
-			cal2.setCssPrefix("PICS");
-			cal2.setReturnFunction("calendarReturn");
-			cal2.offsetX = -350;
-			cal2.offsetY = -250;
-		}
-	}
+function showCriteria(questionID, auditName) {
 	var pars = {
 		'id' :opID,
 		'question.id' :questionID
 	};
-	
-	Modalbox.show('FlagCriteriaActionAjax.action', {
-		method : 'post', 
-		params: pars, 
-		title: 'Edit Criteria - '+auditName,
-		slideDownDuration: .5,
-		slideUpDuration: 0,
-		resizeDuration: .2,
-		overlayClose: false,
-		height: 250
+	$dialog.load('FlagCriteriaActionAjax.action', pars, 
+		function() {
+			$dialog.dialog({
+				title:'Flag Criteria',
+				modal: true,
+				width: 500,
+				open: function() {
+					$dialog.find('.datepicker').datepicker();
+					$('.red').change(function(){$('#red_clear').show();});
+					$('.amber').change(function(){$('#amber_clear').show();});
+				}, 
+				close: function() {
+					$(this).dialog('destroy');
+				},
+				buttons: {
+					Save: function() {
+						saveCriteria();
+					},
+					Cancel: function() {
+						$dialog.dialog('close');
+					}
+				}
 		});
+	});
 }
 
 function showOshaCriteria(type) {
@@ -31,61 +34,45 @@ function showOshaCriteria(type) {
 		'id' :opID,
 		'type': type 
 	};
-	
-	Modalbox.show('FlagOshaCriteriaActionAjax.action', {
-		method : 'post', 
-		params: pars, 
-		title: 'Edit Criteria - ' + shaType,
-		slideDownDuration: .5,
-		slideUpDuration: 0,
-		resizeDuration: .2,
-		overlayClose: false,
-		height: 400
+	$dialog.load('FlagOshaCriteriaActionAjax.action', pars, 
+		function() {
+			$dialog.dialog({
+				title:'Flag Criteria',
+				modal: true,
+				width: 600,
+				open: function() {
+					$dialog.find('.datepicker').datepicker();
+				},
+				close: function() {
+					$(this).dialog('destroy');
+				},
+				buttons: {
+					Save: function() {
+						saveOshaCriteria();
+					},
+					Cancel: function() {
+						$dialog.dialog('close');
+					}
+				}
+		});
 	});
 }
 
-function calendarReturn(y, m, d) {
-	if (window.CP_targetInput != null) {
-		var dt = new Date(y, m - 1, d, 0, 0, 0);
-		if (window.CP_calendarObject != null) {
-			window.CP_calendarObject.copyMonthNamesToWindow();
-		} 
-		var now = new Date();
-		if (typeof(y) == "string" && now.getFullYear() == dt.getFullYear() && now.getMonth() == dt.getMonth() && now.getDay() == dt.getDay())
-			window.CP_targetInput.value = "Today";
-		else
-			window.CP_targetInput.value = formatDate(dt, window.CP_dateFormat);
-		
-		window.CP_targetInput.onchange();
-	}
-}
-
 function clearRow(row) {
-	var comparision = $(row+'_comparison');
-	if(comparision != null)
-		comparision.value = '';
-	var amBest = $(row+'_amRatings');
-	if(amBest != null)
-		amBest.value = 0;
-	var amBestClass = $(row+'_amClass');
-	if(amBestClass != null)
-		amBestClass.value = 0;
-	var value = $(row+'_value');
-	if(value != null)
-	  value.value = '';
-	$(row+'_clear').hide();
+	$('.'+row).val('');
+	$('#'+row+'_clear').hide();
 }
 
 function testCriteria(criteria) {
-	if (!$('test').value.blank()) {
+	if (!$('#test').val().blank()) {
 		startThinking({div:'test_output', message:''});
-		var pars = $('criteriaEditForm').serialize(true);
-		pars.button = 'test';
-		pars.testValue = $('test').value.capitalize();
-		var myAjax = new Ajax.Updater('test_output','FlagCriteriaActionAjax.action', {
-				method: 'post',
-				parameters: pars
-			});
+		var data = {};
+		$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
+			data[e.name] = e.value;
+		});
+		data.button = 'test';
+		data.testValue = $('#test').val().capitalize();
+		$('#test_output').load('FlagCriteriaActionAjax.action', data);
 	}
 }
 
@@ -99,63 +86,73 @@ function deactivateModal() {
 }
 
 function saveCriteria() {
-	startThinking( {
-		message :"saving criteria..."
+	var data = {};
+	$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
+		data[e.name] = e.value;
 	});
-	var pars = $('criteriaEditForm').serialize(true);
-	pars.button = 'save';
-	deactivateModal();
-	var myAjax = new Ajax.Updater('growlBox','FlagCriteriaActionAjax.action', {
-			method: 'post',
-			parameters: pars,
-			onComplete: function() {
-					location.reload();
-				}
-		});
+	data.button = 'save';
+	$.ajax({
+		url: 'FlagCriteriaActionAjax.action',
+		data: data,
+		complete: function() {
+			$dialog.dialog('close');
+			$tabs.tabs('load', $tabs.tabs('option', 'selected'));
+		}
+	});
 }
 
 function saveOshaCriteria() {
-	startThinking( {
-		message :"saving criteria..."
+	var data = {};
+	$.each($('#criteriaEditForm').serializeArray(), function(i, e) {
+		data[e.name] = e.value;
 	});
-	var pars = $('criteriaEditForm').serialize(true);
-	pars.button = 'save';
-	deactivateModal();
-	var myAjax = new Ajax.Updater('growlBox','FlagOshaCriteriaActionAjax.action', {
-			method: 'post',
-			parameters: pars,
-			onComplete: function() {
-				location.reload();	
-			}
-		});
+	data.button = 'save';
+	$.ajax({
+		url: 'FlagOshaCriteriaActionAjax.action',
+		data: data,
+		complete: function() {
+			$dialog.dialog('close');
+		}
+	});
 }
 
-function toggleQuestionList() {
-	$('questionList').toggle();
-	$('addQuestionButton').toggle();
-	$('hideQuestionButton').toggle();
+function getAddQuestions(type) {
+	var layer = '#'+type+'_questions';
+	if ($(layer).is(':hidden')) {
+		var data= {
+			id :opID,
+			classType: type,
+			button: 'questions'
+		};
+		startThinking({div:type+'_thinking', message:'Fetching questions...'});
+		$(layer).load('OperatorFlagCriteriaAjax.action', data, 
+			function() {
+				$(layer).show("slow");
+				stopThinking({div:type+'_thinking'});
+			}
+		);
+	} else {
+		$(layer).hide('slow');
+	}
 }
 
 function showOtherAccounts() {
-	if ($('otherAccounts').visible())
-		Effect.SlideUp('otherAccounts', { duration: .2 });
-	else
-		Effect.SlideDown('otherAccounts', { duration: .3 });
+	$('#otherAccounts').toggle('slow');
 }
 
 function showHudleType(elm, criteria) {
-	var option =  $F(elm);
+	var option =  $('#'+elm).val();
 	if(option == 'None') {
-		$('show_'+criteria+'hurdle').hide();
-		$('show_'+criteria+'hurdlepercent').hide();
+		$('#show_'+criteria+'hurdle').hide();
+		$('#show_'+criteria+'hurdlepercent').hide();
 	}
 	if(option == 'Absolute') {
-		$('show_'+criteria+'hurdle').show();
-		$('show_'+criteria+'hurdlepercent').hide();
+		$('#show_'+criteria+'hurdle').show();
+		$('#show_'+criteria+'hurdlepercent').hide();
 	}
 	if(option == 'NAICS') {
-		$('show_'+criteria+'hurdle').show();
-		$('show_'+criteria+'hurdlepercent').show();
+		$('#show_'+criteria+'hurdle').show();
+		$('#show_'+criteria+'hurdlepercent').show();
 	}	
 	return false;
 }

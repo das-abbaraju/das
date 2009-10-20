@@ -1241,7 +1241,9 @@
 
 		<action name="OperatorFlagCriteriaAjax"
 			class="com.picsauditing.actions.operators.OperatorFlagCriteria">
-			<result>struts/operators/op_flag_criteria_list.jsp</result>
+			<result>struts/blank.jsp</result>
+			<result name="criteria">struts/operators/op_flag_criteria_list.jsp</result>
+			<result name="questions">struts/operators/op_flag_criteria_questions_list.jsp</result>
 		</action>
 
 		<action name="FlagCriteriaActionAjax"
