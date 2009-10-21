@@ -6,15 +6,12 @@
 <head>
 <title><s:property value="contractor.name" /></title>
 <meta name="help" content="User_Manual_for_Contractors">
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script language="JavaScript" SRC="js/CalendarPopup.js"></script>
-<script language="JavaScript">
-	var cal1 = new CalendarPopup('caldiv1');
-	cal1.offsetY = -110;
-	cal1.setCssPrefix("PICS");
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+$(function() {
+	$('.datepicker').datepicker();
+});
 </script>
 </head>
 <body>
@@ -90,7 +87,7 @@
 					<li><label>Country:</label>
 						<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
 						name="contractor.country"
-						onchange="(this.value == 'USA' || this.value == 'Canada') ? $('state_li').show() : $('state_li').hide();"
+						onchange="(this.value == 'USA' || this.value == 'Canada') ? $('#state_li').show() : $('#state_li').hide();"
 						/></li>
 						
 					<li id="state_li" 
@@ -242,7 +239,7 @@
 							value="contractor.mustPay" theme="pics" />
 					</li>
 					<li><label>Upgrade Date:</label>
-						<input name="contractor.lastUpgradeDate" type="text" class="forms" size="10" 
+						<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" 
 							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
 					</li>
 				</ol>
@@ -280,6 +277,5 @@
 		</pics:permission>
 	</div>
 </s:form>
-<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 </body>
 </html>
