@@ -7,9 +7,6 @@
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
-
-<SCRIPT LANGUAGE="JavaScript" SRC="js/validateForms.js"></SCRIPT>
-<script type="text/javascript" src="js/prototype.js"></script>
 </head>
 <body>
 <s:include value="../contractors/conHeader.jsp" />
