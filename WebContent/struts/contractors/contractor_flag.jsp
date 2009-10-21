@@ -5,20 +5,14 @@
 <head>
 <title>Flag Status for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-
-<script type="text/javascript" src="js/prototype.js"></script>
+<s:include value="../jquery.jsp"/>
 <script src="js/notes.js" type="text/javascript"></script>
-<SCRIPT LANGUAGE="JavaScript" SRC="js/CalendarPopup.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript">
-	var cal1 = new CalendarPopup('caldiv1');
-	cal1.offsetY = -110;
-	cal1.offsetX = 0;
-	cal1.addDisabledDates(null, "<%= com.picsauditing.PICS.DateBean.getTodaysDate() %>");
-	cal1.showNavigationDropdowns();
-	cal1.setCssPrefix("PICS");
-</SCRIPT>
+<script type="text/javascript">
+$(function() {
+	$('.datepicker').datepicker();
+});
+</script>
 </head>
 <body>
 
@@ -63,10 +57,7 @@
 						<s:hidden name="opID" />
 						<s:select list="flagList" name="forceFlag" />
 						until 
-						<input id="forceEnd" name="forceEnd" size="8" type="text" />
-						<a onclick="cal1.select($('forceEnd'),'anchor_forceEnd','M/d/yy'); return false;"
-							name="anchor_forceEnd" id="anchor_forceEnd"
-							href="#"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
+						<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker"/>
 						<br/>
 						<s:if test="permissions.corporate">
 							<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
@@ -78,9 +69,9 @@
 							<button class="picsbutton positive" type="submit" name="button" value="Force Flag" onclick="return checkForce();">Force Flag</button>
 						</div>
 					</s:form>
-					<a href="#" onclick="$('override_link').show(); $('override').hide(); return false;">Nevermind</a>
+					<a href="#" onclick="$('#override_link').show(); $('#override').hide(); return false;">Nevermind</a>
 					</div>
-					<a id="override_link" href="#" onclick="$('override').show(); $('override_link').hide(); return false;">Manually Force Flag Color</a>
+					<a id="override_link" href="#" onclick="$('#override').show(); $('#override_link').hide(); return false;">Manually Force Flag Color</a>
 				</pics:permission>
 			</s:else>
 		</s:if>
