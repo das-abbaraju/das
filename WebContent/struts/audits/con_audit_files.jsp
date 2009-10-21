@@ -8,12 +8,17 @@
 	href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/audit.css" />
+<s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript">
-	function showAuditUpload() {
-		$('#show_files').show();
-	}
+function showAuditUpload(auditID, fileID) {
+	var data = {
+		auditID: auditID,
+		fileID: fileID,
+		button: 'Add'
+	};
+	$('#show_files').load('ContractorAuditFileUpload.action #show_files', data);
+}
 </script>
 </head>
 <body>
@@ -45,7 +50,7 @@
 				target="_BLANK"><img src="images/icon_DA.gif" /></a></td>
 			<td><s:if
 				test="permissions.admin || (!reviewed && permissions.userId == createdBy.Id)">
-				<a class="edit" href="#" onclick="showAuditUpload();">Edit</a>
+				<a class="edit" href="#" onclick="showAuditUpload(<s:property value="conAudit.id"/>,<s:property value="id"/>);">Edit</a>
 			</s:if></td>
 			<s:if test="permissions.admin">
 				<td class="center"><s:if test="reviewed">
@@ -62,11 +67,10 @@
 <br clear="all" />
 <s:if test="!permissions.operatorCorporate">
 	<div><input type="button" class="picsbutton positive"
-		value="Add File" onclick="showAuditUpload()" /></div>
+		value="Add File" onclick="showAuditUpload(<s:property value="conAudit.id"/>,0)" /></div>
 </s:if> <br clear="all" />
 <s:include value="../actionMessages.jsp" /> <br clear="all" />
-<div id="show_files" style="display: none;"><s:include
-	value="con_audit_file_upload.jsp" /></div>
+<div id="show_files"></div>
 </div>
 </div>
 </div>

@@ -130,8 +130,10 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 						addActionError("Somehow, two files were uploaded.");
 				}
 			}
+			if(button.equals("Add")) {
+				return "upload";
+			}
 		}
-
 		return SUCCESS;
 	}
 

@@ -3,7 +3,7 @@
 	function showAuditFiles(auditID) {
 		url = 'ContractorAuditFileUpload.action?auditID='+auditID;
 		title = 'Upload';
-		pars = 'scrollbars=yes,resizable=yes,width=700,height=650,toolbar=0,directories=0,menubar=0';
+		pars = 'scrollbars=yes,resizable=yes,width=550,height=550,toolbar=0,directories=0,menubar=0';
 		fileUpload = window.open(url,title,pars);
 		fileUpload.focus();
 	}
