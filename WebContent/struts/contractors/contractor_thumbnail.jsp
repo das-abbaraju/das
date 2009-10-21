@@ -4,7 +4,7 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> Thumbnail</title>
-<script type="text/javascript" src="js/prototype.js"></script>
+<s:include value="../jquery.jsp"/>
 <style>
 body {
 	background-color: #fefefe;
@@ -43,14 +43,14 @@ td.tabbody {
 </style>
 <script type="text/javascript">
 function toggleTab(name) {
-	$('tab_address').hide();
-	$('tab_audits').hide();
-	$('tab_facilities').hide();
-	$('tab_'+name).show();
-	$('head_address').removeClassName('selected');
-	$('head_audits').removeClassName('selected');
-	$('head_facilities').removeClassName('selected');
-	$('head_'+name).addClassName('selected');
+	$('#tab_address').hide();
+	$('#tab_audits').hide();
+	$('#tab_facilities').hide();
+	$('#tab_'+name).show();
+	$('#head_address').removeClassName('selected');
+	$('#head_audits').removeClassName('selected');
+	$('#head_facilities').removeClassName('selected');
+	$('#head_'+name).addClassName('selected');
 }
 </script>
 </head>
