@@ -7,16 +7,13 @@
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
-<script src="js/prototype.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript">
 	function resubmitPqf(verifyCheckBox) {
-		var data = verifyCheckBox.checked;
-		if(data) {
-			$('submit').disabled = false;	
-		}
+		if($(verifyCheckBox).is(':checked'))
+			$('#submit').attr({disabled:false});
 		else
-			$('submit').disabled = true;		
+			$('#submit').attr({disabled:'disabled'});		
 	}
 </script>
 </head>
