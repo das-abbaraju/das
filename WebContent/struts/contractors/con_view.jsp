@@ -5,39 +5,26 @@
 <head>
 <title><s:property value="contractor.name" /></title>
 
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript">
 	function removeTag(tagId) {
-		var pars = "button=RemoveTag&tagId=" + tagId+'&id='+<s:property value="id"/>;
-		var divName ='conoperator_tags';
-		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'TagNameEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
+		var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
+		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
+			.load('TagNameEditAjax.action', data, function(text, status) {
+					if (status=='success')
+						$(this).effect('highlight', {color: '#FFFF11'});
+				});
 		return false;
 	}
 	
 	function addTag() {
-		var tagId = $('tagName').value;
-		var pars = "button=AddTag&tagId=" + tagId+'&id='+<s:property value="id"/>;
-		var divName ='conoperator_tags';
-		$(divName).innerHTML="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater(divName, 'TagNameEditAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				
-				new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
+		var data = {button: 'AddTag', tagId: $('#tagName').val(), id: <s:property value="id"/>};
+		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
+			.load('TagNameEditAjax.action', data, function(text, status) {
+					if (status=='success')
+						$(this).effect('highlight', {color: '#FFFF11'});
+				});
 		return false;
 	}
 </script>
