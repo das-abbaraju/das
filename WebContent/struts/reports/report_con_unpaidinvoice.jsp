@@ -3,9 +3,18 @@
 <head>
 <title><s:property value="reportName" /></title>
 <s:include value="reportHeader.jsp" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript">
+$(function() {
+	$('#selected_contractor').autocomplete('ContractorSelectAjax.action', 
+			{
+				minChars: 3,
+				extraParams: {'filter.accountName': function() {return $('#selected_contractor').val();} }
+			}
+	);
+});
+</script>
 </head>
 <body>
 <h1><s:property value="reportName" /></h1>
@@ -22,14 +31,6 @@
 		<div class="filterOption">
 			Select a Contractor :
 			<s:textfield id="selected_contractor" cssClass="forms" name="filter.accountName" size="60" onfocus="clearText(this)"/> 
-			<div id="selected_contractor_choices" class="autocomplete"></div>
-			<script type="text/javascript">
-				new Ajax.Autocompleter('selected_contractor', 'selected_contractor_choices', 'ContractorSelectAjax.action', {
-					tokens: ',',
-					paramName: "filter.accountName",
-					minChars: 3
-				});
-			</script>
 		</div>
 
 		<br clear="all"/>
