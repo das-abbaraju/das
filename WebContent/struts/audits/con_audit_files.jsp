@@ -9,10 +9,10 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/audit.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript">
 	function showAuditUpload() {
-		$('show_files').show();
+		$('#show_files').show();
 	}
 </script>
 </head>
