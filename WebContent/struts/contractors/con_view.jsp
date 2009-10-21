@@ -13,7 +13,7 @@
 		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
 			.load('TagNameEditAjax.action', data, function(text, status) {
 					if (status=='success')
-						$(this).effect('highlight', {color: '#FFFF11'});
+						$(this).effect('highlight', {color: '#FFFF11'}, 1000);
 				});
 		return false;
 	}
@@ -23,7 +23,7 @@
 		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
 			.load('TagNameEditAjax.action', data, function(text, status) {
 					if (status=='success')
-						$(this).effect('highlight', {color: '#FFFF11'});
+						$(this).effect('highlight', {color: '#FFFF11'}, 1000);
 				});
 		return false;
 	}
