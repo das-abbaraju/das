@@ -5,38 +5,36 @@
 <head>
 <title>Contractor Registration</title>
 <meta name="help" content="User_Manual_for_Contractors">
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/pics.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />	
-<script language="JavaScript" SRC="js/prototype.js"></script>
-<script language="Javascript">	
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript">	
 function checkUsername(username) {
-	$('username_status').innerHTML = 'checking availability of username...';
-	pars = 'userID=0&username='+username;
-	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+	$('#username_status').text('checking availability of username...');
+	var data = {userID: 0, username: username};
+	$('#username_status').load('user_ajax.jsp', data);
 }
 
 function checkTaxId(taxId) {
-	$('taxId_status').innerHTML = 'checking availability of taxId...';
-	pars = 'taxId='+taxId;
-	var myAjax = new Ajax.Updater('taxId_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+	$('#taxId_status').text('checking availability of taxId...');
+	var data = {taxId: taxId};
+	$('#taxId_status').load('user_ajax.jsp', data);
 }
 
 function checkName(name) {
-	$('name_status').innerHTML = 'checking availability of name...';
-	pars = 'companyName='+name;
-	var myAjax = new Ajax.Updater('name_status', 'user_ajax.jsp', {method: 'get', parameters: pars});
+	$('#name_status').text('checking availability of name...');
+	var data = {companyName: name};
+	$('#name_status').load('user_ajax.jsp', data);
 }
 
 function changeState(state) {
 	if (state == 'USA' || state == 'Canada') {
-		$('state_sel').enable();
-		$('state_req').innerHTML = '*';
+		$('#state_sel').attr({disabled: false});
+		$('#state_req').text('*');
 	} else {
-		$('state_sel').disable();
-		$('state_req').innerHTML = '';
+		$('#state_sel').attr({disabled: 'disabled'});
+		$('#state_req').empty();
 	}
 }
 </script>	
