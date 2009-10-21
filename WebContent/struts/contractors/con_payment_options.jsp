@@ -6,19 +6,18 @@
 <meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/invoice.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script language="JavaScript">
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript">
 function validate() {
 	return updateExpDate();
 }
 function updateExpDate() {
-	$('ccexpError').hide();
-	if ($F('expMonth') != "" && $F('expYear') != "") {
-		$('ccexp').value = $F('expMonth') + $F('expYear');
+	$('#ccexpError').hide();
+	if (!$('#expMonth').blank() && !$('#expYear').blank()) {
+		$('#ccexp').val($('#expMonth').val() + $('#expYear').val());
 		return true;
 	}
-	$('ccexpError').innerHTML = "* Please enter your card's expiration date";
-	$('ccexpError').show();
+	$('#ccexpError').text("* Please enter your card's expiration date").show();
 	return false;
 }
 </script>
