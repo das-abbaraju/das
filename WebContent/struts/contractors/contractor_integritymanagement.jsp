@@ -5,12 +5,12 @@
 <head>
 <title>Integrity Management for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-	function showAddAudit() {
-	$('addAudit').hide();	
-	$('addAuditManually').show();
-	}
+function showAddAudit() {
+	$('#addAudit').hide();	
+	$('#addAuditManually').show();
+}
 </script>
 </head>
 <body>
