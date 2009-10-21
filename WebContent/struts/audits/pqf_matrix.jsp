@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>PQF Matrix</title>
-<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <style>
 td.selected {
@@ -13,9 +13,7 @@ td.selected {
 </style>
 <script type="text/javascript">
 function clearSelected(name) {
-	var box = $(name);
-	for(i=0; i < box.length; i++)
-		box.options[i].selected = false
+	$('#'+name).find('option').attr({'selected': false});
 }
 </script>
 </head>
@@ -33,7 +31,7 @@ function clearSelected(name) {
 <s:form id="form1" method="post">
 <div id="search">
 <s:if test="columns.size() > 0">
-	<div id="changecolumns"><a href="#" onclick="$('filters').show(); $('changecolumns').hide(); return false;">Change Columns</a></div>
+	<div id="changecolumns"><a href="#" onclick="$('#filters').show(); $('#changecolumns').hide(); return false;">Change Columns</a></div>
 </s:if>
 <div id="filters" <s:if test="columns.size() > 0">style="display: none;"</s:if>>
 	<div>
