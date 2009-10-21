@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 
-<script src="js/prototype.js" type="text/javascript"></script>
+<s:include value="../jquery.jsp"/>
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script src="js/notes.js" type="text/javascript"></script>
@@ -15,30 +15,25 @@
 <script type="text/javascript">
 	function runSearch() {
 		startThinking( {div: 'thinkingSearchDiv', type:'large', message: 'Searching for matching facilities' } );
-		$('results').innerHtml = "";
-		var pars= $('facilitySearch').serialize();
-		pars += '&button=search';
-		var myAjax = new Ajax.Updater($('results'),'ContractorFacilityAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
+		$('#results').empty();
+		var data= $('#facilitySearch').toObj();
+		data.button = 'search';
+		$('#results').load('ContractorFacilityAjax.action', data, function() {
 				stopThinking( {div: 'thinkingSearchDiv' } );
 			}
-		});
+		);
 		
 		return false;
 	}
 	function addOperator( conId, opId) {
 		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
-		var pars= 'id=' + conId + '&button=addOperator&operator.id=' + opId; 
-		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
+		var data= {id: conId, button: 'addOperator', 'operator.id': opId};
+		$.ajax({
+			url: 'ContractorFacilityAjax.action', 
+			data: data, 
+			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
-				$('results_' + opId).hide();
+				$('#results_' + opId).fadeOut();
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
 			}
@@ -47,13 +42,13 @@
 	}
 	function removeOperator( conId, opId ) {
 		startThinking( {div: 'thinkingDiv', message: 'Unlinking contractor and operator' } );
-		var pars= 'id=' + conId + '&button=removeOperator&operator.id=' + opId; 
-		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
+		var data= {id: conId, button: 'removeOperator', 'operator.id': opId};
+		$.ajax({
+			url: 'ContractorFacilityAjax.action', 
+			data: data, 
+			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
+				$('#operator_' + opId).fadeOut();
 				runSearch();
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
@@ -63,27 +58,22 @@
 	}
 	function reloadOperators( conId ) {
 		startThinking( {div: 'thinkingDiv', message: 'Refreshing Operator List' } );
-		var pars= 'id=' + conId + '&button=load';
-		var myAjax = new Ajax.Updater($('facilities'),'ContractorFacilityAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
+		var data= {id: conId, button: 'load'};
+		$('#facilities').load('ContractorFacilityAjax.action', data, function() {
 				stopThinking( {div: 'thinkingDiv' } );
 			}
-		});
+		);
 		return false;
 	}
 	function setRequestedBy( conId, opId) {
 		startThinking( {div: 'thinkingDiv', message: 'Saving Requested Operator Account' } );
-		var pars= 'id=' + conId + '&button=request&operator.id=' + opId; 
-		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
+		var data= {id: conId, button: 'request', 'operator.id': opId};
+		$.ajax({
+			url: 'ContractorFacilityAjax.action', 
+			data: data, 
+			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
-				$('next_button').show();
+				$('#next_button').show('slow');
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
 			}
@@ -97,21 +87,18 @@
 			return false;
 		}
 		startThinking( {div: 'thinkingDiv', message: 'Switching to Trial Account' } );
-		var pars= 'id=' + conId + '&button=SwitchToTrialAccount'; 
-		var myAjax = new Ajax.Updater('','ContractorFacilityAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function(transport) {
+		var data= {id: conId, button: 'SwitchToTrialAccount'};
+		$.ajax({
+			url: 'ContractorFacilityAjax.action', 
+			data: data, 
+			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
-				$('next_button').show();
+				$('#next_button').show();
 				reloadOperators( conId );
 				runSearch();
 			}
 		});
 		return false;
-			
-		
 	}	
 </script>
 
@@ -166,7 +153,7 @@
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
-					<nobr>Name: <s:textfield cssClass="forms" name="operator.name" onkeypress="return false();"/></nobr>
+					<nobr>Name: <s:textfield cssClass="forms" name="operator.name"/></nobr>
 					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state"></s:select></nobr>
 				</div>
 			</div>

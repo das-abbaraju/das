@@ -67,7 +67,7 @@
 	</thead>
 	<tbody>
 		<s:iterator value="currentOperators">
-			<tr>
+			<tr id="operator_<s:property value="operatorAccount.id"/>">
 				<td><s:if test="contractor.activeB"><s:url id="flagUrl" action="ContractorFlag">
 					<s:param name="id" value="%{contractor.id}" />
 					<s:param name="opID" value="%{operatorAccount.id}" />
