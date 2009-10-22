@@ -54,7 +54,6 @@ public class VerifyAudit extends AuditActionSupport {
 
 	public ArrayList<String> getOshaExemptReason() {
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("- Exempt Reasons -");
 		list.add("SIC code");
 		list.add("Number of Employees (10 or less)");
 		return list;
@@ -62,7 +61,6 @@ public class VerifyAudit extends AuditActionSupport {
 
 	public ArrayList<String> getEmrExemptReason() {
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("- Exempt Reasons -");
 		list.add("Insurance premium to small");
 		list.add("Does not carry workers comp");
 		list.add("Less than 3 years old");

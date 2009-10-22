@@ -5,134 +5,120 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
-<script src="js/prototype.js" type="text/javascript"></script>
-<script type="text/javascript"
-		src="js/scriptaculous/scriptaculous.js?load=effects"></script>
+<s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script src="js/notes.js" type="text/javascript"></script>
 <script src="js/validate_contractor.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, answerId) {
-		var comment = $F($('comment_' + questionId));
-		var answerelm = $('answer_' + questionId)
+		var comment = $('#comment_' + questionId).val();
+		var answerelm = $('#answer_' + questionId);
 		
 		startThinking({div:'status_'+questionId});
-		var pars = 'auditData.audit.id='+auditId+'&auditData.id='+answerId+'&catDataID=-1&auditData.question.id=' + questionId + '&auditData.comment=' + comment + '&toggleVerify=true';
+		var data= {
+				'auditData.audit.id': auditId,
+				'auditData.id': answerId,
+				'catDataID': -1,
+				'auditData.question.id': questionId,
+				'auditData.comment': comment,
+				'toggleVerify': true
+			};
 		if( answerelm != null ) {
-			var answer = $F(answerelm);
-			pars = pars + '&auditData.answer=' + answer;		
+			data.answer = answerelm.val();	
 		}
 
-		var myAjax = new Ajax.Updater('','AuditToggleVerifyAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete : function(transport) {
-				var json = transport.responseText.evalJSON();
-				
-				$('verified_' + questionId).toggle();
-				
-				if( json.who ) {
-					$('verify_' + questionId ).value = 'Unverify';
-					$('verify_details_' + questionId).innerHTML = json.dateVerified + ' by ' + json.who;
+		$.getJSON('AuditToggleVerifyAjax.action', data, function(json){
+				$('#verified_' + questionId).toggle();
+				if (json.who) {
+					$('#verify_' + questionId ).val('Unverify');
+					$('#verify_details_' + questionId).text(json.dateVerified + ' by ' + json.who);
 				} else {
-					$('verify_' + questionId ).value = 'Verify';
+					$('#verify_' + questionId ).val('Verify');
 				}
 				setApproveButton( json.percentVerified );
-				stopThinking({div:'status_'+questionId});
+				stopThinking({div:'status_'+questionId});		
 			}
-		});
+		);
 		return false;
 	}
 	
 	function toggleOSHAVerify( oshaId ) {
-		var comment = $F($('comment_' + oshaId));
 	
 		startThinking({div:'status_'+oshaId});
-		var pars = '';
 		
-		var manHours = $F($('manHours_' + oshaId)); 
-		var fatalities = $F($('fatalities_' + oshaId)); 
-		var lwc = $F($('lwc_' + oshaId)); 
-		var lwd = $F($('lwd_' + oshaId)); 
-		var imc = $F($('imc_' + oshaId)); 
-		var rwc = $F($('rwc_' + oshaId)); 
+		var data= {
+				id: oshaId,
+				'osha.comment': $('#comment_' + oshaId).val(),
+				'osha.manHours': $('#manHours_' + oshaId).val(),
+				'osha.fatalities': $('#fatalities_' + oshaId).val(),
+				'osha.lostWorkCases': $('#lwc_' + oshaId).val(),
+				'osha.lostWorkDays': $('#lwd_' + oshaId).val(),
+				'osha.injuryIllnessCases': $('#imc_' + oshaId).val(),
+				'osha.restrictedWorkCases': $('#rwc_' + oshaId).val(),
+				button: 'toggleVerify'
+		};
 
-		pars = 'id='+oshaId+'&osha.comment=' + comment +'&osha.manHours='+manHours+'&osha.fatalities='+fatalities+'&osha.lostWorkCases='+lwc+'&osha.lostWorkDays='+lwd+'&osha.injuryIllnessCases='+imc+'&osha.restrictedWorkCases='+rwc+'&button=toggleVerify';
-		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete : function(transport) {
-
-				var json = transport.responseText.evalJSON();
-				
-				$('verified_' + oshaId).toggle();
+		$.getJSON('AuditToggleOSHAVerifyAjax.action', data, function(json) {
+				$('#verified_' + oshaId).toggle();
 				if( json.who ) {
-					$('verify_' + oshaId ).value = 'Unverify';
-					$('verify_details_' + oshaId).innerHTML = json.dateVerified + ' by ' + json.who;
+					$('#verify_' + oshaId ).val('Unverify');
+					$('#verify_details_' + oshaId).text(json.dateVerified + ' by ' + json.who);
 				} else {
-					$('verify_' + oshaId ).value = 'Verify';
+					$('#verify_' + oshaId ).val('Verify');
 				}
 				
 				setApproveButton( json.percentVerified );
 				stopThinking({div:'status_'+oshaId});
 			}
-		});
+		);
 		return false;
 	}
 	
 	function setComment(auditId, questionId, answerId ) {
-		var comment = $F($('comment_' + questionId));
-		
 		startThinking({div:'status_'+questionId});
 
-		var pars = 'auditData.audit.id='+auditId+'&catDataID=-1&auditData.id='+answerId+'&auditData.question.id=' + questionId + '&auditData.comment=' + comment;
-		var myAjax = new Ajax.Updater('','AuditDataSaveAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete : function(transport) {
-			
-				new Effect.Highlight($('comment_' + questionId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			
+		var data= {
+			'auditData.audit.id': auditId,
+			'catDataID': -1,
+			'auditData.id': answerId,
+			'auditData.question.id': questionId,
+			'auditData.comment': $('#comment_' + questionId).val()
+		};
+
+		$.post('AuditDataSaveAjax.action', data, function(text, status){
+				$('#comment_' + questionId).effect('highlight', {color: '#FFFF11'}, 1000);
 				stopThinking({div:'status_'+questionId});
 			}
-		});
+		);
 		return false;
 	}
 	
 	function setOSHAComment( oshaId ) {
-		var comment = $F($('comment_' + oshaId));
-	
 		startThinking({div:'status_'+oshaId});
 	
-		var pars = 'id='+oshaId+'&osha.comment=' + comment + '&button=save';
+		var data= {
+				id: oshaId,
+				'osha.comment': $('#comment_' + oshaId),
+				button: 'save'
+		};
 
-		var myAjax = new Ajax.Updater('','AuditToggleOSHAVerifyAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete : function(transport) {
-			
-				new Effect.Highlight($('comment_' + oshaId),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-
+		$.post('AuditToggleOSHAVerifyAjax.action', data, function() {
+				$('#comment_' + oshaId).effect('highlight', {color: '#FFFF11'}, 1000);
 				stopThinking({div:'status_'+oshaId});
 			}
-		});
+		);
 		return false;
 	}
 	
 	
 	function setApproveButton( newPercent ) {
-	
 		if( newPercent == 100 ) {
-			$('approveButton1').show();
-			$('approveButton2').show();
+			$('#approveButton1').show();
+			$('#approveButton2').show();
 		} else {
-			$('approveButton1').hide();
-			$('approveButton2').hide();
+			$('#approveButton1').hide();
+			$('#approveButton2').hide();
 		}
 		return false;
 	}
@@ -145,45 +131,42 @@
 	 }
 	 
 	 function changeAuditStatus(id, auditStatus) {
-		var pars = 'auditID='+id+'&auditStatus='+auditStatus;
-		var myAjax = new Ajax.Updater('','ContractorAuditSaveAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete : function() {
-			$('verification_audit').innerHTML='';
-			$('auditHeader').scrollTo();
+		var data= {
+			auditID: id,
+			auditStatus: auditStatus
+		};
+		$.post('ContractorAuditSaveAjax.action', data, function() {
+				$('#verification_audit').empty();
+				//$('#auditHeader').scrollTo();
 			}
-		});
+		);
 		return false;
 	 }
 
 	function previewEmail() {
-		pars = 'id='+<s:property value="contractor.id" />;
-		$('emailTemplate').innerHTML ="<img src='images/ajax_process.gif' />";
-		var myAjax = new Ajax.Updater('emailTemplate', 'VerifyPreviewEmailAjax.action', {method: 'post', parameters: pars});
+		var data= {id: <s:property value="contractor.id"/>};
+		$('#emailTemplate').html("<img src='images/ajax_process.gif' />")
+			.load('VerifyPreviewEmailAjax.action', data);
 	}
 	 
 	function sendEmail() {
-		pars = 'id='+<s:property value="contractor.id" />;
-		if($('body') != null && $('subject') != null) {
-			pars +='&emailBody=' +escape($F($('body')));
-			pars +='&emailSubject=' +escape($F($('subject')));
-		}	
-		var myAjax = new Ajax.Updater('emailStatus', 'VerifySendEmailAjax.action', {method: 'post', parameters: pars});
-		new Effect.Highlight($('emailStatus'), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		var data= {id: <s:property value="contractor.id"/>};
+		if($('#body') != null && $('#subject') != null) {
+			data.emailBody = $('#body').val();
+			data.emailSubject = $('#subject').val();
+		}
+		$('#emailStatus').load('VerifySendEmailAjax.action', data, function() {
+				$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
+			}
+		);
 	}
 
 	function copyComment(divId, commentID) {
-		var text = $(divId);
-		for(i=0; i < text.length; i++)
-			if (text.options[i].selected) {
-				$(commentID).value = text.options[i].value;
-			} 
+		$('#'+commentID).val($('#'+divId).val()).focus().blur();
 	}	
 	 
 </script>
-
 
 </head>
 <body >
