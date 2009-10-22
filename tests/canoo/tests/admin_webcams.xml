@@ -17,7 +17,7 @@
 						<sleep seconds="5"/>
 						<invoke url="ManageWebcams.action"/>
 						<sleep seconds="5"/>
-						<setInputField htmlId="webcam_form_webcam_model" value="Canoo Test Cam"/>
+						<setInputField htmlId="webcam_form_webcam_model" value="Samsung"/>
 						<setInputField htmlId="webcam_form_webcam_replacementCost" value="50"/>
 						<clickButton label="Save"/>
 						<verifyText text="Saved webcam"/>
