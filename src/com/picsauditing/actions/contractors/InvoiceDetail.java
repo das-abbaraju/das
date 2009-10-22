@@ -43,6 +43,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private PaymentDAO paymentDAO;
 	private NoteDAO noteDAO;
+	private ContractorAccountDAO conAccountDAO;
 
 	private int newFeeId;
 
@@ -185,6 +186,18 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							paymentDAO.save(payment);
 							invoice.updateAmountApplied();
 
+							// Activate the contractor
+							if (!contractor.isActiveB()) {
+								for (InvoiceItem item : invoice.getItems()) {
+									if (item.getInvoiceFee().getFeeClass().equals("Activation")
+											|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
+										contractor.setActive('Y');
+										contractor.setAuditColumns(getUser());
+										conAccountDAO.save(contractor);
+									}
+								}
+							}
+							
 							contractor.syncBalance();
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
