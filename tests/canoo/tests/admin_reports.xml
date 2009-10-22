@@ -10,12 +10,24 @@
 				&login;
 				&body_verify;
 				
+				<storeProperty name="report_link" value="EMR Rates (Graph)" />
+					&click_report;
+				<storeProperty name="report_link" value="Forced Flags" />
+					&click_report;
+				<storeProperty name="report_link" value="User Multi-Login" />
+					&click_report;
+				<storeProperty name="report_link" value="UserList.action" />
+					&click_report;
 				<storeProperty name="report_link" value="EMR Rates" />
-				&click_report;
+					&click_report;
 				<storeProperty name="report_link" value="Fatalities" />
-				&click_report;
+					&click_report;
 				<storeProperty name="report_link" value="Incidence Rates" />
-				&click_report;
+					&click_report;
+				<storeProperty name="report_link" value="Operator Flag Criteria" />
+					&click_report;
+				<storeProperty name="report_link" value="Contractor Licenses" />
+					&click_report;
 			</steps>
 		</webtest>
 	</target>
