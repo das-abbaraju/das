@@ -181,7 +181,7 @@ public class VerifyView extends ContractorActionSupport {
 		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
 		addNote(contractor, note, NoteCategory.Audits);
 
-		output = "The email was sent at and the contractor notes were stamped";
+		output = "The email was sent and the contractor notes were stamped";
 		return SUCCESS;
 	}
 
