@@ -3,58 +3,53 @@
 <html>
 <head>
 <title>Edit Profile</title>
-<script src="js/prototype.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 	function checkUsername(username) {
-		$('username_status').innerHTML = '<img src="images/ajax_process.gif" width="16" height="16" /> checking availability of username...';
-		pars = 'userID=<s:property value="u.id"/>&username=' + username;
-		var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {
-			method :'get',
-			parameters :pars
-		});
+		startThinking({div: 'username_status', message: 'checking availability of username...'});
+		var data = {userID: <s:property value="u.id"/>, username: username};
+		$('#username_status').load('user_ajax.jsp', data);
 	}
 
 	function save(subscription, id, timeperiod) {
-	    var pars = "eu.id="+id+"&eu.subscription="+subscription;
-	    if($('add'+subscription).checked)
-		    pars += "&addsubscription=true";
-	    else
-		    pars += "&addsubscription=false";
+	    var data = {
+    	    'eu.id': id, 
+    	    'eu.subscription': subscription,
+    	    'addSubscription': $('#add'+subscription).is(':checked')
+   	    };
 
 		if(timeperiod != null) {
-			pars += '&sPeriod='+$(timeperiod).value;	
+			data['eu.timePeriod']= $(timeperiod).val();
 		}	
 	    var divName = 'td'+subscription;
 		startThinking({'div':divName});
 
-		var myAjax = new Ajax.Updater(divName, 'UserEmailSubscriptionSaveAjax.action', {
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) {
-			new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		$('#'+divName).load('UserEmailSubscriptionSaveAjax.action',data,function() {
+				$(this).effect('highlight', {color: '#FFFF11'}, 1000)
 			}
-		});
+		);
+
 	}
 
 	function showTab(tabName) {
-		$('tab_profile').hide();
-		$('link_tab_profile').removeClassName('current');
-		$('tab_permissions').hide();
-		$('link_tab_permissions').removeClassName('current');
+		$('#tab_profile').hide();
+		$('#link_tab_profile').removeClass('current');
+		$('#tab_permissions').hide();
+		$('#link_tab_permissions').removeClass('current');
 		<s:if test="eList.size > 0">
-		$('tab_subscriptions').hide();
-		$('link_tab_subscriptions').removeClassName('current');
+		$('#tab_subscriptions').hide();
+		$('#link_tab_subscriptions').removeClass('current');
 		</s:if>
 		<s:if test="switchTos.size > 0">
-		$('tab_switch').hide();
-		$('link_tab_switch').removeClassName('current');
+		$('#tab_switch').hide();
+		$('#link_tab_switch').removeClass('current');
 		</s:if>
 		
-		$(tabName).show();
-		$('link_'+tabName).addClassName('current');
+		$('#'+tabName).show();
+		$('#link_'+tabName).addClass('current');
 	}
 </script>
 
@@ -185,23 +180,10 @@
 </div>
 
 <div id="tab_subscriptions" style="display: none;">
-	<s:iterator value="eList">
-		<table>
-			<tr>
-				<td>
-					<input id="add<s:property value="subscription"/>" type="checkbox" onclick="save('<s:property value="subscription"/>', <s:property value="id"/>, null)" <s:if test="timePeriod.toString() != 'None'">checked</s:if>/>
-				</td>
-				<td>
-					<b><u><s:property value="subscription.description"/></u></b>
-					<br/><s:property value="subscription.longDescription"/>
-					<br/>
-					<span id="td<s:property value="subscription"/>">
-						<s:include value="../mail/user_email_subscription.jsp"></s:include>
-					</span>
-				</td>
-			</tr>
-		</table>
-		<br/>
+	<s:iterator value="eList" status="stat">
+	<div id="td<s:property value="subscription"/>" <s:if test="#stat.even">class="shaded"</s:if>>
+		<s:include value="../mail/user_email_subscription.jsp"/>
+	</div>
 	</s:iterator>
 </div>
 

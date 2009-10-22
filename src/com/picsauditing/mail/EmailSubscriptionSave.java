@@ -32,8 +32,7 @@ public class EmailSubscriptionSave extends PicsActionSupport {
 					eu.setTimePeriod(SubscriptionTimePeriod.Weekly);
 			} else
 				eu.setTimePeriod(sPeriod);
-		} else
-			eu.setTimePeriod(SubscriptionTimePeriod.None);
+		}
 		eu = emailSubscriptionDAO.save(eu);
 		return SUCCESS;
 	}
