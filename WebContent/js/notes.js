@@ -4,10 +4,15 @@ function filter(returnType, filter, value) {
 		return;
 	}
 	var divName = returnType + 'List';
-	var pars = 'id='+accountID+'&button=refresh&returnType='+returnType+'&'+filter+'='+value;
+	var data = {
+			id: accountID,
+			button: 'refresh',
+			returnType: returnType,
+			filter: value
+	};
 	
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
+	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 
 
@@ -18,36 +23,45 @@ function refresh(returnType) {
 	}
 
 	var divName = returnType + 'List';
-	var pars = 'id='+accountID+'&button=refresh&returnType='+returnType;
+	var data = {
+			id: accountID,
+			button: 'refresh',
+			returnType: returnType
+	};
 
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
+	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 
 function refreshNoteCategory(accountID, defaultCategory) {
 	var divName = 'notesList';
-	var pars = 'id='+accountID+'&noteCategory='+defaultCategory;
-
 	startThinking({div: 'thinking_' + divName, message: "Refreshing Notes", type: "large"});
-	var myAjax = new Ajax.Updater(divName, 'EmbeddedNotesAjax.action', {method: 'post', parameters: pars});
+
+	var data = {id: accountID, noteCategory: defaultCategory};
+	$('#'+divName).load('EmbeddedNotesAjax.action', data);
 }
 
 function runNoteSearch(returnType) {
 	var divName = returnType + 'List';
 
-	var pars = $(returnType+'Form').serialize();
+	var data = $('#'+returnType+'Form').toObj();
 	
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
+	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 
 function updateNotePage(accountID,button,returnType,result) {
 	var divName = returnType + 'List';
 
-	var pars = 'id='+accountID+'&button='+button+'&returnType='+returnType+'&filter.firstResult='+result;
+	var data = {
+			id: accountID,
+			button: button,
+			returnType: returnType,
+			'filter.firstResult': result
+	};
 
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	var myAjax = new Ajax.Updater(divName, accountType+'NotesAjax.action', {method: 'post', parameters: pars});
+	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 
 function noteEditor(accountID, noteID, mode, defaultCategory) {
