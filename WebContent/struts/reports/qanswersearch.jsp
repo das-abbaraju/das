@@ -11,18 +11,13 @@
 var myTimer = null;
 
 function getQuestionList() {
-		var elm = escape($F('questionSelect'));
-		var pars = 'questionName='+ elm;
+		var data = {
+			questionName: $('[name=questionSelect]').val()
+		};
 		startThinking({div: 'thinking',message:'Finding matching questions...'});
-		var myAjax = new Ajax.Updater('selected_question','QuestionSelectAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onComplete: function() {
-				stopThinking({div: 'thinking'});
-			}
-		}
-		);
+		$('#selected_question').load('QuestionSelectAjax.action', data, function() {
+			stopThinking({div: 'thinking'});
+		});
 }
 
 function autoGetQuestion(ele) {
