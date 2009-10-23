@@ -41,14 +41,14 @@ function clickSearchSubmit( formid ) {
 }
 
 function runSearch(search) {
-	var ajax = search.find('[name=filter.ajax]').val();
+	var ajax = $(search).find('[name=filter.ajax]').val();
 	if (ajax == "false") {
-		search.submit();
+		$(search).submit();
 	} else {
 		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div
 		startThinking({div:'report_data', type: 'large', message: 'finding search results'});
-		var destinationAction = search.find('[name=filter.destinationAction]').val();
-		var data = search.toObj();
+		var destinationAction = $(search).find('[name=filter.destinationAction]').val();
+		var data = $(search).toObj();
 		$('#report_data').load(destinationAction+'Ajax.action', data);
 	}
 }
