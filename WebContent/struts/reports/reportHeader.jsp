@@ -7,6 +7,9 @@
 <script type="text/javascript" src="js/Search.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 
+<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
+
 <script type="text/javascript">
 $(document).ready(function() {
 	$("a.contractorQuick").cluetip({
