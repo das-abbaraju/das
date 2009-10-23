@@ -1,5 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
 <table class="report">
 	<thead>
 	<tr>
@@ -39,3 +41,6 @@
 	</s:iterator>
 	</tbody>
 </table>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+</div>
