@@ -6,6 +6,8 @@ table.report {
 	background: #f9f9f9;
 	clear: both;
 	margin-bottom: 10px;
+	position: relative;
+	z-index: 10;
 }
 
 table.report td,table.report th {
@@ -192,6 +194,13 @@ ul.alpha li a.current,ul.paging li a.current {
 	border: 1px solid #A84D10;
 }
 
+ul.filterRight {
+	position: absolute;
+	line-height: 12px;
+	top: 11px;
+	left: 200px;
+}
+
 /** other */
 table.report tr.notapp {
 	color: #999;
@@ -258,12 +267,4 @@ a.clearLink {
 
 #navListTop a.inactive {
 	background-color: rgb(192, 192, 192);
-}
-
-/************** New Filter Flyout Box **************/
-#content #reportFilters {
-	border-right: 6px solid #4686BF;
-	color: #4C4D4D;
-	background-color: white;
-	width: 400px;
 }

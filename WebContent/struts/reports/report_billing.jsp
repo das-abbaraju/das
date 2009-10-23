@@ -7,26 +7,6 @@
 <script type="text/javascript" src="js/jquery/jquery.hoverIntent.js"></script>
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" />
-<script type="text/javascript">
-$(document).ready(function() {
-	$("a.contractorQuick").cluetip({
-		sticky: true, 
-		hoverClass: 'cluetip', 
-		clickThrough: true, 
-		closeText: "<img src='images/cross.png' width='16' height='16'>",
-		hoverIntent: {interval: 200},
-		arrows: true,
-		dropShadow: false,
-		width: 400,
-		cluetipClass: 'jtip',
-		ajaxProcess:      function(data) {
-			data = $(data).not('meta, link, title');
-			return data;
-		}
-	});
-});
-</script>
-
 </head>
 <body>
 <h1><s:property value="reportName" /></h1>

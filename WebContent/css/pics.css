@@ -69,14 +69,13 @@ p {
 	font-size: 14px;
 	margin-top: 14px;
 	padding-right: 40px;
-	float: right;	
+	float: right;
 }
 
 /*
 		margin-top: 10px;
 		padding-top: 8px;
-*/
-	/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
+*/ /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 #sidebox {
 	float: right;
 	margin: 10px auto;
@@ -123,7 +122,6 @@ p {
 	border: white 1px solid;
 }
 
-
 /********************  Main body Styles  ************************/
 #bodyholder {
 	margin: 0 auto;
@@ -136,19 +134,18 @@ p {
 }
 
 #content {
-	position: static;
+	position: relative;
 	margin: 0;
 	padding: 45px;
 	height: 100%;
-}
-
-#content div {
-	margin: 0;
-	padding: 5px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	line-height: 24px;
 	color: #4C4D4D;
+}
+
+#content button {
+	line-height: normal;
 }
 
 #content div.container {
@@ -319,8 +316,7 @@ a[href $=".xls"],a.excel {
 }
 
 a.email {
-	background: url('../images/icon_link_email.png') no-repeat right center;
-	;
+	background: url('../images/icon_link_email.png') no-repeat right center;;
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
@@ -384,9 +380,9 @@ a.help {
 	background: url('../images/help.gif') no-repeat left center;
 }
 
-a.insurance span{
+a.insurance span {
 	float: left;
-	clear:both;
+	clear: both;
 	height: 20px;
 	width: 20px;
 	cursor: pointer;
@@ -403,8 +399,7 @@ label.tooltipped {
   margin-bottom: -5px;
 } */
 p.email a {
-	background: url('../images/icon_link_email.png') no-repeat right center;
-	;
+	background: url('../images/icon_link_email.png') no-repeat right center;;
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
@@ -482,8 +477,7 @@ ul#navlist {
 	text-decoration: none;
 }
 
-#navlist a.dropdown,#navlist a.dropdown:active,#navlist a.dropdown:visited,#navlist a.dropdown:hover
-	{
+#navlist a.dropdown,#navlist a.dropdown:active,#navlist a.dropdown:visited,#navlist a.dropdown:hover {
 	background-image: url('../images/down.gif');
 	background-position: right;
 	background-repeat: no-repeat;
@@ -532,27 +526,26 @@ ol {
 }
 
 /********************** Special Styles ******************************/
-div#info, div#alert, div#error, div.info,  div.alert, div.error {
+div#info,div#alert,div#error,div.info,div.alert,div.error {
 	padding: 1em 1em 1em 4em !important;
 	margin: 10px 0 !important;
 	width: 86%;
 	clear: left;
 }
 
-div#info, div.info {
+div#info,div.info {
 	border-top: 2px solid #b7d2f2;
 	border-bottom: 2px solid #b7d2f2;
 	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
 }
 
-div#alert, div.alert {
+div#alert,div.alert {
 	border-top: 2px solid #D0AE10;
 	border-bottom: 2px solid #D0AE10;
-	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px
-		10px;
+	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
 }
 
-div#error, div.error {
+div#error,div.error {
 	border-top: 2px solid #feabab;
 	border-bottom: 2px solid #feabab;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
@@ -564,7 +557,7 @@ td.money,th.money {
 
 /* add to table elements representing money to have it right aligned */
 	/********************** BUTTONS ******************************/
-.picsbutton, a.picsbutton:visited, a.picsbutton:link {
+.picsbutton,a.picsbutton:visited,a.picsbutton:link {
 	margin: 0 7px 0 0;
 	border-top: 1px;
 	border-left: 1px;
@@ -609,7 +602,7 @@ a.picsbutton {
 }
 
 /* UTILITIES */
-.picsbutton:hover, .picsbutton:active, a.picsbutton:hover, a.picsbutton:active {
+.picsbutton:hover,.picsbutton:active,a.picsbutton:hover,a.picsbutton:active {
 	background-color: #dff4ff;
 	border-left: 2px;
 	border-right: 1px;
@@ -623,47 +616,47 @@ a.picsbutton {
 	text-decoration: none;
 }
 
-.picsbutton:active, a.picsbutton:active {
+.picsbutton:active,a.picsbutton:active {
 	background-color: #6299c5;
 	color: #fff;
 }
 
 /* POSITIVE */
-.positive, a.positive:visited, a.positive:link {
+.positive,a.positive:visited,a.positive:link {
 	color: #529214;
 }
 
-.positive:hover, a.positive:hover {
+.positive:hover,a.positive:hover {
 	background-color: #E6EFC2;
 	border-color: #C6D880;
 	color: #529214;
 	text-decoration: none;
 }
 
-.positive:active, a.positive:active {
+.positive:active,a.positive:active {
 	background-color: #529214;
 	border-color: #C6D880;
 	color: #fff;
 }
 
 /* NEGATIVE */
-.negative, a.negative:visited, a.negative:link {
+.negative,a.negative:visited,a.negative:link {
 	color: #d12f19;
 }
 
-.negative:hover, a.negative:hover {
+.negative:hover,a.negative:hover {
 	background: #fbe3e4;
 	border-color: #fbc2c4;
 	color: #d12f19;
 }
 
-.negative:active, a.negative:active {
+.negative:active,a.negative:active {
 	background-color: #d12f19;
 	border-color: #d12f19;
 	color: #fff;
 }
 
-.picsbutton[disabled], .picsbutton[disabled]:hover {
+.picsbutton[disabled],.picsbutton[disabled]:hover {
 	background: #dedede;
 	border-width: 1px 2px 2px 1px;
 	margin-bottom: -1px;
@@ -674,50 +667,55 @@ a.picsbutton {
 
 span.block {
 	margin: 0;
-	position:relative;
+	position: relative;
 }
 
-span.block span.whatsthis{
-	text-decoration:underline;
+span.block span.whatsthis {
+	text-decoration: underline;
 	color: rgb(0, 55, 104);
-	}
+}
 
-span.block span.whatsthis:hover{
+span.block span.whatsthis:hover {
 	color: rgb(168, 77, 16);
-	}
-	
+}
+
 span.hoverhelp {
 	text-align: left;
 	width: 190px;
-	height:120px;
+	height: 120px;
 	padding: 15px;
 	position: absolute;
-	bottom:5px;
-	left:-80px;
+	bottom: 5px;
+	left: -80px;
 	display: none;
-	margin:0 auto;
-	background-image:url('../images/hovertip.png');
-	text-decoration:none!important;
-	font-size:11px;
-	line-height:18px;
+	margin: 0 auto;
+	background-image: url('../images/hovertip.png');
+	text-decoration: none !important;
+	font-size: 11px;
+	line-height: 18px;
 }
-span.hoverhelp a{
-	width:90%;
-	display:block;
-	text-align:right;}
-	
+
+span.hoverhelp a {
+	width: 90%;
+	display: block;
+	text-align: right;
+}
+
 span.block:hover .hoverhelp {
 	display: block;
 }
+
 /********************** LIVE HELP BOX ******************************/
 #helpbox {
 	position: absolute;
 	background-color: #ECECEC;
-	top: 124px;
-	right: 21px;
+	top: 0;
+	right: 0;
 	font-size: 12px;
 	padding: 5px;
 	line-height: 18px;
+	border-left: 1px solid #C3C3C3;
+	border-bottom: 1px solid #C3C3C3;
 }
 
 #helpbox a {
@@ -888,8 +886,13 @@ div.autocomplete ul li {
 	white-space: normal;
 }
 
-table.report tr.clickable:hover, table.notes tr.clickable:hover {
-	background-color: #ffff99;	
-	color:black;
+table.report tr.clickable:hover,table.notes tr.clickable:hover {
+	background-color: #ffff99;
+	color: black;
 	cursor: pointer;
+}
+
+button .ui-icon {
+	float: left;
+	margin-right: 0.5em;
 }
