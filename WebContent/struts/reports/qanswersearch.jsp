@@ -29,7 +29,7 @@ function autoGetQuestion(ele) {
 }
 
 function setId(Id) {
-	$('removeQuestionId').value = Id;
+	$('#removeQuestionId').val(Id);
 	return true;
 }
 </script>
@@ -38,7 +38,7 @@ function setId(Id) {
 <h1>Question Answer Search</h1>
 
 <div id="search">
-<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;" onsubmit="runSearch('form1')">
+<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;" onsubmit="runSearch($('#form1'))">
 	<s:hidden name="filter.ajax" />
 	<s:hidden name="filter.destinationAction" />
 	<s:hidden name="filter.allowMailMerge" />
@@ -86,7 +86,6 @@ function setId(Id) {
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
-
 <table class="report" style="clear : none;">
 	<thead>
 	<tr>
