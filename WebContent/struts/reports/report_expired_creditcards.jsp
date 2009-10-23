@@ -3,14 +3,9 @@
 <head>
 <title><s:property value="reportName" /></title>
 <s:include value="reportHeader.jsp" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript"
-	src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
 <script type="text/javascript">
 function setAllChecked(elm) {
-	$$('.massCheckable').each( function(ele) {
-		ele.checked = elm.checked;
-	});
+	$('.massCheckable').attr({checked: $(elm).is(':checked')});
 	return false;
 }
 </script>

@@ -6,69 +6,59 @@ function download(url) {
 
 function changePage( formid, pageNum ) {
 	var search = $("#"+formid);
-	search['showPage'].value = pageNum;
+	search.find('[name=showPage]').val(pageNum);
 	runSearch(search);
 }
 
 function changeOrderBy( formid, orderBy ) {
 	var search = $("#"+formid);
-	search['showPage'].value = "1";
-	search['orderBy'].value = orderBy;
+	search.find('[name=showPage]').val("1");
+	search.find('[name=orderBy]').val(orderBy);
 	runSearch(search);
 }
 
 function changeStartsWith( formid, v ) {
 	var search = $("#"+formid);
-	search['showPage'].value = "1";
-	search['filter.startsWith'].value = v;
+	search.find('[name=showPage]').val("1");
+	search.find('[name=filter.startsWith]').val(v);
 	runSearch(search);
 }
 
 function clickSearch( formid ) {
 	var search = $("#"+formid);
-	search['showPage'].value = "1";
-	search['filter.startsWith'].value = "";
+	search.find('[name=showPage]').val("1");
+	search.find('[name=filter.startsWith]').val("");
 	runSearch(search);
-	if (search['filter.allowMailMerge'].value == "true")
-		$('write_email_button').show();
+	if (search.find('[name=filter.allowMailMerge]').val() == "true")
+		$('#write_email_button').show();
 	return false;
 }
 
 function clickSearchSubmit( formid ) {
 	var search = $("#"+formid);
-	search['showPage'].value = "1";
-	search['filter.startsWith'].value = "";
+	search.find('[name=showPage]').val("1");
+	search.find('[name=filter.startsWith]').val("");
 }
 
 function runSearch(search) {
-	var ajax = search['filter.ajax'].value;
+	var ajax = search.find('[name=filter.ajax]').val();
 	if (ajax == "false") {
 		search.submit();
 	} else {
 		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div
-		$('report_data').innerHTML = "<img src='images/ajax_process2.gif' width='48' height='48' /> finding search results";
-		//Effect.Opacity('report_data', { from: 1.0, to: 0.7, duration: 0.5 });
-		//alert('done');
-		
-		var destinationAction = search['filter.destinationAction'].value;
-		var pars = search.serialize();
-		var myAjax = new Ajax.Updater('report_data',destinationAction+'Ajax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) {
-				$('search').scrollTo();
-			}
-		});
+		startThinking({div:'report_data', type: 'large', message: 'finding search results'});
+		var destinationAction = search.find('[name=filter.destinationAction]').val();
+		var data = search.toObj();
+		$('#report_data').load(destinationAction+'Ajax.action', data);
 	}
 }
 
 function toggleBox(name) {
-	var box = $(name+'_select');
-	var result = $(name+'_query');
+	var box = $('#'+name+'_select');
+	var result = $('#'+name+'_query');
 	result.hide();
 	box.toggle();
-	if (box.visible())
+	if (box.is(':visible'))
 		return;
 
 	updateQuery(name);
@@ -76,11 +66,11 @@ function toggleBox(name) {
 }
 
 function showTextBox(name) {
-	var textBox = $(name);
-	var result = $(name+'_query'); 
+	var textBox = $('#'+name);
+	var result = $('#'+name+'_query'); 
 	result.hide();
 	textBox.toggle();
-	if(textBox.visible())
+	if(textBox.is(':visible'))
 		return;
 
 	textQuery(name);
@@ -88,9 +78,7 @@ function showTextBox(name) {
 }
 
 function clearSelected(name) {
-	var box = $("#"+name);
-	for(i=0; i < box.length; i++)
-		box.options[i].selected = false
+	$("#"+name).find('option').attr({'selected': false});
 	updateQuery(name);
 }
 
@@ -98,18 +86,15 @@ function updateQuery(name) {
 	var box = $("#"+name);
 	var result = $("#"+name+'_query');
 	var queryText = '';
-	var values = box.val();
-	for(i=0; i < box.length; i++) {
-		if (box.options[i].selected) {
-			if (queryText != '') queryText = queryText + ", ";
-			queryText = queryText + box.options[i].text;
-		}
-	}
+	box.find('option:selected').each(function(i,e){
+		if (queryText != '') queryText += ", ";
+		queryText += $(e).text();
+	});
 	
 	if (queryText == '') {
 		queryText = 'ALL';
 	}
-	result.update(queryText);
+	result.text(queryText);
 }
 
 function textQuery(name) {
@@ -117,12 +102,12 @@ function textQuery(name) {
 	var endField = $("#"+name+'2');
 	var result = $("#"+name+'_query');
 	var queryText = '';
-	if(startField.value != '' && endField.value != '')
-		queryText = 'between '+startField.value+' and '+ endField.value;
-	if(startField.value != '' && endField.value == '')
-		queryText = 'after '+ startField.value;
-	if(startField.value == '' && endField.value != '')
-		queryText = 'before '+ endField.value;
+	if(startField.val() != '' && endField.val() != '')
+		queryText = 'between '+startField.val()+' and '+ endField.val();
+	if(startField.val() != '' && endField.val() == '')
+		queryText = 'after '+ startField.val();
+	if(startField.val() == '' && endField.val() != '')
+		queryText = 'before '+ endField.val();
 	
 	if (queryText == '') {
 		queryText = '= ALL';

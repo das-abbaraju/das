@@ -1165,7 +1165,7 @@
 
 		<action name="ReportFilterAjax"
 			class="com.picsauditing.actions.report.ReportFilterAjax">
-			<result>struts/reports/filters2.jsp</result>
+			<result>struts/reports/filters.jsp</result>
 			<result name="userfilters">
 				struts/reports/userfilters.jsp
 			</result>

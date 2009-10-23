@@ -293,16 +293,10 @@
 		<br clear="all"/>
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_createdDate'); return false;">Created Date</a>  
 			<span id="form1_createdDate_query">= ALL</span><br /> 
-			<span id="form1_createdDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			<span id="form1_createdDate" style="display: none" class="clearLink"><s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_createdDate1" name="filter.createdDate1" />
-			<a id="anchor_createdDate1" name="anchor_createdDate1"
-			onclick="cal2.select($('form1_createdDate1'),'anchor_createdDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
+			To:<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_createdDate2" name="filter.createdDate2" />
-			<a id="anchor_createdDate2" name="anchor_createdDate2"
-			onclick="cal2.select($('form1_createdDate2'),'anchor_createdDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			<script
 			type="text/javascript">textQuery('form1_createdDate');</script> <br />
 			<a class="clearLink" href="#"
@@ -313,16 +307,10 @@
 	<s:if test="filter.showCompletedDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_completedDate'); return false;">Completed Date</a> 
 			<span id="form1_completedDate_query">= ALL</span><br /> 
-			<span id="form1_completedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			<span id="form1_completedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_completedDate1" name="filter.completedDate1" />
-			<a id="anchor_completedDate1" name="anchor_completedDate1"
-			onclick="cal2.select($('form1_completedDate1'),'anchor_completedDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
+			To:<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_completedDate2" name="filter.completedDate2" />
-			<a id="anchor_completedDate2" name="anchor_completedDate2"
-			onclick="cal2.select($('form1_completedDate2'),'anchor_completedDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			<script
 			type="text/javascript">textQuery('form1_completedDate');</script> <br />
 			<a class="clearLink" href="#"
@@ -333,16 +321,10 @@
 	<s:if test="filter.showClosedDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_closedDate'); return false;">Closed Date</a> 
 			<span id="form1_closedDate_query">= ALL</span><br /> 
-			<span id="form1_closedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			<span id="form1_closedDate" style="display: none" class="clearLink"><s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_closedDate1" name="filter.closedDate1" />
-			<a id="anchor_closedDate1" name="anchor_closedDate1"
-			onclick="cal2.select($('form1_closedDate1'),'anchor_closedDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
+			To:<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_closedDate2" name="filter.closedDate2" />
-			<a id="anchor_closedDate2" name="anchor_closedDate2"
-			onclick="cal2.select($('form1_closedDate2'),'anchor_closedDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			<script
 			type="text/javascript">textQuery('form1_closedDate');</script> <br />
 			<a class="clearLink" href="#"
@@ -357,16 +339,10 @@
 	<s:if test="filter.showExpiredDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_expiredDate'); return false;">Expired Date</a> 
 			<span id="form1_expiredDate_query">= ALL</span><br /> 
-			<span id="form1_expiredDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			<span id="form1_expiredDate" style="display: none" class="clearLink"><s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_expiredDate1" name="filter.expiredDate1" />
-			<a id="anchor_expiredDate1" name="anchor_expiredDate1"
-			onclick="cal2.select($('form1_expiredDate1'),'anchor_expiredDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
+			To:<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_expiredDate2" name="filter.expiredDate2" />
-			<a id="anchor_expiredDate2" name="anchor_expiredDate2"
-			onclick="cal2.select($('form1_expiredDate2'),'anchor_expiredDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			<script
 			type="text/javascript">textQuery('form1_expiredDate');</script> <br />
 			<a class="clearLink" href="#"
@@ -519,27 +495,18 @@
 		</div>
 	
 		<div class="filterOption">Email Sent Date 
-			<s:textfield cssClass="forms" size="8" 
+			<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_emailSentDate" name="filter.emailSentDate" />
-			<a id="anchor_emailSentDate" name="anchor_emailSentDate"
-			onclick="cal2.select($('form1_emailSentDate'),'anchor_emailSentDate','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 		</div>
 	</s:if>
 	
 	<s:if test="filter.showRegistrationDate">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_registrationDate'); return false;">Registration Date</a> 
 			<span id="form1_registrationDate_query">= ALL</span><br /> 
-			<span id="form1_registrationDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			<span id="form1_registrationDate" style="display: none" class="clearLink"><s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_registrationDate1" name="filter.registrationDate1" />
-			<a id="anchor_registrationDate1" name="anchor_registrationDate1"
-			onclick="cal2.select($('form1_registrationDate1'),'anchor_registrationDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
+			To:<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_registrationDate2" name="filter.registrationDate2" />
-			<a id="anchor_registrationDate2" name="anchor_registrationDate2"
-			onclick="cal2.select($('form1_registrationDate2'),'anchor_registrationDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			<script
 			type="text/javascript">textQuery('form1_registrationDate');</script> <br />
 			<a class="clearLink" href="#"
@@ -551,16 +518,10 @@
 		<br clear="all">
 		<div class="filterOption"><a href="#" onclick="showTextBox('form1_invoiceDueDate'); return false;">Invoice Due Date</a> 
 			<span id="form1_invoiceDueDate_query">= ALL</span><br /> 
-			<span id="form1_invoiceDueDate" style="display: none" class="clearLink"><s:textfield cssClass="forms" size="8" 
+			<span id="form1_invoiceDueDate" style="display: none" class="clearLink"><s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_invoiceDueDate1" name="filter.invoiceDueDate1" />
-			<a id="anchor_invoiceDueDate1" name="anchor_invoiceDueDate1"
-			onclick="cal2.select($('form1_invoiceDueDate1'),'anchor_invoiceDueDate1','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-			To:<s:textfield cssClass="forms" size="8" 
+			To:<s:textfield cssClass="forms datepicker" size="10" 
 			id="form1_invoiceDueDate2" name="filter.invoiceDueDate2" />
-			<a id="anchor_invoiceDueDate2" name="anchor_invoiceDueDate2"
-			onclick="cal2.select($('form1_invoiceDueDate2'),'anchor_invoiceDueDate2','M/d/yy'); return false;">
-			<img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
 			<script
 			type="text/javascript">textQuery('form1_invoiceDueDate');</script> <br />
 			<a class="clearLink" href="#"
@@ -607,4 +568,3 @@
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form></div>
-<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
