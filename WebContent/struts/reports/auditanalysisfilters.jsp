@@ -1,38 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
-<script type="text/javascript">
-function toggleBox(name) {
-	var box = $(name+'_select');
-	var result = $(name+'_query');
-	result.hide();
-	box.toggle();
-	if (box.visible())
-		return;
-
-	updateQuery(name);
-	result.show();
-}
-
-function updateQuery(name) {
-	var box = $(name);
-	var result = $(name+'_query');
-	var queryText = '';
-	var values = $F(box);
-	for(i=0; i < box.length; i++) {
-		if (box.options[i].selected) {
-			if (queryText != '') queryText = queryText + ", ";
-			queryText = queryText + box.options[i].text;
-		}
-	}
-	
-	if (queryText == '') {
-		queryText = 'ALL';
-	}
-	result.update(queryText);
-}
-
-</script>
-
 <div id="search">
 
 <s:form id="form1" method="post"
@@ -44,7 +10,7 @@ function updateQuery(name) {
 
 	<div style="text-align: center; width: 100%">
 	<div class="buttons"><a href="#" class="picsbutton positive"
-		onclick="$('form1').submit(); return false;">Search</a></div>
+		onclick="$('#form1').submit(); return false;">Search</a></div>
 	</div>
 	<br clear="all" />
 
