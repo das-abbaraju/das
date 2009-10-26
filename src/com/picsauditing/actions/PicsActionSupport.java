@@ -9,7 +9,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
@@ -47,7 +49,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
-	private List<User> auditorList;
+	private Set<User> auditorList;
 	
 	protected void loadPermissions() {
 		loadPermissions(true);
@@ -191,12 +193,14 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
 
-	public List<User> getAuditorList() {
+	public Set<User> getAuditorList() {
 		if (auditorList == null) {
-			auditorList = new ArrayList<User>();
-			auditorList.add(new User(User.DEFAULT_AUDITOR));
+			auditorList = new TreeSet<User>();
 			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			auditorList.addAll(dao.findAuditors());
+			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
+			System.out.println("found " + auditorList.size() + " auditors");
+			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
+			System.out.println("found " + auditorList.size() + " auditors + csrs");
 		}
 		return auditorList;
 	}

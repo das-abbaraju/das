@@ -235,14 +235,6 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	}
 
 	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
 	public int compareTo(AuditType o) {
 		if(!this.getClassType().equals(o.getClassType())) {
 			return getClassType().ordinal() - o.getClassType().ordinal();

@@ -433,20 +433,15 @@ div.message_info {
 
 /******************** Internal Page Navigation  ************************/
 #content #internalnavcontainer {
-	display: block;
 	height: 30px;
-	width: 100%;
 	position: relative;
 }
 
 ul#navlist {
 	float: right;
-	position: relative;
 	white-space: nowrap;
-	display: block;
 	padding-top: 0px;
-	margin-top: -16px;
-	margin-right: 5px;
+	margin-top: -11px;
 }
 
 #navlist li {
@@ -455,6 +450,7 @@ ul#navlist {
 	display: inline;
 	list-style-type: none;
 	margin-right: 0px;
+	position: relative;
 }
 
 #navlist a {
