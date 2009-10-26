@@ -4,16 +4,13 @@
 <html>
 <head>
 <title>Manage Users</title>
-<script type="text/javascript" src="js/prototype.js"></script>
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
-jQuery.noConflict();
+$.noConflict();
 var accountID = <s:property value="accountId"/>;
 var currentUserID = 0;
 <s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
@@ -24,100 +21,100 @@ var permTypes = new Array();
 </s:iterator>
 
 function showPermDesc(item) {
-	var x = jQuery('#'+item).val();
-	jQuery('#permDescription').html(permTypes[x][0]);
+	var x = $(item).val();
+	$('#permDescription').html(permTypes[x][0]);
 }
 
 function addPermission() {
-	jQuery('#addPermissionButton').html('Processing: <img src="images/ajax_process.gif" />');
-	var opPerm = jQuery('#newPermissionSelect').val();
+	$('#addPermissionButton').html('Processing: <img src="images/ajax_process.gif" />');
+	var opPerm = $('#newPermissionSelect').val();
 	var data = {
 		button: 'AddPerm',
 		'user.id': currentUserID,
 		opPerm: opPerm,
 		accountId: accountID
 	};
-	jQuery('#permissionReport').load('UserAccessSaveAjax.action', data);
+	$('#permissionReport').load('UserAccessSaveAjax.action', data);
 }
 
 function removePermission(accessId) {
-	jQuery('#permissionReport').html('Processing: <img src="images/ajax_process.gif" />');
+	$('#permissionReport').html('Processing: <img src="images/ajax_process.gif" />');
 	var data = {
 		button: 'RemovePerm',
 		accessId: accessId,
 		'user.id': currentUserID,
 		accountId: accountID
 	};
-	jQuery('#permissionReport').load('UserAccessSaveAjax.action', data);
+	$('#permissionReport').load('UserAccessSaveAjax.action', data);
 }
 
 function updatePermission(accessId, typeName, theValue) {
 	var data = {
 		accessId: accessId,
 		type: typeName,
-		permValue: jQuery(theValue).val()
+		permValue: $(theValue).val()
 	};
-	jQuery.post('UserAccessUpdateAjax.action', data, 
+	$.post('UserAccessUpdateAjax.action', data, 
 		function(){
-			jQuery('#permission_'+accessId).effect('highlight', {color: '#FFFF11'}, 1000);
+			$('#permission_'+accessId).effect('highlight', {color: '#FFFF11'}, 1000);
 		}
 	);
 }
 
 function addGroup(groupID) {
-	jQuery('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
+	$('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
 	var data = {
 		button: 'AddGroup',
 		groupId: groupID,
 		'user.id': currentUserID,
 		accountId: accountID
 	};
-	jQuery('#groupReport').load('UserGroupSaveAjax.action', data);
+	$('#groupReport').load('UserGroupSaveAjax.action', data);
 }
 
 function removeGroup(userGroupID) {
-	jQuery('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
+	$('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
 	var data = {
 		button: 'RemoveGroup',
 		userGroupId: userGroupID,
 		'user.id': currentUserID,
 		accountId: accountID
 	};
-	jQuery('#groupReport').load('UserGroupSaveAjax.action', data);
+	$('#groupReport').load('UserGroupSaveAjax.action', data);
 }
 
 function addMember(memberId) {
-	jQuery('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
+	$('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
 	var data = {
 		button: 'AddMember',
 		memberId: memberId,
 		'user.id': currentUserID,
 		accountId: accountID
 	};
-	jQuery('#memberReport').load('UserGroupSaveAjax.action', data);
+	$('#memberReport').load('UserGroupSaveAjax.action', data);
 }
 
 function removeMember(userGroupID) {
-	jQuery('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
+	$('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
 	var data = {
 		button: 'RemoveMember',
 		userGroupId: userGroupID,
 		'user.id': currentUserID,
 		accountId: accountID
 	};
-	jQuery('#memberReport').load('UserGroupSaveAjax.action', data);
+	$('#memberReport').load('UserGroupSaveAjax.action', data);
 }
 
 function checkUsername(username) {
-	jQuery('#UserSave').attr({'disabled':'disabled'});
-	jQuery('#username_status').html('checking availability of username...');
+	$('#UserSave').attr({'disabled':'disabled'});
+	$('#username_status').html('checking availability of username...');
 	var data = {
 		userID: currentUserID,
 		username: username
 	};
-	jQuery('#username_status').load('user_ajax.jsp', data, function() {
-		if(jQuery('#username_status').html.indexOf('is NOT available. Please choose a different username.') == -1)
-			jQuery('#UserSave').attr({'disabled': false});
+	$('#username_status').load('user_ajax.jsp', data, function() {
+		if($('#username_status').html.indexOf('is NOT available. Please choose a different username.') == -1)
+			$('#UserSave').attr({'disabled': false});
 		}
 	);
 }
@@ -130,7 +127,7 @@ function checkUsername(username) {
 				'memberId': userID,
 				'accountId':accountID
 		};
-		jQuery('#userSwitch').load('UserGroupSaveAjax.action', data);
+		$('#userSwitch').load('UserGroupSaveAjax.action', data);
 	}
 
 	function removeUserSwitch(userID) {
@@ -140,7 +137,7 @@ function checkUsername(username) {
 				'memberId': userID,
 				'accountId':accountID
 		};
-		jQuery('#userSwitch').load('UserGroupSaveAjax.action', data);
+		$('#userSwitch').load('UserGroupSaveAjax.action', data);
 	}
 </s:if>
 
