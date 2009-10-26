@@ -78,7 +78,7 @@ public class ContractorWidget extends ContractorActionSupport {
                 } catch (Exception ignoreFormattingErrors) {
                 }
                 openTasks
-                .add("Your Account is a Trial Only Account and will expire on " + due +". To continue with the audit process" +
+                .add("Your Account is a BID-ONLY Account and will expire on " + due +". To continue with the audit process" +
                 		" please <a href=\"ContractorView.action?id="
                         + contractor.getId()
                         + "&button=Upgrade to Full Membership\"> upgrade your account to a full membership</a>");

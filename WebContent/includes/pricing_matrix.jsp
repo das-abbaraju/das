@@ -8,7 +8,7 @@
 		</tr>	
 	</thead>
 	<tr>
-		<td>Trial Account</td>
+		<td>Bid Only Account</td>
 		<td class="center">-</td>
 		<td>$25</td>
 	</tr>

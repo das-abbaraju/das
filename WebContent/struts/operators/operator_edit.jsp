@@ -100,7 +100,7 @@ $(function() {
 					<li><label title="The source of statistics that should be used to evaluate contractors">Health &amp;
 					Safety Organization:</label> <s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" name="operator.oshaType"
 						theme="pics" /></li>
-					<li><label>Accepts Trial Contractor:</label>
+					<li><label>Accepts Bid Only Contractor:</label>
 						<s:checkbox name="operator.acceptsBids"/></li>	
 				</s:if>
 				<li><label>InsureGUARD&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"

@@ -289,7 +289,7 @@ public class FlagCalculatorSingle {
 		if (!contractor.isActiveB())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
-		// If Trial Account
+		// If Bid Only Account
 		if(contractor.isAcceptsBids()) {
 			return WaitingOn.Operator;
 		}

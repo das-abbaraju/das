@@ -25,7 +25,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_PERFORMED_BY = "- Performed By -";
-	public static final String[] DEACTIVATION_REASON = {"ChargeBack", "Did not Complete PICS process","Does not work for operator","Duplicate/Merged Account","Operator Exemption","Payments not Current", "Trial Account"};
+	public static final String[] DEACTIVATION_REASON = {"ChargeBack", "Did not Complete PICS process","Does not work for operator","Duplicate/Merged Account","Operator Exemption","Payments not Current", "Bid Only Account"};
 
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;

@@ -18,9 +18,10 @@ and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
 
-/** bidding Contractors widget
- * 
+/**
+ * Update the invoice Fee with Bid Only
  */
-insert into widget_user 
-values
-(null, 22, 616, 1, 0,20,null);
+update invoice_fee set fee="Bid Only Account Fee", 
+qbFullName = "Bid Only Account Fee",updateDate = Now() 
+where
+id = 100;

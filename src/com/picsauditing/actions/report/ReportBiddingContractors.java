@@ -18,7 +18,6 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -96,7 +95,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					}
 				}
 				templateId = 73; // Trial Contractor Account Approval
-				summary = "Upgraded and Approved the Trial Account for " + permissions.getAccountName();
+				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName();
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
@@ -110,7 +109,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					}
 				}
 				templateId = 75;// Trial Contractor Account Rejection
-				summary = "Rejected the Trial Account for " + permissions.getAccountName();
+				summary = "Rejected the Bid Only Account for " + permissions.getAccountName();
 			}
 
 			cAccount.setNeedsRecalculation(true);

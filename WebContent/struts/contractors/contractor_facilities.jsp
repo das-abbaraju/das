@@ -82,11 +82,11 @@
 	}
 
 	function changeToTrialAccount(conId) {
-		var r = confirm("Are you sure that you want to switch to a Trial Account? With only a Trial Account, you will not complete the full audit process for your facilities, and the account will only be valid for 90 days.")
+		var r = confirm("Are you sure you need to switch to a BID-ONLY account? With a bid only account you will only be able to complete the process for the facilities/operators that you are bidding for 90 days.")
 		if(r == false) {
 			return false;
 		}
-		startThinking( {div: 'thinkingDiv', message: 'Switching to Trial Account' } );
+		startThinking( {div: 'thinkingDiv', message: 'Switching to Bid Only Account' } );
 		var data= {id: conId, button: 'SwitchToTrialAccount'};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 

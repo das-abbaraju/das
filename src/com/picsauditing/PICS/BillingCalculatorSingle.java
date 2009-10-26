@@ -139,7 +139,7 @@ public class BillingCalculatorSingle {
 		if (billingStatus.equals("Current"))
 			return items;
 
-		if (billingStatus.equals("TrialAccount")) {
+		if (billingStatus.equals("BidOnlyAccount")) {
 			Date paymentExpires = DateBean.addMonths(new Date(), 3);
 			InvoiceFee fee = getFee(InvoiceFee.BIDONLY, feeDAO);
 			items.add(new InvoiceItem(fee, paymentExpires));

@@ -189,7 +189,7 @@ public class Cron extends PicsActionSupport {
 				contractor.setActive('N');
 				// Setting a deactivation report 
 				if(contractor.isAcceptsBids()) {
-					contractor.setReason("Trial Account");
+					contractor.setReason("Bid Only Account");
 				}	
 				// Leave the PaymentExpires in the past
 				// conAcct.setPaymentExpires(null);
@@ -214,7 +214,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending No Action Email to Trial Accounts ...");
+			startTask("\nSending No Action Email to Bid Only Accounts ...");
 			sendNoActionEmailToTrialAccounts();
 			endTask();
 		} catch (Throwable t) {

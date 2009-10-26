@@ -63,7 +63,7 @@ public class PicsMenu {
 			subMenu.addChild("Search For New", url);
 		}
 		if(permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
-			subMenu.addChild("Trial Accounts", "BiddingContractorSearch.action");
+			subMenu.addChild("Bid Only Account", "BiddingContractorSearch.action");
 		}
 		if (permissions.isCorporate())
 			subMenu.addChild("By Flag", "ReportContractorOperatorFlag.action");

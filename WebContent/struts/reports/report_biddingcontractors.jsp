@@ -2,11 +2,11 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Trial Contractor Accounts </title>
+<title>BID-ONLY Contractor Accounts </title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Trial Contractor Accounts List</h1>
+<h1>BID-ONLY Contractor Accounts List</h1>
 
 <s:include value="filters.jsp" />
 

@@ -125,11 +125,11 @@ img.contractor_logo {
 </s:if>
 <s:if test="contractor.acceptsBids">
 	<s:if test="canUpgrade">
-		<div id="info">This is a Trial Only Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
+		<div id="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
 		Click <a href="ContractorView.action?id=<s:property value="id" />" class="picsbutton positive">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
 	</s:if>
 	<s:else>
-		<div id="alert">This is a Trial Contractor Account.</div>
+		<div id="alert">This is a BID-ONLY Contractor Account.</div>
 	</s:else>
 </s:if>
 <s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
