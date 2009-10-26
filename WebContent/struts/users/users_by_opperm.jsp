@@ -2,7 +2,6 @@
 <html>
 <head>
 <title>Users By OpPerm</title>
-<script src="js/prototype.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 
