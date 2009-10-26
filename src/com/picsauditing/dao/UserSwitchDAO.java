@@ -45,7 +45,7 @@ public class UserSwitchDAO extends PicsDAO {
 	}
 
 	public List<UserSwitch> findByUserId(int userId) {
-		Query query = em.createQuery("SELECT u FROM UserSwitch u where u.user.id = ?");
+		Query query = em.createQuery("SELECT u FROM UserSwitch u where u.user.id = ? ORDER BY u.switchTo.name");
 		query.setParameter(1, userId);
 
 		return query.getResultList();
