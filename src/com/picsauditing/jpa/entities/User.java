@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -30,11 +29,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 @SuppressWarnings("serial")
 @Entity
