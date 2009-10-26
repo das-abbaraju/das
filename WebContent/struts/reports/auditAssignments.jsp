@@ -3,66 +3,19 @@
 <head>
 <title>Schedule &amp; Assign Audits</title>
 <s:include value="reportHeader.jsp" />
-<SCRIPT LANGUAGE="JavaScript">
-	var cal1 = new CalendarPopup('caldiv1');
-	cal1.offsetY = -110;
-	cal1.offsetX = 0;
-	cal1.addDisabledDates(null, "<s:property value="yesterday"/>");
-	cal1.setDisabledWeekDays(0,6);
-	cal1.setCssPrefix("PICS");
-</SCRIPT>
 <script type="text/javascript">
-	function saveAudit(auditId) {
-		var auditor = $F($('auditor_' + auditId));
-		var scheduleDate = $('scheduled_date_' + auditId + '_date');
-		var pars = "contractorAudit.id=" + auditId;
-		
-		pars = pars + "&auditor.id=" + auditor;
-
-		if (scheduleDate != null) {
-			var thisdate = $F($('scheduled_date_' + auditId + '_date'));
-			pars = pars + "&contractorAudit.scheduledDate=";	
-			if (thisdate != '')	{
-				var thisTime = $('scheduled_date_' + auditId + '_time').options[$('scheduled_date_' + auditId + '_time').selectedIndex].text;
-				thisdate = thisdate + ' ' + thisTime;
-				pars = pars + thisdate;
-			}
-			
-			if ($('auditlocation_' + auditId + '_Onsite').checked == true) {
-					pars = pars + "&contractorAudit.auditLocation=Onsite";
-			}
-			else if($('auditlocation_' + auditId + '_Web').checked == true) {
-					pars = pars + "&contractorAudit.auditLocation=Web";
-			}
-		}
-
-		var assignDateDiv = 'assignDate_'+auditId;
-		var divName = 'audit_'+auditId;
-		//alert(pars);
-		
-		var myAjax = new Ajax.Updater(assignDateDiv, 'AuditAssignmentUpdateAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) {
-				new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-			}
-		});
-	}
-	
 	function saveAuditor(auditId, auditorId) {
-		var pars = "contractorAudit.id=" + auditId + '&auditor.id=' + auditorId;
-		var toHighlight = 'audit_'+auditId;
-		var assignDateDiv = 'assignDate_'+auditId;
-			
-		var myAjax = new Ajax.Updater(assignDateDiv, 'AuditAssignmentUpdateAjax.action', 
-		{
-			method: 'post', 
-			parameters: pars,
-			onSuccess: function(transport) { 
-				new Effect.Highlight(toHighlight, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+		var data = {
+				'contractorAudit.id': auditId,
+				'auditor.id': auditorId
+		};
+
+		$('#assignDate_'+auditId).load('AuditAssignmentUpdateAjax.action', data, function(text, status) {
+				if (status='success')
+					$('#audit_'+auditId).effect('highlight', {color: '#FFFF11'}, 1000);
 			}
-		});
+		);
+			
 	}
 </script>
 </head>
@@ -142,29 +95,10 @@
 					</nobr>
 				</td>
 				<td>
-				<s:if test="[0].get('isScheduled')">
-					<nobr><input class="blueMain" size="6" type="text"
-						name="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
-						id="scheduled_date_<s:property value="[0].get('auditID')"/>_date"
-						value="<s:property value="getBetterDate( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')"/>" />
-						<a href="#"
-							onclick="cal1.select($('scheduled_date_<s:property value="[0].get('auditID')"/>_date'),'anchor<s:property value="[0].get('auditID')"/>','MM/dd/yy'); return false;"
-							name="anchor<s:property value="[0].get('auditID')"/>" 
-							id="anchor<s:property value="[0].get('auditID')"/>"><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-					<s:select list="@com.picsauditing.PICS.DateBean@getBusinessTimes()"
-						listKey="key" listValue="value" cssClass="blueMain"
-						name="scheduled_date_%{[0].get('auditID')}_time"
-						id="scheduled_date_%{[0].get('auditID')}_time"
-						value="%{@com.picsauditing.PICS.DateBean@getIndexForTime(getBetterTime( [0].get('scheduledDate'), 'MM/dd/yy hh:mm:ss a.000')) }" />
-					</nobr>
-				</s:if>
+				<s:date name="[0].get('scheduledDate')" format="MM/dd/yyyy hh:mm a"/>
 				</td>
 				<td>
-				<s:if test="[0].get('isScheduled')">
-					<s:radio name="auditlocation_%{[0].get('auditID')}" list="#{'Onsite':'On site', 'Web':'Web'}"
-						id="auditlocation_%{[0].get('auditID')}_"
-						value="%{[0].get('auditLocation')}" theme="pics" />
-				</s:if>
+				<s:property value="[0].get('auditLocation')"/>
 				</td>
 				<td><s:if test="get('manswer') != null">
 					<nobr>Size:<s:property value="getFileSize(get('mid').toString())"/></nobr><br/>
@@ -177,7 +111,7 @@
 					<input type="button" class="forms" value="Save" onclick="saveAudit('<s:property value="%{[0].get('auditID')}"/>'); return false;"/>
 				</td>
 				<td>
-					<s:if test="get('auditTypeID') == 3 || get('auditTypeID') == 5">
+					<s:if test="[0].get('isScheduled')">
 					<a href="ScheduleAudit.action?auditID=<s:property value="get('auditID')"/>" target="scheduleAudit">Schedule</a>
 					</s:if>
 				</td>
@@ -208,8 +142,6 @@
 </div>
 
 <span class="redMain">* - UnConfirmed Audits</span>
-
-<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
 </body>
 </html>
