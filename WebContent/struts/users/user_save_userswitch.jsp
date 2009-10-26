@@ -21,8 +21,21 @@
 		<tr>
 			<td colspan="2">
 				<input type="text" name="userSwitchAdd" id="userSwitchAdd" size="50"/>
-				<div id="userSwitchAutocomplete" class="autocomplete"></div>
 			</td>
 		</tr>
 	</tbody>
 </table>
+<script type="text/javascript">
+jQuery('#userSwitchAdd').autocomplete('UserSearchAjax.action', {
+		minChars: 1,
+		extraParams: {
+			'filter.search': function() {return jQuery('#userSwitchAdd').val();}
+		},
+		formatResult: function(data,i,count) {
+			return '';
+		}
+	}
+).result(function(event, data) {
+	addUserSwitch(data[1]);
+});
+</script>

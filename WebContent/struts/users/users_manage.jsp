@@ -6,9 +6,14 @@
 <title>Manage Users</title>
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous/scriptaculous.js?load=effects,controls"></script>
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <script type="text/javascript">
+jQuery.noConflict();
 var accountID = <s:property value="accountId"/>;
 var currentUserID = 0;
 <s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
@@ -19,105 +24,123 @@ var permTypes = new Array();
 </s:iterator>
 
 function showPermDesc(item) {
-	var x = $F(item);
-	$('permDescription').innerHTML = permTypes[x][0];
+	var x = jQuery('#'+item).val();
+	jQuery('#permDescription').html(permTypes[x][0]);
 }
 
 function addPermission() {
-	$('addPermissionButton').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	var opPerm = $('newPermissionSelect').value;
-	pars = 'button=AddPerm&user.id='+currentUserID+'&opPerm='+opPerm+'&accountId='+accountID;
-	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
+	jQuery('#addPermissionButton').html('Processing: <img src="images/ajax_process.gif" />');
+	var opPerm = jQuery('#newPermissionSelect').val();
+	var data = {
+		button: 'AddPerm',
+		'user.id': currentUserID,
+		opPerm: opPerm,
+		accountId: accountID
+	};
+	jQuery('#permissionReport').load('UserAccessSaveAjax.action', data);
 }
 
 function removePermission(accessId) {
-	$('permissionReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=RemovePerm&accessId='+accessId+'&user.id='+currentUserID+'&accountId='+accountID;
-	var myAjax = new Ajax.Updater('permissionReport', 'UserAccessSaveAjax.action', {method: 'post', parameters: pars});
+	jQuery('#permissionReport').html('Processing: <img src="images/ajax_process.gif" />');
+	var data = {
+		button: 'RemovePerm',
+		accessId: accessId,
+		'user.id': currentUserID,
+		accountId: accountID
+	};
+	jQuery('#permissionReport').load('UserAccessSaveAjax.action', data);
 }
 
 function updatePermission(accessId, typeName, theValue) {
-
-	pars = 'accessId='+accessId+'&type='+typeName+'&permValue='+theValue.value;
-	var myAjax = new Ajax.Updater('', 'UserAccessUpdateAjax.action', {method: 'post', parameters: pars,
-			onSuccess: function(transport) {
-				new Effect.Highlight($('permission_'+accessId),{duration: 0.75, startcolor:'#FFFF11'});
-			}
-	});
+	var data = {
+		accessId: accessId,
+		type: typeName,
+		permValue: jQuery(theValue).val()
+	};
+	jQuery.post('UserAccessUpdateAjax.action', data, 
+		function(){
+			jQuery('#permission_'+accessId).effect('highlight', {color: '#FFFF11'}, 1000);
+		}
+	);
 }
 
 function addGroup(groupID) {
-	$('groupReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=AddGroup&groupId='+groupID+'&user.id='+currentUserID+'&accountId='+accountID;
-	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+	jQuery('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
+	var data = {
+		button: 'AddGroup',
+		groupId: groupID,
+		'user.id': currentUserID,
+		accountId: accountID
+	};
+	jQuery('#groupReport').load('UserGroupSaveAjax.action', data);
 }
 
 function removeGroup(userGroupID) {
-	$('groupReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=RemoveGroup&userGroupId='+userGroupID+'&user.id='+currentUserID+'&accountId='+accountID;
-	var myAjax = new Ajax.Updater('groupReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+	jQuery('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
+	var data = {
+		button: 'RemoveGroup',
+		userGroupId: userGroupID,
+		'user.id': currentUserID,
+		accountId: accountID
+	};
+	jQuery('#groupReport').load('UserGroupSaveAjax.action', data);
 }
 
 function addMember(memberId) {
-	$('memberReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=AddMember&memberId='+memberId+'&user.id='+currentUserID+'&accountId='+accountID;
-	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+	jQuery('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
+	var data = {
+		button: 'AddMember',
+		memberId: memberId,
+		'user.id': currentUserID,
+		accountId: accountID
+	};
+	jQuery('#memberReport').load('UserGroupSaveAjax.action', data);
 }
 
 function removeMember(userGroupID) {
-	$('memberReport').innerHTML = 'Processing: <img src="images/ajax_process.gif" />';
-	pars = 'button=RemoveMember&userGroupId='+userGroupID+'&user.id='+currentUserID+'&accountId='+accountID;
-	var myAjax = new Ajax.Updater('memberReport', 'UserGroupSaveAjax.action', {method: 'post', parameters: pars});
+	jQuery('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
+	var data = {
+		button: 'RemoveMember',
+		userGroupId: userGroupID,
+		'user.id': currentUserID,
+		accountId: accountID
+	};
+	jQuery('#memberReport').load('UserGroupSaveAjax.action', data);
 }
 
 function checkUsername(username) {
-	$('UserSave').writeAttribute('disabled','true');
-	$('username_status').innerHTML = 'checking availability of username...';
-	pars = 'userID='+currentUserID+'&username='+username;
-	var myAjax = new Ajax.Updater('username_status', 'user_ajax.jsp', {method: 'get', parameters: pars,
-		onComplete: function(transport) {
-		if($('username_status').innerHTML.indexOf('is NOT available. Please choose a different username.') == -1)
-		{
-			$('UserSave').writeAttribute('disabled', null);						
+	jQuery('#UserSave').attr({'disabled':'disabled'});
+	jQuery('#username_status').html('checking availability of username...');
+	var data = {
+		userID: currentUserID,
+		username: username
+	};
+	jQuery('#username_status').load('user_ajax.jsp', data, function() {
+		if(jQuery('#username_status').html.indexOf('is NOT available. Please choose a different username.') == -1)
+			jQuery('#UserSave').attr({'disabled': false});
 		}
-	}
-	});
+	);
 }
 
-function loadAutocompleter(){}
-
 <s:if test="user.group">
-	loadAutocompleter = function() {
-		var myAjax = new Ajax.Autocompleter('userSwitchAdd', 'userSwitchAutocomplete', 'UserSearchAjax.action', 
-				{
-					paramName:'filter.search',
-					minChars: 3,
-					updateElement: addUserSwitch
-				} 
-		);
-	};
-
-	function addUserSwitch(li) {
-		$('userSwitchAdd').value = '';
-		var pars = 'button=AddSwitchFrom&user.id='+currentUserID+'&memberId='+li.id+"&accountId="+accountID;
-		var myAjax = new Ajax.Updater('userSwitch', 'UserGroupSaveAjax.action',
-				{
-					method: 'post',
-					parameters: pars,
-					onComplete: function() { loadAutocompleter(); $('userSwitchAdd').focus(); }
-				}
-		);
+	function addUserSwitch(userID) {
+		var data = {
+				button: 'AddSwitchFrom',
+				'user.id': currentUserID,
+				'memberId': userID,
+				'accountId':accountID
+		};
+		jQuery('#userSwitch').load('UserGroupSaveAjax.action', data);
 	}
 
-	function removeUserSwitch(userId) {
-		var pars = 'button=RemoveSwitchFrom&user.id='+currentUserID+'&memberId='+userId+"&accountId="+accountID;
-		var myAjax = new Ajax.Updater('userSwitch', 'UserGroupSaveAjax.action',
-				{
-					method: 'post',
-					parameters: pars,
-					onComplete: function() { loadAutocompleter(); $('userSwitchAdd').focus(); }	
-				} 
-		);
+	function removeUserSwitch(userID) {
+		var data = {
+				button: 'RemoveSwitchFrom',
+				'user.id': currentUserID,
+				'memberId': userID,
+				'accountId':accountID
+		};
+		jQuery('#userSwitch').load('UserGroupSaveAjax.action', data);
 	}
 </s:if>
 
@@ -146,7 +169,7 @@ div.autocomplete ul li {
 }
 </style>
 </head>
-<body onload="loadAutocompleter()">
+<body>
 <h1>Manage User Accounts</h1>
 
 <table border="0">
