@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="all" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="all" href="css/notes.css" />
 
-<script type="text/javascript" src="js/prototype.js"></script>
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/payment_detail.js"></script>
 <script type="text/javascript">
 	<s:if test="payment == null">
