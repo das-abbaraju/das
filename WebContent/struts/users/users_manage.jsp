@@ -10,7 +10,6 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript">
-$.noConflict();
 var accountID = <s:property value="accountId"/>;
 var currentUserID = 0;
 <s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
