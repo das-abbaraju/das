@@ -8,13 +8,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
-<script type="text/javascript" src="js/prototype.js"></script>
-<script language="JavaScript" SRC="js/CalendarPopup.js"></script>
-<SCRIPT LANGUAGE="JavaScript">
-	var cal1 = new CalendarPopup('caldiv1');
-	cal1.offsetY = -110;
-	cal1.setCssPrefix("PICS");
-</SCRIPT>
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+$(function() {
+	$('.datepicker').datepicker();
+});
+</script>"
 </head>
 <body>
 <s:if test="operator == null">
@@ -168,24 +167,19 @@
 							<s:hidden value="%{role}" name="accountRole"/>
 							<s:if test="role.description == 'Sales Representative'">
 							<tr>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="startDate" format="MM/dd/yyyy"/></td>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="endDate" format="MM/dd/yyyy"/></td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:date name="startDate" format="MM/dd/yyyy"/></td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:date name="endDate" format="MM/dd/yyyy"/></td>
 								<td><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove" class="remove">Remove</a></td>
 							</tr>
 							<tr id="show_<s:property value="id"/>" style="display: none;">
 								<td colspan="4"><nobr><s:textfield name="operator.accountUsers[%{#role.index}].ownerPercent" value="%{ownerPercent}" size="3"/>%&nbsp;&nbsp;
-								<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].startDate"
-									id="startDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yy')}"/>
-									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
-									onclick="cal1.select($('startDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
-									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-								&nbsp;&nbsp;<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].endDate"
-									id="endDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yy')}"/>
-									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
-									onclick="cal1.select($('endDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
-									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a></nobr>						
+								<s:textfield cssClass="blueMain datepicker" size="10" name="operator.accountUsers[%{#role.index}].startDate"
+									id="startDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}"/>
+									&nbsp;&nbsp;<s:textfield cssClass="blueMain datepicker" size="10" name="operator.accountUsers[%{#role.index}].endDate"
+									id="endDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}"/>
+									</nobr>						
 								</td>
 								<td><input type="submit" class="picsbutton positive" name="button" value="Save Role" /></td>
 							</tr>
@@ -212,24 +206,19 @@
 						<s:iterator value="operator.accountUsers" status="role">
 							<s:if test="role.description == 'Account Manager'">
 							<tr>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="startDate" format="MM/dd/yyyy"/></td>
-								<td onclick="$('show_<s:property value="id"/>').show();"><s:date name="endDate" format="MM/dd/yyyy"/></td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:property value="user.name"/></td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:property value="ownerPercent"/>%</td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:date name="startDate" format="MM/dd/yyyy"/></td>
+								<td onclick="$('#show_<s:property value="id"/>').show();"><s:date name="endDate" format="MM/dd/yyyy"/></td>
 								<td><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove" class="remove">Remove</a></td>
 							</tr>
 							<tr id="show_<s:property value="id"/>" style="display: none;">
 								<td colspan="4"><nobr><s:textfield name="operator.accountUsers[%{#role.index}].ownerPercent" value="%{ownerPercent}" size="3"/>%&nbsp;&nbsp;
-								<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].startDate"
-									id="startDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yy')}"/>
-									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
-									onclick="cal1.select($('startDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
-									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a>
-								&nbsp;&nbsp;<s:textfield cssClass="blueMain" size="9" name="operator.accountUsers[%{#role.index}].endDate"
-									id="endDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yy')}"/>
-									<a id="anchor<s:property value="id"/>" name="anchor<s:property value="id"/>" href="#"
-									onclick="cal1.select($('endDate[<s:property value="id"/>]'),'anchor<s:property value="id"/>','M/d/yyyy'); return false;"
-									><img src="images/icon_calendar.gif" width="18" height="15" border="0" /></a></nobr>						
+								<s:textfield cssClass="blueMain datepicker" size="10" name="operator.accountUsers[%{#role.index}].startDate"
+									id="startDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}"/>
+									&nbsp;&nbsp;<s:textfield cssClass="blueMain datepicker" size="10" name="operator.accountUsers[%{#role.index}].endDate"
+									id="endDate[%{id}]" value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}"/>
+									</nobr>						
 								</td>
 								<td><input type="submit" class="picsbutton positive" name="button" value="Save Role" /></td>
 							</tr>
@@ -251,6 +240,5 @@
 	<br clear="all">
 	<div><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>
 </s:form>
-<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 </body>
 </html>
