@@ -16,7 +16,7 @@
 					&click_report;
 				<storeProperty name="report_link" value="User Multi-Login" />
 					&click_report;
-				<storeProperty name="report_link" value="UserList.action" />
+				<storeProperty name="report_link" value="User Search" />
 					&click_report;
 				<storeProperty name="report_link" value="EMR Rates" />
 					&click_report;
