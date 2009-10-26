@@ -5,23 +5,17 @@
 <title>Edit Operator/Audit Permissions</title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css" />
-<script src="js/prototype.js" type="text/javascript"></script>
-<script src="js/scriptaculous/scriptaculous.js?load=effects"
-	type="text/javascript"></script>
+<s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function save(id) {
-	$('button'+id).hide();
-	var pars = $('ao'+id).serialize();
+	$('#button'+id).hide();
+	var data = $('#ao'+id).toObj();
 
-	var divName = 'td'+id;
-	startThinking({'div':divName, 'message':'Saving audit/operator data'});
-	var myAjax = new Ajax.Updater(divName, 'AuditOperatorSaveAjax.action', {
-		method: 'post', 
-		parameters: pars,
-		onSuccess: function(transport) {
-			new Effect.Highlight($(divName), {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
+	startThinking({'div':'td'+id, 'message':'Saving audit/operator data'});
+	$('#td'+id).load('AuditOperatorSaveAjax.action', data, function() {
+			$(this).effect('highlight', {color: '#FFFF11'}, 1000);
 		}
-	});
+	);
 }
 </script>
 </head>

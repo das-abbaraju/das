@@ -6,19 +6,19 @@
 	<s:hidden name="ao.auditType.id" value="%{auditType.id}" />
 	<s:hidden name="ao.operatorAccount.id" value="%{operatorAccount.id}" />
 </s:else> <s:checkbox name="ao.canSee" value="%{canSee}" title="View"
-	onclick="$('button%{htmlID}').show()" /> | <s:checkbox
+	onclick="$('#button%{htmlID}').show()" /> | <s:checkbox
 	name="ao.canEdit" value="canEdit" title="Edit"
-	onclick="$('button%{htmlID}').show()" /> | <s:radio
+	onclick="$('#button%{htmlID}').show()" /> | <s:radio
 	id="aorisk%{htmlID}" name="ao.minRiskLevel" list="riskLevelList"
-	value="minRiskLevel" onclick="$('button%{htmlID}').show()" /> | <s:radio
+	value="minRiskLevel" onclick="$('#button%{htmlID}').show()" /> | <s:radio
 	id="aoflag%{htmlID}" name="ao.requiredForFlag" list="FlagColorList"
-	value="requiredForFlag" onclick="$('button%{htmlID}').show()" /> | <s:radio
+	value="requiredForFlag" onclick="$('#button%{htmlID}').show()" /> | <s:radio
 	id="aostatus%{htmlID}" name="ao.requiredAuditStatus"
 	list="AuditStatusList" value="requiredAuditStatus"
-	onclick="$('button%{htmlID}').show()" /> <s:if
+	onclick="$('#button%{htmlID}').show()" /> <s:if
 	test="auditType.classType.policy">
 	<br>
 	<s:textarea name="ao.help" value="%{help}" rows="3" cols="70"
-		onkeyup="$('button%{htmlID}').show()"></s:textarea>
+		onkeyup="$('#button%{htmlID}').show()"></s:textarea>
 </s:if></form>
 </div>
