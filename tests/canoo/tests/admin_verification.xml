@@ -15,6 +15,7 @@
 						<invoke url="http://alpha.picsauditing.com/ReportAuditList.action?&amp;filter.auditTypeID=11"/>
 						<clickLink label="Status"/>
 						<setSelectField name="filter.auditStatus" text="Submitted"/>
+						<clickLink label="Audit Type"/>
 						<setSelectField name="filter.auditTypeID" text="Annual Update"/>
 						<setSelectField name="filter.visible" text="Y"/>
 						<clickButton label="Search"/>
@@ -81,25 +82,9 @@
 								<clickButton description="Verify OSHA Logs" name="verify"/>
 								<sleep seconds="2"/>
 							</ifStep>
-					
-							<verifyText description="Verify CSR Stamp" text="Trevor Allred"/>
 							
-							<ifStep description="Check if approve btn present. Approve if so.">
-								<condition>
-									<verifyElementText description="Check if Approve button present" type="button" text="Approve"/>
-								</condition>
-								<else>
-									<clickButton label="Reject"/>
-									</else>
-									<clickButton label="Approve"/>
-								<sleep seconds="2"/>
-							</ifStep>
+							<verifyText description="Verify CSR Stamp" text="Trevor Allred"/>
 						</group>
-						<verifyText text="Trevor Allred"/>
-						<clickLink label="Annual Update"/>
-						<verifyText text="Trevor Allred"/>
-						<verifyText text="Active"/>
-	
 		    </steps>		
 		</webtest>
 	</target>
