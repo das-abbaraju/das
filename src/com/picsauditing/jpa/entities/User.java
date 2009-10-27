@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -44,7 +45,8 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public static int GROUP_AUDITOR = 11;
 	public static int GROUP_CSR = 959;
 	public static int CONTRACTOR = 12;
-	private static final int GROUP_SU = 9; // Group that automatically has ALL permissions
+	private static final int GROUP_SU = 9; // Group that automatically has ALL
+											// permissions
 	public static int INDEPENDENT_CONTRACTOR = 11265;
 
 	// grant privileges
@@ -378,6 +380,11 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		return TimeZone.getTimeZone(timezone);
 	}
 
+	@Transient
+	public Locale getLocale() {
+		return Locale.ENGLISH;
+	}
+
 	public String getTimezone() {
 		return timezone;
 	}
@@ -462,9 +469,11 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of user.permissions)
+	 *            The new set of permission for this user (transient version of
+	 *            user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user
+	 *            or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */

@@ -200,6 +200,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				emailBuilder.setTemplate(15);
+				emailBuilder.setUser(conAudit.getContractorAccount().getUsers().get(0));
 
 				String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
 				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
@@ -219,9 +220,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&auditID=" + conAudit.getId()
 						+ "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
+				emailBuilder.setUser(conAudit.getAuditor());
 
 				EmailQueue email = emailBuilder.build();
-				email.setToAddresses(conAudit.getAuditor().getEmail());
 				email.setCcAddresses(null);
 				EmailSender.send(email);
 			}

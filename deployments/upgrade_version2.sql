@@ -25,3 +25,10 @@ update invoice_fee set fee="Bid Only Account Fee",
 qbFullName = "Bid Only Account Fee",updateDate = Now() 
 where
 id = 100;
+
+/**
+ * Change email token for AuditScheduledDate
+ */
+update token
+set velocityCode = "${pics_dateTool.format('EEE d MMM h:mm a z', $audit.scheduledDate, $user.locale, $user.timezoneObject)}"
+where tokenID = 16;
