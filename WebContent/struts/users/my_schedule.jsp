@@ -29,7 +29,7 @@ $.ajaxSetup(
 	}
 );
 </script>
-"
+
 <script type="text/javascript" src="js/my_schedule.js"></script>
 <style>
 .cal-availability, .cal-availability a {
