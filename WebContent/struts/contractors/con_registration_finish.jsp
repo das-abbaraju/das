@@ -57,6 +57,7 @@
 								<li>Company Information</li>
 								<li>General Information</li>
 								<li>Services Performed</li>
+								<li>Supplier Diversity</li>
 								<s:iterator value="contractor.audits">
 									<s:if test="!auditType.pqf">
 										<li><s:property value="auditType.auditName"/> <s:property value="auditFor"/></li>

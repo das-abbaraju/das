@@ -86,9 +86,11 @@ public class FacilityChanger {
 				// then let's assume they want to be part of PICS
 				contractor.setRenew(true);
 			}
-			for (ContractorAudit cAudit : contractor.getAudits()) {
-				if (cAudit.getAuditType().isPqf()) {
-					auditBuilder.fillAuditCategories(cAudit, true);
+			if (contractor.isActiveB()) {
+				for (ContractorAudit cAudit : contractor.getAudits()) {
+					if (cAudit.getAuditType().isPqf()) {
+						auditBuilder.fillAuditCategories(cAudit, true);
+					}
 				}
 			}
 		}

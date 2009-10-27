@@ -107,6 +107,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			addAuditCategories(audit, 2); // COMPANY INFORMATION
 			addAuditCategories(audit, 8); // GENERAL INFORMATION
 			addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
+			addAuditCategories(audit, 184); // SUPPLIER DIVERSITY 
 			auditDao.save(audit);
 			
 			EmailBuilder emailBuilder = new EmailBuilder();
