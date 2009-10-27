@@ -49,7 +49,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private String mainTrade;
 	private String logoFile;
 	private String brochureFile;
-	private String description;
 	private String mustPay = "Yes";
 	private OperatorAccount requestedBy;
 	private String secondContact;
@@ -177,20 +176,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setBrochureFile(String brochureFile) {
 		this.brochureFile = brochureFile;
-	}
-
-	@Column(name = "description", length = 65535)
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Transient
-	public String getDescriptionHTML() {
-		return Utilities.escapeNewLines(this.description);
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)

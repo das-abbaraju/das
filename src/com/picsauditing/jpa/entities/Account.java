@@ -21,6 +21,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
 
@@ -59,7 +60,9 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected boolean qbSync;
 	protected String qbListID;
 	protected String reason;
-	protected boolean acceptsBids; 
+	protected boolean acceptsBids;
+	private String description;
+
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -336,6 +339,20 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.acceptsBids = acceptsBids;
 	}
 
+	@Column(name = "description", length = 65535)
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Transient
+	public String getDescriptionHTML() {
+		return Utilities.escapeNewLines(this.description);
+	}
+	
 	@OneToMany(mappedBy = "account")
 	public List<User> getUsers() {
 		return users;

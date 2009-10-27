@@ -27,6 +27,12 @@ where
 id = 100;
 
 /**
+* update the description from the contractor to Account
+*/
+update accounts a, contractor_info c set a.description = c.description
+where a.id = c.id;
+
+/**
  * Change email token for AuditScheduledDate
  */
 update token

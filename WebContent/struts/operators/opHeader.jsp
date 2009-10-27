@@ -3,6 +3,7 @@
 
 <h1><s:property value="operator.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 
+<s:if test="permissions.admin">
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>"
@@ -22,5 +23,6 @@
 	<li><a href="ContractorList.action?filter.visible=Y&filter.operator=<s:property value="operator.id"/>">Contractors</a></li>
 </ul>
 </div>
+</s:if>
 
 <s:include value="../actionMessages.jsp"></s:include>

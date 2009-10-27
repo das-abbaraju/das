@@ -75,8 +75,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		tryPermissions(OpPerms.ManageOperators);
+		if (permissions.isAdmin())
+			tryPermissions(OpPerms.ManageOperators);
 
 		if (id == 0)
 			subHeading = "Add " + type;
@@ -119,105 +119,108 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			}
 
 			if (button.equalsIgnoreCase("Save")) {
-				tryPermissions(OpPerms.ManageOperators, OpType.Edit);
-
-				Map<Integer, OperatorAccount> opMap = new HashMap<Integer, OperatorAccount>();
-				for (OperatorAccount op : getRelatedFacilities()) {
-					opMap.put(op.getId(), op);
-				}
-
-				for (String key : foreignKeys.keySet()) {
-					int keyID = foreignKeys.get(key);
-
-					if (key.equals("parent")) {
-						operator.setParent(opMap.get(keyID));
-					}
-					if (key.equals("inheritFlagCriteria")) {
-						operator.setInheritFlagCriteria(opMap.get(keyID));
-					}
-					if (key.equals("inheritInsuranceCriteria")) {
-						operator.setInheritInsuranceCriteria(opMap.get(keyID));
-					}
-					if (key.equals("inheritInsurance")) {
-						operator.setInheritInsurance(opMap.get(keyID));
-					}
-					if (key.equals("inheritAudits")) {
-						operator.setInheritAudits(opMap.get(keyID));
-					}
-					if (key.equals("inheritAuditCategories")) {
-						operator.setInheritAuditCategories(opMap.get(keyID));
-					}
-				}
-
 				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
+					operatorDao.clear();
 					for (String error : errors)
 						addActionError(error);
 					return SUCCESS;
 				}
 
-				if (operator.isCorporate()) {
-					permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
+				if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
 
-					if (facilities != null) {
-						List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
+					Map<Integer, OperatorAccount> opMap = new HashMap<Integer, OperatorAccount>();
+					for (OperatorAccount op : getRelatedFacilities()) {
+						opMap.put(op.getId(), op);
+					}
 
-						for (int operatorID : facilities) {
-							OperatorAccount opAccount = new OperatorAccount();
-							opAccount.setId(operatorID);
-							newFacilities.add(opAccount);
+					for (String key : foreignKeys.keySet()) {
+						int keyID = foreignKeys.get(key);
+
+						if (key.equals("parent")) {
+							operator.setParent(opMap.get(keyID));
 						}
-
-						Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
-						while (facList.hasNext()) {
-							Facility opFacilities = facList.next();
-							if (newFacilities.contains(opFacilities.getOperator())) {
-								newFacilities.remove(opFacilities.getOperator());
-							} else {
-								facilitiesDAO.remove(opFacilities);
-								if (operator.equals(opFacilities.getOperator().getParent())) {
-									opFacilities.getOperator().setParent(null);
-									operatorDao.save(opFacilities.getOperator());
-								}
-								facList.remove();
-							}
+						if (key.equals("inheritFlagCriteria")) {
+							operator.setInheritFlagCriteria(opMap.get(keyID));
 						}
-
-						for (OperatorAccount opAccount : newFacilities) {
-							opAccount = operatorDao.find(opAccount.getId());
-							if (opAccount != null) {
-								Facility facility = new Facility();
-								facility.setCorporate(operator);
-								facility.setOperator(opAccount);
-								facilitiesDAO.save(facility);
-								operator.getOperatorFacilities().add(facility);
-								if (opAccount.getParent() == null) {
-									opAccount.setParent(operator);
-									operatorDao.save(opAccount);
-								}
-							}
+						if (key.equals("inheritInsuranceCriteria")) {
+							operator.setInheritInsuranceCriteria(opMap.get(keyID));
+						}
+						if (key.equals("inheritInsurance")) {
+							operator.setInheritInsurance(opMap.get(keyID));
+						}
+						if (key.equals("inheritAudits")) {
+							operator.setInheritAudits(opMap.get(keyID));
+						}
+						if (key.equals("inheritAuditCategories")) {
+							operator.setInheritAuditCategories(opMap.get(keyID));
 						}
 					}
 
-				} else {
-					permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
-				}
-				operator.setType(type);
-				operator.setAuditColumns(permissions);
-				operator.setNaics(new Naics());
-				operator.getNaics().setCode("0");
-				operator.setNameIndex();
+					if (operator.isCorporate()) {
+						permissions.tryPermission(OpPerms.ManageCorporate, OpType.Edit);
 
-				if (id == 0) {
-					operator.setInheritAuditCategories(operator);
-					operator.setInheritAudits(operator);
-					operator.setInheritFlagCriteria(operator);
-					operator.setInheritInsuranceCriteria(operator);
-					operator.setInheritInsurance(operator);
+						if (facilities != null) {
+							List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
 
-					// Save so we can get the id and then update the NOLOAD with
-					// a unique id
-					operatorDao.save(operator);
+							for (int operatorID : facilities) {
+								OperatorAccount opAccount = new OperatorAccount();
+								opAccount.setId(operatorID);
+								newFacilities.add(opAccount);
+							}
+
+							Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
+							while (facList.hasNext()) {
+								Facility opFacilities = facList.next();
+								if (newFacilities.contains(opFacilities.getOperator())) {
+									newFacilities.remove(opFacilities.getOperator());
+								} else {
+									facilitiesDAO.remove(opFacilities);
+									if (operator.equals(opFacilities.getOperator().getParent())) {
+										opFacilities.getOperator().setParent(null);
+										operatorDao.save(opFacilities.getOperator());
+									}
+									facList.remove();
+								}
+							}
+
+							for (OperatorAccount opAccount : newFacilities) {
+								opAccount = operatorDao.find(opAccount.getId());
+								if (opAccount != null) {
+									Facility facility = new Facility();
+									facility.setCorporate(operator);
+									facility.setOperator(opAccount);
+									facilitiesDAO.save(facility);
+									operator.getOperatorFacilities().add(facility);
+									if (opAccount.getParent() == null) {
+										opAccount.setParent(operator);
+										operatorDao.save(opAccount);
+									}
+								}
+							}
+						}
+
+					} else {
+						permissions.tryPermission(OpPerms.ManageOperators, OpType.Edit);
+					}
+					operator.setType(type);
+					operator.setAuditColumns(permissions);
+					operator.setNaics(new Naics());
+					operator.getNaics().setCode("0");
+					operator.setNameIndex();
+
+					if (id == 0) {
+						operator.setInheritAuditCategories(operator);
+						operator.setInheritAudits(operator);
+						operator.setInheritFlagCriteria(operator);
+						operator.setInheritInsuranceCriteria(operator);
+						operator.setInheritInsurance(operator);
+
+						// Save so we can get the id and then update the NOLOAD
+						// with
+						// a unique id
+						operatorDao.save(operator);
+					}
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
 				operator = operatorDao.save(operator);

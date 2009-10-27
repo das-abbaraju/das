@@ -176,7 +176,10 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditProfile)) {
 			subMenu.addChild("Edit Profile", "ProfileEdit.action");
 		}
+		if(permissions.hasPermission(OpPerms.EditAccountDetails))
+			subMenu.addChild("Edit Account", "FacilitiesEdit.action?id="+permissions.getAccountId());
 
+		
 		// Add a new permission for this
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
