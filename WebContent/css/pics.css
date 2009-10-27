@@ -72,10 +72,7 @@ p {
 	float: right;
 }
 
-/*
-		margin-top: 10px;
-		padding-top: 8px;
-*/ /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
+/********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 #sidebox {
 	float: right;
 	margin: 10px auto;
@@ -134,7 +131,7 @@ p {
 }
 
 #content {
-	position: relative;
+	position: static;
 	margin: 0;
 	padding: 45px;
 	height: 100%;
@@ -705,8 +702,8 @@ span.block:hover .hoverhelp {
 #helpbox {
 	position: absolute;
 	background-color: #ECECEC;
-	top: 0;
-	right: 0;
+	top: 124px;
+	right: 21px;
 	font-size: 12px;
 	padding: 5px;
 	line-height: 18px;

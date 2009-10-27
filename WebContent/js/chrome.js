@@ -5,7 +5,7 @@
 var cssdropdown={
 disappeardelay: 500, //set delay in miliseconds before menu disappears onmouseout
 disablemenuclick: false, //when user clicks on a menu item with a drop down menu, disable menu item's link?
-enableswipe: 1, //enable swipe effect? 1 for yes, 0 for no
+enableswipe: 0, //enable swipe effect? 1 for yes, 0 for no
 
 //No need to edit beyond here////////////////////////
 dropmenuobj: null, ie: document.all, firefox: document.getElementById&&!document.all, swipetimer: undefined, bottomclip:0,

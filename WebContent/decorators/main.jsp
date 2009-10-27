@@ -51,15 +51,15 @@
 <!-- !begin header -->
 
 <div id="sidebox">
-		<p><% if (permissions.isLoggedIn()) { %>
+	<p><% if (permissions.isLoggedIn()) { %>
 		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
-			"<a href='ProfileEdit.action' onmouseover='getElement(\"profile_summary\").style.display = \"block\";' onmouseout='getElement(\"profile_summary\").style.display = \"none\";'>"+permissions.getName()+"</a>"
+			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
 			: permissions.getName() %></span>
 | <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">Home</a>| <a href="Login.action?button=logout">Logout</a>
-    <div style="display: none;" id="profile_summary"><%= permissions.getAccountName() %></div>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="Login.action">Login</a>
-<% } %></p>
+<% } %>
+	</p>
 </div>
 <% if (permissions.isActive() && !permissions.isContractor()) { %>
 

@@ -168,61 +168,47 @@ div.autocomplete ul li {
 <body>
 <h1>Manage User Accounts</h1>
 
-<table border="0">
-<tr>
-	<td colspan="2" align="center">
-		<div id="search">
-		<div id="showSearch" onclick="showSearch()" <s:if test="filtered">style="display: none"</s:if> ><a href="#">Show Filter Options</a></div>
-		<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if> ><a href="#" onclick="hideSearch()">Hide Filter Options</a></div>
-		<s:form id="form1" method="post" cssStyle="%{filtered ? '' : 'display: none'}">
-		<div style="text-align: center; width: 100%;">
-			<div>
-				<button class="picsbutton positive" type="submit" name="button" value="Search">Search</button>
-			</div>
-		</div><br/>		
-		<pics:permission perm="AllOperators">
-			<label>Operator:</label> <span id="operators">
-			<s:select 
-		       name="accountId"
-		       cssClass="blueSmall"
-			   headerKey="1100"
-			   headerValue="PICS Employees"
-		       list="facilities"
-		       listKey="id"
-		       listValue="name"
-		       />
-			</span><br />
-		</pics:permission>
-			<label>Type:</label>
-				<s:select name="isGroup" cssClass="blueSmall"
-				       headerKey="" headerValue="All"
-				       list="#{'Yes':'Groups', 'No':'Users'}"
-				       value="isGroup"
-				/>
-			<label>Status:</label>
-				<s:select name="isActive" cssClass="blueSmall"
-				       headerKey="" headerValue="All"
-				       list="#{'Yes':'Active', 'No':'Inactive'}"
-				       value="isActive"
-				/>
-		</s:form>
-		</div>
-	</td>
-</tr>
-<tr><td>
-</td></tr>
-<tr>
-	<td colspan="3" align="center" class="blueMain">
-	<s:hidden name="user.id" />
-	<s:hidden name="" />
-		<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add Group</a>
-		&nbsp;&nbsp;
-		<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
-		&nbsp;&nbsp;
-		<a href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>">Permissions Matrix</a>
-	</td>
-</tr>
+<div id="search">
+<s:form id="form1" method="get">
+	<button class="picsbutton positive" type="submit" name="button" value="Search">Search</button>
+	<br/>
+	<div class="filterOption">
+		<h4>Type:</h4><s:radio name="isGroup"
+		       list="#{'Yes':'Groups', 'No':'Users', '':'Both'}"
+		       value="isGroup"
+		/>
+	</div>
+	<div class="filterOption">
+		<h4>Status:</h4><s:radio name="isActive"
+		       list="#{'Yes':'Active', 'No':'Inactive', '':'All'}"
+		       value="isActive"
+		/>
+	</div>
+<pics:permission perm="AllOperators">
+	<div class="filterOption">
+		<h4>Account:</h4>
+		<s:select
+	       name="accountId"
+		   headerKey="1100"
+		   headerValue="PICS Employees"
+	       list="facilities"
+	       listKey="id"
+	       listValue="name"
+	       />
+	</div>
+</pics:permission>
+</s:form>
+<br clear="all" />
+</div>
+
+<table border="0" width="100%">
 <tr valign="top"><td>
+	<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add Group</a>
+	&nbsp;&nbsp;
+	<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+	&nbsp;&nbsp;
+	<a href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>">Permissions Matrix</a>
+	<br />
 	<table class="report">
 		<thead>
 		<tr>

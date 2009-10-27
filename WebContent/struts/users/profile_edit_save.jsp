@@ -9,7 +9,7 @@
 		<li><label for="u.email">Email address:</label> <s:textfield name="u.email" size="30" /></li>
 		<li><label for="u.phone">Phone:</label> <s:textfield name="u.phone" size="20" /></li>
 		<li><label for="u.fax">Fax:</label> <s:textfield name="u.fax" size="20" /></li>
-		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone"
+		<li><label for="u.timezone">Timezone:</label> <s:select name="u.timezone" cssClass="forms"
 			list="@com.picsauditing.util.TimeZoneUtil@getTimeZoneSelector()" listKey="key" listValue="value"></s:select></li>
 		<li><label>Profile Created:</label> <s:property value="formatDate(u.creationDate)" /></li>
 	</ol>
