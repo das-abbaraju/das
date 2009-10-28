@@ -2,7 +2,7 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="register.username" value="canoo_trialaccount1" />
+	<property name="register.username" value="canoo_trialaccount" />
 	<property name="admin.username" value="opman" />
 	<target name="test">
 		<webtest name="Contractor Registration - Pre Cleanup">
@@ -63,17 +63,21 @@
 				<group description="Services Performed">
 					<setRadioButton description="Works with heavy machinery" htmlId="answerq2442Yes"/>
 					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
+					<sleep seconds="2"/>
 					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
+					<sleep seconds="2"/>
 					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
+					<sleep seconds="2"/>
 					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
+					<sleep seconds="2"/>
 					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
+					<sleep seconds="2"/>
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Facilities">
-					<setSelectField htmlId="state" text="Colorado"/>
 					<sleep seconds="5"/>
 						<clickLink description="Click link: Add" htmlId="facility_6166"/>
-					<sleep seconds="5"/>
+						<sleep seconds="5"/>
 						<clickLink label="Switch To Trial Account"/>
 						<sleep seconds="3"/>
 					<clickLink label="Next >>"/>

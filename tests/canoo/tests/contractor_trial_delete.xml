@@ -14,7 +14,7 @@
 					value="${admin.username}"/>
 				&login;
 				<group description="Delete Canoo's Test Contractor - Trial Account">
-					<setInputField name="filter.accountName" value="Canoo's Test Contractor - Trial Account"/>
+					<setInputField name="filter.accountName" value="Canoo's Test - Trial Account"/>
 					<clickButton label="Search"/>
 					
 					<group description="Delete Audits">
