@@ -7,6 +7,8 @@ body {
 
 a img {
 	border: 0px none;
+	margin: 0px;
+	padding: 0px;
 }
 
 p {
@@ -297,7 +299,7 @@ a[href $=".doc"] {
 }
 
 a[href $=".pdf"],a.pdf {
-	background: url('../images/icon_link_pdf.png') no-repeat left center;;
+	background: url('../images/icon_link_pdf.png') no-repeat left center;
 	padding-left: 14px;
 	padding-right: 0;
 	padding-top: 0;
@@ -305,7 +307,7 @@ a[href $=".pdf"],a.pdf {
 }
 
 a[href $=".xls"],a.excel {
-	background: url('../images/icon_link_excel.png') no-repeat left center;;
+	background: url('../images/icon_link_excel.png') no-repeat left center;
 	padding-left: 14px;
 	padding-right: 0;
 	padding-top: 0;
@@ -313,7 +315,7 @@ a[href $=".xls"],a.excel {
 }
 
 a.email {
-	background: url('../images/icon_link_email.png') no-repeat right center;;
+	background: url('../images/icon_link_email.png') no-repeat right center;
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
@@ -429,16 +431,19 @@ div.message_info {
 }
 
 /******************** Internal Page Navigation  ************************/
-#content #internalnavcontainer {
+#internalnavcontainer {
 	height: 30px;
-	position: relative;
 }
 
 ul#navlist {
 	float: right;
+	position: relative;
 	white-space: nowrap;
+	display: block;
 	padding-top: 0px;
-	margin-top: -11px;
+	margin-top: -14px;
+	margin-right: 0px;
+	line-height: 30px
 }
 
 #navlist li {
@@ -447,7 +452,6 @@ ul#navlist {
 	display: inline;
 	list-style-type: none;
 	margin-right: 0px;
-	position: relative;
 }
 
 #navlist a {
@@ -495,8 +499,8 @@ ul#navlist {
 	background-color: #EEEEEE;
 	border-top: 1px solid #A84D10;
 	border-bottom: 1px solid #A84D10;
-	width: 93%;
 	position: relative;
+	padding: 5px;
 }
 
 /*** FLAG Colors ***/

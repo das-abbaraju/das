@@ -136,7 +136,7 @@
 	font-weight: bold;
 }
 
-#content div.auditSubMenu {
+div.auditSubMenu {
 	position: absolute;
 	float: left;
 	display: block;
@@ -146,62 +146,55 @@
 	padding: 0;
 }
 
-#content div.auditSubMenu ul {
+div.auditSubMenu ul {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-#content div.auditSubMenu li {
+div.auditSubMenu li {
 	display: inline;
 	margin: 0;
 	padding: 0;
 }
 
-#content div.auditSubMenu a:link,#content div.auditSubMenu a:visited {
+div.auditSubMenu a, div.auditSubMenu a:link, div.auditSubMenu a:visited {
 	margin: 0;
-	padding: 0;
+	padding: 0 10px;
 	display: block;
 	border: 1px solid white;
 	color: #FFFFFF;
 	background-color: #003768;
 	text-decoration: none;
-}
-
-#content div.auditSubMenu a span {
-	float: left;
-	display: block;
-	line-height: 31px;
-	padding: 0 10px 0 10px;
-	font-family: Helvetica, Arial, Verdana, sans-serif;
 	font-size: 13px;
-	color: #FFFFFF;
+	line-height: 28px;
 }
 
-#content div.auditSubMenu a span {
-	float: none;
+div.auditSubMenu a.audit {
+	padding-left: 18px;
 }
 
-#content div.auditSubMenu a:hover {
+div.auditSubMenu a.done {
+	background-image: url("../images/okCheck.gif");
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+div.auditSubMenu a:hover {
 	border: 1px solid white;
 	background-color: #A84D10;
 	text-decoration: none;
 	color: #ffffff;
 }
 
-#content div.auditSubMenu a:hover span {
-	background-position: right bottom;
-	color: #ffffff;
-}
-
-#content div.auditSubMenu a.current {
+div.auditSubMenu a.current {
 	color: #fff;
 	background-color: rgb(168, 77, 16);
 	text-decoration: none;
 }
 
 /************* Toolbox *************/
-#content #toolbox {
+#toolbox {
 	background-color: #79A7D0;
 	border-top: 3px solid #4686BF;
 	border-bottom: 3px solid #4686BF;

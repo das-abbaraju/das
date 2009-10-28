@@ -15,6 +15,12 @@ table.report td,table.report th {
 	vertical-align: middle;
 	padding: 4px;
 	font-size: 13px;
+	line-height: 15px;
+}
+
+table.report td.icon {
+	padding-top: 2px;
+	padding-bottom: 0px;
 }
 
 table.report thead th,table.report thead td {
@@ -155,6 +161,8 @@ ul.paging {
 	white-space: nowrap;
 	vertical-align: middle;
 	margin-left: 5px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 ul.alpha li,ul.paging li {
@@ -213,15 +221,15 @@ table.report td.inactive {
 }
 
 div.filterOption {
-	margin: 0px;
-	padding: 0px;
+	margin: 1px;
+	padding: 1px 6px;
 	float: left;
 	border: 1px #EFEFEF solid;
 }
 
 div.filterOption:hover {
 	background-color: white;
-	border: 1px black dotted;
+	border: 1px #888 dashed;
 }
 
 div.filterOption a,div.filterOption span {
