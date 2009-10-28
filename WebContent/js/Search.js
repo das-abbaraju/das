@@ -49,7 +49,7 @@ function runSearch(search) {
 		startThinking({div:'report_data', type: 'large', message: 'finding search results'});
 		var destinationAction = $(search).find('[name=filter.destinationAction]').val();
 		var data = $(search).toObj();
-		$('#report_data').load(destinationAction+'Ajax.action', data);
+		$('#report_data').load(destinationAction+'Ajax.action', data, function() {wireClueTips()});
 	}
 }
 
@@ -138,4 +138,23 @@ function hideSearch()
 	$('#showSearch').show();
 	$("#form1").slideUp();
 	return false;
+}
+
+function wireClueTips() {
+	$("a.contractorQuick").cluetip({
+		sticky: true, 
+		hoverClass: 'cluetip', 
+		clickThrough: true, 
+		ajaxCache: false,
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		hoverIntent: {interval: 200},
+		arrows: true,
+		dropShadow: false,
+		width: 400,
+		cluetipClass: 'jtip',
+		ajaxProcess:      function(data) {
+			data = $(data).not('meta, link, title');
+			return data;
+		}
+	});
 }

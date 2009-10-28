@@ -7,65 +7,98 @@
 <body>
 <div id="tabs">
 	<ul>
-		<li><a href="#tabs-1">General</a></li>
-		<li><a href="#tabs-2">Facilities</a></li>
-		<li><a href="#tabs-3">PQF/Audits</a></li>
-	</ul>
-	<div id="tabs-1">
-		<s:if test="contractor.dbaName.length() > 0">
-			<p class="fn org">DBA <s:property value="contractor.dbaName" /></p>
+		<li><a href="#tabs-general">General</a></li>
+		<li><a href="#tabs-facilities">Facilities</a></li>
+		<li><a href="#tabs-audits">PQF/Audits</a></li>
+		<s:if test="permissions.admin || permissions.contractor">
+			<li><a href="#tabs-membership">Membership</a></li>
 		</s:if>
+	</ul>
+	<div id="tabs-general">
+		<s:iterator value="operatorTags"><s:property value="tag"/> </s:iterator>
+		<s:if test="contractor.dbaName.length() > 0">
+			<label>DBA:</label>
+			<s:property value="contractor.dbaName" />
+			<br />
+		</s:if>
+		<label>PICS #:</label>
+		<s:property value="contractor.id" />
+		<br />
+		<label>Industry/Trade:</label>
+		<s:property value="contractor.industry.description" />/<s:property value="contractor.mainTrade" />
+		<br />
+		<label>Risk Level:</label>
+		<s:property value="contractor.riskLevel" />
+		<br />
 		<label>Location:</label>
 		<s:property value="contractor.city" />, <s:property value="contractor.state" />
 		<br />
 		<label>Primary Contact:</label>
 		<s:property value="contractor.contact" />
 		<br />
-		<label>Industry:</label>
-		<s:property value="contractor.industry.description" />
-		<br />
-		<label>Trade:</label>
-		<s:property value="contractor.mainTrade" />
-		<br />
-		<s:iterator value="operatorTags"><s:property value="tag"/> </s:iterator>
-		<label>PICS Contractor ID:</label>
-		<s:property value="contractor.id" />
-		<br />
-		<label>Risk Level:</label>
-		<s:property value="contractor.riskLevel" />
-		<br />
-	</div>
-	<div id="tabs-2">
-		<ul style="list-style-type: none;">
-			<s:iterator value="contractor.operators">
-			<li>
-				<s:if test="flag != null">
-					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flag.flagColor.smallIcon" escape="false" /></a>
-				</s:if>
-				<s:else>
-					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></a>
-				</s:else>
-				<a title="Waiting On : <s:property value="flag.waitingOn"/>" href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
-			</li>
+		<a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Notes</a>
+		<s:if test="permissions.admin || permissions.contractor">
+			| <a href="ContractorEdit.action?id=<s:property value="contractor.id" />">Edit</a>
+		</s:if>
+		<pics:permission perm="SwitchUser">
+			<s:iterator value="contractor.users">
+				| <a href="Login.action?button=login&switchToUser=<s:property value="id"/>">Login as <s:property value="name" /></a>
 			</s:iterator>
-		</ul>
+		</pics:permission>
 	</div>
-	<div id="tabs-3">
-		<s:iterator value="audits">
-			<a href="Audit.action?auditID=<s:property value="id" />"><s:property value="auditType.auditName" /> for </a><br />
-		</s:iterator>
+	<div id="tabs-facilities">
+		<table class="report">
+			<thead>
+			<tr>
+				<th></th>
+				<th>Contractor</th>
+				<th>Waiting On</th>
+			</tr>
+			</thead>
+			<s:iterator value="activeOperators">
+			<tr>
+				<td><s:if test="flag != null"><s:property value="flag.flagColor.smallIcon" escape="false" /></s:if>
+					<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></td>
+				<td><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a></td>
+				<td><s:property value="flag.waitingOn"/></td>
+			</tr>
+			</s:iterator>
+		</table>
+		<s:if test="permissions.admin || permissions.contractor">
+			<a class="edit" href="ContractorFacilities.action?id=<s:property value="contractor.id" />">Edit Facilities</a>
+		</s:if>
 	</div>
+	<div id="tabs-audits">
+		<table>
+			<s:iterator value="activeAudits">
+				<tr>
+					<td><s:property value="auditStatus" /></td>
+					<td><a href="Audit.action?auditID=<s:property value="id" />">
+						<s:if test="auditFor.length() > 0"><s:property value="auditFor" /></s:if>
+						<s:property value="auditType.auditName" /></a></td>
+				</tr>
+			</s:iterator>
+		</table>
+	</div>
+	<s:if test="permissions.admin || permissions.contractor">
+		<div id="tabs-membership">
+			<s:iterator value="operatorTags"><s:property value="tag"/> </s:iterator>
+			<label>PICS Membership:</label>
+			<s:if test="contractor.activeB">Active</s:if><s:else>Inactive</s:else>
+			<br />
+			<label>Membership:</label>
+			<s:property value="contractor.membershipLevel.fee" />
+			<br />
+			<label>Balance:</label>
+			$<s:property value="contractor.balance" />
+			<br />
+			<label>Member Since:</label>
+			<s:date name="contractor.membershipDate" format="M/d/yyyy" />
+			<br />
+			<a href="BillingDetail.action?id=<s:property value="contractor.id" />">Billing Details</a>
+		</div>
+	</s:if>
 </div>
-
-<table width="100%" class="navbar">
-	<tr>
-		<td><a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Notes</a></td>
-		<td><a href="ContractorEdit.action?id=<s:property value="contractor.id" />">Edit</a></td>
-		<td><a href="BillingDetail.action?id=<s:property value="contractor.id" />">Billing</a></td>
-		<td><a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Auto Login</a></td>
-		<td><a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Facilities</a></td>
-	</tr>
-</table>
 
 <script type="text/javascript">
 $(function() {
