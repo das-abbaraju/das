@@ -62,8 +62,10 @@ $(function() {
 </script>
 <style>
 #thinking {
-	height: 20px;
 	float: right;
+}
+#calendar {
+	margin-top: 40px;
 }
 span.fc-event-time {
 	display: block;
