@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
-<script type="text/javascript" src="js/jquery/tooltip/jquery.tooltip.min.js"></script>
-<link rel="stylesheet" type="text/css" href="js/jquery/tooltip/jquery.tooltip.css" />
+<script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
+<link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
 
 <script type="text/javascript">
 var hasHoliday = false;
@@ -32,23 +32,26 @@ $.ajaxSetup(
 
 <script type="text/javascript" src="js/my_schedule.js"></script>
 <style>
-.cal-availability, .cal-availability a {
+.cal-availability, .cal-availability a, .cal-availability .fc-event-time {
 	border-color: #f22;
 	background-color: #f22;
 }
-.cal-vacation, .cal-vacation a {
+.cal-vacation, .cal-vacation a, .cal-vacation .fc-event-time {
 	border-color: #606;
 	background-color: #606;
 }
-.cal-holiday, .cal-holiday a {
+.cal-holiday, .cal-holiday a, .cal-holiday .fc-event-time {
 	border-color: #063;
 	background-color: #063;
 }
-.cal-schedule, .cal-schedule a {
+.cal-schedule, .cal-schedule a, .cal-schedule .fc-event-time {
 	border-color: #00f;
 	background-color: #00f;
 }
-.cal-webcam a {
+span.fc-event-time {
+	display: block;
+}
+.cal-webcam a span.fc-event-time {
 	background-image: url('images/icon_webcam.png');
 	background-repeat: no-repeat;
 	text-indent: 24px;
@@ -63,6 +66,9 @@ table.modal_form td {
 table.modal_form .title {
 	font-weight: bold;
 	text-align: right;
+}
+ul {
+	list-style: none;
 }
 </style>
 </head>

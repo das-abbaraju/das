@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -124,10 +123,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				addActionMessage("This audit may overlap with the following audits:");
 				for (ContractorAudit cAudit : conflicts) {
 					if (!cAudit.equals(conAudit)) {
-						addActionMessage(cAudit.getContractorAccount().getName()
-								+ " at "
-								+ DateBean.format(DateBean.convertTime(cAudit.getScheduledDate(),
-										TimeZone.getDefault(), permissions.getTimezone()), "h:mm a"));
+						addActionMessage(cAudit.getContractorAccount().getName() + " at "
+								+ formatDate(cAudit.getScheduledDate(), "h:mm a z"));
 					}
 				}
 			}

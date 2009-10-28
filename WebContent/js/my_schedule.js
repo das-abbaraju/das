@@ -133,7 +133,7 @@ function loadPreview() {
 		header: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'month,basicWeek,basicDay'
+			right: 'month,agendaWeek,agendaDay'
 		},
 		loading: function(isLoading, view) {
 				if(isLoading)
@@ -166,9 +166,24 @@ function loadPreview() {
 				$dialog.dialog('open');
 			},
 		eventRender: function (calEvent, element, view) {
-				$(element)
-					.attr({title: getType(calEvent)+' '+$.fullCalendar.formatDates(calEvent.start,calEvent.end,"'['[MM/dd ]h:mmt{'-'[MM/dd ]h:mmt}']'")})
-					.tooltip({track: true, delay:0});
+				if (getType(calEvent) == 'Audit')
+					$(element)
+						.attr({rel: 'AuditSelectAjax.action?auditID='+getId(calEvent)})
+						.cluetip({
+							clickThrough: true,
+							positionBy: 'mouse',
+							ajaxCache: true,
+							closeText: "<img src='images/cross.png' width='16' height='16'>",
+							hoverIntent: {interval: 200},
+							arrows: true,
+							dropShadow: false,
+							cluetipClass: 'jtip',
+							ajaxProcess: function(data) {
+								data = $(data).not('meta, link, title');
+								return data;
+							}
+						}
+					);
 			},
 		dayClick: function(dayDate, view) {
 				clearForm();
