@@ -369,6 +369,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return dao.findWhere(false, "", permissions);
 	}
 
+	/**
+	 * Get a list of Audits that the current user can see
+	 * Operators can't see each other's audits
+	 * Contractors can't see the Welcome Call
+	 * @return
+	 */
 	public List<ContractorAudit> getAudits() {
 		// Why is this method so complicated? Seems like it could be simpler
 		// Like this: return contractor.getAudits()
