@@ -62,7 +62,7 @@
 	</s:if>
 </s:if>
 
-<s:if test="!conAudit.auditType.classType.policy">
+<s:if test="conAudit.auditType.hasRequirements">
 	<div id="info">
 		Please use  
 		<input type="button" class="picsbutton positive" value="Additional Attachments" onclick="showAuditFiles(<s:property value="auditID" />)" title="Opens in new window (please disable your popup blocker)"/>
