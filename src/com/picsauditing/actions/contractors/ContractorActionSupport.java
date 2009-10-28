@@ -1,8 +1,10 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
@@ -15,6 +17,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -188,7 +191,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)
+						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
 					String linkText = audit.getAuditType().getAuditName()
 							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
 					if (isShowCheckIcon(audit))
@@ -224,9 +228,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * 
 	 */
 	public boolean isRequiresInsurance() {
-		if(contractor.isAcceptsBids())
+		if (contractor.isAcceptsBids())
 			return false;
-		
+
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
 
@@ -253,7 +257,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * an operator that subscribes to Integrity Management
 	 */
 	public boolean isRequiresIntegrityManagement() {
-		if(contractor.isAcceptsBids())
+		if (contractor.isAcceptsBids())
 			return false;
 
 		if (!accountDao.isContained(getOperators().iterator().next()))
@@ -355,9 +359,28 @@ public class ContractorActionSupport extends AccountActionSupport {
 			e.printStackTrace();
 		}
 		List<ContractorAudit> list = contractor.getAudits();
+		Set<AuditType> aTypes = new HashSet<AuditType>();
+
+		if (permissions.isContractor()) {
+			for (ContractorOperator conOperator : contractor.getOperators()) {
+				for (AuditOperator aOperator : conOperator.getOperatorAccount().getVisibleAudits()) {
+					aTypes.add(aOperator.getAuditType());
+				}
+			}
+		}
+
 		for (ContractorAudit contractorAudit : list) {
-			if (permissions.canSeeAudit(contractorAudit.getAuditType()))
-				temp.add(contractorAudit);
+			if (permissions.canSeeAudit(contractorAudit.getAuditType())) {
+				if (permissions.isContractor()) {
+					for (AuditType auditType : aTypes) {
+						if (auditType.equals(contractorAudit.getAuditType())) {
+							temp.add(contractorAudit);
+							break;
+						}
+					}
+				} else
+					temp.add(contractorAudit);
+			}
 		}
 		return temp;
 	}
