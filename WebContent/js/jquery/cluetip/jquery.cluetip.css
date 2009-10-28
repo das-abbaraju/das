@@ -104,7 +104,8 @@
 
 #cluetip-inner label {
 	font-weight: bold;
-	color: #999;
+	color: #555;
+	padding-right: 10px;
 }
 
 /* stupid IE6 HasLayout hack */
