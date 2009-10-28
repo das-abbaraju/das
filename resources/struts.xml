@@ -1131,6 +1131,15 @@
 			class="com.picsauditing.actions.audits.ScheduleAudit">
 			<result>struts/json.jsp</result>
 		</action>
+		
+		<action name="AuditCalendar"
+			class="com.picsauditing.actions.audits.AuditCalendar">
+			<result>struts/audits/audit_calendar.jsp</result>
+		</action>
+		<action name="AuditCalendarJSON"
+			class="com.picsauditing.actions.audits.AuditCalendar">
+			<result>struts/json.jsp</result>
+		</action>
 
 		<!-- Ajax Snippets -->
 
@@ -1142,6 +1151,11 @@
 		<action name="ContractorSelectAjax"
 			class="com.picsauditing.actions.report.ReportAccount">
 			<result>struts/reports/contractors_select.jsp</result>
+		</action>
+		
+		<action name="AuditSelectAjax"
+			class="com.picsauditing.actions.audits.AuditActionSupport">
+			<result>struts/audits/audit_select.jsp</result>
 		</action>
 
 		<action name="QuestionSelectAjax"

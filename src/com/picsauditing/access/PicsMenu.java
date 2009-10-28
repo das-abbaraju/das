@@ -96,7 +96,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
-			subMenu.addChild("Audit Calendar", "audit_calendar.jsp");
+			subMenu.addChild("Audit Calendar", "AuditCalendar.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Answer Updates", "AuditDataUpdates.action");
 		if(permissions.isAuditor()) {
