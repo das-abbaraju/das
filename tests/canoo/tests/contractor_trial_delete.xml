@@ -18,7 +18,7 @@
 					<clickButton label="Search"/>
 					
 					<group description="Delete Audits">
-						<clickLink label="PQF"/>
+						<clickLink label="Pre-Qualification"/>
 						<clickLink label="System Edit"/>
 						<clickButton label="Delete"/>
 						<clickLink label="2006 Update"/>

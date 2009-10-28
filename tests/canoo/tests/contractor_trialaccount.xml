@@ -131,7 +131,7 @@
 					<clickButton label="Collect Payment"/>
 				</group>
 				<group description="System Edit">
-					<clickLink label="PQF"/>
+					<clickLink label="Pre-Qualification"/>
 					<clickLink label="System Edit"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
@@ -159,7 +159,7 @@
 				</group>
 				<group description="Verify Tasks, PQF Categories">
 					<sleep seconds="3"/>
-					<clickLink label="PQF"/>
+					<clickLink label="Pre-Qualification"/>
 					<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
 					<verifyText description="Verify that text is contained in the page" text="0%"/>
 					<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
