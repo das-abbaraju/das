@@ -1,6 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,12 +20,6 @@ public class AuditCalendar extends PicsActionSupport implements Preparable {
 	private Date start;
 	private Date end;
 
-	// Harvey Staal
-	// Jesse Cota
-	// Mina Mina
-	// Rick McGee
-	private List<Integer> auditors = Arrays.asList(935, 927, 1029, 9615);
-
 	public AuditCalendar(ContractorAuditDAO contractorAuditDAO) {
 		this.contractorAuditDAO = contractorAuditDAO;
 	}
@@ -44,20 +37,17 @@ public class AuditCalendar extends PicsActionSupport implements Preparable {
 		if (button != null) {
 			if (button.equals("audits")) {
 				json = new JSONArray();
-				for (Integer auditorID : auditors) {
-					List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(auditorID, start, end);
-					for (ContractorAudit audit : audits) {
-						JSONObject o = new JSONObject();
-						o.put("id", audit.getId());
-						o.put("title", audit.getContractorAccount().getName() + " (" + audit.getAuditor().getName()
-								+ ")");
-						o.put("start", formatDate(audit.getScheduledDate(), "MM/dd/yyyy HH:mm"));
-						o.put("allDay", false);
-						o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
-						if (!audit.isConductedOnsite())
-							o.put("className", "cal-webcam");
-						json.add(o);
-					}
+				List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(0, start, end);
+				for (ContractorAudit audit : audits) {
+					JSONObject o = new JSONObject();
+					o.put("id", audit.getId());
+					o.put("title", audit.getContractorAccount().getName() + " (" + audit.getAuditor().getName() + ")");
+					o.put("start", formatDate(audit.getScheduledDate(), "MM/dd/yyyy HH:mm"));
+					o.put("allDay", false);
+					o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
+					if (!audit.isConductedOnsite())
+						o.put("className", "cal-webcam");
+					json.add(o);
 				}
 
 				return SUCCESS;
