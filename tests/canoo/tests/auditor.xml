@@ -10,7 +10,7 @@
 				&login;
 				&body_verify;
 				
-				<clickLink description="My Audits" label="My Audits" />
+				<clickLink description="My Audits" href="My Audits" />
 				&body_verify;
 				<verifyText description="Make sure there are multiple contractors found"
 					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />	

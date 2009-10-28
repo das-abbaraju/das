@@ -24,7 +24,7 @@
 				</group>
 				
 				<group description="Activations">
-					<setInputField name="filter.accountName" value="Canoo"/>
+					<setInputField name="filter.accountName" value="Canoo's Test Contractor"/>
 					<clickButton label="Search"/>
 						<verifyText description="Verify that text is contained in the page" text="This contractor is not active."/>
 					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
@@ -43,10 +43,11 @@
 					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 						<verifyText description="Active:Yes" text="Yes"/>
 						<verifyText description="Verify that text is contained in the page" text="$0.00 USD"/>
-						<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
+						<clickLink description="Click linak: Edit Account" href="ContractorEdit.action"/>
 						<clickLink label="Edit Account"/>
 						<clickButton label="Delete"/>
-				</group>
+					</group>
+					&delete_contractor;
 		    </steps>
 		</webtest>
 	</target>

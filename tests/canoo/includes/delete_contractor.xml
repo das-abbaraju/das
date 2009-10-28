@@ -45,7 +45,7 @@
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
-	<group description="Delete Contractor">
+
 		<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
 		<clickButton description="Search for Contractor" label="Search" />
 	<ifStep description="If Canoo exists, delete"/>
@@ -54,7 +54,8 @@
 		</condition>
 		<clickLink description="click on edit page" href="ContractorEdit.action" />
 		<clickButton description="Delete the Contractor" label="Delete" />
-	</group>
+	</ifStep>
 
-</ifStep>
+
+
 
