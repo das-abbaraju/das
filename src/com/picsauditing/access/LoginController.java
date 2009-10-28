@@ -115,7 +115,7 @@ public class LoginController extends PicsActionSupport {
 		} else {
 			// Normal login, via the actual Login.action page
 			permissions.clear();
-
+			
 			String error = canLogin();
 			if (error.length() > 0) {
 				logAttempt();
@@ -129,12 +129,17 @@ public class LoginController extends PicsActionSupport {
 			user.setLastLogin(new Date());
 			user.getAccount().setLastLogin(new Date());
 			userDAO.save(user);
-			
+
+			Cookie cookie = new Cookie("username", username);
+			cookie.setMaxAge(3600*24);
+			getResponse().addCookie(cookie);
+
 			// TODO we should allow each account to set their own timeouts
 			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
 			if (permissions.isPicsEmployee())
 				getRequest().getSession().setMaxInactiveInterval(3600);
 		}
+		
 		ActionContext.getContext().getSession().put("permissions", permissions);
 		logAttempt();
 		postLogin();
@@ -242,18 +247,26 @@ public class LoginController extends PicsActionSupport {
 		// back there below
 		Cookie[] cookiesA = getRequest().getCookies();
 		if (cookiesA != null) {
-			String fromURL = "";
+			String cookieFromURL = "";
+			String cookieUsername = "";
 			for (int i = 0; i < cookiesA.length; i++) {
 				if ("from".equals(cookiesA[i].getName())) {
-					fromURL = cookiesA[i].getValue();
+					cookieFromURL = cookiesA[i].getValue();
 					// Clear the cookie, now that we've used it once
 					Cookie fromCookie = new Cookie("from", "");
 					getResponse().addCookie(fromCookie);
-					if (fromURL.length() > 0) {
-						getResponse().sendRedirect(fromURL);
-						return;
-					}
 				}
+				if ("username".equals(cookiesA[i].getName()))
+					cookieUsername = cookiesA[i].getValue();
+			}
+			if (!Strings.isEmpty(cookieUsername) && !cookieUsername.equals(permissions.getUsername())) {
+				// If they are switching users, just send them back to the Home Page
+				cookieFromURL = "";
+			}
+			
+			if (cookieFromURL.length() > 0) {
+				getResponse().sendRedirect(cookieFromURL);
+				return;
 			}
 		}
 		String url = null;
