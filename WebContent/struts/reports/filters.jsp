@@ -9,8 +9,7 @@
 	<div id="hideSearch" <s:if test="!filtered">style="display: none"</s:if>><a
 		href="#" onclick="hideSearch()">Hide Filter Options</a></div>
 </s:if>
-<s:form id="form1" action="%{filter.destinationAction}"
-	cssStyle="background-color: #F4F4F4;">
+<s:form id="form1" action="%{filter.destinationAction}">
 	
 	<s:hidden name="filter.ajax" />
 	<s:hidden name="filter.destinationAction" />

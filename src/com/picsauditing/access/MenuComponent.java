@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -18,6 +19,7 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
 	protected boolean current = false;
 
+	private String cssClass = "";
 	private ArrayList<MenuComponent> children = new ArrayList<MenuComponent>();
 
 	public MenuComponent() {
@@ -96,25 +98,6 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 		return child;
 	}
 
-	public MenuComponent addChild(String name, String url, int childAuditId, String title) {
-		MenuComponent child = new MenuComponent(name, url);
-		this.children.add(child);
-		child.setTitle(title);
-		child.setId(this.children.size() + (100 * this.id));
-		child.setAuditId(childAuditId);
-		return child;
-	}
-
-	public MenuComponent addChild(String name, String url, int childAuditId, String title, String sortField) {
-		MenuComponent child = new MenuComponent(name, url);
-		this.children.add(child);
-		child.setTitle(title);
-		child.setId(this.children.size() + (100 * this.id));
-		child.setAuditId(childAuditId);
-		child.setSortField(sortField);
-		return child;
-	}
-
 	public boolean isCurrent() {
 
 		if (current)
@@ -147,6 +130,14 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
 	public void setSortField(String sortField) {
 		this.sortField = sortField;
+	}
+
+	public String getCssClass() {
+		return cssClass;
+	}
+
+	public void setCssClass(String cssClass) {
+		this.cssClass = cssClass;
 	}
 
 	@Override

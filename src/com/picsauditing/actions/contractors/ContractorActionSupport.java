@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {
@@ -109,12 +110,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * @return
 	 */
 	public List<MenuComponent> getAuditMenu() {
+		PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
+		PicsLogger.start("ContractorActionSupport.getAuditMenu");
+		
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
-		String url = "Audit.action?auditID=";
-		String checkIcon = "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
-		List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();
-		auditList.addAll(getActiveAudits());
+		//String checkIcon = "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
+		List<ContractorAudit> auditList = getActiveAudits();
+		
+		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
 		{
 			// Add the PQF
@@ -130,6 +134,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 			if (pqfs.size() == 1) {
 				ContractorAudit audit = pqfs.get(0);
+				String url = "Audit.action?auditID=";
 				MenuComponent menuComponent = new MenuComponent(audit.getAuditType().getAuditName(), url
 						+ audit.getId());
 				menuComponent.setAuditId(audit.getId());
@@ -138,13 +143,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 				MenuComponent subMenu = new MenuComponent("PQF", "ConPqfList.action?id=" + id);
 				menu.add(subMenu);
 				for (ContractorAudit audit : pqfs) {
-					String auditName = audit.getAuditType().getAuditName();
-					if (isShowCheckIcon(audit))
-						auditName = checkIcon + auditName;
-					subMenu.addChild(auditName, url + audit.getId(), audit.getId(), audit.getAuditStatus() + " - "
-							+ audit.getPercent() + "% Complete");
+					createMenuItem(subMenu, audit);
 				}
 			}
+			PicsLogger.log("Found [" + pqfs.size() + "] PQFs");
 		}
 
 		{ // Add the Annual Updates
@@ -155,14 +157,19 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().isAnnualAddendum()) {
 					String linkText = audit.getAuditFor() + " Update";
-					if (isShowCheckIcon(audit))
-						linkText = checkIcon + linkText;
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), "", audit.getAuditFor());
+					MenuComponent childMenu = createMenuItem(subMenu, audit);
+					childMenu.setName(linkText);
+					childMenu.setSortField(linkText);
 					iter.remove();
 				}
 			}
 
-			subMenu.sortChildren();
+			try {
+				subMenu.sortChildren();
+			} catch (Exception e) {
+				PicsLogger.log("Failed to sort Annual Updates");
+			}
+			PicsLogger.log("Found [" + subMenu.getChildren() + "] Annual Updates");
 		}
 
 		if (isRequiresInsurance()) {
@@ -174,14 +181,16 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
 						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
-
-					subMenu.addChild(linkText, "AuditCat.action?auditID=" + audit.getId() + "&catDataID="
-							+ audit.getCategories().get(0).getId(), audit.getId(), audit.getAuditStatus().toString());
+					childMenu.setName(linkText);
+					childMenu.setUrl("AuditCat.action?auditID=" + audit.getId() + "&catDataID="
+							+ audit.getCategories().get(0).getId());
 					iter.remove();
 				}
 			}
+			PicsLogger.log("Found [" + subMenu.getChildren() + "] Policies");
 		}
 
 		if (isRequiresIntegrityManagement()) {
@@ -193,14 +202,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM)
 						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					String linkText = audit.getAuditType().getAuditName()
 							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
-					if (isShowCheckIcon(audit))
-						linkText = checkIcon + linkText;
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+					childMenu.setName(linkText);
 					iter.remove();
 				}
 			}
+			PicsLogger.log("Found [" + subMenu.getChildren() + "] IM Audits");
 		}
 
 		{ // Add All Other Audits
@@ -208,17 +217,30 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
+					MenuComponent childMenu = createMenuItem(subMenu, audit);
+					
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
 						linkText = audit.getAuditFor() + " " + linkText;
-					if (isShowCheckIcon(audit))
-						linkText = checkIcon + linkText;
-					subMenu.addChild(linkText, url + audit.getId(), audit.getId(), audit.getAuditStatus().toString());
+					childMenu.setName(linkText);
 				}
 			}
+			PicsLogger.log("Found [" + subMenu.getChildren() + "] Other Audits");
 		}
+		PicsLogger.stop();
 		return menu;
+	}
+	
+	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {
+		String linkText = audit.getAuditType().getAuditName();
+		
+		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
+		menuItem.setAuditId(audit.getId());
+		menuItem.setTitle(audit.getAuditStatus().toString());
+		if (isShowCheckIcon(audit))
+			menuItem.setCssClass("done");
+		return menuItem;
 	}
 
 	/**
