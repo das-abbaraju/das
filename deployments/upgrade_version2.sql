@@ -19,7 +19,7 @@ and pcd.catID = 151;
 **/
 
 /**
- * Update the invoice Fee with Bid Only
+ * Update the invoice Fee with Bid Only Account
  */
 update invoice_fee set fee="Bid Only Account Fee", 
 qbFullName = "Bid Only Account Fee",updateDate = Now() 
