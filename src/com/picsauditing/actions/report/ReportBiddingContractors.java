@@ -8,16 +8,20 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -32,15 +36,17 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected ContractorOperatorDAO contractorOperatorDAO;
 	protected ContractorAuditDAO contractorAuditDAO;
 	protected InvoiceItemDAO invoiceItemDAO;
+	protected OperatorAccountDAO operatorAccountDAO;
 
 	public ReportBiddingContractors(ContractorAccountDAO contractorAccountDAO, NoteDAO noteDAO,
 			ContractorOperatorDAO contractorOperatorDAO, ContractorAuditDAO contractorAuditDAO,
-			InvoiceItemDAO invoiceItemDAO) {
+			InvoiceItemDAO invoiceItemDAO, OperatorAccountDAO operatorAccountDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -85,15 +91,18 @@ public class ReportBiddingContractors extends ReportAccount {
 				}
 				
 				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
-					for (ContractorOperator cOperator : cAccount.getOperators()) {
-						if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
-							cOperator.setWorkStatus("Y");
-							cOperator.setAuditColumns(permissions);
-							contractorOperatorDAO.save(cOperator);
-							break;
+					approveContractor(cAccount, permissions.getAccountId());
+				}
+				
+				if(permissions.isCorporate()) {
+					OperatorAccount corporate = operatorAccountDAO.find(permissions.getAccountId());
+					for(Facility facility : corporate.getOperatorFacilities()) {
+						if(YesNo.Yes.equals(facility.getOperator().getApprovesRelationships())) {
+							approveContractor(cAccount, facility.getOperator().getId());
 						}
 					}
 				}
+				
 				templateId = 73; // Trial Contractor Account Approval
 				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName();
 			}
@@ -156,5 +165,16 @@ public class ReportBiddingContractors extends ReportAccount {
 
 	public void setOperatorNotes(String operatorNotes) {
 		this.operatorNotes = operatorNotes;
+	}
+	
+	public void approveContractor(ContractorAccount cAccount, int operatorID) {
+		for (ContractorOperator cOperator : cAccount.getOperators()) {
+			if (cOperator.getOperatorAccount().getId() == operatorID) {
+				cOperator.setWorkStatus("Y");
+				cOperator.setAuditColumns(permissions);
+				contractorOperatorDAO.save(cOperator);
+				break;
+			}
+		}
 	}
 }
