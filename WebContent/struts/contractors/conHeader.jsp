@@ -227,7 +227,7 @@
 	<div id="auditSubMenu<s:property value="url" />" class="auditSubMenu">
 	<ul>
 	<s:iterator value="children">
-		<li><a href="<s:property value="url"/>"	<s:if test="current == true">class="current"</s:if>
+		<li><a href="<s:property value="url"/>"	class="audit <s:if test="current == true">current </s:if><s:property value="cssClass"/>"
 				title="<s:property value="title" />"><span><s:property value="name" escape="false" /></span></a></li>
 	</s:iterator>
 	</ul>
