@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -93,7 +95,10 @@ public class AuditorVacation extends BaseTable {
 			obj.put("end", end.getTimeInMillis());
 		}
 
-		if (start.get(Calendar.HOUR_OF_DAY) == 0 && start.get(Calendar.MINUTE) == 0
+		DateFormat format = new SimpleDateFormat("HH");
+		format.setTimeZone(user.getTimezoneObject());
+
+		if (format.format(startDate).equals("00")
 				&& (end == null || end.getTime().equals(DateBean.getNextDayMidnight(startDate))))
 			obj.put("allDay", true);
 		else
