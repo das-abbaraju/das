@@ -97,12 +97,12 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 			}
 
 			if ("out".equals(button)) {
-				list = webcamDAO.findWhere("contractor.id > 0");
+				list = webcamDAO.findWhere("contractor.id > 0 AND active = 1");
 				return SUCCESS;
 			}
 
 			if ("in".equals(button)) {
-				list = webcamDAO.findWhere("contractor IS NULL");
+				list = webcamDAO.findWhere("contractor IS NULL AND active = 1");
 				return SUCCESS;
 			}
 		}
