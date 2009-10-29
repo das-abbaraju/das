@@ -166,7 +166,7 @@ function loadPreview() {
 				$dialog.dialog('open');
 			},
 		eventRender: function (calEvent, element, view) {
-				if (getType(calEvent) == 'Audit')
+				if (getType(calEvent) == 'Audit') {
 					$(element)
 						.attr({rel: 'AuditSelectAjax.action?auditID='+getId(calEvent)})
 						.cluetip({
@@ -184,6 +184,7 @@ function loadPreview() {
 							}
 						}
 					);
+				}
 			},
 		dayClick: function(dayDate, view) {
 				clearForm();
