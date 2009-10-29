@@ -27,6 +27,7 @@
 						<nobr>AES<br />
 						Allergan<br />
 						BASF<br />
+						BASF Canada<br />
 						Big West of California<br />
 						Big West Oil, LLC<br />
 						Boise Inc.<br />
@@ -34,6 +35,7 @@
 						BP Carson Refinery<br />
 						BP Cooper River<br />
 						BP Lubricants<br />
+						BP Lubes Canada<br />
 						BP Pipelines &amp; Logistics<br />
 						BP Coke Marketing<br />
 						BP Toledo Refinery<br />
@@ -48,18 +50,19 @@
 						ConocoPhillips Santa Maria Refinery<br />
 						Criterion Catalysts &amp; Technologies<br />
 						CRI<br />
+						CRI Canada<br />
 						Delta Consultants<br />
 						Empire Southwest (CAT)<br />
 						Firestone Polymers<br />
 						Flying J<br />
 						Frontier Oil El Dorado<br>
-						Frontier Refining Inc. Cheyenne<br>
-						Huntsman International<br />
 						</nobr></td>
 						<td valign="top" class="blueClientList">
 						<jsp:include page="includes/client_slideshow.jsp"></jsp:include>
 						
 						<br>
+						Frontier Refining Inc. Cheyenne<br>
+						Huntsman International<br />
 						Huntsman Auburn Hills<br />
 						Huntsman Conroe<br />
 						Huntsman Charlotte<br />
@@ -87,6 +90,7 @@
 						Motiva Port Arthur Refinery
 						Motiva Retail Motiva SD&amp;CM<br>
 						Motorola Field Services<br>
+						Motorola Canada<br />
 						Motorola USA<br>
 						New Belgium Brewing Co.<br/>
 						Paramount Petroleum<br>
@@ -99,6 +103,7 @@
 						Shell Environmental Services<br>
 						Shell Global Solutions<br>
 						Shell Lubricants<br>
+						Shell Lubricants Canada<br />
 						Shell Martinez Refinery<br>
 						Shell Oil Products US RMT<br>
 						Shell Puget Sound Refinery<br>
