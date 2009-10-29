@@ -7,7 +7,7 @@
 <s:include value="../jquery.jsp" />
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
-
+<script type="text/javascript" src="js/jquery/address/jquery.address-1.0.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.layout.min.js"></script>
 <script type="text/javascript">
 
@@ -24,7 +24,7 @@ function wireClueTips() {
 		sticky: true, 
 		hoverClass: 'cluetip', 
 		clickThrough: true, 
-		ajaxCache: false,
+		ajaxCache: true,
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		hoverIntent: {interval: 200},
 		arrows: true,
@@ -37,6 +37,22 @@ function wireClueTips() {
 		}
 	});
 }
+
+$(function() {
+	$.address.change(function(event) {
+			var val = event.value.replace('/', '');
+			if (val != '')
+				loadForm(event.value.replace('/', ''));
+			else
+				$('#webcam_edit').empty();
+		}
+	);
+
+	$('tr.clickable').address(function() {
+			return $(this).attr('id');
+		}
+	);
+});
 </script>
 <style>
 td.webcam_list {
@@ -76,7 +92,7 @@ div.webcam_list {
 				</tr>
 			</thead>
 			<s:iterator value="list">
-				<tr class="clickable" onclick="loadForm(<s:property value="id"/>)">
+				<tr class="clickable" id="<s:property value="id"/>">
 					<td style="font-size-adjust: 120%; font-weight: bold;"><s:property value="id" /></td>
 					<td class="center"><s:property value="%{active ? 'Y' : 'N'}" /></td>
 					<td><s:property value="contractor.name" /></td>
