@@ -22,10 +22,13 @@
 				<li><label>Received On:</label> <s:date name="webcam.receivedDate" /></li>
 			</s:if>
 			<s:else>
-				<li><label>Contractor:</label> <a
-					href="ContractorView.action?id=<s:property
-				value="webcam.contractor.id" />"><s:property
-					value="webcam.contractor.name" /></a></li>
+				<li><label>Contractor:</label> 
+					<a href="ContractorView.action?id=<s:property value="webcam.contractor.id"/>" 
+						rel="ContractorQuickAjax.action?id=<s:property value="webcam.contractor.id"/>" 
+							class="contractorQuick" title="<s:property value="webcam.contractor.name"/>">
+						<s:property value="webcam.contractor.name"/>
+					</a>
+				</li>
 				<li><label>Sent By:</label> <s:property value="webcam.sendBy.name" /></li>
 				<li><label>Sent On:</label> <s:date name="webcam.sentDate" /></li>
 				<li><label>Carrier:</label> <s:property value="webcam.carrier" /></li>
@@ -53,3 +56,4 @@
 		</fieldset>
 	</pics:permission>
 </s:form>
+<script type="text/javascript">wireClueTips()</script>

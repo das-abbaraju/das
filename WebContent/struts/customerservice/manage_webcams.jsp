@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="css/reports.css" />
 <link rel="stylesheet" href="css/forms.css" />
 <s:include value="../jquery.jsp" />
+<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
+
 <script type="text/javascript" src="js/jquery/jquery.layout.min.js"></script>
 <script type="text/javascript">
 
@@ -16,6 +19,24 @@ function loadForm(id) {
 		});
 }
 
+function wireClueTips() {
+	$("a.contractorQuick").cluetip({
+		sticky: true, 
+		hoverClass: 'cluetip', 
+		clickThrough: true, 
+		ajaxCache: false,
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		hoverIntent: {interval: 200},
+		arrows: true,
+		dropShadow: false,
+		width: 400,
+		cluetipClass: 'jtip',
+		ajaxProcess:      function(data) {
+			data = $(data).not('meta, link, title');
+			return data;
+		}
+	});
+}
 </script>
 <style>
 td.webcam_list {
