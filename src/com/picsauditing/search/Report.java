@@ -140,7 +140,7 @@ public class Report {
 	}
 
 	public String getStartsWithLinksWithDynamicForm() {
-		return new LinkBuilder().getStartsWithLinks();
+		return LinkBuilder.getStartsWithLinks();
 	}
 
 	public String getPageLinks() {
