@@ -145,7 +145,7 @@ function wireClueTips() {
 		sticky: true, 
 		hoverClass: 'cluetip', 
 		clickThrough: true, 
-		ajaxCache: false,
+		ajaxCache: true,
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		hoverIntent: {interval: 200},
 		arrows: true,
