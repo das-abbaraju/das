@@ -2,8 +2,10 @@ package com.picsauditing.actions.customerservice;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.Inputs;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -12,6 +14,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Webcam;
 
@@ -123,6 +126,14 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 
 	public void setWebcam(Webcam webcam) {
 		this.webcam = webcam;
+	}
+
+	public String[] getCountryList() {
+		return Inputs.COUNTRY_ARRAY;
+	}
+
+	public TreeMap<String, String> getStateList() {
+		return State.getStates(true);
 	}
 
 }
