@@ -170,6 +170,7 @@ function loadPreview() {
 					$(element)
 						.attr({rel: 'AuditSelectAjax.action?auditID='+getId(calEvent)})
 						.cluetip({
+							sticky: true,
 							clickThrough: true,
 							positionBy: 'mouse',
 							ajaxCache: true,
