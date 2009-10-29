@@ -263,7 +263,7 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate) {
 		String hql = "SELECT ca FROM ContractorAudit ca " +
-			" WHERE ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
+			" WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
