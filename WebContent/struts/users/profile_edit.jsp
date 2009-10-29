@@ -8,11 +8,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
-$(function(){
-	$tabs = $('#internalnavcontainer').tabs({
-	});
-});
-
 	function checkUsername(username) {
 		startThinking({div: 'username_status', message: 'checking availability of username...'});
 		var data = {userID: <s:property value="u.id"/>, username: username};
@@ -62,36 +57,38 @@ $(function(){
 <body>
 <h1>Edit Profile</h1>
 
-
 <div id="internalnavcontainer">
-
-<ul>
-	<li><a id="link_tab_profile" href="#tab_profile">Edit</a></li>
+<ul id="navlist">
+	<li><a id="link_tab_profile" href="#" class="current" onclick="showTab('tab_profile'); return false;">Edit</a></li>
 	<s:if test="switchTos.size > 0">
-	<li><a id="link_tab_switch" href="#tab_switch">Switch Accounts</a></li>
+	<li><a id="link_tab_switch" href="#" onclick="showTab('tab_switch'); return false;">Switch Accounts</a></li>
 	</s:if>
 	<s:if test="eList.size > 0">
-		<li><a id="link_tab_subscriptions" href="#tab_subscriptions">Email Subscriptions</a></li>
+		<li><a id="link_tab_subscriptions" href="#" onclick="showTab('tab_subscriptions'); return false;">Email Subscriptions</a></li>
 	</s:if>
-	<li><a id="link_tab_permissions" href="#tab_permissions">Permissions</a></li>
+	<li><a id="link_tab_permissions" href="#" onclick="showTab('tab_permissions'); return false;">Permissions</a></li>
 </ul>
+</div>
 
 <s:include value="../actionMessages.jsp"></s:include>
 
 <div id="tab_profile">
-<table style=" width: 100%;">
+<table style="width: 100%">
 	<tr>
 		<td><s:include value="profile_edit_save.jsp" /></td>
-		<td>
+		<td style="width: 20px;">&nbsp;</td>
+		<td style="vertical-align:top;">
+		
 		<h3>Recent Logins</h3>
-		<table class="report">
-			<thead>
+		<table class="report" style="position: static;">
+		<thead>
 			<tr>
 				<th>Login Date/Time</th>
 				<th>IP Address</th>
 				<th>Notes</th>
 			</tr>
-			</thead>
+		</thead>
+		<tbody>
 		<s:iterator value="recentLogins">
 			<tr>
 				<td><s:date name="loginDate"/></td>
@@ -102,13 +99,15 @@ $(function(){
 				</td>
 			</tr>
 		</s:iterator>
+		</tbody>
 		</table>
 	</td>
 	</tr>
 </table>
+
 </div>
 
-<div id="tab_switch">
+<div id="tab_switch" style="display: none;">
 	<h3>Switch Accounts</h3>
 	<table class="report">
 		<thead>
@@ -135,7 +134,7 @@ $(function(){
 	</table>
 </div>
 
-<div id="tab_permissions">
+<div id="tab_permissions" style="display: none;">
 <table style="width: 100%">
 	<tr>
 		<td>
@@ -180,14 +179,13 @@ $(function(){
 </table>
 </div>
 
-<div id="tab_subscriptions">
+<div id="tab_subscriptions" style="display: none;">
 	<s:iterator value="eList" status="stat">
 	<div id="td<s:property value="subscription"/>" <s:if test="#stat.even">class="shaded"</s:if>>
 		<s:include value="../mail/user_email_subscription.jsp"/>
 	</div>
 	</s:iterator>
 </div>
-<br clear="all">
-</div>
+
 </body>
 </html>
