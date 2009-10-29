@@ -42,7 +42,7 @@
 			<s:if test="webcam.id > 0">
 				<s:if test="webcam.contractor == null">
 					<pics:permission perm="ManageWebcam" type="Delete">
-						<input type="submit" class="picsbutton negative" name="button" value="Delete" />
+						<input type="submit" class="picsbutton negative" name="button" value="Delete" onclick="return confirm('Are you sure you want to delete this webcam? This cannot be undone.');"/>
 					</pics:permission>
 				</s:if>
 				<s:else>
