@@ -6,27 +6,21 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 @SuppressWarnings("serial")
-public class AuditCalendar extends PicsActionSupport implements Preparable {
+public class AuditCalendar extends PicsActionSupport {
 	private ContractorAuditDAO contractorAuditDAO;
 
-	public JSONArray json;
+	private JSONArray json;
 	private Date start;
 	private Date end;
 
 	public AuditCalendar(ContractorAuditDAO contractorAuditDAO) {
 		this.contractorAuditDAO = contractorAuditDAO;
-	}
-
-	@Override
-	public void prepare() throws Exception {
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -55,6 +49,14 @@ public class AuditCalendar extends PicsActionSupport implements Preparable {
 		}
 
 		return SUCCESS;
+	}
+
+	public JSONArray getJson() {
+		return json;
+	}
+
+	public void setJson(JSONArray json) {
+		this.json = json;
 	}
 
 	public void setStart(String start) {
