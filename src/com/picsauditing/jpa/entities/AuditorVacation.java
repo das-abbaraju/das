@@ -96,7 +96,8 @@ public class AuditorVacation extends BaseTable {
 		}
 
 		DateFormat format = new SimpleDateFormat("HH");
-		format.setTimeZone(user.getTimezoneObject());
+		if (user != null)
+			format.setTimeZone(user.getTimezoneObject());
 
 		if (format.format(startDate).equals("00")
 				&& (end == null || end.getTime().equals(DateBean.getNextDayMidnight(startDate))))
