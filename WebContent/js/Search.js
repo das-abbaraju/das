@@ -117,10 +117,8 @@ function textQuery(name) {
 
 function clearTextField(name) {
 	var box = $("#"+name);
-	var startField = $("#"+name+'1');
-	var endField = $("#"+name+'2');
-	startField.value = "";
-	endField.value = ""; 
+	var startField = $("#"+name+'1').val('');
+	var endField = $("#"+name+'2').val('');
 	textQuery(name);
 }
 
