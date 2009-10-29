@@ -23,7 +23,7 @@
 <h1>Schedule &amp; Assign Audits</h1>
 
 <s:include value="filters.jsp" />
-<div class="blueMain"><a href="audit_calendar.jsp" target="_BLANK">Audit Calendar</a></div>
+<div class="blueMain"><a href="AuditCalendar.action" target="_BLANK">Audit Calendar</a></div>
 
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
