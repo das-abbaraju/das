@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -38,7 +39,8 @@ public class AuditCalendar extends PicsActionSupport {
 					o.put("title", audit.getContractorAccount().getName() + " (" + audit.getAuditor().getName() + ")");
 					o.put("start", formatDate(audit.getScheduledDate(), "MM/dd/yyyy HH:mm"));
 					o.put("allDay", false);
-					o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
+					if (!permissions.isOperatorCorporate())
+						o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
 					if (!audit.isConductedOnsite())
 						o.put("className", "cal-webcam");
 					json.add(o);
