@@ -34,8 +34,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public void remove(ContractorAudit row, String ftpDir) {
 		for (AuditData auditData : row.getData()) {
 			if (auditData.getQuestion().getQuestionType().startsWith("File")) {
-				String Filepath = ftpDir + "/files/"
-				       	+ FileUtils.thousandize(auditData.getId());
+				String Filepath = ftpDir + "/files/" + FileUtils.thousandize(auditData.getId());
 				String FileName = "data_" + auditData.getId() + "." + auditData.getAnswer();
 				FileUtils.deleteFile(Filepath + FileName);
 			}
@@ -58,11 +57,11 @@ public class ContractorAuditDAO extends PicsDAO {
 		}
 	}
 
-	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor, Map<Integer, AuditData> preToPostAuditDataIdMapper) {
+	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor,
+			Map<Integer, AuditData> preToPostAuditDataIdMapper) {
 		if (oCAudit != null) {
 			List<AuditData> auList = new Vector<AuditData>(oCAudit.getData());
-			List<AuditCatData> acList = new Vector<AuditCatData>(oCAudit
-					.getCategories());
+			List<AuditCatData> acList = new Vector<AuditCatData>(oCAudit.getCategories());
 			clear();
 			oCAudit.setId(0);
 			oCAudit.setContractorAccount(nContractor);
@@ -70,7 +69,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			oCAudit.getData().clear();
 			for (AuditData auditData : auList) {
 				preToPostAuditDataIdMapper.put(auditData.getId(), auditData);
-				
+
 				auditData.setId(0);
 				auditData.setAudit(oCAudit);
 			}
@@ -88,17 +87,15 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findByContractor(int conID) {
-		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
-				+ "WHERE t.contractorAccount.id = ? " + "ORDER BY auditTypeID");
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
+				+ "ORDER BY auditTypeID");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
 
 	public ContractorAudit findActiveByContractor(int conID, int auditTypeID) {
-		Query query = em
-				.createQuery("SELECT t FROM ContractorAudit t "
-						+ "WHERE t.contractorAccount.id = ? AND auditType.id = ? "
-						+ "AND auditStatus IN ('Active','Exempt')");
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
+				+ "WHERE t.contractorAccount.id = ? AND auditType.id = ? " + "AND auditStatus IN ('Active','Exempt')");
 		query.setParameter(1, conID);
 		query.setParameter(2, auditTypeID);
 		return (ContractorAudit) query.getSingleResult();
@@ -106,52 +103,40 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
-		Query query = em
-				.createQuery("SELECT t FROM ContractorAudit t "
-						+ "WHERE t.contractorAccount.id = ? "
-						+ "AND auditStatus <> 'Expired' ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
+				+ "AND auditStatus <> 'Expired' ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
 
-	public List<ContractorAudit> findNewlyAssigned(int limit,
-			Permissions permissions) {
-		return findWhere(limit,
-				"auditStatus IN ('Pending', 'Submitted') AND auditor.id = "
-						+ permissions.getUserId(), "assignedDate DESC");
+	public List<ContractorAudit> findNewlyAssigned(int limit, Permissions permissions) {
+		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') AND auditor.id = " + permissions.getUserId(),
+				"assignedDate DESC");
 	}
 
 	public List<ContractorAudit> findUpcoming(int limit, Permissions permissions) {
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(
-				permissions, PermissionQueryBuilder.HQL);
-		return findWhere(limit,
-				"auditStatus = 'Pending' AND scheduledDate IS NOT NULL "
-						+ permQuery.toString() + getAuditWhere(permissions),
-				"scheduledDate");
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		return findWhere(limit, "auditStatus = 'Pending' AND scheduledDate IS NOT NULL " + permQuery.toString()
+				+ getAuditWhere(permissions), "scheduledDate");
 	}
 
 	public List<ContractorAudit> findNew(int limit, Permissions permissions) {
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(
-				permissions, PermissionQueryBuilder.HQL);
-		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') "
-				+ permQuery.toString() + getAuditWhere(permissions),
-				"creationDate DESC");
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+		return findWhere(limit, "auditStatus IN ('Pending', 'Submitted') " + permQuery.toString()
+				+ getAuditWhere(permissions), "creationDate DESC");
 	}
 
-	public List<ContractorAudit> findRecentlyClosed(int limit,
-			Permissions permissions) {
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(
-				permissions, PermissionQueryBuilder.HQL);
+	public List<ContractorAudit> findRecentlyClosed(int limit, Permissions permissions) {
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		permQuery.setOnlyPendingAudits(false);
-		return findWhere(limit,
-				"auditStatus = 'Active' AND closedDate < NOW() "
-						+ permQuery.toString() + getAuditWhere(permissions),
-				"closedDate DESC");
+		return findWhere(limit, "auditStatus = 'Active' AND closedDate < NOW() " + permQuery.toString()
+				+ getAuditWhere(permissions), "closedDate DESC");
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsNeedingWebcams() {
-		Query q = em.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE AND auditLocation = 'Web' ORDER BY scheduledDate");
+		Query q = em
+				.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE AND auditLocation = 'Web' ORDER BY scheduledDate");
 
 		return q.getResultList();
 	}
@@ -171,8 +156,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ContractorAudit> findWhere(int limit, String where,
-			String orderBy) {
+	public List<ContractorAudit> findWhere(int limit, String where, String orderBy) {
 		String hql = "FROM ContractorAudit";
 		if (where.length() > 0)
 			hql += " WHERE " + where;
@@ -195,8 +179,7 @@ public class ContractorAuditDAO extends PicsDAO {
 
 		String hql = "SELECT DISTINCT ca.contractorAccount FROM ContractorAudit ca "
 				+ "WHERE ca.auditType.id > 1 AND ca.auditType.hasMultiple = 0 "
-				+ "AND ca.expiresDate BETWEEN :startDate AND :endDate "
-				+ "ORDER BY ca.expiresDate";
+				+ "AND ca.expiresDate BETWEEN :startDate AND :endDate " + "ORDER BY ca.expiresDate";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
 		Calendar today = Calendar.getInstance();
@@ -210,31 +193,23 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	/**
 	 * This is for getting a list of policies that we need to send emails on.
-	 * The final result of all of this logic below is that we send emails:
-	 * 14 days before it expires
-	 * 7 days after it expires
-	 * 26 days after it expires
+	 * The final result of all of this logic below is that we send emails: 14
+	 * days before it expires 7 days after it expires 26 days after it expires
 	 * for a total of 3 emails
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findExpiredCertificates() {
-		String hql = "SELECT ca FROM ContractorAudit ca "
-				+ "WHERE ca.auditType.classType = 'Policy' "
-				+ "AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status = 'Pending') " 
-				+ "AND (ca.contractorAccount NOT IN (SELECT contractorAccount FROM EmailQueue et " 
-				+ "WHERE et.sentDate > :Before14Days "
-				+ "AND et.emailTemplate.id = 10)"
-				+ ") "
-				+ "AND EXISTS ( "
-				+ "SELECT ca2 FROM ContractorAudit ca2 "
-				+ "WHERE ca.auditType = ca2.auditType "
-				+ "AND ca.contractorAccount = ca2.contractorAccount "
-				+ "AND ca.id > ca2.id "
-				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days "
-				+ ") "
+		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.auditType.classType = 'Policy' "
+				+ "AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status = 'Pending') "
+				+ "AND (ca.contractorAccount NOT IN (SELECT contractorAccount FROM EmailQueue et "
+				+ "WHERE et.sentDate > :Before14Days " + "AND et.emailTemplate.id = 10)" + ") " + "AND EXISTS ( "
+				+ "SELECT ca2 FROM ContractorAudit ca2 " + "WHERE ca.auditType = ca2.auditType "
+				+ "AND ca.contractorAccount = ca2.contractorAccount " + "AND ca.id > ca2.id "
+				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days " + ") "
 				+ "ORDER BY ca.contractorAccount";
-		Query query  = em.createQuery(hql);
+		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
 		Calendar calendar1 = Calendar.getInstance();
 		calendar1.add(calendar1.WEEK_OF_YEAR, -2);
@@ -243,38 +218,58 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setParameter("After26Days", calendar1.getTime());
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorAudit> findAuditsNeedingRecalculation() {
-		String hql = "SELECT ca FROM ContractorAudit ca " +
-				"WHERE (" +
-				" ca.lastRecalculation IS NULL " +
-				" OR ca.lastRecalculation < :threeMonthsAgo " +
-				") ORDER BY ca.auditType.id, ca.contractorAccount.lastLogin DESC";
+		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE (" + " ca.lastRecalculation IS NULL "
+				+ " OR ca.lastRecalculation < :threeMonthsAgo "
+				+ ") ORDER BY ca.auditType.id, ca.contractorAccount.lastLogin DESC";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(10);
-		
+
 		Calendar calendar = Calendar.getInstance();
-		
+
 		calendar.add(Calendar.DAY_OF_YEAR, -90);
 		query.setParameter("threeMonthsAgo", calendar.getTime());
-		
+
 		return query.getResultList();
 	}
 
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate) {
-		String hql = "SELECT ca FROM ContractorAudit ca " +
-			" WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
+		String hql = "SELECT ca FROM ContractorAudit ca "
+				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
-		
+
 		query.setParameter("startDate", startDate);
 		query.setParameter("endDate", endDate);
-		
+
 		if (auditorID > 0)
 			query.setParameter("auditorID", auditorID);
-		
+
+		return query.getResultList();
+	}
+
+	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate, Permissions permissions) {
+		String hql = "SELECT ca FROM ContractorAudit ca "
+				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate ";
+		if (auditorID > 0)
+			hql += " AND ca.auditor.id = :auditorID ";
+		if (permissions.isOperatorCorporate()) { 
+			PermissionQueryBuilder pqb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
+			pqb.setAccountAlias("ca.contractorAccount");
+			hql += pqb.toString() + " AND ca.auditType.id IN (" + glue(permissions.getCanSeeAudits()) + ")";
+		}
+		hql += " ORDER BY ca.scheduledDate, ca.id";
+		Query query = em.createQuery(hql);
+
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
+		if (auditorID > 0)
+			query.setParameter("auditorID", auditorID);
+
 		return query.getResultList();
 	}
 
