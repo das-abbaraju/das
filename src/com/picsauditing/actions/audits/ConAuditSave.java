@@ -85,17 +85,17 @@ public class ConAuditSave extends AuditActionSupport {
 			}
 			note = "Rejected " + conAudit.getAuditType().getAuditName();
 		}
-		conAudit = contractorAuditDAO.save(conAudit);
-		ContractorAccount contractorAccount = conAudit.getContractorAccount();
-		contractor.setNeedsRecalculation(true);
-		accountDao.save(contractorAccount);
-		
+
 		if(!Strings.isEmpty(note)) {
 			if(!Strings.isEmpty(conAudit.getAuditFor())) 
 				note += " " + conAudit.getAuditFor();
 			addNote(contractor, note, NoteCategory.Audits, LowMedHigh.Low, true, Account.PicsID, getUser());
 		}
-		
+
+		conAudit = contractorAuditDAO.save(conAudit);
+		ContractorAccount contractorAccount = conAudit.getContractorAccount();
+		contractor.setNeedsRecalculation(true);
+		accountDao.save(contractorAccount);
 		
 		return SUCCESS;
 	}
