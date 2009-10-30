@@ -15,6 +15,9 @@
 <script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
 <link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
 
+<script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
+<link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
+
 <script type="text/javascript">
 var hasHoliday = false;
 <pics:permission perm="Holidays">
@@ -129,13 +132,13 @@ ul {
 		</tr>
 		<tr>
 			<td class="title" rowspan="3">When</td>
-			<td><s:textfield name="startDate" cssClass="datepicker" size="10"/> <s:select list="#vacationTimes" name="startTime" cssClass="not-all-day"/></td>
+			<td><s:textfield name="startDate" cssClass="datepicker" size="10"/> <s:textfield name="startTime" cssClass="not-all-day time" size="8"/></td>
 		</tr>
 		<tr>
 			<td class="title not-all-day" style="text-align:center">to</td>
 		</tr>
 		<tr>
-			<td><s:textfield name="endDate" cssClass="datepicker not-all-day" size="10"/> <s:select list="#vacationTimes" name="endTime" cssClass="not-all-day"/></td>
+			<td><s:textfield name="endDate" cssClass="datepicker not-all-day" size="10"/> <s:textfield name="endTime" cssClass="not-all-day time" size="8"/></td>
 		</tr>
 		</table>
 	</fieldset>

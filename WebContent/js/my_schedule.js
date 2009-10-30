@@ -125,6 +125,11 @@ function loadPreview() {
 		modal: true,
 		open: function() {
 			$('.datepicker').datepicker();
+			$('.time').timeEntry({
+				ampmPrefix: ' ',
+				defaultTime: new Date('12:00 AM'),
+				spinnerImage: 'images/spinnerDefault.png' 
+			});
 		}
 	});
 
