@@ -107,8 +107,8 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 
 function reloadQuestion(divId, answerid) {
 	if (catDataID == 0) return;
-	var	questionid = $(divId + '_questionID').value;
-
+	var	questionid = $('#'+divId + '_questionID').val();
+	
 	var divName = '#node_'+questionid;
 	var data = {
 			button:'reload',
