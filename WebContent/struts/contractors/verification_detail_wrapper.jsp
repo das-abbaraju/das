@@ -99,7 +99,7 @@
 	
 		var data= {
 				id: oshaId,
-				'osha.comment': $('#comment_' + oshaId),
+				'osha.comment': $('#comment_' + oshaId).val(),
 				button: 'save'
 		};
 
