@@ -39,7 +39,7 @@ public class ReportBilling extends ReportAccount {
 		String where = "";
 		// Show activations and reactivations
 		if (billingState.equals("All") || billingState.equals("Activations")) {
-			where += "(a.active = 'N' AND c.renew = 1 AND (c.membershipLevelID IS NULL OR c.membershipLevelID = " + InvoiceFee.FREE + "))";
+			where += "(a.active = 'N' AND (c.renew = 1 OR (c.renew = 0 AND a.acceptsBids = 1)) AND (c.membershipLevelID IS NULL OR c.membershipLevelID = " + InvoiceFee.FREE + "))";
 		}
 		// Show renewals
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
