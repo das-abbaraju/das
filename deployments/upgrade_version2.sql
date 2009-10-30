@@ -17,24 +17,3 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
-
-/**
- * Update the invoice Fee with Bid Only Account
- */
-update invoice_fee set fee="Bid Only Account Fee", 
-qbFullName = "Bid Only Account Fee",updateDate = Now() 
-where
-id = 100;
-
-/**
-* update the description from the contractor to Account
-*/
-update accounts a, contractor_info c set a.description = c.description
-where a.id = c.id;
-
-/**
- * Change email token for AuditScheduledDate
- */
-update token
-set velocityCode = "${pics_dateTool.format('EEE d MMM h:mm a z', $audit.scheduledDate, $user.locale, $user.timezoneObject)}"
-where tokenID = 16;
