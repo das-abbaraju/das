@@ -52,6 +52,9 @@ public class AuditScheduleBuilder {
 		PicsLogger.start("AuditScheduleBuilder", true);
 
 		PicsLogger.log("Get all my data into RAM");
+
+		holidays = auditorVacationDAO.findByAuditorID(0);
+
 		List<AuditorSchedule> schedules = auditorScheduleDAO.findAll();
 		for (AuditorSchedule schedule : schedules) {
 			getAuditor(schedule.getUser()).addSchedule(schedule);
@@ -59,9 +62,7 @@ public class AuditScheduleBuilder {
 
 		List<AuditorVacation> vacations = auditorVacationDAO.findAll();
 		for (AuditorVacation vacation : vacations) {
-			if (vacation.getUser() == null)
-				holidays.add(vacation);
-			else
+			if (vacation.getUser() != null)
 				getAuditor(vacation.getUser()).addVacation(vacation);
 		}
 
