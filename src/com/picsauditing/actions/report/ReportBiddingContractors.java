@@ -99,7 +99,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					for(Facility facility : corporate.getOperatorFacilities()) {
 						if(YesNo.Yes.equals(facility.getOperator().getApprovesRelationships())) {
 							approveContractor(cAccount, facility.getOperator().getId());
-						}
+						}	
 					}
 				}
 				

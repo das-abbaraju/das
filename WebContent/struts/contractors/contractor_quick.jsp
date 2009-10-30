@@ -51,8 +51,11 @@
 			<thead>
 			<tr>
 				<th></th>
-				<th>Contractor</th>
+				<th>Operator</th>
 				<th>Waiting On</th>
+				<pics:permission perm="ContractorApproval">
+					<th>Work Status</th>
+				</pics:permission>
 			</tr>
 			</thead>
 			<s:iterator value="activeOperators">
@@ -61,6 +64,9 @@
 					<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></td>
 				<td><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a></td>
 				<td><s:property value="flag.waitingOn"/></td>
+				<pics:permission perm="ContractorApproval">
+					<td><s:property value="workStatus"/></td>
+				</pics:permission>
 			</tr>
 			</s:iterator>
 		</table>

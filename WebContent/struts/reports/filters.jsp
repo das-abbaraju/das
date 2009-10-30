@@ -97,6 +97,11 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showWorkStatus">
+		<div class="filterOption"><s:select list="#{'Y':'Yes','N':'No','P':'Pending'}" headerKey="" headerValue="- Work Status -" 
+			cssClass="forms" name="filter.workStatus" /></div>
+	</s:if>
+
 	<s:if test="filter.showWaitingOn">
 		<div class="filterOption"><s:select list="filter.waitingOnList" headerKey="" headerValue="- Waiting On -"
 			cssClass="forms" name="filter.waitingOn" /></div>

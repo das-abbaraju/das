@@ -371,6 +371,11 @@
 			<result>struts/reports/report_biddingcontractors.jsp</result>
 		</action>
 		
+		<action name="ContractorApproval"
+			class="com.picsauditing.actions.report.ReportContractorApproval">
+			<result>struts/reports/report_con_approvals.jsp</result>
+		</action>
+
 		<!-- Billing -->
 		<action name="ReportBilling"
 			class="com.picsauditing.actions.report.ReportBilling">

@@ -23,7 +23,6 @@ import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
-import com.picsauditing.search.SelectFilterInteger;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;

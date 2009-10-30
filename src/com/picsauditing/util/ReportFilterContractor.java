@@ -50,6 +50,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showInvoiceDueDate = false;
 	protected boolean showDeactivationReason = false;
 	protected boolean showMinorityOwned = false;
+	protected boolean showWorkStatus = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -78,7 +79,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date invoiceDueDate2;
 	protected String deactivationReason;
 	protected int minorityQuestion = 0;
-	
+	protected String workStatus = "P";
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -258,6 +259,15 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setShowMinorityOwned(boolean showMinorityOwned) {
 		this.showMinorityOwned = showMinorityOwned;
 	}
+
+	public boolean isShowWorkStatus() {
+		return showWorkStatus;
+	}
+
+	public void setShowWorkStatus(boolean showWorkStatus) {
+		this.showWorkStatus = showWorkStatus;
+	}
+
 
 	public String getPerformedBy() {
 		return performedBy;
@@ -555,5 +565,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setMinorityQuestion(int minorityQuestion) {
 		this.minorityQuestion = minorityQuestion;
+	}
+
+	public String getWorkStatus() {
+		return workStatus;
+	}
+
+	public void setWorkStatus(String workStatus) {
+		this.workStatus = workStatus;
 	}
 }
