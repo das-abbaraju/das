@@ -138,6 +138,7 @@
 		$.post('ContractorAuditSaveAjax.action', data, function() {
 				$('#verification_audit').empty();
 				//$('#auditHeader').scrollTo();
+				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
 			}
 		);
 		return false;
