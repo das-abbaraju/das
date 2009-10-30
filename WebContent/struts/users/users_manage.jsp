@@ -112,7 +112,7 @@ function checkUsername(username) {
 		username: username
 	};
 	$('#username_status').load('user_ajax.jsp', data, function() {
-		if($('#username_status').html.indexOf('is NOT available. Please choose a different username.') == -1)
+		if($('#username_status').html().indexOf('is NOT available. Please choose a different username.') == -1)
 			$('#UserSave').attr({'disabled': false});
 		}
 	);
