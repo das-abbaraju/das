@@ -296,7 +296,7 @@ div.autocomplete ul li {
 				<li>
 				</li>
 				<li><label>Username:</label>
-					<s:textfield name="user.username" size="30" onblur="checkUsername(this.value);"/>
+					<s:textfield name="user.username" size="30" onchange="checkUsername(this.value);"/>
 					<span id="username_status"></span>
 				</li>
 				<li><label>Password:</label>
