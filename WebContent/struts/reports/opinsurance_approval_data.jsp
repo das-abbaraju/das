@@ -81,7 +81,7 @@
 		</td>
 		<td>
 			<a id="show_<s:property value="get('caoId')"/>Text" href="#" class="edit" 
-				onclick="$('caoNote_<s:property value="get('caoId')"/>').show(); $('caoNote_<s:property value="get('caoId')"/>').focus(); $('show_<s:property value="get('caoId')"/>Text').hide(); return false;"
+				onclick="$('#caoNote_<s:property value="get('caoId')"/>').show(); $('#caoNote_<s:property value="get('caoId')"/>').focus(); $('#show_<s:property value="get('caoId')"/>Text').hide(); return false;"
 				title="<s:property value="get('caoNotes')"/>">
 			<s:if test="get('caoNotes') != null">
 				<s:property value="@com.picsauditing.util.Strings@trim(get('caoNotes'),30)"/>
@@ -90,7 +90,7 @@
 			</a>
 			<s:textarea id="caoNote_%{get('caoId')}" rows="4" cols="20" name="caos[%{get('caoId')}].notes" 
 				value="%{get('caoNotes')}" cssStyle="display: none;"
-				onkeyup="$('cao_cb%{get('caoId')}').checked = true"/>
+				onkeyup="$('#cao_cb%{get('caoId')}').attr({checked: true});"/>
 		</td>
 	</tr>
 </s:iterator>

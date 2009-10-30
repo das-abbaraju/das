@@ -6,34 +6,26 @@
 
 <script type="text/javascript">
 function setAllChecked(elm) {
-	$$('.massCheckable').each( function(ele) {
-		ele.checked = elm.checked;
-	});
+	$('.massCheckable').attr({checked: $(elm).is(':checked')});
 	return false;
 }
 
 function searchByFlag(flag) {
-	$('form1')['filter.recommendedFlag'].value = flag;
+	$('[name=filter.recommendedFlag]').val(flag);
 	return clickSearch('form1');
 }
 
 function saveRows() {
-	var pars = $('approveInsuranceForm').serialize();
-	pars = pars + '&button=save';
+	var pars = $('#approveInsuranceForm').serialize();
+	pars += '&button=save';
 
 	startThinking({div: 'messages', message: 'Saving changes', type: 'large'});
 
-	var myAjax = new Ajax.Updater('messages', 'ReportInsuranceApprovalAjax.action',
-		{
-			method :'post',
-			parameters :pars,
-			onException : function(request, exception) {
-				alert(exception);
-			},
-			onSuccess : function(transport) {
+	$('#messages').load('ReportInsuranceApprovalAjax.action', pars, function(text, status) {
+			if(status=='success')
 				clickSearch('form1');
-			}
-		});
+		}
+	);
 
 	return false;
 }
