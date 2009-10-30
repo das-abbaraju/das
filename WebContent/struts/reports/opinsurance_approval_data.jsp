@@ -99,7 +99,9 @@
 			<center><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/><br/>Select<br/>All</center>
 		</td>
 		<td colspan="7">
+			<div style="height:28px;">
 			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Rejected':'Reject Selected','NotApplicable':'Mark as N/A'}"/>
+			</div>
 			<div class="buttons">
 				<a class="picsbutton positive" href="#" onclick="return saveRows();">Save Changes</a>
 			</div>
