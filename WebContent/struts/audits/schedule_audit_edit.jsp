@@ -8,7 +8,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 
 <s:include value="../jquery.jsp"></s:include>
-<script type="text/javascript" src="js/jquery/timepicker/jquery.timepicker.js"></script>
+<script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
+<link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
 
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 <script type="text/javascript" src="js/schedule_audit.js"></script>
@@ -65,7 +66,11 @@ function useContractor() {
 		});
 }
 $(function(){
-	$('.timepicker').timepicker();
+	$('.time').timeEntry({
+			ampmPrefix: ' ',
+			spinnerImage: 'images/spinnerDefault.png' 
+		}
+	);
 });
 </script>
 </head>
@@ -85,7 +90,7 @@ $(function(){
 		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay"
 			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
 		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime"
-			value="%{formatDate(conAudit.scheduledDate, 'h:mm a')}" cssClass="timepicker"/> <s:property value="permissions.timezone.displayName"/></li>
+			value="%{formatDate(conAudit.scheduledDate, 'h:mm a')}" cssClass="time"/> <s:property value="permissions.timezone.displayName"/></li>
 		<li><label>Auditor:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
 		<li><label>Location:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
 			list="#{false: 'Web', true: 'On Site (address below)'}" /></li>
