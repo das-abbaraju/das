@@ -44,7 +44,7 @@ $(function() {
 			if (val != '')
 				loadForm(event.value.replace('/', ''));
 			else
-				$('#webcam_edit').empty();
+				loadForm(0);
 		}
 	);
 
