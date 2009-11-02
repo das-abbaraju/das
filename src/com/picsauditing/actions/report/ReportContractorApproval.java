@@ -54,6 +54,7 @@ public class ReportContractorApproval extends ReportAccount {
 		}
 
 		sql.addWhere("a.acceptsBids = 0");
+		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("a.creationDate");
 
 		filteredDefault = true;
