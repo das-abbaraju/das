@@ -13,7 +13,13 @@
 				
 				<storeProperty name="report_link" value="Audit Definitions" />
 				&click_report;
-
+				<group description="Change PQF title to Pre-Qualification">
+					<clickLink label="Pre-Qualification"/>
+					<setInputField name="auditType.auditName" value=""/>
+					<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
+					<clickButton label="Save"/>
+					<clickLink label="Top"/>
+				</group>
 				<group description="Add new AuditType">
 					<clickLink description="Click Add New link" label="Add New" />
 					<setInputField name="auditType.auditName" value="Canoo Audit" />
