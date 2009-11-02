@@ -3,8 +3,6 @@ package com.picsauditing.actions.audits;
 import java.util.Date;
 import java.util.List;
 
-import org.jboss.util.Strings;
-
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -17,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.util.Strings;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
