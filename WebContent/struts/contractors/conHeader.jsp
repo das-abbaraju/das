@@ -196,6 +196,9 @@
 				<li><a href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
 			</pics:permission>
 		</s:if>
+		<s:if test="(permissions.admin) && conAudit.auditStatus.pending">
+			<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>">Schedule Audit</a></li>
+		</s:if>
 	</ul>
 </div>
 </s:if>
