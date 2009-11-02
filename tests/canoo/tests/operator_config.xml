@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	<target name="test">
+		<webtest name="Admin Billing">
+			&config;
+			<steps>
+				<group description="Login as Admin">
+				&login;
+				
+				<property name="error_expected" value="false" />
+				&body_verify;
+				</group>
+			
+				<group description="Turn on Bid Only">
+					<setInputField name="filter.accountName" value="AES Alamitos"/>
+					<clickButton label="Search"/>
+						<ifStep>
+							<condition>
+								<verifyCheckbox htmlId="save_operator_acceptsBids" checked="false"/>
+							</condition>
+							<setCheckbox name="operator.acceptsBids"/>
+							<clickButton label="Save"/>
+							<verifyText description="Verify that text is contained in the page" text="Successfully saved AES Alamitos"/>
+						</ifStep>
+						
+					<clickLink label="Users"/>
+					<clickLink label="Sandy Synstelien*"/>
+					<verifyText description="Verify that text is contained in the page" text="View Bid Only Account Contractors"/>
+					<verifyText description="Verify that text is contained in the page" text="View UnApproved Contractors"/>
+					<clickLink label="Switch to this User"/>
+					<clickLink label="Bid Only Account"/>
+					&body_verify;
+				</group>
+		    </steps>
+		</webtest>
+	</target>
+</project>
