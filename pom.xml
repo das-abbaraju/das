@@ -52,7 +52,7 @@
 			</resource>
 		</resources>
 		<directory>target</directory>
-		<finalName>ROOT</finalName>
+		<finalName>app</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
