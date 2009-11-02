@@ -31,7 +31,7 @@
 				&body_verify;
 
 				<clickLink description="View PQF"
-					label="PQF" href="Audit.action" />
+					label="Pre-Qualification" href="Audit.action" />
 				&body_verify;
 
 				<clickLink description="View Category 1 COMPANY INFORMATION"
