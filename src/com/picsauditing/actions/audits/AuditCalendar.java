@@ -1,13 +1,14 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -16,9 +17,11 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 public class AuditCalendar extends PicsActionSupport {
 	private ContractorAuditDAO contractorAuditDAO;
 
-	private JSONArray json;
+	private JSONObject json = new JSONObject();
 	private Date start;
 	private Date end;
+
+	public Map<String, Integer> auditorCount = new HashMap<String, Integer>();
 
 	public AuditCalendar(ContractorAuditDAO contractorAuditDAO) {
 		this.contractorAuditDAO = contractorAuditDAO;
@@ -31,9 +34,14 @@ public class AuditCalendar extends PicsActionSupport {
 
 		if (button != null) {
 			if (button.equals("audits")) {
-				json = new JSONArray();
+				JSONArray events = new JSONArray();
 				List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(0, start, end, permissions);
+				auditorCount.put("Total", 0);
 				for (ContractorAudit audit : audits) {
+					if (auditorCount.get(audit.getAuditor().getName()) == null)
+						auditorCount.put(audit.getAuditor().getName(), 0);
+					auditorCount.put(audit.getAuditor().getName(), auditorCount.get(audit.getAuditor().getName()) + 1);
+					auditorCount.put("Total", auditorCount.get("Total") + 1);
 					JSONObject o = new JSONObject();
 					o.put("id", audit.getId());
 					o.put("title", audit.getContractorAccount().getName() + " (" + audit.getAuditor().getName() + ")");
@@ -43,8 +51,11 @@ public class AuditCalendar extends PicsActionSupport {
 						o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
 					if (!audit.isConductedOnsite())
 						o.put("className", "cal-webcam");
-					json.add(o);
+					events.add(o);
 				}
+
+				json.put("events", events);
+				json.put("auditorCount", auditorCount);
 
 				return SUCCESS;
 			}
@@ -53,11 +64,11 @@ public class AuditCalendar extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public JSONArray getJson() {
+	public JSONObject getJson() {
 		return json;
 	}
 
-	public void setJson(JSONArray json) {
+	public void setJson(JSONObject json) {
 		this.json = json;
 	}
 

@@ -3,13 +3,15 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>My Schedule</title>
+<title>Audit Calendar</title>
 <s:include value="../jquery.jsp" />
 
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 <script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
 <link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/reports.css"/>
 
 <script type="text/javascript">
 $(function() {
@@ -52,7 +54,16 @@ $(function() {
 						end: $.fullCalendar.formatDate(end,'MM/dd/yyyy HH:mm')
 					},
 					function(json) {
-						callback(json);
+						callback(json.events);
+						$table = $('<table class="report" />');
+						$table.append('<thead><tr><td>Auditor</td><td>Number of Audits</td></tr></thead>');
+						$.each(json.auditorCount, function (k, v) {
+								if (k != 'Total')
+									$table.append('<tr><td>'+k+'</td><td>'+v+'</td></tr>');
+							}
+						);
+						$table.append('<tr><td> Total </td><td>'+json.auditorCount['Total']+'</td></tr>');
+						$('#auditorReport').html($table);
 					}
 				);
 			}
@@ -84,6 +95,7 @@ ul {
 <h1>Audit Calendar</h1>
 <s:include value="../actionMessages.jsp"></s:include>
 
+<div id="auditorReport"></div>
 <div id="thinking"></div>
 <div id="calendar"></div>
 </body>
