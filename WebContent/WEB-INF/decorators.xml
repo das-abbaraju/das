@@ -27,23 +27,4 @@
 		<pattern>/ConHeader.action</pattern>
 		<pattern>/ContractorAuditFileUpload.action</pattern>
 	</decorator>
-	<decorator name="marketing" page="marketing.jsp">
-		<pattern>/index.jsp</pattern>
-		<pattern>/clients.jsp</pattern>
-		<pattern>/contact.jsp</pattern>
-		<pattern>/confirmContact.jsp</pattern>
-		<pattern>/career_opportunity.jsp</pattern>
-		<pattern>/services.jsp</pattern>
-		<pattern>/Login*</pattern>
-		<pattern>/featured*</pattern>
-		<pattern>/forgot_password.jsp</pattern>
-		<pattern>/contractor_new.jsp</pattern>
-		<pattern>/contractor_new_instructions.jsp</pattern>
-		<pattern>/milestonepartnership.jsp</pattern>
-		<pattern>/article_OSHA300.jsp</pattern>
-		<pattern>/Usergroup_2008.jsp</pattern>
-		<pattern>/safety_2007.jsp</pattern>
-		<pattern>/ScheduleAuditUpdate.action</pattern>
-		<pattern>/managingsafety.jsp</pattern>
-	</decorator>
 </decorators>
