@@ -5,7 +5,8 @@
 <project name="PICS" default="test">
 	<target name="test">
 		<webtest name="Marketing Site">
-			&config;
+			&config_marketing;
+
 			<steps>
 				
 				<invoke
