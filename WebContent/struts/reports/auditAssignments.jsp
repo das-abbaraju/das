@@ -81,7 +81,7 @@
 				<s:if test="[0].get('hasAuditor')">
 					<s:select onchange="javascript: saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('auditorID')}"
-						id="%{'auditor_'.concat([0].get('auditID'))}" />
+						id="%{'auditor_'.concat([0].get('auditID'))}" headerKey="" headerValue="- Auditor -" />
 					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">
 						<span class="redMain">*</span>
 					</s:if>	

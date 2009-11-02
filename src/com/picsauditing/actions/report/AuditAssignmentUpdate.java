@@ -54,7 +54,10 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
+		
+		if(auditor.getId() == 0) {
+			return SUCCESS;
+		}
 		// TODO check to see if auditor already has audit scheduled for this
 		// date
 
@@ -84,7 +87,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		 * ""; return returnStr;
 		 * 
 		 */
-
+		
 		auditor = userDao.find(auditor.getId());
 
 		if (contractorAudit.getAuditType().isScheduled()) {
