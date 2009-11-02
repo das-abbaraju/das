@@ -117,7 +117,7 @@ ul {
 		<pics:permission perm="Holidays">
 		<tr>
 			<td class="title">Type</td>
-			<td><s:select list="{'Vacation','Holiday'}" name="type"/></td>
+			<td><s:select list="#{'Vacation':'Current User','Holiday':'Everyone'}" name="type"/></td>
 		</tr>
 		</pics:permission>
 		<pics:permission perm="Holidays" negativeCheck="true">
@@ -132,13 +132,13 @@ ul {
 		</tr>
 		<tr>
 			<td class="title" rowspan="3">When</td>
-			<td><s:textfield name="startDate" cssClass="datepicker" size="10"/> <s:textfield name="startTime" cssClass="not-all-day time" size="8"/></td>
+			<td><s:textfield name="startDate" cssClass="datepicker" size="10"/> <span class="not-all-day"><s:textfield name="startTime" cssClass="time" size="8"/></span></td>
 		</tr>
 		<tr>
 			<td class="title not-all-day" style="text-align:center">to</td>
 		</tr>
 		<tr>
-			<td><s:textfield name="endDate" cssClass="datepicker not-all-day" size="10"/> <s:textfield name="endTime" cssClass="not-all-day time" size="8"/></td>
+			<td><s:textfield name="endDate" cssClass="datepicker not-all-day" size="10"/> <span class="not-all-day"><s:textfield name="endTime" cssClass="time" size="8"/></span></td>
 		</tr>
 		</table>
 	</fieldset>
