@@ -21,6 +21,7 @@ will be made.</div>
 <s:form>
 	<s:hidden name="auditID" />
 	<s:hidden name="availabilitySelectedID" />
+	<s:hidden name="button" value="confirm"/>
 	<fieldset class="form"><legend><span>Audit Confirmation</span></legend>
 	<ol>
 		<li>Please confirm the information below:</li>
@@ -54,8 +55,7 @@ will be made.</div>
 		I must do so before <s:property value="formatDate(lastCancellationTime)" /> or I will
 		be subject to a $150 rescheduling fee.</li>
 	</ol>
-	<button id="confirmButton" class="picsbutton positive" value="confirm" name="button" type="submit">Confirm
-	Audit</button>
+	<button id="confirmButton" class="picsbutton positive" type="submit">Confirm Audit</button>
 	</div>
 	</fieldset>
 </s:form>

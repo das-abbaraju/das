@@ -46,6 +46,7 @@ function useContractor() {
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
+	<s:hidden name="button" value="address"/>
 	<fieldset class="form"><legend><span>Contact Person</span></legend>
 	<ol>
 		<li>Please enter your company's primary representative for this audit.</li>
@@ -74,8 +75,7 @@ function useContractor() {
 	<div id="mainThinkingDiv"></div>
 	<div>
 	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()">Verify Address</button>
-	<button id="submitButton" style="display: none;" class="picsbutton positive" type="submit" name="button"
-		value="address">Next &gt;&gt;</button>
+	<button id="submitButton" style="display: none;" class="picsbutton positive" type="submit">Next &gt;&gt;</button>
 	</div>
 	</fieldset>
 	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />
