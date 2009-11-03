@@ -28,7 +28,7 @@
 					<setInputField htmlId="login_password" value="bigboy11"/>
 					<clickButton label="Login"/>
 				</group>
-
+				
 				<group description="Close Assigned Audits">
 					<invoke url="ReportCloseAuditAssignments.action"/>
 					<setSelectField htmlId="auditor_98262" text="Jesse Cota"/>
