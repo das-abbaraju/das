@@ -4,7 +4,7 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="tallred" />
 	<target name="test">
-		<webtest name="Admin Billing">
+		<webtest name="Operator Configuration">
 			&config;
 			<steps>
 				<group description="Login as Admin">
