@@ -5,24 +5,20 @@
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
 	function saveAudit(auditId) {
-		var auditor = $F($('auditor_' + auditId));
-		var notes = escape($('notes_' + auditId).value);
-		var pars = "auditID=" + auditId;
-		
-		pars = pars + "&closeAuditor=" + auditor;
+		var auditor = $('#auditor_' + auditId).val();
+		var notes = escape($('#notes_' + auditId).val());
 
-		if (notes != null) {
-			pars += "&notes="+notes;
+		var data = {
+				'auditID': auditId,
+				'closeAuditor': auditor,
+				'notes': notes
+		};
+		
+		$('#notes_'+auditId).load('AuditCloseUpdateAjax.action', data, function(text, status) {
+			if (status='success')
+				$('#audit_'+auditId).effect('highlight', {color: '#FFFF11'}, 1000);
 		}
-		var divName = 'audit_'+auditId;
-		var myAjax = new Ajax.Updater('', 'AuditCloseUpdateAjax.action', 
-				{
-					method: 'post', 
-					parameters: pars,
-					onSuccess: function(transport) {
-						new Effect.Highlight($(divName),{duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-					}
-		});		
+		);
 	}
 </script>
 </head>
@@ -58,7 +54,7 @@
 				<td><nobr>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{get('closingAuditorID')}"
-						id="%{'auditor_'.concat(get('auditID'))}" />
+						id="%{'auditor_'.concat(get('auditID'))}" headerKey="" headerValue="- Auditor -"/>
 				</nobr></td>
 				<td class="center">
 					<nobr><s:property value="%{getBetterDate( get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" /></nobr>
