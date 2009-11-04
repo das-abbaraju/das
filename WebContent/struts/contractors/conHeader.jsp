@@ -197,7 +197,8 @@
 			</pics:permission>
 		</s:if>
 		<s:if test="(permissions.admin) && conAudit.auditStatus.pending">
-			<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>">Schedule Audit</a></li>
+			<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
+					<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
 		</s:if>
 	</ul>
 </div>
