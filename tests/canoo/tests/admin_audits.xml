@@ -21,18 +21,12 @@
 				&click_report;
 				<storeProperty name="report_link" value="PQF Verification" />
 				&click_report;-->
-				
-				<group description="Login as Jesse">
-					<invoke url="Login.action"/>
-					<setInputField htmlId="login_username" value="opman"/>
-					<setInputField htmlId="login_password" value="bigboy11"/>
-					<clickButton label="Login"/>
-				</group>
-				
+
 				<group description="Close Assigned Audits">
-					<invoke url="ReportCloseAuditAssignments.action"/>
-					<setSelectField htmlId="auditor_98262" text="Jesse Cota"/>
-					<setInputField htmlId="notes_98262" value="I wrote a note"/>
+					<invoke url="http://alpha.picsauditing.com/app/ReportAuditList.action?filter.auditorId=927"/>
+					<clickLink label="Type"/>
+					<setSelectField name="" text="Dennis Dooly"/>
+					<setInputField name="notes" value="I wrote a note"/>
 					<clickButton label="Save"/>
 					<clickLink label="Desktop Audit" href="Audit.action?auditID=98262"/>
 					<verifyText text="Dennis Dooly"/>
@@ -42,6 +36,23 @@
 					<verifyText text="Praxair Distribution Inc."/>
 				</group>
 			</steps>
+		</webtest>
+		
+		<webtest name="Assign Contractor to a CSR">
+			<steps>
+				&login;
+				<invoke url="http://alpha.picsauditing.com/app/ContractorAssigned.action"/>
+				<setInputField name="filter.accountName" value="Canoo"/>
+				<clickButton label="Search"/>
+				<ifStep>
+					<condition>
+						<verifyText text="Canoo's Test Contractor"/>
+					</condition>
+					<setSelectField name="" text="Jake Fazeli"/>
+					<clickLink label="Canoo's Test Contractor"/>					
+					<verifyText description="Verify that text is contained in the page" text="Jake Fazeli"/>
+				</ifStep>
+			</steps>	
 		</webtest>
 	</target>
 </project>
