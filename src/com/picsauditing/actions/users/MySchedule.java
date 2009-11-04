@@ -173,6 +173,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						if (calEvent.end > 0)
 							vacation.setEndDate(new Date(calEvent.end));
 
+						vacation.setAuditColumns(permissions);
 						auditorVacationDAO.save(vacation);
 
 						output = vacation.toString();
