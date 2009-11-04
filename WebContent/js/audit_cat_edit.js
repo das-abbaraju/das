@@ -156,13 +156,6 @@ function showCertificates(conID, caoID) {
 	startThinking({div:'certificates'+caoID, message:' Searching for Certificates'});
 	
 	$('#certificates'+caoID).load('ContractorCertificatesAjax.action', data);
-	/*
-	var myAjax = new Ajax.Updater('certificates'+caoID, 'ContractorCertificatesAjax.action', {
-		method:'post',
-		evalScripts:true,
-		parameters: pars
-	});*/
-
 }
 
 function saveCao(form, button, divName) {
