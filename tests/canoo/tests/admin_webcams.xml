@@ -15,7 +15,7 @@
 					<enableJavaScript enable="false"/>
 					<group description="Create Webcam">
 						<sleep seconds="5"/>
-						<invoke url="ManageWebcams.action"/>
+						<invoke url="http://alpha.picsauditing.com/app/ManageWebcams.action"/>
 						<sleep seconds="5"/>
 						<setInputField htmlId="webcam_form_webcam_model" value="Samsung"/>
 						<setInputField htmlId="webcam_form_webcam_replacementCost" value="50"/>
@@ -24,10 +24,10 @@
 					</group>
 
 					<group description="Edit Webcam">
-					<invoke url="ManageWebcams.action?webcam.id=4"/>
+					<invoke url="http://alpha.picsauditing.com/app/ManageWebcams.action?webcam.id=4"/>
 						<setInputField name="webcam.make" value="Samsung"/>
 						<clickButton label="Save"/>
-						<invoke url="ManageWebcams.action?webcam.id=4"/>
+						<invoke url="http://alpha.picsauditing.com/app/ManageWebcams.action?webcam.id=4"/>
 						<verifyText text="Samsung"/>
 						<setInputField name="webcam.make" value="Logitech"/>
 						<clickButton label="Save"/>
