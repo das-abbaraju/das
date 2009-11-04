@@ -7,6 +7,15 @@
 <body>
 <h1>Contractor Risk Assessment</h1>
 
+<s:form id="form1">
+	<s:hidden name="filter.ajax" value="false"/>
+	<s:hidden name="filter.destinationAction" />
+	<s:hidden name="filter.allowMailMerge" />
+	<s:hidden name="showPage" value="1" />
+	<s:hidden name="filter.startsWith" />
+	<s:hidden name="orderBy" />
+</s:form>
+
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

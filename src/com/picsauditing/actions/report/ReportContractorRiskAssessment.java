@@ -41,10 +41,11 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql.addJoin("JOIN pqfdata pd ON pd.auditid = ca.id");
 		sql.addWhere("ca.audittypeID = 1");
 		sql.addWhere("pd.questionid = 2444");
-		sql.addWhere("((pd.answer = 'Low' and c.riskLevel > 1) or (pd.answer = 'Med' and c.riskLevel > 2))");
+		sql.addWhere("((pd.answer = 'Low' and c.riskLevel > 1) or (pd.answer = 'Medium' and c.riskLevel > 2))");
 		sql.addWhere("pd.dateVerified is null");
 		sql.addField("pd.answer");
 		sql.addField("pd.id AS answerID");
+		sql.addWhere("a.active = 'Y'");
 	}
 
 	@Override
