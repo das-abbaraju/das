@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<table class="report">
+<table class="report" style="position: static">
 	<s:iterator value="contractor.operatorTags">
 		<s:if test="tag.operator.id == permissions.accountId">
 			<tr>
