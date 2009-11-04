@@ -1,5 +1,4 @@
 <%@page language="java" errorPage="exception_handler.jsp"%>
-<%@include file="includes/main.jsp" %>
 <%@page import="com.picsauditing.mail.EmailBuilder"%>
 <%@page import="com.picsauditing.jpa.entities.ContractorAccount"%>
 <%@page import="com.picsauditing.mail.EmailSender"%>
@@ -10,7 +9,7 @@
 <%@page import="com.picsauditing.jpa.entities.User"%>
 <%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
 <%@page import="com.picsauditing.jpa.entities.Account"%>
-
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 String id = request.getParameter("id");
 if ((null == id) || ("".equals(id)))

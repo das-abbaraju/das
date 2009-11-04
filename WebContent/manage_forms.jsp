@@ -1,6 +1,8 @@
 <%@ page language="java" import="com.picsauditing.PICS.*,com.picsauditing.access.OpPerms" errorPage="exception_handler.jsp"%>
-<%@ include file="includes/main.jsp" %>
+<%@page import="com.picsauditing.util.Strings"%>
+<%@page import="com.picsauditing.access.OpType"%>
 <jsp:useBean id="fBean" class="com.picsauditing.PICS.FormBean" scope ="page"/>
+<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 if (!permissions.loginRequired(response, request)) return;
 permissions.tryPermission(OpPerms.FormsAndDocs);
@@ -51,7 +53,6 @@ if (isSubmitted){
 
 }//if
 %>
-<%@page import="com.picsauditing.util.Strings"%>
 <html>
 <head>
 <title>Manage Forms</title>
