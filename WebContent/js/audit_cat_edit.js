@@ -77,7 +77,7 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 				if (answerElm.checked)
 					thevalue = 'X';
 				else
-					thevalue = ' ';
+					thevalue = '';
 			}
 		} else if( answerElm.type == 'text' || answerElm.type == 'radio' || answerElm.type == 'textarea') {
 			thevalue = answerElm.value;
