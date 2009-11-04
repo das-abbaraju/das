@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script src="js/notes.js" type="text/javascript"></script>
 <script src="js/validate_contractor.js" type="text/javascript"></script>
