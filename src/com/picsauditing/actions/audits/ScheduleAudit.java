@@ -101,7 +101,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return "summary";
 		}
 
-		if (button.equals("save")) {
+		if (button.equals("Save")) {
 			if (!permissions.isAdmin())
 				throw new NoRightsException("ScheduleAudits");
 

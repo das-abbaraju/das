@@ -134,7 +134,7 @@ $(function(){
 	<div id="mainThinkingDiv"></div>
 	<div>
 	<button id="verifyButton" class="picsbutton" type="button" onclick="verifyAddress()">Verify Address</button>
-	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="save">Save</button>
+	<button id="submitButton" class="picsbutton positive" type="submit" name="button" value="Save">Save</button>
 	</div>
 	</fieldset>
 </s:form>
