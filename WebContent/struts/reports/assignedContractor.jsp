@@ -5,21 +5,18 @@
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
 	function saveContractor(conID) {
-		var pars = "ca.id=" + conID;
-		
-		var auditor = $F($('auditor_' + conID));
-		pars = pars + "&auditorId=" + auditor;
+		var auditor = $('#auditor_' + conID).val();
 
-		var divName = 'assignDate_'+conID;
-		$(divName).innerHTML = '<img src="images/ajax_process.gif" />';
-		var myAjax = new Ajax.Updater(divName,'ContractorSaveAjax.action',
-					 {
-					 	method: 'post', 
-					 	parameters: pars,
-					 	onSuccess: function(transport) {
-					 	new Effect.Highlight('audit_'+conID, {duration: 0.75, startcolor:'#FFFF11', endcolor:'#EEEEEE'});
-					 	}
-					 });
+		var data = {
+				'ca.id': conID,
+				'auditorId': auditor
+		};
+		
+		$('#assignDate_'+conID).load('ContractorSaveAjax.action', data, function(text, status) {
+			if (status='success')
+				$('#audit_'+conID).effect('highlight', {color: '#FFFF11'}, 1000);
+		}
+		);
 	}
 </script>
 </head>
@@ -69,7 +66,7 @@
 				<td>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('welcomeAuditor_id')}"
-						id="%{'auditor_'.concat([0].get('id'))}" onchange="saveContractor('%{[0].get('id')}');" />
+						id="%{'auditor_'.concat([0].get('id'))}" onchange="saveContractor('%{[0].get('id')}');" headerKey="" headerValue="- Auditor -" />
 				</td>
 				<td class="center" id="assignDate_<s:property value="[0].get('id')"/>">
 				</td>
