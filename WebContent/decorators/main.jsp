@@ -194,7 +194,7 @@ var gaJsHost = (("https:" == document.location.protocol) ?
 <div id="footercontent">
 Copyright &copy; 2009
 <a href="<%= URLUtils.getProtocol( request ) %>://www.picsauditing.com/" class="footer">PICS</a> |
-<a href="contact.jsp" class="footer">Contact Us</a> |
+<a href="Contact.action" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
 	title="Opens in new window" class="footer">Privacy Policy</a>
 </div>
