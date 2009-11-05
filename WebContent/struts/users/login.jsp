@@ -29,7 +29,7 @@ fieldset.form input.login {
 		</div>
 		</li>
 		<li>Forget your password? <a href="forgot_password.jsp">Click here to have it sent to you</a></li>
-		<li>Are you a contractor? <a href="contractor_new_instructions.jsp">Click to Register your company</a></li>
+		<li>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit"></fieldset>
