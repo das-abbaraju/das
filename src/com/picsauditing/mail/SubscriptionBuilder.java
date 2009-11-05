@@ -79,6 +79,7 @@ public abstract class SubscriptionBuilder {
 			sub.setLastSent(now);
 			subscriptionDAO.save(sub);
 		}
+		tokens.clear();
 	}
 
 	protected EmailQueue buildEmail(User user, String serverName) throws Exception {
@@ -129,7 +130,7 @@ public abstract class SubscriptionBuilder {
 		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
 			setup(entry.getKey()); // Send the account object to the sub-classes
 
-			// get the recipients
+			// get the recipients 
 			Set<User> recipients = getRecipients(entry.getValue());
 			for (User user : recipients) {
 				EmailQueue emailToSend = buildEmail(user, serverName);
