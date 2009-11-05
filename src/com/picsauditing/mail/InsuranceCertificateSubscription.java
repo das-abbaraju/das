@@ -30,8 +30,6 @@ public class InsuranceCertificateSubscription extends SubscriptionBuilder {
 			caoStatus = CaoStatus.Verified;
 		}
 
-		// OperatorAccount o = opDAO.find(a.getId());
-
 		if (a instanceof OperatorAccount) {
 			OperatorAccount o = (OperatorAccount) a;
 			// We may need to use the inheritance for insurance

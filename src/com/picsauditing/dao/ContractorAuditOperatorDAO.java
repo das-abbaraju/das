@@ -68,8 +68,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status AND ";
 		if(status.isPending()) {
 			query += "creationDate ";
-		}	
-		else {
+		} else {
 			query += "statusChangedDate ";
 		}
 		query += "BETWEEN :start AND :end";
