@@ -10,6 +10,7 @@ public class ReportAuditOpenReqs extends ReportContractorAudits {
 		
 		sql.addJoin("JOIN contractor_audit_file caf on caf.auditID = ca.id");
 		sql.addWhere("ca.closingAuditorID=" + permissions.getUserId() + " OR (ca.closingAuditorID IS NULL AND ca.auditorID=" + permissions.getUserId()+")");
+		sql.addWhere("ca.auditStatus = 'Submitted'");
 		sql.addWhere("atype.hasRequirements = 1");
 		sql.addWhere("caf.reviewed = 0");
 		sql.addWhere("a.active = 'Y'");
