@@ -197,15 +197,14 @@ public class ContractorWidget extends ContractorActionSupport {
                     }
                 }
                 if (conAudit.getAuditType().isHasRequirements()
-                        && conAudit.getAuditStatus().equals(
-                                AuditStatus.Submitted)
+                        && conAudit.getAuditStatus().isSubmitted()
                         && conAudit.getPercentVerified() < 100) {
-                    String text = "You have <a href=\"Audit.action?auditID="
+                    String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
                             + conAudit.getId()
                             + "\">open requirements from your recent "
                             + conAudit.getAuditType().getAuditName() + "</a>";
                     if (!openReq) {
-                        text += "<br/>NOTE: Open requirements cannot be closed online. You must submit these items to audits@picsauditing.com or fax to 949-269-9165 for further review. Please attach a cover sheet to all submitted information.";
+                        text += "<br/>NOTE: Open requirements can be closed online. Please upload these items with a File Title for further review.";
                         openReq = true;
                     }
                     openTasks.add(text);

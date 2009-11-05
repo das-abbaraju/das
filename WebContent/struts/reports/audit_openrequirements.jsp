@@ -5,7 +5,7 @@
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>My Audits</h1>
+<h1>Close Open Requirements</h1>
 
 <s:include value="filters.jsp" />
 

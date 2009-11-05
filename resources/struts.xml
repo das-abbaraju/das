@@ -830,7 +830,13 @@
 		<action name="ContractorAuditFileUpload"
 			class="com.picsauditing.actions.audits.ContractorAuditFileUpload">
 			<result>struts/audits/con_audit_files.jsp</result>
-			<result name="upload">struts/audits/con_audit_upload.jsp</result>
+		</action>
+		
+		<action name="AuditFileUpload"
+			class="com.picsauditing.actions.audits.AuditFileUpload">
+			<result>struts/audits/con_audit_file_upload.jsp</result>
+			<result name="success">struts/audits/con_audit_file_upload.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
 		</action>
 
 		<!-- Track Auditor Payments -->
