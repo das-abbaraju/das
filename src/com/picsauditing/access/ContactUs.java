@@ -1,6 +1,5 @@
 package com.picsauditing.access;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,12 +18,6 @@ public class ContactUs extends PicsActionSupport {
 	private User user = null;
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
-	private String sendTo;
-	private String name;
-	private String company;
-	private String email;
-	private String phone;
-	private String message;
 	private AccountUser accountRep;
 	
 	public ContactUs(UserDAO userDAO, AccountUserDAO accountUserDAO) {
@@ -40,7 +33,7 @@ public class ContactUs extends PicsActionSupport {
 			user = userDAO.find(permissions.getUserId());
 			if(permissions.isContractor()) 
 				contractorAccount = (ContractorAccount) user.getAccount();
-			else {
+			else if (permissions.isOperatorCorporate()) {
 				operatorAccount = (OperatorAccount) user.getAccount();
 				List<AccountUser> accountUsers = accountUserDAO.findByAccount(operatorAccount.getId());
 				for(AccountUser accountUser :  accountUsers) {
@@ -117,54 +110,6 @@ public class ContactUs extends PicsActionSupport {
 
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
-	}
-
-	public String getSendTo() {
-		return sendTo;
-	}
-
-	public void setSendTo(String sendTo) {
-		this.sendTo = sendTo;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getCompany() {
-		return company;
-	}
-
-	public void setCompany(String company) {
-		this.company = company;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public AccountUser getAccountRep() {

@@ -22,7 +22,7 @@
 		<li><label>Email:</label>info@picsauditing.com</li>
 	</ol>
 	</fieldset>
-	<s:if test="permissions.loggedIn">
+	<s:if test="permissions.loggedIn && !permissions.picsEmployee">
 		<fieldset class="form">
 			<s:if test="permissions.contractor">
 				<legend><span>Customer Service</span></legend>
@@ -33,7 +33,7 @@
 					<li><label>Email:</label><s:property value="contractorAccount.auditor.email"/></li>
 				</ol>
 			</s:if>
-			<s:else>
+			<s:elseif test="permissions.operatorCorporate">
 				<legend><span>Account Representative</span></legend>
 				<ol>
 					<li><label>Name:</label><s:property value="accountRep.user.name"/></li>
@@ -41,20 +41,20 @@
 					<li><label>Fax:</label><s:property value="accountRep.user.fax"/></li>
 					<li><label>Email:</label><s:property value="accountRep.user.email"/></li>
 				</ol>
-			</s:else>	
+			</s:elseif>	
 		</fieldset>
 	</s:if>
 		<fieldset class="form">
 			<legend><span>Support Links</span></legend>
 				<ol>
 					<li><label>Help Center:</label>
-						<s:if test="permissions.loggedIn">
+						<s:if test="permissions.loggedIn && !permissions.picsEmployee">
 							<s:if test="permissions.contractor">
 								<a href="http://help.picsauditing.com/wiki/User_Manual_for_Contractors"> Help Center</a>
 							</s:if>
-							<s:else>
+							<s:elseif test="permissions.operatorCorporate">
 								<a href="http://help.picsauditing.com/wiki/User_Manual_for_Operators"> Help Center</a>
-							</s:else>
+							</s:elseif>
 						</s:if>
 						<s:else>
 							<a href="http://help.picsauditing.com/wiki/Help_Center"> Help Center</a>
