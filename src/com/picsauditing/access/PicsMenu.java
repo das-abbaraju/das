@@ -148,7 +148,7 @@ public class PicsMenu {
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
-			subMenu.addChild("Forms &amp Docs", "manage_forms.jsp");
+			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Desktop Matrix", "ManageDesktopMatrix.action");
