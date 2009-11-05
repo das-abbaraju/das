@@ -25,25 +25,31 @@ function showAuditUpload(auditID, fileID, desc, question) {
 
 <h1>Upload Open Requirements <span class="sub"><s:property value="conAudit.auditType.auditName" /> for <s:property value="contractor.name" /></span></h1>
 <s:include value="../actionMessages.jsp" />
+<div class="info">
+Click on the Open Requirement(s) below to upload supporting documentation. <br/><b>Please allow up to 7 days for an auditor to review your files.</b> 
+</div>
+<ul>
+<h4><s:property value="conAudit.auditType.auditName" />
+#<s:property value="conAudit.id" /></h4>
 
-Click on the Open Requirement(s) below to upload supporting documentation. <br/><b>Please allow up to 7 days for an auditor to review your documentation.</b> 
-
-<br clear="all"/>
-<br clear="all"/>
-
-<table class="report">
+<li style="list-style-type: none;"><b>Auditor: </b> Mina Mina</li>
+<li style="list-style-type: none;"><b>Phone: </b> 949-387-1940 x100</li>
+<li style="list-style-type: none;"><b>Email: </b> <a href="mailto:mmina@picsauditing.com">mmina@picsauditing.com</a></li>
+</ul>
+<table style="background-color:none; border:none; margin:10px;">
 	<tr>
-		<td>
-			<table class="report">
+		<td style="vertical-align:top; width:65%;">
+		<h3 style="padding:10px 0 10px 0;">Open Requirements</h3>
+			<table class="report" style="width:95%;">
 				<thead>
 					<tr>
-						<td>Open Requirement</td>
+						<td>Requirements</td>
 					</tr>
 				</thead>
 				<s:iterator value="openReqs" id="data">
 					<tr>
 						<s:set name="fileDesc" value="getFileDesc(#data.question)"/>
-						<td onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;">
+						<td style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;">
 							<s:property value="#fileDesc"/>&nbsp;&nbsp; 
 						<s:property value="question.requirement" /><br/>
 						<s:if test="!comment.toString().equals('null')">
@@ -55,7 +61,8 @@ Click on the Open Requirement(s) below to upload supporting documentation. <br/>
 			</table>		
 		</td>
 		<td style="vertical-align:top;">
-			<table class="report">
+		<h3 style="padding:10px 0 10px 0;">Documents</h3>
+			<table class="report" style="width:95%;">
 				<thead>
 					<tr>
 						<td>Description</td>
