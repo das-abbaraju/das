@@ -15,7 +15,14 @@
 		</s:if>
 	</ul>
 	<div id="tabs-general">
-		<s:iterator value="operatorTags"><s:property value="tag"/> </s:iterator>
+		<s:iterator value="contractor.operatorTags">
+			<s:if test="permissions.admin">
+				<s:property value="tag.tag"/> - <s:property value="tag.operator.name"/> <br/>
+			</s:if>
+			<s:if test="permissions.operator && permissions.accountId == tag.operator.id">
+				<s:property value="tag.tag"/><br/> 
+			</s:if>
+		</s:iterator>
 		<s:if test="contractor.dbaName.length() > 0">
 			<label>DBA:</label>
 			<s:property value="contractor.dbaName" />
