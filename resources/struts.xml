@@ -69,6 +69,10 @@
 			<result>struts/users/login.jsp</result>
 			<result name="forgot">struts/users/forgot_password.jsp</result>
 		</action>
+
+		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
+			<result>struts/login_mkt.jsp</result>
+		</action>
 		
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
