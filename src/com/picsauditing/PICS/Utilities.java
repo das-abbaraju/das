@@ -145,5 +145,5 @@ public class Utilities {
 			return 0.0f;
 		return Float.valueOf(year1).floatValue();
 		
-	}
+	}	
 }

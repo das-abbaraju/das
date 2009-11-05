@@ -22,7 +22,7 @@
 				<td colspan="2" class="blueMain">Enter the email address that
 				you submitted when you created your PICS company profile and we will
 				email you your username and password. If you have any problems, <a
-					href="contact.jsp" title="Contact PICS">contact us</a> directly.</td>
+					href="Contact.action" title="Contact PICS">contact us</a> directly.</td>
 			</tr>
 			<tr>
 				<td class="redMain" align="right">Email address&nbsp;</td>

@@ -79,6 +79,10 @@
 			<result>struts/home.jsp</result>
 		</action>
 
+		<action name="Contact" class="com.picsauditing.access.ContactUs">
+			<result>struts/contact_pics.jsp</result>
+		</action>
+
 		<action name="ContractorRegistrationAjax"
 			class="com.picsauditing.actions.contractors.ContractorsWidget">
 			<result>struts/widgets/new_contractors.jsp</result>

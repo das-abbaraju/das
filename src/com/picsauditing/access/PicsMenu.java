@@ -51,7 +51,7 @@ public class PicsMenu {
 				subMenu = menu.addChild("Home", "Home.action");
 			else
 				subMenu = menu.addChild("Edit Account", "ContractorEdit.action");
-			addSupportLink(menu, subMenu, permissions);
+			addSupportLink(menu, subMenu);
 			return menu;
 		}
 
@@ -234,7 +234,7 @@ public class PicsMenu {
 			subMenu.addChild("User Search", "UserList.action");
 
 		if (permissions.isOperatorCorporate()) {
-			addSupportLink(menu, subMenu, permissions);
+			addSupportLink(menu, subMenu);
 		}
 		// Convert the first submenu into a menu if only one exists
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
@@ -250,16 +250,9 @@ public class PicsMenu {
 		return menu;
 	}
 
-	static public MenuComponent addSupportLink(MenuComponent menu, MenuComponent subMenu, Permissions permissions) {
+	static public MenuComponent addSupportLink(MenuComponent menu, MenuComponent subMenu) {
 		subMenu = menu.addChild("Support");
-		String url = "http://help.picsauditing.com/wiki/";
-		if (permissions.isContractor())
-			url += "User_Manual_for_Contractors";
-		else
-			url += "User_Manual_for_Operators";
-		subMenu.addChild("Help Center", url);
-		subMenu.addChild("Contact Us", "contact.jsp");
-		subMenu.addChild("Online Chat", "Online Chat");
+		subMenu.addChild("Contact Us", "Contact.action");
 		return menu;
 	}
 }
