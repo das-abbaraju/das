@@ -204,7 +204,7 @@ public class ContractorWidget extends ContractorActionSupport {
                             + "\">open requirements from your recent "
                             + conAudit.getAuditType().getAuditName() + "</a>";
                     if (!openReq) {
-                        text += "<br/>NOTE: Open requirements can be closed online. Please upload these items with a File Title for further review.";
+                        text += "<br/>NOTE: Open requirements can be uploaded online.";
                         openReq = true;
                     }
                     openTasks.add(text);

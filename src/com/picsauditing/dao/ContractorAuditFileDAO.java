@@ -37,7 +37,7 @@ public class ContractorAuditFileDAO extends PicsDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<ContractorAuditFile> findByAudit(int auditID) {
-		Query q = em.createQuery("SELECT caf FROM ContractorAuditFile caf WHERE caf.audit.id = ? ");
+		Query q = em.createQuery("SELECT caf FROM ContractorAuditFile caf WHERE caf.audit.id = ? ORDER BY caf.description");
 		q.setParameter(1, auditID);
 		return q.getResultList();
 	}

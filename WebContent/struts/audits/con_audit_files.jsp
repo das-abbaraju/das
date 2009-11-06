@@ -26,15 +26,24 @@ function showAuditUpload(auditID, fileID, desc, question) {
 <h1>Upload Open Requirements <span class="sub"><s:property value="conAudit.auditType.auditName" /> for <s:property value="contractor.name" /></span></h1>
 <s:include value="../actionMessages.jsp" />
 <div class="info">
-Click on the Open Requirement(s) below to upload supporting documentation. <br/><b>Please allow up to 7 days for an auditor to review your files.</b> 
+Click on the Open Requirement(s) below to upload supporting documentation. <br/><b>Please allow up to 3 days for an auditor to review your files.</b> Contact the auditor below with any questions.   
 </div>
 <ul>
 <h3><s:property value="conAudit.auditType.auditName" />
 #<s:property value="conAudit.id" /></h3>
 
-<li style="list-style-type: none;"><b>Auditor: </b> Mina Mina</li>
-<li style="list-style-type: none;"><b>Phone: </b> 949-387-1940 x100</li>
-<li style="list-style-type: none;"><b>Email: </b> <a href="mailto:mmina@picsauditing.com">mmina@picsauditing.com</a></li>
+<li style="list-style-type: none;"><b>Auditor: </b> 
+	<s:if test="conAudit.closingAuditor != null"><s:property value="conAudit.closingAuditor.name"/></s:if>
+	<s:else><s:property value="conAudit.auditor.name"/></s:else>
+</li>
+<li style="list-style-type: none;"><b>Phone: </b> 
+	<s:if test="conAudit.closingAuditor != null"><s:property value="conAudit.closingAuditor.phone"/></s:if>
+	<s:else><s:property value="conAudit.auditor.phone"/></s:else>
+</li>
+<li style="list-style-type: none;"><b>Email: </b> 
+	<s:if test="conAudit.closingAuditor != null"><a href="mailto:<s:property value="conAudit.closingAuditor.email"/></a>"><s:property value="conAudit.closingAuditor.email"/></a></s:if>
+	<s:else><a href="mailto:<s:property value="conAudit.auditor.email"/>"><s:property value="conAudit.auditor.email"/></a></s:else>
+</li>
 </ul>
 <table style="background-color:none; border:none; margin:10px;">
 	<tr>

@@ -89,6 +89,7 @@ public class AuditFileUpload extends AuditActionSupport {
 					}
 					if(Strings.isEmpty(fileName)) {
 						addActionError("Please provide a description for your document");
+						file = null;
 						return SUCCESS;
 					}
 					if (contractorAuditFile == null) {

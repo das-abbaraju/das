@@ -41,9 +41,17 @@ function closePage() {
 						target="_BLANK">Open Existing <s:property value="fileSize" />
 					File</a></div>
 				</s:if>
-				<div class="question shaded"><label>File Title:</label> <s:textfield
-					name="fileName" value="%{contractorAuditFile.description}" size="50" /><br />
+				<div class="question shaded"><label>File Title:</label>
+				<s:if test="fileID == 0">
+					 <s:textfield
+						name="fileName" value="%{contractorAuditFile.description}" size="50" />
+				</s:if>
+				<s:else>
+					<s:property value="contractorAuditFile.description"/>
+				</s:else>
+				<br/>
 				</div>
+
 				<div>
 				<button class="picsbutton" onclick="closePage(); return false;">Close and Return to Page</button>
 				<s:if test="file != null && file.exists()">
