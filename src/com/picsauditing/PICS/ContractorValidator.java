@@ -64,6 +64,14 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the Address field.");
 		if (Strings.isEmpty(contractor.getCity()))
 			errorMessages.addElement("Please fill in the City field.");
+		if(contractor.getCountry().equals("- Country -")) 
+			errorMessages.addElement("Please select a Country");
+		if(contractor.getCountry().equals("USA") || contractor.getCountry().equals("Canada")) {
+			if(Strings.isEmpty(contractor.getState())) {
+				errorMessages.addElement("Please select a State");
+			}
+		}
+		
 		if (Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
 		if (Strings.isEmpty(contractor.getPhone()))
