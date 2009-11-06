@@ -183,7 +183,7 @@
 		</s:if>
 		<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.activeSubmitted">
 			<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true" 
-				<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>View Requirements</a></li>
+				<s:if test="onlyReq && mode != 'Edit'">class="current"</s:if>>Print Requirements</a></li>
 			<s:if test="permissions.auditor">
 				<li><a href="AuditCat.action?auditID=<s:property value="auditID"/>&onlyReq=true&mode=Edit"
 				 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
