@@ -198,7 +198,7 @@ div.autocomplete ul li {
 	</div>
 </pics:permission>
 </s:form>
-<br clear="all" />
+<div class="clear"></div>
 </div>
 
 <table border="0" width="100%">
