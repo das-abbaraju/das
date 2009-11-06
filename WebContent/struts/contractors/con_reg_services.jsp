@@ -13,7 +13,7 @@ display:none}
 
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/validateForms.js"></script>
-<script type="text/javascript" src="js/audit_cat_edit.js"></script>
+<script type="text/javascript" src="js/audit_cat_edit.js?v=20091105"></script>
 
 <script type="text/javascript">
 	var auditID = '<s:property value="auditID"/>';
