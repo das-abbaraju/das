@@ -11,7 +11,7 @@
 <script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
 <link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
 
-<link rel="stylesheet" href="css/reports.css"/>
+<link rel="stylesheet" href="css/reports.css?v=20091105"/>
 
 <script type="text/javascript">
 $(function() {

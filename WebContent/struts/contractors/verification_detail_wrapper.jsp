@@ -2,14 +2,14 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css" /> 
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<script src="js/notes.js" type="text/javascript"></script>
-<script src="js/validate_contractor.js" type="text/javascript"></script>
+<script src="js/validate_contractor.js?v=20091105" type="text/javascript"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091105" /> 
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css?v=20091105" />
 
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, answerId) {

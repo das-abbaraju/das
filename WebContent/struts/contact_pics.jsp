@@ -3,8 +3,8 @@
 <%@page import="com.picsauditing.util.URLUtils"%><html>
 <head>
 <title>Contact Us</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
 
 </head>
 <body>

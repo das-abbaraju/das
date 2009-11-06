@@ -3,7 +3,7 @@
 <head>
 <title>QuickBooks Sync</title>
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+	href="css/reports.css?v=20091105" />
 </head>
 <body>
 <h1>QuickBooks Sync</h1>

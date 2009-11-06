@@ -4,10 +4,9 @@
 <html>
 <head>
 <title>Flag Status for <s:property value="contractor.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
 <s:include value="../jquery.jsp"/>
-<script src="js/notes.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function() {
 	$('.datepicker').datepicker();

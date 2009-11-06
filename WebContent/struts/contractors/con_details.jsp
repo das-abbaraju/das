@@ -6,11 +6,11 @@
 <title><s:property value="contractor.name" /></title>
 
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+	href="css/reports.css?v=20091105" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/notes.css" />
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css" />
+	href="css/audit.css?v=20091105" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 <script>

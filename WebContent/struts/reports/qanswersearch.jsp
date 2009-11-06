@@ -6,7 +6,7 @@
 <title>Question Answer Search</title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css" />
+	href="css/forms.css?v=20091105" />
 <script type="text/javascript">
 var myTimer = null;
 

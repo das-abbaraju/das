@@ -4,10 +4,9 @@
 <html>
 <head>
 <title>InsureGUARD&trade; for <s:property value="contractor.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
 <s:include value="../jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<script src="js/notes.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
 <script type="text/javascript">
 	function showAddAudit() {
 		$('#addAudit').hide();	

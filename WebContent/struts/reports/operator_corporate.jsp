@@ -2,9 +2,9 @@
 <html>
 <head>
 <title>Accounts Report</title>
-<script src="js/Search.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+<script src="js/Search.js?v=20091105" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css?v=20091105" />
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>

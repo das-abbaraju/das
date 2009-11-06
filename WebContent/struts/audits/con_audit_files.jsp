@@ -5,11 +5,11 @@
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractorAccount.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css" />
+	href="css/reports.css?v=20091105" />
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css" />
+	href="css/audit.css?v=20091105" />
 <s:include value="../jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091105" />
 <script type="text/javascript">
 function showAuditUpload(auditID, fileID, desc, question) {
 	url = 'AuditFileUpload.action?auditID='+auditID+'&fileID='+fileID+'&desc='+desc+'&question='+question;

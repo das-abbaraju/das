@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>Confirm Audit</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091105" />
 </head>
 <body>
 <div style="font-size: 20px;width: 400px;height: 100px;position:relative;top : 80px;left :200px;border:3px solid #A84D10;

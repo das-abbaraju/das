@@ -5,10 +5,10 @@
 <head>
 <title><s:property value="account.name" /> Notes</title>
 
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
+
 <s:include value="../jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-<script src="js/notes.js" type="text/javascript"></script>
 <script type="text/javascript">
 var accountID = '<s:property value="id"/>';
 var accountType = '<s:property value="account.type"/>';

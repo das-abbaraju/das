@@ -33,7 +33,7 @@ $.ajaxSetup(
 );
 </script>
 
-<script type="text/javascript" src="js/my_schedule.js"></script>
+<script type="text/javascript" src="js/my_schedule.js?v=20091105"></script>
 <style>
 .cal-availability, .cal-availability a, .cal-availability .fc-event-time {
 	border-color: #f22;

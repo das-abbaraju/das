@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>Edit Invoice <s:property value="invoice.id" /> for <s:property value="invoice.account.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
 </head>
 <body>
 <s:include value="../contractors/conHeader.jsp" />
