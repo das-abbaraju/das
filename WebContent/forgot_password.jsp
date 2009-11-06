@@ -1,41 +1,29 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>PICS - Forgot Password</title>
-<META Http-Equiv="Cache-Control" Content="no-cache">
-<META Http-Equiv="Pragma" Content="no-cache">
-<META Http-Equiv="Expires" Content="0">
+<title>Forgot Password</title>
+<meta name="help" content="Password_Recovery">
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 </head>
-<body onLoad="document.form1.email.focus();">
-<table width="657" cellpadding="0" cellspacing="0">
-	<tr>
-		<td width="145" class="blueMain"><br>
-		</td>
-		<td align="center" valign="top" class="blueMain">
-		<form name="form1" method="post" action="Login.action">
-			<input type="hidden" name="button" value="forgot" />
-		<table width="0" border="0" cellspacing="0" cellpadding="1">
-			<tr class="blueMain">
-				<td colspan="2" class="blueHeader">Forget your password?</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="blueMain">Enter the email address that
-				you submitted when you created your PICS company profile and we will
-				email you your username and password. If you have any problems, <a
-					href="Contact.action" title="Contact PICS">contact us</a> directly.</td>
-			</tr>
-			<tr>
-				<td class="redMain" align="right">Email address&nbsp;</td>
-				<td><input name="email" type="text" class="forms" size="25">
-				<input name="submit" type="submit" class="forms"
-					value="Send Password"></td>
-			</tr>
-		</table>
-		</form>
-		<br>
-		<a href="Login.action">Return to Login Page</a></td>
-		<td width="126" class="blueMain"></td>
-	</tr>
-</table>
+<body>
+<form name="form1" method="post" action="Login.action" style="width: 500px">
+
+<fieldset class="form" style="margin-top: 20px;"><legend><span>Forgot Password</span></legend>
+<ol>
+	<li>Enter the email address that you submitted when you created your PICS company profile and we will email you
+	your username and password. If you have any problems, <a href="Contact.action" title="Contact PICS">contact us</a>
+	directly.</li>
+	<li><label>Email address:</label> <input name="email" type="text" size="40"></li>
+	<li>
+	<div class="buttons" style="padding-left: 200px; padding-bottom: 50px;">
+	<button class="picsbutton positive" value="forgot" name="button" type="submit">Send Password</button>
+	</div>
+	</li>
+	<li><a href="Login.action">Return to Login Page</a></li>
+</ol>
+</fieldset>
+<fieldset class="form submit"></fieldset>
+</form>
+
 </body>
 </html>
