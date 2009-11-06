@@ -11,10 +11,6 @@
 <link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
 
 <script type="text/javascript">
-$(document).ready(function() {
-	$('#operatorQuick').dialog({autoOpen: false});
-});
-
 function showOperator(id) {
 	$.get('OperatorQuickAjax.action', {id: id}, function(data){
 		$('#operatorQuick').html(data);
@@ -34,10 +30,6 @@ function showOperator(id) {
 		<div><a href="FacilitiesEdit.action?type=<s:property value="accountType"/>">Create New</a></div>	
 	</s:else>
 </s:if>
-
-<button onclick="showOperator(6166);">Open</button>
-
-<div id="operatorQuick" title="Operator" style="display: none"></div>
 
 <s:form id="form1">
 	<s:hidden name="filter.ajax" />
