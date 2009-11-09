@@ -28,7 +28,7 @@ display:none}
 <s:include value="registrationHeader.jsp"></s:include>
 
 
-<div id="info">Answers on this page automatically save. Once you are finished, click <b>Next</b> at the bottom to go to the next step.</div>
+<div class="info">Answers on this page automatically save. Once you are finished, click <b>Next</b> at the bottom to go to the next step.</div>
 <br/>
 <h3 class="subCategory">General Info</h3>
 <s:iterator value="infoQuestions">

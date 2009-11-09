@@ -25,7 +25,7 @@ input[type=submit] {
 	<div class="alert" class="noprint">This invoice has been CANCELED.</div>
 </s:if>
 <s:elseif test="invoice.status.paid">
-	<div id="info" class="noprint">This invoice has been PAID in full.</div>
+	<div class="info" class="noprint">This invoice has been PAID in full.</div>
 </s:elseif>
 <s:elseif test="invoice.overdue && contractor.activeB">
 	<div class="alert" class="noprint">This invoice is currently OVERDUE!</div>

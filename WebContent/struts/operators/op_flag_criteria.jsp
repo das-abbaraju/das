@@ -42,7 +42,7 @@ $(function(){
 <br clear="all"/>
 
 <s:if test="operator != operator.inheritFlagCriteria">
-	<div id="info">The PQF/Audit Criteria for this account inherits the configuration from <s:property
+	<div class="info">The PQF/Audit Criteria for this account inherits the configuration from <s:property
 		value="operator.inheritFlagCriteria.name" />. Please login to that account to modify the criteria. <s:if
 		test="permissions.admin">
 		<a href="OperatorFlagCriteria.action?id=<s:property
@@ -51,7 +51,7 @@ $(function(){
 	</s:if></div>
 </s:if>
 <s:if test="operator != operator.inheritInsuranceCriteria">
-	<div id="info">The InsureGUARD&trade; Criteria for this account inherits the configuration from <s:property
+	<div class="info">The InsureGUARD&trade; Criteria for this account inherits the configuration from <s:property
 		value="operator.inheritInsuranceCriteria.name" />. Please login to that account to modify the criteria. <s:if
 		test="permissions.admin">
 		<a href="OperatorFlagCriteria.action?id=<s:property

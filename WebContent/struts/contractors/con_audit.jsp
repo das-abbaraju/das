@@ -89,18 +89,18 @@
 	</s:iterator>
 </table>
 <s:if test="!@com.picsauditing.util.Strings@isEmpty(auditorNotes)">
-	<div id="info">
+	<div class="info">
 		<b>Auditor Notes:</b> <s:property value="auditorNotes"/>
 	</div>
 </s:if>
 <s:if test="conAudit.auditType.pqf">
 	<s:if test="permissions.operatorCorporate && conAudit.auditStatus.active && conAudit.percentComplete < 100">
-		<div id="info">
+		<div class="info">
  			This PQF was Completed and Active as of <s:date name="conAudit.completedDate" format="MMM d, yyyy" />. 
  			Some sections have been added since this date and will be addressed in January.
 		</div>
 	</s:if>
-	<div id="info">
+	<div class="info">
 		The OSHA and EMR categories have been moved to the Annual Update.
 	</div>
 </s:if>

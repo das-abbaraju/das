@@ -184,7 +184,7 @@
 </form>
 <br clear="all"/>
 <s:if test="trir">
-	<div id="info">
+	<div class="info">
 		<span style="font-size: 14px;">You have the option to now flag by either your own TRIR Avg(1) or industry based NAICS TRIR
 		provided by BLS(2).</span><br/>
 		<span style="font-size: 11px;">

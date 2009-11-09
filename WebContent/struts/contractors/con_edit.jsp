@@ -22,7 +22,7 @@ $(function() {
 	<s:include value="conHeader.jsp"></s:include>
 </s:else>
 <s:if test="permissions.admin && unpaidInvoices.size() > 0">
-	<div id="info">Invoices open for this contractor
+	<div class="info">Invoices open for this contractor
 	<ol>
 	<s:iterator value="unpaidInvoices">
 		<li><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><s:property value="id"/></a></li>

@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Email Confirmation</h1>
-<div id="info">
+<div class="info">
 You have sent <s:property value="ids.size()"/> emails to the queue.<br/>
 </div>
 <div class="instructions">

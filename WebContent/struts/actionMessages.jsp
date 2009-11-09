@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:if test="actionMessages.size > 0">
-	<div id="info">
+	<div class="info">
 	<s:iterator value="actionMessages">
 		<s:property escape="false" /><br />
 	</s:iterator>

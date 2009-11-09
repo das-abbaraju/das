@@ -114,5 +114,5 @@
 </div>
 </s:if>
 <s:else>
-	<div id="info">There are no matching policies to review at this time.</div>
+	<div class="info">There are no matching policies to review at this time.</div>
 </s:else>

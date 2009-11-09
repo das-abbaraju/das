@@ -24,7 +24,7 @@
 </s:elseif>
 <s:else>
 	<s:if test="complete">
-		<div id="info">
+		<div class="info">
 			Your account has been registered successfully. A copy of the invoice has been emailed to you.
 			<s:if test="contractor.activeB">
 				<div class="buttons">
@@ -104,7 +104,7 @@
 							<s:include value="con_invoice_embed.jsp"/>
 							<br clear="all"/>
 							<s:if test="contractor.paymentMethod.creditCard">
-								<div id="info">
+								<div class="info">
 									Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be mailed to you.
 								</div>
 							</s:if>

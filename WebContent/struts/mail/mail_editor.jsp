@@ -32,6 +32,6 @@
 </s:if>
 
 <s:if test="templateAllowsVelocity">
-	<div id="info">This template allows velocity tags</div>
+	<div class="info">This template allows velocity tags</div>
 </s:if>
 

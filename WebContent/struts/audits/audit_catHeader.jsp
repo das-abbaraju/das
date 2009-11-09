@@ -42,13 +42,13 @@
 		<div class="alert">Your PQF is about to expire, please review every section and re-submit it.</div>
 	</s:if>
 	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100">
-		<div id="info">The PICS auditor has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
+		<div class="info">The PICS auditor has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
 			<a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID" />" title="Click to see ALL Open Requirements">Open Requirements</a>
 			that need your attention.
 		</div>
 	</s:if>
 	<s:if test="conAudit.auditStatus.name() == 'Pending' && !conAudit.contractorAccount.paymentMethodStatusValid">
-		<div id="info">Before you will be able to submit your information for review, you must <a href="ContractorPaymentOptions.action?id=<s:property value="conAudit.contractorAccount.id"/>"> update your payment method</a>.</div>		
+		<div class="info">Before you will be able to submit your information for review, you must <a href="ContractorPaymentOptions.action?id=<s:property value="conAudit.contractorAccount.id"/>"> update your payment method</a>.</div>		
 	</s:if>
 </s:if>
 

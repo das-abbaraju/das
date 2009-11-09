@@ -47,12 +47,12 @@ function updateExpDate() {
 	</div>
 </s:elseif>
 <s:elseif test="contractor.activeB && !contractor.paymentMethodStatusValid">
-		<div id="info">
+		<div class="info">
 			As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
 		</div>
 </s:elseif>
 <s:if test="!contractor.paymentMethod.creditCard">
-	<div id="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
+	<div class="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
 </s:if>
 <s:if test="contractor.balance > 0">
 	<div class="alert">

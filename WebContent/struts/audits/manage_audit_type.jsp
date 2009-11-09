@@ -102,7 +102,7 @@ $(function(){
 				<div id="list-info"></div>
 			</div>
 			<s:if test="auditType.categories.size > 1">
-				<div id="info">Drag and drop categories to change their order</div>
+				<div class="info">Drag and drop categories to change their order</div>
 				<br clear="all" />
 			</s:if>
 		</td>

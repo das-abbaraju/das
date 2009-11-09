@@ -140,7 +140,7 @@
 	<td style="width: 45%; vertical-align: top;">
 	<h3>Add Facilities</h3>
 		<s:if test="permissions.contractor || permissions.admin">
-			<div id="info">Please specify all facilities at which you work.<br/>
+			<div class="info">Please specify all facilities at which you work.<br/>
 			The pricing is based on the number of facilities you select below.
 			<br>
 			<a onClick="window.open('con_pricing.jsp','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=420'); return false;"

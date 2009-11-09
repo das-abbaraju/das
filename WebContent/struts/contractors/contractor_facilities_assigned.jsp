@@ -33,7 +33,7 @@
 </s:if>
 
 <s:if test="trialContractor">
-	<div id="info" style="80%">
+	<div class="info" style="80%">
 		<a href="#" class="picsbutton"
 			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Bid Only Account</a> 
 			<span class="block" style="position: relative;">
