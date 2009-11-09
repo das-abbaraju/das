@@ -212,13 +212,14 @@ public class ContractorAuditDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
 		Calendar calendar1 = Calendar.getInstance();
-		calendar1.add(calendar1.WEEK_OF_YEAR, -2);
+		calendar1.add(Calendar.WEEK_OF_YEAR, -2);
 		query.setParameter("Before14Days", calendar1.getTime());
-		calendar1.add(calendar1.DATE, 40);
+		calendar1.add(Calendar.DATE, 40);
 		query.setParameter("After26Days", calendar1.getTime());
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsNeedingRecalculation() {
 		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE (" + " ca.lastRecalculation IS NULL "
 				+ " OR ca.lastRecalculation < :threeMonthsAgo "
@@ -234,11 +235,13 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
+		hql += " AND ca.auditStatus != 'Exempt'";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
 
@@ -251,11 +254,13 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate, Permissions permissions) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate ";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID ";
+		hql += " AND ca.auditStatus != 'Exempt'";
 		if (permissions.isOperatorCorporate()) { 
 			PermissionQueryBuilder pqb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 			pqb.setAccountAlias("ca.contractorAccount");
