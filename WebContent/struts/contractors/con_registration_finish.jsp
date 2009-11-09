@@ -15,11 +15,11 @@
 </s:else>
 
 <s:if test="contractor.operators.size == 0">
-	<div id="error">You haven't selected any facilities! We cannot process your account until do. <a
+	<div class="error">You haven't selected any facilities! We cannot process your account until do. <a
 		href="ContractorFacilities.action">Click to Add Facilities</a></div>
 </s:if>
 <s:elseif test="!contractor.paymentMethodStatusValid">
-	<div id="error">You didn't add a credit card to your account. You must enter a valid payment method before we can
+	<div class="error">You didn't add a credit card to your account. You must enter a valid payment method before we can
 	process your account. <a href="ContractorPaymentOptions.action">Click to Add a Credit Card</a></div>
 </s:elseif>
 <s:else>

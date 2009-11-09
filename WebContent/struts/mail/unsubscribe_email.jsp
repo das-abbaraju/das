@@ -6,7 +6,7 @@
 </head>
 <body>
 <s:if test="actionErrors.size > 0">
-	<div id="error">
+	<div class="error">
 	<s:iterator value="actionErrors">
 		<s:property escape="false" /><br />
 	</s:iterator>

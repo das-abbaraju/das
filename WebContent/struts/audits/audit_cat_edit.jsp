@@ -191,7 +191,7 @@
 
 <s:if test="#a.hasRequirements && #a.requirementOpen">
 	<br clear="all"/>
-	<div id="error"><s:property value="#q.requirement" escape="false"/></div>
+	<div class="error"><s:property value="#q.requirement" escape="false"/></div>
 </s:if>
 
 <s:include value="../actionMessages.jsp" />
