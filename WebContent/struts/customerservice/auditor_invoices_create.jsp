@@ -15,6 +15,7 @@
 </s:form>
 
 <table class="report">
+<thead>
 	<tr>
 		<th>Auditor</th>
 		<th>Contractor</th>
@@ -22,6 +23,7 @@
 		<th>Type</th>
 		<th>Date</th>
 	</tr>
+</thead>
 	<s:iterator value="list">
 		<tr>
 			<td><s:property value="auditor.name" /></td>
