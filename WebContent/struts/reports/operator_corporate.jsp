@@ -2,23 +2,8 @@
 <html>
 <head>
 <title>Accounts Report</title>
-<script src="js/Search.js?v=20091105" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css?v=20091105" />
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
-
-<script type="text/javascript">
-function showOperator(id) {
-	$.get('OperatorQuickAjax.action', {id: id}, function(data){
-		$('#operatorQuick').html(data);
-		$('#operatorQuick').dialog('open');
-	});
-}
-</script>
-
+<s:include value="reportHeader.jsp" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
 </head>
 <body>
 <h1>Manage <s:property value="accountType"/> Accounts</h1>
@@ -63,12 +48,16 @@ value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			
 			<s:if test="%{get('active') == \"Y\"}">
-			<td><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>"><s:property value="get('name')"/></a>
-				<a href="#" onclick="showOperator(<s:property value="get('id')"/>); return false;">^</a>
-			</td></s:if>
+			<td><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>" 
+					rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>" 
+					class="operatorQuick" title="<s:property value="get('name')" />"
+					><s:property value="get('name')" /></a></td>
+			</s:if>
 			<s:else>
-			<td class="inactive"><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>"><s:property value="get('name')"/>*</a>
-			</td>
+			<td class="inactive"><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>" 
+					rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>" 
+					class="operatorQuick" title="<s:property value="get('name')" />"
+					><s:property value="get('name')" />*</a></td>
 			</s:else>
 			<td><s:property value="get('industry')"/></td>
 			<td class="right"><s:property value="get('city')"/></td>
