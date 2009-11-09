@@ -5,8 +5,8 @@
 <head>
 <title><s:property value="contractor.name" /></title>
 
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<s:include value="../reports/reportHeader.jsp"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
 <script type="text/javascript">
 	function removeTag(tagId) {
 		var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
@@ -106,13 +106,19 @@
 		<ul style="list-style-type: none;">
 			<s:iterator value="activeOperators">
 			<li>
-				<s:if test="flag != null">
-					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flag.flagColor.smallIcon" escape="false" /></a>
-				</s:if>
-				<s:else>
-					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></a>
-				</s:else>
-				<a title="Waiting On : <s:property value="flag.waitingOn"/>" href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
+				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+				><s:if test="flag != null"><s:property value="flag.flagColor.smallIcon" escape="false" /></s:if>
+				<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></a>
+				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+					<s:if test="permissions.admin"> 
+						title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="flag.waitingOn"/>'"
+						rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+						class="operatorQuick"
+					</s:if>
+					<s:else>
+						title="Waiting On '<s:property value="flag.waitingOn"/>'"
+					</s:else>
+					><s:property value="operatorAccount.name" /></a>
 			</li>
 			</s:iterator>
 			<s:if test="!permissions.operator">
