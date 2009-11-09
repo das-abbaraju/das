@@ -39,30 +39,5 @@ public class Facility extends BaseTable implements Serializable {
 	public void setCorporate(OperatorAccount corporate) {
 		this.corporate = corporate;
 	}
-
-	
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final Facility other = (Facility) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
-
-	
 	
 }

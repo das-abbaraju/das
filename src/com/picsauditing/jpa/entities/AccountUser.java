@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.picsauditing.actions.users.UserAccountRole;
 
@@ -72,5 +73,19 @@ public class AccountUser extends BaseTable {
 
 	public void setOwnerPercent(int ownerPercent) {
 		this.ownerPercent = ownerPercent;
+	}
+	
+	@Transient
+	public boolean isCurrent() {
+		Date now = new Date();
+		if (startDate != null && startDate.after(now)) {
+			// This hasn't started yet
+			return false;
+		}
+		if (endDate != null && endDate.before(now)) {
+			// This already ended
+			return false;
+		}
+		return true;
 	}
 }
