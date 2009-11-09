@@ -173,7 +173,7 @@ function loadPreview() {
 		eventRender: function (calEvent, element, view) {
 				if (getType(calEvent) == 'Audit') {
 					$(element)
-						.attr({rel: 'AuditSelectAjax.action?auditID='+getId(calEvent)})
+						.attr({rel: 'AuditQuickAjax.action?auditID='+getId(calEvent)})
 						.cluetip({
 							sticky: true,
 							clickThrough: true,

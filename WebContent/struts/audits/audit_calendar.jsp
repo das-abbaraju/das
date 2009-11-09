@@ -30,7 +30,7 @@ $(function() {
 					stopThinking ( {div: 'thinking' } );
 			},
 			eventRender: function (calEvent, element, view) {
-				$(element).attr({rel: 'AuditSelectAjax.action?auditID='+calEvent.id}).cluetip({
+				$(element).attr({rel: 'AuditQuickAjax.action?auditID='+calEvent.id}).cluetip({
 						sticky: true, 
 						clickThrough: true,
 						positionBy: 'mouse',

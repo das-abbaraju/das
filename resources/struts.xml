@@ -485,6 +485,11 @@
 			class="com.picsauditing.actions.report.ReportAuditOpenReqs">
 			<result>struts/reports/audit_openrequirements.jsp</result>
 		</action>
+		
+		<action name="AuditQuickAjax"
+			class="com.picsauditing.actions.audits.AuditActionSupport">
+			<result>struts/audits/audit_quick.jsp</result>
+		</action>
 
 		<!-- Operator List -->
 		<action name="ReportAccountList"
@@ -1172,11 +1177,6 @@
 			<result>struts/reports/contractors_select.jsp</result>
 		</action>
 		
-		<action name="AuditSelectAjax"
-			class="com.picsauditing.actions.audits.AuditActionSupport">
-			<result>struts/audits/audit_select.jsp</result>
-		</action>
-
 		<action name="QuestionSelectAjax"
 			class="com.picsauditing.actions.audits.QuestionSelect">
 			<result>struts/audits/questions_select.jsp</result>
