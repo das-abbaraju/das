@@ -4,6 +4,7 @@
 	<li><label>Contractor:</label> <s:property value="conAudit.contractorAccount.name"/></li>
 	<li><label>Auditor:</label> <s:property value="conAudit.auditor.name"/></li>
 	<li><label>Audit Type:</label> <s:property value="conAudit.auditType.auditName"/></li>
+	<li><label>Audit Status:</label> <s:property value="conAudit.auditStatus"/></li>
 	<li><label>Date:</label> <s:date name="conAudit.scheduledDate" format="MM/dd/yyyy"/></li>
 	<li><label>Time:</label> <s:date name="conAudit.scheduledDate" format="hh:mm a z"/></li>
 	<s:if test="conAudit.auditType.scheduled && !permissions.operatorCorporate">
