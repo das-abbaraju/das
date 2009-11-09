@@ -196,8 +196,8 @@
 	</fieldset>
 	</s:if>
 </s:else>
-	<div class="clear"/>
+<br clear="all"/>
 <div>
-	<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Pending');">Reject</button>
+	<button class="picsbutton negative" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Incomplete');">Reject</button>
 	<button id="approveButton2" style="display: <s:property value="#attr.showApproveButton"/>;" class="picsbutton positive" name="button" onclick="return changeAuditStatus(<s:property value="conAudit.id"/>,'Active');">Approve</button>
 </div>
