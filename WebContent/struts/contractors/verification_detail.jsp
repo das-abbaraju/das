@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:if test="verificationAudits.size() == 0">
-	<div id="alert">No Audits found to verify</div>
+	<div class="alert">No Audits found to verify</div>
 </s:if>
 <s:else>
 	<s:form id="verify">

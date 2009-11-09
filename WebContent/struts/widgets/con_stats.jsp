@@ -35,7 +35,7 @@
 </p>
 
 <s:if test="contractor.renew == false">
-	<div id="alert">
+	<div class="alert">
 		Your account is not set to renew and will expire on 
 		<s:property value="contractor.paymentExpires"/>.
 	</div>

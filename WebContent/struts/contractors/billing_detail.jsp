@@ -14,10 +14,10 @@
 <s:include value="conHeader.jsp"></s:include>
 
 <s:if test="contractor.qbListID.startsWith('NOLOAD')">
-	<div id="alert">This contractor is NOT set to sync with QuickBooks</div>
+	<div class="alert">This contractor is NOT set to sync with QuickBooks</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div id="alert">This is a BID-ONLY Contractor Account.</div>
+	<div class="alert">This is a BID-ONLY Contractor Account.</div>
 </s:if>
 
 <table width="100%">

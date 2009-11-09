@@ -3,7 +3,7 @@
 <s:set name="conID" value="contractor.id"/>
 
 <s:if test="searchResults.size == 0">
-	<div id="alert">No Facilities Found</div>
+	<div class="alert">No Facilities Found</div>
 </s:if>
 <s:else>
 <table class="report">

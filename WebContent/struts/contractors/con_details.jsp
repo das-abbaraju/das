@@ -119,7 +119,7 @@ img.contractor_logo {
 <body>
 <s:include value="conHeader.jsp" />
 <s:if test="!contractor.activeB">
-	<div id="alert">This contractor is not active.
+	<div class="alert">This contractor is not active.
 	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 	</div>
 </s:if>
@@ -129,14 +129,14 @@ img.contractor_logo {
 		Click <a href="ContractorView.action?id=<s:property value="id" />" class="picsbutton positive">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
 	</s:if>
 	<s:else>
-		<div id="alert">This is a BID-ONLY Contractor Account.</div>
+		<div class="alert">This is a BID-ONLY Contractor Account.</div>
 	</s:else>
 </s:if>
 <s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
-	<div id="alert">This contractor has an outstanding invoice due</div>
+	<div class="alert">This contractor has an outstanding invoice due</div>
 </s:elseif>
 <s:if test="permissions.admin && !contractor.mustPayB">
-	<div id="alert">This account has a lifetime free membership</div>
+	<div class="alert">This account has a lifetime free membership</div>
 </s:if>
 
 

@@ -39,7 +39,7 @@
 	</s:if>
 	<s:else>
 		<s:if test="contractor.paymentMethod.check">
-			<div id="alert">
+			<div class="alert">
 				Your payment method is currently set to Check. Your account will be activated as soon as we receive a check from you for
 				<strong>$<s:property value="invoice.totalAmount"/></strong>. If you would like to activate your account now,
 				<a href="ContractorPaymentOptions.action">Click Here to Add a Credit Card</a>.

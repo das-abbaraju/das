@@ -31,10 +31,10 @@ $(function() {
 	</div>
 </s:if>
 <s:if test="permissions.admin && contractor.qbSync">
-	<div id="alert" class="noprint">This contractor is still waiting to be synced with QuickBooks!</div>
+	<div class="alert" class="noprint">This contractor is still waiting to be synced with QuickBooks!</div>
 </s:if>
 <s:if test="contractor.acceptsBids">
-	<div id="alert">This is a BID-ONLY Contractor Account.</div>
+	<div class="alert">This is a BID-ONLY Contractor Account.</div>
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">

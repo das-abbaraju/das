@@ -30,7 +30,7 @@ fieldset.form ol {
 <s:include value="conHeader.jsp"></s:include>
 
 <s:if test="permissions.admin && payment.qbSync">
-	<div id="alert" class="noprint">This payment is still waiting to be synced with QuickBooks!</div>
+	<div class="alert" class="noprint">This payment is still waiting to be synced with QuickBooks!</div>
 </s:if>
 
 <s:if test="payment == null && method.creditCard">
@@ -44,7 +44,7 @@ fieldset.form ol {
 </s:if>
 
 <s:if test="payment.status.toString() == 'Void'">
-	<div id="alert">This payment was canceled.</div>
+	<div class="alert">This payment was canceled.</div>
 </s:if>
 
 <s:form onsubmit="cleanPaymentMethods()">

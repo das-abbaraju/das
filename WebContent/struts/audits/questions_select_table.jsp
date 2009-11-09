@@ -21,9 +21,9 @@
 		</s:iterator>
 	</table>
 	<s:if test="questions.size >= 100">
-		<div id="alert">Only displaying first 100 results</div>
+		<div class="alert">Only displaying first 100 results</div>
 	</s:if>
 </s:if>
 <s:else>
-	<div id="alert">No questions matching this text</div>
+	<div class="alert">No questions matching this text</div>
 </s:else>

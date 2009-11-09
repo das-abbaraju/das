@@ -71,7 +71,7 @@ label.policy {
 <s:if test="mode == 'Edit'">
 	<div
 		<s:if test="'done' == button">
-			id="alert"
+			class="alert"
 		</s:if>
 	>
 	<div class="requiredLegend">Starred questions are required to continue from this page</div>
@@ -94,7 +94,7 @@ label.policy {
 								<s:property value="subCategory" escape="false"/>
 							</h3>
 							<s:if test="helpText != null && helpText.length() > 0">
-								<div id="alert"><s:property value="helpText"/></div>
+								<div class="alert"><s:property value="helpText"/></div>
 							</s:if>
 						</s:if>
 						<s:iterator value="questions">
@@ -182,7 +182,7 @@ label.policy {
 		</s:sort>
 	</s:if>
 	<s:else>
-		<div id="alert">No operators are currently requesting your insurance.</div>
+		<div class="alert">No operators are currently requesting your insurance.</div>
 	</s:else>
 </s:if>
 

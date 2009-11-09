@@ -35,7 +35,7 @@ $(function(){
 <div id="dialog" style="display:none"></div>
 
 <s:if test="contractorsNeedingRecalculation > 10">
-	<div id="alert">
+	<div class="alert">
 		<s:property value="contractorsNeedingRecalculation"/> contractor flags are now waiting to be automatically recalculated.
 	</div>
 </s:if>

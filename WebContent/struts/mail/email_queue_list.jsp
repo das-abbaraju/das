@@ -36,7 +36,7 @@ $(function() {
 	<div id="info">You have no pending emails waiting to be sent.</div>
 </s:if>
 <s:else>
-	<div id="alert">There are <b><s:property value="emailsInQueue.size()" /></b> emails before yours in the queue. After we send those, we will start sending your email(s).</div>
+	<div class="alert">There are <b><s:property value="emailsInQueue.size()" /></b> emails before yours in the queue. After we send those, we will start sending your email(s).</div>
 	<table class="report" id="queue_table">
 		<thead>
 		<tr>

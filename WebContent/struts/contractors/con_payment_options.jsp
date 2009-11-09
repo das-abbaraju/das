@@ -33,13 +33,13 @@ function updateExpDate() {
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="contractor.operators.size == 0">
-	<div id="alert">
+	<div class="alert">
 		You have not selected any facilities. No operators will be able to view your account until you do. 
 		<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click to update your operator listings.</a>
 	</div>
 </s:if>
 <s:elseif test="contractor.newMembershipLevel.amount == 0">
-	<div id="alert">
+	<div class="alert">
 		You are currently at the free level and do not owe any membership dues.  
 		However, a valid credit card is required to maintain an account with PICS.  
 		Only if you upgrade your account will your card be charged, and only after PICS notifies you at 
@@ -55,7 +55,7 @@ function updateExpDate() {
 	<div id="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
 </s:if>
 <s:if test="contractor.balance > 0">
-	<div id="alert">
+	<div class="alert">
 		<s:iterator value="contractor.invoices">
 			<s:if test="status.unpaid">
 			You have an <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>">unpaid invoice</a> for $<s:property value="balance"/> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	

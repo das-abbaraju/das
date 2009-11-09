@@ -22,25 +22,25 @@ input[type=submit] {
 </s:if>
 
 <s:if test="invoice.status.void">
-	<div id="alert" class="noprint">This invoice has been CANCELED.</div>
+	<div class="alert" class="noprint">This invoice has been CANCELED.</div>
 </s:if>
 <s:elseif test="invoice.status.paid">
 	<div id="info" class="noprint">This invoice has been PAID in full.</div>
 </s:elseif>
 <s:elseif test="invoice.overdue && contractor.activeB">
-	<div id="alert" class="noprint">This invoice is currently OVERDUE!</div>
+	<div class="alert" class="noprint">This invoice is currently OVERDUE!</div>
 </s:elseif>
 <s:if test="invoice.status.unpaid && !contractor.paymentMethodStatusValid">
-	<div id="alert" class="noprint">Our records show that you do not have a valid method of payment on file, 
+	<div class="alert" class="noprint">Our records show that you do not have a valid method of payment on file, 
 	or your credit card has expired. Please <a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id"/>"> update your payment information.</a></div>
 </s:if>
 
 <s:if test="permissions.admin">
 	<s:if test="invoice.status.unpaid && invoice.totalAmount == 0">
-	<div id="alert" class="noprint">Please post a note after you have modified the invoice!</div>
+	<div class="alert" class="noprint">Please post a note after you have modified the invoice!</div>
 </s:if>
 <s:if test="invoice.qbSync">
-	<div id="alert" class="noprint">This invoice is still waiting to be synced with QuickBooks!</div>
+	<div class="alert" class="noprint">This invoice is still waiting to be synced with QuickBooks!</div>
 </s:if>
 </s:if>
 

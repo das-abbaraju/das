@@ -52,7 +52,7 @@ jQuery(function(){
 <div id="caldiv2"><!-- This is here so we don't get a JS error when clicking on the body --></div>
 
 <s:if test="listSize > 0">
-	<div id="alert">You already have <s:property value="listSize"/> records in your mailing list. 
+	<div class="alert">You already have <s:property value="listSize"/> records in your mailing list. 
 		<a href="MassMailer.action">Skip to Step 4</a></div>
 </s:if>
 

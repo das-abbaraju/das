@@ -26,12 +26,12 @@ $(function() {
 	
 <s:if test="permissions.admin">
 	<s:if test="id > 0 && operator.visibleAudits.size == 0">
-		<div id="alert">This operator doesn't have access to any audits. Please <a
+		<div class="alert">This operator doesn't have access to any audits. Please <a
 			href="AuditOperator.action?oID=<s:property value="id"/>">double check the configuration</a>.</div>
 	</s:if>
 	<s:if test="id > 0 && operator.flagQuestionCriteriaInherited.size == 0">
 	
-		<div id="alert">This operator doesn't have any flag criteria defined. Please <a
+		<div class="alert">This operator doesn't have any flag criteria defined. Please <a
 			href="OperatorFlagCriteria.action?id=<s:property value="id"/>">double check the configuration</a>.</div>
 	</s:if>
 </s:if>

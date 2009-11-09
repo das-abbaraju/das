@@ -5,10 +5,10 @@
 	
 	<s:if test="conAudit.auditType.classType.policy">
 		<s:if test="permissions.operatorCorporate && policyWithOtherOperators">
-			<div id="alert">More than one facility has access to this data. Please contact PICS if any changes to existing data are needed.</div>
+			<div class="alert">More than one facility has access to this data. Please contact PICS if any changes to existing data are needed.</div>
 		</s:if>
 		<s:if test="conAudit.willExpireSoon() && !conAudit.auditStatus.expired">
-			<div id="alert">This policy is about to Expire and is currently locked for editing. Please use the up coming policy to record any changes 
+			<div class="alert">This policy is about to Expire and is currently locked for editing. Please use the up coming policy to record any changes 
 				<s:iterator value="conAudit.contractorAccount.audits" id="newPending">
 					<s:if test="#newPending.auditType.classType.policy && conAudit.id != #newPending.id">
 						<s:if test="conAudit.auditType == #newPending.auditType && #newPending.auditStatus.pending">
@@ -25,7 +25,7 @@
 <s:if test="permissions.contractor">
 	<s:if test="conAudit.auditStatus.activeSubmitted || conAudit.auditStatus.activeResubmittedExempt">
 		<s:if test="activePendingEditableAudits.size > 0">
-			<div id="alert">
+			<div class="alert">
 				You have <strong><s:property value="activePendingEditableAudits.size"/></strong> Audits to complete. To see your list of open tasks go to your <a href="Home.action">home page</a>.
 				<ul>
 					<s:iterator value="activePendingEditableAudits">
@@ -39,7 +39,7 @@
 		</s:if>
 	</s:if>
 	<s:if test="conAudit.auditType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
-		<div id="alert">Your PQF is about to expire, please review every section and re-submit it.</div>
+		<div class="alert">Your PQF is about to expire, please review every section and re-submit it.</div>
 	</s:if>
 	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100">
 		<div id="info">The PICS auditor has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
@@ -56,7 +56,7 @@
 	<s:hidden name="auditID" />
 	<s:if test="!conAudit.auditType.classType.policy">
 		<s:if test="canSubmit">
-			<div id="alert" class="buttons" style="">
+			<div class="alert" class="buttons" style="">
 				<s:if test="conAudit.auditStatus.pendingExpired">
 					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
 					<s:if test="conAudit.auditType.pqf">
@@ -81,7 +81,7 @@
 		</s:if>
 	</s:if>
 	<s:if test="canClose">
-		<div id="alert" class="buttons" style="">
+		<div class="alert" class="buttons" style="">
 			<s:hidden name="auditStatus" value="Active" />
 			<s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}"/>
 		</div>

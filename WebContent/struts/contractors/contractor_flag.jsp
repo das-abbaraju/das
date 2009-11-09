@@ -327,10 +327,10 @@ $(function() {
 
 <s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 	<s:if test="co.workStatusPending">
-		<div id="alert">The operator has not approved this contractor yet.</div>
+		<div class="alert">The operator has not approved this contractor yet.</div>
 	</s:if>
 	<s:if test="co.workStatusRejected">
-		<div id="alert">The operator did not approve this contractor.</div>
+		<div class="alert">The operator did not approve this contractor.</div>
 	</s:if>
 </s:if>
 

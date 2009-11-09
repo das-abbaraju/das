@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="report.allRows == 0">
-	<div id="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert">No rows found matching the given criteria. Please try again.</div>
 </s:if>
 <s:else>
 <pics:permission perm="ContractorDetails">
