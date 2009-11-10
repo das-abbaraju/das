@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
@@ -18,22 +19,25 @@ import com.picsauditing.util.AnswerMap;
 public class ContractorAuditFileUpload extends AuditActionSupport {
 
 	protected ContractorAuditFileDAO contractorAuditFileDAO;
+	protected AuditQuestionDAO auditQuestionDAO;
+	
 	protected List<AuditData> openReqs = null;
 	protected int fileID;
-	
+
 	public ContractorAuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, ContractorAuditFileDAO contractorAuditFileDAO) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.contractorAuditFileDAO = contractorAuditFileDAO;
+		this.auditQuestionDAO = auditQuestionDAO;
 	}
 
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		this.findConAudit();
-		
-		if("Review".equals(button)) {
-			if(fileID > 0) {
+
+		if ("Review".equals(button)) {
+			if (fileID > 0) {
 				ContractorAuditFile contractorAuditFile = contractorAuditFileDAO.find(fileID);
 				contractorAuditFile.setReviewed(true);
 				contractorAuditFile.setAuditColumns(permissions);
@@ -49,16 +53,16 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	}
 
 	public List<AuditData> getOpenReqs() {
-		if(openReqs == null) {
+		if (openReqs == null) {
 			openReqs = new ArrayList<AuditData>();
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
-			for(AuditCatData auditCatData : getCategories()) {
-				for(AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
-					for(AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-						if(auditQuestion.isValid()) {
+			for (AuditCatData auditCatData : getCategories()) {
+				for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
+					for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+						if (auditQuestion.isVisible() && auditQuestion.isValid()) {
 							AuditData auditData = answerMap.get(auditQuestion.getId());
-							if(auditData != null) {
-								if(auditData.isHasRequirements() && auditData.isRequirementOpen()) {
+							if (auditData != null) {
+								if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
 									openReqs.add(auditData);
 								}
 							}
@@ -77,9 +81,17 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	public void setFileID(int fileID) {
 		this.fileID = fileID;
 	}
-	
+
 	public String getFileDesc(AuditQuestion auditQuestion) {
-		return auditQuestion.getSubCategory().getCategory().getNumber()+"."+
-		 auditQuestion.getSubCategory().getNumber()+"."+auditQuestion.getNumber();
+		return auditQuestion.getSubCategory().getCategory().getNumber() + "."
+				+ auditQuestion.getSubCategory().getNumber() + "." + auditQuestion.getNumber();
+	}
+
+	public AuditCatData getAuditCatData(int auditID, int catID) {
+		List<AuditCatData> aList = catDataDao.findAllAuditCatData(auditID, catID);
+		if (aList != null && aList.size() > 0) {
+			return aList.get(0);
+		}
+		return null;
 	}
 }

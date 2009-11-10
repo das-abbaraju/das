@@ -22,8 +22,8 @@ function showAuditUpload(auditID, fileID, desc, question) {
 </head>
 <body>
 
+<s:include value="../audits/audit_catHeader.jsp"/>
 
-<h1>Upload Open Requirements <span class="sub"><s:property value="conAudit.auditType.auditName" /> for <s:property value="contractor.name" /></span></h1>
 <s:include value="../actionMessages.jsp" />
 <div class="info">
 <b>Click on the Open Requirement(s) below to upload supporting documentation. If you have any futher questions or believe that a section does not apply to your company, please contact the auditor below.
@@ -58,13 +58,26 @@ function showAuditUpload(auditID, fileID, desc, question) {
 				</thead>
 				<s:iterator value="openReqs" id="data">
 					<tr>
-						<s:set name="fileDesc" value="getFileDesc(#data.question)"/>
-						<td style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="Click here to upload requirements">
+						<td>
+							<s:set name="fileDesc" value="getFileDesc(#data.question)"/>
 							<s:property value="#fileDesc"/>&nbsp;&nbsp; 
-						<s:property value="question.requirement" /><br/>
-						<s:if test="!comment.toString().equals('null')">
-							<span class="redMain"><b>Auditor Comment : </b><s:property value="comment"/></span>
-						</s:if>
+							<s:if test="permissions.operatorCorporate">
+								<s:property value="question.requirement" />
+							</s:if>
+							<s:else>
+								<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="Click here to upload requirements"><s:property value="question.requirement" /></a>
+							</s:else>	
+							<br/>
+							<s:if test="!comment.toString().equals('null')">
+								<span class="redMain"><b>Auditor Comment : </b><s:property value="comment"/></span>
+							</s:if>
+							<s:if test="permissions.auditor">
+								<s:set name="catData" value="getAuditCatData(#data.audit.id,#data.question.subCategory.category.id)"/>
+								<s:if test="#catData != null">
+									<br/>
+									<a href="AuditCat.action?auditID=<s:property value="#data.audit.id"/>&catDataID=<s:property value="#catData.id"/>&onlyReqs=true&mode=Edit#node_<s:property value="#data.question.id"/>">Close Requirement</a>									
+								</s:if>
+							</s:if>
 						</td>
 					</tr>
 				</s:iterator>

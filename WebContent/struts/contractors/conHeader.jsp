@@ -189,6 +189,9 @@
 				 <s:if test="onlyReq && mode == 'Edit'">class="current"</s:if>>Edit Requirements</a></li>
 				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
 			</s:if>
+			<s:if test="permissions.operatorCorporate">
+				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
+			</s:if>
 		</s:if>
 		<s:if test="!singleCat">
 			<li><a href="Audit.action?auditID=<s:property value="auditID" />"
