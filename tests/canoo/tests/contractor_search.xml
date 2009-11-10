@@ -8,7 +8,7 @@
 			&config;
 			<steps>
 				<invoke  description="Try to search without login"
-				      url="ContractorSearch.action?filter.accountName=Ancon Marine"/>
+				      url="alpha.picsauditing.com/app/ContractorSearch.action?filter.accountName=Ancon Marine"/>
 				<verifyTitle
 				      description="Looks for the title of the Login page"
 				      text="PICS - Login" />
