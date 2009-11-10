@@ -19,14 +19,9 @@
 		<webtest name="Contractor Registration - Trial Account">
 			&config;
 			<steps>
-				<invoke url="Login.action" />
+				<invoke url="http://alpha.picsauditing.com/app/Login.action" />
 				<clickLink label="Click to Register your company" />
-				
-				&body_verify;
-				<clickLink
-					description="Edit Page"
-					href="ContractorRegistration.action" />
-					
+			
 				&body_verify;
 				<group description="Register and Save">
 					<!-- Register Correctly -->
