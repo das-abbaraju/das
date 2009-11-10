@@ -45,7 +45,7 @@
 
 				<!--   Forms & Docs -->
 				<clickLink description="Forms &amp; Docs"
-					href="manage_forms.jsp" />
+					label="Forms &amp; Docs" />
 				<sleep seconds="2"/>
 				&body_verify;
 				<verifyText description="Edit an Existing Form"
