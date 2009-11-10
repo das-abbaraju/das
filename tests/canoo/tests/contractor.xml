@@ -3,9 +3,9 @@
 
 <project name="PICS" default="test">
 	<description>448 - Air Quality Engineering, Inc.</description>
-	<property name="login.username" value="shnguyen" />
+	<property name="login.username" value="ace_admin" />
 	<target name="test">
-		<webtest name="Contractor" description="448 - Air Quality Engineering, Inc.">
+		<webtest name="Contractor" description="6160 - Ace Balancing Testing^^^">
 			&config;
 			<steps>
 				&login;
