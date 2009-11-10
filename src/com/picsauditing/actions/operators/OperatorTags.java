@@ -27,7 +27,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	public void prepare() throws Exception {
 		loadPermissions();
 		findOperator();
-		tags = operatorTagDAO.findByOperator(id);
+		tags = operatorTagDAO.findByOperator(id, false);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 			}
 			if (getActionErrors().size() == 0)
 				addActionMessage("Successfully saved tag" + (tags.size() > 1 ? "s" : ""));
-			tags = operatorTagDAO.findByOperator(id);
+			tags = operatorTagDAO.findByOperator(id, false);
 		}
 
 		return SUCCESS;

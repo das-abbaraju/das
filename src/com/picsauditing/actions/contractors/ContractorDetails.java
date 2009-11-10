@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.access.OpPerms;
@@ -14,17 +13,9 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.TransactionDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Transaction;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Images;
 
 @SuppressWarnings("serial")
@@ -121,7 +112,7 @@ public class ContractorDetails extends ContractorActionSupport {
 		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;
 
-		return operatorTagDAO.findByOperator(permissions.getAccountId());
+		return operatorTagDAO.findByOperator(permissions.getAccountId(),true);
 	}
 
 	public int getTagId() {

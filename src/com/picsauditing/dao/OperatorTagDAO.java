@@ -37,10 +37,13 @@ public class OperatorTagDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<OperatorTag> findByOperator(int opID) {
-		Query query = em.createQuery("SELECT t FROM OperatorTag t WHERE t.operator.id = ? ORDER BY tag");
+	public List<OperatorTag> findByOperator(int opID, boolean active) {
+		String hql = "SELECT t FROM OperatorTag t WHERE t.operator.id = ? ";
+		if(active)
+			hql += " AND t.active = 1";
+		hql += " ORDER BY tag";
+		Query query = em.createQuery(hql);
 		query.setParameter(1, opID);
 		return query.getResultList();
 	}
-
 }

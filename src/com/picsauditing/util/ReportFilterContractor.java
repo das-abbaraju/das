@@ -432,7 +432,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
 		OperatorTagDAO dao = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
-		return dao.findByOperator(permissions.getAccountId());
+		return dao.findByOperator(permissions.getAccountId(),true);
 	}
 	
 	public String[] getDeactivationReasons() {
