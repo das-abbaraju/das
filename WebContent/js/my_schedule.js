@@ -184,6 +184,7 @@ function loadPreview() {
 							arrows: true,
 							dropShadow: false,
 							cluetipClass: 'jtip',
+							activation: 'click',
 							ajaxProcess: function(data) {
 								data = $(data).not('meta, link, title');
 								return data;

@@ -39,6 +39,7 @@ $(function() {
 						arrows: true,
 						dropShadow: false,
 						cluetipClass: 'jtip',
+						activation: 'click',
 						ajaxProcess: function(data) {
 							data = $(data).not('meta, link, title');
 							return data;
@@ -95,8 +96,8 @@ ul {
 <h1>Audit Calendar</h1>
 <s:include value="../actionMessages.jsp"></s:include>
 
-<div id="auditorReport"></div>
 <div id="thinking"></div>
 <div id="calendar"></div>
+<div id="auditorReport"></div>
 </body>
 </html>
