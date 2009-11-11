@@ -21,8 +21,9 @@ function saveRows() {
 
 	startThinking({div: 'messages', message: 'Saving changes', type: 'large'});
 
-	$('#messages').load('ReportInsuranceApprovalAjax.action', pars, function(text, status) {
-			if(status=='success')
+	$.post('ReportInsuranceApprovalAjax.action', pars, function(text, status) {
+			$('#messages').html(text);
+			if (status=='success')
 				clickSearch('form1');
 		}
 	);
