@@ -71,9 +71,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
+	protected List<AuditQuestionText> questionText;
 	private String criteria;
 	private String criteriaAnswer;
 	private String helpPage;
+	private String countries;
 
 	@Transient
 	public AuditType getAuditType() {
@@ -365,6 +367,15 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		return options;
 	}
 
+	@OneToMany(mappedBy = "auditQuestion")
+	public List<AuditQuestionText> getQuestionText() {
+		return questionText;
+	}
+
+	public void setQuestionText(List<AuditQuestionText> questionText) {
+		this.questionText = questionText;
+	}
+
 	@Transient
 	public List<AuditQuestionOption> getOptionsVisible() {
 		List<AuditQuestionOption> options = new ArrayList<AuditQuestionOption>();
@@ -412,6 +423,14 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	public void setHelpPage(String helpPage) {
 		this.helpPage = helpPage;
+	}
+
+	public String getCountries() {
+		return countries;
+	}
+
+	public void setCountries(String countries) {
+		this.countries = countries;
 	}
 
 	@Transient

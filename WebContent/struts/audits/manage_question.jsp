@@ -102,8 +102,30 @@
 				<s:else>help.picsauditing.com/wiki/???</s:else>
 			</div>
 		</li>
+		<li><label>Countries:</label>
+			<s:textfield name="question.countries" size="50"/>
+		</li>				
 	</ol>
 	</fieldset>
+
+	<fieldset class="form">
+	<legend><span>Question Texts</span></legend>
+	<ol>
+		<s:iterator value="question.questionText">
+			<li><label>Locale:</label>
+				<s:select list="localeList" listKey="" listValue="description" value="%{locale}" name="locale"/>
+			</li>
+			<li><label>Question:</label>
+				<s:textfield name="question" size="65"/>
+			</li>
+			<li><label>Requirement:</label>
+				<s:textfield name="requirement" size="65"/>
+			</li>
+			<br/>	
+		</s:iterator>
+	</ol>
+	</fieldset>
+
 	<fieldset class="form">
 	<legend><span>Useful Links</span></legend>
 	<ol>

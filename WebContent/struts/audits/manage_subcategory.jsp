@@ -41,6 +41,9 @@ $(function(){
 			<li><label>Sub Category Name:</label>
 				<s:textfield name="subCategory.subCategory" size="50" />
 			</li>				
+			<li><label>Countries:</label>
+				<s:textfield name="subCategory.countries" size="50"/>
+			</li>				
 			<li><label>Help Text:</label>
 				<s:textarea name="subCategory.helpText" rows="3" cols="50"/>
 			</li>				

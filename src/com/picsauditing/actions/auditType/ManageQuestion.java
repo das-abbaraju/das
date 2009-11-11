@@ -12,6 +12,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.Locale;
 
 public class ManageQuestion extends ManageSubCategory {
 
@@ -137,5 +138,9 @@ public class ManageQuestion extends ManageSubCategory {
 
 	public void setDependsOnQuestionID(int dependsOnQuestionID) {
 		this.dependsOnQuestionID = dependsOnQuestionID;
+	}
+	
+	public Locale[] getLocaleList() {
+		return Locale.values();
 	}
 }
