@@ -23,6 +23,7 @@
 							<setInputField name="auditType.auditName" value=""/>
 							<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
 							<clickButton label="Save"/>
+						<clickButton label="UpdateAllAudits" name="button"/>
 							<clickLink label="Top"/>
 					</ifStep>
 				</group>
