@@ -4,6 +4,7 @@
 	<target name="test" description="Run All PICS Web Tests">
 		<ant antfile="marketingPages.xml"/>
 		<ant antfile="login.xml"/>
+		<ant antfile="audit_definitions.xml"/>
 		<ant antfile="auditor.xml"/>
 		<ant antfile="admin_webcams.xml"/>
 		<ant antfile="corporate.xml"/>
@@ -21,14 +22,15 @@
 		<ant antfile="operator.xml"/>
 		<ant antfile="operator_config.xml"/>
 		<ant antfile="admin_billing.xml"/>
+		<ant antfile="admin_audits.xml"/>
 		<ant antfile="contractor_delete.xml"/>
 		<ant antfile="contractor_trialaccount.xml"/>
 		<ant antfile="contractor_trial_delete.xml"/>
 	</target>
-	
+
 	<target name="adhoc" description="Run a few tests when debugging">
 
-		<ant antfile="contractor_trial_delete.xml"/>
+		<ant antfile="audit_definitions.xml"/>
 		
 		
 	</target>
