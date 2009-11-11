@@ -5,7 +5,7 @@
 	<property name="login.username" value="tallred" />
 	
 	<target name="test">
-		<webtest name="Audits Definitions">
+		<webtest name="Audit Definitions">
 			&config;
 			<steps>
 				&login;
@@ -13,12 +13,18 @@
 				
 				<storeProperty name="report_link" value="Audit Definitions" />
 				&click_report;
+				
 				<group description="Change PQF title to Pre-Qualification">
-					<clickLink label="Pre-Qualification"/>
-					<setInputField name="auditType.auditName" value=""/>
-					<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
-					<clickButton label="Save"/>
-					<clickLink label="Top"/>
+					<ifStep>
+						<condition>
+							<verifyElementText type="link" text="PQF"/>
+						</condition>
+							<clickLink href="ManageAuditType.action?id=1"/>
+							<setInputField name="auditType.auditName" value=""/>
+							<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
+							<clickButton label="Save"/>
+							<clickLink label="Top"/>
+					</ifStep>
 				</group>
 				<group description="Add new AuditType">
 					<clickLink description="Click Add New link" label="Add New" />
