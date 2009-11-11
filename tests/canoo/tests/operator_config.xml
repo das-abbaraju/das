@@ -4,7 +4,7 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="tallred" />
 	<target name="test">
-		<webtest name="Operator Configuration">
+		<webtest name="Operator Config">
 			&config;
 			<steps>
 				<group description="Login as Admin">
@@ -13,27 +13,62 @@
 				<property name="error_expected" value="false" />
 				&body_verify;
 				</group>
-			
-				<group description="Turn on Bid Only">
-					<setInputField name="filter.accountName" value="AES Alamitos"/>
-					<clickButton label="Search"/>
-						<ifStep>
+				<invoke url="http://alpha.picsauditing.com/app/Home.action"/>
+				
+				<group description="Edit Operator">
+						<setInputField name="filter.accountName" value="AES Alamitos"/>
+						<clickButton label="Search"/>
+						
+							<ifStep description="Turn on Bid Only">
+								<condition>
+									<verifyCheckbox htmlId="Accepts Bids:Yes" checked="false"/>
+								</condition>
+								<setCheckbox name="operator.acceptsBids"/>
+								<clickButton label="Save"/>
+								<verifyText description="Verify that text is contained in the page" text="Successfully saved AES Alamitos"/>
+							</ifStep>
+						
+						<ifStep description="Turn on InsureGuard">
 							<condition>
-								<verifyCheckbox htmlId="save_operator_acceptsBids" checked="false"/>
+								<verifyRadioButton htmlId="save_operator_canSeeInsuranceYes" checked="false"/>
 							</condition>
-							<setCheckbox name="operator.acceptsBids"/>
+							<setRadioButton description="Check Yes" name="operator.canSeeInsurance" value="Yes"/>
 							<clickButton label="Save"/>
 							<verifyText description="Verify that text is contained in the page" text="Successfully saved AES Alamitos"/>
 						</ifStep>
-						
+				</group>
+
+				
+				<group description="Add Permissions">
 					<clickLink label="Users"/>
 					<clickLink label="Sandy Synstelien*"/>
-					<verifyText description="Verify that text is contained in the page" text="View Bid Only Account Contractors"/>
-					<verifyText description="Verify that text is contained in the page" text="View UnApproved Contractors"/>
-					<clickLink label="Switch to this User"/>
-					<clickLink label="Bid Only Account"/>
-					&body_verify;
+						<group description="Add Permissions">
+						<verifyText description="Verify that text is contained in the page" text="View Bid Only Account Contractors"/>
+						<verifyText description="Verify that text is contained in the page" text="View UnApproved Contractors"/>
+						<verifyText description="Check Permissions" text="Insurance Approval "/>
+						<verifyText description="Check Permissions" text="Insurance Certificates"/>
 				</group>
+				</group>
+				
+				<group description="Verify Reports">	
+					<clickLink label="Switch to this User"/>
+					
+					<storeProperty 
+					name="report_link" 
+					value="Bid Only Account" />
+					&click_report;
+
+					<storeProperty 
+					name="report_link" 
+					value="Contractor Policies" />
+					&click_report;
+
+					<storeProperty 
+					name="report_link" 
+					value="Policies Awaiting Decision" />
+					&click_report;
+				</group>	
+			
 		    </steps>
 		</webtest>
 	</target>
