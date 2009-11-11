@@ -30,7 +30,7 @@
 					&body_verify;
 				<clickLink 
 					description="Verify if PQF Label exists"
-					label="Pre-Qualification" />
+					label="PQF" />
 					&body_verify;				
 				<clickLink 
 					description="Verify if Desktop Audit exists"

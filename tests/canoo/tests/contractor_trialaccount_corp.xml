@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="register.username" value="canoo_trialaccount1" />
+	<property name="admin.username" value="opman" />
+	<target name="test">
+		<webtest name="Contractor Registration - Pre Cleanup">
+			&config;
+			<steps>
+				<storeProperty description="Delete Account" 
+					name="login.username" 
+					propertyType="ant"
+					value="${admin.username}"/>
+				&login;
+				&contractor_delete;
+			</steps>
+		</webtest>
+		<webtest name="Contractor Registration - Trial Account">
+			&config;
+			<steps>
+				<invoke url="Login.action" />
+				<clickLink label="Click to Register your company" />
+				
+				&body_verify;
+				<clickLink
+					description="Edit Page"
+					href="ContractorRegistration.action" />
+					
+				&body_verify;
+				<group description="Register and Save">
+					<!-- Register Correctly -->
+					<invoke url="http://alpha.picsauditing.com/ContractorRegistration.action"/>
+					<setInputField name="contractor.name" value="Bid / Inheritance Test"/>
+					<setInputField name="contractor.dbaName" value="Inheritance's DBA"/>
+					<setInputField name="contractor.contact" value="John Doe"/>
+					<setInputField name="contractor.webUrl" value="www,picsauditing.com/canoo"/>
+					<setInputField name="contractor.taxId" value="982236544"/>
+					<setInputField name="contractor.address" value="123 Main Street"/>
+					<setInputField name="contractor.city" value="Tester"/>
+					<setSelectField name="contractor.country" text="USA"/>
+					<setSelectField name="contractor.state" text="Wyoming"/>
+					<setInputField name="contractor.zip" value="54321"/>
+					<setInputField name="contractor.phone" value="949-123-4567"/>
+					<setInputField name="contractor.phone2" value="949-123-4567"/>
+					<setInputField name="contractor.fax" value="949-123-4568"/>
+					<setInputField name="contractor.email" value="tester@picsauditing.com"/>
+					<setInputField name="contractor.secondContact" value="Second Contact"/>
+					<setInputField name="contractor.secondPhone" value="949-123-4567"/>
+					<setInputField name="contractor.secondEmail" value="tester@picsauditing.com"/>
+					<setInputField name="contractor.billingContact" value="Billing Contact"/>
+					<setInputField name="contractor.billingPhone" value="949-123-4567"/>
+					<setInputField name="contractor.billingEmail" value="tester@picsauditing.com"/>
+					<setSelectField name="contractor.industry" text="Power"/>
+					<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
+					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me."/>
+					<setInputField name="user.username" value="inheritance_trialaccount"/>
+					<setInputField description="Set password field password: bigboy11" name="password" value="bigboy11"/>
+					<setInputField description="Set password field confirmPassword: bigboy11" name="confirmPassword" value="bigboy11"/>
+					<clickButton label="Create Account"/>
+					&body_verify;
+				</group>
+				<group description="Services Performed">
+					<setRadioButton description="Works with heavy machinery" htmlId="answerq2442Yes"/>
+					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
+					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
+					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
+					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
+					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
+					<clickLink label="Next >>"/>
+				</group>
+				<group description="Add Facilities">
+						<clickLink description="Click link: Add" htmlId="facility_5960"/>
+					<sleep seconds="5"/>
+						<clickLink label="Switch To Trial Account"/>
+						<sleep seconds="3"/>
+					<clickLink label="Next >>"/>
+				</group>
+				<group description="Add Payment Options">
+						<verifyText description="Verify that text is contained in the page" text="$25.00"/>
+				</group>
+				<group description="Set payment to check, switch back">
+						<clickLink label="Logout"/>
+						<setInputField name="username" value="opman"/>
+						<setInputField name="password" value="bigboy11"/>
+						<clickButton label="Login"/>
+						<setInputField name="filter.accountName" value="Bid / Inheritance Test"/>
+						<clickButton label="Search"/>
+						<verifyText description="Verify that text is contained in the page" text="This is a Trial Only Account and will expire on"/>
+						<clickLink description="Click link: Payment Options" href="PaymentOptions.action"/>
+						<clickButton label="Change Payment Method to Check"/>
+						<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
+						<clickLink label="Edit Account"/>
+						<clickLink label="Switch User"/>						
+				</group>
+				<group description="Complete Registration">
+							<clickLink description="Click link: 5) Confirm" htmlId="conConfirmLink"/>
+							<clickLink label="5) Confirm"/>
+							<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+							<clickButton label="Complete My Registration" name="button"/>
+							<verifyText description="Verify that text is contained in the page" text="Your account has been registered successfully."/>
+							<clickLink label="Logout"/>
+				</group>
+			</steps>
+		</webtest>
+		<webtest name="Trial Account Audits">
+
+				&config;
+				<steps>
+				<invoke url="Login.action" />
+				<group description="Login as Admin, process check">
+					<setInputField name="username" value="opman"/>
+					<setInputField name="password" value="bigboy11"/>
+					<clickButton label="Login"/>
+					<setInputField name="filter.accountName" value="Bid / Inheritance Test"/>
+					<clickButton label="Search"/>
+					<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+					<clickLink href="InvoiceDetail.action"/>
+					<verifyText description="Verify that text is contained in the page" text="Trial Account Fee"/>
+					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+					<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+					<clickLink label="Make a Payment"/>
+					<clickButton label="Apply All"/>
+					<clickButton label="Collect Payment"/>
+				</group>
+				<group description="System Edit">
+					<clickLink label="PQF"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save" name="button"/>
+					<clickLink label="2006 Update"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save"/>
+					<clickLink label="2007 Update"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save"/>
+					<clickLink label="2008 Update"/>
+					<clickLink label="System Edit"/>
+					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+					<clickButton label="Save" name="button"/>
+				</group>
+				<group description="Switch to Contractor">
+					<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
+					<clickLink label="Edit Account"/>
+					<clickLink label="Switch User"/>	
+				</group>
+			</steps>
+		</webtest>
+	</target>
+</project>

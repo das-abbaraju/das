@@ -13,18 +13,7 @@
 					propertyType="ant"
 					value="${admin.username}"/>
 				&login;
-				<group description="Delete Canoo's Test Contractor">
-					<setInputField name="filter.accountName" value="Canoo's Test Contractor"/>
-					<clickButton label="Search"/>
-					<ifStep>
-						<condition>
-							<verifyText text="Canoo's Test Contractor"/> 
-						</condition>
-							<clickElement href="ContractorEdit.action"/>
-							<enableJavaScript enable="true"/>
-							<clickButton label="Delete"/>
-					</ifStep>	
-				</group>
+				&delete_contractor;
 			</steps>
 		</webtest>
 	</target>

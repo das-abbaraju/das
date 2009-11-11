@@ -47,7 +47,6 @@
 						<clickLink label="Edit Account"/>
 						<clickButton label="Delete"/>
 					</group>
-					&delete_contractor;
 		    </steps>
 		</webtest>
 	</target>
