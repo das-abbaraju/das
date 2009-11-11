@@ -30,7 +30,7 @@
 
 	<target name="adhoc" description="Run a few tests when debugging">
 
-		<ant antfile="audit_definitions.xml"/>
+		<ant antfile="operator_config.xml"/>
 		
 		
 	</target>
