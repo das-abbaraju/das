@@ -7,7 +7,7 @@
 	
 	<ifStep description="Delete PQF">
 		<condition>
-			<clickLink description="Goto PQF" label="PQF" href="Audit.action" />
+			<clickLink description="Goto PQF" label="Pre-Qualification" href="Audit.action" />
 			<clickLink description="Open System Edit" label="System Edit" />
 		</condition>
 		<clickButton description="Click Delete" label="Delete" />
