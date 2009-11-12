@@ -62,14 +62,14 @@ $(function(){
 			</li>
 			<li><label>Sub Category Name:</label>
 				<s:textfield name="subCategory.subCategory" size="50" />
-			</li>				
+			</li>
 			<li><label>Countries:</label>
 				<s:hidden name="countries" value="%{subCategory.countries}"/>
 				<s:textfield size="50" cssClass="countries"/>
-			</li>				
+			</li>
 			<li><label>Help Text:</label>
 				<s:textarea name="subCategory.helpText" rows="3" cols="50"/>
-			</li>				
+			</li>
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">

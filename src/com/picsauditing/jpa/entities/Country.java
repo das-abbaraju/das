@@ -1,8 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -68,19 +65,6 @@ public class Country {
 
 	public void setFrench(String french) {
 		this.french = french;
-	}
-
-	/**
-	 * Return the only countries we support. Once we start supporting more than a few countries we should convert this
-	 * to use the CountryDAO instead.
-	 * 
-	 * @return
-	 */
-	public static List<Country> getSimpleList() {
-		List<Country> list = new ArrayList<Country>();
-		list.add(new Country("US", "United States"));
-		list.add(new Country("CA", "Canada"));
-		return list;
 	}
 
 	public static String convertToCode(String tempCountry) {

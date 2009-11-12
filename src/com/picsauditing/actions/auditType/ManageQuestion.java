@@ -9,11 +9,13 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.Locale;
 
+@SuppressWarnings("serial")
 public class ManageQuestion extends ManageSubCategory {
 
 	protected AuditQuestionDAO auditQuestionDao;
@@ -21,8 +23,9 @@ public class ManageQuestion extends ManageSubCategory {
 	private int dependsOnQuestionID = 0;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO) {
-		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao);
+			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, 
+			AuditDataDAO auditDataDAO, CountryDAO countryDAO) {
+		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao, countryDAO);
 		this.auditQuestionDao = auditQuestionDao;
 		this.auditDataDAO = auditDataDAO;
 	}

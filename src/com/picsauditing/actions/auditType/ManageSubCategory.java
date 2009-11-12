@@ -5,19 +5,23 @@ import org.json.simple.JSONArray;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.Country;
 
+@SuppressWarnings("serial")
 public class ManageSubCategory extends ManageCategory {
 
 	protected AuditSubCategoryDAO auditSubCategoryDao;
+	protected CountryDAO countryDAO;
 	protected String countries;
 
 	public ManageSubCategory(AuditTypeDAO auditTypeDao,
 			AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao) {
+			AuditSubCategoryDAO auditSubCategoryDao, CountryDAO countryDAO) {
 		super(auditTypeDao, auditCategoryDao);
 		this.auditSubCategoryDao = auditSubCategoryDao;
+		this.countryDAO = countryDAO;
 	}
 
 	@Override
@@ -84,8 +88,8 @@ public class ManageSubCategory extends ManageCategory {
 	public JSONArray getData() {
 		JSONArray json = new JSONArray();
 
-		for (Country country : Country.getSimpleList()) {
-			json.add(country.toString());
+		for (Country country : countryDAO.findAll()) {
+			json.add(country.getEnglish());
 		}
 
 		return json;
