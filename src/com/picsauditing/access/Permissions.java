@@ -3,6 +3,7 @@ package com.picsauditing.access;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -10,6 +11,7 @@ import java.util.TreeSet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
@@ -21,10 +23,11 @@ import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
 
 /**
- * This is the main class that is stored for each user containing information if they are logged in, which groups
- * they're in, and what permission(s) they have
+ * This is the main class that is stored for each user containing information if
+ * they are logged in, which groups they're in, and what permission(s) they have
  * 
- * Warning: this class is stored in the session Make sure you keep the footprint very small
+ * Warning: this class is stored in the session Make sure you keep the footprint
+ * very small
  */
 public class Permissions implements Serializable {
 	private static final long serialVersionUID = -3120292424348289561L;
@@ -48,6 +51,8 @@ public class Permissions implements Serializable {
 	private String phone;
 	private String fax;
 	private TimeZone timezone = null;
+	private String country;
+	private Locale locale;
 
 	private int adminID;
 	private boolean approvesRelationships = false;
@@ -63,7 +68,9 @@ public class Permissions implements Serializable {
 		email = "";
 		phone = "";
 		fax = "";
+		country = "";
 		timezone = null;
+		locale = null;
 		accountID = 0;
 		accountName = "";
 		accountType = "";
@@ -96,9 +103,11 @@ public class Permissions implements Serializable {
 			email = user.getEmail();
 			phone = user.getPhone();
 			fax = user.getFax();
-		
+			country = user.getAccount().getCountry();
+			locale = ActionContext.getContext().getLocale();
+
 			setTimeZone(user);
-			
+
 			setAccountPerms(user);
 
 		} catch (Exception ex) {
@@ -122,43 +131,44 @@ public class Permissions implements Serializable {
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
-				
+
 				if (isOperator()) {
-					if(operator.getParent() != null)
+					if (operator.getParent() != null)
 						topAccountID = operator.getParent().getId();
-					
+
 					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 					for (Facility facility : operator.getCorporateFacilities()) {
 						corporateParent.add(facility.getCorporate().getId());
-						if(facility.getCorporate().isPrimaryCorporate()) {
+						if (facility.getCorporate().isPrimaryCorporate()) {
 							topAccountID = facility.getCorporate().getId();
-						}	
+						}
 					}
-					
+
 					if (operator.getCanSeeInsurance().isTrue())
 						visibleCAOs.add(operator.getInheritInsuranceCriteria().getId());
-					
+
 					loadAuditTypes(operator);
 				}
 				if (isCorporate()) {
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
-						
+
 						if (facility.getOperator().getCanSeeInsurance().isTrue())
 							visibleCAOs.add(facility.getOperator().getInheritInsuranceCriteria().getId());
 
-						/* NOTE!!! There is a big hole here with this logic
-						 * If corporate has two operators A & B
-						 * A uses PQF only
-						 * B uses PQF and Desktop
-						 * Another Operator C uses PQF and Desktop 
-						 * Contractor signs up for operators A & C
-						 * Corporate will be able to incorrectly see the desktop for that Contractor
+						/*
+						 * NOTE!!! There is a big hole here with this logic If
+						 * corporate has two operators A & B A uses PQF only B
+						 * uses PQF and Desktop Another Operator C uses PQF and
+						 * Desktop Contractor signs up for operators A & C
+						 * Corporate will be able to incorrectly see the desktop
+						 * for that Contractor
 						 * 
-						 * One solution would be to add CAOs for each audit and operator
-						 * This would allow us to restrict permissions to view each 
-						 * audit for given operator or corporate account.
-						 * This could be useful if we want to eventually sell access for an operator to each audit
+						 * One solution would be to add CAOs for each audit and
+						 * operator This would allow us to restrict permissions
+						 * to view each audit for given operator or corporate
+						 * account. This could be useful if we want to
+						 * eventually sell access for an operator to each audit
 						 */
 						loadAuditTypes(facility.getOperator());
 					}
@@ -175,7 +185,7 @@ public class Permissions implements Serializable {
 			throw ex;
 		}
 	}
-	
+
 	private void loadAuditTypes(OperatorAccount operator) {
 		for (AuditOperator auditOperator : operator.getVisibleAudits()) {
 			canSeeAudits.add(auditOperator.getAuditType().getId());
@@ -251,7 +261,7 @@ public class Permissions implements Serializable {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
 	 * 
@@ -339,12 +349,13 @@ public class Permissions implements Serializable {
 
 	/**
 	 * True if operator or corporate
+	 * 
 	 * @return
 	 */
 	public boolean isOperatorCorporate() {
 		return isOperator() || isCorporate();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -433,15 +444,15 @@ public class Permissions implements Serializable {
 	public Set<Integer> getOperatorChildren() {
 		return operatorChildren;
 	}
-	
+
 	public Set<Integer> getVisibleCAOs() {
 		return visibleCAOs;
 	}
-	
+
 	public Set<Integer> getCanSeeAudits() {
 		return canSeeAudits;
 	}
-	
+
 	public TimeZone getTimezone() {
 		return timezone;
 	}
@@ -454,11 +465,27 @@ public class Permissions implements Serializable {
 		if (isOperator()) {
 			visibleAccounts.add(topAccountID);
 			visibleAccounts.addAll(corporateParent);
-		}	
+		}
 		return visibleAccounts;
 	}
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 }
