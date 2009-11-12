@@ -15,6 +15,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -51,7 +54,7 @@ public class Permissions implements Serializable {
 	private String phone;
 	private String fax;
 	private TimeZone timezone = null;
-	private String country;
+	private Set<String> accountCountries = new HashSet<String>();
 	private Locale locale;
 
 	private int adminID;
@@ -68,13 +71,13 @@ public class Permissions implements Serializable {
 		email = "";
 		phone = "";
 		fax = "";
-		country = "";
 		timezone = null;
 		locale = null;
 		accountID = 0;
 		accountName = "";
 		accountType = "";
 		accountActive = false;
+		accountCountries.clear();
 		approvesRelationships = false;
 
 		adminID = 0;
@@ -103,7 +106,6 @@ public class Permissions implements Serializable {
 			email = user.getEmail();
 			phone = user.getPhone();
 			fax = user.getFax();
-			country = user.getAccount().getCountry();
 			locale = ActionContext.getContext().getLocale();
 
 			setTimeZone(user);
@@ -128,9 +130,22 @@ public class Permissions implements Serializable {
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			accountActive = user.getAccount().isActiveB();
-
+			
+			if (isContractor()) {
+				ContractorAccount contractor = (ContractorAccount) user.getAccount();
+				for (ContractorOperator co : contractor.getOperators()) {
+					String isoCode = Country.convertToCode(co.getOperatorAccount().getCountry());
+					if (isoCode != null)
+						accountCountries.add(isoCode);
+				}
+			}
+			
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
+				
+				String isoCode = Country.convertToCode(operator.getCountry());
+				if (isoCode != null)
+					accountCountries.add(isoCode);
 
 				if (isOperator()) {
 					if (operator.getParent() != null)
@@ -262,6 +277,10 @@ public class Permissions implements Serializable {
 		return name;
 	}
 
+	public Set<String> getAccountCountries() {
+		return accountCountries;
+	}
+	
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
 	 * 
@@ -471,14 +490,6 @@ public class Permissions implements Serializable {
 
 	public boolean isActive() {
 		return active;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	
-	public String getCountry() {
-		return country;
 	}
 
 	public void setLocale(Locale locale) {

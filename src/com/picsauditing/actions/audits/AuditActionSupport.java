@@ -122,11 +122,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// and which categories have subcategories
 		// We don't actually loop through the all the questions just yet, that's
 		// later
-		for (AuditCatData catData : categories)
+		for (AuditCatData catData : categories) {
 			if (conAudit.getAuditType().getClassType().isPqf())
 				catData.getCategory().setValidDate(new Date());
 			else
 				catData.getCategory().setValidDate(conAudit.getCreationDate());
+			catData.getCategory().setCountries(permissions.getAccountCountries());
+		}
 
 		return categories;
 	}

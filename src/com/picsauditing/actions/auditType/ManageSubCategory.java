@@ -84,7 +84,7 @@ public class ManageSubCategory extends ManageCategory {
 	public JSONArray getData() {
 		JSONArray json = new JSONArray();
 
-		for (Country country : Country.values()) {
+		for (Country country : Country.getSimpleList()) {
 			json.add(country.toString());
 		}
 

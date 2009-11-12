@@ -323,4 +323,26 @@ public class Strings {
 	    }
 	    return number;
 	}
+	
+	/**
+	 * Is country contained in the expression
+	 * @param expression like !|CA|FR|
+	 * @param country like US
+	 * @return
+	 */
+	public static boolean isInCountries(String expression, Set<String> countries) {
+		if (countries == null || countries.size() == 0)
+			return true;
+		if (isEmpty(expression))
+			return true;
+		
+		boolean contains = false;
+		for (String country : countries) {
+			if (expression.contains("|" + country + "|"))
+				contains = true;
+		}
+		if (expression.substring(0, 1).equals("!"))
+			contains = !contains;
+		return contains;
+	}
 }

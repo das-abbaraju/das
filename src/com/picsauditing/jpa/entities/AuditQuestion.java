@@ -476,7 +476,8 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	@Transient
 	public boolean isValid() {
 		if (getSubCategory().getCategory().getValidDate().after(getEffectiveDate())
-				&& getSubCategory().getCategory().getValidDate().before(getExpirationDate()))
+				&& getSubCategory().getCategory().getValidDate().before(getExpirationDate())
+				&& Strings.isInCountries(countries, getSubCategory().getCategory().getCountries()))
 			return true;
 		return false;
 	}

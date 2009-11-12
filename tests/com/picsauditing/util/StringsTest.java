@@ -6,8 +6,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.mail.Address;
@@ -207,5 +209,40 @@ public class StringsTest extends TestCase {
 		assertEquals("1.23M", Strings.formatShort(1234567f));
 		assertEquals("1.23B", Strings.formatShort(1234567890f));
 	}
-	
+
+	public void testIsInCountries() {
+		Set<String> usOnly = new HashSet<String>();
+		usOnly.add("US");
+		Set<String> usAndCanada = new HashSet<String>();
+		usAndCanada.add("US");
+		usAndCanada.add("CA");
+		Set<String> franceOnly = new HashSet<String>();
+		franceOnly.add("FR");
+		Set<String> germanyOnly = new HashSet<String>();
+		germanyOnly.add("DE");
+		Set<String> all = new HashSet<String>();
+		all.add("US");
+		all.add("CA");
+		all.add("FR");
+		all.add("DE");
+		
+		String expression = "";
+		assertTrue(Strings.isInCountries(expression, null));
+		assertTrue(Strings.isInCountries(expression, usOnly));
+		
+		expression = "|US|";
+		assertTrue(Strings.isInCountries(expression, usOnly));
+		assertFalse(Strings.isInCountries(expression, franceOnly));
+		
+		expression = "|US|FR|";
+		assertTrue(Strings.isInCountries(expression, usOnly));
+		assertFalse(Strings.isInCountries(expression, germanyOnly));
+		assertTrue(Strings.isInCountries(expression, usAndCanada));
+		assertTrue(Strings.isInCountries(expression, all));
+		
+		expression = "!|CA|US|";
+		assertTrue(Strings.isInCountries(expression, franceOnly));
+		assertFalse(Strings.isInCountries(expression, usOnly));
+		assertFalse(Strings.isInCountries(expression, all));
+	}
 }

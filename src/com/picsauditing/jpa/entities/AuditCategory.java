@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -42,10 +45,11 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	List<AuditSubCategory> subCategories;
 
 	/**
-	 * This is a transient field that allows us to figure out which categories,
-	 * subcategories and questions should be displayed
+	 * This is a transient field that allows us to figure out which categories, subcategories and questions should be
+	 * displayed
 	 */
 	private Date validDate = null;
+	private Set<String> countries = null;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditTypeID", nullable = false)
@@ -107,7 +111,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public List<AuditSubCategory> getValidSubCategories() {
 		List<AuditSubCategory> list = new ArrayList<AuditSubCategory>();
 		for (AuditSubCategory subCategory : getSubCategories())
-			if (subCategory.hasValidQuestions())
+			if (Strings.isInCountries(subCategory.getCountries(), countries) && subCategory.hasValidQuestions())
 				list.add(subCategory);
 		return list;
 	}
@@ -121,6 +125,15 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setValidDate(Date validDate) {
 		this.validDate = validDate;
+	}
+
+	@Transient
+	public Set<String> getCountries() {
+		return countries;
+	}
+
+	public void setCountries(Set<String> countries) {
+		this.countries = countries;
 	}
 
 	@Override
