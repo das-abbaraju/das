@@ -7,6 +7,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
 $(function(){
 	var sortList = $('#list').sortable({
@@ -17,6 +21,24 @@ $(function(){
 			);
 		}
 	});
+});
+
+var data = <s:property value="data" escape="false"/>;
+var acfb;
+$(function(){
+	function acfbuild(cls,url){
+		var ix = $("input"+cls);
+		ix.addClass('acfb-input').wrap('<ul class="'+cls.replace(/\./,'')+' acfb-holder"></ul>');
+		
+		return $("ul"+cls).autoCompletefb({urlLookup:url, delimeter: '|'});
+	}
+	acfb = acfbuild('.countries', data);
+	acfb.init($('form [name=countries]').val().split('|'));
+
+	$('form#save').submit(function() {
+			$(this).find('[name=countries]').val(acfb.getData());
+		}
+	);
 });
 </script>
 </head>
@@ -42,7 +64,8 @@ $(function(){
 				<s:textfield name="subCategory.subCategory" size="50" />
 			</li>				
 			<li><label>Countries:</label>
-				<s:textfield name="subCategory.countries" size="50"/>
+				<s:hidden name="countries" value="%{subCategory.countries}"/>
+				<s:textfield size="50" cssClass="countries"/>
 			</li>				
 			<li><label>Help Text:</label>
 				<s:textarea name="subCategory.helpText" rows="3" cols="50"/>

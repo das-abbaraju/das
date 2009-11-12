@@ -6,6 +6,19 @@
 <title>Manage Question</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript">
+var data = <s:property value="data" escape="false"/>;
+$(function(){
+	$('#countryList').autocomplete(data, {
+			multiple: true,
+			multipleSeparator: '|'
+		}
+	);
+});
+</script>
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
@@ -103,7 +116,7 @@
 			</div>
 		</li>
 		<li><label>Countries:</label>
-			<s:textfield name="question.countries" size="50"/>
+			<s:textfield name="question.countries" size="50" id="countryList"/>
 		</li>				
 	</ol>
 	</fieldset>

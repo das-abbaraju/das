@@ -1,13 +1,17 @@
 package com.picsauditing.actions.auditType;
 
+import org.json.simple.JSONArray;
+
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.Country;
 
 public class ManageSubCategory extends ManageCategory {
 
 	protected AuditSubCategoryDAO auditSubCategoryDao;
+	protected String countries;
 
 	public ManageSubCategory(AuditTypeDAO auditTypeDao,
 			AuditCategoryDAO auditCategoryDao,
@@ -48,6 +52,11 @@ public class ManageSubCategory extends ManageCategory {
 				subCategory.setNumber(maxID + 1);
 			}
 			subCategory.setAuditColumns(permissions);
+			StringBuilder newCountries = new StringBuilder("|");
+			for (String country : countries.split("\\|")) {
+				newCountries.append(country).append("|");
+			}
+			subCategory.setCountries(newCountries.toString());
 			subCategory = auditSubCategoryDao.save(subCategory);
 			id = subCategory.getCategory().getId();
 			return true;
@@ -71,5 +80,22 @@ public class ManageSubCategory extends ManageCategory {
 		return false;
 	}	
 
-	
+	@SuppressWarnings("unchecked")
+	public JSONArray getData() {
+		JSONArray json = new JSONArray();
+
+		for (Country country : Country.values()) {
+			json.add(country.toString());
+		}
+
+		return json;
+	}
+
+	public String getCountries() {
+		return countries;
+	}
+
+	public void setCountries(String countries) {
+		this.countries = countries;
+	}
 }
