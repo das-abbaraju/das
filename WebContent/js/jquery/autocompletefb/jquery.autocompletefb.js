@@ -21,7 +21,7 @@ jQuery.fn.autoCompletefb = function(options)
 	{
 		ul         : tmp,
 		urlLookup  : [""],
-		acOptions  : {},
+		acOptions  : {formatItem: function(d){return d;}, formatResult: function(d){return d;}},
 		foundClass : ".acfb-data",
 		inputClass : ".acfb-input",
 		delimeter  : ","
@@ -37,7 +37,7 @@ jQuery.fn.autoCompletefb = function(options)
 		    $(settings.foundClass,tmp).each(function(i)
 			{
 				if (i>0)result+=settings.delimeter;
-			    result += $('span',this).html();
+			    result += $(this).attr('id');
 		    });
 			return result;
 		},
@@ -54,7 +54,7 @@ jQuery.fn.autoCompletefb = function(options)
 		},
 		addFind : function(d){
 			var f = settings.foundClass.replace(/\./,'');
-			var v = '<li class="'+f+'"><span>'+d+'</span> <img class="p" src="images/delete.gif"/></li>';
+			var v = '<li class="'+f+'" id="'+settings.acOptions.formatResult(d)+'"><span>'+settings.acOptions.formatItem(d)+'</span> <img class="p" src="images/delete.gif"/></li>';
 			var x = $(settings.inputClass,tmp).before(v);
 			$('.p',x[0].previousSibling).click(function(){
 				acfb.removeFind(this);
