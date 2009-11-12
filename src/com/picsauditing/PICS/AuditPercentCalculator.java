@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -27,7 +28,7 @@ public class AuditPercentCalculator {
 		this.catDataDao = catDataDao;
 	}
 
-	public void updatePercentageCompleted(AuditCatData catData) {
+	public void updatePercentageCompleted(AuditCatData catData, Permissions permissions) {
 		if (catData == null)
 			return;
 
@@ -36,6 +37,9 @@ public class AuditPercentCalculator {
 		}
 
 		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
+		if(permissions != null) {
+			catData.getCategory().setCountries(permissions.getAccountCountries());	
+		}
 
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
@@ -159,11 +163,11 @@ public class AuditPercentCalculator {
 		catDataDao.save(catData);
 	}
 
-	public void percentCalculateComplete(ContractorAudit conAudit) {
-		percentCalculateComplete(conAudit, false);
+	public void percentCalculateComplete(ContractorAudit conAudit, Permissions permissions) {
+		percentCalculateComplete(conAudit, false, permissions);
 	}
 
-	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
+	public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats, Permissions permissions) {
 		int required = 0;
 		int answered = 0;
 		int verified = 0;
@@ -172,7 +176,7 @@ public class AuditPercentCalculator {
 		float runningScore = 0;
 
 		if (recalcCats) {
-			recalcAllAuditCatDatas(conAudit);
+			recalcAllAuditCatDatas(conAudit,permissions);
 		}
 
 		for (AuditCatData data : conAudit.getCategories()) {
@@ -226,18 +230,18 @@ public class AuditPercentCalculator {
 		}
 	}
 
-	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
+	public void recalcAllAuditCatDatas(ContractorAudit conAudit, Permissions permissions) {
 		for (AuditCatData data : conAudit.getCategories()) {
 
 			if (!conAudit.getAuditType().isAnnualAddendum()) {
-				updatePercentageCompleted(data);
+				updatePercentageCompleted(data, permissions);
 			} else {
 				for (OshaAudit osha : conAudit.getOshas()) {
 					if (osha.isCorporate()) {
 						percentOshaComplete(osha, data);
 					}
 				}
-				updatePercentageCompleted(data);
+				updatePercentageCompleted(data, permissions);
 			}
 		}
 	}

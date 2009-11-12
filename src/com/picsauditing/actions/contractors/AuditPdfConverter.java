@@ -124,7 +124,8 @@ public class AuditPdfConverter extends ContractorActionSupport {
 								auditCatData.getCategory().setValidDate(new Date());
 							else
 								auditCatData.getCategory().setValidDate(conAudit.getCreationDate());
-
+							
+							auditCatData.getCategory().setCountries(permissions.getAccountCountries());	
 							Paragraph categoryParagraph = new Paragraph("Category "
 									+ auditCatData.getCategory().getNumber() + " - "
 									+ auditCatData.getCategory().getCategory(), categoryFont);

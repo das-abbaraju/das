@@ -214,7 +214,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					catDataDao.save(currentCategory);
 				}
 			} else {
-				auditPercentCalculator.updatePercentageCompleted(currentCategory);
+				auditPercentCalculator.updatePercentageCompleted(currentCategory, permissions);
 			}
 		}
 
