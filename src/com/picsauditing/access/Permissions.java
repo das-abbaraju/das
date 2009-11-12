@@ -3,7 +3,6 @@ package com.picsauditing.access;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -19,6 +18,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.Locale;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -106,7 +106,7 @@ public class Permissions implements Serializable {
 			email = user.getEmail();
 			phone = user.getPhone();
 			fax = user.getFax();
-			locale = ActionContext.getContext().getLocale();
+			locale = Locale.valueOf(ActionContext.getContext().getLocale());
 
 			setTimeZone(user);
 
@@ -130,7 +130,7 @@ public class Permissions implements Serializable {
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			accountActive = user.getAccount().isActiveB();
-			
+
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
 				for (ContractorOperator co : contractor.getOperators()) {
@@ -139,10 +139,10 @@ public class Permissions implements Serializable {
 						accountCountries.add(isoCode);
 				}
 			}
-			
+
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
-				
+
 				String isoCode = Country.convertToCode(operator.getCountry());
 				if (isoCode != null)
 					accountCountries.add(isoCode);
@@ -280,7 +280,7 @@ public class Permissions implements Serializable {
 	public Set<String> getAccountCountries() {
 		return accountCountries;
 	}
-	
+
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
 	 * 
