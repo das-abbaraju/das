@@ -126,7 +126,7 @@ $(function(){
 	<ol>
 		<s:iterator value="question.questionText">
 			<li><label>Locale:</label>
-				<s:select list="localeList" listKey="" listValue="description" value="%{locale}" name="locale"/>
+				<s:select list="localeList" listValue="description" value="%{locale}" name="locale"/>
 			</li>
 			<li><label>Question:</label>
 				<s:textfield name="question" size="65"/>
