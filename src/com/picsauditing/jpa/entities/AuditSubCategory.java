@@ -1,6 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 @Entity
@@ -62,7 +70,7 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
-	
+
 	public String getCountries() {
 		return countries;
 	}
@@ -83,7 +91,7 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 
 	public boolean hasValidQuestions() {
 		for (AuditQuestion question : this.getQuestions())
-			if(question.isValid())
+			if (question.isValid())
 				return true;
 		return false;
 	}
@@ -100,6 +108,33 @@ public class AuditSubCategory extends BaseTable implements java.io.Serializable,
 			return cmp;
 
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+	}
+
+	@Transient
+	public String[] getCountriesArray() {
+		if (Strings.isEmpty(countries))
+			return new String[] {};
+		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "").split("\\|");
+	}
+
+	@Transient
+	public void setCountriesArray(String[] countryArray, boolean exclude) {
+		Set<String> countrySet = new HashSet<String>();
+		Collections.addAll(countrySet, countryArray);
+		countrySet.remove("");
+		String tmp = null;
+		if (countrySet.size() > 0) {
+			tmp = "";
+			if (exclude)
+				tmp += "!";
+			tmp += "|";
+
+			for (String country : countrySet) {
+				tmp += country + "|";
+			}
+		}
+
+		countries = tmp;
 	}
 
 }

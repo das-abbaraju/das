@@ -3,6 +3,9 @@ package com.picsauditing.actions.auditType;
 import java.util.Date;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -13,6 +16,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Locale;
 
 @SuppressWarnings("serial")
@@ -79,6 +83,7 @@ public class ManageQuestion extends ManageSubCategory {
 				question.getDependsOnQuestion().setId(dependsOnQuestionID);
 			}
 			subCategory.getQuestions().add(question);
+			question.setCountriesArray(countries.split("\\|"), exclude);
 			question = auditQuestionDao.save(question);
 			id = question.getSubCategory().getId();
 
@@ -129,6 +134,23 @@ public class ManageQuestion extends ManageSubCategory {
 			category.setNumRequired(numRequired);
 			auditCategoryDao.save(category);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONArray getInitialCountries() {
+		JSONArray json = new JSONArray();
+
+		for (String c : question.getCountriesArray()) {
+			Country country = countryDAO.find(c);
+			if (country != null) {
+				JSONObject o = new JSONObject();
+				o.put("id", country.getIsoCode());
+				o.put("name", country.getName(permissions.getLocale()));
+				json.add(o);
+			}
+		}
+
+		return json;
 	}
 
 	public String[] getQuestionTypes() {

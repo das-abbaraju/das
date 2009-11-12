@@ -9,12 +9,36 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
 var data = <s:property value="data" escape="false"/>;
+var initCountries = <s:property value="initialCountries" escape="false"/>;
+var acfb;
 $(function(){
-	$('#countryList').autocomplete(data, {
-			multiple: true,
-			multipleSeparator: '|'
+	function acfbuild(cls,url){
+		var ix = $("input"+cls);
+		ix.addClass('acfb-input').wrap('<ul class="'+cls.replace(/\./,'')+' acfb-holder"></ul>');
+		
+		return $("ul"+cls).autoCompletefb({
+				urlLookup:url,
+				delimeter: '|',
+				acOptions: {
+					matchContains: true,
+					formatItem: function(row,index,count){
+						return row.name + ' (' + row.id + ')';
+					},
+					formatResult: function(row,index,count){
+						return row.id;
+					}
+				}
+			});
+	}
+	acfb = acfbuild('.countries', data);
+	acfb.init(initCountries);
+
+	$('form#save').submit(function() {
+			$(this).find('[name=countries]').val(acfb.getData());
 		}
 	);
 });
@@ -116,8 +140,12 @@ $(function(){
 			</div>
 		</li>
 		<li><label>Countries:</label>
-			<s:textfield name="question.countries" size="50" id="countryList"/>
-		</li>				
+			<s:hidden name="countries" value="%{subCategory.countries}"/>
+			<s:textfield size="50" cssClass="countries"/>
+		</li>
+		<li><label>Exclude Countries:</label>
+			<s:checkbox name="exclude" label="Exclude Countries" value="subCategory.countries.startsWith('!')" />
+		</li>			
 	</ol>
 	</fieldset>
 

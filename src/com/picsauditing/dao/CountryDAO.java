@@ -16,4 +16,8 @@ public class CountryDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Country t ORDER BY t.english");
 		return query.getResultList();
 	}
+
+	public Country find(String id) {
+		return em.find(Country.class, id);
+	}
 }

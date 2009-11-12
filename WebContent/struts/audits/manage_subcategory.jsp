@@ -24,16 +24,29 @@ $(function(){
 });
 
 var data = <s:property value="data" escape="false"/>;
+var initCountries = <s:property value="initialCountries" escape="false"/>;
 var acfb;
 $(function(){
 	function acfbuild(cls,url){
 		var ix = $("input"+cls);
 		ix.addClass('acfb-input').wrap('<ul class="'+cls.replace(/\./,'')+' acfb-holder"></ul>');
 		
-		return $("ul"+cls).autoCompletefb({urlLookup:url, delimeter: '|'});
+		return $("ul"+cls).autoCompletefb({
+				urlLookup:url,
+				delimeter: '|',
+				acOptions: {
+					matchContains: true,
+					formatItem: function(row,index,count){
+						return row.name + ' (' + row.id + ')';
+					},
+					formatResult: function(row,index,count){
+						return row.id;
+					}
+				}
+			});
 	}
 	acfb = acfbuild('.countries', data);
-	acfb.init($('form [name=countries]').val().split('|'));
+	acfb.init(initCountries);
 
 	$('form#save').submit(function() {
 			$(this).find('[name=countries]').val(acfb.getData());
@@ -66,6 +79,9 @@ $(function(){
 			<li><label>Countries:</label>
 				<s:hidden name="countries" value="%{subCategory.countries}"/>
 				<s:textfield size="50" cssClass="countries"/>
+			</li>
+			<li><label>Exclude Countries:</label>
+				<s:checkbox name="exclude" label="Exclude Countries" value="subCategory.countries.startsWith('!')" />
 			</li>
 			<li><label>Help Text:</label>
 				<s:textarea name="subCategory.helpText" rows="3" cols="50"/>

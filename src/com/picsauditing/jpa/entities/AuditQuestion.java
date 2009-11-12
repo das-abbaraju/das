@@ -2,7 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +24,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 @Entity
@@ -494,5 +498,32 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 			return cmp;
 
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+	}
+	
+	@Transient
+	public String[] getCountriesArray() {
+		if (Strings.isEmpty(countries))
+			return new String[] {};
+		return countries.replaceFirst("^[!]?\\|", "").replaceAll("\\|$", "").split("\\|");
+	}
+
+	@Transient
+	public void setCountriesArray(String[] countryArray, boolean exclude) {
+		Set<String> countrySet = new HashSet<String>();
+		Collections.addAll(countrySet, countryArray);
+		countrySet.remove("");
+		String tmp = null;
+		if (countrySet.size() > 0) {
+			tmp = "";
+			if (exclude)
+				tmp += "!";
+			tmp += "|";
+
+			for (String country : countrySet) {
+				tmp += country + "|";
+			}
+		}
+
+		countries = tmp;
 	}
 }
