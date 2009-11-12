@@ -14,18 +14,19 @@
 				<storeProperty name="report_link" value="Audit Definitions" />
 				&click_report;
 				
+				<invoke url="http://alpha.picsauditing.com/app/ManageAuditType.action?id=1"/>
+				
 				<group description="Change PQF title to Pre-Qualification">
-					<ifStep>
-						<condition>
-							<verifyElementText type="link" text="PQF"/>
-						</condition>
-							<clickLink href="ManageAuditType.action?id=1"/>
-							<setInputField name="auditType.auditName" value=""/>
-							<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
-							<clickButton label="Save"/>
-						<clickButton label="UpdateAllAudits" name="button"/>
-							<clickLink label="Top"/>
-					</ifStep>
+				
+					<setInputField name="auditType.auditName" value="Pre-Qualification"/>
+					<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
+					<clickButton label="Save"/>
+					<clickButton label="Save" name="button"/>
+					<clickButton name="button"/>
+					<clickButton label="UpdateAllAudits"/>
+					
+					<clickLink label="Top"/>
+					
 				</group>
 				<group description="Add new AuditType">
 					<clickLink description="Click Add New link" label="Add New" />
