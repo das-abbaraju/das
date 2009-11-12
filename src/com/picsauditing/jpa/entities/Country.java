@@ -13,6 +13,9 @@ public class Country {
 	protected String english;
 	protected String spanish;
 	protected String french;
+	
+	public Country() {
+	}
 
 	public Country(String isoCode, String english) {
 		this.isoCode = isoCode;
@@ -20,7 +23,7 @@ public class Country {
 	}
 
 	@Id
-	@Column(nullable = false)
+	@Column(nullable = false, length = 2)
 	public String getIsoCode() {
 		return isoCode;
 	}

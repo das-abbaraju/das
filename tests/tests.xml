@@ -30,6 +30,7 @@
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
 	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO"/>
 	<bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO"/>
+	<bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
 	<bean id="DesktopMatrixDAO" class="com.picsauditing.dao.DesktopMatrixDAO"/>
 	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
 	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
