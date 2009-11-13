@@ -67,7 +67,9 @@
 			<tr id="audit_<s:property value="[0].get('auditID')"/>">
 				<td class="right"><s:property
 					value="#stat.index + report.firstRowNumber" /></td>
-				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a>
+				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>" 
+						class="contractorQuick" title="<s:property value="[0].get('name')"/>"
+						rel="ContractorQuickAjax.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a>
 					<s:if test="[0].get('isScheduled') && [0].get('contractorConfirm') == NULL">
 						<span class="redMain">*</span>
 					</s:if>	
