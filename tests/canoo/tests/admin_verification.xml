@@ -12,7 +12,7 @@
 							
 				<group description="PQF Verification">
 				<group description="Find contractor">
-						<invoke url="alpha.picsauditing.com/app/ReportAuditList.action?&amp;filter.auditTypeID=11"/>
+						<invoke url="ReportAuditList.action?&amp;filter.auditTypeID=11"/>
 						<clickLink label="Status"/>
 						<setSelectField name="filter.auditStatus" text="Submitted"/>
 						<clickLink label="Audit Type"/>
