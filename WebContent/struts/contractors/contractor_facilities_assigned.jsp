@@ -34,7 +34,7 @@
 
 <s:if test="trialContractor">
 	<div class="info" style="80%">
-		<a href="#" class="picsbutton"
+		<a href="#" class="picsbutton" id="bidonly"
 			onclick="javascript: return changeToTrialAccount( <s:property value="contractor.id"/>);">Switch To Bid Only Account</a> 
 			<span class="block" style="position: relative;">
 				<a class="whatsthis" href="#"><img src="images/help.gif" height="15" width="15">
