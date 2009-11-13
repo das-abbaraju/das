@@ -170,7 +170,7 @@ public class Cron extends PicsActionSupport {
 				startTask("\nRecalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
-					auditPercentCalculator.percentCalculateComplete(cAudit, true, permissions);
+					auditPercentCalculator.percentCalculateComplete(cAudit, true);
 					cAudit.setLastRecalculation(new Date());
 					cAudit.setAuditColumns(system);
 					contractorAuditDAO.save(cAudit);

@@ -50,12 +50,12 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 		// Calculate and set the percent complete
 		if (conAudit.getLastRecalculation() == null) {
-			auditPercentCalculator.percentCalculateComplete(conAudit, true, permissions);
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 			conAudit.setLastRecalculation(new Date());
 			auditDao.save(conAudit);
 		} else
 			auditPercentCalculator.percentCalculateComplete(conAudit, conAudit.getAuditType().getClassType().equals(
-					AuditTypeClass.IM), permissions);
+					AuditTypeClass.IM));
 
 		if ("Submit".equals(button)) {
 			if(conAudit.getPercentComplete() < 100) {

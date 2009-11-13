@@ -190,7 +190,7 @@ public class AuditDataUpload extends AuditActionSupport {
 		for (AuditCatData auditCatData : getCategories()) {
 			if (auditCatData.getCategory() == answer.getQuestion()
 					.getSubCategory().getCategory())
-				auditPercentCalculator.updatePercentageCompleted(auditCatData, permissions);
+				auditPercentCalculator.updatePercentageCompleted(auditCatData);
 		}
 		
 		return SUCCESS;

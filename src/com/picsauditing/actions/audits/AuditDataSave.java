@@ -217,9 +217,9 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			if (catData != null) {
-				auditPercentCalculator.updatePercentageCompleted(catData, permissions);
+				auditPercentCalculator.updatePercentageCompleted(catData);
 				conAudit = auditDao.find(auditData.getAudit().getId());
-				auditPercentCalculator.percentCalculateComplete(conAudit, permissions);
+				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
 
 			List<Integer> questionIds = new ArrayList<Integer>();
