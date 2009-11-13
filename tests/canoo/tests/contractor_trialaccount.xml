@@ -158,7 +158,7 @@
 					<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
 					<verifyText description="Verify that text is contained in the page" text="0%"/>
 					<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
-					<verifyText description="Verify that text is contained in the page" text="17%"/>
+					<verifyText description="Verify that text is contained in the page" text="19%"/>
 					<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
 					<verifyText description="Verify that text is contained in the page" text="100%"/>
 				</group>
