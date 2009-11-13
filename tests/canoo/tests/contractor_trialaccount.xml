@@ -73,7 +73,7 @@
 					<sleep seconds="5"/>
 						<clickLink description="Click link: Add" htmlId="facility_6166"/>
 						<sleep seconds="5"/>
-						<clickLink label="Switch To Trial Account"/>
+						<clickLink description="Switch To Bid Only Account" htmlId="bidonly"/>
 						<sleep seconds="3"/>
 					<clickLink label="Next >>"/>
 				</group>
