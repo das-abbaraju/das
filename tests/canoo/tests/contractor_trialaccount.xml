@@ -87,7 +87,7 @@
 						<clickButton label="Login"/>
 						<setInputField name="filter.accountName" value="Canoo's Test - Trial Account"/>
 						<clickButton label="Search"/>
-						<verifyText description="Verify that text is contained in the page" text="This is a Trial Only Account and will expire on"/>
+						<verifyText description="Verify that text is contained in the page" text="This is a BID-ONLY Account and will expire on"/>
 						<clickLink description="Click link: Payment Options" href="PaymentOptions.action"/>
 						<clickButton label="Change Payment Method to Check"/>
 						<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
