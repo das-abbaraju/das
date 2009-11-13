@@ -49,7 +49,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	public String execute() throws Exception {
 
 		// Calculate and set the percent complete
-		if (conAudit.getLastRecalculation() == null) {
+		if (conAudit.getLastRecalculation() == null || 
+				(conAudit.getAuditType().isPqf() && conAudit.getAuditStatus().isPending())) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 			conAudit.setLastRecalculation(new Date());
 			auditDao.save(conAudit);
