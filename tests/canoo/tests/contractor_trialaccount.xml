@@ -118,7 +118,7 @@
 					<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
 					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
 					<clickLink href="InvoiceDetail.action"/>
-					<verifyText description="Verify that text is contained in the page" text="Trial Account Fee"/>
+					<verifyText description="Verify that text is contained in the page" text="Bid Only Account Fee"/>
 					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
 					<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
 					<clickLink label="Make a Payment"/>
