@@ -115,9 +115,12 @@ public class AuditPercentCalculator {
 							if (answer.isOK())
 								verifiedCount++;
 						} else {
-							if (answer.isVerified())
+							if (answer.isVerified()) {
 								verifiedCount++;
-						}
+							} else if (catData.getAudit().getAuditType().isHasRequirements()) {
+								verifiedCount++;
+							}
+						}	
 					}
 
 					if ("Radio".equals(question.getQuestionType())) {
