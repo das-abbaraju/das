@@ -216,6 +216,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			} else {
 				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
+			currentCategory.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
 		if (conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {

@@ -36,7 +36,9 @@ public class AuditPercentCalculator {
 		}
 
 		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
-
+		
+		catData.getCategory().setCountries(null);
+		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -158,7 +160,7 @@ public class AuditPercentCalculator {
 			catData.setScore(scoreAverage);
 			catData.setScoreCount(scoreCount);
 		}
-
+		
 		catDataDao.save(catData);
 	}
 

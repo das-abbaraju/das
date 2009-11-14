@@ -127,7 +127,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 				catData.getCategory().setValidDate(new Date());
 			else
 				catData.getCategory().setValidDate(conAudit.getCreationDate());
-			catData.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
 		return categories;
