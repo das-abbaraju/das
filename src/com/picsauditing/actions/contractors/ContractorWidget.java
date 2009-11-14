@@ -18,6 +18,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -173,16 +174,21 @@ public class ContractorWidget extends ContractorActionSupport {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
 						&& conAudit.getAuditType().isCanContractorView()
 						&& !conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().isHasAuditor()) {
-					String text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upcoming "
-							+ conAudit.getAuditType().getAuditName() + "</a>";
-					if (conAudit.getScheduledDate() != null) {
+					String text;
+					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
+						text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
+								+ "'>schedule your Office Audit</a>";
+					} else {
+						text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upcoming "
+								+ conAudit.getAuditType().getAuditName() + "</a>";
 						try {
 							text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
 						} catch (Exception e) {
 						}
+						if (conAudit.getAuditor() != null)
+							text += " with " + conAudit.getAuditor().getName();
 					}
-					if (conAudit.getAuditor() != null)
-						text += " with " + conAudit.getAuditor().getName();
+
 					openTasks.add(text);
 				}
 			}

@@ -200,7 +200,7 @@
 				<li><a href="?auditID=<s:property value="auditID"/>&button=recalculate">Recalculate Categories</a></li>
 			</pics:permission>
 		</s:if>
-		<s:if test="(permissions.admin) && conAudit.auditStatus.pending">
+		<s:if test="(permissions.contractor || permissions.admin) && conAudit.auditStatus.pending && conAudit.auditType.scheduled">
 			<li><a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>"
 					<s:if test="requestURI.contains('schedule_audit')">class="current"</s:if>>Schedule Audit</a></li>
 		</s:if>
