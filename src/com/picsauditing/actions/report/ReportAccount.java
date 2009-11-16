@@ -208,10 +208,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
-
-		if (filterOn(f.getState()))
-			report.addFilter(new SelectFilter("state", "a.state = '?'", f.getState()));
-
+		
+		String stateList = Strings.implodeForDB(f.getState(), ",");
+		if (filterOn(stateList)) {
+			sql.addWhere("a.state IN (" + stateList + ")");
+			setFiltered(true);
+		}	
+		
 		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 

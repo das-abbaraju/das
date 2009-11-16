@@ -25,7 +25,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String accountName = DEFAULT_NAME;
 	protected Industry[] industry;
 	protected String city = DEFAULT_CITY;
-	protected String state;
+	protected String[] state;
 	protected String zip = DEFAULT_ZIP;
 	protected String visible;
 	protected boolean primaryInformation = false;
@@ -133,11 +133,11 @@ public class ReportFilterAccount extends ReportFilter {
 		this.city = city;
 	}
 
-	public String getState() {
+	public String[] getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(String[] state) {
 		this.state = state;
 	}
 
