@@ -409,6 +409,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		case 9615: // Rick McGee
 		case 1725: // Royce Burnett
 		case 9463: // Tiffany Homayounshad
+		case 11503: // Gary Rogers
 			// Houston Employees
 			return new Location(29.769f, -95.3527f);
 		default:
