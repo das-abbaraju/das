@@ -20,12 +20,13 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 
 	protected ContractorAuditFileDAO contractorAuditFileDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
-	
+
 	protected List<AuditData> openReqs = null;
 	protected int fileID;
 
 	public ContractorAuditFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, ContractorAuditFileDAO contractorAuditFileDAO, AuditQuestionDAO auditQuestionDAO) {
+			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, ContractorAuditFileDAO contractorAuditFileDAO,
+			AuditQuestionDAO auditQuestionDAO) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
 		this.contractorAuditFileDAO = contractorAuditFileDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
@@ -57,13 +58,15 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 			openReqs = new ArrayList<AuditData>();
 			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
 			for (AuditCatData auditCatData : getCategories()) {
-				for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
-					for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
-						if (auditQuestion.isVisible() && auditQuestion.isValid()) {
-							AuditData auditData = answerMap.get(auditQuestion.getId());
-							if (auditData != null) {
-								if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
-									openReqs.add(auditData);
+				if (auditCatData.isAppliesB()) {
+					for (AuditSubCategory auditSubCategory : auditCatData.getCategory().getValidSubCategories()) {
+						for (AuditQuestion auditQuestion : auditSubCategory.getQuestions()) {
+							if (auditQuestion.isVisible() && auditQuestion.isValid()) {
+								AuditData auditData = answerMap.get(auditQuestion.getId());
+								if (auditData != null) {
+									if (auditData.isHasRequirements() && auditData.isRequirementOpen()) {
+										openReqs.add(auditData);
+									}
 								}
 							}
 						}
