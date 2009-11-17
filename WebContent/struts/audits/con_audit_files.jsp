@@ -26,7 +26,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 
 <s:include value="../actionMessages.jsp" />
 <div class="info">
-<b>Click on the Open Requirement(s) below to upload supporting documentation. If you have any futher questions or believe that a section does not apply to your company, please contact the auditor below.
+<b>Click on the Open Requirement(s) below to upload supporting documentation. If you have any further questions or believe that a section does not apply to your company, please contact the auditor below.
 <br/>*** Please allow up to 3 days for an auditor to review your files. ***</b>   
 </div>
 <ul>
