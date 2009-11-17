@@ -27,6 +27,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.noteDAO = noteDAO;
+		this.orderByDefault = "a.creationDate DESC, a.name";
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql.addJoin("JOIN pqfdata pd ON pd.auditid = ca.id");
 		sql.addWhere("ca.audittypeID = 1");
 		sql.addWhere("pd.questionid = 2444");
-		sql.addWhere("((pd.answer = 'Low' and c.riskLevel > 1) or (pd.answer = 'Medium' and c.riskLevel > 2))");
+		sql.addWhere("((pd.answer = 'Low' and c.riskLevel > 1) or (pd.answer like 'Med%' and c.riskLevel > 2))");
 		sql.addWhere("pd.dateVerified is null");
 		sql.addField("pd.answer");
 		sql.addField("pd.id AS answerID");
@@ -55,7 +56,11 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			ContractorAccount cAccount = contractorAccountDAO.find(conID);
 			AuditData aData = auditDataDAO.find(answerID);
 			if ("Accept".equals(button)) {
-				cAccount.setRiskLevel(LowMedHigh.valueOf(aData.getAnswer()));
+				String answer = aData.getAnswer();
+				if(answer.equals("Medium")) {
+					answer = "Med";
+				}
+				cAccount.setRiskLevel(LowMedHigh.valueOf(answer));
 				cAccount.setAuditColumns(permissions);
 				contractorAccountDAO.save(cAccount);
 				Note note = new Note(cAccount, getUser(), "RiskLevel adjusted to "+aData.getAnswer() + " for " + auditorNotes);
