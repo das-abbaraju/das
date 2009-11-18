@@ -60,7 +60,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private Date auditorConfirm;
 	private Date scheduledDate;
 	private String auditLocation;
-	private boolean needsCamera = true;
+	private boolean needsCamera = false;
 	private String contractorContact;
 	private String address;
 	private String address2;

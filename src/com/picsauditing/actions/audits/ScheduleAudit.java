@@ -193,7 +193,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			conAudit.setScheduledDate(availabilitySelected.getStartDate());
 			conAudit.setAuditor(availabilitySelected.getUser());
-			conAudit.setContractorConfirm(new Date());
+			if(permissions.isContractor())
+				conAudit.setContractorConfirm(new Date());
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 			auditDao.save(conAudit);
 			auditorAvailabilityDAO.remove(availabilitySelected);

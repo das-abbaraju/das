@@ -74,7 +74,7 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 						String body = "Sent webcam #" + webcam.getId() + " to " + webcam.getContractor().getName()
 								+ " via shipping method: " + webcam.getShippingMethod() + " with tracking number: "
 								+ webcam.getTrackingNumber();
-						Note note = new Note(webcam.getContractor(), new User(User.SYSTEM), body);
+						Note note = new Note(webcam.getContractor(), getUser(), body);
 						note.setCanContractorView(true);
 						note.setNoteCategory(NoteCategory.Audits);
 						note.setViewableById(Account.PicsID);
