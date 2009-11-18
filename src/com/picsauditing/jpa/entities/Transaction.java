@@ -26,6 +26,7 @@ public abstract class Transaction extends BaseTable {
 	protected boolean qbSync;
 	protected String qbListID;
 	protected TransactionStatus status = TransactionStatus.Unpaid;
+	protected Currency currency = Currency.USD;
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false)
@@ -99,6 +100,15 @@ public abstract class Transaction extends BaseTable {
 
 	public void setStatus(TransactionStatus status) {
 		this.status = status;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency curreny) {
+		this.currency = curreny;
 	}
 
 	public void updateAmountApplied() {
