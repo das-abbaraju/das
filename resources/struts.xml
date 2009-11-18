@@ -71,7 +71,7 @@
 		</action>
 
 		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
-			<result>struts/login_mkt.jsp</result>
+			<result>struts/blank.jsp</result>
 		</action>
 		
 		<!-- Dashboard -->
