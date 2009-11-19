@@ -69,11 +69,11 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	}
 
 	public FlagOshaCriteria getOshaRedFlagCriteria() {
-		return flagOshaCriteriaDAO.findByOperatorFlag(operator.getInheritFlagCriteria(), "t.flagColor = 'Red'");
+		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Red'");
 	}
 
 	public FlagOshaCriteria getOshaAmberFlagCriteria() {
-		return flagOshaCriteriaDAO.findByOperatorFlag(operator.getInheritFlagCriteria(), "t.flagColor = 'Amber'");
+		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Amber'");
 	}
 
 	public Collection<QuestionCriteria> getQuestionList() {

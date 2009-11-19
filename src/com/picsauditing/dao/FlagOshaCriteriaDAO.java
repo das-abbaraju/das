@@ -52,7 +52,7 @@ public class FlagOshaCriteriaDAO extends PicsDAO {
 		try {
 			Query query = em.createQuery("SELECT t FROM FlagOshaCriteria t "
 					+ "WHERE t.operatorAccount = ? " + Where);
-			query.setParameter(1, operator.getInheritAudits());
+			query.setParameter(1, operator.getInheritFlagCriteria());
 			return (FlagOshaCriteria) query.getSingleResult();
 		} catch (NoResultException e) {
 			return null;

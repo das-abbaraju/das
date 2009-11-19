@@ -149,7 +149,6 @@ $(function() {
 </table>
 
 <s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed || oshaCad7Used || oshaNeerUsed || oshaDartUsed">
-
 	<s:iterator value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 		<s:if test="trir.required && trir.hurdleFlag.naics">
 			<div class="info">
