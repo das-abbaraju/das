@@ -12,7 +12,6 @@ import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;

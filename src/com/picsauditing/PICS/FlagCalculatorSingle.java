@@ -220,6 +220,14 @@ public class FlagCalculatorSingle {
 							debug(" --- checking TRIR " + criteria.getTrir() + " against value = "
 									+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
 						}
+						if ((key.equals(OshaAudit.AVG) && criteria.getDart().isTimeAverage())
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getDart().isTimeAverage())) {
+							if (criteria.getDart().isFlagged(contractor.getNaics(), osha.getRestrictedDaysAwayRate()))
+								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+							debug(" --- checking DART " + criteria.getDart() + " against value = "
+									+ osha.getRestrictedDaysAwayRate() + " color = " + osha.getFlagColor());
+						}
+
 						if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
 							if (criteria.getFatalities().isFlagged(contractor.getNaics(), osha.getFatalities()))

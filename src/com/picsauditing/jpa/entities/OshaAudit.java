@@ -61,6 +61,7 @@ public class OshaAudit implements java.io.Serializable {
 	private FlagColor flagColor;
 	private Float trir = null;
 	private Float lwcr = null;
+	private Float dart = null;
 	
 	private Float cad7 = 0.0f;
 	private Float neer = 0.0f;
@@ -307,8 +308,24 @@ public class OshaAudit implements java.io.Serializable {
 	public void setRecordableTotalRate(float rate) {
 		this.trir = rate;
 	}
-
 	
+	@Transient
+	/**
+	 * Get the DART, you can call getRestrictedDaysAwayRate()
+	 * DART is a way for operators to measure severity rates on contractors
+	 * if you don't want this to automatically calculate, 
+	 * for example, in an average rate calculation.
+	 */
+	public Float getRestrictedDaysAwayRate() {
+		if(dart == null) 
+			dart = calculateRate(lostWorkCases + restrictedWorkCases);
+		return dart;
+	}
+
+	public void setRestrictedDaysAwayRate(float rate) {
+		this.dart = rate;
+	}
+
 	@Transient
 	private float calculateRate(int value) {
 		if (manHours > 0) {

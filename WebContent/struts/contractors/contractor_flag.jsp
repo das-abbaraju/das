@@ -148,7 +148,7 @@ $(function() {
 	</pics:permission>
 </table>
 
-<s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed || oshaCad7Used || oshaNeerUsed">
+<s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed || oshaCad7Used || oshaNeerUsed || oshaDartUsed">
 
 	<s:iterator value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 		<s:if test="trir.required && trir.hurdleFlag.naics">
@@ -185,6 +185,10 @@ $(function() {
 				</s:if>
 				<s:if test="oshaTrirUsed">
 					<td>TRIR</td>
+					<td>Criteria</td>
+				</s:if>
+				<s:if test="oshaDartUsed">
+					<td>DART</td>
 					<td>Criteria</td>
 				</s:if>
 				<s:if test="oshaCad7Used">
@@ -249,6 +253,21 @@ $(function() {
 	 										<s:property value="trir.hurdle" />
 	 									</s:else>
 	 									= <s:property value="flagColor" />
+										<br />
+									</s:if>
+								</s:if>
+							</s:iterator></td>
+						</s:if>
+						<s:if test="oshaDartUsed">
+							<td class="right"><s:property
+								value="%{new java.text.DecimalFormat('#,##0.000').format(value.restrictedDaysAwayRate)}" /></td>
+							<td style="vertical-align: middle;"><s:iterator
+								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
+								<s:if test="dart.required">
+									<s:if
+										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && dart.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !dart.timeAverage)">
+								&gt; <s:property value="dart.hurdle" /> = <s:property
+											value="flagColor" />
 										<br />
 									</s:if>
 								</s:if>

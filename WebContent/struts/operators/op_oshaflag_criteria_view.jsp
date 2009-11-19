@@ -16,9 +16,12 @@
 		<s:elseif test="cad7">
 			Cad7:
 		</s:elseif>
-		<s:else>
+		<s:elseif test="neer">
 			Neer:
-		</s:else>
+		</s:elseif>
+		<s:elseif test="dart">
+			Dart:
+		</s:elseif>
 		<br/>
 	</div>
 	<div>
@@ -38,7 +41,12 @@
 		</s:if> <s:elseif test="trir">
 			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.trir.time" theme="pics" />
-		</s:elseif> <s:else>
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+				name="redOshaCriteria.dart.time" theme="pics" />
+		</s:elseif>
+		<s:else>
 				Individual Years	
 		</s:else></td>
 		<td> > </td>
@@ -50,9 +58,13 @@
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif> <s:elseif test="cad7">		
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.cad7.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
-		</s:elseif> <s:else>
+		</s:elseif> <s:elseif test="neer">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.neer.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
-		</s:else></td>
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.dart.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+		</s:elseif>
+		</td>
 		<td>
 		<s:if test="lwcr">
 			<s:set name="redhurdleFlag" value="redOshaCriteria.lwcr.hurdleFlag"/>
@@ -66,9 +78,13 @@
 		<s:elseif test="cad7">
 			<s:set name="redhurdleFlag" value="redOshaCriteria.cad7.hurdleFlag"/>
 		</s:elseif>
-		<s:else>
+		<s:elseif test="neer">
 			<s:set name="redhurdleFlag" value="redOshaCriteria.neer.hurdleFlag"/>
-		</s:else>
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:set name="redhurdleFlag" value="redOshaCriteria.dart.hurdleFlag"/>
+		</s:elseif>
+	
 		<s:if test="#redhurdleFlag.none">
 			<s:set name="show_redhurdle" value="'none'"/>
 		</s:if>
@@ -96,9 +112,12 @@
 			<s:textfield name="redOshaCriteria.fatalities.hurdle" size="5"/>
 		</s:elseif> <s:elseif test="cad7">
 			<s:textfield name="redOshaCriteria.cad7.hurdle" size="5"/>
-		</s:elseif> <s:else>
+		</s:elseif> <s:elseif test="neer">
 			<s:textfield name="redOshaCriteria.neer.hurdle" size="5"/>
-		</s:else>
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:textfield name="redOshaCriteria.dart.hurdle" size="5"/>
+		</s:elseif>
 		</span>
 		<span id="show_redhurdlepercent" style="display: <s:property value="#attr.show_redhurdlepercent"/>;">%</span>
 		</nobr></td>
@@ -113,8 +132,13 @@
 		</s:if> <s:elseif test="trir">
 			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.trir.time" theme="pics" />
-		</s:elseif><s:else>
-					Individual Years	
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+				name="amberOshaCriteria.dart.time" theme="pics" />
+		</s:elseif>
+		<s:else>
+				Individual Years	
 		</s:else></td>
 		<td> > </td>
 		<td><s:if test="lwcr">
@@ -125,9 +149,13 @@
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.fatalities.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:elseif> <s:elseif test="cad7">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.cad7.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
-		</s:elseif> <s:else>
+		</s:elseif> <s:elseif test="neer">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.neer.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
-		</s:else></td>		
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.dart.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+		</s:elseif>
+		</td>		
 		<td>
 		<s:if test="lwcr">
 			<s:set name="amberhurdleFlag" value="amberOshaCriteria.lwcr.hurdleFlag"/>
@@ -141,9 +169,12 @@
 		<s:elseif test="cad7">
 			<s:set name="amberhurdleFlag" value="amberOshaCriteria.cad7.hurdleFlag"/>
 		</s:elseif>
-		<s:else>
+		<s:elseif test="neer">
 			<s:set name="amberhurdleFlag" value="amberOshaCriteria.neer.hurdleFlag"/>
-		</s:else>
+		</s:elseif>
+		<s:elseif test="dart">
+			<s:set name="amberhurdleFlag" value="amberOshaCriteria.dart.hurdleFlag"/>
+		</s:elseif>
 
 		<s:if test="#amberhurdleFlag.none">
 			<s:set name="show_amberhurdle" value="'none'"/>
@@ -172,9 +203,11 @@
 			<s:textfield name="amberOshaCriteria.fatalities.hurdle" size="5"/>
 		</s:elseif> <s:elseif test="cad7">
 			<s:textfield name="amberOshaCriteria.cad7.hurdle" size="5"/>
-		</s:elseif> <s:else>
+		</s:elseif> <s:elseif test="neer">
 			<s:textfield name="amberOshaCriteria.neer.hurdle" size="5"/>
-		</s:else>
+		</s:elseif><s:elseif test="dart">
+			<s:textfield name="amberOshaCriteria.dart.hurdle" size="5"/>
+		</s:elseif>
 		</span>
 		<span id="show_amberhurdlepercent" style="display: <s:property value="#attr.show_amberhurdlepercent"/>;">%</span>
 		</nobr>

@@ -50,12 +50,23 @@
 	<td><s:property value="%{format(injuryIllnessCasesRate)}"/></td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).injuryIllnessCases"/></td><td><s:property value="format(getAverageOsha( type ).injuryIllnessCasesRate)"/></td></s:if>
 </tr>
+
+<s:if test="type.toString().equals('OSHA')">
+	<tr>
+		<th class="label">Dart Rate</th>
+		<td><s:property value="%{restrictedWorkCases+lostWorkCases}"/></td>
+		<td><s:property value="%{format(restrictedDaysAwayRate)}"/></td>
+		<s:if test="corporate"><td><s:property value="%{getAverageOsha( type ).lostWorkCases+getAverageOsha( type ).restrictedWorkCases}"/></td><td><s:property value="format(getAverageOsha( type ).restrictedDaysAwayRate)"/></td></s:if>
+	</tr>
+</s:if>
+
 <tr>
 	<th class="label"><s:property value="getText('totalInjuriesAndIllnesses.'.concat(type))"/></th>
 	<td><s:property value="recordableTotal"/></td>
 	<td><s:property value="%{format(recordableTotalRate)}"/></td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).recordableTotal"/></td><td><s:property value="format(getAverageOsha( type ).recordableTotalRate)"/></td></s:if>
 </tr>
+
 <s:if test="category.id == 158">
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>

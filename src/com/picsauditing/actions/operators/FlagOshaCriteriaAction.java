@@ -21,6 +21,7 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 	private boolean fatalities;
 	private boolean cad7;
 	private boolean neer;
+	private boolean dart;
 	
 	public FlagOshaCriteriaAction(OperatorAccountDAO operatorDao, FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO) {
 		super(operatorDao);
@@ -42,8 +43,10 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 				fatalities = true;
 			else if(type == 4)
 				cad7 = true;
-			else 
+			else if(type == 5)
 				neer = true;
+			else if (type == 6)
+				dart = true;
 		}
 	}
 	@Override
@@ -54,7 +57,8 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 						|| redOshaCriteria.getTrir() != null 
 						|| redOshaCriteria.getFatalities() != null
 						|| redOshaCriteria.getCad7() != null
-						|| redOshaCriteria.getNeer() != null) {
+						|| redOshaCriteria.getNeer() != null
+						|| redOshaCriteria.getDart() != null) {
 					if(redOshaCriteria.getId() == 0)
 						redOshaCriteria.setOperatorAccount(operator);
 					
@@ -68,6 +72,9 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 						redOshaCriteria.setCad7(new FlagOshaCriterion());
 					if(redOshaCriteria.getNeer() == null)
 						redOshaCriteria.setNeer(new FlagOshaCriterion());
+					if(redOshaCriteria.getDart() == null) {
+						redOshaCriteria.setDart(new FlagOshaCriterion());
+					}
 					redOshaCriteria.setFlagColor(FlagColor.Red);
 					redOshaCriteria.setAuditColumns(permissions);
 					flagOshaCriteriaDAO.save(redOshaCriteria);
@@ -76,7 +83,8 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 						amberOshaCriteria.getTrir() != null ||
 						amberOshaCriteria.getFatalities() != null ||
 						amberOshaCriteria.getCad7() != null ||
-						amberOshaCriteria.getNeer() != null) {
+						amberOshaCriteria.getNeer() != null
+						|| amberOshaCriteria.getDart() != null) {
 					if(amberOshaCriteria.getId() == 0)
 						amberOshaCriteria.setOperatorAccount(operator);
 					
@@ -90,6 +98,8 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 						amberOshaCriteria.setCad7(new FlagOshaCriterion());
 					if(amberOshaCriteria.getNeer() == null)
 						amberOshaCriteria.setNeer(new FlagOshaCriterion());
+					if(amberOshaCriteria.getDart() == null)
+						amberOshaCriteria.setDart(new FlagOshaCriterion());
 					
 					amberOshaCriteria.setFlagColor(FlagColor.Amber);
 					amberOshaCriteria.setAuditColumns(permissions);
@@ -104,8 +114,10 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 					note += " Fatalities";
 				else if(isCad7())
 					note += " Cad7";
-				else
+				else if(isNeer())
 					note += " Neer";
+				else if (isDart())
+					note += " DART";
 				this.addNote(operator, note);
 				contractorAccountDAO.updateContractorByOperator(operator);
 				return BLANK;
@@ -160,6 +172,14 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 
 	public void setNeer(boolean neer) {
 		this.neer = neer;
+	}
+	
+	public boolean isDart() {
+		return dart;
+	}
+
+	public void setDart(boolean dart) {
+		this.dart = dart;
 	}
 
 	public FlagOshaCriteria getAmberOshaCriteria() {

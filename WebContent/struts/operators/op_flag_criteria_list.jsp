@@ -141,6 +141,33 @@
 			</nobr></td>
 		</tr>
 	</s:if>
+
+	<s:if test="operator.oshaType.toString() == 'OSHA'">
+		<tr 
+			<s:if test="operator == operator.inheritFlagCriteria">
+				onclick="showOshaCriteria('6');" class="clickable" title="Click to open"
+				</s:if>
+		>
+			<td><s:property value="operator.oshaType"/></td>
+			<td class="right">DART</td>
+			<td>
+				Days Away, Restricted, ot Transferred Rate
+			</td>
+			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.dart.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.dart.time)"/>
+				> <s:property value="oshaRedFlagCriteria.dart.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+			<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.dart.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.dart.time)"/>
+				> <s:property value="oshaAmberFlagCriteria.dart.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+		</tr>
+	</s:if>
+	
 	</s:if>
 	<s:if test="questionList.size() == 0">
 		<tr><td colspan="5">No flag criteria has been defined for this type</td></tr>

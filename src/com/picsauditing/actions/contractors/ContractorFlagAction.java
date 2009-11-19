@@ -296,7 +296,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return false;
 	}
-
+	
+	public boolean isOshaDartUsed() {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
+			if (criteria.getDart().isRequired())
+				return true;
+		}
+		return false;
+	}
+	
 	public boolean isOshaAveragesUsed() {
 		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
@@ -304,6 +312,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			if (criteria.getLwcr().isTimeAverage())
 				return true;
 			if (criteria.getTrir().isTimeAverage())
+				return true;
+			if(criteria.getDart().isTimeAverage())
 				return true;
 		}
 		return false;
