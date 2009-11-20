@@ -43,7 +43,7 @@
 			</s:if>
 		</s:iterator>
 		<s:iterator value="operatorAccount.inheritFlagCriteria.flagQuestionCriteria">
-			<s:if test="flagColor.toString().equals(filter.flagStatus) && checked">
+			<s:if test="flagColor.toString().equals(filter.flagStatus[0]) && checked">
 				<s:if test="!auditQuestion.auditType.classType.policy">
 					<s:if test="auditQuestion.id == 2034">
 						<s:if test="multiYearScope.description.equals('All Three Years')">
@@ -141,7 +141,7 @@
 				</s:if>
 			</s:iterator>
 			<s:iterator value="operatorAccount.inheritFlagCriteria.flagQuestionCriteria">
-				<s:if test="flagColor.toString().equals(filter.flagStatus) && checked">
+				<s:if test="flagColor.toString().equals(filter.flagStatus[0]) && checked">
 					<s:if test="!auditQuestion.auditType.classType.policy">
 						<s:if test="auditQuestion.id == 2034">
 							<s:if test="multiYearScope.description.equals('All Three Years')">

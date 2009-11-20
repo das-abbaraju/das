@@ -151,7 +151,7 @@
 			<td><s:property value="operator.oshaType"/></td>
 			<td class="right">DART</td>
 			<td>
-				Days Away, Restricted, ot Transferred Rate
+				Days Away, Restricted, or Transferred Rate
 			</td>
 			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.dart.hurdleFlag.none">
 				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.dart.time)"/>

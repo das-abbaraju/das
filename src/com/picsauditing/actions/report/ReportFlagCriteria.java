@@ -139,7 +139,7 @@ public class ReportFlagCriteria extends ReportAccount {
 		Set<Integer> questionIds = new HashSet<Integer>();
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getInheritFlagCriteria()
 				.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
+			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()[0])
 					&& flagQuestionCriteria.isChecked()
 					&& !flagQuestionCriteria.getAuditQuestion().getAuditType().getClassType().isPolicy()) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
@@ -162,7 +162,7 @@ public class ReportFlagCriteria extends ReportAccount {
 		}
 		// TODO handle the osha for 2008.
 		for (FlagOshaCriteria flagOshaCriteria : operatorAccount.getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (flagOshaCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
+			if (flagOshaCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()[0])
 					&& flagOshaCriteria.isRequired()) {
 				if (!hasFatalities && flagOshaCriteria.getFatalities().isRequired()) {
 					hasFatalities = true;
@@ -338,7 +338,7 @@ public class ReportFlagCriteria extends ReportAccount {
 		}
 		for (FlagQuestionCriteria flagQuestionCriteria : operatorAccount.getInheritFlagCriteria()
 				.getFlagQuestionCriteria()) {
-			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
+			if (flagQuestionCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()[0])
 					&& flagQuestionCriteria.isChecked()
 					&& !flagQuestionCriteria.getAuditQuestion().getAuditType().getClassType().isPolicy()) {
 				int questionID = flagQuestionCriteria.getAuditQuestion().getId();
@@ -365,7 +365,7 @@ public class ReportFlagCriteria extends ReportAccount {
 			}
 		}
 		for (FlagOshaCriteria flagOshaCriteria : operatorAccount.getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (flagOshaCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus())
+			if (flagOshaCriteria.getFlagColor().toString().equals(getFilter().getFlagStatus()[0])
 					&& flagOshaCriteria.isRequired()) {
 				if (flagOshaCriteria.getFatalities().isRequired()) {
 					year = getYear();

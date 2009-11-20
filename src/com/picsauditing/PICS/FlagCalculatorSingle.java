@@ -198,7 +198,7 @@ public class FlagCalculatorSingle {
 				oa.setFlagColor(FlagColor.Green);
 			}
 		}
-
+		int year = DateBean.getCurrentYear() - 1;
 		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.isRequired()) {
 				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
@@ -207,21 +207,30 @@ public class FlagCalculatorSingle {
 					for (String key : shaMap.keySet()) {
 						OshaAudit osha = shaMap.get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
-								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage())) {
+								|| (!key.equals(OshaAudit.AVG) && 
+										(!criteria.getLwcr().isLastYearOnly() ||
+								(criteria.getLwcr().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
+								))) {
 							if (criteria.getLwcr().isFlagged(contractor.getNaics(), osha.getLostWorkCasesRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking LWCR " + criteria.getLwcr() + " against value = "
 									+ osha.getLostWorkCasesRate() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
-								|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage())) {
+								|| (!key.equals(OshaAudit.AVG) && 
+										(!criteria.getTrir().isLastYearOnly() ||
+								(criteria.getTrir().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
+								))) {
 							if (criteria.getTrir().isFlagged(contractor.getNaics(), osha.getRecordableTotalRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking TRIR " + criteria.getTrir() + " against value = "
 									+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getDart().isTimeAverage())
-								|| (!key.equals(OshaAudit.AVG) && !criteria.getDart().isTimeAverage())) {
+								|| (!key.equals(OshaAudit.AVG) && 
+										(!criteria.getDart().isLastYearOnly() ||
+								(criteria.getDart().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
+								))) {
 							if (criteria.getDart().isFlagged(contractor.getNaics(), osha.getRestrictedDaysAwayRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking DART " + criteria.getDart() + " against value = "

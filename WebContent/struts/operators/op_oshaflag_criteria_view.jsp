@@ -36,14 +36,14 @@
 	<tr>
 		<td><label>Red: </label></td>
 		<td><s:if test="lwcr">
-			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.lwcr.time" theme="pics" />
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.trir.time" theme="pics" />
 		</s:elseif>
 		<s:elseif test="dart">
-			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.dart.time" theme="pics" />
 		</s:elseif>
 		<s:else>
@@ -127,14 +127,14 @@
 			<label>Amber: </label>
 		</td>
 		<td><s:if test="lwcr">
-			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.lwcr.time" theme="pics" />
 		</s:if> <s:elseif test="trir">
-			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.trir.time" theme="pics" />
 		</s:elseif>
 		<s:elseif test="dart">
-			<s:radio list="#{'1':'Individual Yrs','3':'ThreeYearAverage'}"
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.dart.time" theme="pics" />
 		</s:elseif>
 		<s:else>

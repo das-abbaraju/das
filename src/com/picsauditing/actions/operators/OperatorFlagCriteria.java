@@ -193,6 +193,8 @@ public class OperatorFlagCriteria extends OperatorActionSupport {
 	public static String getTime(int time) {
 		if (time == 1)
 			return "Individual Yrs";
+		if(time == 2)
+			return "Last Year Only";
 		if (time == 3)
 			return "ThreeYearAverage";
 		return "";

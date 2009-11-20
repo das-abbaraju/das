@@ -46,7 +46,12 @@ public class FlagOshaCriterion {
 	public boolean isTimeAverage() {
 		return time == 3;
 	}
-
+	
+	@Transient
+	public boolean isLastYearOnly() {
+		return time == 2;
+	}
+	
 	public void setTime(int time) {
 		this.time = time;
 	}
