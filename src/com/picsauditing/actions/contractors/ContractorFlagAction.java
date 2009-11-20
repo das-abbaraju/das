@@ -325,7 +325,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	 * @return
 	 */
 	public Map<String, OshaAudit> getOshas() {
-		return co.getContractorAccount().getOshas().get(co.getOperatorAccount().getOshaType());
+		return co.getContractorAccount().getOshas().get(co.getOperatorAccount().getInheritFlagCriteria().getOshaType());
 	}
 
 	public List<AuditCriteriaAnswer> getAcaList() {
@@ -403,7 +403,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public int getShaTypeID() {
-		OshaType shaType = co.getOperatorAccount().getOshaType();
+		OshaType shaType = co.getOperatorAccount().getInheritFlagCriteria().getOshaType();
 		if (shaType.equals(OshaType.COHS))
 			return AuditCategory.CANADIAN_STATISTICS;
 		if (shaType.equals(OshaType.MSHA))

@@ -105,7 +105,7 @@ public class FlagOshaCriteriaAction extends OperatorActionSupport implements Pre
 					amberOshaCriteria.setAuditColumns(permissions);
 					flagOshaCriteriaDAO.save(amberOshaCriteria);
 				}
-				String note = "Flag Criteria has been edited for " + operator.getOshaType();
+				String note = "Flag Criteria has been edited for " + operator.getInheritFlagCriteria().getOshaType();
 				if(isLwcr())
 					note += " LWCR";
 				else if(isTrir())

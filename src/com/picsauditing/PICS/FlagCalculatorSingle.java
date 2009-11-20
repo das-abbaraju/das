@@ -191,7 +191,7 @@ public class FlagCalculatorSingle {
 		debug(" post audit flagColor=" + flagColor);
 
 		// Initialize the flag color to the default Green
-		Map<String, OshaAudit> shaMap = contractor.getOshas().get(operator.getOshaType());
+		Map<String, OshaAudit> shaMap = contractor.getOshas().get(operator.getInheritFlagCriteria().getOshaType());
 
 		if (shaMap != null) {
 			for (OshaAudit oa : shaMap.values()) {

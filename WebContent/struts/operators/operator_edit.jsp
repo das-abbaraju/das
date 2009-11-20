@@ -110,10 +110,10 @@ $(function() {
 						name="operator.doSendActivationEmail" theme="pics" /></li>
 					<li><label>Approves Contractors:</label> <s:radio list="#{'Yes':'Yes','No':'No'}"
 						name="operator.approvesRelationships" theme="pics" /></li>
-					<s:if test="!operator.corporate">
-						<li><label title="The source of statistics that should be used to evaluate contractors">Health &amp;
+					<li><label title="The source of statistics that should be used to evaluate contractors">Health &amp;
 						Safety Organization:</label> <s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" name="operator.oshaType"
 							theme="pics" /></li>
+					<s:if test="!operator.corporate">
 						<li><label>Accepts Bid Only Contractor:</label>
 							<s:checkbox name="operator.acceptsBids"/></li>	
 					</s:if>
