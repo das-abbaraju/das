@@ -600,6 +600,8 @@ public class ContractorAccount extends Account implements JSONable {
 			float trir = 0;
 			float rwc = 0;
 			float dart = 0;
+			float neer = 0;
+			float cad7 = 0;
 
 			for (String key : oshaMap.keySet()) {
 				OshaAudit osha = oshaMap.get(key);
@@ -616,6 +618,10 @@ public class ContractorAccount extends Account implements JSONable {
 				trir += osha.getRecordableTotalRate();
 				rwc += osha.getRestrictedWorkCases();
 				dart += osha.getRestrictedDaysAwayRate();
+				if(osha.getNeer() != null)
+					neer += osha.getNeer();
+				if(osha.getCad7() != null)
+					cad7 += osha.getCad7();
 			}
 			avg.setManHours(Math.round(manHours / count));
 			avg.setFatalities(Math.round(fatalities / count));
@@ -627,6 +633,8 @@ public class ContractorAccount extends Account implements JSONable {
 			avg.setRecordableTotalRate(trir / count);
 			avg.setRestrictedWorkCases(Math.round(rwc / count));
 			avg.setRestrictedDaysAwayRate(dart / count);
+			avg.setNeer(neer / count);
+			avg.setCad7(cad7/ count);
 
 			oshaMap.put(OshaAudit.AVG, avg);
 		}

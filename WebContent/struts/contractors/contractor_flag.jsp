@@ -288,11 +288,13 @@ $(function() {
 							<td class="right"><s:property value="value.neer" /></td>
 							<td style="vertical-align: middle;"><s:iterator
 								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if
-									test="neer.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-								&gt; <s:property value="neer.hurdle" /> = <s:property
-										value="flagColor" />
-									<br />
+								<s:if test="neer.required">
+									<s:if
+										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && neer.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !neer.timeAverage)">
+									&gt; <s:property value="neer.hurdle" /> = <s:property
+											value="flagColor" />
+										<br />
+									</s:if>
 								</s:if>
 							</s:iterator></td>
 						</s:if>

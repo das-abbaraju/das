@@ -46,6 +46,10 @@
 			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.dart.time" theme="pics" />
 		</s:elseif>
+		<s:elseif test="neer">
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
+				name="redOshaCriteria.neer.time" theme="pics" />
+		</s:elseif>
 		<s:else>
 				Individual Years	
 		</s:else></td>
@@ -136,6 +140,10 @@
 		<s:elseif test="dart">
 			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.dart.time" theme="pics" />
+		</s:elseif>
+		<s:elseif test="neer">
+			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
+				name="amberOshaCriteria.neer.time" theme="pics" />
 		</s:elseif>
 		<s:else>
 				Individual Years	

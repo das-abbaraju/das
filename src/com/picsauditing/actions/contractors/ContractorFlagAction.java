@@ -315,6 +315,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				return true;
 			if(criteria.getDart().isTimeAverage())
 				return true;
+			if(criteria.getNeer().isTimeAverage())
+				return true;
 		}
 		return false;
 	}
