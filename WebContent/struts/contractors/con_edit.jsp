@@ -173,7 +173,12 @@ $(function() {
 						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
 					</li>
 					<li><label>Risk Level:</label>
-						<s:property value="contractor.riskLevel"/>
+						<pics:permission perm="RiskRank">
+							<s:select name="contractor.riskLevel" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
+						</pics:permission>
+						<pics:permission perm="RiskRank" negativeCheck="true">
+							<s:property value="contractor.riskLevel"/>
+						</pics:permission>
 					</li>
 					<li><label>Requested By:</label>
 						<s:property value="contractor.requestedBy.name"/>
