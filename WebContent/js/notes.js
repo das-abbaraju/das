@@ -44,10 +44,13 @@ function refreshNoteCategory(accountID, defaultCategory) {
 function runNoteSearch(returnType) {
 	var divName = returnType + 'List';
 
-	var data = $('#'+returnType+'Form').toObj();
+	var data = $('#'+returnType+'Form').serialize();
 	
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
-	$('#'+divName).load(accountType+'NotesAjax.action', data);
+	$.post(accountType+'NotesAjax.action', data, function(text, status){
+		if (status=='success')
+			$('#'+divName).html(text);
+	});
 }
 
 function updateNotePage(accountID,button,returnType,result) {
