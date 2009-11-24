@@ -46,6 +46,7 @@ $(function() {
 			<td>Contractor</td>
 			<td>From</td>
 			<td>To</td>
+			<td>CC</td>
 			<td>Subject</td>
 			<td></td>
 			<pics:permission perm="EmailQueue" type="Delete">
@@ -63,6 +64,7 @@ $(function() {
 				<s:property value="contractorAccount.name" /></a></td>
 				<td><s:property value="fromAddress" /></td>
 				<td><s:property value="toAddresses" /></td>
+				<td><s:property value="ccAddresses" /></td>
 				<td><s:property value="subject" /></td>
 				<td><a href="EmailQueueListAjax.action?button=preview&id=<s:property value="id"/>" class="fancybox iframe" title="<s:property value="subject"/>">Preview</a></td>
 				<pics:permission perm="EmailQueue" type="Delete">
