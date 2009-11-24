@@ -66,16 +66,15 @@ function clearRow(row) {
 function testCriteria(criteria) {
 	if (!$('#test').blank()) {
 		startThinking({div:'test_output', message:''});
-		var data = $('#criteriaEditForm').toObj();
-		data.button = 'test';
-		data.testValue = $('#test').capitalize();
+		var data = $('#criteriaEditForm').serialize();
+		data += '&button=test&testValue=' + $('#test').capitalize();
 		$('#test_output').load('FlagCriteriaActionAjax.action', data);
 	}
 }
 
 function saveCriteria() {
-	var data = $('#criteriaEditForm').toObj();
-	data.button = 'save';
+	var data = $('#criteriaEditForm').serialize();
+	data += "&button=save";
 	$.ajax({
 		url: 'FlagCriteriaActionAjax.action',
 		data: data,
@@ -87,8 +86,8 @@ function saveCriteria() {
 }
 
 function saveOshaCriteria() {
-	var data = $('#criteriaEditForm').toObj();
-	data.button = 'save';
+	var data = $('#criteriaEditForm').serialize();
+	data += "&button=save";
 	$.ajax({
 		url: 'FlagOshaCriteriaActionAjax.action',
 		data: data,
