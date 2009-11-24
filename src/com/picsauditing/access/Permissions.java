@@ -165,9 +165,13 @@ public class Permissions implements Serializable {
 					loadAuditTypes(operator);
 				}
 				if (isCorporate()) {
+					// Supporting Hub Accounts to See other Connected Corporate Accounts
+					if(operator.getParent() != null) {
+						operatorChildren.add(operator.getParent().getId());
+					}
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
-
+						
 						if (facility.getOperator().getCanSeeInsurance().isTrue())
 							visibleCAOs.add(facility.getOperator().getInheritInsuranceCriteria().getId());
 
