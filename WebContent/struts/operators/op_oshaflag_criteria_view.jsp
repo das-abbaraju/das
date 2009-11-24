@@ -55,7 +55,7 @@
 		</s:else></td>
 		<td> > </td>
 		<td><s:if test="lwcr">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="redOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:if> <s:elseif test="trir">
 			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="redOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif> <s:elseif test="fatalities"> 
@@ -104,7 +104,12 @@
 		<nobr>
 		<span id="show_redhurdle" style="display: <s:property value="#attr.show_redhurdle"/>;">
 		<s:if test="lwcr">
-			<s:textfield name="redOshaCriteria.lwcr.hurdle" size="5"/>
+			<s:if test="#redhurdleFlag.naics">
+				<s:textfield name="redOshaCriteria.lwcr.hurdle" size="5" value="%{format(redOshaCriteria.lwcr.hurdle, '#')}"/>
+			</s:if>
+			<s:else>
+				<s:textfield name="redOshaCriteria.lwcr.hurdle" size="5"/>
+			</s:else>		
 		</s:if><s:elseif test="trir">
 			<s:if test="#redhurdleFlag.naics">
 				<s:textfield name="redOshaCriteria.trir.hurdle" size="5" value="%{format(redOshaCriteria.trir.hurdle, '#')}"/>
@@ -150,7 +155,7 @@
 		</s:else></td>
 		<td> > </td>
 		<td><s:if test="lwcr">
-			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.lwcr.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:if> <s:elseif test="trir">
 			<s:radio list="#{'None':'None<br/>','NAICS':'NAICS<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.trir.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:elseif> <s:elseif test="fatalities"> 
@@ -199,7 +204,12 @@
 		<nobr>
 		<span id="show_amberhurdle" style="display: <s:property value="#attr.show_amberhurdle"/>;">
 		<s:if test="lwcr">
-			<s:textfield name="amberOshaCriteria.lwcr.hurdle" size="5"/>
+			<s:if test="#amberhurdleFlag.naics">
+				<s:textfield name="amberOshaCriteria.lwcr.hurdle" size="5" value="%{format(amberOshaCriteria.lwcr.hurdle, '#')}"/>
+			</s:if>
+			<s:else>
+				<s:textfield name="amberOshaCriteria.lwcr.hurdle" size="5"/>
+			</s:else>		
 		</s:if> <s:elseif test="trir">
 			<s:if test="#amberhurdleFlag.naics">
 				<s:textfield name="amberOshaCriteria.trir.hurdle" size="5" value="%{format(amberOshaCriteria.trir.hurdle, '#')}"/>
@@ -224,16 +234,16 @@
 	</table>
 </form>
 <br clear="all"/>
-<s:if test="trir">
+<s:if test="trir || lwcr">
 	<div class="info">
-		<span style="font-size: 14px;">You have the option to now flag by either your own TRIR Avg(1) or industry based NAICS TRIR
+		<span style="font-size: 14px;">You have the option to now flag by either your own Avg(1) or industry based NAICS 
 		provided by BLS(2).</span><br/>
 		<span style="font-size: 11px;">
-		(1) All Contractors are ranked against one TRIR Avg.<br/>
+		(1) All Contractors are ranked against one Avg.<br/>
 		(2) Contractors are ranked against their own industry avg.
-		ex: For Construction the NAICS code is 23 and Average TRIR is 5.4. 
+		ex: For Construction the NAICS code is 23 and Average rate is 5.4. 
 		If the NAICS cut off is 150%(i.e 50% more than the exact value) all the contractors with that 
-		code and TRIR greater than 8.1 will be flagged.
+		code and rate greater than 8.1 will be flagged.
 		</span>  
 	</div>
 </s:if>

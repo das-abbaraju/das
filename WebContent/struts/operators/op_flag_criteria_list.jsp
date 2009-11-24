@@ -23,14 +23,26 @@
 			Lost Workdays Case Rate 
 		</td>
 		<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.lwcr.hurdleFlag.none">
+			<s:if test="oshaRedFlagCriteria.lwcr.hurdleFlag.naics"><s:property value="oshaRedFlagCriteria.lwcr.hurdleFlag"/></s:if>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.lwcr.time)"/>
-			> <s:property value="oshaRedFlagCriteria.lwcr.hurdle"/>
+			> <s:if test="oshaRedFlagCriteria.lwcr.hurdleFlag.naics">
+				<s:property value="format(oshaRedFlagCriteria.lwcr.hurdle, '#')"/>
+			  </s:if>
+			  <s:else>
+			  	<s:property value="oshaRedFlagCriteria.lwcr.hurdle"/>
+			  </s:else> 
 			</s:if>
 			<s:else>N/A</s:else>
 		</nobr></td>
 		<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.lwcr.hurdleFlag.none">
+			<s:if test="oshaAmberFlagCriteria.lwcr.hurdleFlag.naics"><s:property value="oshaAmberFlagCriteria.lwcr.hurdleFlag"/></s:if>
 			<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.lwcr.time)"/>
-			> <s:property value="oshaAmberFlagCriteria.lwcr.hurdle"/>
+			> <s:if test="oshaAmberFlagCriteria.lwcr.hurdleFlag.naics">
+				<s:property value="format(oshaAmberFlagCriteria.lwcr.hurdle, '#')"/>
+			  </s:if>
+			  <s:else>
+			  	<s:property value="oshaAmberFlagCriteria.lwcr.hurdle"/>
+			  </s:else>
 			</s:if>
 			<s:else>N/A</s:else>
 		</nobr></td>

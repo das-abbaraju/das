@@ -56,15 +56,12 @@ public class FlagOshaCriterion {
 		this.time = time;
 	}
 
-	public boolean isFlagged(Naics naics, float value) {
+	public boolean isFlagged(float naics, float value) {
 		if (!isRequired())
 			return false;
 
 		if (HurdleType.NAICS.equals(hurdleFlag)) {
-			if (naics == null) {
-				throw new RuntimeException("");
-			}
-			return value > naics.getTrir() * hurdle / 100;
+			return value > naics * hurdle / 100;
 		}
 
 		if (HurdleType.Absolute.equals(hurdleFlag))

@@ -163,9 +163,12 @@ $(function() {
 				100% 
 			</s:else>
 			of your NAICS industry average code <s:property value="co.contractorAccount.naics.code"/><br/>
-			Your industry average TRIR is <s:property value="co.contractorAccount.naics.trir"/>.				
+			Your industry average TRIR is <s:property value="co.contractorAccount.naics.trir"/>.
+			<s:if test="oshaLwcrUsed">
+				Your industry average LWCR is <s:property value="co.contractorAccount.naics.lwcr"/> and flags at <s:property value="lwcr.hurdle" />%
+			</s:if>				
 			</div>
-		</s:if>	
+		</s:if>
 	</s:iterator>
 
 <s:if test="oshas.size > 0">
@@ -227,7 +230,10 @@ $(function() {
 								<s:if test="lwcr.required">
 									<s:if
 										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && lwcr.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !lwcr.timeAverage)">
-								&gt; <s:property value="lwcr.hurdle" /> = <s:property
+								&gt; <s:if test="lwcr.hurdleFlag.naics">
+	 									<s:property value="%{new java.text.DecimalFormat('#,##0.000').format((co.contractorAccount.naics.lwcr * lwcr.hurdle) / 100)}" />(<s:property value="co.contractorAccount.naics.lwcr" /> * <s:property value="format(lwcr.hurdle,'#')" />)/100
+	 								</s:if>
+									<s:property value="lwcr.hurdle" /> = <s:property
 											value="flagColor" />
 										<br />
 									</s:if>

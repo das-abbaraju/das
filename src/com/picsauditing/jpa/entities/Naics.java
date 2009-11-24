@@ -13,6 +13,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class Naics implements java.io.Serializable {
 	private String code;
 	private float trir;
+	private float lwcr;
 
 	@Id
 	@Column(nullable = false, length = 6)
@@ -32,4 +33,11 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
+	public float getLwcr() {
+		return lwcr;
+	}
+
+	public void setLwcr(float lwcr) {
+		this.lwcr = lwcr;
+	}
 }

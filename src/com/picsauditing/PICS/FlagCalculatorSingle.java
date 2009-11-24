@@ -211,7 +211,7 @@ public class FlagCalculatorSingle {
 										(!criteria.getLwcr().isLastYearOnly() ||
 								(criteria.getLwcr().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
 								))) {
-							if (criteria.getLwcr().isFlagged(contractor.getNaics(), osha.getLostWorkCasesRate()))
+							if (criteria.getLwcr().isFlagged(contractor.getNaics().getLwcr(), osha.getLostWorkCasesRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking LWCR " + criteria.getLwcr() + " against value = "
 									+ osha.getLostWorkCasesRate() + " color = " + osha.getFlagColor());
@@ -221,7 +221,7 @@ public class FlagCalculatorSingle {
 										(!criteria.getTrir().isLastYearOnly() ||
 								(criteria.getTrir().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
 								))) {
-							if (criteria.getTrir().isFlagged(contractor.getNaics(), osha.getRecordableTotalRate()))
+							if (criteria.getTrir().isFlagged(contractor.getNaics().getTrir(), osha.getRecordableTotalRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking TRIR " + criteria.getTrir() + " against value = "
 									+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
@@ -231,7 +231,7 @@ public class FlagCalculatorSingle {
 										(!criteria.getDart().isLastYearOnly() ||
 								(criteria.getDart().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
 								))) {
-							if (criteria.getDart().isFlagged(contractor.getNaics(), osha.getRestrictedDaysAwayRate()))
+							if (criteria.getDart().isFlagged(contractor.getNaics().getTrir(), osha.getRestrictedDaysAwayRate()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking DART " + criteria.getDart() + " against value = "
 									+ osha.getRestrictedDaysAwayRate() + " color = " + osha.getFlagColor());
@@ -239,7 +239,7 @@ public class FlagCalculatorSingle {
 
 						if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
-							if (criteria.getFatalities().isFlagged(contractor.getNaics(), osha.getFatalities()))
+							if (criteria.getFatalities().isFlagged(contractor.getNaics().getTrir(), osha.getFatalities()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking Fatalities " + criteria.getFatalities() + " against value = "
 									+ osha.getFatalities() + " color = " + osha.getFlagColor());
@@ -247,7 +247,7 @@ public class FlagCalculatorSingle {
 						if ((key.equals(OshaAudit.AVG) && criteria.getCad7().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getCad7().isTimeAverage())) {
 							if (osha.getCad7() != null
-									&& criteria.getCad7().isFlagged(contractor.getNaics(), osha.getCad7()))
+									&& criteria.getCad7().isFlagged(contractor.getNaics().getTrir(), osha.getCad7()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking Cad7 " + criteria.getCad7() + " against value = " + osha.getCad7()
 									+ " color = " + osha.getFlagColor());
@@ -255,7 +255,7 @@ public class FlagCalculatorSingle {
 						if ((key.equals(OshaAudit.AVG) && criteria.getNeer().isTimeAverage())
 								|| (!key.equals(OshaAudit.AVG) && !criteria.getNeer().isTimeAverage())) {
 							if (osha.getNeer() != null
-									&& criteria.getNeer().isFlagged(contractor.getNaics(), osha.getNeer()))
+									&& criteria.getNeer().isFlagged(contractor.getNaics().getTrir(), osha.getNeer()))
 								osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
 							debug(" --- checking Neer " + criteria.getNeer() + " against value = " + osha.getNeer()
 									+ " color = " + osha.getFlagColor());
