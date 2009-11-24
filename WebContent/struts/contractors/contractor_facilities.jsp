@@ -15,10 +15,11 @@
 	function runSearch() {
 		startThinking( {div: 'thinkingSearchDiv', type:'large', message: 'Searching for matching facilities' } );
 		$('#results').empty();
-		var data= $('#facilitySearch').toObj();
-		data.button = 'search';
-		$('#results').load('ContractorFacilityAjax.action', data, function() {
+		var data= $('#facilitySearch').serialize();
+		data += "&button=search";
+		$.post('ContractorFacilityAjax.action', data, function(text, status) {
 				stopThinking( {div: 'thinkingSearchDiv' } );
+				$('#results').html(text);
 			}
 		);
 		
