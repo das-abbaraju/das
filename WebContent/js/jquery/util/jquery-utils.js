@@ -6,11 +6,4 @@
 	var val= $(this).val();
 	return val.substr(0,1).toUpperCase()+val.substr(1, val.length);  
   }
-  $.fn.toObj = function(){
-	var data = {};
-	$.each($(this).find(':input').serializeArray(), function(i, e) {
-		data[e.name] = e.value;
-	});
-	return data;
-  }
 })(jQuery)
