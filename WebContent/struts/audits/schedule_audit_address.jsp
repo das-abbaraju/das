@@ -76,6 +76,9 @@ $(function() {
 	<s:hidden name="button" value="address"/>
 	<fieldset class="form"><legend><span>Contact Person</span></legend>
 	<ol>
+		<s:if test="permissions.admin">
+			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
+		</s:if>
 		<li>Please enter your company's primary representative for this audit.</li>
 		<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/> <a id="showContractor" href="#con_tip" rel="<s:property value="contractor.name"/>">Preview</a></li>
 		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" /></li>

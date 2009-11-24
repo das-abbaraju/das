@@ -77,7 +77,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		subHeading = "Schedule " + conAudit.getAuditType().getAuditName();
 
 		if (permissions.isAdmin() && "edit".equals(button)) {
-			if (conAudit.getScheduledDate().before(new Date())) 
+			if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
 				addActionMessage("This audit's scheduled appointment has already passed. ");
 			if (!conAudit.getAuditStatus().isPending())
 				addActionMessage("This audit has already been completed. It does not need to be rescheduled.");

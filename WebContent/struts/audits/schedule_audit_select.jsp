@@ -63,6 +63,9 @@ li#li_availability a:hover {
 <s:form>
 	<fieldset class="form bottom"><legend><span>Choose an Audit Time</span></legend>
 	<ol>
+		<s:if test="permissions.admin">
+			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
+		</s:if>
 		<li>Please choose one of the available time blocks below for your audit.</li>
 		<li id="li_availability">
 			<s:include value="schedule_audit_select_content.jsp"/>

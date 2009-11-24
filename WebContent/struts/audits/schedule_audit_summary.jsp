@@ -17,7 +17,7 @@
 <fieldset class="form"><legend><span>Audit Time &amp; Location</span></legend>
 <ol>
 	<s:if test="permissions.admin">
-		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule</a></li>
+		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
 	</s:if>
 	<li><label>Audit Date:</label> <s:property value="formatDate(conAudit.scheduledDate, 'EEEE, MMM d, yyyy')" /></li>
 	<li><label>Audit Time:</label> <s:property value="formatDate(conAudit.scheduledDate, 'h:mm a z')" /></li>
