@@ -9,10 +9,11 @@
 <script type="text/javascript">
 function save(id) {
 	$('#button'+id).hide();
-	var data = $('#ao'+id).toObj();
+	var data = $('#ao'+id).serialize();
 
 	startThinking({'div':'td'+id, 'message':'Saving audit/operator data'});
-	$('#td'+id).load('AuditOperatorSaveAjax.action', data, function() {
+	$.post('AuditOperatorSaveAjax.action', data, function(text, status) {
+			$('#td'+id).html(text);
 			$(this).effect('highlight', {color: '#FFFF11'}, 1000);
 		}
 	);
