@@ -66,8 +66,8 @@ $(function(){
 		<legend><span>Sub Category</span></legend>
 		<ol>
 			<li><label>ID:</label>
-				<s:if test="category.id > 0">
-					<s:property value="category.id" />
+				<s:if test="subCategory.id > 0">
+					<s:property value="subCategory.id" />
 				</s:if>
 				<s:else>
 					NEW
