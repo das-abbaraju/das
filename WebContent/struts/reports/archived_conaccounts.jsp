@@ -8,10 +8,20 @@
 <h1>Archived Contractor Accounts</h1>
 
 <s:include value="filters.jsp" />
-
+<pics:permission perm="ContractorDetails">
+<s:if test="!filter.allowMailMerge && data.size() > 0">
+	<div class="right"><a 
+		class="excel" 
+		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('ArchivedAccounts');" 
+		title="Download all <s:property value="report.allRows"/> results to a CSV file"
+		>Download</a></div>
+</s:if>
+</pics:permission>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
+
 <div class="info">
 These contractors have allowed their PICS membership to lapse, or they have decided to discontinue their PICS membership.<br>If you expect to do additional work
 with any of these contractors, please encourage them to renew their membership by contacting PICS.

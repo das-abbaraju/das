@@ -678,6 +678,11 @@
 			class="com.picsauditing.actions.report.ArchivedAccounts">
 			<result>/struts/reports/archived_conaccounts.jsp</result>
 		</action>
+		<action name="ArchivedAccountsCSV"
+			class="com.picsauditing.actions.report.ArchivedAccounts">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<action name="MultiLoginUser"
 			class="com.picsauditing.actions.users.ManageMultiUser">
