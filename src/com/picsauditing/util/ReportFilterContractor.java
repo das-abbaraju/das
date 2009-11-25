@@ -79,7 +79,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date invoiceDueDate2;
 	protected String deactivationReason;
 	protected int minorityQuestion = 0;
-	protected String workStatus = "P";
+	protected String workStatus;
 
 	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
 
@@ -357,6 +357,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowFlagStatus(true);
 			setShowWaitingOn(true);
 			setShowOpertorTagName(true);
+			if(permissions.hasPermission(OpPerms.ViewUnApproved)){
+				setShowWorkStatus(true);
+			}
 		}
 		if(permissions.hasPermission(OpPerms.ContractorDetails)) {
 			setShowPrimaryInformation(true);

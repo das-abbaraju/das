@@ -38,17 +38,17 @@ public class ReportContractorApproval extends ReportAccount {
 		skipPermissions = true;
 		super.buildQuery();
 		String where = "1";
-		if(!Strings.isEmpty(getFilter().getWorkStatus()))
-			where = " gc.workStatus = '"+ getFilter().getWorkStatus() +"'";
 		
 		if(permissions.isCorporate()) {
+			if(filterOn(getFilter().getWorkStatus()))
+				where = "gc.workStatus = '"+ getFilter().getWorkStatus() +"'";
+
 			sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc "
 						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId()+"" 
 						+ " AND "+ where +")");
 		}
 		if(permissions.isOperator()) {
 			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID="+ permissions.getAccountId());
-			sql.addWhere(where);
 			sql.addField("gc.creationDate as dateAdded");
 			sql.addField("gc.workStatus");
 		}

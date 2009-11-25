@@ -356,6 +356,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes'");
 			}
 		}
+		
+		if(filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
+			sql.addWhere("gc.workStatus = '"+ getFilter().getWorkStatus() +"'");
+		}
 	}
 
 	private void createPqfDataClause(SelectSQL sql, String where) {
