@@ -110,7 +110,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * @return
 	 */
 	public List<MenuComponent> getAuditMenu() {
-		PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
+//		PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
 		PicsLogger.start("ContractorActionSupport.getAuditMenu");
 		
 		// Create the menu

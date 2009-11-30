@@ -44,6 +44,7 @@
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits">BuildAudits</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits|AuditOperators">BuildAudits|AuditOperators</a></li>
 	<li><a class="edit" href="?button=add&rule.name=BuildAudits|AuditCategories">BuildAudits|AuditCategories</a></li>
+	<li><a class="edit" href="?button=add&rule.name=ContractorActionSupport.getAuditMenu">ContractorActionSupport.getAuditMenu</a></li>
 	
 
 	<!-- End of System Logging Options -->
