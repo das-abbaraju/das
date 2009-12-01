@@ -140,11 +140,11 @@ $(function(){
 			</div>
 		</li>
 		<li><label>Countries:</label>
-			<s:hidden name="countries" value="%{subCategory.countries}"/>
+			<s:hidden name="countries" value="%{question.countries}"/>
 			<s:textfield size="50" cssClass="countries"/>
 		</li>
 		<li><label>Exclude Countries:</label>
-			<s:checkbox name="exclude" label="Exclude Countries" value="subCategory.countries.startsWith('!')" />
+			<s:checkbox name="exclude" label="Exclude Countries" value="question.countries.startsWith('!')" />
 		</li>			
 	</ol>
 	</fieldset>
