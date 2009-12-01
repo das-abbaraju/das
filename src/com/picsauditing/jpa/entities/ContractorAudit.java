@@ -368,7 +368,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				return assignedDate;
 			return creationDate;
 		}
-		if (auditStatus.equals(AuditStatus.Submitted))
+		if (auditStatus.equals(AuditStatus.Submitted) 
+				|| (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE))
 			return completedDate;
 		return closedDate;
 	}
