@@ -109,8 +109,8 @@ function getAddQuestions(type) {
 		startThinking({div:type+'_thinking', message:'Fetching questions...'});
 		$(layer).load('OperatorFlagCriteriaAjax.action', data, 
 			function() {
-				$(layer).show("slow");
 				stopThinking({div:type+'_thinking'});
+				$(this).show('slow');
 			}
 		);
 	} else {
