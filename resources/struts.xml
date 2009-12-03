@@ -83,7 +83,7 @@
 			<result>struts/contact_pics.jsp</result>
 		</action>
 
-		<action name="ContractorRegistrationAjax"
+		<action name="RegisteredContractorsAjax"
 			class="com.picsauditing.actions.contractors.ContractorsWidget">
 			<result>struts/widgets/new_contractors.jsp</result>
 		</action>
@@ -199,6 +199,11 @@
 		<action name="ContractorRegistration"
 			class="com.picsauditing.actions.contractors.ContractorRegistration">
 			<result>struts/contractors/con_registration.jsp</result>
+		</action>
+
+		<action name="ContractorRegistrationAjax"
+			class="com.picsauditing.actions.contractors.ContractorRegistration">
+			<result>struts/contractors/con_name_list.jsp</result>
 		</action>
 
 		<action name="ContractorRegistrationFinish"
