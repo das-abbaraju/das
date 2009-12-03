@@ -37,6 +37,7 @@ public class FlagCalculatorSingle {
 	private List<ContractorAudit> conAudits;
 	protected List<AuditCriteriaAnswer> acaList;
 	protected boolean hasOqEmployees = false;
+	protected boolean hasCOR = false;
 
 	/**
 	 * 1) Check to see all required audits are there 2) OSHA Data 3) AuditQuestions
@@ -179,6 +180,10 @@ public class FlagCalculatorSingle {
 				if(audit.getAuditType().getId() == AuditType.DA && !isHasOqEmployees()) {
 					audit.setContractorFlag(null);
 					debug(" ---- found D/A but OQ not required");
+				}
+				if(audit.getAuditType().getId() == AuditType.COR && !isHasCOR()) {
+					audit.setContractorFlag(null);
+					debug(" ---- found COR but is not required");
 				}
 				debug(" ---- flagColor=" + audit.getContractorFlag());
 				flagColor = setFlagColor(flagColor, audit.getContractorFlag());
@@ -519,5 +524,13 @@ public class FlagCalculatorSingle {
 
 	public void setHasOqEmployees(boolean hasOqEmployees) {
 		this.hasOqEmployees = hasOqEmployees;
+	}
+
+	public boolean isHasCOR() {
+		return hasCOR;
+	}
+
+	public void setHasCOR(boolean hasCOR) {
+		this.hasCOR = hasCOR;
 	}
 }

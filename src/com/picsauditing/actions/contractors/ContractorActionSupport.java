@@ -12,8 +12,10 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -41,7 +43,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
-
+	private AuditDataDAO auditDataDAO;
+	
 	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		this.accountDao = accountDao;
 		this.auditDao = auditDao;
@@ -110,14 +113,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * @return
 	 */
 	public List<MenuComponent> getAuditMenu() {
-//		PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
+		// PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
 		PicsLogger.start("ContractorActionSupport.getAuditMenu");
-		
+
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
-		//String checkIcon = "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
+		// String checkIcon =
+		// "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
 		List<ContractorAudit> auditList = getActiveAudits();
-		
+
 		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
 		{
@@ -212,13 +216,31 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] IM Audits");
 		}
 
+		if (isRequiresCOR()) {
+			// Add COR/SECOR
+			MenuComponent subMenu = new MenuComponent("COR/SECOR", "ConCorAuditList.action?id=" + id);
+			menu.add(subMenu);
+			Iterator<ContractorAudit> iter = auditList.iterator();
+			while (iter.hasNext()) {
+				ContractorAudit audit = iter.next();
+				if (audit.getAuditType().getId() == AuditType.COR && !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+					MenuComponent childMenu = createMenuItem(subMenu, audit);
+					String linkText = audit.getAuditType().getAuditName()
+							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
+					childMenu.setName(linkText);
+					iter.remove();
+				}
+			}
+			PicsLogger.log("Found [" + subMenu.getChildren() + "] COR Audits");
+		}
+
 		{ // Add All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
-					
+
 					String year = DateBean.format(audit.getEffectiveDate(), "yy");
 					String linkText = audit.getAuditType().getAuditName() + " '" + year;
 					if (!Strings.isEmpty(audit.getAuditFor()))
@@ -231,10 +253,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 		PicsLogger.stop();
 		return menu;
 	}
-	
+
 	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {
 		String linkText = audit.getAuditType().getAuditName();
-		
+
 		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());
 		menuItem.setTitle(audit.getAuditStatus().toString());
@@ -312,6 +334,39 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return false;
 	}
 
+	/**
+	 * Only show the COR/SECOR link for contractors who have answered Yes to that question and linked to
+	 * an operator that subscribes to COR
+	 */
+	
+	protected AuditDataDAO getAuditDataDAO() {
+		if (auditDataDAO == null)
+			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
+		return auditDataDAO;
+	}
+	
+	public boolean isRequiresCOR() {
+		boolean hasCOR = false;
+		if (!accountDao.isContained(getOperators().iterator().next()))
+			operators = null;
+		
+		if (contractor.isCOR(getAuditDataDAO())) {
+			hasCOR = true;
+		}
+
+		if (hasCOR) {
+			for (ContractorOperator corContractors : getOperators()) {
+				OperatorAccount op = corContractors.getOperatorAccount();
+				for (AuditOperator audit : op.getVisibleAudits()) {
+					if (audit.getAuditType().getId() == AuditType.COR) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public boolean isShowHeader() {
 		if (permissions.isContractor())
 			return true;
@@ -370,9 +425,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Get a list of Audits that the current user can see
-	 * Operators can't see each other's audits
-	 * Contractors can't see the Welcome Call
+	 * Get a list of Audits that the current user can see Operators can't see
+	 * each other's audits Contractors can't see the Welcome Call
+	 * 
 	 * @return
 	 */
 	public List<ContractorAudit> getAudits() {

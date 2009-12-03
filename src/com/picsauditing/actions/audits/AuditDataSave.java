@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Naics;
@@ -196,6 +197,12 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 					if (tempAudit.getAuditStatus().isActive()) {
 						tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+						auditDao.save(tempAudit);
+					}
+				}
+				if(tempAudit.getAuditType().getId() == AuditType.COR) {
+					if(auditData.getQuestion().getId() == 2950) {
+						tempAudit.setAuditFor(auditData.getAnswer());
 						auditDao.save(tempAudit);
 					}
 				}

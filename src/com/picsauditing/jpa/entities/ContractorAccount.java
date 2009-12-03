@@ -932,4 +932,17 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
+	
+	@Transient
+	public boolean isCOR(AuditDataDAO auditDataDAO) {
+		List<Integer> questions = new ArrayList<Integer>();
+		questions.add(2954);
+		List<AuditData> auditDataList = auditDataDAO.findAnswerByConQuestions(getId(), questions);
+		if(auditDataList != null && auditDataList.size() > 0) {
+			AuditData auditData = auditDataList.get(0);
+			if(auditData != null && "Yes".equals(auditData.getAnswer()))
+				return true;
+		}
+		return false;
+	}
 }

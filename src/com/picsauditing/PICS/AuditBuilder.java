@@ -129,6 +129,7 @@ public class AuditBuilder {
 
 		//Get the answer for DOT employees from Pqfdata
 		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES);
+		AuditData hasCOR = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954);
 		
 		/** Add other Audits and Policy Types **/
 		// Get a distinct list of AuditTypes that attached operators require
@@ -187,7 +188,9 @@ public class AuditBuilder {
 					boolean insertNow = true;
 					switch (auditType.getId()) {
 					case AuditType.DESKTOP:
-						if (!pqfAudit.getAuditStatus().isActive())
+						if (!pqfAudit.getAuditStatus().isActive() 
+								&& (hasCOR != null 
+								&& "Yes".equals(hasCOR.getAnswer())))
 							insertNow = false;
 						break;
 					case AuditType.OFFICE:
@@ -198,6 +201,11 @@ public class AuditBuilder {
 						if(!pqfAudit.getAuditStatus().isActiveSubmitted()
 								|| oqEmployees == null 
 								|| !"Yes".equals(oqEmployees.getAnswer()))
+							insertNow = false;
+						break;
+					case AuditType.COR:
+						if(hasCOR == null 
+								|| !"Yes".equals(hasCOR.getAnswer()))
 							insertNow = false;
 						break;
 					default:
