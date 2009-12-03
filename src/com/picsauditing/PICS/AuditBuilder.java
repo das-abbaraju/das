@@ -188,9 +188,13 @@ public class AuditBuilder {
 					boolean insertNow = true;
 					switch (auditType.getId()) {
 					case AuditType.DESKTOP:
-						if (!pqfAudit.getAuditStatus().isActive() 
-								&& (hasCOR != null 
-								&& "Yes".equals(hasCOR.getAnswer())))
+						if (!pqfAudit.getAuditStatus().isActive()) {
+							insertNow = false;
+							break;
+						}
+						// If the contractor has answered Yes to the COR question 
+						//don't create a Desktop Audit 
+						if(hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
 							insertNow = false;
 						break;
 					case AuditType.OFFICE:
