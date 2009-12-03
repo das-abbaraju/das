@@ -7,6 +7,7 @@ import com.picsauditing.PICS.Inputs;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -15,6 +16,7 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AccountActionSupport extends PicsActionSupport {
@@ -120,7 +122,13 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public TreeMap<String, String> getStateList() {
-		return State.getStates(true);
+		if(account == null)
+			return State.getStates(null);
+		return State.getStates(Country.convertToCode(account.getCountry()));
+	}
+	
+	public TreeMap<String, String> getStateList(String countries) {
+		return State.getStates(Strings.getCountry(countries));
 	}
 
 	public Industry[] getIndustryList() {

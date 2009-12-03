@@ -15,7 +15,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.State;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Webcam;
 
 @SuppressWarnings("serial")
@@ -133,7 +132,7 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 	}
 
 	public TreeMap<String, String> getStateList() {
-		return State.getStates(true);
+		return State.getStates(null);
 	}
 
 }

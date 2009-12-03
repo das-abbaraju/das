@@ -160,7 +160,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	}
 
 	public TreeMap<String, String> getStateList() {
-		return State.getStates(true);
+		return State.getStates(null);
 	}
 
 	public String getState() {

@@ -88,7 +88,7 @@
 			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'State'">
-		<s:select list="stateList" value="%{#a.answer}" name="answer%{#divID}" 
+		<s:select list="getStateList(#q.countries)" value="%{#a.answer}" name="answer%{#divID}" 
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Country'">

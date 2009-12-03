@@ -154,7 +154,7 @@
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
 					<nobr>Name: <s:textfield cssClass="forms" name="operator.name"/></nobr>
-					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state"></s:select></nobr>
+					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state" headerKey="" headerValue="- State -"></s:select></nobr>
 				</div>
 			</div>
 		</form>

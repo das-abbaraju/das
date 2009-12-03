@@ -3,6 +3,7 @@ package com.picsauditing.util;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -421,7 +422,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public Map<String, String> getStateList() {
-		return State.getStates(true);
+		Set<String> countries = permissions.getAccountCountries();
+		String country = null;
+		if(countries.size() > 0)
+			country = permissions.getAccountCountries().toArray()[0].toString();
+		
+		return State.getStates(country);
 	}
 
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {

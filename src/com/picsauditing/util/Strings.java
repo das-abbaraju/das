@@ -345,4 +345,11 @@ public class Strings {
 			contains = !contains;
 		return contains;
 	}
+	
+	public static String getCountry(String expression) {
+		if (isEmpty(expression))
+			return null;
+		
+		return expression.replace("|", "");
+	}
 }
