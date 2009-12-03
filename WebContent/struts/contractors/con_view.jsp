@@ -94,7 +94,8 @@
 <!--			src="images/vcard.jpg" alt="image" width="130" height="38" /></a></div>-->
 		PICS Contractor ID: <strong><s:property value="contractor.id" /></strong><br />
 		Member Since: <strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong><br />
-		PICS CSR: <strong><a href="mailto:<s:property value="contractor.auditor.email" />"><s:property value="contractor.auditor.name" /></a> / <s:property value="contractor.auditor.phone" /></strong><br />
+		PICS CSR: <strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /></strong><br />
+		Email: <a href="mailto:<s:property value="contractor.auditor.email" />"><s:property value="contractor.auditor.email" /></a><br />
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
 		
 		<pics:permission perm="ContractorDetails">
