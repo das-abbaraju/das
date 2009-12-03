@@ -222,7 +222,10 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			} else {
 				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
-			currentCategory.getCategory().setCountries(permissions.getAccountCountries());
+			if(permissions.isPicsEmployee())
+				currentCategory.getCategory().setCountries(contractor.getCountries());
+			else
+				currentCategory.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
 		if (conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {

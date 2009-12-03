@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -17,6 +18,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 
 public class AuditPercentCalculator {
 	private AuditDataDAO auditDataDao;
@@ -37,7 +39,8 @@ public class AuditPercentCalculator {
 
 		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
 		
-		catData.getCategory().setCountries(null);
+		Set<String> countries = catData.getAudit().getContractorAccount().getCountries();
+		catData.getCategory().setCountries(countries);
 		
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
@@ -74,7 +77,8 @@ public class AuditPercentCalculator {
 		Date validDate = catData.getAudit().getValidDate();
 		for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 			for (AuditQuestion question : subCategory.getQuestions()) {
-				if (validDate.after(question.getEffectiveDate()) && validDate.before(question.getExpirationDate())) {
+				if (validDate.after(question.getEffectiveDate()) && validDate.before(question.getExpirationDate())
+						&& Strings.isInCountries(question.getCountries(), countries)) {
 
 					boolean isRequired = false;
 

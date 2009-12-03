@@ -7,8 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
@@ -944,5 +946,16 @@ public class ContractorAccount extends Account implements JSONable {
 				return true;
 		}
 		return false;
+	}
+	
+	@Transient
+	public Set<String> getCountries() {
+		Set<String> countries = new HashSet<String>();
+		for (ContractorOperator co : getOperators()) {
+			String isoCode = Country.convertToCode(co.getOperatorAccount().getCountry());
+			if (isoCode != null)
+				countries.add(isoCode);
+		}
+		return countries;
 	}
 }
