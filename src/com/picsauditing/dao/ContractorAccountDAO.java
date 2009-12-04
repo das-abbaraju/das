@@ -133,7 +133,8 @@ public class ContractorAccountDAO extends PicsDAO {
 		if (taxId == null)
 			taxId = "";
 		try {
-			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = " + "'" + taxId + "'");
+			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId");
+			query.setParameter("taxId", taxId);
 			query.setMaxResults(1);
 			return (ContractorAccount) query.getSingleResult();
 		} catch (NoResultException e) {
