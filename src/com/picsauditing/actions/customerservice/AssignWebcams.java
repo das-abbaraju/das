@@ -57,9 +57,10 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 					if (webcam == null || webcam.getId() == 0) {
 						addActionError("Webcam was missing");
 					} else {
-						if (audit.getContractorAccount().getWebcam() != null)
+						if (audit.getContractorAccount().getWebcam() != null) {
+							addActionMessage("Removed Webcam "+audit.getContractorAccount().getWebcam().getId() +" from Contractor."); 
 							audit.getContractorAccount().getWebcam().setContractor(null);
-
+						}
 						webcam.setContractor(audit.getContractorAccount());
 						webcam.setAuditColumns(permissions);
 						audit.getContractorAccount().setWebcam(webcam);
@@ -67,6 +68,8 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 						// set the sent information
 						webcam.setSentDate(new Date());
 						webcam.setSendBy(getUser());
+						webcam.setReceivedDate(null);
+						webcam.setReceivedBy(null);
 						webcamDAO.save(webcam);
 
 						// stamp the notes
