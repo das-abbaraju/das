@@ -17,13 +17,13 @@ function checkUsername(username) {
 }
 
 function checkTaxId(taxId) {
-	$('#taxId_status').text('checking availability of taxId...');
-	var data = {taxId: taxId};
-	$('#taxId_status').load('user_ajax.jsp', data);
+	startThinking({div:'taxId_status', message: ' checking availability of taxId...'});
+	var data = {taxId: taxId, button: 'taxId'};
+	$('#taxId_status').load('ContractorValidateAjax.action', data);
 }
 
 function checkName(name) {
-	startThinking({div:'name_status', message: 'checking availability of name...'});
+	startThinking({div:'name_status', message: ' checking availability of name...'});
 	var data = {companyName: name, button: 'name'};
 	$('#name_status').load('ContractorValidateAjax.action', data);
 }
@@ -62,7 +62,8 @@ function changeState(state) {
 							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
 						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId"
 							size="9" maxLength="9" onblur="checkTaxId(this.value);" />
-							<span id="taxId_status"></span><span class="redMain">* Only digits 0-9, no dashes</span>
+							<span class="redMain">* Only digits 0-9, no dashes</span>
+							<span id="taxId_status"></span>
 							</li>
 					</ol>
 				</fieldset>

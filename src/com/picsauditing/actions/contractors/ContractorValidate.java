@@ -13,7 +13,8 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorValidate extends ContractorActionSupport {
-	protected String companyName;
+	private String companyName;
+	private String taxId;
 
 	protected UserDAO userDAO;
 	protected ContractorValidator contractorValidator;
@@ -44,6 +45,18 @@ public class ContractorValidate extends ContractorActionSupport {
 			return BLANK;
 		}
 
+		if ("taxId".equals(button)) {
+			if (!Strings.isEmpty(taxId)) {
+				ContractorAccount con = accountDao.findTaxID(taxId);
+				if (con != null) {
+					addActionError(taxId
+							+ " already exists. Please contact a PICS representative at 949-387-1940 ext 1.");
+				}
+			}
+
+			return BLANK;
+		}
+
 		return SUCCESS;
 	}
 
@@ -53,6 +66,14 @@ public class ContractorValidate extends ContractorActionSupport {
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+
+	public String getTaxId() {
+		return taxId;
+	}
+
+	public void setTaxId(String taxId) {
+		this.taxId = taxId;
 	}
 
 }
