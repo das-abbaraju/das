@@ -17,6 +17,3 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
-
-/*Change the widget's action - ContractorRegistrationAjax was needed elsewhere*/
-update widget set url = "RegisteredContractorsAjax.action" where widgetid = 2;
