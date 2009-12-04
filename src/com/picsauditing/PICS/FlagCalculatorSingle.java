@@ -212,7 +212,7 @@ public class FlagCalculatorSingle {
 					for (String key : shaMap.keySet()) {
 						OshaAudit osha = shaMap.get(key);
 						if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
-								|| (!key.equals(OshaAudit.AVG) && 
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage() &&
 										(!criteria.getLwcr().isLastYearOnly() ||
 								(criteria.getLwcr().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
 								))) {
@@ -222,7 +222,7 @@ public class FlagCalculatorSingle {
 									+ osha.getLostWorkCasesRate() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
-								|| (!key.equals(OshaAudit.AVG) && 
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage() &&
 										(!criteria.getTrir().isLastYearOnly() ||
 								(criteria.getTrir().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
 								))) {
@@ -232,7 +232,7 @@ public class FlagCalculatorSingle {
 									+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
 						}
 						if ((key.equals(OshaAudit.AVG) && criteria.getDart().isTimeAverage())
-								|| (!key.equals(OshaAudit.AVG) && 
+								|| (!key.equals(OshaAudit.AVG) && !criteria.getDart().isTimeAverage() &&
 										(!criteria.getDart().isLastYearOnly() ||
 								(criteria.getDart().isLastYearOnly() && Integer.toString(year).equals(osha.getConAudit().getAuditFor()))
 								))) {
