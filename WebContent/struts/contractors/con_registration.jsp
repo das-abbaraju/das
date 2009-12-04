@@ -23,9 +23,9 @@ function checkTaxId(taxId) {
 }
 
 function checkName(name) {
-	$('#name_status').text('checking availability of name...');
-	var data = {companyName: name};
-	$('#name_status').load('user_ajax.jsp', data);
+	startThinking({div:'name_status', message: 'checking availability of name...'});
+	var data = {companyName: name, button: 'name'};
+	$('#name_status').load('ContractorValidateAjax.action', data);
 }
 
 function changeState(state) {
@@ -51,7 +51,7 @@ function changeState(state) {
 					<legend><span>Details</span></legend>
 					<ol>
 						<li><label>Company Name:</label>
-							<s:textfield name="contractor.name" size="35" onblur="checkName(this.value);"/>
+							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
 							<span class="redMain">*</span><div id="name_status"></div></li>
 						<li><label>DBA Name: </label>
 							<s:textfield name="contractor.dbaName" size="35" />

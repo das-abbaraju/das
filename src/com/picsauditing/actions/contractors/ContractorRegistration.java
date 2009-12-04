@@ -53,13 +53,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.subHeading = "New Contractor Information";
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 
 		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
 			contractor.setActive('N');
-			Vector<String> errors = contractorValidator.validateContractor(contractor, password,
-					confirmPassword, user);
+			Vector<String> errors = contractorValidator.validateContractor(contractor, password, confirmPassword, user);
 			if (Strings.isEmpty(user.getPassword()))
 				errors.add("Please fill in the Password field.");
 
@@ -98,7 +98,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user = userDAO.save(user);
 			contractor.setUsers(new ArrayList<User>());
 			contractor.getUsers().add(user);
-			
+
 			// Create a blank PQF for this contractor
 			ContractorAudit audit = new ContractorAudit();
 			audit.setContractorAccount(contractor);
@@ -107,9 +107,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 			addAuditCategories(audit, 2); // COMPANY INFORMATION
 			addAuditCategories(audit, 8); // GENERAL INFORMATION
 			addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
-			addAuditCategories(audit, 184); // SUPPLIER DIVERSITY 
+			addAuditCategories(audit, 184); // SUPPLIER DIVERSITY
 			auditDao.save(audit);
-			
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(2); // Welcome Email
 			emailBuilder.setContractor(contractor);
@@ -140,6 +140,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 		return auditQuestionDAO.findQuestionByType("Service");
 	}
 
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -156,14 +164,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.confirmPassword = confirmPassword;
 	}
 
-	public ContractorAccount getContractor() {
-		return contractor;
-	}
-
-	public void setContractor(ContractorAccount contractor) {
-		this.contractor = contractor;
-	}
-
 	public User getUser() {
 		return user;
 	}
@@ -171,8 +171,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	public void addAuditCategories(ContractorAudit audit, int CategoryID){
+
+	public void addAuditCategories(ContractorAudit audit, int CategoryID) {
 		AuditCatData catData = new AuditCatData();
 		catData.setCategory(new AuditCategory());
 		catData.getCategory().setId(CategoryID);

@@ -69,6 +69,18 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ContractorAccount> findWhere(String where, Object... params) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		Query query = em.createQuery("SELECT a from ContractorAccount a " + where + " ORDER BY a.name");
+		for (int i = 0; i < params.length; i++) {
+			query.setParameter(i + 1, params[i]);
+		}
+		return query.getResultList();
+	}
+
 	public List<ContractorOperator> findOperators(ContractorAccount contractor, Permissions permissions, String where) {
 		if (where == null)
 			where = "";
@@ -232,28 +244,28 @@ public class ContractorAccountDAO extends PicsDAO {
 		Calendar calendar1 = Calendar.getInstance();
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-		calendar1.add(calendar1.WEEK_OF_YEAR, 1);
+		calendar1.add(Calendar.WEEK_OF_YEAR, 1);
 		dates.add(DBFormat.format(calendar1.getTime()));// Before7Days
 
-		calendar1.add(calendar1.DATE, -12);
+		calendar1.add(Calendar.DATE, -12);
 		dates.add(DBFormat.format(calendar1.getTime()));// Before5Days
 
-		calendar1.add(calendar1.MONTH, -1);
+		calendar1.add(Calendar.MONTH, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// After30Days
 
-		calendar1.add(calendar1.MONTH, -1);
+		calendar1.add(Calendar.MONTH, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// After60Days
 
-		calendar1.add(calendar1.MONTH, -1);
+		calendar1.add(Calendar.MONTH, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// After90Days
 
-		calendar1.add(calendar1.MONTH, -1);
+		calendar1.add(Calendar.MONTH, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// After120Days
 
-		calendar1.add(calendar1.MONTH, -1);
+		calendar1.add(Calendar.MONTH, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// After150Days
 
-		calendar1.add(calendar1.MONTH, -1);
+		calendar1.add(Calendar.MONTH, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// After180Days
 
 		String hql = "FROM Invoice i WHERE i.status = 'Unpaid' AND i.totalAmount > 0" + " AND i.dueDate IN ("
@@ -261,20 +273,20 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorAccount> findBidOnlyContractors() {
 		List<String> dates = new ArrayList<String>();
 		Calendar calendar1 = Calendar.getInstance();
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-		calendar1.add(calendar1.WEEK_OF_YEAR, -1);
+		calendar1.add(Calendar.WEEK_OF_YEAR, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// Before7Days
 
-		calendar1.add(calendar1.WEEK_OF_YEAR, -1);
+		calendar1.add(Calendar.WEEK_OF_YEAR, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// Before14Days
 
 		String hql = "SELECT c FROM ContractorAccount c WHERE c.active = 'Y' AND c.acceptsBids = 1 AND "
-			+ " c.paymentExpires IN (" + Strings.implodeForDB(dates, ",") + ")";
+				+ " c.paymentExpires IN (" + Strings.implodeForDB(dates, ",") + ")";
 
 		Query query = em.createQuery(hql);
 		return query.getResultList();

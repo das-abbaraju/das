@@ -201,9 +201,9 @@
 			<result>struts/contractors/con_registration.jsp</result>
 		</action>
 
-		<action name="ContractorRegistrationAjax"
-			class="com.picsauditing.actions.contractors.ContractorRegistration">
-			<result>struts/contractors/con_name_list.jsp</result>
+		<action name="ContractorValidateAjax"
+			class="com.picsauditing.actions.contractors.ContractorValidate">
+			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="ContractorRegistrationFinish"
