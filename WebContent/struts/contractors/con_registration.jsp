@@ -119,7 +119,7 @@ function changeState(state) {
 						<legend><span>Industry Details</span></legend>
 							<ol>
 							<li><label>Industry:</label> <s:select list="industryList"
-							name="contractor.industry" />
+							name="contractor.industry" /></li>
 						<li><label>Main Trade:</label> <s:select list="tradeList"
 							name="contractor.mainTrade" headerKey=""
 							headerValue="- Choose a trade -" listKey="question"
