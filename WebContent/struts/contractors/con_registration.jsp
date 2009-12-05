@@ -56,15 +56,20 @@ function changeState(state) {
 						<li><label>DBA Name: </label>
 							<s:textfield name="contractor.dbaName" size="35" />
 						</li>
-						<li><label>Contact:</label>
-							<s:textfield name="contractor.contact" size="35" /><span class="redMain">*</span></li>
-						<li><label>Web URL:</label> 
-							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
+						<li><label>Country:</label>
+							<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
+							name="contractor.country"
+							onchange="changeState(this.value);"
+							/><span class="redMain">*</span></li>
 						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId"
 							size="9" maxLength="9" onblur="checkTaxId(this.value);" />
 							<span class="redMain">* Only digits 0-9, no dashes</span>
 							<span id="taxId_status"></span>
 							</li>
+						<li><label>Contact:</label>
+							<s:textfield name="contractor.contact" size="35" /><span class="redMain">*</span></li>
+						<li><label>Web URL:</label> 
+							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
