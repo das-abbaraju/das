@@ -36,6 +36,11 @@ function changeCountry(country) {
 function changeState(country) {
 	$('#state_li').load('ContractorRegistrationAjax.action',{button: 'country', country: $('#contractorCountry').val()});
 	$('#country_display').val($('#contractorCountry').find('option[selected]').text());
+	if (country == 'CA')
+		$('#taxIdLabel').text('Business Number:');
+	else
+		$('#taxIdLabel').text('Tax ID:');
+		
 }
 
 $(function(){
@@ -66,7 +71,7 @@ $(function(){
 							onchange="changeCountry(this.value);"
 							value="locale.country"
 							/><span class="redMain">*</span></li>
-						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"
+						<li><label id="taxIdLabel">Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"
 							size="9" maxLength="9" onchange="checkTaxId(this.value);" />
 							<span class="redMain">* Only digits 0-9, no dashes</span>
 							<span id="taxId_status"></span>
