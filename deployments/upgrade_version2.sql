@@ -17,3 +17,9 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
+
+
+-- Change countries to ISO codes on accounts table
+update accounts set country = 'CA' where country = 'Canada';
+
+update accounts set country = 'US' where country = 'USA';
