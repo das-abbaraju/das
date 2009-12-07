@@ -8,14 +8,17 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Inputs;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.WebcamDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.Webcam;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class AssignWebcams extends PicsActionSupport implements Preparable {
@@ -130,8 +133,9 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 		this.webcam = webcam;
 	}
 
-	public String[] getCountryList() {
-		return Inputs.COUNTRY_ARRAY;
+	public List<Country> getCountryList() {
+		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
+		return countryDAO.findAll();
 	}
 
 	public TreeMap<String, String> getStateList() {

@@ -124,9 +124,9 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/***** END of NOTES *****/
 
-	public Map<String, String> getCountryList() {
+	public List<Country> getCountryList() {
 		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
-		return countryDAO.findMap();
+		return countryDAO.findAll();
 	}
 
 	public TreeMap<String, String> getStateList() {

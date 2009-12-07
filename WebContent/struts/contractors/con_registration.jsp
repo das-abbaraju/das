@@ -72,6 +72,7 @@ $(function(){
 							name="contractor.country"
 							onchange="changeCountry(this.value);"
 							value="locale.country"
+							listKey="isoCode" listValue="english"
 							/><span class="redMain">*</span></li>
 						<li><label id="taxIdLabel">Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"
 							size="9" maxLength="9" onchange="checkTaxId(this.value);" />

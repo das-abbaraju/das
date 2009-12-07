@@ -102,6 +102,7 @@ $(function(){
 				<li>
 					<label>Country:</label>
 					<s:select list="countryList" name="audit.country"
+							listKey="isoCode" listValue="english"
 							onchange="changeState(this.value);"/>
 				</li>
 				<li <s:if test="audit.country == null || audit.country.length == 0">style="display:none"</s:if> id="state_sel"><label>State:</label><s:select list="stateList" name="audit.state"/></li>

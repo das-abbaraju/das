@@ -93,6 +93,7 @@
 	</s:if>
 	<s:if test="#q.questionType == 'Country'">
 		<s:select list="countryList" value="%{#a.answer}" name="answer%{#divID}" 
+			listKey="isoCode" listValue="english"
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Money'">
