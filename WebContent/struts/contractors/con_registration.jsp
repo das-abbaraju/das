@@ -35,6 +35,7 @@ function changeCountry(country) {
 
 function changeState(country) {
 	$('#state_li').load('ContractorRegistrationAjax.action',{button: 'country', country: $('#contractorCountry').val()});
+	$('#country_display').text($('#contractorCountry').find('option[selected]').text());
 }
 
 $(function(){
@@ -83,6 +84,7 @@ $(function(){
 							<s:textfield name="contractor.address" size="35" /><span class="redMain">*</span></li>
 						<li><label>City:</label> 
 							<s:textfield name="contractor.city" size="35" /><span class="redMain">*</span></li>
+						<li><label>Country:</label> <span id="country_display"></span></li>
 						<li id="state_li">
 						</li>
 						<li><label>Zip:</label>
