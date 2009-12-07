@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.TreeSet;
 
 import org.apache.struts2.ServletActionContext;
@@ -25,7 +22,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
@@ -39,7 +35,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected static String CHART_XML = "chartXML";
 
 	protected String requestURL = null;
-	
+
 	protected Permissions permissions = null;
 
 	// replaces the obsolete message in cases where we need to print out a
@@ -50,7 +46,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private Set<User> auditorList;
-	
+
 	protected void loadPermissions() {
 		loadPermissions(true);
 	}
@@ -60,12 +56,12 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		if (permissions != null)
 			// Already set
 			return;
-		
+
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
 		} else
 			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
-		
+
 		if (permissions == null) {
 			permissions = new Permissions();
 		}
@@ -99,7 +95,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -167,21 +163,21 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			return new Permissions();
 		}
 	}
-	
+
 	public String formatDate(Date serverDate) {
 		return formatDate(serverDate, "MMMMM d, yyyy, h:mm a");
 	}
-	
+
 	public String formatDate(Date serverDate, String format) {
 		loadPermissions();
 
 		DateFormat dateFormat = new SimpleDateFormat(format);
-		
+
 		if (permissions == null || permissions.getTimezone() == null)
 			return dateFormat.format(serverDate);
-		
+
 		dateFormat.setTimeZone(permissions.getTimezone());
-		
+
 		return dateFormat.format(serverDate);
 	}
 
@@ -275,10 +271,10 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 	@Override
 	public void setRequest(Map arg0) {
-		if( requestURL == null )
+		if (requestURL == null)
 			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
 	}
-	
+
 	public String getRequestString() {
 		return requestURL;
 	}
@@ -287,7 +283,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		ServletActionContext.getResponse().sendRedirect(url);
 		return BLANK;
 	}
-	
+
 	public void setMsg(String message) {
 		addActionMessage(message);
 	}
