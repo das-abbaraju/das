@@ -3,7 +3,7 @@
 <project name="PICS Webtest" default="wt.full">
 	<property file="build.properties" />
 
-	<import file="definitions.xml" description="Import custom definitions (if any)"/>
+	<import file="definitions.xml"/>
 	<import file="${webtest.home}/webtest.xml" description="Import all functionalities for a full build"/>
 
 	<property name="wt.testInWork" value="tests/all.xml"/>
