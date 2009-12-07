@@ -13,7 +13,12 @@
 					propertyType="ant"
 					value="${admin.username}"/>
 				&login;
-				&contractor_delete;
+				<setInputField name="filter.accountName" value="Canoo's Test - Trial Account"/>
+				<clickButton label="Search"/>
+				<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+				<clickLink label="Edit Account"/>
+				<clickButton label="Delete" name="button"/>
+				<clickLink label="Logout"/>
 			</steps>
 		</webtest>
 		<webtest name="Contractor Registration - Trial Account">
@@ -25,7 +30,6 @@
 				&body_verify;
 				<group description="Register and Save">
 					<!-- Register Correctly -->
-					<invoke url="http://alpha.picsauditing.com/ContractorRegistration.action"/>
 					<setInputField name="contractor.name" value="Canoo's Test - Trial Account"/>
 					<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
 					<setInputField name="contractor.contact" value="John Doe"/>
