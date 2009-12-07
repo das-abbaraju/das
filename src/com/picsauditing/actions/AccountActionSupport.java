@@ -28,14 +28,14 @@ public class AccountActionSupport extends PicsActionSupport {
 	protected NoteCategory noteCategory = NoteCategory.General;
 
 	private NoteDAO noteDao;
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
 		return SUCCESS;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -55,15 +55,15 @@ public class AccountActionSupport extends PicsActionSupport {
 	public Account getAccount() {
 		return account;
 	}
-	
-	/*************  NOTES  ************/
+
+	/************* NOTES ************/
 
 	protected NoteDAO getNoteDao() {
 		if (noteDao == null)
 			noteDao = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		return noteDao;
 	}
-	
+
 	public NoteCategory getNoteCategory() {
 		return noteCategory;
 	}
@@ -74,8 +74,12 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Get a list of notes up to the limit, using the given where clause
-	 * @param where should be in the format of "AND field=1", can be an empty string
-	 * @param limit ie 25
+	 * 
+	 * @param where
+	 *            should be in the format of "AND field=1", can be an empty
+	 *            string
+	 * @param limit
+	 *            ie 25
 	 * @return
 	 */
 	public List<Note> getNotes(String where, int firstLimit, int limit) {
@@ -87,6 +91,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Get a list of 5 embedded notes, based on noteCategory
+	 * 
 	 * @return
 	 */
 	public List<Note> getNotes() {
@@ -102,7 +107,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
-		boolean canContractorView, int viewableBy, User user) throws Exception {
+			boolean canContractorView, int viewableBy, User user) throws Exception {
 		Note note = new Note();
 		note.setAccount(account);
 		note.setAuditColumns(permissions);
@@ -116,17 +121,17 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	/***** END of NOTES *****/
-	
+
 	public String[] getCountryList() {
 		return Inputs.COUNTRY_ARRAY;
 	}
 
 	public TreeMap<String, String> getStateList() {
-		if(account == null)
+		if (account == null)
 			return State.getStates(null);
 		return State.getStates(Country.convertToCode(account.getCountry()));
 	}
-	
+
 	public TreeMap<String, String> getStateList(String countries) {
 		return State.getStates(Strings.getCountry(countries));
 	}
@@ -134,9 +139,9 @@ public class AccountActionSupport extends PicsActionSupport {
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}
-	
+
 	public boolean isShowMoreNotes() {
-		if(account.getType().equals("Contractor")) {
+		if (account.getType().equals("Contractor")) {
 			return permissions.hasPermission(OpPerms.ContractorDetails);
 		}
 		return true;
