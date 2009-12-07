@@ -41,7 +41,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String contact;
 	protected String address;
 	protected String city;
-	protected String country = "USA";
+	protected String country = "US";
 	protected String state;
 	protected String zip;
 	protected String phone;

@@ -43,6 +43,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected NoteDAO noteDAO;
 	protected ContractorValidator contractorValidator;
 
+	protected String country;
+
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO, UserDAO userDAO) {
 		super(accountDao, auditDao);
@@ -55,6 +57,10 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
+
+		if ("country".equals(button)) {
+			return "country";
+		}
 
 		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
@@ -170,6 +176,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	public void addAuditCategories(ContractorAudit audit, int CategoryID) {

@@ -18,7 +18,7 @@ function checkUsername(username) {
 
 function checkTaxId(taxId) {
 	startThinking({div:'taxId_status', message: ' checking availability of taxId...'});
-	var data = {taxId: taxId, button: 'taxId'};
+	var data = {taxId: taxId, button: 'taxId', country: $('#contractorCountry').val()};
 	$('#taxId_status').load('ContractorValidateAjax.action', data);
 }
 
@@ -28,15 +28,18 @@ function checkName(name) {
 	$('#name_status').load('ContractorValidateAjax.action', data);
 }
 
-function changeState(state) {
-	if (state == 'USA' || state == 'Canada') {
-		$('#state_sel').attr({disabled: false});
-		$('#state_req').text('*');
-	} else {
-		$('#state_sel').attr({disabled: 'disabled'});
-		$('#state_req').empty();
-	}
+function changeCountry(country) {
+	checkTaxId($('#contractorTaxId').val());
+	changeState(country);
 }
+
+function changeState(country) {
+	$('#state_li').load('ContractorRegistrationAjax.action',{button: 'country', country: $('#contractorCountry').val()});
+}
+
+$(function(){
+	changeState($('#contractorCountry').val());
+})
 </script>	
 </head>
 <body>
@@ -51,18 +54,19 @@ function changeState(state) {
 					<legend><span>Details</span></legend>
 					<ol>
 						<li><label>Company Name:</label>
-							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
-							<span class="redMain">*</span><div id="name_status"></div></li>
+							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/><span class="redMain">*</span>
+							<div id="name_status"></div></li>
 						<li><label>DBA Name: </label>
 							<s:textfield name="contractor.dbaName" size="35" />
 						</li>
 						<li><label>Country:</label>
-							<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
+							<s:select list="countryList" id="contractorCountry"
 							name="contractor.country"
-							onchange="changeState(this.value);"
+							onchange="changeCountry(this.value);"
+							value="locale.country"
 							/><span class="redMain">*</span></li>
-						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId"
-							size="9" maxLength="9" onblur="checkTaxId(this.value);" />
+						<li><label>Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"
+							size="9" maxLength="9" onchange="checkTaxId(this.value);" />
 							<span class="redMain">* Only digits 0-9, no dashes</span>
 							<span id="taxId_status"></span>
 							</li>
@@ -79,18 +83,7 @@ function changeState(state) {
 							<s:textfield name="contractor.address" size="35" /><span class="redMain">*</span></li>
 						<li><label>City:</label> 
 							<s:textfield name="contractor.city" size="35" /><span class="redMain">*</span></li>
-						<li><label>Country:</label>
-							<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
-							name="contractor.country"
-							onchange="changeState(this.value);"
-							/><span class="redMain">*</span></li>
-						<li id="state_li"><label>State/Province:</label>
-							<s:if test="contractor == null || (contractor.country != 'USA' && contractor.country != 'Canada')">
-								<s:select list="StateList" id="state_sel" name="contractor.state" disabled="true"/><span class="redMain" id="state_req"></span>
-							</s:if>
-							<s:else>
-								<s:select list="StateList" id="state_sel" name="contractor.state"/><span class="redMain" id="state_req">*</span>
-							</s:else>
+						<li id="state_li">
 						</li>
 						<li><label>Zip:</label>
 							<s:textfield name="contractor.zip" size="35" /><span class="redMain">*</span></li>

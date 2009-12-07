@@ -1,10 +1,12 @@
 package com.picsauditing.actions;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.picsauditing.PICS.Inputs;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Country;
@@ -122,8 +124,9 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/***** END of NOTES *****/
 
-	public String[] getCountryList() {
-		return Inputs.COUNTRY_ARRAY;
+	public Map<String, String> getCountryList() {
+		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
+		return countryDAO.findMap();
 	}
 
 	public TreeMap<String, String> getStateList() {

@@ -11,9 +11,7 @@ public class State {
 		if("CA".equals(country))
 			return getCAStates();
 		
-		TreeMap<String, String> states = getUSStates();
-		states.putAll(getCAStates());
-		return states;
+		return new TreeMap<String, String>();
 	}
 
 

@@ -1,12 +1,11 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.picsauditing.PICS.ContractorValidator;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.util.Strings;
@@ -15,6 +14,7 @@ import com.picsauditing.util.Strings;
 public class ContractorValidate extends ContractorActionSupport {
 	private String companyName;
 	private String taxId;
+	private String country;
 
 	protected UserDAO userDAO;
 	protected ContractorValidator contractorValidator;
@@ -46,11 +46,12 @@ public class ContractorValidate extends ContractorActionSupport {
 		}
 
 		if ("taxId".equals(button)) {
-			if (!Strings.isEmpty(taxId)) {
-				ContractorAccount con = accountDao.findTaxID(taxId);
+			if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
+				ContractorAccount con = accountDao.findTaxID(taxId, country);
 				if (con != null) {
-					addActionError(taxId
-							+ " already exists. Please contact a PICS representative at 949-387-1940 ext 1.");
+					Locale l = new Locale("", country);
+					addActionError(taxId + " already exists in " + l.getDisplayCountry()
+							+ ". Please contact a PICS representative at 949-387-1940 ext 1.");
 				}
 			}
 
@@ -76,4 +77,11 @@ public class ContractorValidate extends ContractorActionSupport {
 		this.taxId = taxId;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 }

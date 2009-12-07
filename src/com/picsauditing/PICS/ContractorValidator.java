@@ -110,7 +110,7 @@ public class ContractorValidator {
 	}
 
 	public boolean verifyTaxID(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDAO.findTaxID(contractorAccount.getTaxId());
+		ContractorAccount cAccount = contractorAccountDAO.findTaxID(contractorAccount.getTaxId(), contractorAccount.getCountry());
 		if (cAccount == null || cAccount.equals(contractorAccount))
 			return true;
 

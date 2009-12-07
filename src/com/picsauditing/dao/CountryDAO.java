@@ -1,6 +1,8 @@
 package com.picsauditing.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.Query;
 
@@ -19,5 +21,16 @@ public class CountryDAO extends PicsDAO {
 
 	public Country find(String id) {
 		return em.find(Country.class, id);
+	}
+	
+	public Map<String, String> findMap() {
+		List<Country> countryList = findAll();
+		Map<String, String> map = new TreeMap<String, String>();
+		
+		for (Country country : countryList) {
+			map.put(country.getIsoCode(), country.getEnglish());
+		}
+		
+		return map;
 	}
 }

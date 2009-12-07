@@ -129,12 +129,13 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public ContractorAccount findTaxID(String taxId) {
+	public ContractorAccount findTaxID(String taxId, String country) {
 		if (taxId == null)
 			taxId = "";
 		try {
-			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId");
+			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId AND country = :country");
 			query.setParameter("taxId", taxId);
+			query.setParameter("country", country);
 			query.setMaxResults(1);
 			return (ContractorAccount) query.getSingleResult();
 		} catch (NoResultException e) {

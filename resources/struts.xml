@@ -201,6 +201,12 @@
 			<result>struts/contractors/con_registration.jsp</result>
 		</action>
 
+		<action name="ContractorRegistrationAjax"
+			class="com.picsauditing.actions.contractors.ContractorRegistration">
+			<result>struts/blank.jsp</result>
+			<result name="country">struts/contractors/con_country.jsp</result>
+		</action>
+
 		<action name="ContractorValidateAjax"
 			class="com.picsauditing.actions.contractors.ContractorValidate">
 			<result>struts/blank.jsp</result>
