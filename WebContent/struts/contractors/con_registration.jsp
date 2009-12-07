@@ -46,7 +46,7 @@ function changeState(country) {
 $(function(){
 	changeState($('#contractorCountry').val());
 })
-</script>	
+</script>
 </head>
 <body>
 <s:include value="registrationHeader.jsp"></s:include>
