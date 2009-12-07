@@ -36,10 +36,12 @@ function changeCountry(country) {
 function changeState(country) {
 	$('#state_li').load('ContractorRegistrationAjax.action',{button: 'country', country: $('#contractorCountry').val()});
 	$('#country_display').val($('#contractorCountry').find('option[selected]').text());
-	if (country == 'CA')
+	if (country == 'US')
+		$('#taxIdLabel').text('Tax ID:');
+	else if (country == 'CA')
 		$('#taxIdLabel').text('Business Number:');
 	else
-		$('#taxIdLabel').text('Tax ID:');
+		$('#taxIdLabel').text('Tax Number:');
 		
 }
 
