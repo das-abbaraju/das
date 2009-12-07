@@ -26,26 +26,32 @@
 				<group description="Activations">
 					<setInputField name="filter.accountName" value="Canoo's Test Contractor"/>
 					<clickButton label="Search"/>
+					
+					<ifStep>
+						<condition>
+							<verifyTitle text="PICS - Canoo's Test Contractor"/>
+						</condition>	
 						<verifyText description="Verify that text is contained in the page" text="This contractor is not active."/>
-					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
-					<clickLink href="InvoiceDetail.action"/>
-						<verifyText description="Verify that text is contained in the page" text="Activation Fee"/>
-						<verifyText description="Verify that text is contained in the page" text="$99.00 USD"/>
-						<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators"/>
-						<verifyText description="Verify that text is contained in the page" text="$699.00 USD"/>
-						<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
-					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
-						<verifyText description="Verify Payment Method: Check" text="Check"/>
-					<clickLink label="Make a Payment"/>
-						<setInputField name="payment.checkNumber" value="1111"/>
-						<clickButton label="Apply All"/>
-						<clickButton label="Collect Payment"/>
-					<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
-						<verifyText description="Active:Yes" text="Yes"/>
-						<verifyText description="Verify that text is contained in the page" text="$0.00 USD"/>
-						<clickLink description="Click linak: Edit Account" href="ContractorEdit.action"/>
-						<clickLink label="Edit Account"/>
-						<clickButton label="Delete"/>
+							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
+							<clickLink href="InvoiceDetail.action"/>
+								<verifyText description="Verify that text is contained in the page" text="Activation Fee"/>
+								<verifyText description="Verify that text is contained in the page" text="$99.00 USD"/>
+								<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators"/>
+								<verifyText description="Verify that text is contained in the page" text="$699.00 USD"/>
+								<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
+							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
+								<verifyText description="Verify Payment Method: Check" text="Check"/>
+							<clickLink label="Make a Payment"/>
+								<setInputField name="payment.checkNumber" value="1111"/>
+								<clickButton label="Apply All"/>
+								<clickButton label="Collect Payment"/>
+							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
+								<verifyText description="Active:Yes" text="Yes"/>
+								<verifyText description="Verify that text is contained in the page" text="$0.00 USD"/>
+								<clickLink description="Click linak: Edit Account" href="ContractorEdit.action"/>
+								<clickLink label="Edit Account"/>
+								<clickButton label="Delete"/>
+						</ifStep>
 					</group>
 		    </steps>
 		</webtest>

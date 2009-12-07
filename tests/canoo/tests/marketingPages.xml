@@ -11,7 +11,7 @@
 				
 				<invoke
 					description="Get Homepage"
-					url="http://alpha.picsauditing.com/index.jsp" />
+					url="index.jsp" />
 				<verifyTitle 
 					description="We should see the index page title"
 					text="PICS - Contractor Screening &amp; Contractor Management" />

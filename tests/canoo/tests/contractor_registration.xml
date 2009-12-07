@@ -13,7 +13,12 @@
 					propertyType="ant"
 					value="${admin.username}"/>
 				&login;
-				&contractor_delete;
+				<setInputField name="filter.accountName" value="Canoo's Test Contractor"/>
+				<clickButton label="Search"/>
+				<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+				<clickLink label="Edit Account"/>
+				<clickButton label="Delete" name="button"/>
+				<clickLink label="Logout"/>
 			</steps>
 		</webtest>
 		<webtest name="Contractor Registration - Register">
