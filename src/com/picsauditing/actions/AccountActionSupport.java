@@ -53,6 +53,10 @@ public class AccountActionSupport extends PicsActionSupport {
 	public void setSubHeading(String subHeading) {
 		this.subHeading = subHeading;
 	}
+	
+	public void setAccount(Account account) {
+		this.account = account;
+	}
 
 	public Account getAccount() {
 		return account;

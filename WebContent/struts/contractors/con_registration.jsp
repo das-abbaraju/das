@@ -34,7 +34,7 @@ function changeCountry(country) {
 }
 
 function changeState(country) {
-	$('#state_li').load('ContractorRegistrationAjax.action',{button: 'country', country: $('#contractorCountry').val()});
+	$('#state_li').load('StateListAjax.action',{'account.country': $('#contractorCountry').val()});
 	$('#country_display').val($('#contractorCountry').find('option[selected]').text());
 	if (country == 'US')
 		$('#taxIdLabel').text('Tax ID:');
