@@ -173,12 +173,7 @@ $(function() {
 						<s:select cssStyle="font-size: 12px;" list="tradeList" name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" listKey="question" listValue="question"/>
 					</li>
 					<li><label>Risk Level:</label>
-						<pics:permission perm="RiskRank">
-							<s:select name="contractor.riskLevel" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
-						</pics:permission>
-						<pics:permission perm="RiskRank" negativeCheck="true">
-							<s:property value="contractor.riskLevel"/>
-						</pics:permission>
+						<s:property value="contractor.riskLevel"/>
 					</li>
 					<li><label>Requested By:</label>
 						<s:property value="contractor.requestedBy.name"/>
@@ -224,9 +219,11 @@ $(function() {
 					<li><label>Reason:</label>
 						<s:select list="deactivationReasons" name="contractor.reason" headerKey=" " headerValue="- Deactivation Reason -"/>
 					</li>
-					<li><label>Risk Level:</label>
-						<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
-					</li>
+					<pics:permission perm="RiskRank">
+						<li><label>Risk Level:</label>
+							<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
+						</li>
+					</pics:permission>
 					<li><label>Password:</label>
 						<a href="?id=<s:property value="id"/>&button=PasswordReminder">Password Reminder</a>
 					</li>
