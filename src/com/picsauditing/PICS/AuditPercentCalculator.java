@@ -123,7 +123,7 @@ public class AuditPercentCalculator {
 						} else {
 							if (answer.isVerified()) {
 								verifiedCount++;
-							} else if (catData.getAudit().getAuditType().isHasRequirements()) {
+							} else if (isRequired && catData.getAudit().getAuditType().isHasRequirements()) {
 								verifiedCount++;
 							}
 						}	
