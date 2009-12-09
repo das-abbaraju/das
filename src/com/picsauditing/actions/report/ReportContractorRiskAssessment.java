@@ -46,7 +46,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql.addWhere("pd.dateVerified is null");
 		sql.addField("pd.answer");
 		sql.addField("pd.id AS answerID");
-		sql.addWhere("a.active = 'Y'");
 	}
 
 	@Override
