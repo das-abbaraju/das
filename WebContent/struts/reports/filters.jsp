@@ -79,7 +79,7 @@
 			<br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
 		<s:select id="form1_trade" list="filter.tradeList" listKey="id" listValue="question" cssClass="forms" name="filter.trade"
-			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_trade');</script>
+			multiple="true" size="10" /> <script type="text/javascript">updateQuery('form1_trade');</script>
 		<br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_trade'); return false;">Clear</a> </span></div>
@@ -181,7 +181,7 @@
 			id="form1_auditorId_query">ALL</span><br />
 		<span id="form1_auditorId_select" style="display: none" class="clearLink">
 		<s:select name="filter.auditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
-        multiple="true" size="5" id="form1_auditorId" headerKey="0" headerValue="- ALL -" />
+        multiple="true" size="5" id="form1_auditorId" />
 		<script type="text/javascript">updateQuery('form1_auditorId');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_auditorId'); return false;">Clear</a></span></div>
@@ -193,7 +193,7 @@
 			id="form1_closingAuditorId_query">ALL</span><br />
 		<span id="form1_closingAuditorId_select" style="display: none" class="clearLink">
 		<s:select name="filter.closingAuditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
-        multiple="true" size="5" id="form1_closingAuditorId" headerKey="0" headerValue="- ALL -" />
+        multiple="true" size="5" id="form1_closingAuditorId" />
 		<script type="text/javascript">updateQuery('form1_closingAuditorId');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_closingAuditorId'); return false;">Clear</a></span></div>
@@ -205,7 +205,7 @@
 			id="form1_conAuditorId_query">ALL</span><br />
 		<span id="form1_conAuditorId_select" style="display: none" class="clearLink">
 		<s:select name="filter.conAuditorId" cssClass="forms" list="auditorList" listKey="id" listValue="name"
-        multiple="true" size="5" id="form1_conAuditorId" headerKey="0" headerValue="- ALL -" />
+        multiple="true" size="5" id="form1_conAuditorId" />
 		<script type="text/javascript">updateQuery('form1_conAuditorId');</script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_conAuditorId'); return false;">Clear</a> </span></div>
@@ -225,7 +225,7 @@
 		<span id="form1_operator_select" style="display: none"
 			class="clearLink"> <s:select id="form1_operator" list="filter.operatorList"
 			cssClass="forms" name="filter.operator" listKey="id" listValue="name"
-			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_operator');</script>
+			multiple="true" size="10" /> <script type="text/javascript">updateQuery('form1_operator');</script>
 		<br />
 		<a class="clearLink" href="#"
 			onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
