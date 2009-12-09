@@ -10,7 +10,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.YesNo;
 
 public class AuditCriteriaAnswerTest extends TestCase {
 
@@ -37,6 +36,8 @@ public class AuditCriteriaAnswerTest extends TestCase {
 
 		return new AuditCriteriaAnswer(answer, criteriaMap);
 	}
+	
+	
 
 	public void testBasicRedFlag() {
 		AuditCriteriaAnswer aca = newAca();

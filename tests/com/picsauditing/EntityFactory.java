@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.PICS.AuditCriteriaAnswer;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -22,6 +24,8 @@ import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.Subscription;
@@ -41,6 +45,9 @@ public class EntityFactory {
 		operator.setName("Operator Unit Test");
 		operator.setApprovesRelationships(YesNo.No);
 		operator.setCanSeeInsurance(YesNo.Yes);
+		operator.setInheritAudits(operator);
+		operator.setInheritInsurance(operator);
+		operator.setInheritFlagCriteria(operator);
 		return operator;
 	}
 
@@ -98,6 +105,37 @@ public class EntityFactory {
 		conAudit.setAuditStatus(AuditStatus.Active);
 		return conAudit;
 	}
+	
+	static public ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
+		ContractorAudit conAudit = new ContractorAudit();
+		conAudit.setAuditType(makeAuditType(auditTypeID));
+		conAudit.setContractorAccount(contractor);
+		conAudit.setAuditStatus(AuditStatus.Active);
+		conAudit.setAuditFor(auditFor); 
+		return conAudit;
+	}
+	
+	static public AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
+		AuditCatData  auditCatData = new AuditCatData();
+		auditCatData.setAudit(conAudit);
+		auditCatData.setCategory(new AuditCategory());
+		auditCatData.getCategory().setId(categoryID);
+		auditCatData.setPercentCompleted(100);
+		return auditCatData;
+	}
+
+	static public OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
+		OshaAudit oshaAudit = new OshaAudit();
+		oshaAudit.setConAudit(conAudit);
+		oshaAudit.setType(OshaType.OSHA);
+		oshaAudit.setCorporate(true);
+		oshaAudit.setFatalities(1);
+		oshaAudit.setManHours(manHours);
+		oshaAudit.setLostWorkCases(12);
+		oshaAudit.setRecordableTotal(134);
+		return oshaAudit;
+	}
+
 
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
