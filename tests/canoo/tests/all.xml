@@ -25,7 +25,6 @@
 		<ant antfile="admin_audits.xml"/>
 		<ant antfile="contractor_delete.xml"/>
 		<ant antfile="contractor_trialaccount.xml"/>
-		<ant antfile="contractor_trial_delete.xml"/>
 	</target>
 
 	<target name="adhoc" description="Run a few tests when debugging">
