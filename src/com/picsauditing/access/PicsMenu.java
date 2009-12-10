@@ -56,7 +56,7 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("Contractors");
-		subMenu.addChild("Contractor List", "ContractorList.action");
+		subMenu.addChild("Contractor List", "ContractorList.action?filter.performedBy=Self Performed");
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
