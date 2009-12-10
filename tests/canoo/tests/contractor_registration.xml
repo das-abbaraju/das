@@ -48,7 +48,7 @@
 					<setInputField name="contractor.taxId" value="789456123"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>
-					<setSelectField name="contractor.state" text="Wyoming"/>
+					<setSelectField htmlId="state_sel" text="Wyoming"/>
 					<setInputField name="contractor.zip" value="54321"/>
 					<setInputField name="contractor.phone" value="949-123-4567"/>
 					<setInputField name="contractor.phone2" value="949-123-4567"/>
