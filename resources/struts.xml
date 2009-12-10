@@ -202,7 +202,7 @@
 		</action>
 
 		<action name="StateListAjax"
-			class="com.picsauditing.actions.AccountActionSupport">
+			class="com.picsauditing.actions.StateList">
 			<result>struts/contractors/con_country.jsp</result>
 		</action>
 
