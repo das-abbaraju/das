@@ -7,7 +7,9 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -36,15 +38,30 @@ public class OpenAuditsMailer extends PicsActionSupport {
 
 	private int process(int nextID) {
 		// Only send this to Desktop, Office and D&A
-		String where = "contractorAccount.active = 'Y' AND auditType.id IN (2,3,6) " +
-				"AND auditStatus = 'Submitted' AND id > " + nextID;
+		String where = "contractorAccount.active = 'Y' AND auditType.id IN (2,3,6) "
+				+ "AND auditStatus = 'Submitted' AND id > " + nextID;
 		List<ContractorAudit> list = contractorAuditDAO.findWhere(100, where, "id");
 		NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		nextID = 0;
 		for (ContractorAudit conAudit : list) {
-			if (!conAudit.getContractorAccount().getRiskLevel().equals(LowMedHigh.Low)) {
+			boolean requiresAudit = false;
+			for (ContractorOperator contractorOperator : conAudit.getContractorAccount().getOperators()) {
+				if (contractorOperator.getOperatorAccount().isActiveB()) {
+					for (AuditOperator auditOperator : contractorOperator.getOperatorAccount().getVisibleAudits()) {
+						if (conAudit.getAuditType() == auditOperator.getAuditType()
+								&& auditOperator.isRequiredFor(conAudit.getContractorAccount())) {
+							requiresAudit = true;
+							break;
+						}
+					}
+					if (requiresAudit)
+						break;
+				}
+			}
+
+			if (requiresAudit) {
 				nextID = conAudit.getId();
 				try {
 					System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
