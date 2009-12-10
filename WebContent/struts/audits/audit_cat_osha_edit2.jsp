@@ -69,7 +69,7 @@
 	<td><s:textfield name="osha.neer" value="%{neer}" cssClass="osha"/></td>
 </tr>
 </s:if>
-<s:if test="!type.toString().equals('COHS')">	
+<s:if test="!type.toString().equals('COHS') && category.id != 157">	
 	<tr>
 		<th class="label">
 		<s:if test="fileUploaded">

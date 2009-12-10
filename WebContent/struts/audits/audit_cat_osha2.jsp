@@ -81,7 +81,7 @@
 	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
 </s:if>
-<s:if test="!type.toString().equals('COHS')">	
+<s:if test="!type.toString().equals('COHS') && category.id != 157">	
 	<tr>
 		<th class="label">Uploaded Log Files</th>
 		<th colspan="2"><s:if test="fileUploaded"><a href="#" onclick="openOsha(<s:property value="id"/>); return false;">Download</a></s:if></th>
