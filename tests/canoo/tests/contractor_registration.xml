@@ -15,10 +15,19 @@
 				&login;
 				<setInputField name="filter.accountName" value="Canoo's Test Contractor"/>
 				<clickButton label="Search"/>
-				<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
-				<clickLink label="Edit Account"/>
-				<clickButton label="Delete" name="button"/>
-				<clickLink label="Logout"/>
+				<ifStep description="If canoo present, delete acct">
+					<condition>
+						<verifyText text="No results found"/>
+					</condition>
+						<then>
+							<clickLink label="Logout"/>
+						</then>
+						<else>
+							<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
+							<clickLink label="Edit Account"/>
+							<clickButton label="Delete" name="button"/>
+						</else>
+				</ifStep>
 			</steps>
 		</webtest>
 		<webtest name="Contractor Registration - Register">
