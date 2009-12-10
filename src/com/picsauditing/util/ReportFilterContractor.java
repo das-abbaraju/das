@@ -398,7 +398,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String[] getTradePerformedByList() {
-		String[] list = { "- Performed By -", "Self Performed", "Sub Contracted" };
+		String[] list = { "- No Preference -", "Self Performed", "Sub Contracted" };
 		return list;
 	}
 
