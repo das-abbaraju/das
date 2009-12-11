@@ -1,0 +1,61 @@
+<ifStep description="Delete the Contractor if they exist">
+	<condition>
+		<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
+		<clickButton description="Search for Contractor" label="Search" />
+		<verifyText description="Canoo's Test Contractor still exists" text="Canoo's Test Contractor" />
+	</condition>
+	
+	<ifStep description="Delete PQF">
+		<condition>
+			<clickLink description="Goto PQF" label="Pre-Qualification" href="Audit.action" />
+			<clickLink description="Open System Edit" label="System Edit" />
+		</condition>
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+	
+	<ifStep description="Delete Welcome Call">
+		<condition>
+			<clickLink description="Goto Welcome Call" label="Welcome Call '09" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+
+	<ifStep description="Delete Annual Updates">
+		<condition>
+			<clickLink description="Goto Annual Update 08" label="2008 Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+
+	<ifStep description="Delete Annual Updates">
+		<condition>
+			<clickLink description="Goto Annual Update 07" label="2007 Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+
+	<ifStep description="Delete Annual Updates">
+		<condition>
+			<clickLink description="Goto Annual Update 06" label="2006 Update" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+
+
+		<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
+		<clickButton description="Search for Contractor" label="Search" />
+	<ifStep description="If Canoo exists, delete"/>
+		<condition>
+		<verifyText text="Canoo's Test Contractor"/>
+		</condition>
+		<clickLink description="click on edit page" href="ContractorEdit.action" />
+		<clickButton description="Delete the Contractor" label="Delete" />
+	</ifStep>
+
+
+
+
