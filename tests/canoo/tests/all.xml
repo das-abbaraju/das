@@ -21,10 +21,9 @@
 		<ant antfile="operator.xml"/>
 		<ant antfile="operator_config.xml"/>
 		<ant antfile="admin_billing.xml"/>
-		<ant antfile="contractor.xml"/>
-		<ant antfile="admin_audits.xml"/>
 		<ant antfile="contractor_delete.xml"/>
 		<ant antfile="contractor_trialaccount.xml"/>
+		<ant antfile="contractor.xml"/>
 	</target>
 
 	<target name="adhoc" description="Run a few tests when debugging">
