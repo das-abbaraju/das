@@ -90,6 +90,7 @@
 					<clickLink description="Click link: Add" htmlId="facility_5901"/>
 					<clickLink description="Click link: Add" htmlId="facility_5891"/>
 					<clickLink description="Click link: Add" htmlId="facility_5147"/>
+					<clickLink description="Click link: Add" htmlId="facility_16"/>
 					<sleep seconds="5"/>
 					<setSelectField htmlId="requestedBySelector" text="BASF Brighton Colorado"/>
 					<sleep seconds="3"/>
