@@ -9,7 +9,16 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
+function changeState(country) {
+	$('#state_li').load('StateListAjax.action',{'account.country': $('#contractorCountry').val()});
+}
+
+function countryChanged(country) {
+	changeState(country);
+}
+
 $(function() {
+	changeState($("#contractorCountry").val());
 	$('.datepicker').datepicker();
 });
 </script>
@@ -85,15 +94,13 @@ $(function() {
 						<s:textfield name="contractor.city" size="20" />
 					</li>
 					<li><label>Country:</label>
-						<s:select list="@com.picsauditing.PICS.Inputs@COUNTRY_ARRAY" 
-						name="contractor.country"
-						onchange="(this.value == 'USA' || this.value == 'Canada') ? $('#state_li').show() : $('#state_li').hide();"
+						<s:select list="countryList"
+						name="contractor.country" id="contractorCountry"
+						listKey="isoCode" listValue="english"
+						onchange="countryChanged(this.value)"
 						/></li>
 						
-					<li id="state_li" 
-						<s:if test="contractor.country != 'USA' && contractor.country != 'Canada'">style="display: none"</s:if>
-						><label>State/Province:</label>
-						<s:select list="StateList" name="contractor.state"/></li>
+					<li id="state_li"></li>
 					<li><label>Zip:</label>
 						<s:textfield name="contractor.zip" size="7" />
 					</li>
