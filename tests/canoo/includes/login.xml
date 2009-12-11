@@ -1,6 +1,6 @@
 <invoke
 	description="goto Login Page"
-	url="http://alpha.picsauditing.com/app/Login.action" />
+	url="Login.action" />
 <setInputField description="set user name"
 	name="username"
 	value="${login.username}" />

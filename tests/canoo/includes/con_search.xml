@@ -1,9 +1,12 @@
-<ifStep description="Delete the Contractor if they exist">
+	<setInputField description="Search for Contractor"
+					   name="filter.accountName"
+					   value="${search.contractor}" />
+	<clickButton description="Search for Contractor" label="Search" />
+	
+	<ifStep description="Delete the Contractor if they exist">
 	<condition>
-		<setInputField name="filter.accountName" value="Canoo's Test" />
-		<clickButton description="Search for Contractor" label="Search" />
-		<verifyText description="Canoo's Test Contractor still exists" text="Canoo's Test Contractor" />
-	</condition>
+		<verifyText description="Canoo's Test Contractor still exists" text="${search.contractor}" />
+	</condition>	
 	
 	<ifStep description="Delete PQF">
 		<condition>
@@ -44,13 +47,37 @@
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
+	
+		<ifStep description="Delete Desktop Audit">
+		<condition>
+			<clickLink description="Goto Desktop Audit" label="Desktop Audit" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+		<ifStep description="Delete Office Audit">
+		<condition>
+			<clickLink description="Goto Office Audit" label="Office Audit" />
+		</condition>
+		<clickLink description="Open System Edit" label="System Edit" />
+		<clickButton description="Click Delete" label="Delete" />
+	</ifStep>
+	<ifStep description="If Contractor exists, delete">
+	<clickLink label="Facilities"/>
+		<condition>
+			<verifyElementText type="link" text="Remove"/>
+		</condition>
+	<clickLink description="Click link: Remove" label="remove"/>
+	</ifStep>
+	<!-- Pull Up Contractor -->
 
-	<group description="Delete Contractor">
-		<setInputField name="filter.accountName" value="Canoo's Test" />
+		<setInputField name="filter.accountName" value="${search.contractor}" />
 		<clickButton description="Search for Contractor" label="Search" />
-		<clickLink description="click on edit page" htmlId="conEditLink" />
+	</ifStep>		
+	<ifStep description="If Contractor exists, delete">
+		<condition>
+			<verifyText text="${search.contractor}"/>
+		</condition>
+		<clickLink description="click on edit page" href="ContractorEdit.action" />
 		<clickButton description="Delete the Contractor" label="Delete" />
-	</group>
-
-</ifStep>
-
+	</ifStep>
