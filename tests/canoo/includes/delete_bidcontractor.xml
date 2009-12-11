@@ -1,8 +1,8 @@
 <ifStep description="Delete the Contractor if they exist">
 	<condition>
-		<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
+		<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account" />
 		<clickButton description="Search for Contractor" label="Search" />
-		<verifyText description="Canoo's Test Contractor still exists" text="Canoo's Test Contractor" />
+		<verifyText description="Canoo's Test - Bid Only Account still exists" text="Canoo's Test - Bid Only Account" />
 	</condition>
 	
 	<ifStep description="Delete PQF">
@@ -44,17 +44,9 @@
 		<clickLink description="Open System Edit" label="System Edit" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
-
-
-		<setInputField name="filter.accountName" value="Canoo's Test Contractor" />
-		<clickButton description="Search for Contractor" label="Search" />
-	<ifStep description="If Canoo exists, delete"/>
-		<condition>
-		<verifyText text="Canoo's Test Contractor"/>
-		</condition>
 		<clickLink description="click on edit page" href="ContractorEdit.action" />
 		<clickButton description="Delete the Contractor" label="Delete" />
-	</ifStep>
+</ifStep>
 
 
 
