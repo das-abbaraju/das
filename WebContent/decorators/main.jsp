@@ -27,8 +27,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091105" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" />
 <script src="js/chrome.js" type="text/javascript" ></script>
-<script src="js/pics_main.js?v=20091105" type="text/javascript" ></script>
-<script src="js/notes.js?v=20091105" type="text/javascript"></script>
+<script type="text/javascript" src="js/pics_main.js?v=20091105"></script>
+<script type="text/javascript" src="js/notes.js?v=20091105"></script>
 
 <decorator:head />
 
@@ -170,15 +170,14 @@ var gaJsHost = (("https:" == document.location.protocol) ?
 	"https://ssl." : "http://www.");
 	document.write(unescape("%3Cscript src='" + gaJsHost + 
 	"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-
-<script type="text/javascript">
+try {
 	var pageTracker = _gat._getTracker("UA-2785572-1");
 	pageTracker._initData();
 	pageTracker._trackPageview();
 <%	if (permissions.isLoggedIn()) { %>
 	pageTracker._setVar('<%= permissions.getAccountType() %>');
 <%	} %>
+} catch(err) {}
 </script>
 
 <!-- !begin footer -->
