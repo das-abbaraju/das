@@ -25,3 +25,5 @@ update accounts set country = 'CA' where country = 'Canada';
 update accounts set country = 'US' where country = 'USA';
 
 update accounts set country = null where country like '%- country -%';
+
+update accounts a join country c on a.country = c.english set a.country = c.isoCode where a.country not in ('us', 'ca');
