@@ -62,7 +62,7 @@ function startThinking( args ) {
 	}
 	
 	innerSrc=innerSrc+oOptions.message;
-	if(targetDiv != 'undefined') {
+	if(typeof(targetDiv) != 'undefined') {
 		targetDiv.innerHTML=innerSrc;		
 	}
 	return true;
@@ -72,7 +72,7 @@ function stopThinking( args ) {
       div: "mainThinkingDiv"
     }, args);
 	var targetDiv = getElement(oOptions.div);
-	if(targetDiv != 'undefined') {
+	if(typeof(targetDiv) != 'undefined') {
 		targetDiv.innerHTML='';		
 	}
 	return true;
