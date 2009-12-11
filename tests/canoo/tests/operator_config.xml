@@ -13,7 +13,7 @@
 				<property name="error_expected" value="false" />
 				&body_verify;
 				</group>
-				<invoke url="http://alpha.picsauditing.com/app/Home.action"/>
+				<invoke url="Home.action"/>
 				
 				<group description="Edit Operator">
 						<setInputField name="filter.accountName" value="AES Alamitos"/>
