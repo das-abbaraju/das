@@ -99,7 +99,7 @@ public class Strings {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";
@@ -270,21 +270,21 @@ public class Strings {
 		}
 		return validEmail;
 	}
-	
+
 	public static String trim(String input, int maxlength) {
 		if (isEmpty(input))
 			return "";
 		if (input.length() <= maxlength)
 			return input;
-		return input.substring(0, maxlength-3) + "...";
+		return input.substring(0, maxlength - 3) + "...";
 	}
-	
+
 	public static boolean validUserName(String username) {
 		String regex = "^[a-zA-Z0-9+._@-]{3,24}$";
-		
+
 		return username.matches(regex);
 	}
-	
+
 	public static String formatShort(float value) {
 		if (value < 0)
 			return "-" + formatShort(value * -1);
@@ -304,30 +304,33 @@ public class Strings {
 			return trimTrailingZeros(String.format("%.0f", value));
 		}
 		if (value < 1000000) {
-			return formatShort(value/1000)+"K";
+			return formatShort(value / 1000) + "K";
 		}
 		if (value < 1000000000) {
-			return formatShort(value/1000000)+"M";
+			return formatShort(value / 1000000) + "M";
 		}
-		return formatShort(value/1000000000)+"B";
+		return formatShort(value / 1000000000) + "B";
 	}
-	
-	private static String trimTrailingZeros(String number) {
-	    if(!number.contains(".")) {
-	        return number;
-	    }
 
-	    number = number.replaceAll("0*$", "");
-	    if(number.charAt(number.length() - 1) == '.') {
-	        number = number.substring(0, number.length() - 1);
-	    }
-	    return number;
+	private static String trimTrailingZeros(String number) {
+		if (!number.contains(".")) {
+			return number;
+		}
+
+		number = number.replaceAll("0*$", "");
+		if (number.charAt(number.length() - 1) == '.') {
+			number = number.substring(0, number.length() - 1);
+		}
+		return number;
 	}
-	
+
 	/**
 	 * Is country contained in the expression
-	 * @param expression like !|CA|FR|
-	 * @param country like US
+	 * 
+	 * @param expression
+	 *            like !|CA|FR|
+	 * @param country
+	 *            like US
 	 * @return
 	 */
 	public static boolean isInCountries(String expression, Set<String> countries) {
@@ -335,7 +338,7 @@ public class Strings {
 			return true;
 		if (isEmpty(expression))
 			return true;
-		
+
 		boolean contains = false;
 		for (String country : countries) {
 			if (expression.contains("|" + country + "|"))
@@ -345,11 +348,11 @@ public class Strings {
 			contains = !contains;
 		return contains;
 	}
-	
+
 	public static String getCountry(String expression) {
 		if (isEmpty(expression))
 			return null;
-		
+
 		return expression.replace("|", "");
 	}
 }
