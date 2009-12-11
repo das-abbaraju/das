@@ -71,7 +71,7 @@
 		<td style="vertical-align: top; width: 48%;">
 		<fieldset class="form"><legend><span>Invoicing</span></legend>
 		<ol>
-			<li><label>Current Balance:</label> $<s:property value="contractor.balance" /> USD <s:if
+			<li><label>Current Balance:</label> <s:property value="contractor.balance" /> <s:property value="contractor.currency"/> <s:if
 				test="contractor.balance > 0">
 				<pics:permission perm="Billing" type="Edit">
 					<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Make a Payment</a>
@@ -79,10 +79,10 @@
 			</s:if></li>
 			<li><label>Billing Status:</label> <s:property value="contractor.billingStatus" /></li>
 			<li><label>Must Pay:</label> <s:property value="contractor.mustPay" /></li>
-			<li><label>Current Level:</label> $<s:property value="contractor.membershipLevel.amount" /> USD <br>
+			<li><label>Current Level:</label> <s:property value="contractor.membershipLevel.amount" /> <s:property value="contractor.currency"/><br>
 			<s:property value="contractor.membershipLevel.fee" /></li>
 			<s:if test="contractor.newMembershipLevel != contractor.membershipLevel">
-				<li><label>New Level:</label> $<s:property value="contractor.newMembershipLevel.amount" /> USD <br>
+				<li><label>New Level:</label> <s:property value="contractor.newMembershipLevel.amount" /> <s:property value="contractor.currency"/> <br>
 				<s:property value="contractor.newMembershipLevel.fee" /></li>
 			</s:if>
 
@@ -96,13 +96,13 @@
 				<ol>
 					<s:iterator value="invoiceItems">
 						<s:if test="invoiceFee != null">
-							<li><label><s:property value="invoiceFee.fee" />:</label> $<s:property value="amount" /> USD</li>
+							<li><label><s:property value="invoiceFee.fee" />:</label> <s:property value="amount" /> <s:property value="contractor.currency"/></li>
 						</s:if>
 						<s:else>
-							<li><label><s:property value="description" />:</label> $<s:property value="amount" /> USD</li>
+							<li><label><s:property value="description" />:</label> <s:property value="amount" /> <s:property value="contractor.currency"/></li>
 						</s:else>
 					</s:iterator>
-					<li><label>Total:</label> $<s:property value="invoiceTotal" /> USD</li>
+					<li><label>Total:</label> <s:property value="invoiceTotal" /> <s:property value="contractor.currency"/></li>
 					<li>
 					<div><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
 					</li>
@@ -153,10 +153,10 @@
 								<s:property value="id" />
 							</s:else></td>
 							<td class="right"><s:date name="creationDate" format="M/d/yy" /></td>
-							<td class="right">$<s:property value="totalAmount" /></td>
-							<td class="right">$ <s:if
+							<td class="right"><s:property value="totalAmount" /> <s:property value="contractor.currency"/></td>
+							<td class="right"><s:if
 								test="class.simpleName.equals('Payment') && status.toString() == 'Unpaid' && balance > 0">
-								-</s:if> <s:property value="balance" /></td>
+								-</s:if> <s:property value="balance" /> <s:property value="contractor.currency"/></td>
 							<s:if test="permissions.admin">
 								<td><s:property value="status"/></td>
 							</s:if>

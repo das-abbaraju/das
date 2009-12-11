@@ -745,6 +745,8 @@ public class ContractorAccount extends Account implements JSONable {
 			if (!payment.getStatus().isVoid())
 				balance = balance.subtract(payment.getTotalAmount());
 		}
+		
+		balance = balance.setScale(2);
 
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {

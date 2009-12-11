@@ -56,10 +56,10 @@ fieldset.form ol {
 		<ol>
 			<li><label>Payment #:</label><s:property value="payment.id" /></li>
 			<li><label>Date:</label><s:date name="payment.creationDate" format="M/d/yy" /></li>
-			<li><label>Amount:</label>$<s:property value="payment.totalAmount" /><s:hidden id="payment_totalAmount" value="%{payment.totalAmount}"/></li>
+			<li><label>Amount:</label><s:property value="payment.totalAmount" /> <s:property value="payment.currency"/><s:hidden id="payment_totalAmount" value="%{payment.totalAmount}"/></li>
 			<s:if test="payment.status.unpaid">
-				<li><label>Applied:</label>$<span id="payment_amountApplied"><s:property value="payment.amountApplied"/></span></li>
-				<li><label>Credit:</label>$<span id="payment_balance"><s:property value="payment.balance"/></span>
+				<li><label>Applied:</label><span id="payment_amountApplied"><s:property value="payment.amountApplied"/></span> <s:property value="payment.currency"/></li>
+				<li><label>Credit:</label><span id="payment_balance"><s:property value="payment.balance"/></span> <s:property value="payment.currency"/></li>
 			</s:if>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
@@ -87,9 +87,9 @@ fieldset.form ol {
 		<ol>
 			<li><label>Payment #:</label>NEW</li>
 			<li><label>Date:</label><s:date name="new java.util.Date()" format="M/d/yy" /></li>
-			<li><label>Payment Amount:</label>$<s:textfield id="payment_totalAmount" name="payment.totalAmount" value="0.00" size="7" onchange="changeTotal()"/></li>
-			<li><label>Applied:</label>$<span id="payment_amountApplied">0.00</span></li>
-			<li><label>Credit:</label>$<span id="payment_balance">0.00</span>
+			<li><label>Payment Amount:</label><s:textfield id="payment_totalAmount" name="payment.totalAmount" value="0.00" size="7" onchange="changeTotal()"/> <s:property value="payment.currency"/></li>
+			<li><label>Applied:</label><span id="payment_amountApplied">0.00</span> <s:property value="payment.currency"/></li>
+			<li><label>Credit:</label><span id="payment_balance">0.00</span> <s:property value="payment.currency"/>
 				<input type="button" value="Clear" onclick="calculateTotalFromApplied()"></li>
 		</ol>
 		</td><td style="vertical-align: top;" valign="top">
@@ -124,8 +124,8 @@ fieldset.form ol {
 					<td>Invoice</td>
 					<td><a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />"><s:property value="invoice.id" /></a></td>
 					<td><s:date name="invoice.creationDate" format="M/d/yy" /></td>
-					<td>$<s:property value="invoice.totalAmount" /></td>
-					<td>$<s:property value="amount" /></td>
+					<td><s:property value="invoice.totalAmount" /> <s:property value="payment.currency"/></td>
+					<td><s:property value="amount" /> <s:property value="payment.currency"/></td>
 					<td><a class="remove" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=unapply&amountApplyMap[<s:property value="invoice.id" />]=0">Remove</a></td>
 				</tr>
 			</s:iterator>
@@ -134,8 +134,8 @@ fieldset.form ol {
 					<td>Refund</td>
 					<td><a href=""><s:property value="refund.id" /></a></td>
 					<td><s:date name="refund.creationDate" format="M/d/yy" /></td>
-					<td>$<s:property value="refund.totalAmount" /></td>
-					<td>$<s:property value="amount" /></td>
+					<td><s:property value="refund.totalAmount" /> <s:property value="payment.currency"/></td>
+					<td><s:property value="amount" /> <s:property value="payment.currency"/></td>
 					<td><a class="remove" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=unapply&amountApplyMap[<s:property value="refund.id" />]=0">Remove</a></td>
 				</tr>
 			</s:iterator>
@@ -159,11 +159,11 @@ fieldset.form ol {
 					<tr>
 						<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><span class="invoiceID"><s:property value="id" /></span></a></td>
 						<td class="center"><s:date name="creationDate" format="M/d/yy" /></td>
-						<td class="right">$<s:property value="totalAmount" /></td>
-						<td class="right">$<span id="invoice_balance_<s:property value="id"/>"><s:property value="balance" /></span></td>
+						<td class="right"><s:property value="totalAmount" /> <s:property value="payment.currency"/></td>
+						<td class="right"><span id="invoice_balance_<s:property value="id"/>"><s:property value="balance" /></span> <s:property value="payment.currency"/></td>
 						<td><input type="button" onclick="setInvoiceApply(<s:property value="id" />);" value="&gt;&gt;"/></td>
-						<td class="right">$<s:textfield id="invoice_apply_%{id}" cssClass="amountApply" name="amountApplyMap[%{id}]" size="6"
-							onchange="updateSingleAppliedAmount(%{id});" /></td>
+						<td class="right"><s:textfield id="invoice_apply_%{id}" cssClass="amountApply" name="amountApplyMap[%{id}]" size="6"
+							onchange="updateSingleAppliedAmount(%{id});" /> <s:property value="payment.currency"/></td>
 					</tr>
 				</s:if>
 			</s:iterator>

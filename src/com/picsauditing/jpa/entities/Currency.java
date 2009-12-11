@@ -13,4 +13,12 @@ public enum Currency {
 		return display;
 	}
 
+	public static Currency getFromISO(String isoCode) {
+		if (isoCode.equals("US"))
+			return USD;
+		else if (isoCode.equals("CA"))
+			return CAN;
+
+		return USD;
+	}
 }

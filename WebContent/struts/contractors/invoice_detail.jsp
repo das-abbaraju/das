@@ -179,12 +179,12 @@ input[type=submit] {
 										class="picsbutton positive">Change to: <s:property value="contractor.newMembershipLevel.fee" /></a></div>
 								</s:if>
 							</pics:permission></td>
-							<td class="right"><s:property value="invoice.currency.display"/> <s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" />
+							<td class="right"><s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" /> <s:property value="invoice.currency"/>
 							</td>
 						</s:if>
 						<s:else>
 							<td style="border-left: 0"><s:property value="description" /></td>
-							<td class="right"><s:property value="invoice.currency.display"/> <s:property value="amount" /></td>
+							<td class="right"><s:property value="amount" /> <s:property value="invoice.currency"/></td>
 						</s:else>
 					</tr>
 				</s:iterator>
@@ -192,12 +192,12 @@ input[type=submit] {
 					<tr>
 						<td colspan="2"><s:select list="feeList" name="newFeeId" headerKey="0"
 							headerValue="- Select a New Fee to Add -" listKey="id" listValue="fee" /></td>
-						<td class="right"><s:property value="invoice.currency.display"/> ___</td>
+						<td class="right">___ <s:property value="invoice.currency"/></td>
 					</tr>
 				</s:if>
 				<tr>
 					<th colspan="2" class="big right">Invoice Total</th>
-					<td class="big right"><s:property value="invoice.currency.display"/> <s:property value="invoice.totalAmount" /></td>
+					<td class="big right"><s:property value="invoice.totalAmount" /> <s:property value="invoice.currency"/></td>
 				</tr>
 				<s:if test="invoice.payments.size() > 0">
 					<tr>
@@ -224,13 +224,13 @@ input[type=submit] {
 								Check <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0">#<s:property value="payment.checkNumber"/></s:if>
 							</s:else>
 							</span>
-							<span class="big">(<s:property value="invoice.currency.display"/> <s:property value="amount" />)</span>
+							<span class="big">(<s:property value="amount" /> <s:property value="invoice.currency"/>)</span>
 							<br />
 						</s:iterator></td>
 					</tr>
 					<tr>
 						<th colspan="2" class="big right">Balance</th>
-						<td class="big right"><s:property value="invoice.currency.display"/> <s:property value="invoice.balance" /></td>
+						<td class="big right"><s:property value="invoice.balance" /> <s:property value="invoice.currency"/></td>
 					</tr>
 				</s:if>
 			</table>

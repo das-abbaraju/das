@@ -108,7 +108,7 @@ public class Invoice extends Transaction {
 
 	@Transient
 	public void updateAmountApplied() {
-		amountApplied = BigDecimal.ZERO;
+		amountApplied = BigDecimal.ZERO.setScale(2);
 		for (PaymentApplied ip : payments) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}

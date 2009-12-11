@@ -8,6 +8,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentMethod;
 
 public class BrainTreeTest extends TestCase {
 	public BrainTreeTest(String name) {
@@ -20,6 +21,7 @@ public class BrainTreeTest extends TestCase {
 		service.setPassword("password1");
 		Payment payment = new Payment();
 		payment.setAccount(EntityFactory.makeContractor());
+		payment.setCurrency(payment.getAccount().getCurrency());
 		payment.setId(123);
 		payment.setTotalAmount(new BigDecimal(99));
 		try {

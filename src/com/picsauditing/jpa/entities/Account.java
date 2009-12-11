@@ -392,6 +392,11 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			return 0;
 		return name.compareToIgnoreCase(o.getName());
 	}
+	
+	@Transient
+	public Currency getCurrency() {
+		return Currency.getFromISO(country);
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")

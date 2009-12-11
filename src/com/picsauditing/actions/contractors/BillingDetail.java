@@ -66,7 +66,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
 
-		invoiceTotal = new BigDecimal(0);
+		invoiceTotal = BigDecimal.ZERO.setScale(2);
 		for (InvoiceItem item : invoiceItems)
 			invoiceTotal = invoiceTotal.add(item.getAmount());
 
@@ -74,11 +74,12 @@ public class BillingDetail extends ContractorActionSupport {
 
 			Invoice invoice = new Invoice();
 			invoice.setAccount(contractor);
+			invoice.setCurrency(contractor.getCurrency());
 			invoice.setStatus(TransactionStatus.Unpaid);
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
 			invoice.setAuditColumns(permissions);
-			
+
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
 				invoice.setQbSync(true);
 
@@ -105,9 +106,10 @@ public class BillingDetail extends ContractorActionSupport {
 			if (prop != null) {
 				notes = prop.getValue();
 			}
-			// Add the list of operators if this invoice has a membership level on it
+			// Add the list of operators if this invoice has a membership level
+			// on it
 			boolean hasMembership = false;
-			for(InvoiceItem item : invoiceItems) {
+			for (InvoiceItem item : invoiceItems) {
 				if (item.getInvoiceFee().getFeeClass().equals("Membership"))
 					hasMembership = true;
 			}
@@ -128,9 +130,9 @@ public class BillingDetail extends ContractorActionSupport {
 			contractor.syncBalance();
 			accountDao.save(contractor);
 
-			if(invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
+			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 				this.addNote(contractor, "Created invoice for $" + invoiceTotal, NoteCategory.Billing, LowMedHigh.Med,
-					false, Account.PicsID, this.getUser());
+						false, Account.PicsID, this.getUser());
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
@@ -191,10 +193,10 @@ public class BillingDetail extends ContractorActionSupport {
 	public BigDecimal getInvoiceTotal() {
 		return invoiceTotal;
 	}
-	
+
 	public List<Transaction> getTransactions() {
-		List<Transaction> transactionList = transactionDAO.findWhere("t.account.id = "+contractor.getId());
-		if(transactionList == null)
+		List<Transaction> transactionList = transactionDAO.findWhere("t.account.id = " + contractor.getId());
+		if (transactionList == null)
 			return new ArrayList<Transaction>();
 		return transactionList;
 	}

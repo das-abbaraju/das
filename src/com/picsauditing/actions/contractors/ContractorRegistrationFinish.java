@@ -153,6 +153,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						invoice.setStatus(TransactionStatus.Unpaid);
 						invoice.setItems(items);
 						invoice.setAccount(contractor);
+						invoice.setCurrency(contractor.getCurrency());
 						invoice.setAuditColumns(new User(User.SYSTEM));
 						invoice.setDueDate(new Date());
 

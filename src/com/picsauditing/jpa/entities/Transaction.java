@@ -57,13 +57,13 @@ public abstract class Transaction extends BaseTable {
 	@Transient
 	public BigDecimal getBalance() {
 		if (TransactionStatus.Void.equals(status))
-			return BigDecimal.ZERO;
+			return BigDecimal.ZERO.setScale(2);
 		return totalAmount.subtract(amountApplied);
 	}
 
 	@Transient
 	public boolean isApplied() {
-		return getBalance().equals(BigDecimal.ZERO);
+		return getBalance().compareTo(BigDecimal.ZERO) == 0;
 	}
 
 	/**
