@@ -101,7 +101,7 @@
 				<group description="Complete Registration">
 							<clickLink description="Click link: 5) Confirm" htmlId="conConfirmLink"/>
 							<clickLink label="5) Confirm"/>
-							<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+							<verifyText description="Verify that text is contained in the page" text=" USD $ 25.00"/>
 							<clickButton label="Complete My Registration" name="button"/>
 							<verifyText description="Verify that text is contained in the page" text="Your account has been registered successfully."/>
 							<clickLink label="Logout"/>
