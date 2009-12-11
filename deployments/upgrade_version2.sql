@@ -23,3 +23,5 @@ and pcd.catID = 151;
 update accounts set country = 'CA' where country = 'Canada';
 
 update accounts set country = 'US' where country = 'USA';
+
+update accounts set country = null where country like '%- country -%';
