@@ -14,7 +14,7 @@
 				<storeProperty name="report_link" value="Audit Definitions" />
 				&click_report;
 				
-				<invoke url="http://alpha.picsauditing.com/app/ManageAuditType.action?id=1"/>
+				<invoke url="ManageAuditType.action?id=1"/>
 				
 				<group description="Change PQF title to Pre-Qualification">
 				
