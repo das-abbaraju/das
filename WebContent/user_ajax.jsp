@@ -27,7 +27,7 @@
 		}	
 		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 		if (!Strings.isEmpty(taxId)) {
-			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId);
+			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId, "US");
 			if (cAccount != null) {
 				%><%=taxId%> already exists. Please contact a PICS representative at 949-387-1940 ext 1.<br/><%
 				} else {
