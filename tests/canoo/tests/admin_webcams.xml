@@ -15,22 +15,26 @@
 					<enableJavaScript enable="false"/>
 					<group description="Create Webcam">
 						<sleep seconds="5"/>
-						<invoke url="http://alpha.picsauditing.com/app/ManageWebcams.action"/>
+						<invoke url="ManageWebcams.action"/>
 						<sleep seconds="5"/>
-						<setInputField htmlId="webcam_form_webcam_model" value="Samsung"/>
-						<setInputField htmlId="webcam_form_webcam_replacementCost" value="50"/>
+						<clickLink label="Manage Webcams"/>
+						<setInputField name="webcam.make" value="Samsung"/>
+						<setInputField name="webcam.model" value="Canoo Webcam"/>
+						<setInputField name="webcam.replacementCost" value="500"/>
 						<clickButton label="Save"/>
 						<verifyText text="Saved webcam"/>
 					</group>
-
-					<group description="Edit Webcam">
-					<invoke url="http://alpha.picsauditing.com/app/ManageWebcams.action?webcam.id=4"/>
-						<setInputField name="webcam.make" value="Samsung"/>
-						<clickButton label="Save"/>
-						<invoke url="http://alpha.picsauditing.com/app/ManageWebcams.action?webcam.id=4"/>
-						<verifyText text="Samsung"/>
-						<setInputField name="webcam.make" value="Logitech"/>
-						<clickButton label="Save"/>
+					<group description="Assign Webcam">
+						<invoke url="AssignWebcams.action"/>
+						<clickLink href="?audit.id="/>
+						<setSelectField name="audit.country" text="United States"/>
+						<setSelectField htmlId="AssignWebcams_webcam_id" optionIndex="1"/>
+						<setInputField htmlId="AssignWebcams_webcam_trackingNumber" value="7000000000"/>
+						<clickButton label="Save" name="button"/>
+						<verifyText description="Verify that text is contained in the page" text="Sent webcam"/>
+					</group>
+					<group description="Assign Webcam">
+						
 					</group>
 				</group>
 			</steps>
