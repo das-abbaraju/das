@@ -47,7 +47,7 @@
 								<clickButton label="Collect Payment"/>
 							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 								<verifyText description="Active:Yes" text="Yes"/>
-								<verifyText description="Verify that text is contained in the page" text="$0.00 USD"/>
+								<verifyText description="Verify that text is contained in the page" text="$0.00"/>
 								<clickLink description="Click linak: Edit Account" href="ContractorEdit.action"/>
 								<clickLink label="Edit Account"/>
 								<clickButton label="Delete"/>
