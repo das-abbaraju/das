@@ -16,6 +16,8 @@
 		<ant antfile="admin_insurance.xml"/>
 		<ant antfile="admin_reports.xml"/>
 		<ant antfile="contractor_search.xml"/>
+		<ant antfile="admin_audits.xml"/>
+		<ant antfile="admin_webcams.xml"/>
 		
 		<ant antfile="operator.xml"/>
 		<ant antfile="operator_config.xml"/>
@@ -26,7 +28,8 @@
 	</target>
 
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="contractor_trialaccount.xml"/>
+		<ant antfile="admin_audits.xml"/>
+		<ant antfile="admin_webcams.xml"/>
 
 	</target>
 	
