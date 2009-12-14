@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 
 @Transactional
 public class OshaAuditDAO extends PicsDAO {
@@ -96,4 +97,11 @@ public class OshaAuditDAO extends PicsDAO {
 		return ( AuditData ) qry.getSingleResult();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public int removeByType(int auditID, OshaType oshaType) {
+		Query query = em.createQuery("DELETE OshaAudit WHERE conAudit.id = ? AND type = ?");
+		query.setParameter(1, auditID);
+		query.setParameter(2, oshaType);
+		return query.executeUpdate();		
+	}
 }

@@ -69,6 +69,16 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
+	public List<AuditData> findDataByCategory(int auditID, int categoryID) {
+		Query query = em.createQuery("FROM AuditData d "
+				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category.id = :category ");
+		query.setParameter("auditID", auditID);
+		query.setParameter("category", categoryID);
+
+		return query.getResultList();
+	}
+
+
 	public AnswerMap findByCategory(int auditID, int categoryID) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryID);

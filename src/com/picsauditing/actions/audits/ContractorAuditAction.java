@@ -1,7 +1,10 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -14,11 +17,18 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.AnswerMap;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -31,6 +41,7 @@ import com.picsauditing.jpa.entities.YesNo;
 public class ContractorAuditAction extends AuditCategorySingleAction {
 
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+	protected OshaAuditDAO oshaAuditDAO;
 
 	private boolean isCanApply = false;
 	private int applyCategoryID = 0;
@@ -38,9 +49,10 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 
 	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
 			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao) {
+			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO) {
 		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder, certificateDao);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
+		this.oshaAuditDAO = oshaAuditDAO;
 	}
 
 	public String execute() throws Exception {
@@ -77,7 +89,33 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 				}
 			}
 		}
-
+		
+		if(conAudit.getAuditType().isAnnualAddendum() 
+				&& conAudit.getAuditStatus().isActiveSubmitted()) {
+			Set<Integer> catIds = new HashSet<Integer>();
+			for(AuditCatData auditCatData : conAudit.getCategories()) {
+				if(auditCatData.isAppliesB()) {
+					catIds.add(auditCatData.getCategory().getId());
+				}
+			}
+			
+			if(!catIds.contains(AuditCategory.OSHA_AUDIT)) {
+				removeShaData(OshaType.OSHA, conAudit.getId());
+			}
+			if(!catIds.contains(AuditCategory.MSHA)) {
+				removeShaData(OshaType.MSHA, conAudit.getId());
+			}
+			if(!catIds.contains(AuditCategory.CANADIAN_STATISTICS)) {
+				removeShaData(OshaType.COHS, conAudit.getId());
+			}
+			if(!catIds.contains(AuditCategory.EMR)) {
+				removeData(AuditCategory.EMR , conAudit.getId());
+			}
+			if(!catIds.contains(AuditCategory.LOSS_RUN)) {
+				removeData(AuditCategory.LOSS_RUN, conAudit.getId());
+			}
+		}
+		
 		super.execute();
 
 		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
@@ -144,5 +182,19 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			return auditData.getAnswer();
 
 		return null;	
+	}
+	
+	private void removeShaData(OshaType oshaType, int auditID) {
+		oshaAuditDAO.removeByType(auditID, oshaType);
+	}
+	
+	private void removeData(int categoryID, int auditID) {
+		List<AuditData> data = auditDataDao.findDataByCategory(auditID, categoryID);
+		Iterator<AuditData> aIterator = data.iterator();
+		while(aIterator.hasNext()) {
+			AuditData auditData = aIterator.next();
+			aIterator.remove();
+			auditDataDao.remove(auditData.getId());
+		}
 	}
 }
