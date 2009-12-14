@@ -22,37 +22,47 @@
 				<storeProperty name="report_link" value="PQF Verification" />
 				&click_report;-->
 
-				<group description="Close Assigned Audits">
-					<invoke url="http://alpha.picsauditing.com/app/ReportAuditList.action?filter.auditorId=927"/>
-					<clickLink label="Type"/>
-					<setSelectField name="" text="Dennis Dooly"/>
-					<setInputField name="notes" value="I wrote a note"/>
-					<clickButton label="Save"/>
-					<clickLink label="Desktop Audit" href="Audit.action?auditID=98262"/>
-					<verifyText text="Dennis Dooly"/>
-					<verifyText text="Jesse Cota"/>
-					<clickLink label="My Audits"/>
-					<clickLink label="P"/>
-					<verifyText text="Praxair Distribution Inc."/>
-				</group>
-			</steps>
-		</webtest>
-		
-		<webtest name="Assign Contractor to a CSR">
-			<steps>
-				&login;
-				<invoke url="http://alpha.picsauditing.com/app/ContractorAssigned.action"/>
-				<setInputField name="filter.accountName" value="Canoo"/>
-				<clickButton label="Search"/>
-				<ifStep>
-					<condition>
-						<verifyText text="Canoo's Test Contractor"/>
-					</condition>
-					<setSelectField name="" text="Jake Fazeli"/>
-					<clickLink label="Canoo's Test Contractor"/>					
-					<verifyText description="Verify that text is contained in the page" text="Jake Fazeli"/>
-				</ifStep>
-			</steps>	
-		</webtest>
+
+						&login;
+						&body_verify;
+					
+						<group description="Go to report, pull up contractor">
+							<clickLink label="Sched. &amp; Assign"/>
+							<clickLink label="Audit Type"/>
+							<setSelectField name="filter.auditTypeID" text="Office Audit"/>
+							<clickButton label="Search"/>
+							<clickLink label="Scheduled"/>
+							<clickLink href="ScheduleAudit.action"/>
+						</group>
+						<group description="Add Address Information">
+						<setInputField name="conAudit.contractorContact" value="Joe Smith"/>
+						<setInputField name="conAudit.phone2" value="tester@picsauditing.com"/>
+						<setInputField name="conAudit.phone" value="949-387-1940"/>
+						<setInputField name="conAudit.address" value="1600 Pennsylvania Avenue "/>
+						<setInputField name="conAudit.zip" value="20500"/>
+						<clickButton label="Verify Address"/>
+						<sleep seconds="3"/>
+						<clickButton label="Next >>"/>
+						</group>
+						<group description="Select Date and Time">
+							<ifStep>
+								<condition>
+									<clickLink label="8:00 AM to 10:00 AM"/>
+								</condition>
+								<else>
+									<clickButton label="Show More Timeslots"/>
+									<clickLink label="11:00 AM to 1:00 PM"/>
+								</else>
+							</ifStep>
+						</group>
+						<group description="Confirm Audit">
+							<setRadioButton description="Check radio button conAudit.needsCamera: true" name="conAudit.needsCamera" value="true"/>
+							<setCheckbox name="confirmed"/>
+							<setCheckbox htmlId="ScheduleAudit_confirmed"/>
+							<clickButton label="Confirm Audit"/>
+							<verifyText description="Verify that text is contained in the page" text="Congratulations"/>
+						</group>
+					</steps>
+				</webtest>
 	</target>
 </project>
