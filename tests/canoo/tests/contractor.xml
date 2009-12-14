@@ -38,14 +38,6 @@
 					label="COMPANY INFORMATION" />
 				&body_verify;
 
-				<clickLink description="View Desktop Audit"
-					label="Desktop Audit" />
-				&body_verify;
-
-				<clickLink description="View Office Audit"
-					label="Office Audit" />
-				&body_verify;
-
 			</steps>
 		</webtest>
 	</target>
