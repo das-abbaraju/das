@@ -23,9 +23,7 @@
 							<clickLink label="Logout"/>
 						</then>
 						<else>
-							<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
-							<clickLink label="Edit Account"/>
-							<clickButton label="Delete" name="button"/>
+							&delete_contractor;
 						</else>
 				</ifStep>
 			</steps>
