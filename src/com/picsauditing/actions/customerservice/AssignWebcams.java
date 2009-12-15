@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.Inputs;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -61,7 +60,8 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 						addActionError("Webcam was missing");
 					} else {
 						if (audit.getContractorAccount().getWebcam() != null) {
-							addActionMessage("Removed Webcam "+audit.getContractorAccount().getWebcam().getId() +" from Contractor."); 
+							addActionMessage("Removed Webcam " + audit.getContractorAccount().getWebcam().getId()
+									+ " from Contractor.");
 							audit.getContractorAccount().getWebcam().setContractor(null);
 						}
 						webcam.setContractor(audit.getContractorAccount());

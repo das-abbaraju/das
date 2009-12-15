@@ -41,7 +41,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String contact;
 	protected String address;
 	protected String city;
-	protected String country = "US";
+	protected Country country;
 	protected String state;
 	protected String zip;
 	protected String phone;
@@ -62,7 +62,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String reason;
 	protected boolean acceptsBids;
 	private String description;
-
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -147,12 +146,13 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.city = city;
 	}
 
-	@Column(length = 25)
-	public String getCountry() {
+	@ManyToOne
+	@JoinColumn(name = "country")
+	public Country getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(Country country) {
 		this.country = country;
 	}
 
@@ -173,7 +173,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public void setZip(String zip) {
 		this.zip = zip;
 	}
-	
+
 	@Transient
 	public String getFullAddress() {
 		// We may want to extract this out and create a String address formatter
@@ -183,8 +183,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			full.append(", ").append(city);
 		if (!Strings.isEmpty(state))
 			full.append(", ").append(state);
-		if (!Strings.isEmpty(country) && !country.equals("US") && !country.startsWith("United"))
-			full.append(", ").append(country);
+		if (country != null && !country.getIsoCode().equals("US"))
+			full.append(", ").append(country.getName());
 		if (!Strings.isEmpty(zip))
 			full.append(" ").append(zip);
 
@@ -248,7 +248,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	}
 
 	/**
-	 * North American Industry Classification System http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
+	 * North American Industry Classification System
+	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
 	 * 
 	 * @return
 	 */
@@ -285,7 +286,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	}
 
 	/**
-	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * True if QuickBooks Web Connector needs to pull this record into
+	 * QuickBooks
 	 * 
 	 * @return
 	 */
@@ -352,7 +354,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public String getDescriptionHTML() {
 		return Utilities.escapeNewLines(this.description);
 	}
-	
+
 	@OneToMany(mappedBy = "account")
 	public List<User> getUsers() {
 		return users;
@@ -362,7 +364,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.users = users;
 	}
 
-	@OneToMany(mappedBy = "account", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	@OneToMany(mappedBy = "account", cascade = { CascadeType.MERGE, CascadeType.REMOVE })
 	public List<AccountUser> getAccountUsers() {
 		return accountUsers;
 	}
@@ -392,10 +394,10 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			return 0;
 		return name.compareToIgnoreCase(o.getName());
 	}
-	
+
 	@Transient
 	public Currency getCurrency() {
-		return Currency.getFromISO(country);
+		return Currency.getFromISO(country.getIsoCode());
 	}
 
 	@Override
@@ -407,10 +409,10 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		obj.put("contact", contact);
 		obj.put("active", isActiveB());
 		obj.put("type", type.toString());
-		
+
 		if (!full)
 			return obj;
-		
+
 		if (address != null)
 			obj.put("address", address);
 		if (dbaName != null)
@@ -435,13 +437,13 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			obj.put("email", email);
 		if (industry != null)
 			obj.put("industry", industry.toString());
-		
+
 		return obj;
 	}
-	
+
 	@Override
 	public void fromJSON(JSONObject obj) {
 		super.fromJSON(obj);
-		name = (String)obj.get("name");
+		name = (String) obj.get("name");
 	}
 }

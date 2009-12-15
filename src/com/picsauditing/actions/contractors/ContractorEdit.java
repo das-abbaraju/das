@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
@@ -17,6 +18,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -26,6 +28,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -39,6 +42,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -58,6 +62,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected String password1 = null;
 	protected String password2 = null;
 	protected int[] operatorIds = new int[300];
+	protected Country country;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
@@ -97,6 +102,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 			}
 			accountDao.clear();
+
+			String[] isoArray = (String []) ActionContext.getContext().getParameters().get("country.isoCode");
+			if (isoArray != null && isoArray.length > 0 && !Strings.isEmpty(isoArray[0]))
+				country = getCountryDAO().find(isoArray[0]);
 		}
 	}
 
@@ -134,6 +143,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 						contractor.setBrochureFile(extension);
 					}
+
+					if (country != null && !country.equals(contractor.getCountry())) {
+						contractor.setCountry(country);
+					}
+
 					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2,
 							user);
 					if (errors.size() > 0) {
@@ -224,7 +238,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 					if (emailAddresses.size() > 0) {
 						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(51); // Deactivation Email for operators
+						emailBuilder.setTemplate(51); // Deactivation Email for
+						// operators
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.setContractor(contractor);
 						emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
@@ -335,6 +350,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setOperatorIds(int[] operatorIds) {
 		this.operatorIds = operatorIds;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	public List<Invoice> getUnpaidInvoices() {

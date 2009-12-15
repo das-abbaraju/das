@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
@@ -22,6 +23,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
@@ -46,6 +48,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected int accountUserId;
 	protected AccountUser salesRep = null;
 	protected AccountUser accountRep = null;
+	protected Country country;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
 			AccountUserDAO accountUserDAO, UserDAO userDAO) {
@@ -70,6 +73,10 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				i++;
 			}
 		}
+
+		String[] isoArray = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
+		if (isoArray != null && isoArray.length > 0 && !Strings.isEmpty(isoArray[0]))
+			country = getCountryDAO().find(isoArray[0]);
 	}
 
 	public String execute() throws Exception {
@@ -119,6 +126,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			}
 
 			if (button.equalsIgnoreCase("Save")) {
+				if (country != null && !country.equals(operator.getCountry())) 
+					operator.setCountry(country);
 				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
 					operatorDao.clear();
@@ -357,5 +366,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	public void setAccountRep(AccountUser accountRep) {
 		this.accountRep = accountRep;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 }

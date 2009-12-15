@@ -64,14 +64,14 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the Address field.");
 		if (Strings.isEmpty(contractor.getCity()))
 			errorMessages.addElement("Please fill in the City field.");
-		if(contractor.getCountry().equals("- Country -")) 
+		if (contractor.getCountry() == null)
 			errorMessages.addElement("Please select a Country");
-		if(contractor.getCountry().equals("USA") || contractor.getCountry().equals("Canada")) {
-			if(Strings.isEmpty(contractor.getState())) {
+		if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
+			if (Strings.isEmpty(contractor.getState())) {
 				errorMessages.addElement("Please select a State");
 			}
 		}
-		
+
 		if (Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
 		if (Strings.isEmpty(contractor.getPhone()))
@@ -110,7 +110,8 @@ public class ContractorValidator {
 	}
 
 	public boolean verifyTaxID(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDAO.findTaxID(contractorAccount.getTaxId(), contractorAccount.getCountry());
+		ContractorAccount cAccount = contractorAccountDAO.findTaxID(contractorAccount.getTaxId(), contractorAccount
+				.getCountry().getIsoCode());
 		if (cAccount == null || cAccount.equals(contractorAccount))
 			return true;
 

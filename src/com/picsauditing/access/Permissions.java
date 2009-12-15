@@ -134,18 +134,16 @@ public class Permissions implements Serializable {
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
 				for (ContractorOperator co : contractor.getOperators()) {
-					String isoCode = Country.convertToCode(co.getOperatorAccount().getCountry());
-					if (isoCode != null)
-						accountCountries.add(isoCode);
+					if (co.getOperatorAccount().getCountry() != null)
+						accountCountries.add(co.getOperatorAccount().getCountry().getIsoCode());
 				}
 			}
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 
-				String isoCode = Country.convertToCode(operator.getCountry());
-				if (isoCode != null)
-					accountCountries.add(isoCode);
+				if (operator.getCountry() != null)
+					accountCountries.add(operator.getCountry().getIsoCode());
 
 				if (isOperator()) {
 					if (operator.getParent() != null)
@@ -165,13 +163,14 @@ public class Permissions implements Serializable {
 					loadAuditTypes(operator);
 				}
 				if (isCorporate()) {
-					// Supporting Hub Accounts to See other Connected Corporate Accounts
-					if(operator.getParent() != null) {
+					// Supporting Hub Accounts to See other Connected Corporate
+					// Accounts
+					if (operator.getParent() != null) {
 						operatorChildren.add(operator.getParent().getId());
 					}
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
-						
+
 						if (facility.getOperator().getCanSeeInsurance().isTrue())
 							visibleCAOs.add(facility.getOperator().getInheritInsuranceCriteria().getId());
 

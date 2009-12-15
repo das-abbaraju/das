@@ -34,7 +34,7 @@ function changeCountry(country) {
 }
 
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{'account.country': $('#contractorCountry').val()});
+	$('#state_li').load('StateListAjax.action',{'country': $('#contractorCountry').val()});
 	$('#country_display').val($('#contractorCountry').find('option[selected]').text());
 	if (country == 'US')
 		$('#taxIdLabel').text('Tax ID:');
@@ -69,10 +69,10 @@ $(function(){
 						</li>
 						<li><label>Country:</label>
 							<s:select list="countryList" id="contractorCountry"
-							name="contractor.country"
+							name="contractor.country.isoCode"
 							onchange="changeCountry(this.value);"
 							value="locale.country"
-							listKey="isoCode" listValue="english"
+							listKey="isoCode" listValue="name"
 							/><span class="redMain">*</span></li>
 						<li><label id="taxIdLabel">Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"
 							size="9" maxLength="9" onchange="checkTaxId(this.value);" />
@@ -99,11 +99,11 @@ $(function(){
 							<s:textfield name="contractor.zip" size="35" /><span class="redMain">*</span></li>
 						<li><label>Phone:</label>
 							<s:textfield name="contractor.phone" size="35" /><span class="redMain">*</span></li>
-						<li><label>Phone 2:</label> 
+						<li><label>Phone 2:</label>
 							<s:textfield name="contractor.phone2" size="35" /></li>
-						<li><label>Fax:</label> 
+						<li><label>Fax:</label>
 							<s:textfield name="contractor.fax" size="35" /></li>
-						<li><label>Email:</label> 
+						<li><label>Email:</label>
 							<s:textfield name="contractor.email" size="35" /><span class="redMain">* We send vital account info to this email</span></li>
 					</ol>
 				</fieldset>
@@ -126,14 +126,14 @@ $(function(){
 					</fieldset>
 					<fieldset class="form">
 						<legend><span>Industry Details</span></legend>
-							<ol>
+						<ol>
 							<li><label>Industry:</label> <s:select list="industryList"
-							name="contractor.industry" /></li>
-						<li><label>Main Trade:</label> <s:select list="tradeList"
-							name="contractor.mainTrade" headerKey=""
-							headerValue="- Choose a trade -" listKey="question"
-							listValue="question" /><span class="redMain">*</span></li>
-					</ol>
+								name="contractor.industry" /></li>
+							<li><label>Main Trade:</label> <s:select list="tradeList"
+								name="contractor.mainTrade" headerKey=""
+								headerValue="- Choose a trade -" listKey="question"
+								listValue="question" /><span class="redMain">*</span></li>
+						</ol>
 					</fieldset>
 					<fieldset class="form">
 						<legend><span>Company Identification</span></legend>

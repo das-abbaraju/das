@@ -11,6 +11,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -20,6 +21,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -29,6 +31,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -43,7 +46,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected NoteDAO noteDAO;
 	protected ContractorValidator contractorValidator;
 
-	protected String country;
+	protected Country country;
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO, UserDAO userDAO) {
@@ -57,10 +60,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-
-		if ("country".equals(button)) {
-			return "country";
-		}
 
 		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
@@ -178,11 +177,15 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.user = user;
 	}
 
-	public String getCountry() {
+	public Country getCountry() {
 		return country;
 	}
 
 	public void setCountry(String country) {
+		this.country = getCountryDAO().find(country);
+	}
+
+	public void setCountry(Country country) {
 		this.country = country;
 	}
 

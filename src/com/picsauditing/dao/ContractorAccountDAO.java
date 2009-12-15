@@ -133,7 +133,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		if (taxId == null)
 			taxId = "";
 		try {
-			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId AND country = :country");
+			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId AND country.isoCode = :country");
 			query.setParameter("taxId", taxId);
 			query.setParameter("country", country);
 			query.setMaxResults(1);

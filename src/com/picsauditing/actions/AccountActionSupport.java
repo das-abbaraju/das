@@ -30,6 +30,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	protected NoteCategory noteCategory = NoteCategory.General;
 
 	private NoteDAO noteDao;
+	private CountryDAO countryDAO;
 
 	@Override
 	public String execute() throws Exception {
@@ -53,7 +54,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	public void setSubHeading(String subHeading) {
 		this.subHeading = subHeading;
 	}
-	
+
 	public void setAccount(Account account) {
 		this.account = account;
 	}
@@ -128,15 +129,20 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/***** END of NOTES *****/
 
+	public CountryDAO getCountryDAO() {
+		if (countryDAO == null)
+			countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
+		return countryDAO;
+	}
+
 	public List<Country> getCountryList() {
-		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
-		return countryDAO.findAll();
+		return getCountryDAO().findAll();
 	}
 
 	public TreeMap<String, String> getStateList() {
 		if (account == null)
 			return State.getStates(null);
-		return State.getStates(Country.convertToCode(account.getCountry()));
+		return State.getStates(account.getCountry().getIsoCode());
 	}
 
 	public TreeMap<String, String> getStateList(String countries) {

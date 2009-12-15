@@ -13,7 +13,7 @@ public class Country {
 	protected String english;
 	protected String spanish;
 	protected String french;
-	
+
 	public Country() {
 	}
 
@@ -82,7 +82,12 @@ public class Country {
 
 		return "US";
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Country && this.isoCode.equals(((Country) obj).getIsoCode());
+	}
+
 	@Override
 	public String toString() {
 		return english;

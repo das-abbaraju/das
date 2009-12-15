@@ -620,9 +620,9 @@ public class ContractorAccount extends Account implements JSONable {
 				trir += osha.getRecordableTotalRate();
 				rwc += osha.getRestrictedWorkCases();
 				dart += osha.getRestrictedDaysAwayRate();
-				if(osha.getNeer() != null)
+				if (osha.getNeer() != null)
 					neer += osha.getNeer();
-				if(osha.getCad7() != null)
+				if (osha.getCad7() != null)
 					cad7 += osha.getCad7();
 			}
 			avg.setManHours(Math.round(manHours / count));
@@ -636,7 +636,7 @@ public class ContractorAccount extends Account implements JSONable {
 			avg.setRestrictedWorkCases(Math.round(rwc / count));
 			avg.setRestrictedDaysAwayRate(dart / count);
 			avg.setNeer(neer / count);
-			avg.setCad7(cad7/ count);
+			avg.setCad7(cad7 / count);
 
 			oshaMap.put(OshaAudit.AVG, avg);
 		}
@@ -745,7 +745,7 @@ public class ContractorAccount extends Account implements JSONable {
 			if (!payment.getStatus().isVoid())
 				balance = balance.subtract(payment.getTotalAmount());
 		}
-		
+
 		balance = balance.setScale(2);
 
 		for (Invoice invoice : getSortedInvoices()) {
@@ -761,8 +761,7 @@ public class ContractorAccount extends Account implements JSONable {
 							foundPaymentExpires = true;
 						}
 					}
-					if (!foundMembershipDate 
-							&& invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
+					if (!foundMembershipDate && invoiceItem.getInvoiceFee().getFeeClass().equals("Activation")) {
 						if (invoiceItem.getPaymentExpires() != null)
 							membershipDate = invoiceItem.getPaymentExpires();
 						else
@@ -875,14 +874,14 @@ public class ContractorAccount extends Account implements JSONable {
 	public String getBillingStatus() {
 		if (!isMustPayB())
 			return "Current";
-		
-		if(acceptsBids) {
-			if(isActiveB()) {
+
+		if (acceptsBids) {
+			if (isActiveB()) {
 				return "Current";
-			}	
+			}
 			return "BidOnlyAccount";
-		}	
-		
+		}
+
 		if (newMembershipLevel == null)
 			return "Not Calculated";
 
@@ -906,8 +905,8 @@ public class ContractorAccount extends Account implements JSONable {
 					return "Reactivation";
 			}
 		}
-		
-		if(membershipLevel.getId() == InvoiceFee.BIDONLY) {
+
+		if (membershipLevel.getId() == InvoiceFee.BIDONLY) {
 			return "Renewal";
 		}
 		if (newMembershipLevel.getAmount().compareTo(membershipLevel.getAmount()) > 0)
@@ -923,40 +922,38 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return "Current";
 	}
-	
+
 	@Transient
 	public boolean isOqEmployees(AuditDataDAO auditDataDAO) {
 		List<Integer> questions = new ArrayList<Integer>();
 		questions.add(AuditQuestion.OQ_EMPLOYEES);
 		List<AuditData> auditDataList = auditDataDAO.findAnswerByConQuestions(getId(), questions);
-		if(auditDataList != null && auditDataList.size() > 0) {
+		if (auditDataList != null && auditDataList.size() > 0) {
 			AuditData auditData = auditDataList.get(0);
-			if(auditData != null && "Yes".equals(auditData.getAnswer()))
+			if (auditData != null && "Yes".equals(auditData.getAnswer()))
 				return true;
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isCOR(AuditDataDAO auditDataDAO) {
 		List<Integer> questions = new ArrayList<Integer>();
 		questions.add(2954);
 		List<AuditData> auditDataList = auditDataDAO.findAnswerByConQuestions(getId(), questions);
-		if(auditDataList != null && auditDataList.size() > 0) {
+		if (auditDataList != null && auditDataList.size() > 0) {
 			AuditData auditData = auditDataList.get(0);
-			if(auditData != null && "Yes".equals(auditData.getAnswer()))
+			if (auditData != null && "Yes".equals(auditData.getAnswer()))
 				return true;
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public Set<String> getCountries() {
 		Set<String> countries = new HashSet<String>();
 		for (ContractorOperator co : getOperators()) {
-			String isoCode = Country.convertToCode(co.getOperatorAccount().getCountry());
-			if (isoCode != null)
-				countries.add(isoCode);
+			countries.add(country.getIsoCode());
 		}
 		return countries;
 	}

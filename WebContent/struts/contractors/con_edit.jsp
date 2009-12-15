@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <%@page import="com.picsauditing.util.URLUtils"%>
 <html>
 <head>
@@ -10,7 +10,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{'account.country': $('#contractorCountry').val()});
+	$('#state_li').load('StateListAjax.action',{'country': $('#contractorCountry').val(), state: '<s:property value="contractor.state"/>'});
 }
 
 function countryChanged(country) {
@@ -95,11 +95,11 @@ $(function() {
 					</li>
 					<li><label>Country:</label>
 						<s:select list="countryList"
-						name="contractor.country" id="contractorCountry"
-						listKey="isoCode" listValue="english"
+						name="country.isoCode" id="contractorCountry"
+						listKey="isoCode" listValue="name"
+						value="contractor.country.isoCode"
 						onchange="countryChanged(this.value)"
 						/></li>
-						
 					<li id="state_li"></li>
 					<li><label>Zip:</label>
 						<s:textfield name="contractor.zip" size="7" />
@@ -153,7 +153,7 @@ $(function() {
 					<li><label>Billing City:</label>
 						<s:textfield name="contractor.billingCity" size="35" /></li>
 					<li><label>Billing State:</label>
-						<s:select list="StateList" name="contractor.billingState"/></li>
+						<s:select list="stateList" name="contractor.billingState" headerKey="" headerValue="- State -"/></li>
 					<li><label>Billing Zip:</label>
 						<s:textfield name="contractor.billingZip" size="35" /></li>
 					<li><label>Billing Phone:</label>
@@ -224,7 +224,7 @@ $(function() {
 					<li><label>Bid Only Account:</label>
 						<s:checkbox name="contractor.acceptsBids"/></li>	
 					<li><label>Reason:</label>
-						<s:select list="deactivationReasons" name="contractor.reason" headerKey=" " headerValue="- Deactivation Reason -"/>
+						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>
 					</li>
 					<pics:permission perm="RiskRank">
 						<li><label>Risk Level:</label>

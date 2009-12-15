@@ -1,14 +1,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:if test="getStateList(account.country).size() > 0">
+<s:if test="getStateList(country).size() > 0">
+<s:set name="lbl" value="(country == 'CA') ? 'Province': 'State'" />
 <label>
-<s:if test="account.country == 'US'">
-	State:
-</s:if>
-<s:elseif test="account.country == 'CA'">
-	Province:
-</s:elseif>
+	<s:property value="#lbl"/>:
 </label>
-<s:select list="getStateList(account.country)" id="state_sel" name="contractor.state"/><span class="redMain" id="state_req">*</span>
+<s:select list="getStateList(country)" id="state_sel" name="contractor.state" headerKey="" headerValue="- %{#lbl} -" value="state"/><span class="redMain" id="state_req">*</span>
 </s:if>

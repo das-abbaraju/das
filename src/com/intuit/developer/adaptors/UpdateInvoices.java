@@ -141,7 +141,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 					invoice.getBillAddress().setState(state);
 					invoice.getBillAddress().setPostalCode(zip);
 					
-					invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry());
+					invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry().getName());
 	
 					invoice.setIsPending("false");
 	
@@ -258,7 +258,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 						invoice.getBillAddress().setState(state);
 						invoice.getBillAddress().setPostalCode(zip);
 						
-						invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry());
+						invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry().getName());
 		
 						invoice.setIsPending("false");
 		

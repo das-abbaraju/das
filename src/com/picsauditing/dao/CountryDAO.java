@@ -28,7 +28,7 @@ public class CountryDAO extends PicsDAO {
 		Map<String, String> map = new TreeMap<String, String>();
 		
 		for (Country country : countryList) {
-			map.put(country.getIsoCode(), country.getEnglish());
+			map.put(country.getIsoCode(), country.getName());
 		}
 		
 		return map;
