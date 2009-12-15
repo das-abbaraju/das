@@ -5,6 +5,7 @@ import java.util.List;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.chart.ChartSingleSeries;
 import com.picsauditing.util.chart.DataRow;
 import com.picsauditing.util.chart.Set;
@@ -25,12 +26,12 @@ public class ChartWaitingOnCount extends ChartSSAction {
 		SelectSQL sql = new SelectSQL("generalcontractors gc");
 		sql.addJoin("JOIN flags f ON gc.genID = f.opID AND gc.subID = f.conID");
 		sql.addJoin("JOIN accounts a ON a.id = f.conID");
-		
+
 		sql.addWhere("a.active = 'Y'");
-		
+
 		sql.addGroupBy("waitingOn");
 
-		if (permissions.isOperatorCorporate()) {
+		if (permissions.isOperator()) {
 			sql.addWhere("f.opID = " + permissions.getAccountId());
 		}
 
@@ -44,7 +45,7 @@ public class ChartWaitingOnCount extends ChartSSAction {
 			WaitingOn waitingOn = WaitingOn.valueOf(Integer.parseInt(row.getLabel()));
 			String wait = waitingOn.isNone() ? "None" : waitingOn.toString();
 			set.setLabel(wait);
-			if (permissions.isOperatorCorporate())
+			if (permissions.isOperator())
 				set.setLink("ContractorList.action?filter.waitingOn=" + waitingOn.ordinal());
 			chart.addSet(set);
 		}
