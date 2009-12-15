@@ -474,7 +474,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public boolean isShowCheckIcon(ContractorAudit conAudit) {
 		if (permissions.isContractor()) {
-			if (conAudit.getAuditStatus().isActiveSubmitted())
+			if(conAudit.getAuditStatus().isActive()) {
+				return true;
+			}
+			else if (!conAudit.getAuditType().isHasRequirements() 
+					&& conAudit.getAuditStatus().isSubmitted())
 				return true;
 		} else if (conAudit.getAuditStatus().isActive())
 			return true;
