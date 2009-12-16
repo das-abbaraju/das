@@ -1129,6 +1129,10 @@
 		<action name="CorporateFlagByFacilityAjax"
 			class="com.picsauditing.actions.chart.ChartFlagCountCorp">
 		</action>
+
+		<action name="CorporateWaitingOnByFacilityAjax"
+			class="com.picsauditing.actions.chart.ChartWaitingOnCountCorp">
+		</action>
 		
 		<action name="ChartXMLWaitingOnCount"
 			class="com.picsauditing.actions.chart.ChartWaitingOnCount">
