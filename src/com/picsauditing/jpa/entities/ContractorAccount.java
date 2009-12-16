@@ -35,7 +35,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -953,7 +952,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public Set<String> getCountries() {
 		Set<String> countries = new HashSet<String>();
 		for (ContractorOperator co : getOperators()) {
-			countries.add(country.getIsoCode());
+			countries.add(co.getOperatorAccount().getCountry().getIsoCode());
 		}
 		return countries;
 	}
