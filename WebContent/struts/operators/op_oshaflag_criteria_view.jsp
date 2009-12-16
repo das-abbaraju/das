@@ -5,10 +5,12 @@
 	<input type="hidden" value="<s:property value="type"/>" name="type"/>
 	<div>
 		<s:if test="lwcr">		
-			Lost Workdays Case Rate (LWCR):
+			<s:if test="operator.oshaType.toString() == 'COHS'">Lost Time Injury Frequency Rate (LTIF)</s:if>
+			<s:else>Lost Workdays Case Rate (LWCR)</s:else>:
 		</s:if>
 		<s:elseif test="trir">
-			Total Recordable Incident Rate (TRIR):
+			<s:if test="operator.oshaType.toString() == 'COHS'">Recordable Injury Frequency Rate (RIF)</s:if>
+			<s:else>Total Recordable Incident Rate (TRIR)</s:else>:
 		</s:elseif>
 		<s:elseif test="fatalities">
 			Fatalities:

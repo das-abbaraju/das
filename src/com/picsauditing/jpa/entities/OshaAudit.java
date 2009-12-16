@@ -65,6 +65,8 @@ public class OshaAudit implements java.io.Serializable {
 	
 	private Float cad7 = 0.0f;
 	private Float neer = 0.0f;
+	private int firstAidInjuries;
+	private int modifiedWorkDay;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -246,6 +248,22 @@ public class OshaAudit implements java.io.Serializable {
 
 	public void setNeer(Float neer) {
 		this.neer = neer;
+	}
+
+	public int getFirstAidInjuries() {
+		return firstAidInjuries;
+	}
+
+	public void setFirstAidInjuries(int firstAidInjuries) {
+		this.firstAidInjuries = firstAidInjuries;
+	}
+
+	public int getModifiedWorkDay() {
+		return modifiedWorkDay;
+	}
+
+	public void setModifiedWorkDay(int modifiedWorkDay) {
+		this.modifiedWorkDay = modifiedWorkDay;
 	}
 
 	@Transient

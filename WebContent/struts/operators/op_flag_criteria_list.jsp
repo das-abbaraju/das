@@ -18,9 +18,12 @@
 		</s:if>
 	>
 		<td><s:property value="operator.oshaType"/></td>
-		<td class="right">LWCR</td>
+		<td class="right">
+			<s:if test="operator.oshaType.toString() == 'COHS'">LTIF</s:if><s:else>LWCR</s:else>
+		</td>
 		<td>
-			Lost Workdays Case Rate 
+			<s:if test="operator.oshaType.toString() == 'COHS'">Lost Time Injury Frequency Rate</s:if>
+			<s:else>Lost Workdays Case Rate</s:else>
 		</td>
 		<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.lwcr.hurdleFlag.none">
 			<s:if test="oshaRedFlagCriteria.lwcr.hurdleFlag.naics"><s:property value="oshaRedFlagCriteria.lwcr.hurdleFlag"/></s:if>
@@ -53,9 +56,12 @@
 		</s:if>
 	>
 		<td><s:property value="operator.oshaType"/></td>
-		<td class="right">TRIR</td>
+		<td class="right">
+			<s:if test="operator.oshaType.toString() == 'COHS'">RIF</s:if><s:else>TRIR</s:else>
+		</td>
 		<td>
-			Total Recordable Incident Rate 
+			<s:if test="operator.oshaType.toString() == 'COHS'">Recordable Injury Frequency Rate</s:if>
+			<s:else>Total Recordable Incident Rate</s:else>
 		</td>
 		<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.trir.hurdleFlag.none">
 			<s:if test="oshaRedFlagCriteria.trir.hurdleFlag.naics"><s:property value="oshaRedFlagCriteria.trir.hurdleFlag"/></s:if>

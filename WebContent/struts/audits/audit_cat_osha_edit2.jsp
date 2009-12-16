@@ -61,6 +61,14 @@
 </tr>
 <s:if test="category.id == 158">
 <tr>
+	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
+	<td><s:textfield name="osha.firstAidInjuries" value="%{firstAidInjuries}" cssClass="osha"/></td>
+</tr>
+<tr>
+	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
+	<td><s:textfield name="osha.modifiedWorkDay" value="%{modifiedWorkDay}" cssClass="osha"/></td>
+</tr>
+<tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td><s:textfield name="osha.cad7" value="%{cad7}" cssClass="osha"/></td>
 </tr>
@@ -69,7 +77,7 @@
 	<td><s:textfield name="osha.neer" value="%{neer}" cssClass="osha"/></td>
 </tr>
 </s:if>
-<s:if test="!type.toString().equals('COHS') && category.id != 157">	
+<s:if test="type.toString().equals('OSHA')">	
 	<tr>
 		<th class="label">
 		<s:if test="fileUploaded">

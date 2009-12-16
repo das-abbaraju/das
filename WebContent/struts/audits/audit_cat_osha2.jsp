@@ -51,6 +51,21 @@
 	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).injuryIllnessCases"/></td><td><s:property value="format(getAverageOsha( type ).injuryIllnessCasesRate)"/></td></s:if>
 </tr>
 
+<s:if test="category.id == 158">
+<tr>
+	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
+	<td><s:property value="firstAidInjuries"/></td>
+	<td>&nbsp;</td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
+</tr>
+<tr>
+	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
+	<td><s:property value="modifiedWorkDay"/></td>
+	<td>&nbsp;</td>
+	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
+</tr>
+</s:if>
+
 <s:if test="type.toString().equals('OSHA')">
 	<tr>
 		<th class="label">Dart Rate</th>
@@ -81,7 +96,7 @@
 	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
 </s:if>
-<s:if test="!type.toString().equals('COHS') && category.id != 157">	
+<s:if test="type.toString().equals('OSHA')">	
 	<tr>
 		<th class="label">Uploaded Log Files</th>
 		<th colspan="2"><s:if test="fileUploaded"><a href="#" onclick="openOsha(<s:property value="id"/>); return false;">Download</a></s:if></th>

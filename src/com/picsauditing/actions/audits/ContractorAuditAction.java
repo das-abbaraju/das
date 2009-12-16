@@ -21,14 +21,10 @@ import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.AnswerMap;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -91,7 +87,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 		}
 		
 		if(conAudit.getAuditType().isAnnualAddendum() 
-				&& conAudit.getAuditStatus().isActiveSubmitted()) {
+				&& conAudit.getAuditStatus().isSubmitted()) {
 			Set<Integer> catIds = new HashSet<Integer>();
 			for(AuditCatData auditCatData : conAudit.getCategories()) {
 				if(auditCatData.isAppliesB()) {
@@ -113,6 +109,9 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			}
 			if(!catIds.contains(AuditCategory.LOSS_RUN)) {
 				removeData(AuditCategory.LOSS_RUN, conAudit.getId());
+			}
+			if(!catIds.contains(AuditCategory.WCB)) {
+				removeData(AuditCategory.WCB, conAudit.getId());
 			}
 		}
 		

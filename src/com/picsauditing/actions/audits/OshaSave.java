@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
@@ -150,7 +151,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 		
 		//AutoPopulating Total OSHA Recordable Injuries and Illnesses
 		int recordableTotalCalc = 0;
-		recordableTotalCalc = osha.getFatalities() + osha.getLostWorkCases() + osha.getInjuryIllnessCases() + osha.getRestrictedWorkCases();
+		recordableTotalCalc = osha.getLostWorkCases() + osha.getInjuryIllnessCases() + osha.getRestrictedWorkCases();
+		if(!osha.getType().equals(OshaType.COHS)) { 
+			recordableTotalCalc += osha.getFatalities();
+		}
 		osha.setRecordableTotal(recordableTotalCalc);
 
 		osha.setUpdateDate(new Date());
