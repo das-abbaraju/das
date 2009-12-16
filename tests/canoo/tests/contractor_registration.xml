@@ -41,9 +41,9 @@
 					<sleep seconds="2"/>
 					<setInputField name="contractor.name" value="Canoo's Test Contractor"/>
 					<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
-					<setSelectField name="contractor.country.isocode" text="United States"/>
+					<setSelectField name="contractor.country.isoCode" text="United States"/>
 					<setInputField name="contractor.contact" value="John Doe"/>
-					<setInputField name="contractor.webUrl" value="www,picsauditing.com/canoo"/>
+					<setInputField name="contractor.webUrl" value="www.picsauditing.com/canoo"/>
 					<setInputField name="contractor.taxId" value="789456123"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>
