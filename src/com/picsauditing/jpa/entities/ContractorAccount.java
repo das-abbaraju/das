@@ -878,7 +878,7 @@ public class ContractorAccount extends Account implements JSONable {
 			if (isActiveB()) {
 				return "Current";
 			}
-			return "BidOnlyAccount";
+			return "Bid Only Account";
 		}
 
 		if (newMembershipLevel == null)
