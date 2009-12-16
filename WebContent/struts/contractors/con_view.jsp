@@ -96,6 +96,9 @@
 		Member Since: <strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong><br />
 		PICS CSR: <strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /></strong><br />
 		Email: <a href="mailto:<s:property value="contractor.auditor.email" />"><s:property value="contractor.auditor.email" /></a><br />
+		<s:if test="contractor.webcam.trackingNumber.trim().length() > 0">
+		Track Webcam: <a href="http://www.fedex.com/Tracking?tracknumber_list=<s:property value="contractor.webcam.trackingNumber"/>" target="_blank"><img src="images/icon_webcam.png"/></a><br/>
+		</s:if>
 		Risk Level: <strong><s:property value="contractor.riskLevel" /></strong><br />
 		
 		<pics:permission perm="ContractorDetails">

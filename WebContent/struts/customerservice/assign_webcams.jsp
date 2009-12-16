@@ -119,7 +119,11 @@ $(function(){
 					<s:select name="webcam.id" list="webcams" listKey="id" headerKey="0" headerValue="- Select a Webcam -"/>
 				</li>
 				<li><label>Shipping Method:</label><s:select list="{'Ground','Two Day','Express Saver','Overnight'}" name="webcam.shippingMethod"/></li>
-				<li><label>Tracking Number:</label><s:textfield name="webcam.trackingNumber"/></li>
+				<li><label>Tracking Number:</label><s:textfield name="webcam.trackingNumber"/>
+					<s:if test="webcam.trackingNumber.trim().length() > 0">
+						<a href="http://www.fedex.com/Tracking?tracknumber_list=<s:property value="webcam.trackingNumber"/>" target="_blank">Track Webcam</a>
+					</s:if>
+				</li>
 			</ol>
 		</fieldset>
 		<fieldset class="form submit">
