@@ -84,32 +84,32 @@
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Facilities">
-									<sleep seconds="5"/>
-										<clickLink description="Click link: Add" htmlId="facility_6166"/>
-										<sleep seconds="5"/>
-										<clickLink description="Switch To Bid Only Account" htmlId="bidonly"/>
-										<sleep seconds="3"/>
-									<clickLink label="Next >>"/>
-								</group>
-								<group description="Add Payment Options">
-										<verifyText description="Verify that text is contained in the page" text="$25.00"/>
-								</group>
-								<group description="Set payment to check, switch back">
-										<clickLink label="Logout"/>
-										<setInputField name="username" value="opman"/>
-										<setInputField name="password" value="bigboy11"/>
-										<clickButton label="Login"/>
-										<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
-										<clickButton label="Search"/>
-										<verifyText description="Verify that text is contained in the page" text="This is a BID-ONLY Account and will expire on"/>
-										<clickLink description="Click link: Payment Options" href="PaymentOptions.action"/>
-										<clickButton label="Change Payment Method to Check"/>
-										<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
-										<clickLink label="Edit Account"/>
-										<clickLink label="Switch User"/>						
-								</group>
-								<group description="Complete Registration">
-											<clickLink description="Click link: 5) Confirm" htmlId="conConfirmLink"/>
+					<sleep seconds="5"/>
+					<clickLink description="Click link: Add" htmlId="facility_6166"/>
+					<sleep seconds="5"/>
+					<clickLink description="Switch To Bid Only Account" htmlId="bidonly"/>
+					<sleep seconds="3"/>
+					<clickLink label="Next >>"/>
+				</group>
+				<group description="Add Payment Options">
+					<verifyText description="Verify that text is contained in the page" text="$25.00"/>
+				</group>
+				<group description="Set payment to check, switch back">
+					<clickLink label="Logout"/>
+					<setInputField name="username" value="opman"/>
+					<setInputField name="password" value="bigboy11"/>
+					<clickButton label="Login"/>
+					<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
+					<clickButton label="Search"/>
+					<verifyText description="Verify that text is contained in the page" text="This is a BID-ONLY Account and will expire on"/>
+					<clickLink description="Click link: Payment Options" href="PaymentOptions.action"/>
+					<clickButton label="Change Payment Method to Check"/>
+					<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
+					<clickLink label="Edit Account"/>
+					<clickLink label="Switch User"/>						
+				</group>
+				<group description="Complete Registration">
+					<clickLink description="Click link: 5) Confirm" htmlId="conConfirmLink"/>
 											<clickLink label="5) Confirm"/>
 											<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
 											<clickButton label="Complete My Registration" name="button"/>
