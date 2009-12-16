@@ -15,11 +15,14 @@ import com.picsauditing.util.chart.Set;
 public class ChartWaitingOnCountCorp extends ChartMSAction {
 
 	public ChartMultiSeries buildChart() throws Exception {
-		Map<String, String> colors = new HashMap<String, String>();
-		colors.put("None", "#339900"); // Green
-		colors.put("Contractor", "#CC0000"); // Red
-		colors.put("PICS", "#FFCC33"); // Amber
-		colors.put("Operator", "#0000FF"); // Blue
+		Map<String, String> colors = new HashMap<String, String>() {
+			{
+				put("None", "#339900"); // Green
+				put("Contractor", "#CC0000"); // Red
+				put("PICS", "#FFCC33"); // Amber
+				put("Operator", "#0000FF"); // Blue
+			}
+		};
 		chart.setShowLegend(false);
 		chart.setShowValues(false);
 		chart.setAnimation(false);
