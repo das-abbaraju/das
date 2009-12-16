@@ -127,39 +127,57 @@
 									<setInputField name="username" value="opman"/>
 									<setInputField name="password" value="bigboy11"/>
 									<clickButton label="Login"/>
-									<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
-									<clickButton label="Search"/>
-									<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
-									<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
-									<clickLink href="InvoiceDetail.action"/>
-									<verifyText description="Verify that text is contained in the page" text="Bid Only Account Fee"/>
-									<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
-									<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
-									<clickLink label="Make a Payment"/>
-									<clickButton label="Apply All"/>
-									<clickButton label="Collect Payment"/>
+									<ifStep>
+										<condition>
+											<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
+											<clickButton label="Search"/>
+											<verifyText text="No results found "/>
+										</condition>
+										<then></then>
+										<else>	
+											<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+											<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
+											<clickLink href="InvoiceDetail.action"/>
+											<verifyText description="Verify that text is contained in the page" text="Bid Only Account Fee"/>
+											<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
+											<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+											<clickLink label="Make a Payment"/>
+											<clickButton label="Apply All"/>
+											<clickButton label="Collect Payment"/>
+										</else>	
+									</ifStep>		
 								</group>
 								<group description="System Edit">
-									<clickLink label="Pre-Qualification"/>
-									<clickLink label="System Edit"/>
-									<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-									<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-									<clickButton label="Save" name="button"/>
-									<clickLink label="2006 Update"/>
-									<clickLink label="System Edit"/>
-									<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-									<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-									<clickButton label="Save"/>
-									<clickLink label="2007 Update"/>
-									<clickLink label="System Edit"/>
-									<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-									<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-									<clickButton label="Save"/>
-									<clickLink label="2008 Update"/>
-									<clickLink label="System Edit"/>
-									<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-									<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-									<clickButton label="Save" name="button"/>
+									<ifStep>
+										<condition>
+											<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
+											<clickButton label="Search"/>
+											<verifyText text="No results found "/>
+										</condition>
+										<then></then>
+										<else>	
+											<clickLink label="Pre-Qualification"/>
+											<clickLink label="System Edit"/>
+											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+											<clickButton label="Save" name="button"/>
+											<clickLink label="2006 Update"/>
+											<clickLink label="System Edit"/>
+											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+											<clickButton label="Save"/>
+											<clickLink label="2007 Update"/>
+											<clickLink label="System Edit"/>
+											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+											<clickButton label="Save"/>
+											<clickLink label="2008 Update"/>
+											<clickLink label="System Edit"/>
+											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+											<clickButton label="Save" name="button"/>
+										</else>
+									</ifStep>		
 								</group>
 								<group description="Switch to Contractor">
 									<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
