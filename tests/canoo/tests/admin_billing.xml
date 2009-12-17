@@ -34,7 +34,7 @@
 						<verifyText description="Verify that text is contained in the page" text="This contractor is not active."/>
 							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 							<clickLink href="InvoiceDetail.action"/>
-								<verifyText description="Verify that text is contained in the page" text="Activation Fee"/>
+								<verifyText description="Verify that text is contained in the page" text="Activation"/>
 								<verifyText description="Verify that text is contained in the page" text="99.00"/>
 								<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators"/>
 								<verifyText description="Verify that text is contained in the page" text="699.00"/>
