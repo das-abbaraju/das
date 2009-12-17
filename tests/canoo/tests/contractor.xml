@@ -3,9 +3,9 @@
 
 <project name="PICS" default="test">
 	<description>448 - Air Quality Engineering, Inc.</description>
-	<property name="login.username" value="canoo_contractor1" />
+	<property name="login.username" value="Couch" />
 	<target name="test">
-		<webtest name="Contractor" description="Pull up Canoo">
+		<webtest name="Contractor" description="Pull up Ancon Marine">
 			&config;
 			<steps>
 				&login;
