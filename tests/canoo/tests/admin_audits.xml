@@ -51,7 +51,7 @@
 								</condition>
 								<else>
 									<clickButton label="Show More Timeslots"/>
-									<clickLink label="11:00 AM to 1:00 PM"/>
+									<clickLink href="ScheduleAudit.action"/>
 								</else>
 							</ifStep>
 						</group>
