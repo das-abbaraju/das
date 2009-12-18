@@ -15,7 +15,7 @@
 					<clickLink label="PQF Verification"/>
 					<clickLink href="VerifyView.action"/>
 					<clickButton label="Verify"/>
-					<sleep seconds="5"/>
+					<sleep seconds="10"/>
 				</group>
 				<group description="Verification Detail"/>
 					<ifStep>
@@ -29,7 +29,7 @@
 									<then></then>
 									<else>
 										<clickButton description="1.1.1" htmlId="verify_2033"/>
-										<sleep seconds="1"/>
+										<sleep seconds="3"/>
 									</else>
 							</ifStep>	
 					</ifStep>
@@ -46,7 +46,7 @@
 								<then></then>
 								<else>
 									<clickButton description="1.1.2" htmlId="verify_2064"/>
-									<sleep seconds="1"/>
+									<sleep seconds="3"/>
 								</else>
 							</ifStep>	
 					</ifStep>						
