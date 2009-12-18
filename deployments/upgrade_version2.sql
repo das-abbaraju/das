@@ -27,3 +27,10 @@ update accounts set country = 'US' where country = 'USA';
 update accounts set country = null where country like '%- country -%';
 
 update accounts a join country c on a.country = c.english set a.country = c.isoCode where a.country not in ('us', 'ca');
+
+-- Added a new widget for Operator Flag History
+insert into widget values
+(null,"Operator Flag History","Chart",0,"OperatorFlagHistoryAjax.action",null,"ScrollStackedColumn2D");
+
+insert into widget_user values
+(null,27,616,1,1,10,null);

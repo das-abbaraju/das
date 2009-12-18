@@ -1141,8 +1141,11 @@
 		<action name="ChartXMLCorporateFlags"
 			class="com.picsauditing.actions.chart.ChartCorporateFlags">
 		</action>
-		
 
+		<action name="OperatorFlagHistoryAjax"
+			class="com.picsauditing.actions.chart.OperatorFlagHistory">
+		</action>
+		
 		<!-- Office Audit Scheduling -->
 
 		<action name="AuditScheduleBuilderCron"
