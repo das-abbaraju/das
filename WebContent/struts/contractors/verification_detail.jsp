@@ -31,7 +31,7 @@
 				<s:if test="auditType.Pqf">
 					<tr>
 						<td class="center" colspan="2">
-							<input type="button" value="Verify <s:property value="auditType.auditName"/> " onclick="showAudit(<s:property value="id"/>); return false;"/>
+							<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.auditName"/> " onclick="showAudit(<s:property value="id"/>); return false;"/>
 						</td>
 					</tr>	
 				</s:if>
