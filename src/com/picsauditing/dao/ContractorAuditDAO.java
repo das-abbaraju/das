@@ -207,7 +207,8 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ "WHERE et.sentDate > :Before14Days " + "AND et.emailTemplate.id = 10)" + ") " + "AND EXISTS ( "
 				+ "SELECT ca2 FROM ContractorAudit ca2 " + "WHERE ca.auditType = ca2.auditType "
 				+ "AND ca.contractorAccount = ca2.contractorAccount " + "AND ca.id > ca2.id "
-				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days " + ") "
+				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days " + ") " 
+				+ "AND ca.contractorAccount.active = 'Y' "
 				+ "ORDER BY ca.contractorAccount";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
