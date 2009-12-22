@@ -21,9 +21,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -72,7 +69,7 @@ public class EmailQueue implements java.io.Serializable {
 	public String getFromAddress() {
 		return fromAddress;
 	}
-	
+
 	@Transient
 	public InternetAddress getFromAddress2() throws AddressException {
 		if (Strings.isEmpty(fromAddress))
@@ -83,7 +80,7 @@ public class EmailQueue implements java.io.Serializable {
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
 	}
-	
+
 	@Column(length = 50)
 	public String getFromPassword() {
 		return fromPassword;
@@ -160,6 +157,7 @@ public class EmailQueue implements java.io.Serializable {
 
 	/**
 	 * Higher priority numbers are sent first by the MailCron
+	 * 
 	 * @return
 	 */
 	@Column(nullable = false, length = 4)
@@ -200,7 +198,7 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "templateID", nullable=true)
+	@JoinColumn(name = "templateID", nullable = true)
 	public EmailTemplate getEmailTemplate() {
 		return emailTemplate;
 	}
