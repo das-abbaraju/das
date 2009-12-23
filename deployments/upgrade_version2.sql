@@ -28,6 +28,35 @@ update accounts set country = null where country like '%- country -%';
 
 update accounts a join country c on a.country = c.english set a.country = c.isoCode where a.country not in ('us', 'ca');
 
+-- fix countries in the pqfdata table
+-- verify that all answers are valid countries
+select distinct answer 
+from pqfdata d 
+	join pqfquestions q on d.questionid = q.id 
+where q.questiontype = 'country';
+
+update pqfdata d 
+	join pqfquestions q on d.questionid = q.id
+set d.answer = 'US'
+where q.questionType = 'Country' and d.answer = 'USA';
+
+update pqfdata d 
+	join pqfquestions q on d.questionid = q.id
+set d.answer = 'CA'
+where q.questionType = 'Country' and d.answer = 'Canada';
+
+update pqfdata d 
+	join pqfquestions q on d.questionid = q.id
+	left join country c on d.answer = c.english
+set d.answer = c.isoCode
+where q.questionType = 'Country' and d.answer not in ('US', 'CA');
+
+-- end fix countries
+
+-- create all en_US pqfquestions
+insert into pqfquestion_text (questionID, locale, question, requirement, createdBy, updatedBy, creationDate, updateDate)
+select id, 'en', question, requirement, 2357, 2357, Now(), now() from pqfquestions;
+
 -- Added a new widget for Operator Flag History
 insert into widget values
 (null,"Operator Flag History","Chart",0,"OperatorFlagHistoryAjax.action",null,"ScrollStackedColumn2D");
