@@ -55,7 +55,7 @@ where q.questionType = 'Country' and d.answer not in ('US', 'CA');
 
 -- create all en_US pqfquestions
 insert into pqfquestion_text (questionID, locale, question, requirement, createdBy, updatedBy, creationDate, updateDate)
-select id, 'en', question, requirement, 2357, 2357, Now(), now() from pqfquestions;
+select id, 'en', question, requirement, 2357, 2357, now(), now() from pqfquestions;
 
 -- Added a new widget for Operator Flag History
 insert into widget values
