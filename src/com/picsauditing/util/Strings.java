@@ -248,6 +248,7 @@ public class Strings {
 			buf.append(matcher.group());
 		}
 
+		// return name.toUpperCase().replaceAll("[^A-Z0-9]","");
 		return buf.toString();
 	}
 
