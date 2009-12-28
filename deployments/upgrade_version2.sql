@@ -63,3 +63,7 @@ insert into widget values
 
 insert into widget_user values
 (null,27,616,1,1,10,null);
+
+-- move the WCB Category to Annual Update  
+update pqfcategories set auditTypeID = 11, number = 7 
+where id = 210;
