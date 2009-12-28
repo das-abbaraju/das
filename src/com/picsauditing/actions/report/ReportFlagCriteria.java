@@ -38,6 +38,11 @@ public class ReportFlagCriteria extends ReportAccount {
 			addActionMessage("Please select an Operator");
 			return false;
 		}
+		if(getFilter().getFlagStatus() == null) {
+			addActionMessage("Please select one Flag Color");
+			return false;
+		}
+		
 		return super.runReport();
 	}
 
@@ -45,6 +50,7 @@ public class ReportFlagCriteria extends ReportAccount {
 
 		int blank = input.indexOf(" ");
 		if (blank > 0)
+		
 			input = input.substring(0, blank);
 
 		return input.toLowerCase().replaceAll("'", "_apos_").replace("&", "_and_").replace("/", "_");
