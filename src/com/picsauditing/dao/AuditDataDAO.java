@@ -256,18 +256,11 @@ public class AuditDataDAO extends PicsDAO {
 		return data;
 	}
 	
-	public Map<Integer, AuditData> findServicesPerformed(int conID) {
-		Map<Integer, AuditData> response = new HashMap<Integer, AuditData>();
-		
+	public List<AuditData> findServicesPerformed(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
-				"WHERE d.audit.contractorAccount.id = ? and d.question.subCategory.id = 40");
+				"WHERE d.audit.contractorAccount.id = ? and d.question.subCategory.id = 40 AND d.question.isVisible = 'Yes' ");
 		query.setParameter(1, conID);
-		List<AuditData> results = query.getResultList();
-		
-		for(AuditData row : results) {
-			response.put(row.getQuestion().getId(), row);
-		}
-		return response;
+		return  query.getResultList();
 	}
 
 	public AnswerMap findAnswersByAuditAndUniqueCode( int auditId, String uniqueCode ) {

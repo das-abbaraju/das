@@ -262,6 +262,20 @@ public class FlagCalculator2 {
 			contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate());
 		}
 		
+		// Updating the Trades Column on the Contractor
+		List<AuditData> servicesPerformed = auditDataDAO.findServicesPerformed(contractor.getId());
+		List<String> selfPerform = new ArrayList<String>();
+		List<String> subContract = new ArrayList<String>();
+		for(AuditData auditData : servicesPerformed) {
+			if(auditData.getAnswer().startsWith("C"))
+				selfPerform.add(auditData.getQuestion().getQuestion());
+			if(auditData.getAnswer().endsWith("S"))
+				subContract.add(auditData.getQuestion().getQuestion());
+		}
+		contractor.setTradesSelf(Strings.implode(selfPerform,";"));
+		contractor.setTradesSub(Strings.implode(subContract,";"));
+		
+		
 		// //since the @Transactional annotation is on this method (and it seems
 		// for good reason), and not on the class
 		// //level, the runCalc method actually runs from within a different

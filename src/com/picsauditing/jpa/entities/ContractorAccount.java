@@ -88,6 +88,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	private boolean needsRecalculation;
 	private Date lastRecalculation;
+	private String tradesSelf;
+	private String tradesSub;
+	
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -507,6 +510,22 @@ public class ContractorAccount extends Account implements JSONable {
 		this.lastRecalculation = lastRecalculation;
 	}
 
+	public String getTradesSelf() {
+		return tradesSelf;
+	}
+
+	public void setTradesSelf(String tradesSelf) {
+		this.tradesSelf = tradesSelf;
+	}
+
+	public String getTradesSub() {
+		return tradesSub;
+	}
+
+	public void setTradesSub(String tradesSub) {
+		this.tradesSub = tradesSub;
+	}
+	
 	// Other relationships //
 
 	@ManyToOne

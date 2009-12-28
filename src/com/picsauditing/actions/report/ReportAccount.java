@@ -111,6 +111,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (isShowTrade()) {
 			excelSheet.addColumn(new ExcelColumn("industry", "Industry"));
 			excelSheet.addColumn(new ExcelColumn("main_trade", "Main Trade"));
+			excelSheet.addColumn(new ExcelColumn("tradesSelf", "Self Performed"));
+			excelSheet.addColumn(new ExcelColumn("tradesSub", "Sub Contracted"));
 		}
 		excelSheet.addColumn(new ExcelColumn("fax", "Fax Number"));
 		excelSheet.addColumn(new ExcelColumn("billingContact", "Billing Contact"));
@@ -236,6 +238,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (f.isTradeInformation()) {
 			sql.addField("c.main_trade");
 			sql.addField("a.industry");
+			sql.addField("c.tradesSelf");
+			sql.addField("c.tradesSub");
 		}
 
 		/** **** Filters for Contractors ********** */
