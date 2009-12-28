@@ -35,7 +35,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	public static final int TRAINING = 25;
 	public static final int SAFETY_POLICIES = 7;
 	public static final int SERVICES_PERFORMED = 28;
-	public static final int WCB = 205;
+	public static final int WCB = 210;
 
 	private AuditType auditType;
 	private String category;
