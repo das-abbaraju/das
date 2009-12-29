@@ -98,6 +98,7 @@ label.policy {
 							</s:if>
 						</s:if>
 						<s:iterator value="questions">
+							<s:if test="valid">
 								<s:if test="title != null && title.length() > 0">
 									<h4 class="groupTitle">
 										<s:property value="title" escape="false"/>
@@ -109,26 +110,25 @@ label.policy {
 									</div>
 								</s:if>
 								
-								<s:if test="valid">
-									<s:set name="q" value="[0]" />
-										<!-- Single Leaf Question -->
-										<s:set name="a" value="answerMap.get(#q.id)" />
-										<s:set name="visible" value="#q.visible" />
-										<s:if test="onlyReq && !#a.hasRequirements">
-											<s:set name="visible" value="false" />
-										</s:if>
-										<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
-											<s:set name="visible" value="false" />
-										</s:if>
-										<s:if test="#visible">
-											<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
-												<s:set name="shaded" value="!#shaded" scope="action"/>
-											</s:if>
-											<div id="node_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
-												<s:include value="audit_cat_question.jsp"></s:include>
-											</div>
-										</s:if>
+								<s:set name="q" value="[0]" />
+								<!-- Single Leaf Question -->
+								<s:set name="a" value="answerMap.get(#q.id)" />
+								<s:set name="visible" value="#q.visible" />
+								<s:if test="onlyReq && !#a.hasRequirements">
+									<s:set name="visible" value="false" />
 								</s:if>
+								<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
+									<s:set name="visible" value="false" />
+								</s:if>
+								<s:if test="#visible">
+									<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
+										<s:set name="shaded" value="!#shaded" scope="action"/>
+									</s:if>
+									<div id="node_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
+										<s:include value="audit_cat_question.jsp"></s:include>
+									</div>
+								</s:if>
+							</s:if>
 						</s:iterator>
 					</div>
 				</s:iterator>
