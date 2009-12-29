@@ -4,174 +4,215 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="tallred" />
     <target name="test">
-					<webtest name="Admin Verification">
-						&config;
-						<steps>
-							&login;
-							&body_verify;
-							
-				<group description="PQF Verification">
-				<group description="Find contractor">
-					<clickLink label="PQF Verification"/>
-					<clickLink href="VerifyView.action"/>
-				</group>	
-	<ifStep>		
-		<condition>
-			<enableJavaScript enable="true"/>
-			<verifyElementText text="Verify Pre-Qualification" htmlId="verifyaudit"/>
-			<sleep seconds="5"/>
-		</condition>			
-			<then>
+		<webtest name="Admin Verification">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+	<!-- Verify PQF Questions-->			
+				
+	<group description="PQF Verification">
+		<group description="Find contractor">
+			<clickLink label="PQF Verification"/>
+			<clickLink href="VerifyView.action"/>
+		</group>	
+		
+		<ifStep>		
+			<condition>
+				<verifyElementText text="Verify Pre-Qualification" htmlId="verifyaudit"/>
+				<sleep seconds="5"/>
+			</condition>			
+				<clickButton htmlId="verifyaudit"/>
+				<sleep seconds="5"/>
+
 				<group description="Verify PQF Questions">
-					<clickButton label="Verify Pre-Qualification" htmlId="verifyaudit"/>
-					<clickButton description="Verify" htmlId="verify_1331"/>
-					<sleep seconds="4"/>
-					<clickButton htmlId="approveButton1"/>
-					<sleep seconds="2"/>
-				</group>	
-			</then>
-			<else>
-				<group description="Verify Annual Update">
-					<clickButton label="Verify"/>
-					<sleep seconds="5"/>
-					
-				<group description="Verification Detail"/>
-					<ifStep>
+					<ifStep description="If 18.1.13 exists, verify">
 						<condition>
-							<verifytext text="1.1.1"/>
-						</condition>	
-							<ifStep>
+							<verifyElement text="18.1.13" type="li" />
+						</condition>
+							<ifStep description="Verify if not already">
 								<condition>
-									<verifyElementText description="" type="button" htmlId="verify_2033" text="Unverify"/>
+									<verifyElementText text="Unverify" htmlId="verify_401"/>
 								</condition>
+								<then description="Then do nothing"></then>
+								<else description="Verify the question">
+									<clickButton description="Verify Question 18.1.13" htmlId="verify_401"/>
+									<sleep seconds="5"/>
+								</else>
+							</ifStep>
+					</ifStep>
+
+					<ifStep description="If 18.1.14 exists, verify">
+						<condition>
+							<verifyElement text="18.1.14" type="li" />
+						</condition>
+							<ifStep description="Verify if not already">
+								<condition>
+									<verifyElementText text="Unverify" htmlId="verify_755"/>
+								</condition>
+								<then description="Then do nothing"></then>
+								<else description="Verify the question">
+									<clickButton description="Verify Question 18.1.14" htmlId="verify_755"/>
+									<sleep seconds="5"/>
+								</else>
+							</ifStep>
+					</ifStep>
+
+					<ifStep description="If 25.2.1 exists, verify">
+						<condition>
+							<verifyElement text="25.2.1" type="li" />
+						</condition>
+							<ifStep description="Verify if not already">
+								<condition>
+									<verifyElementText text="Unverify" htmlId="verify_1331"/>
+								</condition>
+								<then description="Then do nothing"></then>
+								<else description="Verify the question">
+									<clickButton description="Verify Question 25.2.1" htmlId="verify_1331"/>
+									<sleep seconds="5"/>
+								</else>
+							</ifStep>
+					</ifStep>
+
+					<ifStep description="If Approve Button exists, click it">
+						<condition>
+							<verifyElement text="Approve" type="button"/>
+						</condition>
+						<then>	
+							<clickButton htmlId="approveButton1"/>
+						</then>
+						<else>
+							<clickButton htmlId="rejectButton"/>
+								</else>
+							</ifStep>	
+						</group>	
+					</ifStep>
+				</group>
+				
+				<!-- Verify Annual Update-->
+				
+				<group description="Verify Annual Update">
+					<ifStep>
+						<condition>	
+							<verifyText text="OSHA"/>
+						</condition>
+
+						<clickButton label="Verify"/>
+						<sleep seconds="5"/>
+						
+					<group description="Verification Detail"/>
+						<ifStep>
+							<condition>
+								<verifytext text="1.1.1"/>
+							</condition>	
+								<ifStep>
+									<condition>
+										<verifyElementText description="" type="button" htmlId="verify_2033" text="Unverify"/>
+									</condition>
+										<then></then>
+										<else>
+											<clickButton description="1.1.1" htmlId="verify_2033"/>
+											<sleep seconds="3"/>
+										</else>
+								</ifStep>	
+						</ifStep>
+						
+						
+						<ifStep>
+							<condition>
+								<verifytext text="1.1.2"/>
+							</condition>	
+								<ifStep>
+									<condition>
+										<verifyElementText description="" type="button"  htmlId="verify_2064" text="Unverify"/>
+									</condition>
 									<then></then>
 									<else>
-										<clickButton description="1.1.1" htmlId="verify_2033"/>
+										<clickButton description="1.1.2" htmlId="verify_2064"/>
 										<sleep seconds="3"/>
 									</else>
-							</ifStep>	
-					</ifStep>
-					
-					
-					<ifStep>
-						<condition>
-							<verifytext text="1.1.2"/>
-						</condition>	
+								</ifStep>	
+						</ifStep>						
+												
+												
+						<ifStep>
+							<condition>
+								<verifytext text="1.1.3"/>
+							</condition>	
+								<ifStep>
+									<condition>
+										<verifyElementText description="" type="button"  htmlId="verify_2065" text="Unverify"/>
+									</condition>
+										<then></then>
+										<else>
+											<clickButton description="1.1.3" htmlId="verify_2065"/>
+											<sleep seconds="4"/>
+										</else>
+								</ifStep>
+						</ifStep>
+						
+						<ifStep>
+							<condition>
+								<verifytext text="1.1.4"/>
+							</condition>	
+								<ifStep>
+									<condition>
+										<verifyElementText description="" type="button"  htmlId="verify_2066" text="Unverify"/>
+									</condition>
+										<then></then>
+										<else>
+											<clickButton description="1.1.4" htmlId="verify_2066"/>
+											<sleep seconds="6"/>
+										</else>
+								</ifStep>
+						</ifStep>
+						
+						<ifStep>
+							<condition>
+								<verifytext text="5.1.1"/>
+							</condition>	
 							<ifStep>
 								<condition>
-									<verifyElementText description="" type="button"  htmlId="verify_2064" text="Unverify"/>
+									<verifyElementText description="" type="button"  htmlId="verify_2034" text="Unverify"/>
 								</condition>
 								<then></then>
 								<else>
-									<clickButton description="1.1.2" htmlId="verify_2064"/>
-									<sleep seconds="3"/>
+									<clickButton description="5.1.1" htmlId="verify_2034"/>
+									<sleep seconds="5"/>
 								</else>
-							</ifStep>	
-					</ifStep>						
-											
-											
-					<ifStep>
-						<condition>
-							<verifytext text="1.1.3"/>
-						</condition>	
-							<ifStep>
-								<condition>
-									<verifyElementText description="" type="button"  htmlId="verify_2065" text="Unverify"/>
-								</condition>
-									<then></then>
-									<else>
-										<clickButton description="1.1.3" htmlId="verify_2065"/>
-										<sleep seconds="4"/>
-									</else>
 							</ifStep>
-					</ifStep>
-					
-					<ifStep>
-						<condition>
-							<verifytext text="1.1.4"/>
-						</condition>	
-							<ifStep>
-								<condition>
-									<verifyElementText description="" type="button"  htmlId="verify_2066" text="Unverify"/>
-								</condition>
-									<then></then>
-									<else>
-										<clickButton description="1.1.4" htmlId="verify_2066"/>
-										<sleep seconds="4"/>
-									</else>
-							</ifStep>
-					</ifStep>
-					
-					<ifStep>
-						<condition>
-							<verifytext text="5.1.1"/>
-						</condition>	
+						</ifStep>
+						
 						<ifStep>
 							<condition>
-								<verifyElementText description="" type="button"  htmlId="verify_2034" text="Unverify"/>
-							</condition>
-							<then></then>
-							<else>
-								<clickButton description="5.1.1" htmlId="verify_2034"/>
-								<sleep seconds="5"/>
-							</else>
-						</ifStep>
-					</ifStep>
-					
-					<ifStep>
-						<condition>
-							<verifytext text="5.1.2"/>
-						</condition>	
-						<ifStep>
-							<condition>
-								<verifyElementText description="" type="button"  htmlId="verify_2037" text="Unverify"/>
-							</condition>
-							<then></then>
-							<else>
-								<clickButton description="5.1.2" htmlId="verify_2037"/>
-								<sleep seconds="4"/>
-							</else>
-						</ifStep>
-					</ifStep>
-					
-					<!-- OSHA SECTION-->
-					<ifStep>
-						<condition>
-							<verifyElementText type="h2" text="2006 Annual Update"/>
-						</condition>
+								<verifytext text="5.1.2"/>
+							</condition>	
 							<ifStep>
 								<condition>
-									<verifyElementText description="" type="button"  name="verify" text="Unverify"/>
+									<verifyElementText description="" type="button"  htmlId="verify_2037" text="Unverify"/>
 								</condition>
-								<then>
-									<clickButton htmlId="approveButton1"/>
-									<sleep seconds="4"/>
-									<clickLink label="2006 Update"/>
-									<verifyText description="Verify Active Status" text="Active"/>
-								</then>
+								<then></then>
 								<else>
-									<clickButton label="Verify"/>
+									<clickButton description="5.1.2" htmlId="verify_2037"/>
 									<sleep seconds="4"/>
-									<clickButton htmlId="approveButton1"/>
-									<sleep seconds="4"/>
-									<clickLink label="2006 Update"/>
-									<verifyText description="Verify Active Status" text="Active"/>
 								</else>
 							</ifStep>
 						</ifStep>
-					
-						<ifStep description="If 2007, then Verify section and Audit Status">
+						
+						<!-- OSHA SECTION-->
+						<ifStep>
 							<condition>
-								<verifyElementText type="h2" text="2007 Annual Update"/>
+								<verifyElementText type="h2" text="2006 Annual Update"/>
 							</condition>
 								<ifStep>
 									<condition>
-										<verifyElementText description="" type="button" name="verify" text="Unverify"/>
+										<verifyElementText description="" type="button"  name="verify" text="Unverify"/>
 									</condition>
 									<then>
 										<clickButton htmlId="approveButton1"/>
 										<sleep seconds="4"/>
-										<clickLink label="2007 Update"/>
+										<clickLink label="2006 Update"/>
 										<verifyText description="Verify Active Status" text="Active"/>
 									</then>
 									<else>
@@ -179,15 +220,15 @@
 										<sleep seconds="4"/>
 										<clickButton htmlId="approveButton1"/>
 										<sleep seconds="4"/>
-										<clickLink label="2007 Update"/>
+										<clickLink label="2006 Update"/>
 										<verifyText description="Verify Active Status" text="Active"/>
 									</else>
 								</ifStep>
 							</ifStep>
-					
-							<ifStep description="If 2008, then Verify section and Audit Status">
+						
+							<ifStep description="If 2007, then Verify section and Audit Status">
 								<condition>
-									<verifyElementText type="h2" text="2008 Annual Update"/>
+									<verifyElementText type="h2" text="2007 Annual Update"/>
 								</condition>
 									<ifStep>
 										<condition>
@@ -196,23 +237,46 @@
 										<then>
 											<clickButton htmlId="approveButton1"/>
 											<sleep seconds="4"/>
-											<clickLink label="2008 Update"/>
-											<verifyText description="Verify Active Status" text="Active "/>
+											<clickLink label="2007 Update"/>
+											<verifyText description="Verify Active Status" text="Active"/>
 										</then>
 										<else>
 											<clickButton label="Verify"/>
 											<sleep seconds="4"/>
 											<clickButton htmlId="approveButton1"/>
 											<sleep seconds="4"/>
-											<clickLink label="2008 Update"/>
+											<clickLink label="2007 Update"/>
 											<verifyText description="Verify Active Status" text="Active"/>
 										</else>
 									</ifStep>
 								</ifStep>
-							</group>
-						</else>
+						
+								<ifStep description="If 2008, then Verify section and Audit Status">
+									<condition>
+										<verifyElementText type="h2" text="2008 Annual Update"/>
+									</condition>
+										<ifStep>
+											<condition>
+												<verifyElementText description="" type="button" name="verify" text="Unverify"/>
+											</condition>
+											<then>
+												<clickButton htmlId="approveButton1"/>
+												<sleep seconds="4"/>
+												<clickLink label="2008 Update"/>
+												<verifyText description="Verify Active Status" text="Active "/>
+											</then>
+											<else>
+												<clickButton label="Verify"/>
+												<sleep seconds="4"/>
+												<clickButton htmlId="approveButton1"/>
+												<sleep seconds="4"/>
+												<clickLink label="2008 Update"/>
+												<verifyText description="Verify Active Status" text="Active"/>
+											</else>
+										</ifStep>
+									</ifStep>
 					</ifStep>
-				</group>
+				</group>						
 		    </steps>		
 		</webtest>
 	</target>

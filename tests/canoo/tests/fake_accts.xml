@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="tallred" />
+	<target name="test">
+		<webtest name="Operator Config">
+			&config;
+			<steps>
+				<group description="Login as Admin">
+				&login;
+				
+				<property name="error_expected" value="false" />
+				&body_verify;
+				</group>
+				<invoke url="http://alpha.picsauditing.com/app/Login.action"/>
+				<setInputField name="username" value="tallred"/>
+				<setInputField description="Set password field password: bigboy11" name="password" value="bigboy11"/>
+				<clickButton label="Login"/>
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=4837"/>
+				<setInputField name="contractor.name" value="McDonald Construction Corp."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7719"/>
+				<setInputField name="contractor.name" value="Nextup"/>
+				<clickButton label="Save"/>
+
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=8499"/>
+				<setInputField name="contractor.name" value="24 Hour Emergency Services"/>
+				<clickButton label="Save"/>
+
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=4083"/>
+				<setInputField name="contractor.name" value="ML Safety"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2864"/>
+				<setInputField name="contractor.name" value="ABC Cleaners"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=4646"/>
+				<setInputField name="contractor.name" value="White Horse Rental Services Inc."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7119"/>
+				<setInputField name="contractor.name" value="Berry Environmental LLC"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2233"/>
+				<setInputField name="contractor.name" value="Best Construction Company"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2510"/>
+				<setInputField name="contractor.name" value="Beta Engineering Associates"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=3046"/>
+				<setInputField name="contractor.name" value="Pete's Pest Control"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=5315"/>
+				<setInputField name="contractor.name" value="American General Safe and Lock"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2263"/>
+				<setInputField name="contractor.name" value="Baker Interiors"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7729"/>
+				<setInputField name="contractor.name" value="LHM Trucking, LLC"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2256"/>
+				<setInputField name="contractor.name" value="EarthCorp"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=1239"/>
+				<setInputField name="contractor.name" value="Ultra Air Systems Inc."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2496"/>
+				<setInputField name="contractor.name" value="Ralph's Roofing"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=9113"/>
+				<setInputField name="contractor.name" value="Janet's Cakes"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=5117"/>
+				<setInputField name="contractor.name" value="Eagle Custom Painting"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=8581"/>
+				<setInputField name="contractor.name" value="TravTek Inc."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=8860"/>
+				<setInputField name="contractor.name" value="CBO Services"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=8684"/>
+				<setInputField name="contractor.name" value="World Printing Services"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7728"/>
+				<setInputField name="contractor.name" value="XYZ Trucking"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=3598"/>
+				<setInputField name="contractor.name" value="Yankee Carpet Cleaning"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=6392"/>
+				<setInputField name="contractor.name" value="Wyatt Window Washers"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7997"/>
+				<setInputField name="contractor.name" value="Harvest Electric Co."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7715"/>
+				<setInputField name="contractor.name" value="Green Bull Materials"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=7732"/>
+				<setInputField name="contractor.name" value="Yellowstone Construction Co."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=3476"/>
+				<setInputField name="contractor.name" value="Scorpion Recycling"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=1216"/>
+				<setInputField name="contractor.name" value="David and Brown Services"/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=9026"/>
+				<setInputField name="contractor.name" value="Baxter, Inc."/>
+				<clickButton label="Save"/>
+					
+				<invoke url="http://alpha.picsauditing.com/app/ContractorEdit.action?id=2610"/>
+				<setInputField name="contractor.name" value="Tommy Associates, LLC"/>
+				<clickButton label="Save"/>
+					
+
+					
+
+			
+		    </steps>
+		</webtest>
+	</target>
+</project>
