@@ -44,7 +44,7 @@
 					<setSelectField name="contractor.country.isoCode" text="United States"/>
 					<setInputField name="contractor.contact" value="John Doe"/>
 					<setInputField name="contractor.webUrl" value="www.picsauditing.com/canoo"/>
-					<setInputField name="contractor.taxId" value="789456123"/>
+					<setInputField name="contractor.taxId" value="759456123"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>
 					<setSelectField name="contractor.state" text="Kansas"/>
@@ -95,101 +95,21 @@
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Payment Options">
-					<verifyText description="Verify that text is contained in the page" text="$699.00 USD"/>
-					<verifyText description="Verify that text is contained in the page" text="$99.00 USD"/>
-					<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
+					<verifyText description="Verify that text is contained in the page" text="$899.00 USD"/>
+					<verifyText description="Verify that text is contained in the page" text="$199.00 USD"/>
+					<verifyText description="Verify that text is contained in the page" text="$1098.00 USD"/>
 					<clickButton label="Change Payment Method to Check" name="button"/>
 					<clickLink label="Next >>"/>
 				</group>
 				<group description="Add Payment Options">
-					<verifyText description="Verify that text is contained in the page" text="$798.00 USD"/>
+					<verifyText description="Verify that text is contained in the page" text="$1098.00 USD"/>
 					<clickButton label="Complete My Registration" name="button"/>
 				</group>
 				<group description="Confirmation Page">
 					<verifyText description="Verify that text is contained in the page" 
 						        text="Your account has been registered successfully."/>
 				</group>
-				<!-- Login inactive -->
-				<storeProperty description="Login inactive"
-					name="login.username"
-					propertyType="ant"
-					value="${register.username}"/>
-				&login;
-				&body_verify;
-				<!--<verifyText description="Verify Activation Fee"
-				      text="Activation Fee" />
-				<verifyText description="Verify Activation Fee"
-				      text="$99 USD" />
-				
-				<group description="Activate the new Account">
-					<storeProperty description="Activate Account" 
-						name="login.username" 
-						propertyType="ant"
-						value="${admin.username}"/>
-					&login;
-					<clickLink
-						description="Open Activation Report"
-						label="Activation" />
-					<setInputField name="name" value="Canoo's Test Contractor" />
-					<clickButton description="Search for Contractor" name="button" />
-					<clickButton description="Make Visible" label="Activate" />
-				</group>-->
 			</steps>
 		</webtest>
-		
-		<!--<webtest name="Contractor Registration - PQF">
-			&config;
-			<steps>
-				<group description="Login correctly">
-					<storeProperty description="Login Correctly" 
-						name="login.username" 
-						propertyType="ant"
-						value="${register.username}"/>
-					&login;
-					&body_verify;
-				</group>
-				<group description="Fill out PQF">
-					<clickLink
-						description="Edit Page"
-						label="Edit" />
-					<clickButton
-						description="Edit Contractor"
-						label="Save" />
-					<clickLink
-						description="Edit Page"
-						label="Edit" />
-					<clickLink
-						description="PQF Page"
-						label="PQF" />
-					<clickLink
-						description="Edit Company Info"
-						label="COMPANY INFORMATION" />
-					<setInputField htmlId="answerq635" value="Canoo's Test Contractor" />
-					<setInputField htmlId="answerq603" value="949-123-4567" />
-					<setInputField htmlId="answerq37" value="A really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long company name goes here" />
-					<setInputField htmlId="answerq38" value="" />
-					<clickLink description="Go To Category List" label="Up to Category List" />
-				</group>
-				<group description="Fill out Annual Update">
-					<clickLink
-						description="Open Annual Update 2007"
-						label="2007 Update" />
-					<clickLink
-						description="GENERAL INFORMATION"
-						label="GENERAL INFORMATION" />
-					<setRadioButton htmlId="answerq2064Yes" />
-					<sleep seconds="2" />
-					<clickLink description="Go To Category List" label="Up to Category List" />
-					<clickLink
-						description="Open OSHA Section"
-						label="OSHA" />
-					<setInputField name="osha.manHours" value="400000" />
-					<setInputField name="osha.recordableTotal" value="10" />
-					<setRadioButton name="osha.applicable" value="true" />
-					<clickButton description="Save Osha" label="Save This Location" />
-				</group>
-				
-			</steps>
-		</webtest>-->
 	</target>
 </project>
