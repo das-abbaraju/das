@@ -64,10 +64,10 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the Address field.");
 		if (Strings.isEmpty(contractor.getCity()))
 			errorMessages.addElement("Please fill in the City field.");
-		if (contractor.getCountry() == null)
+		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement("Please select a Country");
 		if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
-			if (Strings.isEmpty(contractor.getState())) {
+			if (contractor.getState() == null || Strings.isEmpty(contractor.getState().getIsoCode())) {
 				errorMessages.addElement("Please select a State");
 			}
 		}

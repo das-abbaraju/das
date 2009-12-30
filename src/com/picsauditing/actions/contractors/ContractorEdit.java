@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -61,6 +62,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected String password2 = null;
 	protected int[] operatorIds = new int[300];
 	protected Country country;
+	protected State state;
+	protected State billingState;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
@@ -101,9 +104,18 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			accountDao.clear();
 
-			String[] isoArray = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
-			if (isoArray != null && isoArray.length > 0 && !Strings.isEmpty(isoArray[0]))
-				country = getCountryDAO().find(isoArray[0]);
+			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
+			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
+				country = getCountryDAO().find(countryIsos[0]);
+
+			String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
+			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
+				state = getStateDAO().find(stateIsos[0]);
+
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"billingState.isoCode");
+			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
+				billingState = getStateDAO().find(billingStateIsos[0]);
 		}
 	}
 
@@ -144,6 +156,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 					if (country != null && !country.equals(contractor.getCountry())) {
 						contractor.setCountry(country);
+					}
+
+					if (state != null && !state.equals(contractor.getState())) {
+						contractor.setState(state);
+					}
+
+					if (billingState != null && !billingState.equals(contractor.getBillingState())) {
+						contractor.setBillingState(billingState);
 					}
 
 					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2,
@@ -356,6 +376,22 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public State getBillingState() {
+		return billingState;
+	}
+
+	public void setBillingState(State billingState) {
+		this.billingState = billingState;
 	}
 
 	public List<Invoice> getUnpaidInvoices() {

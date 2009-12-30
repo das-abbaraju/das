@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -48,7 +49,7 @@ public class ContractorAccountDAOTest {
 //		}
 //	}
 	
-	// @Test
+	@Test
 	public void testSaveAndRemove() {
 		Calendar cal = Calendar.getInstance();
 		cal.set(2008, 01, 12);
@@ -59,7 +60,7 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setContact("pics admin");
 		contractoraccount.setAddress("17701 cowan");
 		contractoraccount.setCity("irvine");
-		contractoraccount.setState("ca");
+		contractoraccount.setState(new State("CA"));
 		contractoraccount.setZip("92345");
 		contractoraccount.setPhone("999-999-9999");
 		contractoraccount.setPhone2("999-999-9999");

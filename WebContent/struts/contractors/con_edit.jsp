@@ -10,7 +10,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{'country': $('#contractorCountry').val(), state: '<s:property value="contractor.state"/>'});
+	$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), stateString: '<s:property value="contractor.state.isoCode"/>'});
 }
 
 function countryChanged(country) {
@@ -153,7 +153,7 @@ $(function() {
 					<li><label>Billing City:</label>
 						<s:textfield name="contractor.billingCity" size="35" /></li>
 					<li><label>Billing State:</label>
-						<s:select list="stateList" name="contractor.billingState" headerKey="" headerValue="- State -"/></li>
+						<s:select list="stateList" name="billingState.isoCode" headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="contractor.billingState.isoCode"/></li>
 					<li><label>Billing Zip:</label>
 						<s:textfield name="contractor.billingZip" size="35" /></li>
 					<li><label>Billing Phone:</label>

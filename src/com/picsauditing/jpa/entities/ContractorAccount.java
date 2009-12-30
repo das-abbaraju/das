@@ -60,7 +60,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private String billingEmail;
 	private String billingAddress;
 	private String billingCity;
-	private String billingState;
+	private State billingState;
 	private String billingZip;
 	private String ccEmail;
 	private Date membershipDate;
@@ -90,7 +90,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date lastRecalculation;
 	private String tradesSelf;
 	private String tradesSub;
-	
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
@@ -264,12 +263,13 @@ public class ContractorAccount extends Account implements JSONable {
 		this.billingCity = billingCity;
 	}
 
-	@Column(name = "billingState", length = 10)
-	public String getBillingState() {
+	@ManyToOne
+	@JoinColumn(name = "billingState")
+	public State getBillingState() {
 		return billingState;
 	}
 
-	public void setBillingState(String billingState) {
+	public void setBillingState(State billingState) {
 		this.billingState = billingState;
 	}
 
@@ -525,7 +525,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setTradesSub(String tradesSub) {
 		this.tradesSub = tradesSub;
 	}
-	
+
 	// Other relationships //
 
 	@ManyToOne

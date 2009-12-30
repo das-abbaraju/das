@@ -53,6 +53,26 @@ where q.questionType = 'Country' and d.answer not in ('US', 'CA');
 
 -- end fix countries
 
+-- set empty string states to null
+update accounts set state = null where state = "";
+
+-- same for billing states
+update contractor_info set billingstate = null where billingstate = "";
+
+-- convert old states from english to isocodes
+update contractor_info c join ref_state s on c.billingstate = s.english set c.billingstate = s.isocode;
+
+-- fix the one bad spelling of PA, SC, NC
+update contractor_info set billingstate = 'PA' where billingstate = 'Pennsylvan';
+update contractor_info set billingstate = 'SC' where billingstate = 'SOUTH CARO';
+update contractor_info set billingstate = 'NC' where billingstate = 'North Caro';
+update contractor_info set billingstate = 'AB' where billingstate = 'Alberta, C';
+update contractor_info set billingstate = 'TN' where billingstate = 'TN.';
+update contractor_info set billingstate = 'AK' where billingstate = 'Ak.';
+
+-- fix lowercase states
+update contractor_info set billingstate = upper(billingstate);
+
 -- create all en_US pqfquestions
 insert into pqfquestion_text (questionID, locale, question, requirement, createdBy, updatedBy, creationDate, updateDate)
 select id, 'en', question, requirement, 2357, 2357, now(), now() from pqfquestions;

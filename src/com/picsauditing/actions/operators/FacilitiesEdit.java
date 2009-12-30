@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
@@ -49,6 +50,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected AccountUser salesRep = null;
 	protected AccountUser accountRep = null;
 	protected Country country;
+	protected State state;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
 			AccountUserDAO accountUserDAO, UserDAO userDAO) {
@@ -74,9 +76,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			}
 		}
 
-		String[] isoArray = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
-		if (isoArray != null && isoArray.length > 0 && !Strings.isEmpty(isoArray[0]))
-			country = getCountryDAO().find(isoArray[0]);
+		String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
+		if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
+			country = getCountryDAO().find(countryIsos[0]);
+
+		String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
+		if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
+			state = getStateDAO().find(stateIsos[0]);
 	}
 
 	public String execute() throws Exception {
@@ -103,7 +109,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				accountUser.setAccount(operator);
 				accountUser.setStartDate(new Date());
 				Calendar calendar = Calendar.getInstance();
-				calendar.add(calendar.YEAR, 20);
+				calendar.add(Calendar.YEAR, 20);
 				accountUser.setEndDate(calendar.getTime());
 				accountUser.setAuditColumns(permissions);
 				operator.getAccountUsers().add(accountUser);
@@ -126,8 +132,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			}
 
 			if (button.equalsIgnoreCase("Save")) {
-				if (country != null && !country.equals(operator.getCountry())) 
+				if (country != null && !country.equals(operator.getCountry()))
 					operator.setCountry(country);
+				if (state != null && !state.equals(operator.getState()))
+					operator.setState(state);
+
 				Vector<String> errors = validateAccount(operator);
 				if (errors.size() > 0) {
 					operatorDao.clear();
@@ -374,5 +383,13 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
 	}
 }

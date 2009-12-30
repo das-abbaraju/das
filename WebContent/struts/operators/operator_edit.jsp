@@ -11,7 +11,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{'country': $('#opCountry').val(), state: '<s:property value="operator.state"/>'});
+	$('#state_li').load('StateListAjax.action',{countryString: $('#opCountry').val(), stateString: '<s:property value="operator.state.isoCode"/>'});
 }
 
 function countryChanged(country) {

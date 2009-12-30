@@ -21,6 +21,13 @@ public class State {
 	protected Country country;
 	protected User csr;
 
+	public State() {
+	}
+
+	public State(String isoCode) {
+		this.isoCode = isoCode;
+	}
+
 	@Id
 	@Column(nullable = false, length = 2)
 	public String getIsoCode() {

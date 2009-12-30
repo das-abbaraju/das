@@ -34,7 +34,7 @@ function changeCountry(country) {
 }
 
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{'country': $('#contractorCountry').val()});
+	$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.'});
 	$('#country_display').val($('#contractorCountry').find('option[selected]').text());
 	if (country == 'US')
 		$('#taxIdLabel').text('Tax ID:');
@@ -72,6 +72,7 @@ $(function(){
 							name="contractor.country.isoCode"
 							onchange="changeCountry(this.value);"
 							value="locale.country"
+							headerKey="" headerValue="- Country -"
 							listKey="isoCode" listValue="name"
 							/><span class="redMain">*</span></li>
 						<li><label id="taxIdLabel">Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"

@@ -88,13 +88,13 @@ public class InsertInvoices extends CustomerAdaptor {
 				
 				String address = contractor.getBillingAddress();
 				String city = contractor.getBillingCity();
-				String state = contractor.getBillingState();
+				String state = contractor.getBillingState().getIsoCode();
 				String zip = contractor.getBillingZip();
 				
 				if (Strings.isEmpty(address)) {
 					address = contractor.getAddress();
 					city = contractor.getCity();
-					state = contractor.getState();
+					state = contractor.getState().getIsoCode();
 					zip = contractor.getZip();
 				}
 				invoice.getBillAddress().setAddr3(nullSafeSubString(address, 0, 41));

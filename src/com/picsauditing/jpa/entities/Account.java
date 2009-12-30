@@ -42,7 +42,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String address;
 	protected String city;
 	protected Country country;
-	protected String state;
+	protected State state;
 	protected String zip;
 	protected String phone;
 	protected String phone2;
@@ -156,12 +156,13 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.country = country;
 	}
 
-	@Column(length = 2)
-	public String getState() {
+	@ManyToOne
+	@JoinColumn(name = "state")
+	public State getState() {
 		return this.state;
 	}
 
-	public void setState(String state) {
+	public void setState(State state) {
 		this.state = state;
 	}
 
@@ -181,8 +182,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		full.append(address);
 		if (!Strings.isEmpty(city))
 			full.append(", ").append(city);
-		if (!Strings.isEmpty(state))
-			full.append(", ").append(state);
+		if (state != null)
+			full.append(", ").append(state.getIsoCode());
 		if (country != null && !country.getIsoCode().equals("US"))
 			full.append(", ").append(country.getName());
 		if (!Strings.isEmpty(zip))
