@@ -18,7 +18,11 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class BillingCalculatorSingle {
+	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-03-31");
+	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2011-12-31");
+	public static final Date CONTRACT_RENEWAL_NEWBELGIUM = DateBean.parseDate("2010-01-31");
 
+	
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
@@ -62,9 +66,21 @@ public class BillingCalculatorSingle {
 			return fee;
 		}
 
-		if (isAudited(contractor))
+		if (isAudited(contractor)) {
 			// Audited Contractors have a tiered pricing scheme
-			fee.setId(calculatePriceTier(contractor.getPayingFacilities()));
+			int feeID = calculatePriceTier(contractor.getPayingFacilities());
+			// Check to see if the the contractor only has one BASF operator
+			if(feeID == InvoiceFee.FACILITIES1) {
+				if (CONTRACT_RENEWAL_BASF.after(new Date())) {
+					for (ContractorOperator contractorOperator : contractor.getOperators()) {
+						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
+							feeID = 105;
+						}
+					}
+				}
+			}
+			fee.setId(feeID);
+		}	
 		else
 			fee.setId(InvoiceFee.PQFONLY); // $99
 		return fee;
@@ -100,6 +116,8 @@ public class BillingCalculatorSingle {
 	 * @return the InvoiceFee.id for the annual membership level
 	 */
 	static private Integer calculatePriceTier(int billable) {
+		if(billable >= 50)
+			return InvoiceFee.FACILITIES50;
 		if (billable >= 20)
 			return InvoiceFee.FACILITIES20;
 		if (billable >= 13)
@@ -149,8 +167,12 @@ public class BillingCalculatorSingle {
 		if (contractor.getMembershipDate() == null) {
 			// This contractor has never paid their activation fee, make
 			// them now this applies regardless if this is a new reg or renewal
-			InvoiceFee fee = getFee(InvoiceFee.ACTIVATION, feeDAO);
-
+			int feeID = InvoiceFee.ACTIVATION;
+			if(hasReducedActivation(contractor)) {
+				feeID = InvoiceFee.ACTIVATION99;
+			}
+			InvoiceFee fee = getFee(feeID, feeDAO);
+			
 			// Activate effective today
 			items.add(new InvoiceItem(fee, new Date()));
 		}
@@ -260,5 +282,18 @@ public class BillingCalculatorSingle {
 				fee = feeDao.find(feeID);
 		}
 		return fee;
+	}
+	
+	static public boolean hasReducedActivation(ContractorAccount contractor) {
+		// New Belgium Brewing Co.
+		if(BillingCalculatorSingle.CONTRACT_RENEWAL_NEWBELGIUM.after(new Date()) && contractor.getRequestedBy().getId() == 5147)
+			return true;
+		// Timken
+		if (BillingCalculatorSingle.CONTRACT_RENEWAL_TIMKEN.after(new Date()) && (contractor.getRequestedBy().getId() == 9644 || contractor.getRequestedBy().getId() == 9645))
+			return true;
+		// BASF
+		if(BillingCalculatorSingle.CONTRACT_RENEWAL_BASF.after(new Date()) && contractor.getRequestedBy().getName().startsWith("BASF"))
+			return true;
+		return false;
 	}
 }

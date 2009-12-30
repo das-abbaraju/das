@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 @Table(name = "invoice_fee")
 public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int ACTIVATION = 1;
+	public final static int ACTIVATION99 = 104;
 	public final static int REACTIVATION = 2;
 	public final static int FREE = 3;
 	public final static int PQFONLY = 4;
@@ -22,6 +23,7 @@ public class InvoiceFee extends BaseTable implements java.io.Serializable {
 	public final static int FACILITIES9 = 8;
 	public final static int FACILITIES13 = 9;
 	public final static int FACILITIES20 = 10;
+	public final static int FACILITIES50 = 11;
 	public final static int BIDONLY = 100;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;

@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -86,8 +87,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		accountDao.save(contractor);
 		activationFee = null;
 		if (!contractor.isActiveB()) {
-			if (contractor.getMembershipDate() == null)
-				activationFee = invoiceFeeDAO.find(InvoiceFee.ACTIVATION);
+			if (contractor.getMembershipDate() == null) {
+				int feeID = InvoiceFee.ACTIVATION;
+				if(BillingCalculatorSingle.hasReducedActivation(contractor)) {
+					feeID = InvoiceFee.ACTIVATION99;
+				}
+				activationFee = invoiceFeeDAO.find(feeID);
+			}	
 			else
 				activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 		}
