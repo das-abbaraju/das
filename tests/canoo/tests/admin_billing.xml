@@ -2,7 +2,7 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="login.username" value="tallred" />
+	<property name="login.username" value="opman" />
 	<target name="test">
 		<webtest name="Admin Billing">
 			&config;
@@ -35,10 +35,10 @@
 							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 							<clickLink href="InvoiceDetail.action"/>
 								<verifyText description="Verify that text is contained in the page" text="Activation"/>
-								<verifyText description="Verify that text is contained in the page" text="99.00"/>
+								<verifyText description="Verify that text is contained in the page" text="199.00"/>
 								<verifyText description="Verify that text is contained in the page" text="PICS Membership for 2-4 Operators"/>
-								<verifyText description="Verify that text is contained in the page" text="699.00"/>
-								<verifyText description="Verify that text is contained in the page" text="798.00"/>
+								<verifyText description="Verify that text is contained in the page" text="899.00"/>
+								<verifyText description="Verify that text is contained in the page" text="1098.00"/>
 							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 								<verifyText description="Verify Payment Method: Check" text="Check"/>
 							<clickLink label="Make a Payment"/>
