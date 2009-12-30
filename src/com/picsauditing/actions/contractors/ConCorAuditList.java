@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -33,18 +32,18 @@ public class ConCorAuditList extends ContractorActionSupport {
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show COR Audits
 			if (contractorAudit.getAuditType().getId() == AuditType.COR) {
-					if (contractorAudit.getAuditStatus().isPendingSubmitted()
-							|| contractorAudit.getAuditStatus().isIncomplete())
-						upComingAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-						currentAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
-						expiredAudits.add(contractorAudit);
-					else {
-						// There shouldn't be any others
-					}
+				if (contractorAudit.getAuditStatus().isPendingSubmitted()
+						|| contractorAudit.getAuditStatus().isIncomplete())
+					upComingAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+					currentAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+					expiredAudits.add(contractorAudit);
+				else {
+					// There shouldn't be any others
+				}
 			}
-		}	
+		}
 
 		if (button != null && button.equals("Add")) {
 			if (!Strings.isEmpty(auditFor)) {
@@ -53,13 +52,13 @@ public class ConCorAuditList extends ContractorActionSupport {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
 					if (conAudit.getAuditType().getId() == AuditType.COR && !conAudit.getAuditStatus().isExpired()
 							&& conAudit.getAuditFor().equals(auditFor)) {
-								alreadyExists = true;
-								break;
-							}
+						alreadyExists = true;
+						break;
+					}
 				}
 
 				if (alreadyExists) {
-					addActionError("Audit for "+ auditFor + " already exists");
+					addActionError("Audit for " + auditFor + " already exists");
 				} else {
 					ContractorAudit conAudit = new ContractorAudit();
 					conAudit.setAuditType(new AuditType(72));
@@ -82,10 +81,10 @@ public class ConCorAuditList extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public Map<String, String> getProvinceList() {
-		return State.getStates("CA");
+	public List<State> getProvinceList() {
+		return getStateDAO().findByCountry("CA");
 	}
-	
+
 	public boolean isManuallyAddAudit() {
 		if (permissions.isContractor() || permissions.isAdmin()) {
 			return true;

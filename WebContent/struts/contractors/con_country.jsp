@@ -6,5 +6,7 @@
 <label>
 	<s:property value="#lbl"/>:
 </label>
-<s:select list="getStateList(country)" id="state_sel" name="contractor.state" headerKey="" headerValue="- %{#lbl} -" value="state"/><span class="redMain" id="state_req">*</span>
+<s:select list="getStateList(country)" id="state_sel" name="contractor.state" 
+	headerKey="" headerValue="- %{#lbl} -" listKey="isoCode" listValue="name" value="state"/>
+	<span class="redMain" id="state_req">*</span>
 </s:if>

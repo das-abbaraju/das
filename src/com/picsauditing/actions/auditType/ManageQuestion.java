@@ -1,7 +1,10 @@
 package com.picsauditing.actions.auditType;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Locale;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageSubCategory {
@@ -27,8 +29,8 @@ public class ManageQuestion extends ManageSubCategory {
 	private int dependsOnQuestionID = 0;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, 
-			AuditDataDAO auditDataDAO, CountryDAO countryDAO) {
+			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
+			CountryDAO countryDAO) {
 		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao, countryDAO);
 		this.auditQuestionDao = auditQuestionDao;
 		this.auditDataDAO = auditDataDAO;
@@ -122,8 +124,7 @@ public class ManageQuestion extends ManageSubCategory {
 			int numRequired = 0;
 			for (AuditSubCategory subCat : category.getSubCategories()) {
 				for (AuditQuestion tempQuestion : subCat.getQuestions()) {
-					if (today.after(tempQuestion.getEffectiveDate())
-							&& today.before(tempQuestion.getExpirationDate())) {
+					if (today.after(tempQuestion.getEffectiveDate()) && today.before(tempQuestion.getExpirationDate())) {
 						numQuestions++;
 						if ("Yes".equals(tempQuestion.getIsRequired()))
 							numRequired++;
@@ -135,7 +136,7 @@ public class ManageQuestion extends ManageSubCategory {
 			auditCategoryDao.save(category);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public JSONArray getInitialCountries() {
 		JSONArray json = new JSONArray();
@@ -164,8 +165,16 @@ public class ManageQuestion extends ManageSubCategory {
 	public void setDependsOnQuestionID(int dependsOnQuestionID) {
 		this.dependsOnQuestionID = dependsOnQuestionID;
 	}
-	
+
 	public Locale[] getLocaleList() {
-		return Locale.values();
+		Locale[] locales = Locale.getAvailableLocales();
+		Arrays.sort(locales, new Comparator<Locale>() {
+			@Override
+			public int compare(Locale o1, Locale o2) {
+				return o1.getDisplayName().compareTo(o2.getDisplayName());
+			}
+		});
+
+		return locales;
 	}
 }

@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 import javax.naming.NoPermissionException;
 
@@ -19,7 +18,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -36,12 +34,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	private List<ContractorOperator> currentOperators = null;
 	private List<OperatorAccount> searchResults = null;
-	
+
 	private String msg = null;
 
 	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger,
-			ContractorOperatorDAO contractorOperatorDAO) {
+			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
 		super(accountDao, auditDao);
 		this.operatorDao = operatorDao;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -65,8 +62,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			contractor.setViewedFacilities(new Date());
 			accountDao.save(contractor);
 		}
-		
-		if(contractor.getOperators().size() == 1) {
+
+		if (contractor.getOperators().size() == 1) {
 			contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
 			accountDao.save(contractor);
 		}
@@ -89,27 +86,26 @@ public class ContractorFacilities extends ContractorActionSupport {
 				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 				for (OperatorAccount opToAdd : operatorDao.findWhere(false, where, permissions)) {
 					boolean linked = false;
-					for(ContractorOperator co : currentOperators) {
+					for (ContractorOperator co : currentOperators) {
 						if (co.getOperatorAccount().equals(opToAdd))
 							linked = true;
 					}
 					if (!linked)
 						searchResults.add(opToAdd);
 				}
-				
+
 				return "search";
 			}
-			
+
 			if (button.equals("load")) {
 				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 				return button;
 			}
-			
-			if("request".equals(button)) {
-				if (operator.getId() > 0 ) {
+
+			if ("request".equals(button)) {
+				if (operator.getId() > 0) {
 					contractor.setRequestedBy(operator);
-					if(contractor.isAcceptsBids() && 
-							!contractor.getRequestedBy().isAcceptsBids()) {
+					if (contractor.isAcceptsBids() && !contractor.getRequestedBy().isAcceptsBids()) {
 						contractor.setAcceptsBids(false);
 						contractor.setRenew(true);
 						InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
@@ -119,8 +115,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 				}
 				return SUCCESS;
 			}
-			
-			if(button.equals("SwitchToTrialAccount")) {
+
+			if (button.equals("SwitchToTrialAccount")) {
 				contractor.setAcceptsBids(true);
 				contractor.setRenew(false);
 				InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
@@ -153,14 +149,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 				accountDao.save(contractor);
 			}
 		}
-		
+
 		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 
 		return SUCCESS;
-	}
-
-	public TreeMap<String, String> getStateList() {
-		return State.getStates(null);
 	}
 
 	public String getState() {
@@ -170,11 +162,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void setState(String state) {
 		this.state = state;
 	}
-	
+
 	public List<ContractorOperator> getCurrentOperators() {
 		return currentOperators;
 	}
-	
+
 	public List<OperatorAccount> getSearchResults() {
 		return searchResults;
 	}
@@ -194,17 +186,15 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
+
 	public InvoiceFee getCurrentMembership() {
 		InvoiceFee invoiceFee = BillingCalculatorSingle.calculateAnnualFeeForContractor(contractor, new InvoiceFee());
 		InvoiceFeeDAO invoiceFeeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
 		return invoiceFeeDAO.find(invoiceFee.getId());
 	}
-	
+
 	public boolean isTrialContractor() {
-		if(!contractor.isActiveB() 
-				&& contractor.isRenew() 
-				&& contractor.getRequestedBy().isAcceptsBids()) {
+		if (!contractor.isActiveB() && contractor.isRenew() && contractor.getRequestedBy().isAcceptsBids()) {
 			return true;
 		}
 		return false;

@@ -46,7 +46,8 @@
 				id="form1_state_query">ALL</span>
 			<span id="form1_state_select" style="display: none"
 				class="clearLink"> <s:select id="form1_state" name="filter.state"
-				list="filter.stateList" cssClass="forms" multiple="true" size="15" /> <script
+				list="filter.stateList" listKey="isoCode" listValue="name"
+				cssClass="forms" multiple="true" size="15" /> <script
 				type="text/javascript">updateQuery('form1_state');</script> <br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_state'); return false;">Clear</a> </span>

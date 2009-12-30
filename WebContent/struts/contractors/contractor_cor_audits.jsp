@@ -69,7 +69,7 @@
 			</td>
 			<td colspan="3" class="center">
 				<s:hidden name="id" value="%{id}"/>
-				<s:select list="provinceList" headerKey="" headerValue="- Select an Province -" name="auditFor"/>
+				<s:select list="provinceList" headerKey="" headerValue="- Select an Province -" listKey="isoCode" listValue="name" name="auditFor"/>
 			</td>
 		</s:form>	
 	</s:if>		

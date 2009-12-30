@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Locale;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,18 +20,17 @@ public class AuditQuestionText extends BaseTable implements java.io.Serializable
 	private Locale locale;
 	private String question;
 	private String requirement;
-	
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "questionID", nullable = false, updatable = false)
 	public AuditQuestion getAuditQuestion() {
 		return auditQuestion;
 	}
+
 	public void setAuditQuestion(AuditQuestion auditQuestion) {
 		this.auditQuestion = auditQuestion;
 	}
 
-	@Enumerated(EnumType.STRING)
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.Locale") })
 	public Locale getLocale() {
 		return locale;
 	}
@@ -41,13 +42,15 @@ public class AuditQuestionText extends BaseTable implements java.io.Serializable
 	public String getQuestion() {
 		return question;
 	}
+
 	public void setQuestion(String question) {
 		this.question = question;
 	}
-	
+
 	public String getRequirement() {
 		return requirement;
 	}
+
 	public void setRequirement(String requirement) {
 		this.requirement = requirement;
 	}

@@ -3,7 +3,6 @@ package com.picsauditing.util;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -11,6 +10,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.EmailTemplate;
@@ -26,7 +26,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_PERFORMED_BY = "- Performed By -";
-	public static final String[] DEACTIVATION_REASON = {"ChargeBack", "Did not Complete PICS process","Does not work for operator","Duplicate/Merged Account","Operator Exemption","Payments not Current", "Bid Only Account"};
+	public static final String[] DEACTIVATION_REASON = { "ChargeBack", "Did not Complete PICS process",
+			"Does not work for operator", "Duplicate/Merged Account", "Operator Exemption", "Payments not Current",
+			"Bid Only Account" };
 
 	// /////// Filter Visibility /////////////
 	protected boolean showOperator = true;
@@ -75,14 +77,15 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date registrationDate2;
 	protected boolean pendingPqfAnnualUpdate = false;
 	protected int operatorTagName;
-	protected int ccOnFile = 2; 
+	protected int ccOnFile = 2;
 	protected Date invoiceDueDate1;
 	protected Date invoiceDueDate2;
 	protected String deactivationReason;
 	protected int minorityQuestion = 0;
 	protected String workStatus;
 
-	//private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
+	// private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO)
+	// SpringUtils.getBean("AuditQuestionDAO");
 
 	// // setting the filter
 	public boolean isShowOperator() {
@@ -220,7 +223,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setPendingPqfAnnualUpdate(boolean pendingPqfAnnualUpdate) {
 		this.pendingPqfAnnualUpdate = pendingPqfAnnualUpdate;
 	}
-	
+
 	public boolean isShowOpertorTagName() {
 		return showOpertorTagName;
 	}
@@ -268,7 +271,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setShowWorkStatus(boolean showWorkStatus) {
 		this.showWorkStatus = showWorkStatus;
 	}
-
 
 	public String getPerformedBy() {
 		return performedBy;
@@ -358,11 +360,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowFlagStatus(true);
 			setShowWaitingOn(true);
 			setShowOpertorTagName(true);
-			if(permissions.hasPermission(OpPerms.ViewUnApproved)){
+			if (permissions.hasPermission(OpPerms.ViewUnApproved)) {
 				setShowWorkStatus(true);
 			}
 		}
-		if(permissions.hasPermission(OpPerms.ContractorDetails)) {
+		if (permissions.hasPermission(OpPerms.ContractorDetails)) {
 			setShowPrimaryInformation(true);
 			setShowTradeInformation(true);
 		}
@@ -372,7 +374,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowConAuditor(true);
 			setShowConWithPendingAudits(true);
 		}
-		if(permissions.hasPermission(OpPerms.Billing))
+		if (permissions.hasPermission(OpPerms.Billing))
 			setShowCcOnFile(true);
 	}
 
@@ -421,13 +423,15 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return new AuditorCache(dao).getList();
 	}
 
-	public Map<String, String> getStateList() {
-		Set<String> countries = permissions.getAccountCountries();
-		String country = null;
-		if(countries.size() > 0)
-			country = permissions.getAccountCountries().toArray()[0].toString();
-		
-		return State.getStates(country);
+	public List<State> getStateList() {
+		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
+		List<State> result;
+		if (permissions.getAccountCountries().size() > 0)
+			result = stateDAO.findByCountries(permissions.getAccountCountries());
+		else
+			result = stateDAO.findAll();
+
+		return result;
 	}
 
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {
@@ -438,16 +442,16 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		return dao.findByAccountID(permissions.getAccountId(), getEmailListType());
 	}
-	
+
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
 		OperatorTagDAO dao = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
-		return dao.findByOperator(permissions.getAccountId(),true);
+		return dao.findByOperator(permissions.getAccountId(), true);
 	}
-	
+
 	public String[] getDeactivationReasons() {
 		return ReportFilterContractor.DEACTIVATION_REASON;
 	}
-	
+
 	public boolean isShowAssignedCon() {
 		return showAssignedCon;
 	}

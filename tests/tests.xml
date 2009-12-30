@@ -50,6 +50,7 @@
 	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO"/>
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
+	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>

@@ -138,8 +138,4 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 		return countryDAO.findAll();
 	}
 
-	public TreeMap<String, String> getStateList() {
-		return State.getStates(null);
-	}
-
 }

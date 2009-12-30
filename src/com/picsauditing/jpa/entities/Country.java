@@ -1,13 +1,17 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Locale;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.picsauditing.util.Strings;
 
 @Entity
+@Table(name = "ref_country")
 public class Country {
 	protected String isoCode;
 	protected String english;
@@ -39,9 +43,9 @@ public class Country {
 
 	@Transient
 	public String getName(Locale locale) {
-		if (locale.equals(Locale.es))
+		if (locale.getLanguage().equals("es"))
 			return spanish;
-		if (locale.equals(Locale.fr))
+		if (locale.getLanguage().equals("fr"))
 			return french;
 		return english;
 	}

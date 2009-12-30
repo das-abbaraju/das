@@ -1,13 +1,12 @@
 package com.picsauditing.actions;
 
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
-import com.picsauditing.PICS.Inputs;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Industry;
@@ -18,7 +17,6 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AccountActionSupport extends PicsActionSupport {
@@ -31,6 +29,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	private NoteDAO noteDao;
 	private CountryDAO countryDAO;
+	private StateDAO stateDAO;
 
 	@Override
 	public String execute() throws Exception {
@@ -135,18 +134,24 @@ public class AccountActionSupport extends PicsActionSupport {
 		return countryDAO;
 	}
 
+	public StateDAO getStateDAO() {
+		if (stateDAO == null)
+			stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
+		return stateDAO;
+	}
+
 	public List<Country> getCountryList() {
 		return getCountryDAO().findAll();
 	}
 
-	public TreeMap<String, String> getStateList() {
+	public List<State> getStateList() {
 		if (account == null)
-			return State.getStates(null);
-		return State.getStates(account.getCountry().getIsoCode());
+			return getStateDAO().findAll();
+		return getStateDAO().findByCountry(account.getCountry());
 	}
 
-	public TreeMap<String, String> getStateList(String countries) {
-		return State.getStates(Strings.getCountry(countries));
+	public List<State> getStateList(String countries) {
+		return getStateDAO().findByCountry(countries);
 	}
 
 	public Industry[] getIndustryList() {

@@ -3,6 +3,7 @@ package com.picsauditing.access;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -16,9 +17,7 @@ import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Locale;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -106,7 +105,8 @@ public class Permissions implements Serializable {
 			email = user.getEmail();
 			phone = user.getPhone();
 			fax = user.getFax();
-			locale = Locale.valueOf(ActionContext.getContext().getLocale());
+			// locale = Locale.valueOf(ActionContext.getContext().getLocale());
+			locale = ActionContext.getContext().getLocale();
 
 			setTimeZone(user);
 
