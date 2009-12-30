@@ -2,7 +2,6 @@ package com.picsauditing.actions.customerservice;
 
 import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
@@ -15,7 +14,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.Webcam;
 import com.picsauditing.util.SpringUtils;
 
