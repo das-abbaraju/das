@@ -112,7 +112,7 @@ public class ContractorDetails extends ContractorActionSupport {
 		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;
 
-		return operatorTagDAO.findByOperator(permissions.getAccountId(),true);
+		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
 
 	public int getTagId() {

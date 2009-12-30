@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.List;
-import java.util.Locale;
 
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.dao.ContractorAccountDAO;

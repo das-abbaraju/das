@@ -15,7 +15,6 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -44,7 +43,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	// TODO cleanup the PermissionToViewContractor duplicate code here
 	private PermissionToViewContractor permissionToViewContractor = null;
 	private AuditDataDAO auditDataDAO;
-	
+
 	public ContractorActionSupport(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
 		this.accountDao = accountDao;
 		this.auditDao = auditDao;
@@ -335,21 +334,21 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Only show the COR/SECOR link for contractors who have answered Yes to that question and linked to
-	 * an operator that subscribes to COR
+	 * Only show the COR/SECOR link for contractors who have answered Yes to
+	 * that question and linked to an operator that subscribes to COR
 	 */
-	
+
 	protected AuditDataDAO getAuditDataDAO() {
 		if (auditDataDAO == null)
 			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 		return auditDataDAO;
 	}
-	
+
 	public boolean isRequiresCOR() {
 		boolean hasCOR = false;
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
-		
+
 		if (contractor.isCOR(getAuditDataDAO())) {
 			hasCOR = true;
 		}
@@ -474,11 +473,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public boolean isShowCheckIcon(ContractorAudit conAudit) {
 		if (permissions.isContractor()) {
-			if(conAudit.getAuditStatus().isActive()) {
+			if (conAudit.getAuditStatus().isActive()) {
 				return true;
-			}
-			else if (!conAudit.getAuditType().isHasRequirements() 
-					&& conAudit.getAuditStatus().isSubmitted())
+			} else if (!conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted())
 				return true;
 		} else if (conAudit.getAuditStatus().isActive())
 			return true;

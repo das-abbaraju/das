@@ -18,7 +18,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -42,7 +41,6 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -103,7 +101,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			accountDao.clear();
 
-			String[] isoArray = (String []) ActionContext.getContext().getParameters().get("country.isoCode");
+			String[] isoArray = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (isoArray != null && isoArray.length > 0 && !Strings.isEmpty(isoArray[0]))
 				country = getCountryDAO().find(isoArray[0]);
 		}

@@ -13,9 +13,9 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
+@SuppressWarnings("serial")
 public class CalculateFee extends PicsActionSupport {
 
-	
 	private OperatorAccountDAO operatorDao = null;
 	private InvoiceFeeDAO feeDao = null;
 	private int riskLevel = 0;
@@ -27,77 +27,69 @@ public class CalculateFee extends PicsActionSupport {
 		this.operatorDao = operatorAccountDAO;
 		this.feeDao = feeDao;
 	}
-	
-	
+
 	@Override
 	public String execute() throws Exception {
 
-		if( button != null && "pricing".equals(button)) {
-			
+		if (button != null && "pricing".equals(button)) {
+
 			ContractorAccount contractor = new ContractorAccount();
 			contractor.setRiskLevel(LowMedHigh.getMap().get(riskLevel));
-			//contractor.setOqEmployees(oqEmployees);
-			
+			// contractor.setOqEmployees(oqEmployees);
+
 			List<Integer> selectedFacilities = new ArrayList<Integer>();
-			String[] facilityArray = facilities.split(",");;
-			for(String facility: facilityArray) {
+			String[] facilityArray = facilities.split(",");
+			;
+			for (String facility : facilityArray) {
 				selectedFacilities.add(new Integer(facility));
 			}
-			
+
 			List<OperatorAccount> operators = operatorDao.findOperators(selectedFacilities);
 
-			for( OperatorAccount op : operators ) {
-			
+			for (OperatorAccount op : operators) {
+
 				ContractorOperator co = new ContractorOperator();
 				co.setContractorAccount(contractor);
 				co.setOperatorAccount(op);
 				contractor.getOperators().add(co);
 			}
-			
+
 			fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
-			
-			if( fee != null ) {
+
+			if (fee != null) {
 				fee = feeDao.find(fee.getId());
 			}
 		}
 		return SUCCESS;
 	}
 
-
 	public int getRiskLevel() {
 		return riskLevel;
 	}
-
 
 	public void setRiskLevel(int riskLevel) {
 		this.riskLevel = riskLevel;
 	}
 
-
 	public String getOqEmployees() {
 		return oqEmployees;
 	}
-
 
 	public void setOqEmployees(String oqEmployees) {
 		this.oqEmployees = oqEmployees;
 	}
 
-
 	public String getFacilities() {
 		return facilities;
 	}
-
 
 	public void setFacilities(String facilities) {
 		this.facilities = facilities;
 	}
 
-
 	public InvoiceFee getFee() {
 		return fee;
 	}
-
 
 	public void setFee(InvoiceFee fee) {
 		this.fee = fee;

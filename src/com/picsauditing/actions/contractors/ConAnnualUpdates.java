@@ -9,6 +9,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
+@SuppressWarnings("serial")
 public class ConAnnualUpdates extends ContractorActionSupport {
 	public List<ContractorAudit> annualAddendums = new ArrayList<ContractorAudit>();
 
@@ -33,7 +34,7 @@ public class ConAnnualUpdates extends ContractorActionSupport {
 	public List<ContractorAudit> getAnnualAddendums() {
 		return annualAddendums;
 	}
-	
+
 	public Comparator<ContractorAudit> getDateComparator() {
 		return new ContractorAuditComparator("auditFor -1");
 	}
