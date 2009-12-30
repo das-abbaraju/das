@@ -26,7 +26,7 @@
 					</group>
 					<group description="Assign Webcam">
 						<invoke url="AssignWebcams.action"/>
-						<clickLink href="?audit.id="/>
+						<clickLink href="AssignWebcams.action?audit.id="/>
 						<setSelectField name="audit.country" text="United States"/>
 						<setSelectField htmlId="AssignWebcams_webcam_id" optionIndex="1"/>
 						<setInputField htmlId="AssignWebcams_webcam_trackingNumber" value="7000000000"/>

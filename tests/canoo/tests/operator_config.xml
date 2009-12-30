@@ -2,7 +2,7 @@
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
-	<property name="login.username" value="tallred" />
+	<property name="login.username" value="opman" />
 	<target name="test">
 		<webtest name="Operator Config">
 			&config;
@@ -23,7 +23,7 @@
 								<condition>
 									<verifyCheckbox htmlId="Accepts Bids:Yes" checked="false"/>
 								</condition>
-								<setCheckbox name="operator.acceptsBids"/>
+								<setCheckbox htmlId="save_operator_acceptsBids"/>
 								<clickButton label="Save"/>
 								<verifyText description="Verify that text is contained in the page" text="Successfully saved AES Alamitos"/>
 							</ifStep>
