@@ -12,6 +12,7 @@ import com.picsauditing.util.chart.MultiSeriesConverter;
  * 
  * @author Trevor
  */
+@SuppressWarnings("serial")
 public class ChartAuditsClosed extends ChartMSAction {
 
 	@Override
