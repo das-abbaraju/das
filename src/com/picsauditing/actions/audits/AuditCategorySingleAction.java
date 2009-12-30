@@ -28,7 +28,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class AuditCategorySingleAction extends AuditActionSupport {
 
-	protected AuditStatus auditStatus;
+	protected AuditStatus auditStatus = null;
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected CertificateDAO certificateDao;
 	protected AuditBuilder auditBuilder;
@@ -62,17 +62,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				addActionError("Please complete the audit before you submit");
 				return SUCCESS;
 			}
-			if (conAudit.getAuditType().isPqf()) {
-				if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
-					auditStatus = AuditStatus.Active;
-					if (conAudit.isAboutToExpire())
-						conAudit.setCompletedDate(new Date());
-				} else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
-					auditStatus = AuditStatus.Resubmitted;
-				else
-					auditStatus = AuditStatus.Submitted;
-				conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
-			} else if (conAudit.getAuditType().getClassType().isPolicy()) {
+			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				if (conAudit.getPercentComplete() == 100 && !conAudit.getAuditStatus().isExpired()) {
 					ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
 					if (cao != null) {
@@ -87,13 +77,24 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					addActionError("The <strong>" + conAudit.getAuditType().getAuditName()
 							+ "</strong> policy is not complete. Please enter all required answers before submitting.");
 				}
+			} else if (conAudit.getAuditType().isPqf()) {
+					if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
+						// If the PQF is being resubmitted, but it's already 
+						// verified and active, we don't need to reverify
+						auditStatus = AuditStatus.Active;
+					} else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
+						auditStatus = AuditStatus.Resubmitted;
+					else
+						auditStatus = AuditStatus.Submitted;
 			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
 				auditStatus = AuditStatus.Submitted;
 			else
 				auditStatus = AuditStatus.Active;
+			conAudit.setCompletedDate(new Date());
 		}
 
 		if ("Resubmit".equals(button)) {
+			// TODO: find out where we use this
 			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
 				if (cao != null) {
@@ -120,10 +121,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					// previous one
 					for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
 						if (!oldAudit.equals(conAudit)) {
-							if (oldAudit.getAuditType().equals(conAudit.getAuditType())
-									|| (oldAudit.getAuditType().equals(AuditType.NCMS) && conAudit.getAuditType()
-											.equals(AuditType.DESKTOP))) {
-								oldAudit.setAuditStatus(AuditStatus.Expired);
+							if (oldAudit.getAuditType().equals(conAudit.getAuditType())) {
+								oldAudit.changeStatus(AuditStatus.Expired, getUser());
 								auditDao.save(oldAudit);
 							}
 						}
@@ -142,17 +141,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 							auditDao.save(audit);
 						}
 					}
-				}
-				auditBuilder.buildAudits(contractor);
-			}
-
-			if (conAudit.getExpiresDate() == null && conAudit.getCompletedDate() != null) {
-				if(conAudit.getAuditType().getClassType().isPqf())
-					conAudit.setExpiresDate(DateBean.getMarchOfNextYear(new Date()));
-				else {
-					Date dateToExpire = DateBean.addMonths(conAudit.getCompletedDate(), conAudit.getAuditType()
-						.getMonthsToExpire());
-					conAudit.setExpiresDate(dateToExpire);
 				}
 			}
 
@@ -194,7 +182,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 			}
 
-			// Save the audit status
 			conAudit.changeStatus(auditStatus, getUser());
 			auditDao.save(conAudit);
 
@@ -227,8 +214,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			// PQFs are perpetual audits and can be renewed
 			if (permissions.isContractor()) {
 				// We don't allow admins to resubmit audits (only contractors)
-				if (conAudit.getAuditStatus().isExpired())
-					return true;
 				if (conAudit.isAboutToExpire())
 					return true;
 			}

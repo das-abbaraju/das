@@ -162,7 +162,9 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	}
 	
 	/**
-	 * Do we auto create a new audit when the old one is about to expire?
+	 * Can the existing audit be renewed (aka extended aka resubmitted)?
+	 * <br>Examples of true: PQF, Site Specific Audits
+	 * <br>Examples of false: Desktop, Office, Field, Policies
 	 * @return
 	 */
 	public boolean isRenewable() {

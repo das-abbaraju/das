@@ -57,6 +57,9 @@ $(function(){
 						<li><label>Has Multiple:</label>
 							<s:checkbox name="auditType.hasMultiple" />
 						</li>
+						<li><label>Can Renew:</label>
+							<s:checkbox name="auditType.renewable" />
+						</li>
 						<li><label>Is Scheduled:</label>
 							<s:checkbox name="auditType.scheduled" />
 						</li>

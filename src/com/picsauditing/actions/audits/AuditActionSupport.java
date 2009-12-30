@@ -172,7 +172,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanEdit() {
-		if (conAudit.getAuditStatus().equals(AuditStatus.Expired))
+		if (conAudit.getAuditStatus().isExpired())
 			return false;
 		
 		AuditType type = conAudit.getAuditType();

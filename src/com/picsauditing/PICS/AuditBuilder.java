@@ -100,6 +100,7 @@ public class AuditBuilder {
 			}
 			if (needsWelcome) {
 				ContractorAudit welcomeCall = createAudit(AuditType.WELCOME);
+				welcomeCall.setExpiresDate(DateBean.addMonths(new Date(), 3));
 				cAuditDAO.save(welcomeCall);
 				currentAudits.add(welcomeCall);
 			}
@@ -110,7 +111,7 @@ public class AuditBuilder {
 		// Only ever create ONE PQF audit
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit conAudit : currentAudits) {
-			if (conAudit.getAuditType().isPqf()) {
+			if (conAudit.getAuditType().getClassType().isPqf()) {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
 					// This should never happen...but just in case
 					conAudit.changeStatus(AuditStatus.Pending, user);
@@ -165,19 +166,16 @@ public class AuditBuilder {
 				// Figure out if the contractor currently has an
 				// active audit that isn't scheduled to expire soon
 				for (ContractorAudit conAudit : currentAudits) {
-					if (conAudit.getAuditType().equals(auditType)
-							|| (AuditType.NCMS == conAudit.getAuditType().getId() && auditType.isDesktop())) {
+					if (conAudit.getAuditType().equals(auditType)) {
 						// We found a matching audit for this requirement
 						// Now determine if it will be good enough
 						if (auditType.isRenewable()) {
-							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
-								// The audit is still valid for at least another
-								// 60 days
-								found = true;
-						} else {
-							// This audit should not be renewed but we already
-							// have one
+							// This audit should not be renewed but we already have one
 							found = true;
+						} else {
+							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
+								// The audit is still valid for at least another 60 days
+								found = true;
 						}
 					}
 				}

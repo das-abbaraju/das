@@ -123,6 +123,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return auditStatus;
 	}
 
+	/**
+	 * Don't use this! Use changeStatus instead
+	 * @param auditStatus
+	 * @see ContractorAudit.changeStatus()
+	 */
 	public void setAuditStatus(AuditStatus auditStatus) {
 		this.auditStatus = auditStatus;
 	}
@@ -136,27 +141,49 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				closedDate = null;
 			if (completedDate != null)
 				completedDate = null;
-			if (!getAuditType().getClassType().isPolicy()) {
-				if (expiresDate != null)
-					expiresDate = null;
+			if (getAuditType().isRenewable()) {
+				expiresDate = null;
 			}
 		}
 		if (auditStatus.isSubmitted() || auditStatus.isResubmitted()) {
-			// If we're going "forward" then (re)set the closedDate
+			// If we're going "forward" then (re)set the completedDate
 			completedDate = new Date();
+			setExpirationDate();
 		}
 		if (auditStatus.isActive()) {
 			// If we're going "forward" then (re)set the closedDate
-			if (closedDate == null || this.auditStatus.isPendingSubmitted())
+			if (closedDate == null || this.auditStatus.isPendingSubmittedResubmitted())
 				closedDate = new Date();
 
-			// If we're closed, there should always be a completedDate,
-			// so fill it in if it hasn't already been set
 			if (completedDate == null)
+				// If we're closed, there should always be a completedDate,
+				// so fill it in if it hasn't already been set
 				completedDate = closedDate;
+			setExpirationDate();
 		}
+		if (auditStatus.isExempt()) {
+			setExpirationDate();
+		}
+		if (auditStatus.isExpired()) {
+			if (expiresDate == null)
+				// This should never happen, but if it does, let's just cleanup the date
+				expiresDate = new Date();
+		}
+		
 		setAuditColumns(user);
 		setAuditStatus(auditStatus);
+	}
+	
+	private void setExpirationDate() {
+		if (getExpiresDate() != null)
+			return;
+		Integer months = getAuditType().getMonthsToExpire();
+		if (months != null && months > 0) {
+			expiresDate = DateBean.addMonths(getCompletedDate(), months);
+		} else {
+			// check months first, then do date if empty
+			expiresDate = DateBean.getMarchOfNextYear(new Date());
+		}
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -340,6 +367,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	 * 
 	 * 
 	 * @return True if audit expires this year and it's before March 1
+	 * @see willExpireSoon() they are basically the same thing
 	 */
 	@Transient
 	public boolean isAboutToExpire() {
@@ -349,10 +377,31 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(expiresDate);
 
-		if (current.get(Calendar.MONTH) < 2 && current.get(Calendar.YEAR) == expires.get(Calendar.YEAR))
+		if (current.get(Calendar.MONTH) < Calendar.MARCH && current.get(Calendar.YEAR) == expires.get(Calendar.YEAR))
 			return true;
 
 		return false;
+	}
+
+	/**
+	 * 
+	 * @see isAboutToExpire() they are basically the same thing, 
+	 * but we decided to keep both since isAboutToExpire accounts 
+	 * for the year which is important when dealing with PQF class audits
+	 */
+	@Transient
+	public boolean willExpireSoon() {
+		int daysToExpiration = 0;
+		if (getExpiresDate() == null)
+			daysToExpiration = 1000;
+		else
+			daysToExpiration = DateBean.getDateDifference(expiresDate);
+
+		if (getAuditType().getClassType() == AuditTypeClass.Policy) {
+			return daysToExpiration <= 15;
+		} else {
+			return daysToExpiration <= 60;
+		}
 	}
 
 	@Transient
@@ -372,21 +421,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				|| (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE))
 			return completedDate;
 		return closedDate;
-	}
-
-	@Transient
-	public boolean willExpireSoon() {
-		int daysToExpiration = 0;
-		if (getExpiresDate() == null)
-			daysToExpiration = 1000;
-		else
-			daysToExpiration = DateBean.getDateDifference(getExpiresDate());
-
-		if (getAuditType().getClassType() == AuditTypeClass.Policy) {
-			return daysToExpiration <= 15;
-		} else {
-			return daysToExpiration <= 60;
-		}
 	}
 
 	@Transient

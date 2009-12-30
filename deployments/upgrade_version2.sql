@@ -67,3 +67,6 @@ insert into widget_user values
 -- move the WCB Category to Annual Update  
 update pqfcategories set auditTypeID = 11, number = 7 
 where id = 210;
+
+update audit_type set renewable = 0;
+update audit_type set renewable = 1 where classType = 'PQF';

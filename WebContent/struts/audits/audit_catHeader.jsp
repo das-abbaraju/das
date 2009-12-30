@@ -38,8 +38,8 @@
 			</div>
 		</s:if>
 	</s:if>
-	<s:if test="conAudit.auditType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
-		<div class="alert">Your PQF is about to expire, please review every section and re-submit it.</div>
+	<s:if test="conAudit.auditType.classType.pqf && conAudit.auditStatus.activeSubmitted && conAudit.aboutToExpire">
+		<div class="alert">Your <s:property value="conAudit.auditType.auditName" /> is about to expire, please review every section and re-submit it.</div>
 	</s:if>
 	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100">
 		<div class="info">The PICS auditor has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
@@ -57,7 +57,7 @@
 	<s:if test="!conAudit.auditType.classType.policy">
 		<s:if test="canSubmit">
 			<div class="alert" class="buttons" style="">
-				<s:if test="conAudit.auditStatus.pendingExpired">
+				<s:if test="conAudit.auditStatus.pending">
 					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
 					<s:if test="conAudit.auditType.pqf">
 						<br />You're almost done! Please take another opportunity to double check your information.
@@ -70,7 +70,7 @@
 				</s:if>
 				<s:elseif test="conAudit.auditStatus.incomplete">
 					<s:submit id="submit" value="Submit" name="button" cssStyle="font-size: 16px; padding: 8px; margin: 5px; color: darkgreen; font-weight: bold;"></s:submit>
-					<br/>Click Submit when you have completed all the pending requirements.				
+					<br/>Click Submit when you have completed all the pending requirements.
 				</s:elseif>
 				<s:else>
 					<s:checkbox name="''" onchange="resubmitPqf(this);"/>
