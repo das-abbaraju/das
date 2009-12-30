@@ -8,5 +8,7 @@
 </label>
 <s:select list="getStateList(country)" id="state_sel" name="contractor.state" 
 	headerKey="" headerValue="- %{#lbl} -" listKey="isoCode" listValue="name" value="state"/>
-	<span class="redMain" id="state_req">*</span>
+	<s:if test="state == null">
+		<span class="redMain" id="state_req">*</span>
+	</s:if>
 </s:if>
