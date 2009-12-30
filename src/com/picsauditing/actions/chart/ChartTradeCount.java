@@ -13,6 +13,7 @@ import com.picsauditing.util.chart.Set;
  * 
  * @author Trevor
  */
+@SuppressWarnings("serial")
 public class ChartTradeCount extends ChartSSAction {
 
 	@Override

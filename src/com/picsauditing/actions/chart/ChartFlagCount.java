@@ -2,7 +2,6 @@ package com.picsauditing.actions.chart;
 
 import java.util.List;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.chart.ChartSingleSeries;

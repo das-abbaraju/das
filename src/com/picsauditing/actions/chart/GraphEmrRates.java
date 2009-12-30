@@ -13,6 +13,7 @@ import com.picsauditing.util.chart.DataRow;
 import com.picsauditing.util.chart.FusionChart;
 import com.picsauditing.util.chart.MultiSeriesConverterHistogram;
 
+@SuppressWarnings("serial")
 public class GraphEmrRates extends ChartMSAction {
 	private ChartType chartType = ChartType.MSLine;
 	private String flashChart;
