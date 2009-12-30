@@ -44,4 +44,4 @@
 	</tr>
 </table>
 
-<p class="redMain">* There is an account activation fee of $99 for new account registration, and $199 for reactivation</p>
+<p class="redMain">* There is an account activation fee of $199 for new account registration, and $299 for reactivation</p>
