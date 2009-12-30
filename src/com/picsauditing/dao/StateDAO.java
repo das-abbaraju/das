@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.State;
 public class StateDAO extends PicsDAO {
 
 	public List<State> findAll() {
-		Query query = em.createQuery("FROM Country t ORDER BY t.english");
+		Query query = em.createQuery("FROM State t ORDER BY t.english");
 		return query.getResultList();
 	}
 
