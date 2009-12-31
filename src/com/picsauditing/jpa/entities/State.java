@@ -86,4 +86,9 @@ public class State {
 		return english;
 	}
 
+	@Override
+	public String toString() {
+		return isoCode;
+	}
+
 }
