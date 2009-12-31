@@ -45,6 +45,7 @@
 					<setInputField name="contractor.contact" value="John Doe"/>
 					<setInputField name="contractor.webUrl" value="www.picsauditing.com/canoo"/>
 					<setInputField name="contractor.taxId" value="759456123"/>
+					<sleep seconds="2"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>
 					<setSelectField name="contractor.state" text="Kansas"/>
