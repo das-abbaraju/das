@@ -339,6 +339,9 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		else if (operator.getName().length() < 3)
 			errorMessages.addElement("Your company name must be at least 3 characters long");
 
+		if(operator.getCountry() == null) {
+			errorMessages.addElement("Please select a country");
+		}
 		if (!Utilities.isValidEmail(operator.getEmail()))
 			errorMessages.addElement("Please enter a valid email address. "
 					+ "This is our main way of communicating with you so it must be valid.");
