@@ -32,7 +32,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	protected AuditPercentCalculator auditPercentCalculator;
 	protected CertificateDAO certificateDao;
 	protected AuditBuilder auditBuilder;
-
+	private boolean hasStatusChanged = false;
+	
 	protected int opID;
 	protected ContractorAuditOperatorDAO caoDAO;
 
@@ -47,7 +48,10 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-
+		
+		if (auditStatus != null)
+			hasStatusChanged = true;
+		
 		// Calculate and set the percent complete
 		if (conAudit.getLastRecalculation() == null) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
@@ -58,6 +62,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					AuditTypeClass.IM));
 
 		if ("Submit".equals(button)) {
+			hasStatusChanged = true;
 			if(conAudit.getPercentComplete() < 100) {
 				addActionError("Please complete the audit before you submit");
 				return SUCCESS;
@@ -95,6 +100,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 		if ("Resubmit".equals(button)) {
 			// TODO: find out where we use this
+			hasStatusChanged = true;
 			if (conAudit.getAuditType().getClassType().isPolicy()) {
 				ContractorAuditOperator cao = caoDAO.find(conAudit.getId(), opID);
 				if (cao != null) {
@@ -112,83 +118,84 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			}
 		}
 
-		if (auditStatus != null && !auditStatus.equals(conAudit.getAuditStatus())) {
-			// We're changing the status
-			if (auditStatus.equals(AuditStatus.Active)) {
-				conAudit.setClosedDate(new Date());
-				if (!conAudit.getAuditType().isHasMultiple()) {
-					// This audit can only have one active audit, expire the
-					// previous one
-					for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
-						if (!oldAudit.equals(conAudit)) {
-							if (oldAudit.getAuditType().equals(conAudit.getAuditType())) {
-								oldAudit.changeStatus(AuditStatus.Expired, getUser());
-								auditDao.save(oldAudit);
-							}
-						}
-					}
-				}
+		if(!hasStatusChanged)
+			return SUCCESS;
 
-				if (conAudit.getAuditType().isAnnualAddendum()
-						&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
-					// We're activating the most recent year's audit (ie 2008)
-					for (ContractorAudit audit : contractor.getAudits()) {
-						if (audit.getAuditType().isAnnualAddendum()
-								&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
-								&& !audit.getAuditStatus().isExpired()) {
-							// Any annual audit before 2006 (ie 2005)
-							audit.setAuditStatus(AuditStatus.Expired);
-							auditDao.save(audit);
+		// We're changing the status
+		if (auditStatus.equals(AuditStatus.Active)) {
+			conAudit.setClosedDate(new Date());
+			if (!conAudit.getAuditType().isHasMultiple()) {
+				// This audit can only have one active audit, expire the
+				// previous one
+				for (ContractorAudit oldAudit : conAudit.getContractorAccount().getAudits()) {
+					if (!oldAudit.equals(conAudit)) {
+						if (oldAudit.getAuditType().equals(conAudit.getAuditType())) {
+							oldAudit.changeStatus(AuditStatus.Expired, getUser());
+							auditDao.save(oldAudit);
 						}
 					}
 				}
 			}
 
-			if (auditStatus.equals(AuditStatus.Submitted)) {
-				String notes = "";
-				if (conAudit.getAuditType().isPqf() ||
-						conAudit.getAuditType().isAnnualAddendum()) {
-					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(13); // Audits Thank You
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setConAudit(conAudit);
-					EmailSender.send(emailBuilder.build());
-
-					notes = " Submitted " + conAudit.getAuditType().getAuditName();
-					notes += " and email sent to "+ emailBuilder.getSentTo();
+			if (conAudit.getAuditType().isAnnualAddendum()
+					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
+				// We're activating the most recent year's audit (ie 2008)
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().isAnnualAddendum()
+							&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
+							&& !audit.getAuditStatus().isExpired()) {
+						// Any annual audit before 2006 (ie 2005)
+						audit.setAuditStatus(AuditStatus.Expired);
+						auditDao.save(audit);
+					}
 				}
-				int typeID = conAudit.getAuditType().getId();
-				if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
-					EmailBuilder emailBuilder = new EmailBuilder();
-
-					// TODO combine these 2 templates
-					if (typeID == AuditType.DESKTOP)
-						emailBuilder.setTemplate(7); // Desktop Submission
-					else
-						emailBuilder.setTemplate(8); // D&A Submission
-
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setConAudit(conAudit);
-					EmailSender.send(emailBuilder.build());
-
-					notes = conAudit.getAuditType().getAuditName()
-							+ " Submission email sent for outstanding requirements.";
-				} else {
-					notes = conAudit.getAuditType().getAuditName() + " Submitted";
-				}
-				
-				if(!Strings.isEmpty(conAudit.getAuditFor()))
-					notes += " for " + conAudit.getAuditFor();
-				addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 			}
-
-			conAudit.changeStatus(auditStatus, getUser());
-			auditDao.save(conAudit);
-
-			ContractorAccount contractorAccount = conAudit.getContractorAccount();
-			contractor.setNeedsRecalculation(true);
-			accountDao.save(contractorAccount);
 		}
+
+		if (auditStatus.equals(AuditStatus.Submitted)) {
+			String notes = "";
+			if (conAudit.getAuditType().isPqf() ||
+					conAudit.getAuditType().isAnnualAddendum()) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(13); // Audits Thank You
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				EmailSender.send(emailBuilder.build());
+
+				notes = " Submitted " + conAudit.getAuditType().getAuditName();
+				notes += " and email sent to "+ emailBuilder.getSentTo();
+			}
+			int typeID = conAudit.getAuditType().getId();
+			if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+
+				// TODO combine these 2 templates
+				if (typeID == AuditType.DESKTOP)
+					emailBuilder.setTemplate(7); // Desktop Submission
+				else
+					emailBuilder.setTemplate(8); // D&A Submission
+
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				EmailSender.send(emailBuilder.build());
+
+				notes = conAudit.getAuditType().getAuditName()
+						+ " Submission email sent for outstanding requirements.";
+			} else {
+				notes = conAudit.getAuditType().getAuditName() + " Submitted";
+			}
+			
+			if(!Strings.isEmpty(conAudit.getAuditFor()))
+				notes += " for " + conAudit.getAuditFor();
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
+		}
+
+		conAudit.changeStatus(auditStatus, getUser());
+		auditDao.save(conAudit);
+
+		ContractorAccount contractorAccount = conAudit.getContractorAccount();
+		contractor.setNeedsRecalculation(true);
+		accountDao.save(contractorAccount);
 
 		return SUCCESS;
 	}

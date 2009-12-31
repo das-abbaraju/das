@@ -175,7 +175,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	}
 	
 	private void setExpirationDate() {
-		if (getExpiresDate() != null)
+		if (getExpiresDate() != null && !auditType.isRenewable())
+			// Example: Desktop with expiration date already set
 			return;
 		Integer months = getAuditType().getMonthsToExpire();
 		if (months != null && months > 0) {
