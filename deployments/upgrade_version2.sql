@@ -1,3 +1,24 @@
+USE `pics`;
+
+/* Alter table in target */
+ALTER TABLE `contractor_info` 
+	ADD COLUMN `tradesSelf` varchar(500)  COLLATE latin1_swedish_ci NULL after `lwcrAverage`, 
+	ADD COLUMN `tradesSub` varchar(500)  COLLATE latin1_swedish_ci NULL after `tradesSelf`, 
+	DROP COLUMN `oldriskLevel`;
+
+/* Alter table in target */
+DROP TABLE `country`;
+
+/* Alter table in target */
+ALTER TABLE `generalcontractors` 
+	ADD COLUMN `processCompletion` datetime   NULL after `updateDate`;
+
+/* Alter table in target */
+ALTER TABLE `osha_audit` 
+	ADD COLUMN `firstAidInjuries` smallint(5) unsigned   NULL DEFAULT '0' after `neer`, 
+	ADD COLUMN `modifiedWorkDay` smallint(5) unsigned   NULL DEFAULT '0' after `firstAidInjuries`;
+
+
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
@@ -26,7 +47,7 @@ update accounts set country = 'US' where country = 'USA';
 
 update accounts set country = null where country like '%- country -%';
 
-update accounts a join country c on a.country = c.english set a.country = c.isoCode where a.country not in ('us', 'ca');
+update accounts a join ref_country c on a.country = c.english set a.country = c.isoCode where a.country not in ('us', 'ca');
 
 -- fix countries in the pqfdata table
 -- verify that all answers are valid countries
@@ -47,7 +68,7 @@ where q.questionType = 'Country' and d.answer = 'Canada';
 
 update pqfdata d 
 	join pqfquestions q on d.questionid = q.id
-	left join country c on d.answer = c.english
+	left join ref_country c on d.answer = c.english
 set d.answer = c.isoCode
 where q.questionType = 'Country' and d.answer not in ('US', 'CA');
 
@@ -97,3 +118,7 @@ where id = 210;
 
 update audit_type set renewable = 0;
 update audit_type set renewable = 1 where classType = 'PQF';
+update audit_type set renewable = 1 where id = 31; -- EBIX
+
+update generalcontractors set processCompletion = '2009-01-01'
+where exists (select * from flags where flags.conID = generalcontractors.subID and flags.opID = generalcontractors.genID and flags.waitingOn = 0);
