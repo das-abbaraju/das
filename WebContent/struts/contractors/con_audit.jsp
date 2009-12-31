@@ -8,14 +8,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091105" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-<script type="text/javascript">
-	function resubmitPqf(verifyCheckBox) {
-		if($(verifyCheckBox).is(':checked'))
-			$('#submit').attr({disabled:false});
-		else
-			$('#submit').attr({disabled:'disabled'});		
-	}
-</script>
 </head>
 <body>
 
