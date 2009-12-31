@@ -187,10 +187,10 @@ public class Cron extends PicsActionSupport {
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
 				contractor.setActive('N');
-				// Setting a deactivation report 
-				if(contractor.isAcceptsBids()) {
+				// Setting a deactivation report
+				if (contractor.isAcceptsBids()) {
 					contractor.setReason("Bid Only Account");
-				}	
+				}
 				// Leave the PaymentExpires in the past
 				// conAcct.setPaymentExpires(null);
 				contractor.syncBalance();
@@ -220,7 +220,7 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		
+
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
 
@@ -442,6 +442,7 @@ public class Cron extends PicsActionSupport {
 		AuditDataDAO auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
+		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
 		List<Integer> questions = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
 
 		for (Invoice invoice : invoices) {
@@ -465,13 +466,17 @@ public class Cron extends PicsActionSupport {
 				}
 			}
 			cMap.put(cAccount, emailAddresses);
+
+			if (invoice.getDueDate().before(new Date()))
+				templateMap.put(cAccount, 50); // open
+			else
+				templateMap.put(cAccount, 48); // deactivation
 		}
 
 		for (ContractorAccount cAccount : cMap.keySet()) {
 			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
 			emailBuilder.clear();
-			emailBuilder.setTemplate(48); // **Your PICS account is will be
-											// deactivated**
+			emailBuilder.setTemplate(templateMap.get(cAccount));
 			emailBuilder.setContractor(cAccount);
 			emailBuilder.setCcAddresses(emailAddress);
 			EmailQueue email = emailBuilder.build();
@@ -481,7 +486,7 @@ public class Cron extends PicsActionSupport {
 			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
 		}
 	}
-	
+
 	public void sendNoActionEmailToTrialAccounts() throws Exception {
 		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
 		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
@@ -489,7 +494,8 @@ public class Cron extends PicsActionSupport {
 
 		for (ContractorAccount cAccount : conList) {
 			emailBuilder.clear();
-			emailBuilder.setTemplate(70); // No Action Email Notification - Contractor 
+			emailBuilder.setTemplate(70); // No Action Email Notification -
+			// Contractor
 			emailBuilder.setContractor(cAccount);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
