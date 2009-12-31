@@ -3,8 +3,8 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> - Invoice <s:property value="invoice.id" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="all" href="css/invoice.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="all" href="css/invoice.css?v=20091231" />
 
 <style type="text/css" media="print">
 h1 {

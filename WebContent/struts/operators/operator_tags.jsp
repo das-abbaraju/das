@@ -4,7 +4,7 @@
 <html>
 <head>
 <title><s:property value="operator.name" /> Tags</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
 </head>
 <body>
 <s:if test="permissions.admin">

@@ -5,8 +5,8 @@
 <head>
 <title>InsureGUARD&trade; for <s:property value="contractor.name" /></title>
 <s:include value="../jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
 <script type="text/javascript">
 	function showAddAudit() {
 		$('#addAudit').hide();	

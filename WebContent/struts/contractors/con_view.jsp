@@ -6,7 +6,7 @@
 <title><s:property value="contractor.name" /></title>
 
 <s:include value="../reports/reportHeader.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
 <script type="text/javascript">
 	function removeTag(tagId) {
 		var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};

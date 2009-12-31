@@ -4,12 +4,12 @@
 <html>
 <head>
 <title>Manage Flag Criteria</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/address/jquery.address-1.0.min.js"></script>
-<script type="text/javascript" src="js/op_flag_criteria.js?v=20091105"></script>
+<script type="text/javascript" src="js/op_flag_criteria.js?v=20091231"></script>
 <script type="text/javascript">
 var opID = '<s:property value="operator.id" />';
 var shaType = '<s:property value="operator.oshaType" />';

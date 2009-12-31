@@ -4,8 +4,8 @@
 // queries/reports and display the results in table format
 %>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/Search.js?v=20091105"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
+<script type="text/javascript" src="js/Search.js?v=20091231"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
 
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>

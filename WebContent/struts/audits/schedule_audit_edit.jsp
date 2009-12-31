@@ -4,15 +4,15 @@
 <head>
 <title>Schedule Audit</title>
 <meta name="help" content="Scheduling_Audits">
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
 
 <s:include value="../jquery.jsp"></s:include>
 <script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
 <link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
 
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
-<script type="text/javascript" src="js/schedule_audit.js?v=20091105"></script>
+<script type="text/javascript" src="js/schedule_audit.js?v=20091231"></script>
 <style type="text/css">
 #mappreview {
 	float: right;

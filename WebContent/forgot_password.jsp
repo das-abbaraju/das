@@ -3,7 +3,7 @@
 <head>
 <title>Forgot Password</title>
 <meta name="help" content="Password_Recovery">
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
 </head>
 <body>
 <form name="form1" method="post" action="Login.action" style="width: 500px">

@@ -5,7 +5,7 @@
 <title>Email Wizard</title>
 
 <s:include value="../reports/reportHeader.jsp" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css?v=20091231" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 jQuery.noConflict();

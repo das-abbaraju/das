@@ -3,8 +3,8 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> Billing Detail</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091105" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091105" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />

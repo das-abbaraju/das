@@ -10,8 +10,8 @@
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="print" href="css/print.css" /> 
 <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" /> 
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091105" />
-<script src="js/pics_main.js?v=20091105" type="text/javascript" ></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091231" />
+<script src="js/pics_main.js?v=20091231" type="text/javascript" ></script>
 <style type="text/css">
 #content {
 	padding: 15px;
