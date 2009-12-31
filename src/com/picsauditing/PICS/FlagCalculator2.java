@@ -408,6 +408,9 @@ public class FlagCalculator2 {
 								note.setSummary("The \"Waiting On\" status for " + operator.getName() +
 										" has changed from \"" + coFlag.getWaitingOn() + "\" to \"" + waitingOn + "\"");
 							}
+							if(co.getProcessCompletion() != null) {
+								note.setBody("The contractor first completed the PICS process on " + co.getProcessCompletion().toString());
+							}
 							note.setCanContractorView(true);
 							note.setViewableById(operator.getId());
 							noteDAO.save(note);
@@ -416,8 +419,12 @@ public class FlagCalculator2 {
 						}
 
 						try {
-							if (waitingOn.equals(WaitingOn.None) && !coFlag.getWaitingOn().equals(WaitingOn.None))
+							if (co.getProcessCompletion() == null 
+									&& waitingOn.equals(WaitingOn.None) 
+									&& !coFlag.getWaitingOn().equals(WaitingOn.None)) {
 								EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
+								co.setProcessCompletion(new Date());
+							}
 						} catch (Exception e) {
 							System.out.println("ERROR: failed to send subscription email - " + e.getMessage());
 						}

@@ -31,6 +31,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private FlagColor forceFlag;
 	private Date forceEnd;
 	private ContractorOperatorFlag flag;
+	private Date processCompletion;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
@@ -97,6 +98,15 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setForceEnd(Date forceEnd) {
 		this.forceEnd = forceEnd;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getProcessCompletion() {
+		return processCompletion;
+	}
+
+	public void setProcessCompletion(Date processCompletion) {
+		this.processCompletion = processCompletion;
 	}
 
 	@Transient
