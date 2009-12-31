@@ -18,6 +18,7 @@ ALTER TABLE `osha_audit`
 	ADD COLUMN `firstAidInjuries` smallint(5) unsigned   NULL DEFAULT '0' after `neer`, 
 	ADD COLUMN `modifiedWorkDay` smallint(5) unsigned   NULL DEFAULT '0' after `firstAidInjuries`;
 
+DROP TABLE blockeddates;
 
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
@@ -100,6 +101,7 @@ update contractor_audit set state = upper(state);
 
 update contractor_audit set country = null where country = "";
 update contractor_audit set country = 'US' where country = 'USA';
+update accounts set state = 'PR' where id = 7905;
 
 -- create all en_US pqfquestions
 insert into pqfquestion_text (questionID, locale, question, requirement, createdBy, updatedBy, creationDate, updateDate)
@@ -122,3 +124,25 @@ update audit_type set renewable = 1 where id = 31; -- EBIX
 
 update generalcontractors set processCompletion = '2009-01-01'
 where exists (select * from flags where flags.conID = generalcontractors.subID and flags.opID = generalcontractors.genID and flags.waitingOn = 0);
+
+update pqfdata
+set dateVerified = null, comment = concat('Need updated file for upcoming Safety Manual Audit in 2010. Previous file - ', answer), auditorID = null, updateDate = NOW()
+where questionID = 1331
+and auditID in (
+select id from contractor_audit where auditTypeID = 1 and conID in (
+	select conID from contractor_audit where auditTypeID = 2 and year(expiresDate) = 2010
+)
+);
+
+update pqfdata
+set answer = ''
+where questionID = 1331
+and auditID in (
+select id from contractor_audit where auditTypeID = 1 and conID in (
+	select conID from contractor_audit where auditTypeID = 2 and year(expiresDate) = 2010
+)
+);
+
+update contractor_audit
+set lastRecalculation = null
+where auditTypeID = 1;

@@ -226,7 +226,7 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ " OR ca.lastRecalculation < :threeMonthsAgo "
 				+ ") ORDER BY ca.auditType.id, ca.contractorAccount.lastLogin DESC";
 		Query query = em.createQuery(hql);
-		query.setMaxResults(10);
+		query.setMaxResults(100);
 
 		Calendar calendar = Calendar.getInstance();
 

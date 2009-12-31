@@ -62,6 +62,7 @@ public class FlagCalculator2 {
 	private ContractorOperatorFlagDAO coFlagDAO;
 	private NoteDAO noteDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
+	private AuditPercentCalculator auditPercentCalculator;
 
 	private AuditBuilder auditBuilder;
 	private CronMetricsAggregator cronMetrics;
@@ -75,7 +76,7 @@ public class FlagCalculator2 {
 	public FlagCalculator2(OperatorAccountDAO operatorDAO, ContractorAccountDAO contractorDAO,
 			AuditDataDAO auditDataDAO, ContractorOperatorFlagDAO coFlagDAO,
 			ContractorAuditOperatorDAO caoDAO, AuditBuilder auditBuilder, NoteDAO noteDAO,
-			EmailSubscriptionDAO subscriptionDAO) {
+			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator) {
 		this.operatorDAO = operatorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -84,6 +85,7 @@ public class FlagCalculator2 {
 		this.auditBuilder = auditBuilder;
 		this.noteDAO = noteDAO;
 		this.subscriptionDAO = subscriptionDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	public void runAll() {
@@ -229,13 +231,37 @@ public class FlagCalculator2 {
 
 		ContractorAccount contractor = contractorDAO.find(conID);
 
+		
+		/////////////////////////////////////////////
+		//                  BILLING                //
+		/////////////////////////////////////////////
 		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		contractor.setNewMembershipLevel(fee);
 		contractor.syncBalance();
 
-		// Run the auditBuilder for this contractor
+		
+		/////////////////////////////////////////////
+		//             RECALC AUDIT CATEGORY %     //
+		/////////////////////////////////////////////
+		for (ContractorAudit cAudit : contractor.getAudits()) {
+			final Date lastRecalculation = cAudit.getLastRecalculation();
+			if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -90) {
+				auditPercentCalculator.percentCalculateComplete(cAudit, true);
+				cAudit.setLastRecalculation(new Date());
+				cAudit.setAuditColumns();
+			}
+		}
+
+		
+		/////////////////////////////////////////////
+		//                AuditBuilder             //
+		/////////////////////////////////////////////
 		auditBuilder.buildAudits(contractor);
 
+		
+		/////////////////////////////////////////////
+		//                FlagCalculator           //
+		/////////////////////////////////////////////
 		// debug("FlagCalculator: Operator data ready...starting calculations");
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 
