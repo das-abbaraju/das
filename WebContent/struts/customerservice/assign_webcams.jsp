@@ -36,19 +36,12 @@ function showContractor() {
 }
 
 function changeState(state) {
-	if (state == 'USA' || state == 'Canada') {
+	if (state == 'US' || state == 'CA') {
 		$('#state_sel').show('slow');
 	} else {
 		$('#state_sel').hide('slow');
 	}
 }
-
-<s:if test="audit != null">
-$(function(){
-	if ('<s:property value="audit.country"/>' == 'US')
-		$('[name=audit.country]').val('USA');
-});
-</s:if>
 </script>
 </s:if>
 
@@ -102,10 +95,14 @@ $(function(){
 				<li>
 					<label>Country:</label>
 					<s:select list="countryList" name="audit.country"
-							listKey="isoCode" listValue="english"
+							headerKey="" headerValue="- Country -"
+							listKey="isoCode" listValue="name"
 							onchange="changeState(this.value);"/>
 				</li>
-				<li <s:if test="audit.country == null || audit.country.length == 0">style="display:none"</s:if> id="state_sel"><label>State:</label><s:select list="stateList" name="audit.state"/></li>
+				<li id="state_sel"><label>State:</label>
+					<s:select list="stateList" name="audit.state" 
+						headerKey="" headerValue="- State -" listKey="isoCode" listValue="name"/>
+				</li>
 				<li><label>Zip:</label><s:textfield name="audit.zip"/></li>
 				<li><label>Phone:</label><s:textfield name="audit.phone"/></li>
 				<li><label>Email:</label><s:textfield name="audit.phone2"/></li>
