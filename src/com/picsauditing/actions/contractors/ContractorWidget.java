@@ -123,7 +123,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
 					+ " </a>";
 					if(conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear()-1))) {
-						text += "<br/>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a>";
+						text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
 					}
 					openTasks.add(text);
 
