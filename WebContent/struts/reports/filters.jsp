@@ -39,20 +39,19 @@
 	</s:if>
 
 	<s:if test="filter.showAddress">
-		<div class="filterOption">Address: <s:textfield name="filter.city"
-			cssClass="forms" size="15" onfocus="clearText(this)" /> 
-			<a href="#"
-				onclick="toggleBox('form1_state'); return false;">State</a> = <span
-				id="form1_state_query">ALL</span>
+		<div class="filterOption">Address:
+			<s:textfield name="filter.city"	cssClass="forms" size="15" onfocus="clearText(this)" /> 
+			<s:textfield name="filter.zip" cssClass="forms" size="5" onfocus="clearText(this)" />
+			<a href="#" onclick="toggleBox('form1_state'); return false;">State</a> =
+			<span id="form1_state_query">ALL</span>
 			<span id="form1_state_select" style="display: none"
-				class="clearLink"> <s:select id="form1_state" name="filter.state"
+				class="clearLink"><br /><s:select id="form1_state" name="filter.state"
 				list="filter.stateList" listKey="isoCode" listValue="name"
-				cssClass="forms" multiple="true" size="15" /> <script
+				cssClass="forms" multiple="true" size="15" /><script
 				type="text/javascript">updateQuery('form1_state');</script> <br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_state'); return false;">Clear</a> </span>
-			<s:textfield
-			name="filter.zip" cssClass="forms" size="5" onfocus="clearText(this)" /></div>
+		</div>
 	</s:if>
 	<s:if test="filter.showTaxID">
 		<div class="filterOption"><s:textfield name="filter.taxID"
