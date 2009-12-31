@@ -73,6 +73,13 @@ update contractor_info set billingstate = 'AK' where billingstate = 'Ak.';
 -- fix lowercase states
 update contractor_info set billingstate = upper(billingstate);
 
+-- fixes for contractor_audit bad states
+update contractor_audit set state = null where state = "";
+update contractor_audit set state = upper(state);
+
+update contractor_audit set country = null where country = "";
+update contractor_audit set country = 'US' where country = 'USA';
+
 -- create all en_US pqfquestions
 insert into pqfquestion_text (questionID, locale, question, requirement, createdBy, updatedBy, creationDate, updateDate)
 select id, 'en', question, requirement, 2357, 2357, now(), now() from pqfquestions;
