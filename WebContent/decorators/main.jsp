@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
 <%@page import="com.picsauditing.dao.AppPropertyDAO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.jpa.entities.AppProperty"%>
@@ -22,6 +22,7 @@
 <head>
 <title>PICS - <decorator:title default="PICS" /></title>
 <meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091105" />
