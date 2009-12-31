@@ -148,7 +148,7 @@ $(function(){
 		</li>			
 	</ol>
 	</fieldset>
-
+<!-- 
 	<fieldset class="form">
 	<legend><span>Question Texts</span></legend>
 	<ol>
@@ -166,7 +166,7 @@ $(function(){
 		</s:iterator>
 	</ol>
 	</fieldset>
-
+ -->
 	<fieldset class="form">
 	<legend><span>Useful Links</span></legend>
 	<ol>
