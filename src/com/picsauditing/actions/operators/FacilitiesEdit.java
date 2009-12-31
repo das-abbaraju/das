@@ -134,7 +134,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			if (button.equalsIgnoreCase("Save")) {
 				if (country != null && !country.equals(operator.getCountry()))
 					operator.setCountry(country);
-				if (state != null && !state.equals(operator.getState()))
+				if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState()))
 					operator.setState(state);
 
 				Vector<String> errors = validateAccount(operator);

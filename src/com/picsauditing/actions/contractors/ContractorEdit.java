@@ -158,11 +158,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						contractor.setCountry(country);
 					}
 
-					if (state != null && !state.equals(contractor.getState())) {
+					if (state != null && !"".equals(state.getIsoCode()) && !state.equals(contractor.getState())) {
 						contractor.setState(state);
 					}
 
-					if (billingState != null && !billingState.equals(contractor.getBillingState())) {
+					if (billingState != null && !"".equals(billingState.getIsoCode())
+							&& !billingState.equals(contractor.getBillingState())) {
 						contractor.setBillingState(billingState);
 					}
 
