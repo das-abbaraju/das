@@ -83,127 +83,127 @@ public class Cron extends PicsActionSupport {
 		report.append("Starting Cron Job at: ");
 		report.append(new Date().toString());
 		report.append("\n\n");
-
-		if (!flagsOnly) {
-
-			startTask("\nRunning auditBuilder.addAuditRenewals...");
-			auditBuilder.addAuditRenewals();
-			endTask();
-
-			try {
-				// TODO - Move this to the db.picsauditing.com cron bash script
-				/*
-				 * OPTIMIZE TABLE
-				 * OSHA,accounts,auditCategories,auditData,auditQuestions
-				 * ,certificates,contractor_info," +
-				 * "forms,generalContractors,loginLog,users;
-				 */
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				startTask("\nRunning Huntsman EBIX Support...");
-				processEbixData();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				startTask("\nSending emails to contractors for expired Certificates...");
-				sendEmailExpiredCertificates();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
-				startTask("\nExpiring Audits...");
-				// TODO do mass update statements rather than query for loop
-				// update
-				/*
-				 * update contractor_audit set auditStatus = 'Expired' where
-				 * auditStatus IN ('Submitted','Exempt','Active') and
-				 * auditTypeID = 11 and expiresDate < NOW();
-				 * 
-				 * 
-				 * update contractor_audit set auditStatus = 'Pending',
-				 * closedDate = null, completedDate = null, expiresDate = null
-				 * where auditStatus IN ('Submitted','Exempt','Active') and
-				 * auditTypeID = 1 and expiresDate < NOW();
-				 */
-				String where = "expiresDate < NOW() AND auditStatus != 'Expired'";
-				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
-				for (ContractorAudit cAudit : conList) {
-					if (cAudit.getAuditType().getClassType().isPqf())
-						cAudit.changeStatus(AuditStatus.Pending, system);
-					else
-						cAudit.setAuditStatus(AuditStatus.Expired);
-					contractorAuditDAO.save(cAudit);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-			try {
-				// TODO - we should seriously consider removing this all
-				// together and just Activating 100% verified PQFs on submission
-				// This is needed because CSRs can verify a safety manual before
-				// the PQF is submitted and when the contractor
-				// finally submits the policy there's nothing to tell the CSR to
-				// activate it
-				startTask("\nActivating Pqf which are complete and verified...");
-				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1) AND percentComplete = 100 AND percentVerified = 100";
-				List<ContractorAudit> conList = contractorAuditDAO.findWhere(10, where, "creationDate");
-				for (ContractorAudit cAudit : conList) {
-					cAudit.changeStatus(AuditStatus.Active, system);
-					contractorAuditDAO.save(cAudit);
-					stampNote(cAudit.getContractorAccount(), "Activated the " + cAudit.getAuditType().getAuditName(),
-							NoteCategory.Audits);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-			try {
-				startTask("\nRecalculating all the categories for Audits...");
-				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
-				for (ContractorAudit cAudit : conList) {
-					auditPercentCalculator.percentCalculateComplete(cAudit, true);
-					cAudit.setLastRecalculation(new Date());
-					cAudit.setAuditColumns(system);
-					contractorAuditDAO.save(cAudit);
-				}
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-		}
-
-		try {
-			startTask("\nInactivating Accounts via Billing Status...");
-			String where = "a.active = 'Y' AND a.renew = 0 AND paymentExpires < NOW()";
-			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
-			for (ContractorAccount contractor : conAcctList) {
-				contractor.setActive('N');
-				// Setting a deactivation report
-				if (contractor.isAcceptsBids()) {
-					contractor.setReason("Bid Only Account");
-				}
-				// Leave the PaymentExpires in the past
-				// conAcct.setPaymentExpires(null);
-				contractor.syncBalance();
-				contractor.setAuditColumns(system);
-				contractorAccountDAO.save(contractor);
-
-				stampNote(contractor, "Automatically inactivating account based on expired membership",
-						NoteCategory.Billing);
-			}
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
+//
+//		if (!flagsOnly) {
+//
+//			startTask("\nRunning auditBuilder.addAuditRenewals...");
+//			auditBuilder.addAuditRenewals();
+//			endTask();
+//
+//			try {
+//				// TODO - Move this to the db.picsauditing.com cron bash script
+//				/*
+//				 * OPTIMIZE TABLE
+//				 * OSHA,accounts,auditCategories,auditData,auditQuestions
+//				 * ,certificates,contractor_info," +
+//				 * "forms,generalContractors,loginLog,users;
+//				 */
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
+//
+//			try {
+//				startTask("\nRunning Huntsman EBIX Support...");
+//				processEbixData();
+//				endTask();
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
+//
+//			try {
+//				startTask("\nSending emails to contractors for expired Certificates...");
+//				sendEmailExpiredCertificates();
+//				endTask();
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
+//
+//			try {
+//				startTask("\nExpiring Audits...");
+//				// TODO do mass update statements rather than query for loop
+//				// update
+//				/*
+//				 * update contractor_audit set auditStatus = 'Expired' where
+//				 * auditStatus IN ('Submitted','Exempt','Active') and
+//				 * auditTypeID = 11 and expiresDate < NOW();
+//				 * 
+//				 * 
+//				 * update contractor_audit set auditStatus = 'Pending',
+//				 * closedDate = null, completedDate = null, expiresDate = null
+//				 * where auditStatus IN ('Submitted','Exempt','Active') and
+//				 * auditTypeID = 1 and expiresDate < NOW();
+//				 */
+//				String where = "expiresDate < NOW() AND auditStatus != 'Expired'";
+//				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
+//				for (ContractorAudit cAudit : conList) {
+//					if (cAudit.getAuditType().getClassType().isPqf())
+//						cAudit.changeStatus(AuditStatus.Pending, system);
+//					else
+//						cAudit.setAuditStatus(AuditStatus.Expired);
+//					contractorAuditDAO.save(cAudit);
+//				}
+//				endTask();
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
+//			try {
+//				// TODO - we should seriously consider removing this all
+//				// together and just Activating 100% verified PQFs on submission
+//				// This is needed because CSRs can verify a safety manual before
+//				// the PQF is submitted and when the contractor
+//				// finally submits the policy there's nothing to tell the CSR to
+//				// activate it
+//				startTask("\nActivating Pqf which are complete and verified...");
+//				String where = "auditStatus = 'Submitted' AND auditTypeID IN (1) AND percentComplete = 100 AND percentVerified = 100";
+//				List<ContractorAudit> conList = contractorAuditDAO.findWhere(10, where, "creationDate");
+//				for (ContractorAudit cAudit : conList) {
+//					cAudit.changeStatus(AuditStatus.Active, system);
+//					contractorAuditDAO.save(cAudit);
+//					stampNote(cAudit.getContractorAccount(), "Activated the " + cAudit.getAuditType().getAuditName(),
+//							NoteCategory.Audits);
+//				}
+//				endTask();
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
+//			try {
+//				startTask("\nRecalculating all the categories for Audits...");
+//				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+//				for (ContractorAudit cAudit : conList) {
+//					auditPercentCalculator.percentCalculateComplete(cAudit, true);
+//					cAudit.setLastRecalculation(new Date());
+//					cAudit.setAuditColumns(system);
+//					contractorAuditDAO.save(cAudit);
+//				}
+//				endTask();
+//			} catch (Throwable t) {
+//				handleException(t);
+//			}
+//		}
+//
+//		try {
+//			startTask("\nInactivating Accounts via Billing Status...");
+//			String where = "a.active = 'Y' AND a.renew = 0 AND paymentExpires < NOW()";
+//			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
+//			for (ContractorAccount contractor : conAcctList) {
+//				contractor.setActive('N');
+//				// Setting a deactivation report
+//				if (contractor.isAcceptsBids()) {
+//					contractor.setReason("Bid Only Account");
+//				}
+//				// Leave the PaymentExpires in the past
+//				// conAcct.setPaymentExpires(null);
+//				contractor.syncBalance();
+//				contractor.setAuditColumns(system);
+//				contractorAccountDAO.save(contractor);
+//
+//				stampNote(contractor, "Automatically inactivating account based on expired membership",
+//						NoteCategory.Billing);
+//			}
+//			endTask();
+//		} catch (Throwable t) {
+//			handleException(t);
+//		}
 
 		try {
 			startTask("\nSending Email to Delinquent Contractors ...");
@@ -213,20 +213,20 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
-		try {
-			startTask("\nSending No Action Email to Bid Only Accounts ...");
-			sendNoActionEmailToTrialAccounts();
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
-
-		report.append("\n\n\nCompleted Cron Job at: ");
-		report.append(new Date().toString());
-
-		sendEmail();
-
-		output = "Complete";
+//		try {
+//			startTask("\nSending No Action Email to Bid Only Accounts ...");
+//			sendNoActionEmailToTrialAccounts();
+//			endTask();
+//		} catch (Throwable t) {
+//			handleException(t);
+//		}
+//
+//		report.append("\n\n\nCompleted Cron Job at: ");
+//		report.append(new Date().toString());
+//
+//		sendEmail();
+//
+//		output = "Complete";
 
 		return SUCCESS;
 	}
@@ -468,9 +468,9 @@ public class Cron extends PicsActionSupport {
 			cMap.put(cAccount, emailAddresses);
 
 			if (invoice.getDueDate().before(new Date()))
-				templateMap.put(cAccount, 50); // open
-			else
 				templateMap.put(cAccount, 48); // deactivation
+			else
+				templateMap.put(cAccount, 50); // open
 		}
 
 		for (ContractorAccount cAccount : cMap.keySet()) {
