@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
@@ -150,7 +151,12 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public List<State> getStateList(String countries) {
-		return getStateDAO().findByCountry(countries);
+		List<State> result;
+		if (countries == null)
+			result = getStateDAO().findAll();
+		else
+			result = getStateDAO().findByCountries(Arrays.asList(countries.split("[|]")));
+		return result;
 	}
 
 	public Industry[] getIndustryList() {

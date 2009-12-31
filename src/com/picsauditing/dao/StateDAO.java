@@ -1,7 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -34,7 +34,7 @@ public class StateDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<State> findByCountries(Set<String> countries) {
+	public List<State> findByCountries(Collection<String> countries) {
 		Query query = em.createQuery("FROM State WHERE country.isoCode IN (:countries)").setParameter("countries", countries);
 
 		return query.getResultList();
