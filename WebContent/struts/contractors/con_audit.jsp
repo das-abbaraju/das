@@ -92,9 +92,6 @@
  			Some sections have been added since this date and will be addressed in January.
 		</div>
 	</s:if>
-	<div class="info">
-		The OSHA and EMR categories have been moved to the Annual Update.
-	</div>
 </s:if>
 
 <br clear="all"/>
