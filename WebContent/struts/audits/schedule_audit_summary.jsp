@@ -6,7 +6,7 @@
 <meta name="help" content="Scheduling_Audits">
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<s:include value="../jquery.jsp"/>
 </head>
 <body>
 <s:include value="../contractors/conHeader.jsp" />
