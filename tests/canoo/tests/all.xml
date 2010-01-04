@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="PICS" default="adhoc">
+<project name="PICS" default="all">
 	<target name="test" description="Run All PICS Web Tests">
 		<ant antfile="marketingPages.xml"/>
 		<ant antfile="login.xml"/>

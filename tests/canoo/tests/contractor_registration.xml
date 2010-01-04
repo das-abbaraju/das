@@ -48,7 +48,7 @@
 					<sleep seconds="2"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>
-					<setSelectField name="contractor.state" text="Kansas"/>
+					<setSelectField name="contractor.state.isoCode" text="Kansas"/>
 					<setInputField name="contractor.zip" value="54321"/>
 					<setInputField name="contractor.phone" value="949-123-4567"/>
 					<setInputField name="contractor.phone2" value="949-123-4567"/>
