@@ -30,7 +30,6 @@ import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
 import com.picsauditing.quickbooks.qbxml.TxnVoidRqType;
 import com.picsauditing.quickbooks.qbxml.TxnVoidRsType;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 
 public class UpdateInvoices extends CustomerAdaptor {
 
@@ -121,28 +120,8 @@ public class UpdateInvoices extends CustomerAdaptor {
 	
 					ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
 					
-					invoice.getBillAddress().setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-					invoice.getBillAddress().setAddr2( "c/o " +
-							nullSafeSubString(contractor.getBillingContact(), 0, 39));
-					
-					String address = contractor.getBillingAddress();
-					String city = contractor.getBillingCity();
-					String state = contractor.getBillingState().getIsoCode();
-					String zip = contractor.getBillingZip();
-					
-					if (Strings.isEmpty(address)) {
-						address = contractor.getAddress();
-						city = contractor.getCity();
-						state = contractor.getState().getIsoCode();
-						zip = contractor.getZip();
-					}
-					invoice.getBillAddress().setAddr3(nullSafeSubString(address, 0, 41));
-					invoice.getBillAddress().setCity(city);
-					invoice.getBillAddress().setState(state);
-					invoice.getBillAddress().setPostalCode(zip);
-					
-					invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry().getName());
-	
+					invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
+
 					invoice.setIsPending("false");
 	
 					invoice.setPONumber(invoiceJPA.getPoNumber());
@@ -238,26 +217,8 @@ public class UpdateInvoices extends CustomerAdaptor {
 		
 						ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
 						
-						invoice.getBillAddress().setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-						invoice.getBillAddress().setAddr2( "c/o " +
-								nullSafeSubString(contractor.getBillingContact(), 0, 39));
+						invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
 						
-						if (Strings.isEmpty(contractor.getAddress())) {
-							invoice.getBillAddress().setAddr3(nullSafeSubString(contractor.getAddress(),0,41));
-							invoice.getBillAddress().setCity(contractor.getCity());
-							invoice.getBillAddress().setState(contractor.getState().getIsoCode());
-							invoice.getBillAddress().setPostalCode(contractor.getZip());
-							invoice.getBillAddress().setCountry(contractor.getCountry().getEnglish());
-						} else {
-							invoice.getBillAddress().setAddr3(nullSafeSubString(contractor.getBillingAddress(),0,41));
-							invoice.getBillAddress().setCity(contractor.getBillingCity());
-							invoice.getBillAddress().setState(contractor.getBillingState().getIsoCode());
-							invoice.getBillAddress().setPostalCode(contractor.getBillingZip());
-							//invoice.getBillAddress().setCountry(contractor.getCountry().getEnglish());
-						}
-						
-						invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry().getName());
-		
 						invoice.setIsPending("false");
 		
 						invoice.setPONumber(invoiceJPA.getPoNumber());

@@ -71,13 +71,8 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setLastName(nullSafeSubString(getLastName(contractor.getContact()), 0, 25));
 
 				customer.setBillAddress(factory.createBillAddress());
-				customer.getBillAddress().setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-				customer.getBillAddress().setAddr2(nullSafeSubString(contractor.getContact(), 0, 41));
-				customer.getBillAddress().setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
-				customer.getBillAddress().setCity(contractor.getCity());
-				customer.getBillAddress().setState(contractor.getState().getIsoCode());
-				customer.getBillAddress().setPostalCode(contractor.getZip());
-				customer.getBillAddress().setCountry(contractor.getCountry().getName());
+				
+				customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));

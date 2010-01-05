@@ -25,7 +25,6 @@ import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
-import com.picsauditing.util.Strings;
 
 public class InsertInvoices extends CustomerAdaptor {
 
@@ -82,28 +81,8 @@ public class InsertInvoices extends CustomerAdaptor {
 
 				ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
 				
-				invoice.getBillAddress().setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-				invoice.getBillAddress().setAddr2( "c/o " +
-						nullSafeSubString(contractor.getBillingContact(), 0, 39));
+				invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
 				
-				String address = contractor.getBillingAddress();
-				String city = contractor.getBillingCity();
-				String state = contractor.getBillingState().getIsoCode();
-				String zip = contractor.getBillingZip();
-				
-				if (Strings.isEmpty(address)) {
-					address = contractor.getAddress();
-					city = contractor.getCity();
-					state = contractor.getState().getIsoCode();
-					zip = contractor.getZip();
-				}
-				invoice.getBillAddress().setAddr3(nullSafeSubString(address, 0, 41));
-				invoice.getBillAddress().setCity(city);
-				invoice.getBillAddress().setState(state);
-				invoice.getBillAddress().setPostalCode(zip);
-				
-				invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry().getName());
-
 				invoice.setIsPending("false");
 
 				invoice.setPONumber(invoiceJPA.getPoNumber());
