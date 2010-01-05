@@ -242,21 +242,19 @@ public class UpdateInvoices extends CustomerAdaptor {
 						invoice.getBillAddress().setAddr2( "c/o " +
 								nullSafeSubString(contractor.getBillingContact(), 0, 39));
 						
-						String address = contractor.getBillingAddress();
-						String city = contractor.getBillingCity();
-						String state = contractor.getBillingState().getIsoCode();
-						String zip = contractor.getBillingZip();
-						
-						if (Strings.isEmpty(address)) {
-							address = contractor.getAddress();
-							city = contractor.getCity();
-							state = contractor.getState().getIsoCode();
-							zip = contractor.getZip();
+						if (Strings.isEmpty(contractor.getAddress())) {
+							invoice.getBillAddress().setAddr3(nullSafeSubString(contractor.getAddress(),0,41));
+							invoice.getBillAddress().setCity(contractor.getCity());
+							invoice.getBillAddress().setState(contractor.getState().getIsoCode());
+							invoice.getBillAddress().setPostalCode(contractor.getZip());
+							invoice.getBillAddress().setCountry(contractor.getCountry().getEnglish());
+						} else {
+							invoice.getBillAddress().setAddr3(nullSafeSubString(contractor.getBillingAddress(),0,41));
+							invoice.getBillAddress().setCity(contractor.getBillingCity());
+							invoice.getBillAddress().setState(contractor.getBillingState().getIsoCode());
+							invoice.getBillAddress().setPostalCode(contractor.getBillingZip());
+							//invoice.getBillAddress().setCountry(contractor.getCountry().getEnglish());
 						}
-						invoice.getBillAddress().setAddr3(nullSafeSubString(address, 0, 41));
-						invoice.getBillAddress().setCity(city);
-						invoice.getBillAddress().setState(state);
-						invoice.getBillAddress().setPostalCode(zip);
 						
 						invoice.getBillAddress().setCountry(invoiceJPA.getAccount().getCountry().getName());
 		
