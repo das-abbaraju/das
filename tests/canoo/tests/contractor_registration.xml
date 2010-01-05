@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
+<!-- This tests the typical registration for a contractor who is 
+	 registering for multiple facilities-->
+
 <project name="PICS" default="test">
 	<property name="register.username" value="canoo_contractor1" />
 	<property name="admin.username" value="jfazeli" />
@@ -62,7 +65,8 @@
 					<setInputField name="contractor.billingEmail" value="tester@picsauditing.com"/>
 					<setSelectField name="contractor.industry" text="Power"/>
 					<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
-					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me."/>
+					<setInputField name="contractor.description" value="This tests the typical registration for a contractor who is 
+						 registering for multiple facilities. This is a test account from Canoo webtest. Please delete me."/>
 					<setInputField name="user.username" value="canoo_contractor1"/>
 					<setInputField description="Set password field password: bigboy11" name="password" value="bigboy11"/>
 					<setInputField description="Set password field confirmPassword: bigboy11" name="confirmPassword" value="bigboy11"/>
@@ -86,12 +90,12 @@
 				</group>
 				<group description="Add Facilities">
 					<sleep seconds="5"/>
-					<clickLink description="Click link: Add" htmlId="facility_5901"/>
-					<clickLink description="Click link: Add" htmlId="facility_5891"/>
-					<clickLink description="Click link: Add" htmlId="facility_5147"/>
-					<clickLink description="Click link: Add" htmlId="facility_16"/>
+					<clickLink description="Click link: Add" htmlId="facility_1813"/>
+					<clickLink description="Click link: Add" htmlId="facility_7786"/>
+					<clickLink description="Click link: Add" htmlId="facility_784"/>
+					<clickLink description="Click link: Add" htmlId="facility_2475"/>
 					<sleep seconds="5"/>
-					<setSelectField htmlId="requestedBySelector" text="BASF Brighton Colorado"/>
+					<setSelectField htmlId="requestedBySelector" text="BP Cherry Point Refinery"/>					
 					<sleep seconds="3"/>
 					<clickLink label="Next >>"/>
 				</group>
