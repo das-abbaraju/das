@@ -5,7 +5,7 @@
 
 	<!-- For changeable application objects, wait a day -->
 	<cache name="daily" maxElementsInMemory="500" eternal="false"
-		timeToLiveSeconds="86400" overflowToDisk="false" />
+		timeToLiveSeconds="3600" overflowToDisk="false" />
 
 	<!-- For most session elements, wait 30 minutes -->
 	<cache name="temp" maxElementsInMemory="500" eternal="false"
