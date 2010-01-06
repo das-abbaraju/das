@@ -92,6 +92,12 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 				if ("Verify".equals(button)) {
 					cao.setStatus(CaoStatus.Verified);
+					if (cao.getOperator().isAutoApproveInsurance()) {
+						if (cao.getFlag() == FlagColor.Green)
+							cao.setStatus(CaoStatus.Approved);
+						else if (cao.getFlag() == FlagColor.Red)
+							cao.setStatus(CaoStatus.Rejected);
+					}
 					cao.setAuditColumns(permissions);
 					statusChanged = true;
 					button = "Save";
@@ -179,7 +185,8 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							cao.setStatusChangedDate(new Date());
 							String text = " Changed " + cao.getAudit().getAuditType().getAuditName() + " status to "
 									+ cao.getStatus() + " for " + cao.getOperator().getName();
-							addNote(contractor, text, NoteCategory.Insurance, LowMedHigh.Low, true, cao.getOperator().getId(), null);
+							addNote(contractor, text, NoteCategory.Insurance, LowMedHigh.Low, true, cao.getOperator()
+									.getId(), null);
 							// TODO this is a duplicate of FlagCalculator2
 							// because we need the color to change instantly
 							FlagCalculatorSingle calculator = new FlagCalculatorSingle();
@@ -196,7 +203,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 							cao.setFlag(flagColor);
 						}
 						caoDAO.save(cao);
-						
+
 						if (certificate != null) {
 							certificate.updateExpirationDate();
 							certificateDao.save(certificate);

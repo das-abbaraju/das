@@ -50,6 +50,7 @@ public class OperatorAccount extends Account {
 	private boolean verifiedByPics = true;
 	private OshaType oshaType = OshaType.OSHA;
 	private boolean primaryCorporate = false;
+	private boolean autoApproveInsurance = false;
 
 	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
@@ -168,6 +169,14 @@ public class OperatorAccount extends Account {
 
 	public void setPrimaryCorporate(boolean primaryCorporate) {
 		this.primaryCorporate = primaryCorporate;
+	}
+
+	public boolean isAutoApproveInsurance() {
+		return autoApproveInsurance;
+	}
+
+	public void setAutoApproveInsurance(boolean autoApproveInsurance) {
+		this.autoApproveInsurance = autoApproveInsurance;
 	}
 
 	@ManyToOne

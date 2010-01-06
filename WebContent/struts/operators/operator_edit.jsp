@@ -127,7 +127,8 @@ $(function() {
 					</s:if>
 					<li><label>InsureGUARD&trade;:</label> <s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance"
 						theme="pics" /></li>
-	
+					<li><label>Auto Approve/Reject Policies:</label>
+						<s:checkbox name="operator.autoApproveInsurance"/></li>	
 					<li><label>Contractors pay:</label> <s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
 						name="operator.doContractorsPay" theme="pics" /></li>
 					<li><label>Send Emails to:</label> <s:textarea name="operator.activationEmails" rows="3" cols="40" /> <br />

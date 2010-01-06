@@ -73,7 +73,7 @@ fieldset.form label {
 	font-size: 15px;
 	font-weight: bold;
 	color: #003768;
-	height: 20px;
+	line-height: 15px;
 }
 
 fieldset.form label.input {
