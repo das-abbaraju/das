@@ -203,6 +203,16 @@ public class ContractorWidget extends ContractorActionSupport {
 							+ "&catDataID=" + auditCatData.getId()
 							+ "&mode=Edit#node_57\"> update your 2007 NAICS code</a>");
 			}
+			
+			if (contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
+				openTasks
+						.add("Your webcam has been shipped. " 
+								+"<a href=\"http://www.fedex.com/Tracking?tracknumber_list="
+								+ contractor.getWebcam().getTrackingNumber()
+								+ "\" target=\"_blank\">"
+								+ "Click here to track your webcam."
+								+ "</a>");
+			}
 
 		}
 		return openTasks;
