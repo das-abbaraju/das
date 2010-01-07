@@ -14,6 +14,7 @@ import org.jboss.util.Strings;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
@@ -32,10 +33,11 @@ public class InsertPayments extends PaymentAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
+		Currency currency = Currency.getFromISO(currentSession.getCountry());
 
 		List<Payment> payments = getPaymentDao().findWhere(
 				"p.account.qbListID is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account.qbListID not like 'NOLOAD%'", 10);
+						+ "AND p.account.qbListID not like 'NOLOAD%' AND p.currency = '"+ currency + "'", 10);
 
 		// no work to do
 		if (payments.size() == 0) {

@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -35,5 +36,14 @@ public class InvoiceDAOTest extends TestCase {
 		assertTrue(invoice.getId() > 0);
 		invoiceDAO.remove(invoice.getId());
 		assertNull(invoiceDAO.find(invoice.getId()));
+	}
+	
+	@Test
+	public void testCurrencyTest() {
+		Currency currency = Currency.getFromISO("US");
+		List<Invoice> invoices = invoiceDAO.findWhere("i.account.qbListID is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
+						+ "AND i.account.qbListID not like 'NOLOAD%' AND i.currency = '"+ currency + "'", 10);
+		assertNotNull(invoices);
+		assertEquals(invoices.size(), 10);
 	}
 }

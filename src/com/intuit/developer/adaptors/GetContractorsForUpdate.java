@@ -12,9 +12,15 @@ public class GetContractorsForUpdate extends CustomerAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
+		String country = currentSession.getCountry();
+		String where = " AND";
+		if(country.equals("CA")) 
+			where += " a.country.isoCode = 'CA'";
+		else 
+			where += " a.country.isoCode != 'CA'";
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbListID is not null and a.qbListID not like 'NOLOAD%' and a.qbSync = true");
+				"a.qbListID is not null and a.qbListID not like 'NOLOAD%' and a.qbSync = true " + where);
 
 		if (contractors.size() > 0) {
 			currentSession.getPossibleUpdates().addAll(contractors);

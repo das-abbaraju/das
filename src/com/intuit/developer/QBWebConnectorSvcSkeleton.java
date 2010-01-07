@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class QBWebConnectorSvcSkeleton {
@@ -33,7 +34,7 @@ public class QBWebConnectorSvcSkeleton {
 		response.setAuthenticateResult(new ArrayOfString());
 
 		PicsLogger.start("QBWebConnector");
-
+		
 		PicsLogger.log("Authenticating user: " + authenticate.getStrUserName());
 
 		String sessionId = null;
@@ -70,13 +71,21 @@ public class QBWebConnectorSvcSkeleton {
 					}
 				}
 			}
-
-			if (authenticate.getStrUserName().equals("PICSQBLOADER")
+			
+			if(!Strings.isEmpty(authenticate.getStrUserName()) 
 					&& authenticate.getStrPassword().equals(qbPassword)) {
+				
 				QBSession session = new QBSession();
 				session.setSessionId(GUID.asString());
 				session.setLastRequest(new Date());
+				// Setting Session Country for US
+				if (authenticate.getStrUserName().equals("PICSQBLOADER"))
+					session.setCountry("US");
 
+				// Setting Session Country for CA
+				if (authenticate.getStrUserName().equals("PICSQBLOADERCA"))
+					session.setCountry("CA");
+				
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();
 				PicsLogger.log("login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId);
@@ -91,7 +100,6 @@ public class QBWebConnectorSvcSkeleton {
 				if (session.getCurrentStep().equals(QBIntegrationWorkFlow.Finished)) {
 					finished = true;
 				}
-
 			}
 
 			if (sessionId == null) {
