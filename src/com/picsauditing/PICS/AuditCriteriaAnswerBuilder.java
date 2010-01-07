@@ -169,8 +169,8 @@ public class AuditCriteriaAnswerBuilder {
 						} else if (MultiYearScope.ThreeYearAverage.equals(scope)) {
 							List<AuditData> dataList = new ArrayList<AuditData>();
 							int count = 0;
-							if (count < 3) {
-								for (ContractorAudit conAudit : matchingConAudits) {
+							for (ContractorAudit conAudit : matchingConAudits) {
+								if (count < 3) {
 									AuditData data = answerMapByAudits.get(conAudit).get(question.getId());
 									if (data != null) {
 										dataList.add(data);
