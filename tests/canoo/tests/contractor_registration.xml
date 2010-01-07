@@ -90,12 +90,12 @@
 				</group>
 				<group description="Add Facilities">
 					<sleep seconds="5"/>
-					<clickLink description="Click link: Add" htmlId="facility_1813"/>
-					<clickLink description="Click link: Add" htmlId="facility_7786"/>
-					<clickLink description="Click link: Add" htmlId="facility_784"/>
-					<clickLink description="Click link: Add" htmlId="facility_2475"/>
+					<clickLink description="Click link: Add" htmlId="facility_1192"/>
+					<clickLink description="Click link: Add" htmlId="facility_1193"/>
+					<clickLink description="Click link: Add" htmlId="facility_1194"/>
+					<clickLink description="Click link: Add" htmlId="facility_1195"/>
 					<sleep seconds="5"/>
-					<setSelectField htmlId="requestedBySelector" text="BP Cherry Point Refinery"/>					
+					<setSelectField htmlId="requestedBySelector" text="Shell Chemical Mobile"/>
 					<sleep seconds="3"/>
 					<clickLink label="Next >>"/>
 				</group>
