@@ -48,7 +48,7 @@
 	<tr>
 		<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
 		<td><s:property value="modifiedWorkDay"/></td>
-		<td>&nbsp;</td>
+		<td><s:property value="%{format(modifiedWorkDay)}"/></td>
 		<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 	</tr>
 </s:if>
@@ -83,6 +83,25 @@
 	<td><s:property value="%{format(recordableTotalRate)}"/></td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).recordableTotal"/></td><td><s:property value="format(getAverageOsha( type ).recordableTotalRate)"/></td></s:if>
 </tr>
+
+<s:if test="category.id in {151,158}">
+	<tr>
+		<th class="label">Severity Rate</th>
+		<td>
+			<s:if test="type.toString().equals('OSHA')">
+				<s:property value="%{lostWorkDays+modifiedWorkDay}"/>
+			</s:if>
+			<s:else>
+				<s:property value="%{lostWorkDays}"/>
+			</s:else>
+		</td>
+		<td><s:property value="%{format(restrictedOrJobTransferDays)}"/></td>
+		<s:if test="type.toString().equals('OSHA') && corporate">
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</s:if>
+	</tr>
+</s:if>
 
 <s:if test="category.id == 158">
 <tr>

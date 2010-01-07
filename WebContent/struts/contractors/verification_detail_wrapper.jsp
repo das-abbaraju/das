@@ -57,6 +57,7 @@
 				'osha.lostWorkDays': $('#lwd_' + oshaId).val(),
 				'osha.injuryIllnessCases': $('#imc_' + oshaId).val(),
 				'osha.restrictedWorkCases': $('#rwc_' + oshaId).val(),
+				'osha.modifiedWorkDay': $('#rwd_' + oshaId).val(),
 				button: 'toggleVerify'
 		};
 

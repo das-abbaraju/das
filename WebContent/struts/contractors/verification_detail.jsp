@@ -96,6 +96,12 @@
 					</s:iterator>
 				</tr>
 				<tr>
+					<td>Number of On Job Transfer OR Restricted Days</td>
+					<s:iterator value="oshas">
+						<td class="center"><s:property value="modifiedWorkDay" /></td>
+					</s:iterator>
+				</tr>
+				<tr>
 					<td>Total Injuries and Illnesses:</td>
 					<s:iterator value="oshas">
 						<td class="center"><s:property value="recordableTotal" /></td>
