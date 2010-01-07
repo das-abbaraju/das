@@ -9,6 +9,7 @@
 		<ant antfile="corporate.xml"/>
 		<ant antfile="operator_users.xml"/>
 		<ant antfile="contractor_registration.xml"/>
+		<ant antfile="contractor_registration_BASF.xml"/>
 		
 		<ant antfile="admin.xml"/>
 		<ant antfile="admin_verification.xml"/>
@@ -27,9 +28,7 @@
 	</target>
 
 	<target name="adhoc" description="Run a few tests when debugging">
-	
-		<ant antfile="contractor_registration.xml"/>
-		<ant antfile="admin_billing.xml"/>
+		<ant antfile="fake_accts.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
