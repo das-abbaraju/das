@@ -4,8 +4,8 @@
 
 <h2>Category <s:property value="category.number"/> - <s:property value="category.category"/></h2>
 <s:if test="permissions.admin || permissions.contractor">
-	<span class="redMain">You must input at least your corporate statistics. To further assist your clients, please
-	enter additional locations that you maintain logs for that may be needed by your clients.
+	<span class="redMain">You must input at least your corporate statistics. To add additional 
+		sites/locations, please click on 'Add New Location' button located at bottom of the page.
 	</span>
 </s:if>
 <s:if test="mode == 'View'">
@@ -16,11 +16,6 @@
 	</s:iterator>
 </s:if>
 <s:if test="mode == 'Edit'">
-	<s:if test="category.id in { 151, 157 }">		
-		<s:if test="permissions.contractor">
-			<span style="font-size: 12px;color:#003768;">Provide the following numbers (excluding subcontractors) using your OSHA/MSHA 300 Forms from the past 3 years:</span><br/>
-		</s:if>
-	</s:if>
 
 	<s:if test="catDataID == 0">
 		<s:include value="audit_cat_osha_edit2.jsp"/>

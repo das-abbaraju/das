@@ -55,6 +55,12 @@
 	<th class="label"><s:property value="getText('restrictedCases.'.concat(type))"/></th>
 	<td><s:textfield name="osha.restrictedWorkCases" value="%{restrictedWorkCases}" cssClass="osha"></s:textfield></td>
 </tr>
+<s:if test="category.id in { 151, 158 }">
+<tr>
+	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
+	<td><s:textfield name="osha.modifiedWorkDay" value="%{modifiedWorkDay}" cssClass="osha"/></td>
+</tr>
+</s:if>
 <tr>
 	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
 	<td><s:textfield name="osha.injuryIllnessCases" value="%{injuryIllnessCases}" cssClass="osha"></s:textfield></td>
@@ -63,10 +69,6 @@
 <tr>
 	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
 	<td><s:textfield name="osha.firstAidInjuries" value="%{firstAidInjuries}" cssClass="osha"/></td>
-</tr>
-<tr>
-	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
-	<td><s:textfield name="osha.modifiedWorkDay" value="%{modifiedWorkDay}" cssClass="osha"/></td>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
@@ -109,22 +111,30 @@
 </tfoot>
 </table>
 </s:form>
-<s:if test="permissions.contractor && category.id in {151,157}">
+<s:if test="permissions.contractor && category.id in {151, 157}">
 	<table>
+		<s:if test="category.id == 151">
 		<tr>
 			<td></td>
 			<td class="redMain">Please upload scanned .pdf <s:property value="type"/> Log Files. If you are unable to do so, you may mail or fax them to us and we can scan them for you.
 			</td>
 		</tr>
+		</s:if>
 		<tr>
 			<td class="redMain">Notes: </td>
 			<td><span style="font-size: 11px;color:#003768;">(1)   Data should be for the entire company. Facilities may request additional regional statistics later.</span></td>
 		</tr>
+		<s:if test="category.id == 151">
 		<tr>
 			<td></td>
 			<td><span style="font-size: 11px;color:#003768;">(2)   If your company is not required to maintain <s:property value="type"/> 300 forms, please provide information from your
 			Worker's Compensation insurance carrier itemizing all claims for the last three years.</span> 
 			</td>
 		</tr>
+		<tr>
+			<td></td>
+			<td><span style="font-size: 11px;color:#003768;">(3)   If Injuries are reported you will be required to submit both the 300 and 300a forms as one file.</span> </td>
+		</tr>
+		</s:if>
 	</table>
 </s:if>

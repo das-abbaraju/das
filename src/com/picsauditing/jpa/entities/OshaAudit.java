@@ -62,6 +62,7 @@ public class OshaAudit implements java.io.Serializable {
 	private Float trir = null;
 	private Float lwcr = null;
 	private Float dart = null;
+	private Float severityRate = null;
 	
 	private Float cad7 = 0.0f;
 	private Float neer = 0.0f;
@@ -342,6 +343,28 @@ public class OshaAudit implements java.io.Serializable {
 
 	public void setRestrictedDaysAwayRate(float rate) {
 		this.dart = rate;
+	}
+	
+	@Transient
+	/**
+	 * Get the severity rate, you can call getRestrictedOrJobTransferDays()
+	 * Severity rate is a way for operators to measure severity rates on contractors
+	 * if you don't want this to automatically calculate, 
+	 * for example, in an average rate calculation.
+	 */
+	public Float getRestrictedOrJobTransferDays() {
+		if(severityRate == null) { 
+			if (type.equals(OshaType.OSHA)) {
+				severityRate = calculateRate(lostWorkDays + modifiedWorkDay);
+			} else {
+				severityRate = calculateRate(lostWorkDays);
+			}
+		}
+		return severityRate;
+	}
+
+	public void setRestrictedOrJobTransferDays(float rate) {
+		this.severityRate = rate;
 	}
 
 	@Transient

@@ -44,6 +44,14 @@
 	<td><s:property value="%{format(restrictedWorkCasesRate)}"/></td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).restrictedWorkCases"/></td><td><s:property value="format(getAverageOsha( type ).restrictedWorkCasesRate)"/></td></s:if>
 </tr>
+<s:if test="category.id in { 151, 158 }">
+	<tr>
+		<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
+		<td><s:property value="modifiedWorkDay"/></td>
+		<td>&nbsp;</td>
+		<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
+	</tr>
+</s:if>
 <tr>
 	<th class="label"><s:property value="getText('injuryAndIllness.'.concat(type))"/></th>
 	<td><s:property value="injuryIllnessCases"/></td>
@@ -55,12 +63,6 @@
 <tr>
 	<th class="label"><s:property value="getText('firstAidInjuries.'.concat(type))"/></th>
 	<td><s:property value="firstAidInjuries"/></td>
-	<td>&nbsp;</td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
-</tr>
-<tr>
-	<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
-	<td><s:property value="modifiedWorkDay"/></td>
 	<td>&nbsp;</td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
@@ -96,6 +98,7 @@
 	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
 </s:if>
+
 <s:if test="type.toString().equals('OSHA')">	
 	<tr>
 		<th class="label">Uploaded Log Files</th>
