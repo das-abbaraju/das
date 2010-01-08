@@ -186,6 +186,32 @@
 		</tr>
 	</s:if>
 	
+	<s:if test="operator.oshaType.toString() == 'OSHA' || operator.oshaType.toString() == 'COHS'">
+		<tr 
+			<s:if test="operator == operator.inheritFlagCriteria">
+				onclick="showOshaCriteria('7');" class="clickable" title="Click to open"
+				</s:if>
+		>
+			<td><s:property value="operator.oshaType"/></td>
+			<td class="right">Severity Rate</td>
+			<td>
+				On Job Transfer OR Restricted Days
+			</td>
+			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.severity.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.severity.time)"/>
+				> <s:property value="oshaRedFlagCriteria.severity.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+			<td><nobr><s:if test="oshaAmberFlagCriteria != null && !oshaAmberFlagCriteria.severity.hurdleFlag.none">
+				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaAmberFlagCriteria.severity.time)"/>
+				> <s:property value="oshaAmberFlagCriteria.severity.hurdle"/>
+				</s:if>
+				<s:else>N/A</s:else>
+			</nobr></td>
+		</tr>
+	</s:if>
+	
 	</s:if>
 	<s:if test="questionList.size() == 0">
 		<tr><td colspan="5">No flag criteria has been defined for this type</td></tr>

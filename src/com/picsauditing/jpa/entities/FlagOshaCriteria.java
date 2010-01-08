@@ -25,6 +25,7 @@ public class FlagOshaCriteria extends BaseTable {
 	protected FlagOshaCriterion dart;
 	protected FlagOshaCriterion cad7;
 	protected FlagOshaCriterion neer;
+	protected FlagOshaCriterion severity;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "opID", nullable = false)
@@ -116,6 +117,18 @@ public class FlagOshaCriteria extends BaseTable {
 
 	public void setNeer(FlagOshaCriterion neer) {
 		this.neer = neer;
+	}
+	
+	@Embedded
+	@AttributeOverrides( { @AttributeOverride(name = "hurdleFlag", column = @Column(name = "severityHurdleType")),
+			@AttributeOverride(name = "hurdle", column = @Column(name = "severityHurdle")),
+			@AttributeOverride(name = "time", column = @Column(name = "severityTime")) })
+	public FlagOshaCriterion getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(FlagOshaCriterion severity) {
+		this.severity = severity;
 	}
 
 	@Transient

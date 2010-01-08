@@ -250,6 +250,16 @@ public class FlagCalculatorSingle {
 										+ osha.getRestrictedDaysAwayRate() + " color = " + osha.getFlagColor());
 							}
 						}
+						if (criteria.getSeverity().isRequired()) {
+							if (criteria.getSeverity().isLastYearOnly() && Integer
+											.toString(year).equals(osha.getConAudit().getAuditFor())) {
+								if (criteria.getSeverity().isFlagged(contractor.getNaics().getTrir(),
+										osha.getRestrictedOrJobTransferDays()))
+									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+								debug(" --- checking Severity Rate " + criteria.getSeverity() + " against value = "
+										+ osha.getRestrictedOrJobTransferDays() + " color = " + osha.getFlagColor());
+							}
+						}
 						if (criteria.getFatalities().isRequired()) {
 							if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
 									|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {

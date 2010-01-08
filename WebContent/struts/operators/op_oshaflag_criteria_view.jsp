@@ -24,6 +24,9 @@
 		<s:elseif test="dart">
 			Dart:
 		</s:elseif>
+		<s:elseif test="severity">
+			Severity Rate:
+		</s:elseif>
 		<br/>
 	</div>
 	<div>
@@ -48,6 +51,10 @@
 			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.dart.time" theme="pics" />
 		</s:elseif>
+		<s:elseif test="severity">
+			<s:hidden name="redOshaCriteria.severity.time" value="2"></s:hidden>
+			Last Year Only
+		</s:elseif>
 		<s:elseif test="neer">
 			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="redOshaCriteria.neer.time" theme="pics" />
@@ -70,6 +77,9 @@
 		<s:elseif test="dart">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.dart.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
 		</s:elseif>
+		<s:elseif test="severity">
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="redOshaCriteria.severity.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'red'); return true;"/>
+		</s:elseif>
 		</td>
 		<td>
 		<s:if test="lwcr">
@@ -89,6 +99,9 @@
 		</s:elseif>
 		<s:elseif test="dart">
 			<s:set name="redhurdleFlag" value="redOshaCriteria.dart.hurdleFlag"/>
+		</s:elseif>
+		<s:elseif test="severity">
+			<s:set name="redhurdleFlag" value="redOshaCriteria.severity.hurdleFlag"/>
 		</s:elseif>
 	
 		<s:if test="#redhurdleFlag.none">
@@ -129,6 +142,9 @@
 		<s:elseif test="dart">
 			<s:textfield name="redOshaCriteria.dart.hurdle" size="5"/>
 		</s:elseif>
+		<s:elseif test="severity">
+			<s:textfield name="redOshaCriteria.severity.hurdle" size="5"/>
+		</s:elseif>
 		</span>
 		<span id="show_redhurdlepercent" style="display: <s:property value="#attr.show_redhurdlepercent"/>;">%</span>
 		</nobr></td>
@@ -147,6 +163,10 @@
 		<s:elseif test="dart">
 			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
 				name="amberOshaCriteria.dart.time" theme="pics" />
+		</s:elseif>
+		<s:elseif test="severity">
+			<s:hidden name="amberOshaCriteria.severity.time" value="2"></s:hidden>
+			Last Year Only
 		</s:elseif>
 		<s:elseif test="neer">
 			<s:radio list="#{'1':'Individual Yrs','2':'Last Year Only','3':'ThreeYearAverage'}"
@@ -170,6 +190,9 @@
 		<s:elseif test="dart">
 			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.dart.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
 		</s:elseif>
+		<s:elseif test="severity">
+			<s:radio list="#{'None':'None<br/>','Absolute':'Absolute'}" name="amberOshaCriteria.severity.hurdleFlag" theme="pics" onclick="javascript : showHudleType(this,'amber'); return true;"/>
+		</s:elseif>
 		</td>		
 		<td>
 		<s:if test="lwcr">
@@ -189,6 +212,9 @@
 		</s:elseif>
 		<s:elseif test="dart">
 			<s:set name="amberhurdleFlag" value="amberOshaCriteria.dart.hurdleFlag"/>
+		</s:elseif>
+		<s:elseif test="severity">
+			<s:set name="amberhurdleFlag" value="amberOshaCriteria.severity.hurdleFlag"/>
 		</s:elseif>
 
 		<s:if test="#amberhurdleFlag.none">
@@ -227,6 +253,8 @@
 			<s:textfield name="amberOshaCriteria.neer.hurdle" size="5"/>
 		</s:elseif><s:elseif test="dart">
 			<s:textfield name="amberOshaCriteria.dart.hurdle" size="5"/>
+		</s:elseif><s:elseif test="severity">
+			<s:textfield name="amberOshaCriteria.severity.hurdle" size="5"/>
 		</s:elseif>
 		</span>
 		<span id="show_amberhurdlepercent" style="display: <s:property value="#attr.show_amberhurdlepercent"/>;">%</span>

@@ -306,6 +306,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 	
+	public boolean isOshaSeverityUsed() {
+		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
+			if (criteria.getSeverity().isRequired())
+				return true;
+		}
+		return false;
+	}
+	
 	public boolean isOshaAveragesUsed() {
 		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
