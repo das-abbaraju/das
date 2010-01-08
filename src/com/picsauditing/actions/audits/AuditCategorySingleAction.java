@@ -189,6 +189,17 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				notes += " for " + conAudit.getAuditFor();
 			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 		}
+		
+		if (auditStatus.equals(AuditStatus.Active)) {
+			if (conAudit.getAuditType().isHasRequirements()) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(81); // Audit Completed
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				EmailSender.send(emailBuilder.build());
+			}
+			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the " + conAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+		}
 
 		conAudit.changeStatus(auditStatus, getUser());
 		auditDao.save(conAudit);
