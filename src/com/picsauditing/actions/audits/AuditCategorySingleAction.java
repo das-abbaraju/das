@@ -136,20 +136,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 					}
 				}
 			}
-
-			if (conAudit.getAuditType().isAnnualAddendum()
-					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
-				// We're activating the most recent year's audit (ie 2008)
-				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isAnnualAddendum()
-							&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
-							&& !audit.getAuditStatus().isExpired()) {
-						// Any annual audit before 2006 (ie 2005)
-						audit.setAuditStatus(AuditStatus.Expired);
-						auditDao.save(audit);
-					}
-				}
-			}
 		}
 
 		if (auditStatus.equals(AuditStatus.Submitted)) {

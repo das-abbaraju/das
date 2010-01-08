@@ -7,6 +7,9 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -35,11 +38,13 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			conAudit.setAuditColumns(permissions);
 			auditDao.save(conAudit);
 			findConAudit();
+			addNote(conAudit.getContractorAccount(), "Modified "+ conAudit.getAuditType().getAuditName() + " using System Edit", NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, this.getUser());
 			addActionMessage("Successfully saved data");
 		}
 		if ("Delete".equals(button)) {
 			auditDao.clear();
 			auditDao.remove(auditID, getFtpDir());
+			addNote(conAudit.getContractorAccount(), "Deleted "+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, this.getUser());
 			if (conAudit.getAuditType().getClassType().isPolicy()) 
 				return "PolicyList";
 			return "AuditList";

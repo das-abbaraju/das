@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -13,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.Strings;
@@ -25,13 +27,11 @@ import com.picsauditing.util.Strings;
  */
 public class ConAuditSave extends AuditActionSupport {
 
-	protected ContractorAuditDAO contractorAuditDAO;
 	protected String auditStatus;
 
 	public ConAuditSave(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditCategoryDataDAO catDataDao,
-			AuditDataDAO auditDataDao, ContractorAuditDAO contractorAuditDAO) {
+			AuditDataDAO auditDataDao) {
 		super(accountDao, auditDao, catDataDao, auditDataDao);
-		this.contractorAuditDAO = contractorAuditDAO;
 	}
 
 	public String execute() throws Exception {
@@ -46,6 +46,20 @@ public class ConAuditSave extends AuditActionSupport {
 			
 			conAudit.changeStatus(AuditStatus.Active, getUser());
 			note = "Verified and Activated the " + conAudit.getAuditType().getAuditName();
+			
+			if (conAudit.getAuditType().isAnnualAddendum()
+					&& DateBean.getCurrentYear() - 1 == Integer.parseInt(conAudit.getAuditFor())) {
+				// We're activating the most recent year's audit (ie 2008)
+				for (ContractorAudit audit : contractor.getAudits()) {
+					if (audit.getAuditType().isAnnualAddendum()
+							&& Integer.parseInt(audit.getAuditFor()) < DateBean.getCurrentYear() - 3
+							&& !audit.getAuditStatus().isExpired()) {
+						// Any annual audit before 2006 (ie 2005)
+						audit.setAuditStatus(AuditStatus.Expired);
+						auditDao.save(audit);
+					}
+				}
+			}
 		}
 		// TODO add a column to auditData to keep track when the contractor has
 		// changed the answer.
@@ -91,7 +105,7 @@ public class ConAuditSave extends AuditActionSupport {
 			addNote(contractor, note, NoteCategory.Audits, LowMedHigh.Low, true, Account.PicsID, getUser());
 		}
 
-		conAudit = contractorAuditDAO.save(conAudit);
+		conAudit = auditDao.save(conAudit);
 		ContractorAccount contractorAccount = conAudit.getContractorAccount();
 		contractor.setNeedsRecalculation(true);
 		accountDao.save(contractorAccount);
