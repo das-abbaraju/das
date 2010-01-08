@@ -283,8 +283,12 @@ $(function() {
 							</s:iterator></td>
 						</s:if>
 						<s:if test="oshaSeverityUsed">
-							<td class="right"><s:property
-								value="%{new java.text.DecimalFormat('#,##0.000').format(value.restrictedOrJobTransferDays)}" /></td>
+							<td class="right">
+								<s:if test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
+									<s:property
+										value="%{new java.text.DecimalFormat('#,##0.000').format(value.restrictedOrJobTransferDays)}" />
+								</s:if>
+							</td>
 							<td style="vertical-align: middle;"><s:iterator
 								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
 								<s:if test="severity.required">
