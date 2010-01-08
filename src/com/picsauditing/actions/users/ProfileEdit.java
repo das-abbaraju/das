@@ -9,6 +9,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -61,6 +62,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 		if (button != null) {
 			if (button.equals("Save Profile")) {
+				permissions.tryPermission(OpPerms.EditProfile,OpType.Edit);
+
 				dao.clear();
 
 				if (dao.duplicateUsername(u.getUsername(), u.getId())) {
