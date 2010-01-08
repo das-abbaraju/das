@@ -1,46 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>picsWeb2</groupId>
 	<artifactId>picsWeb2</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<description></description>
-
-
-	<profiles>
-		<profile>
-			<id>standard</id>
-			<repositories>
-				<repository>
-					<id>standard mvn repository</id>
-					<url>http://repo1.maven.org/maven2
-					</url>
-				</repository>
-				<repository>
-					<id>jboss repository</id>
-					<url>http://repository.jboss.com/maven2/
-					</url>
-				</repository>
-				<repository>
-					<id>ibiblio</id>
-					<url>http://mirrors.ibiblio.org/pub/mirrors/maven2
-					</url>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>standard mvn repository</id>
-					<url>http://repo1.maven.org/maven2
-					</url>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-	</profiles>
-
-
-
+	
+	<repositories>
+		<repository>
+			<id>pics</id>
+			<url>http://maven.picsauditing.com</url>
+		</repository>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>pics</id>
+			<url>http://maven.picsauditing.com</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>tests</testSourceDirectory>
