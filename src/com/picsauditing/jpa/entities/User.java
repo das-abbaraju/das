@@ -46,7 +46,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public static int GROUP_CSR = 959;
 	public static int CONTRACTOR = 12;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL
-											// permissions
+	// permissions
 	public static int INDEPENDENT_CONTRACTOR = 11265;
 
 	// grant privileges
@@ -72,7 +72,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	private String password;
 	private Date passwordChanged;
-	private String newPassword;
 	private String resetHash;
 	private String passwordHistory;
 	private int failedAttempts = 0;
@@ -189,14 +188,6 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	public void setPasswordChanged(Date passwordChanged) {
 		this.passwordChanged = passwordChanged;
-	}
-
-	public String getNewPassword() {
-		return newPassword;
-	}
-
-	public void setNewPassword(String newPassword) {
-		this.newPassword = newPassword;
 	}
 
 	public String getResetHash() {
