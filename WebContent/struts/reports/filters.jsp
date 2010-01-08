@@ -239,7 +239,7 @@
 			onclick="toggleBox('form1_risklevel'); return false;">Risk Level</a> =
 		<span id="form1_risklevel_query">ALL</span><br />
 		<span id="form1_risklevel_select" style="display: none"
-			class="clearLink"> <s:select id="form1_risklevel" list="#{'1':'Low', '2':'Med', '3':'High'}"
+			class="clearLink"> <s:select id="form1_risklevel" list="#{1:'Low', 2:'Med', 3:'High'}"
 			cssClass="forms" name="filter.riskLevel"
 			multiple="true" size="3" /> <script type="text/javascript">updateQuery('form1_risklevel');</script>
 		<br />
