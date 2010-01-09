@@ -21,6 +21,10 @@ public class Country {
 	public Country() {
 	}
 
+	public Country(String isoCode) {
+		this.isoCode = isoCode;
+	}
+
 	public Country(String isoCode, String english) {
 		this.isoCode = isoCode;
 		this.english = english;

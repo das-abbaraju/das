@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
@@ -61,6 +62,7 @@ public class EntityFactory {
 		contractor.setActive('Y');
 		contractor.setName("Contractor Unit Test");
 		contractor.setRiskLevel(LowMedHigh.Med);
+		contractor.setCountry(new Country("US"));
 		return contractor;
 	}
 
@@ -170,7 +172,7 @@ public class EntityFactory {
 
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
-		question.setQuestion("jUnit Question");
+		question.setDefaultQuestion("jUnit Question");
 		return question;
 	}
 
