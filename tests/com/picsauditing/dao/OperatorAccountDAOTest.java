@@ -16,6 +16,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Industry;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
@@ -26,7 +27,7 @@ import com.picsauditing.jpa.entities.YesNo;
 @TransactionConfiguration(defaultRollback = false)
 @Transactional
 public class OperatorAccountDAOTest {
-
+	
 	@Autowired
 	OperatorAccountDAO operatoraccountDAO;
 	@Autowired
@@ -57,15 +58,19 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setDoContractorsPay("Multiple");
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
 		operatoraccount.setInsuranceAuditor(new User());
-		operatoraccount.getInsuranceAuditor().setId(941); // tallred
+		operatoraccount.getInsuranceAuditor().setId(941); //tallred
 		operatoraccount.setIsUserManualUploaded(YesNo.Yes);
 		operatoraccount.setApprovesRelationships(YesNo.No);
-		assertEquals("pics@picsauditing.com", operatoraccount.getActivationEmails());
+		operatoraccount.setNaics(new Naics());
+		operatoraccount.getNaics().setCode("0");
+		assertEquals("pics@picsauditing.com", operatoraccount
+				.getActivationEmails());
 		operatoraccount = operatoraccountDAO.save(operatoraccount);
 		assertTrue(operatoraccount.getId() > 0);
 		int newID = operatoraccount.getId();
 		operatoraccountDAO.remove(newID);
-		OperatorAccount operatoraccount1 = operatoraccountDAO.find(operatoraccount.getId());
+		OperatorAccount operatoraccount1 = operatoraccountDAO
+				.find(operatoraccount.getId());
 		assertNull(operatoraccount1);
 
 	}
@@ -76,14 +81,14 @@ public class OperatorAccountDAOTest {
 		assertTrue(account.size() > 0);
 	}
 
-	// @Test
-	// public void testContractorCount() {
-	// long start = System.currentTimeMillis();
-	// int count = operatoraccountDAO.getContractorCount(2475);
-	// assertTrue(count > 300 && count < 500);
-	// count = operatoraccountDAO.getContractorCount(2475);
-	// long end = System.currentTimeMillis();
-	// System.out.println("SQL took" + (end - start) + " msecs" );
-	// }
+	//@Test
+//	public void testContractorCount() {
+//		long start = System.currentTimeMillis();
+//		int count = operatoraccountDAO.getContractorCount(2475);
+//		assertTrue(count > 300 && count < 500);
+//		count = operatoraccountDAO.getContractorCount(2475);
+//		long end = System.currentTimeMillis();
+//		System.out.println("SQL took" + (end - start) + " msecs" );
+//	}
 
 }
