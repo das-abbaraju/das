@@ -21,8 +21,8 @@ public class WebcamDAOTest extends TestCase {
 
 	@Test
 	public void testFind() {
-		Webcam webcam = dao.find(1);
-		assertEquals(1, webcam.getId());
+		Webcam webcam = dao.find(2);
+		assertEquals(2, webcam.getId());
 	}
 
 	@Test
