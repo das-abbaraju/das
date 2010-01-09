@@ -19,7 +19,7 @@ public class PaymentDAOTest extends TestCase {
 
 	@Test
 	public void testFind() {
-		Payment payment = paymentDAO.find(14);
-		assertEquals("ECI (Ecology Control Inc.)", payment.getAccount().getName());
+		Payment payment = paymentDAO.find(33825);
+		assertEquals("Ancon Marine", payment.getAccount().getName());
 	}
 }
