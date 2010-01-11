@@ -24,6 +24,13 @@ function changeStartsWith( formid, v ) {
 	runSearch(search);
 }
 
+// Checks if the state and country are selected. If so,
+// ignore and clear out the country.
+function checkStateAndCountry( formidState, formidCountry ) {
+	if($('#'+formidState).find('option:selected') != null)
+		clearSelected(formidCountry);
+}
+
 function clickSearch( formid ) {
 	var search = $("#"+formid);
 	search.find('[name=showPage]').val("1");

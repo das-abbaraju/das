@@ -7,12 +7,14 @@ import java.util.Map;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -432,6 +434,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			result = stateDAO.findAll();
 
 		return result;
+	}
+	
+	public List<Country> getCountryList() {
+		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
+		return countryDAO.findAll();
 	}
 
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {

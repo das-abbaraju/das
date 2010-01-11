@@ -215,7 +215,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(stateList)) {
 			sql.addWhere("a.state IN (" + stateList + ")");
 			setFiltered(true);
-		}	
+		}
+		
+		String countryList = Strings.implodeForDB(f.getCountry(), ",");
+		if (filterOn(countryList) && !filterOn(stateList)) {
+			sql.addWhere("a.country IN (" + countryList + ")");
+			setFiltered(true);
+		}
 		
 		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
