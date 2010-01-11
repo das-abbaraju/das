@@ -152,7 +152,7 @@
 										<condition>
 											<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
 											<clickButton label="Search"/>
-											<verifyText text="No results found "/>
+											<verifyText text="No results found"/>
 										</condition>
 										<then></then>
 										<else>	
@@ -161,11 +161,6 @@
 											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 											<clickButton label="Save" name="button"/>
-											<clickLink label="2006 Update"/>
-											<clickLink label="System Edit"/>
-											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-											<clickButton label="Save"/>
 											<clickLink label="2007 Update"/>
 											<clickLink label="System Edit"/>
 											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
@@ -176,6 +171,11 @@
 											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 											<clickButton label="Save" name="button"/>
+											<clickLink label="2009 Update"/>
+											<clickLink label="System Edit"/>
+											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+											<clickButton label="Save"/>
 										</else>
 									</ifStep>		
 								</group>
@@ -190,7 +190,7 @@
 									<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
 									<verifyText description="Verify that text is contained in the page" text="0%"/>
 									<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
-									<verifyText description="Verify that text is contained in the page" text="19%"/>
+									<verifyText description="Verify that text is contained in the page" text="21%"/>
 									<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
 									<verifyText description="Verify that text is contained in the page" text="100%"/>
 								</group>
