@@ -2,7 +2,6 @@
 
 <project name="PICS" default="test">
 	<target name="test" description="Run All PICS Web Tests">
-		<ant antfile="marketingPages.xml"/>
 		<ant antfile="login.xml"/>
 		<ant antfile="audit_definitions.xml"/>
 		<ant antfile="auditor.xml"/>
