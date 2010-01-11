@@ -13,7 +13,7 @@
 					propertyType="ant"
 					value="${admin.username}"/>
 				&login;
-				<setInputField name="filter.accountName" value="Canoo's Test Contractor for BASF"/>
+				<setInputField name="filter.accountName" value="Canoo's Test for BASF"/>
 				<clickButton label="Search"/>
 				<ifStep description="If canoo present, delete acct">
 					<condition>
