@@ -1,14 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,13 +17,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "contractor_registration_request")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorRegistrationRequest extends BaseTable implements java.io.Serializable {
-	private String name = "";
+	private String name;
 	private OperatorAccount requestedBy;
 	private User requestedByUser;
 	private String requestedByUserOther;
-	private String handledBy = "";
+	private WaitingOn handledBy = WaitingOn.PICS;
 	private boolean open;
-	private String contact = "";
+	private String contact;
 	private String phone;
 	private String email;
 	private String taxID;
@@ -44,18 +40,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String notes;
 	private ContractorAccount contractor;
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "requestID")
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name = "name", nullable = false, length = 100)
 	public String getName() {
 		return name;
 	}
@@ -64,7 +48,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.name = name;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "requestedByID")
 	public OperatorAccount getRequestedBy() {
 		return requestedBy;
@@ -84,7 +67,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.requestedByUser = requestedByUser;
 	}
 
-	@Column(name = "requestedByUser", length = 20)
 	public String getRequestedByUserOther() {
 		return requestedByUserOther;
 	}
@@ -93,16 +75,15 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.requestedByUserOther = requestedByUserOther;
 	}
 
-	@Column(name = "handledBy", nullable = false, length = 10)
-	public String getHandledBy() {
+	@Enumerated(EnumType.STRING)
+	public WaitingOn getHandledBy() {
 		return handledBy;
 	}
 
-	public void setHandledBy(String handledBy) {
+	public void setHandledBy(WaitingOn handledBy) {
 		this.handledBy = handledBy;
 	}
 
-	@Column(name = "open", length = 4)
 	public boolean isOpen() {
 		return open;
 	}
@@ -111,7 +92,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.open = open;
 	}
 
-	@Column(name = "contact", nullable = false, length = 30)
 	public String getContact() {
 		return contact;
 	}
@@ -120,7 +100,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.contact = contact;
 	}
 
-	@Column(name = "phone", length = 20)
 	public String getPhone() {
 		return phone;
 	}
@@ -129,7 +108,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.phone = phone;
 	}
 
-	@Column(name = "email", length = 50)
 	public String getEmail() {
 		return email;
 	}
@@ -138,7 +116,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.email = email;
 	}
 
-	@Column(name = "taxID", length = 9)
 	public String getTaxID() {
 		return taxID;
 	}
@@ -147,7 +124,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.taxID = taxID;
 	}
 
-	@Column(name = "address", length = 100)
 	public String getAddress() {
 		return address;
 	}
@@ -156,7 +132,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.address = address;
 	}
 
-	@Column(name = "city", length = 50)
 	public String getCity() {
 		return city;
 	}
@@ -166,7 +141,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "state", nullable = false)
+	@JoinColumn(name = "state")
 	public State getState() {
 		return state;
 	}
@@ -175,7 +150,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.state = state;
 	}
 
-	@Column(name = "zip", length = 10)
 	public String getZip() {
 		return zip;
 	}
@@ -194,7 +168,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.country = country;
 	}
 
-	@Column(name = "deadline", length = 20)
 	public Date getDeadline() {
 		return deadline;
 	}
@@ -203,7 +176,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.deadline = deadline;
 	}
 
-	@Column(name = "lastContactedBy", length = 9)
+	@ManyToOne
+	@JoinColumn(name = "lastContactedBy")
 	public User getLastContactedBy() {
 		return lastContactedBy;
 	}
@@ -212,7 +186,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.lastContactedBy = lastContactedBy;
 	}
 
-	@Column(name = "lastContactedDate")
 	public Date getLastContactDate() {
 		return lastContactDate;
 	}
@@ -221,7 +194,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.lastContactDate = lastContactDate;
 	}
 
-	@Column(name = "contactCount", length = 4)
 	public int getContactCount() {
 		return contactCount;
 	}
@@ -230,7 +202,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.contactCount = contactCount;
 	}
 
-	@Column(name = "matchCount", length = 4)
 	public int getMatchCount() {
 		return matchCount;
 	}
@@ -239,7 +210,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.matchCount = matchCount;
 	}
 
-	@Column(name = "notes", length = 1000)
 	public String getNotes() {
 		return notes;
 	}
@@ -248,7 +218,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.notes = notes;
 	}
 
-	@Column(name = "conID", length = 9)
+	@ManyToOne
+	@JoinColumn(name = "conID")
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
