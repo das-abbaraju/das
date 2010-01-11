@@ -97,7 +97,7 @@
 				<group description="Set payment to check, switch back">
 					<clickLink label="Logout"/>
 					<setInputField name="username" value="opman"/>
-					<setInputField name="password" value="bigboy11"/>
+					<setInputField name="password" value="@Irvine1"/>
 					<clickButton label="Login"/>
 					<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
 					<clickButton label="Search"/>
