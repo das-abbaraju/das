@@ -22,13 +22,10 @@
 					<setInputField htmlId="save_auditType_auditName" value="Pre-Qualification"/>
 					<clickButton label="Save"/>
 					<clickButton label="Save" name="button"/>
-					<clickButton name="button"/>
-					<clickButton label="UpdateAllAudits"/>
-					
-					<clickLink label="Top"/>
-					
+					<clickButton label="UpdateAllAudits"/>	
 				</group>
 				<group description="Add new AuditType">
+					<clickLink label="Audit Definitions"/>
 					<clickLink description="Click Add New link" label="Add New" />
 					<setInputField name="auditType.auditName" value="Canoo Audit" />
 					<setInputField name="auditType.description" value="Canoo audit type description" />
