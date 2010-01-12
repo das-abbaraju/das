@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
+
 <div id="search"><s:if test="allowCollapsed">
 	<div id="showSearch" onclick="showSearch()"
 		<s:if test="filtered">style="display: none"</s:if>><a href="#">Show
@@ -42,12 +43,13 @@
 	</s:if>
 
 	<s:if test="filter.showAddress">
-		<div class="filterOption">Address: <s:textfield
-			name="filter.city" cssClass="forms" size="15"
-			onfocus="clearText(this)" /> <s:textfield name="filter.zip"
-			cssClass="forms" size="5" onfocus="clearText(this)" />
-		<table style="float: right; vertical-align: top">
+		<div class="filterOption">
+		<table>
 			<tr>
+				<td rowspan="2" style="vertical-align: top">Address: <s:textfield name="filter.city"
+					cssClass="forms" size="15" onfocus="clearText(this)" /> <s:textfield
+					name="filter.zip" cssClass="forms" size="5"
+					onfocus="clearText(this)" /></td>
 				<td style="padding-left: 1ex;"><a href="#"
 					onclick="toggleBox('form1_state'); return false;">State</a> = <span
 					id="form1_state_query">ALL</span></td>
@@ -60,7 +62,7 @@
 					style="display: none" class="clearLink"><s:select
 					id="form1_state" name="filter.state" list="filter.stateList"
 					listKey="isoCode" listValue="name" cssClass="forms" multiple="true"
-					size="15" onclick="clearSelected('form1_country');" /> <br />
+					size="15" onclick="clearSelected('form1_country');" /><br />
 				<script type="text/javascript">updateQuery('form1_state');</script>
 				<a class="clearLink" href="#"
 					onclick="clearSelected('form1_state'); return false;">Clear</a> </span></td>
@@ -68,7 +70,7 @@
 					id="form1_country_select" style="display: none" class="clearLink"><s:select
 					id="form1_country" name="filter.country" list="filter.countryList"
 					listKey="isoCode" listValue="name" cssClass="forms" multiple="true"
-					size="15" /> <br />
+					size="15" /><br />
 				<script type="text/javascript">updateQuery('form1_country');</script>
 				<a class="clearLink" href="#"
 					onclick="clearSelected('form1_country'); return false;">Clear</a> </span>

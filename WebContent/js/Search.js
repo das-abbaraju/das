@@ -27,7 +27,7 @@ function changeStartsWith( formid, v ) {
 // Checks if the state and country are selected. If so,
 // ignore and clear out the country.
 function checkStateAndCountry( formidState, formidCountry ) {
-	if($('#'+formidState).find('option:selected') != null)
+	if($('#'+formidState).find('option:selected').val() != null)
 		clearSelected(formidCountry);
 }
 
