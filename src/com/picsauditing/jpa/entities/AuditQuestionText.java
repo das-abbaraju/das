@@ -63,4 +63,9 @@ public class AuditQuestionText extends BaseTable implements java.io.Serializable
 	public void setRequirement(String requirement) {
 		this.requirement = requirement;
 	}
+
+	@Override
+	public String toString() {
+		return locale + " - " + question;
+	}
 }

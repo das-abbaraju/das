@@ -418,9 +418,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 				if (l.equals(questionText.getLocale()))
 					return questionText;
 			}
+
+			throw new Exception("Not Found");
 		} catch (Exception returnDefault) {
 			for (AuditQuestionText questionText : questionTexts) {
-				if (Locale.ENGLISH.equals(questionText))
+				if (Locale.ENGLISH.equals(questionText.getLocale()))
 					return questionText;
 			}
 		}
@@ -585,5 +587,10 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		}
 
 		countries = tmp;
+	}
+
+	@Override
+	public String toString() {
+		return getQuestionText().toString();
 	}
 }
