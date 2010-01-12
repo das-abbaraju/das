@@ -343,6 +343,12 @@
 			</result>
 		</action>
 		
+		<action name="RequestNewContractor"
+			class="com.picsauditing.actions.contractors.RequestNewContractor">
+			<result>struts/contractors/con_new_registration.jsp</result>
+		</action>
+		
+		
 		<!--  NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes"
 			class="com.picsauditing.actions.notes.OperatorNotes">
