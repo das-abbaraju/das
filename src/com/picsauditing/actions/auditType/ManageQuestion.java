@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -65,6 +66,7 @@ public class ManageQuestion extends ManageSubCategory {
 			return SUCCESS;
 		}
 		if ("saveText".equals(button)) {
+			permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 			boolean found = false;
 			for (AuditQuestionText text : question.getQuestionTexts()) {
 				if (text.getLocale().equals(questionText.getLocale()) && text.getId() != questionText.getId()) {
@@ -80,7 +82,12 @@ public class ManageQuestion extends ManageSubCategory {
 			questionText.setAuditColumns(permissions);
 			questionTextDAO.save(questionText);
 			question.getQuestionTexts().add(questionText);
-			button = "save";
+			// TODO: This is a temporary fix - it will be changed when there is more time.
+			if (save()) {
+				addActionMessage("Successfully saved"); // default message
+			}
+			id = question.getId();
+			return SUCCESS;
 		}
 		if ("removeText".equals(button)) {
 			questionTextDAO.remove(questionText.getId());
