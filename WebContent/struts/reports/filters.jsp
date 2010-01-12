@@ -44,36 +44,34 @@
 		<div class="filterOption">Address:
 			<s:textfield name="filter.city"	cssClass="forms" size="15" onfocus="clearText(this)" /> 
 			<s:textfield name="filter.zip" cssClass="forms" size="5" onfocus="clearText(this)" />
-			<table style="float: right;">
+			<table style="float: right; vertical-align: top">
 				<tr><td style="padding-left:1ex;">
-				<a href="#" onclick="toggleBox('form1_country'); return false;">Country</a> =
-				<span id="form1_country_query">ALL</span>
+					<a href="#" onclick="toggleBox('form1_state'); return false;">State</a> =
+					<span id="form1_state_query">ALL</span>
+				</td>
+				<td style="padding-left:1ex;">
+					<a href="#" onclick="toggleBox('form1_country'); return false;">Country</a> =
+					<span id="form1_country_query">ALL</span>
 				</td></tr>
-				<tr><td>
-				<span id="form1_country_select" style="display: none"
-					class="clearLink"><s:select id="form1_country" name="filter.country"
-					list="filter.countryList" listKey="isoCode" listValue="name"
-					cssClass="forms" multiple="true" size="10" /> <br />
-					<script	type="text/javascript">updateQuery('form1_country');</script>
-					<a class="clearLink" href="#"
-						onclick="clearSelected('form1_country'); return false;">Clear</a>
-				</span>
-			</table>
-			<table style="float: right;">
 				<tr><td style="padding-left:1ex;">
-				<a href="#" onclick="toggleBox('form1_state'); return false;">State</a> =
-				<span id="form1_state_query">ALL</span>
-				</td></tr>
-				<tr><td>
-				<span id="form1_state_select" style="display: none"
-					class="clearLink"><s:select id="form1_state" name="filter.state"
-					list="filter.stateList" listKey="isoCode" listValue="name"
-					cssClass="forms" multiple="true" size="15" 
-					onclick="clearSelected('form1_country');" /> <br />
-					<script	type="text/javascript">updateQuery('form1_state');</script>
-					<a class="clearLink" href="#"
-						onclick="clearSelected('form1_state'); return false;">Clear</a>
-				</span>
+					<span id="form1_state_select" style="display: none"
+						class="clearLink"><s:select id="form1_state" name="filter.state"
+						list="filter.stateList" listKey="isoCode" listValue="name"
+						cssClass="forms" multiple="true" size="15" 
+						onclick="clearSelected('form1_country');" /> <br />
+						<script	type="text/javascript">updateQuery('form1_state');</script>
+						<a class="clearLink" href="#"
+							onclick="clearSelected('form1_state'); return false;">Clear</a>
+					</span>
+				</td><td style="padding-left:1ex;">
+					<span id="form1_country_select" style="display: none"
+						class="clearLink"><s:select id="form1_country" name="filter.country"
+						list="filter.countryList" listKey="isoCode" listValue="name"
+						cssClass="forms" multiple="true" size="10" /> <br />
+						<script	type="text/javascript">updateQuery('form1_country');</script>
+						<a class="clearLink" href="#"
+							onclick="clearSelected('form1_country'); return false;">Clear</a>
+					</span>
 				</td></tr>
 			</table>
 		</div>
