@@ -99,6 +99,10 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setName(contractor.getContact());
 			user.setEmail(contractor.getEmail());
 			user = userDAO.save(user);
+			// Need to perform a save to create a user id for seeding the password.
+			// Initial password is stored unencrypted.
+			user.setEncryptedPassword(user.getPassword());
+			userDAO.save(user);
 			contractor.setUsers(new ArrayList<User>());
 			contractor.getUsers().add(user);
 

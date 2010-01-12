@@ -76,8 +76,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					return SUCCESS;
 				}
 
-				if (!Strings.isEmpty(password1)) {
-					if (!password1.equals(password2) && !password1.equals(u.getPassword()))
+				if (!Strings.isEmpty(password2)) {
+					if (!password1.equals(password2))
 						addActionError("Passwords don't match");
 
 					if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail()))
@@ -87,8 +87,9 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 						return SUCCESS;
 					int maxHistory = 0;
 					// u.getAccount().getPasswordPreferences().getMaxHistory()
+					//TODO: Check is addPasswordToHistory is still needed
 					u.addPasswordToHistory(password1, maxHistory);
-					u.setPassword(password1);
+					u.setEncryptedPassword(password1);
 				}
 				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 				permissions.setTimeZone(u);

@@ -53,9 +53,10 @@ public class UserSave extends UsersManage {
 				userDAO.clear();
 				return SUCCESS;
 			}
-
-			if (!Strings.isEmpty(password1) && !password1.equals(user.getPassword()))
-				user.setPassword(password1);
+			
+			if (!Strings.isEmpty(password1) && user.compareEncryptedPasswords(password1, password2)){
+				user.setEncryptedPassword(password1);
+			}
 
 			user.setAuditColumns(permissions);
 

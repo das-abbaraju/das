@@ -216,7 +216,8 @@ public class LoginController extends PicsActionSupport {
 		if (Strings.isEmpty(password)) {
 			return "You must enter a password";
 		}
-		if (!user.getPassword().equals(password)) {
+		
+		if (!user.isEncryptedPasswordEqual(password)) {
 			user.setFailedAttempts(user.getFailedAttempts() + 1);
 			// TODO parameterize this 7 here
 			if (user.getFailedAttempts() > 7) {

@@ -572,4 +572,18 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	}
 
+	@Transient
+	public boolean isEncryptedPasswordEqual(String query){
+		return Strings.hash(query+this.getId()).equals(this.getPassword());
+	}
+	
+	@Transient
+	public boolean compareEncryptedPasswords(String password1, String password2){
+		return Strings.hash(password1+this.getId()).equals(Strings.hash(password2+this.getId()));
+	}
+	
+	@Transient
+	public void setEncryptedPassword(String unencryptedPassword){
+		this.setPassword(Strings.hash(unencryptedPassword+this.getId()));
+	}
 }

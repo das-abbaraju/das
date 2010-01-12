@@ -28,7 +28,7 @@ fieldset.form input.login {
 		<button class="picsbutton positive" value="login" name="button" type="submit">Login</button>
 		</div>
 		</li>
-		<li>Forget your password? <a href="forgot_password.jsp">Click here to have it sent to you</a></li>
+		<li>Forget your login information? <a href="AccountRecovery.action">Click here to recover it</a></li>
 		<li>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></li>
 	</ol>
 	</fieldset>

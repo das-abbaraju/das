@@ -181,6 +181,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					contractor = accountDao.save(contractor);
 					user.setEmail(contractor.getEmail());
 					user.setName(contractor.getContact());
+					// Validator throws an error msg if either the passwords don't match,
+					// or the password is trying to be changed to the current pw in the database
+					if(!password1.isEmpty())
+						user.setEncryptedPassword(user.getPassword());
 					userDAO.save(user);
 
 					addActionMessage("Successfully modified " + contractor.getName());

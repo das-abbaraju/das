@@ -80,7 +80,28 @@ public class StringsTest extends TestCase {
 
 	@Test
 	public void testHash() {
-		System.out.println(Strings.hashUrlSafe("testinsfgsf"));
+		String source = "mypassword";
+		String source2 = "mypassword";
+		System.out.println(Strings.hash("@Irvine1" + 2357));
+		
+		// Checking the two hashes are equal
+		assertTrue(Strings.hash(source).equals(Strings.hash(source2)));
+		assertTrue(Strings.hash(source2).equals(Strings.hash(source)));
+		
+		// Checking similar strings are not equal
+		assertFalse(Strings.hash(source).equals("mypasswor"));
+		assertFalse(Strings.hash(source).equals("ypassword"));
+		
+		// Zero-length strings should be encoded
+		assertTrue(Strings.hash("").length() == 28);
+		
+		// Strings longer than 28 bytes (size of return hash) should be encoded
+		assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length() == 28);
+		
+		// Check appended seeds are equal
+		int val = 121314;
+		int val2 = 121314;
+		assertTrue(Strings.hash(source+val).equals(Strings.hash(source+val2)));
 	}
 
 	@Test

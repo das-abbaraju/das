@@ -39,9 +39,11 @@ public class ContractorValidator {
 			errorMessages.addElement("Your company name must be at least 3 characters long.");
 
 		// Passwords
-		if (!Strings.isEmpty(password1)) {
+		if (!Strings.isEmpty(password2)) {
 			// They are trying to set/reset the password
-			if (!password1.equals(password2) && !password1.equals(user.getPassword()))
+
+			
+			if (!password1.equals(password2))
 				errorMessages.addElement("The passwords don't match");
 
 			if (password1.length() < MIN_PASSWORD_LENGTH)

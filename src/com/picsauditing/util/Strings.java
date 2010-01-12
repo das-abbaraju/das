@@ -128,14 +128,15 @@ public class Strings {
 	public static String hash(String seed) {
 		MessageDigest digest = null;
 		try {
-			digest = MessageDigest.getInstance("SHA");
+			digest = MessageDigest.getInstance("SHA-1");
 		} catch (NoSuchAlgorithmException e) {
 			return e.getMessage();
 		}
 		digest.update(seed.getBytes());
 		byte[] hashed = digest.digest();
-		String value = Base64.encodeBytes(hashed);
-		return value;
+		BigInteger number = new BigInteger(1, hashed);
+//		String value = Base64.encodeBytes(hashed);
+		return number.toString(16);
 	}
 
 	public static String md5(String seed) {
