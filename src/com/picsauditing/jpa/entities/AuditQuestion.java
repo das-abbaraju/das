@@ -418,7 +418,11 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 				if (l.equals(questionText.getLocale()))
 					return questionText;
 			}
-		} catch (Exception justReturnNull) {
+		} catch (Exception returnDefault) {
+			for (AuditQuestionText questionText : questionTexts) {
+				if (Locale.ENGLISH.equals(questionText))
+					return questionText;
+			}
 		}
 
 		return null;
