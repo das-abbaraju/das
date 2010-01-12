@@ -169,7 +169,7 @@
 			<td><s:property value="operator.oshaType"/></td>
 			<td class="right">DART</td>
 			<td>
-				Days Away, Restricted, or Transferred Rate
+				Days away from work cases, job transfer, or restriction cases
 			</td>
 			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.dart.hurdleFlag.none">
 				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.dart.time)"/>
@@ -195,7 +195,7 @@
 			<td><s:property value="operator.oshaType"/></td>
 			<td class="right">Severity Rate</td>
 			<td>
-				On Job Transfer OR Restricted Days
+				Away from work days, on job transfer, or restriction days
 			</td>
 			<td><nobr><s:if test="oshaRedFlagCriteria != null && !oshaRedFlagCriteria.severity.hurdleFlag.none">
 				<s:property value="@com.picsauditing.actions.operators.OperatorFlagCriteria@getTime(oshaRedFlagCriteria.severity.time)"/>
