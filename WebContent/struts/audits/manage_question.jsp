@@ -155,9 +155,6 @@ function showText(qID, textid) {
 		<li><label>OK Answer:</label>
 			<s:textfield name="question.okAnswer" />
 		</li>
-		<li><label>Requirement:</label>
-			<s:textarea name="question.requirement" rows="2" cols="50" />
-		</li>
 		<li><label>Flaggable:</label>
 			<s:checkbox name="question.isRedFlagQuestion" value="question.isRedFlagQuestion.name() == 'Yes' ? true : false"/>
 		</li>
