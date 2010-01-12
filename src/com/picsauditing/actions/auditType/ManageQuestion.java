@@ -10,30 +10,84 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.AuditQuestionTextDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionText;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageSubCategory {
 
 	protected AuditQuestionDAO auditQuestionDao;
 	protected AuditDataDAO auditDataDAO;
+	protected AuditQuestionTextDAO questionTextDAO;
 	private int dependsOnQuestionID = 0;
+
+	protected AuditQuestionText questionText;
+	protected String defaultQuestion;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
 			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
-			CountryDAO countryDAO) {
+			CountryDAO countryDAO, AuditQuestionTextDAO questionTextDAO) {
 		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao, countryDAO);
 		this.auditQuestionDao = auditQuestionDao;
 		this.auditDataDAO = auditDataDAO;
+		this.questionTextDAO = questionTextDAO;
+	}
+
+	@Override
+	public void prepare() throws Exception {
+		int textID = getParameter("questionText.id");
+		if (textID > 0)
+			questionText = questionTextDAO.find(textID);
+
+		super.prepare();
+	}
+
+	@Override
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+
+		permissions.tryPermission(OpPerms.ManageAudits);
+
+		if ("text".equals(button)) {
+			return SUCCESS;
+		}
+		if ("saveText".equals(button)) {
+			boolean found = false;
+			for (AuditQuestionText text : question.getQuestionTexts()) {
+				if (text.getLocale().equals(questionText.getLocale()) && text.getId() != questionText.getId()) {
+					found = true;
+					break;
+				}
+			}
+			if (found) {
+				addActionError("There is already a translation for that language/country.");
+				return SUCCESS;
+			}
+			questionText.setAuditQuestion(question);
+			questionText.setAuditColumns(permissions);
+			questionTextDAO.save(questionText);
+			question.getQuestionTexts().add(questionText);
+			button = "save";
+		}
+		if ("removeText".equals(button)) {
+			questionTextDAO.remove(questionText.getId());
+			button = "save";
+		}
+
+		return super.execute();
 	}
 
 	@Override
@@ -57,7 +111,10 @@ public class ManageQuestion extends ManageSubCategory {
 
 	public boolean save() {
 		if (question != null) {
-			if (question.getQuestion() == null || question.getQuestion().length() == 0) {
+			if (question.getId() == 0 && !Strings.isEmpty(defaultQuestion)) {
+				question.setDefaultQuestion(defaultQuestion);
+			}
+			if (question.getQuestionTexts().size() == 0) {
 				this.addActionError("Question is required");
 				return false;
 			}
@@ -85,7 +142,8 @@ public class ManageQuestion extends ManageSubCategory {
 				question.getDependsOnQuestion().setId(dependsOnQuestionID);
 			}
 			subCategory.getQuestions().add(question);
-			question.setCountriesArray(countries.split("\\|"), exclude);
+			if (!Strings.isEmpty(countries))
+				question.setCountriesArray(countries.split("\\|"), exclude);
 			question = auditQuestionDao.save(question);
 			id = question.getSubCategory().getId();
 
@@ -166,6 +224,22 @@ public class ManageQuestion extends ManageSubCategory {
 		this.dependsOnQuestionID = dependsOnQuestionID;
 	}
 
+	public AuditQuestionText getQuestionText() {
+		return questionText;
+	}
+
+	public void setQuestionText(AuditQuestionText questionText) {
+		this.questionText = questionText;
+	}
+
+	public String getDefaultQuestion() {
+		return defaultQuestion;
+	}
+
+	public void setDefaultQuestion(String defaultQuestion) {
+		this.defaultQuestion = defaultQuestion;
+	}
+
 	public Locale[] getLocaleList() {
 		Locale[] locales = Locale.getAvailableLocales();
 		Arrays.sort(locales, new Comparator<Locale>() {
@@ -174,7 +248,6 @@ public class ManageQuestion extends ManageSubCategory {
 				return o1.getDisplayName().compareTo(o2.getDisplayName());
 			}
 		});
-
 		return locales;
 	}
 }

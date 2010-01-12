@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -355,5 +356,23 @@ public class Strings {
 			return null;
 
 		return expression.replace("|", "");
+	}
+
+	public static Locale parseLocale(String locale) {
+		Locale test = null;
+		String[] loc = locale.split("[_-]");
+		try {
+			test = new Locale(loc[0], loc[1], loc[2]);
+		} catch (Exception no_variant) {
+			try {
+				test = new Locale(loc[0], loc[1]);
+			} catch (Exception no_country) {
+				try {
+					test = new Locale(loc[0]);
+				} catch (Exception bad_input) {
+				}
+			}
+		}
+		return test;
 	}
 }

@@ -98,7 +98,7 @@ public class AuditCriteriaAnswerBuilderTest extends TestCase {
 		question.setSubCategory(new AuditSubCategory());
 		question.getSubCategory().setCategory(new AuditCategory());
 		question.getSubCategory().getCategory().setAuditType(auditType);
-		question.setQuestion("jUnit Question");
+		question.setDefaultQuestion("jUnit Question");
 		return question;
 	}
 

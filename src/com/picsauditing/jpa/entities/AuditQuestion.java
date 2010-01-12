@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,6 +25,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -42,14 +46,14 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	private AuditSubCategory subCategory;
 	private int number;
-	private String question;
+	// private String question;
 	private String columnHeader;
 	private String uniqueCode;
 	private Date effectiveDate = new Date();
 	private Date expirationDate;
 	private YesNo hasRequirement = YesNo.No;
 	private String okAnswer;
-	private String requirement;
+	// private String requirement;
 	private YesNo isRedFlagQuestion = YesNo.No;
 	private String isRequired;
 	private AuditQuestion dependsOnQuestion = null;
@@ -75,7 +79,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
-	protected List<AuditQuestionText> questionText;
+	protected List<AuditQuestionText> questionTexts = new ArrayList<AuditQuestionText>();
 	private String criteria;
 	private String criteriaAnswer;
 	private String helpPage;
@@ -110,15 +114,6 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.number = number;
 	}
 
-	@Column(nullable = false, length = 1000)
-	public String getQuestion() {
-		return this.question;
-	}
-
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-
 	@Enumerated(EnumType.STRING)
 	public YesNo getHasRequirement() {
 		return this.hasRequirement;
@@ -126,7 +121,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 	@Transient
 	public boolean isHasRequirementB() {
-		if (Strings.isEmpty(requirement))
+		if (Strings.isEmpty(getRequirement()))
 			return false;
 		return YesNo.Yes.equals(hasRequirement);
 	}
@@ -143,13 +138,13 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.okAnswer = okAnswer;
 	}
 
-	public String getRequirement() {
-		return this.requirement;
-	}
-
-	public void setRequirement(String requirement) {
-		this.requirement = requirement;
-	}
+	// public String getRequirement() {
+	// return this.requirement;
+	// }
+	//
+	// public void setRequirement(String requirement) {
+	// this.requirement = requirement;
+	// }
 
 	/**
 	 * Yes, No, Depends
@@ -356,6 +351,34 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		this.operator = operator;
 	}
 
+	@Transient
+	public String getQuestion() {
+		try {
+			return getQuestionText().getQuestion();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Transient
+	public String getRequirement() {
+		try {
+			return getQuestionText().getRequirement();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Transient
+	public void setDefaultQuestion(String question) {
+		addQuestion(Locale.ENGLISH, question);
+	}
+
+	@Transient
+	public void addQuestion(Locale locale, String question) {
+		questionTexts.add(new AuditQuestionText(this, question, locale));
+	}
+
 	@Column(length = 50)
 	public String getUniqueCode() {
 		return uniqueCode;
@@ -371,13 +394,46 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 		return options;
 	}
 
-	@OneToMany(mappedBy = "auditQuestion")
-	public List<AuditQuestionText> getQuestionText() {
-		return questionText;
+	@OneToMany(mappedBy = "auditQuestion", cascade = { CascadeType.ALL })
+	public List<AuditQuestionText> getQuestionTexts() {
+		return questionTexts;
 	}
 
-	public void setQuestionText(List<AuditQuestionText> questionText) {
-		this.questionText = questionText;
+	public void setQuestionTexts(List<AuditQuestionText> questionTexts) {
+		this.questionTexts = questionTexts;
+	}
+
+	@Transient
+	public AuditQuestionText getQuestionText() {
+		try {
+			Permissions permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+			for (AuditQuestionText questionText : questionTexts) {
+				if (permissions.getLocale().equals(questionText.getLocale()))
+					return questionText;
+			}
+
+			// Try to find based on the language only
+			Locale l = new Locale(permissions.getLocale().getLanguage());
+			for (AuditQuestionText questionText : questionTexts) {
+				if (l.equals(questionText.getLocale()))
+					return questionText;
+			}
+		} catch (Exception justReturnNull) {
+		}
+
+		return null;
+	}
+
+	@Transient
+	public AuditQuestionText getQuestionText(Locale l) {
+		AuditQuestionText text = null;
+		for (AuditQuestionText auditQuestionText : questionTexts) {
+			if (auditQuestionText.getLocale().equals(l)) {
+				text = auditQuestionText;
+				break;
+			}
+		}
+		return text;
 	}
 
 	@Transient
@@ -419,7 +475,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public void setColumnHeader(String columnHeader) {
 		this.columnHeader = columnHeader;
 	}
-	
+
 	@Column(length = 100)
 	public String getHelpPage() {
 		return helpPage;
@@ -441,9 +497,9 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 	public String getColumnHeaderOrQuestion() {
 		if (columnHeader != null && columnHeader.length() > 0)
 			return columnHeader;
-		if (question == null)
+		if (getQuestion() == null)
 			return "";
-		return question;
+		return getQuestion();
 	}
 
 	@Transient
@@ -499,7 +555,7 @@ public class AuditQuestion extends BaseTable implements java.io.Serializable, Co
 
 		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 	}
-	
+
 	@Transient
 	public String[] getCountriesArray() {
 		if (Strings.isEmpty(countries))

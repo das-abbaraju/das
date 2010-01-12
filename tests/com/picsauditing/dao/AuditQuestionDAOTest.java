@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +32,9 @@ public class AuditQuestionDAOTest {
 		auditquestion.setSubCategory(new AuditSubCategory());
 		auditquestion.getSubCategory().setId(22);
 		auditquestion.setNumber(Short.parseShort("100"));
-		auditquestion.setQuestion("write junit test class");
+		auditquestion.addQuestion(Locale.ENGLISH, "write junit test class");
 		auditquestion.setHasRequirement(YesNo.No);
 		auditquestion.setOkAnswer("NA");
-		auditquestion.setRequirement("junit test");
 		auditquestion.setIsRequired("Depends");
 		auditquestion.setDependsOnAnswer("fail or pass");
 		auditquestion.setQuestionType("text");
@@ -55,17 +55,16 @@ public class AuditQuestionDAOTest {
 		auditquestion.setExpirationDate(new Date());
 		auditquestion.setIsRedFlagQuestion(YesNo.No);
 		auditquestion.setAuditColumns(new User(941));
-		
+
 		auditquestion = auditquestionDAO.save(auditquestion);
 		assertEquals("write junit test class", auditquestion.getQuestion());
 		assertTrue(auditquestion.getId() > 0);
 		auditquestionDAO.remove(auditquestion.getId());
-		AuditQuestion auditquestion1 = auditquestionDAO.find(auditquestion
-				.getId());
+		AuditQuestion auditquestion1 = auditquestionDAO.find(auditquestion.getId());
 		assertNull(auditquestion1);
 	}
 
-	//@Test
+	// @Test
 	public void testFind() {
 		AuditQuestion auditquestion = auditquestionDAO.find(39);
 		assertEquals("City:", auditquestion.getQuestion());
@@ -74,8 +73,7 @@ public class AuditQuestionDAOTest {
 
 	@Test
 	public void testFindBySubCategory() {
-		List<AuditQuestion> auditquestion = auditquestionDAO
-				.findBySubCategory(56);
+		List<AuditQuestion> auditquestion = auditquestionDAO.findBySubCategory(56);
 		assertEquals(970, auditquestion.get(0).getId());
 	}
 

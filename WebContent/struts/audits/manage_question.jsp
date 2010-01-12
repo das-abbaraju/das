@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
 <title>Manage Question</title>
@@ -15,6 +15,7 @@
 var data = <s:property value="data" escape="false"/>;
 var initCountries = <s:property value="initialCountries" escape="false"/>;
 var acfb;
+var forceRefresh = false;
 $(function(){
 	function acfbuild(cls,url){
 		var ix = $("input"+cls);
@@ -42,6 +43,45 @@ $(function(){
 		}
 	);
 });
+
+function showText(qID, textid) {
+	
+	$('#question_texts').load('ManageQuestionAjax.action', {button: 'text', 'id': qID, 'questionText.id': textid},
+		function() {
+			$(this).dialog({
+				modal: true, 
+				title: 'Edit Question Text',
+				width: '50%',
+				close: function(event, ui) {
+					$(this).dialog('destroy');
+					if (forceRefresh)
+						location.reload();
+				},
+				buttons: {
+					Save: function() {
+						var pars = $('form#textForm').serialize();
+						$('#question_texts').load('ManageQuestionAjax.action', pars);
+						forceRefresh = true;
+					},
+					Delete: function() {
+						$.ajax({
+							url: 'ManageQuestionAjax.action',
+							data: {button: 'removeText', 'questionText.id': $('form#textForm input[name=questionText.id]').val()},
+							complete: function() {
+								$(this).dialog('close');
+								location.reload();
+							}
+						}
+					);
+					},
+					Cancel: function() {
+						$(this).dialog('close');
+					}
+				}
+			});
+		}
+	);
+}
 </script>
 </head>
 <body>
@@ -67,9 +107,30 @@ $(function(){
 				NEW
 			</s:else>
 		</li>
-		<li><label>Question:</label>
-			<s:textarea name="question.question" rows="10" cols="100" />
-		</li>		
+		<li><label>Text:</label>
+			<s:if test="question.id > 0">
+				<table class="report">
+				<thead>
+					<tr>
+						<th>Locale</th>
+						<th>Question</th>
+					</tr>
+				</thead>
+					<s:iterator value="question.questionTexts">
+					<tr class="clickable" onclick="showText(<s:property value="auditQuestion.id"/>, <s:property value="id"/>)">
+						<td><s:property value="locale"/></td>
+						<td><s:property value="question"/></td>
+					</tr>
+					</s:iterator>
+					<tr>
+						<td colspan="2" style="text-align:center"><a href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
+					</tr>
+				</table>
+			</s:if>
+			<s:else>
+				<s:textarea name="defaultQuestion" rows="3" cols="65"/>
+			</s:else>
+		</li>
 		<li><label>Effective Date:</label>
 			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
 		</li>
@@ -148,25 +209,26 @@ $(function(){
 		</li>			
 	</ol>
 	</fieldset>
-<!-- 
+<!--
 	<fieldset class="form">
 	<legend><span>Question Texts</span></legend>
 	<ol>
-		<s:iterator value="question.questionText">
+		<s:iterator value="question.questionTexts" status="stat">
 			<li><label>Locale:</label>
-				<s:select list="localeList" listValue="description" value="%{locale}" name="locale"/>
+				<s:select list="localeList" listValue="displayName" name="question.questionTexts[%{#stat.index}].locale" value="%{locale}"/>
 			</li>
 			<li><label>Question:</label>
-				<s:textfield name="question" size="65"/>
+				<s:textarea name="question.questionTexts[%{#stat.index}].question" value="%{question}" rows="3" cols="65"/>
 			</li>
 			<li><label>Requirement:</label>
-				<s:textfield name="requirement" size="65"/>
+				<s:textarea name="question.questionTexts[%{#stat.index}].requirement" value="%{requirement}" rows="3" cols="65"/>
 			</li>
-			<br/>	
 		</s:iterator>
 	</ol>
+	<a href="#text_<s:property value="question.questionTexts.size()"/>" onclick="newText(<s:property value="question.questionTexts.size()"/>); return false">Add New Text Entry</a>
 	</fieldset>
- -->
+-->
+ 
 	<fieldset class="form">
 	<legend><span>Useful Links</span></legend>
 	<ol>
@@ -217,6 +279,8 @@ $(function(){
 		</div>
 	</fieldset>
 </s:form>
+
+<div id="question_texts"></div>
 
 </body>
 </html>
