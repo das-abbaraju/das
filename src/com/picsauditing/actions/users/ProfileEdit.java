@@ -38,6 +38,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected String password1;
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
+	protected String url;
 
 	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
 			EmailSubscriptionDAO emailSubscriptionDAO) {
@@ -53,8 +54,12 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
+		loadPermissions();
+
+		if (!permissions.isLoggedIn()) {
+			redirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 			return LOGIN;
+		}
 
 		permissions.tryPermission(OpPerms.EditProfile);
 
@@ -62,7 +67,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 		if (button != null) {
 			if (button.equals("Save Profile")) {
-				permissions.tryPermission(OpPerms.EditProfile,OpType.Edit);
+				permissions.tryPermission(OpPerms.EditProfile, OpType.Edit);
 
 				dao.clear();
 
@@ -87,9 +92,13 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 						return SUCCESS;
 					int maxHistory = 0;
 					// u.getAccount().getPasswordPreferences().getMaxHistory()
-					//TODO: Check is addPasswordToHistory is still needed
+					// TODO: Check is addPasswordToHistory is still needed
 					u.addPasswordToHistory(password1, maxHistory);
 					u.setEncryptedPassword(password1);
+					if (!Strings.isEmpty(url) && u.isForcePasswordReset())
+						redirect(url);
+
+					u.setForcePasswordReset(false);
 				}
 				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 				permissions.setTimeZone(u);
@@ -169,8 +178,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	public List<Subscription> requiredSubscriptionList(Permissions permissions) {
 		List<Subscription> subList = new ArrayList<Subscription>();
 		for (Subscription subscription : Subscription.values()) {
-			if (subscription.getRequiredPerms() == null 
-					|| permissions.hasPermission(subscription.getRequiredPerms())) {
+			if (subscription.getRequiredPerms() == null || permissions.hasPermission(subscription.getRequiredPerms())) {
 				if (permissions.isOperatorCorporate() && subscription.isRequiredForOperator()) {
 					subList.add(subscription);
 				} else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
@@ -180,6 +188,14 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			}
 		}
 		return subList;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }

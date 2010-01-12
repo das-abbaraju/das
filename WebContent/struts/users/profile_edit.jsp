@@ -72,6 +72,12 @@
 
 <s:include value="../actionMessages.jsp"></s:include>
 
+<s:if test="u.forcePasswordReset">
+<div class="alert">
+	You are required to change your password.
+</div>
+</s:if>
+
 <div id="tab_profile">
 <table style="width: 100%">
 	<tr>

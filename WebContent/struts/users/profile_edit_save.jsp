@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:form id="saveProfileForm">
+	<s:hidden name="url"/>
 	<s:hidden name="u.id" />
 	<fieldset class="form"><legend><span>Profile</span></legend>
 	<ol>
