@@ -13,6 +13,7 @@ import com.picsauditing.dao.WidgetUserDAO;
 import com.picsauditing.jpa.entities.Widget;
 import com.picsauditing.jpa.entities.WidgetUser;
 
+@SuppressWarnings("serial")
 public class Home extends ContractorActionSupport {
 	private Map<Integer, List<Widget>> columns = new TreeMap<Integer, List<Widget>>();
 

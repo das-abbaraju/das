@@ -74,6 +74,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	private Date passwordChanged;
 	private String resetHash;
 	private String passwordHistory;
+	private boolean forcePasswordReset;
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
 	private String timezone = "US/Central";
@@ -219,6 +220,14 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 			}
 		}
 		return list;
+	}
+
+	public boolean isForcePasswordReset() {
+		return forcePasswordReset;
+	}
+
+	public void setForcePasswordReset(boolean forcePasswordReset) {
+		this.forcePasswordReset = forcePasswordReset;
 	}
 
 	public void addPasswordToHistory(String newPassword, int maxHistory) {
@@ -573,17 +582,17 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	}
 
 	@Transient
-	public boolean isEncryptedPasswordEqual(String query){
-		return Strings.hash(query+this.getId()).equals(this.getPassword());
+	public boolean isEncryptedPasswordEqual(String query) {
+		return Strings.hash(query + this.getId()).equals(this.getPassword());
 	}
-	
+
 	@Transient
-	public boolean compareEncryptedPasswords(String password1, String password2){
-		return Strings.hash(password1+this.getId()).equals(Strings.hash(password2+this.getId()));
+	public boolean compareEncryptedPasswords(String password1, String password2) {
+		return Strings.hash(password1 + this.getId()).equals(Strings.hash(password2 + this.getId()));
 	}
-	
+
 	@Transient
-	public void setEncryptedPassword(String unencryptedPassword){
-		this.setPassword(Strings.hash(unencryptedPassword+this.getId()));
+	public void setEncryptedPassword(String unencryptedPassword) {
+		this.setPassword(Strings.hash(unencryptedPassword + this.getId()));
 	}
 }

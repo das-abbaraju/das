@@ -135,7 +135,7 @@ public class Strings {
 		digest.update(seed.getBytes());
 		byte[] hashed = digest.digest();
 		BigInteger number = new BigInteger(1, hashed);
-//		String value = Base64.encodeBytes(hashed);
+		// String value = Base64.encodeBytes(hashed);
 		return number.toString(16);
 	}
 
