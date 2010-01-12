@@ -67,11 +67,15 @@
 		</global-exception-mappings>
 		<action name="Login" class="com.picsauditing.access.LoginController">
 			<result>struts/users/login.jsp</result>
-			<result name="forgot">struts/users/forgot_password.jsp</result>
+			<result name="forgot">struts/users/account_recovery.jsp</result>
 		</action>
 
 		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
 			<result>struts/blank.jsp</result>
+		</action>
+		
+		<action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
+			<result>struts/users/account_recovery.jsp</result>
 		</action>
 		
 		<!-- Dashboard -->
