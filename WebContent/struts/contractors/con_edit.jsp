@@ -64,18 +64,6 @@ $(function() {
 					<li><label>DBA Name: </label>
 						<s:textfield name="contractor.dbaName" size="35" />
 					</li>
-					<li><label>Username:</label>
-						<s:textfield name="user.username" size="20" />
-							<pics:permission perm="SwitchUser">
-								<a href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch User</a>
-							</pics:permission>
-					</li>
-					<li><label>Change Password:</label>
-						<s:password name="password1" size="15" />
-					</li>
-					<li><label>Confirm Password:</label>
-						<s:password name="password2" size="15" />
-					</li>
 					<li><label>Date Created:</label>
 						<s:date name="contractor.creationDate" format="MMM d, yyyy" />
 					</li>
