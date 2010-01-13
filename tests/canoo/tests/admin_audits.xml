@@ -50,11 +50,10 @@
 						<group description="Select Date and Time">
 							<ifStep>
 								<condition>
-									<clickLink label="8:00 AM to 10:00 AM"/>
+									<clickLink label="AM to"/>
 								</condition>
 								<else>
-									<clickButton label="Show More Timeslots"/>
-									<clickLink href="ScheduleAudit.action"/>
+									<clickLink label="PM to"/>
 								</else>
 							</ifStep>
 						</group>
