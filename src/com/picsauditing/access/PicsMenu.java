@@ -77,6 +77,7 @@ public class PicsMenu {
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
 			
 		subMenu.addChild("Request New Contractor", "RequestNewContractor.action");
+		subMenu.addChild("New Contractor List", "ReportNewRequestedContractor.action");
 		
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {

@@ -12,9 +12,14 @@
 	href="css/notes.css" />
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
-$(document).ready(function(){
-    $(".datepicker").datepicker();
-  });
+$(function() {
+	changeState($("#newContractorCountry").val());
+	$('.datepicker').datepicker();
+});
+
+function countryChanged(country) {
+	changeState(country);
+}
 
 function changeState(country) {
 	$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>'});
@@ -22,19 +27,26 @@ function changeState(country) {
 </script>
 </head>
 <body>
+<h1>Request New Contractor</h1>
 
 <s:form id="saveContractorForm">
 	<s:hidden name="newContractor.id" />
 	<fieldset class="form"><legend><span>Details</span></legend>
 	<ol>
-		<li><label for="saveContractorForm_newContractor_name">Name:</label>
-			<s:textfield name="newContractor.name" /></li>
-		<li><label for="saveContractorForm_newContractor_contact">Contact
-			name:</label> <s:textfield name="newContractor.contact" /></li>
-		<li><label for="saveContractorForm_newContractor_phone">Phone:</label>
-			<s:textfield name="newContractor.phone" size="20" /></li>
-		<li><label for="saveContractorForm_newContractor_email">Email
-			address:</label> <s:textfield name="newContractor.email" size="30" /></li>
+		<li><label>Company Name:</label>
+			<s:textfield name="newContractor.name" size="35"/></li>
+		<li><label>Contact
+			Name:</label> <s:textfield name="newContractor.contact" /></li>
+		<li><label>Phone:</label>
+			<s:textfield name="newContractor.phone" size="20" />
+			<input type="submit"
+			class="picsbutton positive" name="button" value="Contacted By Phone" />
+		</li>
+		<li><label for="saveContractorForm_newContractor_email">Email:</label>
+			 <s:textfield name="newContractor.email" size="30" />
+			<input type="submit" class="picsbutton positive"
+			name="button" value="Send Email" />
+		</li>
 		<li><label for="saveContractorForm_newContractor_taxID">Tax
 			ID:</label> <s:textfield name="newContractor.taxID" size="20" /></li>
 	</ol>
@@ -46,10 +58,6 @@ function changeState(country) {
 			<s:textfield name="newContractor.address" size="35" /></li>
 		<li><label for="saveContractorForm_newContractor_city">City:</label>
 			<s:textfield name="newContractor.city" size="20" /></li>
-		<li><label for="saveContractorForm_newContractor_state_isoCode">State:</label>
-			<s:select list="getStateList()" id="state_sel"
-				name="newContractor.state.isoCode" listKey="isoCode" listValue="name"
-				value="stateString" /></li>
 		<li><label for="saveContractorForm_newContractor_zip">Zip:</label>
 			<s:textfield name="newContractor.zip" size="7" /></li>
 		<li><label for="newContractorCountry">Country:</label> <s:select
@@ -57,57 +65,56 @@ function changeState(country) {
 			listKey="isoCode" listValue="name"
 			value="newContractor.country.isoCode"
 			onchange="countryChanged(this.value)" /></li>
+		<li id="state_li"></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form"><legend><span>User
 		Information</span></legend>
 	<ol>
-		<li><label
-			for="saveContractorForm_newContractor_requestedBy_name">Requested
-			By Account:</label> <s:textfield name="newContractor.requestedBy.name"
-			size="35" /></li>
-		<li><label
-			for="saveContractorForm_newContractor_requestedByUserOther">Requested
-			By User:</label> <s:textfield name="newContractor.requestedByUserOther"
-			size="20" /></li>
-		<li><label for="saveContractorForm_newContractor_deadline">Deadline
+		<li><label>Requested
+			By Account:</label><s:select list="operatorsWithCorporate" headerKey="" headerValue="- Select a Operator -" name="newContractor.requestedBy" value="%{newContractor.requestedBy.id}" listKey="id" listValue="name"/>
+		</li>
+		<li><label>Requested
+			By User:</label>
+			<s:select list="usersList" listKey="id" listValue="name" name="newContractor.requestedByUser" value="%{newContractor.requestedByUser.id}" headerKey="0" headerValue="- Other-"/> 
+			<s:textfield name="newContractor.requestedByUserOther" size="20" /></li>
+		<li><label>Deadline
 			Date:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />
 		</li>
-		<li><label
-			for="saveContractorForm_newContractor_lastContactedBy_name">Last
-			Contacted By:</label> <s:textfield name="newContractor.lastContactedBy.name"
-			size="7" /></li>
-		<li><label
-			for="saveContractorForm_newContractor_lastContactedDate">Date
-			Contacted:</label> <input name="newContractor.lastContactedDate" type="text"
-			class="forms datepicker" size="10"
-			value="<s:date name="newContractor.lastContactedDate" format="MM/dd/yyyy" />" />
+		<li><label>Last
+			Contacted By:</label> <s:property value="newContractor.lastContactedBy.name"
+			/></li>
+		<li><label>Date
+			Contacted:</label><s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" />
 		</li>
-		<li><label for="saveContractorForm_newContractor_notes">Notes:</label>
+		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
 				cols="40" rows="10" /></li>
-		<li><label for="saveContractorForm_newContractor_contactCount">#
-			of Times Contacted:</label> <s:textfield name="newContractor.contactCount"
-				size="7" /></li>
-		<li><label>Handled By:</label> <input type="submit"
+		<li><label>#
+			of Times Contacted:</label><s:property value="newContractor.contactCount"/></li>
+		<li><label>Handled By:</label> 
+			This contractor will be contacted by a PICS Customer Service Representative.
+			<br/>Click here to 
+			<input type="submit"
 			class="picsbutton positive" name="button"
-			value="Let Operator Handle This Account" /> <input type="hidden"
+			value="Handle This Account" /> <input type="hidden"
 			class="picsbutton positive" name="button"
 			value="Let PICS Handle This Account" /></li>
-		<li><label for="saveContractorForm_newContractor_matchCount">Matches
-			Found in PICS:</label> <s:textfield name="newContractor.matchCount" size="7" /></li>
-		<li><label for="saveContractorForm_newContractor_contractor_name">Linked
-			in PICS:</label> <s:textfield name="newContractor.contractor.name" size="7" /></li>
+		<li><label>Matches Found in PICS:</label>
+			<s:property value="newContractor.matchCount"/></li>
+		<li><label>Linked
+			in PICS:</label><s:textfield name="newContractor.contractor.id" size="7" /></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
-	<div><input type="submit" class="picsbutton positive"
-		name="button" value="Send Email" /> <input type="submit"
-		class="picsbutton positive" name="button" value="Contacted" /> <input
+	 <div>	
+	  	<input
 		type="submit" class="picsbutton positive" name="button" value="Save" />
-	</div>
+	  	<input
+		type="submit" class="picsbutton negative" name="button" value="Close Account" />
+	</div>	
 	</fieldset>
 </s:form>
 

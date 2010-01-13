@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,7 +23,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private User requestedByUser;
 	private String requestedByUserOther;
 	private WaitingOn handledBy = WaitingOn.PICS;
-	private boolean open;
+	private boolean open = true;
 	private String contact;
 	private String phone;
 	private String email;
@@ -48,6 +49,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.name = name;
 	}
 
+	@ManyToOne
 	@JoinColumn(name = "requestedByID")
 	public OperatorAccount getRequestedBy() {
 		return requestedBy;
@@ -67,6 +69,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.requestedByUser = requestedByUser;
 	}
 
+	@Column(name="requestedByUser")
 	public String getRequestedByUserOther() {
 		return requestedByUserOther;
 	}
