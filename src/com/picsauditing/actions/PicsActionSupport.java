@@ -88,7 +88,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected boolean forceLogin() {
 		loadPermissions();
 		try {
-			if (permissions.isLoggedIn() && getUser().isForcePasswordReset()) {
+			if (permissions.isLoggedIn() && getUser(permissions.getUserId()).isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + ServletActionContext.getRequest().getRequestURL());
 				return true;
 			}
@@ -107,7 +107,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected boolean forceLogin(String alternateReturnURL) {
 		loadPermissions();
 		try {
-			if (permissions.isLoggedIn() && getUser().isForcePasswordReset()) {
+			if (permissions.isLoggedIn() && getUser(permissions.getUserId()).isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + alternateReturnURL);
 				return true;
 			}
