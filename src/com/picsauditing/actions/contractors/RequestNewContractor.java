@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -40,6 +41,13 @@ public class RequestNewContractor extends PicsActionSupport {
 
 		if(requestID   > 0) {
 			newContractor = contractorRegistrationRequestDAO.find(requestID);
+		}
+		else {
+			newContractor = new ContractorRegistrationRequest();
+		}
+		
+		if(newContractor.getDeadline() == null) {
+			newContractor.setDeadline(DateBean.addMonths(new Date(), 3));
 		}
 		
 		if(button != null) {
