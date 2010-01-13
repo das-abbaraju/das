@@ -193,6 +193,14 @@ public class Permissions implements Serializable {
 			}
 			permissions = user.getPermissions();
 
+			if (isContractor()) {
+				UserAccess conProfileEdit = new UserAccess();
+				conProfileEdit.setOpPerm(OpPerms.EditProfile);
+				conProfileEdit.setViewFlag(true);
+				conProfileEdit.setEditFlag(true);
+				permissions.add(conProfileEdit);
+			}
+
 			for (UserGroup u : user.getGroups())
 				groups.add(u.getGroup().getId());
 
