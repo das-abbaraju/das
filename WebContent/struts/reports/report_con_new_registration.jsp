@@ -5,8 +5,11 @@
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Requested Contractors List</h1>
+<h1>Contractor Registration Request</h1>
 
+<div>
+<a href="RequestNewContractor.action">Request New Contractor</a>
+</div>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
@@ -48,6 +51,7 @@
 	</s:iterator>
 
 </table>
+
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

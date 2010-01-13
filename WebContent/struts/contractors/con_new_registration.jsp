@@ -22,21 +22,21 @@ function countryChanged(country) {
 }
 
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>'});
+	$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val()});
 }
 </script>
 </head>
 <body>
 <h1>Request New Contractor</h1>
-
+<span class="redMain">* - Indicates required information</span>
 <s:form id="saveContractorForm">
 	<s:hidden name="newContractor.id" />
 	<fieldset class="form"><legend><span>Details</span></legend>
 	<ol>
 		<li><label>Company Name:</label>
-			<s:textfield name="newContractor.name" size="35"/></li>
+			<s:textfield name="newContractor.name" size="35"/><span class="redMain">*</span></li>
 		<li><label>Contact
-			Name:</label> <s:textfield name="newContractor.contact" /></li>
+			Name:</label> <s:textfield name="newContractor.contact" /><span class="redMain">*</span></li>
 		<li><label>Phone:</label>
 			<s:textfield name="newContractor.phone" size="20" />
 			<s:if test="newContractor.id > 0">
@@ -68,7 +68,7 @@ function changeState(country) {
 			list="countryList" name="country.isoCode" id="newContractorCountry"
 			listKey="isoCode" listValue="name"
 			value="newContractor.country.isoCode"
-			onchange="countryChanged(this.value)" /></li>
+			onchange="countryChanged(this.value)" /><span class="redMain">*</span></li>
 		<li id="state_li"></li>
 	</ol>
 	</fieldset>
@@ -77,10 +77,12 @@ function changeState(country) {
 	<ol>
 		<li><label>Requested
 			By Account:</label><s:select list="operatorsWithCorporate" headerKey="" headerValue="- Select a Operator -" name="newContractor.requestedBy" value="%{newContractor.requestedBy.id}" listKey="id" listValue="name"/>
+			<span class="redMain">*</span>
 		</li>
 		<li><label>Requested
 			By User:</label>
-			<s:select list="usersList" listKey="id" listValue="name" name="newContractor.requestedByUser" value="%{newContractor.requestedByUser.id}" headerKey="0" headerValue="- Other-"/> 
+			<s:select list="usersList" listKey="id" listValue="name" name="newContractor.requestedByUser" value="%{newContractor.requestedByUser.id}" headerKey="0" headerValue="- Other-"/>
+			<span class="redMain">*</span> 
 			<s:textfield name="newContractor.requestedByUserOther" size="20" /></li>
 		<li><label>Deadline
 			Date:</label> <input name="newContractor.deadline" type="text"
@@ -97,15 +99,10 @@ function changeState(country) {
 		</s:if>
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
-				cols="40" rows="10" /></li>
-		<li><label>Handled By:</label> 
-			This contractor will be contacted by a PICS Customer Service Representative.
-			<br/>Click here to 
-			<input type="submit"
-			class="picsbutton positive" name="button"
-			value="Handle This Account" /> <input type="hidden"
-			class="picsbutton positive" name="button"
-			value="Let PICS Handle This Account" /></li>
+				cols="20" rows="3" /></li>
+		<li><label>Handled By:</label>
+			<input type="radio" value="PICS" name="handledByOption" checked="checked" />PICS
+			<input type="radio" value="operator" name="handledByOption" />Operator</li>
 		<s:if test="newContractor.id > 0">
 			<li><label>#
 				of Times Contacted:</label><s:property value="newContractor.contactCount"/></li>
@@ -121,7 +118,7 @@ function changeState(country) {
 	  	<input
 		type="submit" class="picsbutton positive" name="button" value="Save" />
 	  	<input
-		type="submit" class="picsbutton negative" name="button" value="Close Account" />
+		type="submit" class="picsbutton negative" name="button" value="Close Request" />
 	</div>	
 	</fieldset>
 </s:form>
