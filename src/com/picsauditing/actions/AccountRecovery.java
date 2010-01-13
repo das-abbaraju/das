@@ -50,7 +50,7 @@ public class AccountRecovery extends PicsActionSupport {
 				emailBuilder.addToken("users", matchingUsers);
 				emailBuilder.setToAddresses(email);
 				emailBuilder.addToken("username", matchingUsers.get(0).getName());
-				emailBuilder.addToken("user", matchingUsers.get(0));				
+				emailBuilder.addToken("user", matchingUsers.get(0));
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setPriority(100);
 
@@ -73,20 +73,23 @@ public class AccountRecovery extends PicsActionSupport {
 				user = userDAO.findName(username);
 				if (user == null)
 					throw new Exception("No such user exists");
-				
-				// Seeding the time in the reset hash so that each one will be guaranteed unique
-				user.setResetHash(Strings.hashUrlSafe("u"+user.getId()+String.valueOf(new Date().getTime())));
-				
+
+				// Seeding the time in the reset hash so that each one will be
+				// guaranteed unique
+				user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+				user.setForcePasswordReset(true);
+
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(85);
 				emailBuilder.setFromAddress("info@picsauditing.com");
-				// TODO remove this after we update the templates from username to
+				// TODO remove this after we update the templates from username
+				// to
 				// user.name
 				emailBuilder.addToken("username", user.getName());
 				emailBuilder.addToken("user", user);
 
-				String confirmLink = "http://www.picsauditing.com/LoginController.action?id="
-					+ user.getId() + "&key=" + user.getResetHash();
+				String confirmLink = "http://www.picsauditing.com/LoginController.action?id=" + user.getId() + "&key="
+						+ user.getResetHash();
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setToAddresses(user.getEmail());
 
@@ -94,7 +97,7 @@ public class AccountRecovery extends PicsActionSupport {
 				emailQueue.setPriority(100);
 
 				EmailSender.send(emailQueue);
-				
+
 				addActionMessage("An email has been sent to the user associated"
 						+ " with this username. Please check your email for directions"
 						+ " on how to reset your password.");
