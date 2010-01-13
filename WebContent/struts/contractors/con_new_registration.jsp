@@ -39,13 +39,17 @@ function changeState(country) {
 			Name:</label> <s:textfield name="newContractor.contact" /></li>
 		<li><label>Phone:</label>
 			<s:textfield name="newContractor.phone" size="20" />
-			<input type="submit"
-			class="picsbutton positive" name="button" value="Contacted By Phone" />
+			<s:if test="newContractor.id > 0">
+				<input type="submit"
+				class="picsbutton positive" name="button" value="Contacted By Phone" />
+			</s:if>
 		</li>
 		<li><label for="saveContractorForm_newContractor_email">Email:</label>
 			 <s:textfield name="newContractor.email" size="30" />
-			<input type="submit" class="picsbutton positive"
-			name="button" value="Send Email" />
+			<s:if test="newContractor.id > 0">
+				<input type="submit" class="picsbutton positive"
+				name="button" value="Send Email" />
+			</s:if>
 		</li>
 		<li><label for="saveContractorForm_newContractor_taxID">Tax
 			ID:</label> <s:textfield name="newContractor.taxID" size="20" /></li>
@@ -83,17 +87,17 @@ function changeState(country) {
 			class="forms datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />
 		</li>
-		<li><label>Last
-			Contacted By:</label> <s:property value="newContractor.lastContactedBy.name"
-			/></li>
-		<li><label>Date
-			Contacted:</label><s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" />
-		</li>
+		<s:if test="newContractor.id > 0">
+			<li><label>Last
+				Contacted By:</label> <s:property value="newContractor.lastContactedBy.name"
+				/></li>
+			<li><label>Date
+				Contacted:</label><s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" />
+			</li>
+		</s:if>
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
 				cols="40" rows="10" /></li>
-		<li><label>#
-			of Times Contacted:</label><s:property value="newContractor.contactCount"/></li>
 		<li><label>Handled By:</label> 
 			This contractor will be contacted by a PICS Customer Service Representative.
 			<br/>Click here to 
@@ -102,10 +106,14 @@ function changeState(country) {
 			value="Handle This Account" /> <input type="hidden"
 			class="picsbutton positive" name="button"
 			value="Let PICS Handle This Account" /></li>
+		<s:if test="newContractor.id > 0">
+			<li><label>#
+				of Times Contacted:</label><s:property value="newContractor.contactCount"/></li>
 		<li><label>Matches Found in PICS:</label>
 			<s:property value="newContractor.matchCount"/></li>
 		<li><label>Linked
 			in PICS:</label><s:textfield name="newContractor.contractor.id" size="7" /></li>
+		</s:if>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
