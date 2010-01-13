@@ -31,6 +31,10 @@ public class ReportOperatorCorporate extends ReportAccount {
 			canDelete = permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
 			sql.addJoin("LEFT JOIN (SELECT genID, count(*) as subCount FROM generalContractors GROUP BY genID) sub ON sub.genID = a.id");
 			sql.addField("subCount");
+			// check to see for any requested contractors
+			sql.addJoin("LEFT JOIN (SELECT requestedByID, count(*) as requestedBy FROM contractor_info GROUP BY requestedByID) requested ON requested.requestedByID = a.id");
+			sql.addField("requestedBy");
+
 			sql.addWhere("a.type = 'Operator'");
 			sql.setType(Type.Operator);
 		} else if (accountType.equals("Corporate")) {
