@@ -105,7 +105,6 @@ public class Permissions implements Serializable {
 			email = user.getEmail();
 			phone = user.getPhone();
 			fax = user.getFax();
-			// locale = Locale.valueOf(ActionContext.getContext().getLocale());
 			locale = ActionContext.getContext().getLocale();
 
 			setTimeZone(user);
