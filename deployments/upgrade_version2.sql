@@ -20,3 +20,5 @@ and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
 
+-- update passwords to their hashed versions (sha-1)
+update users set password = sha1(concat(password, id));
