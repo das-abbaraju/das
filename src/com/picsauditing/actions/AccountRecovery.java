@@ -26,7 +26,7 @@ public class AccountRecovery extends PicsActionSupport {
 		if (button == null)
 			return SUCCESS;
 
-		if ("findusername".equals(button)) {
+		if ("Find Username".equals(button)) {
 			if (email == null || email.equals("")) {
 				addActionError("Please input an email address");
 				return SUCCESS;
@@ -64,7 +64,7 @@ public class AccountRecovery extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		if ("resetpassword".equals(button)) {
+		if ("Reset Password".equals(button)) {
 			if (username == null || username.equals("")) {
 				addActionError("Please input a username");
 				return SUCCESS;

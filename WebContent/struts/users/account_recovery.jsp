@@ -14,7 +14,7 @@ fieldset.form input.login {
 }
 </style>
 </head>
-<body onload="document.forms['login'].username.focus();">
+<body>
 
 <s:include value="../actionMessages.jsp"></s:include>
 <div class="left" style="margin-right:40px;">
@@ -27,7 +27,7 @@ fieldset.form input.login {
 		<li><label style="margin-top: 7px;">Username:</label> <s:textfield name="username" cssClass="login" /></li>
 		<li>
 		<div class="buttons" style="padding-left: 200px; padding-bottom: 50px;">
-		<button class="picsbutton positive" value="resetpassword" name="button" type="resetpassword">Reset Password</button>
+		<input type="submit" class="picsbutton positive" value="Reset Password" name="button" />
 		</div>
 		</li>
 		<li><a href="Login.action">Return to Login Page</a></li>
@@ -45,7 +45,7 @@ fieldset.form input.login {
 		<li><label style="margin-top: 7px;">Email:</label> <s:textfield name="email" cssClass="login" /></li>
 		<li>
 		<div class="buttons" style="padding-left: 200px; padding-bottom: 50px;">
-		<button class="picsbutton positive" value="findusername" name="button" type="findusername">Find Username</button>
+		<input type="submit" class="picsbutton positive" value="Find Username" name="button" />
 		</div>
 		</li>
 		<li><a href="Login.action">Return to Login Page</a></li>
