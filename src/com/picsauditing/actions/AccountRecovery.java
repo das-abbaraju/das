@@ -88,8 +88,8 @@ public class AccountRecovery extends PicsActionSupport {
 				emailBuilder.addToken("username", user.getName());
 				emailBuilder.addToken("user", user);
 
-				String confirmLink = "http://www.picsauditing.com/LoginController.action?id=" + user.getId() + "&key="
-						+ user.getResetHash();
+				String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername() + "&key="
+						+ user.getResetHash() + "&button=reset";
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setToAddresses(user.getEmail());
 

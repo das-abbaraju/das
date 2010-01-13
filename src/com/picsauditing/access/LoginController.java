@@ -39,6 +39,8 @@ public class LoginController extends PicsActionSupport {
 	private String email;
 	private String username;
 	private String password;
+	private String usern;
+	private String key;
 	private int switchToUser;
 
 	protected UserDAO userDAO;
@@ -53,31 +55,26 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		loadPermissions(false);
-		
+
 		if (button == null)
 			return SUCCESS;
-		
+
 		if ("logout".equals(button)) {
 			int adminID = permissions.getAdminID();
 			permissions.clear();
-			
+
 			if (adminID > 0) {
 				// Re login the admin on logout
 				user = userDAO.find(adminID);
-				
+
 				permissions.login(user);
 				postLogin();
 				return SUCCESS;
 			}
-			
+
 			return SUCCESS;
 		}
-		
-		if ("forgot".equals(button)) {
-			sendPasswordReminder();
-			return SUCCESS;
-		}
-		
+
 		if ("confirm".equals(button)) {
 			try {
 				user = userDAO.findName(username);
@@ -89,21 +86,47 @@ public class LoginController extends PicsActionSupport {
 			}
 			return SUCCESS;
 		}
-		
-		// Login the user
-		if (switchToUser > 0) {
+
+		// Autologin functionality if the reset button is passed, otherwise
+		// perform
+		// other login procedures
+		if ("reset".equals(button)) {
+			user = userDAO.findName(usern);
+
+			if (!user.getResetHash().equals(key)) {
+				addActionError("Reset hashes do not match");
+				return SUCCESS;
+			} else {
+				// Normal login, via the actual Login.action page
+				permissions.login(user);
+
+				user.setLastLogin(new Date());
+				user.getAccount().setLastLogin(new Date());
+				userDAO.save(user);
+
+				Cookie cookie = new Cookie("username", username);
+				cookie.setMaxAge(3600 * 24);
+				getResponse().addCookie(cookie);
+
+				// TODO we should allow each account to set their own timeouts
+				// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
+				if (permissions.isPicsEmployee())
+					getRequest().getSession().setMaxInactiveInterval(3600);
+			}
+		}// Login the user
+		else if (switchToUser > 0) {
 			if (permissions.getUserId() == switchToUser) {
 				// Switch back to myself
 				user = getUser();
 			} else {
 				user = userDAO.find(switchToUser);
 			}
-			
+
 			if (permissions.hasPermission(OpPerms.SwitchUser)) {
 				int adminID = 0;
 				if (permissions.getUserId() != switchToUser)
 					adminID = permissions.getUserId();
-				
+
 				permissions.login(user);
 				permissions.setAdminID(adminID);
 				password = "switchUser";
@@ -116,7 +139,7 @@ public class LoginController extends PicsActionSupport {
 		} else {
 			// Normal login, via the actual Login.action page
 			permissions.clear();
-			
+
 			String error = canLogin();
 			if (error.length() > 0) {
 				logAttempt();
@@ -126,13 +149,13 @@ public class LoginController extends PicsActionSupport {
 
 			// /////////////////
 			permissions.login(user);
-			
+
 			user.setLastLogin(new Date());
 			user.getAccount().setLastLogin(new Date());
 			userDAO.save(user);
 
 			Cookie cookie = new Cookie("username", username);
-			cookie.setMaxAge(3600*24);
+			cookie.setMaxAge(3600 * 24);
 			getResponse().addCookie(cookie);
 
 			// TODO we should allow each account to set their own timeouts
@@ -140,7 +163,7 @@ public class LoginController extends PicsActionSupport {
 			if (permissions.isPicsEmployee())
 				getRequest().getSession().setMaxInactiveInterval(3600);
 		}
-		
+
 		ActionContext.getContext().getSession().put("permissions", permissions);
 		logAttempt();
 		postLogin();
@@ -148,40 +171,6 @@ public class LoginController extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private boolean sendPasswordReminder() {
-		if (!Utilities.isValidEmail(email)) {
-			addActionError("Please enter a valid email address.");
-			return false;
-		}
-		EmailBuilder emailBuilder = new EmailBuilder();
-
-		List<User> matchingUsers = userDAO.findByEmail(email);
-		if (matchingUsers.size() == 0) {
-			addActionError("No account in our records has that email address.  Please verify it is "
-					+ "the one you used when creating your PICS company profile.");
-			return false;
-		}
-		try {
-			for(User matchingUser : matchingUsers) {
-				emailBuilder.setTemplate(24); // Password Reminder
-				emailBuilder.setUser(matchingUser);
-				EmailQueue emailQueue = emailBuilder.build();
-				emailQueue.setPriority(100);
-				
-				EmailSender sender = new EmailSender();
-				sender.sendNow(emailQueue);
-				
-				addActionMessage("An email has been sent to this address: <b>" + email + "</b> "
-						+ "with your PICS account login information");
-			}
-			
-			
-		} catch (Exception e) {
-			addActionError("Failed to send emails");
-		}
-		return true;
-	}
-	
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
@@ -205,19 +194,21 @@ public class LoginController extends PicsActionSupport {
 
 		if (user.getAccount().isOperator() || user.getAccount().isCorporate())
 			if (!user.getAccount().isActiveB())
-				return user.getAccount().getName() + " is no longer active.<br>Please contact PICS if you have any questions.";
-		
+				return user.getAccount().getName()
+						+ " is no longer active.<br>Please contact PICS if you have any questions.";
+
 		if (user.getIsActive() != YesNo.Yes)
-			return "This account for " + user.getAccount().getName() + " is no longer active.<br>Please contact your administrator to reactivate it.";
+			return "This account for " + user.getAccount().getName()
+					+ " is no longer active.<br>Please contact your administrator to reactivate it.";
 
 		if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
-			return "This account is locked because of too many failed attempts. " +
-					"You will be able to try again in " + DateBean.prettyDate(user.getLockUntil());
+			return "This account is locked because of too many failed attempts. " + "You will be able to try again in "
+					+ DateBean.prettyDate(user.getLockUntil());
 		}
 		if (Strings.isEmpty(password)) {
 			return "You must enter a password";
 		}
-		
+
 		if (!user.isEncryptedPasswordEqual(password)) {
 			user.setFailedAttempts(user.getFailedAttempts() + 1);
 			// TODO parameterize this 7 here
@@ -229,8 +220,8 @@ public class LoginController extends PicsActionSupport {
 				user.setLockUntil(calendar.getTime());
 				return "The password is not correct and the account has now been locked";
 			}
-			return "The password is not correct. You have " + (8 - user.getFailedAttempts()) 
-				+ " attempts remaining before your account will be locked for one hour.";
+			return "The password is not correct. You have " + (8 - user.getFailedAttempts())
+					+ " attempts remaining before your account will be locked for one hour.";
 		}
 		user.setFailedAttempts(0);
 		user.setLockUntil(null); // it's no longer locked
@@ -262,32 +253,32 @@ public class LoginController extends PicsActionSupport {
 					cookieUsername = cookiesA[i].getValue();
 			}
 			if (!Strings.isEmpty(cookieUsername) && !cookieUsername.equals(permissions.getUsername())) {
-				// If they are switching users, just send them back to the Home Page
+				// If they are switching users, just send them back to the Home
+				// Page
 				cookieFromURL = "";
 			}
-			
+
 			if (cookieFromURL.length() > 0) {
 				getResponse().sendRedirect(cookieFromURL);
 				return;
 			}
 		}
 		String url = null;
-		if(permissions.isContractor() && !user.getAccount().isActiveB()) {
+		if (permissions.isContractor() && !user.getAccount().isActiveB()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
-			if(cAccount.getRiskLevel() == null)
+			if (cAccount.getRiskLevel() == null)
 				url = "ContractorRegistrationServices.action?id=" + cAccount.getId();
-			else if(cAccount.getOperators().size() == 0)
+			else if (cAccount.getOperators().size() == 0)
 				url = "ContractorFacilities.action?id=" + cAccount.getId();
-			else if(!cAccount.isPaymentMethodStatusValid())
-				url = "ContractorPaymentOptions.action?id="+cAccount.getId();
+			else if (!cAccount.isPaymentMethodStatusValid())
+				url = "ContractorPaymentOptions.action?id=" + cAccount.getId();
 			else
-				url = "ContractorEdit.action?id="+cAccount.getId();
-		}
-		else 
+				url = "ContractorEdit.action?id=" + cAccount.getId();
+		} else
 			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception("No Permissions or Default Webpages found");
-		
+
 		getResponse().sendRedirect(url);
 		return;
 	}
@@ -309,8 +300,7 @@ public class LoginController extends PicsActionSupport {
 		loginLogDAO.save(loginLog);
 	}
 
-	
-	//////// GETTER & SETTERS ////////
+	// ////// GETTER & SETTERS ////////
 	private HttpServletRequest getRequest() {
 		return ServletActionContext.getRequest();
 	}
@@ -341,5 +331,21 @@ public class LoginController extends PicsActionSupport {
 
 	public void setSwitchToUser(int switchToUser) {
 		this.switchToUser = switchToUser;
+	}
+
+	public String getUsern() {
+		return usern;
+	}
+
+	public void setUsern(String usern) {
+		this.usern = usern;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }
