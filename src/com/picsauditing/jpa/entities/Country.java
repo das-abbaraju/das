@@ -4,7 +4,10 @@ import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -17,6 +20,8 @@ public class Country {
 	protected String english;
 	protected String spanish;
 	protected String french;
+	
+	protected User csr;
 
 	public Country() {
 	}
@@ -89,6 +94,16 @@ public class Country {
 			return "CA";
 
 		return "US";
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "csrID")
+	public User getCsr() {
+		return csr;
+	}
+
+	public void setCsr(User csr) {
+		this.csr = csr;
 	}
 
 	@Override
