@@ -65,7 +65,7 @@ $(function() {
 						<span class="redMain">* All Fields are required</span>
 						
 						<div>
-							<button class="picsbutton positive" type="submit" name="button" value="Force Flag" onclick="return checkForce();">Force Flag</button>
+							<button class="picsbutton positive" type="submit" name="button" value="Force Flag">Force Flag</button>
 						</div>
 					</s:form>
 					<a href="#" onclick="$('#override_link').show(); $('#override').hide(); return false;">Nevermind</a>
