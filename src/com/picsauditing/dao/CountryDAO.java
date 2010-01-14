@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.State;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -32,5 +33,12 @@ public class CountryDAO extends PicsDAO {
 		}
 		
 		return map;
+	}
+	
+	public List<Country> findByCSR(int csrID) {
+		Query query = em.createQuery("FROM Country WHERE csr.id = ?");
+		query.setParameter(1, csrID);
+
+		return query.getResultList();
 	}
 }

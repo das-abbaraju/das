@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -38,6 +39,14 @@ public class AccountUserDAO extends PicsDAO {
 	public List<AccountUser> findByAccount(int id) {
 		Query query =  em.createQuery("SELECT au FROM AccountUser au where au.account.id = :id");
 		query.setParameter("id", id);
+		return query.getResultList();
+	}
+	
+	public List<AccountUser> findByUser(int id) {
+		Query query =  em.createQuery("SELECT au FROM AccountUser au where au.user.id = :id AND :today BETWEEN au.startDate AND au.endDate AND au.role = 'PICSAccountRep'");
+		query.setParameter("id", id);
+		Calendar calendar = Calendar.getInstance();
+		query.setParameter("today", calendar.getTime());
 		return query.getResultList();
 	}
 }

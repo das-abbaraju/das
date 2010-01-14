@@ -133,6 +133,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 			newContractor.setAuditColumns(permissions);
 			contractorRegistrationRequestDAO.save(newContractor);
+			requestID = newContractor.getId();
 			addActionMessage("Successfully saved the Contractor");
 		}
 		return SUCCESS;
@@ -219,10 +220,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public User getAssignedCSR() {
 		if(newContractor.getId() > 0 
 				&& newContractor.getHandledBy().equals(WaitingOn.PICS)) {
-			if(newContractor.getState() != null)
-				return  newContractor.getState().getCsr();
-			else
+			if(newContractor.getCountry().getCsr() != null)
 				return newContractor.getCountry().getCsr();
+			else
+				return  newContractor.getState().getCsr();
 		}
 		return null;
 	}

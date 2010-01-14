@@ -39,4 +39,11 @@ public class StateDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+	
+	public List<State> findByCSR(int csrID) {
+		Query query = em.createQuery("FROM State WHERE csr.id = ?");
+		query.setParameter(1, csrID);
+
+		return query.getResultList();
+	}
 }
