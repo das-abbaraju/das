@@ -326,27 +326,31 @@ div.autocomplete ul li {
 				<pics:permission perm="SwitchUser">
 					<a href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a> | 
 				</pics:permission>
+				<s:if test="!permissions.contractor">
 				<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
+				</s:if>
 			</div>
 			</fieldset>
 			</s:if>
 	</s:form>
 <br clear="all">	
 	<s:if test="user.id > 0">
-		<s:if test="!user.superUser">
-			<div id="permissionReport" style="width: 100%">
-				<s:include value="user_save_permissions.jsp" />
-			</div>
-			
-			<div id="groupReport">
-				<s:include value="user_save_groups.jsp" />
-			</div>
-		</s:if>
-		
-		<s:if test="user.group">
-			<div id="memberReport">
-				<s:include value="user_save_members.jsp" />
-			</div>
+		<s:if test="!permissions.contractor">
+			<s:if test="!user.superUser">
+				<div id="permissionReport" style="width: 100%">
+					<s:include value="user_save_permissions.jsp" />
+				</div>
+				
+				<div id="groupReport">
+					<s:include value="user_save_groups.jsp" />
+				</div>
+			</s:if>
+
+			<s:if test="user.group">
+				<div id="memberReport">
+					<s:include value="user_save_members.jsp" />
+				</div>
+			</s:if>
 		</s:if>
 		
 		
