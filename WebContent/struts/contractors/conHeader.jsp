@@ -34,9 +34,6 @@
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms & Docs</a></li>
 	</s:if>
-	<li>
-		<a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a>
-	</li>
 	<s:iterator value="#auditMenu">
 		<li>
 		<s:if test="children.size() > 0">
@@ -221,6 +218,11 @@
 	<s:if test="!permissions.contractor">
 		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
+	</s:if>
+	<s:if test="permissions.admin">
+		<li>
+			<a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a>
+		</li>
 	</s:if>
 	<s:if test="permissions.admin || permissions.contractor">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
