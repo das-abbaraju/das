@@ -21,10 +21,13 @@
 		<td colspan="2">Account Name</td>
 		<td>Requested By</td>
 		<td>DeadLine</td>
+		<s:if test="permissions.operatorCorporate">
+			<td>Follow Up</td>
+		</s:if>
 		<td>Contacted By</td>
-		<td>Contacted On</td>
-		<td>Contacted</td>
-		<td>MatchesFoundInPICS</td>
+		<td>On</td>
+		<td>Attempts</td>
+		<td title="Potential Matches in PICS">Matches</td>
 		<td>In PICS</td>
 	</tr>
 	</thead>
@@ -38,6 +41,9 @@
 				<s:property value="get('RequestedBy')"/>
 			</td>
 			<td><s:date name="get('deadline')" format="MM/dd/yyyy"/></td>
+			<s:if test="permissions.operatorCorporate">
+				<td><s:property value="get('handledBy')"/></td>
+			</s:if>
 			<td><s:property value="get('ContactedBy')" /></td>
 			<td><s:date name="get('lastContactDate')" format="MM/dd/yyyy"/></td>
 			<td><s:property value="get('contactCount')" /></td>

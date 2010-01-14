@@ -22,15 +22,24 @@ function countryChanged(country) {
 }
 
 function changeState(country) {
-	$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val()});
+	$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>'});
 }
 </script>
 </head>
 <body>
 <h1>Request New Contractor</h1>
 <span class="redMain">* - Indicates required information</span>
+
+<s:include value="../actionMessages.jsp"></s:include>
+
+<s:if test="conAccount != null && conAccount.activeB">
+	<div class="info">This contractor has registered an account with PICS on <strong><s:date name="conAccount.creationDate" format="M/d/yyyy" /></strong><br/>
+		Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>.</div>
+</s:if>
+
+
 <s:form id="saveContractorForm">
-	<s:hidden name="newContractor.id" />
+	<s:hidden name="requestID"/>
 	<fieldset class="form"><legend><span>Details</span></legend>
 	<ol>
 		<li><label>Company Name:</label>
@@ -53,6 +62,11 @@ function changeState(country) {
 		</li>
 		<li><label for="saveContractorForm_newContractor_taxID">Tax
 			ID:</label> <s:textfield name="newContractor.taxID" size="20" /></li>
+		<s:if test="assignedCSR != null">
+			<li><label>Assigned PICS CSR:</label>
+				<s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/>
+			</li>
+		</s:if>	
 	</ol>
 	</fieldset>
 	<fieldset class="form"><legend><span>Primary
@@ -67,7 +81,7 @@ function changeState(country) {
 		<li><label for="newContractorCountry">Country:</label> <s:select
 			list="countryList" name="country.isoCode" id="newContractorCountry"
 			listKey="isoCode" listValue="name"
-			value="newContractor.country.isoCode"
+			value="%{newContractor.country.isoCode}"
 			onchange="countryChanged(this.value)" /><span class="redMain">*</span></li>
 		<li id="state_li"></li>
 	</ol>
@@ -76,16 +90,15 @@ function changeState(country) {
 		Information</span></legend>
 	<ol>
 		<li><label>Requested
-			By Account:</label><s:select list="operatorsWithCorporate" headerKey="" headerValue="- Select a Operator -" name="newContractor.requestedBy" value="%{newContractor.requestedBy.id}" listKey="id" listValue="name"/>
+			By Account:</label><s:select list="operatorsWithCorporate" headerKey="0" headerValue="- Select a Operator -" name="requestedOperator" value="%{newContractor.requestedBy.id}" listKey="id" listValue="name"/>
 			<span class="redMain">*</span>
 		</li>
 		<li><label>Requested
 			By User:</label>
-			<s:select list="usersList" listKey="id" listValue="name" name="newContractor.requestedByUser" value="%{newContractor.requestedByUser.id}" headerKey="0" headerValue="- Other-"/>
+			<s:select list="usersList" listKey="id" listValue="name" name="requestedUser" value="%{newContractor.requestedByUser.id}" headerKey="0" headerValue="- Other-"/>
 			<span class="redMain">*</span> 
 			<s:textfield name="newContractor.requestedByUserOther" size="20" /></li>
-		<li><label>Deadline
-			Date:</label> <input name="newContractor.deadline" type="text"
+		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />
 		</li>
@@ -100,16 +113,22 @@ function changeState(country) {
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
 				cols="20" rows="3" /></li>
-		<li><label>Handled By:</label>
-			<input type="radio" value="PICS" name="handledByOption" checked="checked" />PICS
-			<input type="radio" value="operator" name="handledByOption" />Operator</li>
+		<li><label>Who should follow up?:</label>
+			<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
+		</li>
 		<s:if test="newContractor.id > 0">
 			<li><label>#
 				of Times Contacted:</label><s:property value="newContractor.contactCount"/></li>
 		<li><label>Matches Found in PICS:</label>
 			<s:property value="newContractor.matchCount"/></li>
-		<li><label>Linked
-			in PICS:</label><s:textfield name="newContractor.contractor.id" size="7" /></li>
+		<li><label>PICS Contractor ID:</label>
+			<s:if test="permissions.admin">
+				<s:textfield name="conID" value="%{newContractor.contractor.id}" size="7" />
+			</s:if>
+			<s:if test="conAccount != null">
+				<a href="ContractorView.action?id=<s:property value="conAccount.id"/>"><s:property value="conAccount.name"/></a>
+			</s:if>
+		</li>
 		</s:if>
 	</ol>
 	</fieldset>
@@ -117,8 +136,10 @@ function changeState(country) {
 	 <div>	
 	  	<input
 		type="submit" class="picsbutton positive" name="button" value="Save" />
-	  	<input
-		type="submit" class="picsbutton negative" name="button" value="Close Request" />
+	  	<s:if test="newContractor.id > 0">
+		  	<input
+			type="submit" class="picsbutton negative" name="button" value="Close Request" />
+		</s:if>
 	</div>	
 	</fieldset>
 </s:form>

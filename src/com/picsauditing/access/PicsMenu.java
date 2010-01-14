@@ -75,8 +75,9 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
-			
-		subMenu.addChild("Registration Request", "ReportNewRequestedContractor.action");
+		
+		if(permissions.isPicsEmployee())
+			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 		
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {

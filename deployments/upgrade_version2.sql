@@ -22,3 +22,10 @@ and pcd.catID = 151;
 
 -- update passwords to their hashed versions (sha-1)
 update users set password = sha1(concat(password, id)) where username not like 'GROUP%';
+
+-- update the CSR for State and country
+update ref_state set csrID = 940
+where csrID is null;
+
+update ref_country set csrID = 940
+where isocode not in ('US','CA');
