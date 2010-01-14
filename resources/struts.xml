@@ -349,7 +349,12 @@
 		
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
-			<result>struts/contractors/con_new_registration.jsp</result>
+			<result>/struts/contractors/con_new_registration.jsp</result>
+		</action>
+		
+		<action name="OperatorUserListAjax"
+			class="com.picsauditing.actions.contractors.RequestNewContractor">
+			<result>/struts/users/operator_users.jsp</result>
 		</action>
 
 		<!--  NOTES for CONTRACTORS and OPERATORS -->

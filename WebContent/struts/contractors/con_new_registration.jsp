@@ -24,6 +24,17 @@ function countryChanged(country) {
 function changeState(country) {
 	$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>'});
 }
+
+function updateUsersList() {
+	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val()});
+}
+
+function checkUserOther() {
+	if ($("#requestedUser").val() == 0)
+		$("#requestedByOtherUser").show();
+	else
+		$("#requestedByOtherUser").hide();
+}
 </script>
 </head>
 <body>
@@ -90,14 +101,13 @@ function changeState(country) {
 		Information</span></legend>
 	<ol>
 		<li><label>Requested
-			By Account:</label><s:select list="operatorsWithCorporate" headerKey="0" headerValue="- Select a Operator -" name="requestedOperator" value="%{newContractor.requestedBy.id}" listKey="id" listValue="name"/>
+			By Account:</label><s:select list="operatorsWithCorporate" headerKey="0" 
+				headerValue="- Select a Operator -" name="requestedOperator" 
+				value="%{newContractor.requestedBy.id}" listKey="id" listValue="name" 
+				onchange="updateUsersList();" />
 			<span class="redMain">*</span>
 		</li>
-		<li><label>Requested
-			By User:</label>
-			<s:select list="usersList" listKey="id" listValue="name" name="requestedUser" value="%{newContractor.requestedByUser.id}" headerKey="0" headerValue="- Other-"/>
-			<span class="redMain">*</span> 
-			<s:textfield name="newContractor.requestedByUserOther" size="20" /></li>
+		<li id="loadUsersList"></li>
 		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />

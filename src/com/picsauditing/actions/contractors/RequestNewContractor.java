@@ -41,6 +41,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected int requestedOperator;
 	protected int requestedUser;
 	protected int conID;
+	protected int opID;
 	protected ContractorAccount conAccount = null;
 
 	public RequestNewContractor(ContractorRegistrationRequestDAO contractorRegistrationRequestDAO,
@@ -179,8 +180,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return operatorAccountDAO.findWhere(true, "", permissions);
 	}
 
-	public List<User> getUsersList() {
-		return userDAO.findByAccountID(1813, "Yes", "No");
+	public List<User> getUsersList(int accountID) {
+		return userDAO.findByAccountID(accountID, "Yes", "No");
 	}
 
 	public List<Country> getCountryList() {
@@ -229,6 +230,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setConID(int conID) {
 		this.conID = conID;
+	}
+	
+	public int getOpID() {
+		return opID;
+	}
+
+	public void setOpID(int opID) {
+		this.opID = opID;
 	}
 
 	public ContractorAccount getConAccount() {

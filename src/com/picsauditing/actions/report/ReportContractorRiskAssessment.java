@@ -23,7 +23,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected AuditDataDAO auditDataDAO;
 	protected NoteDAO noteDAO;
 
-	public ReportContractorRiskAssessment(ContractorAccountDAO contractorAccountDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO) {
+	public ReportContractorRiskAssessment(ContractorAccountDAO contractorAccountDAO, AuditDataDAO auditDataDAO,
+			NoteDAO noteDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.noteDAO = noteDAO;
@@ -54,24 +55,34 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		if (button != null) {
 			ContractorAccount cAccount = contractorAccountDAO.find(conID);
 			AuditData aData = auditDataDAO.find(answerID);
+			Note note = null;
 			if ("Accept".equals(button)) {
 				String answer = aData.getAnswer();
-				if(answer.equals("Medium")) {
+				if (answer.equals("Medium")) {
 					answer = "Med";
 				}
+				note = new Note(cAccount, getUser(), "RiskLevel adjusted from " + cAccount.getRiskLevel().toString()
+						+ " to " + aData.getAnswer() + " for " + auditorNotes);
 				cAccount.setRiskLevel(LowMedHigh.valueOf(answer));
 				cAccount.setAuditColumns(permissions);
 				contractorAccountDAO.save(cAccount);
-				Note note = new Note(cAccount, getUser(), "RiskLevel adjusted to "+aData.getAnswer() + " for " + auditorNotes);
-				note.setNoteCategory(NoteCategory.General);
-				note.setCanContractorView(true);
-				note.setViewableById(Account.EVERYONE);
-				noteDAO.save(note);
-			}
+			} else
+				note = new Note(cAccount, getUser(), "Rejected RiskLevel adjustment from " + cAccount.getRiskLevel().toString()
+						+ " to " + aData.getAnswer() + " for " + auditorNotes);
+
 			aData.setDateVerified(new Date());
-			if(!Strings.isEmpty(auditorNotes))
+			if (!Strings.isEmpty(auditorNotes))
 				aData.setComment(auditorNotes);
 			aData.setAuditColumns(permissions);
+
+			// Update the note and save it in the database.
+			note.setNoteCategory(NoteCategory.General);
+			note.setCanContractorView(true);
+			note.setViewableById(Account.EVERYONE);
+			note.setAccount(cAccount);
+			note.setAuditColumns(permissions);
+			noteDAO.save(note);
+
 			auditDataDAO.save(aData);
 			auditorNotes = "";
 		}
