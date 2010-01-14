@@ -971,7 +971,10 @@ public class ContractorAccount extends Account implements JSONable {
 	public Set<String> getCountries() {
 		Set<String> countries = new HashSet<String>();
 		for (ContractorOperator co : getOperators()) {
-			countries.add(co.getOperatorAccount().getCountry().getIsoCode());
+			try {
+				countries.add(co.getOperatorAccount().getCountry().getIsoCode());
+			} catch (Exception justIgnoreThisOperator) {
+			}
 		}
 		return countries;
 	}
