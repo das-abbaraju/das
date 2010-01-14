@@ -236,6 +236,13 @@ $(function() {
 						<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" 
 							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
 					</li>
+					<pics:permission perm="SwitchUser">
+						<li><label>Switch:</Label>
+							<s:iterator value="contractor.users" status="stat">
+								<a href="Login.action?button=login&switchToUser=<s:property value="id"/>"><s:property value="name"/></a><s:if test="!#stat.last"> |</s:if> 
+							</s:iterator>
+						</li>
+					</pics:permission>
 				</ol>
 				</fieldset>
 				<pics:permission perm="EmailOperators">
