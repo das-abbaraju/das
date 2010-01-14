@@ -55,7 +55,7 @@ function changeState(country) {
 		</li>
 		<li><label for="saveContractorForm_newContractor_email">Email:</label>
 			 <s:textfield name="newContractor.email" size="30" />
-			<s:if test="newContractor.id > 0">
+			<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
 				<input type="submit" class="picsbutton positive"
 				name="button" value="Send Email" />
 			</s:if>

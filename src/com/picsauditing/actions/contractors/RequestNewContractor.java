@@ -6,6 +6,7 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -16,10 +17,13 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -90,6 +94,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						addActionError("Please select a State");
 					}
 				}
+				if(Strings.isEmpty(newContractor.getPhone())) {
+					addActionError("Please fill a Phone Number");
+				}
+				if(!Strings.isEmpty(newContractor.getEmail()) && !Utilities.isValidEmail(newContractor.getEmail())) {
+					addActionError("Please fill in a Valid Email Address");
+				}
+				
 				if (getActionErrors().size() > 0) {
 					return SUCCESS;
 				}
@@ -125,7 +136,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
-					// Send the Email
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(83); // Operator Request for Registration
+					emailBuilder.addToken("newContractor", newContractor);
+					emailBuilder.addToken("csr", getAssignedCSR());
+					emailBuilder.setToAddresses(newContractor.getEmail());
+					EmailQueue emailQueue = emailBuilder.build();
+					emailQueue.setPriority(80);
+					EmailSender.send(emailQueue);
 				}
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
