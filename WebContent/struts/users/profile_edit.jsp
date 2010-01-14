@@ -14,6 +14,7 @@
 		$('#username_status').load('user_ajax.jsp', data);
 	}
 
+	<s:if test="!permissions.contractor">
 	function save(subscription, id, timeperiod) {
 	    var data = {
     	    'eu.id': id, 
@@ -51,12 +52,13 @@
 		$('#'+tabName).show();
 		$('#link_'+tabName).addClass('current');
 	}
+	</s:if>
 </script>
 
 </head>
 <body>
 <h1>Edit Profile</h1>
-
+<s:if test="!permissions.contractor">
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a id="link_tab_profile" href="#" class="current" onclick="showTab('tab_profile'); return false;">Edit</a></li>
@@ -69,7 +71,7 @@
 	<li><a id="link_tab_permissions" href="#" onclick="showTab('tab_permissions'); return false;">Permissions</a></li>
 </ul>
 </div>
-
+</s:if>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="u.forcePasswordReset">
@@ -112,7 +114,7 @@
 </table>
 
 </div>
-
+<s:if test="!permissions.contractor">
 <div id="tab_switch" style="display: none;">
 	<h3>Switch Accounts</h3>
 	<table class="report">
@@ -139,7 +141,9 @@
 		</tbody>
 	</table>
 </div>
+</s:if>
 
+<s:if test="!permissions.contractor">
 <div id="tab_permissions" style="display: none;">
 <table style="width: 100%">
 	<tr>
@@ -184,7 +188,9 @@
 	</tr>
 </table>
 </div>
+</s:if>
 
+<s:if test="!permissions.contractor">
 <div id="tab_subscriptions" style="display: none;">
 	<s:iterator value="eList" status="stat">
 	<div id="td<s:property value="subscription"/>" <s:if test="#stat.even">class="shaded"</s:if>>
@@ -192,6 +198,6 @@
 	</div>
 	</s:iterator>
 </div>
-
+</s:if>
 </body>
 </html>
