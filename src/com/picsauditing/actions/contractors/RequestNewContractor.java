@@ -28,7 +28,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RequestNewContractor extends PicsActionSupport implements Preparable {
-	public ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
+	private ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
 	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected UserDAO userDAO;
@@ -56,9 +56,19 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public void prepare() throws Exception {
+		getPermissions();
+
 		requestID = getParameter("requestID");
 		if (requestID > 0) {
 			newContractor = contractorRegistrationRequestDAO.find(requestID);
+		}
+		else {
+			newContractor.setCountry(new Country(permissions.getCountry()));
+			if(permissions.isOperatorCorporate()) {
+				newContractor.setRequestedBy(new OperatorAccount());
+				newContractor.getRequestedBy().setId(permissions.getAccountId());
+				newContractor.setRequestedByUser(new User(permissions.getUserId()));
+			}
 		}
 
 		String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");

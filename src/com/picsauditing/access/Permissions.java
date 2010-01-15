@@ -55,6 +55,7 @@ public class Permissions implements Serializable {
 	private TimeZone timezone = null;
 	private Set<String> accountCountries = new HashSet<String>();
 	private Locale locale;
+	private String country;
 
 	private int adminID;
 	private boolean approvesRelationships = false;
@@ -75,6 +76,7 @@ public class Permissions implements Serializable {
 		accountID = 0;
 		accountName = "";
 		accountType = "";
+		country = "";  
 		accountActive = false;
 		accountCountries.clear();
 		approvesRelationships = false;
@@ -106,6 +108,7 @@ public class Permissions implements Serializable {
 			phone = user.getPhone();
 			fax = user.getFax();
 			locale = ActionContext.getContext().getLocale();
+			country = user.getAccount().getCountry().getIsoCode();
 
 			setTimeZone(user);
 
@@ -515,5 +518,9 @@ public class Permissions implements Serializable {
 
 	public Locale getLocale() {
 		return locale;
+	}
+
+	public String getCountry() {
+		return country;
 	}
 }
