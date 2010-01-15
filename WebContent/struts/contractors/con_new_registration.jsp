@@ -107,7 +107,20 @@ function checkUserOther() {
 				onchange="updateUsersList();" />
 			<span class="redMain">*</span>
 		</li>
-		<li id="loadUsersList"></li>
+		<s:if test="newContractor.requestedByUser == null">
+			<li id="loadUsersList"></li>
+		</s:if>
+		<s:else>
+			<label>Requested By User:</label>
+			<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
+				name="requestedUser" value="%{newContractor.requestedByUser.id}"
+				headerKey="0" headerValue="- Other-" />
+			<span class="redMain">*</span>
+			<s:if test="newContractor.requestedByUser == null">
+				<s:textfield name="newContractor.requestedByUserOther"
+					id="requestedByOtherUser" size="20" />
+			</s:if>
+		</s:else>
 		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />
