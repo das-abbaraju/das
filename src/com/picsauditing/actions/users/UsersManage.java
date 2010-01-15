@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
@@ -25,6 +26,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	protected int accountId = 0;
 	protected User user;
+	protected Account account;
 
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
@@ -38,12 +40,23 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	protected boolean hasAllOperators = false;
 
+	protected AccountDAO accountDAO;
 	protected OperatorAccountDAO operatorDao;
 	protected UserDAO userDAO;
 
-	public UsersManage(OperatorAccountDAO operatorDao, UserDAO userDAO) {
+	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO) {
+		this.accountDAO = accountDAO;
 		this.operatorDao = operatorDao;
 		this.userDAO = userDAO;
+	}
+
+	@Override
+	public void prepare() throws Exception {
+		int id = getParameter("user.id");
+		user = userDAO.find(id);
+
+		int aID = getParameter("accountId");
+		account = accountDAO.find(aID);
 	}
 
 	public String execute() throws Exception {
@@ -107,6 +120,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public List<User> getUserList() {
@@ -190,12 +211,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public List<UserLoginLog> getRecentLogins() {
 		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
-	}
-
-	@Override
-	public void prepare() throws Exception {
-		int id = getParameter("user.id");
-		user = userDAO.find(id);
 	}
 
 	public List<OperatorAccount> getFacilities() {
