@@ -9,6 +9,7 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -22,8 +23,8 @@ public class UserSave extends UsersManage {
 	protected String password1;
 	protected String password2;
 
-	public UserSave(OperatorAccountDAO operatorDao, UserDAO userDAO) {
-		super(operatorDao, userDAO);
+	public UserSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO) {
+		super(accountDao, operatorDao, userDAO);
 	}
 
 	public String execute() throws Exception {
