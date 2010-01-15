@@ -79,3 +79,7 @@ where csrID is null;
 
 update ref_country set csrID = 940
 where isocode not in ('US','CA');
+
+-- update country on PICS account
+update accounts set country = 'US'
+where id = 1100;
