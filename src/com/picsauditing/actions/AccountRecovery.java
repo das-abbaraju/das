@@ -57,7 +57,7 @@ public class AccountRecovery extends PicsActionSupport {
 				EmailSender.send(emailQueue);
 
 				addActionMessage("An email has been sent to this address: <b>" + email + "</b> "
-						+ "with your PICS account usernames");
+						+ "with your PICS account username" + (matchingUsers.size() > 1 ? "s" : ""));
 			} catch (Exception e) {
 				addActionError("Failed to send emails");
 			}
