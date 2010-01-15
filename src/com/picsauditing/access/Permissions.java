@@ -203,12 +203,12 @@ public class Permissions implements Serializable {
 				conProfileEdit.setEditFlag(true);
 				permissions.add(conProfileEdit);
 
-				UserAccess conEditUsers = new UserAccess();
-				conEditUsers.setOpPerm(OpPerms.EditUsers);
-				conEditUsers.setViewFlag(true);
-				conEditUsers.setEditFlag(true);
-				conEditUsers.setDeleteFlag(true);
-				permissions.add(conEditUsers);
+				// UserAccess conEditUsers = new UserAccess();
+				// conEditUsers.setOpPerm(OpPerms.EditUsers);
+				// conEditUsers.setViewFlag(true);
+				// conEditUsers.setEditFlag(true);
+				// conEditUsers.setDeleteFlag(true);
+				// permissions.add(conEditUsers);
 			}
 
 			for (UserGroup u : user.getGroups())
