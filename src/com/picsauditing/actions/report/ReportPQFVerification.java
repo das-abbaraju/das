@@ -25,12 +25,14 @@ public class ReportPQFVerification extends ReportAccount {
 		 * where ao.auditTypeID in (1,11) and ao.canSee = 1 and ao.requiredForFlag in ('Amber','Red')
 		 * and ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'
 		 */
-		SelectSQL subSelect = new SelectSQL("audit_operator ao");
+		SelectSQL subSelect = new SelectSQL("contractor_audit ca");
 		subSelect.addField("ca.conID");
-		subSelect.addJoin("JOIN generalcontractors gc on gc.genID = ao.opID");
-		subSelect.addJoin("JOIN contractor_audit ca on ca.auditTypeID = ao.auditTypeID and ca.conID = gc.subID");
+		subSelect.addJoin("JOIN generalcontractors gc ON gc.subid = ca.conid");
+		subSelect.addJoin("JOIN operators o ON o.id = gc.genid");
+		subSelect.addJoin("JOIN audit_operator ao ON ao.opid = o.inheritAudits ");
 		subSelect.addWhere("ao.auditTypeID in (1,11)");
 		subSelect.addWhere("ao.canSee = 1");
+		subSelect.addWhere("ca.auditTypeID = ao.auditTypeID");
 		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
 		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'");
 		sql.addWhere("a.id IN (" + subSelect.toString() + ")");
