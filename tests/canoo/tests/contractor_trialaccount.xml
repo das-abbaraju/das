@@ -105,36 +105,37 @@
 					<clickLink description="Click link: Payment Options" href="PaymentOptions.action"/>
 					<clickButton label="Change Payment Method to Check"/>
 					<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
-					<clickLink label="Edit Account"/>
-					<clickLink label="Switch User"/>						
+					<clickLink href="UsersManage.action"/>
+					<clickLink label="John Doe"/>
+					<clickLink label="Switch to this User"/>
 				</group>
 				<group description="Complete Registration">
 					<clickLink description="Click link: 5) Confirm" htmlId="conConfirmLink"/>
-											<clickLink label="5) Confirm"/>
-											<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
-											<clickButton label="Complete My Registration" name="button"/>
-											<verifyText description="Verify that text is contained in the page" text="Your account has been registered successfully."/>
-											<clickLink label="Logout"/>
-								</group>
-							</steps>
-						</webtest>
-						<webtest name="Trial Account Audits">
+					<clickLink label="5) Confirm"/>
+					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
+					<clickButton label="Complete My Registration" name="button"/>
+					<verifyText description="Verify that text is contained in the page" text="Your account has been registered successfully."/>
+					<clickLink label="Logout"/>
+				</group>
+			</steps>
+			</webtest>
+			<webtest name="Trial Account Audits">
 
-								&config;
-								<steps>
-								<invoke url="Login.action" />
-								<group description="Login as Admin, process check">
-									<setInputField name="username" value="opman"/>
-									<setInputField name="password" value="@Irvine1"/>
-									<clickButton label="Login"/>
-									<ifStep>
-										<condition>
-											<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
-											<clickButton label="Search"/>
-											<verifyText text="No results found "/>
-										</condition>
-										<then></then>
-										<else>	
+			&config;
+			<steps>
+				<invoke url="Login.action" />
+				<group description="Login as Admin, process check">
+					<setInputField name="username" value="opman"/>
+					<setInputField name="password" value="@Irvine1"/>
+					<clickButton label="Login"/>
+					<ifStep>
+						<condition>
+							<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
+							<clickButton label="Search"/>
+							<verifyText text="No results found "/>
+						</condition>
+						<then></then>
+						<else>	
 											<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
 											<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
 											<clickLink href="InvoiceDetail.action"/>
@@ -180,9 +181,9 @@
 									</ifStep>		
 								</group>
 								<group description="Switch to Contractor">
-									<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
-									<clickLink label="Edit Account"/>
-									<clickLink label="Switch User"/>	
+									<clickLink href="UsersManage.action"/>
+									<clickLink label="John Doe"/>
+									<clickLink label="Switch to this User"/>	
 								</group>
 								<group description="Verify Tasks, PQF Categories">
 									<sleep seconds="3"/>
