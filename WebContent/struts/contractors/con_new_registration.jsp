@@ -58,7 +58,7 @@ function checkUserOther() {
 		<li><label>Contact
 			Name:</label> <s:textfield name="newContractor.contact" /><span class="redMain">*</span></li>
 		<li><label>Phone:</label>
-			<s:textfield name="newContractor.phone" size="20" />
+			<s:textfield name="newContractor.phone" size="20" /><span class="redMain">*</span>
 			<s:if test="newContractor.id > 0">
 				<input type="submit"
 				class="picsbutton positive" name="button" value="Contacted By Phone" />
@@ -111,6 +111,7 @@ function checkUserOther() {
 			<li id="loadUsersList"></li>
 		</s:if>
 		<s:else>
+		<li id="loadUsersList">
 			<label>Requested By User:</label>
 			<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
 				name="requestedUser" value="%{newContractor.requestedByUser.id}"
@@ -120,6 +121,7 @@ function checkUserOther() {
 				<s:textfield name="newContractor.requestedByUserOther"
 					id="requestedByOtherUser" size="20" />
 			</s:if>
+		</li>
 		</s:else>
 		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
