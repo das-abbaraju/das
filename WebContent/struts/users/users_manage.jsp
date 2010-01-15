@@ -168,6 +168,7 @@ div.autocomplete ul li {
 <body>
 <h1>Manage User Accounts</h1>
 
+<s:if test="!account.contractor">
 <div id="search">
 <s:form id="form1" method="get">
 	<button class="picsbutton positive" type="submit" name="button" value="Search">Search</button>
@@ -200,14 +201,19 @@ div.autocomplete ul li {
 </s:form>
 <div class="clear"></div>
 </div>
+</s:if>
 
 <table border="0" width="100%">
 <tr valign="top"><td>
-	<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add Group</a>
-	&nbsp;&nbsp;
+	<s:if test="!account.contractor">
+		<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add Group</a>
+		&nbsp;&nbsp;
+	</s:if>
 	<a href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
-	&nbsp;&nbsp;
-	<a href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>">Permissions Matrix</a>
+	<s:if test="!account.contractor">
+		&nbsp;&nbsp;
+		<a href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>">Permissions Matrix</a>
+	</s:if>
 	<br />
 	<table class="report">
 		<thead>
