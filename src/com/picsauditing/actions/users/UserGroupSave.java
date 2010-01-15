@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -16,9 +17,9 @@ public class UserGroupSave extends UsersManage {
 	protected UserGroupDAO userGroupDAO;
 	protected UserSwitchDAO userSwitchDAO;
 
-	public UserGroupSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO,
+	public UserGroupSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO, UserGroupDAO userGroupDAO,
 			UserSwitchDAO userSwitchDAO) {
-		super(operatorDao, userDAO);
+		super(accountDao, operatorDao, userDAO);
 		this.userGroupDAO = userGroupDAO;
 		this.userSwitchDAO = userSwitchDAO;
 	}
