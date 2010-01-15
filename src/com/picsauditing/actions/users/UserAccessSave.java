@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
@@ -17,8 +18,8 @@ public class UserAccessSave extends UsersManage {
 	protected UserAccessDAO userAccessDAO;
 	protected int accessId;
 
-	public UserAccessSave(OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
-		super(operatorDao, userDAO);
+	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
+		super(accountDao, operatorDao, userDAO);
 		this.userAccessDAO = userAccessDAO;
 	}
 
