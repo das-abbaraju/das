@@ -47,6 +47,7 @@ public enum OpPerms {
 	ContractorAccounts("Administer Contractor Accounts", "Allow PICS employees to create/update/delete contractor accounts"),
 	ContractorActivation("Activate Contractor Accounts", "Allow PICS employees to view/activate/remove contractor accounts during the activation phase"),
 	EditUsers("Manage User Accounts", "Allows administrators to view/add/update/delete users for their account"),
+	ChangePassword("Change User Password", "Allows administrators to change passwords on user accounts"),
 	
 	// Audits
 	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, true),
