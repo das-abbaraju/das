@@ -305,12 +305,17 @@ div.autocomplete ul li {
 					<s:textfield name="user.username" size="30" onchange="checkUsername(this.value);"/>
 					<span id="username_status"></span>
 				</li>
+				<pics:permission perm="ChangePassword">
+				<li><label>Reset Password:</label>
+					<s:password name="password1" value=""/>
+				</li>
 				<li><label>Password:</label>
 					<s:password name="password1" value=""/>
 				</li>
 				<li><label>Confirm Password:</label>
 					<s:password name="password2" value=""/>
 				</li>
+				</pics:permission>
 				<li><label for="user.phone">Phone:</label>
 					<s:textfield name="user.phone" size="15"/>(optional)</li>
 				<li><label for="user.fax">Fax:</label>
