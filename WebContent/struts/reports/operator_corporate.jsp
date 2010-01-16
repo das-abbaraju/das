@@ -33,7 +33,11 @@ value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
     <table class="report">
         <thead><tr> 
            <td></td>
-			<th><a href="?orderBy=a.name">Name</a></th>
+			<th><s:if test="accountType.equals('Corporate')">
+				<a href="?accountType=Corporate&orderBy=a.name">Name</a>
+			</s:if> <s:else>
+				<a href="?accountType=Operator&orderBy=a.name">Name</a>
+			</s:else></th>
 			<td>Industry</td>
 			<td>City</td>
 			<td>State</td>
