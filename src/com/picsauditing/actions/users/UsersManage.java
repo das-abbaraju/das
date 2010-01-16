@@ -72,7 +72,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 		// Default the user (if null) if there is only one on the account
 		// (mostly Contractors)
-		if (user == null && account.getUsers().size() == 1) {
+		if (user == null && account != null && account.getUsers().size() == 1) {
 			user = account.getUsers().get(0);
 		}
 
