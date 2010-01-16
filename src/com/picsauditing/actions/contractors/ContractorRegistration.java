@@ -63,6 +63,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setType("Contractor");
 			contractor.setActive('N');
 			Vector<String> errors = contractorValidator.validateContractor(contractor, password, confirmPassword, user);
+			errors.addAll(contractorValidator.validateUser(password, confirmPassword, user));
 			if (Strings.isEmpty(user.getPassword()))
 				errors.add("Please fill in the Password field.");
 
@@ -99,7 +100,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setName(contractor.getContact());
 			user.setEmail(contractor.getEmail());
 			user = userDAO.save(user);
-			// Need to perform a save to create a user id for seeding the password.
+			// Need to perform a save to create a user id for seeding the
+			// password.
 			// Initial password is stored unencrypted.
 			user.setEncryptedPassword(user.getPassword());
 			userDAO.save(user);

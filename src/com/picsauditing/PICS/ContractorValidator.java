@@ -19,45 +19,18 @@ public class ContractorValidator {
 		this.userDAO = userDAO;
 	}
 
-	public Vector<String> validateContractor(ContractorAccount contractor, String password1, String password2, User user) {
+	public Vector<String> validateContractor(ContractorAccount contractor) {
 		Vector<String> errorMessages = new Vector<String>();
 		if (contractor.getType() == null) {
 			errorMessages.addElement("Please indicate the account type.");
 			return errorMessages;
 		}
 
-		// Username
-		if (Strings.isEmpty(user.getUsername()))
-			errorMessages.addElement("Please fill in the Username field.");
-		else if (!verifyUsername(user))
-			errorMessages.addElement("Username already exists. Please type another.");
-
 		// Company Name
 		if (Strings.isEmpty(contractor.getName()))
 			errorMessages.addElement("Please fill in the Company Name field.");
 		else if (contractor.getName().length() < 3)
 			errorMessages.addElement("Your company name must be at least 3 characters long.");
-
-		// Passwords
-		if (!Strings.isEmpty(password2)) {
-			// They are trying to set/reset the password
-
-			
-			if (!password1.equals(password2))
-				errorMessages.addElement("The passwords don't match");
-
-			if (password1.length() < MIN_PASSWORD_LENGTH)
-				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
-						+ " characters in length.");
-			if (password1.equalsIgnoreCase(user.getUsername()))
-				errorMessages.addElement("Please choose a password different from your username.");
-			if (password1.equalsIgnoreCase("password"))
-				errorMessages.addElement("You can't use that password");
-			if (errorMessages.size() == 0) {
-				user.setPassword(password1);
-				user.setPasswordChanged(new Date());
-			}
-		}
 
 		// Contact and Address info
 		if (Strings.isEmpty(contractor.getContact()))
@@ -96,6 +69,39 @@ public class ContractorValidator {
 		if (Strings.isEmpty(contractor.getMainTrade()) || contractor.getMainTrade().equals("- Trade -"))
 			errorMessages.addElement("Please select a main trade");
 
+		return errorMessages;
+	}
+
+	public Vector<String> validateUser(String password1, String password2, User user) {
+		Vector<String> errorMessages = new Vector<String>();
+
+		// Username
+		if (Strings.isEmpty(user.getUsername()))
+			errorMessages.addElement("Please fill in the Username field.");
+		else if (!verifyUsername(user))
+			errorMessages.addElement("Username already exists. Please type another.");
+
+		// Passwords
+		if (!Strings.isEmpty(password2)) {
+			// They are trying to set/reset the password
+
+			if (!password1.equals(password2))
+				errorMessages.addElement("The passwords don't match");
+
+			if (password1.length() < MIN_PASSWORD_LENGTH)
+				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
+						+ " characters in length.");
+			if (password1.equalsIgnoreCase(user.getUsername()))
+				errorMessages.addElement("Please choose a password different from your username.");
+			if (password1.equalsIgnoreCase("password"))
+				errorMessages.addElement("You can't use that password");
+			// TODO - Remove Side-effect
+			if (errorMessages.size() == 0) {
+				user.setPassword(password1);
+				user.setPasswordChanged(new Date());
+			}
+		}
+		
 		return errorMessages;
 	}
 

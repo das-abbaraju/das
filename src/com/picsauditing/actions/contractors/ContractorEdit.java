@@ -50,7 +50,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String logoFileName = null;
 	private File brochure = null;
 	private String brochureFileName = null;
-	protected User user;
 	protected AuditQuestionDAO auditQuestionDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
 	protected ContractorValidator contractorValidator;
@@ -58,8 +57,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected EmailQueueDAO emailQueueDAO;
 	protected NoteDAO noteDAO;
-	protected String password1 = null;
-	protected String password2 = null;
 	protected int[] operatorIds = new int[300];
 	protected Country country;
 	protected State state;
@@ -95,7 +92,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 				newFee = invoiceFeeDAO.find(newFee.getId());
 				contractor.setNewMembershipLevel(newFee);
-				user = userDAO.findByAccountID(conID, "", "No").get(0);
 				int i = 0;
 				for (ContractorOperator conOperator : contractor.getOperators()) {
 					operatorIds[i] = conOperator.getOperatorAccount().getId();
@@ -167,8 +163,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						contractor.setBillingState(billingState);
 					}
 
-					Vector<String> errors = contractorValidator.validateContractor(contractor, password1, password2,
-							user);
+					Vector<String> errors = contractorValidator.validateContractor(contractor);
 					if (errors.size() > 0) {
 						for (String error : errors)
 							addActionError(error);
@@ -179,13 +174,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					contractor.setNameIndex();
 
 					contractor = accountDao.save(contractor);
-					user.setEmail(contractor.getEmail());
-					user.setName(contractor.getContact());
-					// Validator throws an error msg if either the passwords don't match,
-					// or the password is trying to be changed to the current pw in the database
-					if(!password1.isEmpty())
-						user.setEncryptedPassword(user.getPassword());
-					userDAO.save(user);
 
 					addActionMessage("Successfully modified " + contractor.getName());
 				}
@@ -293,17 +281,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setBillingState(contractor.getState());
 				contractor.setBillingZip(contractor.getZip());
 				accountDao.save(contractor);
-			} else if (button.equals("PasswordReminder")) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(24); // Password Reminder
-				emailBuilder.setUser(user);
-				EmailQueue email = emailBuilder.build();
-				email.setPriority(100);
-
-				EmailSender sender = new EmailSender();
-				sender.sendNow(email);
-				this.addActionMessage("An email has been sent to this address: <b>" + user.getEmail() + "</b> "
-						+ " with login information");
 			} else {
 				// Because there are anomalies between browsers and how they
 				// pass
@@ -342,30 +319,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public List<AuditQuestion> getTradeList() throws Exception {
 		return auditQuestionDAO.findQuestionByType("Service");
-	}
-
-	public String getPassword1() {
-		return password1;
-	}
-
-	public void setPassword1(String password1) {
-		this.password1 = password1;
-	}
-
-	public String getPassword2() {
-		return password2;
-	}
-
-	public void setPassword2(String password2) {
-		this.password2 = password2;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public int[] getOperatorIds() {
