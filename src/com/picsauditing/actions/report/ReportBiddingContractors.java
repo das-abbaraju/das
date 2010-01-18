@@ -89,22 +89,22 @@ public class ReportBiddingContractors extends ReportAccount {
 						}
 					}
 				}
-				
+
 				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
 					approveContractor(cAccount, permissions.getAccountId());
 				}
-				
-				if(permissions.isCorporate()) {
+
+				if (permissions.isCorporate()) {
 					OperatorAccount corporate = operatorAccountDAO.find(permissions.getAccountId());
-					for(Facility facility : corporate.getOperatorFacilities()) {
-						if(YesNo.Yes.equals(facility.getOperator().getApprovesRelationships())) {
+					for (Facility facility : corporate.getOperatorFacilities()) {
+						if (YesNo.Yes.equals(facility.getOperator().getApprovesRelationships())) {
 							approveContractor(cAccount, facility.getOperator().getId());
-						}	
+						}
 					}
 				}
-				
+
 				templateId = 73; // Trial Contractor Account Approval
-				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName();
+				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName() + " and notified contractor via email.";
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
@@ -118,7 +118,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					}
 				}
 				templateId = 75;// Trial Contractor Account Rejection
-				summary = "Rejected the Bid Only Account for " + permissions.getAccountName();
+				summary = "Rejected Contractor for the Bid Only Account for " + permissions.getAccountName();
 			}
 
 			cAccount.setNeedsRecalculation(true);
@@ -135,15 +135,20 @@ public class ReportBiddingContractors extends ReportAccount {
 			noteDAO.save(note);
 
 			if (templateId > 0) {
-				// Sending a Email to the contractor for upgrade/rejection
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(templateId);
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setContractor(cAccount);
-				emailBuilder.addToken("permissions", permissions);
-				EmailQueue emailQueue = emailBuilder.build();
-				emailQueue.setPriority(60);
-				EmailSender.send(emailQueue);
+				try {
+					// Sending a Email to the contractor for upgrade/rejection
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(templateId);
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setContractor(cAccount);
+					emailBuilder.addToken("permissions", permissions);
+					EmailQueue emailQueue = emailBuilder.build();
+					emailQueue.setPriority(100);
+					EmailSender.send(emailQueue);
+					addActionMessage(summary);
+				} catch (Exception e) {
+					addActionError(e.getLocalizedMessage());
+				}
 			}
 
 			operatorNotes = "";
@@ -166,7 +171,7 @@ public class ReportBiddingContractors extends ReportAccount {
 	public void setOperatorNotes(String operatorNotes) {
 		this.operatorNotes = operatorNotes;
 	}
-	
+
 	public void approveContractor(ContractorAccount cAccount, int operatorID) {
 		for (ContractorOperator cOperator : cAccount.getOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
