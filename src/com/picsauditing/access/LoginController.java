@@ -2,7 +2,6 @@ package com.picsauditing.access;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
@@ -13,17 +12,13 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 /**
@@ -93,10 +88,17 @@ public class LoginController extends PicsActionSupport {
 		if ("reset".equals(button)) {
 			user = userDAO.findName(usern);
 
-			if (!user.getResetHash().equals(key)) {
+			if (user == null) {
+				addActionError("No such user found");
+				return SUCCESS;
+			} else if (user.getResetHash() == null) {
+				addActionError("No reset hash associated with this user");
+				return SUCCESS;
+			} else if (!user.getResetHash().equals(key)) {
 				addActionError("Reset hashes do not match");
 				return SUCCESS;
 			} else {
+				user.setForcePasswordReset(true);
 				// Normal login, via the actual Login.action page
 				permissions.login(user);
 
