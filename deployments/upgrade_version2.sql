@@ -83,3 +83,19 @@ where isocode not in ('US','CA');
 -- update country on PICS account
 update accounts set country = 'US'
 where id = 1100;
+
+-- remove old password reminder email template
+delete from email_template where id = 24;
+
+update email_template set body = 'Attn: <DisplayName>
+This is an automatically generated email that will allow you to set or reset your password. Please click the following link and set your password on the following page.
+${confirmLink}
+If you did not request that this email be sent to you or if you have any questions, please contact us.
+<PICSSignature>' where id = 85;
+
+update email_template set body = 'Hello <DisplayName>,
+<MyName> has issued you a login for the ${accountname} account on PICS.
+Please log in using the following link to set your password.
+${confirmLink}
+Have a great week,
+<PICSSignature>' where id = 5;
