@@ -77,7 +77,7 @@ public class AccountRecovery extends PicsActionSupport {
 				// Seeding the time in the reset hash so that each one will be
 				// guaranteed unique
 				user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-				user.setForcePasswordReset(true);
+				userDAO.save(user);
 
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(85);
