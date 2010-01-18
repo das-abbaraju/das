@@ -306,9 +306,15 @@ div.autocomplete ul li {
 					<span id="username_status"></span>
 				</li>
 				<pics:permission perm="ChangePassword">
+				<s:if test="user.id == 0">
+				<li><label>Send Activation Email?</label>
+					<s:checkbox name="sendActivationEmail" value="true"/></li>
+				</s:if>
+				<s:if test="user.id > 0">
 				<li><label>Reset Password:</label>
-					<s:password name="password1" value=""/>
+				<a href="UserSave.action?button=resetPassword&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Reset Password</a>
 				</li>
+				</s:if>
 				<li><label>Password:</label>
 					<s:password name="password1" value=""/>
 				</li>
@@ -337,9 +343,6 @@ div.autocomplete ul li {
 				<pics:permission perm="SwitchUser">
 					<a href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a> | 
 				</pics:permission>
-				<s:if test="!account.contractor">
-				<a href="UserSave.action?button=sendWelcomeEmail&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Send Welcome Email</a>
-				</s:if>
 			</div>
 			</fieldset>
 			</s:if>
