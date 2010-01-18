@@ -84,7 +84,13 @@ public enum OpPerms {
 	AuditorPayments("Auditor Payments", "Create and manage independent contractor payments for audits."),
 
 	//Manage User Account Roles
-	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true);
+	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true),
+	
+	// All of the contractor permissions
+	ContractorAdmin("", "", false, false),
+	ContractorSafety("", "", false, false),
+	ContractorBilling("", "", false, false),
+	ContractorInsurance("", "", false, false);
 
 	
 	private String description;
