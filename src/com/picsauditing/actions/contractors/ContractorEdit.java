@@ -39,7 +39,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -53,8 +52,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected AuditQuestionDAO auditQuestionDAO;
 	private InvoiceFeeDAO invoiceFeeDAO;
 	protected ContractorValidator contractorValidator;
-	protected UserDAO userDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
+	protected UserDAO userDAO;
 	protected EmailQueueDAO emailQueueDAO;
 	protected NoteDAO noteDAO;
 	protected int[] operatorIds = new int[300];
@@ -368,5 +367,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public String[] getDeactivationReasons() {
 		return ReportFilterContractor.DEACTIVATION_REASON;
+	}
+
+	public List<User> getUserList() {
+		return userDAO.findByAccountID(contractor.getId(), "Yes", "No");
 	}
 }
