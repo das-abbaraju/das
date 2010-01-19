@@ -60,6 +60,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected Country country;
 	protected State state;
 	protected State billingState;
+	protected int contactID;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
@@ -172,6 +173,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					contractor.setNeedsRecalculation(true);
 					contractor.setNameIndex();
 
+					if(contactID > 0 && contactID != contractor.getPrimaryContact().getId()){
+						contractor.setPrimaryContact(new User(contactID));
+					}
+					
 					contractor = accountDao.save(contractor);
 
 					addActionMessage("Successfully modified " + contractor.getName());
@@ -371,5 +376,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public List<User> getUserList() {
 		return userDAO.findByAccountID(contractor.getId(), "Yes", "No");
+	}
+
+	public int getContactID() {
+		return contactID;
+	}
+
+	public void setContactID(int contactID) {
+		this.contactID = contactID;
 	}
 }
