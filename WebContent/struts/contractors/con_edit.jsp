@@ -18,9 +18,14 @@ function countryChanged(country) {
 }
 
 $(function() {
+	showPrimaryContactInfo(<s:property value="contractor.primaryContact.id"/>);
 	changeState($("#contractorCountry").val());
 	$('.datepicker').datepicker();
 });
+
+function showPrimaryContactInfo(user) {
+	$('#contact_info').load('ContactInfoAjax.action',{userid: user});
+}
 </script>
 </head>
 <body>
@@ -92,61 +97,16 @@ $(function() {
 					<li><label>Zip:</label>
 						<s:textfield name="contractor.zip" size="7" />
 					</li>
-					<li><label>Phone:</label>
-						<s:textfield name="contractor.phone" size="15" />
+					<li><label>Primary Contact:</label> <s:select
+						list="userList"
+						name="contactID"
+						listKey="id"
+						listValue="name"
+						value="%{contractor.primaryContact.id}"
+						onchange="showPrimaryContactInfo(this.value)"
+						/>
 					</li>
-					<li><label>Phone 2:</label>
-						<s:textfield name="contractor.phone2" size="15" />
-					</li>
-					<li><label>Fax:</label>
-						<s:textfield name="contractor.fax" size="15" />
-					</li>
-					<li><label>Email:</label>
-						<s:textfield name="contractor.email" size="30" />
-					</li>
-					<li><label>Contact:</label>
-						<s:textfield name="contractor.contact" size="20" />
-					</li>
-				</ol>
-				</fieldset>
-				<fieldset class="form">
-				<legend><span>Company Contacts</span></legend>
-				<ol>		
-					<li><label>Second Contact:</label>
-						<s:textfield name="contractor.secondContact" size="20" />
-					</li>
-					<li><label>Second Phone:</label>
-						<s:textfield name="contractor.secondPhone" size="15" />
-					</li>
-					<li><label>Second Email:</label>
-						<s:textfield name="contractor.secondEmail" size="30" />
-					</li>
-					<li><label>Web URL:</label>
-						<s:textfield name="contractor.webUrl" size="30" />
-					</li>
-				</ol>
-				</fieldset>
-				<fieldset class="form">
-				<legend><span>Billing Contact</span></legend>
-				<ol>		
-					<li><label>Billing Contact:</label>
-						<s:textfield name="contractor.billingContact" size="20" />
-					</li>
-					<li><label></label><a href="?id=<s:property value="id"/>&button=copyPrimary">Same As Primary Address</a></li>
-					<li><label>Billing Address:</label> 
-						<s:textfield name="contractor.billingAddress" size="35" /></li>
-					<li><label>Billing City:</label>
-						<s:textfield name="contractor.billingCity" size="35" /></li>
-					<li><label>Billing State:</label>
-						<s:select list="stateList" name="billingState.isoCode" headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="contractor.billingState.isoCode"/></li>
-					<li><label>Billing Zip:</label>
-						<s:textfield name="contractor.billingZip" size="35" /></li>
-					<li><label>Billing Phone:</label>
-						<s:textfield name="contractor.billingPhone" size="15" />
-					</li>
-					<li><label>Billing Email:</label>
-						<s:textfield name="contractor.billingEmail" size="30" />
-					</li>
+					<li id="contact_info"></li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
@@ -218,12 +178,6 @@ $(function() {
 					</pics:permission>
 					<li><label>Tax ID:</label>
 						<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
-					</li>
-					<li><label>Welcome Email:</label>
-						<a target="_blank"
-							href="send_welcome_email.jsp?id=<s:property value="id"/>"
-							onClick="return confirm('Are you sure you want to send a welcome email to <s:property value="contractor.name"/>?');">Send
-							Welcome Email</a>
 					</li>
 					<li><label>Must Pay?</label>
 						<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay"
