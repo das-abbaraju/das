@@ -92,15 +92,19 @@ public class LoginController extends PicsActionSupport {
 				addActionError("No such user found");
 				return SUCCESS;
 			} else if (user.getResetHash() == null) {
-				addActionError("No reset hash associated with this user");
+				addActionError("Invalid reset hash");
 				return SUCCESS;
 			} else if (!user.getResetHash().equals(key)) {
-				addActionError("Reset hashes do not match");
+				addActionError("Invalid reset hash");
 				return SUCCESS;
 			} else {
 				user.setForcePasswordReset(true);
+				user.setEncryptedPassword("");
 				// Normal login, via the actual Login.action page
 				permissions.login(user);
+
+				user.setFailedAttempts(0);
+				user.setLockUntil(null); // it's no longer locked
 
 				user.setLastLogin(new Date());
 				user.getAccount().setLastLogin(new Date());
@@ -220,10 +224,13 @@ public class LoginController extends PicsActionSupport {
 				calendar.add(Calendar.HOUR, 1);
 				user.setFailedAttempts(0);
 				user.setLockUntil(calendar.getTime());
-				return "The password is not correct and the account has now been locked";
+				return "The password is not correct and the account has now been locked. <a href=\"http://www.picsauditing.com/AccountRecovery.action?username="
+						+ user.getUsername() + "&button=Reset+Password\">Click here to reset your password</a>";
 			}
 			return "The password is not correct. You have " + (8 - user.getFailedAttempts())
-					+ " attempts remaining before your account will be locked for one hour.";
+					+ " attempts remaining before your account will be locked for one hour. "
+					+ "<a href=\"http://www.picsauditing.com/AccountRecovery.action?username=" + user.getUsername()
+					+ "&button=Reset+Password\">Click here to reset your password</a>";
 		}
 		user.setFailedAttempts(0);
 		user.setLockUntil(null); // it's no longer locked
