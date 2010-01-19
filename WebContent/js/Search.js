@@ -55,8 +55,13 @@ function runSearch(search) {
 		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div
 		startThinking({div:'report_data', type: 'large', message: 'finding search results'});
 		var destinationAction = $(search).find('[name=filter.destinationAction]').val();
+		var accountType = "";
+		
+		if ($(search).find('[name=filter.accountType]').val() != null)
+			var accountType = "?accountType="+$(search).find('[name=filter.accountType]').val();
+		
 		var data = $(search).serialize();
-		$.post(destinationAction+'Ajax.action', data, function(text, status) {
+		$.post(destinationAction+'Ajax.action'+accountType, data, function(text, status) {
 			$('#report_data').html(text);
 			wireClueTips();
 		});

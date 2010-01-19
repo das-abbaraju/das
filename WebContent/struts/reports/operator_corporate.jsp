@@ -23,6 +23,7 @@
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
+	<s:hidden name="accountType" />
 </s:form>
 
 <div class="alphapaging"><s:property
