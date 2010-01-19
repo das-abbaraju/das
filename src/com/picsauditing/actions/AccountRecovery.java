@@ -62,9 +62,7 @@ public class AccountRecovery extends PicsActionSupport {
 				addActionError("Failed to send emails");
 			}
 			return SUCCESS;
-		}
-
-		if ("Reset Password".equals(button)) {
+		} else if ("Reset Password".equals(button)) {
 			if (username == null || username.equals("")) {
 				addActionError("Please input a username");
 				return SUCCESS;
@@ -91,6 +89,9 @@ public class AccountRecovery extends PicsActionSupport {
 				String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername() + "&key="
 						+ user.getResetHash() + "&button=reset";
 				emailBuilder.addToken("confirmLink", confirmLink);
+				String resetLink = "http://www.picsauditing.com/AccountRecovery.action?username=" + user.getUsername()
+						+ "&button=Reset+Password";
+				emailBuilder.addToken("resetLink", resetLink);
 				emailBuilder.setToAddresses(user.getEmail());
 
 				EmailQueue emailQueue = emailBuilder.build();
