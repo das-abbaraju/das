@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected AccountUser accountRep = null;
 	protected Country country;
 	protected State state;
+	protected int contactID;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
 			AccountUserDAO accountUserDAO, UserDAO userDAO) {
@@ -241,6 +243,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					}
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
+				
+				if(contactID > 0 && contactID != operator.getPrimaryContact().getId()){
+					operator.setPrimaryContact(new User(contactID));
+				}
+				
 				operator = operatorDao.save(operator);
 				id = operator.getId();
 
@@ -394,5 +401,33 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	public List<User> getPrimaryOperatorContactUsers() {
+		Set<User> userSet = new HashSet<User>();
+
+		userSet.addAll(userDAO.findByAccountID(operator.getId(), "Yes", "No"));
+
+		OperatorAccount parent = operator.getParent();
+		// Moving up the level hierarchy and finding associated users.
+		// Note: Cannot find users across same hierarchy level, only within
+		// current hierarchy level and parents.
+		while (parent != null) {
+			userSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
+			parent = parent.getParent();
+		}
+
+		List<User> userList = new ArrayList<User>();
+		userList.addAll(userSet);
+
+		return userList;
+	}
+
+	public int getContactID() {
+		return contactID;
+	}
+
+	public void setContactID(int contactID) {
+		this.contactID = contactID;
 	}
 }
