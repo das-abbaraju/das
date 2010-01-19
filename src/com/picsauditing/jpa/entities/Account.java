@@ -62,6 +62,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String reason;
 	protected boolean acceptsBids;
 	private String description;
+	protected User primaryContact;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -446,5 +447,15 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public void fromJSON(JSONObject obj) {
 		super.fromJSON(obj);
 		name = (String) obj.get("name");
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "contactID", nullable = true)
+	public User getPrimaryContact() {
+		return primaryContact;
+	}
+
+	public void setPrimaryContact(User contactID) {
+		this.primaryContact = contactID;
 	}
 }
