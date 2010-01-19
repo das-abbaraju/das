@@ -196,12 +196,12 @@ public class ContractorWidget extends ContractorActionSupport {
 					openTasks.add(text);
 				}
 			}
-			if (!contractor.isNaicsValid()) {
+			if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
 				AuditCatData auditCatData = getAuditCatData(contractor);
 				if (auditCatData != null)
 					openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()
 							+ "&catDataID=" + auditCatData.getId()
-							+ "&mode=Edit#node_57\"> update your 2007 NAICS code</a>");
+							+ "&mode=Edit#node_57\"> update your 2008 NAICS code</a>");
 			}
 			
 			if (contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
