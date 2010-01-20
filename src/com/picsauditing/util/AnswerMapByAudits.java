@@ -39,7 +39,8 @@ public class AnswerMapByAudits {
 	}
 
 	/**
-	 * Given a set of answers to an audit, figure out if the operator can see the audit and the answers in it
+	 * Given a set of answers to an audit, figure out if the operator can see
+	 * the audit and the answers in it
 	 */
 	public AnswerMapByAudits(AnswerMapByAudits toCopy, OperatorAccount operator) {
 
@@ -58,9 +59,9 @@ public class AnswerMapByAudits {
 		// concurrentmodificationexceptions
 		Set<ContractorAudit> auditSet = new HashSet<ContractorAudit>();
 		auditSet.addAll(data.keySet());
-		
+
 		// check that they can see it
-		
+
 		for (AuditOperator auditOperator : operator.getVisibleAudits())
 			PicsLogger.log(" operator can see " + auditOperator.getAuditType().getAuditName());
 
@@ -105,24 +106,27 @@ public class AnswerMapByAudits {
 			Map<String, List<ContractorAudit>> byAuditTypeName = byContractorIdAndAuditTypeName.get(contractorId);
 
 			for (String auditTypeName : byAuditTypeName.keySet()) {
-				List<ContractorAudit> audits = byAuditTypeName.get(auditTypeName);
+				if (!auditTypeName.equals("Annual Update")) {
+					List<ContractorAudit> audits = byAuditTypeName.get(auditTypeName);
 
-				int biggest = 0;
-				ContractorAudit bestAudit = null;
+					int biggest = 0;
+					ContractorAudit bestAudit = null;
 
-				for (ContractorAudit thisAudit : audits) {
+					for (ContractorAudit thisAudit : audits) {
 
-					int thisScore = scoreAudit(thisAudit, operator);
+						int thisScore = scoreAudit(thisAudit, operator);
 
-					if (thisScore > biggest) {
-						PicsLogger.log("-- " + thisAudit.getAuditType().getAuditName() + "-" + thisAudit.getId() + " scored " + thisScore);
-						if (bestAudit != null) {
-							PicsLogger.log("--- but was less than best, so IGNORING");
-							remove(bestAudit);
+						if (thisScore > biggest) {
+							PicsLogger.log("-- " + thisAudit.getAuditType().getAuditName() + "-" + thisAudit.getId()
+									+ " scored " + thisScore);
+							if (bestAudit != null) {
+								PicsLogger.log("--- but was less than best, so IGNORING");
+								remove(bestAudit);
+							}
+
+							bestAudit = thisAudit;
+							biggest = thisScore;
 						}
-
-						bestAudit = thisAudit;
-						biggest = thisScore;
 					}
 				}
 			}
@@ -137,28 +141,28 @@ public class AnswerMapByAudits {
 		AuditOperator auditOperator = null;
 
 		int score = 0;
-		
-		for (AuditOperator ao : operator.getVisibleAudits() ) {
+
+		for (AuditOperator ao : operator.getVisibleAudits()) {
 			if (ao.getAuditType() == audit.getAuditType()) {
 				auditOperator = ao;
 			}
 		}
 
 		AuditStatus requiredAuditStatus = null;
-		
+
 		if (auditOperator != null) {
 			requiredAuditStatus = auditOperator.getRequiredAuditStatus();
 		} else {
 			PicsLogger.log("Warning: this Operator doesn't require " + audit.getAuditType().getAuditName());
 		}
-		
+
 		if (audit.getAuditType().getClassType().isPolicy()) {
-			// Add 1000 to make sure the number is always positive since creation dates 
+			// Add 1000 to make sure the number is always positive since
+			// creation dates
 			// are always in the past and this DateDifference will be negative
 			return DateBean.getDateDifference(audit.getCreationDate()) + 1000;
 		} else {
-			if (requiredAuditStatus != null
-					&& requiredAuditStatus.isSubmitted()
+			if (requiredAuditStatus != null && requiredAuditStatus.isSubmitted()
 					&& audit.getAuditStatus().isSubmitted()) {
 				score = 100;
 			} else if (audit.getAuditStatus() == AuditStatus.Active)
@@ -167,18 +171,16 @@ public class AnswerMapByAudits {
 				score = 80;
 			else if (audit.getAuditStatus() == AuditStatus.Exempt)
 				score = 70;
-			else if (requiredAuditStatus != null
-					&& requiredAuditStatus == AuditStatus.Submitted
+			else if (requiredAuditStatus != null && requiredAuditStatus == AuditStatus.Submitted
 					&& audit.getAuditStatus() != AuditStatus.Submitted) {
 				score = 60;
 			} else if (audit.getAuditStatus() == AuditStatus.Pending)
 				score = 50;
-	
+
 		}
 		if (audit.getRequestingOpAccount() != null && audit.getRequestingOpAccount().equals(operator)) {
 			score += 101;
 		}
-		
 		return score;
 	}
 

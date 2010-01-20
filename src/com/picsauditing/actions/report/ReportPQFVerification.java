@@ -34,7 +34,11 @@ public class ReportPQFVerification extends ReportAccount {
 		subSelect.addWhere("ao.canSee = 1");
 		subSelect.addWhere("ca.auditTypeID = ao.auditTypeID");
 		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
-		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'");
+		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
+		
+		// As of January 2010 there are only 34 contractors that work for only free accounts 
+		// and don't require verification. This is easier to verify all of them FOR NOW.
+		// and ao.requiredAuditStatus = 'Active'
 		sql.addWhere("a.id IN (" + subSelect.toString() + ")");
 		
 		sql.addJoin("LEFT JOIN users csr ON csr.id = c.welcomeAuditor_id");

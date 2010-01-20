@@ -149,20 +149,21 @@ public class AuditCriteriaAnswerBuilder {
 								try {
 									int year = Integer.parseInt(conAudit.getAuditFor());
 									if (year > mostRecentYear) {
-										mostRecentYear = year;
 										data = answerMapByAudits.get(conAudit).get(question.getId());
+										if(data != null && data.isAnswered() && data.isVerified())
+											mostRecentYear = year;
 									}
 								} catch (Exception e) {
 									System.out.println("Ignoring answer with year key: " + conAudit.getAuditFor());
 								}
 							}
-							if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0)
+							if (data != null)
 								auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
 
 						} else if (MultiYearScope.AllThreeYears.equals(scope)) {
 							for (ContractorAudit conAudit : matchingConAudits) {
 								AuditData data = answerMapByAudits.get(conAudit).get(question.getId());
-								if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0)
+								if (data != null && data.isAnswered() && data.isVerified())
 									auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
 							}
 
@@ -172,14 +173,14 @@ public class AuditCriteriaAnswerBuilder {
 							for (ContractorAudit conAudit : matchingConAudits) {
 								if (count < 3) {
 									AuditData data = answerMapByAudits.get(conAudit).get(question.getId());
-									if (data != null) {
+									if (data != null && data.isAnswered() && data.isVerified()) {
 										dataList.add(data);
 										count++;
 									}
 								}
 							}
 							AuditData data = AuditData.addAverageData(dataList);
-							if (data != null && data.getAnswer() != null && data.getAnswer().length() > 0)
+							if (data != null && data.isAnswered())
 								auditCriteriaAnswers.add(new AuditCriteriaAnswer(data, thisMap));
 						}
 

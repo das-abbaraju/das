@@ -588,18 +588,15 @@ public class ContractorAccount extends Account implements JSONable {
 		int number = 0;
 		for (ContractorAudit audit : annualAudits) {
 			if (number < 3) {
-				for (AuditCatData auditCatData : audit.getCategories()) {
-					if (auditCatData.getCategory().getId() == auditCategoryID
-							&& auditCatData.getPercentCompleted() == 100) {
-						// Store the corporate OSHA rates into a map for later
-						// use
-						for (OshaAudit osha : audit.getOshas())
-							if (osha.getType().equals(oshaType) && osha.isCorporate()) {
-								number++;
-								oshaMap.put(audit.getAuditFor(), osha);
-							}
+			// Store the corporate OSHA rates into a map for later
+			// use
+				for (OshaAudit osha : audit.getOshas())
+					if (osha.getType().equals(oshaType) && osha.isCorporate()) {
+						if(!oshaType.equals(OshaType.OSHA) || (oshaType.equals(OshaType.OSHA) && osha.isVerified())) {
+							number++;
+							oshaMap.put(audit.getAuditFor(), osha);
+						}
 					}
-				}
 			}
 		}
 		int count = oshaMap.size();
