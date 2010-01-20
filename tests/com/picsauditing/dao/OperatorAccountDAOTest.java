@@ -27,7 +27,7 @@ import com.picsauditing.jpa.entities.YesNo;
 @TransactionConfiguration(defaultRollback = false)
 @Transactional
 public class OperatorAccountDAOTest {
-	
+
 	@Autowired
 	OperatorAccountDAO operatoraccountDAO;
 	@Autowired
@@ -39,16 +39,15 @@ public class OperatorAccountDAOTest {
 		OperatorAccount operatoraccount = new OperatorAccount();
 		operatoraccount.setName("PICS");
 		operatoraccount.setLastLogin(Calendar.getInstance().getTime());
-		operatoraccount.setPrimaryContact(new User());
-		operatoraccount.getPrimaryContact().setName("pics admin");
-		operatoraccount.getPrimaryContact().setEmail("pics@picsauditing.com");
-		operatoraccount.getPrimaryContact().setPhone("999-999-9999");
+		operatoraccount.setContact("pics admin");
 		operatoraccount.setAddress("17701 cowan");
 		operatoraccount.setCity("irvine");
 		operatoraccount.setState(new State("CA"));
 		operatoraccount.setZip("92345");
 		operatoraccount.setPhone("999-999-9999");
+		operatoraccount.setPhone2("999-999-9999");
 		operatoraccount.setFax("999-999-9999");
+		operatoraccount.setEmail("pics@picsauditing.com");
 		operatoraccount.setWebUrl("www.picsauditing.com");
 		operatoraccount.setIndustry(Industry.Petrochemical);
 		operatoraccount.setActive('y');
@@ -59,19 +58,17 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setDoContractorsPay("Multiple");
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
 		operatoraccount.setInsuranceAuditor(new User());
-		operatoraccount.getInsuranceAuditor().setId(941); //tallred
+		operatoraccount.getInsuranceAuditor().setId(941); // tallred
 		operatoraccount.setIsUserManualUploaded(YesNo.Yes);
 		operatoraccount.setApprovesRelationships(YesNo.No);
 		operatoraccount.setNaics(new Naics());
 		operatoraccount.getNaics().setCode("0");
-		assertEquals("pics@picsauditing.com", operatoraccount
-				.getActivationEmails());
+		assertEquals("pics@picsauditing.com", operatoraccount.getActivationEmails());
 		operatoraccount = operatoraccountDAO.save(operatoraccount);
 		assertTrue(operatoraccount.getId() > 0);
 		int newID = operatoraccount.getId();
 		operatoraccountDAO.remove(newID);
-		OperatorAccount operatoraccount1 = operatoraccountDAO
-				.find(operatoraccount.getId());
+		OperatorAccount operatoraccount1 = operatoraccountDAO.find(operatoraccount.getId());
 		assertNull(operatoraccount1);
 
 	}
@@ -82,14 +79,14 @@ public class OperatorAccountDAOTest {
 		assertTrue(account.size() > 0);
 	}
 
-	//@Test
-//	public void testContractorCount() {
-//		long start = System.currentTimeMillis();
-//		int count = operatoraccountDAO.getContractorCount(2475);
-//		assertTrue(count > 300 && count < 500);
-//		count = operatoraccountDAO.getContractorCount(2475);
-//		long end = System.currentTimeMillis();
-//		System.out.println("SQL took" + (end - start) + " msecs" );
-//	}
+	// @Test
+	// public void testContractorCount() {
+	// long start = System.currentTimeMillis();
+	// int count = operatoraccountDAO.getContractorCount(2475);
+	// assertTrue(count > 300 && count < 500);
+	// count = operatoraccountDAO.getContractorCount(2475);
+	// long end = System.currentTimeMillis();
+	// System.out.println("SQL took" + (end - start) + " msecs" );
+	// }
 
 }

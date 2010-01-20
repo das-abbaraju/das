@@ -38,35 +38,34 @@ public class ContractorAccountDAOTest {
 	@Autowired
 	AccountDAO accountDAO;
 
-//	@Test
-//	public void testUpdateContractorByOperator() {
-//		OperatorAccount operator = new OperatorAccount();
-//		operator.setId(1813);
-//		try {
-//			contractoraccountDAO.updateContractorByOperator(operator);
-//		} catch (RuntimeException e) {
-//			Assert.fail(e.getMessage());
-//		}
-//	}
-	
+	// @Test
+	// public void testUpdateContractorByOperator() {
+	// OperatorAccount operator = new OperatorAccount();
+	// operator.setId(1813);
+	// try {
+	// contractoraccountDAO.updateContractorByOperator(operator);
+	// } catch (RuntimeException e) {
+	// Assert.fail(e.getMessage());
+	// }
+	// }
+
 	@Test
 	public void testSaveAndRemove() {
 		Calendar cal = Calendar.getInstance();
 		cal.set(2008, 01, 12);
-		
+
 		ContractorAccount contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
 		contractoraccount.setLastLogin(new Date());
-		contractoraccount.setPrimaryContact(new User());
-		contractoraccount.getPrimaryContact().setName("pics admin");
-		contractoraccount.getPrimaryContact().setEmail("pics@picsauditing.com");
-		contractoraccount.getPrimaryContact().setPhone("999-999-9999");
+		contractoraccount.setContact("pics admin");
 		contractoraccount.setAddress("17701 cowan");
 		contractoraccount.setCity("irvine");
 		contractoraccount.setState(new State("CA"));
 		contractoraccount.setZip("92345");
 		contractoraccount.setPhone("999-999-9999");
+		contractoraccount.setPhone2("999-999-9999");
 		contractoraccount.setFax("999-999-9999");
+		contractoraccount.setEmail("pics@picsauditing.com");
 		contractoraccount.setWebUrl("www.picsauditing.com");
 		contractoraccount.setIndustry(Industry.Construction);
 		contractoraccount.setActive('y');
@@ -94,28 +93,32 @@ public class ContractorAccountDAOTest {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
 		List<ContractorOperator> operators = contractoraccount.getOperators();
 		assertTrue(operators.size() > 0);
-		for(ContractorOperator co : operators)
+		for (ContractorOperator co : operators)
 			assertTrue(co.getOperatorAccount().getName().length() > 0);
 
 		ContractorAccount cached = contractoraccountDAO.find(14);
 		List<ContractorOperator> cachedOps = cached.getOperators();
 		assertTrue(cachedOps.size() > 0);
-		for(ContractorOperator co : cachedOps)
+		for (ContractorOperator co : cachedOps)
 			assertTrue(co.getOperatorAccount().getName().length() > 0);
-		
-		
-//		System.out.println("contractoraccount.getFlags()");
-//		for (OperatorAccount operator : contractoraccount.getFlags().keySet()) {
-//			System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
-//		}
-//		System.out.println("contractoraccount.getOperators()");
-//		for (ContractorOperator operator : contractoraccount.getOperators()) {
-//			System.out.println(operator.getOperatorAccount().getName() + operator.getFlag().getFlagColor());
-//		}
-//		System.out.println("contractoraccountDAO.findOperators");
-//		for (ContractorOperator operator : contractoraccountDAO.findOperators(contractoraccount, new Permissions(), "")) {
-//			System.out.println(operator.getOperatorAccount().getName());
-//		}
+
+		// System.out.println("contractoraccount.getFlags()");
+		// for (OperatorAccount operator :
+		// contractoraccount.getFlags().keySet()) {
+		// System.out.println(contractoraccount.getFlags().get(operator).getFlagColor());
+		// }
+		// System.out.println("contractoraccount.getOperators()");
+		// for (ContractorOperator operator : contractoraccount.getOperators())
+		// {
+		// System.out.println(operator.getOperatorAccount().getName() +
+		// operator.getFlag().getFlagColor());
+		// }
+		// System.out.println("contractoraccountDAO.findOperators");
+		// for (ContractorOperator operator :
+		// contractoraccountDAO.findOperators(contractoraccount, new
+		// Permissions(), "")) {
+		// System.out.println(operator.getOperatorAccount().getName());
+		// }
 		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());
 	}
 
