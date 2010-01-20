@@ -73,6 +73,7 @@ function showPrimaryContactInfo(user) {
 					listValue="name"
 					value="%{operator.primaryContact.id}"
 					onchange="showPrimaryContactInfo(this.value)"/>
+					<a href="http://www.picsauditing.com/UsersManage.action?button=newUser&accountId=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 				</li>
 				<li id="contact_info"></li>
 				<li><label>Industry:</label> <s:select list="industryList"
