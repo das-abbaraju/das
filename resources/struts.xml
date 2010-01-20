@@ -1372,7 +1372,7 @@
 
 		<action name="Trevor"
 			class="com.picsauditing.actions.Trevor">
-			<result>struts/blank.jsp</result>
+			<result>struts/opPermTable.jsp</result>
 		</action>
 		
 		<!-- Insurance Reports -->
