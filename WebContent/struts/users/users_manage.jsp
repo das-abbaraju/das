@@ -9,6 +9,11 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<style type="text/css">
+.user-password {
+	display: none;
+}
+</style>
 <script type="text/javascript">
 var accountID = <s:property value="accountId"/>;
 var currentUserID = 0;
@@ -289,7 +294,7 @@ div.autocomplete ul li {
 					</s:if>
 				</pics:permission>
 			</div>
-			<fieldset class="form">
+			<fieldset class="form bottom">
 			<legend><span>User Details</span></legend>		
 			<ol>
 				<s:if test="user.id > 0">
@@ -319,14 +324,17 @@ div.autocomplete ul li {
 						<s:checkbox name="sendActivationEmail" /><span for="sendActivationEmail">Send Activation Email</span></li>
 				</s:if>
 				<s:if test="user.id > 0">
-				<li><label>Reset Password:</label>
-				<a href="button=resetPassword&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Reset Password</a>
-				</li>
+					<li><label>&nbsp;</label>
+						<a class="picsbutton" href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send Reset Password Email</a>
+					</li>
+					<li><label>&nbsp;</label>
+						<input type="checkbox" onchange="$('.user-password').toggle()"> Manually Set Password
+					</li>
 				</s:if>
-				<li><label>Password:</label>
+				<li class="user-password"><label>Password:</label>
 					<s:password name="password1" value=""/>
 				</li>
-				<li><label>Confirm Password:</label>
+				<li class="user-password"><label>Confirm Password:</label>
 					<s:password name="password2" value=""/>
 				</li>
 				</pics:permission>
@@ -350,14 +358,12 @@ div.autocomplete ul li {
 				</s:else>
 			</ol>
 			</fieldset>
-			<s:if test="user.id > 0 && !user.group && user.account.id != 1100">
-			<fieldset class="form bottom">
-			<div>
+			<s:if test="user.id > 0 && !user.group && !user.account.admin">
+			<div >
 				<pics:permission perm="SwitchUser">
-					<a href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a> | 
+					<a class="picsbutton" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch to this User</a>
 				</pics:permission>
 			</div>
-			</fieldset>
 			</s:if>
 	</s:form>
 <br clear="all">	
