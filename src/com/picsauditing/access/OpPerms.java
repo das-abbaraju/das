@@ -1,5 +1,8 @@
 package com.picsauditing.access;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum OpPerms {
 	// Development Permission
 	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test.", true, true, true, false, false),
@@ -151,4 +154,34 @@ public enum OpPerms {
 	public boolean isForOperator() {
 		return forOperator;
 	}
+
+	public static List<OpPerms> adminPermissions() {
+		List<OpPerms> adminPermissions = new ArrayList<OpPerms>();
+		for (OpPerms opPerm : values()) {
+			if (opPerm.forAdmin)
+				adminPermissions.add(opPerm);
+		}
+
+		return adminPermissions;
+	}
+
+	public static List<OpPerms> contractorPermissions() {
+		List<OpPerms> contractorPermissions = new ArrayList<OpPerms>();
+		for (OpPerms opPerm : values()) {
+			if (opPerm.forContractor)
+				contractorPermissions.add(opPerm);
+		}
+
+		return contractorPermissions;
+	}
+
+	public static List<OpPerms> operatorPermissions() {
+		List<OpPerms> operatorPermissions = new ArrayList<OpPerms>();
+		for (OpPerms opPerms : values()) {
+			if (opPerms.forOperator)
+				operatorPermissions.add(opPerms);
+		}
+		return operatorPermissions;
+	}
+
 }
