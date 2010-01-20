@@ -148,6 +148,10 @@
 <% } %>
 <!-- !end subnavigation -->
 
+<%
+	if (!"1".equals(System.getProperty("pics.debug"))) {
+%>
+
 <!-- BEGIN LivePerson -->
 <script type="text/javascript">
 	var lpPosY = 100;
@@ -180,6 +184,8 @@ try {
 <%	} %>
 } catch(err) {}
 </script>
+
+<% } %>
 
 <!-- !begin footer -->
 <div class="footer">
