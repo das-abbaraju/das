@@ -308,7 +308,7 @@ div.autocomplete ul li {
 				<pics:permission perm="ChangePassword">
 				<s:if test="user.id == 0">
 				<li><label>Send Activation Email?</label>
-					<s:checkbox name="sendActivationEmail" value="true"/></li>
+					<s:checkbox name="sendActivationEmail" /></li>
 				</s:if>
 				<s:if test="user.id > 0">
 				<li><label>Reset Password:</label>
