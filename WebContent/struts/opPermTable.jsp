@@ -2,6 +2,8 @@
 
 <link rel="stylesheet" href="css/reports.css" />
 
+<s:iterator value="#{'Admin': @com.picsauditing.access.OpPerms@adminPermissions(), 'Contractor': @com.picsauditing.access.OpPerms@contractorPermissions(),'Operator': @com.picsauditing.access.OpPerms@operatorPermissions()}">
+<h2><s:property value="key"/></h2>
 <table class="report">
 <thead>
 <tr>
@@ -18,7 +20,7 @@
 </tr>
 </thead>
 
-<s:iterator value="@com.picsauditing.access.OpPerms@values()">
+<s:iterator value="value">
 <tr>
 	<td>
 		<s:property/>
@@ -66,3 +68,4 @@
 </s:iterator>
 
 </table>
+</s:iterator>
