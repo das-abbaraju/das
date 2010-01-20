@@ -85,42 +85,7 @@ public class LoginController extends PicsActionSupport {
 		// Autologin functionality if the reset button is passed, otherwise
 		// perform
 		// other login procedures
-		if ("reset".equals(button)) {
-			user = userDAO.findName(usern);
-
-			if (user == null) {
-				addActionError("No such user found");
-				return SUCCESS;
-			} else if (user.getResetHash() == null) {
-				addActionError("Invalid reset hash");
-				return SUCCESS;
-			} else if (!user.getResetHash().equals(key)) {
-				addActionError("Invalid reset hash");
-				return SUCCESS;
-			} else {
-				user.setForcePasswordReset(true);
-				user.setEncryptedPassword("");
-				// Normal login, via the actual Login.action page
-				permissions.login(user);
-
-				user.setFailedAttempts(0);
-				user.setLockUntil(null); // it's no longer locked
-
-				user.setLastLogin(new Date());
-				user.getAccount().setLastLogin(new Date());
-				userDAO.save(user);
-
-				Cookie cookie = new Cookie("username", username);
-				cookie.setMaxAge(3600 * 24);
-				getResponse().addCookie(cookie);
-
-				// TODO we should allow each account to set their own timeouts
-				// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
-				if (permissions.isPicsEmployee())
-					getRequest().getSession().setMaxInactiveInterval(3600);
-			}
-		}// Login the user
-		else if (switchToUser > 0) {
+		if (switchToUser > 0) {
 			if (permissions.getUserId() == switchToUser) {
 				// Switch back to myself
 				user = getUser();
@@ -151,6 +116,11 @@ public class LoginController extends PicsActionSupport {
 				logAttempt();
 				addActionError(error);
 				return SUCCESS;
+			}
+
+			if ("reset".equals(button)) {
+				user.setForcePasswordReset(true);
+				user.setResetHash("");
 			}
 
 			// /////////////////
@@ -196,42 +166,55 @@ public class LoginController extends PicsActionSupport {
 		if (user == null)
 			return "No account exists with that username";
 
-		// After this point we should always have a user
+		if (Strings.isEmpty(key)) {
+			// After this point we should always have a user
 
-		if (user.getAccount().isOperator() || user.getAccount().isCorporate())
-			if (!user.getAccount().isActiveB())
-				return user.getAccount().getName()
-						+ " is no longer active.<br>Please contact PICS if you have any questions.";
+			if (user.getAccount().isOperator() || user.getAccount().isCorporate())
+				if (!user.getAccount().isActiveB())
+					return user.getAccount().getName()
+							+ " is no longer active.<br>Please contact PICS if you have any questions.";
 
-		if (user.getIsActive() != YesNo.Yes)
-			return "This account for " + user.getAccount().getName()
-					+ " is no longer active.<br>Please contact your administrator to reactivate it.";
+			if (user.getIsActive() != YesNo.Yes)
+				return "This account for " + user.getAccount().getName()
+						+ " is no longer active.<br>Please contact your administrator to reactivate it.";
 
-		if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
-			return "This account is locked because of too many failed attempts. " + "You will be able to try again in "
-					+ DateBean.prettyDate(user.getLockUntil());
-		}
-		if (Strings.isEmpty(password)) {
-			return "You must enter a password";
-		}
-
-		if (!user.isEncryptedPasswordEqual(password)) {
-			user.setFailedAttempts(user.getFailedAttempts() + 1);
-			// TODO parameterize this 7 here
-			if (user.getFailedAttempts() > 7) {
-				// Lock this user out for 1 hour
-				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.HOUR, 1);
-				user.setFailedAttempts(0);
-				user.setLockUntil(calendar.getTime());
-				return "The password is not correct and the account has now been locked. <a href=\"http://www.picsauditing.com/AccountRecovery.action?username="
-						+ user.getUsername() + "&button=Reset+Password\">Click here to reset your password</a>";
+			if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
+				return "This account is locked because of too many failed attempts. "
+						+ "You will be able to try again in " + DateBean.prettyDate(user.getLockUntil());
 			}
-			return "The password is not correct. You have " + (8 - user.getFailedAttempts())
-					+ " attempts remaining before your account will be locked for one hour. "
-					+ "<a href=\"http://www.picsauditing.com/AccountRecovery.action?username=" + user.getUsername()
-					+ "&button=Reset+Password\">Click here to reset your password</a>";
+			if (Strings.isEmpty(password)) {
+				return "You must enter a password";
+			}
+
+			if (!user.isEncryptedPasswordEqual(password)) {
+				user.setFailedAttempts(user.getFailedAttempts() + 1);
+				// TODO parameterize this 7 here
+				if (user.getFailedAttempts() > 7) {
+					// Lock this user out for 1 hour
+					Calendar calendar = Calendar.getInstance();
+					calendar.add(Calendar.HOUR, 1);
+					user.setFailedAttempts(0);
+					user.setLockUntil(calendar.getTime());
+					return "The password is not correct and the account has now been locked. <a href=\"http://www.picsauditing.com/AccountRecovery.action?username="
+							+ user.getUsername() + "&button=Reset+Password\">Click here to reset your password</a>";
+				}
+				return "The password is not correct. You have " + (8 - user.getFailedAttempts())
+						+ " attempts remaining before your account will be locked for one hour. "
+						+ "<a href=\"http://www.picsauditing.com/AccountRecovery.action?username=" + user.getUsername()
+						+ "&button=Reset+Password\">Click here to reset your password</a>";
+			}
+		} else {
+			if (user.getResetHash() == null) {
+				return "Expired reset code. Try logging in below or <a href=\"http://www.picsauditing.com/AccountRecovery.action?username="
+						+ user.getUsername() + "\">Click here to send a new email</a>";
+			}
+
+			if (!user.getResetHash().equals(key)) {
+				return "Expired reset code. Try logging in below or <a href=\"http://www.picsauditing.com/AccountRecovery.action?username="
+						+ user.getUsername() + "\">Click here to send a new email</a>";
+			}
 		}
+
 		user.setFailedAttempts(0);
 		user.setLockUntil(null); // it's no longer locked
 
@@ -342,12 +325,8 @@ public class LoginController extends PicsActionSupport {
 		this.switchToUser = switchToUser;
 	}
 
-	public String getUsern() {
-		return usern;
-	}
-
 	public void setUsern(String usern) {
-		this.usern = usern;
+		this.username = usern;
 	}
 
 	public String getKey() {
