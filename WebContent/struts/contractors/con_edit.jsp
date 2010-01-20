@@ -105,6 +105,9 @@ function showPrimaryContactInfo(user) {
 						value="%{contractor.primaryContact.id}"
 						onchange="showPrimaryContactInfo(this.value)"
 						/>
+					<s:if test="permissions.admin">
+					<a href="http://www.picsauditing.com/UsersManage.action?button=newUser&accountId=<s:property value="getAccount().getId()"/>&isActive=Yes&isGroup=No">Add User</a>
+					</s:if>
 					</li>
 					<li id="contact_info"></li>
 				</ol>
