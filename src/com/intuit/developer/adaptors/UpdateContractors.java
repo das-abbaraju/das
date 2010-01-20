@@ -11,6 +11,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.quickbooks.qbxml.CustomerMod;
@@ -79,9 +80,9 @@ public class UpdateContractors extends CustomerAdaptor {
 
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 
-				customer.setContact(nullSafeSubString(contractor.getContact(), 0, 41));
-				customer.setFirstName(nullSafeSubString(getFirstName(contractor.getContact()), 0, 25));
-				customer.setLastName(nullSafeSubString(getLastName(contractor.getContact()), 0, 25));
+				customer.setContact(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
+				customer.setFirstName(nullSafeSubString(getFirstName(contractor.getPrimaryContact().getName()), 0, 25));
+				customer.setLastName(nullSafeSubString(getLastName(contractor.getPrimaryContact().getName()), 0, 25));
 
 				customer.setBillAddress(factory.createBillAddress());
 
@@ -89,10 +90,10 @@ public class UpdateContractors extends CustomerAdaptor {
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
-				customer.setEmail(contractor.getEmail());
+				customer.setEmail(contractor.getPrimaryContact().getEmail());
 
-				customer.setAltContact(nullSafeSubString(contractor.getBillingContact(), 0, 41));
-				customer.setAltPhone(nullSafePhoneFormat(contractor.getBillingPhone()));
+				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 41));
+				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getPhone()));
 
 				customer.setTermsRef(factory.createTermsRef());
 				customer.getTermsRef().setFullName("Net 30");

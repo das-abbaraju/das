@@ -33,8 +33,16 @@ public class ContractorValidator {
 			errorMessages.addElement("Your company name must be at least 3 characters long.");
 
 		// Contact and Address info
-		if (Strings.isEmpty(contractor.getContact()))
-			errorMessages.addElement("Please fill in the Contact field.");
+		if (contractor.getPrimaryContact() == null)
+			errorMessages.addElement("Please fill in the primary contact information");
+		else {
+			if (Strings.isEmpty(contractor.getPrimaryContact().getName()))
+				errorMessages.addElement("Please fill in the Contact field.");
+			if (!Utilities.isValidEmail(contractor.getPrimaryContact().getEmail()))
+				errorMessages
+						.addElement("Please enter a valid email address. This is our main way of communicating with you.");
+		}
+
 		if (Strings.isEmpty(contractor.getAddress()))
 			errorMessages.addElement("Please fill in the Address field.");
 		if (Strings.isEmpty(contractor.getCity()))
@@ -51,15 +59,6 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the Zip field.");
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
-
-		if (!Utilities.isValidEmail(contractor.getEmail()))
-			errorMessages
-					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
-		if (!Strings.isEmpty(contractor.getSecondEmail()) && !Utilities.isValidEmail(contractor.getSecondEmail()))
-			errorMessages.addElement("Please enter a valid secondary email address.");
-
-		if (!Strings.isEmpty(contractor.getBillingEmail()) && !Utilities.isValidEmail(contractor.getBillingEmail()))
-			errorMessages.addElement("Please enter a valid billing email address.");
 
 		// Tax Id
 		if (!java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
@@ -101,7 +100,7 @@ public class ContractorValidator {
 				user.setPasswordChanged(new Date());
 			}
 		}
-		
+
 		return errorMessages;
 	}
 

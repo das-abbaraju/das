@@ -35,6 +35,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -914,5 +915,20 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 		return countries;
+	}
+	
+	@Transient
+	public List<User> getUsersByRole(OpPerms opPerms) {
+		List<User> users = new ArrayList<User>(); 
+		for(User user : getUsers()) {
+			if(user.isActiveB()) {
+				for(UserAccess userAccess : user.getPermissions()) {
+					if(userAccess.getOpPerm().equals(opPerms)) {
+						users.add(user);
+					}
+				}
+			}
+		}
+		return users;
 	}
 }

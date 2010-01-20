@@ -44,7 +44,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected State state;
 	protected String zip;
 	protected String phone;
-	protected String phone2;
 	protected String fax;
 	protected String webUrl;
 	protected Industry industry;
@@ -189,15 +188,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-	@Column(length = 25)
-	public String getPhone2() {
-		return this.phone2;
-	}
-
-	public void setPhone2(String phone2) {
-		this.phone2 = phone2;
 	}
 
 	@Column(length = 20)
@@ -423,8 +413,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			obj.put("zip", zip);
 		if (phone != null)
 			obj.put("phone", phone);
-		if (phone2 != null)
-			obj.put("phone2", phone2);
 		if (fax != null)
 			obj.put("fax", fax);
 		if (industry != null)

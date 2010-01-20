@@ -7,6 +7,7 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -78,7 +79,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setPaymentMethod(PaymentMethod.CreditCard);
 		}
 		if ("copyBillingEmail".equals(button)) {
-			contractor.setCcEmail(contractor.getBillingEmail());
+			contractor.setCcEmail(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
 		}
 		if ("Mark this Credit Card Invalid".equals(button)) {
 			contractor.setCcOnFile(false);

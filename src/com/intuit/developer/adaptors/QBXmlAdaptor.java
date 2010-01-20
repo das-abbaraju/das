@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import com.intuit.developer.QBSession;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
@@ -138,7 +139,7 @@ public class QBXmlAdaptor {
 	static public BillAddress updateBillAddress(ContractorAccount contractor, BillAddress billAddress) {
 		if (Strings.isEmpty(contractor.getAddress())) {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-			billAddress.setAddr2(nullSafeSubString(contractor.getContact(), 0, 41));
+			billAddress.setAddr2(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
 			billAddress.setCity(contractor.getCity());
 			if(contractor.getState() != null)
@@ -147,7 +148,7 @@ public class QBXmlAdaptor {
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			billAddress.setAddr2("c/o " +
-					nullSafeSubString(contractor.getBillingContact(), 0, 39));
+					nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 39));
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
 			billAddress.setCity(contractor.getBillingCity());
 			if(contractor.getBillingState() != null)
