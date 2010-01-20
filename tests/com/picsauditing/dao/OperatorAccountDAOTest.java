@@ -39,14 +39,16 @@ public class OperatorAccountDAOTest {
 		OperatorAccount operatoraccount = new OperatorAccount();
 		operatoraccount.setName("PICS");
 		operatoraccount.setLastLogin(Calendar.getInstance().getTime());
-		operatoraccount.setContact("pics admin");
+		operatoraccount.setPrimaryContact(new User());
+		operatoraccount.getPrimaryContact().setName("pics admin");
+		operatoraccount.getPrimaryContact().setEmail("pics@picsauditing.com");
+		operatoraccount.getPrimaryContact().setPhone("999-999-9999");
 		operatoraccount.setAddress("17701 cowan");
 		operatoraccount.setCity("irvine");
 		operatoraccount.setState(new State("CA"));
 		operatoraccount.setZip("92345");
 		operatoraccount.setPhone("999-999-9999");
 		operatoraccount.setFax("999-999-9999");
-		operatoraccount.setEmail("pics@picsauditing.com");
 		operatoraccount.setWebUrl("www.picsauditing.com");
 		operatoraccount.setIndustry(Industry.Petrochemical);
 		operatoraccount.setActive('y');
