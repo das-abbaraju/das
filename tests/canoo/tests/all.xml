@@ -23,12 +23,12 @@
 		<ant antfile="admin_billing.xml"/>
 		<ant antfile="contractor_trialaccount.xml"/>
 		<ant antfile="contractor.xml"/>
+		<ant antfile="contractor_edit.xml"/>
 		
 	</target>
 
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="contractor_trialaccount.xml"/>
-
+		<ant antfile="contractor_edit.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
