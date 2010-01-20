@@ -1,6 +1,7 @@
 package com.picsauditing.actions.users;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.Vector;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -70,9 +71,15 @@ public class UserSave extends UsersManage {
 				return SUCCESS;
 			}
 
-			if (!Strings.isEmpty(password1) && user.compareEncryptedPasswords(password1, password2)) {
-				user.setEncryptedPassword(password1);
-			}
+			if (user.getId() > 0) { // We want to save data for an existing user
+				if (!Strings.isEmpty(password1) && user.compareEncryptedPasswords(password1, password2)) {
+					user.setEncryptedPassword(password1);
+				}
+			} else { // We want to save a new user
+				// Generating a random password and forcing password reset
+				user.setEncryptedPassword(Long.toString(new Random().nextLong()));
+				user.setForcePasswordReset(true);
+			}			
 
 			user.setAuditColumns(permissions);
 
@@ -161,6 +168,7 @@ public class UserSave extends UsersManage {
 	}
 
 	private boolean isOK() throws Exception {
+
 		if (user == null) {
 			addActionError("No user found");
 			return false;
@@ -183,16 +191,18 @@ public class UserSave extends UsersManage {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
 
-		if (Strings.isEmpty(user.getPassword()) && Strings.isEmpty(password1))
-			addActionError("Please enter a password");
+		if (user.getId() > 0) { // Checks for saving an existing user
+			if (Strings.isEmpty(user.getPassword()) && Strings.isEmpty(password1))
+				addActionError("Please enter a password");
 
-		if (!Strings.isEmpty(password1)) {
-			if (!password1.equals(password2) && !password1.equals(user.getPassword()))
-				addActionError("Passwords don't match");
+			if (!Strings.isEmpty(password1)) {
+				if (!password1.equals(password2) && !password1.equals(user.getPassword()))
+					addActionError("Passwords don't match");
 
-			Vector<String> errors = PasswordValidator.validateContractor(user, password1);
-			for (String error : errors)
-				addActionError(error);
+				Vector<String> errors = PasswordValidator.validateContractor(user, password1);
+				for (String error : errors)
+					addActionError(error);
+			}
 		}
 
 		return getActionErrors().size() == 0;
