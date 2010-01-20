@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE project SYSTEM "../dtd/Project.dtd">
+
+<project name="PICS" default="test">
+	<property name="login.username" value="jfazeli" />
+	
+	<target name="test">
+		<webtest name="Contractor Edit">
+			&config;
+			<steps>
+				&login;
+				&body_verify;
+				
+				<group description="Edit Information">
+				<setInputField name="filter.accountName" value="5217"/>
+				<clickButton label="Search"/>
+				<clickLink label="Edit Account"/>
+				<setInputField name="contractor.dbaName" value="2-Way DBA"/>
+				<setSelectField name="country.isoCode" text="United States"/>
+				<sleep seconds="2"/>
+				<setInputField name="contractor.city" value="Irvine"/>
+				<setSelectField name="state.isoCode" text="California"/>
+				<setInputField name="contractor.zip" value="92614"/>
+				<setSelectField name="contractor.mainTrade" text="Backflow Testing"/>
+				<clickButton label="Save"/>
+				</group>
+			</steps>
+		</webtest>
+		
+		<webtest name="Change Country">
+			&config;
+			<steps>
+						&login;
+						&body_verify;
+						
+				<group description="Edit Information">
+					<setInputField name="filter.accountName" value="5217"/>
+					<clickButton label="Search"/>
+					<clickLink label="Edit Account"/>
+					<setSelectField name="country.isoCode" text="Canada"/>
+					<sleep seconds="2"/>
+					<setSelectField name="state.isoCode" text="Alberta"/>
+					<clickButton label="Save"/>
+				</group>
+				<group description="Canadian Currency">
+					<clickLink label="Billing Details"/>
+					<clickLink href="InvoiceDetail.action"/>
+					<verifyText description="Verify that Currency is CAN" text="CAN"/>
+				</group>
+				<group description="Edit Information">
+					<clickLink label="Edit Account"/>
+					<setSelectField name="country.isoCode" text="United States"/>
+					<setSelectField name="state.isoCode" text="Illinois"/>
+					<clickButton label="Save"/>
+				</group>
+			</steps>
+		</webtest>
+		
+	</target>
+</project>
