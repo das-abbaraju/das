@@ -30,25 +30,37 @@
 		<s:property value="helpText"/>
 	</td>
 	<td>
-		<s:property value="usesView()"/>
+		<s:if test="usesView()">
+			<img src="images/checkBoxTrue.gif"/>
+		</s:if>
 	</td>
 	<td>
-		<s:property value="usesEdit()"/>
+		<s:if test="usesEdit()">
+			<img src="images/checkBoxTrue.gif"/>
+		</s:if>
 	</td>
 	<td>
-		<s:property value="usesDelete()"/>
+		<s:if test="usesDelete()">
+			<img src="images/checkBoxTrue.gif"/>
+		</s:if>
 	</td>
 	<td>
 		
 	</td>
 	<td>
-		<s:property value="forAdmin"/>
+		<s:if test="forAdmin">
+			<img src="images/checkBoxTrue.gif"/>
+		</s:if>
 	</td>
 	<td>
-		<s:property value="forContractor"/>
+		<s:if test="forContractor">
+			<img src="images/checkBoxTrue.gif"/>
+		</s:if>
 	</td>
 	<td>
-		<s:property value="forOperator"/>
+		<s:if test="forOperator">
+			<img src="images/checkBoxTrue.gif"/>
+		</s:if>
 	</td>
 </tr>
 </s:iterator>
