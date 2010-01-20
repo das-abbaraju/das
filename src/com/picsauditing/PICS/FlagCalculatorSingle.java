@@ -251,8 +251,10 @@ public class FlagCalculatorSingle {
 							}
 						}
 						if (criteria.getSeverity().isRequired()) {
-							if (criteria.getSeverity().isLastYearOnly() && Integer
-											.toString(year).equals(osha.getConAudit().getAuditFor())) {
+							if ((key.equals(OshaAudit.AVG) && criteria.getSeverity().isTimeAverage())
+									|| (!key.equals(OshaAudit.AVG) && !criteria.getSeverity().isTimeAverage() && (!criteria
+											.getSeverity().isLastYearOnly() || (criteria.getSeverity().isLastYearOnly() && Integer
+											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
 								if (criteria.getSeverity().isFlagged(contractor.getNaics().getTrir(),
 										osha.getRestrictedOrJobTransferDays()))
 									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
