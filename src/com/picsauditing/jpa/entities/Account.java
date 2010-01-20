@@ -38,7 +38,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String nameIndex;
 	protected String dbaName;
 	protected Date lastLogin;
-	protected String contact;
 	protected String address;
 	protected String city;
 	protected Country country;
@@ -47,7 +46,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected String phone;
 	protected String phone2;
 	protected String fax;
-	protected String email;
 	protected String webUrl;
 	protected Industry industry;
 	private Naics naics;
@@ -118,15 +116,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
-	}
-
-	@Column(name = "contact", length = 50)
-	public String getContact() {
-		return this.contact;
-	}
-
-	public void setContact(String contact) {
-		this.contact = contact;
 	}
 
 	@Column(name = "address", length = 50)
@@ -218,15 +207,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setFax(String fax) {
 		this.fax = fax;
-	}
-
-	@Column(length = 50)
-	public String getEmail() {
-		return this.email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	@Column(name = "web_URL", length = 50)
@@ -423,7 +403,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("name", name);
-		obj.put("contact", contact);
 		obj.put("active", isActiveB());
 		obj.put("type", type.toString());
 
@@ -434,8 +413,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			obj.put("address", address);
 		if (dbaName != null)
 			obj.put("dbaName", dbaName);
-		if (contact != null)
-			obj.put("contact", contact);
 		if (city != null)
 			obj.put("city", city);
 		if (state != null)
@@ -450,8 +427,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			obj.put("phone2", phone2);
 		if (fax != null)
 			obj.put("fax", fax);
-		if (email != null)
-			obj.put("email", email);
 		if (industry != null)
 			obj.put("industry", industry.toString());
 

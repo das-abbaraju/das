@@ -52,12 +52,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private String brochureFile;
 	private String mustPay = "Yes";
 	private OperatorAccount requestedBy;
-	private String secondContact;
-	private String secondPhone;
-	private String secondEmail;
-	private String billingContact;
-	private String billingPhone;
-	private String billingEmail;
 	private String billingAddress;
 	private String billingCity;
 	private State billingState;
@@ -189,60 +183,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setRequestedBy(OperatorAccount requestedBy) {
 		this.requestedBy = requestedBy;
-	}
-
-	@Column(name = "secondContact", length = 50)
-	public String getSecondContact() {
-		return this.secondContact;
-	}
-
-	public void setSecondContact(String secondContact) {
-		this.secondContact = secondContact;
-	}
-
-	@Column(name = "secondPhone", length = 50)
-	public String getSecondPhone() {
-		return this.secondPhone;
-	}
-
-	public void setSecondPhone(String secondPhone) {
-		this.secondPhone = secondPhone;
-	}
-
-	@Column(name = "secondEmail", length = 50)
-	public String getSecondEmail() {
-		return this.secondEmail;
-	}
-
-	public void setSecondEmail(String secondEmail) {
-		this.secondEmail = secondEmail;
-	}
-
-	@Column(name = "billingContact", length = 50)
-	public String getBillingContact() {
-		return this.billingContact;
-	}
-
-	public void setBillingContact(String billingContact) {
-		this.billingContact = billingContact;
-	}
-
-	@Column(name = "billingPhone", length = 50)
-	public String getBillingPhone() {
-		return this.billingPhone;
-	}
-
-	public void setBillingPhone(String billingPhone) {
-		this.billingPhone = billingPhone;
-	}
-
-	@Column(name = "billingEmail", length = 50)
-	public String getBillingEmail() {
-		return this.billingEmail;
-	}
-
-	public void setBillingEmail(String billingEmail) {
-		this.billingEmail = billingEmail;
 	}
 
 	@Column(name = "billingAddress", length = 50)
