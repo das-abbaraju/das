@@ -50,6 +50,7 @@
 				<group description="Edit Information">
 					<clickLink label="Edit Account"/>
 					<setSelectField name="country.isoCode" text="United States"/>
+					<sleep seconds="2"/>
 					<setSelectField name="state.isoCode" text="Illinois"/>
 					<clickButton label="Save"/>
 				</group>
