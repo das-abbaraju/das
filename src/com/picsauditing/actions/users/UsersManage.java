@@ -94,6 +94,11 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
 
+		if ("newUser".equalsIgnoreCase(button)) {
+			user = new User();
+			return SUCCESS;
+		}
+
 		// Default the user (if null) if there is only one on the account
 		// (mostly Contractors)
 		if (user == null && account.getUsers().size() == 1) {
@@ -119,15 +124,17 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				return SUCCESS;
 			}
 
-			if (user.getId() > 0) { // We want to save data for an existing user
-				if (!Strings.isEmpty(password1) && user.compareEncryptedPasswords(password1, password2)) {
-					user.setEncryptedPassword(password1);
+			if (user.getId() > 0) {
+				// We want to save data for an existing user
+				if (!Strings.isEmpty(password2) && password2.equals(password1)) {
+					user.setEncryptedPassword(password2);
 				}
-			} else { // We want to save a new user
-				// Generating a random password and forcing password reset
-				user.setEncryptedPassword(Long.toString(new Random().nextLong()));
+			} else {
+				// We want to save a new user
+				final String randomPassword = Long.toString(new Random().nextLong());
+				user.setEncryptedPassword(randomPassword);
 				user.setForcePasswordReset(true);
-			}			
+			}
 
 			user.setAuditColumns(permissions);
 
@@ -241,11 +248,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
 
-		if (user.getId() > 0) { // Checks for saving an existing user
-			if (Strings.isEmpty(user.getPassword()) && Strings.isEmpty(password1))
-				addActionError("Please enter a password");
-
-			if (!Strings.isEmpty(password1)) {
+		if (user.getId() > 0) {
+			if (!Strings.isEmpty(password2)) {
 				if (!password1.equals(password2) && !password1.equals(user.getPassword()))
 					addActionError("Passwords don't match");
 

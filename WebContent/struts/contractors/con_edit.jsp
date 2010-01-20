@@ -97,6 +97,9 @@ function showPrimaryContactInfo(user) {
 					<li><label>Zip:</label>
 						<s:textfield name="contractor.zip" size="7" />
 					</li>
+					<li><label>Main Phone:</label><s:textfield name="contractor.phone" /></li>
+					<li><label>Main Fax:</label><s:textfield name="contractor.fax" /></li>
+					
 					<li><label>Primary Contact:</label> <s:select
 						list="userList"
 						name="contactID"
@@ -106,10 +109,9 @@ function showPrimaryContactInfo(user) {
 						onchange="showPrimaryContactInfo(this.value)"
 						/>
 					<s:if test="permissions.admin">
-					<a href="http://www.picsauditing.com/UsersManage.action?button=newUser&accountId=<s:property value="getAccount().getId()"/>&isActive=Yes&isGroup=No">Add User</a>
+					<a href="UsersManage.action?button=newUser&accountId=<s:property value="getAccount().getId()"/>">Add User</a>
 					</s:if>
 					</li>
-					<li id="contact_info"></li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
@@ -190,13 +192,6 @@ function showPrimaryContactInfo(user) {
 						<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" 
 							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
 					</li>
-					<pics:permission perm="SwitchUser">
-						<li><label>Switch:</Label>
-							<s:iterator value="contractor.users" status="stat">
-								<a href="Login.action?button=login&switchToUser=<s:property value="id"/>"><s:property value="name"/></a><s:if test="!#stat.last"> |</s:if> 
-							</s:iterator>
-						</li>
-					</pics:permission>
 				</ol>
 				</fieldset>
 				<pics:permission perm="EmailOperators">

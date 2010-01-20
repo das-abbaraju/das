@@ -74,12 +74,15 @@
 						target="_blank">map</a>]</p>
 				</div>
 		 		<div class="telecommunications">
-					<p class="contact">Contact: <span class="value"><s:property value="contractor.contact" /></span></p>
-					<p class="tel">Phone: <span class="value"><s:property value="contractor.phone" /></span></p>
-					<s:if test="contractor.phone2" ><p class="tel">Other Phone: <span class="value"><s:property value="contractor.phone2" /></span></p></s:if>
-					<s:if test="contractor.fax" ><p class="tel">Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
- 					<p class="email">Email: <strong><a href="mailto:<s:property value="contractor.email" />" class="value"><s:property value="contractor.email" /></a></strong></p>
+					<p class="tel">Main Phone: <span class="value"><s:property value="contractor.phone" /></span></p>
+					<s:if test="contractor.fax" ><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
 					<s:if test="contractor.webUrl.length() > 0" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
+					<s:iterator value="contractor.users">
+						<p class="contact">Contact: <span class="value"><s:property value="name" /></span></p>
+						<s:if test="phone.length > 0"><p class="tel">&nbsp;&nbsp;Phone: <span class="value"><s:property value="phone" /></span></p></s:if>
+						<s:if test="fax.length > 0"><p class="tel">&nbsp;&nbsp;Fax: <span class="value"><s:property value="fax" /></span></p></s:if>
+	 					<s:if test="email.length > 0"><p class="email">&nbsp;&nbsp;Email: <s:property value="email" /> <a href="mailto:<s:property value="email" />" class="value"></a></p></s:if>
+					</s:iterator>
 					<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false"><p class="web"><strong>
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
 					</strong></p></s:if>

@@ -321,14 +321,14 @@ div.autocomplete ul li {
 				<pics:permission perm="ChangePassword">
 				<s:if test="user.id == 0">
 					<li><label>&nbsp;</label>
-						<s:checkbox name="sendActivationEmail" /><span for="sendActivationEmail">Send Activation Email</span></li>
+						<s:checkbox id="sendActivationEmail" name="sendActivationEmail" /><label for="sendActivationEmail" class="checkbox">Send Activation Email</label></li>
 				</s:if>
 				<s:if test="user.id > 0">
 					<li><label>&nbsp;</label>
 						<a class="picsbutton" href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send Reset Password Email</a>
 					</li>
 					<li><label>&nbsp;</label>
-						<input type="checkbox" onchange="$('.user-password').toggle()"> Manually Set Password
+						<input id="manual_password" type="checkbox" onclick="$('.user-password').toggle()"> <label for="manual_password" class="checkbox">Manually Set Password</label>
 					</li>
 				</s:if>
 				<li class="user-password"><label>Password:</label>

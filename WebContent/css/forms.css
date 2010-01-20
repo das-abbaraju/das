@@ -76,6 +76,17 @@ fieldset.form label {
 	line-height: 15px;
 }
 
+fieldset.form label.checkbox {
+	float: none;
+	width: auto;
+	margin-right: auto;
+	text-align: left;
+	font-size: inherit;
+	font-weight: normal;
+	color: inherit;
+	line-height: inherit;
+}
+
 fieldset.form label.input {
 	float: none;
 	width: inherit;
