@@ -90,8 +90,6 @@ delete from email_template where id = 24;
 update email_template set body = 'Attn: <DisplayName>
 This is an automatically generated email that will allow you to set or reset your password. Please click the following link and set your password on the following page.
 ${confirmLink}
-If you would like to generate a new password reset link, please click below:
-${resetLink}
 If you did not request that this email be sent to you or if you have any questions, please contact us.
 <PICSSignature>' where id = 85;
 
