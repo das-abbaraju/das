@@ -63,7 +63,6 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setState(new State("CA"));
 		contractoraccount.setZip("92345");
 		contractoraccount.setPhone("999-999-9999");
-		contractoraccount.setPhone2("999-999-9999");
 		contractoraccount.setFax("999-999-9999");
 		contractoraccount.setEmail("pics@picsauditing.com");
 		contractoraccount.setWebUrl("www.picsauditing.com");

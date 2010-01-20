@@ -45,7 +45,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setState(new State("CA"));
 		operatoraccount.setZip("92345");
 		operatoraccount.setPhone("999-999-9999");
-		operatoraccount.setPhone2("999-999-9999");
 		operatoraccount.setFax("999-999-9999");
 		operatoraccount.setEmail("pics@picsauditing.com");
 		operatoraccount.setWebUrl("www.picsauditing.com");
