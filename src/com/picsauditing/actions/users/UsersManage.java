@@ -2,24 +2,37 @@ package com.picsauditing.actions.users;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.Vector;
+
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.PasswordValidator;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.actions.AccountRecovery;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Report;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport implements Preparable {
@@ -28,12 +41,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected User user;
 	protected Account account;
 
+	protected String password1;
+	protected String password2;
+	protected boolean sendActivationEmail = true;
+
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
 	protected Report search = null;
 	protected List<User> userList = null;
-
-	protected boolean filtered = false;
 
 	protected String isGroup = "";
 	protected String isActive = "Yes";
@@ -53,10 +68,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 		int id = getParameter("user.id");
-		user = userDAO.find(id);
-
+		if (id > 0) {
+			user = userDAO.find(id);
+			if (user != null)
+				account = user.getAccount();
+		}
+		
 		int aID = getParameter("accountId");
-		account = accountDAO.find(aID);
+		if (account == null && aID > 0)
+			account = accountDAO.find(aID);
 	}
 
 	public String execute() throws Exception {
@@ -64,26 +84,178 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return LOGIN;
 		permissions.tryPermission(OpPerms.EditUsers);
 
+		if (account == null) {
+			// This would happen if I'm looking at my own account, but not a user yet
+			account = super.getUser().getAccount();
+		}
+		accountId = account.getId();
+
 		// Make sure we can edit users in this account
-		if (accountId == 0)
-			accountId = permissions.getAccountId();
 		if (permissions.getAccountId() != accountId)
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		// Default the user (if null) if there is only one on the account
 		// (mostly Contractors)
-		if (user == null && account != null && account.getUsers().size() == 1) {
+		if (user == null && account.getUsers().size() == 1) {
 			user = account.getUsers().get(0);
 		}
 
-		// Final security check
-		if (user != null && user.getAccount() != null && user.getAccount().getId() != accountId) {
-			this.addActionError(user.getName() + " was not listed in this account");
-			user = null;
+		if (user == null) {
+			return SUCCESS;
 		}
-		filtered = true;
+		
+		if ("resetPassword".equals(button)) {
+			// Seeding the time in the reset hash so that each one will be
+			// guaranteed unique
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+			userDAO.save(user);
+
+			addActionMessage(AccountRecovery.sendRecoveryEmail(user));
+		}
+
+		if ("Save".equalsIgnoreCase(button)) {
+			if (!isOK()) {
+				userDAO.clear();
+				return SUCCESS;
+			}
+
+			if (user.getId() > 0) { // We want to save data for an existing user
+				if (!Strings.isEmpty(password1) && user.compareEncryptedPasswords(password1, password2)) {
+					user.setEncryptedPassword(password1);
+				}
+			} else { // We want to save a new user
+				// Generating a random password and forcing password reset
+				user.setEncryptedPassword(Long.toString(new Random().nextLong()));
+				user.setForcePasswordReset(true);
+			}			
+
+			user.setAuditColumns(permissions);
+
+			if (user.getAccount() == null) {
+				user.setAccount(new Account());
+				if (!permissions.hasPermission(OpPerms.AllOperators)) {
+					user.getAccount().setId(permissions.getAccountId());
+				} else
+					user.getAccount().setId(accountId);
+			}
+
+			if (user.isGroup()) {
+				// Create a unique username for this group
+				String username = "GROUP";
+				username += user.getAccount().getId();
+				username += user.getName();
+
+				user.setUsername(username);
+			} else {
+				int maxHistory = 0;
+				// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
+				user.addPasswordToHistory(user.getPassword(), maxHistory);
+				user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
+			}
+
+			// Send activation email if set
+			if (sendActivationEmail) {
+				try {
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setFromAddress(permissions.getEmail());
+					emailBuilder.setTemplate(5); // New User Welcome
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setUser(user);
+					user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+					userDAO.save(user);
+					String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername()
+							+ "&key=" + user.getResetHash() + "&button=reset";
+					emailBuilder.addToken("confirmLink", confirmLink);
+					// Account id hasn't been set. Still null value before
+					// saving
+					emailBuilder.addToken("accountname", accountDAO.find(accountId).getName());
+					emailBuilder.setFromAddress("info@picsauditing.com");
+					EmailQueue emailQueue = emailBuilder.build();
+					emailQueue.setPriority(100);
+					EmailSender.send(emailQueue);
+				} catch (Exception e) {
+					addActionError(e.getMessage());
+					return SUCCESS;
+				}
+				addActionMessage("Activation Email sent to " + user.getEmail());
+			}
+
+			try {
+				user = userDAO.save(user);
+				addActionMessage("User saved successfully.");
+			} catch (ConstraintViolationException e) {
+				addActionError("That Username is already in use.  Please select another.");
+				return SUCCESS;
+			} catch (DataIntegrityViolationException e) {
+				addActionError("That Username is already in use.  Please select another.");
+				return SUCCESS;
+			}
+		}
+
+		if ("Delete".equalsIgnoreCase(button)) {
+			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+			String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
+			if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
+				addActionMessage(message);
+			} else if (!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
+				addActionMessage(message);
+			} else if (!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
+				addActionMessage(message);
+			} else if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
+				addActionMessage(message);
+			} else if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
+				addActionMessage(message);
+			} else {
+				userDAO.remove(user);
+				addActionMessage("Successfully removed "
+						+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
+				user = null;
+			}
+		}
+
 
 		return SUCCESS;
+	}
+
+	private boolean isOK() throws Exception {
+
+		if (user == null) {
+			addActionError("No user found");
+			return false;
+		}
+		if (user.getName() == null || user.getName().length() == 0)
+			addActionError("Please enter a Display Name.");
+		else if (user.getName().length() < 3)
+			addActionError("Please enter a Display Name with more than 2 characters.");
+
+		if (user.isGroup())
+			return (getActionErrors().size() == 0);
+
+		// Users only after this point
+		if (user.getUsername() == null || user.getUsername().length() < 5)
+			addActionError("Please choose a Username at least 5 characters long.");
+
+		if (!Strings.validUserName(user.getUsername().trim()))
+			addActionError("Please enter a valid Username.");
+
+		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
+			addActionError("Please enter a valid Email address.");
+
+		if (user.getId() > 0) { // Checks for saving an existing user
+			if (Strings.isEmpty(user.getPassword()) && Strings.isEmpty(password1))
+				addActionError("Please enter a password");
+
+			if (!Strings.isEmpty(password1)) {
+				if (!password1.equals(password2) && !password1.equals(user.getPassword()))
+					addActionError("Passwords don't match");
+
+				Vector<String> errors = PasswordValidator.validateContractor(user, password1);
+				for (String error : errors)
+					addActionError(error);
+			}
+		}
+
+		return getActionErrors().size() == 0;
 	}
 
 	public int getAccountId() {
@@ -99,9 +271,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public void setIsGroup(String isGroup) {
-		if (isGroup != null && isGroup.length() > 0)
-			filtered = true;
-
 		this.isGroup = isGroup;
 	}
 
@@ -110,14 +279,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 
 	public void setIsActive(String isActive) {
-		if (!isActive.equals("Yes"))
-			filtered = true;
-
 		this.isActive = isActive;
-	}
-
-	public boolean isFiltered() {
-		return filtered;
 	}
 
 	public User getUser() {
@@ -134,6 +296,30 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public String getPassword1() {
+		return password1;
+	}
+
+	public void setPassword1(String password1) {
+		this.password1 = password1;
+	}
+
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
+	}
+
+	public boolean isSendActivationEmail() {
+		return sendActivationEmail;
+	}
+
+	public void setSendActivationEmail(boolean sendActivationEmail) {
+		this.sendActivationEmail = sendActivationEmail;
 	}
 
 	public List<User> getUserList() {

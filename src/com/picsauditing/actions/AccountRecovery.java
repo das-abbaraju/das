@@ -77,31 +77,7 @@ public class AccountRecovery extends PicsActionSupport {
 				user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 				userDAO.save(user);
 
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(85);
-				emailBuilder.setFromAddress("info@picsauditing.com");
-				// TODO remove this after we update the templates from username
-				// to
-				// user.name
-				emailBuilder.addToken("username", user.getName());
-				emailBuilder.addToken("user", user);
-
-				String confirmLink = "http://www.picsauditing.com/Login.action?username=" + user.getUsername() + "&key="
-						+ user.getResetHash() + "&button=reset";
-				emailBuilder.addToken("confirmLink", confirmLink);
-				String resetLink = "http://www.picsauditing.com/AccountRecovery.action?username=" + user.getUsername()
-						+ "&button=Reset+Password";
-				emailBuilder.addToken("resetLink", resetLink);
-				emailBuilder.setToAddresses(user.getEmail());
-
-				EmailQueue emailQueue = emailBuilder.build();
-				emailQueue.setPriority(100);
-
-				EmailSender.send(emailQueue);
-
-				addActionMessage("An email has been sent to the user associated"
-						+ " with this username. Please check your email for directions"
-						+ " on how to reset your password.");
+				addActionMessage(sendRecoveryEmail(user));
 			} catch (Exception e) {
 				addActionError("No such user exists");
 			}
@@ -109,6 +85,31 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	static public String sendRecoveryEmail(User user) {
+		try {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(85);
+			emailBuilder.setFromAddress("info@picsauditing.com");
+			emailBuilder.addToken("user", user);
+
+			String confirmLink = "http://www.picsauditing.com/Login.action?username=" + user.getUsername() + "&key="
+					+ user.getResetHash() + "&button=reset";
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setToAddresses(user.getEmail());
+
+			EmailQueue emailQueue;
+			emailQueue = emailBuilder.build();
+			emailQueue.setPriority(100);
+
+			EmailSender sender = new EmailSender();
+			sender.sendNow(emailQueue);
+			return "An email has been sent to " + user.getEmail()
+					+ ". This email includes a link to set or reset the password on the account.";
+		} catch (Exception e) {
+			return "An error occurred in sending the password reset email.";
+		}
 	}
 
 	public String getEmail() {

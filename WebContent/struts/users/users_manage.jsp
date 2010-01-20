@@ -168,6 +168,16 @@ div.autocomplete ul li {
 <body>
 <h1>Manage User Accounts</h1>
 
+<s:if test="!account.admin">
+<div>
+	<a href="<s:if test="account.contractor">ContractorView</s:if><s:else>FacilitiesEdit</s:else>.action?id=<s:property value="account.id"/>"><s:property value="account.name"/></a> 
+	&gt; <a href="?accountId=<s:property value="account.id"/>">Manage User Accounts</a>
+	<s:if test="user.id > 0">&gt; <s:property value="user.name"/></s:if>
+	<s:if test="button == 'newUser'">&gt; NEW USER</s:if>
+	
+</div>
+</s:if>
+
 <s:if test="!account.contractor">
 <div id="search">
 <s:form id="form1" method="get">
@@ -259,7 +269,7 @@ div.autocomplete ul li {
 <s:include value="../actionMessages.jsp" />
 <s:if test="user != null">
 	
-	<s:form action="UserSave" id="UserSave">
+	<s:form id="UserSave">
 		<s:hidden name="user.id" />
 		<s:hidden name="accountId" />
 		<s:hidden name="isGroup" />
@@ -282,24 +292,22 @@ div.autocomplete ul li {
 			<fieldset class="form">
 			<legend><span>User Details</span></legend>		
 			<ol>
-				<li><label>
-					<s:if test="user.group">Group</s:if>
-					<s:else>User</s:else> #:</label>
-					<s:property value="user.id"/>
-				</li>
-				<li><label>Date Created:</label>
-					<s:date name="user.creationDate" format="MM/d/yyyy" />
-				</li>
+				<s:if test="user.id > 0">
+					<li><label>
+						<s:if test="user.group">Group</s:if>
+						<s:else>User</s:else> #:</label>
+						<s:property value="user.id"/>
+					</li>
+					<li><label>Date Created:</label>
+						<s:date name="user.creationDate" format="MM/d/yyyy" />
+					</li>
+				</s:if>
 				<li><label>Display Name:</label>
 					<s:textfield name="user.name" size="30"/>
 				</li>
-			</ol>
-			<ol>
 			<s:if test="!user.group">	
 				<li><label>Email:</label>
 					<s:textfield name="user.email" size="40"/>
-				</li>
-				<li>
 				</li>
 				<li><label>Username:</label>
 					<s:textfield name="user.username" size="30" onchange="checkUsername(this.value);"/>
@@ -307,12 +315,12 @@ div.autocomplete ul li {
 				</li>
 				<pics:permission perm="ChangePassword">
 				<s:if test="user.id == 0">
-				<li><label>Send Activation Email?</label>
-					<s:checkbox name="sendActivationEmail" /></li>
+					<li><label>&nbsp;</label>
+						<s:checkbox name="sendActivationEmail" /><span for="sendActivationEmail">Send Activation Email</span></li>
 				</s:if>
 				<s:if test="user.id > 0">
 				<li><label>Reset Password:</label>
-				<a href="UserSave.action?button=resetPassword&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Reset Password</a>
+				<a href="button=resetPassword&accountId=<s:property value="accountId"/>&user.accountID=<s:property value="accountId"/>&user.id=<s:property value="user.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>">Reset Password</a>
 				</li>
 				</s:if>
 				<li><label>Password:</label>
@@ -326,15 +334,20 @@ div.autocomplete ul li {
 					<s:textfield name="user.phone" size="15"/>(optional)</li>
 				<li><label for="user.fax">Fax:</label>
 					<s:textfield name="user.fax" size="15"/>(optional)</li>
-				<s:if test="user != null">
+				<s:if test="user.id > 0">
 					<li><label>Last Login:</label>
 						<s:date name="user.lastLogin" />
 					</li>
 				</s:if>
 			</s:if>
-				<li><label>Active</label>
-					<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
-				</li>
+				<s:if test="user.id > 0">
+					<li><label>Active</label>
+						<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
+					</li>
+				</s:if>
+				<s:else>
+					<s:hidden name="user.isActive" value="true" />
+				</s:else>
 			</ol>
 			</fieldset>
 			<s:if test="user.id > 0 && !user.group && user.account.id != 1100">

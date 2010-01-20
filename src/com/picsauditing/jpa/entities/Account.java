@@ -375,6 +375,12 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.accountUsers = accountUsers;
 	}
 
+	
+	@Transient
+	public boolean isAdmin() {
+		return id == PicsID;
+	}
+
 	@Transient
 	public boolean isContractor() {
 		return "Contractor".equals(type);
@@ -388,6 +394,15 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	@Transient
 	public boolean isCorporate() {
 		return "Corporate".equals(type);
+	}
+
+	/**
+	 * Is Operator or Corporate
+	 * @return
+	 */
+	@Transient
+	public boolean isOperatorCorporate() {
+		return isOperator() || isCorporate();
 	}
 
 	@Override

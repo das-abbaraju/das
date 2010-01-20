@@ -1062,11 +1062,6 @@
 			<result>struts/users/users_manage.jsp</result>
 		</action>
 
-		<action name="UserSave"
-			class="com.picsauditing.actions.users.UserSave">
-			<result>struts/users/users_manage.jsp</result>
-		</action>
-
 		<action name="UserAccessSaveAjax"
 			class="com.picsauditing.actions.users.UserAccessSave">
 			<result>struts/users/user_save_permissions.jsp</result>
