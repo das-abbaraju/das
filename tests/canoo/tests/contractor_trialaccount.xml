@@ -190,7 +190,6 @@
 								</group>
 								<group description="Switch to Contractor">
 									<clickLink href="UsersManage.action"/>
-									<clickLink label="John Doe"/>
 									<clickLink label="Switch to this User"/>	
 								</group>
 								<group description="Verify Tasks, PQF Categories">
