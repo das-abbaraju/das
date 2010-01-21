@@ -19,7 +19,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
@@ -104,14 +103,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				permissions.setTimeZone(u);
 				ActionContext.getContext().getSession().put("permissions", permissions);
 				u = dao.save(u);
-
-				if (u.getAccount().isContractor()) {
-					ContractorAccount contractor = (ContractorAccount) u.getAccount();
-					contractor.setContact(u.getName());
-					contractor.setEmail(u.getEmail());
-					contractor.setPhone(u.getPhone());
-					accountDao.save(contractor);
-				}
 
 				addActionMessage("Your profile was saved successfully");
 			}
