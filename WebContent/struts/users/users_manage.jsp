@@ -229,7 +229,12 @@ div.autocomplete ul li {
 		&nbsp;&nbsp;
 		<a href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>">Permissions Matrix</a>
 	</s:if>
+	<s:if test="account.contractor && account.users.size() > 1">
+		&nbsp;&nbsp;
+		<a href="ManageUserPermissions.action?accountId=<s:property value="accountId"/>">Manage User Permissions</a>
+	</s:if>
 	<br />
+	<s:if test="account.users.size() > 1">
 	<table class="report">
 		<thead>
 		<tr>
@@ -268,6 +273,7 @@ div.autocomplete ul li {
 		</tr>
 	</s:iterator>
 	</table>
+	</s:if>
 </td>
 <td id="editUser" class="blueMain" style="padding-left: 20px; vertical-align: top;">
 
