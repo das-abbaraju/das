@@ -19,14 +19,10 @@ function countryChanged(country) {
 }
 
 $(function() {
-	showPrimaryContactInfo(<s:property value="operator.primaryContact.id"/>);
 	changeState($("#opCountry").val());
 	$('.datepicker').datepicker();
 });
 
-function showPrimaryContactInfo(user) {
-	$('#contact_info').load('ContactInfoAjax.action',{userid: user});
-}
 </script>
 </head>
 <body>
@@ -71,11 +67,9 @@ function showPrimaryContactInfo(user) {
 					name="contactID"
 					listKey="id"
 					listValue="name"
-					value="%{operator.primaryContact.id}"
-					onchange="showPrimaryContactInfo(this.value)"/>
-					<a href="http://www.picsauditing.com/UsersManage.action?button=newUser&accountId=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+					value="%{operator.primaryContact.id}"/>
+					<a href="UsersManage.action?button=newUser&accountId=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 				</li>
-				<li id="contact_info"></li>
 				<li><label>Industry:</label> <s:select list="industryList"
 					name="operator.industry" listValue="description" /></li>
 			</ol>
@@ -98,6 +92,8 @@ function showPrimaryContactInfo(user) {
 				<li id="state_li"></li>
 				<li><label>Zip:</label> <s:textfield name="operator.zip"
 					size="7" /></li>
+				<li><label>Main Phone:</label><s:textfield name="operator.phone" /></li>
+				<li><label>Main Fax:</label><s:textfield name="operator.fax" /></li>
 				<li><label>Web URL:</label> <s:textfield name="operator.webUrl"
 					size="30" /></li>
 			</ol>
