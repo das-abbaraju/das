@@ -47,30 +47,36 @@
 
 						<ifStep>
 							<condition>
-						<setSelectField htmlId="newPermissionSelect" text="View Bid Only Account Contractors"/>
-						<sleep seconds="5"/>
+								<setSelectField htmlId="newPermissionSelect" text="View Bid Only Account Contractors"/>
+								<sleep seconds="3"/>
 							</condition>
-						<clickButton />							
+							<clickButton htmlId="permButton"/>						
 						</ifStep>
 					</group>
 
 					<group description="Add View UnApproved Contractors">
 						<ifStep>
 							<condition>
-						<setSelectField htmlId="newPermissionSelect" text="View UnApproved Contractors"/>
-							<sleep seconds="5"/>
+							<setSelectField htmlId="newPermissionSelect" text="View UnApproved Contractors"/>
+							<sleep seconds="3"/>
 							</condition>
 								<clickButton htmlId="permButton"/>
 						</ifStep>
 					</group>
 										
-							<group description="Add Insurance Approval">
-							<setSelectField htmlId="newPermissionSelect" text="Insurance Approval"/>
+					<group description="Add Insurance Approval">
+						<ifStep>
+							<condition>
+								<setSelectField htmlId="newPermissionSelect" text="Insurance Approval"/>
+								<sleep seconds="3"/>
+							</condition>		
 							<clickButton htmlId="permButton"/>
+						</ifStep>	
 							</group>
 														
 							<group description="Add Insurance Certificates">
 							<setSelectField htmlId="newPermissionSelect" text="Insurance Certificates"/>
+							<sleep seconds="3"/>
 							<clickButton htmlId="permButton"/>	
 							</group>
 				</group>
@@ -78,22 +84,13 @@
 				<group description="Verify Reports">	
 					<clickLink label="Switch to this User"/>
 					
-					<storeProperty 
-					name="report_link" 
-					value="Bid Only Account" />
+					<storeProperty name="report_link" value="Bid Only Account" />
 					&click_report;
 
-					<storeProperty 
-					name="report_link" 
-					value="Contractor Policies" />
+					<storeProperty name="report_link" value="Contractor Policies" />
 					&click_report;
 
-					<storeProperty 
-					name="report_link" 
-					value="Policies Awaiting Decision" />
-					&click_report;
-				</group>	
-			
+				</group>			
 		    </steps>
 		</webtest>
 	</target>
