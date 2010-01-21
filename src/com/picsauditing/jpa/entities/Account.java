@@ -63,7 +63,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
-	protected List<User> users;
+	protected List<User> users = new ArrayList<User>();
 	protected List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 
 	@Transient
@@ -433,7 +433,10 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		return primaryContact;
 	}
 
-	public void setPrimaryContact(User contactID) {
-		this.primaryContact = contactID;
+	public void setPrimaryContact(User user) {
+		this.primaryContact = user;
+		
+		if (!users.contains(user))
+			users.add(user);
 	}
 }

@@ -32,17 +32,6 @@ public class ContractorValidator {
 		else if (contractor.getName().length() < 3)
 			errorMessages.addElement("Your company name must be at least 3 characters long.");
 
-		// Contact and Address info
-		if (contractor.getPrimaryContact() == null)
-			errorMessages.addElement("Please fill in the primary contact information");
-		else {
-			if (Strings.isEmpty(contractor.getPrimaryContact().getName()))
-				errorMessages.addElement("Please fill in the Contact field.");
-			if (!Utilities.isValidEmail(contractor.getPrimaryContact().getEmail()))
-				errorMessages
-						.addElement("Please enter a valid email address. This is our main way of communicating with you.");
-		}
-
 		if (Strings.isEmpty(contractor.getAddress()))
 			errorMessages.addElement("Please fill in the Address field.");
 		if (Strings.isEmpty(contractor.getCity()))
@@ -80,6 +69,12 @@ public class ContractorValidator {
 		else if (!verifyUsername(user))
 			errorMessages.addElement("Username already exists. Please type another.");
 
+		if (Strings.isEmpty(user.getName()))
+				errorMessages.addElement("Please fill in the Primary Contact Name");
+		if (!Utilities.isValidEmail(user.getEmail()))
+				errorMessages
+						.addElement("Please enter a valid email address. This is our main way of communicating with you.");
+		
 		// Passwords
 		if (!Strings.isEmpty(password2)) {
 			// They are trying to set/reset the password

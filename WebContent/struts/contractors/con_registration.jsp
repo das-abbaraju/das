@@ -17,7 +17,7 @@ function checkUsername(username) {
 }
 
 function checkTaxId(taxId) {
-	startThinking({div:'taxId_status', message: ' checking availability of taxId...'});
+	startThinking({div:'taxId_status', message: ' checking availability of Tax ID...'});
 	var data = {taxId: taxId, button: 'taxId', country: $('#contractorCountry').val()};
 	$('#taxId_status').load('ContractorValidateAjax.action', data);
 }
@@ -59,7 +59,7 @@ $(function(){
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
-					<legend><span>Details</span></legend>
+					<legend><span>Company Details</span></legend>
 					<ol>
 						<li><label>Company Name:</label>
 							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/><span class="redMain">*</span>
@@ -83,18 +83,9 @@ $(function(){
 						<li><label>Web URL:</label> 
 							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
 						<li><label>Phone:</label>
-							<s:textfield name="contractor.phone" size="35" /><span class="redMain">*</span></li>
+							<s:textfield name="contractor.phone" size="20" /><span class="redMain">*</span></li>
 						<li><label>Fax:</label>
-							<s:textfield name="contractor.fax" size="35" /></li>
-					</ol>
-				</fieldset>
-				<fieldset class="form">
-					<legend><span>Primary Contact</span></legend>
-					<ol>
-						<li><label>Name:</label>
-							<s:textfield name="user.name" size="35" /><span class="redMain">*</span></li>
-						<li><label>Email:</label>
-							<s:textfield name="user.email" size="35" /><span class="redMain">* We send vital information to this email</span></li>
+							<s:textfield name="contractor.fax" size="20" /></li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
@@ -107,8 +98,8 @@ $(function(){
 						<li><label>Country:</label> <input type="text" disabled="disabled" id="country_display"/></li>
 						<li id="state_li">
 						</li>
-						<li><label>Zip:</label>
-							<s:textfield name="contractor.zip" size="35" /><span class="redMain">*</span></li>
+						<li><label>Zip/Postal Code:</label>
+							<s:textfield name="contractor.zip" size="10" /><span class="redMain">*</span></li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
@@ -126,18 +117,23 @@ $(function(){
 					<legend><span>Company Identification</span></legend>
 					<ol>
 						<li><label>Description:</label>
-							<s:textarea name="contractor.description" cols="40" rows="15" />
+							<s:textarea name="contractor.description" cols="60" rows="15" />
 							<br/>Include up to 2000 words to describe your company. 
                        		<br>
-                       		<span class="blueMain">Suggestion:</span> copy and paste text from the &quot;about&quot; section 
-                     			on your website or company brochure.
+                       		<span class="blueMain">Suggestion:</span> Copy and paste text from the &quot;About&quot; section 
+                     			on your web site or company brochure.
 						</li>
 					</ol>
 				</fieldset>
-				<fieldset class="form"><legend><span>Login Information</span></legend>
+				<fieldset class="form">
+					<legend><span>Primary Contact</span></legend>
 					<ol>
+						<li><label>Name:</label>
+							<s:textfield name="user.name" size="20" /><span class="redMain">*</span></li>
+						<li><label>Email:</label>
+							<s:textfield name="user.email" size="35" /><span class="redMain">* We send vital information to this email</span></li>
 						<li><label>Username:</label>
-					 		<s:textfield name="user.username" onblur="checkUsername(this.value);"/>
+					 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
 					 		<span id="username_status"></span><span class="redMain">* Please type in your desired user name</span>
 					 	</li>
 						<li><label>Password:</label> 
@@ -146,6 +142,7 @@ $(function(){
 						<li><label>Confirm Password:</label> 
 							<s:password name="confirmPassword"/>
 						</li>
+						<li>You'll have the opportunity to create more users later.</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form submit">

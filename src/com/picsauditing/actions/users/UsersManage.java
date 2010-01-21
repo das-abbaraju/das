@@ -82,7 +82,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		permissions.tryPermission(OpPerms.EditUsers);
+		if (permissions.isContractor())
+			permissions.tryPermission(OpPerms.ContractorAdmin);
+		else
+			permissions.tryPermission(OpPerms.EditUsers);
 
 		if (account == null) {
 			// This would happen if I'm looking at my own account, but not a user yet

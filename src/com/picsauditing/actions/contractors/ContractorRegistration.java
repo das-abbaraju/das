@@ -105,6 +105,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			// Need to perform a save to create a user id for 
 			// seeding the password.
 			user.setEncryptedPassword(user.getPassword());
+			userDAO.save(user);
 			
 			user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);

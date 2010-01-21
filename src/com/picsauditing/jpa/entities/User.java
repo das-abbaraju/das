@@ -600,6 +600,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public UserAccess addOwnedPermissions(OpPerms opPerm, int grantorID) {
 		UserAccess ua = new UserAccess();
 		ua.setUser(this);
+		ua.setOpPerm(opPerm);
 		ua.setViewFlag(opPerm.usesView());
 		ua.setEditFlag(opPerm.usesEdit());
 		ua.setDeleteFlag(opPerm.usesDelete());
