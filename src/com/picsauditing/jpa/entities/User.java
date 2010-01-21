@@ -590,4 +590,23 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setEncryptedPassword(String unencryptedPassword) {
 		this.setPassword(Strings.hash(unencryptedPassword + this.getId()));
 	}
+
+	/**
+	 * Grants all allowable permission types for this OpPerm
+	 * @param opPerm
+	 * @param grantorID who is granting the permission
+	 * @return
+	 */
+	public UserAccess addOwnedPermissions(OpPerms opPerm, int grantorID) {
+		UserAccess ua = new UserAccess();
+		ua.setUser(this);
+		ua.setViewFlag(opPerm.usesView());
+		ua.setEditFlag(opPerm.usesEdit());
+		ua.setDeleteFlag(opPerm.usesDelete());
+		ua.setGrantFlag(true);
+		ua.setLastUpdate(new Date());
+		ua.setGrantedBy(new User(grantorID));
+		ownedPermissions.add(ua);
+		return ua;
+	}
 }

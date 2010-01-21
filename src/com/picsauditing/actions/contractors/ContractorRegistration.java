@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -92,21 +93,27 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.setNaics(new Naics());
 			contractor.getNaics().setCode("0");
 			contractor.setNaicsValid(false);
-			contractor = accountDao.save(contractor);
+			accountDao.save(contractor);
+			
+			user.setPhone(contractor.getPhone());
 			user.setIsActive(YesNo.Yes);
 			user.setAccount(contractor);
 			user.setAuditColumns(new User(User.CONTRACTOR));
 			user.setIsGroup(YesNo.No);
-			user.setName(contractor.getContact());
-			user.setEmail(contractor.getEmail());
-			user = userDAO.save(user);
-			// Need to perform a save to create a user id for seeding the
-			// password.
-			// Initial password is stored unencrypted.
-			user.setEncryptedPassword(user.getPassword());
 			userDAO.save(user);
-			contractor.setUsers(new ArrayList<User>());
-			contractor.getUsers().add(user);
+			// Initial password is stored unencrypted.
+			// Need to perform a save to create a user id for 
+			// seeding the password.
+			user.setEncryptedPassword(user.getPassword());
+			
+			user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
+			user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
+			user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
+			user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
+			userDAO.save(user);
+			
+			contractor.setPrimaryContact(user);
+			accountDao.save(contractor);
 
 			// Create a blank PQF for this contractor
 			ContractorAudit audit = new ContractorAudit();
