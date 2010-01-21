@@ -356,7 +356,7 @@
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/users/operator_users.jsp</result>
 		</action>
-
+		
 		<!--  NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes"
 			class="com.picsauditing.actions.notes.OperatorNotes">
@@ -1061,6 +1061,7 @@
 			class="com.picsauditing.actions.users.UserAccessSave">
 			<result>struts/users/user_save_permissions.jsp</result>
 		</action>
+		
 		<action name="UserAccessUpdateAjax"
 			class="com.picsauditing.actions.users.UserAccessUpdate">
 			<result>struts/blank.jsp</result>
@@ -1077,8 +1078,15 @@
 			</result>
 		</action>
 
-
-
+		<action name="ManageUserPermissions"
+			class="com.picsauditing.actions.users.ManageUserPermissions">
+			<result>/struts/users/user_manage_permissions.jsp</result>
+		</action>
+		
+		<action name="ManageUserPermissionsAjax"
+			class="com.picsauditing.actions.users.UserAccessSave">
+			<result>struts/blank.jsp</result>
+		</action>
 
 
 		<!-- Email Wizard/Templates/Mailer -->

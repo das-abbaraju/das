@@ -69,11 +69,21 @@ public class UserAccessSave extends UsersManage {
 				temp.addAll(user.getOwnedPermissions());
 				user.getOwnedPermissions().clear();
 				user.getOwnedPermissions().addAll(temp);
+				output = "Successfully added the " + opPerm.toString() + " permission to " + user.getName();
 			}
 		}
 
 		if ("RemovePerm".equals(button)) {
-			userAccessDAO.remove(accessId);
+			if (accessId > 0)
+				userAccessDAO.remove(accessId);
+			else {
+				for (UserAccess userAccess : userAccessDAO.findByUser(user.getId())) {
+					if (userAccess.getOpPerm().equals(opPerm))
+						userAccessDAO.remove(userAccess.getId());
+				}
+			}
+			
+			output = "Successfully removed the " + opPerm.toString() + " permission from " + user.getName();
 		}
 		return SUCCESS;
 	}
