@@ -38,7 +38,7 @@ public class ManageUserPermissions extends PicsActionSupport implements Preparab
 		if (!forceLogin())
 			return LOGIN;
 
-		if (permissions.isContractor() || permissions.isAdmin()) {
+		if (permissions.isAdmin()) {
 			if (account == null) {
 				if (account.getType().equals("Admin"))
 					account = accountDAO.find(permissions.getAccountId());
@@ -72,7 +72,7 @@ public class ManageUserPermissions extends PicsActionSupport implements Preparab
 
 			return SUCCESS;
 		} else
-			throw new NoRightsException("Contractors or Administration");
+			throw new NoRightsException("Administration");
 	}
 
 	public Account getAccount() {
