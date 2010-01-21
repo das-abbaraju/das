@@ -10,7 +10,7 @@
 	<s:iterator value="loggedContractors">
 		<tr>
 			<td><nobr><s:date name="lastLogin" format="MM/dd hh:mm"/></nobr></td>
-			<td><s:property value="contact"/></td>
+			<td><s:property value="primaryContact.name"/></td>
 			<td><a href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name"/></a></td>
 		</tr>
 	</s:iterator>
