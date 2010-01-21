@@ -58,7 +58,13 @@
 							</ifStep>
 						</group>
 						<group description="Confirm Audit">
-							<setRadioButton description="Check radio button conAudit.needsCamera: true" name="conAudit.needsCamera" value="true"/>
+							<ifStep>
+								<condition>
+									<verifyText text="Video Camera"/>
+								</condition>	
+								<setRadioButton description="Check radio button conAudit.needsCamera: true" name="conAudit.needsCamera" value="true"/>
+							</ifStep>
+							
 							<setCheckbox name="confirmed"/>
 							<setCheckbox htmlId="ScheduleAudit_confirmed"/>
 							<clickButton label="Confirm Audit"/>
