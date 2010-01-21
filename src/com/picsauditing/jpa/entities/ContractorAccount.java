@@ -923,7 +923,7 @@ public class ContractorAccount extends Account implements JSONable {
 		for(User user : getUsers()) {
 			// TJA - not sure how null users are getting into the list but on registration it happens
 			if(user != null && user.isActiveB()) {
-				for(UserAccess userAccess : user.getPermissions()) {
+				for(UserAccess userAccess : user.getOwnedPermissions()) {
 					if(userAccess.getOpPerm().equals(opPerms)) {
 						users.add(user);
 					}
