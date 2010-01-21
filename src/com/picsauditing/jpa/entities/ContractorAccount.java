@@ -921,7 +921,8 @@ public class ContractorAccount extends Account implements JSONable {
 	public List<User> getUsersByRole(OpPerms opPerms) {
 		List<User> users = new ArrayList<User>(); 
 		for(User user : getUsers()) {
-			if(user.isActiveB()) {
+			// TJA - not sure how null users are getting into the list but on registration it happens
+			if(user != null && user.isActiveB()) {
 				for(UserAccess userAccess : user.getPermissions()) {
 					if(userAccess.getOpPerm().equals(opPerms)) {
 						users.add(user);

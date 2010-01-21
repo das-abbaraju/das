@@ -129,7 +129,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(2); // Welcome Email
-			emailBuilder.setContractor(contractor);
+			emailBuilder.setUser(user);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(90);
 			EmailSender.send(emailQueue);
