@@ -62,7 +62,7 @@ $(function() {
 			<ol>
 				<li><label>Name:</label> <s:textfield name="operator.name"
 					size="35" /></li>
-				<li><label>Primary Contact:</label> <s:select
+				<s:if test="id > 0"><li><label>Primary Contact:</label> <s:select
 					list="primaryOperatorContactUsers"
 					name="contactID"
 					listKey="id"
@@ -70,6 +70,7 @@ $(function() {
 					value="%{operator.primaryContact.id}"/>
 					<a href="UsersManage.action?button=newUser&accountId=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 				</li>
+				</s:if>
 				<li><label>Industry:</label> <s:select list="industryList"
 					name="operator.industry" listValue="description" /></li>
 			</ol>
