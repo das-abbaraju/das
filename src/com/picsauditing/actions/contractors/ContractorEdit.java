@@ -385,6 +385,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
 	}
+	
+	public LowMedHigh getRiskLevel() {
+		return contractor.getRiskLevel();
+	}
 
 	public void setRiskLevel(LowMedHigh riskLevel) {
 		String userName = userDAO.find(permissions.getUserId()).getName();
