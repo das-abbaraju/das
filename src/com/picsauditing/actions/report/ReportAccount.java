@@ -72,13 +72,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (download) {
 			getFilter().setPrimaryInformation(true);
 		}
-
+		
+		sql.addField("a.phone");
 		sql.addField("a.fax");
 		sql.addField("a.creationDate");
 		sql.addField("c.riskLevel");
-		sql.addField("c.billingContact");
-		sql.addField("c.billingPhone");
-		sql.addField("c.billingEmail");
 
 		addFilterToSQL();
 	}
@@ -95,17 +93,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 500);
 		excelSheet.addColumn(new ExcelColumn("riskLevel", "Risk Level", ExcelCellType.Enum));
 		if (isShowContact()) {
-			excelSheet.addColumn(new ExcelColumn("contact", "Primary Contact"));
-			excelSheet.addColumn(new ExcelColumn("email", "Email"));
+			excelSheet.addColumn(new ExcelColumn("contactname", "Primary Contact"));
+			excelSheet.addColumn(new ExcelColumn("contactphone", "Phone"));
+			excelSheet.addColumn(new ExcelColumn("contactemail", "Email"));
 			excelSheet.addColumn(new ExcelColumn("address", "Address"));
 			excelSheet.addColumn(new ExcelColumn("city", "City"));
 			excelSheet.addColumn(new ExcelColumn("state", "State"));
 			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code", ExcelCellType.Integer));
-			excelSheet.addColumn(new ExcelColumn("phone", "Phone"));
-			excelSheet.addColumn(new ExcelColumn("phone2", "Second Phone"));
-			excelSheet.addColumn(new ExcelColumn("secondContact", "Secondary Contact"));
-			excelSheet.addColumn(new ExcelColumn("secondPhone", "Secondary Contact Phone"));
-			excelSheet.addColumn(new ExcelColumn("secondEmail", "Secondary Contact Email"));
 			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
 		}
 		if (isShowTrade()) {
@@ -114,10 +108,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			excelSheet.addColumn(new ExcelColumn("tradesSelf", "Self Performed"));
 			excelSheet.addColumn(new ExcelColumn("tradesSub", "Sub Contracted"));
 		}
+		excelSheet.addColumn(new ExcelColumn("phone", "Corporate Phone"));
 		excelSheet.addColumn(new ExcelColumn("fax", "Fax Number"));
-		excelSheet.addColumn(new ExcelColumn("billingContact", "Billing Contact"));
-		excelSheet.addColumn(new ExcelColumn("billingPhone", "Billing Phone"));
-		excelSheet.addColumn(new ExcelColumn("billingEmail", "Billing Email"));
 
 		// Add these to the beginning
 		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
@@ -227,17 +219,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
 		if (f.isPrimaryInformation()) {
-			sql.addField("a.contact");
-			sql.addField("a.phone");
-			sql.addField("a.phone2");
-			sql.addField("a.email");
+			sql.addField("contact.name AS contactname");
+			sql.addField("contact.phone AS contactphone");
+			sql.addField("contact.email AS contactemail");
 			sql.addField("a.address");
 			sql.addField("a.city");
 			sql.addField("a.state");
 			sql.addField("a.zip");
-			sql.addField("c.secondContact");
-			sql.addField("c.secondPhone");
-			sql.addField("c.secondEmail");
 			sql.addField("a.web_URL");
 		}
 

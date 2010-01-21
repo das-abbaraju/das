@@ -22,6 +22,7 @@ public class SelectAccount extends SelectSQL {
 	public SelectAccount() {
 		super();
 		this.setFromTable("accounts a");
+		this.addJoin("JOIN users contact ON contact.id = a.contactID");
 		this.addField("a.id");
 		this.addField("a.name");
 		this.addField("a.active");
