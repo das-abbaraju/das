@@ -21,7 +21,7 @@
 						
 							<ifStep description="Turn on Bid Only">
 								<condition>
-									<verifyCheckbox htmlId="Accepts Bids:Yes" checked="false"/>
+									<verifyCheckbox htmlId="save_operator_acceptsBids" checked="false"/>
 								</condition>
 								<setCheckbox htmlId="save_operator_acceptsBids"/>
 								<clickButton label="Save"/>
@@ -41,13 +41,38 @@
 				
 				<group description="Add Permissions">
 					<clickLink label="Users"/>
-					<clickLink label="Sandy Synstelien*"/>
-						<group description="Add Permissions">
-						<verifyText description="Verify that text is contained in the page" text="View Bid Only Account Contractors"/>
-						<verifyText description="Verify that text is contained in the page" text="View UnApproved Contractors"/>
-						<verifyText description="Check Permissions" text="Insurance Approval "/>
-						<verifyText description="Check Permissions" text="Insurance Certificates"/>
-				</group>
+					<clickLink label="Sandy Synstelien*"/>	
+							
+					<group description="Add View Bid Only Account Contractors">
+
+						<ifStep>
+							<condition>
+						<setSelectField htmlId="newPermissionSelect" text="View Bid Only Account Contractors"/>
+						<sleep seconds="5"/>
+							</condition>
+						<clickButton />							
+						</ifStep>
+					</group>
+
+					<group description="Add View UnApproved Contractors">
+						<ifStep>
+							<condition>
+						<setSelectField htmlId="newPermissionSelect" text="View UnApproved Contractors"/>
+							<sleep seconds="5"/>
+							</condition>
+								<clickButton htmlId="permButton"/>
+						</ifStep>
+					</group>
+										
+							<group description="Add Insurance Approval">
+							<setSelectField htmlId="newPermissionSelect" text="Insurance Approval"/>
+							<clickButton htmlId="permButton"/>
+							</group>
+														
+							<group description="Add Insurance Certificates">
+							<setSelectField htmlId="newPermissionSelect" text="Insurance Certificates"/>
+							<clickButton htmlId="permButton"/>	
+							</group>
 				</group>
 				
 				<group description="Verify Reports">	
