@@ -196,11 +196,8 @@
 									<sleep seconds="3"/>
 									<clickLink label="Pre-Qualification"/>
 									<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
-									<verifyText description="Verify that text is contained in the page" text="0%"/>
 									<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
-									<verifyText description="Verify that text is contained in the page" text="21%"/>
 									<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
-									<verifyText description="Verify that text is contained in the page" text="100%"/>
 								</group>
 								<group description="Verify Flag Page">
 									<clickLink label="Facilities"/>
