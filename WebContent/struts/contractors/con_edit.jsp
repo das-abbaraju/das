@@ -18,14 +18,10 @@ function countryChanged(country) {
 }
 
 $(function() {
-	showPrimaryContactInfo(<s:property value="contractor.primaryContact.id"/>);
 	changeState($("#contractorCountry").val());
 	$('.datepicker').datepicker();
 });
 
-function showPrimaryContactInfo(user) {
-	$('#contact_info').load('ContactInfoAjax.action',{userid: user});
-}
 </script>
 </head>
 <body>
@@ -106,7 +102,6 @@ function showPrimaryContactInfo(user) {
 						listKey="id"
 						listValue="name"
 						value="%{contractor.primaryContact.id}"
-						onchange="showPrimaryContactInfo(this.value)"
 						/>
 					<s:if test="permissions.admin">
 					<a href="UsersManage.action?button=newUser&accountId=<s:property value="getAccount().getId()"/>">Add User</a>
