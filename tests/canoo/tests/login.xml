@@ -4,7 +4,7 @@
 <project name="PICS" default="test">
 	<property name="login.username" value="opman"/>
 	<target name="test">
-		<webtest name="Login: no username or password">
+		<webtest name="Login: No username or password">
 		&config;
 			<steps>
 				<invoke	
@@ -74,7 +74,7 @@
 					value="usernamethatdoesnotexist" />
 				<setInputField description="Set a password"
 					name="password"
-					value="BADPASS" />
+					value="BADPASS"/>
 				<clickButton 
 					label="Login"/>
 				<verifyText description="No account exists with that username"

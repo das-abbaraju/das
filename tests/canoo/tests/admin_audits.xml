@@ -39,8 +39,8 @@
 						<setInputField name="conAudit.contractorContact" value="Joe Smith"/>
 						<setInputField name="conAudit.phone2" value="tester@picsauditing.com"/>
 						<setInputField name="conAudit.phone" value="949-387-1940"/>
-						<setInputField name="conAudit.address" value="1600 Pennsylvania Avenue "/>
-						<setInputField name="conAudit.zip" value="20500"/>
+						<setInputField name="conAudit.address" value="555 Main St"/>
+						<setInputField name="conAudit.zip" value="46112"/>
 						<enableJavaScript enable="true"/>
 						<clickButton label="Verify Address"/>
 						<sleep seconds="5"/>

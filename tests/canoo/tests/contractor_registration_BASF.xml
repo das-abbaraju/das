@@ -28,7 +28,7 @@
 				</ifStep>
 			</steps>
 		</webtest>
-		<webtest name="Contractor Registration - Register">
+		<webtest name="Contractor Registration for BASF - Register">
 			&config;
 			<steps>
 				<invoke url="Login.action" />
@@ -36,39 +36,47 @@
 
 				&body_verify;
 				<group description="Register and Save">
-					<!-- Register Correctly -->
-					<invoke url="ContractorRegistration.action"/>
-					<sleep seconds="2"/>
-					<setInputField name="contractor.name" value="Canoo's Test for BASF"/>
-					<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
-					<setSelectField name="contractor.country.isoCode" text="United States"/>
-					<setInputField name="contractor.contact" value="John Doe"/>
-					<setInputField name="contractor.webUrl" value="www.picsauditing.com/canoo"/>
-					<setInputField name="contractor.taxId" value="789456123"/>
-					<sleep seconds="2"/>
-					<setInputField name="contractor.address" value="123 Main Street"/>
-					<setInputField name="contractor.city" value="Tester"/>
-					<setSelectField name="contractor.state.isoCode" text="Kansas"/>
-					<setInputField name="contractor.zip" value="54321"/>
-					<setInputField name="contractor.phone" value="949-123-4567"/>
-					<setInputField name="contractor.phone2" value="949-123-4567"/>
-					<setInputField name="contractor.fax" value="949-123-4568"/>
-					<setInputField name="contractor.email" value="tester@picsauditing.com"/>
-					<setInputField name="contractor.secondContact" value="Second Contact"/>
-					<setInputField name="contractor.secondPhone" value="949-123-4567"/>
-					<setInputField name="contractor.secondEmail" value="tester@picsauditing.com"/>
-					<setInputField name="contractor.billingContact" value="Billing Contact"/>
-					<setInputField name="contractor.billingPhone" value="949-123-4567"/>
-					<setInputField name="contractor.billingEmail" value="tester@picsauditing.com"/>
-					<setSelectField name="contractor.industry" text="Power"/>
-					<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
-					<setInputField name="contractor.description" value="This is a test account from Canoo webtest. Please delete me."/>
-					<setInputField name="user.username" value="canoo_contractor_BASF"/>
-					<setInputField description="Set password field password: bigboy11" name="password" value="bigboy11"/>
-					<setInputField description="Set password field confirmPassword: bigboy11" name="confirmPassword" value="bigboy11"/>
-					<clickButton label="Create Account"/>
-					&body_verify;
-				</group>
+									<!-- Register Correctly -->
+									<invoke url="ContractorRegistration.action"/>
+									<sleep seconds="2"/>
+									
+									<group description="Company Details">
+										<setInputField name="contractor.name" value="Canoo's Test for BASF"/>
+										<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
+										<setSelectField name="contractor.country.isoCode" text="United States"/>
+										<setInputField name="contractor.taxId" value="789456123"/>
+										<setInputField name="contractor.webUrl" value="www.picsauditing.com/canoo"/>
+										<setInputField name="contractor.phone" value="949-123-4567"/>
+										<setInputField name="contractor.fax" value="949-123-4568"/>
+										<sleep seconds="2"/>
+									</group>
+										<group description="Primary Address">
+										<setInputField name="contractor.address" value="123 Main Street"/>
+										<setInputField name="contractor.city" value="Tester"/>
+										<setSelectField name="contractor.state.isoCode" text="Kansas"/>
+										<setInputField name="contractor.zip" value="54321"/>
+									</group>
+									<group description="Industry Details">	
+										<setSelectField name="contractor.industry" text="Power"/>
+										<setSelectField name="contractor.mainTrade" text="Boiler Repair"/>
+									</group>
+									<group description="Company Identification">
+										<setInputField name="contractor.description" 
+													   value="This tests the typical registration for a contractor who is 
+															  registering for multiple facilities. This is a test account from Canoo webtest. Please delete me."/>
+									</group>
+									<group description="Primary Contact">
+										<setInputField name="user.name" value="John Doe"/>
+										<setInputField name="user.email" value="tester@picsauditing.com"/>
+										<setInputField name="user.username" value="canoo_contractor_BASF"/>
+										<setInputField description="@Irvine1" name="password" value="@Irvine1"/>
+										<setInputField description="@Irvine1" name="confirmPassword" value="@Irvine1"/>
+									</group>
+									
+									<clickButton label="Create Account"/>
+									
+									&body_verify;
+								</group>
 				<group description="Services Performed">
 					<setRadioButton description="Works with heavy machinery" htmlId="answerq2442Yes"/>
 					<sleep seconds="2"/>

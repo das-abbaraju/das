@@ -28,7 +28,7 @@
 	</target>
 
 	<target name="adhoc" description="Run a few tests when debugging">
-		<ant antfile="contractor_edit.xml"/>
+		<ant antfile="operator_config.xml"/>
 	</target>
 	
 	<target name="live_fixer" description="Run a Quick Fix routine on Live">
