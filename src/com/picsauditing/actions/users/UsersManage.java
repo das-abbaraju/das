@@ -164,7 +164,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 
 			// Send activation email if set
-			if (sendActivationEmail) {
+			if (sendActivationEmail && user.getId() == 0) {
 				try {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setFromAddress(permissions.getEmail());
