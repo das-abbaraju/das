@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
@@ -328,6 +329,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	}
 
 	@OneToMany(mappedBy = "account")
+	@OrderBy(clause="id ASC")
 	public List<User> getUsers() {
 		return users;
 	}
