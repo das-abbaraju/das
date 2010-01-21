@@ -50,8 +50,6 @@ public class ReportUser extends ReportActionSupport {
 			this.mailMerge = true;
 		}
 
-		sql.addField("u.tableType");
-		sql.addField("u.columnType");
 		sql.addField("u.accountID");
 		sql.addField("u.name");
 		sql.addField("u.creationDate");

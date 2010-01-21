@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.PaymentApplied;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
 
@@ -317,5 +318,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			ccNumber = creditCard.getCardNumber();
 		} catch (Exception e) {}
 		return ccNumber;
+	}
+	
+	public User getBillingUser() {
+		return contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
 	}
 }

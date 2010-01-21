@@ -119,10 +119,8 @@ input[type=submit] {
 				</tr>
 				<tr>
 					<td><s:property value="contractor.name" /><br />
-					<s:if test="contractor.billingContact.length() > 0">
-						c/o <s:property value="contractor.billingContact" />
+						c/o <s:property value="billingUser.name" />
 						<br />
-					</s:if>
 					<s:if test="contractor.billingAddress.length() > 0">
 						<s:property value="contractor.billingAddress" /><br />
 						<s:property value="contractor.billingCity" />, <s:property value="contractor.billingState.isoCode" />
