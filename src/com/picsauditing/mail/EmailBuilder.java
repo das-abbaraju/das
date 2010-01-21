@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
@@ -106,8 +107,11 @@ public class EmailBuilder {
 
 	public void setContractor(ContractorAccount contractor) {
 		addToken("contractor", contractor);
-		toAddresses = contractor.getEmail();
-		ccAddresses = contractor.getSecondEmail();
+		toAddresses = contractor.getPrimaryContact().getEmail();
+		List<User> users = contractor.getUsersByRole(OpPerms.ContractorAdmin); 
+		if(users.size() > 1) {
+			ccAddresses = users.get(1).getEmail();
+		}
 		conID = contractor.getId();
 	}
 
