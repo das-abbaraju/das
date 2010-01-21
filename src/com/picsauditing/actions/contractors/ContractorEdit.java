@@ -173,10 +173,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					contractor.setNeedsRecalculation(true);
 					contractor.setNameIndex();
 
-					if(contactID > 0 && contactID != contractor.getPrimaryContact().getId()){
+					if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
 						contractor.setPrimaryContact(new User(contactID));
 					}
-					
+
 					contractor = accountDao.save(contractor);
 
 					addActionMessage("Successfully modified " + contractor.getName());
@@ -384,5 +384,26 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
+	}
+
+	public void setRiskLevel(LowMedHigh riskLevel) {
+		String userName = userDAO.find(permissions.getUserId()).getName();
+		String newRiskLevel = riskLevel.toString();
+		String oldRiskLevel = contractor.getRiskLevel().toString();
+		if (oldRiskLevel.equals("Med"))
+			oldRiskLevel = "Medium";
+		if (newRiskLevel.equals("Med"))
+			newRiskLevel = "Medium";
+		
+		Note note = new Note();
+		note.setAccount(contractor);
+		note.setAuditColumns(permissions);
+		note.setSummary(userName + " changed the risk level to " + newRiskLevel + " from " + oldRiskLevel);
+		note.setNoteCategory(NoteCategory.General);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.EVERYONE);
+
+		contractor.setRiskLevel(riskLevel);
+		noteDAO.save(note);
 	}
 }

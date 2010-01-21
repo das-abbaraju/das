@@ -178,7 +178,7 @@ function showPrimaryContactInfo(user) {
 					</li>
 					<pics:permission perm="RiskRank">
 						<li><label>Risk Level:</label>
-							<s:radio list="riskLevelList" name="contractor.riskLevel" theme="pics" />
+							<s:radio list="riskLevelList" name="riskLevel" theme="pics" />
 						</li>
 					</pics:permission>
 					<li><label>Tax ID:</label>
