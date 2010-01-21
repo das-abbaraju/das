@@ -205,11 +205,6 @@
 			<result>struts/contractors/con_registration.jsp</result>
 		</action>
 
-		<action name="ContactInfoAjax"
-			class="com.picsauditing.actions.ContactInfo">
-			<result>struts/contractors/contact_info.jsp</result>
-		</action>
-
 		<action name="StateListAjax"
 			class="com.picsauditing.actions.StateList">
 			<result>struts/contractors/con_country.jsp</result>
