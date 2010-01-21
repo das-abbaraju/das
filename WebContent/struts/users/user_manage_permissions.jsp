@@ -40,10 +40,10 @@ function savePerm(userID, permType, isChecked) {
 		<tr>
 			<td>&nbsp;</td>
 			<td>User</td>
-			<td>Admin</td>
-			<td>Billing</td>
-			<td>Safety</td>
-			<td>Insurance</td>
+			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/></td>
+			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></td>
+			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/></td>
+			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></td>
 		</tr>
 	</thead>
 	<tbody>

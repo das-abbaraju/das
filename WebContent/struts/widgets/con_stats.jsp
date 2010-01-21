@@ -12,8 +12,9 @@
 <p><label>Address:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property value="contractor.zip" /></p>
 <p><label>Account Since:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
-<p><label>Primary Contact:</label> <s:property value="contractor.contact" /></p>
-<p><label>Primary Email:</label> <s:property value="contractor.email" /></p>
+<p><label>Primary Contact:</label> <s:property value="contractor.primaryContact.name" /></p>
+<p><label>Primary Phone:</label> <s:property value="contractor.primaryContact.phone" /></p>
+<p><label>Primary Email:</label> <s:property value="contractor.primaryContact.email" /></p>
 <s:if test="contractor.auditor.name != null">
 	<p><label>Assigned Representative:</label> <s:property value="contractor.auditor.name" /></p>
 	<p><label>Representative's Email:</label> <s:property value="contractor.auditor.email" /></p>
