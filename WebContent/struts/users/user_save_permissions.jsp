@@ -45,7 +45,7 @@
 		<tr>
 			<td colspan="6">
 			<div class="buttons" id="addPermissionButton">
-				<button name="button" onclick="addPermission();">Add</button>
+				<button name="button" onclick="addPermission();" id="permButton">Add</button>
 			</div>
 			<s:select id="newPermissionSelect" list="grantablePermissions"
 				listValue="description" name="opPerm" headerKey="" headerValue="- Add Permission -" 
