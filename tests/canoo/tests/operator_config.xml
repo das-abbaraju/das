@@ -74,10 +74,14 @@
 						</ifStep>	
 							</group>
 														
-							<group description="Add Insurance Certificates">
-							<setSelectField htmlId="newPermissionSelect" text="Insurance Certificates"/>
-							<sleep seconds="3"/>
-							<clickButton htmlId="permButton"/>	
+						<group description="Add Insurance Certificates">
+							<ifStep>
+								<condition>
+									<setSelectField htmlId="newPermissionSelect" text="Insurance Certificates"/>
+									<sleep seconds="3"/>
+								</condition>	
+							<clickButton htmlId="permButton"/>
+							</ifStep>	
 							</group>
 				</group>
 				
