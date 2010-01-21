@@ -78,12 +78,12 @@ public class UserAccessSave extends UsersManage {
 				userAccessDAO.remove(accessId);
 			else {
 				for (UserAccess userAccess : userAccessDAO.findByUser(user.getId())) {
-					if (userAccess.getOpPerm().equals(opPerm))
+					if (userAccess.getOpPerm().equals(opPerm)) {
 						userAccessDAO.remove(userAccess.getId());
+						output = "Successfully removed the " + opPerm.toString() + " permission from " + user.getName();
+					}	
 				}
 			}
-			
-			output = "Successfully removed the " + opPerm.toString() + " permission from " + user.getName();
 		}
 		return SUCCESS;
 	}
