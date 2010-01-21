@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -12,6 +13,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class EventSubscriptionBuilder {
@@ -70,15 +72,12 @@ public class EventSubscriptionBuilder {
 			if (!Strings.isEmpty(contractor.getCcEmail()))
 				emailAddresses.add(contractor.getCcEmail());
 		}
-		if (!Strings.isEmpty(contractor.getBillingEmail()))
-			emailAddresses.add(contractor.getBillingEmail());
-		if (!Strings.isEmpty(contractor.getEmail())) {
-			if (!emailAddresses.contains(contractor.getEmail()))
-				emailAddresses.add(contractor.getEmail());
-		}
-		if (!Strings.isEmpty(contractor.getSecondEmail())) {
-			if (!emailAddresses.contains(contractor.getSecondEmail()))
-				emailAddresses.add(contractor.getSecondEmail());
+		User billing = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
+		if (!Strings.isEmpty(billing.getEmail()))
+			emailAddresses.add(billing.getEmail());
+		if (!Strings.isEmpty(contractor.getPrimaryContact().getEmail())) {
+			if (!emailAddresses.contains(contractor.getPrimaryContact().getEmail()))
+				emailAddresses.add(contractor.getPrimaryContact().getEmail());
 		}
 
 		emailBuilder.setToAddresses(emailAddresses.get(0));

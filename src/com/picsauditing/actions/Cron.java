@@ -21,6 +21,7 @@ import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -448,16 +449,13 @@ public class Cron extends PicsActionSupport {
 		for (Invoice invoice : invoices) {
 			Set<String> emailAddresses = new HashSet<String>();
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
-
-			if (!Strings.isEmpty(cAccount.getBillingEmail()))
-				emailAddresses.add(cAccount.getBillingEmail());
+			
+			User billing = cAccount.getUsersByRole(OpPerms.ContractorBilling).get(0);
+			if (!Strings.isEmpty(billing.getEmail()))
+				emailAddresses.add(billing.getEmail());
 			if (!Strings.isEmpty(cAccount.getCcEmail()))
 				emailAddresses.add(cAccount.getCcEmail());
 
-			if (DateBean.getDateDifference(invoice.getDueDate()) < 0) {
-				if (!Strings.isEmpty(cAccount.getSecondEmail()))
-					emailAddresses.add(cAccount.getSecondEmail());
-			}
 			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
 				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questions);
 				for (AuditData auditData : aList) {
@@ -501,7 +499,7 @@ public class Cron extends PicsActionSupport {
 			email.setPriority(30);
 			emailQueueDAO.save(email);
 
-			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getEmail(), NoteCategory.General);
+			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(), NoteCategory.General);
 		}
 	}
 
