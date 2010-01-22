@@ -18,8 +18,8 @@ and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
 
--- remove old password reminder email template
-delete from email_template where id = 24;
+-- remove old password reminder email template for Contractor and User
+delete from email_template where id IN (3,24);
 
 update email_template set body = 'Attn: <DisplayName>
 This is an automatically generated email that will allow you to set or reset your password. Please click the following link and set your password on the following page.
@@ -45,3 +45,19 @@ Have a great week,
 
 -- Deleting the permissions "CHANGE PASSWORD" FROM THE UserAccess
 delete from useraccess where accessType = 'ChangePassword'; 
+
+
+-- Updating the tokens on the Emails
+update token set velocityCode = '${contractor.primaryContact.email}'
+where id = 2; --PrimaryEmail
+
+update token set velocityCode = '${contractor.primaryContact.name}'
+where id = 3; --ContactName
+
+update token set velocityCode = '${contractor.primaryContact.username}'
+where id = 9; --Username
+
+update token set velocityCode = '${contractor.primaryContact.phone}'
+where id = 23; --PrimaryPhone
+
+delete from token where tokenId = 4 and tokenName = 'BillingEmail';

@@ -49,6 +49,7 @@ public class EventSubscriptionBuilder {
 		emailBuilder.setTemplate(45);
 		emailBuilder.setContractor(contractor);
 		emailBuilder.addToken("invoice", invoice);
+		emailBuilder.addToken("billingUser", contractor.getUsersByRole(OpPerms.ContractorBilling).get(0));
 		if (permissions != null)
 			emailBuilder.setPermissions(permissions);
 
