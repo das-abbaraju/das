@@ -98,6 +98,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		if ("newUser".equalsIgnoreCase(button)) {
+			if(user.getIsGroup().isTrue())
+				sendActivationEmail = false;
+			else
+				sendActivationEmail = true;
 			user = new User();
 			return SUCCESS;
 		}
