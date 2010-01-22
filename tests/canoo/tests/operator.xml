@@ -82,17 +82,14 @@
 					&body_verify;
 				<verifyText 
 					description="Show List of Contractors"
-					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
+					text="Showing 1-" regex="true" />
 					&body_verify;															
 <!--Audit List Page -->
 				<clickLink 
 					description="View Audits"
 					label="Audit List" />
 					&body_verify;
-				<setSelectField 
-					description="Choose Green Flag"
-					name="filter.flagStatus"
-					value="Green" />
+				
 				<setSelectField 
 					description="Choose Self Performed"
 					name="filter.performedBy"
