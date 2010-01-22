@@ -104,8 +104,6 @@ and u.id is null;
 update temp_user set `name` = email
 where length(trim(name)) = 0;
 
-
--- --------------------------------
 DROP table IF EXISTS temp_user_duplicates;
 create table temp_user_duplicates as
 select email, min(accountID) account1, mAX(accountID) account2, count(*) total from temp_user group by email having count(*) > 1;
@@ -113,64 +111,34 @@ select email, min(accountID) account1, mAX(accountID) account2, count(*) total f
 update temp_user set username = email
 where username is null and email not in (select email from temp_user_duplicates);
 
-
-temp_user
-
-alter table temp_user add unique `username` (`username`);
-Duplicate entry 'cmozena@ryko.com' for key 2
-
-
-select * from temp_user t1
-join temp_user t2 on t1.email = t2.email and t1.id < t2.id
-where t1.username is null
-limit 100
-
-
-select * from temp_user_duplicates
-
-
-select email, min(accountID), MAX(accountID), count(*) from temp_user
-group by email
-having count(*) > 1
+update temp_user set username = concat(email,accountID)
+where username is null;
 
 -- insert 4749 users
 insert into users (username, email, name, accountID, phone, createdBy, creationDate, updatedBy, updateDate)
-select concat(secondEmail,c.id),secondEmail,secondEmail,c.id, secondPhone,1, now(), 1, now() from contractor_info c
-left join users u on c.secondEmail = u.email and u.accountID = c.id
-where length(secondEmail) > 1
-and secondEmail like '%@%'
-and u.id is null;
-
-
--- insert users
-insert into users (username, email, name, accountID, phone, createdBy, creationDate, updatedBy, updateDate)
-select concat(billingEmail,c.id),billingEmail,billingContact,c.id, billingPhone,1, now(), 1, now() from contractor_info c
-left join users u on c.billingEmail = u.email and u.accountID = c.id
-where length(billingEmail) > 1
-and billingEmail like '%@%'
-and u.id is null
-and length(billingContact) > 1;
-
-
--- --------------------------------
+select username, email, `name`, accountID, phone, 1, now(), 1, now() from temp_user WHERE status != 'P';
 
 -- Inserting notes for 4824 secondary contacts not already in users
 insert into note (noteCategory, summary, priority, accountid, creationDate, createdBy, updateDate, updatedBy)
-SELECT "Other" noteCategory, concat("Added user for [", email, "] from legacy contact fields") summary, 1, conID, now(), 1, now(), 1
-FROM temp_user;
+SELECT "Other" noteCategory, concat("Added admin user for [", email, "] from legacy secondary contact fields") summary, 1, accountID, now(), 1, now(), 1
+FROM temp_user WHERE status = 'S'
+UNION
+SELECT "Other" noteCategory, concat("Added billing for [", email, "] from legacy billing contact fields") summary, 1, accountID, now(), 1, now(), 1
+FROM temp_user WHERE status = 'B';
 
 insert into useraccess (userID, accessType, viewFlag,editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
 select u.id, "ContractorAdmin", 1, 0, 0, 0, Now(), 1
-FROM users u join temp_user t on u.username = t.username and t.secondary = 1
+FROM users u join temp_user t on u.username = t.username and t.status = 'S'
 UNION
 select u.id, "ContractorSafety", 1, 0, 0, 0, Now(), 1
-FROM users u join temp_user t on u.username = t.username and t.secondary = 1
+FROM users u join temp_user t on u.username = t.username and t.status = 'S'
 UNION
 select u.id, "ContractorInsurance", 1, 0, 0, 0, Now(), 1
-FROM users u join temp_user t on u.username = t.username and t.secondary = 1
+FROM users u join temp_user t on u.username = t.username and t.status = 'S'
 UNION
 select u.id, "ContractorBilling", 1, 0, 0, 0, Now(), 1
-FROM users u join temp_user t on u.username = t.username and t.billing = 1;
+FROM users u join temp_user t on u.username = t.username and t.status IN ('S','B');
+
 
 ALTER TABLE accounts DROP COLUMN contact, DROP COLUMN email;
 ALTER TABLE contractor_info DROP COLUMN secondContact, DROP COLUMN secondPhone, DROP COLUMN secondEmail, DROP COLUMN billingContact, DROP COLUMN billingPhone, DROP COLUMN billingEmail;
