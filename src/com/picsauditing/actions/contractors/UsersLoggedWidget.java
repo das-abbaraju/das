@@ -3,20 +3,16 @@ package com.picsauditing.actions.contractors;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class UsersLoggedWidget extends PicsActionSupport {
-	private List<ContractorAccount> loggedCon;
+	private List<User> loggedCon;
 	private List<User> loggedOp;
-	ContractorAccountDAO accountDao;
 	UserDAO userDAO;
 
-	public UsersLoggedWidget(ContractorAccountDAO accountDao, UserDAO userDAO) {
-		this.accountDao = accountDao;
+	public UsersLoggedWidget(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
 
@@ -28,13 +24,11 @@ public class UsersLoggedWidget extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<ContractorAccount> getLoggedContractors() {
-		loggedCon = accountDao.findRecentLoggedContractors();
-		return loggedCon;
+	public List<User> getLoggedContractors() {
+		return userDAO.findRecentLoggedContractors();
 	}
 
 	public List<User> getLoggedOperators() {
-		loggedOp = userDAO.findRecentLoggedOperators();
-		return loggedOp;
+		return userDAO.findRecentLoggedOperators();
 	}
 }

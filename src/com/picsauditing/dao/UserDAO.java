@@ -121,9 +121,17 @@ public class UserDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
+	public List<User> findRecentLoggedContractors() {
+		String sql = "SELECT u FROM User u WHERE u.account.type = 'Contractor' "
+			+ "ORDER BY u.lastLogin DESC";
+		Query query = em.createQuery(sql);
+		query.setMaxResults(10);
+		return query.getResultList();
+	}
+	
 	public List<User> findRecentLoggedOperators() {
-		Query query = em.createQuery("SELECT u FROM User u WHERE u.account "
-				+ "IN (SELECT o FROM OperatorAccount o) ORDER BY u.lastLogin DESC");
+		Query query = em.createQuery("SELECT u FROM User u WHERE u.account.type IN ('Operator','Corporate') "
+				+ "ORDER BY u.lastLogin DESC");
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
@@ -164,4 +172,5 @@ public class UserDAO extends PicsDAO {
 		}
 		return false;
 	}
+
 }

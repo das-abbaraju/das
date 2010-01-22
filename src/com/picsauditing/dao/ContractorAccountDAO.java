@@ -152,12 +152,6 @@ public class ContractorAccountDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
-	public List<ContractorAccount> findRecentLoggedContractors() {
-		Query query = em.createQuery("SELECT c FROM ContractorAccount c ORDER BY c.lastLogin DESC");
-		query.setMaxResults(10);
-		return query.getResultList();
-	}
-
 	public ContractorAccount findConID(String name) {
 		if (Strings.isEmpty(name))
 			return null;
