@@ -307,10 +307,12 @@ div.autocomplete ul li {
 		Details</span></legend>
 		<ol>
 			<s:if test="account.users.size() > 1">
+				<s:if test="user.id > 0">
 				<li><label> <s:if test="user.group">Group</s:if> <s:else>User</s:else>
-				#:</label> <s:property value="user.id" /></li>
+				#:</label> <s:property value="user.id" /></li>				
 				<li><label>Date Created:</label> <s:date
 					name="user.creationDate" format="MM/d/yyyy" /></li>
+				</s:if>
 			</s:if>
 			<li><label>Display Name:</label> <s:textfield name="user.name"
 				size="30" /></li>
@@ -344,6 +346,20 @@ div.autocomplete ul li {
 					name="user.phone" size="15" />(optional)</li>
 				<li><label for="user.fax">Fax:</label> <s:textfield
 					name="user.fax" size="15" />(optional)</li>
+				<s:if test="user.id == 0">
+					<li><label>User Role:</label><s:checkbox
+						id="conAdmin" name="user.conAdmin" /><label
+						for="conAdmin" class="checkbox">Account Administrator</label></li>
+					<li><label>&nbsp;</label> <s:checkbox
+						id="conBilling" name="user.conBilling" /><label
+						for="conBilling" class="checkbox">Billing</label></li>
+					<li><label>&nbsp;</label> <s:checkbox
+						id="conSafety" name="user.conSafety" /><label
+						for="conSafety" class="checkbox">Safety</label></li>
+					<li><label>&nbsp;</label> <s:checkbox
+						id="conInsurance" name="user.conInsurance" /><label
+						for="conInsurance" class="checkbox">Insurance</label></li>
+				</s:if>
 				<s:if test="user.id > 0">
 					<li><label>Last Login:</label> <s:date name="user.lastLogin" />
 					</li>
