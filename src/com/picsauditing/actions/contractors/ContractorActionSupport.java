@@ -124,7 +124,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
-		{
+		if(!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))
+		{			
 			// Add the PQF
 			List<ContractorAudit> pqfs = new ArrayList<ContractorAudit>();
 
@@ -153,6 +154,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + pqfs.size() + "] PQFs");
 		}
 
+		if(!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))
 		{ // Add the Annual Updates
 			MenuComponent subMenu = new MenuComponent("Annual Update", "ConAnnualUpdates.action?id=" + id);
 			menu.add(subMenu);
@@ -176,7 +178,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] Annual Updates");
 		}
 
-		if (isRequiresInsurance()) {
+		if (isRequiresInsurance() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
 			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ConInsureGUARD.action?id=" + id);
 			menu.add(subMenu);
@@ -197,7 +199,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] Policies");
 		}
 
-		if (isRequiresIntegrityManagement()) {
+		if (isRequiresIntegrityManagement() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add Integrity Management
 			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
 			menu.add(subMenu);
@@ -216,7 +218,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] IM Audits");
 		}
 
-		if (isRequiresCOR()) {
+		if (isRequiresCOR() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add COR/SECOR
 			MenuComponent subMenu = new MenuComponent("COR/SECOR", "ConCorAuditList.action?id=" + id);
 			menu.add(subMenu);
@@ -234,6 +236,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] COR Audits");
 		}
 
+		if(!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))
 		{ // Add All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
