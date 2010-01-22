@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="css/reports.css?v=20091231" />
 <link rel="stylesheet" href="css/forms.css?v=20091231" />
 <s:include value="../jquery.jsp" />
+<script type="text/javascript" src="js/jquery/hoverIntent/jquery.hoverIntent.js"></script>
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
 <script type="text/javascript" src="js/jquery/address/jquery.address-1.0.min.js"></script>

@@ -7,7 +7,8 @@
 <script type="text/javascript" src="js/Search.js?v=20091231"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
 
-<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.js"></script>
+<script type="text/javascript" src="js/jquery/hoverIntent/jquery.hoverIntent.js"></script>
+<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
 
 <script type="text/javascript">
