@@ -149,6 +149,10 @@ function checkUsername(username) {
 	}
 </s:if>
 
+function showUserList() {
+	$('#manage_controls').show();
+	$('#user_edit').hide();
+}
 </script>
 <style type="text/css">
 div.autocomplete {
@@ -182,14 +186,15 @@ div.autocomplete ul li {
 <body>
 <h1>Manage User Accounts</h1>
 
+<div id="manage_controls" <s:if test="user != null">style="display:none"</s:if>>
 <s:if test="!account.admin">
-	<div><a
+	<a
 		href="<s:if test="account.contractor">ContractorView</s:if><s:else>FacilitiesEdit</s:else>.action?id=<s:property value="account.id"/>"><s:property
 		value="account.name" /></a> &gt; <a
 		href="?accountId=<s:property value="account.id"/>">Manage User
 	Accounts</a> <s:if test="user.id > 0">&gt; <s:property
 			value="user.name" />
-	</s:if> <s:if test="button == 'newUser'">&gt; NEW USER</s:if></div>
+	</s:if> <s:if test="button == 'newUser'">&gt; NEW USER</s:if>
 </s:if>
 
 <s:if test="!account.contractor">
@@ -225,7 +230,7 @@ div.autocomplete ul li {
 					href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add
 				Group</a>
 			</s:if>
-			<a class="picsbutton"
+			<a class="picsbutton" 
 				href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add
 			New User</a>
 			<s:if test="!account.contractor">
@@ -237,198 +242,194 @@ div.autocomplete ul li {
 			<s:if test="account.contractor && account.users.size() > 1">
 		&nbsp;&nbsp;
 		<a class="picsbutton"
-					href="ManageUserPermissions.action?accountId=<s:property value="accountId"/>">Manage
+					href="ManageUserPermissions.action?id=<s:property value="accountId"/>">Manage
 				User Permissions</a>
 			</s:if>
 		</ol>
 </div>
-<table border="0" width="100%">
-	<tr valign="top">
-		
-		<td id="editUser" class="blueMain"
-			style="padding-left: 0px; vertical-align: top;"><s:include
-			value="../actionMessages.jsp" /> <s:if test="user != null">
-
-			<s:form id="UserSave">
-				<s:hidden name="user.id" />
-				<s:hidden name="accountId" />
-				<s:hidden name="isGroup" />
-				<s:hidden name="isActive" />
-				<s:hidden name="user.isGroup" />
-				<s:if test="user.group">
-					<s:hidden name="user.isActive" />
+<s:if test="account.users.size() > 1">
+	<h3>User List</h3>
+	<table class="report">
+		<thead>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="2">User/Group</td>
+				<td>Last Login</td>
+			</tr>
+		</thead>
+		<s:iterator value="userList" status="stat">
+			<tr>
+				<td class="right"><s:property value="#stat.index + 1" />.</td>
+				<s:if test="group">
+					<td>G</td>
+					<td style="font-weight: bold"><a
+						href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+						value="name" /></a></td>
+					<td>N/A</td>
 				</s:if>
-				<fieldset class="form bottom"><legend><span>User
-				Details</span></legend>
-				<ol>
-					<s:if test="account.users.size() > 1">
-						<li><label> <s:if test="user.group">Group</s:if> <s:else>User</s:else>
-						#:</label> <s:property value="user.id" /></li>
-						<li><label>Date Created:</label> <s:date
-							name="user.creationDate" format="MM/d/yyyy" /></li>
-					</s:if>
-					<li><label>Display Name:</label> <s:textfield name="user.name"
-						size="30" /></li>
-					<s:if test="!user.group">
-						<li><label>Email:</label> <s:textfield name="user.email"
-							size="40" /></li>
-						<li><label>Username:</label> <s:textfield
-							name="user.username" size="30"
-							onchange="checkUsername(this.value);" /> <span
-							id="username_status"></span></li>
-						<s:if test="user.id == 0">
-							<li><label>&nbsp;</label> <s:checkbox
-								id="sendActivationEmail" name="sendActivationEmail" /><label
-								for="sendActivationEmail" class="checkbox">Send
-							Activation Email</label></li>
-						</s:if>
-						<s:if test="user.id > 0">
-							<li><label>&nbsp;</label> <a class="picsbutton"
-								href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send
-							Reset Password Email</a></li>
-							<li><label>&nbsp;</label> <input id="manual_password"
-								type="checkbox" onclick="$('.user-password').toggle()">
-							<label for="manual_password" class="checkbox">Manually
-							Set Password</label></li>
-						</s:if>
-						<li class="user-password"><label>Password:</label> <s:password
-							name="password1" value="" /></li>
-						<li class="user-password"><label>Confirm Password:</label> <s:password
-							name="password2" value="" /></li>
-						<li><label for="user.phone">Phone:</label> <s:textfield
-							name="user.phone" size="15" />(optional)</li>
-						<li><label for="user.fax">Fax:</label> <s:textfield
-							name="user.fax" size="15" />(optional)</li>
-						<s:if test="user.id > 0">
-							<li><label>Last Login:</label> <s:date name="user.lastLogin" />
-							</li>
-						</s:if>
-					</s:if>
-					<s:if test="user.id > 0">
-						<li><label>Active</label> <s:radio theme="pics"
-							list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></li>
+				<s:else>
+					<td>U</td>
+					<s:if test="isActive.toString().equals('Yes')">
+						<td><a
+							href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+							value="name" />*</a></td>
 					</s:if>
 					<s:else>
-						<s:hidden name="user.isActive" value="true" />
+						<td class="inactive"><a
+							href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+							value="name" /></a></td>
 					</s:else>
-				</ol>
-				<div style="margin-left:10px;">
-				<button id="SaveButton" class="picsbutton positive" type="submit"
-					name="button" value="Save">Save</button>
-			<pics:permission perm="EditUsers" type="Delete">
-				<s:if test="user.id > 0 && !permissions.contractor">
-					<button type="submit" name="button" class="picsbutton negative"
-						value="Delete"
-						onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+					<td><s:if test="lastLogin != null">
+						<s:date name="lastLogin" format="MM/dd/yy" />
+					</s:if> <s:else>never</s:else></td>
+				</s:else>
+			</tr>
+		</s:iterator>
+	</table>
+</s:if>
+
+</div>
+
+<div id="user_edit">
+<s:include value="../actionMessages.jsp" />
+<s:if test="user != null">
+	<input type="button" class="picsbutton" onclick="showUserList();" value="Back to User List"/>
+	<s:form id="UserSave">
+		<s:hidden name="user.id" />
+		<s:hidden name="accountId" />
+		<s:hidden name="isGroup" />
+		<s:hidden name="isActive" />
+		<s:hidden name="user.isGroup" />
+		<s:if test="user.group">
+			<s:hidden name="user.isActive" />
+		</s:if>
+		<fieldset class="form bottom"><legend><span>User
+		Details</span></legend>
+		<ol>
+			<s:if test="account.users.size() > 1">
+				<li><label> <s:if test="user.group">Group</s:if> <s:else>User</s:else>
+				#:</label> <s:property value="user.id" /></li>
+				<li><label>Date Created:</label> <s:date
+					name="user.creationDate" format="MM/d/yyyy" /></li>
+			</s:if>
+			<li><label>Display Name:</label> <s:textfield name="user.name"
+				size="30" /></li>
+			<s:if test="!user.group">
+				<li><label>Email:</label> <s:textfield name="user.email"
+					size="40" /></li>
+				<li><label>Username:</label> <s:textfield
+					name="user.username" size="30"
+					onchange="checkUsername(this.value);" /> <span
+					id="username_status"></span></li>
+				<s:if test="user.id == 0">
+					<li><label>&nbsp;</label> <s:checkbox
+						id="sendActivationEmail" name="sendActivationEmail" /><label
+						for="sendActivationEmail" class="checkbox">Send
+					Activation Email</label></li>
 				</s:if>
-			</pics:permission>			
-					<s:if test="user.id > 0 && !user.group && !user.account.admin">
-					<pics:permission perm="SwitchUser">
-						<a class="picsbutton"
-							href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
-						to this User</a>
-					</pics:permission>
+				<s:if test="user.id > 0">
+					<li><label>&nbsp;</label> <a class="picsbutton"
+						href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send
+					Reset Password Email</a></li>
+					<li><label>&nbsp;</label> <input id="manual_password"
+						type="checkbox" onclick="$('.user-password').toggle()">
+					<label for="manual_password" class="checkbox">Manually
+					Set Password</label></li>
 				</s:if>
-			
-			</div>
-				</fieldset>
-
-			</s:form>
-			
-			<br clear="all">
-			<s:if test="user.id > 0">
-				<s:if test="!account.contractor">
-					<s:if test="!user.superUser">
-						<div id="permissionReport" style="width: 100%"><s:include
-							value="user_save_permissions.jsp" /></div>
-
-						<div id="groupReport"><s:include
-							value="user_save_groups.jsp" /></div>
-					</s:if>
-
-					<s:if test="user.group">
-						<div id="memberReport"><s:include
-							value="user_save_members.jsp" /></div>
-					</s:if>
-				</s:if>
-
-
-				<s:if test="!user.group">
-					<table class="report">
-						<thead>
-							<tr>
-								<th>Login Date/Time</th>
-								<th>IP Address</th>
-								<th>Notes</th>
-							</tr>
-						</thead>
-						<tbody>
-							<s:iterator value="recentLogins">
-								<tr>
-									<td><s:date name="loginDate" /></td>
-									<td><s:property value="remoteAddress" /></td>
-									<td><s:if test="admin.id > 0">Login by <s:property
-											value="admin.name" /> from <s:property
-											value="admin.account.name" />
-									</s:if> <s:if test="successful == 'N'">Incorrect password attempt</s:if>
-									</td>
-								</tr>
-							</s:iterator>
-						</tbody>
-					</table>
-				</s:if>
-				<s:if test="permissions.admin">
-					<s:if test="user.group">
-						<div id="userSwitch"><s:include
-							value="user_save_userswitch.jsp" /></div>
-					</s:if>
+				<li class="user-password"><label>Password:</label> <s:password
+					name="password1" value="" /></li>
+				<li class="user-password"><label>Confirm Password:</label> <s:password
+					name="password2" value="" /></li>
+				<li><label for="user.phone">Phone:</label> <s:textfield
+					name="user.phone" size="15" />(optional)</li>
+				<li><label for="user.fax">Fax:</label> <s:textfield
+					name="user.fax" size="15" />(optional)</li>
+				<s:if test="user.id > 0">
+					<li><label>Last Login:</label> <s:date name="user.lastLogin" />
+					</li>
 				</s:if>
 			</s:if>
-		</s:if></td>
-		
-		<td style="padding:10px;">
-		<h3>User List</h3>
-		<s:if test="account.users.size() > 1">
+			<s:if test="user.id > 0">
+				<li><label>Active</label> <s:radio theme="pics"
+					list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></li>
+			</s:if>
+			<s:else>
+				<s:hidden name="user.isActive" value="true" />
+			</s:else>
+		</ol>
+		<div style="margin-left:10px;">
+		<button id="SaveButton" class="picsbutton positive" type="submit"
+			name="button" value="Save">Save</button>
+	<pics:permission perm="EditUsers" type="Delete">
+		<s:if test="user.id > 0 && !permissions.contractor">
+			<button type="submit" name="button" class="picsbutton negative"
+				value="Delete"
+				onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+		</s:if>
+	</pics:permission>			
+			<s:if test="user.id > 0 && !user.group && !user.account.admin">
+			<pics:permission perm="SwitchUser">
+				<a class="picsbutton"
+					href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
+				to this User</a>
+			</pics:permission>
+		</s:if>
+	
+	</div>
+		</fieldset>
+
+	</s:form>
+			
+	<br clear="all">
+	<s:if test="user.id > 0">
+		<s:if test="!account.contractor">
+			<s:if test="!user.superUser">
+				<div id="permissionReport" style="width: 100%"><s:include
+					value="user_save_permissions.jsp" /></div>
+
+				<div id="groupReport"><s:include
+					value="user_save_groups.jsp" /></div>
+			</s:if>
+
+			<s:if test="user.group">
+				<div id="memberReport"><s:include
+					value="user_save_members.jsp" /></div>
+			</s:if>
+		</s:if>
+
+		<s:if test="!user.group">
 			<table class="report">
 				<thead>
 					<tr>
-						<td>&nbsp;</td>
-						<td colspan="2">User/Group</td>
-						<td>Last Login</td>
+						<th>Login Date/Time</th>
+						<th>IP Address</th>
+						<th>Notes</th>
 					</tr>
 				</thead>
-				<s:iterator value="userList" status="stat">
-					<tr>
-						<td class="right"><s:property value="#stat.index + 1" />.</td>
-						<s:if test="group">
-							<td>G</td>
-							<td style="font-weight: bold"><a
-								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-								value="name" /></a></td>
-							<td>N/A</td>
-						</s:if>
-						<s:else>
-							<td>U</td>
-							<s:if test="isActive.toString().equals('Yes')">
-								<td><a
-									href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-									value="name" />*</a></td>
-							</s:if>
-							<s:else>
-								<td class="inactive"><a
-									href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-									value="name" /></a></td>
-							</s:else>
-							<td><s:if test="lastLogin != null">
-								<s:date name="lastLogin" format="MM/dd/yy" />
-							</s:if> <s:else>never</s:else></td>
-						</s:else>
-					</tr>
-				</s:iterator>
+				<tbody>
+					<s:iterator value="recentLogins">
+						<tr>
+							<td><s:date name="loginDate" /></td>
+							<td><s:property value="remoteAddress" /></td>
+							<td><s:if test="admin.id > 0">Login by <s:property
+									value="admin.name" /> from <s:property
+									value="admin.account.name" />
+							</s:if> <s:if test="successful == 'N'">Incorrect password attempt</s:if>
+							</td>
+						</tr>
+					</s:iterator>
+				</tbody>
 			</table>
-		</s:if></td>
-	</tr>
-	
-</table>
+		</s:if>
+		<s:if test="permissions.admin">
+			<s:if test="user.group">
+				<div id="userSwitch"><s:include
+					value="user_save_userswitch.jsp" /></div>
+			</s:if>
+		</s:if>
+	</s:if>
+</s:if>
+
+</div>
 </body>
 </html>
