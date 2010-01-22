@@ -88,10 +88,10 @@ public enum OpPerms {
 	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true, false, false),
 
 	// All of the contractor permissions
-	ContractorAdmin("Manage Account", "Can View and Edit the Account/User Details", false, false, false, true, false),
-	ContractorSafety("Manage Audits", "Allows users to view and Edit the safety related information/Audits", false, false, false, true, false),
-	ContractorBilling("Manage Invoices", "Allows users to manage invoices and payments.", false, false, false, true, false),
-	ContractorInsurance("Manage Insurance", "Allows users to view (Read), upload (Edit), and delete insurance certificates", false, false, false, true, false);
+	ContractorAdmin("Admin", "Can View and Edit the Account/User Details", false, false, false, true, false),
+	ContractorSafety("Safety", "Allows users to view and Edit the safety related information/Audits", false, false, false, true, false),
+	ContractorBilling("Billing", "Allows users to manage invoices and payments.", false, false, false, true, false),
+	ContractorInsurance("Insurance", "Allows users to view (Read), upload (Edit), and delete insurance certificates", false, false, false, true, false);
 
 	private String description;
 	private String helpText;
