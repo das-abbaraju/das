@@ -41,7 +41,7 @@
 		<s:property value="contractor.city" />, <s:property value="contractor.state" />
 		<br />
 		<label>Primary Contact:</label>
-		<s:property value="contractor.contact" />
+		<s:property value="contractor.primaryContact.name" />
 		<br />
 		<a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Notes</a>
 		<s:if test="permissions.admin || permissions.contractor">
