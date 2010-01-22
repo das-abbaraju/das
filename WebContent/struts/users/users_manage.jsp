@@ -348,16 +348,16 @@ div.autocomplete ul li {
 					name="user.fax" size="15" />(optional)</li>
 				<s:if test="user.id == 0">
 					<li><label>User Role:</label><s:checkbox
-						id="conAdmin" name="user.conAdmin" /><label
+						id="conAdmin" name="conAdmin" /><label
 						for="conAdmin" class="checkbox">Account Administrator</label></li>
 					<li><label>&nbsp;</label> <s:checkbox
-						id="conBilling" name="user.conBilling" /><label
+						id="conBilling" name="conBilling" /><label
 						for="conBilling" class="checkbox">Billing</label></li>
 					<li><label>&nbsp;</label> <s:checkbox
-						id="conSafety" name="user.conSafety" /><label
+						id="conSafety" name="conSafety" /><label
 						for="conSafety" class="checkbox">Safety</label></li>
 					<li><label>&nbsp;</label> <s:checkbox
-						id="conInsurance" name="user.conInsurance" /><label
+						id="conInsurance" name="conInsurance" /><label
 						for="conInsurance" class="checkbox">Insurance</label></li>
 				</s:if>
 				<s:if test="user.id > 0">
