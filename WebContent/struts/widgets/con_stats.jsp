@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <div style="
 	border: 1px #A84D10 solid; 
 	background-color: #F6F6F6;
@@ -7,7 +8,9 @@
 	width: 200px; 
 	text-align: center;
 "><a href="ContractorView.action">Show Details Page</a></div>
-<a href="ContractorEdit.action" class="edit right">Edit Account Info</a>
+<pics:permission perm="ContractorAdmin">
+	<a href="ContractorEdit.action" class="edit right">Edit Account Info</a>
+</pics:permission>
 <p><label>Account Name:</label> <s:property value="contractor.name" /></p>
 <p><label>Address:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state" /> <s:property value="contractor.zip" /></p>
@@ -24,7 +27,9 @@
 	$<s:property value="contractor.membershipLevel.amount" /> USD <br />
 	<s:property value="contractor.membershipLevel.fee" />
 </p>
-<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right">Edit Credit Card Info</a>
+<pics:permission perm="ContractorBilling">
+	<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right">Edit Credit Card Info</a>
+</pics:permission>
 <p>
 	<label>Credit Card:</label>
 	<s:if test="contractor.ccOnFile && creditCard != null">

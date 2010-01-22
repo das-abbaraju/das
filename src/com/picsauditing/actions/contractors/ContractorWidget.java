@@ -62,164 +62,174 @@ public class ContractorWidget extends ContractorActionSupport {
 	public List<String> getOpenTasks() {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
-			
-			if(permissions.hasPermission(OpPerms.ContractorAdmin)) {
-				if(contractor.getUsers().size() == 1 
-						&& DateBean.getDateDifference(contractor.getCreationDate()) > - 250) {
-					openTasks.add("PICS now requires contractors to have two or more users to help maintain their account."
-							+ "Please click here <a href=\"UsersManage.action\"> to add a new user</a>");
+
+			if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
+				if (contractor.getUsers().size() == 1
+						&& DateBean.getDateDifference(contractor.getCreationDate()) > -250) {
+					openTasks
+							.add("PICS now requires contractors to have two or more users to help maintain their account."
+									+ "Please click here <a href=\"UsersManage.action\"> to add a new user</a>");
+				}
+				
+				if (contractor.isAcceptsBids()) {
+					String due = null;
+					try {
+						due = DateBean.toShowFormat(contractor.getPaymentExpires());
+					} catch (Exception ignoreFormattingErrors) {
+					}
+					openTasks.add("Your Account is a BID-ONLY Account and will expire on " + due
+							+ ". To continue with the audit process" + " please <a href=\"ContractorView.action?id="
+							+ contractor.getId()
+							+ "&button=Upgrade to Full Membership\"> upgrade your account to a full membership</a>");
 				}
 			}
-			String billingStatus = contractor.getBillingStatus();
-			if ("Upgrade".equals(billingStatus)
-					|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
-				openTasks.add("Your Account is upgraded to " + contractor.getNewMembershipLevel().getFee()
-						+ ". To continue working at your selected facilities"
-						+ " please <a href=\"BillingDetail.action?id=" + contractor.getId()
-						+ "&button=Create\"> generate and pay the invoice </a>");
-			}
 
-			if (contractor.isAcceptsBids()) {
-				String due = null;
-				try {
-					due = DateBean.toShowFormat(contractor.getPaymentExpires());
-				} catch (Exception ignoreFormattingErrors) {
+			if (permissions.hasPermission(OpPerms.ContractorBilling)) {
+				String billingStatus = contractor.getBillingStatus();
+				if ("Upgrade".equals(billingStatus)
+						|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
+					openTasks.add("Your Account is upgraded to " + contractor.getNewMembershipLevel().getFee()
+							+ ". To continue working at your selected facilities"
+							+ " please <a href=\"BillingDetail.action?id=" + contractor.getId()
+							+ "&button=Create\"> generate and pay the invoice </a>");
 				}
-				openTasks.add("Your Account is a BID-ONLY Account and will expire on " + due
-						+ ". To continue with the audit process" + " please <a href=\"ContractorView.action?id="
-						+ contractor.getId()
-						+ "&button=Upgrade to Full Membership\"> upgrade your account to a full membership</a>");
-			}
 
-			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
-				for (Invoice invoice : contractor.getInvoices()) {
-					if (invoice.getStatus().isUnpaid()) {
-						String due = null;
-						try {
-							due = DateBean.toShowFormat(invoice.getDueDate());
-						} catch (Exception ignoreFormattingErrors) {
+				if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+					for (Invoice invoice : contractor.getInvoices()) {
+						if (invoice.getStatus().isUnpaid()) {
+							String due = null;
+							try {
+								due = DateBean.toShowFormat(invoice.getDueDate());
+							} catch (Exception ignoreFormattingErrors) {
+							}
+							openTasks.add("You have an <a href=\"InvoiceDetail.action?invoice.id=" + invoice.getId()
+									+ "\">invoice of <b>$" + invoice.getBalance() + "</b></a> due " + due);
 						}
-						openTasks.add("You have an <a href=\"InvoiceDetail.action?invoice.id=" + invoice.getId()
-								+ "\">invoice of <b>$" + invoice.getBalance() + "</b></a> due " + due);
 					}
 				}
-			}
 
-			if (!contractor.isPaymentMethodStatusValid()) {
-				openTasks.add("Please <a href=\"ContractorPaymentOptions.action?id=" + contractor.getId()
-						+ "\">update your payment method</a>");
+				if (!contractor.isPaymentMethodStatusValid()) {
+					openTasks.add("Please <a href=\"ContractorPaymentOptions.action?id=" + contractor.getId()
+							+ "\">update your payment method</a>");
+				}
 			}
 			String auditName;
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
-				if (conAudit.getAuditType().getClassType().isPqf()) {
-					if (conAudit.getAuditType().isPqf())
-						auditName = "Pre-Qualification Form";
-					else
-						auditName = conAudit.getAuditType().getAuditName();
-					if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
-						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">complete and submit your " + auditName + "</a>");
-					} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
-						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">review and re-submit your " + auditName + "</a>");
+				if (permissions.hasPermission(OpPerms.ContractorSafety)) {
+					if (conAudit.getAuditType().getClassType().isPqf()) {
+						if (conAudit.getAuditType().isPqf())
+							auditName = "Pre-Qualification Form";
+						else
+							auditName = conAudit.getAuditType().getAuditName();
+						if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
+							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+									+ "\">complete and submit your " + auditName + "</a>");
+						} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
+							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+									+ "\">review and re-submit your " + auditName + "</a>");
+						}
+					}
+					if (conAudit.getAuditType().isAnnualAddendum()
+							&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
+						String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+								+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
+								+ " </a>";
+						if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1))) {
+							text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
+						}
+						openTasks.add(text);
+
+					}
+
+					if (conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted()
+							&& conAudit.getPercentVerified() < 100) {
+						String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID=" + conAudit.getId()
+								+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
+								+ "</a>";
+						if (!openReq) {
+							text += "<br/>NOTE: Open requirements can be uploaded online.";
+							openReq = true;
+						}
+						openTasks.add(text);
+					}
+
+					if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
+							&& conAudit.getAuditType().isCanContractorView()
+							&& !conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().isHasAuditor()) {
+						String text;
+						if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
+							text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
+									+ "'>click here to schedule your Office Audit</a>";
+						} else {
+							text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upcoming "
+									+ conAudit.getAuditType().getAuditName() + "</a>";
+							try {
+								text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
+							} catch (Exception e) {
+							}
+							if (conAudit.getAuditor() != null)
+								text += " with " + conAudit.getAuditor().getName();
+						}
+
+						openTasks.add(text);
 					}
 				}
-				if (conAudit.getAuditType().isAnnualAddendum()
-						&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
-					String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-					+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
-					+ " </a>";
-					if(conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear()-1))) {
-						text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
-					}
-					openTasks.add(text);
 
-				}
+				if (permissions.hasPermission(OpPerms.ContractorInsurance)) {
+					if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
+						Set<String> pendingOperators = new TreeSet<String>();
+						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
+							if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
+								AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
+										cAuditOperator.getAudit().getAuditType().getId());
+								if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
+									pendingOperators.add(cAuditOperator.getOperator().getName());
+								}
+							}
+						}
 
-				if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
-					Set<String> pendingOperators = new TreeSet<String>();
-					for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
-						if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
-							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
-									cAuditOperator.getAudit().getAuditType().getId());
-							if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
-								pendingOperators.add(cAuditOperator.getOperator().getName());
+						if (pendingOperators.size() > 0) {
+							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+									+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
+									+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
+						}
+
+						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
+							if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
+								AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
+										cAuditOperator.getAudit().getAuditType().getId());
+								if (ao.isCanSee() && ao.getMinRiskLevel() > 0
+										&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
+									String Text = "<a href=\"Audit.action?auditID=" + conAudit.getId()
+											+ "\">Update your " + conAudit.getAuditType().getAuditName()
+											+ " Policy rejected by </a> " + cAuditOperator.getOperator().getName();
+									if (!Strings.isEmpty(cAuditOperator.getNotes()))
+										Text += " for reason " + cAuditOperator.getNotes();
+									openTasks.add(Text);
+								}
 							}
 						}
 					}
-
-					if (pendingOperators.size() > 0) {
-						openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
-								+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
-					}
-
-					for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
-						if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
-							AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
-									cAuditOperator.getAudit().getAuditType().getId());
-							if (ao.isCanSee() && ao.getMinRiskLevel() > 0
-									&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
-								String Text = "<a href=\"Audit.action?auditID=" + conAudit.getId() + "\">Update your "
-										+ conAudit.getAuditType().getAuditName() + " Policy rejected by </a> "
-										+ cAuditOperator.getOperator().getName();
-								if (!Strings.isEmpty(cAuditOperator.getNotes()))
-									Text += " for reason " + cAuditOperator.getNotes();
-								openTasks.add(Text);
-							}
-						}
-					}
-				}
-				if (conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted()
-						&& conAudit.getPercentVerified() < 100) {
-					String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID=" + conAudit.getId()
-							+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
-							+ "</a>";
-					if (!openReq) {
-						text += "<br/>NOTE: Open requirements can be uploaded online.";
-						openReq = true;
-					}
-					openTasks.add(text);
 				}
 
-				if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
-						&& conAudit.getAuditType().isCanContractorView()
-						&& !conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().isHasAuditor()) {
-					String text;
-					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
-						text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-								+ "'>click here to schedule your Office Audit</a>";
-					} else {
-						text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upcoming "
-								+ conAudit.getAuditType().getAuditName() + "</a>";
-						try {
-							text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
-						} catch (Exception e) {
-						}
-						if (conAudit.getAuditor() != null)
-							text += " with " + conAudit.getAuditor().getName();
-					}
-
-					openTasks.add(text);
-				}
 			}
-			if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
-				AuditCatData auditCatData = getAuditCatData(contractor);
-				if (auditCatData != null)
-					openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()
-							+ "&catDataID=" + auditCatData.getId()
-							+ "&mode=Edit#node_57\"> update your 2008 NAICS code</a>");
-			}
-			
-			if (contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-				openTasks
-						.add("Your webcam has been shipped. " 
-								+"<a href=\"http://www.fedex.com/Tracking?tracknumber_list="
-								+ contractor.getWebcam().getTrackingNumber()
-								+ "\" target=\"_blank\">"
-								+ "Click here to track your webcam."
-								+ "</a>");
+
+			if (permissions.hasPermission(OpPerms.ContractorSafety)) {
+				if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
+					AuditCatData auditCatData = getAuditCatData(contractor);
+					if (auditCatData != null)
+						openTasks.add("Please <a href=\"AuditCat.action?auditID=" + auditCatData.getAudit().getId()
+								+ "&catDataID=" + auditCatData.getId()
+								+ "&mode=Edit#node_57\"> update your 2008 NAICS code</a>");
+				}
+
+				if (contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
+					openTasks.add("Your webcam has been shipped. "
+							+ "<a href=\"http://www.fedex.com/Tracking?tracknumber_list="
+							+ contractor.getWebcam().getTrackingNumber() + "\" target=\"_blank\">"
+							+ "Click here to track your webcam." + "</a>");
+				}
 			}
 
 		}
