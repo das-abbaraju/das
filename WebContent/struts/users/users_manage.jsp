@@ -218,10 +218,7 @@ div.autocomplete ul li {
 	<div class="clear"></div>
 	</div>
 </s:if>
-
-<table border="0" width="100%">
-	<tr valign="top">
-		<td>
+<div style="margin:5px 0 8px 0;">
 		<ol>
 			<s:if test="!account.contractor">
 				<a class="picsbutton"
@@ -230,20 +227,24 @@ div.autocomplete ul li {
 			</s:if>
 			<a class="picsbutton"
 				href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add
-			User</a>
+			New User</a>
 			<s:if test="!account.contractor">
-		&nbsp;&nbsp;
-		<a
+		
+		<a class="picsbutton"
 					href="ReportUserPermissionMatrix.action?accountID=<s:property value="accountId"/>">Permissions
 				Matrix</a>
 			</s:if>
 			<s:if test="account.contractor && account.users.size() > 1">
 		&nbsp;&nbsp;
-		<a
+		<a class="picsbutton"
 					href="ManageUserPermissions.action?id=<s:property value="accountId"/>">Manage
 				User Permissions</a>
 			</s:if>
 		</ol>
+</div>
+<table border="0" width="100%">
+	<tr valign="top">
+		<td>
 		<s:if test="account.users.size() > 1">
 			<table class="report">
 				<thead>
@@ -350,16 +351,7 @@ div.autocomplete ul li {
 						<s:hidden name="user.isActive" value="true" />
 					</s:else>
 				</ol>
-				</fieldset>
-				<s:if test="user.id > 0 && !user.group && !user.account.admin">
-					<div><pics:permission perm="SwitchUser">
-						<a class="picsbutton"
-							href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
-						to this User</a>
-					</pics:permission></div>
-				</s:if>
-			</s:form>
-			<div>
+				<div style="margin-left:10px;">
 				<button id="SaveButton" class="picsbutton positive" type="submit"
 					name="button" value="Save">Save</button>
 			<pics:permission perm="EditUsers" type="Delete">
@@ -368,7 +360,20 @@ div.autocomplete ul li {
 						value="Delete"
 						onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
 				</s:if>
-			</pics:permission></div>
+			</pics:permission>			
+					<s:if test="user.id > 0 && !user.group && !user.account.admin">
+					<pics:permission perm="SwitchUser">
+						<a class="picsbutton"
+							href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
+						to this User</a>
+					</pics:permission>
+				</s:if>
+			
+			</div>
+				</fieldset>
+
+			</s:form>
+			
 			<br clear="all">
 			<s:if test="user.id > 0">
 				<s:if test="!account.contractor">
