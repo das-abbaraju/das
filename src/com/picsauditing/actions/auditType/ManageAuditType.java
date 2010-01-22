@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.util.AuditTypeCache;
 
 @SuppressWarnings("serial")
 public class ManageAuditType extends PicsActionSupport implements Preparable {
@@ -42,14 +43,15 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 				if (save()) {
 					addActionMessage("Successfully saved"); // default message
+					new AuditTypeCache();
 					return "saved";
 				}
 			}
 			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				if (delete()) {
-					addActionMessage("Successfully removed"); // default
-																// message
+					addActionMessage("Successfully removed"); // default message
+					new AuditTypeCache();					 
 					return "deleted";
 				}
 			}

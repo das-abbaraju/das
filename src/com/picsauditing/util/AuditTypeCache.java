@@ -19,13 +19,16 @@ public class AuditTypeCache extends BaseCache
 	Map<Integer, AuditType> byId = null;
 	Map<String, AuditType> byName = null;
 	
+	public AuditTypeCache() {
+		if(getContext().getAttribute("auditTypes") != null)
+			getContext().removeAttribute("auditTypes");
+	}
 	
 	public AuditTypeCache(AuditTypeDAO dao) 
 	{
 		auditTypes = (List<AuditType>) getContext().getAttribute("auditTypes");
 		byId = (Map<Integer,AuditType>) getContext().getAttribute("auditTypesById");
 		byName = (Map<String,AuditType>) getContext().getAttribute("auditTypesByName");
-		
 		if( auditTypes == null || (System.currentTimeMillis() - lastLoadTime > 1000 * 60 * 60 * 24 ) )
 		{
 			auditTypes = dao.findAll();
