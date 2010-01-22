@@ -218,7 +218,7 @@ div.autocomplete ul li {
 	<div class="clear"></div>
 	</div>
 </s:if>
-<div style="margin:5px 0 8px 0;">
+<div style="margin:5px 0 5px 0;">
 		<ol>
 			<s:if test="!account.contractor">
 				<a class="picsbutton"
@@ -237,55 +237,16 @@ div.autocomplete ul li {
 			<s:if test="account.contractor && account.users.size() > 1">
 		&nbsp;&nbsp;
 		<a class="picsbutton"
-					href="ManageUserPermissions.action?id=<s:property value="accountId"/>">Manage
+					href="ManageUserPermissions.action?accountId=<s:property value="accountId"/>">Manage
 				User Permissions</a>
 			</s:if>
 		</ol>
 </div>
 <table border="0" width="100%">
 	<tr valign="top">
-		<td>
-		<s:if test="account.users.size() > 1">
-			<table class="report">
-				<thead>
-					<tr>
-						<td>&nbsp;</td>
-						<td colspan="2">User/Group</td>
-						<td>Last Login</td>
-					</tr>
-				</thead>
-				<s:iterator value="userList" status="stat">
-					<tr>
-						<td class="right"><s:property value="#stat.index + 1" />.</td>
-						<s:if test="group">
-							<td>G</td>
-							<td style="font-weight: bold"><a
-								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-								value="name" /></a></td>
-							<td>N/A</td>
-						</s:if>
-						<s:else>
-							<td>U</td>
-							<s:if test="isActive.toString().equals('Yes')">
-								<td><a
-									href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-									value="name" />*</a></td>
-							</s:if>
-							<s:else>
-								<td class="inactive"><a
-									href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-									value="name" /></a></td>
-							</s:else>
-							<td><s:if test="lastLogin != null">
-								<s:date name="lastLogin" format="MM/dd/yy" />
-							</s:if> <s:else>never</s:else></td>
-						</s:else>
-					</tr>
-				</s:iterator>
-			</table>
-		</s:if></td>
+		
 		<td id="editUser" class="blueMain"
-			style="padding-left: 20px; vertical-align: top;"><s:include
+			style="padding-left: 0px; vertical-align: top;"><s:include
 			value="../actionMessages.jsp" /> <s:if test="user != null">
 
 			<s:form id="UserSave">
@@ -424,7 +385,50 @@ div.autocomplete ul li {
 				</s:if>
 			</s:if>
 		</s:if></td>
+		
+		<td style="padding:10px;">
+		<h3>User List</h3>
+		<s:if test="account.users.size() > 1">
+			<table class="report">
+				<thead>
+					<tr>
+						<td>&nbsp;</td>
+						<td colspan="2">User/Group</td>
+						<td>Last Login</td>
+					</tr>
+				</thead>
+				<s:iterator value="userList" status="stat">
+					<tr>
+						<td class="right"><s:property value="#stat.index + 1" />.</td>
+						<s:if test="group">
+							<td>G</td>
+							<td style="font-weight: bold"><a
+								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+								value="name" /></a></td>
+							<td>N/A</td>
+						</s:if>
+						<s:else>
+							<td>U</td>
+							<s:if test="isActive.toString().equals('Yes')">
+								<td><a
+									href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+									value="name" />*</a></td>
+							</s:if>
+							<s:else>
+								<td class="inactive"><a
+									href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+									value="name" /></a></td>
+							</s:else>
+							<td><s:if test="lastLogin != null">
+								<s:date name="lastLogin" format="MM/dd/yy" />
+							</s:if> <s:else>never</s:else></td>
+						</s:else>
+					</tr>
+				</s:iterator>
+			</table>
+		</s:if></td>
 	</tr>
+	
 </table>
 </body>
 </html>
