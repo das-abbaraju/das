@@ -68,6 +68,8 @@
 									<group description="Primary Contact">
 										<setInputField name="user.name" value="John Doe"/>
 										<setInputField name="user.email" value="tester@picsauditing.com"/>
+										<setInputField name="ContractorRegistration_user_phone" value="1800506PICS"/>
+										<setInputField name="ContractorRegistration_user_fax" value="18005061111"/>
 										<setInputField name="user.username" value="canoo_bidaccount"/>
 										<setInputField description="@Irvine1" name="password" value="@Irvine1"/>
 										<setInputField description="@Irvine1" name="confirmPassword" value="@Irvine1"/>
