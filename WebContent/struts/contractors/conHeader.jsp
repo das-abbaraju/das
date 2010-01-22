@@ -224,9 +224,7 @@
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
 		<li><a id="profileEditLink" href="ProfileEdit.action"
 			<s:if test="requestURI.contains('profile')">class="current"</s:if>><span>Edit Profile</span></a></li>
-		<s:if test="!permissions.contractor">
-			<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
-		</s:if>
+		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
 		<li><a id="conEditLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
