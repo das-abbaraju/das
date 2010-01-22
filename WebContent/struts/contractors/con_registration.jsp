@@ -82,9 +82,9 @@ $(function(){
 							</li>
 						<li><label>Web URL:</label> 
 							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
-						<li><label>Phone:</label>
+						<li><label>Company Phone:</label>
 							<s:textfield name="contractor.phone" size="20" /><span class="redMain">*</span></li>
-						<li><label>Fax:</label>
+						<li><label>Company Fax:</label>
 							<s:textfield name="contractor.fax" size="20" /></li>
 					</ol>
 				</fieldset>
@@ -131,7 +131,11 @@ $(function(){
 						<li><label>Name:</label>
 							<s:textfield name="user.name" size="20" /><span class="redMain">*</span></li>
 						<li><label>Email:</label>
-							<s:textfield name="user.email" size="35" /><span class="redMain">* We send vital information to this email</span></li>
+							<s:textfield name="user.email" size="20" /><span class="redMain">* We send vital information to this email</span></li>
+						<li><label>Phone:</label>
+							<s:textfield name="user.phone" size="20" /></li>
+						<li><label>Fax:</label>
+							<s:textfield name="user.fax" size="20" /><span>(optional)</span></li>
 						<li><label>Username:</label>
 					 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
 					 		<span id="username_status"></span><span class="redMain">* Please type in your desired user name</span>
