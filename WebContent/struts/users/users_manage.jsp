@@ -240,7 +240,7 @@ div.autocomplete ul li {
 			<s:if test="account.contractor && account.users.size() > 1">
 		&nbsp;&nbsp;
 		<a
-					href="ManageUserPermissions.action?accountId=<s:property value="accountId"/>">Manage
+					href="ManageUserPermissions.action?id=<s:property value="accountId"/>">Manage
 				User Permissions</a>
 			</s:if>
 		</ol>

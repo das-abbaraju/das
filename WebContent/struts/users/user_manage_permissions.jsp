@@ -7,29 +7,28 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
-function savePerm(userID, permType, isChecked) {
+function savePerm(userID, permType, checkbox) {
 	var data = {
-		button: isChecked ? 'AddPerm' : 'RemovePerm',
+		button: checkbox.checked ? 'AddPerm' : 'RemovePerm',
 		'user.id': userID,
 		opPerm: permType,
 		accountId: <s:property value="account.id" />
 	};
 
-	$.ajax({
-		url: 'ManageUserPermissionsAjax.action',
-		data: data,
-		success: function(text, status){
+	$.getJSON('ManageUserPermissionsAjax.action', data, function(json) {
+			if (json.reset == true)
+				checkbox.checked = !checkbox.checked;
 			$.gritter.add({
-				title: isChecked ? 'Added New Permission' : 'Removed Permission',
-				text: (text).replace("Contractor", "") // Remove "Contractor" from the permission types
+				title: json.title,
+				text: json.msg
 			})
 		}
-	});
+	);
 }
 </script>
 </head>
 <body>
-<h1>Manage User Permissions</h1>
+<s:include value="../contractors/conHeader.jsp" />
 <s:include value="../actionMessages.jsp" />
 
 <s:form action="ManageUserPermissions" id="ManageUserPermissions">
@@ -59,7 +58,7 @@ function savePerm(userID, permType, isChecked) {
 						value="@com.picsauditing.actions.users.ManageUserPermissions@permissionTypes"
 						id="perm">
 						<td class="center"><input type="checkbox"
-							onchange="savePerm(<s:property value="#user.id" />, '<s:property value="#perm" />', this.checked);"
+							onchange="savePerm(<s:property value="#user.id" />, '<s:property value="#perm" />', this);"
 							<s:iterator value="#user.ownedPermissions" id="userPerm">
 								<s:if test="#perm == #userPerm.opPerm">checked="checked"</s:if>
 							</s:iterator> /></td>

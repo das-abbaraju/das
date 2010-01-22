@@ -4,7 +4,7 @@
 <s:set name="auditMenu" value="auditMenu"></s:set>
 
 <h1><s:property value="contractor.name" /><span class="sub">
-<s:if test="subHeading.length > 0">
+<s:if test="subHeading.length() > 0">
 	<s:property value="subHeading" escape="false" />
 </s:if>
 <s:elseif test="auditID > 0">

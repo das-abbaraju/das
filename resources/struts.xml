@@ -1085,7 +1085,7 @@
 		
 		<action name="ManageUserPermissionsAjax"
 			class="com.picsauditing.actions.users.UserAccessSave">
-			<result>struts/blank.jsp</result>
+			<result>struts/json.jsp</result>
 		</action>
 
 

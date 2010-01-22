@@ -4,12 +4,15 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.json.simple.JSONObject;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.UserAccess;
 
 @SuppressWarnings("serial")
@@ -17,6 +20,7 @@ public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
 	protected UserAccessDAO userAccessDAO;
 	protected int accessId;
+	protected JSONObject json = new JSONObject();
 
 	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
 		super(accountDao, operatorDao, userDAO);
@@ -36,6 +40,15 @@ public class UserAccessSave extends UsersManage {
 		}
 
 		if ("AddPerm".equals(button)) {
+			if (account.isContractor() && opPerm.equals(OpPerms.ContractorAdmin)) {
+				if (((ContractorAccount) account).getUsersByRole(opPerm).size() >= 3) {
+					json.put("title", "Too Many Users");
+					json.put("reset", true);
+					json.put("msg", "You can only have 1-3 users with the " + opPerm.getDescription() + " permission");
+					return SUCCESS;
+				}
+			}
+			
 			if (opPerm == null) {
 				addActionError("permission is not selected");
 				return SUCCESS;
@@ -69,21 +82,32 @@ public class UserAccessSave extends UsersManage {
 				temp.addAll(user.getOwnedPermissions());
 				user.getOwnedPermissions().clear();
 				user.getOwnedPermissions().addAll(temp);
-				output = "Successfully added the " + opPerm.toString() + " permission to " + user.getName();
+				json.put("title", "Added New Permission");
+				json.put("msg", "Successfully added the " + opPerm.getDescription() + " permission to " + user.getName());
 			}
 		}
 
 		if ("RemovePerm".equals(button)) {
-			if (accessId > 0)
-				userAccessDAO.remove(accessId);
-			else {
+			if (account.isContractor()) {
+				if (((ContractorAccount) account).getUsersByRole(opPerm).size() <= 1) {
+					json.put("title", "Cannot Remove Permission");
+					json.put("reset", true);
+					json.put("msg", "You must have at least one user with the " + opPerm.getDescription() + " permission");
+					return SUCCESS;
+				}
+				
 				for (UserAccess userAccess : userAccessDAO.findByUser(user.getId())) {
 					if (userAccess.getOpPerm().equals(opPerm)) {
+						user.getOwnedPermissions().remove(userAccess);
 						userAccessDAO.remove(userAccess.getId());
-						output = "Successfully removed the " + opPerm.toString() + " permission from " + user.getName();
+						json.put("title", "Removed Permission");
+						json.put("msg", "Successfully removed the " + opPerm.getDescription() + " permission from " + user.getName());
 					}	
 				}
 			}
+			
+			if (accessId > 0)
+				userAccessDAO.remove(accessId);
 		}
 		return SUCCESS;
 	}
@@ -102,5 +126,13 @@ public class UserAccessSave extends UsersManage {
 
 	public void setAccessId(int accessId) {
 		this.accessId = accessId;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
 	}
 }
