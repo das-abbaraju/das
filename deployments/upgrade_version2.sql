@@ -58,7 +58,7 @@ and users.name = accounts.contact;
 
 
 -- should be done with all contractors
-select * from accounts where contactID is null order by type;
+-- select * from accounts where contactID is null order by type;
 
 -- move over the phone for 3331 primary contact users who are missing phone
 update users, accounts
@@ -75,34 +75,64 @@ create table temp_user(
 	`name` varchar(100) , 
 	`phone` varchar(50) , 
 	`fax` varchar(50) , 
+	`userID` mediumint , 
 	`accountID` int NOT NULL , 
-	`billing` tinyint NOT NULL DEFAULT '0' , 
-	`secondary` tinyint NOT NULL DEFAULT '0' , 
+	unique `username` (`username`),
 	index `email` (`email`),
 	PRIMARY KEY (`id`)
 );
 
 
-INSERT INTO temp_user (`status`, email, username, `name`, phone, accountID)
-select 'P', u.email, username, u.name, u.phone, accountID from users u
-join accounts a on u.accountID = a.id and a.type = 'Contractor';
-
+INSERT INTO temp_user (`status`, email, username, `name`, phone, accountID, userID)
+select 'P', trim(u.email), username, u.name, u.phone, accountID, u.id from users u;
 
 INSERT INTO temp_user (`status`, email, `name`, phone, accountID)
-select 'S', secondEmail, secondContact, secondPhone, c.id from contractor_info c
-left join temp_user u on c.secondEmail = u.email and u.accountID = c.id
+select 'S', trim(secondEmail), secondContact, secondPhone, c.id from contractor_info c
+left join temp_user u on trim(secondEmail) = u.email and u.accountID = c.id
 where secondEmail like '%@%'
 and u.id is null;
 
 INSERT INTO temp_user (`status`, email, `name`, phone, accountID)
-select 'B', billingEmail, billingContact, billingPhone,c.id from contractor_info c
-left join temp_user u on c.billingEmail = u.email and u.accountID = c.id
+select 'B', trim(billingEmail), billingContact, billingPhone,c.id from contractor_info c
+left join temp_user u on trim(billingEmail) = u.email and u.accountID = c.id
 where length(billingEmail) > 1
 and billingEmail like '%@%'
 and u.id is null;
 
+
 update temp_user set `name` = email
 where length(trim(name)) = 0;
+
+-- Cleanup the dirty data
+update temp_user set username = email where email = 'jpeel@ryko.com'; -- previous
+update temp_user set username = email where email = 'cmozena@ryko.com'; -- new
+update temp_user set username = email where email = 'scott.wozniak@uop.com'; -- previous
+update temp_user set username = email where email = 'lisa.wichtendahl@uop.com'; -- new
+update temp_user set username = email where email = 'willie@trinitytx.com'; -- previous
+update temp_user set username = email where email = 'lydia@trinitytx.com'; -- new
+update temp_user set username = email where email = 'kbender@bendercomm.com'; -- previous
+update temp_user set username = email where email = 'donb@bendercomm.com'; -- new
+update temp_user set username = email where email = 'hayden@oldsfiltration.com'; -- previous
+update temp_user set username = email where email = 'beth@oldsfiltration.com'; -- new
+update temp_user set username = email where email = 'jbrock@devoge.com'; -- previous
+update temp_user set username = email where email = 'slwright@devoge.com'; -- new
+update temp_user set username = email where email = 'wheeler@gregpoole.com'; -- previous
+update temp_user set username = email where email = 'Erin.Perdun@GregPoole.com'; -- new
+update temp_user set username = email where email = 'mike@cacradio.com'; -- previous
+update temp_user set username = concat(email,accountID) where email = 'barb_kccom@msn.com' and accountID = 7499; -- new
+
+update temp_user set username = concat(email,accountID) where email IN ('jp2way@vci.net','jp2way105@vci.net');
+update temp_user set username = concat(email,accountID) where email = 'rob@atlantech-online.com' and accountID = 6364;
+update temp_user set username = 'tricia@cambriacontracting.com', email = 'tricia@cambriacontracting.com' where email = 'tricia@cambriacontracting.com, kevin@cambriacontra' and accountID = 8247;
+update temp_user set username = email where email = 'kevin@cambriacontracting.com' and accountID = 8247;
+delete from temp_user WHERE email = 'johna@johnapapalasco.com';
+delete from temp_user WHERE email = 'tricia@cambriacontracting.com' and status = 'B';
+
+-- Check to see if there are any duplicates remaining
+select * from temp_user t1
+join temp_user t2 on t1.email = t2.username and t1.id != t2.id
+where t1.username is null;
+-- done with dirty data
 
 DROP table IF EXISTS temp_user_duplicates;
 create table temp_user_duplicates as
@@ -114,7 +144,12 @@ where username is null and email not in (select email from temp_user_duplicates)
 update temp_user set username = concat(email,accountID)
 where username is null;
 
--- insert 4749 users
+-- update the 11 P users who have changed
+update users, temp_user
+set users.username = temp_user.username
+where temp_user.userID = users.id and temp_user.username != users.username;
+
+-- insert 7582 users
 insert into users (username, email, name, accountID, phone, createdBy, creationDate, updatedBy, updateDate)
 select username, email, `name`, accountID, phone, 1, now(), 1, now() from temp_user WHERE status != 'P';
 
@@ -145,7 +180,7 @@ ALTER TABLE contractor_info DROP COLUMN secondContact, DROP COLUMN secondPhone, 
 
 
 
-update users set password = SHA1(CONCAT('@Irvine1',id));
+-- update users set password = SHA1(CONCAT('@Irvine1',id));
 -- update users set email = 'tester@picsauditing.com' where email > '';
 
 
