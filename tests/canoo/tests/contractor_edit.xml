@@ -44,7 +44,7 @@
 				</group>
 				<group description="Canadian Currency">
 					<clickLink label="Billing Details"/>
-					<clickLink href="InvoiceDetail.action"/>
+					<clickButton label="Create"/>
 					<verifyText description="Verify that Currency is CAN" text="CAN"/>
 				</group>
 				<group description="Edit Information">
