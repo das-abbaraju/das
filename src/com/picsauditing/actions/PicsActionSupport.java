@@ -56,7 +56,6 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		if (permissions != null)
 			// Already set
 			return;
-		
 
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
@@ -89,9 +88,11 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected boolean forceLogin() {
 		loadPermissions();
 		try {
-			// TJA I tried using getUser() but it doesn't work from the UsersManage 
+			// TJA I tried using getUser() but it doesn't work from the
+			// UsersManage
 			// class because there's a getUser() method defined there already
-			if (permissions.isLoggedIn() && getUser(permissions.getUserId()).isForcePasswordReset()) {
+			if (permissions.isLoggedIn() && permissions.getAdminID() == 0
+					&& getUser(permissions.getUserId()).isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + ServletActionContext.getRequest().getRequestURL());
 				return true;
 			}
@@ -110,7 +111,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected boolean forceLogin(String alternateReturnURL) {
 		loadPermissions();
 		try {
-			if (permissions.isLoggedIn() && getUser(permissions.getUserId()).isForcePasswordReset()) {
+			if (permissions.isLoggedIn() && permissions.getAdminID() == 0
+					&& getUser(permissions.getUserId()).isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + alternateReturnURL);
 				return true;
 			}
