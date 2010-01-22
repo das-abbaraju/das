@@ -219,7 +219,7 @@
 		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
 	</s:if>
-	<s:if test="permissions.admin || permissions.contractor">
+	<s:if test="permissions.admin">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
 		<li><a id="profileEditLink" href="ProfileEdit.action"
@@ -230,6 +230,24 @@
 		<li><a id="conEditLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 	</s:if>
+	<s:elseif test="permissions.contractor">
+		<pics:permission perm="ContractorAdmin">
+			<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
+				<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
+		</pics:permission>
+			<li><a id="profileEditLink" href="ProfileEdit.action"
+		<s:if test="requestURI.contains('profile')">class="current"</s:if>><span>Edit Profile</span></a></li>
+		<pics:permission perm="ContractorAdmin">
+			<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
+		</pics:permission>
+		<pics:permission perm="ContractorBilling">
+			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
+				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
+			<li><a id="conEditLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
+				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
+		</pics:permission>
+	</s:elseif>
+	
 </ul>
 </div>
 
