@@ -135,6 +135,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				// We want to save data for an existing user
 				if (!Strings.isEmpty(password2) && password2.equals(password1)) {
 					user.setEncryptedPassword(password2);
+					user.setForcePasswordReset(false);
 				}
 			} else {
 				// We want to save a new user
