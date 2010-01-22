@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -61,7 +62,14 @@ public class ContractorWidget extends ContractorActionSupport {
 	public List<String> getOpenTasks() {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
-
+			
+			if(permissions.hasPermission(OpPerms.ContractorAdmin)) {
+				if(contractor.getUsers().size() == 1 
+						&& DateBean.getDateDifference(contractor.getCreationDate()) > - 250) {
+					openTasks.add("PICS now requires contractors to have two or more users to help maintain their account."
+							+ "Please click here <a href=\"UsersManage.action\"> to add a new user</a>");
+				}
+			}
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {

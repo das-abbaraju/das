@@ -222,6 +222,8 @@
 	<s:if test="permissions.admin || permissions.contractor">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
+		<li><a id="profileEditLink" href="ProfileEdit.action"
+			<s:if test="requestURI.contains('profile')">class="current"</s:if>><span>Edit Profile</span></a></li>
 		<s:if test="!permissions.contractor">
 			<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		</s:if>

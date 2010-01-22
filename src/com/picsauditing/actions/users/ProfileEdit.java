@@ -59,8 +59,11 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			redirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 			return LOGIN;
 		}
-
-		permissions.tryPermission(OpPerms.EditProfile);
+		
+		if(!permissions.hasPermission(OpPerms.EditProfile)) {
+			addActionError("This user does not have access to Edit their Profile. Please contact your Administrator");
+			return BLANK;
+		}
 
 		// u = dao.find(permissions.getUserId());
 
