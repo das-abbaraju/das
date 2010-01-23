@@ -346,7 +346,7 @@ div.autocomplete ul li {
 					name="user.phone" size="15" />(optional)</li>
 				<li><label for="user.fax">Fax:</label> <s:textfield
 					name="user.fax" size="15" />(optional)</li>
-				<s:if test="user.id == 0">
+				<s:if test="permissions.contractor && user.id == 0">
 					<li><label>User Role:</label><s:checkbox
 						id="conAdmin" name="conAdmin" /><label
 						for="conAdmin" class="checkbox">Account Administrator</label></li>
