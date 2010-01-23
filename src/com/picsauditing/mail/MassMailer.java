@@ -197,7 +197,7 @@ public class MassMailer extends PicsActionSupport {
 		if (ListType.Contractor.equals(type)) {
 			ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 			ContractorAccount contractor = dao.find(id);
-			emailBuilder.setContractor(contractor);
+			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		}
 		if (ListType.Audit.equals(type)) {
 			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");

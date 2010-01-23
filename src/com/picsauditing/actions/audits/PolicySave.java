@@ -7,6 +7,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.AuditCriteriaAnswer;
 import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.FlagCalculatorSingle;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -119,12 +120,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						button = "Save";
 
 						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(52); // Insurance Policy
-						// rejected
-						// by PICS
+						// Insurance Policy rejected by PICS
+						emailBuilder.setTemplate(52);
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.setFromAddress(permissions.getEmail());
-						emailBuilder.setContractor(cao.getAudit().getContractorAccount());
+						emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorInsurance);
 						emailBuilder.addToken("cao", cao);
 						EmailSender.send(emailBuilder.build());
 

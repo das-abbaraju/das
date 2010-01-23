@@ -68,7 +68,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 						ContractorAccount con = contractorAccountDAO.find(conID);
 						emailBuilder.setTemplate(59);
 						emailBuilder.setPermissions(permissions);
-						emailBuilder.setContractor(con);
+						emailBuilder.setContractor(con, OpPerms.ContractorBilling);
 						emailBuilder.setFromAddress("billing@picsauditing.com");
 						EmailQueue email = emailBuilder.build();
 						EmailSender.send(email);

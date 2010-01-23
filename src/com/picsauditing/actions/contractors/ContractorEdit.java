@@ -256,7 +256,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						emailBuilder.setTemplate(51); // Deactivation Email for
 						// operators
 						emailBuilder.setPermissions(permissions);
-						emailBuilder.setContractor(contractor);
+						emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 						emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
 						emailBuilder.setCcAddresses("");
 						emailBuilder.setToAddresses("aharker@picsauditing.com");

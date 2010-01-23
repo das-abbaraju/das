@@ -116,7 +116,7 @@ public class ContractorView extends ContractorActionSupport {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(73); // Trial Contractor Account Approval 
 			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(contractor);
+			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);

@@ -154,7 +154,7 @@ public class VerifyView extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(11); // PQF Verification
 		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		emailBuilder.addToken("missing_items", addMissingItemsToEmail());
 		previewEmail = emailBuilder.build();
 
@@ -166,7 +166,7 @@ public class VerifyView extends ContractorActionSupport {
 
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
 		if (emailBody == null && emailSubject == null) {
 			emailBuilder.setTemplate(11);
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());

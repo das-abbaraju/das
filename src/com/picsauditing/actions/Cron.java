@@ -298,7 +298,7 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.clear();
 			emailBuilder.setTemplate(10); // Certificate Expiration
 			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(policy);
+			emailBuilder.setContractor(policy, OpPerms.ContractorInsurance);
 			emailBuilder.addToken("policies", policy);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
@@ -475,7 +475,7 @@ public class Cron extends PicsActionSupport {
 			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
 			emailBuilder.clear();
 			emailBuilder.setTemplate(templateMap.get(cAccount));
-			emailBuilder.setContractor(cAccount);
+			emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
 			emailBuilder.setCcAddresses(emailAddress);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
@@ -492,9 +492,9 @@ public class Cron extends PicsActionSupport {
 
 		for (ContractorAccount cAccount : conList) {
 			emailBuilder.clear();
-			emailBuilder.setTemplate(70); // No Action Email Notification -
-			// Contractor
-			emailBuilder.setContractor(cAccount);
+			emailBuilder.setTemplate(70);
+			// No Action Email Notification - Contractor
+			emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);

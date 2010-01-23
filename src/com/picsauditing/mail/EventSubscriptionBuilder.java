@@ -47,7 +47,7 @@ public class EventSubscriptionBuilder {
 			Permissions permissions) throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(45);
-		emailBuilder.setContractor(contractor);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorBilling);
 		emailBuilder.addToken("invoice", invoice);
 		emailBuilder.addToken("billingUser", contractor.getUsersByRole(OpPerms.ContractorBilling).get(0));
 		if (permissions != null)

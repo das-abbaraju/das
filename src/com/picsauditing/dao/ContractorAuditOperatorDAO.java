@@ -9,6 +9,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -106,7 +107,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				// Change
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setFromAddress(permissions.getEmail());
-				emailBuilder.setContractor(cao.getAudit().getContractorAccount());
+				emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorSafety);
 				emailBuilder.addToken("cao", cao);
 				EmailSender.send(emailBuilder.build());
 			} catch (Exception e) {

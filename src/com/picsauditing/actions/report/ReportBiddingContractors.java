@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.Date;
 import java.util.Iterator;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -140,7 +141,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					EmailBuilder emailBuilder = new EmailBuilder();
 					emailBuilder.setTemplate(templateId);
 					emailBuilder.setPermissions(permissions);
-					emailBuilder.setContractor(cAccount);
+					emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
 					emailBuilder.addToken("permissions", permissions);
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(100);

@@ -2,9 +2,12 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -60,8 +63,6 @@ public class EmailBuilder {
 	public EmailQueue build() throws Exception {
 		EmailQueue email = new EmailQueue();
 
-//		email.setEmailTemplate(new EmailTemplate());
-//		email.getEmailTemplate().setId(template.getId());
 		email.setEmailTemplate(template);
 		email.setHtml(template.isHtml());
 		email.setCreationDate(new Date());
@@ -101,18 +102,25 @@ public class EmailBuilder {
 	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers
 	public void setConAudit(ContractorAudit conAudit) {
-		setContractor(conAudit.getContractorAccount());
+		setContractor(conAudit.getContractorAccount(), OpPerms.ContractorSafety);
 		addToken("audit", conAudit);
 	}
 
-	public void setContractor(ContractorAccount contractor) {
-		addToken("contractor", contractor);
-		toAddresses = contractor.getPrimaryContact().getEmail();
-		List<User> users = contractor.getUsersByRole(OpPerms.ContractorAdmin); 
-		if(users.size() > 1) {
-			ccAddresses = users.get(1).getEmail();
-		}
+	public void setContractor(ContractorAccount contractor, OpPerms role) {
 		conID = contractor.getId();
+		addToken("contractor", contractor);
+		
+		Set<String> emails = new HashSet<String>();
+		for (User user : contractor.getUsersByRole(role)) {
+			if (Utilities.isValidEmail(user.getEmail()))
+				emails.add(user.getEmail());
+		}
+		if (emails.size() > 0)
+			toAddresses = Strings.implode(emails, "; ");
+		else if (role == OpPerms.ContractorAdmin)
+			toAddresses = contractor.getPrimaryContact().getEmail();
+		else
+			setContractor(contractor, OpPerms.ContractorAdmin);
 	}
 
 	public void setUser(User user) {
