@@ -377,7 +377,7 @@ div.autocomplete ul li {
 		<button id="SaveButton" class="picsbutton positive" type="submit"
 			name="button" value="Save">Save</button>
 	<pics:permission perm="EditUsers" type="Delete">
-		<s:if test="user.id > 0 && !permissions.contractor">
+		<s:if test="user.id > 0 && !account.contractor">
 			<button type="submit" name="button" class="picsbutton negative"
 				value="Delete"
 				onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
