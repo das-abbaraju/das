@@ -107,7 +107,7 @@
 					&body_verify;
 				<verifyText 
 					description="[Add User] link exists"
-					text="Add User" />
+					text="Add New User" />
 				
 				<storeProperty 
 					name="report_link" 
