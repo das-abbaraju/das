@@ -47,7 +47,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	protected String password1;
 	protected String password2;
-	protected boolean sendActivationEmail = true;
+	protected boolean sendActivationEmail = false;
 
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
@@ -134,7 +134,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				sendActivationEmail = false;
 			else
 				sendActivationEmail = true;
-			user = new User();
 			return SUCCESS;
 		}
 

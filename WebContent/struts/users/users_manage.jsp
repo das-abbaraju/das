@@ -299,7 +299,8 @@ div.autocomplete ul li {
 		<s:hidden name="isGroup" />
 		<s:hidden name="isActive" />
 		<s:hidden name="user.isGroup" />
-		<s:if test="user.group">
+		<s:hidden name="sendActivationEmail"/>
+		<s:if test="user.isGroup.toString() == 'Yes'">
 			<s:hidden name="user.isActive" />
 		</s:if>
 		<fieldset class="form bottom"><legend><span>User
@@ -314,8 +315,9 @@ div.autocomplete ul li {
 				</s:if>
 			</s:if>
 			<li><label>Display Name:</label> <s:textfield name="user.name"
-				size="30" /></li>
-			<s:if test="!user.group">
+				size="30" />
+			</li>
+			<s:if test="user.isGroup.toString() == 'No'">
 				<li><label>Email:</label> <s:textfield name="user.email"
 					size="40" /></li>
 				<li><label>Username:</label> <s:textfield
@@ -345,18 +347,20 @@ div.autocomplete ul li {
 					name="user.phone" size="15" />(optional)</li>
 				<li><label for="user.fax">Fax:</label> <s:textfield
 					name="user.fax" size="15" />(optional)</li>
-				<li><label>User Role:</label><s:checkbox
-					id="conAdmin" name="conAdmin" /><label
-					for="conAdmin" class="checkbox"><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/></label></li>
-				<li><label>&nbsp;</label> <s:checkbox
-					id="conBilling" name="conBilling" /><label
-					for="conBilling" class="checkbox"><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></label></li>
-				<li><label>&nbsp;</label> <s:checkbox
-					id="conSafety" name="conSafety" /><label
-					for="conSafety" class="checkbox"><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/></label></li>
-				<li><label>&nbsp;</label> <s:checkbox
-					id="conInsurance" name="conInsurance" /><label
-					for="conInsurance" class="checkbox"><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></label></li>
+				<s:if test="account.contractor">
+					<li><label>User Role:</label><s:checkbox
+						id="conAdmin" name="conAdmin" /><label
+						for="conAdmin" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/> </b><i>(<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>)</i></label></li>
+					<li><label>&nbsp;</label> <s:checkbox
+						id="conBilling" name="conBilling" /><label
+						for="conBilling" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>)</i></label></li>
+					<li><label>&nbsp;</label> <s:checkbox
+						id="conSafety" name="conSafety" /><label
+						for="conSafety" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.helpText"/>)</i></label></li>
+					<li><label>&nbsp;</label> <s:checkbox
+						id="conInsurance" name="conInsurance" /><label
+						for="conInsurance" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>)</i></label></li>
+					</s:if>
 				<s:if test="user.id > 0">
 					<li><label>Last Login:</label> <s:date name="user.lastLogin" />
 					</li>
@@ -373,13 +377,13 @@ div.autocomplete ul li {
 		<div style="margin-left:10px;">
 		<button id="SaveButton" class="picsbutton positive" type="submit"
 			name="button" value="Save">Save</button>
-	<pics:permission perm="EditUsers" type="Delete">
-		<s:if test="user.id > 0 && !account.contractor">
-			<button type="submit" name="button" class="picsbutton negative"
-				value="Delete"
-				onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
-		</s:if>
-	</pics:permission>			
+		<pics:permission perm="EditUsers" type="Delete">
+			<s:if test="user.id > 0 && !account.contractor">
+				<button type="submit" name="button" class="picsbutton negative"
+					value="Delete"
+					onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
+			</s:if>
+		</pics:permission>			
 			<s:if test="user.id > 0 && !user.group && !user.account.admin">
 			<pics:permission perm="SwitchUser">
 				<a class="picsbutton"
