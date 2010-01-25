@@ -12,6 +12,33 @@
 				&login;
 				<clickLink description="Edit User Accounts"
 					label="Users" />
+				<group description="Add New Operator User">
+					<clickLink label="Add New User"/>
+					<setInputField name="user.name" value="Canoo Test User (Operator)"/>
+					<setInputField name="user.email" value="tester@picsauditing.com"/>
+					<setInputField name="user.username" value="CanooOperator"/>
+					<clickButton label="Save"/>
+					<verifyText description="Verify that text is contained in the page" text="User saved successfully"/>
+					
+					<group description="Add Permissions">
+						<clickLink label="Canoo Test User (Operator)*"/>
+						<clickLink label="add"/>
+					</group>
+				</group>
+				
+				<group description="Verify Activation Email">
+					<clickLink label="Email Queue"/>
+					<clickLink label="Preview"/>
+					<followFrame name="fancy_iframe951"/>
+					<verifyText description="Verify that text is contained in the page" text="Hello Canoo Test User (Operator)"/>
+				</group>
+				
+				<group description="Delete user">
+					<clickLink label="Users"/>
+					<clickLink label="Canoo Test User (Operator)*"/>
+					<clickButton label="Delete"/>
+				</group>
+				
 			</steps>
 		</webtest>
 	</target>
