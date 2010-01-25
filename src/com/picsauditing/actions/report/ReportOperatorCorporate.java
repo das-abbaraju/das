@@ -45,7 +45,8 @@ public class ReportOperatorCorporate extends ReportAccount {
 			sql.addWhere("a.type='Corporate'");
 			sql.setType(null);
 		}
-		sql.addField("a.contact");
+		sql.addJoin("left JOIN users contact ON contact.id = a.contactID");
+		sql.addField("contact.name AS contactname");
 		sql.addField("a.industry");
 		sql.addField("a.state");
 		sql.addField("a.city");

@@ -67,7 +67,7 @@ value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 			<td><s:property value="get('industry')"/></td>
 			<td class="right"><s:property value="get('city')"/></td>
 			<td class="right"><s:property value="get('state')"/></td>
-			<td class="right"><s:property value="get('contact')"/></td>
+			<td class="right"><s:property value="get('contactname')"/></td>
 			<td><s:property value="get('subCount')"/></td>
 			<td><s:if test="canDelete && get('subCount') == null && get('requestedBy') == null">
 			<s:form action="ReportAccountList" method="POST">
