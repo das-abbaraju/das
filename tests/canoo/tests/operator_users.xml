@@ -35,9 +35,8 @@
 				
 				<group description="Verify Activation Email">
 					<clickLink label="Email Queue"/>
-					<clickLink label="Preview"/>
-					<followFrame name="fancy_iframe951"/>
-					<verifyText description="Verify that text is contained in the page" text="Hello Canoo Test User (Operator)"/>
+					<verifyText description="Verify that text is contained in the page" text="New PICS User Account"/>
+					<verifyText description="Verify that text is contained in the page" text="tester@picsauditing.com"/>
 				</group>
 				
 				<group description="Delete user">
