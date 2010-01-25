@@ -21,7 +21,6 @@
 					<verifyText description="Verify that text is contained in the page" text="User saved successfully"/>
 					
 					<group description="Add Permissions">
-						<clickLink label="Canoo Test User (Operator)*"/>
 						<clickLink label="add"/>
 					</group>
 				</group>
