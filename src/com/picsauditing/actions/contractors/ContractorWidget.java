@@ -65,7 +65,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
 				if (contractor.getUsers().size() == 1
-						&& DateBean.getDateDifference(contractor.getCreationDate()) > -250) {
+						&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
 					openTasks
 							.add("PICS now requires contractors to have two or more users to help maintain their account."
 									+ "Please click here <a href=\"UsersManage.action\"> to add a new user</a>");
