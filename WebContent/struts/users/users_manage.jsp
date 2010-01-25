@@ -222,8 +222,7 @@ div.autocomplete ul li {
 	<div class="clear"></div>
 	</div>
 </s:if>
-<div style="margin:5px 0 5px 0;">
-		<ol>
+<div style="margin:5px 0 5px 0; list-style: none;">
 			<s:if test="!account.contractor">
 				<a class="picsbutton"
 					href="?button=newUser&accountId=<s:property value="accountId"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=Yes&user.isActive=Yes">Add
@@ -244,46 +243,47 @@ div.autocomplete ul li {
 					href="ManageUserPermissions.action?id=<s:property value="accountId"/>">Manage
 				User Permissions</a>
 			</s:if>
-		</ol>
 </div>
-<h3>User List</h3>
-<table class="report">
-	<thead>
-		<tr>
-			<td>&nbsp;</td>
-			<td colspan="2">User/Group</td>
-			<td>Last Login</td>
-		</tr>
-	</thead>
-	<s:iterator value="userList" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + 1" />.</td>
-			<s:if test="group">
-				<td>G</td>
-				<td style="font-weight: bold"><a
-					href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-					value="name" /></a></td>
-				<td>N/A</td>
-			</s:if>
-			<s:else>
-				<td>U</td>
-				<s:if test="isActive.toString().equals('Yes')">
-					<td><a
-						href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-						value="name" />*</a></td>
-				</s:if>
-				<s:else>
-					<td class="inactive"><a
+<s:if test="account.users.size() > 1">
+	<h3>User List</h3>
+	<table class="report">
+		<thead>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="2">User/Group</td>
+				<td>Last Login</td>
+			</tr>
+		</thead>
+		<s:iterator value="userList" status="stat">
+			<tr>
+				<td class="right"><s:property value="#stat.index + 1" />.</td>
+				<s:if test="group">
+					<td>G</td>
+					<td style="font-weight: bold"><a
 						href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
 						value="name" /></a></td>
+					<td>N/A</td>
+				</s:if>
+				<s:else>
+					<td>U</td>
+					<s:if test="isActive.toString().equals('Yes')">
+						<td><a
+							href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+							value="name" />*</a></td>
+					</s:if>
+					<s:else>
+						<td class="inactive"><a
+							href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+							value="name" /></a></td>
+					</s:else>
+					<td><s:if test="lastLogin != null">
+						<s:date name="lastLogin" format="MM/dd/yy" />
+					</s:if> <s:else>never</s:else></td>
 				</s:else>
-				<td><s:if test="lastLogin != null">
-					<s:date name="lastLogin" format="MM/dd/yy" />
-				</s:if> <s:else>never</s:else></td>
-			</s:else>
-		</tr>
-	</s:iterator>
-</table>
+			</tr>
+		</s:iterator>
+	</table>
+</s:if>
 
 </div>
 
