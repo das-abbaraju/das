@@ -216,15 +216,15 @@ delete from useraccess where accessType = 'ChangePassword';
 
 -- Updating the tokens on the Emails
 update token set velocityCode = '${contractor.primaryContact.email}'
-where id = 2; --PrimaryEmail
+where tokenId = 2; -- PrimaryEmail
 
 update token set velocityCode = '${contractor.primaryContact.name}'
-where id = 3; --ContactName
+where tokenId = 3; -- ContactName
 
 update token set velocityCode = '${contractor.primaryContact.username}'
-where id = 9; --Username
+where tokenId = 9; -- Username
 
 update token set velocityCode = '${contractor.primaryContact.phone}'
-where id = 23; --PrimaryPhone
+where tokenId = 23; -- PrimaryPhone
 
 delete from token where tokenId = 4 and tokenName = 'BillingEmail';
