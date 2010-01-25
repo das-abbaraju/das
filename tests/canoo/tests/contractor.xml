@@ -17,7 +17,7 @@
 				&body_verify;
 				
 				<clickLink description="Edit Profile"
-					label="Edit Profile" />
+					label="Edit My Profile" />
 					<sleep seconds="2"/>
 					&body_verify;
 				
