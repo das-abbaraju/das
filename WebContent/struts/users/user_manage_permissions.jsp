@@ -58,7 +58,7 @@ function savePerm(userID, permType, checkbox) {
 						value="@com.picsauditing.actions.users.ManageUserPermissions@permissionTypes"
 						id="perm">
 						<td class="center"><input type="checkbox"
-							onchange="savePerm(<s:property value="#user.id" />, '<s:property value="#perm" />', this);"
+							onclick="savePerm(<s:property value="#user.id" />, '<s:property value="#perm" />', this);"
 							<s:iterator value="#user.ownedPermissions" id="userPerm">
 								<s:if test="#perm == #userPerm.opPerm">checked="checked"</s:if>
 							</s:iterator> /></td>
