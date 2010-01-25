@@ -82,7 +82,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						statusChanged = true;
 						button = "Save";
 						addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
-								+ "</strong> Policy has been submitted tor <strong>" + cao.getOperator().getName()
+								+ "</strong> Policy has been submitted for <strong>" + cao.getOperator().getName()
 								+ "</strong>.");
 					} else {
 						addActionError("Please enter all required questions before submitting the policy.");
