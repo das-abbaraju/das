@@ -12,10 +12,15 @@
 				&body_verify;
 								
 				<clickLink description="Edit Account Info"
-					label="Edit" />
+					label="Edit Account" />
 				<sleep seconds="2"/>
 				&body_verify;
-
+				
+				<clickLink description="Edit Profile"
+					label="Edit Profile" />
+					<sleep seconds="2"/>
+					&body_verify;
+				
 				<clickLink description="Facilities"
 					label="Facilities" />
 				<sleep seconds="2"/>
