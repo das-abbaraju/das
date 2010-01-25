@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -38,5 +39,20 @@ public class UserAccessDAO extends PicsDAO {
 		Query query = em.createQuery("FROM UserAccess ua WHERE ua.user.id = :userID");
 		query.setParameter("userID", userID);
 		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<UserAccess> findByAccount(int aID) {
+		Query query = em.createQuery("FROM UserAccess ua WHERE ua.user.account.id = :aID");
+		query.setParameter("aID", aID);
+		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public UserAccess findByUserAndOpPerm(int userID, OpPerms opPerm) {
+		Query query = em.createQuery("FROM UserAccess ua WHERE ua.user.id = ? AND ua.opPerm = ?");
+		query.setParameter(1, userID);
+		query.setParameter(2, opPerm);
+		return (UserAccess) query.getSingleResult();
 	}
 }

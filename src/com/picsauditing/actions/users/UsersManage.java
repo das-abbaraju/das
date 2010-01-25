@@ -3,8 +3,10 @@ package com.picsauditing.actions.users;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -19,9 +21,11 @@ import com.picsauditing.actions.AccountRecovery;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -55,14 +59,22 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	protected boolean hasAllOperators = false;
 
+	protected boolean conAdmin = false;
+	protected boolean conBilling = false;
+	protected boolean conSafety = false;
+	protected boolean conInsurance = false;
+
 	protected AccountDAO accountDAO;
 	protected OperatorAccountDAO operatorDao;
 	protected UserDAO userDAO;
+	protected UserAccessDAO userAccessDAO;
 
-	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO) {
+	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO,
+			UserAccessDAO userAccessDAO) {
 		this.accountDAO = accountDAO;
 		this.operatorDao = operatorDao;
 		this.userDAO = userDAO;
+		this.userAccessDAO = userAccessDAO;
 	}
 
 	@Override
@@ -70,25 +82,45 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		int id = getParameter("user.id");
 		if (id > 0) {
 			user = userDAO.find(id);
-			if (user != null)
+			if (user != null) {
 				account = user.getAccount();
+				for (UserAccess ua : user.getOwnedPermissions()) {
+					if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
+						conAdmin = true;
+					}
+					if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
+						conBilling = true;
+					}
+					if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
+						conSafety = true;
+					}
+					if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
+						conInsurance = true;
+					}
+				}
+			}
 		}
-		
+
 		int aID = getParameter("accountId");
 		if (account == null && aID > 0)
 			account = accountDAO.find(aID);
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
+		loadPermissions();
+
+		if (!permissions.isLoggedIn()) {
 			return LOGIN;
+		}
+
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else
 			permissions.tryPermission(OpPerms.EditUsers);
 
 		if (account == null) {
-			// This would happen if I'm looking at my own account, but not a user yet
+			// This would happen if I'm looking at my own account, but not a
+			// user yet
 			account = super.getUser().getAccount();
 		}
 		accountId = account.getId();
@@ -98,7 +130,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		if ("newUser".equalsIgnoreCase(button)) {
-			if(user.getIsGroup().isTrue())
+			if (user.getIsGroup().isTrue())
 				sendActivationEmail = false;
 			else
 				sendActivationEmail = true;
@@ -115,7 +147,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (user == null) {
 			return SUCCESS;
 		}
-		
+
 		if ("resetPassword".equals(button)) {
 			// Seeding the time in the reset hash so that each one will be
 			// guaranteed unique
@@ -129,6 +161,26 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			if (!isOK()) {
 				userDAO.clear();
 				return SUCCESS;
+			}
+
+			Set<OpPerms> userPerms = new HashSet<OpPerms>();
+			if (user.getId() > 0 && account.isContractor()) {
+				if (!user.isActiveB() && account.isActiveB()) {
+
+					for (User users : user.getAccount().getUsers()) {
+						for (UserAccess ua : users.getOwnedPermissions()) {
+							if (ua.getUser() != user) {
+								userPerms.add(ua.getOpPerm());
+							}
+						}
+					}
+
+					if (userPerms.size() < 4) {
+						addActionError("Cannot inactivate this user");
+						userDAO.clear();
+						return SUCCESS;
+					}
+				}
 			}
 
 			if (user.getId() > 0) {
@@ -150,8 +202,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				user.setAccount(new Account());
 				if (!permissions.hasPermission(OpPerms.AllOperators)) {
 					user.getAccount().setId(permissions.getAccountId());
-				} else
-					user.getAccount().setId(accountId);
+				} else {
+					account = accountDAO.find(accountId);
+					user.setAccount(account);
+				}
 			}
 
 			if (user.isGroup()) {
@@ -195,6 +249,61 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				addActionMessage("Activation Email sent to " + user.getEmail());
 			}
 
+			if ("Contractor".equals(user.getAccount().getType())) {
+
+				userPerms = new HashSet<OpPerms>();
+
+				for (UserAccess ua : user.getOwnedPermissions()) {
+					userPerms.add(ua.getOpPerm());
+				}
+
+				if (!userPerms.contains(OpPerms.ContractorAdmin)) {
+					if (conAdmin) {
+						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
+							addActionError("You can only have 1-3 users with the "
+									+ OpPerms.ContractorAdmin.getDescription() + " permission");
+							return SUCCESS;
+						}
+						user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
+					}
+				} else {
+					if (!conAdmin)
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
+				}
+
+				if (!userPerms.contains(OpPerms.ContractorBilling)) {
+					if (conBilling)
+						user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
+				} else {
+					if (!conBilling)
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
+				}
+
+				if (!userPerms.contains(OpPerms.ContractorSafety)) {
+					if (conSafety)
+						user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
+				} else {
+					if (!conSafety)
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
+				}
+
+				if (!userPerms.contains(OpPerms.ContractorInsurance)) {
+					if (conInsurance)
+						user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
+				} else {
+					if (!conInsurance)
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
+				}
+
+				if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
+					addActionError("Please add a permission to this user");
+				}
+			}
+
 			try {
 				user = userDAO.save(user);
 				addActionMessage("User saved successfully.");
@@ -227,7 +336,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				user = null;
 			}
 		}
-
 
 		return SUCCESS;
 	}
@@ -332,6 +440,38 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 	public void setSendActivationEmail(boolean sendActivationEmail) {
 		this.sendActivationEmail = sendActivationEmail;
+	}
+
+	public boolean isConAdmin() {
+		return conAdmin;
+	}
+
+	public void setConAdmin(boolean conAdmin) {
+		this.conAdmin = conAdmin;
+	}
+
+	public boolean isConBilling() {
+		return conBilling;
+	}
+
+	public void setConBilling(boolean conBilling) {
+		this.conBilling = conBilling;
+	}
+
+	public boolean isConSafety() {
+		return conSafety;
+	}
+
+	public void setConSafety(boolean conSafety) {
+		this.conSafety = conSafety;
+	}
+
+	public boolean isConInsurance() {
+		return conInsurance;
+	}
+
+	public void setConInsurance(boolean conInsurance) {
+		this.conInsurance = conInsurance;
 	}
 
 	public List<User> getUserList() {

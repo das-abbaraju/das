@@ -18,13 +18,11 @@ import com.picsauditing.jpa.entities.UserAccess;
 @SuppressWarnings("serial")
 public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
-	protected UserAccessDAO userAccessDAO;
 	protected int accessId;
 	protected JSONObject json = new JSONObject();
 
 	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
-		super(accountDao, operatorDao, userDAO);
-		this.userAccessDAO = userAccessDAO;
+		super(accountDao, operatorDao, userDAO, userAccessDAO);
 	}
 
 	public String execute() throws Exception {
