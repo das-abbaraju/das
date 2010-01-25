@@ -105,10 +105,10 @@
 					description="Manage User Accounts"
 					href="UsersManage.action" />
 					&body_verify;
-				<verifyText 
-					description="[Add User] link exists"
-					text="Add New User" />
-				
+				<verifyElementText 
+					description="[Add New User] button exists"
+					text="Add New User"
+					type="button"/>
 				<storeProperty 
 					name="report_link" 
 					value="EMR Rates" />
