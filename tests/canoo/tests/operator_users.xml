@@ -12,6 +12,14 @@
 				&login;
 				<clickLink description="Edit User Accounts"
 					label="Users" />
+				<ifStep description="Pre Clean-up: If Canoo Exists, delete">
+					<condition>
+						<verifyText text="Canoo Test User (Operator)"/>
+					</condition>
+						<clickLink label="Canoo Test User (Operator)*"/>
+						<clickButton label="Delete"/>
+				</ifStep>	
+				
 				<group description="Add New Operator User">
 					<clickLink label="Add New User"/>
 					<setInputField name="user.name" value="Canoo Test User (Operator)"/>
