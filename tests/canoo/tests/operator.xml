@@ -108,7 +108,7 @@
 				<verifyElementText 
 					description="[Add New User] button exists"
 					text="Add New User"
-					type="button"/>
+					type="link"/>
 				<storeProperty 
 					name="report_link" 
 					value="EMR Rates" />
