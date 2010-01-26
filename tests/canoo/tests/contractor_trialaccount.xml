@@ -117,6 +117,7 @@
 					<clickButton label="Change Payment Method to Check"/>
 					<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
 					<clickLink href="UsersManage.action"/>
+					<clickLink label="John Doe"/>
 					<clickLink label="Switch to this User"/>
 				</group>
 				<group description="Complete Registration">
