@@ -349,9 +349,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		if(operator.getCountry() == null) {
 			errorMessages.addElement("Please select a country");
 		}
-		if (!Utilities.isValidEmail(operator.getPrimaryContact().getEmail()))
-			errorMessages.addElement("Please enter a valid email address. "
-					+ "This is our main way of communicating with you so it must be valid.");
 		return errorMessages;
 	}
 

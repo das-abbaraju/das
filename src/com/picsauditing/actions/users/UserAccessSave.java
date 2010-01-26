@@ -104,8 +104,11 @@ public class UserAccessSave extends UsersManage {
 				}
 			}
 			
-			if (accessId > 0)
+			if (accessId > 0) {
+				UserAccess usAccess = userAccessDAO.find(accessId);
+				user.getOwnedPermissions().remove(usAccess);
 				userAccessDAO.remove(accessId);
+			}	
 		}
 		return SUCCESS;
 	}

@@ -68,7 +68,7 @@ $(function() {
 					listKey="id"
 					listValue="name"
 					value="%{operator.primaryContact.id}"/>
-					<a href="UsersManage.action?button=newUser&accountId=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+					<a href="UsersManage.action?button=newUser&accountId=<s:property value="operator.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 				</li>
 				</s:if>
 				<li><label>Industry:</label> <s:select list="industryList"
