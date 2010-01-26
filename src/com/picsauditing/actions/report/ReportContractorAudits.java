@@ -79,6 +79,11 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.addField("auditor.name auditor_name");
 
+		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
+		sql.addField("contact.name AS contactname");
+		sql.addField("contact.phone AS contactphone");
+		sql.addField("contact.email AS contactemail");
+
 		if (permissions.isCorporate() || permissions.isOperator()) {
 			sql.addWhere("atype.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",") + ")");
 		}
