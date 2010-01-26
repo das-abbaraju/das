@@ -252,6 +252,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					}
 
 					if (emailAddresses.size() > 0) {
+						if(!accountDao.isContained(contractor)) {
+							contractor = accountDao.find(contractor.getId());
+						}
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(51); // Deactivation Email for
 						// operators
