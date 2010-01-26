@@ -93,8 +93,8 @@ $(function() {
 					<li><label>Zip:</label>
 						<s:textfield name="contractor.zip" size="7" />
 					</li>
-					<li><label>Main Phone:</label><s:textfield name="contractor.phone" /></li>
-					<li><label>Main Fax:</label><s:textfield name="contractor.fax" /></li>
+					<li><label>Company Phone:</label><s:textfield name="contractor.phone" /></li>
+					<li><label>Company Fax:</label><s:textfield name="contractor.fax" /></li>
 					
 					<li><label>Primary Contact:</label> <s:select
 						list="userList"
