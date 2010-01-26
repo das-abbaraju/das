@@ -136,7 +136,7 @@
 			<steps>
 				<invoke url="Login.action" />
 				<group description="Login as Admin, process check">
-					<setInputField name="username" value="opman"/>
+					<setInputField name="username" value="jsmith"/>
 					<setInputField name="password" value="@Irvine1"/>
 					<clickButton label="Login"/>
 					<ifStep>
