@@ -193,13 +193,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 			if (user.getAccount() == null) {
 				user.setAccount(new Account());
-				if (!permissions.hasPermission(OpPerms.AllOperators)) {
-					user.getAccount().setId(permissions.getAccountId());
-				} else {
+				if(user.getId() == 0) {
 					account = accountDAO.find(accountId);
 					user.setAccount(account);
 				}
-			}
+				else if (!permissions.hasPermission(OpPerms.AllOperators)) {
+					user.getAccount().setId(permissions.getAccountId());
+				}
+			}	
 
 			if (user.isGroup()) {
 				// Create a unique username for this group
