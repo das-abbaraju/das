@@ -244,7 +244,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				operator.setQbListID("NOLOAD" + operator.getId());
 
 				if (contactID > 0 && contactID != operator.getPrimaryContact().getId()) {
-					operator.setPrimaryContact(new User(contactID));
+					operator.setPrimaryContact(userDAO.find(contactID));
 				}
 
 				operator = operatorDao.save(operator);
