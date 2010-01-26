@@ -298,6 +298,10 @@ div.autocomplete ul li {
 		<s:hidden name="isActive" />
 		<s:hidden name="user.isGroup" />
 		<s:hidden name="sendActivationEmail"/>
+		<s:hidden name="conAdmin"/>
+		<s:hidden name="conBilling"/>
+		<s:hidden name="conSafety"/>
+		<s:hidden name="conInsurance"/>
 		<s:if test="user.isGroup.toString() == 'Yes'">
 			<s:hidden name="user.isActive" />
 		</s:if>
