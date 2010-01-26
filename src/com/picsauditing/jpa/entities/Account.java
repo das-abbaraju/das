@@ -437,8 +437,5 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setPrimaryContact(User user) {
 		this.primaryContact = user;
-		
-		if (!users.contains(user))
-			users.add(user);
 	}
 }
