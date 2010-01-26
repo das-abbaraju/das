@@ -105,9 +105,7 @@
 					description="Manage User Accounts"
 					href="UsersManage.action" />
 					&body_verify;
-				<verifyText description="Add new User Link" 
-					text="Add New User"/>
-				<storeProperty 
+								<storeProperty 
 					name="report_link" 
 					value="EMR Rates" />
 					&click_report;
