@@ -325,7 +325,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			} else if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
 				addActionMessage(message);
 			// Putting primary user check last so that primary users aren't switched that can't be deleted
-			} else if (user.getId() != user.getAccount().getPrimaryContact().getId()) {
+			} else if (user.getId() == user.getAccount().getPrimaryContact().getId()) {
 				addActionMessage("Cannot remove the primary user for " + user.getAccount().getName()
 						+ ". Please switch the primary user of this account and then attempt to delete them.");
 			} else {
