@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +30,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 @Entity

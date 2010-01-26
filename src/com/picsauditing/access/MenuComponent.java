@@ -2,9 +2,8 @@ package com.picsauditing.access;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	private static final long serialVersionUID = 923449569385839331L;

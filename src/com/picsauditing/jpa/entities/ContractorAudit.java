@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 @Entity

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +28,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class ConInsureGuard extends ContractorActionSupport {

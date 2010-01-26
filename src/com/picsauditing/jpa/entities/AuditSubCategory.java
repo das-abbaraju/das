@@ -1,6 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +20,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.util.Strings;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 @Entity

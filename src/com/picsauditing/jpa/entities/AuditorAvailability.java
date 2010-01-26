@@ -19,7 +19,7 @@ import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "auditor_availability")
