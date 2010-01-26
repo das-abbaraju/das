@@ -104,7 +104,7 @@ $(function() {
 						value="%{contractor.primaryContact.id}"
 						/>
 					<s:if test="permissions.admin">
-					<a href="UsersManage.action?button=newUser&accountId=<s:property value="getAccount().getId()"/>">Add User</a>
+						<a href="UsersManage.action?button=newUser&accountId=<s:property value="contractor.id"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 					</s:if>
 					</li>
 				</ol>
