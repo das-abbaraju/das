@@ -360,7 +360,7 @@ div.autocomplete ul li {
 						for="conInsurance" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>)</i></label></li>
 					</s:if>
 				<s:if test="user.id > 0">
-					<li><label>Last Login:</label> <s:date name="user.lastLogin" />
+					<li><label>Last Login:</label><s:if test="user.lastLogin != null"> <s:date name="user.lastLogin" /></s:if><s:else> never</s:else>
 					</li>
 				</s:if>
 			</s:if>
