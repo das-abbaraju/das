@@ -290,7 +290,7 @@ div.autocomplete ul li {
 <div id="user_edit">
 <s:include value="../actionMessages.jsp" />
 <s:if test="user != null">
-	<input type="button" class="picsbutton" onclick="showUserList();" value="Back to User List"/>
+	<input style="margin-bottom: 5px;" type="button" class="picsbutton" onclick="showUserList();" value="Back to User List"/>
 	<s:form id="UserSave">
 		<s:hidden name="user.id" />
 		<s:hidden name="accountId" />
