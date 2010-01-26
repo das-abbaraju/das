@@ -215,33 +215,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 			}
 
-			// Send activation email if set
-			if (sendActivationEmail && user.getId() == 0) {
-				try {
-					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setFromAddress(permissions.getEmail());
-					emailBuilder.setTemplate(5); // New User Welcome
-					emailBuilder.setPermissions(permissions);
-					emailBuilder.setUser(user);
-					user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-					userDAO.save(user);
-					String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername()
-							+ "&key=" + user.getResetHash() + "&button=reset";
-					emailBuilder.addToken("confirmLink", confirmLink);
-					// Account id hasn't been set. Still null value before
-					// saving
-					emailBuilder.addToken("accountname", accountDAO.find(accountId).getName());
-					emailBuilder.setFromAddress("info@picsauditing.com");
-					EmailQueue emailQueue = emailBuilder.build();
-					emailQueue.setPriority(100);
-					EmailSender.send(emailQueue);
-				} catch (Exception e) {
-					addActionError(e.getMessage());
-					return SUCCESS;
-				}
-				addActionMessage("Activation Email sent to " + user.getEmail());
-			}
-
 			if ("Contractor".equals(user.getAccount().getType())) {
 
 				userPerms = new HashSet<OpPerms>();
@@ -294,6 +267,33 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 				if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
 					addActionError("Please add a permission to this user");
+					return SUCCESS;
+				}
+				
+				// Send activation email if set
+				if (sendActivationEmail && user.getId() == 0) {
+					try {
+						EmailBuilder emailBuilder = new EmailBuilder();
+						emailBuilder.setFromAddress(permissions.getEmail());
+						emailBuilder.setTemplate(5); // New User Welcome
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.setUser(user);
+						user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+						userDAO.save(user);
+						String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername()
+								+ "&key=" + user.getResetHash() + "&button=reset";
+						emailBuilder.addToken("confirmLink", confirmLink);
+						// Account id hasn't been set. Still null value before saving
+						emailBuilder.addToken("accountname", accountDAO.find(accountId).getName());
+						emailBuilder.setFromAddress("info@picsauditing.com");
+						EmailQueue emailQueue = emailBuilder.build();
+						emailQueue.setPriority(100);
+						EmailSender.send(emailQueue);
+					} catch (Exception e) {
+						addActionError(e.getMessage());
+						return SUCCESS;
+					}
+					addActionMessage("Activation Email sent to " + user.getEmail());
 				}
 			}
 
