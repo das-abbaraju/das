@@ -106,6 +106,11 @@ $(function() {
 					<s:if test="permissions.admin">
 						<a href="UsersManage.action?button=newUser&accountId=<s:property value="contractor.id"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 					</s:if>
+					<s:else>
+					<pics:permission perm="ContractorAdmin">
+						<a href="UsersManage.action?button=newUser&accountId=<s:property value="contractor.id"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+					</pics:permission>
+					</s:else>
 					</li>
 				</ol>
 				</fieldset>
