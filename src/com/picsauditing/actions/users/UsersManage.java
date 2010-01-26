@@ -193,14 +193,13 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 			if (user.getAccount() == null) {
 				user.setAccount(new Account());
-				if(user.getId() == 0) {
+				if (user.getId() == 0) {
 					account = accountDAO.find(accountId);
 					user.setAccount(account);
-				}
-				else if (!permissions.hasPermission(OpPerms.AllOperators)) {
+				} else if (!permissions.hasPermission(OpPerms.AllOperators)) {
 					user.getAccount().setId(permissions.getAccountId());
 				}
-			}	
+			}
 
 			if (user.isGroup()) {
 				// Create a unique username for this group
@@ -270,7 +269,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					addActionError("Please add a permission to this user");
 					return SUCCESS;
 				}
-				
+
 				// Send activation email if set
 				if (sendActivationEmail && user.getId() == 0) {
 					try {
@@ -279,12 +278,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						emailBuilder.setTemplate(5); // New User Welcome
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.setUser(user);
-						user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+						user.setResetHash(Strings
+								.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 						userDAO.save(user);
 						String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername()
 								+ "&key=" + user.getResetHash() + "&button=reset";
 						emailBuilder.addToken("confirmLink", confirmLink);
-						// Account id hasn't been set. Still null value before saving
+						// Account id hasn't been set. Still null value before
+						// saving
 						emailBuilder.addToken("accountname", accountDAO.find(accountId).getName());
 						emailBuilder.setFromAddress("info@picsauditing.com");
 						EmailQueue emailQueue = emailBuilder.build();
@@ -323,6 +324,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				addActionMessage(message);
 			} else if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
 				addActionMessage(message);
+			// Putting primary user check last so that primary users aren't switched that can't be deleted
+			} else if (user.getId() != user.getAccount().getPrimaryContact().getId()) {
+				addActionMessage("Cannot remove the primary user for " + user.getAccount().getName()
+						+ ". Please switch the primary user of this account and then attempt to delete them.");
 			} else {
 				userDAO.remove(user);
 				addActionMessage("Successfully removed "
