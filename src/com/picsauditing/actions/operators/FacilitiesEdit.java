@@ -14,7 +14,6 @@ import java.util.Vector;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.users.UserAccountRole;
@@ -243,11 +242,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 					}
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
-				
-				if(contactID > 0 && contactID != operator.getPrimaryContact().getId()){
+
+				if (contactID > 0 && contactID != operator.getPrimaryContact().getId()) {
 					operator.setPrimaryContact(new User(contactID));
 				}
-				
+
 				operator = operatorDao.save(operator);
 				id = operator.getId();
 
@@ -346,7 +345,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		else if (operator.getName().length() < 3)
 			errorMessages.addElement("Your company name must be at least 3 characters long");
 
-		if(operator.getCountry() == null) {
+		if (operator.getCountry() == null) {
 			errorMessages.addElement("Please select a country");
 		}
 		return errorMessages;
