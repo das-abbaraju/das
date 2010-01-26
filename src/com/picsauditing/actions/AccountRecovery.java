@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class AccountRecovery extends PicsActionSupport {
 				return SUCCESS;
 			}
 			try {
-				emailBuilder.setTemplate(86); // Password Reminder
+				emailBuilder.setTemplate(86); // Username Reminder
 				emailBuilder.setFromAddress("info@picsauditing.com");
 				emailBuilder.addToken("users", matchingUsers);
 				emailBuilder.setToAddresses(email);
@@ -94,7 +95,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailBuilder.setFromAddress("info@picsauditing.com");
 			emailBuilder.addToken("user", user);
 
-			String confirmLink = "http://www.picsauditing.com/Login.action?username=" + user.getUsername() + "&key="
+			String confirmLink = "http://www.picsauditing.com/Login.action?username=" + URLEncoder.encode(user.getUsername(),"UTF-8") + "&key="
 					+ user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
