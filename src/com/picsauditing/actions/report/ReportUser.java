@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -14,6 +17,8 @@ import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectUserUnion;
 import com.picsauditing.util.ReportFilterUser;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportUser extends ReportActionSupport {
@@ -84,6 +89,24 @@ public class ReportUser extends ReportActionSupport {
 			this.addActionMessage("Redirected to MassMailer");
 			return BLANK;
 		}
+
+		if (download) {
+			addExcelColumns();
+			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
+			excelSheet.setName(filename);
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
+		}
+
 		return SUCCESS;
 	}
 
@@ -109,7 +132,7 @@ public class ReportUser extends ReportActionSupport {
 		if (filterOn(f.getUserName())) {
 			report.addFilter(new SelectFilter("UserName", "u.username LIKE '%?%'", f.getUserName()));
 		}
-		
+
 		if (filterOn(f.getCompanyName())) {
 			report.addFilter(new SelectFilter("companyName", "a.nameIndex LIKE '%?%'", f.getCompanyName()));
 		}
@@ -119,4 +142,13 @@ public class ReportUser extends ReportActionSupport {
 		return filter;
 	}
 
+	protected void addExcelColumns() {
+		excelSheet.setData(data);
+		excelSheet.addColumn(new ExcelColumn("companyName", "Account Name"), 0);
+		excelSheet.addColumn(new ExcelColumn("name", "Contact Name"));
+		excelSheet.addColumn(new ExcelColumn("phone", "Phone"));
+		excelSheet.addColumn(new ExcelColumn("email", "Email"));
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Created", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("lastLogin", "Last Login"));
+	}
 }

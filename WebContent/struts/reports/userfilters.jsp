@@ -16,7 +16,8 @@
 	<div><s:if test="filter.allowMailMerge">
 		<button type="submit" id="write_email_button" name="button"
 			value="Write Email" onclick="clickSearchSubmit('form1')"
-			class="picsbutton positive" style="display: none">Write Email</button>
+			class="picsbutton positive" style="display: none">Write
+		Email</button>
 		<button type="button" name="button" value="Find Recipients"
 			onclick="clickSearch('form1')">Find Recipients</button>
 	</s:if> <s:else>
@@ -26,37 +27,38 @@
 	</s:else></div>
 
 	<s:if test="filter.showContact">
-		<div class="filterOption">Contact Name: <s:textfield name="filter.contactName"
-			cssClass="forms" size="15" onfocus="clearText(this)"
-			title="must be 9 digits" /></div>
+		<div class="filterOption">Contact Name: <s:textfield
+			name="filter.contactName" cssClass="forms" size="15"
+			onfocus="clearText(this)" /></div>
 	</s:if>
 
 	<s:if test="filter.showUser">
-		<div class="filterOption">User Name: <s:textfield name="filter.userName"
-			cssClass="forms" size="15" onfocus="clearText(this)"
-			title="must be 9 digits" /></div>
+		<div class="filterOption">User Name: <s:textfield
+			name="filter.userName" cssClass="forms" size="15"
+			onfocus="clearText(this)" /></div>
 	</s:if>
 
 	<s:if test="filter.showCompanyName">
 		<div class="filterOption">Company Name: <s:textfield
 			name="filter.companyName" cssClass="forms" size="15"
-			onfocus="clearText(this)" title="must be 9 digits" /></div>
+			onfocus="clearText(this)" /></div>
 	</s:if>
 
 	<s:if test="filter.showPhone">
-		<div class="filterOption">Phone Number: <s:textfield name="filter.phoneNumber"
-			cssClass="forms" size="15" onfocus="clearText(this)"
-			title="must be 9 digits" /></div>
+		<div class="filterOption">Phone Number: <s:textfield
+			name="filter.phoneNumber" cssClass="forms" size="15"
+			onfocus="clearText(this)" title="must be 9 digits" /></div>
 	</s:if>
 
 	<s:if test="filter.showEmail">
 		<div class="filterOption">Email Address: <s:textfield
 			name="filter.emailAddress" cssClass="forms" size="15"
-			onfocus="clearText(this)" title="must be 9 digits" /></div>
+			onfocus="clearText(this)" /></div>
 	</s:if>
-	
+
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form></div>
-<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
+<div id="caldiv2"
+	style="position: absolute; visibility: hidden; background-color: white; layer-background-color: white;"></div>

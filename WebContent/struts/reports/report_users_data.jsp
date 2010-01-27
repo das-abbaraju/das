@@ -5,6 +5,13 @@
 </s:if>
 <s:else>
 
+<div class="right"><a 
+		class="excel" 
+		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('UserList');" 
+		title="Download all <s:property value="report.allRows"/> results to a CSV file"
+		>Download</a></div>
+
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

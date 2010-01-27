@@ -500,6 +500,11 @@
 			class="com.picsauditing.actions.report.ReportUser2">
 			<result>struts/reports/report_user_search.jsp</result>
 		</action>
+		<action name="UserListCSV"
+			class="com.picsauditing.actions.report.ReportUser">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<!-- Audit List -->
 		<action name="ReportAuditList"
