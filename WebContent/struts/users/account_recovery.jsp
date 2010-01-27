@@ -8,7 +8,7 @@
 fieldset.form input.login {
 	padding: 3px;
 	font-size: 16px;
-	width: 240px;
+	width: 150px;
 	font-weight: bold;
 	font-family: 'Trebuchet MS', Helvetica, sans-serif;
 }
@@ -18,7 +18,7 @@ fieldset.form input.login {
 
 <s:include value="../actionMessages.jsp"></s:include>
 <div class="left" style="margin-right:40px;">
-<s:form id="login" cssStyle="width: 500px;">
+<s:form id="login" cssStyle="width: 400px;">
 	<fieldset class="form" style="margin-top: 20px;"><legend><span>Reset Password</span></legend>
 	<ol>
 		<li>Enter the user name which you created your PICS company profile with. After verifying your identity through the email associated
@@ -37,7 +37,7 @@ fieldset.form input.login {
 </s:form>
 </div>
 <div class="left">
-<s:form id="login" cssStyle="width: 500px;">
+<s:form id="login" cssStyle="width: 400px;">
 	<fieldset class="form" style="margin-top: 20px;"><legend><span>Find Username</span></legend>
 	<ol>
 		<li>Enter the email address that you submitted when you created your PICS company profile and we will email you a list of all usernames associated with that email address at PICS. If you have any problems, <a href="Contact.action" title="Contact PICS">contact us</a>
@@ -53,6 +53,11 @@ fieldset.form input.login {
 	</fieldset>
 	<fieldset class="form submit"></fieldset>
 </s:form>
+</div>
+<div class="info">
+	We made improvements to our site and contractors can now have multiple user accounts. 
+	If you are the secondary or billing contact for your account please type in your email address to retrieve 
+	your new username. If you have problems, please <a href="Contact.action">contact us directly</a>.
 </div>
 </body>
 </html>
