@@ -13,6 +13,7 @@
 <s:form id="form1" method="post"
 	cssStyle="background-color: #F4F4F4;"
 	onsubmit="runSearch('form1')">
+	<s:hidden name="filter.ajax" value="false" />
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="startsWith" />
 	<s:hidden name="orderBy" />
@@ -62,7 +63,7 @@
 <br clear="all"/>
 <s:if test="showSummary">
 	<table class="report">
-		<thead><tr><td>Summary For <s:property value="data.get(0).get('userName')"/></td>
+		<thead><tr><td>Summary For <s:property value="username"/></td>
 				<td></td>
 				<td>Accounts Managed</td>
 				<td><s:property value="previousMonthName"/></td>

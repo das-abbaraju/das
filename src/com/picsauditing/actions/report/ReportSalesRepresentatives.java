@@ -265,6 +265,14 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	public List<BasicDynaBean> getData() {
 		return data;
 	}
+	
+	public String getUsername() {
+		if (accountUser != null && accountUser.length == 1) {
+			return (userDAO.find(accountUser[0])).getName();
+		}
+		
+		return "Selected User";
+	}
 
 	public boolean isShowSummary() {
 		return showSummary;
