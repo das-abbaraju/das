@@ -121,7 +121,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if (account == null) {
 			// This would happen if I'm looking at my own account, but not a
 			// user yet
-			account = super.getUser().getAccount();
+			account = accountDAO.find(permissions.getAccountId());
 		}
 		accountId = account.getId();
 
