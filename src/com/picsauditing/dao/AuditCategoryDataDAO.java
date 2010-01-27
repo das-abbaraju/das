@@ -1,7 +1,9 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -11,10 +13,10 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class AuditCategoryDataDAO extends PicsDAO {
@@ -42,7 +44,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<AuditCatData> findByAudit(ContractorAudit contractorAudit, Permissions permissions) {
 		String where = "";
-		if (contractorAudit.getAuditType().getId() == AuditType.PQF) {
+		if (contractorAudit.getAuditType().isPqf()) {
 			// This is a PQF, so it has special query criteria
 			if (!permissions.isAdmin()) // TODO change this to be a permission
 				where += "AND d.applies = 'Yes' "; // Show only the admins the full PQF
@@ -52,14 +54,22 @@ public class AuditCategoryDataDAO extends PicsDAO {
 				if (!permissions.hasPermission(OpPerms.ViewFullPQF))
 					where += "AND d.category.id <> " + AuditCategory.WORK_HISTORY + " ";
 
-				if (permissions.isOperator()) {
+				if (permissions.isOperatorCorporate()) {
+					Set<Integer> inheritCategories = new HashSet<Integer>();
+					Query query;
+					if (permissions.isOperator()) {
+						query = em.createQuery("SELECT inheritAuditCategories.id FROM OperatorAccount WHERE id = :id");
+					} else {
+						query = em.createQuery("SELECT operator.inheritAuditCategories.id FROM Facility f WHERE corporate.id = :id");
+					}
+					query.setParameter("id", permissions.getAccountId());
+					for (Object row : query.getResultList()) {
+						inheritCategories.add(Integer.parseInt(row.toString()));
+					}
+					
 					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o "
-							+ "WHERE o.category.auditType.id = :auditType AND o.riskLevel = :risk AND o.operatorAccount.id = :id) ";
-				}
-				if (permissions.isCorporate()) {
-					where += "AND d.category IN (SELECT o.category FROM AuditCatOperator o "
-							+ "WHERE o.riskLevel = :risk AND o.operatorAccount IN ("
-							+ "SELECT operator FROM Facility f WHERE corporate.id = :id)) ";
+						+ "WHERE o.category.auditType.id = 1 AND o.riskLevel = :risk " +
+								"AND o.operatorAccount.id IN (" + Strings.implode(inheritCategories, ",") + ") )";
 				}
 			}
 		}
@@ -76,7 +86,6 @@ public class AuditCategoryDataDAO extends PicsDAO {
 
 			query.setParameter("conAudit", contractorAudit.getId());
 			setOptionalParameter(query, "auditType", contractorAudit.getAuditType().getId());
-			setOptionalParameter(query, "id", permissions.getAccountId());
 			setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
 
 			return query.getResultList();
