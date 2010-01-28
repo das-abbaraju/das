@@ -17,9 +17,9 @@
 
 This is tomcat: <%=request.getLocalPort()%>
 &nbsp;&nbsp;&nbsp;
-<a href="http://localhost:8080/picsWeb2/test.jsp">8080</a>
+<a href="http://alpha.picsauditing.com:8080/app/test.jsp">8080</a>
 &nbsp;
-<a href="http://localhost:8180/picsWeb2/test.jsp">8180</a>
+<a href="http://alpha.picsauditing.com:8280/app/test.jsp">8280</a>
 <br />
 <br />
 
