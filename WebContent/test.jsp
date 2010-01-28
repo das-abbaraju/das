@@ -14,6 +14,7 @@
 <body>
 
 
+<% System.out.println("hit this server"); %>
 
 This is tomcat: <%=request.getLocalPort()%>
 &nbsp;&nbsp;&nbsp;
