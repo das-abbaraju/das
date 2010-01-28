@@ -86,6 +86,19 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	protected boolean forceLogin() {
+		// Check if cookies are enabled before running any other checks
+		// Cookies are saved in a previous step. If they are still null,
+		// then cookies are disabled
+		if (ServletActionContext.getRequest().getCookies() == null) {
+			try {
+				redirect("Login.action?button=logout&msg=Cookies are disabled on your browser. Please open your browser settings and make sure cookies are enabled to log in to PICS");
+			} catch (IOException e) {
+				System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+				return false;
+			}
+			return true;
+		}
+		
 		loadPermissions();
 		try {
 			// TJA I tried using getUser() but it doesn't work from the
