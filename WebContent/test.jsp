@@ -69,7 +69,9 @@ session string
 		List<Object> keys = (List<Object>) cache.getKeys();
 
 		for (Object s : keys) {
-			out.write("&nbsp;&nbsp;&nbsp;&nbsp;" + s + ": " + cache.get(s).getValue() + "<br/>");
+			
+			if( cache.get(s) != null )
+				out.write("&nbsp;&nbsp;&nbsp;&nbsp;" + s + ": " + cache.get(s).getValue() + "<br/>");
 		}
 	}
 %>
