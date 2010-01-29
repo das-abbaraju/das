@@ -25,8 +25,9 @@
 				'auditData.comment': comment,
 				'toggleVerify': true
 			};
+
 		if( answerelm != null ) {
-			data.answer = answerelm.val();	
+			data['auditData.answer'] = answerelm.val();
 		}
 
 		$.getJSON('AuditToggleVerifyAjax.action', data, function(json){
@@ -95,7 +96,7 @@
 		);
 		return false;
 	}
-	
+
 	function setOSHAComment( oshaId ) {
 		startThinking({div:'status_'+oshaId});
 	
