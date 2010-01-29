@@ -18,8 +18,8 @@ public class UserGroupSave extends UsersManage {
 	protected UserGroupDAO userGroupDAO;
 	protected UserSwitchDAO userSwitchDAO;
 
-	public UserGroupSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO,
-			UserSwitchDAO userSwitchDAO) {
+	public UserGroupSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
+			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO) {
 		super(accountDao, operatorDao, userDAO, userAccessDAO);
 		this.userGroupDAO = userGroupDAO;
 		this.userSwitchDAO = userSwitchDAO;
@@ -37,51 +37,17 @@ public class UserGroupSave extends UsersManage {
 		}
 
 		if ("AddGroup".equals(button)) {
-			boolean hasUserGroup = false;
-			for (UserGroup userGroup : user.getGroups()) {
-				if (userGroup.getGroup().getId() == groupId)
-					hasUserGroup = true;
-			}
-			if (!hasUserGroup) {
-				UserGroup uGroup = new UserGroup();
-				User newGroup = userDAO.find(groupId);
-				if (containsGroup(user, newGroup)) {
-					this.addActionError("You can't add a circular relationship");
-					return SUCCESS;
-				}
-
-				uGroup.setGroup(newGroup);
-				uGroup.setUser(user);
-				uGroup.setAuditColumns(permissions);
-				userGroupDAO.save(uGroup);
-				user.getGroups().add(uGroup);
-			}
+			User newGroup = userDAO.find(groupId);
+			addUserToGroup(user, newGroup);
+			return SUCCESS;
 		}
 		if ("RemoveGroup".equals(button)) {
 			userGroupDAO.remove(userGroupId);
+			return SUCCESS;
 		}
 		if ("AddMember".equals(button)) {
-			// Make sure memberId isn't already in user's member list
-			boolean hasUserGroup = false;
-			for (UserGroup userGroup : user.getMembers()) {
-				if (userGroup.getGroup().getId() == memberId)
-					hasUserGroup = true;
-			}
-			if (!hasUserGroup) {
-				// Make sure user isn't in member's member list
-				UserGroup uGroup = new UserGroup();
-				User newUser = userDAO.find(memberId);
-				if (containsMember(newUser, user)) {
-					this.addActionError("You can't add a circular relationship");
-					return "member";
-				}
-
-				uGroup.setUser(newUser);
-				uGroup.setGroup(user);
-				uGroup.setAuditColumns(permissions);
-				userGroupDAO.save(uGroup);
-				user.getMembers().add(uGroup);
-			}
+			User newUser = userDAO.find(memberId);
+			addUserToGroup(newUser, user);
 			return "member";
 		}
 		if ("RemoveMember".equals(button)) {
@@ -122,23 +88,60 @@ public class UserGroupSave extends UsersManage {
 		return SUCCESS;
 	}
 
-	private boolean containsMember(User group, User member) {
-		for (UserGroup userMember : group.getMembers()) {
-			if (userMember.getUser().getId() == member.getId()) {
-				return true;
-			}
-			if (containsMember(userMember.getUser(), member))
-				return true;
+	private boolean addUserToGroup(User user, User group) {
+		if (!group.isGroup()) {
+			addActionError("You can only inherit permissions from groups");
+			return false;
 		}
-		return false;
+		if (user.equals(group)) {
+			addActionError("You can't add a group to itself");
+			return false;
+		}
+
+		for (UserGroup userGroup : user.getGroups()) {
+			if (userGroup.getGroup().equals(group)) {
+				// Don't add the same group twice
+				return false;
+			}
+		}
+
+		if (user.isGroup()) {
+			// Make sure the new parent group isn't a descendant of this child group
+			if (containsMember(user, group)) {
+				addActionError(group.getName() + " is a descendant of " + user.getName()
+						+ ". This action would create an infinite loop.");
+				return false;
+			}
+		}
+
+		// Make sure user isn't in member's member list
+		UserGroup uGroup = new UserGroup();
+
+		uGroup.setUser(user);
+		uGroup.setGroup(group);
+		uGroup.setAuditColumns(permissions);
+		userGroupDAO.save(uGroup);
+		if (!group.getMembers().contains(uGroup))
+			group.getMembers().add(uGroup);
+		if (!user.getGroups().contains(uGroup))
+			user.getGroups().add(uGroup);
+
+		return true;
 	}
 
-	private boolean containsGroup(User user, User group) {
-		for (UserGroup userGroup : user.getGroups()) {
-			if (userGroup.getGroup().getId() == group.getId()) {
+	/**
+	 * Is the group a child/descendant(member) of the user
+	 * 
+	 * @param user
+	 * @param group
+	 * @return
+	 */
+	private boolean containsMember(User user, User group) {
+		for (UserGroup userMember : user.getMembers()) {
+			if (userMember.getUser().equals(group)) {
 				return true;
 			}
-			if (containsGroup(userGroup.getGroup(), group))
+			if (containsMember(userMember.getUser(), group))
 				return true;
 		}
 		return false;
