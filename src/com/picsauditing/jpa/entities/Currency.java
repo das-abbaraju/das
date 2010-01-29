@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum Currency {
-	USD("USD $"), CAN("CAN $");
+	USD("USD $"), CAD("CAD $");
 
 	private String display;
 
@@ -15,7 +15,7 @@ public enum Currency {
 
 	public static Currency getFromISO(String isoCode) {
 		if (isoCode.equals("CA"))
-			return CAN;
+			return CAD;
 
 		return USD;
 	}
