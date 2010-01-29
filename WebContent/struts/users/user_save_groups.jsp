@@ -5,7 +5,7 @@
 <table class="report">
 <thead>
 	<tr>
-		<th colspan="3">Group(s)</th>
+		<th colspan="3">Inherit Permissions From</th>
 	</tr>
 </thead>
 <tbody>
@@ -34,8 +34,13 @@
 	</tr>
 </s:iterator>
 </s:sort>
+<s:if test="addableGroups.size > 0">
+	<tr id="addGroupButton">
+		<td colspan="3"><button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide();">Show Groups to Add</button></td>
+	</tr>
+</s:if>
 <s:iterator value="addableGroups">
-	<tr>
+	<tr class="addableGroup">
 		<td><s:property value="account.name"/></td>
 		<td><a href="?accountId=<s:property value="account.id"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>" style="font-style: italic; color: red;"><s:property value="name"/></a></td>
 		<td><a class="edit" href="#" style="font-style: italic; color: red;" 

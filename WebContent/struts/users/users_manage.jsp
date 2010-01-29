@@ -3,7 +3,7 @@
 <%@page language="java" errorPage="../../exception_handler.jsp"%>
 <html>
 <head>
-<title>Manage Users</title>
+<title>Manage Users <s:if test="user.id > 0">: <s:property value="user.name"/></s:if></title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=20091231" />
 <link rel="stylesheet" type="text/css" media="screen"
@@ -13,11 +13,7 @@
 	src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="js/jquery/autocomplete/jquery.autocomplete.css" />
-<style type="text/css">
-.user-password {
-	display: none;
-}
-</style>
+<script type="text/javascript" src="js/user_manage.js?v=20091231"></script>
 <script type="text/javascript">
 var accountID = <s:property value="accountId"/>;
 var currentUserID = 0;
@@ -27,134 +23,11 @@ var permTypes = new Array();
 <s:iterator value="permissions.permissions">
 	<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
 </s:iterator>
-
-function showPermDesc(item) {
-	var x = $(item).val();
-	$('#permDescription').html(permTypes[x][0]);
-}
-
-function addPermission() {
-	$('#addPermissionButton').html('Processing: <img src="images/ajax_process.gif" />');
-	var opPerm = $('#newPermissionSelect').val();
-	var data = {
-		button: 'AddPerm',
-		'user.id': currentUserID,
-		opPerm: opPerm,
-		accountId: accountID
-	};
-	$('#permissionReport').load('UserAccessSaveAjax.action', data);
-}
-
-function removePermission(accessId) {
-	$('#permissionReport').html('Processing: <img src="images/ajax_process.gif" />');
-	var data = {
-		button: 'RemovePerm',
-		accessId: accessId,
-		'user.id': currentUserID,
-		accountId: accountID
-	};
-	$('#permissionReport').load('UserAccessSaveAjax.action', data);
-}
-
-function updatePermission(accessId, typeName, theValue) {
-	var data = {
-		accessId: accessId,
-		type: typeName,
-		permValue: $(theValue).val()
-	};
-	$.post('UserAccessUpdateAjax.action', data, 
-		function(){
-			$('#permission_'+accessId).effect('highlight', {color: '#FFFF11'}, 1000);
-		}
-	);
-}
-
-function addGroup(groupID) {
-	$('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
-	var data = {
-		button: 'AddGroup',
-		groupId: groupID,
-		'user.id': currentUserID,
-		accountId: accountID
-	};
-	$('#groupReport').load('UserGroupSaveAjax.action', data);
-}
-
-function removeGroup(userGroupID) {
-	$('#groupReport').html('Processing: <img src="images/ajax_process.gif" />');
-	var data = {
-		button: 'RemoveGroup',
-		userGroupId: userGroupID,
-		'user.id': currentUserID,
-		accountId: accountID
-	};
-	$('#groupReport').load('UserGroupSaveAjax.action', data);
-}
-
-function addMember(memberId) {
-	$('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
-	var data = {
-		button: 'AddMember',
-		memberId: memberId,
-		'user.id': currentUserID,
-		accountId: accountID
-	};
-	$('#memberReport').load('UserGroupSaveAjax.action', data);
-}
-
-function removeMember(userGroupID) {
-	$('#memberReport').html('Processing: <img src="images/ajax_process.gif" />');
-	var data = {
-		button: 'RemoveMember',
-		userGroupId: userGroupID,
-		'user.id': currentUserID,
-		accountId: accountID
-	};
-	$('#memberReport').load('UserGroupSaveAjax.action', data);
-}
-
-function checkUsername(username) {
-	$('#UserSave').attr({'disabled':'disabled'});
-	$('#username_status').html('checking availability of username...');
-	var data = {
-		userID: currentUserID,
-		username: username
-	};
-	$('#username_status').load('user_ajax.jsp', data, function() {
-		if($('#username_status').html().indexOf('is NOT available. Please choose a different username.') == -1)
-			$('#UserSave').attr({'disabled': false});
-		}
-	);
-}
-
-<s:if test="user.group">
-	function addUserSwitch(userID) {
-		var data = {
-				button: 'AddSwitchFrom',
-				'user.id': currentUserID,
-				'memberId': userID,
-				'accountId':accountID
-		};
-		$('#userSwitch').load('UserGroupSaveAjax.action', data);
-	}
-
-	function removeUserSwitch(userID) {
-		var data = {
-				button: 'RemoveSwitchFrom',
-				'user.id': currentUserID,
-				'memberId': userID,
-				'accountId':accountID
-		};
-		$('#userSwitch').load('UserGroupSaveAjax.action', data);
-	}
-</s:if>
-
-function showUserList() {
-	$('#manage_controls').show();
-	$('#user_edit').hide();
-}
 </script>
 <style type="text/css">
+.user-password, .addableGroup, .addableMember {
+	display: none;
+}
 div.autocomplete {
 	position: absolute;
 	width: 250px;
@@ -185,17 +58,20 @@ div.autocomplete ul li {
 </head>
 <body>
 <h1>Manage User Accounts</h1>
-<div id="manage_controls" <s:if test="user != null">style="display:none"</s:if>>
-<s:if test="!account.admin">
-	<a
-		href="<s:if test="account.contractor">ContractorView</s:if><s:else>FacilitiesEdit</s:else>.action?id=<s:property value="account.id"/>"><s:property
-		value="account.name" /></a> &gt; <a
-		href="?accountId=<s:property value="account.id"/>">Manage User
-	Accounts</a> <s:if test="user.id > 0">&gt; <s:property
-			value="user.name" />
-	</s:if> <s:if test="button == 'newUser'">&gt; NEW USER</s:if>
-</s:if>
 
+<s:if test="account.contractor">
+	<a href="ContractorView.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+</s:if>
+<s:if test="account.operatorCorporate">
+	<a href="FacilitiesEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+</s:if>
+<s:if test="account.admin">PICS</s:if>
+&gt; <a href="?accountId=<s:property value="account.id"/>">Manage User Accounts</a>
+<s:if test="user.id > 0">&gt; <a href="?user.id=<s:property value="user.id"/>"><s:property value="user.name" /></a>
+</s:if>
+<s:if test="button == 'newUser'">&gt; NEW USER</s:if>
+
+<div id="manage_controls" <s:if test="user != null">style="display:none"</s:if>>
 <s:if test="!account.contractor">
 	<div id="search"><s:form id="form1" method="get">
 		<button class="picsbutton positive" type="submit" name="button"
@@ -245,7 +121,6 @@ div.autocomplete ul li {
 			</s:if>
 </div>
 
-<h3>User List</h3>
 <table class="report">
 	<thead>
 		<tr>
@@ -284,20 +159,15 @@ div.autocomplete ul li {
 	</s:iterator>
 </table>
 
-
 </div>
+
 
 <div id="user_edit">
 <s:include value="../actionMessages.jsp" />
 <s:if test="user != null">
-	<a
-		href="<s:if test="account.contractor">ContractorView</s:if><s:else>FacilitiesEdit</s:else>.action?id=<s:property value="account.id"/>"><s:property
-		value="account.name" /></a> &gt; <a
-		href="?accountId=<s:property value="account.id"/>">Manage User
-	Accounts</a> <s:if test="user.id > 0">&gt; <s:property
-			value="user.name" />
-	</s:if> <s:if test="button == 'newUser'">&gt; NEW USER</s:if><br/>
-	<input style="margin-bottom: 5px;" type="button" class="picsbutton" onclick="showUserList();" value="Back to User List"/>
+	<div style="margin-bottom: 10px;">
+		<button class="picsbutton" onclick="showUserList();">&lt;&lt; Back to User List</button>
+	</div>
 	<s:form id="UserSave">
 		<s:hidden name="user.id" />
 		<s:hidden name="accountId" />
@@ -308,7 +178,7 @@ div.autocomplete ul li {
 		<s:if test="user.isGroup.toString() == 'Yes'">
 			<s:hidden name="user.isActive" />
 		</s:if>
-		<fieldset class="form bottom"><legend><span>User
+		<fieldset class="form bottom"><legend><span><s:if test="user.group">Group</s:if> <s:else>User</s:else>
 		Details</span></legend>
 		<ol>
 			<s:if test="account.users.size() > 1">
@@ -406,7 +276,9 @@ div.autocomplete ul li {
 	<s:if test="user.id > 0">
 		<s:if test="!account.contractor">
 			<s:if test="!user.superUser">
-				<div id="permissionReport" style="width: 100%"><s:include
+				<td class="column">
+				</td>
+				<div id="permissionReport" style="width: 600px"><s:include
 					value="user_save_permissions.jsp" /></div>
 
 				<div id="groupReport"><s:include
@@ -416,6 +288,13 @@ div.autocomplete ul li {
 			<s:if test="user.group">
 				<div id="memberReport"><s:include
 					value="user_save_members.jsp" /></div>
+			</s:if>
+		</s:if>
+
+		<s:if test="permissions.admin">
+			<s:if test="user.group">
+				<div id="userSwitch"><s:include
+					value="user_save_userswitch.jsp" /></div>
 			</s:if>
 		</s:if>
 
@@ -443,15 +322,11 @@ div.autocomplete ul li {
 				</tbody>
 			</table>
 		</s:if>
-		<s:if test="permissions.admin">
-			<s:if test="user.group">
-				<div id="userSwitch"><s:include
-					value="user_save_userswitch.jsp" /></div>
-			</s:if>
-		</s:if>
 	</s:if>
 </s:if>
 
 </div>
+
+
 </body>
 </html>
