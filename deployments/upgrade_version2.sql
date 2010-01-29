@@ -17,3 +17,5 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
+
+update pqfquestions set dependsOnqID = null where dependsOnqID = 0;
