@@ -289,7 +289,7 @@ public class BillingCalculatorSingle {
 		if(BillingCalculatorSingle.CONTRACT_RENEWAL_NEWBELGIUM.after(new Date()) && contractor.getRequestedBy().getId() == 5147)
 			return true;
 		// Timken
-		if (BillingCalculatorSingle.CONTRACT_RENEWAL_TIMKEN.after(new Date()) && (contractor.getRequestedBy().getId() == 9644 || contractor.getRequestedBy().getId() == 9645))
+		if (BillingCalculatorSingle.CONTRACT_RENEWAL_TIMKEN.after(new Date()) && contractor.getRequestedBy().getName().startsWith("Timken"))
 			return true;
 		// BASF
 		if(BillingCalculatorSingle.CONTRACT_RENEWAL_BASF.after(new Date()) && contractor.getRequestedBy().getName().startsWith("BASF"))
