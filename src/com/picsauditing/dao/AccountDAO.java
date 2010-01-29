@@ -69,5 +69,15 @@ public class AccountDAO extends PicsDAO {
 		query.setParameter(1, Utilities.escapeQuotes(username));
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
-
+	
+	public List<Account> findSetWhere(String where, int limit) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		
+		Query query = em.createQuery("FROM Account a " + where + " ORDER BY a.id");
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
 }

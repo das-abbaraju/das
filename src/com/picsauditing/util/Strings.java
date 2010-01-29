@@ -238,7 +238,10 @@ public class Strings {
 		if (name == null)
 			return null;
 		name = name.toUpperCase();
-
+		
+		/*		
+		 * Old code for reference
+		 * 
 		String expression = "[A-Z0-9]+";
 		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
 		Matcher matcher = pattern.matcher(name);
@@ -252,6 +255,24 @@ public class Strings {
 
 		// return name.toUpperCase().replaceAll("[^A-Z0-9]","");
 		return buf.toString();
+		*/
+		
+		// Remove all quotes
+		name = name.replaceAll("[\\'\\\"]", "");
+		// Replace all non letters/digits with spaces
+		name = name.replaceAll("\\W", " ");
+		name = name.replaceAll("_", " ");
+		// Collapse multiple spaces into one space
+		name = name.replaceAll(" +", " ");
+		name = name.trim();
+		// Take out "the" at the beginning of the sentences, llc & inc (in multiple variations) at the end of sentences
+		name = name.replaceAll("^THE ", "");
+		name = name.replaceAll(" L ?L ?C$", "");
+		name = name.replaceAll(" I ?N ?C$", "");
+		
+		//System.out.println(name);
+		
+		return name;
 	}
 
 	public static String htmlStrip(String input) {

@@ -1442,6 +1442,10 @@
 			class="com.picsauditing.actions.contractors.CertCleanUp">
 			<result>/struts/blank.jsp</result>
 		</action>
+		
+		<action name="NameIndexUpdater"
+			class="com.picsauditing.util.NameIndexUpdater">
+		</action>
 
 		<action name="CertHashUtil" class="com.picsauditing.actions.contractors.CertHashUtil">
 			<result>struts/contractors/cert_convert.jsp</result>

@@ -46,7 +46,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	public ReportAccount() {
 		listType = ListType.Contractor;
-		orderByDefault = "a.name";
+		orderByDefault = "a.nameIndex";
 	}
 
 	/**
@@ -185,11 +185,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		/** **** Filters for Accounts ********** */
 		if (filterOn(f.getStartsWith()))
-			report.addFilter(new SelectFilter("startsWith", "a.name LIKE '?%'", f.getStartsWith()));
+			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%' OR a.name LIKE '?%'", f.getStartsWith()));
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
-			report.addFilter(new SelectFilter("accountName", "a.name LIKE '%?%' OR a.dbaName LIKE '%?%'", accountName));
+			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%?%' OR a.name LIKE '?%' OR a.dbaName LIKE '?%'", accountName));
 		}
 
 		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE))
