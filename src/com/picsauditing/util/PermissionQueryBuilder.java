@@ -63,6 +63,12 @@ public class PermissionQueryBuilder {
 			else
 				subquery = "SELECT gc.subID FROM generalcontractors gc "
 						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId();
+
+			if (workingFacilities) {
+				if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+						subquery += " AND workStatus = 'Y'";
+				}
+			}
 		}
 
 		if (permissions.isOnlyAuditor()) {

@@ -147,11 +147,12 @@ public class Permissions implements Serializable {
 				if (operator.getCountry() != null)
 					accountCountries.add(operator.getCountry().getIsoCode());
 
+				approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
+
 				if (isOperator()) {
 					if (operator.getParent() != null)
 						topAccountID = operator.getParent().getId();
 
-					approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
 					for (Facility facility : operator.getCorporateFacilities()) {
 						corporateParent.add(facility.getCorporate().getId());
 						if (facility.getCorporate().isPrimaryCorporate()) {
