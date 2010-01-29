@@ -17,6 +17,7 @@ import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectUserUnion;
 import com.picsauditing.util.ReportFilterUser;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -133,8 +134,11 @@ public class ReportUser extends ReportActionSupport {
 			report.addFilter(new SelectFilter("UserName", "u.username LIKE '%?%'", f.getUserName()));
 		}
 
+		// If we're searching by nameIndexes, we should use the nameIndex format
+		// on the company name users input
 		if (filterOn(f.getCompanyName())) {
-			report.addFilter(new SelectFilter("companyName", "a.nameIndex LIKE '%?%'", f.getCompanyName()));
+			report.addFilter(new SelectFilter("companyName", "a.nameIndex LIKE '%?%'",
+				Strings.indexName(f.getCompanyName())));
 		}
 	}
 

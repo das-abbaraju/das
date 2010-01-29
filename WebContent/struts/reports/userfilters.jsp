@@ -19,7 +19,7 @@
 			class="picsbutton positive" style="display: none">Write
 		Email</button>
 		<button type="button" name="button" value="Find Recipients"
-			onclick="clickSearch('form1')">Find Recipients</button>
+			onclick="clickSearch('form1')" class="picsbutton">Find Recipients</button>
 	</s:if> <s:else>
 		<button type="submit" name="button" value="Search"
 			onclick="return clickSearch('form1');" class="picsbutton positive">Search</button>

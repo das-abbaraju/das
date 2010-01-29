@@ -65,14 +65,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected void buildQuery() {
 		sql = new SelectAccount();
 		sql.setType(SelectAccount.Type.Contractor);
-		
+
 		if (!skipPermissions)
 			sql.setPermissions(permissions);
 
 		if (download) {
 			getFilter().setPrimaryInformation(true);
 		}
-		
+
 		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
 		sql.addField("a.phone");
 		sql.addField("a.fax");
@@ -189,7 +189,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
-			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%?%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%?%'", accountName));
+			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%?%'", accountName));
 		}
 
 		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE))
@@ -203,19 +204,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
-		
+
 		String stateList = Strings.implodeForDB(f.getState(), ",");
 		if (filterOn(stateList)) {
 			sql.addWhere("a.state IN (" + stateList + ")");
 			setFiltered(true);
 		}
-		
+
 		String countryList = Strings.implodeForDB(f.getCountry(), ",");
 		if (filterOn(countryList) && !filterOn(stateList)) {
 			sql.addWhere("a.country IN (" + countryList + ")");
 			setFiltered(true);
 		}
-		
+
 		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
@@ -282,7 +283,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String list = Strings.implodeForDB(f.getFlagStatus(), ",");
 			sql.addWhere("flags.flag IN (" + list + ")");
 			setFiltered(true);
-		}	
+		}
 
 		if (filterOn(f.getWaitingOn()))
 			report.addFilter(new SelectFilter("waitingOn", "flags.waitingOn = '?'", f.getWaitingOn()));
@@ -298,7 +299,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String list = Strings.implode(f.getRiskLevel(), ",");
 			sql.addWhere("c.riskLevel IN (" + list + ")");
 			setFiltered(true);
-		}	
+		}
 
 		if (f.getEmailTemplate() > 0) {
 			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
@@ -355,9 +356,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes'");
 			}
 		}
-		
-		if(filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
-			sql.addWhere("gc.workStatus = '"+ getFilter().getWorkStatus() +"'");
+
+		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
+			sql.addWhere("gc.workStatus = '" + getFilter().getWorkStatus() + "'");
 		}
 	}
 
