@@ -14,7 +14,7 @@ public class ReportAccountAudits extends ReportAccount {
 		super.buildQuery();
 
 		getFilter().setShowMinorityOwned(true);
-		
+
 		if (filterOn(getFilter().getInvoiceDueDate1()) || filterOn(getFilter().getInvoiceDueDate2())) {
 			sql.addJoin("JOIN invoice i ON a.id = i.accountID AND status = 'Unpaid' AND i.tableType = 'I'");
 			if (filterOn(getFilter().getInvoiceDueDate1())) {
@@ -28,13 +28,15 @@ public class ReportAccountAudits extends ReportAccount {
 		}
 
 		sql.addAudit(AuditType.PQF);
-		if(download) {
-			sql.addJoin("LEFT JOIN pqfdata pd2340 ON ca1.id = pd2340.auditID AND pd2340.questionID = 2340");
-			sql.addField("pd2340.answer AS 2340answer"); 
-			sql.addJoin("LEFT JOIN pqfdata pd2354 ON ca1.id = pd2354.auditID AND pd2354.questionID = 2354");
+		if (download) {
+			sql.addField("pd2340.answer AS 2340answer");
 			sql.addField("pd2354.answer AS 2354answer");
-			sql.addJoin("LEFT JOIN pqfdata pd2373 ON ca1.id = pd2373.auditID AND pd2373.questionID = 2373");
 			sql.addField("pd2373.answer AS 2373answer");
+			if (getFilter().getMinorityQuestion() != 3) {
+				sql.addJoin("LEFT JOIN pqfdata pd2340 ON ca1.id = pd2340.auditID AND pd2340.questionID = 2340");
+				sql.addJoin("LEFT JOIN pqfdata pd2354 ON ca1.id = pd2354.auditID AND pd2354.questionID = 2354");
+				sql.addJoin("LEFT JOIN pqfdata pd2373 ON ca1.id = pd2373.auditID AND pd2373.questionID = 2373");
+			}
 		}
 		if (permissions.isOperator()) {
 			sql.addField("flags.waitingOn");
@@ -76,8 +78,8 @@ public class ReportAccountAudits extends ReportAccount {
 			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On", ExcelCellType.Enum), 405);
 			excelSheet.addColumn(new ExcelColumn("tag", "Contractor Tag"));
 		}
-		excelSheet.addColumn(new ExcelColumn("2340answer", "Small Business"));	
-		excelSheet.addColumn(new ExcelColumn("2354answer", "Minority-Owned"));	
-		excelSheet.addColumn(new ExcelColumn("2373answer", "Women-Owned"));	
+		excelSheet.addColumn(new ExcelColumn("2340answer", "Small Business"));
+		excelSheet.addColumn(new ExcelColumn("2354answer", "Minority-Owned"));
+		excelSheet.addColumn(new ExcelColumn("2373answer", "Women-Owned"));
 	}
 }
