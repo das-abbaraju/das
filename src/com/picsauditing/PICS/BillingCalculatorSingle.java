@@ -94,7 +94,7 @@ public class BillingCalculatorSingle {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
 			if (operator.getDoContractorsPay() != null && !operator.getDoContractorsPay().equals("No")) {
 				// See if this operator requires this contractor to be audited
-				for (AuditOperator audit : operator.getAudits()) {
+				for (AuditOperator audit : operator.getInheritAudits().getAudits()) {
 					if (audit.isRequiredFor(contractor)) {
 						// This operator requires this audit and can see it
 
