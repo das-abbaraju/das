@@ -38,13 +38,15 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 			sql.addJoin("JOIN flags f1 ON a.id = f1.conID AND f1.opID = " + o.getId());
 			sql.addJoin("JOIN flag_archive f2 ON f1.conID = f2.conID AND f1.opID = f2.opID AND f1.flag <> f2.flag");
 			sql.addJoin("JOIN generalcontractors gc ON f1.conID = gc.subID AND f1.opID = gc.genID AND gc.workStatus = 'Y'");
+			sql.addJoin("JOIN operators o ON gc.genID = o.id");
+			
 			sql.addWhere("f2.creationDate = '" + df.format(timePeriod.getComparisonDate()) + "'");
+			sql.addWhere("((o.approvesRelationships = 'Yes' AND gc.workStatus = 'Y') OR (o.approvesRelationships = 'No'))");
 
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
 			sql.addField("f2.flag AS oldFlag");
 			sql.addField("f1.flag AS flag");
-			sql.addField("gc.workStatus AS workStatus");
 
 			sql.addOrderBy("a.name");
 
