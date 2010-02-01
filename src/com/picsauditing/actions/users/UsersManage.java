@@ -48,6 +48,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected String password1;
 	protected String password2;
 	protected boolean sendActivationEmail = false;
+	protected boolean setPrimaryAccount = false;
 
 	protected String filter = null;
 	protected List<OperatorAccount> facilities = null;
@@ -104,6 +105,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		int aID = getParameter("accountId");
 		if (account == null && aID > 0)
 			account = accountDAO.find(aID);
+
+		// checking to see if primary account user is set
+		if (account != null && account.getPrimaryContact() == null)
+			setPrimaryAccount = true;
 	}
 
 	public String execute() throws Exception {
@@ -302,6 +307,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			try {
 				user = userDAO.save(user);
 				addActionMessage("User saved successfully.");
+				// checking isgroup and isAdmin so that admins cannot set pics
+				// employees as primary contacts
+				if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
+					user.getAccount().setPrimaryContact(user);
 			} catch (ConstraintViolationException e) {
 				addActionError("That Username is already in use.  Please select another.");
 				return SUCCESS;
@@ -324,7 +333,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				addActionMessage(message);
 			} else if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
 				addActionMessage(message);
-			// Putting primary user check last so that primary users aren't switched that can't be deleted
+				// Putting primary user check last so that primary users aren't
+				// switched that can't be deleted
 			} else if (user.getId() == user.getAccount().getPrimaryContact().getId()) {
 				addActionMessage("Cannot remove the primary user for " + user.getAccount().getName()
 						+ ". Please switch the primary user of this account and then attempt to delete them.");
@@ -473,6 +483,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		this.conInsurance = conInsurance;
 	}
 
+	public boolean isSetPrimaryAccount() {
+		return setPrimaryAccount;
+	}
+
+	public void setSetPrimaryAccount(boolean setPrimaryAccount) {
+		this.setPrimaryAccount = setPrimaryAccount;
+	}
+
 	public List<User> getUserList() {
 		if (userList == null)
 			userList = userDAO.findByAccountID(accountId, isActive, isGroup);
@@ -587,5 +605,4 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 		};
 	}
-
 }

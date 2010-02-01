@@ -222,6 +222,9 @@ div.autocomplete ul li {
 					name="user.phone" size="15" />(optional)</li>
 				<li><label for="user.fax">Fax:</label> <s:textfield
 					name="user.fax" size="15" />(optional)</li>
+				<li><label>&nbsp;Primary Contact:</label> <s:checkbox
+						id="setPrimaryAccount" name="setPrimaryAccount" /><label
+						for="setPrimaryAccount" class="checkbox">Set User as Primary Contact</label></li>
 				<s:if test="account.contractor">
 					<li><label>User Role:</label><s:checkbox
 						id="conAdmin" name="conAdmin" /><label
