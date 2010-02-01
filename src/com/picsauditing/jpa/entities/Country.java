@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import javax.persistence.Column;
@@ -15,12 +16,14 @@ import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "ref_country")
-public class Country {
+public class Country implements Serializable {
+	private static final long serialVersionUID = 6312208192653925848L;
+
 	protected String isoCode;
 	protected String english;
 	protected String spanish;
 	protected String french;
-	
+
 	protected User csr;
 
 	public Country() {
