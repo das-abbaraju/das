@@ -56,7 +56,8 @@ function previewEmail() {
 				previewID: id,
 				type: type,
 				templateSubject: $('#templateSubject').val(),
-				templateBody: $('#templateBody').val()
+				templateBody: $('#templateBody').val(),
+				recipient: $('#recipient').val()
 		};
 		$('#previewEmail').html('<img src="images/ajax_process2.gif" />');
 		$('#previewEmail').load('MailPreviewAjax.action', data);
@@ -118,10 +119,11 @@ function addTemplate(id) {
 	var data = {
 			button: 'save',
 			id: id,
-			'template.listType': type,
+			'template.listType': $('#form1_type').val(),
 			'template.templateName': $('#templateName').val(),
 			'template.subject': $('#templateSubject').val(),
-			'template.body': $('#templateBody').val()
+			'template.body': $('#templateBody').val(),
+			'template.recipient': $('#recipient').val()
 	};
 	
 	$('#messages').load('EmailTemplateSaveAjax.action', data,

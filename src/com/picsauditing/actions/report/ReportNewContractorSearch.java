@@ -71,14 +71,14 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.city");
 		sql.addField("a.state");
 		sql.addField("a.phone");
-		sql.addWhere("a.active = 'Y'");
+		//sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
 	}
 
 	@Override
 	public String execute() throws Exception {
-		getFilter().setPrimaryInformation(true);
-		getFilter().setTradeInformation(true);
+		//getFilter().setPrimaryInformation(true);
+		//getFilter().setTradeInformation(true);
 		getFilter().setShowMinorityOwned(true);
 
 		if (button != null && id > 0) {

@@ -22,6 +22,7 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private String templateName = "";
 	private String subject;
 	private String body;
+	private String recipient;
 	private ListType listType;
 	private boolean allowsVelocity = false;
 	private boolean html = false;
@@ -61,6 +62,14 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 
 	public void setBody(String body) {
 		this.body = body;
+	}
+
+	public String getRecipient() {
+		return recipient;
+	}
+
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
 	}
 
 	public String getTemplateName() {

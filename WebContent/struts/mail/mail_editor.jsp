@@ -1,22 +1,27 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <h3><s:property value="templateName"/></h3>
-<div id="div_saveEmail" style="display: none; margin-bottom: 150px">
-	<fieldset>
+<div id="div_saveEmail" style="display: none;">
+	<fieldset class="form bottom">
 	<legend><span>Save Template Form</span></legend>
 	<ol>
 		<li><label>Template name:</label>
 			<s:textfield name="templateName" id="templateName" size="30" cssClass="forms" maxlength="50" />
 			<s:if test="templateID > 0">
-				<br />
-				<input type="button" onclick="addTemplate(<s:property value="templateID" />);" value="Save" class="forms" />
+				<input type="button" onclick="addTemplate(<s:property value="templateID" />);" value="Save" class="picsbutton positive" />
 			</s:if>
-			<input type="button" onclick="addTemplate(0);" value="Save As New" class="forms" />
+			<input type="button" onclick="addTemplate(0);" value="Save As New" class="picsbutton positive" />
 		</li>
 	</ol>
 	</fieldset>
 </div>
-
+<s:if test="type.toString() == 'Contractor'">
+	Send to <s:select
+		cssClass="forms" name="recipient" value="%{recipient.description}"
+		listKey="description" listValue="description" onchange="dirtyOn();"
+		list="@com.picsauditing.actions.users.ManageUserPermissions@permissionTypes" /> Users
+	<br />
+</s:if>
 <s:hidden name="templateID" />
 <s:select cssClass="forms" id="tokens" name="tokens" headerKey="0"
 	headerValue="- Add Field to Email -" listKey="tokenName"

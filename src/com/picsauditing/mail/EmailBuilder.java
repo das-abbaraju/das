@@ -117,8 +117,6 @@ public class EmailBuilder {
 		}
 		if (emails.size() > 0)
 			toAddresses = Strings.implode(emails, "; ");
-		else if (role == OpPerms.ContractorAdmin)
-			toAddresses = contractor.getPrimaryContact().getEmail();
 		else
 			setContractor(contractor, OpPerms.ContractorAdmin);
 	}

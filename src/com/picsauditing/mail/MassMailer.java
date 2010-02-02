@@ -40,12 +40,13 @@ import com.picsauditing.util.Strings;
 public class MassMailer extends PicsActionSupport {
 	private Set<Integer> ids = null;
 	private ListType type;
-	
+
 	private int templateID = 0; // 0 means no template selected at all
 	final public static int BLANK_EMAIL = -1;
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
+	private OpPerms recipient;
 	private boolean templateAllowsVelocity;
 	private EmailQueue emailPreview;
 	private List<EmailTemplate> emailTemplates = null;
@@ -72,7 +73,7 @@ public class MassMailer extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-		
+
 		permissions.tryPermission(OpPerms.EmailTemplates);
 
 		// Start the main logic for actions that require passing the contractors
@@ -197,7 +198,20 @@ public class MassMailer extends PicsActionSupport {
 		if (ListType.Contractor.equals(type)) {
 			ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 			ContractorAccount contractor = dao.find(id);
-			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+
+			if (recipient != null && !recipient.equals(OpPerms.ContractorAdmin)) {
+				// Send the emails to the right recipients?
+				if (recipient.equals(OpPerms.ContractorBilling)) {
+					emailBuilder.setContractor(contractor, OpPerms.ContractorBilling);
+				} else if (recipient.equals(OpPerms.ContractorSafety)) {
+					emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
+				} else if (recipient.equals(OpPerms.ContractorInsurance)) {
+					emailBuilder.setContractor(contractor, OpPerms.ContractorInsurance);
+				}
+			}
+			else
+				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+
 		}
 		if (ListType.Audit.equals(type)) {
 			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
@@ -295,6 +309,25 @@ public class MassMailer extends PicsActionSupport {
 		this.templateName = templateName;
 	}
 
+	public OpPerms getRecipient() {
+		if (templateID > 0) {
+			EmailTemplate temp = emailTemplateDAO.find(templateID);
+			String recipientType = temp.getRecipient();
+			
+			if (recipientType.equals("Billing"))
+				recipient = OpPerms.ContractorBilling;
+			else if (recipientType.equals("Safety"))
+				recipient = OpPerms.ContractorSafety;
+			else if (recipientType.equals("Insurance"))
+				recipient = OpPerms.ContractorInsurance;
+			else
+				recipient = OpPerms.ContractorAdmin;
+			
+			return recipient;
+		}
+		return OpPerms.ContractorAdmin;
+	}
+	
 	public int getPreviewID() {
 		return previewID;
 	}
@@ -318,7 +351,7 @@ public class MassMailer extends PicsActionSupport {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public EmailQueue getEmailPreview() {
 		return emailPreview;
 	}
@@ -330,7 +363,7 @@ public class MassMailer extends PicsActionSupport {
 	public void setTokens() {
 		// do nothing
 	}
-	
+
 	public boolean isTemplateAllowsVelocity() {
 		return templateAllowsVelocity;
 	}
