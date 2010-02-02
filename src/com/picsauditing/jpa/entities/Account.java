@@ -245,6 +245,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.naicsValid = naicsValid;
 	}
 	
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public AccountStatus getStatus() {
