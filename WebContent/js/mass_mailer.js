@@ -119,7 +119,7 @@ function addTemplate(id) {
 	var data = {
 			button: 'save',
 			id: id,
-			'template.listType': $('#form1_type').val(),
+			'template.listType': type,
 			'template.templateName': $('#templateName').val(),
 			'template.subject': $('#templateSubject').val(),
 			'template.body': $('#templateBody').val(),
