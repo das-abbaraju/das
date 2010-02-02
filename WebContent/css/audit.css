@@ -276,7 +276,7 @@ input.osha {
 	margin: 0px;
 }
 
-table.osha tbody tr:hover {
+table.osha tr:hover {
 	background-color: #FFFFCC;
 }
 

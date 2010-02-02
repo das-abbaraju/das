@@ -22,7 +22,7 @@ table.summary thead th, table.summary thead td {
 	color: #FFF;
 }
 
-table.summary tbody tr:hover {
+table.summary tr:hover {
 	background: #EEE;
 	color: #A84D10;
 }

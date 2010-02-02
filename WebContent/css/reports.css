@@ -45,15 +45,21 @@ table.report thead a:hover {
 	text-decoration: underline;
 }
 
-table.report tbody td a {
+table.report td a {
 	text-decoration: none;
 }
 
-table.report tbody td a:hover {
+table.report td a:hover {
 	text-decoration: underline;
 }
 
-table.report tbody tr:hover {
+a.inactive {
+	color: #fff;
+	background-color: rgb(192, 192, 192);
+	text-decoration: line-through;
+}
+
+table.report tr:hover {
 	background: #EEE;
 	color: #A84D10;
 }
@@ -68,7 +74,7 @@ table.report td.right,table.report th.right {
 	float: none;
 }
 
-table.noshade tbody tr:hover {
+table.noshade tr:hover {
 	color: #4C4D4D;
 	background: #f9f9f9;
 }
@@ -117,17 +123,17 @@ table.tablestyle tr.odd {
 	background-color: #F1F5FA;
 }
 
-table.tablestyle tbody td a {
+table.tablestyle td a {
 	text-decoration: none;
 	color: #8C8C8C;
 }
 
-table.tablestyle tbody td a:hover {
+table.tablestyle td a:hover {
 	text-decoration: underline;
 	color: #003366;
 }
 
-table.tablestyle tbody tr:hover,table.tablestyle tbody td:hover {
+table.tablestyle tr:hover,table.tablestyle td:hover {
 	background: #C7E5F7;
 	color: #003366;
 }
@@ -277,3 +283,4 @@ a.clearLink {
 #navListTop a.inactive {
 	background-color: rgb(192, 192, 192);
 }
+

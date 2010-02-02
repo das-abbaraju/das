@@ -487,10 +487,10 @@ ul#navlist {
 	text-decoration: none;
 }
 
-#navlist a.inactive {
+a.inactive, #navlist a.inactive, #navlist a.inactive, table.report td a.inactive {
 	color: #fff;
 	background-color: rgb(192, 192, 192);
-	text-decoration: none;
+	text-decoration: line-through;
 }
 
 /************* Search *************/

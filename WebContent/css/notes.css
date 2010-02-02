@@ -34,13 +34,13 @@ table.notes td.priority {
 table.notes thead a:hover {
 	text-decoration: underline;
 }
-table.notes tbody td a {
+table.notes td a {
 	text-decoration: none;
 }
-table.notes tbody td a:hover {
+table.notes td a:hover {
 	text-decoration: underline;
 }
-table.notes tbody tr:hover {
+table.notes tr:hover {
 	background: #EEE;
 	color: #A84D10;
 }
