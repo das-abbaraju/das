@@ -101,7 +101,7 @@
 				<td><s:if test="get('manswer') != null">
 					<nobr>Size:<s:property value="getFileSize(get('mid').toString())"/></nobr><br/>
 						<s:if test="get('mcomment') != null && get('mcomment').toString().length() > 0">
-						Comments:<s:property value="get('mcomment')"/>
+						Comments:<s:property value="get('mcomment')" escape="false"/>
 						</s:if>
 					</s:if>
 				</td>

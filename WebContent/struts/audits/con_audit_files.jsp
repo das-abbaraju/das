@@ -69,7 +69,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 							</s:else>	
 							<br/>
 							<s:if test="!comment.toString().equals('null')">
-								<span class="redMain"><b>Auditor Comment : </b><s:property value="comment"/></span>
+								<span class="redMain"><b>Auditor Comment : </b><s:property value="comment" escape="false"/></span>
 							</s:if>
 							<s:if test="permissions.auditor">
 								<s:set name="catData" value="getAuditCatData(#data.audit.id,#data.question.subCategory.category.id)"/>

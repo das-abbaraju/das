@@ -54,7 +54,7 @@
 		<s:else>
 			<td colspan="2"><s:property value="[0].get('answer401')"/></td>
 		</s:else>
-		<td><s:property value="[0].get('comment401')"/></td>
+		<td><s:property value="[0].get('comment401')" escape="false"/></td>
 		<s:set name="expired" value="@com.picsauditing.PICS.DateBean@isAfterToday(get('answer755'))"/>
 		<s:if test="[0].get('dateVerified401') != NULL">
 			<td <s:if test="!#expired">style="color: #CC0000;"</s:if>><s:property value="[0].get('answer755')"/></td>
@@ -63,7 +63,7 @@
 		<s:else>
 			<td colspan="2" <s:if test="!#expired">style="color: #CC0000;"</s:if>><s:property value="[0].get('answer755')"/></td>
 		</s:else>
-		<td><s:property value="[0].get('comment755')"/></td>
+		<td><s:property value="[0].get('comment755')" escape="false"/></td>
 		</tr>
 	</s:iterator>
 </table>

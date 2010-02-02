@@ -91,7 +91,7 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 	}
 	
 	if (commentElm != null) {
-		data['auditData.comment'] = commentElm.value;
+		data['auditData.comment'] = commentElm.val();
 	}
 	
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});

@@ -133,7 +133,7 @@
 						$('#ambest_naic_code').val(data[2]);
 					else
 						$('#ambest_naic_code').val("");
-					saveAnswerComment('<s:property value="%{#divID}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code')[0]);
+					saveAnswerComment('<s:property value="%{#divID}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
 				});
 		</script>
 		
@@ -187,8 +187,11 @@
 	<s:if test="#q.showComment || mode == 'Verify'">
 		<br/>
 		<label>Comments:</label>
-		<s:textarea name="answer%{#divID}" value="%{#a.comment}" rows="4" cols="20"
-			onchange="saveAnswerComment('%{#divID}', null, this);"/>
+		<input type="button" class="picsbutton positive" value="Save Comment" onclick="saveAnswerComment('<s:property value="#divID"/>', null, $('#answer<s:property value="#divID"/>'));"/>
+		<s:textarea name="answer%{#divID}" id="answer%{#divID}" cssClass="richText" value="%{#a.comment}" rows="6" cols="80"/>
+		<script type="text/javascript">
+			$('textarea.richText').wysiwyg();
+		</script>
 	</s:if>
 </div>
 
