@@ -37,6 +37,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	protected String name;
 	protected String nameIndex;
+	private char active;
+	protected AccountStatus status = AccountStatus.Pending;
 	protected String dbaName;
 	protected Date lastLogin;
 	protected String address;
@@ -50,7 +52,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected Industry industry;
 	private Naics naics;
 	private boolean naicsValid;
-	protected char active;
 	protected char seesAllB;
 	protected char sendActivationEmailB;
 	protected String activationEmailsB;
@@ -243,16 +244,29 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public void setNaicsValid(boolean naicsValid) {
 		this.naicsValid = naicsValid;
 	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	public AccountStatus getStatus() {
+		return status;
+	}
+	
+	public void setStatus(AccountStatus status) {
+		this.status = status;
+	}
 
+	@Deprecated
 	@Column(nullable = false, length = 1)
 	public char getActive() {
 		return this.active;
 	}
 
+	@Deprecated
 	public void setActive(char active) {
 		this.active = active;
 	}
 
+	@Deprecated
 	@Transient
 	public boolean isActiveB() {
 		return active == 'Y';
