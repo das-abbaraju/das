@@ -17,6 +17,7 @@ public class AccountRecovery extends PicsActionSupport {
 	private String email, username;
 	private User user;
 	private UserDAO userDAO;
+	private Recaptcha recaptcha;
 
 	public AccountRecovery(UserDAO userDAO) {
 		this.userDAO = userDAO;
@@ -24,10 +25,13 @@ public class AccountRecovery extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		recaptcha = new Recaptcha();
+		
 		if (button == null)
 			return SUCCESS;
 
 		if ("Find Username".equals(button)) {
+			
 			if (email == null || email.equals("")) {
 				addActionError("Please input an email address");
 				return SUCCESS;
@@ -37,14 +41,22 @@ public class AccountRecovery extends PicsActionSupport {
 				addActionError("Please enter a valid email address.");
 				return SUCCESS;
 			}
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 
 			List<User> matchingUsers = userDAO.findByEmail(email);
+
 			if (matchingUsers.size() == 0) {
 				addActionError("No account in our records has that email address.  Please verify it is "
 						+ "the one you used when creating your PICS company profile.");
 				return SUCCESS;
 			}
+
+			if (!recaptcha.isRecaptchaResponseValid()) {
+				addActionError("Find Username reCaptcha verification does not match");
+				return SUCCESS;
+			}
+
 			try {
 				emailBuilder.setTemplate(86); // Username Reminder
 				emailBuilder.setFromAddress("info@picsauditing.com");
@@ -68,6 +80,12 @@ public class AccountRecovery extends PicsActionSupport {
 				addActionError("Please input a username");
 				return SUCCESS;
 			}
+			
+			if (!recaptcha.isRecaptchaResponseValid()) {
+				addActionError("Reset Password reCaptcha verification does not match");
+				return SUCCESS;
+			}
+			
 			try {
 				user = userDAO.findName(username);
 				if (user == null)
@@ -95,8 +113,8 @@ public class AccountRecovery extends PicsActionSupport {
 			emailBuilder.setFromAddress("info@picsauditing.com");
 			emailBuilder.addToken("user", user);
 
-			String confirmLink = "http://www.picsauditing.com/Login.action?username=" + URLEncoder.encode(user.getUsername(),"UTF-8") + "&key="
-					+ user.getResetHash() + "&button=reset";
+			String confirmLink = "http://www.picsauditing.com/Login.action?username="
+					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
 
@@ -127,5 +145,13 @@ public class AccountRecovery extends PicsActionSupport {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Recaptcha getRecaptcha() {
+		return recaptcha;
+	}
+
+	public void setRecaptcha(Recaptcha recaptcha) {
+		this.recaptcha = recaptcha;
 	}
 }

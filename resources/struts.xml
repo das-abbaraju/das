@@ -78,6 +78,11 @@
 			<result>struts/users/account_recovery.jsp</result>
 		</action>
 		
+		<action name="RecaptchaAjax"
+			class="com.picsauditing.actions.Recaptcha">
+			<result>struts/misc/recaptcha_ajax.jsp</result>
+		</action>
+		
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>
