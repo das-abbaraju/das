@@ -67,6 +67,8 @@ $(function() {
 					name="contactID"
 					listKey="id"
 					listValue="name"
+					headerKey=""
+					headerValue="- Select a User -" 
 					value="%{operator.primaryContact.id}"/>
 					<a href="UsersManage.action?button=newUser&accountId=<s:property value="operator.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
 				</li>

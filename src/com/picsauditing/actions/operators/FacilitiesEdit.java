@@ -94,6 +94,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 		if (id == 0)
 			subHeading = "Add " + type;
+		else {
+			if(operator.getPrimaryContact() == null)
+				addActionError("Please add a primary contact to this account");
+		}
+			
 
 		if (button != null) {
 			if (button.equalsIgnoreCase("Remove")) {
@@ -243,7 +248,8 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				}
 				operator.setQbListID("NOLOAD" + operator.getId());
 
-				if (contactID > 0 && contactID != operator.getPrimaryContact().getId()) {
+				if (contactID > 0
+						&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 					operator.setPrimaryContact(userDAO.find(contactID));
 				}
 
