@@ -381,6 +381,24 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public int compareTo(Account o) {
 		if (o.getId() == id)
 			return 0;
+		if (!o.getType().equals(type)) {
+			if (this.isAdmin())
+				return -1;
+			if (this.isContractor())
+				return 1;
+			if (this.isCorporate()) {
+				if (o.isAdmin())
+					return 1;
+				else
+					return -1;
+			}
+			if (this.isOperator()) {
+				if (o.isContractor())
+					return -1;
+				else
+					return 1;
+			}
+		}
 		return name.compareToIgnoreCase(o.getName());
 	}
 
@@ -437,5 +455,10 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setPrimaryContact(User user) {
 		this.primaryContact = user;
+	}
+	
+	@Override
+	public String toString() {
+		return name + "(" + id + ")";
 	}
 }

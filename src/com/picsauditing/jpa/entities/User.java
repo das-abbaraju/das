@@ -470,11 +470,9 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of
-	 *            user.permissions)
+	 *            The new set of permission for this user (transient version of user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user
-	 *            or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
@@ -527,22 +525,26 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Override
 	public int compareTo(User o) {
-		if (!this.isActive.equals(o.isActive)) {
+		System.out.println("Compare " + this.toString() + " to " + o.toString());
+		if (!this.isActive.equals(o.getIsActive())) {
 			// Sort Active before Inactive
-			if (this.isActive.equals("Yes"))
+			if (this.isActiveB())
 				return -1;
 			else
 				return 1;
 		}
-		if (!this.isGroup.equals(o.isGroup)) {
+		int accounts = this.account.compareTo(o.getAccount());
+		if (accounts != 0)
+			return accounts;
+		if (!this.isGroup.equals(o.getIsGroup())) {
 			// Sort Groups before Users
-			if (this.isGroup.equals("Yes"))
+			if (this.isGroup())
 				return -1;
 			else
 				return 1;
 		}
-		// Then sort by name
-		return this.name.compareToIgnoreCase(o.name);
+
+		return this.name.compareToIgnoreCase(o.getName());
 	}
 
 	@Transient
@@ -593,8 +595,10 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	/**
 	 * Grants all allowable permission types for this OpPerm
+	 * 
 	 * @param opPerm
-	 * @param grantorID who is granting the permission
+	 * @param grantorID
+	 *            who is granting the permission
 	 * @return
 	 */
 	public UserAccess addOwnedPermissions(OpPerms opPerm, int grantorID) {
@@ -609,5 +613,10 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		ua.setGrantedBy(new User(grantorID));
 		ownedPermissions.add(ua);
 		return ua;
+	}
+
+	@Override
+	public String toString() {
+		return account.toString() + ": " + name + "(" + (isGroup() ? "G" : "U") + id + ")";
 	}
 }

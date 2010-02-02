@@ -323,27 +323,41 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		if ("Delete".equalsIgnoreCase(button)) {
 			permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 			String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
-			if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
-				addActionMessage(message);
-			} else if (!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
-				addActionMessage(message);
-			} else if (!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
-				addActionMessage(message);
-			} else if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
-				addActionMessage(message);
-			} else if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
-				addActionMessage(message);
-				// Putting primary user check last so that primary users aren't
-				// switched that can't be deleted
-			} else if (user.getId() == user.getAccount().getPrimaryContact().getId()) {
-				addActionMessage("Cannot remove the primary user for " + user.getAccount().getName()
-						+ ". Please switch the primary user of this account and then attempt to delete them.");
-			} else {
-				userDAO.remove(user);
-				addActionMessage("Successfully removed "
-						+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
-				user = null;
+			if (!user.isGroup()) {
+				// This user is a user (not a group)
+				if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
+					addActionError(message);
+					return SUCCESS;
+				}
+				if (!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
+					addActionError(message);
+					return SUCCESS;
+				}
+				if (!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
+					addActionError(message);
+					return SUCCESS;
+				}
+				if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
+					addActionError(message);
+					return SUCCESS;
+				}
+				if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
+					addActionError(message);
+					return SUCCESS;
+				}
+				if (user.getAccount().getPrimaryContact() != null
+						&& user.getId() == user.getAccount().getPrimaryContact().getId()) {
+					// Putting primary user check last so that primary users aren't switched that can't be deleted
+					addActionError("Cannot remove the primary user for " + user.getAccount().getName()
+							+ ". Please switch the primary user of this account and then attempt to delete them.");
+					return SUCCESS;
+				}
 			}
+			
+			userDAO.remove(user);
+			addActionMessage("Successfully removed "
+					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
+			user = null;
 		}
 
 		return SUCCESS;
@@ -601,7 +615,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					return -1;
 				if (o2 == null)
 					return 1;
-				return o1.getUser().getName().compareTo(o2.getUser().getName());
+				return o1.getUser().compareTo(o2.getUser());
 			}
 		};
 	}
