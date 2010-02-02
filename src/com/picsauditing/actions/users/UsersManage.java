@@ -307,8 +307,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			try {
 				user = userDAO.save(user);
 				addActionMessage("User saved successfully.");
-				// checking isgroup and isAdmin so that admins cannot set pics
-				// employees as primary contacts
 				if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 					user.getAccount().setPrimaryContact(user);
 			} catch (ConstraintViolationException e) {
