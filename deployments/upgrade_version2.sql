@@ -19,3 +19,9 @@ and pcd.catID = 151;
 **/
 
 update pqfquestions set dependsOnqID = null where dependsOnqID = 0;
+
+update accounts set status = 'Active';
+update accounts set status = 'Pending' WHERE active = 'N';
+update accounts set status = 'Demo' where name like '%^^^%' or name like 'PICS%demo%';
+update accounts set status = 'Deleted' where status != 'Active' and name like '%duplicat%';
+update accounts set status = 'Deactivated' where status = 'Pending' and type = 'Contractor' and id in (select id from invoice where tableType = 'I' and status = 'Paid');
