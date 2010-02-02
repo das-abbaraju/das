@@ -149,6 +149,7 @@ public class MassMailer extends PicsActionSupport {
 				emailBuilder.setTemplate(template);
 
 				for (Integer id : ids) {
+					getRecipient();
 					addTokens(id);
 					EmailQueue email = emailBuilder.build();
 					email.setEmailTemplate(null);
