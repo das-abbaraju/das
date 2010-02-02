@@ -134,6 +134,14 @@ public class FacilityChanger {
 				contractor.setNeedsRecalculation(true);
 
 				contractorAccountDAO.save(contractor);
+
+				if (!contractor.isAcceptsBids() && contractor.isActiveB()) {
+					for (ContractorAudit cAudit : contractor.getAudits()) {
+						if (cAudit.getAuditType().isPqf()) {
+							auditBuilder.fillAuditCategories(cAudit, true);
+						}
+					}
+				}
 				return true;
 			}
 		}
