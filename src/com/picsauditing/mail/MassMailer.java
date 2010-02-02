@@ -120,6 +120,7 @@ public class MassMailer extends PicsActionSupport {
 
 			EmailTemplate template = buildEmailTemplate();
 			emailBuilder.setTemplate(template);
+			getRecipient();
 			addTokens(previewID);
 
 			emailPreview = emailBuilder.build();
