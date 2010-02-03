@@ -95,7 +95,7 @@ public class FacilityChanger {
 				// then let's assume they want to be part of PICS
 				contractor.setRenew(true);
 			}
-			if (contractor.isActiveB()) {
+			if (contractor.getStatus().isActiveDemo()) {
 				for (ContractorAudit cAudit : contractor.getAudits()) {
 					if (cAudit.getAuditType().isPqf()) {
 						auditBuilder.fillAuditCategories(cAudit, true);
@@ -135,7 +135,7 @@ public class FacilityChanger {
 
 				contractorAccountDAO.save(contractor);
 
-				if (!contractor.isAcceptsBids() && contractor.isActiveB()) {
+				if (!contractor.isAcceptsBids() && contractor.getStatus().isActiveDemo()) {
 					for (ContractorAudit cAudit : contractor.getAudits()) {
 						if (cAudit.getAuditType().isPqf()) {
 							auditBuilder.fillAuditCategories(cAudit, true);

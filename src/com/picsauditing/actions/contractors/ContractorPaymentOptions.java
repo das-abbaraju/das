@@ -57,7 +57,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.findContractor();
 
 		// Only during registration - redirect if no requestedBy operator is set
-		if (permissions.isContractor() && !contractor.isActiveB() && contractor.getRequestedBy() == null) {
+		if (permissions.isContractor() && contractor.getStatus().isPending() && contractor.getRequestedBy() == null) {
 			if (contractor.getOperators().size() == 1) {
 				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
 			} else {
@@ -87,15 +87,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		accountDao.save(contractor);
 		activationFee = null;
-		if (!contractor.isActiveB()) {
+		if (contractor.getStatus().isPendingDeactivated() ) {
 			if (contractor.getMembershipDate() == null) {
 				int feeID = InvoiceFee.ACTIVATION;
 				if(BillingCalculatorSingle.hasReducedActivation(contractor)) {
 					feeID = InvoiceFee.ACTIVATION99;
 				}
 				activationFee = invoiceFeeDAO.find(feeID);
-			}	
-			else
+			} else
 				activationFee = invoiceFeeDAO.find(InvoiceFee.REACTIVATION);
 		}
 

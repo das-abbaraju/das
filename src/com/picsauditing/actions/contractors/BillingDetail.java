@@ -18,6 +18,7 @@ import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
@@ -97,7 +98,7 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(DateBean.addDays(new Date(), 30));
 
 			// Make sure the invoice isn't due within 7 days for active accounts
-			if (contractor.isActiveB() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
+			if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
 				invoice.setDueDate(DateBean.addDays(new Date(), 7));
 			// End of Due date
 
@@ -139,7 +140,7 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		if ("Activate".equals(button)) {
-			contractor.setActive('Y');
+			contractor.setStatus(AccountStatus.Active);
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
 					Account.PicsID, this.getUser());
 		}

@@ -831,8 +831,15 @@ public class ContractorAccount extends Account implements JSONable {
 		if (!isMustPayB())
 			return "Current";
 
+		if (status.isDemo())
+			return "Current";
+
+		if (status.isDeleted())
+			return "Current";
+
 		if (acceptsBids) {
-			if (isActiveB()) {
+			// Do we want to do this?
+			if (status.isActive()) {
 				return "Current";
 			}
 			return "Bid Only Account";
@@ -844,9 +851,12 @@ public class ContractorAccount extends Account implements JSONable {
 		if (newMembershipLevel.isFree())
 			return "Current";
 
+		if (status.isPending())
+			return "Activation";
+
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if (!isActiveB() || daysUntilRenewal < -90) {
+		if (status.isDeactivated() || daysUntilRenewal < -90) {
 			// this contractor is not active or their membership expired more
 			// than 90 days ago
 			if (!renew)
@@ -855,10 +865,7 @@ public class ContractorAccount extends Account implements JSONable {
 				if (new Date().before(paymentExpires))
 					return "Current";
 
-				if (membershipDate == null)
-					return "Activation";
-				else
-					return "Reactivation";
+				return "Reactivation";
 			}
 		}
 

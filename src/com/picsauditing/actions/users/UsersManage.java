@@ -161,9 +161,9 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				return SUCCESS;
 			}
 
-			Set<OpPerms> userPerms = new HashSet<OpPerms>();
 			if (user.getId() > 0 && account.isContractor()) {
-				if (!user.isActiveB() && account.isActiveB()) {
+				if (!user.isActiveB()) {
+					Set<OpPerms> userPerms = new HashSet<OpPerms>();
 					for (User users : user.getAccount().getUsers()) {
 						for (UserAccess ua : users.getOwnedPermissions()) {
 							if (ua.getUser() != user) {
@@ -219,7 +219,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 			}
 
-			if ("Contractor".equals(user.getAccount().getType())) {
+			if (user.getAccount().isContractor()) {
+				Set<OpPerms> userPerms = new HashSet<OpPerms>();
 				userPerms = new HashSet<OpPerms>();
 				for (UserAccess ua : user.getOwnedPermissions()) {
 					userPerms.add(ua.getOpPerm());

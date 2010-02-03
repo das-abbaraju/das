@@ -28,8 +28,7 @@ public class BillingCalculatorSingle {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
-			if (operator.isActiveB() && operator.getDoContractorsPay() != null
-					&& !"No".equals(operator.getDoContractorsPay()))
+			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay()))
 				payingOperators.add(operator);
 		}
 
@@ -285,14 +284,14 @@ public class BillingCalculatorSingle {
 	}
 	
 	static public boolean hasReducedActivation(ContractorAccount contractor) {
-		// New Belgium Brewing Co.
-		if(BillingCalculatorSingle.CONTRACT_RENEWAL_NEWBELGIUM.after(new Date()) && contractor.getRequestedBy().getId() == 5147)
+		final Date now = new Date();
+		final OperatorAccount requestedBy = contractor.getRequestedBy();
+		
+		if(CONTRACT_RENEWAL_NEWBELGIUM.after(now) && requestedBy.getId() == 5147)
 			return true;
-		// Timken
-		if (BillingCalculatorSingle.CONTRACT_RENEWAL_TIMKEN.after(new Date()) && contractor.getRequestedBy().getName().startsWith("Timken"))
+		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
 			return true;
-		// BASF
-		if(BillingCalculatorSingle.CONTRACT_RENEWAL_BASF.after(new Date()) && contractor.getRequestedBy().getName().startsWith("BASF"))
+		if(CONTRACT_RENEWAL_BASF.after(now) && requestedBy.getName().startsWith("BASF"))
 			return true;
 		return false;
 	}

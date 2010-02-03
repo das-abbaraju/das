@@ -70,7 +70,7 @@ public class InsertContractors extends CustomerAdaptor {
 				customerAddRequest.setCustomerAdd(customer);
 
 				customer.setName(contractor.getIdString());
-				customer.setIsActive(new Boolean((contractor.isActiveB() || contractor.isRenew())).toString());
+				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew())).toString());
 
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 

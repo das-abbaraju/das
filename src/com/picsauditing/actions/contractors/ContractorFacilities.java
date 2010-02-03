@@ -194,7 +194,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	}
 
 	public boolean isTrialContractor() {
-		if (!contractor.isActiveB() && contractor.isRenew() && contractor.getRequestedBy().isAcceptsBids()) {
+		if (contractor.getStatus().isPending() && contractor.getRequestedBy().isAcceptsBids()) {
 			return true;
 		}
 		return false;

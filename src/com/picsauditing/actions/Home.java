@@ -30,7 +30,7 @@ public class Home extends ContractorActionSupport {
 
 		if (permissions.isContractor()) {
 			findContractor();
-			if (!contractor.isActiveB()) {
+			if (!contractor.getStatus().isActiveDemo()) {
 				addActionError("Your account is inactive. You can't access this page");
 				return BLANK;
 			}

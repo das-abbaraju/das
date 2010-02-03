@@ -337,7 +337,7 @@ public class FlagCalculatorSingle {
 			return WaitingOn.None; // This contractor is not associated with
 		// this operator, so nothing to do now
 
-		if (!contractor.isActiveB())
+		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
 		// If Bid Only Account

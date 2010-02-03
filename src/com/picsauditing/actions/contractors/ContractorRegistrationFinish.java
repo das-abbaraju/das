@@ -21,6 +21,7 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -81,7 +82,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 			if (contractor.getNewMembershipLevel().isFree()) {
 				// Free accounts should just be activated
-				contractor.setActive('Y');
+				contractor.setStatus(AccountStatus.Active);
 				contractor.setAuditColumns(permissions);
 			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -107,11 +108,11 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							invoice.updateAmountApplied();
 
 							// Activate the contractor
-							if (!contractor.isActiveB()) {
+							if (contractor.getStatus().isPendingDeactivated()) {
 								for (InvoiceItem item : invoice.getItems()) {
 									if (item.getInvoiceFee().getFeeClass().equals("Activation")
 											|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
-										contractor.setActive('Y');
+										contractor.setStatus(AccountStatus.Active);
 										contractor.setAuditColumns(getUser());
 									}
 								}
@@ -138,7 +139,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 			complete = true;
 
-		} else if (!contractor.isActiveB()) {
+		} else if (contractor.getStatus().isPendingDeactivated()) {
 			InvoiceFee newFee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 			newFee = invoiceFeeDAO.find(newFee.getId());
 			contractor.setNewMembershipLevel(newFee);

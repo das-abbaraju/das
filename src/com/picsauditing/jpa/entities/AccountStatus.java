@@ -23,7 +23,11 @@ public enum AccountStatus {
 		return this.equals(Deactivated);
 	}
 
+	public boolean isPendingDeactivated() {
+		return this.equals(Pending) || this.equals(Deactivated);
+	}
+
 	public boolean isActiveDemo() {
-		return this.equals(Demo);
+		return this.equals(Active) || this.equals(Demo);
 	}
 }

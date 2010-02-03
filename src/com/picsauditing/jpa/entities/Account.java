@@ -37,7 +37,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	protected String name;
 	protected String nameIndex;
-	private char active;
+//	private char active;
 	protected AccountStatus status = AccountStatus.Pending;
 	protected String dbaName;
 	protected Date lastLogin;
@@ -256,22 +256,22 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.status = status;
 	}
 
-	@Deprecated
-	@Column(nullable = false, length = 1)
-	public char getActive() {
-		return this.active;
-	}
-
-	@Deprecated
-	public void setActive(char active) {
-		this.active = active;
-	}
-
-	@Deprecated
-	@Transient
-	public boolean isActiveB() {
-		return active == 'Y';
-	}
+//	@Deprecated
+//	@Column(nullable = false, length = 1)
+//	public char getActive() {
+//		return this.active;
+//	}
+//
+//	@Deprecated
+//	public void setActive(char active) {
+//		this.active = active;
+//	}
+//
+//	@Deprecated
+//	@Transient
+//	public boolean isActiveB() {
+//		return active == 'Y';
+//	}
 
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into
