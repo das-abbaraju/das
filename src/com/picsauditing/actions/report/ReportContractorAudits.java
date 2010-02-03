@@ -112,6 +112,7 @@ public class ReportContractorAudits extends ReportAccount {
 		excelSheet.removeColumn("creationDate");
 		excelSheet.removeColumn("riskLevel");
 		excelSheet.removeColumn("fax");
+		excelSheet.removeColumn("phone");
 
 		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
