@@ -25,11 +25,11 @@ public class OperatorFlagHistory extends ChartMSAction {
 
 		String sql = getOperatorFlagHistorySQL(yesterday, operatorID)
 			+ " UNION " +	
-			getOperatorFlagHistorySQL(DateBean.addMonths(yesterday, -1), operatorID)
+			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addMonths(yesterday, -1)), operatorID)
 			+ " UNION " +
-			getOperatorFlagHistorySQL(DateBean.addMonths(yesterday, -2), operatorID)
+			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addMonths(yesterday, -2)), operatorID)
 			+ " UNION " +
-			getOperatorFlagHistorySQL(DateBean.addMonths(yesterday, -3), operatorID)
+			getOperatorFlagHistorySQL(DateBean.getFirstofMonthOrClosestSunday(DateBean.addMonths(yesterday, -3)), operatorID)
 			+ " ORDER BY label";
 
 		ChartDAO db = new ChartDAO();
@@ -51,7 +51,8 @@ public class OperatorFlagHistory extends ChartMSAction {
 	
 	private String getOperatorFlagHistorySQL(Date date, int operatorID) throws Exception {
 		String dbDate = DateBean.toDBFormat(date);
-		String sql = "SELECT creationDate AS label, flag AS series, count(*) AS value FROM flag_archive WHERE opID = "+ operatorID + " AND creationDate = '" + dbDate +"' GROUP BY flag";	
+		String creationDate = DateBean.prettyDate(date);
+		String sql = "SELECT '"+ creationDate +"' AS label, flag AS series, count(*) AS value FROM flag_archive WHERE opID = "+ operatorID + " AND creationDate = '" + dbDate +"' GROUP BY flag";	
 		return sql;
 	}
 }

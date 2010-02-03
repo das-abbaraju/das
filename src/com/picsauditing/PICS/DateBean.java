@@ -525,4 +525,23 @@ public class DateBean {
 		return value + " " + period + ago;
 	}
 	
+	/**
+	 * Get the first date of a month before or the closest sunday before
+	 * @param startDate
+	 * @return
+	 */
+	public static Date getFirstofMonthOrClosestSunday(Date startDate) {
+		Calendar month = Calendar.getInstance();
+		month.setTime(startDate);
+		month.set(Calendar.DATE, 1);
+		Calendar sunday = Calendar.getInstance();
+		sunday.setTime(startDate);
+		sunday.set(Calendar.DAY_OF_WEEK, 1);
+		int closestmonth = DateBean.getDateDifference(startDate, month.getTime());
+		int closestsunday = DateBean.getDateDifference(startDate, sunday.getTime());
+		if(closestmonth > closestsunday)
+			return month.getTime();
+		else
+			return sunday.getTime();
+	}
 }
