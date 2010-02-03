@@ -26,7 +26,7 @@ function changeState(country) {
 }
 
 function updateUsersList() {
-	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val()});
+	$('.loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val()});
 }
 
 function checkUserOther() {
@@ -108,10 +108,10 @@ function checkUserOther() {
 			<span class="redMain">*</span>
 		</li>
 		<s:if test="newContractor.requestedByUser == null">
-			<li id="loadUsersList"></li>
+			<li class="loadUsersList"></li>
 		</s:if>
 		<s:else>
-		<li id="loadUsersList">
+		<li class="loadUsersList">
 			<label>Requested By User:</label>
 			<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
 				name="requestedUser" value="%{newContractor.requestedByUser.id}"
@@ -130,9 +130,10 @@ function checkUserOther() {
 		<s:if test="newContractor.id > 0">
 			<li><label>Last
 				Contacted By:</label> <s:property value="newContractor.lastContactedBy.name"
-				/></li>
+				/><br /></li>
 			<li><label>Date
 				Contacted:</label><s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" />
+				<br />
 			</li>
 		</s:if>
 		<li><label>Notes:</label>

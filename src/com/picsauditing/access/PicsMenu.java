@@ -76,7 +76,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
 		
-		if(permissions.isPicsEmployee())
+		if(permissions.isPicsEmployee() || permissions.isOperatorCorporate())
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 		
 		subMenu = menu.addChild("Auditing");
