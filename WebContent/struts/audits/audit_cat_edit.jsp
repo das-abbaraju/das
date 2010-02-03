@@ -190,7 +190,7 @@
 		<input type="button" class="picsbutton positive" value="Save Comment" onclick="saveAnswerComment('<s:property value="#divID"/>', null, $('#answer<s:property value="#divID"/>'));"/>
 		<s:textarea name="answer%{#divID}" id="answer%{#divID}" cssClass="richText" value="%{#a.comment}" rows="6" cols="80"/>
 		<script type="text/javascript">
-			$('textarea.richText').wysiwyg();
+			$('#answer<s:property value="#divID"/>').wysiwyg();	
 		</script>
 	</s:if>
 </div>
