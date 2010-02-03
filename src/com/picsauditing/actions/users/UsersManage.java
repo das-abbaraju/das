@@ -164,7 +164,6 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			Set<OpPerms> userPerms = new HashSet<OpPerms>();
 			if (user.getId() > 0 && account.isContractor()) {
 				if (!user.isActiveB() && account.isActiveB()) {
-
 					for (User users : user.getAccount().getUsers()) {
 						for (UserAccess ua : users.getOwnedPermissions()) {
 							if (ua.getUser() != user) {
@@ -221,9 +220,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 
 			if ("Contractor".equals(user.getAccount().getType())) {
-
 				userPerms = new HashSet<OpPerms>();
-
 				for (UserAccess ua : user.getOwnedPermissions()) {
 					userPerms.add(ua.getOpPerm());
 				}
@@ -238,36 +235,41 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
 					}
 				} else {
-					if (!conAdmin)
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
+					if (!conAdmin) {
+						// We need both now to remove data from the useraccess database
+						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin)).getId());
+					}
 				}
 
 				if (!userPerms.contains(OpPerms.ContractorBilling)) {
 					if (conBilling)
 						user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
 				} else {
-					if (!conBilling)
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
+					if (!conBilling) {
+						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling)).getId());
+					}
 				}
 
 				if (!userPerms.contains(OpPerms.ContractorSafety)) {
 					if (conSafety)
 						user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
 				} else {
-					if (!conSafety)
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
+					if (!conSafety) {
+						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety)).getId());
+					}
 				}
 
 				if (!userPerms.contains(OpPerms.ContractorInsurance)) {
 					if (conInsurance)
 						user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
 				} else {
-					if (!conInsurance)
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
+					if (!conInsurance) {
+						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance)).getId());
+					}
 				}
 
 				if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
