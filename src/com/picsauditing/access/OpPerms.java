@@ -88,7 +88,7 @@ public enum OpPerms {
 	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true, false, false),
 
 	// All of the contractor permissions
-	ContractorAdmin("Admin", "Account,Users,Activation", false, false, false, true, false),
+	ContractorAdmin("Admin", "Account, Users, Activation", false, false, false, true, false),
 	ContractorSafety("Safety", "PQF, Annual Updates, Audits, etc", false, false, false, true, false),
 	ContractorBilling("Billing", "Invoices, Payments, Credit Card", false, false, false, true, false),
 	ContractorInsurance("Insurance", "Insurance Certificates", false, false, false, true, false);

@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.search.SelectUser;
 import com.picsauditing.util.SelectOption;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -164,6 +165,7 @@ public class MassMailer extends PicsActionSupport {
 		// the db using the filters
 		String idList = Strings.implode(ids, ",");
 		SelectAccount sql = null;
+		SelectUser sqlUser = null;
 
 		if (ListType.Contractor.equals(type)) {
 			sql = new SelectAccount();
@@ -174,13 +176,21 @@ public class MassMailer extends PicsActionSupport {
 			sql.addWhere("ca.id IN (" + idList + ")");
 			sql.addOrderBy("a.name");
 			sql.addOrderBy("atype.auditName");
+		} else if (ListType.User.equals(type)) {
+			sqlUser = new SelectUser();
+			sqlUser.addWhere("u.id IN (" + idList + ")");
+			sqlUser.addOrderBy("u.name");
 		} else {
 			addActionError(type + " is not supported");
 			return SUCCESS;
 		}
 
 		Database db = new Database();
-		data = db.select(sql.toString(), true);
+		
+		if (ListType.Contractor.equals(type) || ListType.Audit.equals(type))
+			data = db.select(sql.toString(), true);
+		else
+			data = db.select(sqlUser.toString(), true);
 
 		for (BasicDynaBean row : data) {
 			if (ListType.Contractor.equals(type)) {
@@ -188,6 +198,8 @@ public class MassMailer extends PicsActionSupport {
 			} else if (ListType.Audit.equals(type)) {
 				list.add(new SelectOption(row.get("auditID").toString(), row.get("name").toString() + " - "
 						+ row.get("auditName").toString()));
+			} else if (ListType.User.equals(type)) {
+				list.add(new SelectOption(row.get("id").toString(), row.get("name").toString()));
 			}
 		}
 

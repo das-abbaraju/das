@@ -1,5 +1,7 @@
 package com.picsauditing.util;
 
+import com.picsauditing.jpa.entities.ListType;
+
 public class ReportFilterUser extends ReportFilter {
 
 	// /////// Filter Visibility /////////////
@@ -8,7 +10,7 @@ public class ReportFilterUser extends ReportFilter {
 	protected boolean showEmail = true;
 	protected boolean showUser = true;
 	protected boolean showCompanyName = true;
-
+	
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
 	protected String contactName;
@@ -17,6 +19,10 @@ public class ReportFilterUser extends ReportFilter {
 	protected String userName;
 	protected String companyName;
 	protected String search;
+	
+	// Email Builder
+	protected boolean showEmailTemplate = false;
+	protected ListType emailListType;
 
 	public boolean isShowContact() {
 		return showContact;
@@ -114,4 +120,19 @@ public class ReportFilterUser extends ReportFilter {
 		this.search = search;
 	}
 
+	public boolean isShowEmailTemplate() {
+		return showEmailTemplate;
+	}
+
+	public void setShowEmailTemplate(boolean showEmailTemplate) {
+		this.showEmailTemplate = showEmailTemplate;
+	}
+
+	public ListType getEmailListType() {
+		return emailListType;
+	}
+
+	public void setEmailListType(ListType emailListType) {
+		this.emailListType = emailListType;
+	}
 }

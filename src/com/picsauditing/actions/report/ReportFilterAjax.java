@@ -49,6 +49,8 @@ public class ReportFilterAjax extends PicsActionSupport {
 			if (listType.equals(ListType.User)) {
 				ReportFilterUser filter = new ReportFilterUser();
 				filter.setDestinationAction("UserList");
+				filter.setShowEmailTemplate(true);
+				filter.setEmailListType(ListType.User);
 				this.filter = filter;
 			}
 		}
