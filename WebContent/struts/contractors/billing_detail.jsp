@@ -25,11 +25,7 @@
 		<td style="vertical-align: top; width: 48%;">
 		<fieldset class="form"><legend><span>Info</span></legend>
 		<ol>
-			<li><label>Active:</label> <s:if test="contractor.active == 'Y'">
-							Yes
-						</s:if> <s:else>
-							No
-						</s:else></li>
+			<li><label>Active:</label> <s:property value="contractor.status"/></li>
 			<li><label title="The Date the Account was Created.">Registration Date:</label> <s:date
 				name="contractor.creationDate" format="MMM d, yyyy" /></li>
 			<li><label title="The Date the Activation/Reactivation Fee was Paid.">Activation Date:</label> <s:date
@@ -49,7 +45,7 @@
 			<br />
 			<ul style="position: relative; left: 11em; list-style-type: disc;">
 				<s:iterator value="contractor.operators">
-					<s:if test="operatorAccount.activeB">
+					<s:if test="operatorAccount.status.activeDemo">
 						<li><s:if test="permissions.admin">
 							<a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property
 								value="operatorAccount.name" /></a>
@@ -107,7 +103,7 @@
 					<div><input type="submit" class="picsbutton positive" name="button" value="Create" /></div>
 					</li>
 				</ol>
-			</s:form> <s:if test="contractor.billingStatus == 'Current' && !contractor.activeB">
+			</s:form> <s:if test="contractor.billingStatus == 'Current' && !contractor.status.activeDemo">
 				<s:form>
 					<s:hidden name="id" />
 					<div><input type="submit" class="picsbutton positive" name="button" value="Activate" /></div>

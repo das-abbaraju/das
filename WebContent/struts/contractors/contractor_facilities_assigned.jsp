@@ -22,7 +22,7 @@
 	</s:else>
 </s:if>
 
-<s:if test="currentOperators.size() > 1 && !contractor.activeB">
+<s:if test="currentOperators.size() > 1 && contractor.status.pendingDeactivated">
 	<div class="alert" style="width:80%">
 		You have selected more than one operator. Please indicate which operator initially requested your company to register with PICS. <br/>
 		<label>Requested By:</label> 
@@ -57,7 +57,7 @@
 				<th>Remove<br />
 				Operator</th>
 			</pics:permission>
-			<s:if test="permissions.contractor && !contractor.activeB">
+			<s:if test="permissions.contractor && contractor.status.pendingDeactivated">
 				<th>Remove<br />
 				Operator</th>
 			</s:if>
@@ -66,14 +66,14 @@
 	<tbody>
 		<s:iterator value="currentOperators">
 			<tr id="operator_<s:property value="operatorAccount.id"/>">
-				<td><s:if test="contractor.activeB"><s:url id="flagUrl" action="ContractorFlag">
+				<td><s:if test="contractor.status.activeDemo"><s:url id="flagUrl" action="ContractorFlag">
 					<s:param name="id" value="%{contractor.id}" />
 					<s:param name="opID" value="%{operatorAccount.id}" />
 				</s:url></s:if><s:a href="%{flagUrl}">
 					<s:property value="flag.flagColor.smallIcon" escape="false" />
 				</s:a></td>
 				<td>
-					<s:if test="contractor.activeB">
+					<s:if test="contractor.status.activeDemo">
 						<s:url id="opUrl" action="ContractorFlag">
 							<s:param name="id" value="%{contractor.id}" />
 							<s:param name="opID" value="%{operatorAccount.id}" />
@@ -90,7 +90,7 @@
 					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</pics:permission>
-				<s:if test="permissions.contractor && !contractor.activeB">
+				<s:if test="permissions.contractor && contractor.status.pendingDeactivated">
 					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#" class="remove"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</s:if>

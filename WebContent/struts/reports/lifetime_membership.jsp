@@ -19,7 +19,7 @@
 	<tr>
 		<td></td>
 	    <td>Name</td>
-	    <td class="center">Active</td>
+	    <td class="center">Status</td>
 	    <td class="center">Paying<br>Facilities</td>
 	</tr>
 	</thead>
@@ -27,7 +27,7 @@
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
-		<td class="center"><s:property value="get('active')"/></td>
+		<td class="center"><s:property value="get('status')"/></td>
 		<td class="center"><s:property value="get('payingFacilities')"/></td>
 	</tr>
 	</s:iterator>

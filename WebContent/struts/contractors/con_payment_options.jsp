@@ -23,7 +23,7 @@ function updateExpDate() {
 </script>
 </head>
 <body>
-<s:if test="permissions.contractor && !contractor.activeB">
+<s:if test="permissions.contractor && !contractor.status.activeDemo">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>
@@ -46,7 +46,7 @@ function updateExpDate() {
 		least 7 days before the charge.
 	</div>
 </s:elseif>
-<s:elseif test="contractor.activeB && !contractor.paymentMethodStatusValid">
+<s:elseif test="contractor.status.active && !contractor.paymentMethodStatusValid">
 		<div class="info">
 			As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at (800) 506-7427 x 708.
 		</div>
@@ -76,7 +76,7 @@ function updateExpDate() {
 		</s:if>
 	</li>
 
-	<s:if test="contractor.activeB">
+	<s:if test="contractor.status.activeDemo">
 		<li><label>Next Billing Date:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
 		<li><label>Next Billing Amount:</label> $<s:property
@@ -206,7 +206,7 @@ function updateExpDate() {
 </s:if>
 
 <br clear="all" /><br/><br/>
-<s:if test="permissions.contractor && !contractor.activeB && contractor.paymentMethodStatusValid">
+<s:if test="permissions.contractor && contractor.status.pendingDeactivated && contractor.paymentMethodStatusValid">
 	<div class="buttons" style="float: right;">
 		<a href="ContractorRegistrationFinish.action" class="picsbutton positive">Next &gt;&gt;</a>
 	</div>

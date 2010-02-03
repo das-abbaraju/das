@@ -25,7 +25,7 @@ $(function() {
 </script>
 </head>
 <body>
-<s:if test="permissions.contractor && !contractor.activeB">
+<s:if test="permissions.contractor && !contractor.status.activeDemo">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>

@@ -43,7 +43,7 @@ function checkUserOther() {
 
 <s:include value="../actionMessages.jsp"></s:include>
 
-<s:if test="conAccount != null && conAccount.activeB">
+<s:if test="conAccount != null && conAccount.status.active">
 	<div class="info">This contractor has registered an account with PICS on <strong><s:date name="conAccount.creationDate" format="M/d/yyyy" /></strong><br/>
 		Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>.</div>
 </s:if>

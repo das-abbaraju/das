@@ -104,14 +104,14 @@
 
 </head>
 <body onload="runSearch();">
-<s:if test="permissions.contractor && !contractor.activeB">
+<s:if test="permissions.contractor && !contractor.status.activeDemo">
 	<s:include value="registrationHeader.jsp"></s:include>
 </s:if>
 <s:else>
 <s:include value="conHeader.jsp"></s:include>
 </s:else>
 
-<s:if test="permissions.contractor && !contractor.activeB">
+<s:if test="permissions.contractor && contractor.status.pendingDeactivated">
 	<s:if test="msg != null && msg.length() > 0">
 		<div class="error"><s:property value="msg"/></div>
 	</s:if>

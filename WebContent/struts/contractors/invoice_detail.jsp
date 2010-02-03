@@ -17,7 +17,7 @@ input[type=submit] {
 </style>
 </head>
 <body>
-<s:if test="!permissions.contractor || contractor.activeB">
+<s:if test="!permissions.contractor || contractor.status.activeDemo">
 	<s:include value="conHeader.jsp"></s:include>
 </s:if>
 
@@ -27,7 +27,7 @@ input[type=submit] {
 <s:elseif test="invoice.status.paid">
 	<div class="info" class="noprint">This invoice has been PAID in full.</div>
 </s:elseif>
-<s:elseif test="invoice.overdue && contractor.activeB">
+<s:elseif test="invoice.overdue && contractor.status.active">
 	<div class="alert" class="noprint">This invoice is currently OVERDUE!</div>
 </s:elseif>
 <s:if test="invoice.status.unpaid && !contractor.paymentMethodStatusValid">

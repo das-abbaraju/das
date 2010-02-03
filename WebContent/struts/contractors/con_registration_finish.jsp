@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<s:if test="contractor.activeB">
+<s:if test="contractor.status.activeDemo">
 	<s:include value="conHeader.jsp"></s:include>
 </s:if>
 <s:else>
@@ -26,7 +26,7 @@
 	<s:if test="complete">
 		<div class="info">
 			Your account has been registered successfully. A copy of the invoice has been emailed to you.
-			<s:if test="contractor.activeB">
+			<s:if test="contractor.status.active">
 				<div class="buttons">
 					<a href="Home.action" class="picsbutton positive">Click Here to go to your Home Page</a>
 				</div>
@@ -45,7 +45,7 @@
 				<a href="ContractorPaymentOptions.action">Click Here to Add a Credit Card</a>.
 			</div>
 		</s:if>
-		<s:if test="!contractor.activeB">
+		<s:if test="contractor.status.pendingDeactivated">
 			<div>
 				<s:form>
 					<s:hidden name="id" value="%{contractor.id}"/>

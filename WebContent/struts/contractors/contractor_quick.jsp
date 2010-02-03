@@ -96,8 +96,7 @@
 	<s:if test="permissions.admin || permissions.contractor">
 		<div id="tabs-membership">
 			<s:iterator value="operatorTags"><s:property value="tag"/> </s:iterator>
-			<label>PICS Membership:</label>
-			<s:if test="contractor.activeB">Active</s:if><s:else>Inactive</s:else>
+			<label>PICS Membership:</label><s:property value="contractor.status"/>
 			<br />
 			<label>Membership:</label>
 			<s:property value="contractor.membershipLevel.fee" />

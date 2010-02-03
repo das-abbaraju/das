@@ -118,11 +118,20 @@ img.contractor_logo {
 </head>
 <body>
 <s:include value="conHeader.jsp" />
-<s:if test="!contractor.activeB">
-	<div class="alert">This contractor is not active.
+<s:if test="contractor.status.pending">
+	<div class="alert">This contractor is not active and has recently registered in PICS.</div>
+</s:if>
+<s:if test="contractor.status.deleted">
+	<div class="alert">This contractor is a duplicate account in PICS.
 	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 	</div>
 </s:if>
+<s:if test="contractor.status.deactivated">
+	<div class="alert">This contractor has been deactivated in PICS.
+	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+	</div>
+</s:if>
+
 <s:if test="contractor.acceptsBids">
 	<s:if test="canUpgrade">
 		<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>

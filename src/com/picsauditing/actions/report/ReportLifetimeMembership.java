@@ -7,7 +7,7 @@ public class ReportLifetimeMembership extends ReportAccount {
 	public void buildQuery(){
 		super.buildQuery();
 		
-		sql.addField("a.active");
+		sql.addField("a.status");
 		sql.addField("c.payingFacilities");
 		
 		sql.addWhere("c.mustPay = 'No'");
