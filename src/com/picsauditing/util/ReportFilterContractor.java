@@ -435,7 +435,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 		return result;
 	}
-	
+
 	public List<Country> getCountryList() {
 		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
 		return countryDAO.findAll();
