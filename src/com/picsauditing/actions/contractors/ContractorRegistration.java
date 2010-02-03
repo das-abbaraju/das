@@ -61,7 +61,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
-			contractor.setActive('N');
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
 			errors.addAll(contractorValidator.validateUser(password, confirmPassword, user));
 			if (Strings.isEmpty(user.getPassword()))

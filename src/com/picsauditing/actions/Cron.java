@@ -30,6 +30,7 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -184,11 +185,11 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			startTask("\nInactivating Accounts via Billing Status...");
-			String where = "a.active = 'Y' AND a.renew = 0 AND paymentExpires < NOW()";
+			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
-				contractor.setActive('N');
-				// Setting a deactivation report
+				contractor.setStatus(AccountStatus.Deactivated);
+				// Setting a deactivation reason
 				if (contractor.isAcceptsBids()) {
 					contractor.setReason("Bid Only Account");
 				}

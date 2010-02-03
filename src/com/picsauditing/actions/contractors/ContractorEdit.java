@@ -24,6 +24,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -213,7 +214,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			} else if (button.equals("Reactivate")) {
 				contractor.setRenew(true);
 				if (contractor.getNewMembershipLevel().isFree())
-					contractor.setActive('Y');
+					contractor.setStatus(AccountStatus.Active);
 
 				accountDao.save(contractor);
 				this.addNote(contractor, "Reactivated account");
@@ -225,7 +226,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				} else {
 					contractor.setRenew(false);
 					if (contractor.getNewMembershipLevel().isFree())
-						contractor.setActive('N');
+						contractor.setStatus(AccountStatus.Deactivated);
 
 					String expiresMessage = "";
 					if (contractor.getPaymentExpires().after(new Date()))
@@ -233,7 +234,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 								+ contractor.getPaymentExpires();
 					else {
 						expiresMessage = " This account is no longer visible to operators.";
-						contractor.setActive('N');
+						contractor.setStatus(AccountStatus.Deactivated);
 					}
 					accountDao.save(contractor);
 
