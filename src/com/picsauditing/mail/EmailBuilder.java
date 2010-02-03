@@ -116,7 +116,7 @@ public class EmailBuilder {
 				emails.add(user.getEmail());
 		}
 		if (emails.size() > 0)
-			toAddresses = Strings.implode(emails, "; ");
+			toAddresses = Strings.implode(emails, ", ");
 		else
 			setContractor(contractor, OpPerms.ContractorAdmin);
 	}
