@@ -22,4 +22,8 @@ public enum AccountStatus {
 	public boolean isDeactivated() {
 		return this.equals(Deactivated);
 	}
+
+	public boolean isActiveDemo() {
+		return this.equals(Demo);
+	}
 }

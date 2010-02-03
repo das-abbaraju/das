@@ -428,7 +428,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("name", name);
-		obj.put("active", isActiveB());
 		obj.put("type", type.toString());
 
 		if (!full)

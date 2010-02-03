@@ -169,10 +169,14 @@ public class LoginController extends PicsActionSupport {
 		if (Strings.isEmpty(key)) {
 			// After this point we should always have a user
 
-			if (user.getAccount().isOperator() || user.getAccount().isCorporate())
-				if (!user.getAccount().isActiveB())
+			if (user.getAccount().isOperatorCorporate())
+				if (!user.getAccount().getStatus().isActiveDemo())
 					return user.getAccount().getName()
 							+ " is no longer active.<br>Please contact PICS if you have any questions.";
+
+			if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted())
+				return user.getAccount().getName()
+						+ " has been deleted.<br>Please contact PICS if you have any questions.";
 
 			if (user.getIsActive() != YesNo.Yes)
 				return "This account for " + user.getAccount().getName()
@@ -256,7 +260,7 @@ public class LoginController extends PicsActionSupport {
 			}
 		}
 		String url = null;
-		if (permissions.isContractor() && !user.getAccount().isActiveB()) {
+		if (permissions.isContractor() && !user.getAccount().getStatus().isActiveDemo()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
 			if (cAccount.getRiskLevel() == null)
 				url = "ContractorRegistrationServices.action?id=" + cAccount.getId();

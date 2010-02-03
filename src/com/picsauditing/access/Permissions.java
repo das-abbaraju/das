@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -60,7 +61,7 @@ public class Permissions implements Serializable {
 	private int adminID;
 	private boolean approvesRelationships = false;
 	private boolean active = false;
-	private boolean accountActive = false;
+	private AccountStatus accountStatus = AccountStatus.Pending;
 
 	public void clear() {
 		userID = 0;
@@ -77,7 +78,7 @@ public class Permissions implements Serializable {
 		accountName = "";
 		accountType = "";
 		country = "";  
-		accountActive = false;
+		accountStatus = AccountStatus.Pending;
 		accountCountries.clear();
 		approvesRelationships = false;
 
@@ -131,7 +132,7 @@ public class Permissions implements Serializable {
 			topAccountID = accountID;
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
-			accountActive = user.getAccount().isActiveB();
+			accountStatus = user.getAccount().getStatus();
 
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
@@ -269,11 +270,11 @@ public class Permissions implements Serializable {
 	public String getAccountName() {
 		return accountName;
 	}
-
-	public boolean isAccountActive() {
-		return accountActive;
+	
+	public AccountStatus getAccountStatus() {
+		return accountStatus;
 	}
-
+	
 	public String getEmail() {
 		return email;
 	}
