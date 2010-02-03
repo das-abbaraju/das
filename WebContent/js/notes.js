@@ -7,9 +7,9 @@ function filter(returnType, filter, value) {
 	var data = {
 			id: accountID,
 			button: 'refresh',
-			returnType: returnType,
-			filter: value
+			returnType: returnType
 	};
+	data[filter] = value;
 	
 	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
 	$('#'+divName).load(accountType+'NotesAjax.action', data);
