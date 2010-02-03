@@ -41,7 +41,8 @@ public class ContractorAccountTest extends TestCase {
 		contractor.setRenew(false);
 		assertEquals("Do not renew", contractor.getBillingStatus());
 		
-		contractor.setActive('N');
+		//contractor.setActive('N');
+		contractor.setStatus(AccountStatus.Deactivated);
 		assertEquals("Membership Canceled", contractor.getBillingStatus());
 
 		contractor.setPaymentExpires(contractor.getCreationDate());

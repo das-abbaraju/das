@@ -7,6 +7,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -74,7 +75,8 @@ public class FlagCalculatorTest extends TestCase {
 		contractor.getOperators().get(0).setWorkStatus("Y");
 		assertEquals(WaitingOn.None, calculator.calculateWaitingOn());
 
-		contractor.setActive('N');
+		//contractor.setActive('N');
+		contractor.setStatus(AccountStatus.Deactivated);
 		assertEquals(WaitingOn.Contractor, calculator.calculateWaitingOn());
 		
     }

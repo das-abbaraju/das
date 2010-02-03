@@ -8,6 +8,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -159,7 +160,8 @@ public class BillingCalculatorSingleTest extends TestCase {
 		assertNotNull("Activation Fee must be included", findItemWithFee(items, InvoiceFee.PQFONLY));
 
 		// Upgrade from PQF to 1 facility
-		contractor.setActive('Y');
+		//contractor.setActive('Y');
+		contractor.setStatus(AccountStatus.Active);
 		contractor.setMembershipDate(DateBean.addMonths(new Date(), -6));
 		contractor.setMembershipLevel(EntityFactory.makeInvoiceFee(InvoiceFee.PQFONLY));
 		contractor.setNewMembershipLevel(EntityFactory.makeInvoiceFee(InvoiceFee.FACILITIES1));

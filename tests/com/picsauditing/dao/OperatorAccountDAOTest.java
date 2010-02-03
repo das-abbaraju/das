@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -51,7 +52,8 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setFax("999-999-9999");
 		operatoraccount.setWebUrl("www.picsauditing.com");
 		operatoraccount.setIndustry(Industry.Petrochemical);
-		operatoraccount.setActive('y');
+		//operatoraccount.setActive('y');
+		operatoraccount.setStatus(AccountStatus.Active);
 		operatoraccount.setCreatedBy(new User(1100));
 		operatoraccount.setCreationDate(new java.util.Date());
 		operatoraccount.setActivationEmails("pics@picsauditing.com");

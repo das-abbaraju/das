@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.PICS.AuditCriteriaAnswer;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -42,7 +43,8 @@ public class EntityFactory {
 
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
-		operator.setActive('Y');
+		//operator.setActive('Y');
+		operator.setStatus(AccountStatus.Active);
 		operator.setName("Operator Unit Test");
 		operator.setApprovesRelationships(YesNo.No);
 		operator.setCanSeeInsurance(YesNo.Yes);
@@ -59,7 +61,8 @@ public class EntityFactory {
 	 */
 	static public ContractorAccount makeContractor() {
 		ContractorAccount contractor = new ContractorAccount();
-		contractor.setActive('Y');
+		//contractor.setActive('Y');
+		contractor.setStatus(AccountStatus.Active);
 		contractor.setName("Contractor Unit Test");
 		contractor.setRiskLevel(LowMedHigh.Med);
 		contractor.setCountry(new Country("US"));

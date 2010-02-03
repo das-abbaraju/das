@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorFlag;
@@ -69,7 +70,8 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setFax("999-999-9999");
 		contractoraccount.setWebUrl("www.picsauditing.com");
 		contractoraccount.setIndustry(Industry.Construction);
-		contractoraccount.setActive('y');
+		//contractoraccount.setActive('y');
+		contractoraccount.setStatus(AccountStatus.Active);
 		contractoraccount.setCreatedBy(new User(1100));
 		contractoraccount.setCreationDate(new Date());
 		contractoraccount.setTaxId("test17701");
