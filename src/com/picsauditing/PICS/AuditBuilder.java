@@ -138,7 +138,7 @@ public class AuditBuilder {
 		// is that the operators and auditTypes will be really cached well
 		Set<AuditType> auditTypeList = new HashSet<AuditType>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB()) {
+			if (co.getOperatorAccount().getStatus().isActiveDemo()) {
 				// We used to also check to see that the contractor is approved,
 				// But now we just add in advance of being approved
 				// (co.getOperatorAccount().getApprovesRelationships().equals(YesNo.No)
@@ -302,7 +302,8 @@ public class AuditBuilder {
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isActiveB() && co.getOperatorAccount().getCanSeeInsurance().isTrue())
+			if (co.getOperatorAccount().getStatus().isActiveDemo()
+					&& co.getOperatorAccount().getCanSeeInsurance().isTrue())
 				operatorSet.add(co.getOperatorAccount().getInheritInsurance());
 		}
 

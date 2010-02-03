@@ -31,7 +31,7 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 		else {
 			OperatorAccount corporate = (OperatorAccount) getUser().getAccount();
 			for( Facility child : corporate.getOperatorFacilities() ) {
-				if(child.getOperator().isActiveB()) {
+				if(child.getOperator().getStatus().isActiveDemo()) {
 					ops.add(child.getOperator().getId());
 				}
 			}
