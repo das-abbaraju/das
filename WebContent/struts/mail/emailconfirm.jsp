@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Email Confimration Page</title>
+<title>Email Confirmation Page</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css" />
 </head>
 <body>

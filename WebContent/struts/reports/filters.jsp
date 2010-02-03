@@ -37,6 +37,18 @@
 			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
 	</s:if>
 
+	<s:if test="filter.showStatus">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_status'); return false;">Status</a> = <span
+			id="form1_status_query">ALL</span><br /><span id="form1_status_select"
+			style="display: none" class="clearLink"><s:select
+			list="filter.statusList" multiple="true" cssClass="forms"
+			name="filter.status" id="form1_status" /><br />
+		<script type="text/javascript">updateQuery('form1_status');</script> <a
+			class="clearLink" href="#"
+			onclick="clearSelected('form1_status'); return false;">Clear</a> </span></div>
+	</s:if>
+
 	<s:if test="filter.showVisible">
 		<div class="filterOption"><s:select list="filter.visibleOptions"
 			cssClass="forms" name="filter.visible" /></div>

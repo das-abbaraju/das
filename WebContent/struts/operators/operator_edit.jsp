@@ -127,8 +127,8 @@ $(function() {
 				<fieldset class="form"><legend><span>Admin
 				Fields</span></legend>
 				<ol>
-					<li><label>Visible?</label> <s:radio
-						list="#{'Y':'Yes','N':'No'}" name="operator.active" theme="pics" /></li>
+					<li><label>Status:</label> 
+						<s:radio list="statusList" name="operator.status" theme="pics" /></li>
 					<li><label>Reason:</label> <s:textarea name="operator.reason"
 						rows="3" cols="25" /></li>
 					<s:if test="operator.corporate">

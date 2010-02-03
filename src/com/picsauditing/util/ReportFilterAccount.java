@@ -3,6 +3,7 @@ package com.picsauditing.util;
 import java.util.ArrayList;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 
@@ -17,6 +18,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
 	protected boolean showVisible = false;
+	protected boolean showStatus = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
 
@@ -29,6 +31,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String[] country;
 	protected String zip = DEFAULT_ZIP;
 	protected String visible;
+	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
 
@@ -37,7 +40,7 @@ public class ReportFilterAccount extends ReportFilter {
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		if (permissions.isPicsEmployee()) {
-			showVisible = true;
+			showStatus = true;
 		}
 	}
 
@@ -84,6 +87,14 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowVisible(boolean showVisible) {
 		this.showVisible = showVisible;
+	}
+
+	public boolean isShowStatus() {
+		return showStatus;
+	}
+
+	public void setShowStatus(boolean showStatus) {
+		this.showStatus = showStatus;
 	}
 
 	public boolean isShowPrimaryInformation() {
@@ -164,6 +175,18 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setVisible(String visible) {
 		this.visible = visible;
+	}
+
+	public AccountStatus[] getStatus() {
+		return status;
+	}
+
+	public void setStatus(AccountStatus[] status) {
+		this.status = status;
+	}
+
+	public AccountStatus[] getStatusList() {
+		return AccountStatus.values();
 	}
 
 	public boolean isPrimaryInformation() {

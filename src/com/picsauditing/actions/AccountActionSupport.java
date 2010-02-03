@@ -8,6 +8,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -168,5 +169,9 @@ public class AccountActionSupport extends PicsActionSupport {
 			return permissions.hasPermission(OpPerms.ContractorDetails);
 		}
 		return true;
+	}
+	
+	public AccountStatus[] getStatusList() {
+		return AccountStatus.values();
 	}
 }

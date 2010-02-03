@@ -163,9 +163,8 @@ $(function() {
 				<fieldset class="form">
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
-					<li><label>Active (Visible):</label>
-						<s:if test="contractor.activeB">Yes</s:if>
-						<s:else>No</s:else>
+					<li><label>Status:</label>
+						<s:radio list="statusList" name="contractor.status" theme="pics" value="%{contractor.status}" />
 					</li>
 					<li><label>Will Renew:</label>
 						<s:if test="contractor.renew">Yes - <a href="?id=<s:property value="id"/>&button=Cancel">Cancel Account</a></s:if>
