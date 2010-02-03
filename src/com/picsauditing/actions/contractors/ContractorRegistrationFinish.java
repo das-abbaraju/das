@@ -108,17 +108,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							invoice.updateAmountApplied();
 
 							// Activate the contractor
-							if (contractor.getStatus().isPendingDeactivated()) {
-								for (InvoiceItem item : invoice.getItems()) {
-									if (item.getInvoiceFee().getFeeClass().equals("Activation")
-											|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
-										contractor.setStatus(AccountStatus.Active);
-										contractor.setAuditColumns(getUser());
-									}
-								}
-							}
-
+							BillingCalculatorSingle.activateContractor(contractor, invoice);
 							contractor.syncBalance();
+							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
 									+ invoice.getTotalAmount());

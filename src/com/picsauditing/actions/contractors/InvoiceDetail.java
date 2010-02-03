@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -20,6 +21,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -188,18 +190,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							invoice.updateAmountApplied();
 
 							// Activate the contractor
-							if (!contractor.isActiveB()) {
-								for (InvoiceItem item : invoice.getItems()) {
-									if (item.getInvoiceFee().getFeeClass().equals("Activation")
-											|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
-										contractor.setActive('Y');
-										contractor.setAuditColumns(getUser());
-										conAccountDAO.save(contractor);
-									}
-								}
-							}
-							
+							BillingCalculatorSingle.activateContractor(contractor, invoice);
 							contractor.syncBalance();
+							conAccountDAO.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
 									+ invoice.getTotalAmount());
@@ -229,8 +222,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		invoiceDAO.save(invoice);
 
 		contractor.syncBalance();
-		if (contractor.isActiveB() && contractor.getPaymentExpires().before(new Date())) {
-			contractor.setActive('N');
+		if (contractor.getStatus().isActive() && contractor.getPaymentExpires().before(new Date())) {
+			contractor.setStatus(AccountStatus.Deactivated);
 			addNote("Automatically inactivating account based on expired membership");
 		}
 		contractor.setAuditColumns(permissions);

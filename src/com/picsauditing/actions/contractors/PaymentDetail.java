@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -17,8 +18,6 @@ import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.Payment;
@@ -94,18 +93,11 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			// Activate the contractor if an activation invoice is fully applied
 			// (this will occur on the redirect)
-			if (!contractor.isActiveB()) {
+			if (contractor.getStatus().isPendingDeactivated()) {
 				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
-					if (ip.getInvoice().getStatus().isPaid()) {
-						for (InvoiceItem item : ip.getInvoice().getItems()) {
-							if (item.getInvoiceFee().getFeeClass().equals("Activation") 
-									|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
-								contractor.setActive('Y');
-								contractor.setAuditColumns(permissions);
-								accountDao.save(contractor);
-								break;
-							}
-						}
+					if (BillingCalculatorSingle.activateContractor(contractor, ip.getInvoice())) {
+						accountDao.save(contractor);
+						break;
 					}
 				}
 			}
