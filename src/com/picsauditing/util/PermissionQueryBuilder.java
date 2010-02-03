@@ -8,7 +8,7 @@ public class PermissionQueryBuilder {
 	static final public int HQL = 2;
 	private int queryLanguage = SQL;
 	private String accountAlias = "a"; // or contractorAccount
-	private boolean activeContractorsOnly = true;
+	private boolean showDeactivated = false;
 	private boolean onlyPendingAudits = true; // if auditor, then only show
 												// the pending or submitted
 												// audits
@@ -86,9 +86,13 @@ public class PermissionQueryBuilder {
 			// If we never set the query, then show no contractors
 			return "AND 1=0";
 
-		String query = "";
-		if (activeContractorsOnly)
-			query = "AND " + accountAlias + ".active = 'Y' ";
+		String query = "AND " + accountAlias + ".status IN ('Active'";
+		
+		if (permissions.getAccountStatus().isDemo())
+			query += ",'Demo'";
+		
+		if (showDeactivated)
+			query = ",'Deactivated'";
 
 		if (queryLanguage == HQL)
 			return query += "AND " + accountAlias + " IN (" + subquery + ")";
@@ -106,20 +110,12 @@ public class PermissionQueryBuilder {
 		this.queryLanguage = queryLanguage;
 	}
 
-	public String getAccountAlias() {
-		return accountAlias;
-	}
-
 	public void setAccountAlias(String accountAlias) {
 		this.accountAlias = accountAlias;
 	}
 
-	public boolean isActiveContractorsOnly() {
-		return activeContractorsOnly;
-	}
-
-	public void setActiveContractorsOnly(boolean activeContractorsOnly) {
-		this.activeContractorsOnly = activeContractorsOnly;
+	public void setShowPendingDeactivated(boolean value) {
+		this.showDeactivated = value;
 	}
 
 	/**
@@ -130,10 +126,6 @@ public class PermissionQueryBuilder {
 	 */
 	public void setOnlyPendingAudits(boolean onlyPendingAudits) {
 		this.onlyPendingAudits = onlyPendingAudits;
-	}
-
-	public boolean isWorkingFacilities() {
-		return workingFacilities;
 	}
 
 	public void setWorkingFacilities(boolean workingFacilities) {

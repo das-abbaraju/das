@@ -27,7 +27,7 @@ public class ArchivedAccounts extends ReportAccount {
 		}
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
-		qb.setActiveContractorsOnly(false);
+		qb.setShowPendingDeactivated(true);
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
 
