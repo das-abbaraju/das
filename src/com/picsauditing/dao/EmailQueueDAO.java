@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -38,7 +39,6 @@ public class EmailQueueDAO extends PicsDAO {
 		return em.find(EmailQueue.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailQueue> getPendingEmails(int limit) {
 		return getPendingEmails("", limit);
 	}
@@ -66,10 +66,39 @@ public class EmailQueueDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<EmailQueue> findByContractorId(int id) {
-		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id"
-				+ " ORDER BY sentDate DESC");
+		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id" + " ORDER BY sentDate DESC");
 		query.setMaxResults(25);
 		query.setParameter("id", id);
 		return query.getResultList();
+	}
+
+	public long findNumberOfEmailsSent(int timePeriodInMinutes) {
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.sentDate > :lastSentDate";
+		Query query = em.createQuery(hql);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -timePeriodInMinutes);
+		query.setParameter("lastSentDate", calendar.getTime());
+
+		return (Long) query.getSingleResult();
+	}
+
+	public long findNumberOfEmailsPending() {
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = 'Pending'";
+		Query query = em.createQuery(hql);
+
+		return (Long) query.getSingleResult();
+	}
+
+	public long findNumberOfEmailsPending(int creationTimeInMinutes) {
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = 'Pending'"
+				+ "AND t.creationDate < :creationTime";
+		Query query = em.createQuery(hql);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -creationTimeInMinutes);
+		query.setParameter("creationTime", calendar.getTime());
+
+		return (Long) query.getSingleResult();
 	}
 }

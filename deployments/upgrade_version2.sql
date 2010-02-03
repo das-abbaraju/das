@@ -25,3 +25,6 @@ update accounts set status = 'Pending' WHERE active = 'N';
 update accounts set status = 'Demo' where name like '%^^^%' or name like 'PICS%demo%';
 update accounts set status = 'Deleted' where status != 'Active' and name like '%duplicat%';
 update accounts set status = 'Deactivated' where status = 'Pending' and type = 'Contractor' and id in (select id from invoice where tableType = 'I' and status = 'Paid');
+
+-- Changing Cron Statistics widget title to System Status
+update widget set caption = 'System Status' where widgetID = 16;

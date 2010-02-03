@@ -133,7 +133,8 @@ public class ContractorAccountDAO extends PicsDAO {
 		if (taxId == null)
 			taxId = "";
 		try {
-			Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId AND country.isoCode = :country");
+			Query query = em
+					.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId AND country.isoCode = :country");
 			query.setParameter("taxId", taxId);
 			query.setParameter("country", country);
 			query.setMaxResults(1);
@@ -187,6 +188,24 @@ public class ContractorAccountDAO extends PicsDAO {
 		query.setParameter("lastRunDate", calendar.getTime());
 
 		return query.getResultList();
+	}
+
+	public long findNumberOfContractorsNeedingRecalculation() {
+		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE c.active = 'Y' AND c.needsRecalculation = 0";
+		Query query = em.createQuery(hql);
+
+		return (Long) query.getSingleResult();
+	}
+
+	public long findNumberOfContractorsProcessed(int timePeriodInMinutes) {
+		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE " + "c.lastRecalculation >= :lastRunDate ";
+		Query query = em.createQuery(hql);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -timePeriodInMinutes);
+		query.setParameter("lastRunDate", calendar.getTime());
+
+		return (Long) query.getSingleResult();
 	}
 
 	public void updateContractorByOperator(OperatorAccount operator) {
