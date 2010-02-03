@@ -26,4 +26,4 @@ public class DBBean {
     private DataSource getJdbcPics() throws NamingException {
     	return (DataSource) getServiceLocator().getDataSource("java:comp/env/jdbc/pics");
     }
-}//DBBean
+}
