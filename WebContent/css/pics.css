@@ -689,6 +689,7 @@ span.hoverhelp {
 	text-decoration: none !important;
 	font-size: 11px;
 	line-height: 18px;
+	color: #333;
 }
 
 span.hoverhelp a {
