@@ -177,7 +177,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	 * @return
 	 */
 	public List<Integer> findContractorsNeedingRecalculation() {
-		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.active = 'Y' AND ("
+		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.status = 'Active' AND ("
 				+ "c.lastRecalculation < :lastRunDate " + "OR c.lastRecalculation IS NULL) "
 				+ "ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
@@ -191,7 +191,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public long findNumberOfContractorsNeedingRecalculation() {
-		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE c.active = 'Y' AND c.needsRecalculation = 0";
+		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE c.status = 'Active' AND c.needsRecalculation = 0";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();

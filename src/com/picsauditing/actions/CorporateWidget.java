@@ -27,7 +27,7 @@ public class CorporateWidget extends PicsActionSupport {
 			return LOGIN_AJAX;
 		
 		totalContractorCount = cAccountDAO.getActiveContractorCounts("");
-		activeContractorCount = cAccountDAO.getActiveContractorCounts("c.active = 'Y'");
+		activeContractorCount = cAccountDAO.getActiveContractorCounts("c.status = 'Active'");
 		operatorCount = opAccountDAO.getOperatorCounts("o.type = 'Operator'");
 		corporateCount = opAccountDAO.getOperatorCounts("o.type = 'Corporate'");
 		userCount = userDAO.getUsersCounts();
