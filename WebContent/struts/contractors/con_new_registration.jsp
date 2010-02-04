@@ -10,11 +10,19 @@
 	href="css/reports.css?v=20091231" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/notes.css" />
-<s:include value="../jquery.jsp" />
+<s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript">
 $(function() {
 	changeState($("#newContractorCountry").val());
 	$('.datepicker').datepicker();
+	$('#newContractorName').autocomplete('ContractorSelectAjax.action', 
+		{
+			minChars: 3,
+			extraParams: {'filter.accountName': function() {return $('#newContractorName').val();} }
+		}
+	);
 });
 
 function countryChanged(country) {
@@ -54,7 +62,7 @@ function checkUserOther() {
 	<fieldset class="form"><legend><span>Details</span></legend>
 	<ol>
 		<li><label>Company Name:</label>
-			<s:textfield name="newContractor.name" size="35"/><span class="redMain">*</span></li>
+			<s:textfield name="newContractor.name" size="35" id="newContractorName" /><span class="redMain">*</span></li>
 		<li><label>Contact
 			Name:</label> <s:textfield name="newContractor.contact" /><span class="redMain">*</span></li>
 		<li><label>Phone:</label>
