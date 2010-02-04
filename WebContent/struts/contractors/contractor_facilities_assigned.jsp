@@ -87,7 +87,7 @@
 				<td><s:property value="flag.waitingOn.name()" /></td>
 
 				<pics:permission perm="RemoveContractors">
-					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#"
+					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#" class="remove"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</pics:permission>
 				<s:if test="permissions.contractor && contractor.status.pendingDeactivated">

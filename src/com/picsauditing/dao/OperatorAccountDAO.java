@@ -71,7 +71,13 @@ public class OperatorAccountDAO extends PicsDAO {
 		
 		if (where.length() > 0)
 			where += "AND ";
-		where += "(a.status = 'Active' OR a.status = 'Demo') ";
+		
+		where += "a.status IN ('Active'";
+		if (permissions.isAdmin())
+			where += ",'Pending'";
+		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
+			where += ",'Demo'";
+		where += ") ";
 
 		if (permissions.isCorporate()) {
 			// Show corporate users operators in their facility
