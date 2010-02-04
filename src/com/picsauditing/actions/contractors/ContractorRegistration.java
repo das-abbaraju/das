@@ -14,6 +14,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -58,6 +59,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
+		loadPermissions(false);
+		if (permissions.isLoggedIn()) {
+			addActionError("You must logout before trying to register a new contractor account");
+			return BLANK;
+		}
 
 		if ("Create Account".equalsIgnoreCase(button)) {
 			contractor.setType("Contractor");
@@ -82,6 +88,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 				return SUCCESS;
 			}
 
+			if (contractor.getName().contains("^^^")) {
+				contractor.setStatus(AccountStatus.Demo);
+				contractor.setName(contractor.getName().replaceAll("^", "").trim());
+			}
+			
 			// Default their current membership to 0
 			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 			contractor.setPaymentExpires(new Date());
@@ -94,7 +105,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			accountDao.save(contractor);
 			
 			user.setPhone(contractor.getPhone());
-			user.setIsActive(YesNo.Yes);
+			user.setActive(true);
 			user.setAccount(contractor);
 			user.setAuditColumns(new User(User.CONTRACTOR));
 			user.setIsGroup(YesNo.No);
