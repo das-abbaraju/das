@@ -41,15 +41,25 @@ function savePerm(userID, permType, checkbox) {
 			<td>&nbsp;</td>
 			<td>User</td>
 			<td><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/>
-			<span class="block" style="position: relative;">
-		<img src="images/help.gif" height="15" width="15">
-		<span class="hoverhelp" style="bottom: 20px; left: -100px;">
-		<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>
-</span></span>
+				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
+					<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>
+				</span></span>
 			</td>
-			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></td>
-			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/></td>
-			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></td>
+			<td><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/>
+				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
+					<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>
+				</span></span>
+			</td>
+			<td><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/>
+				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
+					<s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.helpText"/>
+				</span></span>
+			</td>
+			<td><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/>
+				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
+					<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>
+				</span></span>
+			</td>
 		</tr>
 	</thead>
 	<tbody>
