@@ -44,7 +44,7 @@ public class InvoiceDAO extends PicsDAO {
 		qb.setAccountAlias("i.account");
 		qb.setShowPendingDeactivated(true);
 		String hql = "SELECT i FROM Invoice i " +
-				"WHERE i.dueDate < NOW() AND i.paid = 0 " +
+				"WHERE i.dueDate < NOW() AND i.status = 'Unpaid' " +
 				"AND i.account.status = 'Active' "
 				+ qb.toString() + " ORDER BY i.dueDate";
 		Query query = em.createQuery(hql);
