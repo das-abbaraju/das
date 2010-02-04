@@ -23,6 +23,12 @@ function checkTaxId(taxId) {
 }
 
 function checkName(name) {
+	if (name.indexOf('^^^') > 0) {
+		$('#name_status').html("This contractor will be created as a DEMO account.");
+		$('#contractorTaxId').val('000000000');
+		$('#contractorPhone').val('949-387-1940');
+		return;
+	}
 	startThinking({div:'name_status', message: ' checking availability of name...'});
 	var data = {companyName: name, button: 'name'};
 	$('#name_status').load('ContractorValidateAjax.action', data);
@@ -83,7 +89,7 @@ $(function(){
 						<li><label>Web URL:</label> 
 							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
 						<li><label>Company Phone:</label>
-							<s:textfield name="contractor.phone" size="20" /><span class="redMain">*</span></li>
+							<s:textfield id="contractorPhone" name="contractor.phone" size="20" /><span class="redMain">*</span></li>
 						<li><label>Company Fax:</label>
 							<s:textfield name="contractor.fax" size="20" /></li>
 					</ol>

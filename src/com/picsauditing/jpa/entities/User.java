@@ -63,7 +63,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	// field
 	private Date emailConfirmedDate;
 	private String name;
-	private YesNo isActive;
+	private YesNo isActive = YesNo.Yes;
 	private Date lastLogin;
 	private Account account;
 	private String phone;
@@ -159,6 +159,10 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	@Transient
 	public boolean isActiveB() {
 		return YesNo.Yes.equals(isActive);
+	}
+
+	public void setActive(boolean value) {
+		this.isActive = YesNo.valueOf(value);
 	}
 
 	public void setIsActive(YesNo isActive) {
