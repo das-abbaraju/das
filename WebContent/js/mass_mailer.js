@@ -19,6 +19,13 @@ function sendEmails() {
 	// Select all of the contractors left in the box, then submit the form
 	var contractors = $('#contractors option').attr('selected', 'selected');
 	
+	// Confirm box for sending out emails
+	var r = confirm("You are sending " + $('#contractors option').length 
+			+ " emails. Please confirm if this is correct.");
+	if(r == false) {
+		return false;
+	}
+	
 	$('#form1').submit();
 }
 
