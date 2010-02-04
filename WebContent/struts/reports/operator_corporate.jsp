@@ -52,7 +52,7 @@ value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			
-			<s:if test="%{get('status') == "Active"}">
+			<s:if test="%{get('status') == 'Active' || get('status') == 'Demo'}">
 			<td><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>" 
 					rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="operatorQuick" title="<s:property value="get('name')" />"
