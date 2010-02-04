@@ -83,16 +83,28 @@ public class EmailQueueDAO extends PicsDAO {
 		return (Long) query.getSingleResult();
 	}
 
-	public long findNumberOfEmailsPending() {
-		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = 'Pending'";
+	public long findNumberOfEmailsWithStatus(String status) {
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '"+status+"'";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();
 	}
 
-	public long findNumberOfEmailsPending(int creationTimeInMinutes) {
-		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = 'Pending'"
+	public long findNumberOfEmailsWithStatusBeforeTime(String status, int creationTimeInMinutes) {
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '"+status+"'"
 				+ "AND t.creationDate < :creationTime";
+		Query query = em.createQuery(hql);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, -creationTimeInMinutes);
+		query.setParameter("creationTime", calendar.getTime());
+
+		return (Long) query.getSingleResult();
+	}
+	
+	public long findNumberOfEmailsWithStatusInTime(String status, int creationTimeInMinutes) {
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '"+status+"'"
+				+ "AND t.creationDate >= :creationTime";
 		Query query = em.createQuery(hql);
 
 		Calendar calendar = Calendar.getInstance();

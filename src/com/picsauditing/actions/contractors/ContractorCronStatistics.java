@@ -16,6 +16,7 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 	private long emailsPending;
 	private long emailsSentInLastFiveMinutes;
 	private long emailsPendingAndCreatedMoreThanFiveMinutesAgo;
+	private long emailsWithErrorsInLastWeek;
 
 	private boolean contractorCronError = false;
 	private boolean contractorCronWarning = false;
@@ -36,7 +37,8 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 		emailsSentInHour = getNumberOfEmailsSent(60);
 		emailsPending = getNumberOfEmailsPending();
 		emailsSentInLastFiveMinutes = getNumberOfEmailsSent(5);
-		emailsPendingAndCreatedMoreThanFiveMinutesAgo = getNumberOfEmailsPendingInTimePeriod(5);
+		emailsPendingAndCreatedMoreThanFiveMinutesAgo = getNumberOfEmailsPendingBeforeTime(5);
+		emailsWithErrorsInLastWeek = getNumberOfEmailsWithErrorsInTimePeriod(60 * 24 * 7);
 
 		if (contractorsWaiting == 0) {
 			// leave default values
@@ -48,11 +50,11 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 
 		if (emailsPendingAndCreatedMoreThanFiveMinutesAgo == 0) {
 			// leave default values
-		} else if (emailsSentInLastFiveMinutes > 20) {
+		} else if (emailsSentInLastFiveMinutes > 20 || emailsWithErrorsInLastWeek > 10) {
 			emailCronWarning = true;
 		} else {
 			emailCronError = true;
-		}	
+		}
 	}
 
 	public String execute() throws Exception {
@@ -76,11 +78,15 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 	}
 
 	public long getNumberOfEmailsPending() {
-		return emailQueueDAO.findNumberOfEmailsPending();
+		return emailQueueDAO.findNumberOfEmailsWithStatus("Pending");
 	}
 
-	public long getNumberOfEmailsPendingInTimePeriod(int creationTimeInMinutes) {
-		return emailQueueDAO.findNumberOfEmailsPending(creationTimeInMinutes);
+	public long getNumberOfEmailsPendingBeforeTime(int creationTimeInMinutes) {
+		return emailQueueDAO.findNumberOfEmailsWithStatusBeforeTime("Pending", creationTimeInMinutes);
+	}
+
+	public long getNumberOfEmailsWithErrorsInTimePeriod(int creationTimeInMinutes) {
+		return emailQueueDAO.findNumberOfEmailsWithStatusInTime("Error", creationTimeInMinutes);
 	}
 
 	public long getContractorsProcessed() {
@@ -105,6 +111,10 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 
 	public long getEmailsPendingAndCreatedMoreThanFiveMinutesAgo() {
 		return emailsPendingAndCreatedMoreThanFiveMinutesAgo;
+	}
+
+	public long getEmailsWithErrorsInLastWeek() {
+		return emailsWithErrorsInLastWeek;
 	}
 
 	public boolean isContractorCronError() {
