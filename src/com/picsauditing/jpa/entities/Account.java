@@ -40,7 +40,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 //	private char active;
 	protected AccountStatus status = AccountStatus.Pending;
 	protected String dbaName;
-	protected Date lastLogin;
 	protected String address;
 	protected String city;
 	protected Country country;
@@ -108,15 +107,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setDbaName(String dbaName) {
 		this.dbaName = dbaName;
-	}
-
-	@Column(name = "lastLogin", length = 19)
-	public Date getLastLogin() {
-		return this.lastLogin;
-	}
-
-	public void setLastLogin(Date lastLogin) {
-		this.lastLogin = lastLogin;
 	}
 
 	@Column(name = "address", length = 50)

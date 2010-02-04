@@ -68,9 +68,6 @@ $(function() {
 					<li><label>Date Created:</label>
 						<s:date name="contractor.creationDate" format="MMM d, yyyy" />
 					</li>
-					<li><label>Last Login:</label>
-						<s:date name="contractor.lastLogin" format="MMM d, yyyy" />
-					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">

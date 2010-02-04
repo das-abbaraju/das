@@ -127,7 +127,6 @@ public class LoginController extends PicsActionSupport {
 			permissions.login(user);
 
 			user.setLastLogin(new Date());
-			user.getAccount().setLastLogin(new Date());
 			userDAO.save(user);
 
 			Cookie cookie = new Cookie("username", username);
