@@ -81,7 +81,7 @@ background-position: 10px 10px;
 			&nbsp;&nbsp;&nbsp;Emails sent in Past Hour: <strong><s:property value="emailsSentInHour"/></strong><br/>
 			&nbsp;&nbsp;&nbsp;Emails Waiting to be Sent: <strong><s:property value="emailsPending"/></strong><br/>
 			&nbsp;&nbsp;&nbsp;Emails sent in Last Five Minutes: <strong><s:property value="emailsSentInLastFiveMinutes"/></strong><br/>
-			&nbsp;&nbsp;&nbsp;Emails Created in Last Five Minutes Waiting: <strong><s:property value="emailsPendingAndCreatedMoreThanFiveMinutesAgo"/></strong>
+			&nbsp;&nbsp;&nbsp;Emails Waiting more than Five Minutes to be sent: <strong><s:property value="emailsPendingAndCreatedMoreThanFiveMinutesAgo"/></strong>
 		</div>
 	</s:if>
 	<s:elseif test="emailCronWarning">
