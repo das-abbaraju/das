@@ -115,7 +115,8 @@ public class VerifyView extends ContractorActionSupport {
 				sb.append("-------------------------------");
 				sb.append("\n");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
+					if (oshaAudit.getType().equals(OshaType.OSHA) 
+							&& oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
 						sb.append("OSHA : ");
 						sb.append(oshaAudit.getComment());
 						sb.append("\n");
