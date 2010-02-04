@@ -222,9 +222,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			auditorList = new TreeSet<User>();
 			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
 			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
-			System.out.println("found " + auditorList.size() + " auditors");
 			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
-			System.out.println("found " + auditorList.size() + " auditors + csrs");
 		}
 		return auditorList;
 	}

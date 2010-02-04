@@ -64,8 +64,8 @@ public class OpenAuditsMailer extends PicsActionSupport {
 			if (requiresAudit) {
 				nextID = conAudit.getId();
 				try {
-					System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
-							+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
+					//System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
+					//		+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
 					emailBuilder.clear();
 					emailBuilder.setTemplate(6);
 					emailBuilder.setPermissions(permissions);
