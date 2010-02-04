@@ -15,7 +15,7 @@ public class ReportMyAuditHistory extends ReportContractorAudits {
 		orderByDefault = "ca.closedDate DESC";
 		
 		getFilter().setShowAuditor(false);
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 	}

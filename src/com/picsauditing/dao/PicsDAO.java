@@ -1,12 +1,12 @@
 package com.picsauditing.dao;
 
-import java.util.Collection;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import com.picsauditing.jpa.entities.BaseTable;
 
 @Transactional
 abstract public class PicsDAO {
@@ -50,26 +50,23 @@ abstract public class PicsDAO {
 		em.clear();
 	}
 
-	public void close() {
-		clear();
-		// em.close();
-	}
-
 	public boolean isContained(Object o) {
 		return em.contains(o);
 	}
 
-	/**
-	 * Convert a List into a comma-delimited String Note: this could be a good candidate to go into a Utility class
-	 * 
-	 * @return
-	 */
-	protected String glue(Collection<Integer> listIDs) {
-		StringBuilder ids = new StringBuilder();
-		ids.append("-1"); // so we don't have to worry about this ',110,243'
-		for (Integer id : listIDs)
-			ids.append(",").append(id);
-		return ids.toString();
+	public BaseTable save(BaseTable o) {
+		if (o.getId() == 0) {
+			em.persist(o);
+		} else {
+			o = em.merge(o);
+		}
+		return o;
+	}
+
+	public void remove(BaseTable row) {
+		if (row != null) {
+			em.remove(row);
+		}
 	}
 
 }

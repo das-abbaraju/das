@@ -18,7 +18,6 @@ public class ReportUser2 extends ReportActionSupport {
 		sql.addField("a.name as accountName");
 		sql.addWhere("u.isActive = 'Yes'");
 		sql.addWhere("u.isGroup = 'No'");
-		sql.addWhere("a.active = 'Y'");
 		sql.addOrderBy("a.name, u.name");
 		addFilterToSQL();
 

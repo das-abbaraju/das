@@ -238,7 +238,7 @@ public class ReportFlagCriteria extends ReportAccount {
 			sql.addWhere("gc.genID = " + operatorID);
 		}
 
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addOrderBy("a.name");
 	}
 

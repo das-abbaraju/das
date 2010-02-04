@@ -18,7 +18,7 @@ public class ArchivedAccounts extends ReportAccount {
 		skipPermissions = true;
 		super.buildQuery();
 
-		sql.addWhere("a.active = 'N'");
+		sql.addWhere("a.status IN ('Pending','Deactivated')");
 
 		if (permissions.seesAllContractors()) {
 			sql.addField("a.reason");
@@ -31,7 +31,7 @@ public class ArchivedAccounts extends ReportAccount {
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
 
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowFlagStatus(false);
 		getFilter().setShowWaitingOn(false);
 		if(permissions.seesAllContractors())

@@ -56,7 +56,7 @@ public class OperatorActionSupport extends AccountActionSupport {
 	
 	public List<OperatorAccount> getInheritsFlagCriteria() {
 		if (inheritsFlagCriteria == null) {
-			inheritsFlagCriteria = operatorDao.findWhere(true, "a.active = 'Y' AND a.inheritFlagCriteria.id = " + operator.getId());
+			inheritsFlagCriteria = operatorDao.findWhere(true, "a.status IN ('Active','Demo') AND a.inheritFlagCriteria.id = " + operator.getId());
 			inheritsFlagCriteria.remove(operator);
 		}
 		return inheritsFlagCriteria;
@@ -64,7 +64,7 @@ public class OperatorActionSupport extends AccountActionSupport {
 
 	public List<OperatorAccount> getInheritsInsuranceCriteria() {
 		if (inheritsInsuranceCriteria == null) {
-			inheritsInsuranceCriteria = operatorDao.findWhere(true, "a.active = 'Y' AND a.inheritInsuranceCriteria.id = " + operator.getId());
+			inheritsInsuranceCriteria = operatorDao.findWhere(true, "a.status IN ('Active','Demo') AND a.inheritInsuranceCriteria.id = " + operator.getId());
 			inheritsInsuranceCriteria.remove(operator);
 		}
 		return inheritsInsuranceCriteria;
@@ -72,7 +72,7 @@ public class OperatorActionSupport extends AccountActionSupport {
 
 	public List<OperatorAccount> getInheritsAudits() {
 		if (inheritsAudits == null) {
-			inheritsAudits = operatorDao.findWhere(true, "a.active = 'Y' AND a.inheritAudits.id = " + operator.getId());
+			inheritsAudits = operatorDao.findWhere(true, "a.status IN ('Active','Demo') AND a.inheritAudits.id = " + operator.getId());
 			inheritsAudits.remove(operator);
 		}
 		return inheritsAudits;
@@ -80,7 +80,7 @@ public class OperatorActionSupport extends AccountActionSupport {
 
 	public List<OperatorAccount> getInheritsInsurance() {
 		if (inheritsInsurance == null) {
-			inheritsInsurance = operatorDao.findWhere(true, "a.active = 'Y' AND a.inheritInsurance.id = " + operator.getId());
+			inheritsInsurance = operatorDao.findWhere(true, "a.status IN ('Active','Demo') AND a.inheritInsurance.id = " + operator.getId());
 			inheritsInsurance.remove(operator);
 		}
 		return inheritsInsurance;

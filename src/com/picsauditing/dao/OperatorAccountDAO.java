@@ -12,6 +12,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -112,7 +113,7 @@ public class OperatorAccountDAO extends PicsDAO {
 
 	public List<OperatorAccount> findOperators(List<Integer> opIds) {
 		
-		Query query = em.createQuery("select a from OperatorAccount a where a.id in (" + glue(opIds) + ") order by a.type, a.name");
+		Query query = em.createQuery("select a from OperatorAccount a where a.id in (" + Strings.implode(opIds) + ") order by a.type, a.name");
 		
 		return query.getResultList();
 	}

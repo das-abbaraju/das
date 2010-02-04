@@ -276,7 +276,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		return operatorDao.findWhere(false, "active='Y'");
+		return operatorDao.findWhere(false, "status IN ('Active','Demo')");
 	}
 
 	public List<User> getUserList() throws Exception {

@@ -139,7 +139,7 @@ public class FlagCalculator2 {
 		PicsLogger.log("FlagCalculator.execute()");
 		// Load ALL operators and contractors by default
 		if (operators.size() == 0)
-			operators = operatorDAO.findWhere(false, "type='Operator' and active='Y'");
+			operators = operatorDAO.findWhere(false, "type='Operator' and status IN ('Active','Demo','Pending')");
 		if (contractorIDs.size() == 0) {
 			contractorIDs = contractorDAO.findAll();
 		}

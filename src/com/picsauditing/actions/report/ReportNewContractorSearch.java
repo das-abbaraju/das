@@ -71,7 +71,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.city");
 		sql.addField("a.state");
 		sql.addField("a.phone");
-		//sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status != 'Deleted'");
 		sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
 	}
 

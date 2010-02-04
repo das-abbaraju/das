@@ -43,7 +43,6 @@ public class EntityFactory {
 
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
-		//operator.setActive('Y');
 		operator.setStatus(AccountStatus.Active);
 		operator.setName("Operator Unit Test");
 		operator.setApprovesRelationships(YesNo.No);

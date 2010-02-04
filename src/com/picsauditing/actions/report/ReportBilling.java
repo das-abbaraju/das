@@ -39,13 +39,13 @@ public class ReportBilling extends ReportAccount {
 		String where = "";
 		// Show activations and reactivations
 		if (billingState.equals("All") || billingState.equals("Activations")) {
-			where += "(a.active = 'N' AND (c.renew = 1 OR (c.renew = 0 AND a.acceptsBids = 1)) AND (c.membershipLevelID IS NULL OR c.membershipLevelID = " + InvoiceFee.FREE + "))";
+			where += "(a.status IN ('Pending','Deactivated') AND (c.renew = 1 OR (c.renew = 0 AND a.acceptsBids = 1)) AND (c.membershipLevelID IS NULL OR c.membershipLevelID = " + InvoiceFee.FREE + "))";
 		}
 		// Show renewals
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
 			sql.addWhere("");
 			if (where.length() > 0) where += " OR ";
-			where += "(a.active = 'Y' AND c.renew = 1 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
+			where += "(a.status IN ('Active','Demo') AND c.renew = 1 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
 		}
 		// Show upgrades
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {
@@ -54,11 +54,11 @@ public class ReportBilling extends ReportAccount {
 			// However, we (the billing department) should be vigilant about reviewing upgrades 
 			// on non-renewable contractor accounts.
 			if (where.length() > 0) where += " OR ";
-			where += "(a.active = 'Y' AND f2.defaultAmount > f1.defaultAmount)";
+			where += "(a.status IN ('Active','Demo') AND f2.defaultAmount > f1.defaultAmount)";
 		}
 		
 		sql.addField("CASE " +
-				"WHEN a.active = 'N' THEN 'Activations' " +
+				"WHEN a.status = 'Pending' THEN 'Activations' " +
 				"WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'Renewals' " +
 				"WHEN f2.defaultAmount > f1.defaultAmount THEN 'Upgrades' " +
 				"ELSE 'Other' END billingStatus");

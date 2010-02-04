@@ -67,7 +67,7 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 		sql.addField("operator.id AS opId");
 		sql.addField("flags.flag as flag");
 		sql.addField("workStatus");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.id in (" + Strings.implode(ops, ",") + ")");
 		orderByDefault = "a.name, operator.name";
 

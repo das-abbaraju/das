@@ -279,7 +279,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		return operatorAccountDAO.findWhere(true, "active='Y'");
+		return operatorAccountDAO.findWhere(true, "status = 'Active'");
 	}
 
 	public List<User> getUserList() throws Exception {
@@ -357,7 +357,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 	}
 	
 	private String getContractorListUrl(String accountID) {
-		return "ContractorList.action?filter.visible=Y&filter.customAPI=c.mustPay='Yes'" + 
+		return "ContractorList.action?filter.status=Active&filter.customAPI=c.mustPay='Yes'" + 
 			" AND c.requestedbyid=" + accountID;
 	}
 
@@ -390,7 +390,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			super("users u");
 			addJoin("JOIN account_user au ON au.userid = u.id");
 			addJoin("JOIN accounts a ON a.id = au.accountid");
-			addWhere("a.active = 'Y'");
+			addWhere("a.status = 'Active'");
 			
 			String effectiveDateString;
 			try {
@@ -422,7 +422,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			super(effectiveDate, regisThisMonth, regisLastMonth, totalCons);
 			addJoin("JOIN contractor_info c ON c.requestedbyid = a.id");
 			addJoin("JOIN accounts con ON con.id = c.id");
-			addWhere("con.active = 'Y'");
+			addWhere("con.status = 'Active'");
 			addWhere("c.mustPay = 'Yes'");
 			addWhere("con.acceptsBids = 0");
 			addGroupBy("a.id");

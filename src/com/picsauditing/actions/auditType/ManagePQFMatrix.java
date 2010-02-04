@@ -167,7 +167,7 @@ public class ManagePQFMatrix extends PicsActionSupport {
 	}
 	
 	public List<OperatorAccount> getInheritsAuditCategories(int opID) {
-		return operatorAccountDAO.findWhere(true, "a.active = 'Y' AND a.inheritAuditCategories.id = " + opID);
+		return operatorAccountDAO.findWhere(true, "a.status IN ('Active','Demo','Pending') AND a.inheritAuditCategories.id = " + opID);
 	}
 
 	public int[] getRiskLevels() {

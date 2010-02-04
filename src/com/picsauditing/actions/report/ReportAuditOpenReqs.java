@@ -13,7 +13,7 @@ public class ReportAuditOpenReqs extends ReportContractorAudits {
 		sql.addWhere("ca.auditStatus = 'Submitted'");
 		sql.addWhere("atype.hasRequirements = 1");
 		sql.addWhere("caf.reviewed = 0");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		
 		sql.addField("caf.description");
 		sql.addField("caf.creationDate AS uploadDate");
@@ -21,7 +21,7 @@ public class ReportAuditOpenReqs extends ReportContractorAudits {
 		orderByDefault = "ca.assignedDate DESC";
 
 		getFilter().setShowAuditor(false);
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 	}

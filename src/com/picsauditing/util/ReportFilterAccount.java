@@ -7,17 +7,16 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 
+@SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
 	public static final String DEFAULT_NAME = "- Name - ";
 	public static final String DEFAULT_ZIP = "- Zip -";
 	public static final String DEFAULT_CITY = "- City -";
-	public static final String DEFAULT_VISIBLE = "- Visible -";
 
 	// /////// Filter Visibility /////////////
 	protected boolean showAccountName = true;
 	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
-	protected boolean showVisible = false;
 	protected boolean showStatus = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
@@ -30,7 +29,6 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String[] state;
 	protected String[] country;
 	protected String zip = DEFAULT_ZIP;
-	protected String visible;
 	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
@@ -47,10 +45,6 @@ public class ReportFilterAccount extends ReportFilter {
 	// Getters for search lists
 	public Industry[] getIndustryList() {
 		return Industry.values();
-	}
-
-	public String[] getVisibleOptions() {
-		return new String[] { DEFAULT_VISIBLE, "Y", "N" };
 	}
 
 	public ArrayList<String> getFlagStatusList() throws Exception {
@@ -79,14 +73,6 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowAddress(boolean showAddress) {
 		this.showAddress = showAddress;
-	}
-
-	public boolean isShowVisible() {
-		return showVisible;
-	}
-
-	public void setShowVisible(boolean showVisible) {
-		this.showVisible = showVisible;
 	}
 
 	public boolean isShowStatus() {
@@ -169,20 +155,16 @@ public class ReportFilterAccount extends ReportFilter {
 		this.zip = zip;
 	}
 
-	public String getVisible() {
-		return visible;
-	}
-
-	public void setVisible(String visible) {
-		this.visible = visible;
-	}
-
 	public AccountStatus[] getStatus() {
 		return status;
 	}
 
 	public void setStatus(AccountStatus[] status) {
 		this.status = status;
+	}
+
+	public void setStatus(AccountStatus status) {
+		this.status = new AccountStatus[]{status};
 	}
 
 	public AccountStatus[] getStatusList() {

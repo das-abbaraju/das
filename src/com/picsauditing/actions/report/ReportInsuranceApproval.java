@@ -56,11 +56,11 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 	public void buildQuery() {
 		super.buildQuery();
 
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowRecommendedFlag(true);
 		getFilter().setShowAMBest(true);
 
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 
 		sql.addField("cao.status as caoStatus");
 		sql.addField("cao.notes as caoNotes");

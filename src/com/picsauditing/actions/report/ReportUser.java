@@ -67,8 +67,7 @@ public class ReportUser extends ReportActionSupport {
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addField("a.name AS companyName");
 		sql.addField("a.type AS AcctType");
-		sql.addWhere("u.isActive = 'Yes'");
-		sql.addWhere("a.active = 'Y'");
+		//sql.addWhere("u.isActive = 'Yes'");
 		sql.addOrderBy("u.name");
 
 		if (isFiltered())

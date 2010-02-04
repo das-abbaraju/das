@@ -96,21 +96,21 @@ public class ChartCorporateFlags extends ChartMSAction {
 	 * JOIN generalcontractors gc ON a.id = gc.subID<br>
 	 * JOIN flags f ON a.id = f.conID AND f.opID = gc.genID<br>
 	 * JOIN accounts op ON op.id = gc.genID<br>
-	 * WHERE a.active = 'Y'
+	 * WHERE a.status IN ('Active','Demo')
 	 * AND gc.genID IN (SELECT opID from facilities where corporateID = ?)
-	 * AND op.active = 'Y'<br>
+	 * AND op.status IN ('Active','Demo')<br>
 	 * GROUP BY f.flag
 	 * @return
 	 */
 	private SelectSQL createBase() {
 		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addWhere("gc.genID IN (SELECT opID from facilities where corporateID = " + permissions.getAccountId()
 				+ ")");
 		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
 		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
-		sql.addWhere("op.active = 'Y'");
+		sql.addWhere("op.status IN ('Active','Demo')");
 		sql.addField("f.flag as series");
 		sql.addGroupBy("f.flag");
 		return sql;

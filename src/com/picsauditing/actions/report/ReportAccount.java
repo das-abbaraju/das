@@ -193,9 +193,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%?%'", accountName));
 		}
 
-		if (filterOn(f.getVisible(), ReportFilterAccount.DEFAULT_VISIBLE))
-			report.addFilter(new SelectFilter("visible", "a.active = '?'", f.getVisible()));
-
 		String statusList = Strings.implodeForDB(f.getStatus(), ",");
 		if (filterOn(statusList)) {
 			sql.addWhere("a.status IN (" + statusList + ")");

@@ -8,7 +8,7 @@ public class DelinquentAccounts extends ReportContractorInvoice {
 		sql.addWhere("i.dueDate < NOW()");
 		sql.addWhere("i.status = 'Unpaid'");
 		sql.addWhere("i.totalAmount > 0");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addField("DATEDIFF(ADDDATE(i.dueDate, 90),NOW()) AS DaysLeft");
 		if(permissions.seesAllContractors()) {
 			sql.addField("(i.totalAmount - i.amountApplied) AS invoiceAmount");
@@ -16,6 +16,6 @@ public class DelinquentAccounts extends ReportContractorInvoice {
 			sql.addJoin("LEFT JOIN generalcontractors gcon on gcon.subid = a.id");
 			sql.addGroupBy("gcon.subid, i.id");
 		}
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 	}
 }

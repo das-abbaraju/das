@@ -17,12 +17,12 @@ public class ReportContractorAuditAuditor extends ReportContractorAudits {
 
 		sql.addWhere("(ca.auditorID=" + permissions.getUserId()+" OR ca.closingAuditorID=" + permissions.getUserId()+")");
 		sql.addWhere("ca.auditStatus IN ('" + AuditStatus.Pending + "','" + AuditStatus.Submitted + "')");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		
 		orderByDefault = "ca.assignedDate DESC";
 
 		getFilter().setShowAuditor(false);
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 	}

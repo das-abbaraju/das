@@ -56,8 +56,13 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findAll() {
-		Query query = em.createQuery("select a.id from ContractorAccount a WHERE a.active = 'Y'");
-		return query.getResultList();
+		// I'm not sure we actually want to do this very often at all, I want to know how long it takes
+		long start = new Date().getTime();
+		Query query = em.createQuery("SELECT id ContractorAccount WHERE status IN ('Active','Demo')");
+		List<Integer> list = query.getResultList();
+		long elapsed = new Date().getTime() - start;
+		System.out.println("ContractorAccountDAO.findAll() found " + list.size() + " contractors ids in " + elapsed + "ms");
+		return list;
 	}
 
 	public List<ContractorAccount> findWhere(String where) {
@@ -244,7 +249,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	public List<ContractorAccount> findNewContractorsByOperator(int opID, Date start, Date end) {
 		String query = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount.id = "
-				+ ":opID AND co.contractorAccount.creationDate BETWEEN :start and :end AND co.contractorAccount.active = 'Y'";
+				+ ":opID AND co.contractorAccount.creationDate BETWEEN :start and :end AND co.contractorAccount.status IN ('Active')";
 
 		Query q = em.createQuery(query);
 		q.setParameter("opID", opID);
@@ -284,7 +289,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		dates.add(DBFormat.format(calendar1.getTime()));// After180Days
 
 		String hql = "FROM Invoice i WHERE i.status = 'Unpaid' AND i.totalAmount > 0" + " AND i.dueDate IN ("
-				+ Strings.implodeForDB(dates, ",") + ") " + " AND i.account.active = 'Y' ORDER BY i.dueDate ";
+				+ Strings.implodeForDB(dates, ",") + ") " + " AND i.account.status IN ('Active') ORDER BY i.dueDate ";
 		Query query = em.createQuery(hql);
 		return query.getResultList();
 	}
@@ -300,7 +305,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		calendar1.add(Calendar.WEEK_OF_YEAR, -1);
 		dates.add(DBFormat.format(calendar1.getTime()));// Before14Days
 
-		String hql = "SELECT c FROM ContractorAccount c WHERE c.active = 'Y' AND c.acceptsBids = 1 AND "
+		String hql = "SELECT c FROM ContractorAccount c WHERE c.status = 'Active' AND c.acceptsBids = 1 AND "
 				+ " c.paymentExpires IN (" + Strings.implodeForDB(dates, ",") + ")";
 
 		Query query = em.createQuery(hql);

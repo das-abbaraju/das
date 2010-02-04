@@ -44,14 +44,14 @@ public class ReportCompletePQF extends ReportContractorAudits {
 		
 		sql.addWhere("ca.auditStatus = 'Pending'");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addField("COUNT(eq.conid) As followUp");
 		sql.addJoin("LEFT JOIN email_queue eq ON eq.conid = a.id AND eq.templateID = 12 AND eq.status = 'Sent'");
 		sql.addGroupBy("eq.conid");
 		sql.addGroupBy("ca.id");
 		sql.addOrderBy("ca.percentComplete DESC");
 
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowClosingAuditor(false);
 		getFilter().setShowAuditStatus(false);

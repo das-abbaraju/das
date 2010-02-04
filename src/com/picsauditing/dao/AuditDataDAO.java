@@ -24,20 +24,9 @@ import com.picsauditing.util.Strings;
 @Transactional
 @SuppressWarnings("unchecked")
 public class AuditDataDAO extends PicsDAO {
-	public AuditData save(AuditData o) {
-		if (o.getId() == 0) {
-			em.persist(o);
-		} else {
-			o = em.merge(o);
-		}
-		return o;
-	}
-
 	public void remove(int id) {
 		AuditData row = find(id);
-		if (row != null) {
-			em.remove(row);
-		}
+		remove(row);
 	}
 
 	public int remove(Set<Integer> ids) {
@@ -102,7 +91,7 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.contractorAccount.id = ? " +
 				"AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') " +
-				"AND d.question.id IN (" + glue(questionIds) + ") " +
+				"AND d.question.id IN (" + Strings.implode(questionIds) + ") " +
 				"ORDER BY d.audit.auditStatus DESC");
 		// Sort it first by Submitted, then by Active, so when we load the map
 		// the Active values will override the Submitted ones
@@ -184,7 +173,7 @@ public class AuditDataDAO extends PicsDAO {
 			return null;
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + 
-				"WHERE audit.id = ? AND question.id IN (" + glue(questionIds) + ") " +
+				"WHERE audit.id = ? AND question.id IN (" + Strings.implode(questionIds) + ") " +
 				"ORDER BY d.creationDate");
 		query.setParameter(1, auditID);
 		return mapData(query.getResultList());
@@ -202,8 +191,8 @@ public class AuditDataDAO extends PicsDAO {
 		if (questionIds.size() == 0)
 			return null;
 		
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) and question.id IN ("
-				+ glue(questionIds) + ") ");
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + Strings.implode(auditIds) + " ) and question.id IN ("
+				+ Strings.implode(questionIds) + ") ");
 
 		Map<Integer, AnswerMap> response = new HashMap<Integer, AnswerMap>();
 		List<AuditData> results = query.getResultList();
@@ -230,11 +219,11 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = null;
 		
 		if( questionIds != null && questionIds.size() > 0 ) {
-			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) and question.id IN ("
-				+ glue(questionIds) + ") ");
+			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + Strings.implode(auditIds) + " ) and question.id IN ("
+				+ Strings.implode(questionIds) + ") ");
 		}
 		else {
-			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + glue( auditIds ) + " ) ");
+			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + Strings.implode(auditIds) + " ) ");
 			
 		}
 		
@@ -343,7 +332,7 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.contractorAccount.id = ? " +
 				"AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') " +
-				"AND d.question.id IN (" + glue(questionIds) + ") " +
+				"AND d.question.id IN (" + Strings.implode(questionIds) + ") " +
 				"ORDER BY d.audit.auditStatus DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();

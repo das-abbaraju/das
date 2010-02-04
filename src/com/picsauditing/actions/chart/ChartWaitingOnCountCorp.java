@@ -39,8 +39,8 @@ public class ChartWaitingOnCountCorp extends ChartMSAction {
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
 		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
-		sql.addWhere("a.active = 'Y'");
-		sql.addWhere("op.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
+		sql.addWhere("op.status IN ('Active','Demo')");
 		sql.addWhere("gc.genID IN (SELECT fac.opID from facilities fac where fac.corporateID = "
 				+ permissions.getAccountId() + ")");
 

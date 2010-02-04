@@ -25,7 +25,7 @@ public class ChartWaitingOnCount extends ChartSSAction {
 		sql.addJoin("JOIN flags f ON gc.genID = f.opID AND gc.subID = f.conID");
 		sql.addJoin("JOIN accounts a ON a.id = f.conID");
 
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 
 		sql.addGroupBy("waitingOn");
 

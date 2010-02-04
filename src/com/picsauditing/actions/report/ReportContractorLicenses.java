@@ -18,7 +18,7 @@ public class ReportContractorLicenses extends ReportContractorAudits {
 		super.buildQuery();
 		
 		sql.addWhere("ca.auditTypeID = 1"); // PQF
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addPQFQuestion(401);
 		sql.addPQFQuestion(755);
 		sql.addField("q401.dateVerified AS dateVerified401");

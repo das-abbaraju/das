@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 
 @Transactional
 public class ContractorAuditDAO extends PicsDAO {
@@ -208,7 +209,7 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ "SELECT ca2 FROM ContractorAudit ca2 " + "WHERE ca.auditType = ca2.auditType "
 				+ "AND ca.contractorAccount = ca2.contractorAccount " + "AND ca.id > ca2.id "
 				+ "AND ca2.expiresDate BETWEEN :Before14Days AND :After26Days " + ") " 
-				+ "AND ca.contractorAccount.active = 'Y' "
+				+ "AND ca.contractorAccount.status = 'Active' "
 				+ "ORDER BY ca.contractorAccount";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
@@ -265,7 +266,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		if (permissions.isOperatorCorporate()) { 
 			PermissionQueryBuilder pqb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 			pqb.setAccountAlias("ca.contractorAccount");
-			hql += pqb.toString() + " AND ca.auditType.id IN (" + glue(permissions.getCanSeeAudits()) + ")";
+			hql += pqb.toString() + " AND ca.auditType.id IN (" + Strings.implode(permissions.getCanSeeAudits()) + ")";
 		}
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);

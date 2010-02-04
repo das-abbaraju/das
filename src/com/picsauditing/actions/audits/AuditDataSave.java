@@ -141,7 +141,7 @@ public class AuditDataSave extends AuditActionSupport {
 					addActionError("This is not a valid 2007 NAICS code");
 				}
 			}
-			auditData = auditDataDao.save(auditData);
+			auditDataDao.save(auditData);
 
 			if (auditData.getAudit() != null) {
 				ContractorAudit tempAudit = null;

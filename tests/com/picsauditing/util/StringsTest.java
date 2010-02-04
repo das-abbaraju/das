@@ -120,7 +120,7 @@ public class StringsTest extends TestCase {
 		sql.addField("a.name");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 
-		sql.addWhere("u.isActive = 'Y'");
+		sql.addWhere("u.isActive = 'Yes'");
 		sql.addOrderBy("u.name");
 		sql.setLimit(100);
 		// System.out.println(sql.toString());

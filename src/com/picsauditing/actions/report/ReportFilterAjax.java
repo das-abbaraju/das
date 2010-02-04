@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.util.ReportFilter;
@@ -32,7 +33,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 			if (listType.equals(ListType.Contractor)) {
 				ReportFilterContractor filter = wizardSession.getContractorFilter();
 				filter.setDestinationAction("ContractorList");
-				filter.setVisible("Active"); // default to only active contractors
+				filter.setStatus(AccountStatus.Active); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Contractor);
 				filter.setShowInvoiceDueDate(true);
@@ -41,7 +42,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 			if (listType.equals(ListType.Audit)) {
 				ReportFilterAudit filter = wizardSession.getAuditFilter();
 				filter.setDestinationAction("ReportAuditList");
-				filter.setVisible("Active"); // default to only active contractors
+				filter.setStatus(AccountStatus.Active); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Audit);
 				this.filter = filter;

@@ -8,7 +8,7 @@ public class PermissionQueryBuilder {
 	static final public int HQL = 2;
 	private int queryLanguage = SQL;
 	private String accountAlias = "a"; // or contractorAccount
-	private boolean showDeactivated = false;
+	private boolean showPendingDeactivated = false;
 	private boolean onlyPendingAudits = true; // if auditor, then only show
 												// the pending or submitted
 												// audits
@@ -91,8 +91,8 @@ public class PermissionQueryBuilder {
 		if (permissions.getAccountStatus().isDemo())
 			query += ",'Demo'";
 		
-		if (showDeactivated)
-			query = ",'Deactivated'";
+		if (showPendingDeactivated)
+			query = ",'Pending','Deactivated'";
 
 		if (queryLanguage == HQL)
 			return query += "AND " + accountAlias + " IN (" + subquery + ")";
@@ -115,7 +115,7 @@ public class PermissionQueryBuilder {
 	}
 
 	public void setShowPendingDeactivated(boolean value) {
-		this.showDeactivated = value;
+		this.showPendingDeactivated = value;
 	}
 
 	/**

@@ -15,7 +15,7 @@ public class ReportEmailSubscription extends ReportAccount {
 		sql.addField("es.subscription");
 		sql.addField("timePeriod");
 		sql.addWhere("u.isActive = 'Yes'");
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addField("a.name");
 	}
 }

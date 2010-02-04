@@ -46,6 +46,10 @@ public class Strings {
 		return newValue.toString().trim();
 	}
 
+	public static String implode(int[] array) {
+		return implode(array, ",");
+	}
+	
 	public static String implode(int[] array, String delimiter) {
 		if (array == null)
 			return "";
@@ -101,6 +105,10 @@ public class Strings {
 		return buffer.toString();
 	}
 
+	public static String implode(Collection<? extends Object> collection) {
+		return implode(collection, ",");
+	}
+	
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";

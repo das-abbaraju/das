@@ -38,10 +38,10 @@ public class ReportPolicyVerification extends ReportInsuranceSupport {
 		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addGroupBy("ca.id");
 
-		sql.addWhere("a.active = 'Y'");
+		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("a.acceptsBids = 0");
 
-		getFilter().setShowVisible(false);
+		getFilter().setShowStatus(false);
 		getFilter().setShowCaoStatus(false);
 	}
 
