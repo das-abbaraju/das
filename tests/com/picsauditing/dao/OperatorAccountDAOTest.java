@@ -39,7 +39,6 @@ public class OperatorAccountDAOTest {
 
 		OperatorAccount operatoraccount = new OperatorAccount();
 		operatoraccount.setName("PICS");
-		operatoraccount.setLastLogin(Calendar.getInstance().getTime());
 		operatoraccount.setPrimaryContact(new User());
 		operatoraccount.getPrimaryContact().setName("pics admin");
 		operatoraccount.getPrimaryContact().setPhone("999-99-9999");

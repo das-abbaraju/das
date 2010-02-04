@@ -57,7 +57,6 @@ public class ContractorAccountDAOTest {
 
 		ContractorAccount contractoraccount = new ContractorAccount();
 		contractoraccount.setName("PICS");
-		contractoraccount.setLastLogin(new Date());
 		contractoraccount.setPrimaryContact(new User());
 		contractoraccount.getPrimaryContact().setName("pics admin");
 		contractoraccount.getPrimaryContact().setPhone("999-999-9999");
