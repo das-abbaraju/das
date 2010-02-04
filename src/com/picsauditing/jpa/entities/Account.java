@@ -391,6 +391,12 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public boolean isOperatorCorporate() {
 		return isOperator() || isCorporate();
 	}
+	
+	// Updated to reflect status instead of active
+	@Transient
+	public boolean isDemo() {
+		return status.equals(AccountStatus.Demo);
+	}
 
 	@Override
 	public int compareTo(Account o) {
