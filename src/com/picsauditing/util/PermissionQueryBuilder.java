@@ -92,12 +92,14 @@ public class PermissionQueryBuilder {
 			query += ",'Demo'";
 		
 		if (showPendingDeactivated)
-			query = ",'Pending','Deactivated'";
+			query += ",'Pending','Deactivated'";
 
+		query += ") AND " + accountAlias;
+		
 		if (queryLanguage == HQL)
-			return query += "AND " + accountAlias + " IN (" + subquery + ")";
+			return query += " IN (" + subquery + ")";
 		else
-			return query += "AND " + accountAlias + ".id IN (" + subquery + ")";
+			return query += ".id IN (" + subquery + ")";
 	}
 
 	public int getQueryLanguage() {
