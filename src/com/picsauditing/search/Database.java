@@ -37,17 +37,35 @@ public class Database {
 		}
 	}
 
-	public void executeUpdate(String sql) throws SQLException {
+	public long executeInsert(String sql) throws SQLException {
 		Connection Conn = DBBean.getDBConnection();
 		Statement stmt = Conn.createStatement();
 		try {
-			stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			
+			long id=-1;
+			while (rs.next()) { 
+				id = rs.getLong(1);
+			} 
+			return id;
 		} finally {
 			stmt.close();
 			Conn.close();
 		}
 	}
 
+	public int executeUpdate(String sql) throws SQLException {
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement();
+		try {
+			return stmt.executeUpdate(sql);
+		} finally {
+			stmt.close();
+		    Conn.close();
+		}
+	}
+	
 	public int getAllRows() {
 		return allRows;
 	}

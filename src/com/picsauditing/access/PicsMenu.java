@@ -191,6 +191,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			subMenu = menu.addChild("Dev");
 			subMenu.addChild("System Logging", "LoggerConfig.action");
+			subMenu.addChild("Page Logging", "PageLogger.action");
 			subMenu.addChild("Clear Cache", "ClearCache.action");
 			subMenu.addChild("Cron", "Cron.action");
 			subMenu.addChild("Contractor Cron", "ContractorCron.action");

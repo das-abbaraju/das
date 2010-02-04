@@ -83,6 +83,11 @@
 			<result>struts/misc/recaptcha_ajax.jsp</result>
 		</action>
 		
+		<action name="PageLogger"
+			class="com.picsauditing.actions.PageLogger">
+			<result>struts/misc/page_logger.jsp</result>
+		</action>
+		
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>

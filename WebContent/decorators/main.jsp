@@ -12,6 +12,9 @@
 <%@ page import="com.picsauditing.util.URLUtils"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.Date"%>
+<%@ page import="com.picsauditing.search.Database"%>
+<%@ page import="java.sql.Timestamp"%>
+<%@ page import="java.sql.SQLException"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 	MenuComponent menu = PicsMenu.getMenu(permissions);
@@ -190,6 +193,14 @@ try {
 <!-- !begin footer -->
 <div class="footer">
 <% 
+	Long page_logger_id = (Long) request.getAttribute("pics_page_logger_id");
+	if( page_logger_id != null ) {
+		Database db = new Database();
+		try {
+			db.executeUpdate("UPDATE app_page_logger SET endTime = '"+new Timestamp(System.currentTimeMillis())+"' WHERE id = "+page_logger_id);
+		} catch (SQLException e) {
+		}
+	}		
 	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
 	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
