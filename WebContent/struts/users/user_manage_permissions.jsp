@@ -34,12 +34,19 @@ function savePerm(userID, permType, checkbox) {
 <s:form action="ManageUserPermissions" id="ManageUserPermissions">
 	<s:hidden value="accountId" />
 </s:form>
+
 <table class="report">
 	<thead>
 		<tr>
 			<td>&nbsp;</td>
 			<td>User</td>
-			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/></td>
+			<td><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/>
+			<span class="block" style="position: relative;">
+		<img src="images/help.gif" height="15" width="15">
+		<span class="hoverhelp" style="bottom: 20px; left: -100px;">
+		<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>
+</span></span>
+			</td>
 			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></td>
 			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/></td>
 			<td title="<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>"><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></td>

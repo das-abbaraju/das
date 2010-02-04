@@ -66,8 +66,8 @@ public class FacilityChanger {
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
 		
-		if(permissions.hasPermission(OpPerms.ContractorApproval, OpType.Edit) 
-				&& YesNo.Yes.equals(operator.getApprovesRelationships())) {
+		if(permissions.isOperatorCorporate()) {
+			// This could be controversial, but we're going to always approve if the operator adds them
 			co.setWorkStatus("Y");
 		}
 		
