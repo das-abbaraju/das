@@ -45,7 +45,7 @@ public class ReportBilling extends ReportAccount {
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
 			sql.addWhere("");
 			if (where.length() > 0) where += " OR ";
-			where += "(a.status IN ('Active','Demo') AND c.renew = 1 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
+			where += "(a.status = 'Active' AND c.renew = 1 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
 		}
 		// Show upgrades
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {
@@ -54,7 +54,7 @@ public class ReportBilling extends ReportAccount {
 			// However, we (the billing department) should be vigilant about reviewing upgrades 
 			// on non-renewable contractor accounts.
 			if (where.length() > 0) where += " OR ";
-			where += "(a.status IN ('Active','Demo') AND f2.defaultAmount > f1.defaultAmount)";
+			where += "(a.status = 'Active' AND f2.defaultAmount > f1.defaultAmount)";
 		}
 		
 		sql.addField("CASE " +

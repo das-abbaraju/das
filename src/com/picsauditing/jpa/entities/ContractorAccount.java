@@ -378,7 +378,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The date the contractor paid their activation/reactivation fee
+	 * The date the contractor was invoiced for their most recent activation/reactivation fee
 	 * 
 	 * @return
 	 */
