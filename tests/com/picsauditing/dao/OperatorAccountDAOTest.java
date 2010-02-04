@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setFax("999-999-9999");
 		operatoraccount.setWebUrl("www.picsauditing.com");
 		operatoraccount.setIndustry(Industry.Petrochemical);
-		//operatoraccount.setActive('y');
+		// operatoraccount.setActive('y');
 		operatoraccount.setStatus(AccountStatus.Active);
 		operatoraccount.setCreatedBy(new User(1100));
 		operatoraccount.setCreationDate(new java.util.Date());
