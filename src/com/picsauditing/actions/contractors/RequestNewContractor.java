@@ -136,7 +136,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						&& (newContractor.getRequestedByUser() == null || requestedUser != newContractor
 								.getRequestedByUser().getId())) {
 					newContractor.setRequestedByUser(new User(requestedUser));
-				}
+					newContractor.setRequestedByUserOther(null);
+				} else if (newContractor.getRequestedByUserOther() != null)
+					newContractor.setRequestedByUser(null);
 				if (conID > 0
 						&& (newContractor.getContractor() == null || conID != newContractor.getContractor().getId())) {
 					newContractor.setContractor(new ContractorAccount(conID));
