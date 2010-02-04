@@ -20,7 +20,7 @@
 		<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"
 			<s:if test="requestURI.contains('operator_tags')">class="current"</s:if>>Tags</a></li>
 	</pics:permission>
-	<li><a href="ContractorList.action?filter.visible=Y&filter.operator=<s:property value="operator.id"/>">Contractors</a></li>
+	<li><a href="ContractorList.action?filter.status=Active&filter.status=Demo&filter.operator=<s:property value="operator.id"/>">Contractors</a></li>
 </ul>
 </div>
 </s:if>

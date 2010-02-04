@@ -65,7 +65,7 @@ public class AuditDataDAOTest {
 		auditdata.setComment("junit");
 		auditdata.setDateVerified(new Date());
 		auditdata.setWasChanged(YesNo.No);
-		auditdata = auditdataDAO.save(auditdata);
+		auditdataDAO.save(auditdata);
 		assertEquals("junit testing", auditdata.getAnswer());
 
 		List<Integer> questionid = new LinkedList<Integer>();

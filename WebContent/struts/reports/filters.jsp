@@ -49,11 +49,6 @@
 			onclick="clearSelected('form1_status'); return false;">Clear</a> </span></div>
 	</s:if>
 
-	<s:if test="filter.showVisible">
-		<div class="filterOption"><s:select list="filter.visibleOptions"
-			cssClass="forms" name="filter.visible" /></div>
-	</s:if>
-
 	<s:if test="filter.showAddress">
 		<div class="filterOption">
 		<table>

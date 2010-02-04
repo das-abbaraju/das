@@ -160,7 +160,6 @@ public class BillingCalculatorSingleTest extends TestCase {
 		assertNotNull("Activation Fee must be included", findItemWithFee(items, InvoiceFee.PQFONLY));
 
 		// Upgrade from PQF to 1 facility
-		//contractor.setActive('Y');
 		contractor.setStatus(AccountStatus.Active);
 		contractor.setMembershipDate(DateBean.addMonths(new Date(), -6));
 		contractor.setMembershipLevel(EntityFactory.makeInvoiceFee(InvoiceFee.PQFONLY));

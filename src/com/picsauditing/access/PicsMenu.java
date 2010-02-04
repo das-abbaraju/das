@@ -95,7 +95,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit List", url);
 		}
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.visible=Y");
+			subMenu.addChild("Sched. &amp; Assign", "AuditAssignments.action?filter.filter.status=Active");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
@@ -118,14 +118,14 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.visible=Y");
+			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active");
 
 		subMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			subMenu.addChild("Billing Report", "ReportBilling.action");
 			subMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action");
 			subMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action");
-			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.visible=Y");
+			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active");
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
 			subMenu.addChild("QuickBooks Sync", "QBSyncList.action");
 		}
