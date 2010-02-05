@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ import com.picsauditing.access.Permissions;
 
 @Entity
 @MappedSuperclass
-public abstract class BaseTable implements JSONable {
+public abstract class BaseTable implements JSONable, Serializable {
 	protected int id;
 	protected User createdBy;
 	protected User updatedBy;
