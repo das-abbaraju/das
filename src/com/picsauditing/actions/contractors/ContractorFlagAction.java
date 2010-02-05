@@ -230,8 +230,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co.getFlag().setFlagColor(newColor);
 		}
 		WaitingOn waitingOn = calculator.calculateWaitingOn();
-		if (!co.getFlag().getWaitingOn().equals(WaitingOn.None) && waitingOn.equals(WaitingOn.None))
-			EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
 
 		co.getFlag().setWaitingOn(waitingOn);
 		co.setAuditColumns(permissions);
