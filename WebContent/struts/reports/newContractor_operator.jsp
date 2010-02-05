@@ -58,7 +58,7 @@
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
-		<tr <s:if test="!(get('genID') > 0)">class="notapp"</s:if>>
+		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><s:if test="get('genID') > 0"><a
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
@@ -79,20 +79,20 @@
 				<s:if test="get('genID') > 0">
 					<pics:permission perm="RemoveContractors">
 						<s:if test="permissions.corporate">
-							<a href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Remove</a>
+							<a class="remove" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Remove</a>
 						</s:if>
 						<s:else>
-							<a href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
+							<a class="remove" href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
 						</s:else>
 					</pics:permission>
 				</s:if>
 				<s:else>
 					<pics:permission perm="AddContractors">
 						<s:if test="permissions.corporate">
-							<a href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Add</a>
+							<a class="add" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Add</a>
 						</s:if>
 						<s:else>
-							<a href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
+							<a class="add" href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
 						</s:else>
 					</pics:permission>
 				</s:else>

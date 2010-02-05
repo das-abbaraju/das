@@ -487,10 +487,11 @@ ul#navlist {
 	text-decoration: none;
 }
 
-a.inactive, #navlist a.inactive, #navlist a.inactive, table.report td a.inactive {
-	color: #666666;
-	background-color: #EEEEEE;
-	text-decoration: line-through;
+#navlist a.inactive {
+	color: #FFFFFF;
+	background-color: #C0C0C0;
+	text-decoration: none;
+	font-weight: bold;
 }
 
 .accountDemo, table.report td a.accountDemo {
@@ -501,6 +502,7 @@ a.inactive, #navlist a.inactive, #navlist a.inactive, table.report td a.inactive
 	background-color: #FFA;
 }
 
+table.report td a.inactive,
 table.report td a.accountDeactivated, 
 table.report td a.accountDeleted, 
 table.report td a.userActiveNo {

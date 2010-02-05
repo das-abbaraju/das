@@ -209,12 +209,6 @@ ul.filterRight {
 	left: 200px;
 }
 
-/** other */
-table.report tr.notapp {
-	color: #999;
-	font-style: italic;
-}
-
 div.filterOption {
 	margin: 1px;
 	padding: 1px 6px;
@@ -239,37 +233,3 @@ a.clearLink {
 	padding: 0px;
 	margin: 0px;
 }
-
-/*************** topLeft Navlist *******************/
-#navListTop {
-	padding-top: 5px;
-	padding-bottom: 4px;
-	padding-left: 2px;
-}
-
-#navListTop li {
-	font-size: 13px;
-	border: 0px;
-	display: inline;
-	list-style-type: none;
-	margin-right: 0px;
-}
-
-#navListTop a {
-	color: #fff;
-	padding: 8px 10px;
-	text-decoration: none;
-}
-
-#navListTop a:link,#navListTop a:visited {
-	background-color: #003768;
-}
-
-#navListTop a:hover,#navListTop a:active,#navListTop a.current {
-	background-color: rgb(168, 77, 16);
-}
-
-#navListTop a.inactive {
-	background-color: rgb(192, 192, 192);
-}
-

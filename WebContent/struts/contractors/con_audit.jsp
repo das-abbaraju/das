@@ -60,11 +60,11 @@
 	</s:iterator>
 	<s:iterator value="categories" status="rowStatus">
 		<s:if test="!appliesB && permissions.picsEmployee">
-			<tr class="notapp">
+			<tr>
 			<s:if test="!conAudit.auditType.pqf">
 				<td class="right"><a name="<s:property value="id" />"><s:property value="category.number" /></a></td>
 				</s:if>
-				<td><a href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
+				<td><a class="inactive" href="AuditCat.action?auditID=<s:property value="auditID" />&catDataID=<s:property value="id" />"><s:property value="category.category" /></a></td>
 				<s:if test="conAudit.auditStatus.pending || conAudit.auditType.pqf">
 					<td class="center" colspan="2">N/A</td>
 				</s:if>
