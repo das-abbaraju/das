@@ -21,16 +21,22 @@ public class EventSubscriptionBuilder {
 	public static void contractorFinishedEvent(EmailSubscriptionDAO subscriptionDAO, ContractorOperator co)
 			throws Exception {
 		Date now = new Date();
+		final int templateID = 63;
+		final String serverName = "http://www.picsaduiting.com/app/";
 
 		List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorFinished,
 				SubscriptionTimePeriod.Event, co.getOperatorAccount().getId());
 
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
-			builder.setTemplate(63);
+			builder.setTemplate(templateID);
 			builder.setFromAddress("info@picsauditing.com");
 			builder.addToken("contractor", co.getContractorAccount());
 			builder.addToken("operator", co.getOperatorAccount());
+			String seed = "u" + subscription.getUser().getId() + "t" + templateID;
+			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + subscription.getUser().getId()
+					+ "&sub=" + subscription + "&key=" + Strings.hashUrlSafe(seed);
+			builder.addToken("confirmLink", confirmLink);
 			builder.setUser(subscription.getUser());
 
 			EmailQueue q = builder.build();
