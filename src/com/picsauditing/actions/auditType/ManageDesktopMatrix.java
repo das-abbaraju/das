@@ -2,7 +2,6 @@ package com.picsauditing.actions.auditType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.DesktopMatrix;
-import com.picsauditing.jpa.entities.LowMedHigh;
 
 @SuppressWarnings("serial")
 public class ManageDesktopMatrix extends PicsActionSupport {
