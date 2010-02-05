@@ -30,6 +30,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091231" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css" />
 <script src="js/chrome.js" type="text/javascript" ></script>
 <script type="text/javascript" src="js/pics_main.js?v=20091231"></script>
 <script type="text/javascript" src="js/notes.js?v=20091231"></script>
