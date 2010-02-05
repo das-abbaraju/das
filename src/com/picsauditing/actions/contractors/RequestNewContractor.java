@@ -6,7 +6,6 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -61,10 +60,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		requestID = getParameter("requestID");
 		if (requestID > 0) {
 			newContractor = contractorRegistrationRequestDAO.find(requestID);
-		}
-		else {
+		} else {
 			newContractor.setCountry(new Country(permissions.getCountry()));
-			if(permissions.isOperatorCorporate()) {
+			if (permissions.isOperatorCorporate()) {
 				newContractor.setRequestedBy(new OperatorAccount());
 				newContractor.getRequestedBy().setId(permissions.getAccountId());
 				newContractor.setRequestedByUser(new User(permissions.getUserId()));
@@ -78,8 +76,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
 		if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 			state = stateDAO.find(stateIsos[0]);
-		
-		if(newContractor.getContractor() != null) {
+
+		if (newContractor.getContractor() != null) {
 			conAccount = contractorAccountDAO.find(newContractor.getContractor().getId());
 		}
 	}
@@ -105,13 +103,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						addActionError("Please select a State");
 					}
 				}
-				if(Strings.isEmpty(newContractor.getPhone())) {
+				if (Strings.isEmpty(newContractor.getPhone())) {
 					addActionError("Please fill a Phone Number");
 				}
-				if(!Strings.isEmpty(newContractor.getEmail()) && !Utilities.isValidEmail(newContractor.getEmail())) {
+				if (!Strings.isEmpty(newContractor.getEmail()) && !Strings.isValidEmail(newContractor.getEmail())) {
 					addActionError("Please fill in a Valid Email Address");
 				}
-				
+
 				if (getActionErrors().size() > 0) {
 					return SUCCESS;
 				}
@@ -150,7 +148,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
 					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setTemplate(83); // Operator Request for Registration
+					emailBuilder.setTemplate(83); // Operator Request for
+													// Registration
 					emailBuilder.addToken("newContractor", newContractor);
 					emailBuilder.addToken("csr", getAssignedCSR());
 					emailBuilder.setToAddresses(newContractor.getEmail());
@@ -243,7 +242,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setConID(int conID) {
 		this.conID = conID;
 	}
-	
+
 	public int getOpID() {
 		return opID;
 	}
@@ -255,14 +254,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public ContractorAccount getConAccount() {
 		return conAccount;
 	}
-	
+
 	public User getAssignedCSR() {
-		if(newContractor.getId() > 0 
-				&& newContractor.getHandledBy().equals(WaitingOn.PICS)) {
-			if(newContractor.getCountry().getCsr() != null)
+		if (newContractor.getId() > 0 && newContractor.getHandledBy().equals(WaitingOn.PICS)) {
+			if (newContractor.getCountry().getCsr() != null)
 				return newContractor.getCountry().getCsr();
 			else
-				return  newContractor.getState().getCsr();
+				return newContractor.getState().getCsr();
 		}
 		return null;
 	}

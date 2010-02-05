@@ -14,7 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PasswordValidator;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountRecovery;
@@ -237,9 +236,12 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					}
 				} else {
 					if (!conAdmin) {
-						// We need both now to remove data from the useraccess database
-						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin)).getId());
+						// We need both now to remove data from the useraccess
+						// database
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin))
+								.getId());
 					}
 				}
 
@@ -248,8 +250,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
 				} else {
 					if (!conBilling) {
-						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling)).getId());
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
+						userAccessDAO.remove((userAccessDAO
+								.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling)).getId());
 					}
 				}
 
@@ -258,8 +262,11 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
 				} else {
 					if (!conSafety) {
-						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety)).getId());
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
+						userAccessDAO
+								.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety))
+										.getId());
 					}
 				}
 
@@ -268,8 +275,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
 				} else {
 					if (!conInsurance) {
-						user.getOwnedPermissions().remove(userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance)).getId());
+						user.getOwnedPermissions().remove(
+								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
+						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
+								OpPerms.ContractorInsurance)).getId());
 					}
 				}
 
@@ -348,13 +357,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				}
 				if (user.getAccount().getPrimaryContact() != null
 						&& user.getId() == user.getAccount().getPrimaryContact().getId()) {
-					// Putting primary user check last so that primary users aren't switched that can't be deleted
+					// Putting primary user check last so that primary users
+					// aren't switched that can't be deleted
 					addActionError("Cannot remove the primary user for " + user.getAccount().getName()
 							+ ". Please switch the primary user of this account and then attempt to delete them.");
 					return SUCCESS;
 				}
 			}
-			
+
 			userDAO.remove(user);
 			addActionMessage("Successfully removed "
 					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
@@ -379,13 +389,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			return (getActionErrors().size() == 0);
 
 		// Users only after this point
-		if (user.getUsername() == null || user.getUsername().length() < 5)
-			addActionError("Please choose a Username at least 5 characters long.");
+		if (user.getUsername() == null || user.getUsername().length() < 3)
+			addActionError("Please choose a Username at least 3 characters long.");
 
-		if (!Strings.validUserName(user.getUsername().trim()))
-			addActionError("Please enter a valid Username.");
+		String result = Strings.validUserName(user.getUsername().trim());
+		if (!result.equals("valid"))
+			addActionError(result);
 
-		if (user.getEmail() == null || user.getEmail().length() == 0 || !Utilities.isValidEmail(user.getEmail()))
+		if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
 
 		if (user.getId() > 0) {

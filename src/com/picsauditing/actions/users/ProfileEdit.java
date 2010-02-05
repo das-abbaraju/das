@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -59,8 +58,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 			redirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 			return LOGIN;
 		}
-		
-		if(!permissions.hasPermission(OpPerms.EditProfile)) {
+
+		if (!permissions.hasPermission(OpPerms.EditProfile)) {
 			addActionError("This user does not have access to Edit their Profile. Please contact your Administrator");
 			return BLANK;
 		}
@@ -78,8 +77,9 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					return SUCCESS;
 				}
 
-				if (!Strings.validUserName(u.getUsername().trim())) {
-					addActionError("This username is not valid.  Please enter a valid Username.");
+				String result = Strings.validUserName(u.getUsername().trim());
+				if (!result.equals("valid")) {
+					addActionError(result);
 					return SUCCESS;
 				}
 
@@ -87,7 +87,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					if (!password1.equals(password2))
 						addActionError("Passwords don't match");
 
-					if (!Strings.isEmpty(u.getEmail()) && !Utilities.isValidEmail(u.getEmail()))
+					if (!Strings.isEmpty(u.getEmail()) && !Strings.isValidEmail(u.getEmail()))
 						addActionError("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
 
 					if (getActionErrors().size() > 0)

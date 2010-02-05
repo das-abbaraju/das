@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
@@ -170,8 +171,9 @@ public class LoginController extends PicsActionSupport {
 	 * @throws Exception
 	 */
 	private String canLogin() throws Exception {
-		if (username == null || username.length() < 3)
-			return "Enter a valid username";
+		String result = Strings.validUserName(username);
+		if (!result.equals("valid"))
+			return result;
 
 		try {
 			user = userDAO.findName(username);

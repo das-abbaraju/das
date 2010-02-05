@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -82,13 +81,11 @@ public class EmailBuilder {
 			}
 		}
 
-		String subject = convertPicsTagsToVelocity(template.getSubject(),
-				template.isAllowsVelocity());
+		String subject = convertPicsTagsToVelocity(template.getSubject(), template.isAllowsVelocity());
 		subject = velocityAdaptor.merge(subject, tokens);
 		email.setSubject(subject);
 
-		String body = convertPicsTagsToVelocity(template.getBody(), template
-				.isAllowsVelocity());
+		String body = convertPicsTagsToVelocity(template.getBody(), template.isAllowsVelocity());
 		body = velocityAdaptor.merge(body, tokens);
 		email.setBody(body);
 
@@ -109,10 +106,10 @@ public class EmailBuilder {
 	public void setContractor(ContractorAccount contractor, OpPerms role) {
 		conID = contractor.getId();
 		addToken("contractor", contractor);
-		
+
 		Set<String> emails = new HashSet<String>();
 		for (User user : contractor.getUsersByRole(role)) {
-			if (Utilities.isValidEmail(user.getEmail()))
+			if (Strings.isValidEmail(user.getEmail()))
 				emails.add(user.getEmail());
 		}
 		if (emails.size() > 0)
@@ -139,8 +136,7 @@ public class EmailBuilder {
 	}
 
 	public void setTemplate(int id) {
-		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils
-				.getBean("EmailTemplateDAO");
+		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		setTemplate(dao.find(id));
 	}
 
@@ -169,7 +165,7 @@ public class EmailBuilder {
 			text = text.replace('“', '"');
 			text = text.replace('”', '"');
 			text = text.replace("`", "'");
-			System.out.println("SUBJECT AFTER: " + text);			
+			System.out.println("SUBJECT AFTER: " + text);
 		}
 		for (Token tag : getPicsTags()) {
 			// This token is valid for this type of email template
@@ -193,7 +189,7 @@ public class EmailBuilder {
 	public void addToken(String key, Object value) {
 		tokens.put(key, value);
 	}
-	
+
 	public void addAllTokens(Map<? extends String, ? extends Object> m) {
 		tokens.putAll(m);
 	}

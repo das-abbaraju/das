@@ -49,7 +49,7 @@ public class ContactUs extends PicsActionSupport {
 		
 //		if(button != null) {
 //			if(button.equals("SendEmail")) {
-//				if(!Utilities.isValidEmail(email)) {
+//				if(!Strings.isValidEmail(email)) {
 //					addActionError("Please Enter a Valid Email Address");
 //					return SUCCESS;
 //				}

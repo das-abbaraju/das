@@ -9,8 +9,9 @@
 		String taxId = request.getParameter("taxId");
 		String companyName = request.getParameter("companyName");
 		if (!Strings.isEmpty(username)) {
-			if (!Strings.validUserName(username)) {
-				%> Username cannot contain spaces. <%
+			String result = Strings.validUserName(username);
+			if (!result.equals("valid")) {
+				%> <%= result %> <%
 				return;
 			}
 

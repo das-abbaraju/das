@@ -49,7 +49,7 @@ public class Strings {
 	public static String implode(int[] array) {
 		return implode(array, ",");
 	}
-	
+
 	public static String implode(int[] array, String delimiter) {
 		if (array == null)
 			return "";
@@ -108,7 +108,7 @@ public class Strings {
 	public static String implode(Collection<? extends Object> collection) {
 		return implode(collection, ",");
 	}
-	
+
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";
@@ -246,25 +246,22 @@ public class Strings {
 		if (name == null)
 			return null;
 		name = name.toUpperCase();
-		
-		/*		
+
+		/*
 		 * Old code for reference
 		 * 
-		String expression = "[A-Z0-9]+";
-		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
-		Matcher matcher = pattern.matcher(name);
+		 * String expression = "[A-Z0-9]+"; Pattern pattern =
+		 * Pattern.compile(expression, Pattern.CANON_EQ); Matcher matcher =
+		 * pattern.matcher(name);
+		 * 
+		 * StringBuffer buf = new StringBuffer(); boolean found = false; while
+		 * ((found = matcher.find())) { System.out.println(matcher.group());
+		 * buf.append(matcher.group()); }
+		 * 
+		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return
+		 * buf.toString();
+		 */
 
-		StringBuffer buf = new StringBuffer();
-		boolean found = false;
-		while ((found = matcher.find())) {
-			System.out.println(matcher.group());
-			buf.append(matcher.group());
-		}
-
-		// return name.toUpperCase().replaceAll("[^A-Z0-9]","");
-		return buf.toString();
-		*/
-		
 		// Remove all quotes
 		name = name.replaceAll("[\\'\\\"]", "");
 		// Replace all non letters/digits with spaces
@@ -273,13 +270,14 @@ public class Strings {
 		// Collapse multiple spaces into one space
 		name = name.replaceAll(" +", " ");
 		name = name.trim();
-		// Take out "the" at the beginning of the sentences, llc & inc (in multiple variations) at the end of sentences
+		// Take out "the" at the beginning of the sentences, llc & inc (in
+		// multiple variations) at the end of sentences
 		name = name.replaceAll("^THE ", "");
 		name = name.replaceAll(" L ?L ?C$", "");
 		name = name.replaceAll(" I ?N ?C$", "");
-		
-		//System.out.println(name);
-		
+
+		// System.out.println(name);
+
 		return name;
 	}
 
@@ -296,7 +294,7 @@ public class Strings {
 		if (!Strings.isEmpty(emailAddresses)) {
 			String[] list1 = emailAddresses.split(",");
 			for (String email : list1) {
-				if (Utilities.isValidEmail(email))
+				if (Strings.isValidEmail(email))
 					validEmail.add(email);
 			}
 		}
@@ -311,10 +309,28 @@ public class Strings {
 		return input.substring(0, maxlength - 3) + "...";
 	}
 
-	public static boolean validUserName(String username) {
-		String regex = "^[a-zA-Z0-9+._@-]{3,50}$";
+	public static boolean isValidEmail(String email) {
+		boolean result = false;
+		if (Strings.isEmpty(email))
+			return false;
+		int index = email.indexOf("@");
+		if (index > 0) {
+			int pindex = email.indexOf(".", index);
+			if ((pindex > index + 1) && (email.length() > pindex + 1))
+				result = true;
+		}// if
+		return result;
+	}// isValidEmail
 
-		return username.matches(regex);
+	public static String validUserName(String username) {
+		if (username.matches("^\\p{ASCII}{0,2}$"))
+			return "Your username entry is less than three characters. Please enter at least 3 characters for your username.";
+		else if (username.matches("^\\p{ASCII}{51,255}$"))
+			return "Your username entry is longer than pics supports. Please shorten your username entry.";
+		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
+			return "Special characters are not allowed in your username. Please use only digits, letters, @ . _ or -";
+		else
+			return "valid";
 	}
 
 	public static String formatShort(float value) {

@@ -4,7 +4,6 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
@@ -26,18 +25,18 @@ public class AccountRecovery extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		recaptcha = new Recaptcha();
-		
+
 		if (button == null)
 			return SUCCESS;
 
 		if ("Find Username".equals(button)) {
-			
+
 			if (email == null || email.equals("")) {
 				addActionError("Please input an email address");
 				return SUCCESS;
 			}
 
-			if (!Utilities.isValidEmail(email)) {
+			if (!Strings.isValidEmail(email)) {
 				addActionError("Please enter a valid email address.");
 				return SUCCESS;
 			}
@@ -80,12 +79,12 @@ public class AccountRecovery extends PicsActionSupport {
 				addActionError("Please input a username");
 				return SUCCESS;
 			}
-			
+
 			if (!recaptcha.isRecaptchaResponseValid()) {
 				addActionError("Reset Password reCaptcha verification does not match");
 				return SUCCESS;
 			}
-			
+
 			try {
 				user = userDAO.findName(username);
 				if (user == null)

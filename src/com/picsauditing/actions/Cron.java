@@ -20,7 +20,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -450,7 +449,7 @@ public class Cron extends PicsActionSupport {
 		for (Invoice invoice : invoices) {
 			Set<String> emailAddresses = new HashSet<String>();
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
-			
+
 			User billing = cAccount.getUsersByRole(OpPerms.ContractorBilling).get(0);
 			if (!Strings.isEmpty(billing.getEmail()))
 				emailAddresses.add(billing.getEmail());
@@ -460,7 +459,7 @@ public class Cron extends PicsActionSupport {
 			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
 				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questions);
 				for (AuditData auditData : aList) {
-					if (!Strings.isEmpty(auditData.getAnswer()) && Utilities.isValidEmail(auditData.getAnswer()))
+					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
 						emailAddresses.add(auditData.getAnswer());
 				}
 			}
@@ -500,7 +499,8 @@ public class Cron extends PicsActionSupport {
 			email.setPriority(30);
 			emailQueueDAO.save(email);
 
-			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(), NoteCategory.General);
+			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),
+					NoteCategory.General);
 		}
 	}
 

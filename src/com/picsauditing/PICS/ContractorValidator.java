@@ -70,11 +70,11 @@ public class ContractorValidator {
 			errorMessages.addElement("Username already exists. Please type another.");
 
 		if (Strings.isEmpty(user.getName()))
-				errorMessages.addElement("Please fill in the Primary Contact Name");
-		if (!Utilities.isValidEmail(user.getEmail()))
-				errorMessages
-						.addElement("Please enter a valid email address. This is our main way of communicating with you.");
-		
+			errorMessages.addElement("Please fill in the Primary Contact Name");
+		if (!Strings.isValidEmail(user.getEmail()))
+			errorMessages
+					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
+
 		// Passwords
 		if (!Strings.isEmpty(password2)) {
 			// They are trying to set/reset the password

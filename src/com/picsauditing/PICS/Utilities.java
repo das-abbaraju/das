@@ -1,12 +1,11 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.util.Strings;
-
 /**
- * A set of generic Utilities. We should consider moving this into the Strings class
+ * A set of generic Utilities. We should consider moving this into the Strings
+ * class
  */
 public class Utilities {
-	
+
 	public static String escapeHTML(String value) {
 		if (value == null)
 			return "";
@@ -96,19 +95,6 @@ public class Utilities {
 		return strval.toString();
 	}
 
-	public static boolean isValidEmail(String email) {
-		boolean result = false;
-		if (Strings.isEmpty(email))
-			return false;
-		int index = email.indexOf("@");
-		if (index > 0) {
-			int pindex = email.indexOf(".", index);
-			if ((pindex > index + 1) && (email.length() > pindex + 1))
-				result = true;
-		}// if
-		return result;
-	}// isValidEmail
-
 	public static String getBGColor(int count) {
 		if ((count % 2) == 0)
 			return " bgcolor=\"#FFFFFF\"";
@@ -119,31 +105,31 @@ public class Utilities {
 	public static float getAverageEMR(String year1, String year2, String year3, String year4) {
 		Float rateFloat = 0.0f;
 		int count = 0;
-		if(convertToFloat(year1) > 0) {
+		if (convertToFloat(year1) > 0) {
 			rateFloat += convertToFloat(year1);
 			count++;
 		}
-		if(convertToFloat(year2) > 0) {
+		if (convertToFloat(year2) > 0) {
 			rateFloat += convertToFloat(year2);
 			count++;
 		}
-		if(convertToFloat(year3) > 0) {
+		if (convertToFloat(year3) > 0) {
 			rateFloat += convertToFloat(year3);
 			count++;
 		}
-		if(count < 3 && convertToFloat(year4) > 0) {
+		if (count < 3 && convertToFloat(year4) > 0) {
 			rateFloat += convertToFloat(year4);
 			count++;
 		}
-		
-		Float avgRateFloat = rateFloat/count;
+
+		Float avgRateFloat = rateFloat / count;
 		return (float) Math.round(1000 * avgRateFloat) / 1000;
 	}
-	
+
 	public static float convertToFloat(String year1) {
-		if(year1 == null)
+		if (year1 == null)
 			return 0.0f;
 		return Float.valueOf(year1).floatValue();
-		
-	}	
+
+	}
 }
