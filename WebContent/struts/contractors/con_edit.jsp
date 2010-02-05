@@ -161,7 +161,7 @@ $(function() {
 				<legend><span>PICS Admin Fields</span></legend>
 				<ol>
 					<li><label>Status:</label>
-						<s:radio list="statusList" name="contractor.status" theme="pics" value="%{contractor.status}" />
+						<s:select list="statusList" name="contractor.status" value="%{contractor.status}" />
 					</li>
 					<li><label>Will Renew:</label>
 						<s:if test="contractor.renew">Yes - <a href="?id=<s:property value="id"/>&button=Cancel">Cancel Account</a></s:if>
