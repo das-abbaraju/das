@@ -38,7 +38,6 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
