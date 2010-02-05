@@ -488,10 +488,26 @@ ul#navlist {
 }
 
 a.inactive, #navlist a.inactive, #navlist a.inactive, table.report td a.inactive {
-	color: #fff;
-	background-color: rgb(192, 192, 192);
+	color: #666666;
+	background-color: #EEEEEE;
 	text-decoration: line-through;
 }
+
+.accountDemo, table.report td a.accountDemo {
+	font-style: italic;
+}
+
+.accountPending, table.report td a.accountPending {
+	background-color: #FFA;
+}
+
+table.report td a.accountDeactivated, 
+table.report td a.accountDeleted, 
+table.report td a.userActiveNo {
+	color: #4C4D4D;
+	text-decoration: line-through;
+}
+
 
 /************* Search *************/
 #search {

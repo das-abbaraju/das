@@ -32,15 +32,16 @@
 <body>
 <s:include value="conHeader.jsp" />
 <s:if test="contractor.status.pending">
-	<div class="alert">This contractor is not active and has recently registered in PICS.</div>
+	<div class="alert">This contractor has not activated their account.</div>
 </s:if>
 <s:if test="contractor.status.deleted">
-	<div class="alert">This contractor is a duplicate account in PICS.
-	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+	<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
+			because of the following reason: <s:property value="contractor.reason"/></s:if>.
+		<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 	</div>
 </s:if>
 <s:if test="contractor.status.deactivated">
-	<div class="alert">This contractor has been deactivated in PICS.
+	<div class="alert">This contractor was deactivated.
 	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 	</div>
 </s:if>

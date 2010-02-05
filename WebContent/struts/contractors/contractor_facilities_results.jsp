@@ -16,7 +16,7 @@
 	<tbody>
 	<s:iterator value="searchResults">
 		<tr id="results_<s:property value="id"/>">
-			<td><s:property value="name"/></td>
+			<td	class="account<s:property value="status" />"><s:property value="name"/></td>
 			<td class="center"><a id="facility_<s:property value="id"/>" href="#" onclick="javascript: return addOperator( <s:property value="#conID"/>, <s:property value="id"/>);"
 				class="add">Add</a></td>
 		</tr>

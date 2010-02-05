@@ -66,25 +66,27 @@
 	<tbody>
 		<s:iterator value="currentOperators">
 			<tr id="operator_<s:property value="operatorAccount.id"/>">
-				<td><s:if test="contractor.status.activeDemo"><s:url id="flagUrl" action="ContractorFlag">
-					<s:param name="id" value="%{contractor.id}" />
-					<s:param name="opID" value="%{operatorAccount.id}" />
-				</s:url></s:if><s:a href="%{flagUrl}">
-					<s:property value="flag.flagColor.smallIcon" escape="false" />
-				</s:a></td>
-				<td>
-					<s:if test="contractor.status.activeDemo">
+				<s:if test="contractor.status.activeDemo">
+					<td><s:url id="flagUrl" action="ContractorFlag">
+						<s:param name="id" value="%{contractor.id}" />
+						<s:param name="opID" value="%{operatorAccount.id}" />
+					</s:url><s:a href="%{flagUrl}">
+						<s:property value="flag.flagColor.smallIcon" escape="false" />
+					</s:a></td>
+					<td class="account<s:property value="operatorAccount.status" />">
 						<s:url id="opUrl" action="ContractorFlag">
 							<s:param name="id" value="%{contractor.id}" />
 							<s:param name="opID" value="%{operatorAccount.id}" />
 						</s:url>
 						<s:a href="%{opUrl}"><s:property value="operatorAccount.name" /></s:a>
-					</s:if>
-					<s:else>
-						<s:property value="operatorAccount.name"/>
-					</s:else>
-				</td>
-				<td><s:property value="flag.waitingOn.name()" /></td>
+					</td>
+					<td><s:property value="flag.waitingOn.name()" /></td>
+				</s:if>
+				<s:else>
+					<td>N/A</td>
+					<td><s:property value="operatorAccount.name"/></td>
+					<td>Contractor</td>
+				</s:else>
 
 				<pics:permission perm="RemoveContractors">
 					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#" class="remove"

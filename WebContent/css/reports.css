@@ -53,12 +53,6 @@ table.report td a:hover {
 	text-decoration: underline;
 }
 
-a.inactive {
-	color: #fff;
-	background-color: rgb(192, 192, 192);
-	text-decoration: line-through;
-}
-
 table.report tr:hover {
 	background: #EEE;
 	color: #A84D10;
@@ -217,11 +211,6 @@ ul.filterRight {
 
 /** other */
 table.report tr.notapp {
-	color: #999;
-	font-style: italic;
-}
-
-table.report td.inactive {
 	color: #999;
 	font-style: italic;
 }

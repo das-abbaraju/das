@@ -63,7 +63,7 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
-					class="contractorQuick" title="<s:property value="get('name')" />"
+					class="contractorQuick account<s:property value="get('status')" />" title="<s:property value="get('name')" />"
 					><s:property value="get('name')" /></a></td>
 			<pics:permission perm="AllContractors">
 				<td><a

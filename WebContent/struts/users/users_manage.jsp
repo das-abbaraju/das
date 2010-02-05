@@ -141,19 +141,15 @@ div.autocomplete ul li {
 			</s:if>
 			<s:else>
 				<td>U</td>
-				<s:if test="isActive.toString().equals('Yes')">
-					<td><a
-						href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-						value="name" />*</a></td>
-				</s:if>
-				<s:else>
-					<td class="inactive"><a
-						href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-						value="name" /></a></td>
-				</s:else>
-				<td><s:if test="lastLogin != null">
-					<s:date name="lastLogin" format="MM/dd/yy" />
-				</s:if> <s:else>never</s:else></td>
+				<td><a
+					href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+					class="userActive<s:property value="isActive" />"><s:property value="name" /></a></td>
+				<td>
+					<s:if test="lastLogin != null">
+						<s:date name="lastLogin" format="MM/dd/yy" />
+					</s:if>
+					<s:else>never</s:else>
+				</td>
 			</s:else>
 		</tr>
 	</s:iterator>

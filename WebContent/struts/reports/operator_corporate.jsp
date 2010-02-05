@@ -31,44 +31,40 @@ value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-    <table class="report">
-        <thead><tr> 
-           <td></td>
+<table class="report">
+	<thead>
+		<tr>
+			<td></td>
 			<th><s:if test="accountType.equals('Corporate')">
 				<a href="?accountType=Corporate&orderBy=a.name">Name</a>
 			</s:if> <s:else>
 				<a href="?accountType=Operator&orderBy=a.name">Name</a>
 			</s:else></th>
+			<td>Status</td>
 			<td>Industry</td>
 			<td>City</td>
 			<td>State</td>
 			<td>Primary Contact</td>
-			<td><s:if test="accountType.startsWith('O')">Contractors</s:if>
-			<s:else>Operators</s:else>
-			</td>
+			<td><s:if test="accountType.startsWith('O')">Contractors</s:if> <s:else>Operators</s:else></td>
 			<td></td>
-		</tr></thead>
+		</tr>
+	</thead>
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			
-			<s:if test="%{get('status') == 'Active' || get('status') == 'Demo'}">
-			<td><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>" 
-					rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>" 
-					class="operatorQuick" title="<s:property value="get('name')" />"
-					><s:property value="get('name')" /></a></td>
-			</s:if>
-			<s:else>
-			<td class="inactive"><a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>" 
-					rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>" 
-					class="operatorQuick" title="<s:property value="get('name')" />"
-					><s:property value="get('name')" />*</a></td>
-			</s:else>
+			<td>
+				<a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>"
+					rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>"
+					class="operatorQuick account<s:property value="get('status')" />"
+					title="<s:property value="get('name')" />"
+				><s:property value="get('name')" /></a>
+			</td>
+			<td><s:property value="get('status')"/></td>
 			<td><s:property value="get('industry')"/></td>
-			<td class="right"><s:property value="get('city')"/></td>
-			<td class="right"><s:property value="get('state')"/></td>
-			<td class="right"><s:property value="get('contactname')"/></td>
-			<td><s:property value="get('subCount')"/></td>
+			<td><s:property value="get('city')"/></td>
+			<td><s:property value="get('state')"/></td>
+			<td><s:property value="get('contactname')"/></td>
+			<td class="right"><s:property value="get('subCount')"/></td>
 			<td><s:if test="canDelete && get('subCount') == null && get('requestedBy') == null">
 			<s:form action="ReportAccountList" method="POST">
 			<s:submit value="Remove" name="button"/>
