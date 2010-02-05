@@ -35,7 +35,6 @@ public class LoginController extends PicsActionSupport {
 	private String email;
 	private String username;
 	private String password;
-	private String usern;
 	private String key;
 	private int switchToUser;
 
