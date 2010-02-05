@@ -32,9 +32,6 @@ public class UserDaoTest extends TestCase {
 		try {
 			User row = dao.find(681);
 			OperatorAccount operator = (OperatorAccount) row.getAccount();
-			System.out.println(row.getAccount().getName());
-			System.out.println(operator.getActivationEmails());
-
 			assertEquals(2921, row.getAccount().getId());
 		} catch (Exception e) {
 			fail(e.getMessage());

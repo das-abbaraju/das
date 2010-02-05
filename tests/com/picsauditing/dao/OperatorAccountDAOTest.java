@@ -54,8 +54,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setStatus(AccountStatus.Active);
 		operatoraccount.setCreatedBy(new User(1100));
 		operatoraccount.setCreationDate(new java.util.Date());
-		operatoraccount.setActivationEmails("pics@picsauditing.com");
-		operatoraccount.setDoSendActivationEmail("Yes");
 		operatoraccount.setDoContractorsPay("Multiple");
 		operatoraccount.setCanSeeInsurance(YesNo.Yes);
 		operatoraccount.setInsuranceAuditor(new User());
@@ -64,7 +62,6 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setApprovesRelationships(YesNo.No);
 		operatoraccount.setNaics(new Naics());
 		operatoraccount.getNaics().setCode("0");
-		assertEquals("pics@picsauditing.com", operatoraccount.getActivationEmails());
 		operatoraccount = operatoraccountDAO.save(operatoraccount);
 		assertTrue(operatoraccount.getId() > 0);
 		int newID = operatoraccount.getId();

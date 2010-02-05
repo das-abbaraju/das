@@ -40,8 +40,6 @@ public class OperatorAccount extends Account {
 	private OperatorAccount inheritAudits;
 	private OperatorAccount inheritAuditCategories;
 
-	private String activationEmails = "";
-	private String doSendActivationEmail = "No";
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
 	private User insuranceAuditor;
@@ -71,24 +69,6 @@ public class OperatorAccount extends Account {
 	public OperatorAccount(String name) {
 		this.name = name;
 		this.type = "Operator";
-	}
-
-	@Column(name = "activationEmails", nullable = false)
-	public String getActivationEmails() {
-		return this.activationEmails;
-	}
-
-	public void setActivationEmails(String activationEmails) {
-		this.activationEmails = activationEmails;
-	}
-
-	@Column(name = "doSendActivationEmail", nullable = false, length = 10)
-	public String getDoSendActivationEmail() {
-		return this.doSendActivationEmail;
-	}
-
-	public void setDoSendActivationEmail(String doSendActivationEmail) {
-		this.doSendActivationEmail = doSendActivationEmail;
 	}
 
 	/**

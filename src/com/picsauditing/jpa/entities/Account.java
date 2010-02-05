@@ -51,9 +51,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected Industry industry;
 	private Naics naics;
 	private boolean naicsValid;
-	protected char seesAllB;
-	protected char sendActivationEmailB;
-	protected String activationEmailsB;
 	protected String type;
 	protected boolean qbSync;
 	protected String qbListID;

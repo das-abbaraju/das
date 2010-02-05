@@ -128,16 +128,13 @@ $(function() {
 				Fields</span></legend>
 				<ol>
 					<li><label>Status:</label> 
-						<s:radio list="statusList" name="operator.status" theme="pics" /></li>
+						<s:select list="statusList" name="operator.status" /></li>
 					<li><label>Reason:</label> <s:textarea name="operator.reason"
 						rows="3" cols="25" /></li>
 					<s:if test="operator.corporate">
 						<li><label>Primary Corporate:</label> <s:checkbox
 							name="operator.primaryCorporate"></s:checkbox></li>
 					</s:if>
-					<li><label>Receive contractor activation emails:</label> <s:radio
-						list="#{'Yes':'Yes','No':'No'}"
-						name="operator.doSendActivationEmail" theme="pics" /></li>
 					<li><label>Approves Contractors:</label> <s:radio
 						list="#{'Yes':'Yes','No':'No'}"
 						name="operator.approvesRelationships" theme="pics" /></li>
@@ -158,9 +155,6 @@ $(function() {
 					<li><label>Contractors pay:</label> <s:radio
 						list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
 						name="operator.doContractorsPay" theme="pics" /></li>
-					<li><label>Send Emails to:</label> <s:textarea
-						name="operator.activationEmails" rows="3" cols="40" /> <br />
-					* separate emails with commas ex: a@bb.com, c@dd.com</li>
 
 				</ol>
 				</fieldset>
