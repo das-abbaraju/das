@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.servlet.http.Cookie;
+
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 
@@ -87,16 +89,35 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 	protected boolean forceLogin() {
 		// Check if cookies are enabled before running any other checks
-		// Cookies are saved in a previous step. If they are still null,
-		// then cookies are disabled
+		// A cookie is saved but will only be checked on the next request. If
+		// the list of cookies is still null on the next request, then cookies
+		// are disabled
 		if (ServletActionContext.getRequest().getCookies() == null) {
-			try {
-				redirect("Login.action?button=logout&msg=Cookies are disabled on your browser. Please open your browser settings and make sure cookies are enabled to log in to PICS");
-			} catch (IOException e) {
-				System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
-				return false;
+			// Checking if CookieTest parameter is set. If set, then no cookie
+			// was created on previous pass.
+			if (ServletActionContext.getRequest().getParameter("CookieTest") == null) {
+
+				Cookie c = new Cookie("PICSCookiesEnabled", "true");
+				c.setMaxAge(5);
+				ServletActionContext.getResponse().addCookie(c);
+
+				try {
+					ServletActionContext.getResponse().sendRedirect(
+							ServletActionContext.getRequest().getRequestURI() + "?CookieTest=test");
+				} catch (IOException e) {
+					System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+				}
+			} else {
+				try {
+					redirect("Login.action?button=logout&msg=Cookies are disabled on your browser. Please open your browser settings and make sure cookies are enabled to log in to PICS");
+				} catch (IOException e) {
+					System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+				}
 			}
+
 			return true;
+		} else if(ServletActionContext.getRequest().getParameter("CookieTest") != null){
+			// just removing the parameter if set and cookies are enabled
 		}
 
 		loadPermissions();
