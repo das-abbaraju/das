@@ -312,7 +312,7 @@ public class Strings {
 	}
 
 	public static boolean validUserName(String username) {
-		String regex = "^[a-zA-Z0-9+._@-]{3,24}$";
+		String regex = "^[a-zA-Z0-9+._@-]{3,50}$";
 
 		return username.matches(regex);
 	}
