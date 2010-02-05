@@ -2,14 +2,12 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,8 +15,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @SuppressWarnings("serial")
 @Entity
@@ -28,12 +24,14 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private String workStatus = "P";
+	private FlagColor flagColor;
 	private FlagColor forceFlag;
 	private Date forceEnd;
-	private ContractorOperatorFlag flag;
+	private WaitingOn waitingOn = WaitingOn.None;
 	private Date processCompletion;
+	private String relationshipType;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
 	public OperatorAccount getOperatorAccount() {
 		return operatorAccount;
@@ -43,7 +41,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.operatorAccount = operator;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "subID", nullable = false, updatable = false)
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
@@ -54,8 +52,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	/**
-	 * Assume Yes if the operator approvesRelationships=No, otherwise this
-	 * should default to P and then be approved or rejected
+	 * Assume Yes if the operator approvesRelationships=No, otherwise this should default to P and then be approved or
+	 * rejected
 	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
@@ -127,16 +125,42 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return true;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@Fetch(FetchMode.JOIN)
-	@JoinColumns( { @JoinColumn(name = "genID", referencedColumnName = "opID", insertable = false, updatable = false),
-			@JoinColumn(name = "subID", referencedColumnName = "conID", insertable = false, updatable = false) })
-	public ContractorOperatorFlag getFlag() {
-		return flag;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "flag", nullable = false)
+	public FlagColor getFlagColor() {
+		return flagColor;
 	}
 
+	public void setFlagColor(FlagColor flagColor) {
+		this.flagColor = flagColor;
+	}
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "waitingOn", nullable = false)
+	public WaitingOn getWaitingOn() {
+		return waitingOn;
+	}
+
+	public void setWaitingOn(WaitingOn waitingOn) {
+		this.waitingOn = waitingOn;
+	}
+
+	public String getRelationshipType() {
+		return relationshipType;
+	}
+
+	public void setRelationshipType(String relationshipType) {
+		this.relationshipType = relationshipType;
+	}
+
+	@Transient
+	@Deprecated
+	public ContractorOperatorFlag getFlag() {
+		return null;
+	}
+
+	@Deprecated
 	public void setFlag(ContractorOperatorFlag flag) {
-		this.flag = flag;
 	}
 
 }
