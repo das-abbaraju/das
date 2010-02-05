@@ -98,7 +98,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			}
 			return true;
 		}
-		
+
 		loadPermissions();
 		try {
 			// TJA I tried using getUser() but it doesn't work from the
