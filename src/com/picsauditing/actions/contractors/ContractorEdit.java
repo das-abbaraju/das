@@ -19,6 +19,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -30,6 +31,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -40,6 +42,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.Subscription;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -57,6 +60,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected UserDAO userDAO;
 	protected EmailQueueDAO emailQueueDAO;
 	protected NoteDAO noteDAO;
+	protected EmailSubscriptionDAO subscriptionDAO;
 	protected int[] operatorIds = new int[300];
 	protected Country country;
 	protected State state;
@@ -66,7 +70,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
 			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
-			NoteDAO noteDAO) {
+			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -75,6 +79,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.emailQueueDAO = emailQueueDAO;
 		this.noteDAO = noteDAO;
+		this.subscriptionDAO = subscriptionDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -246,14 +251,18 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				Set<String> emailAddresses = new HashSet<String>();
 				if (operatorIds != null) {
 					for (int operatorID : operatorIds) {
-						OperatorAccount operatorAccount = operatorAccountDAO.find(operatorID);
-						Set<String> email = Strings.findUniqueEmailAddresses(operatorAccount.getActivationEmails());
-						if (email.size() > 0)
-							emailAddresses.addAll(email);
+						List<EmailSubscription> subscriptions = subscriptionDAO.find(
+								Subscription.ContractorRegistration, operatorID);
+						Set<String> emails = new HashSet<String>();
+						for (EmailSubscription subscription : subscriptions) {
+							emails.add(subscription.getUser().getEmail());
+						}
+						if (emails.size() > 0)
+							emailAddresses.addAll(emails);
 					}
 
 					if (emailAddresses.size() > 0) {
-						if(!accountDao.isContained(contractor)) {
+						if (!accountDao.isContained(contractor)) {
 							contractor = accountDao.find(contractor.getId());
 						}
 						EmailBuilder emailBuilder = new EmailBuilder();
@@ -389,7 +398,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
 	}
-	
+
 	public LowMedHigh getRiskLevel() {
 		return contractor.getRiskLevel();
 	}
@@ -402,7 +411,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			oldRiskLevel = "Medium";
 		if (newRiskLevel.equals("Med"))
 			newRiskLevel = "Medium";
-		
+
 		Note note = new Note();
 		note.setAccount(contractor);
 		note.setAuditColumns(permissions);
