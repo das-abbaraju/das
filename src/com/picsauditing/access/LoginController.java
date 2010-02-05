@@ -55,6 +55,22 @@ public class LoginController extends PicsActionSupport {
 			return SUCCESS;
 
 		if ("logout".equals(button)) {
+			// The msg parameter is passed on Permissions.java when a session
+			// has timed out and login is required again.
+			// A cookie is set in this method, and if this msg has been passed,
+			// and cookies are still non-existant,
+			// then cookies are disabled.
+			// Note: Sessions are saved even if cookies are disabled on
+			// Mozilla 5 and others.
+			if (ServletActionContext.getRequest().getCookies() == null
+			// TODO: Going to need to refactor to preference file check on
+					// localization update
+					&& ServletActionContext.getRequest().getParameter("msg") != null) {
+				ServletActionContext.getResponse().sendRedirect(
+						"Login.action?msg=Cookies are disabled on your browser. Please open your "
+								+ "browser settings and make sure cookies are enabled to log in to PICS");
+			}
+
 			int adminID = permissions.getAdminID();
 			permissions.clear();
 

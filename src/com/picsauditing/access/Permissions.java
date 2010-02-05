@@ -11,6 +11,8 @@ import java.util.TreeSet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -356,6 +358,9 @@ public class Permissions implements Serializable {
 			fromCookie.setMaxAge(3600);
 			response.addCookie(fromCookie);
 		}
+		Cookie c = new Cookie("PICSCookiesEnabled", "true");
+		c.setMaxAge(60);
+		ServletActionContext.getResponse().addCookie(c);
 		response.sendRedirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
 		return false;
 	}
