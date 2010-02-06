@@ -323,10 +323,12 @@ public class Strings {
 	}// isValidEmail
 
 	public static String validUserName(String username) {
-		if (username.matches("^\\p{ASCII}{0,2}$"))
+		if (username.length() < 3)
 			return "Your username entry is less than three characters. Please enter at least 3 characters for your username.";
-		else if (username.matches("^\\p{ASCII}{51,255}$"))
+		else if (username.length() > 100)
 			return "Your username entry is longer than pics supports. Please shorten your username entry.";
+		else if (username.contains(" "))
+			return "Your username is not allowed to contain spaces. Please remove any spaces in your username entry.";
 		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
 			return "Special characters are not allowed in your username. Please use only digits, letters, @ . _ or -";
 		else
