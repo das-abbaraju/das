@@ -115,20 +115,20 @@ function checkUserOther() {
 				onchange="updateUsersList();" />
 			<span class="redMain">*</span>
 		</li>
-		<s:if test="newContractor.requestedByUser == null && newContractor.requestedByUserOther == null">
+		<s:if test="newContractor.requestedByUser == null && newContractor.requestedByUserOther == null && newContractor.requestedBy.users != null">
 			<li id="loadUsersList"></li>
 		</s:if>
 		<s:else>
-		<li id="loadUsersList">
-			<label>Requested By User:</label>
-			<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
-				id="requestedUser" name="requestedUser" value="%{newContractor.requestedByUser.id}"
-				headerKey="0" headerValue="- Other -" onchange="checkUserOther();" />
-			<span class="redMain">*</span>
-			<input type="text" name="newContractor.requestedByUserOther" id="requestedByOtherUser" size="20"
-				<s:if test="newContractor.requestedByUser != null">style="display:none;"</s:if>
-				value="<s:property value="newContractor.requestedByUserOther" />" />
-		</li>
+			<li id="loadUsersList">
+				<label>Requested By User:</label>
+				<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
+					id="requestedUser" name="requestedUser" value="%{newContractor.requestedByUser.id}"
+					headerKey="0" headerValue="- Other -" onclick="checkUserOther();" />
+				<span class="redMain">*</span>
+				<input type="text" name="newContractor.requestedByUserOther" id="requestedByOtherUser" size="20"
+					<s:if test="newContractor.requestedByUser != null && newContractor.requestedBy.users != null">style="display:none;"</s:if>
+					value="<s:property value="newContractor.requestedByUserOther" />" />
+			</li>
 		</s:else>
 		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
