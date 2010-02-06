@@ -31,7 +31,7 @@ public class FlagDataCalculator {
 			if (contractorCriteria.containsKey(key)) {
 				FlagColor flag = FlagColor.Green;
 				if (overrides.containsKey(key)) {
-					flag = overrides.get(key).getFlag();
+//					flag = overrides.get(key).getFlag();
 				} else {
 					flag = operatorCriteria.get(key).evaluate(contractorCriteria.get(key));
 				}
