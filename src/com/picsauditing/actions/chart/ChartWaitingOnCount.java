@@ -27,13 +27,13 @@ public class ChartWaitingOnCount extends ChartSSAction {
 
 		sql.addWhere("a.status IN ('Active','Demo')");
 
-		sql.addGroupBy("waitingOn");
+		sql.addGroupBy("gc.waitingOn");
 
 		if (permissions.isOperator()) {
 			sql.addWhere("f.opID = " + permissions.getAccountId());
 		}
 
-		sql.addField("waitingOn AS label");
+		sql.addField("gc.waitingOn AS label");
 		sql.addField("count(*) AS value");
 
 		ChartDAO db = new ChartDAO();
