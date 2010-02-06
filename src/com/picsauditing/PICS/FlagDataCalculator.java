@@ -10,10 +10,12 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
+	private Map<FlagCriteria, FlagDataOverride> overrides = null;
 	
 	public FlagDataCalculator(List<FlagCriteriaContractor> contractorCriteria, List<FlagCriteriaOperator> operatorCriteria) {
 		setContractorCriteria(contractorCriteria);
@@ -23,9 +25,16 @@ public class FlagDataCalculator {
 	public List<FlagData> calculate() {
 		List<FlagData> list = new ArrayList<FlagData>();
 		
+		// Consider audit operator matrix and see if something is required or not
+		
 		for (FlagCriteria key : operatorCriteria.keySet()) {
 			if (contractorCriteria.containsKey(key)) {
-				FlagColor flag = operatorCriteria.get(key).evaluate(contractorCriteria.get(key));
+				FlagColor flag = FlagColor.Green;
+				if (overrides.containsKey(key)) {
+					flag = overrides.get(key).getFlag();
+				} else {
+					flag = operatorCriteria.get(key).evaluate(contractorCriteria.get(key));
+				}
 				if (!flag.equals(FlagColor.Green)) {
 					FlagData data = new FlagData();
 					// TODO set the data fields
