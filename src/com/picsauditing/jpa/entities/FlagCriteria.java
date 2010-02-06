@@ -3,12 +3,16 @@ package com.picsauditing.jpa.entities;
 import java.util.Map;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "flag_criteria")
@@ -55,6 +59,8 @@ public class FlagCriteria extends BaseTable {
 		this.auditType = auditType;
 	}
 
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
+	@Enumerated(EnumType.STRING)
 	public OshaType getOshaType() {
 		return oshaType;
 	}
@@ -95,6 +101,8 @@ public class FlagCriteria extends BaseTable {
 		this.validationRequired = validationRequired;
 	}
 
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
+	@Enumerated(EnumType.STRING)
 	public MultiYearScope getMultiYearScope() {
 		return multiYearScope;
 	}
