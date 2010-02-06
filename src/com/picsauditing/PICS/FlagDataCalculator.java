@@ -23,9 +23,9 @@ public class FlagDataCalculator {
 	public List<FlagData> calculate() {
 		List<FlagData> list = new ArrayList<FlagData>();
 		
-		for (FlagCriteria criteria : operatorCriteria.keySet()) {
-			if (contractorCriteria.containsKey(criteria)) {
-				FlagColor flag = criteria.evaluate(contractorCriteria);
+		for (FlagCriteria key : operatorCriteria.keySet()) {
+			if (contractorCriteria.containsKey(key)) {
+				FlagColor flag = operatorCriteria.get(key).evaluate(contractorCriteria.get(key));
 				if (!flag.equals(FlagColor.Green)) {
 					FlagData data = new FlagData();
 					// TODO set the data fields
