@@ -431,6 +431,11 @@
 			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
 			<result>struts/reports/report_con_new_registration.jsp</result>
 		</action>
+		<action name="ReportNewRequestedContractorCSV"
+			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
+			<param name="download">true</param>
+			<result>struts/blank.jsp</result>
+		</action>
 
 		<!-- Billing -->
 		<action name="ReportBilling"

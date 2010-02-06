@@ -3,6 +3,12 @@
 <head>
 <title>Requested Contractors List</title>
 <s:include value="reportHeader.jsp" />
+<script type="text/javascript">
+function download() {
+	newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
+	popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
+}
+</script>
 </head>
 <body>
 <h1>Contractor Registration Request</h1>
@@ -10,11 +16,16 @@
 <div>
 <a href="RequestNewContractor.action">Request New Contractor</a>
 </div>
-
+<s:include value="filters.jsp" />
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-
+<div class="right"><a class="excel" 
+	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
+		<s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download();"
+		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
+</div>
 <table class="report">
 	<thead>
 	<tr>
@@ -61,6 +72,5 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-
 </body>
 </html>

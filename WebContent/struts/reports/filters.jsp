@@ -48,6 +48,13 @@
 			class="clearLink" href="#"
 			onclick="clearSelected('form1_status'); return false;">Clear</a> </span></div>
 	</s:if>
+	
+	<s:if test="filter.showOpen">
+		<div class="filterOption">
+			<s:select cssClass="forms" list="#{2:'Open',1:'Closed'}" name="filter.open"
+			headerValue="- Request Status -" headerKey="0" />
+		</div>
+	</s:if>
 
 	<s:if test="filter.showAddress">
 		<div class="filterOption">
@@ -84,6 +91,32 @@
 				</td>
 			</tr>
 		</table>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showState">
+		<div class="filterOption">
+			<a href="#" onclick="toggleBox('form1_state'); return false;">State</a> = 
+				<span id="form1_state_query">ALL</span><br />
+			<span id="form1_state_select" style="display: none" class="clearLink">
+				<s:select id="form1_state" name="filter.state" list="filter.stateList"
+					listKey="isoCode" listValue="name" cssClass="forms" multiple="true" size="15" /><br />
+				<script type="text/javascript">updateQuery('form1_state');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">Clear</a>
+			</span>
+		</div>
+	</s:if>
+	
+	<s:if test="filter.showCountry">
+		<div class="filterOption">
+			<a href="#" onclick="toggleBox('form1_country'); return false;">Country</a> =
+				<span id="form1_country_query">ALL</span><br />
+			<span id="form1_country_select" style="display: none" class="clearLink">
+				<s:select id="form1_country" name="filter.country" list="filter.countryList"
+					listKey="isoCode" listValue="name" cssClass="forms" multiple="true"	size="15" /><br />
+				<script type="text/javascript">updateQuery('form1_country');</script>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">Clear</a>
+			</span>
 		</div>
 	</s:if>
 
@@ -154,6 +187,12 @@
 		<div class="filterOption"><s:select list="filter.waitingOnList"
 			headerKey="" headerValue="- Waiting On -" cssClass="forms"
 			name="filter.waitingOn" /></div>
+	</s:if>
+	
+	<s:if test="filter.showHandledBy">
+		<div class="filterOption"><s:select list="filter.handledByList"
+			headerKey="" headerValue="- Follow Up By -" cssClass="forms"
+			name="filter.handledBy" /></div>
 	</s:if>
 
 	<s:if test="filter.showCcOnFile">
@@ -586,6 +625,20 @@
 		<br />
 		<a class="clearLink" href="#"
 			onclick="clearTextField('form1_registrationDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
+
+	<s:if test="filter.showFollowUpDate">
+		<div class="filterOption">
+			<a href="#"	onclick="showTextBox('form1_followUpDate'); return false;">Follow Up Date</a>
+			<span id="form1_followUpDate_query">= ALL</span><br />
+			<span id="form1_followUpDate" style="display: none"
+				class="clearLink">Before: <s:textfield
+				cssClass="forms datepicker" size="10" id="form1_followUpDate2"
+				name="filter.followUpDate" /> <script type="text/javascript">textQuery('form1_followUpDate');</script>
+			<br />
+			<a class="clearLink" href="#"
+				onclick="clearTextField('form1_followUpDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
 

@@ -117,12 +117,17 @@ function textQuery(name) {
 	var endField = $("#"+name+'2');
 	var result = $("#"+name+'_query');
 	var queryText = '';
-	if(startField.val() != '' && endField.val() != '')
-		queryText = 'between '+startField.val()+' and '+ endField.val();
-	if(startField.val() != '' && endField.val() == '')
-		queryText = 'after '+ startField.val();
-	if(startField.val() == '' && endField.val() != '')
+	
+	if (startField.val() != undefined) {
+		if(startField.val() != '' && endField.val() != '')
+			queryText = 'between '+startField.val()+' and '+ endField.val();
+		if(startField.val() != '' && endField.val() == '')
+			queryText = 'after '+ startField.val();
+		if(startField.val() == '' && endField.val() != '')
+			queryText = 'before '+ endField.val();
+	} else if (endField.val() != '') {
 		queryText = 'before '+ endField.val();
+	}
 	
 	if (queryText == '') {
 		queryText = '= ALL';
