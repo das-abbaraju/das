@@ -154,32 +154,17 @@ function hideSearch()
 }
 
 function wireClueTips() {
-	$("a.contractorQuick").cluetip({
+	$('a.contractorQuick').add('a.operatorQuick').cluetip({
 		sticky: true, 
 		hoverClass: 'cluetip', 
+		mouseOutClose: true,
 		clickThrough: true, 
 		ajaxCache: true,
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
-		hoverIntent: {interval: 500},
+		hoverIntent: {interval: 300},
 		arrows: true,
 		dropShadow: false,
 		width: 400,
-		cluetipClass: 'jtip',
-		ajaxProcess:      function(data) {
-			data = $(data).not('meta, link, title');
-			return data;
-		}
-	});
-	$("a.operatorQuick").cluetip({
-		sticky: true, 
-		hoverClass: 'cluetip', 
-		clickThrough: true, 
-		ajaxCache: true,
-		closeText: "<img src='images/cross.png' width='16' height='16'>",
-		hoverIntent: {interval: 500},
-		arrows: true,
-		dropShadow: false,
-		width: 500,
 		cluetipClass: 'jtip',
 		ajaxProcess: function(data) {
 			data = $(data).not('meta, link, title');
