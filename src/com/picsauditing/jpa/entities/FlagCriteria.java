@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Map;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,17 +17,17 @@ import org.hibernate.annotations.Type;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteria extends BaseTable {
 
-	protected String category;
-	protected AuditQuestion question;
-	protected AuditType auditType;
-	protected OshaType oshaType;
-	protected String label;
-	protected String description;
-	protected char comparision;
-	protected boolean validationRequired;
-	protected MultiYearScope multiYearScope;
-	protected String defaultValue;
-	protected boolean allowCustomValue;
+	private String category;
+	private AuditQuestion question;
+	private AuditType auditType;
+	private OshaType oshaType;
+	private String label;
+	private String description;
+	private char comparision;
+	private boolean validationRequired;
+	private MultiYearScope multiYearScope;
+	private String defaultValue;
+	private boolean allowCustomValue;
 
 	public String getCategory() {
 		return category;
