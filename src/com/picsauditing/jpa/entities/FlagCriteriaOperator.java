@@ -71,6 +71,10 @@ public class FlagCriteriaOperator extends BaseTable {
 		return data;
 	}
 	
+	public void setData(List<FlagData> data) {
+		this.data = data;
+	}
+	
 	/**
 	 * Determine if a contractor's answer to this criteria should be flagged and
 	 * if so, what color. If the contractor criteria is not the same as the

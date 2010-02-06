@@ -70,6 +70,10 @@ public class FlagData extends BaseTable {
 	public FlagCriteriaOperator getOperatorCriteria() {
 		return operatorCriteria;
 	}
+	
+	public void setOperatorCriteria(FlagCriteriaOperator operatorCriteria) {
+		this.operatorCriteria = operatorCriteria;
+	}
 
 	@ManyToOne
 	@JoinColumns( {
@@ -79,5 +83,7 @@ public class FlagData extends BaseTable {
 		return contractorCriteria;
 	}
 	
-	
+	public void setContractorCriteria(FlagCriteriaContractor contractorCriteria) {
+		this.contractorCriteria = contractorCriteria;
+	}
 }
