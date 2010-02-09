@@ -23,7 +23,10 @@ function showExcelUpload() {
 <form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 	<div style="padding: 5px;">
 	<a href="RequestNewContractor.action" class="picsbutton">Request New Contractor</a>
-	<button class="picsbutton" onclick="showExcelUpload(); return false;" title="Opens in new window (please disable your popup blocker)">Import Excel File</button>
+	<s:if test="accountUsers.size() > 0">
+		<button class="picsbutton" onclick="showExcelUpload(); return false;" 
+			title="Opens in new window (please disable your popup blocker)">Import Excel File</button>
+	</s:if>
 	</div>
 </form>
 <s:include value="filters.jsp" />

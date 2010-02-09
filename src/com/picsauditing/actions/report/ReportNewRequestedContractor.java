@@ -100,7 +100,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				filter.setShowConAuditor(true);
 				filter.setShowState(true);
 				filter.setShowCountry(true);
-				List<AccountUser> accountUsers = accountUserDAO.findByUser(permissions.getUserId());
+				List<AccountUser> accountUsers = getAccountUsers();
 				if(accountUsers.size() > 0) {
 					List<Integer> accUsers = new ArrayList<Integer>();
 					for(AccountUser accountUser : accountUsers) {
@@ -269,5 +269,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("conID", "PICS ID", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("contractorName", "Contractor Name"));
 		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
+	}
+	
+	public List<AccountUser> getAccountUsers() {
+		return accountUserDAO.findByUser(permissions.getUserId());
 	}
 }
