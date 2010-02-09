@@ -8,23 +8,33 @@ function download() {
 	newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
 	popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
 }
+function showExcelUpload() {
+	url = 'ReportNewReqConImport.action';
+	title = 'Upload';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=300,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url,title,pars);
+	fileUpload.focus();
+}
 </script>
 </head>
 <body>
 <h1>Contractor Registration Request</h1>
 
-<div>
-<a href="RequestNewContractor.action">Request New Contractor</a>
-</div>
+<form id="test" action="ReportNewRequestedContractorImport.action" method="post">
+	<div style="padding: 5px;">
+	<a href="RequestNewContractor.action" class="picsbutton">Request New Contractor</a>
+	<button class="picsbutton" onclick="showExcelUpload(); return false;" title="Opens in new window (please disable your popup blocker)">Import Excel File</button>
+	</div>
+</form>
 <s:include value="filters.jsp" />
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
 <div class="right"><a class="excel" 
 	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
 		<s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
 		href="javascript: download();"
 		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
+</div>
+<div>
+<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 <table class="report">
 	<thead>

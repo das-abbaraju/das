@@ -80,7 +80,7 @@ function checkUserOther() {
 			</s:if>
 		</li>
 		<li><label for="saveContractorForm_newContractor_taxID">Tax
-			ID:</label> <s:textfield name="newContractor.taxID" size="20" /></li>
+			ID:</label> <s:textfield name="newContractor.taxID" size="9" maxLength="9" /></li>
 		<s:if test="assignedCSR != null">
 			<li><label>Assigned PICS CSR:</label>
 				<s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/>
@@ -115,10 +115,7 @@ function checkUserOther() {
 				onchange="updateUsersList();" />
 			<span class="redMain">*</span>
 		</li>
-		<s:if test="newContractor.requestedByUser == null && newContractor.requestedByUserOther == null && newContractor.requestedBy.users != null">
-			<li id="loadUsersList"></li>
-		</s:if>
-		<s:else>
+		<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
 			<li id="loadUsersList">
 				<label>Requested By User:</label>
 				<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
@@ -129,6 +126,9 @@ function checkUserOther() {
 					<s:if test="newContractor.requestedByUser != null && newContractor.requestedBy.users != null">style="display:none;"</s:if>
 					value="<s:property value="newContractor.requestedByUserOther" />" />
 			</li>
+		</s:if>
+		<s:else>
+			<li id="loadUsersList"></li>
 		</s:else>
 		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
