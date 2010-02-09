@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -21,11 +22,12 @@ public class FlagCriteria extends BaseTable {
 	private AuditQuestion question;
 	private AuditType auditType;
 	private OshaType oshaType;
+	private String oshaRateType;
 	private String label;
 	private String description;
 	private char comparision;
-	private boolean validationRequired;
 	private MultiYearScope multiYearScope;
+	protected boolean validationRequired;
 	private String defaultValue;
 	private boolean allowCustomValue;
 
@@ -67,6 +69,14 @@ public class FlagCriteria extends BaseTable {
 		this.oshaType = oshaType;
 	}
 
+	public String getOshaRateType() {
+		return oshaRateType;
+	}
+
+	public void setOshaRateType(String oshaRateType) {
+		this.oshaRateType = oshaRateType;
+	}
+
 	public String getLabel() {
 		return label;
 	}
@@ -91,14 +101,6 @@ public class FlagCriteria extends BaseTable {
 		this.comparision = comparision;
 	}
 
-	public boolean isValidationRequired() {
-		return validationRequired;
-	}
-
-	public void setValidationRequired(boolean validationRequired) {
-		this.validationRequired = validationRequired;
-	}
-
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
 	@Enumerated(EnumType.STRING)
 	public MultiYearScope getMultiYearScope() {
@@ -107,6 +109,14 @@ public class FlagCriteria extends BaseTable {
 
 	public void setMultiYearScope(MultiYearScope multiYearScope) {
 		this.multiYearScope = multiYearScope;
+	}
+	
+	public boolean isValidationRequired() {
+		return validationRequired;
+	}
+
+	public void setValidationRequired(boolean validationRequired) {
+		this.validationRequired = validationRequired;
 	}
 
 	public String getDefaultValue() {
