@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -19,7 +18,6 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -65,12 +63,13 @@ public class FacilityChanger {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-		
-		if(permissions.isOperatorCorporate()) {
-			// This could be controversial, but we're going to always approve if the operator adds them
+
+		if (permissions.isOperatorCorporate()) {
+			// This could be controversial, but we're going to always approve if
+			// the operator adds them
 			co.setWorkStatus("Y");
 		}
-		
+
 		co.setAuditColumns(permissions);
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
