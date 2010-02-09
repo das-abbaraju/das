@@ -18,6 +18,7 @@
 		<pattern>/Download*</pattern>
 		<pattern>/AuditDataUpload.action</pattern>
 		<pattern>/CertificateUpload.action</pattern>
+		<pattern>/ReportNewReqConImport.action</pattern>
 		<pattern>/user_edit.jsp</pattern>
 		<pattern>/exception_handler.jsp</pattern>
 		<pattern>/reasons.html</pattern>
