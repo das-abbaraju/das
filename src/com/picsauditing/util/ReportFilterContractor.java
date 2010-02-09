@@ -56,6 +56,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showDeactivationReason = false;
 	protected boolean showMinorityOwned = false;
 	protected boolean showWorkStatus = false;
+	protected boolean showInsuranceLimits = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -85,6 +86,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String deactivationReason;
 	protected int minorityQuestion = 0;
 	protected String workStatus;
+	protected String glEachOccurrence;
+	protected String glGeneralAggregate;
+	protected String alCombinedSingle;
+	protected String wcEachAccident;
+	protected String exEachOccurrence;
 
 	// private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO)
 	// SpringUtils.getBean("AuditQuestionDAO");
@@ -593,5 +599,55 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setWorkStatus(String workStatus) {
 		this.workStatus = workStatus;
+	}
+
+	// Insurance Limit Filters
+
+	public boolean isShowInsuranceLimits() {
+		return showInsuranceLimits;
+	}
+
+	public void setShowInsuranceLimits(boolean showInsuranceLimits) {
+		this.showInsuranceLimits = showInsuranceLimits;
+	}
+
+	public String getGlEachOccurrence() {
+		return glEachOccurrence;
+	}
+
+	public void setGlEachOccurrence(String glEachOccurence) {
+		this.glEachOccurrence = glEachOccurence.replaceAll("[^0-9]", "");
+	}
+
+	public String getGlGeneralAggregate() {
+		return glGeneralAggregate;
+	}
+
+	public void setGlGeneralAggregate(String glGeneralAggregate) {
+		this.glGeneralAggregate = glGeneralAggregate.replaceAll("[^0-9]", "");
+	}
+
+	public String getAlCombinedSingle() {
+		return alCombinedSingle;
+	}
+
+	public void setAlCombinedSingle(String alCombinedSingle) {
+		this.alCombinedSingle = alCombinedSingle.replaceAll("[^0-9]", "");
+	}
+
+	public String getWcEachAccident() {
+		return wcEachAccident;
+	}
+
+	public void setWcEachAccident(String wcEachAccident) {
+		this.wcEachAccident = wcEachAccident.replaceAll("[^0-9]", "");
+	}
+
+	public String getExEachOccurrence() {
+		return exEachOccurrence;
+	}
+
+	public void setExEachOccurrence(String exEachOccurence) {
+		this.exEachOccurrence = exEachOccurence.replaceAll("[^0-9]", "");
 	}
 }

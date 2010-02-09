@@ -664,6 +664,33 @@
 			headerKey=" " headerValue="- Deactivation Reason -" cssClass="forms"
 			name="filter.deactivationReason" /></div>
 	</s:if>
+	
+	<s:if test="filter.showInsuranceLimits">
+		<div class="filterOption">
+			<table>
+				<tr>
+					<td>GL Each Occurrence:</td>
+					<td><s:textfield name="filter.glEachOccurrence"/></td>
+				</tr>
+				<tr>
+					<td>GL General Aggregate:</td>
+					<td><s:textfield name="filter.glGeneralAggregate"/></td>
+				</tr>
+				<tr>
+					<td>AL Combined Single:</td>
+					<td><s:textfield name="filter.alCombinedSingle"/></td>
+				</tr>
+				<tr>
+					<td>WC Each Accident:</td>
+					<td><s:textfield name="filter.wcEachAccident"/></td>
+				</tr>
+				<tr>
+					<td>EX Each Occurrence:</td>
+					<td><s:textfield name="filter.exEachOccurrence"/></td>
+				</tr>
+			</table>
+		</div>	
+	</s:if>
 
 	<s:if test="filter.showConWithPendingAudits">
 		<br clear="all" />

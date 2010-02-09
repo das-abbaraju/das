@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -146,22 +145,6 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		return false;
 	}
 
-	public String getFormattedDollarAmount(String answer) {
-		String response = "$0";
-
-		try {
-			String temp = answer.replaceAll(",", "");
-			DecimalFormat decimalFormat = new DecimalFormat("$#,##0");
-
-			Long input = new Long(temp);
-
-			response = decimalFormat.format(input);
-		} catch (Exception e) {
-			// System.out.println("unable to format as money: " + answer);
-		}
-		return response;
-	}
-	
 	public Map<Integer, ContractorAuditOperator> getCaos() {
 		return caos;
 	}

@@ -30,6 +30,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		super.prepare();
 		if (permissions.getCorporateParent().size() > 0)
 			getFilter().setShowInParentCorporation(true);
+
+		getFilter().setShowInsuranceLimits(true);
 	}
 
 	@Override
@@ -77,8 +79,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	public String execute() throws Exception {
-		//getFilter().setPrimaryInformation(true);
-		//getFilter().setTradeInformation(true);
+		// getFilter().setPrimaryInformation(true);
+		// getFilter().setTradeInformation(true);
 		getFilter().setShowMinorityOwned(true);
 
 		if (button != null && id > 0) {

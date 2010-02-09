@@ -55,6 +55,7 @@
 		<s:if test="showTrade">
 			<td>Trade</td>
 		</s:if>
+		<td>Insurance</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -109,7 +110,24 @@
 			<s:if test="showTrade">
 				<td><s:property value="get('main_trade')"/></td>
 			</s:if>
-			</tr>
+			<td>
+				<s:if test="get('answer2074') != null">
+					<span style="font-size: 9px;">GL Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2074'))"/></span> <br/>
+				</s:if>
+				<s:if test="get('answer2079') != null">
+					<span style="font-size: 9px;">GL General Aggregate = <s:property value="getFormattedDollarAmount(get('answer2079'))"/></span> <br/>
+				</s:if>
+				<s:if test="get('answer2155') != null">
+					<span style="font-size: 9px;">AL Combined Single = <s:property value="getFormattedDollarAmount(get('answer2155'))"/></span> <br/>
+				</s:if>
+				<s:if test="get('answer2149') != null">
+					<span style="font-size: 9px;">WC Each Accident = <s:property value="getFormattedDollarAmount(get('answer2149'))"/></span> <br/>
+				</s:if>
+				<s:if test="get('answer2161') != null">
+					<span style="font-size: 9px;">EX Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2161'))"/></span>
+				</s:if>
+			</td>
+		</tr>
 	</s:iterator>
 </table>
 <div>

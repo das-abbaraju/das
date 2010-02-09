@@ -301,4 +301,20 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	public void setMsg(String message) {
 		addActionMessage(message);
 	}
+
+	public String getFormattedDollarAmount(String answer) {
+		String response = "$0";
+	
+		try {
+			String temp = answer.replaceAll(",", "");
+			DecimalFormat decimalFormat = new DecimalFormat("$#,##0");
+	
+			Long input = new Long(temp);
+	
+			response = decimalFormat.format(input);
+		} catch (Exception e) {
+			// System.out.println("unable to format as money: " + answer);
+		}
+		return response;
+	}
 }

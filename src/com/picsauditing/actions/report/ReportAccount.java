@@ -118,6 +118,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	// TODO make this method final
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -146,6 +147,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected String returnResult() throws IOException {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();
@@ -362,6 +364,31 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
 			sql.addWhere("gc.workStatus = '" + getFilter().getWorkStatus() + "'");
+		}
+
+		if (getFilter().isShowInsuranceLimits()) {
+			if (filterOn(getFilter().getGlEachOccurrence())) {
+				sql.addAuditQuestion(2074, 13, true);
+				sql.addWhere("REPLACE(q2074.answer,',','') > " + getFilter().getGlEachOccurrence());
+			}
+			if (filterOn(getFilter().getGlGeneralAggregate())) {
+				sql.addAuditQuestion(2079, 13, true);
+				sql.addWhere("REPLACE(q2079.answer,',','') > " + getFilter().getGlGeneralAggregate());
+			}
+			if (filterOn(getFilter().getAlCombinedSingle())) {
+				sql.addAuditQuestion(2155, 15, true);
+				sql.addWhere("REPLACE(q2155.answer,',','') > " + getFilter().getAlCombinedSingle());
+			}
+			if (filterOn(getFilter().getWcEachAccident())) {
+				sql.addAuditQuestion(2149, 14, true);
+				sql.addWhere("REPLACE(q2149.answer,',','') > " + getFilter().getWcEachAccident());
+			}
+			if (filterOn(getFilter().getExEachOccurrence())) {
+				sql.addAuditQuestion(2161, 16, true);
+				sql.addWhere("REPLACE(q2161.answer,',','') > " + getFilter().getExEachOccurrence());
+			}
+			
+			sql.addGroupBy("a.id");
 		}
 	}
 
