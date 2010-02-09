@@ -3,8 +3,6 @@ package com.picsauditing.util.chart;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import org.apache.commons.beanutils.LazyDynaBean;
-
 public class MultiSeriesConverterHistogram extends MultiSeriesConverter {
 	protected float minCategory = 0;
 	protected float maxCategory = 100;
@@ -23,7 +21,7 @@ public class MultiSeriesConverterHistogram extends MultiSeriesConverter {
 				categoryValue += categoryDifference;
 			}
 		}
-		
+
 		// Create all of the series
 		for (DataRow row : data) {
 			if (!chart.getDataSets().containsKey(row.getIndex())) {
@@ -36,18 +34,18 @@ public class MultiSeriesConverterHistogram extends MultiSeriesConverter {
 		// Add the values into the series and categories
 		for (DataRow row : data) {
 			Set set = new Set(row);
-			
+
 			// Convert string values like ".2" to "0.2"
 			String label = row.getLabel();
 			label = df.format(Float.parseFloat(label));
 			set.setIndex(label);
 			set.setLabel(label);
-			
+
 			// TODO Handle values outside the range (optional)
 			chart.getDataSet(row.getSeries()).addSet(set);
 		}
 	}
-	
+
 	public float getMinCategory() {
 		return minCategory;
 	}

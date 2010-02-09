@@ -2,8 +2,6 @@ package com.picsauditing.util.chart;
 
 import java.util.List;
 
-import org.apache.commons.beanutils.LazyDynaBean;
-
 public class MultiSeriesConverter {
 	protected ChartMultiSeries chart;
 
@@ -17,7 +15,7 @@ public class MultiSeriesConverter {
 				chart.addCategory(category);
 			}
 		}
-		
+
 		// Create all of the series
 		for (DataRow row : data) {
 			if (!chart.getDataSets().containsKey(row.getSeries())) {
@@ -26,7 +24,7 @@ public class MultiSeriesConverter {
 				chart.addDataSet(dataSet);
 			}
 		}
-		
+
 		// Add the values into the series and categories
 		for (DataRow row : data) {
 			Set set = new Set(row);

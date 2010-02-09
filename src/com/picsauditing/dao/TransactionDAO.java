@@ -6,12 +6,11 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.Transaction;
 
 @Transactional
 public class TransactionDAO extends PicsDAO {
-	
+
 	public Transaction save(Transaction o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -42,5 +41,4 @@ public class TransactionDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	
 }

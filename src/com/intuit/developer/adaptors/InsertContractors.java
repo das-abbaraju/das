@@ -11,8 +11,6 @@ import javax.xml.bind.Unmarshaller;
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.quickbooks.qbxml.CustomerAdd;
 import com.picsauditing.quickbooks.qbxml.CustomerAddRqType;
 import com.picsauditing.quickbooks.qbxml.CustomerAddRsType;
@@ -28,12 +26,13 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 		String country = currentSession.getCountry();
 		String where = " AND";
-		if(country.equals("CA")) 
+		if (country.equals("CA"))
 			where += " a.country.isoCode = 'CA'";
-		else 
+		else
 			where += " a.country.isoCode != 'CA'";
-		
-		List<ContractorAccount> contractors = getContractorDao().findWhere("a.qbSync = true and a.qbListID is null" + where);
+
+		List<ContractorAccount> contractors = getContractorDao().findWhere(
+				"a.qbSync = true and a.qbListID is null" + where);
 
 		// no work to do
 		if (contractors.size() == 0) {
@@ -70,7 +69,8 @@ public class InsertContractors extends CustomerAdaptor {
 				customerAddRequest.setCustomerAdd(customer);
 
 				customer.setName(contractor.getIdString());
-				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew())).toString());
+				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
+						.toString());
 
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 
@@ -80,15 +80,17 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setLastName(nullSafeSubString(getLastName(contractor.getPrimaryContact().getName()), 0, 25));
 
 				customer.setBillAddress(factory.createBillAddress());
-				
+
 				customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
 				customer.setEmail(contractor.getPrimaryContact().getEmail());
-				
-				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 41));
-				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getPhone()));
+
+				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
+						.getName(), 0, 41));
+				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
+						.getPhone()));
 
 				customer.setTermsRef(factory.createTermsRef());
 				customer.getTermsRef().setFullName("Net 30");

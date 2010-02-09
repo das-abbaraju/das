@@ -4,34 +4,35 @@ import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 
 public class PermissionToViewContractor {
 	private int id;
 	private Permissions permissions = null;
-	
+
 	private List<ContractorOperator> operators;
 	private List<ContractorAudit> activeAudits;
-	
+
 	/**
 	 * 
-	 * @param id Contractor ID
-	 * @param permissions Currently logged in user
+	 * @param id
+	 *            Contractor ID
+	 * @param permissions
+	 *            Currently logged in user
 	 */
 	public PermissionToViewContractor(int id, Permissions permissions) {
 		this.id = id;
 		this.permissions = permissions;
 	}
-	
+
 	public boolean check(boolean limitedView) {
 		if (id == 0)
 			return false;
-		
+
 		if (permissions == null)
 			return false;
-		
+
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return true;
 
@@ -44,10 +45,10 @@ public class PermissionToViewContractor {
 			// and looking at their summary page, then it's OK
 			return true;
 
-		else if(!permissions.hasPermission(OpPerms.ContractorDetails)) {
+		else if (!permissions.hasPermission(OpPerms.ContractorDetails)) {
 			return false;
 		}
-		
+
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			// If we want to look at their detail, like PQF data
 			// Then we have to add them first (generalContractors).
@@ -68,8 +69,7 @@ public class PermissionToViewContractor {
 
 		for (ContractorAudit audit : activeAudits) {
 			if (audit.getAuditor() != null && audit.getAuditor().getId() == permissions.getUserId())
-				if (audit.getAuditStatus().isPendingSubmitted()
-						|| audit.getAuditStatus().isIncomplete())
+				if (audit.getAuditStatus().isPendingSubmitted() || audit.getAuditStatus().isIncomplete())
 					return true;
 		}
 
@@ -83,6 +83,5 @@ public class PermissionToViewContractor {
 	public void setActiveAudits(List<ContractorAudit> activeAudits) {
 		this.activeAudits = activeAudits;
 	}
-	
 
 }

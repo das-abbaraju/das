@@ -2,7 +2,6 @@ package com.picsauditing.dao;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 
 @Transactional
@@ -15,14 +14,15 @@ public class AuditSubCategoryDAO extends PicsDAO {
 		}
 		return o;
 	}
+
 	public void remove(int id) {
 		AuditSubCategory row = find(id);
-        if (row != null) {
-            em.remove(row);
-        }
-    }
-	
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
 	public AuditSubCategory find(int id) {
-        return em.find(AuditSubCategory.class, id);
-    }
+		return em.find(AuditSubCategory.class, id);
+	}
 }

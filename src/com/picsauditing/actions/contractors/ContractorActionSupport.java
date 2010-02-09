@@ -25,7 +25,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -124,8 +123,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
 
-		if(!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))
-		{			
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the PQF
 			List<ContractorAudit> pqfs = new ArrayList<ContractorAudit>();
 
@@ -154,8 +152,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + pqfs.size() + "] PQFs");
 		}
 
-		if(!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))
-		{ // Add the Annual Updates
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
+																									// the
+																									// Annual
+																									// Updates
 			MenuComponent subMenu = new MenuComponent("Annual Update", "ConAnnualUpdates.action?id=" + id);
 			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
@@ -178,7 +178,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] Annual Updates");
 		}
 
-		if (isRequiresInsurance() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
+		if (isRequiresInsurance()
+				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance))) {
 			// Add InsureGUARD
 			MenuComponent subMenu = new MenuComponent("InsureGUARD&trade;", "ConInsureGUARD.action?id=" + id);
 			menu.add(subMenu);
@@ -199,7 +200,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] Policies");
 		}
 
-		if (isRequiresIntegrityManagement() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
+		if (isRequiresIntegrityManagement()
+				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add Integrity Management
 			MenuComponent subMenu = new MenuComponent("IM", "ConIntegrityManagement.action?id=" + id);
 			menu.add(subMenu);
@@ -236,8 +238,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] COR Audits");
 		}
 
-		if(!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))
-		{ // Add All Other Audits
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
+																									// All
+																									// Other
+																									// Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {
@@ -418,7 +422,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorOperator> getActiveOperators() {
 		if (activeOperators == null)
-			activeOperators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.status IN ('Active','Demo') ");
+			activeOperators = accountDao.findOperators(contractor, permissions,
+					" AND operatorAccount.status IN ('Active','Demo') ");
 		return activeOperators;
 	}
 

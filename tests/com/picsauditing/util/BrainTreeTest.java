@@ -6,15 +6,13 @@ import junit.framework.TestCase;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentMethod;
 
 public class BrainTreeTest extends TestCase {
 	public BrainTreeTest(String name) {
 		super(name);
 	}
-	
+
 	public void testPayment() {
 		BrainTreeService service = new BrainTreeService();
 		service.setUserName("testapi");
@@ -45,7 +43,8 @@ public class BrainTreeTest extends TestCase {
 
 	public void testHashGenerator3() {
 		// Used values from http://tools.getbraintree.com/hasher
-		String hash = BrainTree.buildHash("", "", "1", "0", "", "", "891", "20090120054536", "UVgCejU48ANga4mKF77WFXfm2yUve76W");
+		String hash = BrainTree.buildHash("", "", "1", "0", "", "", "891", "20090120054536",
+				"UVgCejU48ANga4mKF77WFXfm2yUve76W");
 		assertEquals("b91b1cba19380839575c68ffdf6434d8", hash);
 	}
 

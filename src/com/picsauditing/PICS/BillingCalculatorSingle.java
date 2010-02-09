@@ -18,7 +18,6 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.User;
 
 public class BillingCalculatorSingle {
@@ -133,7 +132,8 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Create a list of fees that this contractor should be charge for. The following contractor fields are used:
+	 * Create a list of fees that this contractor should be charge for. The
+	 * following contractor fields are used:
 	 * <ul>
 	 * <li>membershipDate</li>
 	 * <li>newMembershipLevel</li>
@@ -258,7 +258,8 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Return TRUE if any one of the items is for a Fee Class = "Membership" and the amount isn't prorated
+	 * Return TRUE if any one of the items is for a Fee Class = "Membership" and
+	 * the amount isn't prorated
 	 * 
 	 * @param items
 	 * @return

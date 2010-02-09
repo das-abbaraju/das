@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,12 +43,12 @@ public class AuditDataDAOTest {
 		int questionID = 48;
 		int auditID = 3259;
 		int auditorID = 744;
-		
+
 		// remove any old data before starting the test
 		ArrayList<Integer> questions = new ArrayList<Integer>();
 		questions.add(questionID);
 		AnswerMap existingData = auditdataDAO.findAnswers(auditID, questions);
-		
+
 		if (existingData.get(questionID) != null)
 			auditdataDAO.remove(existingData.get(questionID).getId());
 
@@ -83,11 +82,12 @@ public class AuditDataDAOTest {
 		assertEquals("Yes", auditdata.getAnswer());
 	}
 
-	//@Test
+	// @Test
 	public void testCascadeDelete() {
-		//AuditData answer = auditdataDAO.find( 2300347 );
+		// AuditData answer = auditdataDAO.find( 2300347 );
 		auditdataDAO.remove(2302497);
 	}
+
 	// @Test
 	public void testFindAnswers() {
 		List<Integer> questionid = new LinkedList<Integer>();
@@ -108,13 +108,14 @@ public class AuditDataDAOTest {
 		Map<Integer, Map<String, AuditData>> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
 		assertEquals(2, data.size());
 	}
-	
+
 	// @Test
 	public void findCustomAnswers() {
 		List<AuditData> list = auditdataDAO.findCustomPQFVerifications(1687);
-		//for(AuditData data : list) {
-		//	System.out.println(data.getQuestion().getQuestion() + ": " + data.getAnswer());
-		//}
+		// for(AuditData data : list) {
+		// System.out.println(data.getQuestion().getQuestion() + ": " +
+		// data.getAnswer());
+		// }
 		assertEquals(3, list.size());
 	}
 

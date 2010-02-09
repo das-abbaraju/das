@@ -37,7 +37,6 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -201,7 +200,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		calculator.setAcaList(acaList);
 		calculator.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
 		calculator.setHasCOR(contractor.isCOR(auditDataDAO));
-		
+
 		PicsLogger.start("CaoStatus");
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getClassType().isPolicy()) {
@@ -295,7 +294,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return false;
 	}
-	
+
 	public boolean isOshaDartUsed() {
 		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getDart().isRequired())
@@ -303,7 +302,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return false;
 	}
-	
+
 	public boolean isOshaSeverityUsed() {
 		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getSeverity().isRequired())
@@ -311,7 +310,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return false;
 	}
-	
+
 	public boolean isOshaAveragesUsed() {
 		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
 			if (criteria.getFatalities().isTimeAverage())
@@ -320,9 +319,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				return true;
 			if (criteria.getTrir().isTimeAverage())
 				return true;
-			if(criteria.getDart().isTimeAverage())
+			if (criteria.getDart().isTimeAverage())
 				return true;
-			if(criteria.getNeer().isTimeAverage())
+			if (criteria.getNeer().isTimeAverage())
 				return true;
 		}
 		return false;
@@ -401,7 +400,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public AuditCatData getAuditCatData(int auditID, int questionID) {
 		AuditQuestion auditQuestion = auditQuestionDAO.find(questionID);
-		if(isCanSeeAudit(auditQuestion.getAuditType())) {
+		if (isCanSeeAudit(auditQuestion.getAuditType())) {
 			int catID = auditQuestion.getSubCategory().getCategory().getId();
 			List<AuditCatData> aList = auditCategoryDataDAO.findAllAuditCatData(auditID, catID);
 			if (aList != null && aList.size() > 0) {
@@ -420,13 +419,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		else
 			return AuditCategory.OSHA_AUDIT;
 	}
-	
+
 	public boolean isCanSeeAudit(AuditType auditType) {
-		if(permissions.isContractor() 
-				&& auditType.isCanContractorView())
+		if (permissions.isContractor() && auditType.isCanContractorView())
 			return true;
-		if(permissions.hasPermission(OpPerms.ContractorDetails))
+		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			return true;
-		return false;	
+		return false;
 	}
 }

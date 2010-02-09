@@ -2,9 +2,7 @@ package com.picsauditing.actions.customerservice;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -60,7 +58,7 @@ public class AuditorInvoices extends PicsActionSupport {
 		cal.add(Calendar.MONTH, -7);
 		list = auditDAO.findAuditorBatches(auditorID, cal.getTime());
 	}
-	
+
 	public int getTotal() {
 		int total = 0;
 		for (ContractorAudit conAudit : auditList) {
@@ -68,7 +66,7 @@ public class AuditorInvoices extends PicsActionSupport {
 		}
 		return total;
 	}
-	
+
 	public List getList() {
 		return list;
 	}

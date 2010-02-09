@@ -3,7 +3,6 @@ package com.picsauditing.mail;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
@@ -34,14 +33,16 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 			SelectSQL sql = new SelectSQL();
 
 			sql.setFromTable("accounts a");
-			// Only send out results on the contractors in the general contractor table that have approved work status
+			// Only send out results on the contractors in the general
+			// contractor table that have approved work status
 			sql.addJoin("JOIN flags f1 ON a.id = f1.conID AND f1.opID = " + o.getId());
 			sql.addJoin("JOIN flag_archive f2 ON f1.conID = f2.conID AND f1.opID = f2.opID AND f1.flag <> f2.flag");
 			sql.addJoin("JOIN generalcontractors gc ON f1.conID = gc.subID AND f1.opID = gc.genID");
 			sql.addJoin("JOIN operators o ON gc.genID = o.id");
-			
+
 			sql.addWhere("f2.creationDate = '" + df.format(timePeriod.getComparisonDate()) + "'");
-			sql.addWhere("((o.approvesRelationships = 'Yes' AND gc.workStatus = 'Y') OR (o.approvesRelationships = 'No'))");
+			sql
+					.addWhere("((o.approvesRelationships = 'Yes' AND gc.workStatus = 'Y') OR (o.approvesRelationships = 'No'))");
 
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");

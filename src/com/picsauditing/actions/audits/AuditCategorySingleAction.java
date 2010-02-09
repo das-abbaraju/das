@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.AuditPercentCalculator;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -33,7 +32,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	protected CertificateDAO certificateDao;
 	protected AuditBuilder auditBuilder;
 	private boolean hasStatusChanged = false;
-	
+
 	protected int opID;
 	protected ContractorAuditOperatorDAO caoDAO;
 
@@ -48,10 +47,10 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 	}
 
 	public String execute() throws Exception {
-		
+
 		if (auditStatus != null)
 			hasStatusChanged = true;
-		
+
 		// Calculate and set the percent complete
 		if (conAudit.getLastRecalculation() == null) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
@@ -63,7 +62,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 		if ("Submit".equals(button)) {
 			hasStatusChanged = true;
-			if(conAudit.getPercentComplete() < 100) {
+			if (conAudit.getPercentComplete() < 100) {
 				addActionError("Please complete the audit before you submit");
 				return SUCCESS;
 			}
@@ -83,14 +82,14 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 							+ "</strong> policy is not complete. Please enter all required answers before submitting.");
 				}
 			} else if (conAudit.getAuditType().isPqf()) {
-					if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
-						// If the PQF is being resubmitted, but it's already 
-						// verified and active, we don't need to reverify
-						auditStatus = AuditStatus.Active;
-					} else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
-						auditStatus = AuditStatus.Resubmitted;
-					else
-						auditStatus = AuditStatus.Submitted;
+				if (conAudit.getAuditStatus().isActive() && conAudit.getPercentVerified() == 100) {
+					// If the PQF is being resubmitted, but it's already
+					// verified and active, we don't need to reverify
+					auditStatus = AuditStatus.Active;
+				} else if (conAudit.getAuditStatus().isActiveResubmittedExempt())
+					auditStatus = AuditStatus.Resubmitted;
+				else
+					auditStatus = AuditStatus.Submitted;
 			} else if (conAudit.getAuditType().isHasRequirements() || conAudit.getAuditType().isMustVerify())
 				auditStatus = AuditStatus.Submitted;
 			else
@@ -118,7 +117,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			}
 		}
 
-		if(!hasStatusChanged)
+		if (!hasStatusChanged)
 			return SUCCESS;
 
 		// We're changing the status
@@ -140,8 +139,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 		if (auditStatus.equals(AuditStatus.Submitted)) {
 			String notes = "";
-			if (conAudit.getAuditType().isPqf() ||
-					conAudit.getAuditType().isAnnualAddendum()) {
+			if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum()) {
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(13); // Audits Thank You
 				emailBuilder.setPermissions(permissions);
@@ -149,7 +147,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				EmailSender.send(emailBuilder.build());
 
 				notes = " Submitted " + conAudit.getAuditType().getAuditName();
-				notes += " and email sent to "+ emailBuilder.getSentTo();
+				notes += " and email sent to " + emailBuilder.getSentTo();
 			}
 			int typeID = conAudit.getAuditType().getId();
 			if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
@@ -165,17 +163,16 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setConAudit(conAudit);
 				EmailSender.send(emailBuilder.build());
 
-				notes = conAudit.getAuditType().getAuditName()
-						+ " Submission email sent for outstanding requirements.";
+				notes = conAudit.getAuditType().getAuditName() + " Submission email sent for outstanding requirements.";
 			} else {
 				notes = conAudit.getAuditType().getAuditName() + " Submitted";
 			}
-			
-			if(!Strings.isEmpty(conAudit.getAuditFor()))
+
+			if (!Strings.isEmpty(conAudit.getAuditFor()))
 				notes += " for " + conAudit.getAuditFor();
 			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
 		}
-		
+
 		if (auditStatus.equals(AuditStatus.Active)) {
 			if (conAudit.getAuditType().isHasRequirements()) {
 				EmailBuilder emailBuilder = new EmailBuilder();
@@ -184,7 +181,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setConAudit(conAudit);
 				EmailSender.send(emailBuilder.build());
 			}
-			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the " + conAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the "
+					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits);
 		}
 
 		conAudit.changeStatus(auditStatus, getUser());
@@ -207,8 +205,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			return false;
 		if (conAudit.getPercentComplete() < 100)
 			return false;
-		if (conAudit.getAuditStatus().isPending() 
-				|| conAudit.getAuditStatus().isIncomplete()) {
+		if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
 			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
 				return false;
 			}
@@ -244,7 +241,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 			return true;
 		return false;
 	}
-	
+
 	public List<Certificate> getCertificates() {
 		return certificateDao.findByConId(contractor.getId(), permissions, false);
 	}

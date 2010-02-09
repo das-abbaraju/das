@@ -1,10 +1,7 @@
 package com.picsauditing.util.chart;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class DataSet extends AbstractElement {
 	protected String seriesName;
@@ -14,7 +11,7 @@ public class DataSet extends AbstractElement {
 	protected Boolean showValues = true;
 	protected Boolean dashed;
 	protected Boolean includeInLegend = true;
-	
+
 	protected Map<String, Category> categories;
 	protected Map<String, Set> sets = new HashMap<String, Set>();
 
@@ -30,7 +27,7 @@ public class DataSet extends AbstractElement {
 		append(xml, "dashed", dashed);
 		append(xml, "includeInLegend", includeInLegend);
 		xml.append(">");
-		
+
 		for (String category : categories.keySet()) {
 			Set set = sets.get(category);
 			if (set == null)
@@ -45,7 +42,7 @@ public class DataSet extends AbstractElement {
 	public void setCategories(Map<String, Category> categories) {
 		this.categories = categories;
 	}
-	
+
 	public Map<String, Set> getSets() {
 		return sets;
 	}
@@ -54,7 +51,6 @@ public class DataSet extends AbstractElement {
 		this.sets = sets;
 	}
 
-	
 	public void addSet(Set set) {
 		sets.put(set.getIndex(), set);
 	}

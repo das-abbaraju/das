@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -37,7 +36,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	protected String name;
 	protected String nameIndex;
-//	private char active;
+	// private char active;
 	protected AccountStatus status = AccountStatus.Pending;
 	protected String dbaName;
 	protected String address;
@@ -231,34 +230,34 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public void setNaicsValid(boolean naicsValid) {
 		this.naicsValid = naicsValid;
 	}
-	
+
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public AccountStatus getStatus() {
 		return status;
 	}
-	
+
 	public void setStatus(AccountStatus status) {
 		this.status = status;
 	}
 
-//	@Deprecated
-//	@Column(nullable = false, length = 1)
-//	public char getActive() {
-//		return this.active;
-//	}
-//
-//	@Deprecated
-//	public void setActive(char active) {
-//		this.active = active;
-//	}
-//
-//	@Deprecated
-//	@Transient
-//	public boolean isActiveB() {
-//		return active == 'Y';
-//	}
+	// @Deprecated
+	// @Column(nullable = false, length = 1)
+	// public char getActive() {
+	// return this.active;
+	// }
+	//
+	// @Deprecated
+	// public void setActive(char active) {
+	// this.active = active;
+	// }
+	//
+	// @Deprecated
+	// @Transient
+	// public boolean isActiveB() {
+	// return active == 'Y';
+	// }
 
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into
@@ -331,7 +330,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	}
 
 	@OneToMany(mappedBy = "account")
-	@OrderBy(clause="id ASC")
+	@OrderBy(clause = "id ASC")
 	public List<User> getUsers() {
 		return users;
 	}
@@ -349,7 +348,6 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 		this.accountUsers = accountUsers;
 	}
 
-	
 	@Transient
 	public boolean isAdmin() {
 		return id == PicsID;
@@ -372,13 +370,14 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	/**
 	 * Is Operator or Corporate
+	 * 
 	 * @return
 	 */
 	@Transient
 	public boolean isOperatorCorporate() {
 		return isOperator() || isCorporate();
 	}
-	
+
 	// Updated to reflect status instead of active
 	@Transient
 	public boolean isDemo() {
@@ -463,7 +462,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public void setPrimaryContact(User user) {
 		this.primaryContact = user;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name + "(" + id + ")";

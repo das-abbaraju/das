@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityExistsException;
 
-import org.hibernate.exception.ConstraintViolationException;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
@@ -39,15 +37,15 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 
 	public String execute() throws NoRightsException {
 		getPermissions();
-		
+
 		if (button == null) {
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.setTemplateID(0);
-			
+
 			emailTemplateDAO.clear(); // don't save
 			return SUCCESS;
 		}
-		
+
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
 			addActionError("You don't have permission to change this template");

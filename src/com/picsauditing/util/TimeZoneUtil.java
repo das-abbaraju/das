@@ -2,9 +2,7 @@ package com.picsauditing.util;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 public class TimeZoneUtil {
@@ -49,20 +47,20 @@ public class TimeZoneUtil {
 
 	static public List<TimeZoneOption> getTimeZoneSelector() {
 		List<TimeZoneOption> timezones = new ArrayList<TimeZoneOption>();
-		
+
 		Date today = new Date();
-		for(TimeZone tz : getTimeZones()) {
+		for (TimeZone tz : getTimeZones()) {
 			timezones.add(new TimeZoneOption(tz.getID(), getDisplayName(tz, today)));
 		}
-		
+
 		return timezones;
-		
+
 	}
-	
+
 	static public class TimeZoneOption {
 		public String key;
 		public String value;
-		
+
 		public TimeZoneOption(String tzShort, String tzLong) {
 			this.key = tzShort;
 			this.value = tzLong;

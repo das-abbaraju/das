@@ -11,7 +11,6 @@ import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
@@ -64,8 +63,10 @@ public class OpenAuditsMailer extends PicsActionSupport {
 			if (requiresAudit) {
 				nextID = conAudit.getId();
 				try {
-					//System.out.println("Sending openRequirements email to: (" + conAudit.getId() + ") "
-					//		+ conAudit.getContractorAccount().getName() + " " + conAudit.getAuditType().getAuditName());
+					// System.out.println("Sending openRequirements email to: ("
+					// + conAudit.getId() + ") "
+					// + conAudit.getContractorAccount().getName() + " " +
+					// conAudit.getAuditType().getAuditName());
 					emailBuilder.clear();
 					emailBuilder.setTemplate(6);
 					emailBuilder.setPermissions(permissions);
