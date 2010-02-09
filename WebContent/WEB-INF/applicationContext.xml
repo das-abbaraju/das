@@ -45,6 +45,7 @@
 	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
 	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
+	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
 	<bean id="FlagOshaCriteriaDAO" class="com.picsauditing.dao.FlagOshaCriteriaDAO"/>
 	<bean id="FlagQuestionCriteriaDAO" class="com.picsauditing.dao.FlagQuestionCriteriaDAO"/>
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
