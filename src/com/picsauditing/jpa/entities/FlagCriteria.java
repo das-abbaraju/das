@@ -24,7 +24,7 @@ public class FlagCriteria extends BaseTable {
 	private String oshaRateType;
 	private String label;
 	private String description;
-	private char comparision;
+	private String comparison;
 	private MultiYearScope multiYearScope;
 	protected boolean validationRequired;
 	private String defaultValue;
@@ -92,12 +92,12 @@ public class FlagCriteria extends BaseTable {
 		this.description = description;
 	}
 
-	public char getComparision() {
-		return comparision;
+	public String getComparison() {
+		return comparison;
 	}
 
-	public void setComparision(char comparision) {
-		this.comparision = comparision;
+	public void setComparison(String comparison) {
+		this.comparison = comparison;
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
