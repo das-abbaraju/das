@@ -17,7 +17,7 @@ public class FlagCriteriaDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public FlagCriteria find(String id) {
+	public FlagCriteria find(int id) {
 		return em.find(FlagCriteria.class, id);
 	}
 }
