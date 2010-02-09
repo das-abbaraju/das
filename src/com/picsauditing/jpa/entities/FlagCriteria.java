@@ -6,7 +6,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -110,7 +109,7 @@ public class FlagCriteria extends BaseTable {
 	public void setMultiYearScope(MultiYearScope multiYearScope) {
 		this.multiYearScope = multiYearScope;
 	}
-	
+
 	public boolean isValidationRequired() {
 		return validationRequired;
 	}
