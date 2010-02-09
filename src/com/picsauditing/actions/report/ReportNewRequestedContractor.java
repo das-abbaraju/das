@@ -121,16 +121,30 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		sql.addField("cr.id");
 		sql.addField("cr.name");
+		sql.addField("cr.contact AS Contact");
+		sql.addField("cr.phone AS Phone");
+		sql.addField("cr.email AS Email");
+		sql.addField("cr.taxID AS TaxID");
+		sql.addField("cr.address AS Address");
+		sql.addField("cr.city AS City");
+		sql.addField("cr.state AS State");
+		sql.addField("cr.zip AS Zip");
+		sql.addField("cr.country AS Country");
 		sql.addField("op.name AS RequestedBy");
+		sql.addField("op.id AS RequestedByID");
 		sql.addField("u.name AS RequestedUser");
+		sql.addField("u.id AS RequestedUserID");
+		sql.addField("cr.requestedByUser AS RequestedByUserOther");
 		sql.addField("cr.deadline");
 		sql.addField("uc.name AS ContactedBy");
+		sql.addField("uc.id AS ContactedByID");
 		sql.addField("cr.lastContactDate");
 		sql.addField("cr.contactCount");
 		sql.addField("cr.matchCount");
 		sql.addField("cr.handledBy");
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
+		sql.addField("cr.notes AS Notes");
 		
 		sql.addOrderBy("cr.deadline, cr.name");
 		addFilterToSQL();
@@ -226,13 +240,34 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.setData(data);
 
 		excelSheet.addColumn(new ExcelColumn("name", "Account Name"));
-		excelSheet.addColumn(new ExcelColumn("RequestedBy", "Requested By"));
+		excelSheet.addColumn(new ExcelColumn("Contact", "Contact Name"));
+		excelSheet.addColumn(new ExcelColumn("Phone", "Phone Number"));
+		excelSheet.addColumn(new ExcelColumn("Email", "Email Address"));
+		excelSheet.addColumn(new ExcelColumn("TaxID", "Tax ID"));
+		excelSheet.addColumn(new ExcelColumn("Address", "Address"));
+		excelSheet.addColumn(new ExcelColumn("City", "City"));
+		excelSheet.addColumn(new ExcelColumn("State", "State"));
+		excelSheet.addColumn(new ExcelColumn("Zip", "Zip", ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("Country", "Country"));
+		
+		if (!permissions.isOperatorCorporate()) {
+			excelSheet.addColumn(new ExcelColumn("RequestedByID", "Requested By", ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("RequestedUserID", "Requested By User", ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther", "Requested By User (Other)"));
+		}
+		
 		excelSheet.addColumn(new ExcelColumn("deadline", "Deadline Date", ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("ContactedBy", "Contacted By"));
+		
+		if (permissions.isOperatorCorporate())
+			excelSheet.addColumn(new ExcelColumn("ContactedBy", "Contacted By"));
+		else
+			excelSheet.addColumn(new ExcelColumn("ContactedByID", "Contacted By"));
+		
 		excelSheet.addColumn(new ExcelColumn("lastContactDate", "On", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("contactCount", "Attempts", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("matchCount", "Matches", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("conID", "PICS ID", ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("contractorName", "Contractor Name"));
+		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
 	}
 }
