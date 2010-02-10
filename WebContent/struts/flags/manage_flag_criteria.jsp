@@ -10,11 +10,32 @@
 <s:include value="../jquery.jsp"/>
 
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="js/jquery/dataTables/css/demo_table_jui.css"/>
 
 
 <script type="text/javascript">
 	function show(id) {
-		alert(id);
+		$.getJSON('ManageFlagCriteriaAjax.action', 
+				{'criteria.id': id}, 
+				function(data, result) {
+					alert(data);
+				}
+		);
+		$('#item').dialog({
+			title: 'Edit Flag Criteria',
+			width: '50%',
+			modal: true,
+			close: function() {
+				$(this).dialog('destroy');
+			},
+			buttons: {
+				'Save': function() {
+				},
+				'Cancel': function() {
+					$(this).dialog('close');
+				}
+			}
+		});
 	}
 
 	function save() {
@@ -22,34 +43,31 @@
 	}
 
 	$(function() {
-		$('table#criterialist').dataTable({bJQueryUI : true})		
+		$('table#criterialist').dataTable({bJQueryUI: true, sPaginationType: "full_numbers" });
 	});
 </script>
 
 </head>
 <body>
 <h1>Manage Flag Criteria</h1>
-<div id="list">
-	<table id="criterialist" class="report">
+<table id="criterialist" class="report" style="width:100%; margin-bottom: 0;">
 	<thead>
 		<tr>
 			<th>Category</th>
 			<th>Label</th>
 		</tr>
 	</thead>
-		<s:iterator value="criteriaList">
+	<s:iterator value="criteriaList">
 		<tr onclick="show(<s:property value="id"/>)">
 			<td><s:property value="category"/></td>
 			<td><s:property value="label"/></td>
 		</tr>
-		</s:iterator>
-	</table>
-</div>
+	</s:iterator>
+</table>
 
-<div id="item">
+<div id="item" style="display:none">
 	<form id="itemform">
-		<fieldset class="form">
-			<legend><span>Flag Criteria</span></legend>
+		<fieldset class="form" style="border: none">
 			<ol>
 				<li>
 					<label>Category:</label>
@@ -73,7 +91,7 @@
 					<s:textfield name="criteria.defaultValue"/>
 				</li>
 				<li>
-					<label>Custom Value Allowed:</label>
+					<label>Custom Value:</label>
 					<s:checkbox name="criteria.allowCustomValue"/>
 				</li>
 				
@@ -105,9 +123,6 @@
 					<s:checkbox name="criteria.validationRequired"/>
 				</li>
 			</ol>
-		</fieldset>
-		<fieldset class="form submit">
-			<input type="submit" class="picsbutton positive" value="Save" onclick="save(); return false;"/>
 		</fieldset>
 	</form>
 </div>

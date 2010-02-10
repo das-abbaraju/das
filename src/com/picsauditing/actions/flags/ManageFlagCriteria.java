@@ -2,6 +2,8 @@ package com.picsauditing.actions.flags;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -12,6 +14,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	private FlagCriteriaDAO criteriaDAO;
 
 	private FlagCriteria criteria;
+	private JSONObject json;
 
 	public ManageFlagCriteria(FlagCriteriaDAO criteriaDAO) {
 		this.criteriaDAO = criteriaDAO;
@@ -29,7 +32,15 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		if (!forceLogin())
 			return LOGIN_AJAX;
 
-		if ("save".equalsIgnoreCase(button)) {
+		if ("load".equals(button)) {
+			if (criteria != null) {
+				json = criteria.toJSON();
+			}
+
+			return JSON;
+		}
+
+		if ("save".equals(button)) {
 
 		}
 
@@ -46,6 +57,14 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 	public void setCriteria(FlagCriteria criteria) {
 		this.criteria = criteria;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
 	}
 
 }

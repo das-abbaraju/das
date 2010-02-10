@@ -11,6 +11,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.json.simple.JSONObject;
 
 @Entity
 @Table(name = "flag_criteria")
@@ -132,5 +133,29 @@ public class FlagCriteria extends BaseTable {
 
 	public void setAllowCustomValue(boolean allowCustomValue) {
 		this.allowCustomValue = allowCustomValue;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = new JSONObject();
+		json.put("category", category);
+		json.put("question", question);
+		json.put("auditType", auditType.toJSON());
+		json.put("oshaType", oshaType);
+		json.put("oshaRateType", oshaRateType);
+		json.put("label", label);
+		json.put("description", description);
+		json.put("comparison", comparison);
+		json.put("multiYearScope", multiYearScope);
+		json.put("validationRequired", validationRequired);
+		json.put("defaultValue", defaultValue);
+		json.put("allowCustomValue", allowCustomValue);
+
+		if (full) {
+			json.putAll(super.toJSON(full));
+		}
+
+		return json;
 	}
 }
