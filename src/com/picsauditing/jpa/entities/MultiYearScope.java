@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum MultiYearScope {
-	LastYearOnly("Last Year Only"), 
+	LastYearOnly("Last Year Only"),
+	TwoYearsOnly("Two Years Only"),
+	ThreeYearsOnly("Three Years Only"), 
 	ThreeYearAverage("Three Year Average"), 
 	AllThreeYears("All Three Years");
 	
