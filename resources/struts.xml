@@ -1376,6 +1376,16 @@
 			class="com.picsauditing.actions.operators.FlagOshaCriteriaAction">
 			<result>struts/operators/op_oshaflag_criteria_view.jsp</result>
 		</action>
+		
+		<!-- Flags -->
+		<action name="ManageFlagCriteria"
+			class="com.picsauditing.actions.flags.ManageFlagCriteria">
+			<result>struts/flags/manage_flag_criteria.jsp</result>	
+		</action>
+		<action name="ManageFlagCriteriaAjax"
+			class="com.picsauditing.actions.flags.ManageFlagCriteria">
+			<result>struts/flags/manage_flag_criteria.jsp</result>	
+		</action>
 
 		<!-- Customer Service -->
 		
