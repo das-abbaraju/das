@@ -30,6 +30,12 @@ public class FlagCriteria extends BaseTable {
 	protected boolean validationRequired;
 	private String defaultValue;
 	private boolean allowCustomValue;
+	private String dataType;
+	
+	public static final String BOOLEAN = "boolean";
+	public static final String NUMBER = "number";
+	public static final String DATE = "date";
+	public static final String STRING = "string";
 
 	public String getCategory() {
 		return category;
@@ -134,7 +140,15 @@ public class FlagCriteria extends BaseTable {
 	public void setAllowCustomValue(boolean allowCustomValue) {
 		this.allowCustomValue = allowCustomValue;
 	}
-
+	
+	public String getDataType() {
+		return dataType;
+	}
+	
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
