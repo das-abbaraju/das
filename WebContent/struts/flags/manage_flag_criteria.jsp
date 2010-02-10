@@ -16,9 +16,11 @@
 <script type="text/javascript">
 	function show(id) {
 		$.getJSON('ManageFlagCriteriaAjax.action', 
-				{'criteria.id': id}, 
+				{'criteria.id': id, button: 'load'}, 
 				function(data, result) {
-					alert(data);
+					$.each(data, function (i,v) {
+						$('form [name=criteria.'+i+']').val(v);
+					});
 				}
 		);
 		$('#item').dialog({
@@ -68,6 +70,7 @@
 <div id="item" style="display:none">
 	<form id="itemform">
 		<fieldset class="form" style="border: none">
+		<s:hidden name="criteria.id"/>
 			<ol>
 				<li>
 					<label>Category:</label>
@@ -79,7 +82,7 @@
 				</li>
 				<li>
 					<label>Description:</label>
-					<s:textfield name="criteria.description"/>
+					<s:textarea name="criteria.description"/>
 				</li>
 				
 				<li>

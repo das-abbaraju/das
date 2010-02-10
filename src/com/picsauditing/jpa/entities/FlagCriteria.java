@@ -139,6 +139,7 @@ public class FlagCriteria extends BaseTable {
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
+		json.put("id", id);
 		json.put("category", category);
 		json.put("question", question);
 		json.put("auditType", auditType.toJSON());
