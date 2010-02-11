@@ -52,6 +52,7 @@ function showText(qID, textid) {
 				modal: true, 
 				title: 'Edit Question Text',
 				width: '50%',
+				zindex: 9999,
 				close: function(event, ui) {
 					$(this).dialog('destroy');
 					if (forceRefresh)
