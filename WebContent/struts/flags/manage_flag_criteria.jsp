@@ -25,20 +25,28 @@
 	var selectedquestion;
 
 	function show(id) {
-		$.getJSON('ManageFlagCriteriaAjax.action', 
-				{'criteria.id': id, button: 'load'}, 
-				function(data, result) {
-					$.each(data, function (i,v) {
-						if (v == null)
-							v = "";
-						$('form [name=criteria.'+i+']').val(v);
-					});
-					selectedaudit = data['auditType.id'];
-					selectedquestion = data['question.id'];
-
-					dialog.dialog('open');
-				}
-		);
+		if (id !== undefined) {
+			$.getJSON('ManageFlagCriteriaAjax.action', 
+					{'criteria.id': id, button: 'load'}, 
+					function(data, result) {
+						$.each(data, function (i,v) {
+							if (v == null)
+								v = "";
+							$('form#itemform [name=criteria.'+i+']').val(v);
+						});
+						selectedaudit = data['auditType.id'];
+						selectedquestion = data['question.id'];
+	
+						dialog.dialog('open');
+					}
+			);
+		} else {
+			$('form#itemform input, form textarea').val('');
+			console.log($('form#itemform input, form textarea'));
+			selectedaudit = '';
+			selectquestion = '';
+			dialog.dialog('open');
+		}
 	}
 
 	$(function() {
@@ -88,6 +96,8 @@
 							}
 					);
 				},
+				'Delete': function() {
+				},
 				'Cancel': function() {
 					$(this).dialog('close');
 				}
@@ -112,6 +122,11 @@
 </head>
 <body>
 <h1>Manage Flag Criteria</h1>
+
+<div>
+<input type="button" class="picsbutton positive add" onclick="show()" value="New Criteria"/>
+</div>
+
 <table id="criterialist" class="report" style="width:100%; margin-bottom: 0;">
 	<thead>
 		<tr>
