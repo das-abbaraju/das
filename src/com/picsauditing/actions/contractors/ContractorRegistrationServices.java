@@ -69,10 +69,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		for (AuditQuestion q : serviceQuestions)
 			questionIds.add(q.getId());
 
-		Map<Integer, Map<String, AuditData>> indexedResult = auditDataDAO.findAnswersByContractor(id, questionIds);
-		answerMap = new HashMap<Integer, AuditData>();
-		for (Integer questionID : indexedResult.keySet())
-			answerMap.put(questionID, indexedResult.get(questionID).get(""));
+		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
 		if ("calculateRisk".equals(button)) {
 			if (contractor.getRiskLevel() == null) {
