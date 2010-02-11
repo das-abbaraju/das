@@ -22,7 +22,7 @@ public class FlagCriteria extends BaseTable {
 	private AuditQuestion question;
 	private AuditType auditType;
 	private OshaType oshaType;
-	private String oshaRateType;
+	private OshaRateType oshaRateType;
 	private String label;
 	private String description;
 	private String comparison;
@@ -75,11 +75,13 @@ public class FlagCriteria extends BaseTable {
 		this.oshaType = oshaType;
 	}
 
-	public String getOshaRateType() {
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaRateType") })
+	@Enumerated(EnumType.STRING)
+	public OshaRateType getOshaRateType() {
 		return oshaRateType;
 	}
 
-	public void setOshaRateType(String oshaRateType) {
+	public void setOshaRateType(OshaRateType oshaRateType) {
 		this.oshaRateType = oshaRateType;
 	}
 
