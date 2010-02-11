@@ -52,10 +52,6 @@
 		});
 	}
 
-	function save() {
-		alert($('form#itemform').serialize());
-	}
-
 	$(function() {
 		dtable = $('table#criterialist').dataTable({bJQueryUI: true, sPaginationType: "full_numbers" });
 	});
