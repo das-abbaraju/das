@@ -37,13 +37,18 @@
 				'Save': function() {
 					var pars = $('form#itemform').serialize();
 					pars += '&button=save';
+					var criteria_dialog = $(this);
 					$.getJSON('ManageFlagCriteriaAjax.action',
 							pars,
 							function(data, result) {
 								if (data.gritter)
 									$.gritter.add(data.gritter);
-								if (data.success) {
-									$('#criteria'+data.data.id)
+								if (data.result == 'success') {
+									$.each(data.data, function (i,v) {
+										if (v == null) v = "";
+										$('#criteria_'+data.data.id+' .criteria_'+i).html(v);
+										criteria_dialog.dialog('close');
+									});
 								}
 							}
 					);
@@ -56,7 +61,10 @@
 	}
 
 	$(function() {
-		dtable = $('table#criterialist').dataTable({bJQueryUI: true, sPaginationType: "full_numbers" });
+		dtable = $('table#criterialist').dataTable({
+			bJQueryUI: true, 
+			sPaginationType: "full_numbers"
+		});
 	});
 </script>
 
@@ -77,10 +85,10 @@
 		</tr>
 	</thead>
 	<s:iterator value="criteriaList">
-		<tr id="criteria<s:property value="id"/>" onclick="show(<s:property value="id"/>)" class="clickable">
-			<td><nobr><s:property value="category"/></nobr></td>
-			<td><nobr><s:property value="label"/></nobr></td>
-			<td><s:property value="description"/></td>
+		<tr id="criteria_<s:property value="id"/>" onclick="show(<s:property value="id"/>)" class="clickable">
+			<td class="criteria_category"><nobr><s:property value="category"/></nobr></td>
+			<td class="criteria_label"><nobr><s:property value="label"/></nobr></td>
+			<td class="criteria_description"><s:property value="description"/></td>
 		</tr>
 	</s:iterator>
 </table>
