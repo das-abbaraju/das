@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -421,4 +423,34 @@ public class OshaAudit implements java.io.Serializable {
 			return "OSHA Recordable";
 	}
 	
+	@Transient
+	public Map<OshaRateType, Float> getRates(){
+		HashMap<OshaRateType, Float> rateMap = new HashMap<OshaRateType, Float>();
+		
+		Naics naicsCode = conAudit.getContractorAccount().getNaics();
+		
+		switch (type) {
+		case OSHA:
+		case MSHA:
+			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
+			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
+			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
+			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
+			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
+			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
+			break;
+		case COHS:
+			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
+			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
+			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
+			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
+			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
+			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
+			rateMap.put(OshaRateType.Cad7, getCad7()); // get cad7
+			rateMap.put(OshaRateType.Neer, getNeer()); // get neer
+			break;
+		}
+		
+		return rateMap;
+	}
 }
