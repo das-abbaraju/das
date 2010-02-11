@@ -19,6 +19,8 @@
 
 <script type="text/javascript">
 	var dtable;
+	var ddaudit;
+	var ddquestion;
 
 	function show(id) {
 		$.getJSON('ManageFlagCriteriaAjax.action', 
@@ -29,40 +31,43 @@
 							v = "";
 						$('form [name=criteria.'+i+']').val(v);
 					});
+
+					$('#item').dialog({
+						title: 'Edit Flag Criteria',
+						width: '50%',
+						modal: true,
+						close: function() {
+							$(this).dialog('destroy');
+							ddaudit.closeMenu();
+							ddquestion.closeMenu();
+						},
+						buttons: {
+							'Save': function() {
+								var pars = $('form#itemform').serialize();
+								pars += '&button=save';
+								var criteria_dialog = $(this);
+								$.getJSON('ManageFlagCriteriaAjax.action',
+										pars,
+										function(data, result) {
+											if (data.gritter)
+												$.gritter.add(data.gritter);
+											if (data.result == 'success') {
+												$.each(data.data, function (i,v) {
+													if (v == null) v = "";
+													$('#criteria_'+data.data.id+' .criteria_'+i).html(v);
+													criteria_dialog.dialog('close');
+												});
+											}
+										}
+								);
+							},
+							'Cancel': function() {
+								$(this).dialog('close');
+							}
+						}
+					});
 				}
 		);
-		$('#item').dialog({
-			title: 'Edit Flag Criteria',
-			width: '50%',
-			modal: true,
-			close: function() {
-				$(this).dialog('destroy');
-			},
-			buttons: {
-				'Save': function() {
-					var pars = $('form#itemform').serialize();
-					pars += '&button=save';
-					var criteria_dialog = $(this);
-					$.getJSON('ManageFlagCriteriaAjax.action',
-							pars,
-							function(data, result) {
-								if (data.gritter)
-									$.gritter.add(data.gritter);
-								if (data.result == 'success') {
-									$.each(data.data, function (i,v) {
-										if (v == null) v = "";
-										$('#criteria_'+data.data.id+' .criteria_'+i).html(v);
-										criteria_dialog.dialog('close');
-									});
-								}
-							}
-					);
-				},
-				'Cancel': function() {
-					$(this).dialog('close');
-				}
-			}
-		});
 	}
 
 	$(function() {
@@ -72,7 +77,9 @@
 		});
 
 		$('#audittype').mcDropdown('#audittypemenu');
+		ddaudit = $('#audittype').mcDropdown();
 		$('#question').mcDropdown('#questionmenu');
+		ddquestion = $('#question').mcDropdown();
 	});
 </script>
 
