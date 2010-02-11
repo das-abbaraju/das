@@ -3,14 +3,11 @@ package com.picsauditing.PICS;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,25 +16,14 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.FlagQuestionCriteria;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -46,7 +32,7 @@ public class ContractorFlagETL {
 	private ContractorAccountDAO contractorAccountDao;
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
-	private List<FlagCriteria> distinctFlagCriteriaList;
+	private List<FlagCriteria> flagCriteriaList = null;
 	private CronMetricsAggregator cronMetrics;
 	private HashSet<Integer> criteriaQuestionSet = new HashSet<Integer>();
 
@@ -59,69 +45,14 @@ public class ContractorFlagETL {
 	}
 
 	public void execute(List<Integer> contractorList) {
-		// try catch send email on Exception
 		try {
 			// TODO: Check to ensure function returns proper list
-			distinctFlagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
+			flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 
-			// Iterating over list to get questions
-			for (FlagCriteria fc : distinctFlagCriteriaList) {
+			// Get AuditQuestion ids that are used
+			for (FlagCriteria fc : flagCriteriaList) {
 				if (fc.getQuestion() != null)
 					criteriaQuestionSet.add(fc.getQuestion().getId());
-			}
-
-			int errorCount = 0;
-
-			for (Integer conID : contractorList) {
-
-				try {
-					long conStart = System.currentTimeMillis();
-					PicsLogger.start("ContractorFlagETL.calculate", "for : " + conID);
-					run(conID);
-
-					if (cronMetrics != null) {
-						cronMetrics.addContractor(conID, System.currentTimeMillis() - conStart);
-					}
-
-				} catch (Throwable t) {
-					t.printStackTrace();
-					StringBuffer body = new StringBuffer();
-
-					body.append("There was an error calculating flags for contractor ");
-					body.append(conID.toString());
-					body.append("\n\n");
-
-					body.append(t.getMessage());
-					body.append("\n");
-
-					StringWriter sw = new StringWriter();
-					t.printStackTrace(new PrintWriter(sw));
-					body.append(sw.toString());
-
-					try {
-						EmailQueue email = new EmailQueue();
-						email.setToAddresses("errors@picsauditing.com");
-						email.setPriority(30);
-						email.setSubject("Flag calculation error for conID = " + conID);
-						email.setBody(body.toString());
-						email.setContractorAccount(new ContractorAccount(conID));
-						email.setCreationDate(new Date());
-						EmailSender.send(email);
-					} catch (Exception notMuchWeCanDoButLogIt) {
-						System.out.println("**********************************");
-						System.out.println("Error calculating flags AND unable to send email");
-						System.out.println("**********************************");
-
-						System.out.println(notMuchWeCanDoButLogIt);
-						notMuchWeCanDoButLogIt.printStackTrace();
-					}
-
-					if (++errorCount == 10) {
-						break;
-					}
-				} finally {
-					PicsLogger.stop();
-				}
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -137,199 +68,164 @@ public class ContractorFlagETL {
 			t.printStackTrace(new PrintWriter(sw));
 			body.append(sw.toString());
 
-			try {
-				EmailQueue email = new EmailQueue();
-				email.setToAddresses("errors@picsauditing.com");
-				email.setPriority(30);
-				email.setSubject("Flag Criteria data creation error");
-				email.setBody(body.toString());
-				email.setCreationDate(new Date());
-				EmailSender.send(email);
-			} catch (Exception notMuchWeCanDoButLogIt) {
-				System.out.println("**********************************");
-				System.out.println("Error creating flag critera data AND unable to send email");
-				System.out.println("**********************************");
+			sendMail(body.toString());
+		}
 
-				System.out.println(notMuchWeCanDoButLogIt);
-				notMuchWeCanDoButLogIt.printStackTrace();
+		int errorCount = 0;
+
+		for (Integer conID : contractorList) {
+			try {
+				long conStart = System.currentTimeMillis();
+				PicsLogger.start("ContractorFlagETL.calculate", "for : " + conID);
+				run(conID);
+
+				if (cronMetrics != null) {
+					cronMetrics.addContractor(conID, System.currentTimeMillis() - conStart);
+				}
+			} catch (Throwable t) {
+				t.printStackTrace();
+				StringBuffer body = new StringBuffer();
+
+				body.append("There was an error calculating flags for contractor ");
+				body.append(conID.toString());
+				body.append("\n\n");
+
+				body.append(t.getMessage());
+				body.append("\n");
+
+				StringWriter sw = new StringWriter();
+				t.printStackTrace(new PrintWriter(sw));
+				body.append(sw.toString());
+
+				sendMail(body.toString());
+
+				if (++errorCount > 3) {
+					break;
+				}
 			}
 		}
+		PicsLogger.stop();
 	}
 
 	@Transactional
+	// TODO: ADDDDD DATAAAA CLEAANNNNUUPPPPPP!!!
+	// See FlagCalculator2 line 263-302
 	private void run(int conID) {
-		// TODO: ADDDDD DATAAAA CLEAANNNNUUPPPPPP!!!
-		// <----------------------------------------------------------------*********
+		List<FlagCriteriaContractor> changes = new ArrayList<FlagCriteriaContractor>();
+		// List of contractor data to save into DB
 
-		// get select FlagCriteria where id in (select id from
-		// FlagCriteriaOperator)
 		ContractorAccount contractor = contractorAccountDao.find(conID);
-		ArrayList<FlagCriteriaContractor> changes = new ArrayList<FlagCriteriaContractor>();
-
-		// Get question answers
 		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(conID, criteriaQuestionSet);
-		
-		for (FlagCriteria flagCriteria : distinctFlagCriteriaList) {
-		
-		HashMap<AuditType, ArrayList<ContractorAudit>> contractorAuditTypeMap = new HashMap<AuditType, ArrayList<ContractorAudit>>();
-		
-		// Creating contractor audit type buckets
-		for (ContractorAudit ca : contractor.getAudits()) {
-			// Mapping AuditTypes to lists of FlagCriteria, so that extra
-			// audits which do not apply to the criteria will not have to
-			// be iterated over.
-			ArrayList<ContractorAudit> auditTypeList = contractorAuditTypeMap.get(ca.getAuditType());
-			if (auditTypeList != null)
-				auditTypeList.add(ca);
-			else {
-				auditTypeList = new ArrayList<ContractorAudit>();
-				auditTypeList.add(ca);
-				contractorAuditTypeMap.put(ca.getAuditType(), auditTypeList);
-			}
-		}
-				
-			// Checking Audit Type
-			if (flagCriteria.getAuditType().getClassType().isPolicy()) { // Is policy audit?
-				Boolean hasCurrentPolicy = false;
 
-				if (contractorAuditTypeMap.get(flagCriteria.getAuditType()).size() > 0)
-					hasCurrentPolicy = true;
+		for (FlagCriteria flagCriteria : flagCriteriaList) {
 
-				changes.add(new FlagCriteriaContractor(contractor,flagCriteria,hasCurrentPolicy.toString()));
-			} else if (flagCriteria.getAuditType().isAnnualAddendum()) { // Is annual update audit?
-				Boolean hasThreeAnnualAddendums = false;
-				int numberOfCurrentAddendums = 0;
+			if (flagCriteria.getAuditType() != null) {
+				// Checking Audit Type
+				if (flagCriteria.getAuditType().getClassType().isPolicy()) {
+					// Contractors are evaluated by their CAO, 
+					// so it's operator specific and we can't calculate exact data here
+					// Just put in a place holder row
+					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
+				} else if (flagCriteria.getAuditType().isAnnualAddendum()) {
+					int count = 0;
 
-				// Checking for at least 3 active annual updates
-				for (ContractorAudit ca : contractorAuditTypeMap.get(flagCriteria.getAuditType()))
-					if (ca.getAuditStatus() == AuditStatus.Active)
-						numberOfCurrentAddendums++;
-
-				hasThreeAnnualAddendums = numberOfCurrentAddendums >= 3;
-
-				changes.add(new FlagCriteriaContractor(contractor,flagCriteria,hasThreeAnnualAddendums.toString()));
-			} else if (flagCriteria.getAuditType() != null) {
-				// Return best audit type
-				ContractorAudit bestContractorAudit = getBestContractorAuditFromList(contractorAuditTypeMap.get(flagCriteria.getAuditType()));
-
-				// iterate over all entries in flagCriteriaMap for this
-				// auditType
-				Boolean hasProperStatus = false;
-
-					if (!flagCriteria.isValidationRequired()
-							&& (bestContractorAudit.getAuditStatus() == AuditStatus.Active
-									|| bestContractorAudit.getAuditStatus() == AuditStatus.Resubmitted || bestContractorAudit
-									.getAuditStatus() == AuditStatus.Submitted)) {
-						hasProperStatus = true;
-					} else if (flagCriteria.isValidationRequired()
-							&& (bestContractorAudit.getAuditStatus() == AuditStatus.Active || bestContractorAudit
-									.getAuditStatus() == AuditStatus.Resubmitted)) {
-						hasProperStatus = true;
+					// Checking for at least 3 active annual updates
+					for (ContractorAudit ca : contractor.getAudits()) {
+						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
+							if (ca.getAuditStatus().isActiveResubmittedExempt())
+								count++;
+						}
 					}
 
-					changes.add(new FlagCriteriaContractor(contractor,flagCriteria,hasProperStatus.toString()));
-			} else if(flagCriteria.getQuestion() != null) { // Is a question
-				// find answer in answermap if exists to related question
-				String answer = answerMap.get(flagCriteria.getQuestion().getId()).getAnswer(); // can be null
-				changes.add(new FlagCriteriaContractor(contractor,flagCriteria,answer));
-			} else if(flagCriteria.getOshaType() != null){
-				// expecting to contain 4 or less of the most current audits
-				// TODO: VERIFY ORDER IS PRESERVED <-----------------------*******
-				ArrayList<OshaAudit> auditYears = new ArrayList<OshaAudit>(contractor.getOshas().get(flagCriteria.getOshaType()).values());
-				
-				String answer = null;
-				
-				switch(flagCriteria.getMultiYearScope()){
-					case ThreeYearAverage:
-						if(auditYears.size() >= 3){
-						
+					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, (count >= 3 ? "true" : "false")));
+				} else {
+					Boolean hasProperStatus = false;
+					for (ContractorAudit ca : contractor.getAudits()) {
+						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
+							if (ca.getAuditStatus().isActiveResubmittedExempt())
+								hasProperStatus = true;
+							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
+								hasProperStatus = true;
 						}
-						break;
-					case ThreeYearsAgo:
-						if(auditYears.size() >= 3){
-							
-						}						
-						break;
-					case TwoYearsAgo:
-						if(auditYears.size() >= 2){
-						
-						}
-						break;
-					case LastYearOnly: 
-						if(auditYears.size() >= 1){
-						
-						}
-						break;
+					}
+					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus.toString()));
 				}
-				// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
-				
-			} else {
-				//
 			}
 			
-			// do EMR check
+			if (flagCriteria.getQuestion() != null) {
+				// find answer in answermap if exists to related question
+				// can be null
+				final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
+				if (auditData != null) {
+					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
+					changes.add(flagCriteriaContractor);
+					if (flagCriteria.getDataType().equals("boolean")) {
+						// TODO parse to boolean
+						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+					} else if (flagCriteria.getDataType().equals("number")) {
+						// TODO parse to number
+						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+					} else if (flagCriteria.getDataType().equals("date")) {
+						// TODO parse to date
+						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+					} else if (flagCriteria.getDataType().equals("string")) {
+						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+					} 
+				}
+			}
+			
+			if (flagCriteria.getOshaType() != null) {
+				// expecting to contain 4 or less of the most current audits
+				// TODO: VERIFY ORDER IS PRESERVED <-----------------------*******
+				ArrayList<OshaAudit> auditYears = new ArrayList<OshaAudit>(contractor.getOshas().get(
+						flagCriteria.getOshaType()).values());
 
-			// populate data by evaluating each operator criteria
-			// query pqf data (check)
-			// query osha data
-			// query audit status (check)
-			// query caos (check)
+				String answer = null;
 
-			// clean up data
+				switch (flagCriteria.getMultiYearScope()) {
+				case ThreeYearAverage:
+					if (auditYears.size() >= 3) {
 
-			// add it to database
-		}
-		// See FlagCalculator2 line 263-302
+					}
+					break;
+				case ThreeYearsAgo:
+					if (auditYears.size() >= 3) {
 
-		// List of contractor data to save into DB
-		List<FlagCriteriaContractor> data;
+					}
+					break;
+				case TwoYearsAgo:
+					if (auditYears.size() >= 2) {
 
-		// populate data by evaluating each operator criteria
-		// query pqf data
-		// query osha data
-		// query audit status
-		// query caos
+					}
+					break;
+				case LastYearOnly:
+					if (auditYears.size() >= 1) {
 
-		// handle 3 year averages
-		// Maybe we should use the ContractorAccount.getOsha and
-		// ContractorAccount.getEmr
-
-		// delete from flag_criteria_con where conID = ?
-		// Deleting all questions in table having to do with current contractor
-		flagCriteriaContractorDao.deleteEntriesForContractor(conID);
-
-		// insert "data"
-	}
-
-	// TODO: Trevor Check <--------------------
-	private ContractorAudit getBestContractorAuditFromList(ArrayList<ContractorAudit> auditList) {
-		ContractorAudit bestAudit = null;
-		int bestScore = 0;
-
-		for (ContractorAudit ca : auditList) {
-			int currentScore = scoreAudit(ca);
-			if (currentScore >= bestScore) {
-				bestScore = currentScore;
-				bestAudit = ca;
+					}
+					break;
+				}
+				// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
 			}
 		}
 
-		return bestAudit;
+		flagCriteriaContractorDao.deleteEntriesForContractor(conID);
+
 	}
 
-	private int scoreAudit(ContractorAudit audit) {
-		if (audit.getAuditStatus().isExpired())
-			return 0;
-
-		int score = 0;
-
-		if (audit.getAuditStatus().isSubmitted())
-			score = 100;
-		else if (audit.getAuditStatus() == AuditStatus.Active)
-			score = 90;
-		else if (audit.getAuditStatus() == AuditStatus.Resubmitted)
-			score = 80;
-
-		return score;
+	private void sendMail(String message) {
+		try {
+			EmailQueue email = new EmailQueue();
+			email.setToAddresses("errors@picsauditing.com");
+			email.setPriority(30);
+			email.setSubject("Error in ContractorFlagETL");
+			email.setBody(message);
+			email.setCreationDate(new Date());
+			EmailSender sender = new EmailSender();
+			sender.sendNow(email);
+		} catch (Exception notMuchWeCanDoButLogIt) {
+			System.out.println("Error sending email");
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
+		}
 	}
 }
