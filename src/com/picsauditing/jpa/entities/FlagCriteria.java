@@ -155,9 +155,11 @@ public class FlagCriteria extends BaseTable {
 		JSONObject json = new JSONObject();
 		json.put("id", id);
 		json.put("category", category);
-		json.put("question", question);
+		if (question != null) {
+			json.put("question.id", question.getId());
+		}
 		if (auditType != null) {
-			json.put("auditType", auditType.toJSON());
+			json.put("auditType.id", auditType.getId());
 		}
 		json.put("oshaType", oshaType);
 		json.put("oshaRateType", oshaRateType);
