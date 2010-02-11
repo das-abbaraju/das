@@ -1,12 +1,12 @@
 package com.picsauditing.jpa.entities;
 
 public enum OshaRateType {
-	LWCRAbsolute("Lwcr Absolute"), 
-	LWCRNaics("Lwcr Industry Avg"), 
-	TRIRAbsolute("Trir Absolute"),
-	TRIRNaics("Trir industry Avg"),
+	LwcrAbsolute("Lwcr Absolute"), 
+	LwcrNaics("Lwcr Industry Avg"), 
+	TrirAbsolute("Trir Absolute"),
+	TrirNaics("Trir industry Avg"),
 	Fatalities("Fatalities"),
-	DART("Dart"),
+	Dart("Dart"),
 	SeverityRate("Severity Rate"),
 	Cad7("Cad7"),
 	Neer("Neer");
