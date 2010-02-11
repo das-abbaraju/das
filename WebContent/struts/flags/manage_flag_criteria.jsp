@@ -230,7 +230,7 @@
 				</li>
 				<li>
 					<label>Multi Year Scope:</label>
-					<s:select name="criteria.multiYearScope" list="multiYearScopeList" headerKey="" headerValue=" - Multi Year Scope - "/>
+					<s:select name="criteria.multiYearScope" list="multiYearScopeList" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
 				</li>
 				
 				<li>
