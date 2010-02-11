@@ -10,7 +10,7 @@
 <s:include value="../jquery.jsp"/>
 
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="js/jquery/dataTables/css/demo_table_jui.css"/>
+<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
 
 <script type="text/javascript">
@@ -57,12 +57,14 @@
 		<tr>
 			<th>Category</th>
 			<th>Label</th>
+			<th>Description</th>
 		</tr>
 	</thead>
 	<s:iterator value="criteriaList">
-		<tr onclick="show(<s:property value="id"/>)">
+		<tr onclick="show(<s:property value="id"/>)" class="clickable">
 			<td><s:property value="category"/></td>
 			<td><s:property value="label"/></td>
+			<td><s:property value="description"/></td>
 		</tr>
 	</s:iterator>
 </table>
@@ -74,24 +76,24 @@
 			<ol>
 				<li>
 					<label>Category:</label>
-					<s:textfield name="criteria.category"/>
+					<s:textfield name="criteria.category" size="30"/>
 				</li>
 				<li>
 					<label>Label:</label>
-					<s:textfield name="criteria.label"/>
+					<s:textfield name="criteria.label" size="30"/>
 				</li>
 				<li>
 					<label>Description:</label>
-					<s:textarea name="criteria.description"/>
+					<s:textarea name="criteria.description" cols="30" rows="4"/>
 				</li>
 				
 				<li>
 					<label>Comparison:</label>
-					<s:textfield name="criteria.comparison"/>
+					<s:textfield name="criteria.comparison" size="30"/>
 				</li>
 				<li>
 					<label>Default Value:</label>
-					<s:textfield name="criteria.defaultValue"/>
+					<s:textfield name="criteria.defaultValue" size="30"/>
 				</li>
 				<li>
 					<label>Custom Value:</label>
@@ -101,24 +103,24 @@
 				
 				<li>
 					<label>Audit Type:</label>
-					<s:textfield name="criteria.auditType.id"/>
+					<s:textfield name="criteria.auditType.id" size="30"/>
 				</li>
 				<li>
 					<label>Question:</label>
-					<s:textfield name="criteria.question.id"/>
+					<s:textfield name="criteria.question.id" size="30"/>
 				</li>
 				
 				<li>
 					<label>Osha Type:</label>
-					<s:textfield name="criteria.oshaType"/>
+					<s:textfield name="criteria.oshaType" size="30"/>
 				</li>
 				<li>
 					<label>Osha Rate Type:</label>
-					<s:textfield name="criteria.oshaRateType"/>
+					<s:textfield name="criteria.oshaRateType" size="30"/>
 				</li>
 				<li>
 					<label>Multi Year Scope:</label>
-					<s:textfield name="criteria.multiYearScope"/>
+					<s:textfield name="criteria.multiYearScope" size="30"/>
 				</li>
 				
 				<li>
