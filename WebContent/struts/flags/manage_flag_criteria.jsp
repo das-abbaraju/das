@@ -21,6 +21,8 @@
 	var ddaudit;
 	var ddquestion;
 	var dialog;
+	var selectedaudit;
+	var selectedquestion;
 
 	function show(id) {
 		$.getJSON('ManageFlagCriteriaAjax.action', 
@@ -31,8 +33,8 @@
 							v = "";
 						$('form [name=criteria.'+i+']').val(v);
 					});
-
-					$('li[rel='+data['question.id']+']')
+					selectedaudit = data['auditType.id'];
+					selectedquestion = data['question.id'];
 
 					dialog.dialog('open');
 				}
@@ -59,6 +61,8 @@
 					$('#question').mcDropdown('#questionmenu');
 					ddquestion = $('#question').mcDropdown();
 				}
+				ddaudit.setValue(selectedaudit);
+				ddquestion.setValue(selectedquestion);
 			},
 			close: function() {
 				ddaudit.closeMenu();
