@@ -64,6 +64,17 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 
 		return q.getResultList();
 	}
+	
+	public List<ContractorAuditOperator> findByContractorOperatorStatus(int conID, int opID) {
+		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID" 
+			+ " AND operator.id = :opID";
+		
+		Query q = em.createQuery(query);
+		q.setParameter("conID", conID);
+		q.setParameter("opID", opID);
+		
+		return q.getResultList();
+	}
 
 	public List<ContractorAuditOperator> find(int opID, CaoStatus status, Date start, Date end) {
 		String query = "FROM ContractorAuditOperator WHERE operator.id = :opID AND status = :status AND ";
