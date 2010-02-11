@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
 <script type="text/javascript">
+	var dtable;
+
 	function show(id) {
 		$.getJSON('ManageFlagCriteriaAjax.action', 
 				{'criteria.id': id, button: 'load'}, 
@@ -31,7 +33,17 @@
 			},
 			buttons: {
 				'Save': function() {
-				
+					var pars = $('form#itemform').serialize();
+					pars += '&button=save';
+					$.getJSON('ManageFlagCriteriaAjax.action',
+							pars,
+							function(data, result) {
+								if (data.gritter)
+									$.gritter.add(data.gritter);
+								if (data.success)
+									alert('handle success here');
+							}
+					);
 				},
 				'Cancel': function() {
 					$(this).dialog('close');
@@ -45,12 +57,12 @@
 	}
 
 	$(function() {
-		$('table#criterialist').dataTable({bJQueryUI: true, sPaginationType: "full_numbers" });
+		dtable = $('table#criterialist').dataTable({bJQueryUI: true, sPaginationType: "full_numbers" });
 	});
 </script>
 
 <style>
-#item input, #item textarea {
+#item input[type=text], #item textarea {
 	width: 60%;
 }
 </style>
@@ -111,11 +123,11 @@
 				
 				<li>
 					<label>Audit Type:</label>
-					<s:textfield name="criteria.auditType.id"/>
+					<s:select name="criteria.auditType.id" list="auditTypeList" listKey="id" listValue="auditName" headerKey="" headerValue=" - Audit Type - "/>
 				</li>
 				<li>
 					<label>Question:</label>
-					<s:textfield name="criteria.question.id"/>
+					<s:select name="criteria.question.id" list="flagQuestions" listKey="id" listValue="expandedNumber + '. ' + question" headerKey="" headerValue=" - Question - "/>
 				</li>
 				
 				<li>
