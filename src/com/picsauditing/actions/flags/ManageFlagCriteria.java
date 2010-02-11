@@ -2,6 +2,8 @@ package com.picsauditing.actions.flags;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.json.simple.JSONObject;
 
@@ -10,8 +12,11 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.MultiYearScope;
 
@@ -98,12 +103,66 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		this.json = json;
 	}
 
-	public List<AuditType> getAuditTypeList() {
-		return auditTypeDAO.findAll();
+	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {
+		Map<AuditTypeClass, List<AuditType>> auditTypeMap = new TreeMap<AuditTypeClass, List<AuditType>>();
+
+		for (AuditType auditType : auditTypeDAO.findAll()) {
+			if (auditTypeMap.get(auditType.getClassType()) == null)
+				auditTypeMap.put(auditType.getClassType(), new ArrayList<AuditType>());
+			auditTypeMap.get(auditType.getClassType()).add(auditType);
+		}
+		return auditTypeMap;
 	}
 
 	public List<AuditQuestion> getFlagQuestionList() {
 		return questionDAO.findWhere("isRedFlagQuestion = 'Yes'");
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map getFlagQuestionMap() {
+		Map<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>> flagQuestionMap = new TreeMap<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>>();
+
+		for (AuditQuestion question : questionDAO
+				.findWhere("isRedFlagQuestion = 'Yes'")) {
+			if (flagQuestionMap.get(question.getAuditType().getClassType()) == null) {
+				flagQuestionMap
+						.put(
+								question.getAuditType().getClassType(),
+								new TreeMap<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>());
+			}
+
+			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(
+					question.getAuditType()) == null) {
+				flagQuestionMap
+						.get(question.getAuditType().getClassType())
+						.put(
+								question.getAuditType(),
+								new TreeMap<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>());
+			}
+
+			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(
+					question.getAuditType()).get(question.getSubCategory().getCategory()) == null) {
+				flagQuestionMap.get(question.getAuditType().getClassType()).get(
+						question.getAuditType()).put(
+						question.getSubCategory().getCategory(),
+						new TreeMap<AuditSubCategory, List<AuditQuestion>>());
+			}
+
+			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(
+					question.getAuditType()).get(question.getSubCategory().getCategory())
+					.get(question.getSubCategory()) == null) {
+				flagQuestionMap.get(question.getAuditType().getClassType()).get(
+						question.getAuditType()).get(
+						question.getSubCategory().getCategory()).put(
+						question.getSubCategory(), new ArrayList<AuditQuestion>());
+			}
+
+			flagQuestionMap.get(question.getAuditType().getClassType()).get(
+					question.getAuditType()).get(question.getSubCategory().getCategory())
+					.get(question.getSubCategory()).add(question);
+		}
+
+		return flagQuestionMap;
 	}
 
 	public MultiYearScope[] getMultiYearScopeList() {

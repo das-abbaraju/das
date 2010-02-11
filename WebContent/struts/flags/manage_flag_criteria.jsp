@@ -12,6 +12,11 @@
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
+<script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
+<link rel="stylesheet" href="js/jquery/mcdropdown/css/jquery.mcdropdown.css"/>
+
+<script type="text/javscript" src="js/jquery/jquery.bgiframe.min.js"></script>
+
 <script type="text/javascript">
 	var dtable;
 
@@ -65,6 +70,9 @@
 			bJQueryUI: true, 
 			sPaginationType: "full_numbers"
 		});
+
+		$('#audittype').mcDropdown('#audittypemenu');
+		$('#question').mcDropdown('#questionmenu');
 	});
 </script>
 
@@ -130,11 +138,58 @@
 				
 				<li>
 					<label>Audit Type:</label>
-					<s:select name="criteria.auditType.id" list="auditTypeList" listKey="id" listValue="auditName" headerKey="" headerValue=" - Audit Type - "/>
+					<s:textfield id="audittype" name="criteria.auditType.id"/>
+					<ul id="audittypemenu" class="mcdropdown_menu">
+					<s:iterator value="auditTypeMap">
+						<li>
+							<s:property value="key"/>
+							<ul>
+								<s:iterator value="value">
+									<li rel="<s:property value="id"/>"><s:property value="auditName"/></li>
+								</s:iterator>
+							</ul>
+						</li>
+					</s:iterator>
+					</ul>
 				</li>
 				<li>
 					<label>Question:</label>
-					<s:select name="criteria.question.id" list="flagQuestionList" listKey="id" listValue="expandedNumber + '. ' + question" headerKey="" headerValue=" - Question - "/>
+					<s:textfield id="question" name="criteria.question.id"/>
+					<ul id="questionmenu" class="mcdropdown_menu">
+					<s:iterator value="flagQuestionMap" id="atypeclass">
+						<li>
+							<s:property value="#atypeclass.key"/>
+							<ul>
+								<s:iterator value="#atypeclass.value" id="atype">
+									<li>
+										<s:property value="#atype.key.auditName"/>
+										<ul>
+											<s:iterator value="#atype.value" id="auditcategory">
+												<li>
+													<s:property value="#auditcategory.key.number"/>. <s:property value="#auditcategory.key.category"/>
+													<ul>
+														<s:iterator value="#auditcategory.value">
+															<li>
+																<s:property value="key.number"/>. <s:property value="key.subCategory"/>
+																<ul>
+																	<s:iterator value="value">
+																		<li rel="<s:property value="id"/>">
+																			<s:property value="number"/>. <s:property value="question"/>
+																		</li>
+																	</s:iterator>
+																</ul>
+															</li>
+														</s:iterator>
+													</ul>
+												</li>
+											</s:iterator>
+										</ul>
+									</li>
+								</s:iterator>
+							</ul>
+						</li>
+					</s:iterator>
+					</ul>
 				</li>
 				
 				<li>
