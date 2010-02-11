@@ -27,6 +27,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			criteria = criteriaDAO.find(criteriaID);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -41,7 +42,20 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 
 		if ("save".equals(button)) {
+			// TODO - is validation required?
+			if (criteria != null) {
+				criteriaDAO.save(criteria);
+			}
 
+			json = new JSONObject() {
+				{
+					put("msg", "Flag Criteria " + criteria.getLabel()
+							+ " saved successfully.");
+					put("result", "success");
+				}
+			};
+
+			return JSON;
 		}
 
 		return SUCCESS;
