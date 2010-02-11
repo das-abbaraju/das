@@ -1,5 +1,6 @@
 package com.picsauditing.actions.flags;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -12,6 +13,7 @@ import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.MultiYearScope;
 
 public class ManageFlagCriteria extends PicsActionSupport implements Preparable {
 
@@ -99,8 +101,22 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	public List<AuditType> getAuditTypeList() {
 		return auditTypeDAO.findAll();
 	}
-	
-	public List<AuditQuestion> getFlagQuestions() {
+
+	public List<AuditQuestion> getFlagQuestionList() {
 		return questionDAO.findWhere("isRedFlagQuestion = 'Yes'");
+	}
+
+	public MultiYearScope[] getMultiYearScopeList() {
+		return MultiYearScope.values();
+	}
+
+	public List<String> getComparisonList() {
+		return new ArrayList<String>() {
+			{
+				add("<");
+				add("=");
+				add(">");
+			}
+		};
 	}
 }

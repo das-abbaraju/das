@@ -20,6 +20,8 @@
 				{'criteria.id': id, button: 'load'}, 
 				function(data, result) {
 					$.each(data, function (i,v) {
+						if (v == null)
+							v = "";
 						$('form [name=criteria.'+i+']').val(v);
 					});
 				}
@@ -40,8 +42,9 @@
 							function(data, result) {
 								if (data.gritter)
 									$.gritter.add(data.gritter);
-								if (data.success)
-									alert('handle success here');
+								if (data.success) {
+									$('#criteria'+data.data.id)
+								}
 							}
 					);
 				},
@@ -74,7 +77,7 @@
 		</tr>
 	</thead>
 	<s:iterator value="criteriaList">
-		<tr onclick="show(<s:property value="id"/>)" class="clickable">
+		<tr id="criteria<s:property value="id"/>" onclick="show(<s:property value="id"/>)" class="clickable">
 			<td><nobr><s:property value="category"/></nobr></td>
 			<td><nobr><s:property value="label"/></nobr></td>
 			<td><s:property value="description"/></td>
@@ -102,7 +105,7 @@
 				
 				<li>
 					<label>Comparison:</label>
-					<s:textfield name="criteria.comparison"/>
+					<s:select name="criteria.comparison" list="comparisonList" headerKey="" headerValue=" - Comparison - "/>
 				</li>
 				<li>
 					<label>Default Value:</label>
@@ -123,7 +126,7 @@
 				</li>
 				<li>
 					<label>Question:</label>
-					<s:select name="criteria.question.id" list="flagQuestions" listKey="id" listValue="expandedNumber + '. ' + question" headerKey="" headerValue=" - Question - "/>
+					<s:select name="criteria.question.id" list="flagQuestionList" listKey="id" listValue="expandedNumber + '. ' + question" headerKey="" headerValue=" - Question - "/>
 				</li>
 				
 				<li>
@@ -136,7 +139,7 @@
 				</li>
 				<li>
 					<label>Multi Year Scope:</label>
-					<s:textfield name="criteria.multiYearScope"/>
+					<s:select name="criteria.multiYearScope" list="multiYearScopeList" headerKey="" headerValue=" - Multi Year Scope - "/>
 				</li>
 				
 				<li>
