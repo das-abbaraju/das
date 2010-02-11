@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -61,6 +63,12 @@ abstract public class PicsDAO {
 			o = em.merge(o);
 		}
 		return o;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BaseTable> findAll(Class clazz) {
+		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
+		return q.getResultList();
 	}
 
 	public void remove(BaseTable row) {
