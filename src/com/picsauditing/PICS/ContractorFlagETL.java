@@ -122,7 +122,7 @@ public class ContractorFlagETL {
 			if (flagCriteria.getAuditType() != null) {
 				// Checking Audit Type
 				if (flagCriteria.getAuditType().getClassType().isPolicy()) {
-					// Contractors are evaluated by their CAO, 
+					// Contractors are evaluated by their CAO,
 					// so it's operator specific and we can't calculate exact data here
 					// Just put in a place holder row
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
@@ -151,60 +151,72 @@ public class ContractorFlagETL {
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus.toString()));
 				}
 			}
-			
+
 			if (flagCriteria.getQuestion() != null) {
 				// find answer in answermap if exists to related question
 				// can be null
 				final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
 				if (auditData != null) {
-					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
-					changes.add(flagCriteriaContractor);
+					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+							flagCriteria, "");
 					if (flagCriteria.getDataType().equals("boolean")) {
 						// TODO parse to boolean
 						flagCriteriaContractor.setAnswer(auditData.getAnswer());
 					} else if (flagCriteria.getDataType().equals("number")) {
 						// TODO parse to number
-						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+						Float f = Float.parseFloat(auditData.getAnswer());
+						flagCriteriaContractor.setAnswer(f.toString());
 					} else if (flagCriteria.getDataType().equals("date")) {
 						// TODO parse to date
 						flagCriteriaContractor.setAnswer(auditData.getAnswer());
 					} else if (flagCriteria.getDataType().equals("string")) {
 						flagCriteriaContractor.setAnswer(auditData.getAnswer());
-					} 
+					}
+					//auditData.isVerified()
+					changes.add(flagCriteriaContractor);
 				}
 			}
-			
+
 			if (flagCriteria.getOshaType() != null) {
 				// expecting to contain 4 or less of the most current audits
+				final Map<String, OshaAudit> auditsOfThisSHAType = contractor.getOshas()
+						.get(flagCriteria.getOshaType());
 				// TODO: VERIFY ORDER IS PRESERVED <-----------------------*******
-				ArrayList<OshaAudit> auditYears = new ArrayList<OshaAudit>(contractor.getOshas().get(
-						flagCriteria.getOshaType()).values());
-
-				String answer = null;
-
-				switch (flagCriteria.getMultiYearScope()) {
-				case ThreeYearAverage:
-					if (auditYears.size() >= 3) {
-
+				List<OshaAudit> auditYears = new ArrayList<OshaAudit>(auditsOfThisSHAType.values());
+				if (auditYears.size() > 0) {
+					if (auditYears.size() > 3) {
+						// Check which one to pop off
+						auditYears.remove(3);
 					}
-					break;
-				case ThreeYearsAgo:
-					if (auditYears.size() >= 3) {
 
-					}
-					break;
-				case TwoYearsAgo:
-					if (auditYears.size() >= 2) {
+					Float answer = 0f;
+					boolean verified = false;
+					int yearIndex = -1;
 
-					}
-					break;
-				case LastYearOnly:
-					if (auditYears.size() >= 1) {
+					switch (flagCriteria.getMultiYearScope()) {
+					case ThreeYearAverage:
 
+						break;
+					case ThreeYearsAgo:
+						if (auditYears.size() >= 3) {
+
+							yearIndex = 2;
+						}
+					case TwoYearsAgo:
+						if (auditYears.size() >= 2) {
+
+							yearIndex = 1;
+						}
+					case LastYearOnly:
+						yearIndex = 0;
+						answer = auditYears.get(yearIndex).getRates(flagCriteria.getOshaRateType());
+						break;
 					}
-					break;
+					// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
+					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, answer.toString());
+					// flagCriteriaContractor.set = verified;
+					changes.add(flagCriteriaContractor);
 				}
-				// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
 			}
 		}
 
