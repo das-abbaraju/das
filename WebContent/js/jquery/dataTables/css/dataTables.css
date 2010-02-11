@@ -69,13 +69,13 @@ table.display thead th {
 
 .dataTables_length {
 	width: 40%;
-	float: left;
+	float: right;
+	text-align: right;
 }
 
 .dataTables_filter {
 	width: 50%;
-	float: right;
-	text-align: right;
+	float: left;
 }
 
 .dataTables_info {
