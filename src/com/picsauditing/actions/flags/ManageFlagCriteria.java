@@ -29,8 +29,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	private FlagCriteria criteria;
 	private JSONObject json;
 
-	public ManageFlagCriteria(AuditTypeDAO auditTypeDAO,
-			AuditQuestionDAO questionDAO, FlagCriteriaDAO criteriaDAO) {
+	public ManageFlagCriteria(AuditTypeDAO auditTypeDAO, AuditQuestionDAO questionDAO, FlagCriteriaDAO criteriaDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.questionDAO = questionDAO;
 		this.criteriaDAO = criteriaDAO;
@@ -68,8 +67,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 					put("gritter", new JSONObject() {
 						{
 							put("title", "Criteria Saved");
-							put("text", "Flag Criteria " + criteria.getLabel()
-									+ " saved successfully.");
+							put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
 						}
 					});
 					put("result", "success");
@@ -122,44 +120,31 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	public Map getFlagQuestionMap() {
 		Map<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>> flagQuestionMap = new TreeMap<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>>();
 
-		for (AuditQuestion question : questionDAO
-				.findWhere("isRedFlagQuestion = 'Yes'")) {
+		for (AuditQuestion question : questionDAO.findWhere("isRedFlagQuestion = 'Yes'")) {
 			if (flagQuestionMap.get(question.getAuditType().getClassType()) == null) {
-				flagQuestionMap
-						.put(
-								question.getAuditType().getClassType(),
-								new TreeMap<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>());
+				flagQuestionMap.put(question.getAuditType().getClassType(),
+						new TreeMap<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>());
 			}
 
-			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(
-					question.getAuditType()) == null) {
-				flagQuestionMap
-						.get(question.getAuditType().getClassType())
-						.put(
-								question.getAuditType(),
-								new TreeMap<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>());
+			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()) == null) {
+				flagQuestionMap.get(question.getAuditType().getClassType()).put(question.getAuditType(),
+						new TreeMap<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>());
 			}
 
-			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(
-					question.getAuditType()).get(question.getSubCategory().getCategory()) == null) {
-				flagQuestionMap.get(question.getAuditType().getClassType()).get(
-						question.getAuditType()).put(
-						question.getSubCategory().getCategory(),
-						new TreeMap<AuditSubCategory, List<AuditQuestion>>());
+			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
+					question.getSubCategory().getCategory()) == null) {
+				flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).put(
+						question.getSubCategory().getCategory(), new TreeMap<AuditSubCategory, List<AuditQuestion>>());
 			}
 
-			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(
-					question.getAuditType()).get(question.getSubCategory().getCategory())
-					.get(question.getSubCategory()) == null) {
-				flagQuestionMap.get(question.getAuditType().getClassType()).get(
-						question.getAuditType()).get(
-						question.getSubCategory().getCategory()).put(
-						question.getSubCategory(), new ArrayList<AuditQuestion>());
+			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
+					question.getSubCategory().getCategory()).get(question.getSubCategory()) == null) {
+				flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
+						question.getSubCategory().getCategory()).put(question.getSubCategory(), new ArrayList<AuditQuestion>());
 			}
 
-			flagQuestionMap.get(question.getAuditType().getClassType()).get(
-					question.getAuditType()).get(question.getSubCategory().getCategory())
-					.get(question.getSubCategory()).add(question);
+			flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
+					question.getSubCategory().getCategory()).get(question.getSubCategory()).add(question);
 		}
 
 		return flagQuestionMap;
