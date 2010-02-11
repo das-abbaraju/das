@@ -422,35 +422,39 @@ public class OshaAudit implements java.io.Serializable {
 		else
 			return "OSHA Recordable";
 	}
-	
+
 	@Transient
-	public Map<OshaRateType, Float> getRates(){
-		HashMap<OshaRateType, Float> rateMap = new HashMap<OshaRateType, Float>();
+	public float getRates(OshaRateType rateType){
+		switch (rateType) {
+		case SeverityRate:
+			return getRestrictedOrJobTransferDays();
+		}
 		
 		Naics naicsCode = conAudit.getContractorAccount().getNaics();
 		
-		switch (type) {
-		case OSHA:
-		case MSHA:
-			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
-			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
-			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
-			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
-			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
-			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
-			break;
-		case COHS:
-			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
-			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
-			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
-			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
-			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
-			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
-			rateMap.put(OshaRateType.Cad7, getCad7()); // get cad7
-			rateMap.put(OshaRateType.Neer, getNeer()); // get neer
-			break;
-		}
+//		switch (type) {
+//		case OSHA:
+//		case MSHA:
+//			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
+//			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
+//			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
+//			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
+//			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
+//			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
+//			break;
+//		case COHS:
+//			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
+//			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
+//			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
+//			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
+//			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
+//			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
+//			rateMap.put(OshaRateType.Cad7, getCad7()); // get cad7
+//			rateMap.put(OshaRateType.Neer, getNeer()); // get neer
+//			break;
+//		}
 		
-		return rateMap;
+		return 0;
 	}
+
 }
