@@ -1,7 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -9,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import com.picsauditing.cron.CronMetricsAggregator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -20,101 +15,35 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
-	private FlagCriteriaDAO flagCriteriaDao;
-	private ContractorAccountDAO contractorAccountDao;
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
 	private List<FlagCriteria> flagCriteriaList = null;
-	private CronMetricsAggregator cronMetrics;
 	private HashSet<Integer> criteriaQuestionSet = new HashSet<Integer>();
 
 	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, ContractorAccountDAO contractorAccountDao,
 			FlagCriteriaContractorDAO flagCriteriaContractorDao, AuditDataDAO auditDataDao) {
-		this.flagCriteriaDao = flagCriteriaDao;
-		this.contractorAccountDao = contractorAccountDao;
 		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 		this.auditDataDao = auditDataDao;
+
+		flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
+		// Get AuditQuestion ids that are used
+		for (FlagCriteria fc : flagCriteriaList) {
+			if (fc.getQuestion() != null)
+				criteriaQuestionSet.add(fc.getQuestion().getId());
+		}
 	}
 
-	public void execute(List<Integer> contractorList) {
-		try {
-			flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
+	public void calculate(ContractorAccount contractor) {
+		// TODO: Check to ensure function returns proper list
 
-			// Get AuditQuestion ids that are used
-			for (FlagCriteria fc : flagCriteriaList) {
-				if (fc.getQuestion() != null)
-					criteriaQuestionSet.add(fc.getQuestion().getId());
-				// Need to remove EMR questions since they return multiple
-				// AuditData
-				criteriaQuestionSet.remove(AuditQuestion.EMR);
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-			StringBuffer body = new StringBuffer();
+		List<FlagCriteriaContractor> changes = contractor.getFlagCriteria();
 
-			body.append("There was an error creating flag criteria data");
-			body.append("\n\n");
-
-			body.append(t.getMessage());
-			body.append("\n");
-
-			StringWriter sw = new StringWriter();
-			t.printStackTrace(new PrintWriter(sw));
-			body.append(sw.toString());
-
-			sendMail(body.toString());
-		}
-
-		int errorCount = 0;
-
-		for (Integer conID : contractorList) {
-			try {
-				long conStart = System.currentTimeMillis();
-				PicsLogger.start("ContractorFlagETL.calculate", "for : " + conID);
-				run(conID);
-
-				if (cronMetrics != null) {
-					cronMetrics.addContractor(conID, System.currentTimeMillis() - conStart);
-				}
-			} catch (Throwable t) {
-				t.printStackTrace();
-				StringBuffer body = new StringBuffer();
-
-				body.append("There was an error calculating flags for contractor ");
-				body.append(conID.toString());
-				body.append("\n\n");
-
-				body.append(t.getMessage());
-				body.append("\n");
-
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
-				body.append(sw.toString());
-
-				sendMail(body.toString());
-
-				if (++errorCount > 3) {
-					break;
-				}
-			}
-		}
-		PicsLogger.stop();
-	}
-
-	@Transactional
-	private void run(int conID) {
-		List<FlagCriteriaContractor> changes = new ArrayList<FlagCriteriaContractor>();
-
-		ContractorAccount contractor = contractorAccountDao.find(conID);
-		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(conID, criteriaQuestionSet);
+		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(), criteriaQuestionSet);
 
 		for (FlagCriteria flagCriteria : flagCriteriaList) {
 
@@ -142,6 +71,12 @@ public class ContractorFlagETL {
 					Boolean hasProperStatus = false;
 					for (ContractorAudit ca : contractor.getAudits()) {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
+							// TODO if Audit is D&A, then the only consider it if OQEmployees is Yes
+							// See FlagCalcSingle line 183
+							// calcSingle.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
+							// TODO also look at COR
+							// See FlagCalcSingle line 187
+							// calcSingle.setHasCOR(contractor.isCOR(auditDataDAO));
 							if (ca.getAuditStatus().isActiveResubmittedExempt())
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
@@ -285,6 +220,17 @@ public class ContractorFlagETL {
 								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
 					}
 
+					/*
+					 * Legacy code From FlagCalculator2 OshaAudit oshaAvg =
+					 * contractor.getOshas().get(OshaType.OSHA).get(OshaAudit.AVG); AuditData emrAvg =
+					 * contractor.getEmrs().get(OshaAudit.AVG); if(emrAvg != null &&
+					 * !Strings.isEmpty(emrAvg.getAnswer()))
+					 * contractor.setEmrAverage(Float.valueOf(emrAvg.getAnswer()).floatValue()); if (oshaAvg != null) {
+					 * contractor.setTrirAverage(oshaAvg.getRecordableTotalRate());
+					 * contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate()); }
+					 */
+
+					// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
 					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, answer.toString());
 					flagCriteriaContractor.setVerified(verified);
@@ -293,25 +239,8 @@ public class ContractorFlagETL {
 			}
 		}
 
-		flagCriteriaContractorDao.deleteEntriesForContractor(conID);
+		flagCriteriaContractorDao.deleteEntriesForContractor(contractor.getId());
 		// TODO: Verify data is saving automatically via struts. Otherwise
 		// iterate through list and save individual items
-	}
-
-	private void sendMail(String message) {
-		try {
-			EmailQueue email = new EmailQueue();
-			email.setToAddresses("errors@picsauditing.com");
-			email.setPriority(30);
-			email.setSubject("Error in ContractorFlagETL");
-			email.setBody(message);
-			email.setCreationDate(new Date());
-			EmailSender sender = new EmailSender();
-			sender.sendNow(email);
-		} catch (Exception notMuchWeCanDoButLogIt) {
-			System.out.println("Error sending email");
-			System.out.println(notMuchWeCanDoButLogIt);
-			notMuchWeCanDoButLogIt.printStackTrace();
-		}
 	}
 }

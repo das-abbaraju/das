@@ -46,7 +46,7 @@ public class FlagDataCalculator {
 
 				FlagData data = new FlagData();
 				data.setCriteria(key);
-				data.setContractor(contractorCriteria.get(key).getContractorAccount());
+				data.setContractor(contractorCriteria.get(key).getContractor());
 				data.setOperator(operatorCriteria.get(key).getOperator());
 				data.setFlag(flag);
 				data.setAuditColumns(new User(User.SYSTEM));

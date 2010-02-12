@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -50,17 +51,18 @@ public class OperatorAccount extends Account {
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
 
-	protected List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
-	protected List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
-	protected List<FlagOshaCriteria> flagOshaCriteria = new ArrayList<FlagOshaCriteria>();
-	protected List<Facility> corporateFacilities = new ArrayList<Facility>();
-	protected List<Facility> operatorFacilities = new ArrayList<Facility>();
-	protected List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
-	protected List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
-	protected List<OperatorTag> tags = new ArrayList<OperatorTag>();
-	protected List<AuditOperator> audits = new ArrayList<AuditOperator>();
-	protected List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
-	protected Map<Integer, AuditOperator> auditMap = null;
+	private List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
+	private List<FlagQuestionCriteria> flagQuestionCriteria = new ArrayList<FlagQuestionCriteria>();
+	private List<FlagOshaCriteria> flagOshaCriteria = new ArrayList<FlagOshaCriteria>();
+	private List<Facility> corporateFacilities = new ArrayList<Facility>();
+	private List<Facility> operatorFacilities = new ArrayList<Facility>();
+	private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+	private List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
+	private List<OperatorTag> tags = new ArrayList<OperatorTag>();
+	private List<AuditOperator> audits = new ArrayList<AuditOperator>();
+	private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
+	private Map<Integer, AuditOperator> auditMap = null;
+	private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();	
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -420,6 +422,15 @@ public class OperatorAccount extends Account {
 
 	public void setTags(List<OperatorTag> value) {
 		this.tags = value;
+	}
+
+	@OneToMany(mappedBy = "operator", cascade = { CascadeType.ALL })
+	public List<FlagCriteriaOperator> getFlagCriteria() {
+		return flagCriteria;
+	}
+
+	public void setFlagCriteria(List<FlagCriteriaOperator> flagCriteria) {
+		this.flagCriteria = flagCriteria;
 	}
 
 }

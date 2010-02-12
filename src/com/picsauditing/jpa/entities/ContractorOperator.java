@@ -26,6 +26,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private String workStatus = "P";
 	private FlagColor flagColor;
 	private FlagColor forceFlag;
+	private Date flagLastUpdated;
 	private Date forceEnd;
 	private WaitingOn waitingOn = WaitingOn.None;
 	private Date processCompletion;
@@ -133,6 +134,14 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
+	}
+
+	public Date getFlagLastUpdated() {
+		return flagLastUpdated;
+	}
+
+	public void setFlagLastUpdated(Date flagLastUpdated) {
+		this.flagLastUpdated = flagLastUpdated;
 	}
 
 	@Enumerated(EnumType.ORDINAL)

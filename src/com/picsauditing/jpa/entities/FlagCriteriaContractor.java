@@ -13,7 +13,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteriaContractor extends BaseTable {
 
-	private ContractorAccount contractorAccount;
+	private ContractorAccount contractor;
 	private FlagCriteria criteria;
 	private String answer;
 	private boolean verified;
@@ -22,7 +22,7 @@ public class FlagCriteriaContractor extends BaseTable {
 	}
 
 	public FlagCriteriaContractor(ContractorAccount ca, FlagCriteria fc, String answer) {
-		contractorAccount = ca;
+		contractor = ca;
 		criteria = fc;
 		this.answer = answer;
 		setAuditColumns(new User(User.SYSTEM));
@@ -30,12 +30,12 @@ public class FlagCriteriaContractor extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false)
-	public ContractorAccount getContractorAccount() {
-		return contractorAccount;
+	public ContractorAccount getContractor() {
+		return contractor;
 	}
 
-	public void setContractorAccount(ContractorAccount contractorAccount) {
-		this.contractorAccount = contractorAccount;
+	public void setContractor(ContractorAccount contractorAccount) {
+		this.contractor = contractorAccount;
 	}
 
 	@ManyToOne

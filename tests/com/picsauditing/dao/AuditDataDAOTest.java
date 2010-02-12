@@ -105,7 +105,7 @@ public class AuditDataDAOTest {
 		Set<Integer> questionIds = new HashSet<Integer>();
 		questionIds.add(1509);
 		questionIds.add(954);
-		Map<Integer, Map<String, AuditData>> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
+		Map<Integer, AuditData> data = auditdataDAO.findAnswersByContractor(2657, questionIds);
 		assertEquals(2, data.size());
 	}
 
