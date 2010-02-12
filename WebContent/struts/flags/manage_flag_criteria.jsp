@@ -24,20 +24,23 @@
 	var selectedaudit;
 	var selectedquestion;
 
+	function loadDialog(criteria) {
+		$.each(criteria, function (i,v) {
+			if (v == null)
+				v = "";
+			$('form#itemform [name=criteria.'+i+']').val(v);
+		});
+		selectedaudit = criteria['auditType.id'];
+		selectedquestion = criteria['question.id'];
+	}
+
 	function show(id) {
 		if (id !== undefined) {
 			$.getJSON('ManageFlagCriteriaAjax.action', 
 					{'criteria.id': id, button: 'load'}, 
-					function(data, result) {
+					function(data, result) { console.log(data);
 						if (data.result == 'success') {
-							$.each(data.criteria, function (i,v) {
-								if (v == null)
-									v = "";
-								$('form#itemform [name=criteria.'+i+']').val(v);
-							});
-							selectedaudit = data['auditType.id'];
-							selectedquestion = data['question.id'];
-		
+							loadDialog(data.criteria);
 							dialog.dialog('open');
 						} else {
 							if (data.gritter) {
@@ -48,7 +51,6 @@
 			);
 		} else {
 			$('form#itemform input, form textarea').val('');
-			console.log($('form#itemform input, form textarea'));
 			selectedaudit = '';
 			selectquestion = '';
 			dialog.dialog('open');
@@ -57,7 +59,8 @@
 
 	$(function() {
 		dtable = $('table#criterialist').dataTable({
-			bJQueryUI: true, 
+			bJQueryUI: true,
+			bSaveState: true,
 			sPaginationType: "full_numbers"
 		});
 
@@ -98,6 +101,10 @@
 										$('#criteria_'+data.criteria.id+' .criteria_'+i).html(v);
 										criteria_dialog.dialog('close');
 									});
+								} else {
+									loadDialog(data.criteria);
+									ddaudit.setValue(selectedaudit);
+									ddquestion.setValue(selectedquestion);
 								}
 							}
 					);

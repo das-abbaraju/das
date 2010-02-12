@@ -52,7 +52,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 		int questionID = getParameter("question.id");
 		if (questionID > 0) {
-			auditType = auditTypeDAO.find(questionID);
+			question = questionDAO.find(questionID);
 		}
 	}
 
@@ -66,8 +66,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			if (criteria != null) {
 				json = new JSONObject() {
 					{
-						put("criteria", criteria.toJSON());
 						put("result", "success");
+						put("criteria", criteria.toJSON());
 					}
 				};
 			} else {
@@ -90,10 +90,10 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		if ("save".equals(button)) {
 			// TODO - is validation required?
 			if (criteria != null) {
-
 				if (auditType != null && question != null) {
 					// clear anything that was put in here
-					criteriaDAO.refresh(criteria);
+					criteriaDAO.clear();
+					criteria = criteriaDAO.find(criteria.getId());
 					json = new JSONObject() {
 						{
 							put("result", "failure");
@@ -103,8 +103,11 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 									put("text", "Cannot save a flag criteria with both Audit and Question selected.");
 								}
 							});
+							put("criteria", criteria.toJSON());
 						}
 					};
+
+					return JSON;
 				}
 
 				// set the auditType or the question based on the incoming value
@@ -199,6 +202,22 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 	public void setJson(JSONObject json) {
 		this.json = json;
+	}
+
+	public AuditType getAuditType() {
+		return auditType;
+	}
+
+	public void setAuditType(AuditType auditType) {
+		this.auditType = auditType;
+	}
+
+	public AuditQuestion getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(AuditQuestion question) {
+		this.question = question;
 	}
 
 	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {
