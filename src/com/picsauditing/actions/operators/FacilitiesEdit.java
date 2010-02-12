@@ -92,14 +92,6 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 		if (permissions.isAdmin())
 			tryPermissions(OpPerms.ManageOperators);
 
-		if (id == 0)
-			subHeading = "Add " + type;
-		else {
-			if(operator.getPrimaryContact() == null)
-				addActionError("Please add a primary contact to this account");
-		}
-			
-
 		if (button != null) {
 			if (button.equalsIgnoreCase("Remove")) {
 				if (accountUserId > 0) {
@@ -258,6 +250,14 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 				addActionMessage("Successfully saved " + operator.getName());
 			}
+		}
+		
+
+		if (id == 0)
+			subHeading = "Add " + type;
+		else {
+			if(operator.getPrimaryContact() == null)
+				addActionError("Please add a primary contact to this account");
 		}
 
 		return SUCCESS;
