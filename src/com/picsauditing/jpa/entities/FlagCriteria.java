@@ -163,12 +163,18 @@ public class FlagCriteria extends BaseTable {
 		if (auditType != null) {
 			json.put("auditType.id", auditType.getId());
 		}
-		json.put("oshaType", oshaType.toString());
-		json.put("oshaRateType", oshaRateType.toString());
+		if (oshaType != null) {
+			json.put("oshaType", oshaType.toString());
+		}
+		if (oshaRateType != null) {
+			json.put("oshaRateType", oshaRateType.toString());
+		}
 		json.put("label", label);
 		json.put("description", description);
 		json.put("comparison", comparison);
-		json.put("multiYearScope", multiYearScope.toString());
+		if (multiYearScope != null) {
+			json.put("multiYearScope", multiYearScope.toString());
+		}
 		json.put("validationRequired", validationRequired);
 		json.put("defaultValue", defaultValue);
 		json.put("allowCustomValue", allowCustomValue);
