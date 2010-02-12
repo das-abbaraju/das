@@ -88,7 +88,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 
 		if ("save".equals(button)) {
-			// TODO - is validation required?
 			if (criteria != null) {
 				if (auditType != null && question != null) {
 					// clear anything that was put in here
