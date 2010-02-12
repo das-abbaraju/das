@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -15,130 +14,137 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.User;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
 	private Map<Integer, List<ContractorAuditOperator>> caoMap;
-	
-	public FlagDataCalculator(List<FlagCriteriaContractor> contractorCriteria, List<FlagCriteriaOperator> operatorCriteria) {
+
+	public FlagDataCalculator(List<FlagCriteriaContractor> contractorCriteria,
+			List<FlagCriteriaOperator> operatorCriteria) {
 		setContractorCriteria(contractorCriteria);
 		setOperatorCriteria(operatorCriteria);
 	}
 
 	public List<FlagData> calculate() {
 		List<FlagData> list = new ArrayList<FlagData>();
-		
-		// Consider audit operator matrix and see if something is required or not
-		
+
 		for (FlagCriteria key : operatorCriteria.keySet()) {
 			FlagColor flag = FlagColor.Green;
 			if (contractorCriteria.containsKey(key)) {
 				if (overrides != null && overrides.containsKey(key)) {
-					// Check if the override is still effective
-					if (overrides.get(key).getForceEnd().compareTo(new Date()) < 0)
-						flag = overrides.get(key).getForceflag();
+					final FlagDataOverride override = overrides.get(key);
+					if (override.isInForce())
+						flag = override.getForceflag();
 				} else {
-					//flag = operatorCriteria.get(key).evaluate(contractorCriteria.get(key));
-					// Moving the evaluate function here
-					flag = evaluate(operatorCriteria.get(key), contractorCriteria.get(key));
+					boolean flagged = isFlagged(operatorCriteria.get(key), contractorCriteria.get(key));
+					if (flagged)
+						flag = operatorCriteria.get(key).getFlag();
 				}
-				
-				if (!flag.equals(FlagColor.Green)) {
-					FlagData data = new FlagData();
-					// TODO set the data fields
-					data.setContractor(contractorCriteria.get(key).getContractorAccount());
-					data.setContractorCriteria(contractorCriteria.get(key));
-					data.setOperator(operatorCriteria.get(key).getOperator());
-					data.setOperatorCriteria(operatorCriteria.get(key));
-					data.setFlag(flag);
-					data.setCriteria(key);
-					Date now = new Date();
-					data.setCreationDate(now);
-					data.setUpdateDate(now);
-					
-					list.add(data);
-				}
+
+				FlagData data = new FlagData();
+				data.setCriteria(key);
+				data.setContractor(contractorCriteria.get(key).getContractorAccount());
+				data.setOperator(operatorCriteria.get(key).getOperator());
+				data.setFlag(flag);
+				data.setAuditColumns(new User(User.SYSTEM));
+				list.add(data);
 			}
 		}
-		
+
 		return list;
 	}
-	
-	private FlagColor evaluate(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
+
+	private boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		// Criteria should match
 		FlagCriteria criteria = opCriteria.getCriteria();
-		String opAnswer = criteria.getDefaultValue();
-		String conAnswer = conCriteria.getAnswer();
-		FlagColor flag = opCriteria.getFlag();
-		
+		String hurdle = criteria.getDefaultValue();
+
+		// See if the criteria can be overridden
+		if (criteria.isAllowCustomValue()) {
+			// See if operators have a hurdle (override?) set
+			if (opCriteria.getHurdle() != null)
+				hurdle = opCriteria.getHurdle();
+		}
+
+		String answer = conCriteria.getAnswer();
+
 		// Check to see if Criteria is a policy
 		// Check if policy is not applicable or approved (green flag), else red flag
 		if (criteria.getAuditType().getClassType().isPolicy()) {
-			List<ContractorAuditOperator> caoList = caoMap.get(new Integer(criteria.getAuditType().getId()));
-			if (caoList.size() > 0) {
+			List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType().getId());
+			if (caoList != null) {
 				for (ContractorAuditOperator cao : caoList) {
-					if (cao.getAudit().getAuditType().equals(criteria.getAuditType())
-							&& (cao.getStatus().equals(CaoStatus.Approved)
-									|| cao.getStatus().equals(CaoStatus.NotApplicable))) {
-						return flag;
-					} else
-						return FlagColor.Red;
+					if (cao.getAudit().getAuditType().equals(criteria.getAuditType())) {
+						if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+							return false;
+						if (cao.getStatus().isRejected())
+							return true;
+					}
 				}
 			}
+			// If the policy doesn't exist, then flag it
+			return true;
 		}
-		
-		// See if the criteria can be overridden
-		if (criteria.isAllowCustomValue())
-		{ // See if operators have a hurdle (override?) set
-			if (opCriteria.getHurdle() != null)
-				opAnswer = opCriteria.getHurdle();
-		}
-		
+
+		final String dataType = criteria.getDataType();
+		final String comparison = criteria.getComparison();
 		try {
-			if (criteria.getDataType().equals("boolean") && (Boolean.parseBoolean(conAnswer) == Boolean.parseBoolean(opAnswer)))
-				return flag;
-			else if (criteria.getDataType().equals("number")
-					&& ( (criteria.getComparison().equals("=") && Float.parseFloat(conAnswer) == Float.parseFloat(opAnswer))
-						|| (criteria.getComparison().equals(">") && Float.parseFloat(conAnswer) > Float.parseFloat(opAnswer))
-						|| (criteria.getComparison().equals("<") && Float.parseFloat(conAnswer) < Float.parseFloat(opAnswer))
-						|| (criteria.getComparison().equals(">=") && Float.parseFloat(conAnswer) >= Float.parseFloat(opAnswer))
-						|| (criteria.getComparison().equals("<=") && Float.parseFloat(conAnswer) <= Float.parseFloat(opAnswer))
-						|| (criteria.getComparison().equals("!=") && Float.parseFloat(conAnswer) != Float.parseFloat(opAnswer)) ))
-				return flag;
-			else if (criteria.getDataType().equals("string")
-					&& ( (conAnswer.equals(opAnswer) && criteria.getComparison().equals("="))
-					|| (!conAnswer.equals(opAnswer) && criteria.getComparison().equals("!=")) ) )
-				return flag;
-			else if (criteria.getDataType().equals("date")) {
-				SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-				Date conDate;
-				Date opDate;
-
-				if (conAnswer.equals("Today"))
-					conDate = new Date();
-				else
-					conDate = (Date) date.parse(conAnswer);
-
-				if (opAnswer.equals("Today"))
-					opDate = new Date();
-				else
-					opDate = (Date) date.parse(opAnswer);
-
-				if ( (criteria.getComparison().equals("<") && conDate.before(opDate))
-					|| (criteria.getComparison().equals("=") && conDate.equals(opDate))
-					|| (criteria.getComparison().equals(">") && conDate.after(opDate)) )
-					return flag;
+			if (dataType.equals("boolean")) {
+				return (Boolean.parseBoolean(answer) == Boolean.parseBoolean(hurdle));
 			}
 
-			return FlagColor.Red;
+			if (dataType.equals("number")) {
+				float answer2 = Float.parseFloat(answer);
+				float hurdle2 = Float.parseFloat(hurdle);
+				if (comparison.equals("="))
+					return answer2 == hurdle2;
+				if (comparison.equals(">"))
+					return answer2 > hurdle2;
+				if (comparison.equals("<"))
+					return answer2 < hurdle2;
+				if (comparison.equals(">="))
+					return answer2 >= hurdle2;
+				if (comparison.equals("<="))
+					return answer2 <= hurdle2;
+				if (comparison.equals("!="))
+					return answer2 != hurdle2;
+				return false;
+			}
+
+			if (dataType.equals("string")) {
+				if (comparison.equals("="))
+					return hurdle.equals(answer);
+				else
+					return !hurdle.equals(answer);
+			}
+
+			if (dataType.equals("date")) {
+				SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+				Date conDate = (Date) date.parse(answer);
+				Date opDate;
+
+				if (hurdle.equals("Today"))
+					opDate = new Date();
+				else
+					opDate = (Date) date.parse(hurdle);
+
+				if (comparison.equals("<"))
+					return conDate.before(opDate);
+				if (comparison.equals(">"))
+					return conDate.after(opDate);
+				if (comparison.equals("="))
+					return conDate.equals(opDate);
+			}
 		} catch (Exception e) {
-			System.out.println("Datatype is " + criteria.getDataType() + " but values were not " + criteria.getDataType() + "s");
-			return FlagColor.Red;
+			System.out.println("Datatype is " + dataType + " but values were not " + dataType + "s");
+			return true;
 		}
+		return false;
 	}
-	
+
 	public void setContractorCriteria(List<FlagCriteriaContractor> list) {
 		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
 		for (FlagCriteriaContractor value : list) {
@@ -152,11 +158,11 @@ public class FlagDataCalculator {
 			operatorCriteria.put(value.getCriteria(), value);
 		}
 	}
-	
+
 	public Map<Integer, List<ContractorAuditOperator>> getCaoMap() {
 		return caoMap;
 	}
-	
+
 	public void setCaoMap(Map<Integer, List<ContractorAuditOperator>> caoMap) {
 		this.caoMap = caoMap;
 	}
