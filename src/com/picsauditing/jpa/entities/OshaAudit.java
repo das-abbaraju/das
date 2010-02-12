@@ -3,8 +3,6 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
