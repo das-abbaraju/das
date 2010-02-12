@@ -28,7 +28,12 @@
 		$.each(criteria, function (i,v) {
 			if (v == null)
 				v = "";
-			$('form#itemform [name=criteria.'+i+']').val(v);
+			if (v === true)
+				$('form#itemform [name=criteria.'+i+']').attr('checked', 'checked');
+			else if (v === false)
+				$('form#itemform [name=criteria.'+i+']').removeAttr('checked');
+			else
+				$('form#itemform [name=criteria.'+i+']').val(v);
 		});
 		selectedaudit = criteria['auditType.id'];
 		selectedquestion = criteria['question.id'];
