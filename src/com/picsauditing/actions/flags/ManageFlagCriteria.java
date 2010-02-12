@@ -151,7 +151,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			final int criteriaID = criteria.getId();
 
 			if (criteriaID > 0 && criteria != null) {
-				criteriaDAO.delete(criteria);
+				criteriaDAO.remove(criteria);
 				json = new JSONObject() {
 					{
 						put("result", "success");
