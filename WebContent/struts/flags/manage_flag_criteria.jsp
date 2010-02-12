@@ -66,7 +66,7 @@
 	$(function() {
 		dtable = $('table#criterialist').dataTable({
 			bJQueryUI: true,
-			bSaveState: true,
+			bStateSave: true,
 			sPaginationType: "full_numbers"
 		});
 
