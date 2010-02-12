@@ -64,7 +64,12 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 		if ("load".equals(button)) {
 			if (criteria != null) {
-				json = criteria.toJSON();
+				json = new JSONObject() {
+					{
+						put("criteria", criteria.toJSON());
+						put("result", "success");
+					}
+				};
 			} else {
 				json = new JSONObject() {
 					{
@@ -120,7 +125,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 								put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
 							}
 						});
-						put("data", criteria.toJSON());
+						put("criteria", criteria.toJSON());
 					}
 				};
 			} else {

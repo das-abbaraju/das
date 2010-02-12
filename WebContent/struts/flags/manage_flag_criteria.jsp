@@ -30,7 +30,7 @@
 					{'criteria.id': id, button: 'load'}, 
 					function(data, result) {
 						if (data.result == 'success') {
-							$.each(data, function (i,v) {
+							$.each(data.criteria, function (i,v) {
 								if (v == null)
 									v = "";
 								$('form#itemform [name=criteria.'+i+']').val(v);
@@ -93,9 +93,9 @@
 								if (data.gritter)
 									$.gritter.add(data.gritter);
 								if (data.result == 'success') {
-									$.each(data.data, function (i,v) {
+									$.each(data.criteria, function (i,v) {
 										if (v == null) v = "";
-										$('#criteria_'+data.data.id+' .criteria_'+i).html(v);
+										$('#criteria_'+data.criteria.id+' .criteria_'+i).html(v);
 										criteria_dialog.dialog('close');
 									});
 								}
