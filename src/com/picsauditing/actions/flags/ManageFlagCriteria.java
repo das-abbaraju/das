@@ -169,7 +169,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 						put("gritter", new JSONObject() {
 							{
 								put("title", "Criteria Not Deleted!");
-								put("test", "Flag criteria does exists");
+								put("text", "Flag criteria does not exist");
 							}
 						});
 					}
