@@ -65,6 +65,18 @@ abstract public class PicsDAO {
 		return o;
 	}
 
+	public void refresh(BaseTable o) {
+		if (o != null) {
+			em.refresh(o);
+		}
+	}
+
+	public void delete(BaseTable o) {
+		if (o != null) {
+			em.remove(o);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<BaseTable> findAll(Class clazz) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
