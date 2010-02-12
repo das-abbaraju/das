@@ -28,9 +28,10 @@ import org.hibernate.annotations.Type;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class OshaAudit implements java.io.Serializable {
 	private static final long serialVersionUID = -4451146415122493617L;
-	
+
 	/**
-	 * Key used when creating a map of osha data including the past 3 year average
+	 * Key used when creating a map of osha data including the past 3 year
+	 * average
 	 */
 	public static final String AVG = "Average";
 	private int id;
@@ -63,7 +64,7 @@ public class OshaAudit implements java.io.Serializable {
 	private Float lwcr = null;
 	private Float dart = null;
 	private Float severityRate = null;
-	
+
 	private Float cad7 = 0.0f;
 	private Float neer = 0.0f;
 	private int firstAidInjuries;
@@ -292,7 +293,7 @@ public class OshaAudit implements java.io.Serializable {
 			lwcr = calculateRate(lostWorkCases);
 		return lwcr;
 	}
-	
+
 	public void setLostWorkCasesRate(float rate) {
 		this.lwcr = rate;
 	}
@@ -327,7 +328,7 @@ public class OshaAudit implements java.io.Serializable {
 	public void setRecordableTotalRate(float rate) {
 		this.trir = rate;
 	}
-	
+
 	@Transient
 	/**
 	 * Get the DART, you can call getRestrictedDaysAwayRate()
@@ -336,7 +337,7 @@ public class OshaAudit implements java.io.Serializable {
 	 * for example, in an average rate calculation.
 	 */
 	public Float getRestrictedDaysAwayRate() {
-		if(dart == null) 
+		if (dart == null)
 			dart = calculateRate(lostWorkCases + restrictedWorkCases);
 		return dart;
 	}
@@ -344,7 +345,7 @@ public class OshaAudit implements java.io.Serializable {
 	public void setRestrictedDaysAwayRate(float rate) {
 		this.dart = rate;
 	}
-	
+
 	@Transient
 	/**
 	 * Get the severity rate, you can call getRestrictedOrJobTransferDays()
@@ -353,7 +354,7 @@ public class OshaAudit implements java.io.Serializable {
 	 * for example, in an average rate calculation.
 	 */
 	public Float getRestrictedOrJobTransferDays() {
-		if(severityRate == null) { 
+		if (severityRate == null) {
 			if (type.equals(OshaType.OSHA)) {
 				severityRate = calculateRate(lostWorkDays + modifiedWorkDay);
 			} else {
@@ -385,7 +386,7 @@ public class OshaAudit implements java.io.Serializable {
 	public void setFlagColor(FlagColor flagColor) {
 		this.flagColor = flagColor;
 	}
-	
+
 	@Transient
 	public boolean isVerified() {
 		return verifiedDate != null;
@@ -412,7 +413,7 @@ public class OshaAudit implements java.io.Serializable {
 			return false;
 		return true;
 	}
-	
+
 	@Transient
 	public String getDescriptionReportable() {
 		if (getType() != null && getType().equals(OshaType.MSHA))
@@ -422,37 +423,32 @@ public class OshaAudit implements java.io.Serializable {
 	}
 
 	@Transient
-	public float getRates(OshaRateType rateType){
+	public float getRate(OshaRateType rateType) {
+		// expecting that the caller already knows the type of rate they expect
+		// (i.e. caller knows it is a COHS and therefore expects COHS rateTypes
+		// to be valid)
 		switch (rateType) {
 		case SeverityRate:
 			return getRestrictedOrJobTransferDays();
+		case LwcrAbsolute:
+			return getLostWorkCasesRate();
+		case LwcrNaics:
+			return (getLostWorkCasesRate() / conAudit.getContractorAccount().getNaics().getLwcr()) * 100;
+		case TrirAbsolute:
+			return getRecordableTotalRate();
+		case TrirNaics:
+			return (getRecordableTotalRate() / conAudit.getContractorAccount().getNaics().getLwcr()) * 100;
+		case Fatalities:
+			return getFatalitiesRate();
+		case Cad7:
+			return getCad7();
+		case Neer:
+			return getNeer();
+		default:
+			throw new RuntimeException("Invalid OSHA Rate Type of " + rateType.toString()
+					+ " specified for osha audit id " + getId() + ", contractor id "
+					+ conAudit.getContractorAccount().getId());
 		}
-		
-		Naics naicsCode = conAudit.getContractorAccount().getNaics();
-		
-//		switch (type) {
-//		case OSHA:
-//		case MSHA:
-//			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
-//			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
-//			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
-//			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
-//			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
-//			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
-//			break;
-//		case COHS:
-//			rateMap.put(OshaRateType.SeverityRate, getRestrictedOrJobTransferDays()); // get severity rate
-//			rateMap.put(OshaRateType.LwcrAbsolute, getLostWorkCasesRate()); // get lwcr, in percent
-//			rateMap.put(OshaRateType.LwcrNaics, (getLostWorkCasesRate()/naicsCode.getLwcr())*100); // get lwcr, in percent
-//			rateMap.put(OshaRateType.TrirAbsolute, getRecordableTotalRate()); // get trir, in percent
-//			rateMap.put(OshaRateType.TrirNaics, (getRecordableTotalRate()/naicsCode.getTrir())*100); // get trir, in percent
-//			rateMap.put(OshaRateType.Fatalities, getFatalitiesRate()); // get fatalities
-//			rateMap.put(OshaRateType.Cad7, getCad7()); // get cad7
-//			rateMap.put(OshaRateType.Neer, getNeer()); // get neer
-//			break;
-//		}
-		
-		return 0;
 	}
 
 }

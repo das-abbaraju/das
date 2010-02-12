@@ -4,10 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -46,13 +46,15 @@ public class ContractorFlagETL {
 
 	public void execute(List<Integer> contractorList) {
 		try {
-			// TODO: Check to ensure function returns proper list
 			flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 
 			// Get AuditQuestion ids that are used
 			for (FlagCriteria fc : flagCriteriaList) {
 				if (fc.getQuestion() != null)
 					criteriaQuestionSet.add(fc.getQuestion().getId());
+				// Need to remove EMR questions since they return multiple
+				// AuditData
+				criteriaQuestionSet.remove(AuditQuestion.EMR);
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -108,11 +110,8 @@ public class ContractorFlagETL {
 	}
 
 	@Transactional
-	// TODO: ADDDDD DATAAAA CLEAANNNNUUPPPPPP!!!
-	// See FlagCalculator2 line 263-302
 	private void run(int conID) {
 		List<FlagCriteriaContractor> changes = new ArrayList<FlagCriteriaContractor>();
-		// List of contractor data to save into DB
 
 		ContractorAccount contractor = contractorAccountDao.find(conID);
 		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(conID, criteriaQuestionSet);
@@ -123,7 +122,8 @@ public class ContractorFlagETL {
 				// Checking Audit Type
 				if (flagCriteria.getAuditType().getClassType().isPolicy()) {
 					// Contractors are evaluated by their CAO,
-					// so it's operator specific and we can't calculate exact data here
+					// so it's operator specific and we can't calculate exact
+					// data here
 					// Just put in a place holder row
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
 				} else if (flagCriteria.getAuditType().isAnnualAddendum()) {
@@ -152,7 +152,7 @@ public class ContractorFlagETL {
 				}
 			}
 
-			if (flagCriteria.getQuestion() != null) {
+			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() != AuditQuestion.EMR) {
 				// find answer in answermap if exists to related question
 				// can be null
 				final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
@@ -160,68 +160,142 @@ public class ContractorFlagETL {
 					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, "");
 					if (flagCriteria.getDataType().equals("boolean")) {
-						// TODO parse to boolean
-						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+						// parse to boolean
+						Boolean b = Boolean.parseBoolean(auditData.getAnswer());
+						flagCriteriaContractor.setAnswer(b.toString());
 					} else if (flagCriteria.getDataType().equals("number")) {
-						// TODO parse to number
+						// parse to number
 						Float f = Float.parseFloat(auditData.getAnswer());
 						flagCriteriaContractor.setAnswer(f.toString());
 					} else if (flagCriteria.getDataType().equals("date")) {
-						// TODO parse to date
-						flagCriteriaContractor.setAnswer(auditData.getAnswer());
+						// parse to date
+						Date d = DateBean.parseDate(auditData.getAnswer());
+						flagCriteriaContractor.setAnswer(d.toString());
 					} else if (flagCriteria.getDataType().equals("string")) {
 						flagCriteriaContractor.setAnswer(auditData.getAnswer());
 					}
-					//auditData.isVerified()
 					changes.add(flagCriteriaContractor);
 				}
 			}
 
 			if (flagCriteria.getOshaType() != null) {
 				// expecting to contain 4 or less of the most current audits
+				// TODO: VERIFY THAT UNVERIFIED OSHAS ARE RETURNED BY
+				// .getOshas()
 				final Map<String, OshaAudit> auditsOfThisSHAType = contractor.getOshas()
 						.get(flagCriteria.getOshaType());
-				// TODO: VERIFY ORDER IS PRESERVED <-----------------------*******
+				// TODO: VERIFY ORDER IS PRESERVED
+				// <-----------------------*******
 				List<OshaAudit> auditYears = new ArrayList<OshaAudit>(auditsOfThisSHAType.values());
 				if (auditYears.size() > 0) {
 					if (auditYears.size() > 3) {
-						// Check which one to pop off
-						auditYears.remove(3);
+						// Removing year which is not needed for transition
+						// years
+						if (!auditYears.get(0).isVerified())
+							auditYears.remove(0);
+						else
+							auditYears.remove(4);
 					}
 
-					Float answer = 0f;
-					boolean verified = false;
-					int yearIndex = -1;
+					Float answer = 0.0f;
+					boolean verified = true; // Has the data been verified?
 
 					switch (flagCriteria.getMultiYearScope()) {
 					case ThreeYearAverage:
-
+						for (OshaAudit year : auditYears) {
+							answer += year.getRate(flagCriteria.getOshaRateType());
+							if (!year.isVerified())
+								verified = false;
+						}
+						answer /= 3.0f;
 						break;
 					case ThreeYearsAgo:
-						if (auditYears.size() >= 3) {
-
-							yearIndex = 2;
-						}
-					case TwoYearsAgo:
-						if (auditYears.size() >= 2) {
-
-							yearIndex = 1;
-						}
-					case LastYearOnly:
-						yearIndex = 0;
-						answer = auditYears.get(yearIndex).getRates(flagCriteria.getOshaRateType());
+						if (auditYears.size() >= 3)
+							answer = auditYears.get(2).getRate(flagCriteria.getOshaRateType());
+						verified = auditYears.get(2).isVerified();
 						break;
+					case TwoYearsAgo:
+						if (auditYears.size() >= 2)
+							answer = auditYears.get(1).getRate(flagCriteria.getOshaRateType());
+						verified = auditYears.get(1).isVerified();
+						break;
+					case LastYearOnly:
+						answer = auditYears.get(0).getRate(flagCriteria.getOshaRateType());
+						verified = auditYears.get(0).isVerified();
+						break;
+					default:
+						throw new RuntimeException("Invalid MultiYear scope of "
+								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
+								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
 					}
-					// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
-					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, answer.toString());
-					// flagCriteriaContractor.set = verified;
+
+					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+							flagCriteria, answer.toString());
+					flagCriteriaContractor.setVerified(verified);
+					changes.add(flagCriteriaContractor);
+				}
+			}
+
+			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
+				// TODO: Add in EMR stuff. Handle like OSHA
+				Map<String, AuditData> auditsOfThisEMRType = new TreeMap<String, AuditData>(contractor.getEmrs());
+				List<AuditData> years = new ArrayList<AuditData>(auditsOfThisEMRType.values());
+
+				// TODO: THIS PART.....
+				if (years.size() > 0) {
+					if (years.size() > 3) {
+						// Removing year which is not needed for transition
+						// years
+						if (!years.get(0).isVerified())
+
+							years.remove(0);
+						else
+							years.remove(4);
+					}
+
+					Float answer = 0.0f;
+					boolean verified = true; // Has the data been verified?
+
+					switch (flagCriteria.getMultiYearScope()) {
+					case ThreeYearAverage:
+						for (AuditData year : years) {
+							answer += Float.valueOf(year.getAnswer());
+							if (!year.isVerified())
+								verified = false;
+						}
+						answer /= 3.0f;
+						break;
+					case ThreeYearsAgo:
+						if (years.size() >= 3)
+							answer = Float.valueOf(years.get(2).getAnswer());
+						verified = years.get(2).isVerified();
+						break;
+					case TwoYearsAgo:
+						if (years.size() >= 2)
+							answer = Float.valueOf(years.get(1).getAnswer());
+						verified = years.get(1).isVerified();
+						break;
+					case LastYearOnly:
+						answer = Float.valueOf(years.get(0).getAnswer());
+						verified = years.get(0).isVerified();
+						break;
+					default:
+						throw new RuntimeException("Invalid MultiYear scope of "
+								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
+								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
+					}
+
+					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+							flagCriteria, answer.toString());
+					flagCriteriaContractor.setVerified(verified);
 					changes.add(flagCriteriaContractor);
 				}
 			}
 		}
 
 		flagCriteriaContractorDao.deleteEntriesForContractor(conID);
-
+		// TODO: Verify data is saving automatically via struts. Otherwise
+		// iterate through list and save individual items
 	}
 
 	private void sendMail(String message) {

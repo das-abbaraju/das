@@ -16,6 +16,7 @@ public class FlagCriteriaContractor extends BaseTable {
 	private ContractorAccount contractorAccount;
 	private FlagCriteria criteria;
 	private String answer;
+	private boolean verified;
 
 	public FlagCriteriaContractor() {
 	}
@@ -53,5 +54,13 @@ public class FlagCriteriaContractor extends BaseTable {
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
 	}
 }
