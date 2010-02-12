@@ -92,8 +92,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			// TJA I tried using getUser() but it doesn't work from the
 			// UsersManage
 			// class because there's a getUser() method defined there already
-			if (permissions.isLoggedIn() && permissions.getAdminID() == 0
-					&& getUser(permissions.getUserId()).isForcePasswordReset()) {
+			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + ServletActionContext.getRequest().getRequestURL());
 				return true;
 			}
@@ -112,8 +111,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected boolean forceLogin(String alternateReturnURL) {
 		loadPermissions();
 		try {
-			if (permissions.isLoggedIn() && permissions.getAdminID() == 0
-					&& getUser(permissions.getUserId()).isForcePasswordReset()) {
+			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + alternateReturnURL);
 				return true;
 			}
@@ -224,8 +222,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	/**
-	 * Get the directory to store file uploads Use the System property or the
-	 * Init parameter or C:/temp/ To set the System property add
+	 * Get the directory to store file uploads Use the System property or the Init
+	 * parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
 	 * 
 	 * @return
@@ -304,13 +302,13 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 	public String getFormattedDollarAmount(String answer) {
 		String response = "$0";
-	
+
 		try {
 			String temp = answer.replaceAll(",", "");
 			DecimalFormat decimalFormat = new DecimalFormat("$#,##0");
-	
+
 			Long input = new Long(temp);
-	
+
 			response = decimalFormat.format(input);
 		} catch (Exception e) {
 			// System.out.println("unable to format as money: " + answer);

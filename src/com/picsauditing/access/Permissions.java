@@ -39,6 +39,7 @@ public class Permissions implements Serializable {
 
 	private int userID;
 	private boolean loggedIn = false;
+	private boolean forcePasswordReset = false;
 	private Set<Integer> groups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new TreeSet<UserAccess>();
 	private Set<Integer> canSeeAudits = new HashSet<Integer>();
@@ -104,6 +105,7 @@ public class Permissions implements Serializable {
 				throw new Exception("Missing User");
 
 			loggedIn = true;
+			forcePasswordReset = user.isForcePasswordReset();
 			active = user.isActiveB();
 			username = user.getUsername();
 			name = user.getName();
@@ -243,6 +245,10 @@ public class Permissions implements Serializable {
 
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+
+	public boolean isForcePasswordReset() {
+		return forcePasswordReset;
 	}
 
 	public Set<Integer> getGroups() {
