@@ -30,6 +30,9 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	private FlagCriteria criteria;
 	private JSONObject json;
 
+	private AuditType auditType;
+	private AuditQuestion question;
+
 	public ManageFlagCriteria(AuditTypeDAO auditTypeDAO, AuditQuestionDAO questionDAO, FlagCriteriaDAO criteriaDAO) {
 		this.auditTypeDAO = auditTypeDAO;
 		this.questionDAO = questionDAO;
@@ -41,6 +44,16 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		int criteriaID = getParameter("criteria.id");
 		if (criteriaID > 0)
 			criteria = criteriaDAO.find(criteriaID);
+
+		int auditTypeID = getParameter("auditType.id");
+		if (auditTypeID > 0) {
+			auditType = auditTypeDAO.find(auditTypeID);
+		}
+
+		int questionID = getParameter("question.id");
+		if (questionID > 0) {
+			auditType = auditTypeDAO.find(questionID);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -52,6 +65,18 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		if ("load".equals(button)) {
 			if (criteria != null) {
 				json = criteria.toJSON();
+			} else {
+				json = new JSONObject() {
+					{
+						put("result", "failure");
+						put("gritter", new JSONObject() {
+							{
+								put("title", "Criteria Not Loaded!");
+								put("text", "There was no criteria to load.");
+							}
+						});
+					}
+				};
 			}
 
 			return JSON;
@@ -60,25 +85,94 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		if ("save".equals(button)) {
 			// TODO - is validation required?
 			if (criteria != null) {
-				criteriaDAO.save(criteria);
-			}
 
-			json = new JSONObject() {
-				{
-					put("gritter", new JSONObject() {
+				if (auditType != null && question != null) {
+					// clear anything that was put in here
+					criteriaDAO.refresh(criteria);
+					json = new JSONObject() {
 						{
-							put("title", "Criteria Saved");
-							put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
+							put("result", "failure");
+							put("gritter", new JSONObject() {
+								{
+									put("title", "Criteria Not Saved!");
+									put("text", "Cannot save a flag criteria with both Audit and Question selected.");
+								}
+							});
 						}
-					});
-					put("result", "success");
-					put("data", criteria.toJSON());
+					};
 				}
-			};
+
+				// set the auditType or the question based on the incoming value
+				if (criteria.getAuditType() == null || !criteria.getAuditType().equals(auditType)) {
+					criteria.setAuditType(auditType);
+				} else if (criteria.getQuestion() == null || !criteria.getQuestion().equals(question)) {
+					criteria.setQuestion(question);
+				}
+
+				criteriaDAO.save(criteria);
+
+				json = new JSONObject() {
+					{
+						put("result", "success");
+						put("gritter", new JSONObject() {
+							{
+								put("title", "Criteria Saved");
+								put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
+							}
+						});
+						put("data", criteria.toJSON());
+					}
+				};
+			} else {
+				json = new JSONObject() {
+					{
+						put("result", "failure");
+						put("gritter", new JSONObject() {
+							{
+								put("title", "Criteria Not Saved!");
+								put("text", "There was no criteria to save.");
+							}
+						});
+					}
+				};
+			}
 
 			return JSON;
 		}
 
+		if ("delete".equals(button)) {
+			final int criteriaID = criteria.getId();
+
+			if (criteriaID > 0 && criteria != null) {
+				criteriaDAO.delete(criteria);
+				json = new JSONObject() {
+					{
+						put("result", "success");
+						put("gritter", new JSONObject() {
+							{
+								put("title", "Criteria Deleted");
+								put("text", "Flag Criteria " + criteria.getLabel() + " removed successfully.");
+							}
+						});
+						put("id", criteriaID);
+					}
+				};
+			} else {
+				json = new JSONObject() {
+					{
+						put("result", "failure");
+						put("gritter", new JSONObject() {
+							{
+								put("title", "Criteria Not Deleted!");
+								put("test", "Flag criteria does exists");
+							}
+						});
+					}
+				};
+			}
+
+			return JSON;
+		}
 		return SUCCESS;
 	}
 
@@ -161,6 +255,17 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 				add("<");
 				add("=");
 				add(">");
+			}
+		};
+	}
+
+	public List<String> getDatatypeList() {
+		return new ArrayList<String>() {
+			{
+				add(FlagCriteria.BOOLEAN);
+				add(FlagCriteria.DATE);
+				add(FlagCriteria.NUMBER);
+				add(FlagCriteria.STRING);
 			}
 		};
 	}

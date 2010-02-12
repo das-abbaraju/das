@@ -29,15 +29,21 @@
 			$.getJSON('ManageFlagCriteriaAjax.action', 
 					{'criteria.id': id, button: 'load'}, 
 					function(data, result) {
-						$.each(data, function (i,v) {
-							if (v == null)
-								v = "";
-							$('form#itemform [name=criteria.'+i+']').val(v);
-						});
-						selectedaudit = data['auditType.id'];
-						selectedquestion = data['question.id'];
-	
-						dialog.dialog('open');
+						if (data.result == 'success') {
+							$.each(data, function (i,v) {
+								if (v == null)
+									v = "";
+								$('form#itemform [name=criteria.'+i+']').val(v);
+							});
+							selectedaudit = data['auditType.id'];
+							selectedquestion = data['question.id'];
+		
+							dialog.dialog('open');
+						} else {
+							if (data.gritter) {
+								$.gritter.add(data.gritter);
+							}
+						}
 					}
 			);
 		} else {
@@ -78,7 +84,7 @@
 			},
 			buttons: {
 				'Save': function() {
-					var pars = $('form#itemform').serialize();
+					var pars = $('form#itemform :input[name][value]').serialize();
 					pars += '&button=save';
 					var criteria_dialog = $(this);
 					$.getJSON('ManageFlagCriteriaAjax.action',
@@ -97,6 +103,21 @@
 					);
 				},
 				'Delete': function() {
+					var criteria_dialog = $(this);
+					var pars = $('form#itemform :input[name][value]').serialize();
+					pars += "&button=delete";
+					$.getJSON('ManageFlagCriteriaAjax.action',
+							pars,
+							function(data, result) {
+								if (data.gritter)
+									$.gritter.add(data.gritter);
+
+								if (data.result == 'success') {
+									criteria_dialog.dialog('close');
+									dtable.fnDeleteRow($('tr#criteria_'+data.id));
+								}
+							}
+						);
 				},
 				'Cancel': function() {
 					$(this).dialog('close');
@@ -163,16 +184,16 @@
 				</li>
 				
 				<li>
+					<label>Data Type:</label>
+					<s:select name="criteria.dataType" list="datatypeList" headerKey="" headerValue=" - Data Type - "/>
+				</li>
+				<li>
 					<label>Comparison:</label>
 					<s:select name="criteria.comparison" list="comparisonList" headerKey="" headerValue=" - Comparison - "/>
 				</li>
 				<li>
 					<label>Default Value:</label>
 					<s:textfield name="criteria.defaultValue"/>
-				</li>
-				<li>
-					<label>Data Type:</label>
-					<s:textfield name="criteria.dataType"/>
 				</li>
 				<li>
 					<label>Custom Value:</label>
@@ -182,7 +203,7 @@
 				<li>
 					<label>Audit Type:</label>
 					<div class="mcdropdown_wrapper">
-						<s:textfield id="audittype" name="criteria.auditType.id"/>
+						<s:textfield id="audittype" name="auditType.id"/>
 						<ul id="audittypemenu" class="mcdropdown_menu">
 						<s:iterator value="auditTypeMap">
 							<li>
@@ -200,7 +221,7 @@
 				<li>
 					<label>Question:</label>
 					<div class="mcdropdown_wrapper">
-						<s:textfield id="question" name="criteria.question.id"/>
+						<s:textfield id="question" name="question.id"/>
 						<ul id="questionmenu" class="mcdropdown_menu">
 						<s:iterator value="flagQuestionMap" id="atypeclass">
 							<li>
