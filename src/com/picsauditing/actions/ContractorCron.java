@@ -19,9 +19,9 @@ import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -49,34 +49,44 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
 
+	private PicsDAO dao;
 	private ContractorAccountDAO contractorDAO;
-	private ContractorAuditOperatorDAO caoDAO;
 	private AuditDataDAO auditDataDAO;
-	private NoteDAO noteDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
 
 	private int conID = 0;
-	private Steps[] steps = null;
+	private ContractorCronStep[] steps = null;
 
-	public ContractorCron(ContractorAccountDAO contractorAccountDAO) {
-		this.contractorDAO = contractorAccountDAO;
+	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
+			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL) {
+		this.dao = contractorDAO;
+		this.contractorDAO = contractorDAO;
+		this.auditDataDAO = auditDataDAO;
+		this.subscriptionDAO = subscriptionDAO;
+		this.auditPercentCalculator = auditPercentCalculator;
+		this.auditBuilder = auditBuilder;
+		this.contractorFlagETL = contractorFlagETL;
 	}
 
 	public String execute() throws Exception {
+		if (steps == null)
+			return SUCCESS;
+
+		if (isDebugging())
+			PicsLogger.addRuntimeRule("ContractorCron");
+
 		PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
 			run(conID);
 		} else {
 			List<Integer> list = contractorDAO.findContractorsNeedingRecalculation();
-
-			if (list != null && list.size() > 0) {
-				for (Integer conID : list) {
-					run(conID);
-				}
+			for (Integer conID : list) {
+				run(conID);
 			}
 			addActionMessage("ContractorCron processed " + list.size() + " record(s)");
 		}
@@ -98,7 +108,6 @@ public class ContractorCron extends PicsActionSupport {
 			Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
 			for (ContractorOperator co : contractor.getOperators()) {
 				OperatorAccount operator = co.getOperatorAccount();
-				PicsLogger.log(" Starting FlagCalculator2 for conID: " + conID + " opID:" + operator.getId());
 				for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteriaInherited())
 					PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for "
 							+ criteria.getAuditQuestion().getQuestion());
@@ -127,27 +136,33 @@ public class ContractorCron extends PicsActionSupport {
 			if (steps != null && steps.length > 0) {
 				contractor.setNeedsRecalculation(false);
 				contractor.setLastRecalculation(new Date());
-				contractorDAO.save(contractor);
+				dao.save(contractor);
+
+				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
+						+ " successfully");
 			}
-
-			addActionMessage("Completed " + steps.length + " steps for contractor " + conID + " successfully");
 		} catch (Throwable t) {
-			addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
-
-			StringBuffer body = new StringBuffer();
-
-			body.append("There was an error running ContractorCron for id=");
-			body.append(conID);
-			body.append("\n\n");
-
-			body.append(t.getMessage());
-			body.append("\n");
-
 			StringWriter sw = new StringWriter();
 			t.printStackTrace(new PrintWriter(sw));
-			body.append(sw.toString());
 
-			sendMail(body.toString());
+			if (!isDebugging()) {
+				addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
+
+				StringBuffer body = new StringBuffer();
+
+				body.append("There was an error running ContractorCron for id=");
+				body.append(conID);
+				body.append("\n\n");
+
+				body.append(t.getMessage());
+				body.append("\n");
+
+				body.append(sw.toString());
+
+				sendMail(body.toString());
+			} else {
+				addActionError(sw.toString());
+			}
 		}
 	}
 
@@ -169,7 +184,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runBilling(ContractorAccount contractor) {
-		if (!runStep(Steps.Billing))
+		if (!runStep(ContractorCronStep.Billing))
 			return;
 		InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
 		contractor.setNewMembershipLevel(fee);
@@ -177,7 +192,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runAuditCategory(ContractorAccount contractor) {
-		if (!runStep(Steps.AuditCategory))
+		if (!runStep(ContractorCronStep.AuditCategory))
 			return;
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			final Date lastRecalculation = cAudit.getLastRecalculation();
@@ -190,13 +205,13 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runAuditBuilder(ContractorAccount contractor) {
-		if (!runStep(Steps.AuditBuilder))
+		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
 		auditBuilder.buildAudits(contractor);
 	}
 
 	private void runTradeETL(ContractorAccount contractor) {
-		if (!runStep(Steps.TradeETL))
+		if (!runStep(ContractorCronStep.TradeETL))
 			return;
 		List<AuditData> servicesPerformed = auditDataDAO.findServicesPerformed(contractor.getId());
 		List<String> selfPerform = new ArrayList<String>();
@@ -212,16 +227,16 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runContractorETL(ContractorAccount contractor) {
-		if (!runStep(Steps.ContractorETL))
+		if (!runStep(ContractorCronStep.ContractorETL))
 			return;
 		contractorFlagETL.calculate(contractor);
 	}
 
 	private void runFlag(ContractorOperator co) {
-		if (!runStep(Steps.Flag))
+		if (!runStep(ContractorCronStep.Flag))
 			return;
-		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co.getOperatorAccount()
-				.getFlagCriteria());
+		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co
+				.getOperatorAccount().getFlagCriteria());
 		final List<FlagData> flagResults = flagDataCalculator.calculate();
 		// TODO Save flagResults into table
 		FlagColor color = FlagColor.Green;
@@ -236,16 +251,16 @@ public class ContractorCron extends PicsActionSupport {
 					+ co.getOperatorAccount().getName());
 			note.setCanContractorView(true);
 			note.setViewableById(co.getOperatorAccount().getId());
-			noteDAO.save(note);
+			dao.save(note);
 			co.setFlagColor(color);
 			co.setFlagLastUpdated(new Date());
 		}
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {
-		if (!runStep(Steps.WaitingOn))
+		if (!runStep(ContractorCronStep.WaitingOn))
 			return;
-		
+
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 		WaitingOn waitingOn = calcSingle.calculateWaitingOn();
 
@@ -272,7 +287,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 			note.setCanContractorView(true);
 			note.setViewableById(operator.getId());
-			noteDAO.save(note);
+			dao.save(note);
 
 			if (co.getProcessCompletion() == null && waitingOn.isNone() && !co.getWaitingOn().isNone()) {
 				EventSubscriptionBuilder.contractorFinishedEvent(subscriptionDAO, co);
@@ -283,7 +298,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runPolicies(ContractorOperator co) {
-		if (!runStep(Steps.Policies))
+		if (!runStep(ContractorCronStep.Policies))
 			return;
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 		for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
@@ -295,7 +310,7 @@ public class ContractorCron extends PicsActionSupport {
 							FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
 
 							cao.setFlag(flagColor);
-							caoDAO.save(cao);
+							dao.save(cao);
 						}
 					}
 				}
@@ -304,7 +319,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
-		if (!runStep(Steps.AuditCategory))
+		if (!runStep(ContractorCronStep.AuditCategory))
 			return;
 		for (OperatorAccount corporate : corporateSet) {
 			FlagColor color = FlagColor.Green;
@@ -319,28 +334,32 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
+	public int getConID() {
+		return conID;
+	}
+
 	public void setConID(int conID) {
 		this.conID = conID;
 	}
 
-	public Steps[] getSteps() {
+	public ContractorCronStep[] getStepValues() {
+		return ContractorCronStep.values();
+	}
+
+	public ContractorCronStep[] getSteps() {
 		return steps;
 	}
 
-	public void setSteps(Steps[] steps) {
+	public void setSteps(ContractorCronStep[] steps) {
 		this.steps = steps;
 	}
 
-	private boolean runStep(Steps step) {
+	private boolean runStep(ContractorCronStep step) {
 		if (step == null || steps == null)
 			return false;
-		for (Steps candidate : steps)
-			if (candidate.equals(step) || candidate.equals(Steps.All))
+		for (ContractorCronStep candidate : steps)
+			if (candidate.equals(step) || candidate.equals(ContractorCronStep.All))
 				return true;
 		return false;
-	}
-
-	public enum Steps {
-		All, Billing, AuditCategory, AuditBuilder, TradeETL, ContractorETL, Flag, WaitingOn, Policies, CorporateRollup;
 	}
 }
