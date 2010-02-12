@@ -23,6 +23,7 @@
 	var dialog;
 	var selectedaudit;
 	var selectedquestion;
+	var newItem = false;
 
 	function loadDialog(criteria) {
 		$.each(criteria, function (i,v) {
@@ -46,6 +47,7 @@
 					function(data, result) {
 						if (data.result == 'success') {
 							loadDialog(data.criteria);
+							newItem = false;
 							dialog.dialog('open');
 						} else {
 							if (data.gritter) {
@@ -59,14 +61,22 @@
 			$('form#itemform :checked').removeAttr('checked');
 			selectedaudit = '';
 			selectquestion = '';
+			newItem = true;
 			dialog.dialog('open');
 		}
 	}
 
 	$(function() {
 		dtable = $('table#criterialist').dataTable({
+			aoColumns: [
+			            {bVisible: false},
+			            null,
+			            null,
+			            null
+						],
 			bJQueryUI: true,
 			bStateSave: true,
+			bAutoWidth: false,
 			sPaginationType: "full_numbers"
 		});
 
@@ -102,11 +112,15 @@
 								if (data.gritter)
 									$.gritter.add(data.gritter);
 								if (data.result == 'success') {
-									$.each(data.criteria, function (i,v) {
-										if (v == null) v = "";
-										$('#criteria_'+data.criteria.id+' .criteria_'+i).html(v);
-										criteria_dialog.dialog('close');
-									});
+									if (newItem) {
+										dtable.fnAddData([data.criteria.category, data.criteria.label, data.criteria.description]);
+									} else {
+										$.each(data.criteria, function (i,v) {
+											if (v == null) v = "";
+											$('#criteria_'+data.criteria.id+' .criteria_'+i).html(v);
+										});
+									}
+									criteria_dialog.dialog('close');
 								} else {
 									loadDialog(data.criteria);
 									ddaudit.setValue(selectedaudit);
@@ -127,7 +141,7 @@
 
 								if (data.result == 'success') {
 									criteria_dialog.dialog('close');
-									dtable.fnDeleteRow($('tr#criteria_'+data.id));
+									dtable.fnDeleteRow($('tr#criteria_'+data.id)[0]);
 								}
 							}
 						);
@@ -164,6 +178,7 @@
 <table id="criterialist" class="report" style="width:100%; margin-bottom: 0;">
 	<thead>
 		<tr>
+			<th>ID</th>
 			<th>Category</th>
 			<th>Label</th>
 			<th>Description</th>
@@ -171,6 +186,7 @@
 	</thead>
 	<s:iterator value="criteriaList">
 		<tr id="criteria_<s:property value="id"/>" onclick="show(<s:property value="id"/>)" class="clickable">
+			<td><s:property value="id"/></td>
 			<td class="criteria_category"><nobr><s:property value="category"/></nobr></td>
 			<td class="criteria_label"><nobr><s:property value="label"/></nobr></td>
 			<td class="criteria_description"><s:property value="description"/></td>
