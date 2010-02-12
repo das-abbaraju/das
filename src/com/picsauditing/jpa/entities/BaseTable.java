@@ -119,19 +119,12 @@ public abstract class BaseTable implements JSONable, Serializable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", id);
-		if (!full)
-			return obj;
-
-		obj.put("id", id);
-		if (createdBy != null)
-			obj.put("createdBy", createdBy.toJSON(false));
-		if (updatedBy != null)
-			obj.put("updatedBy", updatedBy.toJSON(false));
-		if (creationDate != null)
-			obj.put("creationDate", creationDate.getTime());
-		if (updateDate != null)
-			obj.put("updateDate", updateDate.getTime());
-
+		if (full) {
+			obj.put("createdBy", createdBy == null ? null : createdBy.toJSON(full));
+			obj.put("updatedBy", updatedBy == null ? null : updatedBy.toJSON(full));
+			obj.put("creationDate", creationDate == null ? null : creationDate.getTime());
+			obj.put("updateDate", updateDate == null ? null : updateDate.getTime());
+		}
 		return obj;
 	}
 

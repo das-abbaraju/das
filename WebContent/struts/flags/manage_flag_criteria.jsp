@@ -35,15 +35,15 @@
 			else
 				$('form#itemform [name=criteria.'+i+']').val(v);
 		});
-		selectedaudit = criteria['auditType.id'];
-		selectedquestion = criteria['question.id'];
+		selectedaudit = criteria.auditType ? criteria.auditType.id : '';
+		selectedquestion = criteria.question ? criteria.question.id : '';
 	}
 
 	function show(id) {
 		if (id !== undefined) {
 			$.getJSON('ManageFlagCriteriaAjax.action', 
 					{'criteria.id': id, button: 'load'}, 
-					function(data, result) { console.log(data);
+					function(data, result) {
 						if (data.result == 'success') {
 							loadDialog(data.criteria);
 							dialog.dialog('open');
@@ -275,15 +275,15 @@
 				
 				<li>
 					<label>Osha Type:</label>
-					<s:textfield name="criteria.oshaType"/>
+					<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" headerKey="" headerValue=" - Osha Type - "/>
 				</li>
 				<li>
 					<label>Osha Rate Type:</label>
-					<s:textfield name="criteria.oshaRateType"/>
+					<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" listValue="description" headerKey="" headerValue=" - Osha Rate Type - "/>
 				</li>
 				<li>
 					<label>Multi Year Scope:</label>
-					<s:select name="criteria.multiYearScope" list="multiYearScopeList" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
+					<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
 				</li>
 				
 				<li>

@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.MultiYearScope;
 
 public class ManageFlagCriteria extends PicsActionSupport implements Preparable {
 
@@ -265,10 +264,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 
 		return flagQuestionMap;
-	}
-
-	public MultiYearScope[] getMultiYearScopeList() {
-		return MultiYearScope.values();
 	}
 
 	public List<String> getComparisonList() {

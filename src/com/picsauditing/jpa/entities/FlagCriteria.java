@@ -154,35 +154,21 @@ public class FlagCriteria extends BaseTable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
-		JSONObject json = new JSONObject();
-		json.put("id", id);
+		JSONObject json = super.toJSON(full);
+
 		json.put("category", category);
-		if (question != null) {
-			json.put("question.id", question.getId());
-		}
-		if (auditType != null) {
-			json.put("auditType.id", auditType.getId());
-		}
-		if (oshaType != null) {
-			json.put("oshaType", oshaType.toString());
-		}
-		if (oshaRateType != null) {
-			json.put("oshaRateType", oshaRateType.toString());
-		}
+		json.put("question", question == null ? null : question.toJSON(full));
+		json.put("auditType", auditType == null ? null : auditType.toJSON(full));
+		json.put("oshaType", oshaType == null ? null : oshaType.toString());
+		json.put("oshaRateType", oshaRateType == null ? null : oshaRateType.toString());
 		json.put("label", label);
 		json.put("description", description);
 		json.put("comparison", comparison);
-		if (multiYearScope != null) {
-			json.put("multiYearScope", multiYearScope.toString());
-		}
+		json.put("multiYearScope", multiYearScope == null ? null : multiYearScope.toString());
 		json.put("validationRequired", validationRequired);
 		json.put("defaultValue", defaultValue);
 		json.put("allowCustomValue", allowCustomValue);
 		json.put("dataType", dataType);
-
-		if (full) {
-			json.putAll(super.toJSON(full));
-		}
 
 		return json;
 	}
