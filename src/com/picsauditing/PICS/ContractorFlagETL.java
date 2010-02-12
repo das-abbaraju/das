@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -22,13 +21,16 @@ import com.picsauditing.jpa.entities.OshaAudit;
 public class ContractorFlagETL {
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
+	private FlagCriteriaDAO flagCriteriaDao;
+
 	private List<FlagCriteria> flagCriteriaList = null;
 	private HashSet<Integer> criteriaQuestionSet = new HashSet<Integer>();
 
-	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, ContractorAccountDAO contractorAccountDao,
-			FlagCriteriaContractorDAO flagCriteriaContractorDao, AuditDataDAO auditDataDao) {
+	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
+			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
 		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 		this.auditDataDao = auditDataDao;
+		this.flagCriteriaDao = flagCriteriaDao;
 
 		flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 		// Get AuditQuestion ids that are used
@@ -43,7 +45,8 @@ public class ContractorFlagETL {
 
 		List<FlagCriteriaContractor> changes = contractor.getFlagCriteria();
 
-		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(), criteriaQuestionSet);
+		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(),
+				criteriaQuestionSet);
 
 		for (FlagCriteria flagCriteria : flagCriteriaList) {
 
@@ -71,7 +74,8 @@ public class ContractorFlagETL {
 					Boolean hasProperStatus = false;
 					for (ContractorAudit ca : contractor.getAudits()) {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
-							// TODO if Audit is D&A, then the only consider it if OQEmployees is Yes
+							// TODO if Audit is D&A, then the only consider it
+							// if OQEmployees is Yes
 							// See FlagCalcSingle line 183
 							// calcSingle.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
 							// TODO also look at COR
@@ -222,15 +226,22 @@ public class ContractorFlagETL {
 
 					/*
 					 * Legacy code From FlagCalculator2 OshaAudit oshaAvg =
-					 * contractor.getOshas().get(OshaType.OSHA).get(OshaAudit.AVG); AuditData emrAvg =
-					 * contractor.getEmrs().get(OshaAudit.AVG); if(emrAvg != null &&
-					 * !Strings.isEmpty(emrAvg.getAnswer()))
-					 * contractor.setEmrAverage(Float.valueOf(emrAvg.getAnswer()).floatValue()); if (oshaAvg != null) {
-					 * contractor.setTrirAverage(oshaAvg.getRecordableTotalRate());
-					 * contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate()); }
+					 * contractor
+					 * .getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
+					 * AuditData emrAvg =
+					 * contractor.getEmrs().get(OshaAudit.AVG); if(emrAvg !=
+					 * null && !Strings.isEmpty(emrAvg.getAnswer()))
+					 * contractor.setEmrAverage
+					 * (Float.valueOf(emrAvg.getAnswer()).floatValue()); if
+					 * (oshaAvg != null) {
+					 * contractor.setTrirAverage(oshaAvg.getRecordableTotalRate
+					 * ());
+					 * contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate
+					 * ()); }
 					 */
 
-					// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT VALIDATION IS REQUIRED!!!!!!!
+					// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT
+					// VALIDATION IS REQUIRED!!!!!!!
 					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, answer.toString());
 					flagCriteriaContractor.setVerified(verified);
