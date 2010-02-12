@@ -53,6 +53,7 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorAccountDAO contractorDAO;
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
+
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
@@ -105,33 +106,38 @@ public class ContractorCron extends PicsActionSupport {
 			runTradeETL(contractor);
 			runContractorETL(contractor);
 
-			Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
-			for (ContractorOperator co : contractor.getOperators()) {
-				OperatorAccount operator = co.getOperatorAccount();
-				for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteriaInherited())
-					PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for "
-							+ criteria.getAuditQuestion().getQuestion());
+			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
+					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
+				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
+				for (ContractorOperator co : contractor.getOperators()) {
+					OperatorAccount operator = co.getOperatorAccount();
+					for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteriaInherited())
+						PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for "
+								+ criteria.getAuditQuestion().getQuestion());
 
-				for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria())
-					PicsLogger.log(" osha criteria " + criteria.getFlagColor());
+					for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria())
+						PicsLogger.log(" osha criteria " + criteria.getFlagColor());
 
-				for (AuditOperator auditOperator : operator.getInheritInsurance().getAudits())
-					PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
+					for (AuditOperator auditOperator : operator.getInheritInsurance().getAudits())
+						PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
 
-				for (AuditOperator auditOperator : operator.getInheritAudits().getAudits())
-					PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
+					for (AuditOperator auditOperator : operator.getInheritAudits().getAudits())
+						PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
 
-				for (AuditOperator auditOperator : operator.getVisibleAudits())
-					PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
+					for (AuditOperator auditOperator : operator.getVisibleAudits())
+						PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 
-				for (Facility facility : operator.getCorporateFacilities()) {
-					corporateSet.add(facility.getCorporate());
+					if (runStep(ContractorCronStep.CorporateRollup)) {
+						for (Facility facility : operator.getCorporateFacilities()) {
+							corporateSet.add(facility.getCorporate());
+						}
+					}
+					runFlag(co);
+					runWaitingOn(co);
+					runPolicies(co);
 				}
-				runFlag(co);
-				runWaitingOn(co);
-				runPolicies(co);
+				runCorporateRollup(contractor, corporateSet);
 			}
-			runCorporateRollup(contractor, corporateSet);
 
 			if (steps != null && steps.length > 0) {
 				contractor.setNeedsRecalculation(false);

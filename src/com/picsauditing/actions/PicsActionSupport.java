@@ -315,4 +315,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		}
 		return response;
 	}
+	
+	public boolean isDebugging() {
+		return "1".equals(System.getProperty("pics.debug"));
+	}
 }

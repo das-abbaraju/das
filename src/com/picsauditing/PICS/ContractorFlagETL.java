@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.OshaAudit;
 public class ContractorFlagETL {
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
-	private FlagCriteriaDAO flagCriteriaDao;
 
 	private List<FlagCriteria> flagCriteriaList = null;
 	private HashSet<Integer> criteriaQuestionSet = new HashSet<Integer>();
@@ -30,7 +29,6 @@ public class ContractorFlagETL {
 			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
 		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 		this.auditDataDao = auditDataDao;
-		this.flagCriteriaDao = flagCriteriaDao;
 
 		flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 		// Get AuditQuestion ids that are used

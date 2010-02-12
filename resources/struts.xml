@@ -1304,7 +1304,7 @@
 		</action>
 
 		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">
-			<result>/struts/blank.jsp</result>
+			<result>/struts/contractors/contractor_cron.jsp</result>
 		</action>
 		
 		<action name="SubscriptionCron" class="com.picsauditing.actions.SubscriptionCron">
