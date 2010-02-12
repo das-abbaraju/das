@@ -56,6 +56,7 @@
 			);
 		} else {
 			$('form#itemform input, form textarea').val('');
+			$('form#itemform :checked').removeAttr('checked');
 			selectedaudit = '';
 			selectquestion = '';
 			dialog.dialog('open');
