@@ -71,7 +71,6 @@
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
-	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
