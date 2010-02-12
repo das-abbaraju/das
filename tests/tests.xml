@@ -35,7 +35,6 @@
 	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
 	<bean id="ContractorNoteDAO" class="com.picsauditing.dao.ContractorNoteDAO"/>
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
-	<bean id="ContractorOperatorFlagDAO" class="com.picsauditing.dao.ContractorOperatorFlagDAO"/>
 	<bean id="ContractorRegistrationRequestDAO" class="com.picsauditing.dao.ContractorRegistrationRequestDAO"/>
 	<bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO"/>
 	<bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>

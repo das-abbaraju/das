@@ -24,7 +24,6 @@
 		<class>com.picsauditing.jpa.entities.ContractorAudit</class>
 		<class>com.picsauditing.jpa.entities.ContractorAuditOperator</class>
 		<class>com.picsauditing.jpa.entities.ContractorOperator</class>
-		<class>com.picsauditing.jpa.entities.ContractorOperatorFlag</class>
 		<class>com.picsauditing.jpa.entities.DesktopMatrix</class>
 		<class>com.picsauditing.jpa.entities.EmailAttachment</class>
 		<class>com.picsauditing.jpa.entities.EmailQueue</class>

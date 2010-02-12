@@ -16,7 +16,6 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -41,7 +40,6 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 	
 	private AppPropertyDAO appPropDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
-	private ContractorOperatorFlagDAO flagDAO;
 	private ContractorAuditOperatorDAO caoDAO;
 	private ContractorAccountDAO conDAO;
 	private UserDAO userDAO;
@@ -54,11 +52,10 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 	private String serverName;
 
 	public SubscriptionCron(AppPropertyDAO appPropDAO, EmailSubscriptionDAO subscriptionDAO,
-			ContractorOperatorFlagDAO flagDAO, ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO, 
+			ContractorAuditOperatorDAO caoDAO, ContractorAccountDAO conDAO, 
 			UserDAO userDAO, AccountDAO accountDAO, ContractorOperatorDAO contractorOperatorDAO) {
 		this.appPropDAO = appPropDAO;
 		this.subscriptionDAO = subscriptionDAO;
-		this.flagDAO = flagDAO;
 		this.caoDAO = caoDAO;
 		this.conDAO = conDAO;
 		this.userDAO = userDAO;
@@ -146,15 +143,15 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 			}
 
 			if (subscription.equals(Subscription.RedFlags)) {
-				builder = new FlagColorSubscription(Subscription.RedFlags, timePeriod, subscriptionDAO, flagDAO);
+				builder = new FlagColorSubscription(Subscription.RedFlags, timePeriod, subscriptionDAO, contractorOperatorDAO);
 			}
 
 			if (subscription.equals(Subscription.AmberFlags)) {
-				builder = new FlagColorSubscription(Subscription.AmberFlags, timePeriod, subscriptionDAO, flagDAO);
+				builder = new FlagColorSubscription(Subscription.AmberFlags, timePeriod, subscriptionDAO, contractorOperatorDAO);
 			}
 
 			if (subscription.equals(Subscription.GreenFlags)) {
-				builder = new FlagColorSubscription(Subscription.GreenFlags, timePeriod, subscriptionDAO, flagDAO);
+				builder = new FlagColorSubscription(Subscription.GreenFlags, timePeriod, subscriptionDAO, contractorOperatorDAO);
 			}
 
 			if (subscription.equals(Subscription.TrialContractorAccounts)) {

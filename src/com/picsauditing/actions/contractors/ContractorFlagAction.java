@@ -179,7 +179,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (co.getFlagColor() == null) {
 			// Add a new flag for the contractor
 			// TODO get the flagColor from FlagDataCalculator
+			co.setFlagLastUpdated(new Date());
 			co.setFlagColor(FlagColor.Red);
+			
 		}
 
 		// Make sure the operator has only the answers that are visible to them
@@ -216,6 +218,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			addNote(contractor, "Flag color changed from " + co.getFlagColor() + " to " + newColor + " for "
 					+ co.getOperatorAccount().getName(), NoteCategory.Flags, LowMedHigh.Med, true, co
 					.getOperatorAccount().getId(), new User(User.SYSTEM));
+			co.setFlagLastUpdated(new Date());
 			co.setFlagColor(newColor);
 		}
 		WaitingOn waitingOn = calculator.calculateWaitingOn();

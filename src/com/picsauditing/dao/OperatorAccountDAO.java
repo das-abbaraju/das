@@ -170,8 +170,6 @@ public class OperatorAccountDAO extends PicsDAO {
 		query.executeUpdate();
 		query = em.createQuery("DELETE FROM FlagOshaCriteria fo WHERE fo.operatorAccount.id = " + opID);
 		query.executeUpdate();
-		query = em.createQuery("DELETE FROM ContractorOperatorFlag cf WHERE cf.operatorAccount.id = " + opID);
-		query.executeUpdate();
 		query = em.createQuery("DELETE FROM AuditCatOperator ao WHERE ao.operatorAccount.id = " + opID);
 		query.executeUpdate();
 		query = em.createQuery("DELETE FROM AuditQuestionOperatorAccount aq WHERE aq.operatorAccount.id = " + opID);

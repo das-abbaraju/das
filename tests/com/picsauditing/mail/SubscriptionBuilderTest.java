@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 
@@ -25,7 +25,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Autowired
 	EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
-	ContractorOperatorFlagDAO flagDAO;
+	ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	ContractorAuditOperatorDAO caoDAO;
 	@Autowired
@@ -67,7 +67,7 @@ public class SubscriptionBuilderTest extends TestCase {
 	@Test
 	public void testFlagColor() throws Exception {
 		SubscriptionBuilder builder = new FlagColorSubscription(Subscription.GreenFlags, SubscriptionTimePeriod.Weekly,
-				subscriptionDAO, flagDAO);
+				subscriptionDAO, contractorOperatorDAO);
 
 		builder.process();
 	}
