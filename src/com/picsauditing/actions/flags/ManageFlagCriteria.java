@@ -91,8 +91,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			if (criteria != null) {
 				if (auditType != null && question != null) {
 					// clear anything that was put in here
-					criteriaDAO.clear();
-					criteria = criteriaDAO.find(criteria.getId());
+					criteriaDAO.refresh(criteria);
 					json = new JSONObject() {
 						{
 							put("result", "failure");
