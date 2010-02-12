@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.util.Strings;
 
@@ -50,8 +51,17 @@ public class ContractorOperatorDAO extends PicsDAO {
 		}
 	}
 
+	public List<ContractorOperator> findWhere(String where) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		Query query = em.createQuery("FROM ContractorOperator WHERE " + where + " ORDER BY contractorAccount.name");
+		return query.getResultList();
+	}
+
 	public List<ContractorOperator> findByContractor(int conID, Permissions permissions) {
-		
+
 		String where = "";
 		if (permissions.isCorporate()) {
 			String ids = Strings.implode(permissions.getOperatorChildren(), ",");
@@ -59,7 +69,8 @@ public class ContractorOperatorDAO extends PicsDAO {
 				return null;
 			where = " AND operatorAccount.id IN (" + ids + ")";
 		}
-		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? " + where + " ORDER BY operatorAccount.name");
+		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? " + where
+				+ " ORDER BY operatorAccount.name");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
@@ -69,14 +80,13 @@ public class ContractorOperatorDAO extends PicsDAO {
 		query.setParameter(1, opID);
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorOperator> findPendingApprovalContractors(int opID, boolean includeBidding) {
-		String where = "SELECT co FROM ContractorOperator co WHERE co.operatorAccount.id = "
-				+ opID + " AND co.workStatus = 'P' AND co.contractorAccount.status = 'Active'";
-		if(includeBidding) {
+		String where = "SELECT co FROM ContractorOperator co WHERE co.operatorAccount.id = " + opID
+				+ " AND co.workStatus = 'P' AND co.contractorAccount.status = 'Active'";
+		if (includeBidding) {
 			where += " AND co.contractorAccount.acceptsBids = 1";
-		}
-		else {
+		} else {
 			where += " AND co.contractorAccount.acceptsBids = 0";
 		}
 		where += " ORDER BY co.creationDate DESC";

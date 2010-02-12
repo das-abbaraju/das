@@ -161,15 +161,4 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setRelationshipType(String relationshipType) {
 		this.relationshipType = relationshipType;
 	}
-
-	@Transient
-	@Deprecated
-	public ContractorOperatorFlag getFlag() {
-		return null;
-	}
-
-	@Deprecated
-	public void setFlag(ContractorOperatorFlag flag) {
-	}
-
 }

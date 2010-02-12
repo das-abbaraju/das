@@ -4,24 +4,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.dao.ContractorOperatorFlagDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
 public class FlagColorSubscription extends SubscriptionBuilder {
 
-	private ContractorOperatorFlagDAO flagDAO;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	private FlagColor flagColor;
 
 	public FlagColorSubscription(Subscription subscription, SubscriptionTimePeriod timePeriod,
-			EmailSubscriptionDAO subscriptionDAO, ContractorOperatorFlagDAO flagDAO) {
+			EmailSubscriptionDAO subscriptionDAO, ContractorOperatorDAO contractorOperatorDAO) {
 		super(subscription, timePeriod, subscriptionDAO);
-		this.flagDAO = flagDAO;
+		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.templateID = 65;
 		if (subscription.equals(Subscription.RedFlags))
 			flagColor = FlagColor.Red;
@@ -41,7 +40,7 @@ public class FlagColorSubscription extends SubscriptionBuilder {
 		}
 
 		if (conIds.size() > 0) {
-			List<ContractorOperatorFlag> flags = flagDAO
+			List<ContractorOperator> flags = contractorOperatorDAO
 					.findWhere("contractorAccount.status = 'Active' AND operatorAccount.id = " + a.getId()
 							+ " AND contractorAccount.id IN (" + Strings.implode(conIds, ",") + ") AND flagColor = '"
 							+ flagColor + "'");

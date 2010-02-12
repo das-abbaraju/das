@@ -18,7 +18,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorFlagDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -27,7 +26,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorOperatorFlag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -51,7 +49,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected int opID;
 	protected ContractorOperator co;
 	protected FlagCalculatorSingle calculator = new FlagCalculatorSingle();
-	protected ContractorOperatorFlagDAO coFlagDao;
 	protected String action = "";
 
 	protected List<AuditCriteriaAnswer> acaList;
@@ -65,13 +62,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
-			ContractorOperatorFlagDAO contractorOperatorFlagDAO, ContractorAuditOperatorDAO caoDAO,
+			ContractorAuditOperatorDAO caoDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditCategoryDataDAO auditCategoryDataDAO,
 			AuditQuestionDAO auditQuestionDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.auditDataDAO = auditDataDAO;
-		this.coFlagDao = contractorOperatorFlagDAO;
 		this.caoDAO = caoDAO;
 		this.subscriptionDAO = subscriptionDAO;
 		this.auditCategoryDataDAO = auditCategoryDataDAO;
@@ -180,15 +176,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			getNoteDao().save(note);
 		}
 
-		if (co.getFlag() == null) {
+		if (co.getFlagColor() == null) {
 			// Add a new flag for the contractor
-			ContractorOperatorFlag newFlag = new ContractorOperatorFlag();
-			newFlag.setFlagColor(FlagColor.Red); // Always start with Red
-			newFlag.setContractorAccount(co.getContractorAccount());
-			newFlag.setOperatorAccount(co.getOperatorAccount());
-			newFlag.setLastUpdate(new Date());
-			newFlag = coFlagDao.save(newFlag);
-			co.setFlag(newFlag);
+			// TODO get the flagColor from FlagDataCalculator
+			co.setFlagColor(FlagColor.Red);
 		}
 
 		// Make sure the operator has only the answers that are visible to them
@@ -220,17 +211,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		PicsLogger.start("Flag.calculate");
 		FlagColor newColor = calculator.calculate();
 		PicsLogger.stop();
-		if (newColor != null && !newColor.equals(co.getFlag().getFlagColor())) {
-			addActionMessage("Flag color has been now updated from " + co.getFlag().getFlagColor() + " to " + newColor);
-			addNote(contractor, "Flag color changed from " + co.getFlag().getFlagColor() + " to " + newColor + " for "
+		if (newColor != null && !newColor.equals(co.getFlagColor())) {
+			addActionMessage("Flag color has been now updated from " + co.getFlagColor() + " to " + newColor);
+			addNote(contractor, "Flag color changed from " + co.getFlagColor() + " to " + newColor + " for "
 					+ co.getOperatorAccount().getName(), NoteCategory.Flags, LowMedHigh.Med, true, co
 					.getOperatorAccount().getId(), new User(User.SYSTEM));
-			co.getFlag().setLastUpdate(new Date());
-			co.getFlag().setFlagColor(newColor);
+			co.setFlagColor(newColor);
 		}
 		WaitingOn waitingOn = calculator.calculateWaitingOn();
 
-		co.getFlag().setWaitingOn(waitingOn);
+		co.setWaitingOn(waitingOn);
 		co.setAuditColumns(permissions);
 		contractorOperatorDao.save(co);
 

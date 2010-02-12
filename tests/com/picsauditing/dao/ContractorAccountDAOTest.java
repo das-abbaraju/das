@@ -19,11 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorOperatorFlag;
-import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 
@@ -34,8 +31,6 @@ import com.picsauditing.jpa.entities.User;
 public class ContractorAccountDAOTest {
 	@Autowired
 	ContractorAccountDAO contractoraccountDAO;
-	@Autowired
-	ContractorOperatorFlagDAO flagDAO;
 	@Autowired
 	AccountDAO accountDAO;
 
@@ -122,19 +117,5 @@ public class ContractorAccountDAOTest {
 		// System.out.println(operator.getOperatorAccount().getName());
 		// }
 		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());
-	}
-
-	// @Test
-	public void addContractorOperatorFlag() {
-		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
-		OperatorAccount operator = (OperatorAccount) accountDAO.find(1251);
-
-		ContractorOperatorFlag coFlag = new ContractorOperatorFlag();
-		coFlag.setFlagColor(FlagColor.Red);
-		coFlag.setContractorAccount(contractoraccount);
-		coFlag.setOperatorAccount(operator);
-		coFlag.setLastUpdate(new Date(0));
-		flagDAO.save(coFlag);
-		flagDAO.remove(coFlag.getId());
 	}
 }

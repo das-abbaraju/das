@@ -89,7 +89,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
-	protected Map<OperatorAccount, ContractorOperatorFlag> flags = new HashMap<OperatorAccount, ContractorOperatorFlag>();
 	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 	protected List<Certificate> certificates = new ArrayList<Certificate>();
 
@@ -478,19 +477,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
-	}
-
-	/**
-	 * Map of Contractor Flags with OperatorID as the key
-	 */
-	@MapKey(name = "operatorAccount")
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
-	public Map<OperatorAccount, ContractorOperatorFlag> getFlags() {
-		return flags;
-	}
-
-	public void setFlags(Map<OperatorAccount, ContractorOperatorFlag> flags) {
-		this.flags = flags;
 	}
 
 	// /// Transient/Helper Methods ///////

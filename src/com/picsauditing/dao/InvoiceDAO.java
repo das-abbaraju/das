@@ -42,7 +42,7 @@ public class InvoiceDAO extends PicsDAO {
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		qb.setAccountAlias("i.account");
-		qb.setShowPendingDeactivated(true);
+		qb.setShowPendingDeactivated(false);
 		String hql = "SELECT i FROM Invoice i " +
 				"WHERE i.dueDate < NOW() AND i.status = 'Unpaid' " +
 				"AND i.account.status = 'Active' "
