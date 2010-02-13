@@ -57,7 +57,7 @@
 					}
 			);
 		} else {
-			$('form#itemform input, form textarea').val('');
+			$('form#itemform input, form#itemform textarea, form#itemform select').val('');
 			$('form#itemform :checked').removeAttr('checked');
 			selectedaudit = '';
 			selectquestion = '';
