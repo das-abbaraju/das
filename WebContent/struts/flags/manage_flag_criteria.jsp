@@ -250,7 +250,7 @@
 						</s:iterator>
 						</ul>
 					</div>
-					<a class="remove left" href="#" onclick="ddaudit.setValue('');return false">Clear</a>
+					<a class="remove" href="#" onclick="ddaudit.setValue('');return false">Clear</a>
 				</li>
 				<li>
 					<label>Question:</label>
@@ -292,7 +292,7 @@
 						</s:iterator>
 						</ul>
 					</div>
-					<a class="remove left" href="#" onclick="ddquestion.setValue('');return false">Clear</a>
+					<a class="remove" href="#" onclick="ddquestion.setValue('');return false">Clear</a>
 				</li>
 				
 				<li>
