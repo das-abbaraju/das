@@ -71,7 +71,7 @@
 						<s:param name="id" value="%{contractor.id}" />
 						<s:param name="opID" value="%{operatorAccount.id}" />
 					</s:url><s:a href="%{flagUrl}">
-						<s:property value="flag.flagColor.smallIcon" escape="false" />
+						<s:property value="flagColor.smallIcon" escape="false" />
 					</s:a></td>
 					<td class="account<s:property value="operatorAccount.status" />">
 						<s:url id="opUrl" action="ContractorFlag">

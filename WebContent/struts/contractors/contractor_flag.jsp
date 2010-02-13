@@ -23,7 +23,7 @@ $(function() {
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
-			value="co.flag.flagColor.bigIcon" escape="false" /></td>
+			value="co.flagColor.bigIcon" escape="false" /></td>
 		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b>
 		<br/><a href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status" class="help">What does this mean?</a><br/></td>
 	</tr>

@@ -14,10 +14,12 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -71,6 +73,8 @@ public class FacilityChanger {
 		}
 
 		co.setAuditColumns(permissions);
+		co.setWaitingOn(WaitingOn.Contractor);
+		co.setFlagColor(FlagColor.Red);
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 
