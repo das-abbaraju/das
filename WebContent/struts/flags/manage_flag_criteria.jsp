@@ -68,6 +68,7 @@
 
 	$(function() {
 		dtable = $('table#criterialist').dataTable({
+			aaSorting: [[1, 'asc']],
 			aoColumns: [
 			            {bVisible: false},
 			            null,
@@ -77,6 +78,12 @@
 			bJQueryUI: true,
 			bStateSave: true,
 			bAutoWidth: false,
+			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+				$(nRow).not('.clickable').attr('id','criteria_'+aData[0]).addClass('clickable').click(function() {
+						show(aData[0]);
+					});
+				return nRow;
+			},
 			sPaginationType: "full_numbers"
 		});
 
@@ -113,12 +120,9 @@
 									$.gritter.add(data.gritter);
 								if (data.result == 'success') {
 									if (newItem) {
-										dtable.fnAddData([data.criteria.category, data.criteria.label, data.criteria.description]);
+										dtable.fnAddData([data.criteria.id, data.criteria.category, data.criteria.label, data.criteria.description]);
 									} else {
-										$.each(data.criteria, function (i,v) {
-											if (v == null) v = "";
-											$('#criteria_'+data.criteria.id+' .criteria_'+i).html(v);
-										});
+										dtable.fnUpdate([data.criteria.id, data.criteria.category, data.criteria.label, data.criteria.description], $('#criteria_'+data.criteria.id)[0])
 									}
 									criteria_dialog.dialog('close');
 								} else {
@@ -185,11 +189,11 @@
 		</tr>
 	</thead>
 	<s:iterator value="criteriaList">
-		<tr id="criteria_<s:property value="id"/>" onclick="show(<s:property value="id"/>)" class="clickable">
+		<tr>
 			<td><s:property value="id"/></td>
-			<td class="criteria_category"><nobr><s:property value="category"/></nobr></td>
-			<td class="criteria_label"><nobr><s:property value="label"/></nobr></td>
-			<td class="criteria_description"><s:property value="description"/></td>
+			<td><nobr><s:property value="category"/></nobr></td>
+			<td><nobr><s:property value="label"/></nobr></td>
+			<td><s:property value="description"/></td>
 		</tr>
 	</s:iterator>
 </table>
@@ -246,6 +250,7 @@
 						</s:iterator>
 						</ul>
 					</div>
+					<a class="remove left" href="#" onclick="ddaudit.setValue('');return false">Clear</a>
 				</li>
 				<li>
 					<label>Question:</label>
@@ -287,6 +292,7 @@
 						</s:iterator>
 						</ul>
 					</div>
+					<a class="remove left" href="#" onclick="ddquestion.setValue('');return false">Clear</a>
 				</li>
 				
 				<li>
