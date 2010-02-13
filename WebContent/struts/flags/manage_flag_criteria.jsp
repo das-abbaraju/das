@@ -60,7 +60,7 @@
 			$('form#itemform input, form#itemform textarea, form#itemform select').val('');
 			$('form#itemform :checked').removeAttr('checked');
 			selectedaudit = '';
-			selectquestion = '';
+			selectedquestion = '';
 			newItem = true;
 			dialog.dialog('open');
 		}
