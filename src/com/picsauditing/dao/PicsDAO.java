@@ -66,7 +66,7 @@ abstract public class PicsDAO {
 	}
 
 	public void refresh(BaseTable o) {
-		if (o != null) {
+		if (em.contains(o)) {
 			em.refresh(o);
 		}
 	}

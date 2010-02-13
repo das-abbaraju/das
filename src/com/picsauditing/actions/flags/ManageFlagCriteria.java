@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.util.Strings;
 
 public class ManageFlagCriteria extends PicsActionSupport implements Preparable {
 
@@ -114,6 +115,22 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 					criteria.setQuestion(question);
 				}
 
+				if (Strings.isEmpty(criteria.getDataType())) {
+					json = new JSONObject() {
+						{
+							put("result", "failure");
+							put("gritter", new JSONObject() {
+								{
+									put("title", "Criteria Not Saved!");
+									put("text", "Data Type is a required field.");
+								}
+							});
+						}
+					};
+					criteriaDAO.refresh(criteria);
+					return JSON;
+				}
+
 				criteriaDAO.save(criteria);
 
 				json = new JSONObject() {
@@ -146,9 +163,10 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 
 		if ("delete".equals(button)) {
-			final int criteriaID = criteria.getId();
 
-			if (criteriaID > 0 && criteria != null) {
+			if (criteria != null) {
+				final int criteriaID = criteria.getId();
+
 				criteriaDAO.remove(criteria);
 				json = new JSONObject() {
 					{
