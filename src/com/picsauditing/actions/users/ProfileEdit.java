@@ -101,6 +101,7 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 						redirect(url);
 
 					u.setForcePasswordReset(false);
+					permissions.setForcePasswordReset(false);
 				}
 				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 				permissions.setTimeZone(u);

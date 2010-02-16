@@ -80,7 +80,7 @@ public class Permissions implements Serializable {
 		accountID = 0;
 		accountName = "";
 		accountType = "";
-		country = "";  
+		country = "";
 		accountStatus = AccountStatus.Pending;
 		accountCountries.clear();
 		approvesRelationships = false;
@@ -251,6 +251,10 @@ public class Permissions implements Serializable {
 		return forcePasswordReset;
 	}
 
+	public void setForcePasswordReset(boolean forcePasswordReset) {
+		this.forcePasswordReset = forcePasswordReset;
+	}
+
 	public Set<Integer> getGroups() {
 		return groups;
 	}
@@ -278,11 +282,11 @@ public class Permissions implements Serializable {
 	public String getAccountName() {
 		return accountName;
 	}
-	
+
 	public AccountStatus getAccountStatus() {
 		return accountStatus;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
