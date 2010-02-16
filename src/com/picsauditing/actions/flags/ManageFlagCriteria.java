@@ -274,7 +274,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
 					question.getSubCategory().getCategory()).get(question.getSubCategory()) == null) {
 				flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
-						question.getSubCategory().getCategory()).put(question.getSubCategory(), new ArrayList<AuditQuestion>());
+						question.getSubCategory().getCategory()).put(question.getSubCategory(),
+						new ArrayList<AuditQuestion>());
 			}
 
 			flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
