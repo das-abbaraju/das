@@ -89,9 +89,6 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 		loadPermissions();
 		try {
-			// TJA I tried using getUser() but it doesn't work from the
-			// UsersManage
-			// class because there's a getUser() method defined there already
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
 				redirect("ProfileEdit.action?url=" + ServletActionContext.getRequest().getRequestURL());
 				return true;
