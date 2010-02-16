@@ -36,7 +36,9 @@ public class ContractorAuditOperatorDAOTest {
 		OperatorAccount op = new OperatorAccount();
 		op.setId(16);
 
-		ContractorAudit ca = auditDao.findActiveByContractor(3, 14);
+		ContractorAudit ca = auditDao.findActiveByContractor(3, 1);
+
+		assertNotNull("Audit should not be null", ca);
 
 		cao.setOperator(op);
 		cao.setAudit(ca);

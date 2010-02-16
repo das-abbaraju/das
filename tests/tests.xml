@@ -14,8 +14,6 @@
 	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
 	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
 	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
-	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
-	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
 	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO"/>
 	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>
@@ -44,6 +42,9 @@
 	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
 	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
+	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
+	<bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO"/>
+	<bean id="FlagCriteriaOperatorDAO" class="com.picsauditing.dao.FlagCriteriaOperatorDAO"/>
 	<bean id="FlagOshaCriteriaDAO" class="com.picsauditing.dao.FlagOshaCriteriaDAO"/>
 	<bean id="FlagQuestionCriteriaDAO" class="com.picsauditing.dao.FlagQuestionCriteriaDAO"/>
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
@@ -68,13 +69,14 @@
 	<bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
 	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
 
-	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
-	<bean id="FlagCalculator2" class="com.picsauditing.PICS.FlagCalculator2" scope="prototype"/>
-	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
+	<bean id="AuditBuilder" class="com.picsauditing.PICS.AuditBuilder" scope="prototype"/>
 	<bean id="AuditPercentCalculator" class="com.picsauditing.PICS.AuditPercentCalculator" scope="prototype"/>
-	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
+	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle" scope="prototype"/>
-	<bean id="CronMetricsAggregator" class="com.picsauditing.cron.InMemoryAggregator"/>
+	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL" scope="prototype"/>
+	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
+	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
+	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 		
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
@@ -95,7 +97,7 @@
  	
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha?jdbcCompliantTruncation=false" />
+    <property name="url" value="jdbc:mysql://alpha.picsauditing.com:3306/pics_alpha" />
     <property name="username" value="pics" />
     <property name="password" value="@Irvine1" />
   </bean>

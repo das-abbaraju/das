@@ -278,6 +278,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setRequest(Map arg0) {
 		if (requestURL == null)
