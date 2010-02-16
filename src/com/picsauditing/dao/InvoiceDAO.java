@@ -40,13 +40,14 @@ public class InvoiceDAO extends PicsDAO {
 		if (permissions == null)
 			return new ArrayList<Invoice>();
 
-		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		qb.setAccountAlias("i.account");
-		qb.setShowPendingDeactivated(false);
 		String hql = "SELECT i FROM Invoice i " +
 				"WHERE i.dueDate < NOW() AND i.status = 'Unpaid' " +
-				"AND i.account.status = 'Active' "
-				+ qb.toString() + " ORDER BY i.dueDate";
+				"AND i.account.status = 'Active' ";
+		if(permissions.isOperator()) {
+			hql += "AND i.account.id IN (SELECT t.contractorAccount.id FROM ContractorOperator t WHERE t.operatorAccount.id = "
+				+ permissions.getAccountId() + ") "; 
+		}
+		hql +="ORDER BY i.dueDate";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 		return query.getResultList();
