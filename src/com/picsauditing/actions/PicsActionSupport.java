@@ -222,8 +222,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	/**
-	 * Get the directory to store file uploads Use the System property or the Init
-	 * parameter or C:/temp/ To set the System property add
+	 * Get the directory to store file uploads Use the System property or the
+	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
 	 * 
 	 * @return
@@ -315,7 +315,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		}
 		return response;
 	}
-	
+
 	public boolean isDebugging() {
 		return "1".equals(System.getProperty("pics.debug"));
 	}
