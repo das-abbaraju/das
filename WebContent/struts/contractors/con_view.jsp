@@ -122,16 +122,16 @@
 			<s:iterator value="activeOperators">
 			<li>
 				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-				><s:if test="flag != null"><s:property value="flag.flagColor.smallIcon" escape="false" /></s:if>
+				><s:property value="flagColor.smallIcon" escape="false" />
 				<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></a>
 				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
 					<s:if test="permissions.admin"> 
-						title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="flag.waitingOn"/>'"
+						title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
 						rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
 						class="operatorQuick"
 					</s:if>
 					<s:else>
-						title="Waiting On '<s:property value="flag.waitingOn"/>'"
+						title="Waiting On '<s:property value="waitingOn"/>'"
 					</s:else>
 					><s:property value="operatorAccount.name" /></a>
 			</li>

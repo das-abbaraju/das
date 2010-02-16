@@ -11,9 +11,9 @@
 	</thead>
 	<s:iterator value="activeOperators">
 		<tr>
-			<td class="center"><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flag.flagColor.smallIcon" escape="false" /></a></td>
+			<td class="center"><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flagColor.smallIcon" escape="false" /></a></td>
 			<td><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a></td>
-			<td class="center"><s:property value="flag.waitingOn"/></td>
+			<td class="center"><s:property value="waitingOn"/></td>
 		</tr>
 	</s:iterator>
 	<tr><td colspan="3" class="right"><a href="ContractorFacilities.action?id=<s:property value="id" />">... add more Facilities</a></td>

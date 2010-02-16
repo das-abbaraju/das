@@ -61,11 +61,10 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			
 		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
 		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
-		sql.addJoin("LEFT JOIN flags flags on flags.conid = a.id and flags.opid = operator.id");
 
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
-		sql.addField("flags.flag as flag");
+		sql.addField("gc.flag as flag");
 		sql.addField("workStatus");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.id in (" + Strings.implode(ops, ",") + ")");

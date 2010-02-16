@@ -40,11 +40,10 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 		
 		sql.addJoin("JOIN generalcontractors gencon on gencon.subid = a.id");
 		sql.addJoin("JOIN accounts operator on operator.id = gencon.genid");
-		sql.addJoin("LEFT JOIN flags flags on flags.conid = a.id and flags.opid = operator.id");
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
-		sql.addField("flags.flag");
-		sql.addField("lower(flags.flag) AS lflag");
+		sql.addField("gencon.flag");
+		sql.addField("lower(gencon.flag) AS lflag");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.id in (" + opIds + ")");
 	}

@@ -33,11 +33,10 @@ public class ChartWaitingOnCountCorp extends ChartMSAction {
 		sql.addField("op.name as label");
 		sql.addField("count(*) as value");
 		sql
-				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search&filter.waitingOn=',f.waitingOn,'&filter.operator=',op.id) as link");
+				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search&filter.waitingOn=',gc.waitingOn,'&filter.operator=',op.id) as link");
 		sql.addGroupBy("series, label");
 		sql.addOrderBy("series, label");
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
-		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
 		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("op.status IN ('Active','Demo')");

@@ -19,7 +19,7 @@ $(function() {
 <s:include value="conHeader.jsp" />
 
 <div style="text-align: center; width: 100%">
-<s:if test="co.flag.waitingOn.ordinal() > 0"><div class="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.flag.waitingOn"/></b></div></s:if>
+<s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property

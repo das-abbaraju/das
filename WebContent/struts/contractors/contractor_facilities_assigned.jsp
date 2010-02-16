@@ -80,7 +80,7 @@
 						</s:url>
 						<s:a href="%{opUrl}"><s:property value="operatorAccount.name" /></s:a>
 					</td>
-					<td><s:property value="flag.waitingOn.name()" /></td>
+					<td><s:property value="waitingOn.name()" /></td>
 				</s:if>
 				<s:else>
 					<td>N/A</td>

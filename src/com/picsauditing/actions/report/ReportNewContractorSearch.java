@@ -46,13 +46,12 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (permissions.isOperator()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
-			sql.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + permissions.getAccountId());
-			sql.addField("flags.flag");
-			sql.addField("lower(flags.flag) AS lflag");
 			sql.addJoin("LEFT JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
 					+ permissions.getAccountId());
 			sql.addField("gc.genID");
 			sql.addField("gc.workStatus");
+			sql.addField("gc.flag");
+			sql.addField("lower(gc.flag) AS lflag");
 		}
 
 		if (getFilter().isInParentCorporation()) {

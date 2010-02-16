@@ -22,15 +22,14 @@ public class ChartWaitingOnCount extends ChartSSAction {
 		chart.setShowValues(true);
 
 		SelectSQL sql = new SelectSQL("generalcontractors gc");
-		sql.addJoin("JOIN flags f ON gc.genID = f.opID AND gc.subID = f.conID");
-		sql.addJoin("JOIN accounts a ON a.id = f.conID");
+		sql.addJoin("JOIN accounts a ON a.id = gc.subID");
 
 		sql.addWhere("a.status IN ('Active','Demo')");
 
 		sql.addGroupBy("gc.waitingOn");
 
 		if (permissions.isOperator()) {
-			sql.addWhere("f.opID = " + permissions.getAccountId());
+			sql.addWhere("gc.genID = " + permissions.getAccountId());
 		}
 
 		sql.addField("gc.waitingOn AS label");

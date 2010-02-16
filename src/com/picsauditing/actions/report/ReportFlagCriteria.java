@@ -229,12 +229,11 @@ public class ReportFlagCriteria extends ReportAccount {
 		}
 
 		if (!permissions.isOperator()) {
-			sql.addJoin("LEFT JOIN flags ON flags.conID = a.id AND flags.opID = " + operatorID);
-			sql.addField("flags.flag");
-			sql.addField("lower(flags.flag) AS lflag");
 			if (!sql.hasJoin("generalcontractors gc"))
 				sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
 			sql.addField("gc.workStatus");
+			sql.addField("gc.flag");
+			sql.addField("lower(gc.flag) AS lflag");
 			sql.addWhere("gc.genID = " + operatorID);
 		}
 

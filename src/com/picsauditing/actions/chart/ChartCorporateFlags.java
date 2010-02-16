@@ -37,7 +37,7 @@ public class ChartCorporateFlags extends ChartMSAction {
 		{
 			SelectSQL sql = createBase();
 			sql.addField("a.id");
-			sql.addField("CASE f.flag WHEN 'Red' THEN 1 WHEN 'Amber' THEN 2 WHEN 'Green' THEN 3 END as flag");
+			sql.addField("CASE gc.flag WHEN 'Red' THEN 1 WHEN 'Amber' THEN 2 WHEN 'Green' THEN 3 END as flag");
 			sql.addGroupBy("a.id");
 			
 			SelectSQL sql2 = new SelectSQL("(" + sql.toString() + ") t");
@@ -57,7 +57,7 @@ public class ChartCorporateFlags extends ChartMSAction {
 		{
 			SelectSQL sql = createBase();
 			sql.addField("a.id");
-			sql.addField("CASE f.flag WHEN 'Red' THEN 1 WHEN 'Amber' THEN 2 WHEN 'Green' THEN 3 END as flag");
+			sql.addField("CASE gc.flag WHEN 'Red' THEN 1 WHEN 'Amber' THEN 2 WHEN 'Green' THEN 3 END as flag");
 			sql.addGroupBy("a.id");
 			
 			SelectSQL sql2 = new SelectSQL("(" + sql.toString() + ") t");
@@ -92,14 +92,13 @@ public class ChartCorporateFlags extends ChartMSAction {
 		return chart;
 	}
 	/**
-	 * SELECT f.flag as series FROM accounts a<br>
+	 * SELECT gc.flag as series FROM accounts a<br>
 	 * JOIN generalcontractors gc ON a.id = gc.subID<br>
-	 * JOIN flags f ON a.id = f.conID AND f.opID = gc.genID<br>
 	 * JOIN accounts op ON op.id = gc.genID<br>
 	 * WHERE a.status IN ('Active','Demo')
 	 * AND gc.genID IN (SELECT opID from facilities where corporateID = ?)
 	 * AND op.status IN ('Active','Demo')<br>
-	 * GROUP BY f.flag
+	 * GROUP BY gc.flag
 	 * @return
 	 */
 	private SelectSQL createBase() {
@@ -108,11 +107,10 @@ public class ChartCorporateFlags extends ChartMSAction {
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addWhere("gc.genID IN (SELECT opID from facilities where corporateID = " + permissions.getAccountId()
 				+ ")");
-		sql.addJoin("JOIN flags f ON a.id = f.conID AND f.opID = gc.genID");
 		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
 		sql.addWhere("op.status IN ('Active','Demo')");
-		sql.addField("f.flag as series");
-		sql.addGroupBy("f.flag");
+		sql.addField("gc.flag as series");
+		sql.addGroupBy("gc.flag");
 		return sql;
 	}
 	

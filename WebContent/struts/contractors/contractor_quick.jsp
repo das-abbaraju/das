@@ -67,10 +67,10 @@
 			</thead>
 			<s:iterator value="activeOperators">
 			<tr>
-				<td><s:if test="flag != null"><s:property value="flag.flagColor.smallIcon" escape="false" /></s:if>
+				<td><s:property value="flagColor.smallIcon" escape="false" />
 					<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></td>
 				<td><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a></td>
-				<td><s:property value="flag.waitingOn"/></td>
+				<td><s:property value="waitingOn"/></td>
 				<pics:permission perm="ContractorApproval">
 					<td><s:property value="workStatus"/></td>
 				</pics:permission>

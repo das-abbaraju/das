@@ -237,7 +237,7 @@ img.contractor_logo {
 				<tr>
 					<td>
 						<s:if test="flag != null">
-							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flag.flagColor.smallIcon" escape="false" /></a>
+							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="flagColor.smallIcon" escape="false" /></a>
 						</s:if>
 						<s:else>
 							<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></a>
@@ -247,7 +247,7 @@ img.contractor_logo {
 						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a>
 					</td>
 					<td>
-						<s:property value="flag.waitingOn"/>
+						<s:property value="waitingOn"/>
 					</td>
 				</tr>
 			</s:iterator>
