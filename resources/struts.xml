@@ -1354,6 +1354,18 @@
 			<result name="criteria">struts/operators/op_flag_criteria_list.jsp</result>
 			<result name="questions">struts/operators/op_flag_criteria_questions_list.jsp</result>
 		</action>
+		
+		<action name="ManageFlagCriteriaOperator"
+			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
+			<result>struts/operators/op_manage_flag_criteria.jsp</result>
+		</action>
+		
+		<action name="ManageFlagCriteriaOperatorAjax"
+			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
+			<result>struts/blank.jsp</result>
+			<result name="criteria">struts/operators/op_manage_flag_criteria_list.jsp</result>
+			<result name="questions">struts/operators/op_manage_flag_criteria_questions.jsp</result>
+		</action>
 
 		<action name="FlagCriteriaActionAjax"
 			class="com.picsauditing.actions.operators.FlagCriteriaAction">
