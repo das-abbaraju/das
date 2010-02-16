@@ -312,7 +312,7 @@ public class FlagDataCalculatorTest extends TestCase {
 		conCrits.set(0, fcCon);
 		opCrits.set(0, fcOp);
 		calculator = new FlagDataCalculator(conCrits, opCrits);
-		calculator.setCaoMap(caoMap);
+//		calculator.setCaoMap(caoMap);
 		List<FlagData> data = calculator.calculate();
 
 		if (data.size() > 0)
