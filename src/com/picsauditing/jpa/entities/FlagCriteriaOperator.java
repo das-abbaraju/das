@@ -61,6 +61,23 @@ public class FlagCriteriaOperator extends BaseTable {
 	public void setHurdle(String hurdle) {
 		this.hurdle = hurdle;
 	}
+	
+	public String replaceHurdle(String description) {
+		String value = criteria.getDefaultValue();
+		
+		if (criteria.isAllowCustomValue() && hurdle != null) {
+			value = hurdle;
+		}
+		
+		return criteria.getDescription().replaceAll("\\{HURDLE\\}", value);
+	}
+	
+	public String criteriaValue() {
+		if (criteria.isAllowCustomValue() && hurdle != null)
+			return hurdle;
+		
+		return criteria.getDefaultValue();
+	}
 
 	@OneToMany
 	@JoinColumns( {
@@ -86,5 +103,4 @@ public class FlagCriteriaOperator extends BaseTable {
 
 		return null;
 	}
-
 }
