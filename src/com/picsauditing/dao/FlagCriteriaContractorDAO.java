@@ -31,7 +31,7 @@ public class FlagCriteriaContractorDAO extends PicsDAO {
 	}
 	
 	public void deleteEntriesForContractor(int conID){
-		Query query = em.createQuery("DELETE FROM FlagCriteriaContractor fcc WHERE fcc.id = ?");
+		Query query = em.createQuery("DELETE FROM FlagCriteriaContractor fcc WHERE fcc.contractor.id = ?");
 		query.setParameter(1, conID);
 		query.executeUpdate();
 	}

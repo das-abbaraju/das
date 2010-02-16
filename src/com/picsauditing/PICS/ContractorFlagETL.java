@@ -12,6 +12,7 @@ import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -33,13 +34,14 @@ public class ContractorFlagETL {
 		flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 		// Get AuditQuestion ids that are used
 		for (FlagCriteria fc : flagCriteriaList) {
-			if (fc.getQuestion() != null)
+			if (fc.getQuestion() != null && fc.getAuditType() != null && !fc.getAuditType().isAnnualAddendum())
 				criteriaQuestionSet.add(fc.getQuestion().getId());
 		}
 	}
 
 	public void calculate(ContractorAccount contractor) {
-		// TODO: Check to ensure function returns proper list
+
+		flagCriteriaContractorDao.deleteEntriesForContractor(contractor.getId());
 
 		List<FlagCriteriaContractor> changes = contractor.getFlagCriteria();
 
@@ -47,16 +49,29 @@ public class ContractorFlagETL {
 				criteriaQuestionSet);
 
 		for (FlagCriteria flagCriteria : flagCriteriaList) {
-
 			if (flagCriteria.getAuditType() != null) {
 				// Checking Audit Type
-				if (flagCriteria.getAuditType().getClassType().isPolicy()) {
+
+				// TODO if Audit is D&A, then the only consider it if
+				// OQEmployees is Yes
+				if (flagCriteria.getAuditType().getId() == AuditType.DA) { // D&A Audit
+					for (ContractorAudit ca : contractor.getAudits()) {
+						if (ca.getAuditType().getId() == AuditType.DA
+								&& ca.getContractorAccount().isOqEmployees(auditDataDao))
+							changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
+					}
+				} else if (flagCriteria.getAuditType().getId() == AuditType.COR) { // COR Audit
+					for (ContractorAudit ca : contractor.getAudits()) {
+						if (ca.getAuditType().getId() == AuditType.COR && ca.getContractorAccount().isCOR(auditDataDao))
+							changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
+					}
+				} else if (flagCriteria.getAuditType().getClassType().isPolicy()) { // Insurance Audit
 					// Contractors are evaluated by their CAO,
 					// so it's operator specific and we can't calculate exact
 					// data here
 					// Just put in a place holder row
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
-				} else if (flagCriteria.getAuditType().isAnnualAddendum()) {
+				} else if (flagCriteria.getAuditType().isAnnualAddendum()) { // Annual Update Audit
 					int count = 0;
 
 					// Checking for at least 3 active annual updates
@@ -68,17 +83,10 @@ public class ContractorFlagETL {
 					}
 
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, (count >= 3 ? "true" : "false")));
-				} else {
+				} else { // Any other audit, PQF/IM/Desktop
 					Boolean hasProperStatus = false;
 					for (ContractorAudit ca : contractor.getAudits()) {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
-							// TODO if Audit is D&A, then the only consider it
-							// if OQEmployees is Yes
-							// See FlagCalcSingle line 183
-							// calcSingle.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
-							// TODO also look at COR
-							// See FlagCalcSingle line 187
-							// calcSingle.setHasCOR(contractor.isCOR(auditDataDAO));
 							if (ca.getAuditStatus().isActiveResubmittedExempt())
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
@@ -131,7 +139,7 @@ public class ContractorFlagETL {
 						if (!auditYears.get(0).isVerified())
 							auditYears.remove(0);
 						else
-							auditYears.remove(4);
+							auditYears.remove(3);
 					}
 
 					Float answer = 0.0f;
@@ -187,7 +195,7 @@ public class ContractorFlagETL {
 
 							years.remove(0);
 						else
-							years.remove(4);
+							years.remove(3);
 					}
 
 					Float answer = 0.0f;
@@ -248,8 +256,10 @@ public class ContractorFlagETL {
 			}
 		}
 
-		flagCriteriaContractorDao.deleteEntriesForContractor(contractor.getId());
 		// TODO: Verify data is saving automatically via struts. Otherwise
 		// iterate through list and save individual items
+		for (FlagCriteriaContractor change : changes) {
+			flagCriteriaContractorDao.save(change);
+		}
 	}
 }
