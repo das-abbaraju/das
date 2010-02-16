@@ -286,12 +286,12 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getFlagStatus())) {
 			String list = Strings.implodeForDB(f.getFlagStatus(), ",");
-			sql.addWhere("flags.flag IN (" + list + ")");
+			sql.addWhere("gc.flag IN (" + list + ")");
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getWaitingOn()))
-			report.addFilter(new SelectFilter("waitingOn", "flags.waitingOn = '?'", f.getWaitingOn()));
+			report.addFilter(new SelectFilter("waitingOn", "gc.waitingOn = '?'", f.getWaitingOn()));
 
 		if (filterOn(f.getConAuditorId())) {
 			String list = Strings.implode(f.getConAuditorId(), ",");

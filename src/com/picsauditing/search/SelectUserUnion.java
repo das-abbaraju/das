@@ -84,7 +84,7 @@ public class SelectUserUnion extends SelectSQL {
 
 	/**
 	 * Limit contractor search to the accounts I can see based on my perms If
-	 * I'm an operator join to flags.flag and gc.workStatus too
+	 * I'm an operator join to gc.flag and gc.workStatus too
 	 * 
 	 * @param permissions
 	 */

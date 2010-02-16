@@ -39,7 +39,7 @@ public class ReportAccountAudits extends ReportAccount {
 			}
 		}
 		if (permissions.isOperator()) {
-			sql.addField("flags.waitingOn");
+			sql.addField("gc.waitingOn");
 			if (download) {
 				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
 				sql

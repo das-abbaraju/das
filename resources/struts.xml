@@ -778,17 +778,6 @@
 			<result>struts/reports/user_permission_matrix.jsp</result>
 		</action>
 
-		<action name="ReportOperatorCriteria"
-			class="com.picsauditing.actions.report.ReportFlagCriteria">
-			<result>struts/reports/operator_flagcriteria.jsp</result>
-		</action>
-
-		<action name="ReportOperatorCriteriaCSV"
-			class="com.picsauditing.actions.report.ReportFlagCriteria">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
-		</action>
-
 		<action name="QuestionAnswerSearch"
 			class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<result>struts/reports/qanswersearch.jsp</result>

@@ -122,8 +122,8 @@
 			<s:iterator value="activeOperators">
 			<li>
 				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-				><s:property value="flagColor.smallIcon" escape="false" />
-				<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></a>
+					><s:property value="flagColor.smallIcon" escape="false" />
+				</a>
 				<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
 					<s:if test="permissions.admin"> 
 						title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"

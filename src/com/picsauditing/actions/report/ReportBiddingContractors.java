@@ -55,7 +55,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		super.buildQuery();
 
 		if (permissions.isOperator()) {
-			sql.addField("flags.waitingOn");
+			sql.addField("gc.waitingOn");
 		}
 		sql.addWhere("a.acceptsBids = 1");
 

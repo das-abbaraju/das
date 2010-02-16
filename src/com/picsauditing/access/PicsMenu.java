@@ -225,7 +225,6 @@ public class PicsMenu {
 			final String url = "ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Fatalities", url);
 		}
-		subMenu.addChild("Operator Flag Criteria", "ReportOperatorCriteria.action?filter.flagStatus=Red");
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
