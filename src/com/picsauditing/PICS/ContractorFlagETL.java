@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.persistence.Transient;
+
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -18,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.util.Strings;
 
 public class ContractorFlagETL {
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
@@ -25,6 +28,8 @@ public class ContractorFlagETL {
 
 	private List<FlagCriteria> flagCriteriaList = null;
 	private HashSet<Integer> criteriaQuestionSet = new HashSet<Integer>();
+	protected boolean hasOqEmployees = false;
+	protected boolean hasCOR = false;
 
 	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
 			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
@@ -40,7 +45,6 @@ public class ContractorFlagETL {
 	}
 
 	public void calculate(ContractorAccount contractor) {
-
 		flagCriteriaContractorDao.deleteEntriesForContractor(contractor.getId());
 
 		List<FlagCriteriaContractor> changes = contractor.getFlagCriteria();
@@ -49,29 +53,19 @@ public class ContractorFlagETL {
 				criteriaQuestionSet);
 
 		for (FlagCriteria flagCriteria : flagCriteriaList) {
+			// Processing Audits
 			if (flagCriteria.getAuditType() != null) {
 				// Checking Audit Type
-
-				// TODO if Audit is D&A, then the only consider it if
-				// OQEmployees is Yes
-				if (flagCriteria.getAuditType().getId() == AuditType.DA) { // D&A Audit
-					for (ContractorAudit ca : contractor.getAudits()) {
-						if (ca.getAuditType().getId() == AuditType.DA
-								&& ca.getContractorAccount().isOqEmployees(auditDataDao))
-							changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
-					}
-				} else if (flagCriteria.getAuditType().getId() == AuditType.COR) { // COR Audit
-					for (ContractorAudit ca : contractor.getAudits()) {
-						if (ca.getAuditType().getId() == AuditType.COR && ca.getContractorAccount().isCOR(auditDataDao))
-							changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
-					}
-				} else if (flagCriteria.getAuditType().getClassType().isPolicy()) { // Insurance Audit
+				if (flagCriteria.getAuditType().getClassType().isPolicy()) { // Insurance
+					// Audit
 					// Contractors are evaluated by their CAO,
 					// so it's operator specific and we can't calculate exact
 					// data here
 					// Just put in a place holder row
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
-				} else if (flagCriteria.getAuditType().isAnnualAddendum()) { // Annual Update Audit
+				} else if (flagCriteria.getAuditType().isAnnualAddendum()) { // Annual
+					// Update
+					// Audit
 					int count = 0;
 
 					// Checking for at least 3 active annual updates
@@ -83,11 +77,17 @@ public class ContractorFlagETL {
 					}
 
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, (count >= 3 ? "true" : "false")));
-				} else { // Any other audit, PQF/IM/Desktop
+				} else { // Any other audit, PQF/IM/Desktop/D&A/COR
 					Boolean hasProperStatus = false;
 					for (ContractorAudit ca : contractor.getAudits()) {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
-							if (ca.getAuditStatus().isActiveResubmittedExempt())
+							if (flagCriteria.getAuditType().getId() == AuditType.DA
+									&& !isHasOqEmployees(contractor.getId()))
+								hasProperStatus = true;
+							else if (flagCriteria.getAuditType().getId() == AuditType.COR
+									&& !isHasCOR(contractor.getId()))
+								hasProperStatus = true;
+							else if (ca.getAuditStatus().isActiveResubmittedExempt())
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
 								hasProperStatus = true;
@@ -97,6 +97,7 @@ public class ContractorFlagETL {
 				}
 			}
 
+			// Non-EMR questions (emrs handled seperately)
 			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() != AuditQuestion.EMR) {
 				// find answer in answermap if exists to related question
 				// can be null
@@ -123,10 +124,9 @@ public class ContractorFlagETL {
 				}
 			}
 
+			// Checking OSHA
 			if (flagCriteria.getOshaType() != null) {
 				// expecting to contain 4 or less of the most current audits
-				// TODO: VERIFY THAT UNVERIFIED OSHAS ARE RETURNED BY
-				// .getOshas()
 				final Map<String, OshaAudit> auditsOfThisSHAType = contractor.getOshas()
 						.get(flagCriteria.getOshaType());
 				// TODO: VERIFY ORDER IS PRESERVED
@@ -142,27 +142,30 @@ public class ContractorFlagETL {
 							auditYears.remove(3);
 					}
 
-					Float answer = 0.0f;
+					Float answer = null;
 					boolean verified = true; // Has the data been verified?
 
 					switch (flagCriteria.getMultiYearScope()) {
 					case ThreeYearAverage:
+						answer = 0.0f;
 						for (OshaAudit year : auditYears) {
 							answer += year.getRate(flagCriteria.getOshaRateType());
 							if (!year.isVerified())
 								verified = false;
 						}
-						answer /= 3.0f;
+						answer /= (float) auditYears.size();
 						break;
 					case ThreeYearsAgo:
-						if (auditYears.size() >= 3)
+						if (auditYears.size() >= 3) {
 							answer = auditYears.get(2).getRate(flagCriteria.getOshaRateType());
-						verified = auditYears.get(2).isVerified();
+							verified = auditYears.get(2).isVerified();
+						}
 						break;
 					case TwoYearsAgo:
-						if (auditYears.size() >= 2)
+						if (auditYears.size() >= 2) {
 							answer = auditYears.get(1).getRate(flagCriteria.getOshaRateType());
-						verified = auditYears.get(1).isVerified();
+							verified = auditYears.get(1).isVerified();
+						}
 						break;
 					case LastYearOnly:
 						answer = auditYears.get(0).getRate(flagCriteria.getOshaRateType());
@@ -174,92 +177,125 @@ public class ContractorFlagETL {
 								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
 					}
 
-					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-							flagCriteria, answer.toString());
-					flagCriteriaContractor.setVerified(verified);
-					changes.add(flagCriteriaContractor);
+					if (answer != null) {
+						final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+								flagCriteria, answer.toString());
+						flagCriteriaContractor.setVerified(verified);
+						changes.add(flagCriteriaContractor);
+					}
 				}
 			}
 
+			// EMR Questions
 			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-				// TODO: Add in EMR stuff. Handle like OSHA
 				Map<String, AuditData> auditsOfThisEMRType = new TreeMap<String, AuditData>(contractor.getEmrs());
 				List<AuditData> years = new ArrayList<AuditData>(auditsOfThisEMRType.values());
 
-				// TODO: THIS PART.....
-				if (years.size() > 0) {
+				if (years != null && years.size() > 0) {
 					if (years.size() > 3) {
 						// Removing year which is not needed for transition
 						// years
 						if (!years.get(0).isVerified())
-
 							years.remove(0);
 						else
 							years.remove(3);
 					}
 
-					Float answer = 0.0f;
+					Float answer = null;
 					boolean verified = true; // Has the data been verified?
 
-					switch (flagCriteria.getMultiYearScope()) {
-					case ThreeYearAverage:
-						for (AuditData year : years) {
-							answer += Float.valueOf(year.getAnswer());
-							if (!year.isVerified())
-								verified = false;
+					try {
+						switch (flagCriteria.getMultiYearScope()) {
+						case ThreeYearAverage:
+							answer = 0.0f;
+							for (AuditData year : years) {
+								answer += Float.valueOf(year.getAnswer());
+								if (!year.isVerified())
+									verified = false;
+							}
+							answer /= (float) years.size();
+
+							break;
+						case ThreeYearsAgo:
+							if (years.size() >= 3) {
+								answer = Float.valueOf(years.get(2).getAnswer());
+								verified = years.get(2).isVerified();
+							}
+							break;
+						case TwoYearsAgo:
+							if (years.size() >= 2) {
+								answer = Float.valueOf(years.get(1).getAnswer());
+								System.out.println(years.get(1).getId());
+								verified = years.get(1).isVerified();
+							}
+							break;
+						case LastYearOnly:
+							answer = Float.valueOf(years.get(0).getAnswer());
+							verified = years.get(0).isVerified();
+							break;
+						default:
+							throw new RuntimeException("Invalid MultiYear scope of "
+									+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
+									+ flagCriteria.getId() + ", contractor id " + contractor.getId());
 						}
-						answer /= 3.0f;
-						break;
-					case ThreeYearsAgo:
-						if (years.size() >= 3)
-							answer = Float.valueOf(years.get(2).getAnswer());
-						verified = years.get(2).isVerified();
-						break;
-					case TwoYearsAgo:
-						if (years.size() >= 2)
-							answer = Float.valueOf(years.get(1).getAnswer());
-						verified = years.get(1).isVerified();
-						break;
-					case LastYearOnly:
-						answer = Float.valueOf(years.get(0).getAnswer());
-						verified = years.get(0).isVerified();
-						break;
-					default:
-						throw new RuntimeException("Invalid MultiYear scope of "
-								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
-								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
+
+						/*
+						 * Legacy code From FlagCalculator2 OshaAudit oshaAvg =
+						 * contractor
+						 * .getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
+						 * AuditData emrAvg =
+						 * contractor.getEmrs().get(OshaAudit.AVG); if(emrAvg !=
+						 * null && !Strings.isEmpty(emrAvg.getAnswer()))
+						 * contractor.setEmrAverage
+						 * (Float.valueOf(emrAvg.getAnswer()).floatValue()); if
+						 * (oshaAvg != null) {
+						 * contractor.setTrirAverage(oshaAvg.
+						 * getRecordableTotalRate ());
+						 * contractor.setLwcrAverage(
+						 * oshaAvg.getLostWorkCasesRate ()); }
+						 */
+
+					} catch (NumberFormatException e) {
+						answer = 0.0f;
 					}
 
-					/*
-					 * Legacy code From FlagCalculator2 OshaAudit oshaAvg =
-					 * contractor
-					 * .getOshas().get(OshaType.OSHA).get(OshaAudit.AVG);
-					 * AuditData emrAvg =
-					 * contractor.getEmrs().get(OshaAudit.AVG); if(emrAvg !=
-					 * null && !Strings.isEmpty(emrAvg.getAnswer()))
-					 * contractor.setEmrAverage
-					 * (Float.valueOf(emrAvg.getAnswer()).floatValue()); if
-					 * (oshaAvg != null) {
-					 * contractor.setTrirAverage(oshaAvg.getRecordableTotalRate
-					 * ());
-					 * contractor.setLwcrAverage(oshaAvg.getLostWorkCasesRate
-					 * ()); }
-					 */
-
-					// TODO: MAKE SURE TO ADD ENTRY FOR WHETHER OR NOT
-					// VALIDATION IS REQUIRED!!!!!!!
-					final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-							flagCriteria, answer.toString());
-					flagCriteriaContractor.setVerified(verified);
-					changes.add(flagCriteriaContractor);
+					if (answer != null) {
+						final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+								flagCriteria, answer.toString());
+						flagCriteriaContractor.setVerified(verified);
+						changes.add(flagCriteriaContractor);
+					}
 				}
 			}
 		}
 
-		// TODO: Verify data is saving automatically via struts. Otherwise
-		// iterate through list and save individual items
+		// TODO: MAKE SURE BATCH INSERT IS BEING PERFORMED PROPERLY
 		for (FlagCriteriaContractor change : changes) {
-			flagCriteriaContractorDao.save(change);
+			// flagCriteriaContractorDao.save(change);
 		}
+	}
+
+	private boolean isHasOqEmployees(int conID) {
+		List<Integer> questions = new ArrayList<Integer>();
+		questions.add(AuditQuestion.OQ_EMPLOYEES);
+		List<AuditData> auditDataList = auditDataDao.findAnswerByConQuestions(conID, questions);
+		if (auditDataList != null && auditDataList.size() > 0) {
+			AuditData auditData = auditDataList.get(0);
+			if (auditData != null && "Yes".equals(auditData.getAnswer()))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean isHasCOR(int conID) {
+		List<Integer> questions = new ArrayList<Integer>();
+		questions.add(2954);
+		List<AuditData> auditDataList = auditDataDao.findAnswerByConQuestions(conID, questions);
+		if (auditDataList != null && auditDataList.size() > 0) {
+			AuditData auditData = auditDataList.get(0);
+			if (auditData != null && "Yes".equals(auditData.getAnswer()))
+				return true;
+		}
+		return false;
 	}
 }

@@ -378,7 +378,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The date the contractor was invoiced for their most recent activation/reactivation fee
+	 * The date the contractor was invoiced for their most recent
+	 * activation/reactivation fee
 	 * 
 	 * @return
 	 */
@@ -516,14 +517,12 @@ public class ContractorAccount extends Account implements JSONable {
 		int number = 0;
 		for (ContractorAudit audit : annualAudits) {
 			if (number < 3) {
-			// Store the corporate OSHA rates into a map for later
-			// use
+				// Store the corporate OSHA rates into a map for later
+				// use
 				for (OshaAudit osha : audit.getOshas())
 					if (osha.getType().equals(oshaType) && osha.isCorporate()) {
-						if(!oshaType.equals(OshaType.OSHA) || (oshaType.equals(OshaType.OSHA) && osha.isVerified())) {
-							number++;
-							oshaMap.put(audit.getAuditFor(), osha);
-						}
+						number++;
+						oshaMap.put(audit.getAuditFor(), osha);
 					}
 			}
 		}
@@ -599,24 +598,22 @@ public class ContractorAccount extends Account implements JSONable {
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 3) {
-				for (AuditCatData auditCatData : audit.getCategories()) {
-					if (auditCatData.getCategory().getId() == AuditCategory.EMR
-							&& auditCatData.getPercentCompleted() == 100) {
-						// Store the EMR rates into a map for later use
-						for (AuditData answer : audit.getData())
-							if (answer.getQuestion().getId() == AuditQuestion.EMR) {
-								if (answer != null && !Strings.isEmpty(answer.getAnswer())) {
-									number++;
-									emrs.put(audit.getAuditFor(), answer);
-								}
-							}
+
+				// Store the EMR rates into a map for later use
+				for (AuditData answer : audit.getData())
+					if (answer.getQuestion().getId() == AuditQuestion.EMR) {
+						if (answer != null && !Strings.isEmpty(answer.getAnswer())) {
+							number++;
+							emrs.put(audit.getAuditFor(), answer);
+						}
 					}
-				}
+
 			}
 		}
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
-		emrs.put(OshaAudit.AVG, avg);
+		if (avg != null && !Strings.isEmpty(avg.getAnswer()))
+			emrs.put(OshaAudit.AVG, avg);
 
 		return emrs;
 	}
@@ -883,32 +880,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isOqEmployees(AuditDataDAO auditDataDAO) {
-		List<Integer> questions = new ArrayList<Integer>();
-		questions.add(AuditQuestion.OQ_EMPLOYEES);
-		List<AuditData> auditDataList = auditDataDAO.findAnswerByConQuestions(getId(), questions);
-		if (auditDataList != null && auditDataList.size() > 0) {
-			AuditData auditData = auditDataList.get(0);
-			if (auditData != null && "Yes".equals(auditData.getAnswer()))
-				return true;
-		}
-		return false;
-	}
-
-	@Transient
-	public boolean isCOR(AuditDataDAO auditDataDAO) {
-		List<Integer> questions = new ArrayList<Integer>();
-		questions.add(2954);
-		List<AuditData> auditDataList = auditDataDAO.findAnswerByConQuestions(getId(), questions);
-		if (auditDataList != null && auditDataList.size() > 0) {
-			AuditData auditData = auditDataList.get(0);
-			if (auditData != null && "Yes".equals(auditData.getAnswer()))
-				return true;
-		}
-		return false;
-	}
-
-	@Transient
 	public Set<String> getCountries() {
 		Set<String> countries = new HashSet<String>();
 		for (ContractorOperator co : getOperators()) {
@@ -919,15 +890,16 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return countries;
 	}
-	
+
 	@Transient
 	public List<User> getUsersByRole(OpPerms opPerms) {
-		List<User> users = new ArrayList<User>(); 
-		for(User user : getUsers()) {
-			// TJA - not sure how null users are getting into the list but on registration it happens
-			if(user != null && user.isActiveB()) {
-				for(UserAccess userAccess : user.getOwnedPermissions()) {
-					if(userAccess.getOpPerm().equals(opPerms)) {
+		List<User> users = new ArrayList<User>();
+		for (User user : getUsers()) {
+			// TJA - not sure how null users are getting into the list but on
+			// registration it happens
+			if (user != null && user.isActiveB()) {
+				for (UserAccess userAccess : user.getOwnedPermissions()) {
+					if (userAccess.getOpPerm().equals(opPerms)) {
 						users.add(user);
 					}
 				}
