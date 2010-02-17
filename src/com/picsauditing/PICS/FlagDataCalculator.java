@@ -66,77 +66,81 @@ public class FlagDataCalculator {
 
 		return list;
 	}
-	
+
 	private boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		// Criteria should match
-		
+
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
-		
+
 		if (criteria.isAllowCustomValue() && opCriteria.getHurdle() != null) {
 			hurdle = opCriteria.getHurdle();
 		}
 
 		String answer = conCriteria.getAnswer();
 
+		if (criteria.getAuditType() != null) {
+			for (AuditOperator auditOperator : opCriteria.getOperator().getVisibleAudits()) {
+				if (auditOperator.isRequiredFor(conCriteria.getContractor())) {
+					if (!criteria.getAuditType().getClassType().isPolicy()) {
+						if (conCriteria.getAnswer().equals("false")) {
+							return true;
+						}
+					} else {
+						// TODO check to see if the policy is not expired when
+						// adding caos to caoMap
+						List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
+						if (caoList != null) {
+							for (ContractorAuditOperator cao : caoList) {
+								if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+									return false;
+								else
+									return true;
+							}
+						}
+						// If the policy doesn't exist, then flag it
+					}
+					return true;
+				}
+			}
+		}
 		// Check for questionID in (401, 755)
 		if (criteria.getQuestion() != null) {
 			int questionID = criteria.getQuestion().getId();
-			
 			if (questionID == 401 || questionID == 755) {
-				// Check if answers have been verified... if yes, return false (don't flag)
+				// Check if answers have been verified... if yes, return false
+				// (don't flag)
 				return !conCriteria.isVerified();
 			}
 		}
-		
-		// Check to see if Criteria is a policy
-		// Check if policy is not applicable or approved (green flag), else red flag
-		if (criteria.getAuditType() != null && criteria.getAuditType().getClassType().isPolicy()) {
-			if (caoMap != null) {
-				List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
-				if (caoList != null) {
-					for (ContractorAuditOperator cao : caoList) {
-						if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
-							return false;
-						if (cao.getStatus().isRejected())
-							return true;
-					}
-				}
-			}
-			// If the policy doesn't exist, then flag it
-			return true;
-		}
-
 		final String dataType = criteria.getDataType();
 		final String comparison = criteria.getComparison();
+		boolean isValid = true;
 		try {
 			if (dataType.equals("boolean")) {
-				return (Boolean.parseBoolean(answer) == Boolean.parseBoolean(hurdle));
+				isValid = (Boolean.parseBoolean(answer) == Boolean.parseBoolean(hurdle));
 			}
 
 			if (dataType.equals("number")) {
 				float answer2 = Float.parseFloat(answer);
 				float hurdle2 = Float.parseFloat(hurdle);
 				if (comparison.equals("="))
-					return answer2 == hurdle2;
+					isValid = answer2 == hurdle2;
 				if (comparison.equals(">"))
-					return answer2 > hurdle2;
+					isValid = answer2 > hurdle2;
 				if (comparison.equals("<"))
-					return answer2 < hurdle2;
+					isValid = answer2 < hurdle2;
 				if (comparison.equals(">="))
-					return answer2 >= hurdle2;
+					isValid = answer2 >= hurdle2;
 				if (comparison.equals("<="))
-					return answer2 <= hurdle2;
+					isValid = answer2 <= hurdle2;
 				if (comparison.equals("!="))
-					return answer2 != hurdle2;
-				return false;
+					isValid = answer2 != hurdle2;
 			}
 
 			if (dataType.equals("string")) {
 				if (comparison.equals("="))
-					return hurdle.equals(answer);
-				else
-					return !hurdle.equals(answer);
+					isValid = hurdle.equals(answer);
 			}
 
 			if (dataType.equals("date")) {
@@ -150,161 +154,125 @@ public class FlagDataCalculator {
 					opDate = (Date) date.parse(hurdle);
 
 				if (comparison.equals("<"))
-					return conDate.before(opDate);
+					isValid = conDate.before(opDate);
 				if (comparison.equals(">"))
-					return conDate.after(opDate);
+					isValid = conDate.after(opDate);
 				if (comparison.equals("="))
-					return conDate.equals(opDate);
+					isValid = conDate.equals(opDate);
 			}
 		} catch (Exception e) {
 			System.out.println("Datatype is " + dataType + " but values were not " + dataType + "s");
 			return true;
 		}
-		return false;
+		if (isValid)
+			return false;
+
+		return true;
 	}
-	
+
 	public WaitingOn calculateWaitingOn() {
-		// Assuming that the contractors in the contractorCriteria map are the same, and similar for operators
-		ContractorAccount contractor = null;
-		OperatorAccount operator = null;
-		
-		for (FlagCriteria key : contractorCriteria.keySet()) {
-			FlagCriteriaContractor conFlags = contractorCriteria.get(key);
-			contractor = conFlags.getContractor();
-			break;
-		}
-		
-		for (FlagCriteria key : operatorCriteria.keySet()) {
-			FlagCriteriaOperator opFlags = operatorCriteria.get(key);
-			operator = opFlags.getOperator();
-			break;
-		}
-		
-		// Taken more or less verbatim from FlagCalculatorSingle
-		ContractorOperator co = null;
-		// First see if there are any forced flags for this operator
-		for (ContractorOperator co2 : contractor.getOperators()) {
-			if (co2.getOperatorAccount().equals(operator)) {
-				co = co2;
-				break;
+		List<FlagData> flagDataList = calculate();
+
+		if (flagDataList.size() > 0) {
+			ContractorAccount contractor = flagDataList.get(0).getContractor();
+			OperatorAccount operator = flagDataList.get(0).getOperator();
+
+			ContractorOperator co = null;
+			for (ContractorOperator co2 : contractor.getOperators()) {
+				if (co2.getOperatorAccount().equals(operator)) {
+					co = co2;
+					break;
+				}
 			}
-		}
-		if (co == null)
-			return WaitingOn.None; // This contractor is not associated with
-		// this operator, so nothing to do now
 
-		if (!contractor.getStatus().isActiveDemo())
-			return WaitingOn.Contractor; // This contractor is delinquent
+			if (co == null)
+				return WaitingOn.None; // This contractor is not associated with
+			// this operator, so nothing to do now
 
-		// If Bid Only Account
-		if (contractor.isAcceptsBids()) {
-			return WaitingOn.Operator;
-		}
+			if (!contractor.getStatus().isActiveDemo())
+				return WaitingOn.Contractor; // This contractor is delinquent
 
-		// Operator Relationship Approval
-		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
-			if (co.isWorkStatusPending())
-				// Operator needs to approve/reject this contractor
+			// If Bid Only Account
+			if (contractor.isAcceptsBids()) {
 				return WaitingOn.Operator;
-			if (co.isWorkStatusRejected())
-				// Operator has already rejected this
-				// contractor, and there's nothing else
-				// they can do
-				return WaitingOn.None;
-		}
+			}
 
-		// Billing
-		if (contractor.isPaymentOverdue())
-			return WaitingOn.Contractor; // The contractor has an unpaid
-		// invoice due
+			// Operator Relationship Approval
+			if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
+				if (co.isWorkStatusPending())
+					// Operator needs to approve/reject this contractor
+					return WaitingOn.Operator;
+				if (co.isWorkStatusRejected())
+					// Operator has already rejected this
+					// contractor, and there's nothing else
+					// they can do
+					return WaitingOn.None;
+			}
 
-		// If waiting on contractor, immediately exit, otherwise track the other
-		// parties
-		boolean waitingOnPics = false;
-		boolean waitingOnOperator = false;
-		List<ContractorAudit> conAudits = contractor.getAudits();
+			// Billing
+			if (contractor.isPaymentOverdue())
+				return WaitingOn.Contractor; // The contractor has an unpaid
+			// invoice due
 
-		// PQF, Desktop & Office Audits
-		for (AuditOperator audit : operator.getInheritAudits().getAudits()) {
-			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null
-					&& !audit.getRequiredForFlag().equals(FlagColor.Green)) {
+			// If waiting on contractor, immediately exit, otherwise track the
+			// other parties
+			boolean waitingOnPics = false;
+			boolean waitingOnOperator = false;
 
-				for (ContractorAudit conAudit : conAudits) {
-					AuditStatus auditStatus = conAudit.getAuditStatus();
-					if (conAudit.getAuditType().equals(audit.getAuditType())) {
-						// We found a matching audit type. Is it required?
-						if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-
-							if (!auditStatus.equals(AuditStatus.Exempt) && !auditStatus.equals(AuditStatus.Expired)) {
-								// Pending, Submitted, Resubmitted, or Active
-								// Policy
-
-								// This is a Policy, find the CAO for this
-								// operator
-								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator) && cao.isVisible()) {
-
-										// This policy is already approved by
-										// operator
-										if (cao.getStatus().isApproved())
-											return WaitingOn.None;
-
-										if (cao.getStatus().isPending()) {
-											return WaitingOn.Contractor;
-										}
-
-										if (cao.getStatus().isSubmitted()) {
-											waitingOnPics = true;
-										}
-
-										if (cao.getStatus().isVerified()) {
-											waitingOnOperator = true;
-										}
-
-										if (cao.getStatus().isRejected())
-											// The operator rejected their certificate,
-											// they should fix it and resubmit it
-											return WaitingOn.Contractor;
-									} // if
-								} // for cao
-							}
-							// end of policies
-						} else {
-							// This is a audit
-							if (!auditStatus.isComplete(audit.getRequiredAuditStatus())) {
-								// We found a matching pending or submitted
-								// audit still not finished. Whose fault is it??
+			for (FlagData flagData : flagDataList) {
+				if (flagData.getCriteria().getAuditType() != null) {
+					for (ContractorAudit conAudit : contractor.getAudits()) {
+						if (conAudit.getAuditType().equals(flagData.getCriteria().getAuditType())) {
+							AuditStatus auditStatus = conAudit.getAuditStatus();
+							if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+								if (!auditStatus.equals(AuditStatus.Expired)) {
+									// This is a Policy, find the CAO for this
+									// operator
+									for (ContractorAuditOperator cao : conAudit.getOperators()) {
+										if (cao.getOperator().equals(operator) && cao.isVisible()) {
+											if (cao.getStatus().isPending()) {
+												return WaitingOn.Contractor;
+											}
+											if (cao.getStatus().isSubmitted()) {
+												waitingOnPics = true;
+											}
+											if (cao.getStatus().isVerified()) {
+												waitingOnOperator = true;
+											}
+											if (cao.getStatus().isRejected())
+												return WaitingOn.Contractor;
+										} // if
+									} // for cao
+								} // end of policies
+							} else {
 								if (conAudit.getAuditType().getClassType().isPqf()
 										|| conAudit.getAuditType().isAnnualAddendum()) {
 									if (auditStatus.isPending() || auditStatus.isIncomplete())
-										// The contractor still needs to submit their PQF
+										// The contractor still needs to submit
+										// their PQF
 										return WaitingOn.Contractor;
 									waitingOnPics = true;
 								} else if (conAudit.getAuditType().getId() == AuditType.OFFICE)
-									// either needs to schedule the audit or close out RQs
-									return WaitingOn.Contractor; // The contractor
+									// either needs to schedule the audit or
+									// close out RQs
+									return WaitingOn.Contractor;
 								else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
 									if (auditStatus.equals(AuditStatus.Submitted))
 										// contractor needs to close out RQs
-										// This desktop still hasn't been performed by PICS
-										return WaitingOn.Contractor; // The
+										return WaitingOn.Contractor;
 									waitingOnPics = true;
 								}
-							} // if stillRequired
-						}
-					} // if auditType
-				} // for conAudits
-			} // if op.audit required
-		} // for operator.audits
-
-		// Conclusion
-		if (waitingOnPics)
-			return WaitingOn.PICS;
-		if (waitingOnOperator)
-			// only show the operator if contractor and pics are all done
-			return WaitingOn.Operator;
-
-		// If everything is done, then quit with waiting on = no one
+							} // end of audits
+						} // end of flagData
+					} // contractor.audits
+				}
+			}
+			if (waitingOnPics)
+				return WaitingOn.PICS;
+			if (waitingOnOperator)
+				// only show the operator if contractor and pics are all done
+				return WaitingOn.Operator;
+		}
 		return WaitingOn.None;
 	}
 
