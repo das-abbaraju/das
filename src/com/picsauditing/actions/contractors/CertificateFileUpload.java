@@ -40,6 +40,10 @@ public class CertificateFileUpload extends ContractorActionSupport {
 
 		if (certID > 0) {
 			certificate = certificateDAO.find(certID);
+			if (certificate == null) {
+				addActionError("Certificate " + certID + " was not found.");
+				return SUCCESS;
+			}
 		}
 		if (button != null) {
 			if (certID > 0 && button.equals("download")) {
@@ -55,7 +59,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				}
 			}
 
-			if (certID > 0 && button.startsWith("Delete")) {
+			if (certificate != null && button.startsWith("Delete")) {
 				if (certificate.getCaos().size() > 0) {
 					addActionError("Failed to remove the file attached to a Policy.");
 					return SUCCESS;
