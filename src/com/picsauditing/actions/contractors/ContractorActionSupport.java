@@ -16,7 +16,9 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -357,9 +359,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
 
-//		if (contractor.isCOR(getAuditDataDAO())) {
-//			hasCOR = true;
-//		}
+		AuditData answer = auditDataDAO.findAnswerByConQuestion(id, AuditQuestion.COR);
+		if (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer())) {
+			hasCOR = true;
+		}
 
 		if (hasCOR) {
 			for (ContractorOperator corContractors : getOperators()) {

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.persistence.Transient;
-
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -270,32 +268,16 @@ public class ContractorFlagETL {
 		}
 
 		// TODO: MAKE SURE BATCH INSERT IS BEING PERFORMED PROPERLY
-		for (FlagCriteriaContractor change : changes) {
-			// flagCriteriaContractorDao.save(change);
-		}
+		for (FlagCriteriaContractor change : changes);
 	}
 
 	private boolean isHasOqEmployees(int conID) {
-		List<Integer> questions = new ArrayList<Integer>();
-		questions.add(AuditQuestion.OQ_EMPLOYEES);
-		List<AuditData> auditDataList = auditDataDao.findAnswerByConQuestions(conID, questions);
-		if (auditDataList != null && auditDataList.size() > 0) {
-			AuditData auditData = auditDataList.get(0);
-			if (auditData != null && "Yes".equals(auditData.getAnswer()))
-				return true;
-		}
-		return false;
+		AuditData answer = auditDataDao.findAnswerByConQuestion(conID, AuditQuestion.OQ_EMPLOYEES);
+		return (answer != null && !Strings.isEmpty(answer.getAnswer()) && "Yes".equals(answer.getAnswer()));
 	}
 
 	private boolean isHasCOR(int conID) {
-		List<Integer> questions = new ArrayList<Integer>();
-		questions.add(2954);
-		List<AuditData> auditDataList = auditDataDao.findAnswerByConQuestions(conID, questions);
-		if (auditDataList != null && auditDataList.size() > 0) {
-			AuditData auditData = auditDataList.get(0);
-			if (auditData != null && "Yes".equals(auditData.getAnswer()))
-				return true;
-		}
-		return false;
+		AuditData answer = auditDataDao.findAnswerByConQuestion(conID, AuditQuestion.COR);
+		return (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer()));
 	}
 }

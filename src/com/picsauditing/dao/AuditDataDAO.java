@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Vector;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.Transient;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -329,5 +331,15 @@ public class AuditDataDAO extends PicsDAO {
 				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.auditStatus DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
+	}
+	
+	@Transient
+	public AuditData findAnswerByConQuestion(int conID, int questionID) {
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
+				+ "AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') "
+				+ "AND d.question.id = ? ORDER BY d.audit.auditStatus DESC");
+		query.setParameter(1, conID);
+		query.setParameter(2, questionID);
+		return (AuditData)query.getSingleResult();
 	}
 }

@@ -30,7 +30,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfquestions")
@@ -39,6 +38,7 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
 	static public final int OQ_EMPLOYEES = 894;
+	static public final int COR = 2954;
 
 	static public final String[] TYPE_ARRAY = { "Additional Insured", "AMBest", "Check Box", "Country", "Date",
 			"Decimal Number", "File", "FileCertificate", "Industry", "License", "Main Work", "Money",
