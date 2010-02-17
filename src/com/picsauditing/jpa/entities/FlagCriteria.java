@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -99,6 +100,24 @@ public class FlagCriteria extends BaseTable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Transient
+	public String getDescriptionBeforeHurdle() {
+		try {
+			return description.substring(0, description.indexOf("{HURDLE}"));
+		} catch (Exception e) {
+			return description;
+		}
+	}
+
+	@Transient
+	public String getDescriptionAfterHurdle() {
+		try {
+			return description.substring(description.indexOf("{HURDLE}") + 8);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public String getComparison() {

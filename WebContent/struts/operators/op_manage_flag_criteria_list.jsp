@@ -17,8 +17,9 @@
 			<pics:permission perm="AuditVerification">
 			<tr>
 				<td><s:property value="criteria.category" /></td>
-				<td><s:property value="criteria.description" />
+				<td>
 					<s:if test="criteria.allowCustomValue">
+						<s:property value="criteria.descriptionBeforeHurdle" />
 						<s:if test="criteria.dataType == 'boolean' && criteria.allowCustomValue">
 							<s:select list="#{'true':'True','false':'False'}" value="criteria.defaultValue"></s:select>
 						</s:if>
@@ -33,7 +34,11 @@
 							<s:select list="#{'=':'=','!=':'!='}" value="criteria.comparison"></s:select>
 							<input type="text" value="<s:property value="criteria.defaultValue" />" size="20" />
 						</s:else>
+						<s:property value="criteria.descriptionAfterHurdle"/>
 					</s:if>
+					<s:else>
+						<s:property value="criteria.description" />
+					</s:else>
 				</td>
 				<td class="center" id="<s:property value="criteria.id" />">
 					<s:select list="#{'Red':'Red','Amber':'Amber'}" value="flag" onchange="updateFlag(this)"></s:select>
