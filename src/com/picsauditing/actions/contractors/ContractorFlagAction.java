@@ -191,8 +191,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				.getOperatorAccount().getFlagQuestionCriteriaInherited());
 		acaList = acaBuilder.getAuditCriteriaAnswers();
 		calculator.setAcaList(acaList);
-		calculator.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
-		calculator.setHasCOR(contractor.isCOR(auditDataDAO));
+//		calculator.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
+//		calculator.setHasCOR(contractor.isCOR(auditDataDAO));
 
 		PicsLogger.start("CaoStatus");
 		for (ContractorAudit audit : contractor.getAudits()) {

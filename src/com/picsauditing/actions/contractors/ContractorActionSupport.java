@@ -357,9 +357,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
 
-		if (contractor.isCOR(getAuditDataDAO())) {
-			hasCOR = true;
-		}
+//		if (contractor.isCOR(getAuditDataDAO())) {
+//			hasCOR = true;
+//		}
 
 		if (hasCOR) {
 			for (ContractorOperator corContractors : getOperators()) {
