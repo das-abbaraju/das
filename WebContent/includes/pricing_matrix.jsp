@@ -2,9 +2,9 @@
 <table class="report"> 
 	<thead> 
 		<tr> 
-			<td>Facilities</td> 
+			<td>Operators</td> 
 			<td>Audited</td> 
-			<td>PQF-Only</td> 
+			<td>Non-Audited</td> 
 		</tr>	
 	</thead> 
 	<tbody><tr> 
