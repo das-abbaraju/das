@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_contractor")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
@@ -62,5 +63,16 @@ public class FlagCriteriaContractor extends BaseTable {
 
 	public void setVerified(boolean verified) {
 		this.verified = verified;
+	}
+
+	public boolean equals(FlagCriteriaContractor fcc) {
+		return (fcc.getContractor() == this.getContractor() && fcc.getCriteria() == this.getCriteria());
+	}
+
+	public void update(FlagCriteriaContractor change) {
+		if (!answer.equals(change.getAnswer()))
+			answer = change.getAnswer();
+		if (verified != change.isVerified())
+			verified = change.isVerified();
 	}
 }

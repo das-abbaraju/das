@@ -21,7 +21,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -36,7 +35,6 @@ import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
@@ -80,7 +78,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<Invoice> invoices = new ArrayList<Invoice>();
 	private List<Payment> payments = new ArrayList<Payment>();
 	private List<Refund> refunds = new ArrayList<Refund>();
-	private List<FlagCriteriaContractor> flagCriteria = new ArrayList<FlagCriteriaContractor>();
+	private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
 
 	private boolean needsRecalculation;
 	private Date lastRecalculation;
@@ -772,11 +770,11 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.ALL })
-	public List<FlagCriteriaContractor> getFlagCriteria() {
+	public Set<FlagCriteriaContractor> getFlagCriteria() {
 		return flagCriteria;
 	}
 
-	public void setFlagCriteria(List<FlagCriteriaContractor> flagCriteria) {
+	public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
 		this.flagCriteria = flagCriteria;
 	}
 

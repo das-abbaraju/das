@@ -3,12 +3,13 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -21,36 +22,31 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.Strings;
 
 public class ContractorFlagETL {
-	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
 
-	private List<FlagCriteria> flagCriteriaList = null;
-	private HashSet<Integer> criteriaQuestionSet = new HashSet<Integer>();
+	private Set<FlagCriteria> distinctFlagCriteria = null;
+	private Set<Integer> criteriaQuestionSet = new HashSet<Integer>();
 	protected boolean hasOqEmployees = false;
 	protected boolean hasCOR = false;
 
-	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
-			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
-		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
+	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao) {
 		this.auditDataDao = auditDataDao;
 
-		flagCriteriaList = flagCriteriaDao.getDistinctOperatorFlagCriteria();
+		distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 		// Get AuditQuestion ids that are used
-		for (FlagCriteria fc : flagCriteriaList) {
+		for (FlagCriteria fc : distinctFlagCriteria) {
 			if (fc.getQuestion() != null && fc.getAuditType() != null && !fc.getAuditType().isAnnualAddendum())
 				criteriaQuestionSet.add(fc.getQuestion().getId());
 		}
 	}
 
 	public void calculate(ContractorAccount contractor) {
-		flagCriteriaContractorDao.deleteEntriesForContractor(contractor.getId());
-
-		List<FlagCriteriaContractor> changes = contractor.getFlagCriteria();
+		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(),
 				criteriaQuestionSet);
 
-		for (FlagCriteria flagCriteria : flagCriteriaList) {
+		for (FlagCriteria flagCriteria : distinctFlagCriteria) {
 			// Processing Audits
 			if (flagCriteria.getAuditType() != null) {
 				// Checking Audit Type
@@ -130,6 +126,7 @@ public class ContractorFlagETL {
 				// TODO: VERIFY ORDER IS PRESERVED
 				// <-----------------------*******
 				List<OshaAudit> auditYears = new ArrayList<OshaAudit>(auditsOfThisSHAType.values());
+				auditYears = new ArrayList<OshaAudit>(auditYears); // reordering list
 				if (auditYears.size() > 0) {
 					if (auditYears.size() > 3) {
 						// Removing year which is not needed for transition
@@ -188,7 +185,8 @@ public class ContractorFlagETL {
 			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
 				Map<String, AuditData> auditsOfThisEMRType = new TreeMap<String, AuditData>(contractor.getEmrs());
 				List<AuditData> years = new ArrayList<AuditData>(auditsOfThisEMRType.values());
-
+				years = new ArrayList<AuditData>(years); // reordering years
+				
 				if (years != null && years.size() > 0) {
 					if (years.size() > 3) {
 						// Removing year which is not needed for transition
@@ -267,8 +265,32 @@ public class ContractorFlagETL {
 			}
 		}
 
-		// TODO: MAKE SURE BATCH INSERT IS BEING PERFORMED PROPERLY
-		for (FlagCriteriaContractor change : changes);
+		Set<FlagCriteriaContractor> currentFlagCriteria = contractor.getFlagCriteria();
+
+		// comparing list of changes to current flag criteria
+		Iterator<FlagCriteriaContractor> flagIter = currentFlagCriteria.iterator();
+		// performing update/delete
+		while (flagIter.hasNext()) {
+			FlagCriteriaContractor found = null;
+			FlagCriteriaContractor currentCriteria = flagIter.next();
+
+			for (FlagCriteriaContractor change : changes) {
+				if (currentCriteria.equals(change)) {
+					currentCriteria.update(change);
+					found = change;
+				}
+			}
+			
+			if (found != null)
+				changes.remove(found); // update was performed
+			else
+				flagIter.remove();
+		}
+
+		// merging remaining changes (inserts)
+		currentFlagCriteria.addAll(changes);
+
+		// for(FlagCriteriaContractor fcc : currentFlagCriteria);
 	}
 
 	private boolean isHasOqEmployees(int conID) {
