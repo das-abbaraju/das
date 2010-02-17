@@ -66,24 +66,41 @@ public class FlagDataCalculator {
 
 		return list;
 	}
-
+	
 	private boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		// Criteria should match
+		
 		FlagCriteria criteria = opCriteria.getCriteria();
-		String hurdle = opCriteria.criteriaValue();
+		String hurdle = criteria.getDefaultValue();
+		
+		if (criteria.isAllowCustomValue() && opCriteria.getHurdle() != null) {
+			hurdle = opCriteria.getHurdle();
+		}
 
 		String answer = conCriteria.getAnswer();
 
+		// Check for questionID in (401, 755)
+		if (criteria.getQuestion() != null) {
+			int questionID = criteria.getQuestion().getId();
+			
+			if (questionID == 401 || questionID == 755) {
+				// Check if answers have been verified... if yes, return false (don't flag)
+				return !conCriteria.isVerified();
+			}
+		}
+		
 		// Check to see if Criteria is a policy
 		// Check if policy is not applicable or approved (green flag), else red flag
-		if (criteria.getAuditType().getClassType().isPolicy()) {
-			List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
-			if (caoList != null) {
-				for (ContractorAuditOperator cao : caoList) {
-					if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
-						return false;
-					if (cao.getStatus().isRejected())
-						return true;
+		if (criteria.getAuditType() != null && criteria.getAuditType().getClassType().isPolicy()) {
+			if (caoMap != null) {
+				List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
+				if (caoList != null) {
+					for (ContractorAuditOperator cao : caoList) {
+						if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+							return false;
+						if (cao.getStatus().isRejected())
+							return true;
+					}
 				}
 			}
 			// If the policy doesn't exist, then flag it
