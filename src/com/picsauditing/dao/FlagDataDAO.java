@@ -23,4 +23,10 @@ public class FlagDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<FlagData> findByOperaqtor(int opID) {
+		Query query = em.createQuery("FROM FlagData d WHERE operator.id = :opID ORDER BY d.contractor.id");
+		query.setParameter("opID", opID);
+		return query.getResultList();
+	}
+
 }
