@@ -137,6 +137,8 @@ $(function() {
 				<fieldset class="form">
 				<legend><span>Company Identification</span></legend>
 				<ol>
+					<li><label>Web URL:</label> 
+						<s:textfield name="contractor.webUrl" size="35" /></li>
 					<li><label>Company Logo:</label>
 						<s:file name="logo" size="35" />
 					</li>
