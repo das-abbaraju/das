@@ -31,9 +31,9 @@ public class FlagDataDAOTest extends TestCase {
 
 	@Test
 	public void testFindByOperator() {
-		final List<FlagData> findByOperaqtor = dataDAO.findByOperaqtor(4744);
+		final List<FlagData> findByOperator = dataDAO.findByOperator(4744);
 
-		for (FlagData flagData : findByOperaqtor) {
+		for (FlagData flagData : findByOperator) {
 			assertEquals("Operator was incorrect", 4744, flagData.getOperator().getId());
 		}
 	}
