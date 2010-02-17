@@ -114,9 +114,15 @@ $(function() {
 				<ol>
 					<s:iterator value="operator.visibleAudits">
 						<li><label><s:property value="auditType.auditName" />:</label>
-						Risk >= <s:property value="minRiskLevel" />, Status >= <s:property
-							value="requiredAuditStatus" />, Flag = <s:property
-							value="requiredForFlag" /> <s:if test="canEdit">, Editable = Yes</s:if></li>
+						Risk >= <s:property value="minRiskLevel" />
+						<s:set name="flagCriteriaOperator" value="getFlagCriteriaOperatorByAudit(auditType.id)"/>
+						<s:if test="#flagCriteriaOperator != null">
+							, RequiresActiveStatus = 
+								<s:if test="#flagCriteriaOperator.criteria.validationRequired">Active</s:if>
+								<s:else>Submitted</s:else>
+							, Flag = <s:property value="#flagCriteriaOperator.flag"/>
+						</s:if>
+						<s:if test="canEdit">, Editable = Yes</s:if></li>
 					</s:iterator>
 				</ol>
 				</fieldset>

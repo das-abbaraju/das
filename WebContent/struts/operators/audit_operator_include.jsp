@@ -10,12 +10,8 @@
 	name="ao.canEdit" value="canEdit" title="Edit"
 	onclick="$('#button%{htmlID}').show()" /> | <s:radio
 	id="aorisk%{htmlID}" name="ao.minRiskLevel" list="riskLevelList"
-	value="minRiskLevel" onclick="$('#button%{htmlID}').show()" /> | <s:radio
-	id="aoflag%{htmlID}" name="ao.requiredForFlag" list="FlagColorList"
-	value="requiredForFlag" onclick="$('#button%{htmlID}').show()" /> | <s:radio
-	id="aostatus%{htmlID}" name="ao.requiredAuditStatus"
-	list="AuditStatusList" value="requiredAuditStatus"
-	onclick="$('#button%{htmlID}').show()" /> <s:if
+	value="minRiskLevel" onclick="$('#button%{htmlID}').show()" />
+	<s:if
 	test="auditType.classType.policy">
 	<br>
 	<s:textarea name="ao.help" value="%{help}" rows="3" cols="70"

@@ -113,11 +113,11 @@ public class FlagCalculatorTest extends TestCase {
 		assertEquals(FlagColor.Red, calculator.calculate());
 		assertEquals(WaitingOn.PICS, calculator.calculateWaitingOn());
 
-		operator.getAudits().get(0).setRequiredForFlag(FlagColor.Amber);
+//		operator.getAudits().get(0).setRequiredForFlag(FlagColor.Amber);
 		assertEquals(FlagColor.Amber, calculator.calculate());
 		assertEquals(WaitingOn.PICS, calculator.calculateWaitingOn());
 		
-		operator.getAudits().get(0).setRequiredAuditStatus(AuditStatus.Submitted);
+//		operator.getAudits().get(0).setRequiredAuditStatus(AuditStatus.Submitted);
 		assertEquals(FlagColor.Green, calculator.calculate());
 		assertEquals(WaitingOn.None, calculator.calculateWaitingOn());
 		

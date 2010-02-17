@@ -56,10 +56,19 @@
 					<s:if test="minRiskLevel == 3">High</s:if>
 				</td>
 				<td class="center">
-					<s:if test="requiredAuditStatus == 'Active'">Yes</s:if>
-					<s:else>No</s:else>
+					<s:set name="flagCriteriaOperator" value="getFlagCriteriaOperatorByAudit(auditType.id)"/>
+					<s:if test="#flagCriteriaOperator != null">
+						<s:if test="#flagCriteriaOperator.criteria.validationRequired">Yes</s:if>
+						<s:else>No</s:else>
+					</s:if>
+					<s:else>-</s:else>
 				</td>
-				<td class="center"><s:property value="requiredForFlag.smallIcon" escape="false" /></td>
+				<td class="center">
+					<s:if test="#flagCriteriaOperator != null">
+						<s:property value="#flagCriteriaOperator.flag.smallIcon" escape="false" />
+					</s:if>
+					<s:else>-</s:else>
+				</td>
 			</tr>
 		</s:iterator>
 		</table>

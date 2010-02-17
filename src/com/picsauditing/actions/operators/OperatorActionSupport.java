@@ -6,6 +6,7 @@ import java.util.Map;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class OperatorActionSupport extends AccountActionSupport {
@@ -92,5 +93,14 @@ public class OperatorActionSupport extends AccountActionSupport {
 
 	public Map<Integer, String> getAMBestRatingsList() {
 		return AmBest.ratingMap;
+	}
+	
+	public FlagCriteriaOperator getFlagCriteriaOperatorByAudit(int auditTypeID) {
+		for(FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteria()) {
+			if(flagCriteriaOperator.getCriteria().getAuditType().getId() == auditTypeID) {
+				return flagCriteriaOperator;
+			}
+		}
+		return null;
 	}
 }

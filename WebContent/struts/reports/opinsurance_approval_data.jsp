@@ -12,9 +12,6 @@
 		<td title="PICS Recommendation" style="cursor: help;"></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 		<td><a href="javascript: changeOrderBy('form1','atype.auditName');">Policy</a></td>
-		<s:if test="requiresActivePolicy">	
-			<td>Status</td>
-		</s:if>
 		<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
 		<td>Limits</td>
 		<td>AMBest</td>
@@ -40,9 +37,6 @@
 				<br><s:property value="get('caoOperatorName')"/>
 			</s:if>
 		</td>
-		<s:if test="requiresActivePolicy">
-			<td><s:property value="get('auditStatus')"/></td>
-		</s:if>
 		<td class="reportDate">
 			<s:if test="get('auditName') == 'Workers Comp'">
 				<s:iterator value="getDataForAudit(get('auditID'),'GoodStanding')">

@@ -89,8 +89,6 @@ public class EntityFactory {
 		ao.setAuditType(makeAuditType(auditTypeID));
 		ao.setCanSee(true);
 		ao.setCanEdit(false);
-		ao.setRequiredAuditStatus(AuditStatus.Active);
-		ao.setRequiredForFlag(FlagColor.Red);
 		ao.setMinRiskLevel(2); // Medium Risk
 		operator.getAudits().add(ao);
 		return ao;

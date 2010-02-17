@@ -76,9 +76,7 @@ function save(id) {
 		<th>&nbsp;&nbsp;Save&nbsp;&nbsp;</th>
 		<th style="text-align: left;">&nbsp;V&nbsp;&nbsp;| 
 			&nbsp;E&nbsp;&nbsp;&nbsp;|
-			&nbsp;&nbsp;Minimum Risk Level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-			&nbsp;&nbsp;Flag Color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-			&nbsp;&nbsp;Required Status 
+			&nbsp;&nbsp;Minimum Risk Level
 		</th>
 	</tr>
 	</thead>

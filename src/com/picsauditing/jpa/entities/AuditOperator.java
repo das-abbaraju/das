@@ -2,8 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,13 +21,9 @@ public class AuditOperator extends BaseTable {
 	protected boolean canSee;
 	protected boolean canEdit;
 	protected int minRiskLevel = 0;
-	// Can sometimes be Submitted
-	protected AuditStatus requiredAuditStatus = AuditStatus.Active;
-	protected FlagColor requiredForFlag;
 	protected String help;
 
 	private int htmlID = 0;
-	private FlagColor contractorFlag;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID", nullable = false)
@@ -80,24 +74,6 @@ public class AuditOperator extends BaseTable {
 		this.operatorAccount = operator;
 	}
 
-	@Enumerated(EnumType.STRING)
-	public FlagColor getRequiredForFlag() {
-		return requiredForFlag;
-	}
-
-	public void setRequiredForFlag(FlagColor requiredForFlag) {
-		this.requiredForFlag = requiredForFlag;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public AuditStatus getRequiredAuditStatus() {
-		return requiredAuditStatus;
-	}
-
-	public void setRequiredAuditStatus(AuditStatus requiredAuditStatus) {
-		this.requiredAuditStatus = requiredAuditStatus;
-	}
-
 	@Column(length = 1000)
 	public String getHelp() {
 		return help;
@@ -121,20 +97,6 @@ public class AuditOperator extends BaseTable {
 		if (getOperatorAccount() != null)
 			htmlID += getOperatorAccount().getId();
 		return htmlID;
-	}
-
-	/**
-	 * Temporary field to store ??
-	 * 
-	 * @return
-	 */
-	@Transient
-	public FlagColor getContractorFlag() {
-		return contractorFlag;
-	}
-
-	public void setContractorFlag(FlagColor contractorFlag) {
-		this.contractorFlag = contractorFlag;
 	}
 
 	/**

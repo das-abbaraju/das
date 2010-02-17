@@ -22,8 +22,8 @@ public class ReportPQFVerification extends ReportAccount {
 		 * select  from audit_operator ao
 		 * join generalcontractors gc on gc.genID = ao.opID
 		 * join contractor_audit ca on ca.auditTypeID = ao.auditTypeID and ca.conID = gc.subID
-		 * where ao.auditTypeID in (1,11) and ao.canSee = 1 and ao.requiredForFlag in ('Amber','Red')
-		 * and ca.auditStatus IN ('Submitted','Resubmitted') and ao.requiredAuditStatus = 'Active'
+		 * where ao.auditTypeID in (1,11) and ao.canSee = 1 
+		 * and ca.auditStatus IN ('Submitted','Resubmitted')
 		 */
 		SelectSQL subSelect = new SelectSQL("contractor_audit ca");
 		subSelect.addField("ca.conID");
@@ -33,7 +33,6 @@ public class ReportPQFVerification extends ReportAccount {
 		subSelect.addWhere("ao.auditTypeID in (1,11)");
 		subSelect.addWhere("ao.canSee = 1");
 		subSelect.addWhere("ca.auditTypeID = ao.auditTypeID");
-		subSelect.addWhere("ao.requiredForFlag in ('Amber','Red')");
 		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
 		
 		// As of January 2010 there are only 34 contractors that work for only free accounts 

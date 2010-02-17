@@ -134,17 +134,6 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 		return super.execute();
 	}
 
-	public boolean isRequiresActivePolicy() {
-		if (permissions.seesAllContractors())
-			return true;
-		for (DynaBean bean : data) {
-			String status = bean.get("requiredAuditStatus").toString();
-			if (status.equals(AuditStatus.Active.toString()))
-				return true;
-		}
-		return false;
-	}
-
 	public Map<Integer, ContractorAuditOperator> getCaos() {
 		return caos;
 	}
