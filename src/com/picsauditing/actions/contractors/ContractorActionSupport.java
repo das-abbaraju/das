@@ -359,7 +359,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (!accountDao.isContained(getOperators().iterator().next()))
 			operators = null;
 
-		AuditData answer = auditDataDAO.findAnswerByConQuestion(id, AuditQuestion.COR);
+		AuditData answer = getAuditDataDAO().findAnswerByConQuestion(id, AuditQuestion.COR);
 		if (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer())) {
 			hasCOR = true;
 		}

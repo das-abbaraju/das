@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -332,7 +331,7 @@ public class AuditDataDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
-	
+
 	@Transient
 	public AuditData findAnswerByConQuestion(int conID, int questionID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
@@ -340,6 +339,10 @@ public class AuditDataDAO extends PicsDAO {
 				+ "AND d.question.id = ? ORDER BY d.audit.auditStatus DESC");
 		query.setParameter(1, conID);
 		query.setParameter(2, questionID);
-		return (AuditData)query.getSingleResult();
+		try {
+			return (AuditData) query.getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 }
