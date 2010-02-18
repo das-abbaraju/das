@@ -60,31 +60,17 @@ public class FlagData extends BaseTable {
 		this.flag = flag;
 	}
 
-	/**
-	 * Make sure that the
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		try {
-			FlagData other = (FlagData) obj;
-			if (id > 0 && other.getId() > 0)
-				return id == other.getId();
+	public boolean equals(FlagData other) {
+		if (id > 0 && other.getId() > 0)
+			return super.equals(other);
 
-			if (!contractor.equals(other.getContractor()))
-				return false;
-			if (!operator.equals(other.getOperator()))
-				return false;
-			if (!criteria.equals(other.getCriteria()))
-				return false;
-			return true;
-		} catch (Exception e) {
-			System.out.println("Error comparing FlagData objects: " + e.getMessage());
+		if (!contractor.equals(other.getContractor()))
 			return false;
-		}
+		if (!operator.equals(other.getOperator()))
+			return false;
+		if (!criteria.equals(other.getCriteria()))
+			return false;
+		return true;
 	}
 
 	public void update(FlagData change) {

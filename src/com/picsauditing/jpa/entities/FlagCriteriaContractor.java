@@ -65,8 +65,14 @@ public class FlagCriteriaContractor extends BaseTable {
 		this.verified = verified;
 	}
 
-	public boolean equals(FlagCriteriaContractor fcc) {
-		return (contractor.equals(fcc.getContractor()) && criteria.equals(fcc.getCriteria()));
+	public boolean equals(FlagCriteriaContractor other) {
+		if (other.getId() > 0 && id > 0)
+			return super.equals(other);
+		if (!contractor.equals(other.getContractor()))
+			return false;
+		if (!criteria.equals(other.getCriteria()))
+			return false;
+		return true;
 	}
 
 	public void update(FlagCriteriaContractor change) {
