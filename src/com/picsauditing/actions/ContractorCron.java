@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -31,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.FlagQuestionCriteria;
@@ -53,6 +56,7 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorAccountDAO contractorDAO;
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
+	private FlagDataDAO flagDataDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
@@ -63,7 +67,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL) {
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, FlagDataDAO flagDataDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -71,6 +75,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.contractorFlagETL = contractorFlagETL;
+		this.flagDataDAO = flagDataDAO;
 	}
 
 	public String execute() throws Exception {
@@ -243,22 +248,48 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co
 				.getOperatorAccount().getFlagCriteria());
-		final List<FlagData> flagResults = flagDataCalculator.calculate();
-		// TODO Save flagResults into table
-		FlagColor color = FlagColor.Green;
-		// TODO find overall flag color for this operator
 
-		if (!color.equals(co.getFlagColor())) {
+		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co.getOperatorAccount().getId());
+		List<FlagData> changes = flagDataCalculator.calculate();
+
+		// Find overall flag color for this operator
+		FlagColor overallColor = FlagColor.Green;
+		for(FlagData change : changes) {
+			overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
+		}
+
+		// Save changes into table
+		final Iterator<FlagData> dbIterator = flagData.iterator();
+		while(dbIterator.hasNext()) {
+			FlagData fromDB = dbIterator.next();
+			if (changes.contains(fromDB)) {
+				for(FlagData change : changes) {
+					if (fromDB.equals(change)) {
+						fromDB.update(change);
+						flagDataDAO.save(fromDB);
+					}
+				}
+				changes.remove(fromDB);
+			} else {
+				dbIterator.remove();
+				flagDataDAO.remove(fromDB);
+			}
+		}
+		for(FlagData changeToInsert : changes) {
+			flagDataDAO.save(changeToInsert);
+		}
+		
+		if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);
 			note.setAuditColumns(new User(User.SYSTEM));
-			note.setSummary("Flag color changed from " + co.getFlagColor() + " to " + color + " for "
+			note.setSummary("Flag color changed from " + co.getFlagColor() + " to " + overallColor + " for "
 					+ co.getOperatorAccount().getName());
 			note.setCanContractorView(true);
 			note.setViewableById(co.getOperatorAccount().getId());
 			dao.save(note);
-			co.setFlagColor(color);
+			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
 		}
 	}

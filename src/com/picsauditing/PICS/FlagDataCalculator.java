@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,15 +34,15 @@ public class FlagDataCalculator {
 	private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	private boolean worksForOperator = false;
 
-	public FlagDataCalculator(List<FlagCriteriaContractor> contractorCriteria,
-			List<FlagCriteriaOperator> operatorCriteria) {
+	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria,
+			Collection<FlagCriteriaOperator> operatorCriteria) {
 		setContractorCriteria(contractorCriteria);
 		setOperatorCriteria(operatorCriteria);
 	}
 
 	public List<FlagData> calculate() {
-		List<FlagData> list = new ArrayList<FlagData>();
-		
+		List<FlagData> dataSet = new ArrayList<FlagData>();
+
 		for (FlagCriteria key : operatorCriteria.keySet()) {
 			FlagColor flag = FlagColor.Green;
 			if (contractorCriteria.containsKey(key)) {
@@ -61,11 +62,11 @@ public class FlagDataCalculator {
 				data.setOperator(operatorCriteria.get(key).getOperator());
 				data.setFlag(flag);
 				data.setAuditColumns(new User(User.SYSTEM));
-				list.add(data);
+				dataSet.add(data);
 			}
 		}
 
-		return list;
+		return dataSet;
 	}
 
 	private boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
@@ -101,7 +102,7 @@ public class FlagDataCalculator {
 						}
 						// If the policy doesn't exist, then flag it
 					}
-					if(!isWorksForOperator() || conCriteria.getContractor().isAcceptsBids()) {
+					if (!isWorksForOperator() || conCriteria.getContractor().isAcceptsBids()) {
 						return false;
 					}
 					return true;
@@ -280,14 +281,14 @@ public class FlagDataCalculator {
 		return WaitingOn.None;
 	}
 
-	public void setContractorCriteria(List<FlagCriteriaContractor> list) {
+	public void setContractorCriteria(Collection<FlagCriteriaContractor> list) {
 		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
 		for (FlagCriteriaContractor value : list) {
 			contractorCriteria.put(value.getCriteria(), value);
 		}
 	}
 
-	public void setOperatorCriteria(List<FlagCriteriaOperator> list) {
+	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, FlagCriteriaOperator>();
 		for (FlagCriteriaOperator value : list) {
 			operatorCriteria.put(value.getCriteria(), value);
