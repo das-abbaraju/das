@@ -64,6 +64,11 @@ public class FlagCriteriaContractor extends BaseTable {
 	public void setVerified(boolean verified) {
 		this.verified = verified;
 	}
+	
+	@Override
+	public String toString() {
+		return criteria.toString() + " (" + answer + ") for " + contractor.toString();
+	}
 
 	public boolean equals(FlagCriteriaContractor other) {
 		if (other.getId() > 0 && id > 0)

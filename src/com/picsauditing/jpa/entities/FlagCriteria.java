@@ -14,6 +14,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
@@ -168,6 +169,11 @@ public class FlagCriteria extends BaseTable {
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+	
+	@Override
+	public String toString() {
+		return category + ": " + description;
 	}
 
 	@SuppressWarnings("unchecked")
