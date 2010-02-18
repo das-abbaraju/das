@@ -31,6 +31,7 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
 	private Map<AuditType, List<ContractorAuditOperator>> caoMap;
+	private boolean worksForOperator = false;
 
 	public FlagDataCalculator(List<FlagCriteriaContractor> contractorCriteria,
 			List<FlagCriteriaOperator> operatorCriteria) {
@@ -40,7 +41,7 @@ public class FlagDataCalculator {
 
 	public List<FlagData> calculate() {
 		List<FlagData> list = new ArrayList<FlagData>();
-
+		
 		for (FlagCriteria key : operatorCriteria.keySet()) {
 			FlagColor flag = FlagColor.Green;
 			if (contractorCriteria.containsKey(key)) {
@@ -99,6 +100,9 @@ public class FlagDataCalculator {
 							}
 						}
 						// If the policy doesn't exist, then flag it
+					}
+					if(!isWorksForOperator() || conCriteria.getContractor().isAcceptsBids()) {
+						return false;
 					}
 					return true;
 				}
@@ -296,5 +300,13 @@ public class FlagDataCalculator {
 
 	public void setCaoMap(Map<AuditType, List<ContractorAuditOperator>> caoMap) {
 		this.caoMap = caoMap;
+	}
+
+	public boolean isWorksForOperator() {
+		return worksForOperator;
+	}
+
+	public void setWorksForOperator(boolean worksForOperator) {
+		this.worksForOperator = worksForOperator;
 	}
 }
