@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Transient;
+
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -26,6 +29,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
@@ -118,6 +122,37 @@ public class FlagDataCalculator {
 				return !conCriteria.isVerified();
 			}
 		}
+		
+//		 TODO If criteria is AMBEST
+//		if("AMBest".equals(questionType)) {
+//			boolean flag1 = false;
+//			boolean flag2 = false;
+//			int ratings = Integer.parseInt(answer.substring(0, answer.indexOf('|')));
+//			int bestClass = Integer.parseInt(answer.substring(value.indexOf('|')+ 1,answer.length()));
+//			if(getAMBestRatings() > 0)
+//				flag1 = ratings > getAMBestRatings();
+//			if(getAMBestClass() > 0)
+//				flag2 = bestClass < getAMBestClass();
+//			if(flag1 || flag2)
+//				return true;
+//						
+//			return false;
+//		}
+		
+//		public int getAMBestRatings() {
+//		if(!Strings.isEmpty(value)) {
+//			return Integer.parseInt(value.substring(0, value.indexOf('|')));
+//		}
+//		return 0;
+//	}
+//
+//	public int getAMBestClass() {
+//		if(!Strings.isEmpty(value)) {
+//			return Integer.parseInt(value.substring(value.indexOf('|')+ 1,value.length()));
+//		}
+//		return 0;
+//	}
+		
 		final String dataType = criteria.getDataType();
 		final String comparison = criteria.getComparison();
 		boolean isValid = true;
