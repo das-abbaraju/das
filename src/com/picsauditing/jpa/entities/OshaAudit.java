@@ -437,7 +437,7 @@ public class OshaAudit implements java.io.Serializable {
 		case TrirAbsolute:
 			return getRecordableTotalRate();
 		case TrirNaics:
-			return (getRecordableTotalRate() / conAudit.getContractorAccount().getNaics().getLwcr()) * 100;
+			return (getRecordableTotalRate() / conAudit.getContractorAccount().getNaics().getTrir()) * 100;
 		case Fatalities:
 			return getFatalitiesRate();
 		case Cad7:
@@ -451,4 +451,32 @@ public class OshaAudit implements java.io.Serializable {
 		}
 	}
 
+	@Transient
+	public float getValue(OshaRateType rateType) {
+		// expecting that the caller already knows the type of rate they expect
+		// (i.e. caller knows it is a COHS and therefore expects COHS rateTypes
+		// to be valid)
+		switch (rateType) {
+		case SeverityRate:
+			return (type.equals(OshaType.OSHA) ? lostWorkDays + modifiedWorkDay : lostWorkDays);
+		case LwcrAbsolute:
+			return getLostWorkCases();
+		case LwcrNaics:
+			return (getLostWorkCases()*100)/conAudit.getContractorAccount().getNaics().getLwcr();
+		case TrirAbsolute:
+			return getRecordableTotal();
+		case TrirNaics:
+			return (getRecordableTotal()*100)/conAudit.getContractorAccount().getNaics().getTrir();
+		case Fatalities:
+			return getFatalities();
+		case Cad7:
+			return getCad7();
+		case Neer:
+			return getNeer();
+		default:
+			throw new RuntimeException("Invalid OSHA Rate Type of " + rateType.toString()
+					+ " specified for osha audit id " + getId() + ", contractor id "
+					+ conAudit.getContractorAccount().getId());
+		}
+	}
 }

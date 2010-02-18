@@ -123,8 +123,6 @@ public class ContractorFlagETL {
 				// expecting to contain 4 or less of the most current audits
 				final Map<String, OshaAudit> auditsOfThisSHAType = contractor.getOshas()
 						.get(flagCriteria.getOshaType());
-				// TODO: VERIFY ORDER IS PRESERVED
-				// <-----------------------*******
 				List<OshaAudit> auditYears = new ArrayList<OshaAudit>(auditsOfThisSHAType.values());
 				auditYears = new ArrayList<OshaAudit>(auditYears); // reordering list
 				if (auditYears.size() > 0) {
@@ -141,6 +139,17 @@ public class ContractorFlagETL {
 					boolean verified = true; // Has the data been verified?
 
 					switch (flagCriteria.getMultiYearScope()) {
+					case ThreeYearWeightedAverage:
+						float incidentRate = 0.0f;
+						float manHours = 0.0f;
+						for (OshaAudit year : auditYears) {
+							incidentRate += year.getValue(flagCriteria.getOshaRateType());
+							manHours += (float)year.getManHours();
+							if (!year.isVerified())
+								verified = false;
+						}
+						answer = (incidentRate * 200000)/manHours;
+						break;
 					case ThreeYearAverage:
 						answer = 0.0f;
 						for (OshaAudit year : auditYears) {
