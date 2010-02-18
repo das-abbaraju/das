@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,8 +19,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
-
-import java.util.Arrays;
 
 @Entity
 @Table(name = "auditor_availability")
@@ -69,6 +68,7 @@ public class AuditorAvailability extends BaseTable {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+
 	@Transient
 	public Date getEndDate() {
 		Calendar cal = Calendar.getInstance();
@@ -76,6 +76,7 @@ public class AuditorAvailability extends BaseTable {
 		cal.add(Calendar.MINUTE, duration);
 		return cal.getTime();
 	}
+
 	public float getLatitude() {
 		return latitude;
 	}
@@ -202,6 +203,7 @@ public class AuditorAvailability extends BaseTable {
 			boolean matchedState = false;
 			for (String state : states) {
 				if (state.equals(conAudit.getState())) {
+					matchedState = true;
 					rank += 25;
 				}
 			}
@@ -209,7 +211,7 @@ public class AuditorAvailability extends BaseTable {
 				rank -= 10;
 			}
 		}
-		
+
 		if (permissions.isAuditor() && user.getId() == permissions.getUserId())
 			rank += 1000;
 
