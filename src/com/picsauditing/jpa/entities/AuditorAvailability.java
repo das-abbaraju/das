@@ -128,7 +128,6 @@ public class AuditorAvailability extends BaseTable {
 		this.onlyInStates = onlyInStates;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void setOnlyInStates(String[] onlyInStates) {
 		this.onlyInStates = Strings.implode(Arrays.asList(onlyInStates), ",");
 	}
