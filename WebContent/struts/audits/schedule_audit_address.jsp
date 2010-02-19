@@ -27,9 +27,6 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 .calculatedAddress {
 	display: none;
 }
-#con_tip ul {
-	list-style: none;
-}
 </style>
 
 </head>
