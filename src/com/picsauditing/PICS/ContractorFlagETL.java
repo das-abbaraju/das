@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
@@ -19,6 +21,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class ContractorFlagETL {
@@ -91,6 +94,18 @@ public class ContractorFlagETL {
 				}
 			}
 
+			// AMBest questions
+			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
+				final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
+				if (auditData != null) {
+					AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+					AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
+
+					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, amBest.getRatingCode() + "|"
+							+ amBest.getFinancialCode()));
+				}
+			}
+
 			// Non-EMR questions (emrs handled seperately)
 			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() != AuditQuestion.EMR) {
 				// find answer in answermap if exists to related question
@@ -118,84 +133,12 @@ public class ContractorFlagETL {
 				}
 			}
 
-			// Checking OSHA
-			if (flagCriteria.getOshaType() != null) {
-				// expecting to contain 4 or less of the most current audits
-				final Map<String, OshaAudit> auditsOfThisSHAType = contractor.getOshas()
-						.get(flagCriteria.getOshaType());
-				List<OshaAudit> auditYears = new ArrayList<OshaAudit>(auditsOfThisSHAType.values());
-				auditYears = new ArrayList<OshaAudit>(auditYears); // reordering list
-				if (auditYears.size() > 0) {
-					if (auditYears.size() > 3) {
-						// Removing year which is not needed for transition
-						// years
-						if (!auditYears.get(0).isVerified())
-							auditYears.remove(0);
-						else
-							auditYears.remove(3);
-					}
-
-					Float answer = null;
-					boolean verified = true; // Has the data been verified?
-
-					switch (flagCriteria.getMultiYearScope()) {
-					case ThreeYearWeightedAverage:
-						float incidentRate = 0.0f;
-						float manHours = 0.0f;
-						for (OshaAudit year : auditYears) {
-							incidentRate += year.getValue(flagCriteria.getOshaRateType());
-							manHours += (float)year.getManHours();
-							if (!year.isVerified())
-								verified = false;
-						}
-						answer = (incidentRate * 200000)/manHours;
-						break;
-					case ThreeYearAverage:
-						answer = 0.0f;
-						for (OshaAudit year : auditYears) {
-							answer += year.getRate(flagCriteria.getOshaRateType());
-							if (!year.isVerified())
-								verified = false;
-						}
-						answer /= (float) auditYears.size();
-						break;
-					case ThreeYearsAgo:
-						if (auditYears.size() >= 3) {
-							answer = auditYears.get(2).getRate(flagCriteria.getOshaRateType());
-							verified = auditYears.get(2).isVerified();
-						}
-						break;
-					case TwoYearsAgo:
-						if (auditYears.size() >= 2) {
-							answer = auditYears.get(1).getRate(flagCriteria.getOshaRateType());
-							verified = auditYears.get(1).isVerified();
-						}
-						break;
-					case LastYearOnly:
-						answer = auditYears.get(0).getRate(flagCriteria.getOshaRateType());
-						verified = auditYears.get(0).isVerified();
-						break;
-					default:
-						throw new RuntimeException("Invalid MultiYear scope of "
-								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
-								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
-					}
-
-					if (answer != null) {
-						final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-								flagCriteria, answer.toString());
-						flagCriteriaContractor.setVerified(verified);
-						changes.add(flagCriteriaContractor);
-					}
-				}
-			}
-
 			// EMR Questions
 			if (flagCriteria.getQuestion() != null && flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
 				Map<String, AuditData> auditsOfThisEMRType = new TreeMap<String, AuditData>(contractor.getEmrs());
 				List<AuditData> years = new ArrayList<AuditData>(auditsOfThisEMRType.values());
 				years = new ArrayList<AuditData>(years); // reordering years
-				
+
 				if (years != null && years.size() > 0) {
 					if (years.size() > 3) {
 						// Removing year which is not needed for transition
@@ -272,6 +215,79 @@ public class ContractorFlagETL {
 					}
 				}
 			}
+
+			// Checking OSHA
+			if (flagCriteria.getOshaType() != null) {
+				// expecting to contain 4 or less of the most current audits
+				final Map<String, OshaAudit> auditsOfThisSHAType = contractor.getOshas()
+						.get(flagCriteria.getOshaType());
+				List<OshaAudit> auditYears = new ArrayList<OshaAudit>(auditsOfThisSHAType.values());
+				auditYears = new ArrayList<OshaAudit>(auditYears); // reordering
+				// list
+				if (auditYears.size() > 0) {
+					if (auditYears.size() > 3) {
+						// Removing year which is not needed for transition
+						// years
+						if (!auditYears.get(0).isVerified())
+							auditYears.remove(0);
+						else
+							auditYears.remove(3);
+					}
+
+					Float answer = null;
+					boolean verified = true; // Has the data been verified?
+
+					switch (flagCriteria.getMultiYearScope()) {
+					case ThreeYearWeightedAverage:
+						float incidentRate = 0.0f;
+						float manHours = 0.0f;
+						for (OshaAudit year : auditYears) {
+							incidentRate += year.getValue(flagCriteria.getOshaRateType());
+							manHours += (float) year.getManHours();
+							if (!year.isVerified())
+								verified = false;
+						}
+						answer = (incidentRate * 200000) / manHours;
+						break;
+					case ThreeYearAverage:
+						answer = 0.0f;
+						for (OshaAudit year : auditYears) {
+							answer += year.getRate(flagCriteria.getOshaRateType());
+							if (!year.isVerified())
+								verified = false;
+						}
+						answer /= (float) auditYears.size();
+						break;
+					case ThreeYearsAgo:
+						if (auditYears.size() >= 3) {
+							answer = auditYears.get(2).getRate(flagCriteria.getOshaRateType());
+							verified = auditYears.get(2).isVerified();
+						}
+						break;
+					case TwoYearsAgo:
+						if (auditYears.size() >= 2) {
+							answer = auditYears.get(1).getRate(flagCriteria.getOshaRateType());
+							verified = auditYears.get(1).isVerified();
+						}
+						break;
+					case LastYearOnly:
+						answer = auditYears.get(0).getRate(flagCriteria.getOshaRateType());
+						verified = auditYears.get(0).isVerified();
+						break;
+					default:
+						throw new RuntimeException("Invalid MultiYear scope of "
+								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
+								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
+					}
+
+					if (answer != null) {
+						final FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+								flagCriteria, answer.toString());
+						flagCriteriaContractor.setVerified(verified);
+						changes.add(flagCriteriaContractor);
+					}
+				}
+			}
 		}
 
 		Set<FlagCriteriaContractor> currentFlagCriteria = contractor.getFlagCriteria();
@@ -289,7 +305,7 @@ public class ContractorFlagETL {
 					found = change;
 				}
 			}
-			
+
 			if (found != null)
 				changes.remove(found); // update was performed
 			else
