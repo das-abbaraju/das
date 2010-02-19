@@ -7,31 +7,33 @@
 			<th>Category</th>
 			<th>Description</th>
 			<th>Flag</th>
-			<th><nobr>% Affected</nobr></th>
+			<th title="Click percentage to see impact."><nobr>% Affected</nobr></th>
 			<th>Remove</th>
 		</tr>
 	</thead>
 	
 	<s:iterator value="criteriaList">
 		<pics:permission perm="AuditVerification">
-		<tr>
+		<tr id="<s:property value="id" />">
 			<td><s:property value="criteria.category" /></td>
 			<td>
 				<s:if test="criteria.allowCustomValue">
 					<s:property value="criteria.descriptionBeforeHurdle" />
 					<s:if test="criteria.dataType == 'boolean'">
-						<s:select list="#{'true':'True','false':'False'}" value="criteria.defaultValue"></s:select>
+						<s:select list="#{'true':'True','false':'False'}" value="criteriaValue()" name="newHurdle"
+							onchange="submitHurdle(this);"></s:select>
 					</s:if>
 					<s:elseif test="criteria.dataType == 'number'">
-						<input type="text" value="<s:property value="criteria.defaultValue" />" size="5" />
+						<input type="text" value="<s:property value="criteriaValue()" />" size="5" name="newHurdle"
+							onchange="submitHurdle(this);" />
 					</s:elseif>
 					<s:elseif test="criteria.dataType == 'date'">
-						<s:select list="#{'<':'<','>':'>','=':'='}" value="criteria.comparison"></s:select>
-						<input type="text" class="datepicker" value="<s:property value="criteria.defaultValue" />" size="10" />
+						<input type="text" class="datepicker" value="<s:property value="criteriaValue()" />" name="newHurdle"
+							size="10" onchange="submitHurdle(this);" />
 					</s:elseif>
 					<s:else>
-						<s:select list="#{'=':'=','!=':'!='}" value="criteria.comparison"></s:select>
-						<input type="text" value="<s:property value="criteria.defaultValue" />" size="20" />
+						<input type="text" value="<s:property value="criteriaValue()" />" size="20" name="newHurdle"
+							onchange="submitHurdle(this);" />
 					</s:else>
 					<s:property value="criteria.descriptionAfterHurdle"/>
 				</s:if>
@@ -41,11 +43,11 @@
 			</td>
 			<td class="center"><s:property value="flag.smallIcon" escape="false" /></td>
 			<td class="center">
-				<a href="#" onclick="getImpact(<s:property value="id" />); return false;">
+				<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact.">
 					<s:property value="getPercentAffected(id)" />%</a>
 			</td>
 			<td class="center">
-				<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />);"></a>
+				<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>
 			</td>
 		</tr>
 		</pics:permission>

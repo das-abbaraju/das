@@ -11,6 +11,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -31,14 +33,14 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private boolean insurance = false;
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	private FlagCriteriaDAO flagCriteriaDAO;
-	private FlagDataCalculator calculator;
 	private int criteriaID;
 	private FlagColor newFlag;
 	private String newHurdle;
 	private String newComparison;
 	
-	private List<ContractorOperator> contractorOperators;
 	private List<FlagCriteria> addableCriteria = null;
+	private List<Integer> doNotAdd = null;
+	private Map<Integer, FlagColor> existing = null;
 	private Map<Integer, List<ContractorAccount>> affectingCriteria = new TreeMap<Integer, List<ContractorAccount>>();
 
 	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
@@ -46,7 +48,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		super(operatorDao);
 		this.flagCriteriaOperatorDAO = opCriteriaDAO;
 		this.flagCriteriaDAO = flagCriteriaDAO;
-		subHeading = "Manage Flag Criteria";
+
+		if (insurance)
+			subHeading = "Manage Insurance Criteria";
+		else
+			subHeading = "Manage Flag Criteria";
+		
 		noteCategory = NoteCategory.Flags;
 	}
 
@@ -58,36 +65,56 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
-		contractorOperators = operator.getContractorOperators();
 
 		if (button != null) {
 			if (button.equals("questions") || button.equals("impact")) {
 				return button;
 			}
 			if (button.equals("delete")) {
-				flagCriteriaOperatorDAO.clear();
 				FlagCriteriaOperator remove = flagCriteriaOperatorDAO.find(criteriaID);
 
 				if (remove.getOperator().equals(operator)) {
 					flagCriteriaOperatorDAO.remove(remove);
 				}
+				
+				FlagCriteria fc = remove.getCriteria();
+				String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription()
+					+ ", " + remove.getFlag().toString() + " flagged";
+				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 			}
-			if (button.equals("add")) {
-				if (criteriaID > 0) {
-					flagCriteriaOperatorDAO.clear();
-					flagCriteriaDAO.clear();
-					FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
-					FlagCriteriaOperator fco = new FlagCriteriaOperator();
-					fco.setAuditColumns(permissions);
-					fco.setCriteria(fc);
-					fco.setFlag(newFlag);
-					fco.setHurdle(newHurdle);
-					fco.setOperator(operator);
-					flagCriteriaOperatorDAO.save(fco);
-				}
+			if (button.equals("add") && criteriaID > 0) {
+				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
+				FlagCriteriaOperator fco = new FlagCriteriaOperator();
+				fco.setAuditColumns(permissions);
+				fco.setCriteria(fc);
+				fco.setFlag(newFlag);
+				fco.setHurdle(newHurdle);
+				fco.setOperator(operator);
+				flagCriteriaOperatorDAO.save(fco);
+				calculatePercentAffected(fco);
+				
+				String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
+					+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle()  
+					+ ", " + newFlag.toString() + " flagged";
+				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
+			}
+			if (button.equals("save") && criteriaID > 0) {
+				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
+				fco.setUpdateDate(new Date());
+				fco.setUpdatedBy(getUser());
+				fco.setHurdle(newHurdle);
+				fco.setLastCalculated(null);
+				flagCriteriaOperatorDAO.save(fco);
+				calculatePercentAffected(fco);
+				
+				FlagCriteria fc = fco.getCriteria();
+				String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "
+					+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle()  
+					+ ", " + fco.getFlag().toString() + " flagged";
+				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 			}
 		}
-
+		
 		return SUCCESS;
 	}
 	
@@ -134,6 +161,23 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public List<FlagCriteria> getAddableCriterias() {
 		if (addableCriteria == null) {
 			addableCriteria = new ArrayList<FlagCriteria>();
+			
+			// Get existing flag criterias so we don't add duplicates?
+			existing = new TreeMap<Integer, FlagColor>();
+			doNotAdd = new ArrayList<Integer>();
+			
+			for (FlagCriteriaOperator fco : operator.getFlagCriteria()) {
+				int existingID = fco.getCriteria().getId();
+				
+				if (!existing.containsKey(existingID)) {
+					existing.put(existingID, fco.getFlag());
+				} else {
+					if (!existing.get(existingID).equals(fco.getFlag())) {
+						// This criteria has both amber and red flags
+						doNotAdd.add(existingID);
+					}
+				}
+			}
 
 			// Get all ready viewable audit types
 			List<AuditOperator> visibleAudits = operator.getVisibleAudits();
@@ -153,10 +197,21 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				flagCriteria = flagCriteriaDAO.findWhere("category NOT LIKE 'InsureGUARD' ORDER BY category, label");
 
 			for (FlagCriteria fc : flagCriteria) {
+				if (doNotAdd.contains(fc))
+					continue;
+				
+				if (!fc.getDataType().equals("number")) {
+					if (existing.containsKey(fc.getId()))
+						continue;
+				}
+				
 				if (fc.getAuditType() != null && auditTypes.contains(fc.getAuditType())) {
 					// Check audits by matching up the audit types
 					addableCriteria.add(fc);
 				} else if (fc.getQuestion() != null) {
+					// Skip questions 401 & 755?
+					if (fc.getQuestion().getId() == 401 || fc.getQuestion().getId() == 755)
+						continue;
 					// Check questions
 					AuditQuestion aq = fc.getQuestion();
 					List<String> countries = Arrays.asList(aq.getCountriesArray());
@@ -212,13 +267,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	
 	public List<ContractorAccount> getAffectedByCriteria(int id) {
 		if (affectingCriteria.keySet().size() == 0) {
-			FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(id);
-			calculatePercentAffected(fco);
+			calculatePercentAffected(flagCriteriaOperatorDAO.find(id));
 		}
 		
-		if (affectingCriteria.containsKey(id)) {
+		if (affectingCriteria.containsKey(id))
 			return affectingCriteria.get(id);
-		}
 		
 		return null;
 	}
@@ -238,7 +291,24 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return fco.getPercentAffected();
 	}
 	
+	public List<FlagColor> getAddableFlags(int id) {
+		List<FlagColor> addableFlags = new ArrayList<FlagColor>();
+		
+		if (existing.containsKey(id)) {
+			if (existing.get(id).equals(FlagColor.Red))
+				addableFlags.add(FlagColor.Amber);
+			else
+				addableFlags.add(FlagColor.Red);
+		} else {
+			addableFlags.add(FlagColor.Red);
+			addableFlags.add(FlagColor.Amber);
+		}
+		
+		return addableFlags;
+	}
+	
 	private int calculatePercentAffected(FlagCriteriaOperator fco) {
+		List<ContractorOperator> contractorOperators = operator.getContractorOperators();
 		Map<ContractorAccount, List<FlagData>> contractorsAffected = new TreeMap<ContractorAccount, List<FlagData>>();
 		int totalContractors = contractorOperators.size();
 
@@ -248,7 +318,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteriaOperator> opList = new ArrayList<FlagCriteriaOperator>();
 			opList.add(fco);
 
-			calculator = new FlagDataCalculator(conList, opList);
+			FlagDataCalculator calculator = new FlagDataCalculator(conList, opList);
 			List<FlagData> flagged = calculator.calculate();
 
 			if (flagged.size() > 0) {

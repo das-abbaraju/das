@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<table class="report" style="width: 300px;">
+<table class="report" style="width: 250px;">
 	<thead>
 		<tr><th colspan="2">Impact</th></tr>
 	</thead>

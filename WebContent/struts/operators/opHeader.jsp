@@ -14,7 +14,7 @@
 		<li><a href="AuditOperator.action?oID=<s:property value="operator.id"/>">Audits</a></li>
 	</s:if>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>
-	<li><a href="OperatorFlagCriteria.action?id=<s:property value="operator.id"/>"
+	<li><a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('op_flag_criteria')">class="current"</s:if>>Flag Criteria</a></li>
 	<pics:permission perm="ContractorTags">
 		<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"

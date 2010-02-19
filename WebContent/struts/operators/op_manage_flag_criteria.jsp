@@ -8,76 +8,41 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
 <style type="text/css">
+table.report a {
+	text-decoration: underline;
+}
 #impactDiv {
 	float: right;
 	clear: none;
-	width: 300px;
+	width: 30%;
+}
+#impactDiv table.report {
+	float: right;
 }
 
-#criteriaDiv {
+#criteriaDiv, #addCriteria {
 	float: left;
 	clear: none;
-	margin-right: 20px;
+	width: 70%
 }
 
-#addCriteria {
-	clear: both;
+.flagImage {
+	width: 10px;
+	height: 12px;
 }
 </style>
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/op_manage_flag_criteria.js?v=20100219"></script>
 <script type="text/javascript">
-function checkSubmit(criteriaID) {
-	var checked = confirm('Are you sure you want to remove this criteria?');
-	var data = {
-			button: 'delete',
-			criteriaID: criteriaID,
-			id: <s:property value="account.id" />
-		};
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data);
-}
-function addCriteria(criteriaID) {
-	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
+function getFlag(selectObject) {
+	var flagColor = $(selectObject).find("option:selected").val();
+
+	if (flagColor == "Red")
+		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.smallIcon" escape="false" />';
+	else
+		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Amber.smallIcon" escape="false" />';
 	
-	var data = {
-			button: 'add',
-			criteriaID: criteriaID,
-			newFlag: $('#'+criteriaID).find("[name='newFlag']").val(),
-			newHurdle: hurdle == null ? '' : hurdle,
-			id: <s:property value="account.id" />
-		};
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data);
-}
-function getImpact(criteriaID) {
-	var data = {
-			button: 'impact',
-			criteriaID: criteriaID,
-			id: <s:property value="account.id" />
-		};
-	startThinking({div:'impact_thinking', message:'Fetching impact...'});
-	$('#impactDiv').load('ManageFlagCriteriaOperatorAjax.action', data,
-		function() {
-			stopThinking({div:'impact_thinking'});
-			$(this).show('slow');
-		}
-	);
-}
-function getAddQuestions() {
-	var layer = '#addCriteria';
-	if ($(layer).is(':hidden')) {
-		var data= {
-			id: <s:property value="account.id" />,
-			button: 'questions'
-		};
-		startThinking({div:'question_thinking', message:'Fetching criteria...'});
-		$(layer).load('ManageFlagCriteriaOperatorAjax.action', data, 
-			function() {
-				stopThinking({div:'question_thinking'});
-				$(this).show('slow');
-			}
-		);
-	} else {
-		$(layer).hide('slow');
-	}
+	var flagImage = $(selectObject.parentNode).find("span.flagImage img").replaceWith(flagColor);
 }
 </script>
 </head>
@@ -87,14 +52,14 @@ function getAddQuestions() {
 
 <div style="vertical-align: top">
 <s:form id="form1" method="get">
+	<s:hidden name="id" />
 	<div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
 	<div id="growlBox"></div>
 	<div id="impactDiv"></div>
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
-	<div style="clear: both; margin: 10px 0px;">
+	<div style="clear: left; margin: 10px 0px;">
 		<a href="#" onclick="getAddQuestions(); return false;" class="picsbutton">Add New Criteria</a>
-		<span id="question_thinking"></span>
-		<span id="impact_thinking"></span>
+		<span id="thinking"></span>
 	</div>
 	<div id="addCriteria" style="display:none"></div>
 </s:form>

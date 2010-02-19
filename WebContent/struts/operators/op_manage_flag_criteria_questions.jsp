@@ -37,9 +37,16 @@
 					<s:property value="description" />
 				</s:else>
 			</td>
-			<td class="center">
-				<s:select list="#{'Amber':'Amber','Red':'Red'}" name="newFlag" />
-			</td>
+			<td class="center"><nobr>
+				<s:if test="getAddableFlags(id).size() == 1">
+					<span class="flagImage"><s:property value="getAddableFlags(id).get(0).smallIcon" escape="false" /></span>
+					<input type="hidden" name="newFlag" value="<s:property value="getAddableFlags(id).get(0)" />" />
+				</s:if>
+				<s:else>
+					<span class="flagImage"><s:property value="getAddableFlags(id).get(0).smallIcon" escape="false" /></span>
+					<s:select list="getAddableFlags(id)" name="newFlag" onchange="getFlag(this)" />
+				</s:else>
+			</nobr></td>
 			<td class="center">
 				<a href="#" class="add" onclick="addCriteria(<s:property value="id" />); return false;"></a>
 			</td>
