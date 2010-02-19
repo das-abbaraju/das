@@ -288,8 +288,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	public List<String> getComparisonList() {
 		return new ArrayList<String>() {
 			{
-				add("<");
 				add("=");
+				add("<");
 				add(">");
 			}
 		};

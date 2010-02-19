@@ -156,6 +156,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Desktop Matrix", "ManageDesktopMatrix.action");
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
+			subMenu.addChild("Manage Flag Criteria","ManageFlagCriteria.action");
 		}
 
 		if (permissions.seesAllContractors()) {

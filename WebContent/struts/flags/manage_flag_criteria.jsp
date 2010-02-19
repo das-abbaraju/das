@@ -75,6 +75,7 @@
 			            null,
 			            null
 						],
+			iDisplayLength: 25,
 			bJQueryUI: true,
 			bStateSave: true,
 			bAutoWidth: false,
@@ -218,19 +219,19 @@
 				
 				<li>
 					<label>Data Type:</label>
-					<s:select name="criteria.dataType" list="datatypeList" headerKey="" headerValue=" - Data Type - "/>
+					<s:select name="criteria.dataType" list="datatypeList"/>
 				</li>
 				<li>
 					<label>Comparison:</label>
-					<s:select name="criteria.comparison" list="comparisonList" headerKey="" headerValue=" - Comparison - "/>
+					<s:select name="criteria.comparison" list="comparisonList"/>
 				</li>
 				<li>
-					<label>Default Value:</label>
+					<label>Default Hurdle:</label>
 					<s:textfield name="criteria.defaultValue"/>
 				</li>
 				<li>
-					<label>Custom Value:</label>
-					<s:checkbox name="criteria.allowCustomValue"/>
+					<label>Allow Custom Hurdle:</label>
+					<s:checkbox name="criteria.allowCustomValue"/> <br/> <br/>
 				</li>
 				
 				<li>
