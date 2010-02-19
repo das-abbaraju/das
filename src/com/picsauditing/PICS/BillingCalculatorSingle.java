@@ -24,6 +24,7 @@ public class BillingCalculatorSingle {
 	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-03-31");
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2011-12-31");
 	public static final Date CONTRACT_RENEWAL_NEWBELGIUM = DateBean.parseDate("2010-03-31");
+	public static final Date CONTRACT_RENEWAL_BP_LUBRICANTS = DateBean.parseDate("2010-04-30");
 
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
@@ -72,10 +73,18 @@ public class BillingCalculatorSingle {
 			int feeID = calculatePriceTier(contractor.getPayingFacilities());
 			// Check to see if the the contractor only has one BASF operator
 			if (feeID == InvoiceFee.FACILITIES1) {
-				if (CONTRACT_RENEWAL_BASF.after(new Date())) {
+				Date now = new Date();
+				if (CONTRACT_RENEWAL_BASF.after(now)) {
 					for (ContractorOperator contractorOperator : contractor.getOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
 							feeID = 105;
+						}
+					}
+				}
+				if (CONTRACT_RENEWAL_BP_LUBRICANTS.after(now)) {
+					for (ContractorOperator contractorOperator : contractor.getOperators()) {
+						if (contractorOperator.getOperatorAccount().getName().startsWith("BP Lubricants")) {
+							feeID = 105;	
 						}
 					}
 				}
@@ -293,6 +302,8 @@ public class BillingCalculatorSingle {
 		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
 			return true;
 		if (CONTRACT_RENEWAL_BASF.after(now) && requestedBy.getName().startsWith("BASF"))
+			return true;
+		if (CONTRACT_RENEWAL_BP_LUBRICANTS.after(now) && requestedBy.getName().startsWith("BP Lubricants"))
 			return true;
 		return false;
 	}
