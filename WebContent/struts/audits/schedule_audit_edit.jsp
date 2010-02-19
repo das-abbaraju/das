@@ -54,9 +54,9 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 function useContractor() {
 	$.getJSON("ContractorJson.action", {id: conID}, 
 		function(con){
-			$('form [name=conAudit.contractorContact]').val(con.contact);
-			$('form [name=conAudit.phone]').val(con.phone);
-			$('form [name=conAudit.phone2]').val(con.email);
+			$('form [name=conAudit.contractorContact]').val(con.primaryContact.name);
+			$('form [name=conAudit.phone]').val(con.primaryContact.phone);
+			$('form [name=conAudit.phone2]').val(con.primaryContact.email);
 			$('form [name=conAudit.address]').val(con.address);
 			$('form [name=conAudit.city]').val(con.city);
 			$('form [name=conAudit.state]').val(con.state);
@@ -110,11 +110,11 @@ $(function(){
 		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
 		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
 		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
-		<li class="calculatedAddress"><label>State/Province:</label> <s:textfield id="conAudit_state"
-			name="conAudit.state" size="6" /></li>
+		<li class="calculatedAddress"><label>State/Province:</label> <s:select id="conAudit_state"
+			name="conAudit.state" list="stateList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - State/Province - "/></li>
 		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
-		<li class="calculatedAddress"><label>Country:</label> <s:textfield id="conAudit_country" name="conAudit.country"
-			size="6" /></li>
+		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
+			list="countryList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - Country - "/></li>
 		<li class="calculatedAddress"><label>Latitude:</label> <s:textfield id="conAudit_latitude" name="conAudit.latitude" size="10" /></li>
 		<li class="calculatedAddress"><label>Longitude:</label> <s:textfield id="conAudit_longitude" name="conAudit.longitude" size="10" /></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"

@@ -427,8 +427,8 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 			obj.put("address", address);
 			obj.put("dbaName", dbaName);
 			obj.put("city", city);
-			obj.put("state", state == null ? null : state.toString());
-			obj.put("country", country == null ? null : country.toString());
+			obj.put("state", state == null ? null : state.getIsoCode());
+			obj.put("country", country == null ? null : country.getIsoCode());
 			obj.put("zip", zip);
 			obj.put("phone", phone);
 			obj.put("fax", fax);
