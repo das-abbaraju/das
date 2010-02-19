@@ -1337,18 +1337,6 @@
 			<result>struts/operators/audit_operator_save.jsp</result>
 		</action>
 		
-		<action name="OperatorFlagCriteria"
-			class="com.picsauditing.actions.operators.OperatorFlagCriteria">
-			<result>struts/operators/op_flag_criteria.jsp</result>
-		</action>
-
-		<action name="OperatorFlagCriteriaAjax"
-			class="com.picsauditing.actions.operators.OperatorFlagCriteria">
-			<result>struts/blank.jsp</result>
-			<result name="criteria">struts/operators/op_flag_criteria_list.jsp</result>
-			<result name="questions">struts/operators/op_flag_criteria_questions_list.jsp</result>
-		</action>
-		
 		<action name="ManageFlagCriteriaOperator"
 			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
@@ -1361,17 +1349,6 @@
 			<result name="questions">struts/operators/op_manage_flag_criteria_questions.jsp</result>
 		</action>
 
-		<action name="FlagCriteriaActionAjax"
-			class="com.picsauditing.actions.operators.FlagCriteriaAction">
-			<result>struts/operators/op_flag_criteria_view.jsp</result>
-			<result name="test">struts/operators/op_flag_criteria_test_result.jsp</result>
-		</action>
-
-		<action name="FlagOshaCriteriaActionAjax"
-			class="com.picsauditing.actions.operators.FlagOshaCriteriaAction">
-			<result>struts/operators/op_oshaflag_criteria_view.jsp</result>
-		</action>
-		
 		<!-- Flags -->
 		<action name="ManageFlagCriteria"
 			class="com.picsauditing.actions.flags.ManageFlagCriteria">
