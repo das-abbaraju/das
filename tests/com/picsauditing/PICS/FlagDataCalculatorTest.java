@@ -27,7 +27,7 @@ public class FlagDataCalculatorTest extends TestCase {
 	private FlagCriteria fc;
 	List<FlagCriteriaContractor> conCrits;
 	List<FlagCriteriaOperator> opCrits;
-	Map<Integer, List<ContractorAuditOperator>> caoMap;
+	Map<AuditType, List<ContractorAuditOperator>> caoMap;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -287,23 +287,23 @@ public class FlagDataCalculatorTest extends TestCase {
 		ContractorAudit ca = new ContractorAudit();
 		ca.setAuditType(at);
 		fc.setAuditType(at);
-		caoMap = new HashMap<Integer, List<ContractorAuditOperator>>();
+		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		ContractorAuditOperator cao = new ContractorAuditOperator();
 		cao.setStatus(CaoStatus.Pending);
 		cao.setAudit(ca);
 		List<ContractorAuditOperator> caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
-		caoMap.put(5, caoList);
+		caoMap.put(at, caoList);
 		
 		assertEquals("Red", getSingle().getFlag().name());
 		
-		caoMap = new HashMap<Integer, List<ContractorAuditOperator>>();
+		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		cao = new ContractorAuditOperator();
 		cao.setStatus(CaoStatus.Approved);
 		cao.setAudit(ca);
 		caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
-		caoMap.put(5, caoList);
+		caoMap.put(at, caoList);
 		
 		assertNull(getSingle()); // Green
 	}
