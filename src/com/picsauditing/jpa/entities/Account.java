@@ -420,30 +420,22 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("name", name);
-		obj.put("type", type.toString());
+		obj.put("status", status == null ? null : status.toString());
+		obj.put("type", type);
 
-		if (!full)
-			return obj;
-
-		if (address != null)
+		if (full) {
 			obj.put("address", address);
-		if (dbaName != null)
 			obj.put("dbaName", dbaName);
-		if (city != null)
 			obj.put("city", city);
-		if (state != null)
-			obj.put("state", state);
-		if (country != null)
-			obj.put("country", country);
-		if (zip != null)
+			obj.put("state", state == null ? null : state.toString());
+			obj.put("country", country == null ? null : country.toString());
 			obj.put("zip", zip);
-		if (phone != null)
 			obj.put("phone", phone);
-		if (fax != null)
 			obj.put("fax", fax);
-		if (industry != null)
-			obj.put("industry", industry.toString());
+			obj.put("industry", industry == null ? null : industry.toString());
 
+			obj.put("primaryContact", primaryContact == null ? null : primaryContact.toJSON());
+		}
 		return obj;
 	}
 

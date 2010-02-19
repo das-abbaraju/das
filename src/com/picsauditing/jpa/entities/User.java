@@ -474,9 +474,11 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of user.permissions)
+	 *            The new set of permission for this user (transient version of
+	 *            user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user
+	 *            or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
@@ -529,7 +531,8 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 
 	@Override
 	public int compareTo(User o) {
-		//System.out.println("Compare " + this.toString() + " to " + o.toString());
+		// System.out.println("Compare " + this.toString() + " to " +
+		// o.toString());
 		if (!this.isActive.equals(o.getIsActive())) {
 			// Sort Active before Inactive
 			if (this.isActiveB())
@@ -562,13 +565,13 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		obj.put("group", isGroup());
 		obj.put("active", isActiveB());
 		obj.put("email", email);
+		obj.put("fax", fax);
+		obj.put("phone", phone);
 
 		if (!full)
 			return obj;
 
 		obj.put("creationDate", creationDate);
-		obj.put("fax", fax);
-		obj.put("phone", phone);
 		obj.put("lastLogin", lastLogin);
 		obj.put("username", username);
 

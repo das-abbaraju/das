@@ -17,41 +17,6 @@
 <s:if test="conAudit != null">
 <script type="text/javascript">
 var conID = '<s:property value="conAudit.contractorAccount.id"/>';
-var conJSON = null;
-function useContractor() {
-	$('form [name=conAudit.contractorContact]').val(conJSON.contact);
-	$('form [name=conAudit.phone]').val(conJSON.phone);
-	$('form [name=conAudit.phone2]').val(conJSON.email);
-	$('form [name=conAudit.address]').val(conJSON.address);
-	$('form [name=conAudit.city]').val(conJSON.city);
-	$('form [name=conAudit.state]').val(conJSON.state);
-	$('form [name=conAudit.zip]').val(conJSON.zip);
-	$('form [name=conAudit.country]').val(conJSON.country);
-}
-function showContractor() {
-	$.each(conJSON, function(k,v) {
-			$('#'+k).text(v);
-		}
-	);
-}
-$(function() {
-	$.getJSON("ContractorJson.action?id=" + conID,
-		function(con){
-			conJSON = con;
-			$('#con_tip span').each(function() {
-				$(this).text(conJSON[$(this).attr('id')]);
-			}
-		);
-	});
-	$('#showContractor').cluetip({
-			local: true,
-			attribute: 'href',
-			titleAttribute: 'rel',
-			arrows: true,
-			cluetipClass: 'jtip'
-		}
-	);
-});
 </script>
 </s:if>
 <style type="text/css">
@@ -71,6 +36,11 @@ $(function() {
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
+<div class="info" style="clear:left">
+	Please enter your company's primary representative for this audit. <br/>
+	By default we have used the information for the primary contact on your account.
+</div>
+
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
 	<s:hidden name="button" value="address"/>
@@ -79,24 +49,21 @@ $(function() {
 		<s:if test="permissions.admin">
 			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
 		</s:if>
-		<li>Please enter your company's primary representative for this audit.</li>
-		<li><label></label><input type="button" value="Same as Primary" onclick="useContractor()"/> <a id="showContractor" href="#con_tip" rel="<s:property value="contractor.name"/>">Preview</a></li>
-		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" /></li>
-		<li><label>Email:</label> <s:textfield name="conAudit.phone2" /></li>
-		<li><label>Phone:</label> <s:textfield name="conAudit.phone" /></li>
+		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" /></li>
+		<li><label>Email:</label> <s:textfield name="conAudit.phone2" value="%{conAudit.contractorAccount.primaryContact.email}"/></li>
+		<li><label>Phone:</label> <s:textfield name="conAudit.phone" value="%{conAudit.contractorAccount.primaryContact.phone}"/></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form"><legend><span>Enter the Audit Location</span></legend>
 	<ol>
-		<li>Please enter the address at which this audit will be conducted.</li>
-		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" /> No PO Boxes</li>
-		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /> Suite/Apartment</li>
+		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> No PO Boxes</li>
+		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> Suite/Apartment</li>
 		<li class="calculatedAddress"><label>City:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
 		<li class="calculatedAddress"><label>State/Province:</label> <s:textfield id="conAudit_state"
 			name="conAudit.state" size="6" /></li>
-		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
-		<li class="calculatedAddress"><label>Country:</label> <s:textfield id="conAudit_country" name="conAudit.country"
-			size="6" /></li>
+		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
+		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
+			list="countryList" listKey="isoCode" listValue="name"/></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
 			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> This address is correct</li>
 	</ol>
@@ -111,19 +78,6 @@ $(function() {
 	<s:hidden id="conAudit_latitude" name="conAudit.latitude" />
 	<s:hidden id="conAudit_longitude" name="conAudit.longitude" />
 </s:form>
-
-<div id="con_tip">
-<ul>
-	<li><label>Name:</label> <span id="contact"></span></li>
-	<li><label>Phone:</label> <span id="phone"></span></li>
-	<li><label>Email:</label> <span id="email"></span></li>
-	<li><label>Address:</label> <span id="address"></span></li>
-	<li><label>City:</label> <span id="city"></span></li>
-	<li><label>State:</label> <span id="state"></span></li>
-	<li><label>Zip:</label> <span id="zip"></span></li>
-	<li><label>Country:</label> <span id="country"></span></li>
-</ul>
-</div>
 
 </body>
 </html>
