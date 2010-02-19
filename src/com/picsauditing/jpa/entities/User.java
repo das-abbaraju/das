@@ -559,35 +559,30 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("name", name);
-		if (account != null) {
-			obj.put("account", account.toJSON());
-		}
+		obj.put("account", account == null ? null : account.toJSON());
 		obj.put("group", isGroup());
 		obj.put("active", isActiveB());
 		obj.put("email", email);
 		obj.put("fax", fax);
 		obj.put("phone", phone);
 
-		if (!full)
-			return obj;
+		if (full) {
+			obj.put("creationDate", creationDate);
+			obj.put("lastLogin", lastLogin);
+			obj.put("username", username);
 
-		obj.put("creationDate", creationDate);
-		obj.put("lastLogin", lastLogin);
-		obj.put("username", username);
-
-		JSONArray dtoGroups = new JSONArray();
-		for (UserGroup userGroup : groups) {
-			dtoGroups.add(userGroup.getGroup().toJSON());
+			JSONArray dtoGroups = new JSONArray();
+			for (UserGroup userGroup : groups) {
+				dtoGroups.add(userGroup.getGroup().toJSON());
+			}
+			obj.put("groups", dtoGroups);
 		}
-		obj.put("groups", dtoGroups);
 
 		return obj;
 	}
 
 	public void fromJSON(JSONObject o) {
 		name = (String) o.get("name");
-		// TODO Auto-generated method stub
-
 	}
 
 	@Transient
