@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Note;
@@ -65,7 +66,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 	
-	public List<ContractorAuditOperator> findByContractorOperatorStatus(int conID, int opID) {
+	public List<ContractorAuditOperator> findByContractorOperator(int conID, int opID) {
 		String query = "FROM ContractorAuditOperator cao WHERE cao.audit.contractorAccount.id = :conID" 
 			+ " AND operator.id = :opID";
 		

@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -23,6 +25,8 @@ public class FlagCriteriaOperator extends BaseTable {
 	private FlagCriteria criteria;
 	private FlagColor flag;
 	private String hurdle;
+	private int percentAffected;
+	private Date lastCalculated;
 	
 	private List<FlagData> data;
 
@@ -61,6 +65,37 @@ public class FlagCriteriaOperator extends BaseTable {
 
 	public void setHurdle(String hurdle) {
 		this.hurdle = hurdle;
+	}
+	
+	public int getPercentAffected() {
+		return percentAffected;
+	}
+	
+	public void setPercentAffected(int percentAffected) {
+		this.percentAffected = percentAffected;
+	}
+	
+	public Date getLastCalculated() {
+		return lastCalculated;
+	}
+	
+	public void setLastCalculated(Date lastCalculated) {
+		this.lastCalculated = lastCalculated;
+	}
+	
+	@Transient
+	public boolean isNeedsRecalc() {
+		if (lastCalculated != null) {
+			Date now = new Date();
+			Long diff = now.getTime() - lastCalculated.getTime();
+			
+			// Difference is a day?
+			if (diff > (long) 60*60*24*1000)
+				return true;
+			else return false;
+		}
+		
+		return true;
 	}
 	
 	public String replaceHurdle() {

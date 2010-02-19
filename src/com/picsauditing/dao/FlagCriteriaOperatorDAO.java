@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 @SuppressWarnings("unchecked")
 public class FlagCriteriaOperatorDAO extends PicsDAO {
 
-	public FlagCriteriaOperator find(String id) {
+	public FlagCriteriaOperator find(int id) {
 		return em.find(FlagCriteriaOperator.class, id);
 	}
 

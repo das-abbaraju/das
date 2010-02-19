@@ -1,58 +1,51 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.dao.FlagOshaCriteriaDAO;
-import com.picsauditing.dao.FlagQuestionCriteriaDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.FlagQuestionCriteria;
+import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
-	private FlagQuestionCriteriaDAO criteriaDao;
-	private FlagCriteriaOperatorDAO opCriteriaDAO;
-	private AuditQuestionDAO questionDao;
-	private FlagOshaCriteriaDAO flagOshaCriteriaDAO;
-	private ContractorAccountDAO contractorAccountDAO;
-	private AuditTypeClass classType = AuditTypeClass.Audit;
-	private Integer contractorsNeedingRecalculation = null;
+	private boolean insurance = false;
+	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
+	private FlagCriteriaDAO flagCriteriaDAO;
+	private FlagDataCalculator calculator;
+	private int criteriaID;
+	private FlagColor newFlag;
+	private String newHurdle;
+	private String newComparison;
+	
+	private List<ContractorOperator> contractorOperators;
+	private List<FlagCriteria> addableCriteria = null;
+	private Map<Integer, List<ContractorAccount>> affectingCriteria = new TreeMap<Integer, List<ContractorAccount>>();
 
-	private Collection<QuestionCriteria> questionList = null;
-	private List<AuditQuestion> addableQuestions = null;
-
-	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagQuestionCriteriaDAO criteriaDao,
-			FlagOshaCriteriaDAO flagOshaCriteriaDAO, ContractorAccountDAO contractorAccountDAO,
-			AuditQuestionDAO questionDao, FlagCriteriaOperatorDAO opCriteriaDAO) {
+	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
+			FlagCriteriaDAO flagCriteriaDAO) {
 		super(operatorDao);
-		this.criteriaDao = criteriaDao;
-		this.opCriteriaDAO = opCriteriaDAO;
-		this.questionDao = questionDao;
-		this.flagOshaCriteriaDAO = flagOshaCriteriaDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
+		this.flagCriteriaOperatorDAO = opCriteriaDAO;
+		this.flagCriteriaDAO = flagCriteriaDAO;
 		subHeading = "Manage Flag Criteria";
 		noteCategory = NoteCategory.Flags;
 	}
@@ -65,166 +58,143 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
-		
-		if(button != null) {
-			return button;
+		contractorOperators = operator.getContractorOperators();
+
+		if (button != null) {
+			if (button.equals("questions") || button.equals("impact")) {
+				return button;
+			}
+			if (button.equals("delete")) {
+				flagCriteriaOperatorDAO.clear();
+				FlagCriteriaOperator remove = flagCriteriaOperatorDAO.find(criteriaID);
+
+				if (remove.getOperator().equals(operator)) {
+					flagCriteriaOperatorDAO.remove(remove);
+				}
+			}
+			if (button.equals("add")) {
+				if (criteriaID > 0) {
+					flagCriteriaOperatorDAO.clear();
+					flagCriteriaDAO.clear();
+					FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
+					FlagCriteriaOperator fco = new FlagCriteriaOperator();
+					fco.setAuditColumns(permissions);
+					fco.setCriteria(fc);
+					fco.setFlag(newFlag);
+					fco.setHurdle(newHurdle);
+					fco.setOperator(operator);
+					flagCriteriaOperatorDAO.save(fco);
+				}
+			}
 		}
 
 		return SUCCESS;
 	}
-
-	public FlagOshaCriteria getOshaRedFlagCriteria() {
-		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Red'");
-	}
-
-	public FlagOshaCriteria getOshaAmberFlagCriteria() {
-		return flagOshaCriteriaDAO.findByOperatorFlag(operator, "t.flagColor = 'Amber'");
-	}
-
-	public Collection<QuestionCriteria> getQuestionList() {
-		if (questionList == null) {
-			Map<AuditQuestion, QuestionCriteria> map = new TreeMap<AuditQuestion, QuestionCriteria>();
-			List<FlagQuestionCriteria> criteriaList = new ArrayList<FlagQuestionCriteria>();
-			
-			if(classType.isPolicy())
-			  criteriaList = criteriaDao.findByOperator(operator.getInheritInsuranceCriteria());
-			else
-				criteriaList = criteriaDao.findByOperator(operator.getInheritFlagCriteria());
-			
-			for (FlagQuestionCriteria criteria : criteriaList) {
-				AuditQuestion q = criteria.getAuditQuestion();
-				if (q.isVisible()) {
-					AuditTypeClass qClassType = q.getSubCategory().getCategory().getAuditType().getClassType();
-					if (!qClassType.isPolicy())
-						// Convert IM and any "other" audit type to Audit
-						qClassType = AuditTypeClass.Audit;
-					if (qClassType.equals(classType)) {
-						if (!map.containsKey(q)) {
-							map.put(q, new QuestionCriteria(q));
-						}
-						if (criteria.getFlagColor().equals(FlagColor.Amber))
-							map.get(q).amber = criteria;
-						if (criteria.getFlagColor().equals(FlagColor.Red))
-							map.get(q).red = criteria;
-					}
-				}
-			}
-
-			questionList = map.values();
-		}
-
-		return questionList;
-	}
-
-	public List<AuditQuestion> getQuestions() {
-		if (addableQuestions == null) {
-			addableQuestions = questionDao.findWhere("isRedFlagQuestion = 'Yes' AND isVisible = 'Yes'");
-
-			Iterator<AuditQuestion> questions = addableQuestions.iterator();
-			Set<AuditType> visibleAudits = new HashSet<AuditType>();
-			Set<OperatorAccount> children = new HashSet<OperatorAccount>();
-
-			if (classType.isPolicy())
-				children.addAll(getInheritsInsuranceCriteria());
-			else
-				children.addAll(getInheritsFlagCriteria());
-
-			children.add(operator);
-
-			for (OperatorAccount o : children) {
-				for (AuditOperator ao : o.getInheritAudits().getVisibleAudits()) {
-					if ((ao.getAuditType().getClassType().isPolicy() && classType.isPolicy())
-							|| !ao.getAuditType().getClassType().isPolicy() && !classType.isPolicy())
-						visibleAudits.add(ao.getAuditType());
-				}
-			}
-			while (questions.hasNext()) {
-				AuditQuestion question = questions.next();
-				if (!visibleAudits.contains(question.getAuditType()))
-					questions.remove();
-				else
-					for (QuestionCriteria cq : getQuestionList()) {
-						if (cq.question.equals(question)) {
-							questions.remove();
-							break;
-						}
-					}
-			}
-
-			Collections.sort(addableQuestions, new Comparator<AuditQuestion>() {
-				@Override
-				public int compare(AuditQuestion o1, AuditQuestion o2) {
-					return o1.getSubCategory().getCategory().getAuditType().compareTo(
-							o2.getSubCategory().getCategory().getAuditType());
-				}
-			});
-		}
-		return addableQuestions;
-	}
-
-	/**
-	 * Get a list of operators that inherit their criteria from this account
-	 * 
-	 * @return
-	 */
-	public Collection<OperatorAccount> getInheritingOperators() {
-		if (classType.isPolicy())
-			return getInheritsInsuranceCriteria();
-		return getInheritsFlagCriteria();
-	}
-
-	public class QuestionCriteria {
-		public AuditQuestion question;
-		public FlagQuestionCriteria red;
-		public FlagQuestionCriteria amber;
-
-		public QuestionCriteria(AuditQuestion q) {
-			question = q;
-		}
-	}
-
-	public AuditTypeClass getClassType() {
-		return classType;
-	}
-
-	public void setClassType(AuditTypeClass classType) {
-		this.classType = classType;
-		if (this.classType.isPolicy())
-			this.subHeading = "Manage Flag Criteria - InsureGUARD&trade;";
-		else
-			this.subHeading = "Manage Flag Criteria - PQF/Audits";
-	}
-
-	public static String getTime(int time) {
-		if (time == 1)
-			return "Individual Yrs";
-		if(time == 2)
-			return "Last Year Only";
-		if (time == 3)
-			return "ThreeYearAverage";
-		return "";
-	}
-
-	public int getContractorsNeedingRecalculation() {
-		if (contractorsNeedingRecalculation == null)
-			contractorsNeedingRecalculation = contractorAccountDAO.findContractorsNeedingRecalculation(operator);
-		return contractorsNeedingRecalculation;
+	
+	public boolean isInsurance() {
+		return insurance;
 	}
 	
+	public void setInsurance(boolean insurance) {
+		this.insurance = insurance;
+	}
+
+	public int getCriteriaID() {
+		return criteriaID;
+	}
+
+	public void setCriteriaID(int criteriaID) {
+		this.criteriaID = criteriaID;
+	}
+	
+	public FlagColor getNewFlag() {
+		return newFlag;
+	}
+	
+	public void setNewFlag(FlagColor newFlag) {
+		this.newFlag = newFlag;
+	}
+	
+	public String getNewHurdle() {
+		return newHurdle;
+	}
+	
+	public void setNewHurdle(String newHurdle) {
+		this.newHurdle = newHurdle;
+	}
+	
+	public String getNewComparison() {
+		return newComparison;
+	}
+	
+	public void setNewComparison(String newComparison) {
+		this.newComparison = newComparison;
+	}
+
+	public List<FlagCriteria> getAddableCriterias() {
+		if (addableCriteria == null) {
+			addableCriteria = new ArrayList<FlagCriteria>();
+
+			// Get all ready viewable audit types
+			List<AuditOperator> visibleAudits = operator.getVisibleAudits();
+			List<AuditType> auditTypes = new ArrayList<AuditType>();
+
+			for (AuditOperator ao : visibleAudits) {
+				if (!auditTypes.contains(ao.getAuditType())) {
+					auditTypes.add(ao.getAuditType());
+				}
+			}
+			
+			List<FlagCriteria> flagCriteria = null;
+
+			if (insurance)
+				flagCriteria = flagCriteriaDAO.findWhere("category LIKE 'InsureGUARD' ORDER BY label");
+			else
+				flagCriteria = flagCriteriaDAO.findWhere("category NOT LIKE 'InsureGUARD' ORDER BY category, label");
+
+			for (FlagCriteria fc : flagCriteria) {
+				if (fc.getAuditType() != null && auditTypes.contains(fc.getAuditType())) {
+					// Check audits by matching up the audit types
+					addableCriteria.add(fc);
+				} else if (fc.getQuestion() != null) {
+					// Check questions
+					AuditQuestion aq = fc.getQuestion();
+					List<String> countries = Arrays.asList(aq.getCountriesArray());
+
+					// If there's a restriction by country, make sure that the
+					// question matches the operator's country
+					// If there are no countries, just check if it's valid and
+					// it's visible
+					if ((countries.size() > 0 && countries.contains(operator.getCountry().getIsoCode()))
+							|| countries.size() == 0) {
+						if (aq.isValid() && aq.isVisible())
+							addableCriteria.add(fc);
+					}
+				} else if (fc.getOshaType() != null && fc.getOshaType().equals(operator.getOshaType()))
+					addableCriteria.add(fc);
+			}
+		}
+
+		return addableCriteria;
+	}
+
 	public List<FlagCriteriaOperator> getCriteriaList() {
 		// Filter out here?
-		List<FlagCriteriaOperator> list = opCriteriaDAO.findByOperator(operator.getId());
+		List<FlagCriteriaOperator> list = flagCriteriaOperatorDAO.findByOperator(operator.getId());
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
-		
+
 		for (FlagCriteriaOperator item : list) {
 			FlagCriteria criteria = item.getCriteria();
 			
-			if (criteria.getCategory().equals("InsureGUARD"))
+			// If we're looking for insurance, then get only InsureGUARD
+			// If we're not looking for insurance, then get everything else
+			if ((insurance && !criteria.getCategory().equals("InsureGUARD")) 
+					|| (!insurance && criteria.getCategory().equals("InsureGUARD")))
 				continue;
-			
+
 			if (criteria.getQuestion() != null) {
 				int questionID = criteria.getQuestion().getId();
-				
+
 				if (questionID == 401 || questionID == 755)
 					continue;
 			}
@@ -233,10 +203,67 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				if (!criteria.getOshaType().equals(operator.getOshaType()))
 					continue;
 			}
-			
+
 			valid.add(item);
 		}
-		
+
 		return valid;
+	}
+	
+	public List<ContractorAccount> getAffectedByCriteria(int id) {
+		if (affectingCriteria.keySet().size() == 0) {
+			FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(id);
+			calculatePercentAffected(fco);
+		}
+		
+		if (affectingCriteria.containsKey(id)) {
+			return affectingCriteria.get(id);
+		}
+		
+		return null;
+	}
+
+	public int getPercentAffected(int id) {
+		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(id);
+		
+		if (fco.isNeedsRecalc()) {
+			int affected = calculatePercentAffected(fco);
+			
+			fco.setPercentAffected(affected);
+			fco.setLastCalculated(new Date());
+			flagCriteriaOperatorDAO.save(fco);
+
+			return affected;
+		} else
+			return fco.getPercentAffected();
+	}
+	
+	private int calculatePercentAffected(FlagCriteriaOperator fco) {
+		Map<ContractorAccount, List<FlagData>> contractorsAffected = new TreeMap<ContractorAccount, List<FlagData>>();
+		int totalContractors = contractorOperators.size();
+
+		for (ContractorOperator co : contractorOperators) {
+			ContractorAccount contractor = co.getContractorAccount();
+			List<FlagCriteriaContractor> conList = new ArrayList<FlagCriteriaContractor>(contractor.getFlagCriteria());
+			List<FlagCriteriaOperator> opList = new ArrayList<FlagCriteriaOperator>();
+			opList.add(fco);
+
+			calculator = new FlagDataCalculator(conList, opList);
+			List<FlagData> flagged = calculator.calculate();
+
+			if (flagged.size() > 0) {
+				contractorsAffected.put(contractor, flagged);
+			}
+		}
+
+		int affected = 0;
+		
+		if (contractorsAffected.size() > 0)
+			affected = (int) (((float) contractorsAffected.size() / (float) totalContractors) * 100);
+		
+		// Add to the map?
+		affectingCriteria.put(fco.getId(), new ArrayList<ContractorAccount>(contractorsAffected.keySet()));
+		
+		return affected;
 	}
 }
