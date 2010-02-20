@@ -39,6 +39,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 
 	private InvoiceFee activationFee;
+	// Any time we do a get w/o an exception we set the communication status.
+	// That way we know the information switched off of in the jsp is valid
+	private boolean braintreeCommunicationError = false;
 
 	AppPropertyDAO appPropDao;
 
@@ -87,10 +90,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		accountDao.save(contractor);
 		activationFee = null;
-		if (contractor.getStatus().isPendingDeactivated() ) {
+		if (contractor.getStatus().isPendingDeactivated()) {
 			if (contractor.getMembershipDate() == null) {
 				int feeID = InvoiceFee.ACTIVATION;
-				if(BillingCalculatorSingle.hasReducedActivation(contractor)) {
+				if (BillingCalculatorSingle.hasReducedActivation(contractor)) {
 					feeID = InvoiceFee.ACTIVATION99;
 				}
 				activationFee = invoiceFeeDAO.find(feeID);
@@ -147,6 +150,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			}
 		}
 
+		// Response code not received, can either be transmission error or no
+		// previous info entered
 		BrainTreeService ccService = new BrainTreeService();
 		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
 		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
@@ -156,26 +161,49 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcOnFile(false);
 		}
 
-		try {
-			cc = ccService.getCreditCard(contractor.getId());
-		} catch (Exception communicationProblem) {
-		} // should not appear as if the user does not have a credit card
+		// Accounting for transmission errors which result in
+		// exceptions being thrown.
+		boolean transmissionError = true;
+		int retries = 0, quit = 5;
+		while (transmissionError && retries < quit) {
+			try {
+				cc = ccService.getCreditCard(contractor.getId());
+				transmissionError = false;
+				braintreeCommunicationError = false;
+			} catch (Exception communicationProblem) {
+				// a message or packet could have been dropped in transmission
+				// wait and resume retrying
+				retries++;
+				Thread.sleep(150);
+			}
+		}
+
+		// Should exit immediately on communication error since we do not know
+		// the true status of a contractor's account on braintree, and should
+		// not show cc data
+		if (retries >= quit) {
+			addActionError("An network error has occured while communicating"
+					+ " with our credit processing gateway. Please wait for twenty"
+					+ " seconds and try refreshing this page. If you continue to see this "
+					+ "message, or believe there is an error please contact PICS support.");
+			braintreeCommunicationError = true;
+			return SUCCESS;
+		}
 
 		if (cc == null || cc.getCardNumber() == null) {
 			contractor.setCcOnFile(false);
 			contractor.setCcExpiration(null);
 		} else {
 			contractor.setCcExpiration(cc.getExpirationDate2());
-			// contractor.setCcOnFile(true);
-			// The card must be valid if BrainTree is accepting it and it hasn't
-			// expired yet.
+			contractor.setCcOnFile(true);
+			// Need to set CcOnFile to true in case an insert was performed
+			// properly, but PICS never received the response message.
 		}
 
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 
-		// We don't explicitly save, but it should happen here
-		// accountDao.save(contractor);
+		accountDao.save(contractor);
 		return SUCCESS;
 	}
 
@@ -324,5 +352,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public InvoiceFee getActivationFee() {
 		return activationFee;
+	}
+
+	public boolean isBraintreeCommunicationError() {
+		return braintreeCommunicationError;
+	}
+
+	public void setBraintreeCommunicationError(boolean braintreeCommunicationError) {
+		this.braintreeCommunicationError = braintreeCommunicationError;
 	}
 }

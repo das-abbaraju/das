@@ -143,7 +143,7 @@ function updateExpDate() {
 </fieldset>
 </s:form>
 
-<s:if test="contractor.paymentMethod.creditCard">
+<s:if test="contractor.paymentMethod.creditCard && !braintreeCommunicationError">
 	<form method="post" action="https://secure.braintreepaymentgateway.com/api/transact.php" onsubmit="return validate();">
 		<input type="hidden" name="redirect" value="<s:property value="requestString"/>?id=<s:property value="id"/>"/>
 		<s:hidden name="hash"></s:hidden>
