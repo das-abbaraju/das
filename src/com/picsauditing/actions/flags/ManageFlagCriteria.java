@@ -289,6 +289,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return new ArrayList<String>() {
 			{
 				add("=");
+				add("!=");
+				add("NOT EMPTY");
 				add("<");
 				add(">");
 			}
