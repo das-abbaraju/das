@@ -237,15 +237,8 @@ public class ContractorFlagETL {
 		String cType = flagCriteria.getDataType();
 		String answer = auditData.getAnswer();
 
-		// AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
-		// AmBest amBest = amBestDAO.findByNaic(answer.getComment());
-		// if(amBest != null) {
-		// if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()))
-		// isFlagged = true;
-		// }
-
 		if ("Check Box".equals(qType)) {
-			if (!cType.equals("boolean"))
+			if (!"boolean".equals(cType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
 			if ("X".equals(answer))
 				return "true";
@@ -253,31 +246,42 @@ public class ContractorFlagETL {
 				return "false";
 		}
 		if ("Yes/No/NA".equals(qType) || "Yes/No".equals(qType) || "Manual".equals(qType)) {
-			if (!cType.equals("string"))
+			if (!"string".equals(cType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
 			return answer;
 		}
 		if ("Date".equals(qType)) {
-			if (!cType.equals("date"))
+			if (!"date".equals(cType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to date but isn't");
 			try {
 				DateBean.parseDate(answer);
+				return answer;
 			} catch (Exception doNothingRightHere) {
 				System.out.println("Failed to parse date [" + answer + "]");
 				return "";
 			}
 		}
-		if (cType.equals("number")) {
+		if ("number".equals(cType)) {
 			answer = answer.replace(",", "");
 			try {
 				Float parsedAnswer = Float.parseFloat(answer);
-				answer = parsedAnswer.toString();
+				return parsedAnswer.toString();
 			} catch (Exception doNothingRightHere) {
 				System.out.println("Failed to parse date [" + answer + "]");
 				return "";
 			}
 		}
 		if ("AMBest".equals(qType)) {
+			// AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+			// AmBest amBest = amBestDAO.findByNaic(answer.getComment());
+			// if(amBest != null) {
+			// if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()))
+			// isFlagged = true;
+			// }
+
+			return answer;
+		}
+		if ("string".equals(cType)) {
 			return answer;
 		}
 		System.out.println("Failed to parse type " + cType + " " + qType);

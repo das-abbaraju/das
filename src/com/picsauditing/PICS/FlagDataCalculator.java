@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;

@@ -17,6 +17,7 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 	private ContractorAccount contractor;
 	private FlagCriteria criteria;
 	private String answer;
+	private String answer2;
 	private boolean verified;
 
 	public FlagCriteriaContractor() {
@@ -55,6 +56,14 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+
+	public String getAnswer2() {
+		return answer2;
+	}
+
+	public void setAnswer2(String answer2) {
+		this.answer2 = answer2;
 	}
 
 	public boolean isVerified() {
