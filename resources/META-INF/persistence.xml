@@ -33,9 +33,6 @@
 		<class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class>
 		<class>com.picsauditing.jpa.entities.Facility</class>
 		<class>com.picsauditing.jpa.entities.FlagColor</class>
-		<class>com.picsauditing.jpa.entities.FlagOshaCriteria</class>
-		<class>com.picsauditing.jpa.entities.FlagOshaCriterion</class>
-		<class>com.picsauditing.jpa.entities.FlagQuestionCriteria</class>
 		<class>com.picsauditing.jpa.entities.Industry</class>
 		<class>com.picsauditing.jpa.entities.ListType</class>
 		<class>com.picsauditing.jpa.entities.LowMedHigh</class>

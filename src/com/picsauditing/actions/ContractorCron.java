@@ -33,10 +33,8 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -116,19 +114,11 @@ public class ContractorCron extends PicsActionSupport {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
 				for (ContractorOperator co : contractor.getOperators()) {
 					OperatorAccount operator = co.getOperatorAccount();
-					for (FlagQuestionCriteria criteria : operator.getFlagQuestionCriteriaInherited())
-						PicsLogger.log(" flag criteria " + criteria.getFlagColor() + " for "
-								+ criteria.getAuditQuestion().getQuestion());
-
-					for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria())
-						PicsLogger.log(" osha criteria " + criteria.getFlagColor());
-
-					for (AuditOperator auditOperator : operator.getInheritInsurance().getAudits())
-						PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
-
-					for (AuditOperator auditOperator : operator.getInheritAudits().getAudits())
-						PicsLogger.log(" has audits " + auditOperator.getAuditType().getAuditName());
-
+					for(FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+						PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+								+ flagCriteriaOperator.getCriteria().getCategory());
+					}
+ 					
 					for (AuditOperator auditOperator : operator.getVisibleAudits())
 						PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 

@@ -1,10 +1,7 @@
 package com.picsauditing;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.picsauditing.PICS.AuditCriteriaAnswer;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -22,7 +19,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagQuestionCriteria;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -159,15 +155,6 @@ public class EntityFactory {
 		cao.setStatus(CaoStatus.Approved);
 		cao.setFlag(FlagColor.Green);
 		conAudit.getOperators().add(cao);
-	}
-
-	static public void addAuditCriteriaAnswer(ContractorAudit conAudit, AuditQuestion question, String answer) {
-		AuditData data = new AuditData();
-		data.setAudit(conAudit);
-		data.setQuestion(question);
-		data.setAnswer(answer);
-		Map<FlagColor, FlagQuestionCriteria> criteriaMap = new HashMap<FlagColor, FlagQuestionCriteria>();
-		AuditCriteriaAnswer aka = new AuditCriteriaAnswer(data, criteriaMap);
 	}
 
 	static public AuditQuestion makeAuditQuestion() {

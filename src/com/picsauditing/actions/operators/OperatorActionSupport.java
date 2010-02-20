@@ -96,7 +96,7 @@ public class OperatorActionSupport extends AccountActionSupport {
 	}
 	
 	public FlagCriteriaOperator getFlagCriteriaOperatorByAudit(int auditTypeID) {
-		for(FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteria()) {
+		for(FlagCriteriaOperator flagCriteriaOperator : operator.getFlagAuditCriteriaInherited()) {
 			if(flagCriteriaOperator.getCriteria().getAuditType().getId() == auditTypeID) {
 				return flagCriteriaOperator;
 			}

@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.AuditCriteriaAnswer;
-import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -187,6 +185,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 									.getId(), null);
 							// TODO this is a duplicate of FlagCalculator2
 							// because we need the color to change instantly
+							// use the flagDataCalculator to calculate the recommendedFlagColor
 							FlagCalculatorSingle calculator = new FlagCalculatorSingle();
 							List<Integer> criteriaQuestionIDs = cao.getOperator().getQuestionIDs();
 							AnswerMapByAudits answerMapByAudits = auditDataDao.findAnswersByAudits(contractor

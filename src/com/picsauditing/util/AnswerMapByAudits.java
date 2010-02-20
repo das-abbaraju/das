@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.util.log.PicsLogger;
@@ -145,10 +146,14 @@ public class AnswerMapByAudits {
 			}
 		}
 
-		AuditStatus requiredAuditStatus = null;
-
+		boolean requiresActiveStatus = true;
 		if (auditOperator != null) {
-			requiredAuditStatus = auditOperator.getRequiredAuditStatus();
+			for(FlagCriteriaOperator flagCriteriaOperator : operator.getFlagAuditCriteriaInherited()) {
+				if(flagCriteriaOperator.getCriteria().getAuditType().equals(auditOperator.getAuditType())) {
+					if(!flagCriteriaOperator.getCriteria().isValidationRequired())
+						requiresActiveStatus = false;
+				}
+			}
 		} else {
 			PicsLogger.log("Warning: this Operator doesn't require " + audit.getAuditType().getAuditName());
 		}
@@ -159,7 +164,7 @@ public class AnswerMapByAudits {
 			// are always in the past and this DateDifference will be negative
 			return DateBean.getDateDifference(audit.getCreationDate()) + 1000;
 		} else {
-			if (requiredAuditStatus != null && requiredAuditStatus.isSubmitted()
+			if (!requiresActiveStatus
 					&& audit.getAuditStatus().isSubmitted()) {
 				score = 100;
 			} else if (audit.getAuditStatus() == AuditStatus.Active)
@@ -168,7 +173,7 @@ public class AnswerMapByAudits {
 				score = 80;
 			else if (audit.getAuditStatus() == AuditStatus.Exempt)
 				score = 70;
-			else if (requiredAuditStatus != null && requiredAuditStatus == AuditStatus.Submitted
+			else if (!requiresActiveStatus
 					&& audit.getAuditStatus() != AuditStatus.Submitted) {
 				score = 60;
 			} else if (audit.getAuditStatus() == AuditStatus.Pending)
