@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 @Entity
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteria extends BaseTable {
+public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> {
 
 	private String category;
 	private AuditQuestion question;
@@ -170,7 +170,7 @@ public class FlagCriteria extends BaseTable {
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
-	
+
 	@Override
 	public String toString() {
 		return category + ": " + description;
@@ -196,5 +196,13 @@ public class FlagCriteria extends BaseTable {
 		json.put("dataType", dataType);
 
 		return json;
+	}
+
+	@Override
+	public int compareTo(FlagCriteria o) {
+		int res = label.compareTo(o.label);
+		if (res == 0)
+			res = description.compareTo(o.description);
+		return res;
 	}
 }

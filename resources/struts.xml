@@ -809,6 +809,11 @@
 			<result>struts/reports/report_sales.jsp</result>
 		</action>
 		
+		<action name="OperatorFlagMatrix"
+			class="com.picsauditing.actions.report.OperatorFlagMatrix">
+			<result>struts/reports/flag_matrix.jsp</result>	
+		</action>
+		
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"

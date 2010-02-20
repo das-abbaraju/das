@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "flag_criteria_contractor")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteriaContractor extends BaseTable {
+public class FlagCriteriaContractor extends BaseTable implements Comparable<FlagCriteriaContractor> {
 
 	private ContractorAccount contractor;
 	private FlagCriteria criteria;
@@ -64,7 +64,7 @@ public class FlagCriteriaContractor extends BaseTable {
 	public void setVerified(boolean verified) {
 		this.verified = verified;
 	}
-	
+
 	@Override
 	public String toString() {
 		return criteria.toString() + " (" + answer + ") for " + contractor.toString();
@@ -85,5 +85,13 @@ public class FlagCriteriaContractor extends BaseTable {
 			answer = change.getAnswer();
 		if (verified != change.isVerified())
 			verified = change.isVerified();
+	}
+
+	@Override
+	public int compareTo(FlagCriteriaContractor o) {
+		int res = contractor.compareTo(o.contractor);
+		if (res == 0)
+			res = criteria.compareTo(o.criteria);
+		return res;
 	}
 }
