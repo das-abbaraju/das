@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Transient;
-
-import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -29,7 +26,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.Strings;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;

@@ -37,7 +37,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private FlagColor newFlag;
 	private String newHurdle;
 	private String newComparison;
-	
+
 	private List<FlagCriteria> addableCriteria = null;
 	private List<Integer> doNotAdd = null;
 	private Map<Integer, FlagColor> existing = null;
@@ -53,7 +53,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			subHeading = "Manage Insurance Criteria";
 		else
 			subHeading = "Manage Flag Criteria";
-		
+
 		noteCategory = NoteCategory.Flags;
 	}
 
@@ -76,10 +76,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				if (remove.getOperator().equals(operator)) {
 					flagCriteriaOperatorDAO.remove(remove);
 				}
-				
+
 				FlagCriteria fc = remove.getCriteria();
 				String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription()
-					+ ", " + remove.getFlag().toString() + " flagged";
+						+ ", " + remove.getFlag().toString() + " flagged";
 				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 			}
 			if (button.equals("add") && criteriaID > 0) {
@@ -92,10 +92,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setOperator(operator);
 				flagCriteriaOperatorDAO.save(fco);
 				calculatePercentAffected(fco);
-				
+
 				String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
-					+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle()  
-					+ ", " + newFlag.toString() + " flagged";
+						+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle() + ", "
+						+ newFlag.toString() + " flagged";
 				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 			}
 			if (button.equals("save") && criteriaID > 0) {
@@ -106,22 +106,22 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setLastCalculated(null);
 				flagCriteriaOperatorDAO.save(fco);
 				calculatePercentAffected(fco);
-				
+
 				FlagCriteria fc = fco.getCriteria();
 				String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "
-					+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle()  
-					+ ", " + fco.getFlag().toString() + " flagged";
+						+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle() + ", "
+						+ fco.getFlag().toString() + " flagged";
 				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 			}
 		}
-		
+
 		return SUCCESS;
 	}
-	
+
 	public boolean isInsurance() {
 		return insurance;
 	}
-	
+
 	public void setInsurance(boolean insurance) {
 		this.insurance = insurance;
 	}
@@ -133,27 +133,27 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public void setCriteriaID(int criteriaID) {
 		this.criteriaID = criteriaID;
 	}
-	
+
 	public FlagColor getNewFlag() {
 		return newFlag;
 	}
-	
+
 	public void setNewFlag(FlagColor newFlag) {
 		this.newFlag = newFlag;
 	}
-	
+
 	public String getNewHurdle() {
 		return newHurdle;
 	}
-	
+
 	public void setNewHurdle(String newHurdle) {
 		this.newHurdle = newHurdle;
 	}
-	
+
 	public String getNewComparison() {
 		return newComparison;
 	}
-	
+
 	public void setNewComparison(String newComparison) {
 		this.newComparison = newComparison;
 	}
@@ -161,14 +161,14 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public List<FlagCriteria> getAddableCriterias() {
 		if (addableCriteria == null) {
 			addableCriteria = new ArrayList<FlagCriteria>();
-			
+
 			// Get existing flag criterias so we don't add duplicates?
 			existing = new TreeMap<Integer, FlagColor>();
 			doNotAdd = new ArrayList<Integer>();
-			
-			for (FlagCriteriaOperator fco : operator.getFlagCriteria()) {
+
+			for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
 				int existingID = fco.getCriteria().getId();
-				
+
 				if (!existing.containsKey(existingID)) {
 					existing.put(existingID, fco.getFlag());
 				} else {
@@ -180,15 +180,14 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			}
 
 			// Get all ready viewable audit types
-			List<AuditOperator> visibleAudits = operator.getVisibleAudits();
 			List<AuditType> auditTypes = new ArrayList<AuditType>();
 
-			for (AuditOperator ao : visibleAudits) {
+			for (AuditOperator ao : operator.getVisibleAudits()) {
 				if (!auditTypes.contains(ao.getAuditType())) {
 					auditTypes.add(ao.getAuditType());
 				}
 			}
-			
+
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
@@ -199,12 +198,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			for (FlagCriteria fc : flagCriteria) {
 				if (doNotAdd.contains(fc))
 					continue;
-				
+
 				if (!fc.getDataType().equals("number")) {
 					if (existing.containsKey(fc.getId()))
 						continue;
 				}
-				
+
 				if (fc.getAuditType() != null && auditTypes.contains(fc.getAuditType())) {
 					// Check audits by matching up the audit types
 					addableCriteria.add(fc);
@@ -212,18 +211,23 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					// Skip questions 401 & 755?
 					if (fc.getQuestion().getId() == 401 || fc.getQuestion().getId() == 755)
 						continue;
+
 					// Check questions
 					AuditQuestion aq = fc.getQuestion();
-					List<String> countries = Arrays.asList(aq.getCountriesArray());
-
-					// If there's a restriction by country, make sure that the
-					// question matches the operator's country
-					// If there are no countries, just check if it's valid and
-					// it's visible
-					if ((countries.size() > 0 && countries.contains(operator.getCountry().getIsoCode()))
-							|| countries.size() == 0) {
-						if (aq.isValid() && aq.isVisible())
-							addableCriteria.add(fc);
+					if (auditTypes.contains(aq.getAuditType())) {
+						List<String> countries = Arrays.asList(aq.getCountriesArray());
+						// If there's a restriction by country, make sure that
+						// the
+						// question matches the operator's country
+						// If there are no countries, just check if it's valid
+						// and
+						// it's visible
+						if ((countries.size() > 0 && countries.contains(operator.getCountry().getIsoCode()))
+								|| countries.size() == 0) {
+							if (aq.isValid() && aq.isVisible()) {
+								addableCriteria.add(fc);
+							}
+						}
 					}
 				} else if (fc.getOshaType() != null && fc.getOshaType().equals(operator.getOshaType()))
 					addableCriteria.add(fc);
@@ -235,24 +239,17 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 	public List<FlagCriteriaOperator> getCriteriaList() {
 		// Filter out here?
-		List<FlagCriteriaOperator> list = flagCriteriaOperatorDAO.findByOperator(operator.getId());
+		List<FlagCriteriaOperator> list = operator.getFlagCriteriaInherited();
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
 
 		for (FlagCriteriaOperator item : list) {
 			FlagCriteria criteria = item.getCriteria();
-			
+
 			// If we're looking for insurance, then get only InsureGUARD
 			// If we're not looking for insurance, then get everything else
-			if ((insurance && !criteria.getCategory().equals("InsureGUARD")) 
+			if ((insurance && !criteria.getCategory().equals("InsureGUARD"))
 					|| (!insurance && criteria.getCategory().equals("InsureGUARD")))
 				continue;
-
-			if (criteria.getQuestion() != null) {
-				int questionID = criteria.getQuestion().getId();
-
-				if (questionID == 401 || questionID == 755)
-					continue;
-			}
 
 			if (criteria.getOshaType() != null) {
 				if (!criteria.getOshaType().equals(operator.getOshaType()))
@@ -264,24 +261,24 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		return valid;
 	}
-	
+
 	public List<ContractorAccount> getAffectedByCriteria(int id) {
 		if (affectingCriteria.keySet().size() == 0) {
 			calculatePercentAffected(flagCriteriaOperatorDAO.find(id));
 		}
-		
+
 		if (affectingCriteria.containsKey(id))
 			return affectingCriteria.get(id);
-		
+
 		return null;
 	}
 
 	public int getPercentAffected(int id) {
 		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(id);
-		
+
 		if (fco.isNeedsRecalc()) {
 			int affected = calculatePercentAffected(fco);
-			
+
 			fco.setPercentAffected(affected);
 			fco.setLastCalculated(new Date());
 			flagCriteriaOperatorDAO.save(fco);
@@ -290,10 +287,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		} else
 			return fco.getPercentAffected();
 	}
-	
+
 	public List<FlagColor> getAddableFlags(int id) {
 		List<FlagColor> addableFlags = new ArrayList<FlagColor>();
-		
+
 		if (existing.containsKey(id)) {
 			if (existing.get(id).equals(FlagColor.Red))
 				addableFlags.add(FlagColor.Amber);
@@ -303,10 +300,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			addableFlags.add(FlagColor.Red);
 			addableFlags.add(FlagColor.Amber);
 		}
-		
+
 		return addableFlags;
 	}
-	
+
 	private int calculatePercentAffected(FlagCriteriaOperator fco) {
 		List<ContractorOperator> contractorOperators = operator.getContractorOperators();
 		Map<ContractorAccount, List<FlagData>> contractorsAffected = new TreeMap<ContractorAccount, List<FlagData>>();
@@ -327,13 +324,13 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 
 		int affected = 0;
-		
+
 		if (contractorsAffected.size() > 0)
 			affected = (int) (((float) contractorsAffected.size() / (float) totalContractors) * 100);
-		
+
 		// Add to the map?
 		affectingCriteria.put(fco.getId(), new ArrayList<ContractorAccount>(contractorsAffected.keySet()));
-		
+
 		return affected;
 	}
 }
