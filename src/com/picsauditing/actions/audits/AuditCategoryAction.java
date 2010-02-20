@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.YesNo;
@@ -347,15 +348,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 	}
 
 	public OshaAudit getAverageOsha(OshaType oshaType) {
-		OshaAudit response = null;
-
-		Map<String, OshaAudit> temp = contractor.getOshas().get(oshaType);
-
-		if (temp != null) {
-			response = temp.get(OshaAudit.AVG);
-		}
-
-		return response;
+		return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
 	}
 
 	public boolean matchesType(int categoryId, OshaType oa) {

@@ -34,6 +34,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -91,7 +92,7 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<Certificate> certificates = new ArrayList<Certificate>();
 
 	// Transient helper methods
-	protected Map<OshaType, Map<String, OshaAudit>> oshas = null;
+	protected OshaOrganizer oshaOrganizer = null;
 	protected Map<String, AuditData> emrs = null;
 
 	public ContractorAccount() {
@@ -490,98 +491,11 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	/*
-	 * Get a double-keyed map, by OshaType and auditFor, for the last 3 years of
-	 * applicable osha data (verified or not)
-	 */
-	public Map<OshaType, Map<String, OshaAudit>> getOshas() {
-		if (oshas != null)
-			return oshas;
-		oshas = new TreeMap<OshaType, Map<String, OshaAudit>>();
-
-		List<ContractorAudit> annualAudits = getSortedAudits();
-		oshas.put(OshaType.OSHA, buildOshaMap(annualAudits, OshaType.OSHA, AuditCategory.OSHA_AUDIT));
-		oshas.put(OshaType.MSHA, buildOshaMap(annualAudits, OshaType.MSHA, AuditCategory.MSHA));
-		oshas.put(OshaType.COHS, buildOshaMap(annualAudits, OshaType.COHS, AuditCategory.CANADIAN_STATISTICS));
-
-		return oshas;
-	}
-
-	@Transient
-	private Map<String, OshaAudit> buildOshaMap(List<ContractorAudit> annualAudits, OshaType oshaType,
-			int auditCategoryID) {
-		Map<String, OshaAudit> oshaMap = new TreeMap<String, OshaAudit>();
-
-		int number = 0;
-		for (ContractorAudit audit : annualAudits) {
-			if (number < 3) {
-				// Store the corporate OSHA rates into a map for later
-				// use
-				for (OshaAudit osha : audit.getOshas())
-					if (osha.getType().equals(oshaType) && osha.isCorporate()) {
-						number++;
-						oshaMap.put(audit.getAuditFor(), osha);
-					}
-			}
+	public OshaOrganizer getOshaOrganizer() {
+		if (oshaOrganizer == null) {
+			oshaOrganizer = new OshaOrganizer(getAudits());
 		}
-		int count = oshaMap.size();
-		if (count > 0) {
-			// Add in the average for the past 3 years
-			OshaAudit avg = new OshaAudit();
-			avg.setLostWorkCasesRate(0);
-			avg.setRecordableTotalRate(0);
-			avg.setRestrictedDaysAwayRate(0);
-
-			float manHours = 0;
-			float fatalities = 0;
-			float injuries = 0;
-			float lwc = 0;
-			float lwcr = 0;
-			float lwd = 0;
-			float tri = 0;
-			float trir = 0;
-			float rwc = 0;
-			float dart = 0;
-			float neer = 0;
-			float cad7 = 0;
-
-			for (String key : oshaMap.keySet()) {
-				OshaAudit osha = oshaMap.get(key);
-				avg.setFactor(osha.getFactor());
-				avg.setConAudit(osha.getConAudit());
-
-				manHours += osha.getManHours();
-				fatalities += osha.getFatalities();
-				injuries += osha.getInjuryIllnessCases();
-				lwc += osha.getLostWorkCases();
-				lwcr += osha.getLostWorkCasesRate();
-				lwd += osha.getLostWorkDays();
-				tri += osha.getRecordableTotal();
-				trir += osha.getRecordableTotalRate();
-				rwc += osha.getRestrictedWorkCases();
-				dart += osha.getRestrictedDaysAwayRate();
-				if (osha.getNeer() != null)
-					neer += osha.getNeer();
-				if (osha.getCad7() != null)
-					cad7 += osha.getCad7();
-			}
-			avg.setManHours(Math.round(manHours / count));
-			avg.setFatalities(Math.round(fatalities / count));
-			avg.setInjuryIllnessCases(Math.round(injuries / count));
-			avg.setLostWorkCases(Math.round(lwc / count));
-			avg.setLostWorkCasesRate(lwcr / count);
-			avg.setLostWorkDays(Math.round(lwd / count));
-			avg.setRecordableTotal(Math.round(tri / count));
-			avg.setRecordableTotalRate(trir / count);
-			avg.setRestrictedWorkCases(Math.round(rwc / count));
-			avg.setRestrictedDaysAwayRate(dart / count);
-			avg.setNeer(neer / count);
-			avg.setCad7(cad7 / count);
-
-			oshaMap.put(OshaAudit.AVG, avg);
-		}
-
-		return oshaMap;
+		return oshaOrganizer;
 	}
 
 	@Transient

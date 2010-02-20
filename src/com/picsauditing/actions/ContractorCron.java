@@ -289,7 +289,7 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
-		WaitingOn waitingOn = calcSingle.calculateWaitingOn();
+		WaitingOn waitingOn = null; //calcSingle.calculateWaitingOn();
 
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
@@ -334,7 +334,7 @@ public class ContractorCron extends PicsActionSupport {
 					if (cao.isVisible()) {
 						if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
 								&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-							FlagColor flagColor = calcSingle.calculateCaoRecommendedFlag(cao);
+							FlagColor flagColor = null; //calcSingle.calculateCaoRecommendedFlag(cao);
 
 							cao.setFlag(flagColor);
 							dao.save(cao);

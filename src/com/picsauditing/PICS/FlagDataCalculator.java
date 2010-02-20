@@ -69,13 +69,20 @@ public class FlagDataCalculator {
 		return dataSet;
 	}
 
+	/**
+	 * 
+	 * @param opCriteria
+	 * @param conCriteria
+	 * @return true if something is BAD
+	 */
 	private boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
-		// Criteria should match
+		if (!opCriteria.getCriteria().equals(conCriteria.getCriteria()))
+			throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
 
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
 
-		if (criteria.isAllowCustomValue() && opCriteria.getHurdle() != null) {
+		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
 
@@ -91,17 +98,20 @@ public class FlagDataCalculator {
 					} else {
 						// TODO check to see if the policy is not expired when
 						// adding caos to caoMap
-						List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
-						if (caoList != null) {
-							for (ContractorAuditOperator cao : caoList) {
-								if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
-									return false;
-								else
-									return true;
+						if (caoMap != null) {
+							List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
+							if (caoList != null) {
+								for (ContractorAuditOperator cao : caoList) {
+									if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+										return false;
+									else
+										return true;
+								}
 							}
+							// If the policy doesn't exist, then flag it
 						}
-						// If the policy doesn't exist, then flag it
 					}
+					// TODO What is this for exactly? Do we still need Works for Operator??
 					if (!isWorksForOperator() || conCriteria.getContractor().isAcceptsBids()) {
 						return false;
 					}
@@ -109,7 +119,8 @@ public class FlagDataCalculator {
 				}
 			}
 		}
-		// Check for questionID in (401, 755)
+
+		// Check for License Verifications
 		if (criteria.getQuestion() != null) {
 			int questionID = criteria.getQuestion().getId();
 			if (questionID == 401 || questionID == 755) {
@@ -151,32 +162,33 @@ public class FlagDataCalculator {
 		
 		final String dataType = criteria.getDataType();
 		final String comparison = criteria.getComparison();
-		boolean isValid = true;
 		try {
 			if (dataType.equals("boolean")) {
-				isValid = (Boolean.parseBoolean(answer) == Boolean.parseBoolean(hurdle));
+				return (Boolean.parseBoolean(answer) == Boolean.parseBoolean(hurdle));
 			}
 
 			if (dataType.equals("number")) {
 				float answer2 = Float.parseFloat(answer);
 				float hurdle2 = Float.parseFloat(hurdle);
 				if (comparison.equals("="))
-					isValid = answer2 == hurdle2;
+					return answer2 == hurdle2;
 				if (comparison.equals(">"))
-					isValid = answer2 > hurdle2;
+					return answer2 > hurdle2;
 				if (comparison.equals("<"))
-					isValid = answer2 < hurdle2;
+					return answer2 < hurdle2;
 				if (comparison.equals(">="))
-					isValid = answer2 >= hurdle2;
+					return answer2 >= hurdle2;
 				if (comparison.equals("<="))
-					isValid = answer2 <= hurdle2;
+					return answer2 <= hurdle2;
 				if (comparison.equals("!="))
-					isValid = answer2 != hurdle2;
+					return answer2 != hurdle2;
 			}
 
 			if (dataType.equals("string")) {
+				if (comparison.equals("NOT EMPTY"))
+					return !Strings.isEmpty(answer);
 				if (comparison.equals("="))
-					isValid = hurdle.equals(answer);
+					return hurdle.equals(answer);
 			}
 
 			if (dataType.equals("date")) {
@@ -190,18 +202,16 @@ public class FlagDataCalculator {
 					opDate = (Date) date.parse(hurdle);
 
 				if (comparison.equals("<"))
-					isValid = conDate.before(opDate);
+					return conDate.before(opDate);
 				if (comparison.equals(">"))
-					isValid = conDate.after(opDate);
+					return conDate.after(opDate);
 				if (comparison.equals("="))
-					isValid = conDate.equals(opDate);
+					return conDate.equals(opDate);
 			}
 		} catch (Exception e) {
 			System.out.println("Datatype is " + dataType + " but values were not " + dataType + "s");
 			return true;
 		}
-		if (isValid)
-			return false;
 
 		return true;
 	}

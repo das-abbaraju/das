@@ -55,8 +55,7 @@ public class OshaAudit implements java.io.Serializable {
 	private int injuryIllnessCases;
 	private int restrictedWorkCases;
 	private int recordableTotal;
-	private int factor = 200000; // default factor used to normalize man
-	// hours
+	private int factor = 200000;
 	private String comment;
 
 	private FlagColor flagColor;
@@ -268,6 +267,10 @@ public class OshaAudit implements java.io.Serializable {
 		this.modifiedWorkDay = modifiedWorkDay;
 	}
 
+	/**
+	 * default factor (200K) used to normalize man hours
+	 * @return
+	 */
 	@Transient
 	public int getFactor() {
 		return factor;
