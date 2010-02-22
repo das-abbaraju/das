@@ -28,11 +28,12 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private String label;
 	private String description;
 	private String comparison;
-	private MultiYearScope multiYearScope;
+	private MultiYearScope multiYearScope = null;
 	protected boolean validationRequired;
 	private String defaultValue;
-	private boolean allowCustomValue;
-	private String dataType;
+	private boolean allowCustomValue = false;
+	private String dataType = "string";
+	private boolean flaggableWhenMissing = false;
 
 	public static final String BOOLEAN = "boolean";
 	public static final String NUMBER = "number";
@@ -169,6 +170,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public boolean isFlaggableWhenMissing() {
+		return flaggableWhenMissing;
+	}
+
+	public void setFlaggableWhenMissing(boolean flaggableWhenMissing) {
+		this.flaggableWhenMissing = flaggableWhenMissing;
 	}
 
 	@Override

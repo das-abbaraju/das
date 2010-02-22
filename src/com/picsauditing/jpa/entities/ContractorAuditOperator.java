@@ -17,6 +17,7 @@ import org.hibernate.annotations.Type;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_operator")
 public class ContractorAuditOperator extends BaseTable {
@@ -43,8 +44,7 @@ public class ContractorAuditOperator extends BaseTable {
 	}
 
 	/**
-	 * @return The "inherited" operator/corporate/division that is associated
-	 *         with this CAO
+	 * @return The "inherited" operator/corporate/division that is associated with this CAO
 	 */
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)

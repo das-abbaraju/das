@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -32,11 +31,11 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
-	private Map<AuditType, List<ContractorAuditOperator>> caoMap;
-	private boolean worksForOperator = false;
+	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
+	// private boolean worksForOperator = false;
 
 	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria,
-			Collection<FlagCriteriaOperator> operatorCriteria) {
+			Collection<FlagCriteriaOperator> operatorCriteria, Map<FlagCriteria, FlagDataOverride> overrides) {
 		setContractorCriteria(contractorCriteria);
 		setOperatorCriteria(operatorCriteria);
 	}
@@ -82,6 +81,7 @@ public class FlagDataCalculator {
 
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
+		
 
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
@@ -90,34 +90,35 @@ public class FlagDataCalculator {
 		String answer = conCriteria.getAnswer();
 
 		if (criteria.getAuditType() != null) {
-			for (AuditOperator auditOperator : opCriteria.getOperator().getVisibleAudits()) {
-				if (auditOperator.isRequiredFor(conCriteria.getContractor())) {
-					if (!criteria.getAuditType().getClassType().isPolicy()) {
-						if (conCriteria.getAnswer().equals("false")) {
-							return true;
-						}
-					} else {
-						// TODO check to see if the policy is not expired when
-						// adding caos to caoMap
-						if (caoMap != null) {
-							List<ContractorAuditOperator> caoList = caoMap.get(criteria.getAuditType());
-							if (caoList != null) {
-								for (ContractorAuditOperator cao : caoList) {
+			if (opCriteria.getMinRiskLevel().compareTo(conCriteria.getContractor().getRiskLevel()) <= 0) {
+				for(ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
+					if (conAudit.getAuditType().equals(criteria.getAuditType())) {
+						if (criteria.getAuditType().getClassType().isPolicy()) {
+							// Calculating the Policy status is much more complex
+							if (!opCriteria.getOperator().getCanSeeInsurance().isTrue())
+								// Don't flag for operators that don't subscribe to InsureGUARD
+								return false;
+							OperatorAccount insuranceParent = opCriteria.getOperator().getInheritInsurance();
+							for (ContractorAuditOperator cao : conAudit.getOperators()) {
+								if (cao.getOperator().equals(insuranceParent)) {
+									// We've found the applicable cao
 									if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
 										return false;
 									else
 										return true;
 								}
 							}
-							// If the policy doesn't exist, then flag it
+						} else {
+							// All other Audits, PQF, etc, flag if it's missing
+							return conCriteria.getAnswer().equals("false");
 						}
 					}
-					// TODO What is this for exactly? Do we still need Works for Operator??
-					if (!isWorksForOperator() || conCriteria.getContractor().isAcceptsBids()) {
-						return false;
-					}
-					return true;
 				}
+				// TODO What is this for exactly? Do we still need Works for Operator??
+//				if (worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
+//					return false;
+//				}
+				return criteria.isFlaggableWhenMissing();
 			}
 		}
 
@@ -130,37 +131,37 @@ public class FlagDataCalculator {
 				return !conCriteria.isVerified();
 			}
 		}
-		
-//		 TODO If criteria is AMBEST
-//		if("AMBest".equals(questionType)) {
-//			boolean flag1 = false;
-//			boolean flag2 = false;
-//			int ratings = Integer.parseInt(answer.substring(0, answer.indexOf('|')));
-//			int bestClass = Integer.parseInt(answer.substring(value.indexOf('|')+ 1,answer.length()));
-//			if(getAMBestRatings() > 0)
-//				flag1 = ratings > getAMBestRatings();
-//			if(getAMBestClass() > 0)
-//				flag2 = bestClass < getAMBestClass();
-//			if(flag1 || flag2)
-//				return true;
-//						
-//			return false;
-//		}
-		
-//		public int getAMBestRatings() {
-//		if(!Strings.isEmpty(value)) {
-//			return Integer.parseInt(value.substring(0, value.indexOf('|')));
-//		}
-//		return 0;
-//	}
-//
-//	public int getAMBestClass() {
-//		if(!Strings.isEmpty(value)) {
-//			return Integer.parseInt(value.substring(value.indexOf('|')+ 1,value.length()));
-//		}
-//		return 0;
-//	}
-		
+
+		// TODO If criteria is AMBEST
+		// if("AMBest".equals(questionType)) {
+		// boolean flag1 = false;
+		// boolean flag2 = false;
+		// int ratings = Integer.parseInt(answer.substring(0, answer.indexOf('|')));
+		// int bestClass = Integer.parseInt(answer.substring(value.indexOf('|')+ 1,answer.length()));
+		// if(getAMBestRatings() > 0)
+		// flag1 = ratings > getAMBestRatings();
+		// if(getAMBestClass() > 0)
+		// flag2 = bestClass < getAMBestClass();
+		// if(flag1 || flag2)
+		// return true;
+		//						
+		// return false;
+		// }
+
+		// public int getAMBestRatings() {
+		// if(!Strings.isEmpty(value)) {
+		// return Integer.parseInt(value.substring(0, value.indexOf('|')));
+		// }
+		// return 0;
+		// }
+		//
+		// public int getAMBestClass() {
+		// if(!Strings.isEmpty(value)) {
+		// return Integer.parseInt(value.substring(value.indexOf('|')+ 1,value.length()));
+		// }
+		// return 0;
+		// }
+
 		final String dataType = criteria.getDataType();
 		final String comparison = criteria.getComparison();
 		try {
@@ -323,33 +324,18 @@ public class FlagDataCalculator {
 		return WaitingOn.None;
 	}
 
-	public void setContractorCriteria(Collection<FlagCriteriaContractor> list) {
+	private void setContractorCriteria(Collection<FlagCriteriaContractor> list) {
 		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
 		for (FlagCriteriaContractor value : list) {
 			contractorCriteria.put(value.getCriteria(), value);
 		}
 	}
 
-	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
+	private void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, FlagCriteriaOperator>();
 		for (FlagCriteriaOperator value : list) {
 			operatorCriteria.put(value.getCriteria(), value);
 		}
 	}
 
-	public Map<AuditType, List<ContractorAuditOperator>> getCaoMap() {
-		return caoMap;
-	}
-
-	public void setCaoMap(Map<AuditType, List<ContractorAuditOperator>> caoMap) {
-		this.caoMap = caoMap;
-	}
-
-	public boolean isWorksForOperator() {
-		return worksForOperator;
-	}
-
-	public void setWorksForOperator(boolean worksForOperator) {
-		this.worksForOperator = worksForOperator;
-	}
 }

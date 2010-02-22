@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.FlagDataDAO;
+import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -33,8 +35,10 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -55,6 +59,7 @@ public class ContractorCron extends PicsActionSupport {
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
 	private FlagDataDAO flagDataDAO;
+	private FlagDataOverrideDAO flagDataOverrideDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
@@ -65,7 +70,8 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, FlagDataDAO flagDataDAO) {
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, FlagDataDAO flagDataDAO,
+			FlagDataOverrideDAO flagDataOverrideDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -74,6 +80,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.auditBuilder = auditBuilder;
 		this.contractorFlagETL = contractorFlagETL;
 		this.flagDataDAO = flagDataDAO;
+		this.flagDataOverrideDAO = flagDataOverrideDAO;
 	}
 
 	public String execute() throws Exception {
@@ -114,11 +121,11 @@ public class ContractorCron extends PicsActionSupport {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
 				for (ContractorOperator co : contractor.getOperators()) {
 					OperatorAccount operator = co.getOperatorAccount();
-					for(FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+					for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
 						PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
 								+ flagCriteriaOperator.getCriteria().getCategory());
 					}
- 					
+
 					for (AuditOperator auditOperator : operator.getVisibleAudits())
 						PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 
@@ -236,24 +243,29 @@ public class ContractorCron extends PicsActionSupport {
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
-		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co
-				.getOperatorAccount().getFlagCriteria());
+		// get a list of overrides for this contractor and operator
 
-		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co.getOperatorAccount().getId());
+		Map<FlagCriteria, FlagDataOverride> overrides = flagDataOverrideDAO.findByContractorAndOperator(co
+				.getContractorAccount(), co.getOperatorAccount());
+		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co
+				.getOperatorAccount().getFlagCriteria(), overrides);
+
+		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
+				.getOperatorAccount().getId());
 		List<FlagData> changes = flagDataCalculator.calculate();
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
-		for(FlagData change : changes) {
+		for (FlagData change : changes) {
 			overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
 
 		// Save changes into table
 		final Iterator<FlagData> dbIterator = flagData.iterator();
-		while(dbIterator.hasNext()) {
+		while (dbIterator.hasNext()) {
 			FlagData fromDB = dbIterator.next();
 			if (changes.contains(fromDB)) {
-				for(FlagData change : changes) {
+				for (FlagData change : changes) {
 					if (fromDB.equals(change)) {
 						fromDB.update(change);
 						flagDataDAO.save(fromDB);
@@ -265,10 +277,10 @@ public class ContractorCron extends PicsActionSupport {
 				flagDataDAO.remove(fromDB);
 			}
 		}
-		for(FlagData changeToInsert : changes) {
+		for (FlagData changeToInsert : changes) {
 			flagDataDAO.save(changeToInsert);
 		}
-		
+
 		if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
@@ -289,7 +301,7 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
-		WaitingOn waitingOn = null; //calcSingle.calculateWaitingOn();
+		WaitingOn waitingOn = null; // calcSingle.calculateWaitingOn();
 
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
@@ -334,7 +346,7 @@ public class ContractorCron extends PicsActionSupport {
 					if (cao.isVisible()) {
 						if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
 								&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-							FlagColor flagColor = null; //calcSingle.calculateCaoRecommendedFlag(cao);
+							FlagColor flagColor = null; // calcSingle.calculateCaoRecommendedFlag(cao);
 
 							cao.setFlag(flagColor);
 							dao.save(cao);
