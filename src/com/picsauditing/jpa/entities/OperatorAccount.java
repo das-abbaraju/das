@@ -223,13 +223,13 @@ public class OperatorAccount extends Account {
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
-		
+
 		criteriaList.addAll(getFlagAuditCriteriaInherited());
 		criteriaList.addAll(getFlagQuestionCriteriaInherited());
 
 		return criteriaList;
 	}
-	
+
 	@Transient
 	public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
@@ -254,7 +254,7 @@ public class OperatorAccount extends Account {
 
 		return criteriaList;
 	}
-	
+
 	@Transient
 	public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
@@ -275,12 +275,15 @@ public class OperatorAccount extends Account {
 						&& c.getCriteria().getQuestion().isVisible())
 					criteriaList.add(c);
 			}
+			if (c.getCriteria().getOshaType() != null) {
+				if (c.getCriteria().getOshaType().equals(oshaType)) {
+					criteriaList.add(c);
+				}
+			}
 		}
 
 		return criteriaList;
 	}
-	
-	
 
 	// TODO: get these to cache too
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
