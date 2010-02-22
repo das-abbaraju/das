@@ -34,7 +34,7 @@ update widget set caption = 'System Status' where widgetID = 16;
 -- insert data for PQF and Annual Updates
 insert into flag_criteria_operator
 select null,ao.createdBy, ao.updatedBy, ao.creationDate, ao.updateDate, ao.opid, f.id, 
-ao.requiredForFlag,null from audit_operator ao
+ao.requiredForFlag,null as hurdle, null as percentAffected, null as lastcalculated,ao.minRiskLevel from audit_operator ao
 join flag_criteria f on ao.auditTypeid = f.audittypeid
 join audit_type at on at.id = ao.audittypeid
 where
@@ -51,7 +51,7 @@ and ao.minriskLevel > 0;
 -- insert data for non PQF and Annual Updates
 insert into flag_criteria_operator
 select null,ao.createdBy, ao.updatedBy, ao.creationDate, ao.updateDate, ao.opid, f.id, 
-ao.requiredForFlag,null from audit_operator ao
+ao.requiredForFlag,null as hurdle, null as percentAffected, null as lastcalculated,ao.minRiskLevel from audit_operator ao
 join flag_criteria f on ao.auditTypeid = f.audittypeid
 join audit_type at on at.id = ao.audittypeid
 where ao.auditTypeid not in (1,11)
@@ -64,7 +64,7 @@ and ao.minriskLevel > 0;
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,f.ID, 
-fo.flagStatus,fo.value
+fo.flagStatus,fo.value as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagcriteria fo
 join flag_criteria f on fo.questionid = f.questionid
 where fo.questionid not in (2034);
@@ -73,7 +73,7 @@ where fo.questionid not in (2034);
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,f.ID, 
-fo.flagStatus,fo.value
+fo.flagStatus,fo.value as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagcriteria fo
 join flag_criteria f on fo.questionid = f.questionid
 and fo.multiyearscope = f.multiyearscope
@@ -85,7 +85,7 @@ where fo.questionid in (2034);
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,f.ID, 
-fo.flagStatus,fo.value
+fo.flagStatus,fo.value as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagcriteria fo
 join flag_criteria f on fo.questionid = f.questionid
 and fo.multiyearscope = 'AllThreeYears'
@@ -95,7 +95,7 @@ where fo.questionid in (2034);
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,f.ID, 
-fo.flagStatus,fo.value
+fo.flagStatus,fo.value as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagcriteria fo
 join flag_criteria f on fo.questionid = f.questionid
 and fo.multiyearscope = 'AllThreeYears'
@@ -105,7 +105,7 @@ where fo.questionid in (2034);
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,f.ID, 
-fo.flagStatus,fo.value
+fo.flagStatus,fo.value as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagcriteria fo
 join flag_criteria f on fo.questionid = f.questionid
 and fo.multiyearscope = 'AllThreeYears'
@@ -132,7 +132,7 @@ and fo.hurdle is not null;
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.lwcrhurdle
+fo.lwcrhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -151,7 +151,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.lwcrhurdle
+fo.lwcrhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -173,7 +173,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.trirhurdle
+fo.trirhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -192,7 +192,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.trirhurdle
+fo.trirhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -214,7 +214,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.fatalitieshurdle
+fo.fatalitieshurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -231,7 +231,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.fatalitieshurdle
+fo.fatalitieshurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -252,7 +252,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.severityhurdle
+fo.severityhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -269,7 +269,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.severityhurdle
+fo.severityhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -290,7 +290,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.cad7hurdle
+fo.cad7hurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -307,7 +307,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.cad7hurdle
+fo.cad7hurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -328,7 +328,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.neerhurdle
+fo.neerhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType
@@ -345,7 +345,7 @@ and
 insert into flag_criteria_operator 
 select null, fo.createdBy, fo.updatedBy, fo.creationDate, 
 fo.updateDate,fo.opID,k.id,fo.flagStatus, 
-fo.neerhurdle
+fo.neerhurdle as hurdle, null as percentAffected, null as lastcalculated,null as minRiskLevel
 from flagoshacriteria fo
 join operators o on fo.opid = o.id
 join flag_criteria k on k.oshaType = o.oshaType

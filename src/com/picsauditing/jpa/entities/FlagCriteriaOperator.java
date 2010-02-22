@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -80,7 +79,7 @@ public class FlagCriteriaOperator extends BaseTable {
 		this.lastCalculated = lastCalculated;
 	}
 
-	@Column(nullable = false)
+	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getMinRiskLevel() {
 		return minRiskLevel;
 	}

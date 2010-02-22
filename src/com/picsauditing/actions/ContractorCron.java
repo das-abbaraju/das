@@ -248,7 +248,7 @@ public class ContractorCron extends PicsActionSupport {
 		Map<FlagCriteria, FlagDataOverride> overrides = flagDataOverrideDAO.findByContractorAndOperator(co
 				.getContractorAccount(), co.getOperatorAccount());
 		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co
-				.getOperatorAccount().getFlagCriteria(), overrides);
+				.getOperatorAccount().getFlagCriteriaInherited(), overrides);
 
 		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
 				.getOperatorAccount().getId());
