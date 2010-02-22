@@ -25,7 +25,7 @@ public class FlagCriteriaOperator extends BaseTable {
 	private FlagCriteria criteria;
 	private FlagColor flag;
 	private String hurdle;
-	private int percentAffected;
+	private float percentAffected;
 	private Date lastCalculated;
 	
 	private List<FlagData> data;
@@ -67,11 +67,11 @@ public class FlagCriteriaOperator extends BaseTable {
 		this.hurdle = hurdle;
 	}
 	
-	public int getPercentAffected() {
+	public float getPercentAffected() {
 		return percentAffected;
 	}
 	
-	public void setPercentAffected(int percentAffected) {
+	public void setPercentAffected(float percentAffected) {
 		this.percentAffected = percentAffected;
 	}
 	
