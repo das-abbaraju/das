@@ -39,8 +39,10 @@ function getFlag(selectObject) {
 
 	if (flagColor == "Red")
 		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.smallIcon" escape="false" />';
-	else
+	else if (flagColor == "Amber")
 		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Amber.smallIcon" escape="false" />';
+	else
+		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Green.smallIcon" escape="false" />';
 	
 	var flagImage = $(selectObject.parentNode).find("span.flagImage img").replaceWith(flagColor);
 }

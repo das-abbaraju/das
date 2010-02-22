@@ -2,6 +2,7 @@ package com.picsauditing.actions.operators;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +42,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private String newComparison;
 
 	private List<FlagCriteria> addableCriteria = null;
-	private List<Integer> doNotAdd = null;
-	private Map<Integer, FlagColor> existing = null;
 	private Map<Integer, List<ContractorAccount>> affectingCriteria = new TreeMap<Integer, List<ContractorAccount>>();
 
 	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
@@ -165,8 +164,8 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			addableCriteria = new ArrayList<FlagCriteria>();
 
 			// Get existing flag criterias so we don't add duplicates?
-			existing = new TreeMap<Integer, FlagColor>();
-			doNotAdd = new ArrayList<Integer>();
+			Map<Integer, FlagColor> existing = new TreeMap<Integer, FlagColor>();
+			List<Integer> doNotAdd = new ArrayList<Integer>();
 
 			for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
 				int existingID = fco.getCriteria().getId();
@@ -243,13 +242,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
 		
+		// Sort by category, description
+		Collections.sort(inheritedCriteria, new ByCategoryDescription());
+		
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();
 
-			// If we're looking for insurance, then get only InsureGUARD
-			// If we're not looking for insurance, then get everything else
-			if ((insurance && !criteria.getCategory().equals("InsureGUARD"))
-					|| (!insurance && criteria.getCategory().equals("InsureGUARD")))
+			// If we're looking for insurance, get only InsureGUARD Questions, not InsureGUARD audits
+			if ((insurance && criteria.getCategory().equals("InsureGUARD") && criteria.getAuditType() != null)
+					|| (!insurance && criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() != null))
 				continue;
 
 			if (criteria.getOshaType() != null) {
@@ -289,17 +290,22 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return fco.getPercentAffected();
 	}
 
-	public List<FlagColor> getAddableFlags(int id) {
+	public List<FlagColor> getAddableFlags(int criteriaId) {
 		List<FlagColor> addableFlags = new ArrayList<FlagColor>();
-
-		if (existing.containsKey(id)) {
-			if (existing.get(id).equals(FlagColor.Red))
-				addableFlags.add(FlagColor.Amber);
-			else
-				addableFlags.add(FlagColor.Red);
-		} else {
-			addableFlags.add(FlagColor.Red);
-			addableFlags.add(FlagColor.Amber);
+		// Get all flags
+		addableFlags.add(FlagColor.Red);
+		addableFlags.add(FlagColor.Amber);
+		addableFlags.add(FlagColor.Green);
+		
+		// If the FlagCriteria is already used by the operator, remove that flag
+		for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
+			if (fco.getCriteria().getId() == criteriaId) {
+				addableFlags.remove(fco.getFlag());
+				
+				// Only audit questions can be green flagged.
+				if (fco.getCriteria().getAuditType() == null)
+					addableFlags.remove(FlagColor.Green);
+			}
 		}
 
 		return addableFlags;
@@ -316,7 +322,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteriaOperator> opList = new ArrayList<FlagCriteriaOperator>();
 			opList.add(fco);
 
-			FlagDataCalculator calculator = new FlagDataCalculator(conList, opList);
+			FlagDataCalculator calculator = new FlagDataCalculator(conList, opList, null);
 			List<FlagData> flagged = calculator.calculate();
 
 			// Since we're testing on one criteria, there's only one FlagData item
@@ -352,5 +358,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 		
 		return true;
+	}
+	
+	public class ByCategoryDescription implements Comparator<FlagCriteriaOperator> {
+		public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
+			// If the categories are the same, order by description
+			if (o1.getCriteria().getCategory().equals(o2.getCriteria().getCategory()))
+				return o1.getCriteria().getDescription().compareTo(o2.getCriteria().getDescription());
+			
+			return o1.getCriteria().getCategory().compareTo(o2.getCriteria().getCategory());
+		}
 	}
 }
