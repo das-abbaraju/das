@@ -30,7 +30,7 @@ public class FlagDataOverrideDAO extends PicsDAO {
 		}
 		Query query = em.createQuery("FROM FlagDataOverride d WHERE contractor.id = ? AND operator.id IN (" + where
 				+ ")");
-		query.setParameter(1, contractor);
+		query.setParameter(1, contractor.getId());
 		Map<FlagCriteria, FlagDataOverride> map = new HashMap<FlagCriteria, FlagDataOverride>();
 		List<FlagDataOverride> results = query.getResultList();
 		if (operator.getCorporateFacilities().size() > 0) {
