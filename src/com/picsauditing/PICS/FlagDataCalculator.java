@@ -98,14 +98,16 @@ public class FlagDataCalculator {
 							if (!opCriteria.getOperator().getCanSeeInsurance().isTrue())
 								// Don't flag for operators that don't subscribe to InsureGUARD
 								return false;
-							OperatorAccount insuranceParent = opCriteria.getOperator().getInheritInsurance();
-							for (ContractorAuditOperator cao : conAudit.getOperators()) {
-								if (cao.getOperator().equals(insuranceParent)) {
-									// We've found the applicable cao
-									if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
-										return false;
-									else
-										return true;
+							if (!conAudit.getAuditStatus().isExpired()) {
+								OperatorAccount insuranceParent = opCriteria.getOperator().getInheritInsurance();
+								for (ContractorAuditOperator cao : conAudit.getOperators()) {
+									if (cao.getOperator().equals(insuranceParent)) {
+										// We've found the applicable cao
+										if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+											return false;
+										else
+											return true;
+									}
 								}
 							}
 						} else {
