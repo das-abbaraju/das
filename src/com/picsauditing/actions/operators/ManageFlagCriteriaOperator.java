@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
@@ -62,7 +64,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return LOGIN;
 
 		// TODO check permissions
-		tryPermissions(OpPerms.EditFlagCriteria);
+		//tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
 
@@ -191,9 +193,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
-				flagCriteria = flagCriteriaDAO.findWhere("category LIKE 'InsureGUARD' ORDER BY label");
+				flagCriteria = flagCriteriaDAO.findWhere("category like 'InsureGUARD' AND questionID IS NOT NULL ORDER BY label");
 			else
-				flagCriteria = flagCriteriaDAO.findWhere("category NOT LIKE 'InsureGUARD' ORDER BY category, label");
+				flagCriteria = flagCriteriaDAO.findWhere("(category NOT LIKE 'InsureGUARD' OR (category LIKE 'InsureGUARD'"
+						+ " AND auditTypeID IS NOT NULL)) ORDER BY category, label");
 
 			for (FlagCriteria fc : flagCriteria) {
 				if (doNotAdd.contains(fc))
@@ -216,12 +219,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					AuditQuestion aq = fc.getQuestion();
 					if (auditTypes.contains(aq.getAuditType())) {
 						List<String> countries = Arrays.asList(aq.getCountriesArray());
-						// If there's a restriction by country, make sure that
-						// the
-						// question matches the operator's country
+						// If there's a restriction by country, make sure that 
+						// the question matches the operator's country
 						// If there are no countries, just check if it's valid
-						// and
-						// it's visible
+						// and it's visible
 						if ((countries.size() > 0 && countries.contains(operator.getCountry().getIsoCode()))
 								|| countries.size() == 0) {
 							if (aq.isValid() && aq.isVisible()) {
@@ -239,11 +240,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 	public List<FlagCriteriaOperator> getCriteriaList() {
 		// Filter out here?
-		List<FlagCriteriaOperator> list = operator.getFlagCriteriaInherited();
+		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
-
-		for (FlagCriteriaOperator item : list) {
-			FlagCriteria criteria = item.getCriteria();
+		
+		for (FlagCriteriaOperator inherited : inheritedCriteria) {
+			FlagCriteria criteria = inherited.getCriteria();
 
 			// If we're looking for insurance, then get only InsureGUARD
 			// If we're not looking for insurance, then get everything else
@@ -256,7 +257,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					continue;
 			}
 
-			valid.add(item);
+			valid.add(inherited);
 		}
 
 		return valid;
@@ -273,11 +274,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return null;
 	}
 
-	public int getPercentAffected(int id) {
+	public float getPercentAffected(int id) {
 		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(id);
 
 		if (fco.isNeedsRecalc()) {
-			int affected = calculatePercentAffected(fco);
+			float affected = calculatePercentAffected(fco);
 
 			fco.setPercentAffected(affected);
 			fco.setLastCalculated(new Date());
@@ -304,7 +305,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return addableFlags;
 	}
 
-	private int calculatePercentAffected(FlagCriteriaOperator fco) {
+	private float calculatePercentAffected(FlagCriteriaOperator fco) {
 		List<ContractorOperator> contractorOperators = operator.getContractorOperators();
 		Map<ContractorAccount, List<FlagData>> contractorsAffected = new TreeMap<ContractorAccount, List<FlagData>>();
 		int totalContractors = contractorOperators.size();
@@ -318,19 +319,38 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			FlagDataCalculator calculator = new FlagDataCalculator(conList, opList);
 			List<FlagData> flagged = calculator.calculate();
 
-			if (flagged.size() > 0) {
+			// Since we're testing on one criteria, there's only one FlagData item
+			if (flagged.size() > 0 && flagged.get(0).getFlag().equals(fco.getFlag())) {
 				contractorsAffected.put(contractor, flagged);
 			}
 		}
 
-		int affected = 0;
+		float affected = 0;
 
-		if (contractorsAffected.size() > 0)
-			affected = (int) (((float) contractorsAffected.size() / (float) totalContractors) * 100);
+		if (contractorsAffected.size() > 0) {
+			affected = ((float) contractorsAffected.size() / (float) totalContractors) * 100;
+			String test = new DecimalFormat("0.#").format((double) affected);
+			affected = Float.parseFloat(test);
+		}
 
 		// Add to the map?
 		affectingCriteria.put(fco.getId(), new ArrayList<ContractorAccount>(contractorsAffected.keySet()));
 
 		return affected;
+	}
+	
+	public boolean canEditFlags() {
+		try {
+			tryPermissions(OpPerms.EditFlagCriteria);
+			
+			if ((!insurance && !operator.equals(operator.getInheritFlagCriteria()))
+					|| (insurance && !operator.equals(operator.getInheritInsurance())))
+				return false;
+		} catch (Exception e) {
+			// Doesn't have the EditFlagCriteria permission
+			return false;
+		}
+		
+		return true;
 	}
 }

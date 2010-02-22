@@ -11,21 +11,21 @@ function checkSubmit(criteriaID) {
 	}
 }
 function addCriteria(criteriaID) {
-	var hurdle = $('#'+criteriaID).find("input[name='newHurdle']").val();
+	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
 	
 	var data = {
 			button: 'add',
 			id: $('#form1_id').val(),
 			criteriaID: criteriaID,
-			newFlag: $('#'+criteriaID).find("input[name='newFlag']").val(),
+			newFlag: $('#'+criteriaID).find("[name='newFlag']").val(),
 			newHurdle: hurdle == null ? '' : hurdle
 		};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data, function() { $('#addCriteria').hide(); });
+	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data, function() { $('#addCriteria').hide('slow'); });
 }
 function submitHurdle(inputObject) {
 	var criteriaID = inputObject.parentNode.parentNode.id;
-	var hurdle = $('#'+criteriaID).find("input[name='newHurdle']").val();
+	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
 	startThinking({div:'thinking', message:'Saving changes...'});
 	
 	var data = {

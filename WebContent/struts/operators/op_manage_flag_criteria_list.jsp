@@ -7,17 +7,18 @@
 			<th>Category</th>
 			<th>Description</th>
 			<th>Flag</th>
-			<th title="Click percentage to see impact."><nobr>% Affected</nobr></th>
-			<th>Remove</th>
+			<s:if test="canEditFlags()">
+				<th title="Click percentage to see impact."><nobr>% Affected</nobr></th>
+				<th>Remove</th>
+			</s:if>
 		</tr>
 	</thead>
 	
 	<s:iterator value="criteriaList">
-		<pics:permission perm="AuditVerification">
 		<tr id="<s:property value="id" />">
 			<td><s:property value="criteria.category" /></td>
 			<td>
-				<s:if test="criteria.allowCustomValue">
+				<s:if test="criteria.allowCustomValue && canEditFlags()">
 					<s:property value="criteria.descriptionBeforeHurdle" />
 					<s:if test="criteria.dataType == 'boolean'">
 						<s:select list="#{'true':'True','false':'False'}" value="criteriaValue()" name="newHurdle"
@@ -37,19 +38,25 @@
 					</s:else>
 					<s:property value="criteria.descriptionAfterHurdle"/>
 				</s:if>
+				<s:elseif test="criteria.allowCustomValue && !canEditFlags()">
+					<s:property value="criteria.descriptionBeforeHurdle" />
+					<s:property value="criteriaValue()" />
+					<s:property value="criteria.descriptionAfterHurdle"/>
+				</s:elseif>
 				<s:else>
 					<s:property value="criteria.description" />
 				</s:else>
 			</td>
 			<td class="center"><s:property value="flag.smallIcon" escape="false" /></td>
-			<td class="center">
-				<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact.">
-					<s:property value="getPercentAffected(id)" />%</a>
-			</td>
-			<td class="center">
-				<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>
-			</td>
+			<s:if test="canEditFlags()">
+				<td class="center">
+					<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact.">
+						<s:property value="getPercentAffected(id)" />%</a>
+				</td>
+				<td class="center">
+					<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>
+				</td>
+			</s:if>
 		</tr>
-		</pics:permission>
 	</s:iterator>
 </table>
