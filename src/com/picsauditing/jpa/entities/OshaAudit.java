@@ -442,7 +442,7 @@ public class OshaAudit implements java.io.Serializable {
 		case TrirNaics:
 			return (getRecordableTotalRate() / conAudit.getContractorAccount().getNaics().getTrir()) * 100;
 		case Fatalities:
-			return getFatalitiesRate();
+			return getFatalities();
 		case Cad7:
 			return getCad7();
 		case Neer:
