@@ -250,4 +250,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		return i;
 	}
 
+	@Override
+	public String toString() {
+		return auditName + "(" + id + ")";
+	}
 }

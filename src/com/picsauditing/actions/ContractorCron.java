@@ -28,6 +28,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -64,6 +65,7 @@ public class ContractorCron extends PicsActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
+	private FlagDataCalculator flagDataCalculator;
 
 	private int conID = 0;
 	private ContractorCronStep[] steps = null;
@@ -110,11 +112,14 @@ public class ContractorCron extends PicsActionSupport {
 	private void run(int conID) {
 		try {
 			ContractorAccount contractor = contractorDAO.find(conID);
+			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
+
 			runBilling(contractor);
 			runAuditCategory(contractor);
 			runAuditBuilder(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+			runPolicies(contractor);
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
@@ -136,7 +141,6 @@ public class ContractorCron extends PicsActionSupport {
 					}
 					runFlag(co);
 					runWaitingOn(co);
-					runPolicies(co);
 				}
 				runCorporateRollup(contractor, corporateSet);
 			}
@@ -245,13 +249,11 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		// get a list of overrides for this contractor and operator
 
+		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteria());
 		Map<FlagCriteria, FlagDataOverride> overrides = flagDataOverrideDAO.findByContractorAndOperator(co
 				.getContractorAccount(), co.getOperatorAccount());
-		FlagDataCalculator flagDataCalculator = new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), co
-				.getOperatorAccount().getFlagCriteriaInherited(), overrides);
+		flagDataCalculator.setOverrides(overrides);
 
-		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
-				.getOperatorAccount().getId());
 		List<FlagData> changes = flagDataCalculator.calculate();
 
 		// Find overall flag color for this operator
@@ -260,6 +262,8 @@ public class ContractorCron extends PicsActionSupport {
 			overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
 
+		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
+				.getOperatorAccount().getId());
 		// Save changes into table
 		final Iterator<FlagData> dbIterator = flagData.iterator();
 		while (dbIterator.hasNext()) {
@@ -336,20 +340,24 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private void runPolicies(ContractorOperator co) {
+	private void runPolicies(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Policies))
 			return;
-		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
-		for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
-			if (audit.getAuditType().getClassType().isPolicy()) {
-				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (cao.isVisible()) {
-						if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
-								&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-							FlagColor flagColor = null; // calcSingle.calculateCaoRecommendedFlag(cao);
 
-							cao.setFlag(flagColor);
-							dao.save(cao);
+		for (ContractorOperator co : contractor.getOperators()) {
+			OperatorAccount inheritInsurance = co.getOperatorAccount().getInheritInsurance();
+			flagDataCalculator.setOperatorCriteria(inheritInsurance.getFlagCriteria());
+			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
+				if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
+					for (ContractorAuditOperator cao : audit.getOperators()) {
+						if (cao.isVisible()) {
+							if (cao.getOperator().equals(inheritInsurance)
+									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
+
+								cao.setFlag(flagColor);
+								dao.save(cao);
+							}
 						}
 					}
 				}

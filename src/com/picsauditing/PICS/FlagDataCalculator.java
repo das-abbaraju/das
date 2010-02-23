@@ -26,18 +26,18 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
+
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	// private boolean worksForOperator = false;
 
-	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria,
-			Collection<FlagCriteriaOperator> operatorCriteria, Map<FlagCriteria, FlagDataOverride> overrides) {
+	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
 		setContractorCriteria(contractorCriteria);
-		setOperatorCriteria(operatorCriteria);
 	}
 
 	public List<FlagData> calculate() {
@@ -81,7 +81,6 @@ public class FlagDataCalculator {
 
 		FlagCriteria criteria = opCriteria.getCriteria();
 		String hurdle = criteria.getDefaultValue();
-		
 
 		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
@@ -91,7 +90,7 @@ public class FlagDataCalculator {
 
 		if (criteria.getAuditType() != null) {
 			if (opCriteria.getMinRiskLevel().compareTo(conCriteria.getContractor().getRiskLevel()) <= 0) {
-				for(ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
+				for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
 					if (conAudit.getAuditType().equals(criteria.getAuditType())) {
 						if (criteria.getAuditType().getClassType().isPolicy()) {
 							// Calculating the Policy status is much more complex
@@ -117,9 +116,9 @@ public class FlagDataCalculator {
 					}
 				}
 				// TODO What is this for exactly? Do we still need Works for Operator??
-//				if (worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
-//					return false;
-//				}
+				// if (worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
+				// return false;
+				// }
 				return criteria.isFlaggableWhenMissing();
 			}
 		}
@@ -326,6 +325,29 @@ public class FlagDataCalculator {
 		return WaitingOn.None;
 	}
 
+	public FlagColor calculateCaoStatus(AuditType auditType) {
+		PicsLogger.log("Calculating recommendation for " + auditType);
+		FlagColor flag = null;
+		for (FlagCriteria key : operatorCriteria.keySet()) {
+			if (key.getQuestion() != null && key.getQuestion().getAuditType().equals(auditType)) {
+				PicsLogger.log(" --- " + key.getQuestion());
+				FlagCriteriaOperator opCriteria = operatorCriteria.get(key);
+				if (isFlagged(opCriteria, contractorCriteria.get(key))) {
+					PicsLogger.log(" --- " + opCriteria.getFlag() + " " + key.getQuestion());
+					flag = FlagColor.getWorseColor(flag, opCriteria.getFlag());
+					if (flag.isRed())
+						// Exit early
+						return flag;
+				} else {
+					PicsLogger.log(" --- Green " + key.getQuestion());
+					if (flag == null)
+						flag = FlagColor.Green;
+				}
+			}
+		}
+		return flag;
+	}
+
 	private void setContractorCriteria(Collection<FlagCriteriaContractor> list) {
 		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
 		for (FlagCriteriaContractor value : list) {
@@ -333,11 +355,14 @@ public class FlagDataCalculator {
 		}
 	}
 
-	private void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
+	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, FlagCriteriaOperator>();
 		for (FlagCriteriaOperator value : list) {
 			operatorCriteria.put(value.getCriteria(), value);
 		}
 	}
 
+	public void setOverrides(Map<FlagCriteria, FlagDataOverride> overrides) {
+		this.overrides = overrides;
+	}
 }

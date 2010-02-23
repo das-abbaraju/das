@@ -47,6 +47,7 @@ public class FlagCriteriaOperator extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@JoinColumn(nullable = false)
 	public FlagColor getFlag() {
 		return flag;
 	}

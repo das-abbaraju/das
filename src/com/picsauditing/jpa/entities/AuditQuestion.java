@@ -46,14 +46,12 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	private AuditSubCategory subCategory;
 	private int number;
-	// private String question;
 	private String columnHeader;
 	private String uniqueCode;
 	private Date effectiveDate = new Date();
 	private Date expirationDate;
 	private YesNo hasRequirement = YesNo.No;
 	private String okAnswer;
-	// private String requirement;
 	private YesNo isRedFlagQuestion = YesNo.No;
 	private String isRequired;
 	private AuditQuestion dependsOnQuestion = null;
@@ -77,7 +75,6 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	private String linkText6;
 	private boolean showComment = false;
 
-	protected List<AuditQuestionOperatorAccount> operator;
 	protected List<AuditQuestionOption> options;
 	protected List<AuditQuestionText> questionTexts = new ArrayList<AuditQuestionText>();
 	private String criteria;
@@ -137,14 +134,6 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	public void setOkAnswer(String okAnswer) {
 		this.okAnswer = okAnswer;
 	}
-
-	// public String getRequirement() {
-	// return this.requirement;
-	// }
-	//
-	// public void setRequirement(String requirement) {
-	// this.requirement = requirement;
-	// }
 
 	/**
 	 * Yes, No, Depends
@@ -340,15 +329,6 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	public void setIsRedFlagQuestion(YesNo isRedFlagQuestion) {
 		this.isRedFlagQuestion = isRedFlagQuestion;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "auditQuestion")
-	public List<AuditQuestionOperatorAccount> getOperator() {
-		return operator;
-	}
-
-	public void setOperator(List<AuditQuestionOperatorAccount> operator) {
-		this.operator = operator;
 	}
 
 	@Transient

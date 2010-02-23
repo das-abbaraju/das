@@ -49,4 +49,8 @@ public enum FlagColor {
 			color1 = color2;
 		return color1;
 	}
+
+	public boolean isRed() {
+		return this.equals(Red);
+	}
 }

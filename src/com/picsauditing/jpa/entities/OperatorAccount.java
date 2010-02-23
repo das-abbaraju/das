@@ -51,7 +51,6 @@ public class OperatorAccount extends Account {
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
 
-	private List<AuditQuestionOperatorAccount> auditQuestions = new ArrayList<AuditQuestionOperatorAccount>();
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
 	private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
@@ -209,15 +208,6 @@ public class OperatorAccount extends Account {
 
 	public void setInheritAuditCategories(OperatorAccount inheritAuditCategories) {
 		this.inheritAuditCategories = inheritAuditCategories;
-	}
-
-	@OneToMany(mappedBy = "operatorAccount")
-	public List<AuditQuestionOperatorAccount> getAuditQuestions() {
-		return auditQuestions;
-	}
-
-	public void setAuditQuestions(List<AuditQuestionOperatorAccount> auditQuestions) {
-		this.auditQuestions = auditQuestions;
 	}
 
 	@Transient
