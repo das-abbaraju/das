@@ -102,41 +102,41 @@ $(function() {
 			<td>Upcoming</td>
 		</tr>
 	</thead>
-	<s:iterator id="op" value="co.operatorAccount.visibleAudits">
-		<s:if test="contractorFlag != null">
-			<tr class="<s:property value="contractorFlag" />">
-				<td class="center"><s:property value="contractorFlag.smallIcon"
+	<s:iterator id="data" value="flagData">
+		<s:if test="#data.criteria.auditType != null">
+			<tr class="<s:property value="#data.flag" />">
+				<td class="center"><s:property value="#data.flag.smallIcon"
 					escape="false" />
-					</td>
-				<td><s:property value="auditType.auditName" /></td>
+				</td>
+				<td><s:property value="#data.criteria.auditType.auditName" /></td>
 				<td>
-				<s:iterator id="con" value="contractor.audits">
-					<s:if test="#op.auditType == #con.auditType">
-						<s:if test="#op.auditType.classType.policy && !(#con.auditStatus.expired)">
-							<s:iterator value="#con.operators">
-								<s:if test="visible && (#op.operatorAccount == operator)">
-									<s:if test="!status.approved && !status.notApplicable">
-										<s:if test="isCanSeeAudit(auditType)">
-											<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
-											<s:property value="status"/><br/>
+					<s:iterator id="con" value="contractor.audits">
+						<s:if test="#data.criteria.auditType == #con.auditType">
+							<s:if test="#data.criteria.auditType.classType.policy && !(#con.auditStatus.expired)">
+								<s:iterator value="#con.operators">
+									<s:if test="visible && (opID == operator)">
+										<s:if test="!status.approved && !status.notApplicable">
+											<s:if test="isCanSeeAudit(auditType)">
+												<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
+												<s:property value="status"/><br/>
+											</s:if>
 										</s:if>
 									</s:if>
-								</s:if>
-							</s:iterator>
-						</s:if>
-						<s:else>
-							<s:if test="#con.auditStatus.pendingSubmitted || #con.auditStatus.incomplete">
-								<s:if test="isCanSeeAudit(auditType)">
-									<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
-								</s:if>
-								<s:property value="auditStatus" /><br />
+								</s:iterator>
 							</s:if>
-						</s:else>
-					</s:if>
-				</s:iterator>
+							<s:else>
+								<s:if test="#con.auditStatus.pendingSubmitted || #con.auditStatus.incomplete">
+									<s:if test="isCanSeeAudit(auditType)">
+										<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
+									</s:if>
+									<s:property value="auditStatus" /><br />
+								</s:if>
+							</s:else>
+						</s:if>
+					</s:iterator>
 				</td>
 			</tr>
-			</s:if>
+		</s:if>
 	</s:iterator>
 	
 	<pics:permission perm="ManageOperators">
@@ -148,197 +148,54 @@ $(function() {
 	</pics:permission>
 </table>
 
-<s:if test="oshaFatalitiesUsed || oshaLwcrUsed || oshaTrirUsed || oshaCad7Used || oshaNeerUsed || oshaDartUsed || oshaSeverityUsed">
-	<s:iterator value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-		<s:if test="trir.required && trir.hurdleFlag.naics">
-			<div class="info">
-			The operator flags up to
-			<s:if test="trir.hurdle > 100">
-				<s:property value="trir.hurdle - 100" />% above
-			</s:if>
-			<s:elseif test="trir.hurdle < 100 ">
-				<s:property value="100 - trir.hurdle" />% below
-			</s:elseif>
-			<s:else>
-				100% 
-			</s:else>
-			of your NAICS industry average code <s:property value="co.contractorAccount.naics.code"/><br/>
-			Your industry average TRIR is <s:property value="co.contractorAccount.naics.trir"/>.
-			<s:if test="oshaLwcrUsed">
-				Your industry average LWCR is <s:property value="co.contractorAccount.naics.lwcr"/> and flags at <s:property value="lwcr.hurdle" />%
-			</s:if>				
-			</div>
-		</s:if>
-	</s:iterator>
-
-<s:if test="oshas.size > 0">
+<s:if test="oshaFlagged">
 	<table class="report" style="clear: none">
 		<thead>
 			<tr>
 				<td>Flag</td>
-				<td>Year</td>
-				<s:if test="oshaFatalitiesUsed">
-					<td>Fatalities</td>
-					<td>Criteria</td>
-				</s:if>
-				<s:if test="oshaLwcrUsed">
-					<td>LWCR</td>
-					<td>Criteria</td>
-				</s:if>
-				<s:if test="oshaTrirUsed">
-					<td>TRIR</td>
-					<td>Criteria</td>
-				</s:if>
-				<s:if test="oshaDartUsed">
-					<td>DART</td>
-					<td>Criteria</td>
-				</s:if>
-				<s:if test="oshaSeverityUsed">
-					<td>Severity Rate</td>
-					<td>Criteria</td>
-				</s:if>
-				<s:if test="oshaCad7Used">
-					<td>Cad7</td>
-					<td>Criteria</td>
-				</s:if>
-				<s:if test="oshaNeerUsed">
-					<td>Neer</td>
-					<td>Criteria</td>
-				</s:if>
+				<td>OshaRateType</td>
+				<td>MultiYearScope</td>
+				<td>Value</td>
+				<td>Verified</td>
+				<td>Criteria</td>
 				<td></td>
 			</tr>
 		</thead>
-		<s:iterator value="oshas">
-			<s:iterator value="value">
-					<tr class="<s:property value="value.flagColor" />">
-						<td class="center"><s:property
-							value="value.flagColor.smallIcon" escape="false" /></td>
-						<td><s:property value="key" /></td>
-						<s:if test="oshaFatalitiesUsed">
-							<td class="right"><s:property value="value.fatalities" /></td>
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if
-									test="fatalities.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-								&gt; <s:property value="fatalities.hurdle" /> = <s:property
-										value="flagColor" />
-									<br />
-								</s:if>
-							</s:iterator></td>
-						</s:if>
-						<s:if test="oshaLwcrUsed">
-							<td class="right"><s:property
-								value="%{new java.text.DecimalFormat('#,##0.000').format(value.lostWorkCasesRate)}" /></td>
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if test="lwcr.required">
-									<s:if
-										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && lwcr.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !lwcr.timeAverage)">
-								&gt; <s:if test="lwcr.hurdleFlag.naics">
-	 									<s:property value="%{new java.text.DecimalFormat('#,##0.000').format((co.contractorAccount.naics.lwcr * lwcr.hurdle) / 100)}" />(<s:property value="co.contractorAccount.naics.lwcr" /> * <s:property value="format(lwcr.hurdle,'#')" />)/100
-	 								</s:if>
-									<s:property value="lwcr.hurdle" /> = <s:property
-											value="flagColor" />
-										<br />
-									</s:if>
-								</s:if>
-							</s:iterator></td>
-						</s:if>
-						<s:if test="oshaTrirUsed">
+		<s:iterator id="data" value="flagData">
+			<s:if test="#data.criteria.oshaType != null && #data.criteria.oshaType == co.operatorAccount.oshaType">		
+				<tr class="<s:property value="#data.flag" />">
+					<td class="center"><s:property
+						value="#data.flag.smallIcon" escape="false" /></td>
+					<td><s:property value="#data.criteria.oshaRateType.description" /></td>
+					<td><s:property value="#data.criteria.multiYearScope" /></td>
+					<s:iterator id="conCriteria" value="contractor.flagCriteria">					
+						<s:if test="#data.criteria == #conCriteria.criteria">
 							<td class="right">
-								<s:property
-									value="%{new java.text.DecimalFormat('#,##0.000').format(value.recordableTotalRate)}" />
-							</td>	
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if test="trir.required">
-									<s:if
-										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && trir.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !trir.timeAverage)">
-	 									&gt; 
-	 									<s:if test="trir.hurdleFlag.naics">
-	 										<s:property value="%{new java.text.DecimalFormat('#,##0.000').format((co.contractorAccount.naics.trir * trir.hurdle) / 100)}" />(<s:property value="co.contractorAccount.naics.trir" /> * <s:property value="format(trir.hurdle,'#')" />)/100
-	 									</s:if>
-	 									<s:else>
-	 										<s:property value="trir.hurdle" />
-	 									</s:else>
-	 									= <s:property value="flagColor" />
-										<br />
-									</s:if>
-								</s:if>
-							</s:iterator></td>
-						</s:if>
-						<s:if test="oshaDartUsed">
-							<td class="right"><s:property
-								value="%{new java.text.DecimalFormat('#,##0.000').format(value.restrictedDaysAwayRate)}" /></td>
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if test="dart.required">
-									<s:if
-										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && dart.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !dart.timeAverage)">
-								&gt; <s:property value="dart.hurdle" /> = <s:property
-											value="flagColor" />
-										<br />
-									</s:if>
-								</s:if>
-							</s:iterator></td>
-						</s:if>
-						<s:if test="oshaSeverityUsed">
-							<td class="right">
-								<s:if test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-									<s:property
-										value="%{new java.text.DecimalFormat('#,##0.000').format(value.restrictedOrJobTransferDays)}" />
-								</s:if>
+								<s:property value="#conCriteria.answer" />  
 							</td>
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if test="severity.required">
-									<s:if
-										test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !severity.timeAverage">
-								&gt; <s:property value="severity.hurdle" /> = <s:property
-											value="flagColor" />
-										<br />
-									</s:if>
-								</s:if>
-							</s:iterator></td>
+							<td>
+								<s:if test="#conCriteria.verified">Verified</s:if>
+								<s:else>Unverified</s:else>
+							</td>	
+						</s:if>	
+						</s:iterator>
+					<td>> 
+						<s:if test="#data.criteria.allowCustomValue == false">
+							<s:property value="#data.criteria.defaultValue"/>
 						</s:if>
-						<s:if test="oshaCad7Used">
-							<td class="right"><s:property value="value.cad7" /></td>
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if
-									test="cad7.required && !key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-								&gt; <s:property value="cad7.hurdle" /> = <s:property
-										value="flagColor" />
-									<br />
+						<s:else>
+							<s:iterator id="opCriteria" value="co.operatorAccount.flagQuestionCriteriaInherited">
+								<s:if test="#opCriteria.criteria == #data.criteria">
+									<s:property value="#opCriteria.hurdle"/> = <s:property value="#opCriteria.flag"/>
 								</s:if>
-							</s:iterator></td>
-						</s:if>
-						<s:if test="oshaNeerUsed">
-							<td class="right"><s:property value="value.neer" /></td>
-							<td style="vertical-align: middle;"><s:iterator
-								value="co.operatorAccount.inheritFlagCriteria.flagOshaCriteria">
-								<s:if test="neer.required">
-									<s:if
-										test="(key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && neer.timeAverage) || (!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG) && !neer.timeAverage)">
-									&gt; <s:property value="neer.hurdle" /> = <s:property
-											value="flagColor" />
-										<br />
-									</s:if>
-								</s:if>
-							</s:iterator></td>
-						</s:if>
-						<td><s:if test="isCanSeeAudit(value.conAudit.auditType)">
-							<s:if
-							test="!key.equals(@com.picsauditing.jpa.entities.OshaAudit@AVG)">
-							<a
-								href="AuditCat.action?auditID=<s:property value="value.conAudit.id"/>&catID=<s:property value="shaTypeID"/>">Show</a>
-							</s:if>
-						</s:if></td>
-					</tr>
-				</s:iterator>
+							</s:iterator>
+						</s:else>
+					</td>
+					<td>Link to Audit</td>
+				</tr>
+			</s:if>
 		</s:iterator>
 	</table>
-</s:if>
 </s:if>
 
 <table class="report" style="clear: none">
@@ -346,30 +203,50 @@ $(function() {
 		<tr>
 			<td>Flag</td>
 			<td>Answer</td>
+			<td>Criteria</td>
 			<td>For</td>
 			<td>Question</td>
 			<td></td>
 		</tr>
 	</thead>
-	<s:iterator value="acaListAudits">
-		<tr class="<s:property value="resultColor" />">
-			<td class="center"><s:property
-				value="resultColor.smallIcon" escape="false" /></td>
-			<td class="center"><s:property value="answer.answer" /></td>
-			<td><s:property value="answer.audit.auditType.auditName" /> <s:property value="answer.audit.auditFor" /></td>
-			<td>
-				<s:property value="answer.question.question" escape="false" />
-			</td>
-			<td>
-				<s:if test="getAuditCatData(answer.audit.id,answer.question.id) != null">
-					<a href="AuditCat.action?auditID=<s:property value="answer.audit.id"/>&catDataID=<s:property value="#auditCatData.id"/>&mode=View#node_<s:property value="answer.question.id"/>">Show</a>
-				</s:if>
-			</td>
-		</tr>
+	<s:iterator id="data" value="flagData">
+		<s:if test="#data.criteria.question != null && !#data.criteria.question.auditType.classType.policy">
+			<tr class="<s:property value="#data.flag" />">
+				<td class="center"><s:property
+					value="#data.flag.smallIcon" escape="false" /></td>
+				<td class="center">
+					<s:iterator id="conCriteria" value="contractor.flagCriteria">					
+						<s:if test="#data.criteria == #conCriteria.criteria">
+							<s:property value="#conCriteria.answer" />
+						</s:if>
+					</s:iterator>				
+				</td>
+				<td><s:property value="#data.criteria.comparison"/> 
+					<s:iterator id="opCriteria" value="co.operatorAccount.flagQuestionCriteriaInherited">
+						<s:if test="#opCriteria.criteria == #data.criteria">
+							<s:if test="!#data.criteria.allowCustomValue">
+								<s:property value="#data.criteria.defaultValue"/>
+							</s:if>
+							<s:else>
+								<s:property value="#opCriteria.hurdle"/> 
+							</s:else>
+							= <s:property value="#opCriteria.flag"/>
+						</s:if>
+					</s:iterator>
+				</td>
+				<td><s:property value="#data.criteria.question.auditType.auditName" /> <s:property value="#data.criteria.multiYearScope" /></td>
+				<td>
+					<s:property value="#data.criteria.question.question" escape="false" />
+				</td>
+				<td>
+					Link to Audit
+				</td>
+			</tr>
+		</s:if>
 	</s:iterator>
 	<pics:permission perm="EditFlagCriteria">
 		<tr><td colspan="5" class="center"><a 
-			href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.id" />">Edit Flag Criteria</a></td></tr>
+			href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">Edit Flag Criteria</a></td></tr>
 	</pics:permission>
 </table>
 

@@ -1,78 +1,54 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import com.picsauditing.PICS.AuditCriteriaAnswer;
-import com.picsauditing.PICS.AuditCriteriaAnswerBuilder;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagOshaCriteria;
-import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
-	protected AuditDataDAO auditDataDAO;
 	protected AuditCategoryDataDAO auditCategoryDataDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
+	protected FlagDataDAO flagDataDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
-	protected FlagCalculatorSingle calculator = new FlagCalculatorSingle();
 	protected String action = "";
 
-	protected List<AuditCriteriaAnswer> acaList;
 	protected Date forceEnd;
 	protected FlagColor forceFlag;
 	protected String forceNote;
 	protected boolean overrideAll = false;
-
-	private ContractorAuditOperatorDAO caoDAO;
-	private EmailSubscriptionDAO subscriptionDAO;
+	protected List<FlagData> flagData;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDao, AuditDataDAO auditDataDAO,
-			ContractorAuditOperatorDAO caoDAO,
-			EmailSubscriptionDAO subscriptionDAO, AuditCategoryDataDAO auditCategoryDataDAO,
-			AuditQuestionDAO auditQuestionDAO) {
+			ContractorOperatorDAO contractorOperatorDao,AuditCategoryDataDAO auditCategoryDataDAO,
+			AuditQuestionDAO auditQuestionDAO,FlagDataDAO flagDataDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
-		this.auditDataDAO = auditDataDAO;
-		this.caoDAO = caoDAO;
-		this.subscriptionDAO = subscriptionDAO;
 		this.auditCategoryDataDAO = auditCategoryDataDAO;
 		this.auditQuestionDAO = auditQuestionDAO;
-		this.noteCategory = NoteCategory.Flags;
+		this.flagDataDAO = flagDataDAO;
 	}
 
 	public String execute() throws Exception {
@@ -82,6 +58,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		findContractor();
 
 		PicsLogger.start("ContractorFlagAction");
+		contractor.setNeedsRecalculation(true);
+		contractor.setLastRecalculation(null);
+		accountDao.save(contractor);
+
 		if (opID == 0)
 			opID = permissions.getAccountId();
 
@@ -96,18 +76,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			addActionError("This contractor doesn't work at the given site");
 			return BLANK;
 		}
-		co.getOperatorAccount().getFlagOshaCriteria();
-		co.getOperatorAccount().getAudits();
-
-		// calculator.setDebug(true); // for development
-		calculator.setAnswerOnly(false);
-		calculator.setOperator(co.getOperatorAccount());
-		calculator.setContractor(contractor);
-		calculator.setConAudits(contractor.getAudits());
-
-		List<Integer> criteriaQuestionIDs = co.getOperatorAccount().getQuestionIDs();
-		AnswerMapByAudits answerMapByAudits = auditDataDAO.findAnswersByAudits(contractor.getAudits(),
-				criteriaQuestionIDs);
 
 		if (button != null) {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
@@ -176,57 +144,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			getNoteDao().save(note);
 		}
 
-		if (co.getFlagColor() == null) {
-			// Add a new flag for the contractor
-			// TODO get the flagColor from FlagDataCalculator
-			co.setFlagLastUpdated(new Date());
-			co.setFlagColor(FlagColor.Red);
-			
-		}
-
-		// Make sure the operator has only the answers that are visible to them
-		AnswerMapByAudits answerMapForOperator = new AnswerMapByAudits(answerMapByAudits, co.getOperatorAccount());
-		PicsLogger.log(" Found " + answerMapForOperator.getAuditSet().size() + " audits in answerMapForOperator");
-		AuditCriteriaAnswerBuilder acaBuilder = new AuditCriteriaAnswerBuilder(answerMapForOperator, co
-				.getOperatorAccount().getFlagQuestionCriteriaInherited());
-		acaList = acaBuilder.getAuditCriteriaAnswers();
-		calculator.setAcaList(acaList);
-//		calculator.setHasOqEmployees(contractor.isOqEmployees(auditDataDAO));
-//		calculator.setHasCOR(contractor.isCOR(auditDataDAO));
-
-		PicsLogger.start("CaoStatus");
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getClassType().isPolicy()) {
-				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (cao.isVisible()) {
-						if (cao.getStatus().isSubmitted() || cao.getStatus().isVerified()) {
-							FlagColor flagColor = calculator.calculateCaoRecommendedFlag(cao);
-							cao.setFlag(flagColor);
-							caoDAO.save(cao);
-						}
-					}
-				}
-			}
-		}
-		PicsLogger.stop();
-
-		PicsLogger.start("Flag.calculate");
-		FlagColor newColor = calculator.calculate();
-		PicsLogger.stop();
-		if (newColor != null && !newColor.equals(co.getFlagColor())) {
-			addActionMessage("Flag color has been now updated from " + co.getFlagColor() + " to " + newColor);
-			addNote(contractor, "Flag color changed from " + co.getFlagColor() + " to " + newColor + " for "
-					+ co.getOperatorAccount().getName(), NoteCategory.Flags, LowMedHigh.Med, true, co
-					.getOperatorAccount().getId(), new User(User.SYSTEM));
-			co.setFlagLastUpdated(new Date());
-			co.setFlagColor(newColor);
-		}
-		WaitingOn waitingOn = calculator.calculateWaitingOn();
-
-		co.setWaitingOn(waitingOn);
-		co.setAuditColumns(permissions);
-		contractorOperatorDao.save(co);
-
 		PicsLogger.stop();
 		return SUCCESS;
 	}
@@ -246,101 +163,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public void setCo(ContractorOperator co) {
 		this.co = co;
 	}
-
-	// Other helper getters for osha criteria
-	public boolean isOshaTrirUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getTrir().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaLwcrUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getLwcr().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaFatalitiesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getFatalities().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaCad7Used() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getCad7().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaNeerUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getNeer().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaDartUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getDart().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaSeverityUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getSeverity().isRequired())
-				return true;
-		}
-		return false;
-	}
-
-	public boolean isOshaAveragesUsed() {
-		for (FlagOshaCriteria criteria : co.getOperatorAccount().getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.getFatalities().isTimeAverage())
-				return true;
-			if (criteria.getLwcr().isTimeAverage())
-				return true;
-			if (criteria.getTrir().isTimeAverage())
-				return true;
-			if (criteria.getDart().isTimeAverage())
-				return true;
-			if (criteria.getNeer().isTimeAverage())
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * The contractor's OSHA/MSHA record that the operator uses for evaluation
-	 * 
-	 * @return
-	 */
-	public Map<String, OshaAudit> getOshas() {
-		return co.getContractorAccount().getOshas().get(co.getOperatorAccount().getInheritFlagCriteria().getOshaType());
-	}
-
-	public List<AuditCriteriaAnswer> getAcaList() {
-		return acaList;
-	}
-
-	public List<AuditCriteriaAnswer> getAcaListAudits() {
-		List<AuditCriteriaAnswer> list = new ArrayList<AuditCriteriaAnswer>();
-		for (AuditCriteriaAnswer aca : acaList)
-			if (!aca.getClassType().isPolicy())
-				list.add(aca);
-		return list;
-	}
-
+	
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
@@ -404,7 +227,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public int getShaTypeID() {
-		OshaType shaType = co.getOperatorAccount().getInheritFlagCriteria().getOshaType();
+		OshaType shaType = co.getOperatorAccount().getOshaType();
 		if (shaType.equals(OshaType.COHS))
 			return AuditCategory.CANADIAN_STATISTICS;
 		if (shaType.equals(OshaType.MSHA))
@@ -418,6 +241,21 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return true;
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			return true;
+		return false;
+	}
+	
+	public List<FlagData> getFlagData() {
+		if(flagData == null)
+			flagData = flagDataDAO.findByContractorAndOperator(contractor.getId(), opID);
+		return flagData;
+	}
+	
+	public boolean isOshaFlagged() {
+		for(FlagData flagDatas : getFlagData()) {
+			if(flagDatas.getCriteria().getOshaType() != null) {
+				return true;
+			}
+		}
 		return false;
 	}
 }
