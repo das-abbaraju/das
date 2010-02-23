@@ -123,6 +123,8 @@ public class ContractorFlagETL {
 										verified = false;
 								}
 								answer /= (float) years.size();
+								// formatting data as was done previously
+								answer = (float) Math.round(1000 * answer) / 1000;
 
 								break;
 							case ThreeYearsAgo:
