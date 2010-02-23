@@ -104,17 +104,13 @@ public class FlagCriteriaOperator extends BaseTable {
 
 		return true;
 	}
-
+	
+	@Transient 
 	public String replaceHurdle() {
-		String value = criteria.getDefaultValue();
-
-		if (criteria.isAllowCustomValue() && hurdle != null) {
-			value = hurdle;
-		}
-
-		return criteria.getDescription().replaceAll("\\{HURDLE\\}", value);
+		return criteria.getDescription().replaceAll("\\{HURDLE\\}", criteriaValue());
 	}
 
+	@Transient 
 	public String criteriaValue() {
 		if (criteria.isAllowCustomValue() && hurdle != null)
 			return hurdle;
