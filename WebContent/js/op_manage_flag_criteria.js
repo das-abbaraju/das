@@ -12,6 +12,7 @@ function checkSubmit(criteriaID) {
 }
 function addCriteria(criteriaID) {
 	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
+	startThinking({div:'thinking', message:'Adding criteria...'});
 	
 	var data = {
 			button: 'add',
@@ -21,7 +22,12 @@ function addCriteria(criteriaID) {
 			newHurdle: hurdle == null ? '' : hurdle
 		};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data, function() { $('#addCriteria').hide('slow'); });
+	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data, 
+			function() {
+				$('#addCriteria').hide('slow');
+				stopThinking({div:'thinking'});
+			}
+		);
 }
 function submitHurdle(inputObject) {
 	var criteriaID = inputObject.parentNode.parentNode.id;

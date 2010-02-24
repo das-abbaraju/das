@@ -322,7 +322,8 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteriaOperator> opList = new ArrayList<FlagCriteriaOperator>();
 			opList.add(fco);
 
-			FlagDataCalculator calculator = new FlagDataCalculator(conList, opList, null);
+			FlagDataCalculator calculator = new FlagDataCalculator(conList);
+			calculator.setOperatorCriteria(opList);
 			List<FlagData> flagged = calculator.calculate();
 
 			// Since we're testing on one criteria, there's only one FlagData item
