@@ -45,6 +45,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addField("fd.id dataID");
 		sql.addField("fd.flag");
 
+		sql.setLimit(10000);
+
 		int opID = 0;
 		if (permissions.isOperatorCorporate()) {
 			opID = permissions.getAccountId();

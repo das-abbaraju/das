@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>Operator Flag Matrix</title>
-<s:include value="../jquery.jsp"/>
+<s:include value="reportHeader.jsp"/>
 <style>
 .Red {
 	color: #CC0000;
@@ -15,12 +15,20 @@
 .Green {
 	color: #339900;
 }
+.flag_override {
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
 
-<s:include value="reportHeader.jsp"/>
+<s:include value="../operators/opHeader.jsp"/>
 
+<s:if test="permissions.admin">
+	<s:form id="operatorForm">
+		<s:select name="id" list="filter.operatorList" listKey="id" listValue="name" headerKey="" headerValue=" - Operator - " onchange="$('form#operatorForm').submit();"/>
+	</s:form>
+</s:if>
 
 <table class="report">
 	<thead>
@@ -39,6 +47,7 @@
 		<s:iterator value="flagCriteria" id="criteria">
 			<td>
 				<s:iterator value="#conmap.value.get(#criteria)">
+					<span class="flag_override" onclick="alert('override flag <s:property value="#conmap.key.id"/>')">
 					<s:if test="#criteria.dataType == 'boolean'">
 						<s:property value="value.flag.smallIcon" escape="false"/>
 					</s:if>
@@ -48,6 +57,7 @@
 					<s:else>
 						<span class="<s:property value="value.flag"/>"><s:property value="key.answer"/></span>
 					</s:else>
+					</span>
 				</s:iterator>
 			</td>
 		</s:iterator>
