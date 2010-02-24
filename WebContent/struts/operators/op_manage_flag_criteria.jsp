@@ -30,6 +30,14 @@ table.report a {
 	width: 10px;
 	height: 12px;
 }
+
+.hide {
+	display: none;
+}
+
+.hover {
+	margin-left: 10px;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/op_manage_flag_criteria.js?v=20100219"></script>

@@ -29,16 +29,18 @@ function addCriteria(criteriaID) {
 			}
 		);
 }
-function submitHurdle(inputObject) {
-	var criteriaID = inputObject.parentNode.parentNode.id;
+function submitHurdle(tdCell) {
+	var criteriaID = tdCell.parentNode.id;
 	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
+	var flag = $('#'+criteriaID).find("[name='newFlag']").val();
 	startThinking({div:'thinking', message:'Saving changes...'});
 	
 	var data = {
 			button: 'save',
 			id: $('#form1_id').val(),
 			criteriaID: criteriaID,
-			newHurdle: hurdle
+			newHurdle: hurdle,
+			newFlag: flag
 	};
 	
 	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data,
@@ -75,5 +77,24 @@ function getAddQuestions() {
 		);
 	} else {
 		$(layer).hide('slow');
+	}
+}
+
+function editCriteria(tdCell) {
+	var id = tdCell.parentNode.id;
+	var hurdleValue;
+	
+	$(tdCell).find(".hide").toggle();
+	$("#"+id+" .empty").toggle();
+	
+	if ($("#"+id+" .empty").is(":hidden")) {
+		hurdleValue = $(tdCell).find(".hurdle").text();
+		$(tdCell).find(".hurdle").html('<input type="text" value="'+hurdleValue+'" name="newHurdle" size="5" />');
+		$(tdCell).find(".hover").text("[cancel]");
+	}
+	else {
+		hurdleValue = $(tdCell).find("input").val();
+		$(tdCell).find(".hurdle").html("<b>"+hurdleValue+"</b>");
+		$(tdCell).find(".hover").text("[edit]");
 	}
 }

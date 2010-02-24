@@ -116,6 +116,8 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	@Transient
 	public String getDescriptionAfterHurdle() {
 		try {
+			if (description.indexOf("{HURDLE}") < 0)
+				return null;
 			return description.substring(description.indexOf("{HURDLE}") + 8);
 		} catch (Exception e) {
 			return null;

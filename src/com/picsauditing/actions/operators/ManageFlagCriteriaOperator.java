@@ -103,6 +103,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
 				fco.setUpdateDate(new Date());
 				fco.setUpdatedBy(getUser());
+				fco.setFlag(newFlag);
 				fco.setHurdle(newHurdle);
 				fco.setLastCalculated(null);
 				flagCriteriaOperatorDAO.save(fco);

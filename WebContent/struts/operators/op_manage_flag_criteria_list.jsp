@@ -13,44 +13,27 @@
 			</s:if>
 		</tr>
 	</thead>
-	
+	<tbody>
 	<s:iterator value="criteriaList">
-		<tr id="<s:property value="id" />">
+		<tr id="<s:property value="id" />" class="clickable">
 			<td><s:property value="criteria.category" /></td>
-			<td>
-				<s:if test="criteria.allowCustomValue && canEditFlags()">
-					<s:property value="criteria.descriptionBeforeHurdle" />
-					<s:if test="criteria.dataType == 'boolean'">
-						<s:select list="#{'true':'True','false':'False'}" value="criteriaValue()" name="newHurdle"
-							onchange="submitHurdle(this);"></s:select>
-					</s:if>
-					<s:elseif test="criteria.dataType == 'number'">
-						<input type="text" value="<s:property value="criteriaValue()" />" size="5" name="newHurdle"
-							onchange="submitHurdle(this);" />
-					</s:elseif>
-					<s:elseif test="criteria.dataType == 'date'">
-						<input type="text" class="datepicker" value="<s:property value="criteriaValue()" />" name="newHurdle"
-							size="10" onchange="submitHurdle(this);" />
-					</s:elseif>
-					<s:else>
-						<input type="text" value="<s:property value="criteriaValue()" />" size="20" name="newHurdle"
-							onchange="submitHurdle(this);" />
-					</s:else>
-					<s:property value="criteria.descriptionAfterHurdle"/>
+			<td onmouseover="$(this).find('.hover').show();" onmouseout="$(this).find('.hover').hide();">
+				<a href="#" onclick="editCriteria(this.parentNode); return false;" class="hover"
+					style="display:none; float:right;">[edit]</a>
+				<a href="#" onclick="submitHurdle(this.parentNode); return false;" class="picsbutton hide">Save</a>
+				<s:select list="getAddableFlags(0)" name="newFlag" value="flag" cssClass="hide"></s:select>
+				<span class="hide"> flag if </span>
+				<s:property value="criteria.descriptionBeforeHurdle" />
+				<s:if test="criteria.dataType != 'boolean'">
+					<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
 				</s:if>
-				<s:elseif test="criteria.allowCustomValue && !canEditFlags()">
-					<s:property value="criteria.descriptionBeforeHurdle" />
-					<s:property value="criteriaValue()" />
-					<s:property value="criteria.descriptionAfterHurdle"/>
-				</s:elseif>
-				<s:else>
-					<s:property value="criteria.description" />
-				</s:else>
+				<s:property value="criteria.descriptionAfterHurdle" />
 			</td>
-			<td class="center"><s:property value="flag.smallIcon" escape="false" /></td>
+			<td class="center"><span class="empty"><s:property value="flag.smallIcon" escape="false" /></span></td>
 			<s:if test="canEditFlags()">
 				<td class="center">
-					<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact.">
+					<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact."
+						class="empty">
 						<s:property value="getPercentAffected(id)" />%</a>
 				</td>
 				<td class="center">
@@ -59,4 +42,5 @@
 			</s:if>
 		</tr>
 	</s:iterator>
+	</tbody>
 </table>

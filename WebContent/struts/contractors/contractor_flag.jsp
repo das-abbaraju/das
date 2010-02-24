@@ -246,7 +246,7 @@ $(function() {
 	</s:iterator>
 	<pics:permission perm="EditFlagCriteria">
 		<tr><td colspan="5" class="center"><a 
-			href="OperatorFlagCriteria.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">Edit Flag Criteria</a></td></tr>
+			href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">Edit Flag Criteria</a></td></tr>
 	</pics:permission>
 </table>
 
