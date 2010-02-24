@@ -17,7 +17,6 @@ import com.picsauditing.PICS.AuditPercentCalculator;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.FlagCalculatorSingle;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -28,7 +27,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -304,9 +302,12 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.WaitingOn))
 			return;
 
-		FlagCalculatorSingle calcSingle = new FlagCalculatorSingle();
 		WaitingOn waitingOn = null; // calcSingle.calculateWaitingOn();
-
+		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
+				.getOperatorAccount().getId());
+		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
+		waitingOn = flagDataCalculator.calculateWaitingOn(flagData);
+		
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
 			Note note = new Note();

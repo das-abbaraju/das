@@ -8,8 +8,7 @@ public enum MultiYearScope {
 	TwoYearsAgo("Two Years Ago"),
 	ThreeYearsAgo("Three Years Ago"), 
 	ThreeYearAverage("Three Year Average"), 
-	ThreeYearWeightedAverage("Three Year Weighted Average"), 
-	AllThreeYears("All Three Years");
+	ThreeYearWeightedAverage("Three Year Weighted Average");
 	
 	private String description;
 	private MultiYearScope(String description) {

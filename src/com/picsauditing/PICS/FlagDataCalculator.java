@@ -219,8 +219,7 @@ public class FlagDataCalculator {
 		return true;
 	}
 
-	public WaitingOn calculateWaitingOn() {
-		List<FlagData> flagDataList = calculate();
+	public WaitingOn calculateWaitingOn(List<FlagData> flagDataList) {
 
 		if (flagDataList.size() > 0) {
 			ContractorAccount contractor = flagDataList.get(0).getContractor();
