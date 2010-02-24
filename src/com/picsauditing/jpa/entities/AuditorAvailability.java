@@ -23,6 +23,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "auditor_availability")
 public class AuditorAvailability extends BaseTable {
+
 	private User user;
 	private Date startDate;
 	private int duration;
