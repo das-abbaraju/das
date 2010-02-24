@@ -635,6 +635,12 @@ a.picsbutton {
 	color: #fff;
 }
 
+.picsbutton.grey {
+	background: #dedede;
+	border-color: #ababab;
+	color: #ababab;
+}
+
 /* POSITIVE */
 .positive,a.positive:visited,a.positive:link {
 	color: #529214;
