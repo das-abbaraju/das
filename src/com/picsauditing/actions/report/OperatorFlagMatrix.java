@@ -29,7 +29,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
 		sql.addJoin("JOIN accounts ac ON ac.id = c.id");
 		sql.addJoin("JOIN generalcontractors gc ON gc.genID = o.id AND gc.subID = c.id");
-		sql.addJoin("LEFT JOIN flag_data fd ON fd.opID = fco.opID AND fd.conID = fcc.conID AND fd.criteriaID = fc.id");
+		sql.addJoin("JOIN flag_data fd ON fd.opID = fco.opID AND fd.conID = fcc.conID AND fd.criteriaID = fc.id");
 
 		sql.addField("c.id conID");
 		sql.addField("ac.name conName");
@@ -38,6 +38,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addField("fc.description");
 		sql.addField("fc.defaultValue");
 		sql.addField("fc.comparison");
+		sql.addField("fc.dataType");
 		sql.addField("fco.hurdle");
 		sql.addField("fcc.id fccID");
 		sql.addField("fcc.answer");
@@ -70,6 +71,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 			criteria.setId(Integer.parseInt(d.get("criteriaID").toString()));
 			criteria.setLabel((String) d.get("label"));
 			criteria.setDescription((String) d.get("description"));
+			criteria.setDataType(d.get("dataType").toString());
 
 			flagCriteria.add(criteria);
 
@@ -82,7 +84,9 @@ public class OperatorFlagMatrix extends ReportAccount {
 				dat.setId(Integer.parseInt(d.get("dataID").toString()));
 				dat.setFlag(d.get("flag") == null ? null : FlagColor.valueOf(d.get("flag").toString()));
 			}
+
 			contractorCriteria.get(con).put(criteria, new TreeMap<FlagCriteriaContractor, FlagData>() {
+
 				{
 					put(criteriaContractor, dat);
 				}

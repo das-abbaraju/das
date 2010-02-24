@@ -39,7 +39,15 @@
 		<s:iterator value="flagCriteria" id="criteria">
 			<td>
 				<s:iterator value="#conmap.value.get(#criteria)">
-					<span class="<s:property value="value.flag"/>"><s:property value="key.answer"/></span>
+					<s:if test="#criteria.dataType == 'boolean'">
+						<s:property value="value.flag.smallIcon" escape="false"/>
+					</s:if>
+					<s:elseif test="dataType == 'number'">
+						<span class="<s:property value="value.flag"/>"><s:property value="format(key.answer)"/></span>
+					</s:elseif>
+					<s:else>
+						<span class="<s:property value="value.flag"/>"><s:property value="key.answer"/></span>
+					</s:else>
 				</s:iterator>
 			</td>
 		</s:iterator>
