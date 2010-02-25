@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
@@ -121,8 +122,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
 
-			EmailSender sender = new EmailSender();
-			sender.sendNow(emailQueue);
+			EmailSender.send(emailQueue);
 			return "An email has been sent to " + user.getEmail()
 					+ ". This email includes a link to set or reset the password on the account.";
 		} catch (Exception e) {
@@ -130,7 +130,7 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 	}
 	
-	static public String sendActivationEmail(User user) {
+	static public String sendActivationEmail(User user, Permissions permission) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
@@ -141,13 +141,13 @@ public class AccountRecovery extends PicsActionSupport {
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
-
+			emailBuilder.setPermissions(permission);
+			
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
 
-			EmailSender sender = new EmailSender();
-			sender.sendNow(emailQueue);
+			EmailSender.send(emailQueue);
 			return "An email has been sent to " + user.getEmail()
 					+ ". This email includes a link to set or reset the password on the account.";
 		} catch (Exception e) {

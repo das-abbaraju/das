@@ -286,7 +286,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 				// Send activation email if set
 				if (sendActivationEmail && user.getId() == 0)
-					addActionMessage(AccountRecovery.sendActivationEmail(user));
+					addActionMessage(AccountRecovery.sendActivationEmail(user,permissions));
 			}
 
 			try {
