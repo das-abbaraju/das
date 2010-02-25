@@ -58,7 +58,7 @@ public class FlagDataCalculatorTest extends TestCase {
 		opCrits.add(fcOp);
 
 		/* Initialize the calculator */
-		calculator = new FlagDataCalculator(conCrits, opCrits);
+		calculator = new FlagDataCalculator(conCrits);
 		caoMap = null;
 	}
 
@@ -311,7 +311,7 @@ public class FlagDataCalculatorTest extends TestCase {
 	private FlagData getSingle() {
 		conCrits.set(0, fcCon);
 		opCrits.set(0, fcOp);
-		calculator = new FlagDataCalculator(conCrits, opCrits);
+		calculator = new FlagDataCalculator(conCrits);
 //		calculator.setCaoMap(caoMap);
 		List<FlagData> data = calculator.calculate();
 

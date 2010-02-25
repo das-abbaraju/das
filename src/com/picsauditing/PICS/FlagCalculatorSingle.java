@@ -1,7 +1,6 @@
 package com.picsauditing.PICS;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,15 +8,12 @@ import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagOshaCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.log.PicsLogger;
@@ -36,7 +32,7 @@ public class FlagCalculatorSingle {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private List<ContractorAudit> conAudits;
-	protected List<AuditCriteriaAnswer> acaList;
+//	protected List<AuditCriteriaAnswer> acaList;
 	protected boolean hasOqEmployees = false;
 	protected boolean hasCOR = false;
 
@@ -77,247 +73,247 @@ public class FlagCalculatorSingle {
 
 		debug(" post override flagColor=" + flagColor);
 
-		for (AuditOperator audit : operator.getVisibleAudits()) {
-			audit.setContractorFlag(null);
-			boolean hasAudit = false;
-			for (ContractorAudit conAudit : conAudits) {
-				if (conAudit.getAuditType().equals(audit.getAuditType()) && !conAudit.getAuditStatus().isExpired()) {
-					hasAudit = true;
-					break;
-				}
-			}
+//		for (AuditOperator audit : operator.getVisibleAudits()) {
+//			audit.setContractorFlag(null);
+//			boolean hasAudit = false;
+//			for (ContractorAudit conAudit : conAudits) {
+//				if (conAudit.getAuditType().equals(audit.getAuditType()) && !conAudit.getAuditStatus().isExpired()) {
+//					hasAudit = true;
+//					break;
+//				}
+//			}
 			// Always start with Green
-			if (hasAudit)
-				audit.setContractorFlag(FlagColor.Green);
+//			if (hasAudit)
+//				audit.setContractorFlag(FlagColor.Green);
 			// removed contractor.getRiskLevel().ordinal() >=
 			// audit.getMinRiskLevel() (needs further review)
-			boolean auditFlagRedOrAmber = audit.getRequiredForFlag() != null
-					&& !audit.getRequiredForFlag().equals(FlagColor.Green);
-			boolean contractorRiskLevelHighEnough = audit.getMinRiskLevel() > 0
-					&& contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel();
-			boolean adHocExists = false;
+//			boolean auditFlagRedOrAmber = audit.getRequiredForFlag() != null
+//					&& !audit.getRequiredForFlag().equals(FlagColor.Green);
+//			boolean contractorRiskLevelHighEnough = audit.getMinRiskLevel() > 0
+//					&& contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel();
+//			boolean adHocExists = false;
 			// Setting the Flag Color to
-			if (audit.getMinRiskLevel() == 0) {
-				if (hasAudit)
-					adHocExists = true;
-				else
-					audit.setContractorFlag(null);
-			}
+//			if (audit.getMinRiskLevel() == 0) {
+//				if (hasAudit)
+//					adHocExists = true;
+//				else
+//					audit.setContractorFlag(null);
+//			}
 
-			if ((adHocExists || contractorRiskLevelHighEnough) && auditFlagRedOrAmber) {
-				debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
-				// The contractor requires this audit,
-				// make sure they have an active one
-				// If an active audit doesn't exist, then set
-				// the contractor's flag to the required color
-
-				if (!hasAudit && (contractor.isAcceptsBids() || !worksForOperator)) {
-					audit.setContractorFlag(null);
-				} else
-					audit.setContractorFlag(audit.getRequiredForFlag());
-
-				int annualAuditCount = 0;
-				for (ContractorAudit conAudit : conAudits) {
-					if (conAudit.getAuditType().equals(audit.getAuditType())) {
-						if (conAudit.getAuditType().getClassType().isPolicy()) {
-							// For Policies
-							if (!worksForOperator) {
-								audit.setContractorFlag(null);
-							}
-							if (!conAudit.getAuditStatus().isExpired()) {
-								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator.getInheritInsurance())) {
-										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
-											audit.setContractorFlag(null);
-											debug(" ---- found N/A");
-										}
-										if (CaoStatus.Approved.equals(cao.getStatus())) {
-											audit.setContractorFlag(FlagColor.Green);
-											debug(" ---- found");
-										}
-									}
-								}
-							}
-						} else {
-							// For PQF, Audit, IM
-							boolean statusOK = false;
-							boolean typeOK = false;
-							if (conAudit.getAuditStatus().isActiveResubmittedExempt())
-								statusOK = true;
-							if (conAudit.getAuditStatus().isSubmitted() && audit.getRequiredAuditStatus().isSubmitted())
-								statusOK = true;
-							if (conAudit.getAuditType().equals(audit.getAuditType()))
-								typeOK = true;
-							if (conAudit.getAuditType().getId() == AuditType.NCMS && audit.getAuditType().isDesktop())
-								typeOK = true;
-							if (contractor.isAcceptsBids() && conAudit.getAuditStatus().isSubmitted()) {
-								statusOK = true;
-							}
-							if (typeOK) {
-								if (statusOK) {
-									// We found a matching "valid" audit for
-									// this
-									// contractor audit requirement
-									debug(" ---- found");
-
-									if (audit.getAuditType().isAnnualAddendum()) {
-										// We actually require THREE annual
-										// addendums
-										// before we consider this requirement
-										// complete
-										annualAuditCount++;
-									} else {
-										// Regular audits (PQF, Desktop, Office,
-										// Field, IM, etc)
-										audit.setContractorFlag(FlagColor.Green);
-									}
-								}
-							}
-						}
-					} // end if auditType
-				} // end for conAudit
-				if (audit.getAuditType().isAnnualAddendum() && annualAuditCount >= 3) {
-					// Make sure we have atleast three annual addendums
-					audit.setContractorFlag(FlagColor.Green);
-				}
-				if (audit.getAuditType().getId() == AuditType.DA && !isHasOqEmployees()) {
-					audit.setContractorFlag(null);
-					debug(" ---- found D/A but OQ not required");
-				}
-				if (audit.getAuditType().getId() == AuditType.COR && !isHasCOR()) {
-					audit.setContractorFlag(null);
-					debug(" ---- found COR but is not required");
-				}
-				debug(" ---- flagColor=" + audit.getContractorFlag());
-				flagColor = setFlagColor(flagColor, audit.getContractorFlag());
-			}
-			if (answerOnly && flagColor.equals(FlagColor.Red))
-				// Things can't get worse, just exit
-				return flagColor;
-		} // end for (operator audit)
+//			if ((adHocExists || contractorRiskLevelHighEnough) && auditFlagRedOrAmber) {
+//				debug(" -- " + audit.getAuditType().getAuditName() + " - " + audit.getRequiredForFlag().toString());
+//				// The contractor requires this audit,
+//				// make sure they have an active one
+//				// If an active audit doesn't exist, then set
+//				// the contractor's flag to the required color
+//
+//				if (!hasAudit && (contractor.isAcceptsBids() || !worksForOperator)) {
+//					audit.setContractorFlag(null);
+//				} else
+//					audit.setContractorFlag(audit.getRequiredForFlag());
+//
+//				int annualAuditCount = 0;
+//				for (ContractorAudit conAudit : conAudits) {
+//					if (conAudit.getAuditType().equals(audit.getAuditType())) {
+//						if (conAudit.getAuditType().getClassType().isPolicy()) {
+//							// For Policies
+//							if (!worksForOperator) {
+//								audit.setContractorFlag(null);
+//							}
+//							if (!conAudit.getAuditStatus().isExpired()) {
+//								for (ContractorAuditOperator cao : conAudit.getOperators()) {
+//									if (cao.getOperator().equals(operator.getInheritInsurance())) {
+//										if (CaoStatus.NotApplicable.equals(cao.getStatus())) {
+//											audit.setContractorFlag(null);
+//											debug(" ---- found N/A");
+//										}
+//										if (CaoStatus.Approved.equals(cao.getStatus())) {
+//											audit.setContractorFlag(FlagColor.Green);
+//											debug(" ---- found");
+//										}
+//									}
+//								}
+//							}
+//						} else {
+//							// For PQF, Audit, IM
+//							boolean statusOK = false;
+//							boolean typeOK = false;
+//							if (conAudit.getAuditStatus().isActiveResubmittedExempt())
+//								statusOK = true;
+//							if (conAudit.getAuditStatus().isSubmitted() && audit.getRequiredAuditStatus().isSubmitted())
+//								statusOK = true;
+//							if (conAudit.getAuditType().equals(audit.getAuditType()))
+//								typeOK = true;
+//							if (conAudit.getAuditType().getId() == AuditType.NCMS && audit.getAuditType().isDesktop())
+//								typeOK = true;
+//							if (contractor.isAcceptsBids() && conAudit.getAuditStatus().isSubmitted()) {
+//								statusOK = true;
+//							}
+//							if (typeOK) {
+//								if (statusOK) {
+//									// We found a matching "valid" audit for
+//									// this
+//									// contractor audit requirement
+//									debug(" ---- found");
+//
+//									if (audit.getAuditType().isAnnualAddendum()) {
+//										// We actually require THREE annual
+//										// addendums
+//										// before we consider this requirement
+//										// complete
+//										annualAuditCount++;
+//									} else {
+//										// Regular audits (PQF, Desktop, Office,
+//										// Field, IM, etc)
+//										audit.setContractorFlag(FlagColor.Green);
+//									}
+//								}
+//							}
+//						}
+//					} // end if auditType
+//				} // end for conAudit
+//				if (audit.getAuditType().isAnnualAddendum() && annualAuditCount >= 3) {
+//					// Make sure we have atleast three annual addendums
+//					audit.setContractorFlag(FlagColor.Green);
+//				}
+//				if (audit.getAuditType().getId() == AuditType.DA && !isHasOqEmployees()) {
+//					audit.setContractorFlag(null);
+//					debug(" ---- found D/A but OQ not required");
+//				}
+//				if (audit.getAuditType().getId() == AuditType.COR && !isHasCOR()) {
+//					audit.setContractorFlag(null);
+//					debug(" ---- found COR but is not required");
+//				}
+//				debug(" ---- flagColor=" + audit.getContractorFlag());
+//				flagColor = setFlagColor(flagColor, audit.getContractorFlag());
+//			}
+//			if (answerOnly && flagColor.equals(FlagColor.Red))
+//				// Things can't get worse, just exit
+//				return flagColor;
+//		} // end for (operator audit)
 
 		debug(" post audit flagColor=" + flagColor);
 
 		// Initialize the flag color to the default Green
-		Map<String, OshaAudit> shaMap = contractor.getOshas().get(operator.getInheritFlagCriteria().getOshaType());
+//		Map<String, OshaAudit> shaMap = contractor.getOshas().get(operator.getInheritFlagCriteria().getOshaType());
 
-		if (shaMap != null) {
-			for (OshaAudit oa : shaMap.values()) {
-				oa.setFlagColor(FlagColor.Green);
-			}
-		}
-		int year = DateBean.getCurrentYear() - 1;
-		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
-			if (criteria.isRequired()) {
-				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
-
-				if (shaMap != null) {
-					for (String key : shaMap.keySet()) {
-						OshaAudit osha = shaMap.get(key);
-						if (criteria.getLwcr().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage() && (!criteria
-											.getLwcr().isLastYearOnly() || (criteria.getLwcr().isLastYearOnly() && Integer
-											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
-								if (criteria.getLwcr().isFlagged(contractor.getNaics().getLwcr(),
-										osha.getLostWorkCasesRate()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking LWCR " + criteria.getLwcr() + " against value = "
-										+ osha.getLostWorkCasesRate() + " color = " + osha.getFlagColor());
-							}
-						}
-						if (criteria.getTrir().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage() && (!criteria
-											.getTrir().isLastYearOnly() || (criteria.getTrir().isLastYearOnly() && Integer
-											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
-								if (criteria.getTrir().isFlagged(contractor.getNaics().getTrir(),
-										osha.getRecordableTotalRate()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking TRIR " + criteria.getTrir() + " against value = "
-										+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
-							}
-						}
-						if (criteria.getDart().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getDart().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getDart().isTimeAverage() && (!criteria
-											.getDart().isLastYearOnly() || (criteria.getDart().isLastYearOnly() && Integer
-											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
-								if (criteria.getDart().isFlagged(contractor.getNaics().getTrir(),
-										osha.getRestrictedDaysAwayRate()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking DART " + criteria.getDart() + " against value = "
-										+ osha.getRestrictedDaysAwayRate() + " color = " + osha.getFlagColor());
-							}
-						}
-						if (criteria.getSeverity().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getSeverity().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getSeverity().isTimeAverage() && (!criteria
-											.getSeverity().isLastYearOnly() || (criteria.getSeverity().isLastYearOnly() && Integer
-											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
-								if (criteria.getSeverity().isFlagged(contractor.getNaics().getTrir(),
-										osha.getRestrictedOrJobTransferDays()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking Severity Rate " + criteria.getSeverity() + " against value = "
-										+ osha.getRestrictedOrJobTransferDays() + " color = " + osha.getFlagColor());
-							}
-						}
-						if (criteria.getFatalities().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
-								if (criteria.getFatalities().isFlagged(contractor.getNaics().getTrir(),
-										osha.getFatalities()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking Fatalities " + criteria.getFatalities() + " against value = "
-										+ osha.getFatalities() + " color = " + osha.getFlagColor());
-							}
-						}
-						if (criteria.getCad7().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getCad7().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getCad7().isTimeAverage())) {
-								if (osha.getCad7() != null
-										&& criteria.getCad7()
-												.isFlagged(contractor.getNaics().getTrir(), osha.getCad7()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking Cad7 " + criteria.getCad7() + " against value = " + osha.getCad7()
-										+ " color = " + osha.getFlagColor());
-							}
-						}
-						if (criteria.getNeer().isRequired()) {
-							if ((key.equals(OshaAudit.AVG) && criteria.getNeer().isTimeAverage())
-									|| (!key.equals(OshaAudit.AVG) && !criteria.getNeer().isTimeAverage())) {
-								if (osha.getNeer() != null
-										&& criteria.getNeer()
-												.isFlagged(contractor.getNaics().getTrir(), osha.getNeer()))
-									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
-								debug(" --- checking Neer " + criteria.getNeer() + " against value = " + osha.getNeer()
-										+ " color = " + osha.getFlagColor());
-							}
-						}
-						flagColor = setFlagColor(flagColor, osha.getFlagColor());
-					}
-				} else {
-					// TODO what if they don't enter any OSHA/MSHA record?
-					// I think we should auto set it to red
-					flagColor = FlagColor.Red;
-				}
-
-				if (answerOnly && flagColor.equals(FlagColor.Red))
-					// Things can't get worse, just exit
-					return flagColor;
-			}
-		}
-		debug(" post osha flagColor=" + flagColor);
-
-		debug(" evaluating " + acaList.size() + " question criteria");
-		for (AuditCriteriaAnswer aca : acaList) {
-			if (!aca.getClassType().isPolicy())
-				flagColor = setFlagColor(flagColor, aca.getResultColor());
-		}
-		debug(" post aca flagColor=" + flagColor);
-
-		if (overrideColor != null)
-			return overrideColor;
+//		if (shaMap != null) {
+//			for (OshaAudit oa : shaMap.values()) {
+//				oa.setFlagColor(FlagColor.Green);
+//			}
+//		}
+//		int year = DateBean.getCurrentYear() - 1;
+//		for (FlagOshaCriteria criteria : operator.getInheritFlagCriteria().getFlagOshaCriteria()) {
+//			if (criteria.isRequired()) {
+//				debug(" -- osha " + criteria.getFlagColor()); // Red or Amber
+//
+//				if (shaMap != null) {
+//					for (String key : shaMap.keySet()) {
+//						OshaAudit osha = shaMap.get(key);
+//						if (criteria.getLwcr().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getLwcr().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getLwcr().isTimeAverage() && (!criteria
+//											.getLwcr().isLastYearOnly() || (criteria.getLwcr().isLastYearOnly() && Integer
+//											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
+//								if (criteria.getLwcr().isFlagged(contractor.getNaics().getLwcr(),
+//										osha.getLostWorkCasesRate()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking LWCR " + criteria.getLwcr() + " against value = "
+//										+ osha.getLostWorkCasesRate() + " color = " + osha.getFlagColor());
+//							}
+//						}
+//						if (criteria.getTrir().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getTrir().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getTrir().isTimeAverage() && (!criteria
+//											.getTrir().isLastYearOnly() || (criteria.getTrir().isLastYearOnly() && Integer
+//											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
+//								if (criteria.getTrir().isFlagged(contractor.getNaics().getTrir(),
+//										osha.getRecordableTotalRate()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking TRIR " + criteria.getTrir() + " against value = "
+//										+ osha.getRecordableTotalRate() + " color = " + osha.getFlagColor());
+//							}
+//						}
+//						if (criteria.getDart().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getDart().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getDart().isTimeAverage() && (!criteria
+//											.getDart().isLastYearOnly() || (criteria.getDart().isLastYearOnly() && Integer
+//											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
+//								if (criteria.getDart().isFlagged(contractor.getNaics().getTrir(),
+//										osha.getRestrictedDaysAwayRate()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking DART " + criteria.getDart() + " against value = "
+//										+ osha.getRestrictedDaysAwayRate() + " color = " + osha.getFlagColor());
+//							}
+//						}
+//						if (criteria.getSeverity().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getSeverity().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getSeverity().isTimeAverage() && (!criteria
+//											.getSeverity().isLastYearOnly() || (criteria.getSeverity().isLastYearOnly() && Integer
+//											.toString(year).equals(osha.getConAudit().getAuditFor()))))) {
+//								if (criteria.getSeverity().isFlagged(contractor.getNaics().getTrir(),
+//										osha.getRestrictedOrJobTransferDays()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking Severity Rate " + criteria.getSeverity() + " against value = "
+//										+ osha.getRestrictedOrJobTransferDays() + " color = " + osha.getFlagColor());
+//							}
+//						}
+//						if (criteria.getFatalities().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getFatalities().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getFatalities().isTimeAverage())) {
+//								if (criteria.getFatalities().isFlagged(contractor.getNaics().getTrir(),
+//										osha.getFatalities()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking Fatalities " + criteria.getFatalities() + " against value = "
+//										+ osha.getFatalities() + " color = " + osha.getFlagColor());
+//							}
+//						}
+//						if (criteria.getCad7().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getCad7().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getCad7().isTimeAverage())) {
+//								if (osha.getCad7() != null
+//										&& criteria.getCad7()
+//												.isFlagged(contractor.getNaics().getTrir(), osha.getCad7()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking Cad7 " + criteria.getCad7() + " against value = " + osha.getCad7()
+//										+ " color = " + osha.getFlagColor());
+//							}
+//						}
+//						if (criteria.getNeer().isRequired()) {
+//							if ((key.equals(OshaAudit.AVG) && criteria.getNeer().isTimeAverage())
+//									|| (!key.equals(OshaAudit.AVG) && !criteria.getNeer().isTimeAverage())) {
+//								if (osha.getNeer() != null
+//										&& criteria.getNeer()
+//												.isFlagged(contractor.getNaics().getTrir(), osha.getNeer()))
+//									osha.setFlagColor(setFlagColor(osha.getFlagColor(), criteria.getFlagColor()));
+//								debug(" --- checking Neer " + criteria.getNeer() + " against value = " + osha.getNeer()
+//										+ " color = " + osha.getFlagColor());
+//							}
+//						}
+//						flagColor = setFlagColor(flagColor, osha.getFlagColor());
+//					}
+//				} else {
+//					// TODO what if they don't enter any OSHA/MSHA record?
+//					// I think we should auto set it to red
+//					flagColor = FlagColor.Red;
+//				}
+//
+//				if (answerOnly && flagColor.equals(FlagColor.Red))
+//					// Things can't get worse, just exit
+//					return flagColor;
+//			}
+//		}
+//		debug(" post osha flagColor=" + flagColor);
+//
+//		debug(" evaluating " + acaList.size() + " question criteria");
+//		for (AuditCriteriaAnswer aca : acaList) {
+//			if (!aca.getClassType().isPolicy())
+//				flagColor = setFlagColor(flagColor, aca.getResultColor());
+//		}
+//		debug(" post aca flagColor=" + flagColor);
+//
+//		if (overrideColor != null)
+//			return overrideColor;
 
 		return flagColor;
 	}
@@ -369,8 +365,7 @@ public class FlagCalculatorSingle {
 
 		// PQF, Desktop & Office Audits
 		for (AuditOperator audit : operator.getInheritAudits().getAudits()) {
-			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel() && audit.getRequiredForFlag() != null
-					&& !audit.getRequiredForFlag().equals(FlagColor.Green)) {
+			if (contractor.getRiskLevel().ordinal() >= audit.getMinRiskLevel()) {
 
 				for (ContractorAudit conAudit : conAudits) {
 					AuditStatus auditStatus = conAudit.getAuditStatus();
@@ -416,7 +411,7 @@ public class FlagCalculatorSingle {
 							// end of policies
 						} else {
 							// This is a audit
-							if (!auditStatus.isComplete(audit.getRequiredAuditStatus())) {
+							if (false) {
 								// We found a matching pending or submitted
 								// audit still not finished
 								// Whose fault is it??
@@ -471,10 +466,10 @@ public class FlagCalculatorSingle {
 		if (cao.getValid() != null && !cao.getValid().isTrue())
 			return FlagColor.Red;
 
-		for (AuditCriteriaAnswer aca : acaList) {
-			if (aca.getClassType() == AuditTypeClass.Policy && aca.getAnswer().getAudit().equals(cao.getAudit()))
-				flagColor = setFlagColor(flagColor, aca.getResultColor());
-		}
+//		for (AuditCriteriaAnswer aca : acaList) {
+//			if (aca.getClassType() == AuditTypeClass.Policy && aca.getAnswer().getAudit().equals(cao.getAudit()))
+//				flagColor = setFlagColor(flagColor, aca.getResultColor());
+//		}
 
 		if (flagColor == null)
 			return null;
@@ -553,9 +548,9 @@ public class FlagCalculatorSingle {
 		this.answerOnly = answerOnly;
 	}
 
-	public void setAcaList(List<AuditCriteriaAnswer> acaList) {
-		this.acaList = acaList;
-	}
+//	public void setAcaList(List<AuditCriteriaAnswer> acaList) {
+//		this.acaList = acaList;
+//	}
 
 	public boolean isHasOqEmployees() {
 		return hasOqEmployees;
