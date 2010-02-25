@@ -25,14 +25,11 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Report;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -288,32 +285,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				}
 
 				// Send activation email if set
-				if (sendActivationEmail && user.getId() == 0) {
-					try {
-						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setFromAddress(permissions.getEmail());
-						emailBuilder.setTemplate(5); // New User Welcome
-						emailBuilder.setPermissions(permissions);
-						emailBuilder.setUser(user);
-						user.setResetHash(Strings
-								.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-						userDAO.save(user);
-						String confirmLink = "http://www.picsauditing.com/Login.action?usern=" + user.getUsername()
-								+ "&key=" + user.getResetHash() + "&button=reset";
-						emailBuilder.addToken("confirmLink", confirmLink);
-						// Account id hasn't been set. Still null value before
-						// saving
-						emailBuilder.addToken("accountname", accountDAO.find(accountId).getName());
-						emailBuilder.setFromAddress("info@picsauditing.com");
-						EmailQueue emailQueue = emailBuilder.build();
-						emailQueue.setPriority(100);
-						EmailSender.send(emailQueue);
-					} catch (Exception e) {
-						addActionError(e.getMessage());
-						return SUCCESS;
-					}
-					addActionMessage("Activation Email sent to " + user.getEmail());
-				}
+				if (sendActivationEmail && user.getId() == 0)
+					addActionMessage(AccountRecovery.sendActivationEmail(user));
 			}
 
 			try {

@@ -129,6 +129,31 @@ public class AccountRecovery extends PicsActionSupport {
 			return "An error occurred in sending the password reset email.";
 		}
 	}
+	
+	static public String sendActivationEmail(User user) {
+		try {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(5);
+			emailBuilder.setFromAddress("info@picsauditing.com");
+			emailBuilder.addToken("user", user);
+
+			String confirmLink = "http://www.picsauditing.com/Login.action?username="
+					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setToAddresses(user.getEmail());
+
+			EmailQueue emailQueue;
+			emailQueue = emailBuilder.build();
+			emailQueue.setPriority(100);
+
+			EmailSender sender = new EmailSender();
+			sender.sendNow(emailQueue);
+			return "An email has been sent to " + user.getEmail()
+					+ ". This email includes a link to set or reset the password on the account.";
+		} catch (Exception e) {
+			return "An error occurred in sending the password reset email.";
+		}
+	}
 
 	public String getEmail() {
 		return email;
