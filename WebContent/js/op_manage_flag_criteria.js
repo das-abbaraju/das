@@ -82,19 +82,17 @@ function getAddQuestions() {
 
 function editCriteria(tdCell) {
 	var id = tdCell.parentNode.id;
-	var hurdleValue;
 	
 	$("#"+id).find("span.newImpact").html("");
 	$(tdCell).find(".hide").toggle();
 	$("#"+id+" .hideOld").toggle();
 	
 	if ($("#"+id+" .hideOld").is(":hidden")) {
-		hurdleValue = $(tdCell).find(".hurdle").text();
 		$(tdCell).find(".hurdle").toggle();
 		$(tdCell).find(".hover").text("[cancel]");
+		$(tdCell).find("input").val($(tdCell).find(".hurdle").text());
 	}
 	else {
-		hurdleValue = $(tdCell).find("input").val();
 		$(tdCell).find(".hurdle").toggle();
 		$(tdCell).find(".hover").text("[edit]");
 	}
