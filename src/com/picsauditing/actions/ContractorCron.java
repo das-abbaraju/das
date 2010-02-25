@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
@@ -55,6 +57,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	private PicsDAO dao;
 	private ContractorAccountDAO contractorDAO;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
 	private FlagDataDAO flagDataDAO;
@@ -71,7 +74,7 @@ public class ContractorCron extends PicsActionSupport {
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, FlagDataDAO flagDataDAO,
-			FlagDataOverrideDAO flagDataOverrideDAO) {
+			FlagDataOverrideDAO flagDataOverrideDAO, ContractorOperatorDAO contractorOperatorDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -81,6 +84,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.contractorFlagETL = contractorFlagETL;
 		this.flagDataDAO = flagDataDAO;
 		this.flagDataOverrideDAO = flagDataOverrideDAO;
+		this.contractorOperatorDAO = contractorOperatorDAO;
 	}
 
 	public String execute() throws Exception {
@@ -247,7 +251,8 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		// get a list of overrides for this contractor and operator
 
-		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteria());
+		co.getOperatorAccount().getInheritFlagCriteria();
+		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getInheritFlagCriteria().getFlagCriteria());
 		Map<FlagCriteria, FlagDataOverride> overrides = flagDataOverrideDAO.findByContractorAndOperator(co
 				.getContractorAccount(), co.getOperatorAccount());
 		flagDataCalculator.setOverrides(overrides);
@@ -296,6 +301,11 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagColor(overallColor);
 			co.setFlagLastUpdated(new Date());
 		}
+
+		if (co.isForcedFlag()) { // operator has a forced flag
+			co.setFlagColor(co.getForceFlag());
+			co.setFlagLastUpdated(new Date());
+		}
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {
@@ -307,7 +317,7 @@ public class ContractorCron extends PicsActionSupport {
 				.getOperatorAccount().getId());
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
 		waitingOn = flagDataCalculator.calculateWaitingOn(flagData);
-		
+
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
 			Note note = new Note();
@@ -369,16 +379,66 @@ public class ContractorCron extends PicsActionSupport {
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
 		if (!runStep(ContractorCronStep.AuditCategory))
 			return;
-		for (OperatorAccount corporate : corporateSet) {
-			FlagColor color = FlagColor.Green;
-			for (Facility corpOperator : corporate.getOperatorFacilities()) {
-				for (ContractorOperator conOperator : contractor.getOperators()) {
-					if (corpOperator.getOperator().equals(conOperator.getOperatorAccount())) {
-						// TODO finish
-					}
+
+		// rolls up every flag color to root 
+		Map<OperatorAccount, FlagColor> rollupData = new HashMap<OperatorAccount, FlagColor>();
+		Map<OperatorAccount, ContractorOperator> corporateCOs = new HashMap<OperatorAccount, ContractorOperator>();
+
+		// rolling up data to map
+		Iterator<ContractorOperator> coIter = contractor.getOperators().iterator();
+		while (coIter.hasNext()) {
+			ContractorOperator coOperator = coIter.next();
+			OperatorAccount operator = coOperator.getOperatorAccount();
+
+			if (operator.isCorporate()) {
+				if (!corporateSet.contains(operator)) {
+					// if we have a corporate account in my operator list that
+					// is not in the corporate rollup data map
+					// it shouldn't be in my operator list and should be deleted
+					coIter.remove();
+				} else {
+					// found a corporate CO
+					corporateCOs.put(operator, coOperator);
+					rollupData.put(operator, coOperator.getFlagColor());
+				}
+			} else { // just rollup data, will be checked later
+				OperatorAccount parent = operator.getParent();
+				if(parent != null) { // we have a corporate parent
+					FlagColor worstColor = FlagColor.getWorseColor(coOperator.getFlagColor(), rollupData.get(parent));
+					rollupData.put(parent, worstColor);
 				}
 			}
-			// TODO finish
+		}
+		
+		// ensuring that data is updated from hub to primaryCorporate in rollup
+		for(OperatorAccount corporate : corporateCOs.keySet()){
+			// rollup data should contain all entries for corporate, including those not in corporateSet
+			OperatorAccount parent = corporate.getParent();
+			if(parent != null) { // we have a corporate parent
+				FlagColor worstColor = FlagColor.getWorseColor(rollupData.get(corporate), rollupData.get(parent));
+				rollupData.put(parent, worstColor);
+			}
+		}
+		
+		// rollup finished, updating corporate values
+		for(OperatorAccount corporate : corporateCOs.keySet())
+			corporateCOs.get(corporate).setFlagColor(rollupData.get(corporate));
+
+		// removing corporateSet entries based on contractor CO data
+		for (OperatorAccount corporate : corporateCOs.keySet())
+			corporateSet.remove(corporate);
+		
+		// whatever left in corporateSet needs to be inserted
+		for (OperatorAccount corporate : corporateSet) {
+			ContractorOperator newCo = new ContractorOperator();
+			newCo.setCreationDate(new Date());
+			newCo.setFlagColor(rollupData.get(corporate));
+			newCo.setUpdateDate(new Date());
+			newCo.setOperatorAccount(corporate);
+			newCo.setContractorAccount(contractor);
+			//newCo.setCreatedBy(new User());
+			//newCo.setUpdatedBy(new User());
+			contractorOperatorDAO.save(newCo);
 		}
 	}
 
