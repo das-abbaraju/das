@@ -66,8 +66,7 @@
 				><s:property value="[0].get('name')" /></a></s:if>
 				<s:else><s:property value="[0].get('name')" /></s:else></td>
 			<s:if test="permissions.operator">
-				<td class="center"><img 
-					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0" /></td>
+				<td class="center"><s:property value="getOverallFlag([0].get('id')).smallIcon" escape="false" /></td>
 				<s:if test="operatorAccount.approvesRelationships">
 					<pics:permission perm="ViewUnApproved">
 						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property

@@ -1,9 +1,16 @@
 package com.picsauditing.actions.report;
 
+import java.util.List;
+
 import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.ReportFilterAccount;
 
 /**
@@ -16,13 +23,17 @@ import com.picsauditing.util.ReportFilterAccount;
 public class ReportNewContractorSearch extends ReportAccount {
 	protected int id;
 	private ContractorAccountDAO contractorAccountDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 	private FacilityChanger facilityChanger;
+	private OperatorAccount operator;
 
-	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger) {
+	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
+			OperatorAccountDAO operatorAccountDAO) {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -32,6 +43,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 			getFilter().setShowInParentCorporation(true);
 
 		getFilter().setShowInsuranceLimits(true);
+		
+		if (permissions.isOperatorCorporate())
+			operator = operatorAccountDAO.find(permissions.getAccountId());
 	}
 
 	@Override
@@ -122,5 +136,30 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public FlagColor getOverallFlag(int contractorID) {
+		// Assume the contractor is fine until we find different
+		FlagColor overallFlag = FlagColor.Green;
+		
+		if (operator != null) {
+			ContractorAccount contractor = contractorAccountDAO.find(contractorID);
+			FlagDataCalculator calculator = new FlagDataCalculator(contractor.getFlagCriteria());
+			calculator.setOperatorCriteria(operator.getFlagCriteria());
+			// Set so contractors don't get flagged for audits they don't have, but operator requires
+			calculator.setWorksForOperator(false);
+			
+			List<FlagData> results = calculator.calculate();
+			
+			for (FlagData flagData : results) {
+				if (flagData.getFlag().equals(FlagColor.Red))
+					// Return immediately if there's a red flag found
+					return FlagColor.Red;
+				if (flagData.getFlag().equals(FlagColor.Amber))
+					overallFlag = flagData.getFlag(); 
+			}
+		}
+		
+		return overallFlag;
 	}
 }

@@ -34,7 +34,8 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
 
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
-	// private boolean worksForOperator = false;
+	// Assume this is true for the contractor in question
+	private boolean worksForOperator = true;
 
 	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
 		setContractorCriteria(contractorCriteria);
@@ -116,9 +117,12 @@ public class FlagDataCalculator {
 					}
 				}
 				// TODO What is this for exactly? Do we still need Works for Operator??
-				// if (worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
-				// return false;
-				// }
+				// This is a check for Search For New. If the contractor doesn't work for the operator,
+				// or is bid only, we shouldn't flag on the audits they don't have.
+				if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
+					return false;
+				}
+				
 				return criteria.isFlaggableWhenMissing();
 			}
 		}
@@ -363,5 +367,13 @@ public class FlagDataCalculator {
 
 	public void setOverrides(Map<FlagCriteria, FlagDataOverride> overrides) {
 		this.overrides = overrides;
+	}
+	
+	public boolean isWorksForOperator() {
+		return worksForOperator;
+	}
+	
+	public void setWorksForOperator(boolean worksForOperator) {
+		this.worksForOperator = worksForOperator;
 	}
 }

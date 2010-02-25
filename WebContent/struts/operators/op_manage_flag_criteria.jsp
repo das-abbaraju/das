@@ -38,6 +38,10 @@ table.report a {
 .hover {
 	margin-left: 10px;
 }
+
+.newImpact {
+	color: gray;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/op_manage_flag_criteria.js?v=20100219"></script>
