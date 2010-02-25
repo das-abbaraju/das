@@ -71,6 +71,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			if (button.equals("questions") || button.equals("impact")) {
 				return button;
 			}
+			if (button.equals("calculateSingle")) {
+				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
+				fco.setHurdle(newHurdle);
+				output = calculatePercentAffected(fco) + "%";
+				return BLANK;
+			}
 			if (button.equals("delete")) {
 				FlagCriteriaOperator remove = flagCriteriaOperatorDAO.find(criteriaID);
 
@@ -104,10 +110,18 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setUpdateDate(new Date());
 				fco.setUpdatedBy(getUser());
 				fco.setFlag(newFlag);
-				fco.setHurdle(newHurdle);
+				boolean needsCalculation = false;
+				
+				if (!newHurdle.equals(fco.getHurdle())) {
+					fco.setHurdle(newHurdle);
+					needsCalculation = true;
+				}
+				
 				fco.setLastCalculated(null);
 				flagCriteriaOperatorDAO.save(fco);
-				calculatePercentAffected(fco);
+				
+				if (needsCalculation)
+					calculatePercentAffected(fco);
 
 				FlagCriteria fc = fco.getCriteria();
 				String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "

@@ -1352,6 +1352,7 @@
 			<result>struts/operators/op_manage_flag_criteria_list.jsp</result>
 			<result name="impact">struts/operators/op_manage_flag_criteria_impact.jsp</result>
 			<result name="questions">struts/operators/op_manage_flag_criteria_questions.jsp</result>
+			<result name="calculateSingle">struts/blank.jsp</result>
 		</action>
 
 		<!-- Flags -->

@@ -26,15 +26,18 @@
 				<s:property value="criteria.descriptionBeforeHurdle" />
 				<s:if test="criteria.dataType != 'boolean'">
 					<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
+					<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="5" class="hide"
+						onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);" />
 				</s:if>
 				<s:property value="criteria.descriptionAfterHurdle" />
 			</td>
-			<td class="center"><span class="empty"><s:property value="flag.smallIcon" escape="false" /></span></td>
+			<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
 			<s:if test="canEditFlags()">
 				<td class="center">
 					<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact."
-						class="empty">
+						class="hideOld">
 						<s:property value="getPercentAffected(id)" />%</a>
+					<span class="newImpact"></span>
 				</td>
 				<td class="center">
 					<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>

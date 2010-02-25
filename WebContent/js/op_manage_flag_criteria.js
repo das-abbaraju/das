@@ -84,17 +84,42 @@ function editCriteria(tdCell) {
 	var id = tdCell.parentNode.id;
 	var hurdleValue;
 	
+	$("#"+id).find("span.newImpact").html("");
 	$(tdCell).find(".hide").toggle();
-	$("#"+id+" .empty").toggle();
+	$("#"+id+" .hideOld").toggle();
 	
-	if ($("#"+id+" .empty").is(":hidden")) {
+	if ($("#"+id+" .hideOld").is(":hidden")) {
 		hurdleValue = $(tdCell).find(".hurdle").text();
-		$(tdCell).find(".hurdle").html('<input type="text" value="'+hurdleValue+'" name="newHurdle" size="5" />');
+		$(tdCell).find(".hurdle").toggle();
 		$(tdCell).find(".hover").text("[cancel]");
 	}
 	else {
 		hurdleValue = $(tdCell).find("input").val();
-		$(tdCell).find(".hurdle").html("<b>"+hurdleValue+"</b>");
+		$(tdCell).find(".hurdle").toggle();
 		$(tdCell).find(".hover").text("[edit]");
 	}
 }
+
+function calculateImpact(criteriaID, newHurdle) {
+	var data = {
+		button: 'calculateSingle',
+		id: $('#form1_id').val(),
+		criteriaID: criteriaID,
+		newHurdle: newHurdle
+	};
+	
+	startThinking({div:'thinking', message:'Calculating impact...'});
+	$('#'+criteriaID).find('span.newImpact').load('ManageFlagCriteriaOperatorAjax.action', data,
+		function() {
+			stopThinking({div:'thinking'});
+		}
+	);
+}
+
+var wait = function(){
+    var timer = 0;
+    return function(criteriaID, newHurdle, ms){
+        clearTimeout(timer);
+        timer = setTimeout('calculateImpact('+criteriaID+','+newHurdle+')', ms);
+    }  
+}();
