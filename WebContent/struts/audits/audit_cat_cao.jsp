@@ -44,8 +44,9 @@
 				</li>
 				<s:if test="#cao.flag != null">
 					<li><label>Meets Criteria:</label>
-						<s:property value="#cao.flag.smallIcon" escape="false"/>
-						<s:property value="#cao.flag" />
+						<span class="<s:property value="#cao.flag"/>">
+							<s:property value="#cao.flag.insuranceStatus"/>
+						</span>
 					</li>
 				</s:if>
 			</s:if>
