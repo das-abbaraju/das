@@ -14,27 +14,28 @@
 		</tr>
 	</thead>
 	<tbody>
-	<s:iterator value="criteriaList">
-		<tr<s:if test="canEditFlags()"> id="<s:property value="id" />" class="clickable"</s:if>>
-			<td><s:property value="criteria.category" /></td>
-			<td<s:if test="canEditFlags()"> onmouseover="$(this).find('.hover').show();" onmouseout="$(this).find('.hover').hide();"</s:if>>
-				<s:if test="canEditFlags()">
-					<a href="#" onclick="editCriteria(this.parentNode); return false;" class="hover"
-						style="display:none; float:right;">[edit]</a>
-					<a href="#" onclick="submitHurdle(this.parentNode); return false;" class="picsbutton hide">Save</a>
-					<s:select list="getAddableFlags(0)" name="newFlag" value="flag" cssClass="hide"></s:select>
-					<span class="hide"> flag if </span>
-					<s:property value="criteria.descriptionBeforeHurdle" />
-					<s:if test="criteria.dataType != 'boolean'">
-						<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
-						<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="5"
-							class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);" />
+		<s:iterator value="criteriaList">
+			<tr<s:if test="canEditFlags()"> id="<s:property value="id" />" class="clickable"</s:if>>
+				<td><s:property value="criteria.category" /></td>
+				<td<s:if test="canEditFlags()"> onmouseover="$(this).find('.hover').show();" onmouseout="$(this).find('.hover').hide();"</s:if>>
+					<s:if test="canEditFlags()">
+						<a href="#" onclick="editCriteria(this.parentNode); return false;" class="hover"
+							style="display:none; float:right;">[edit]</a>
+						<a href="#" onclick="submitHurdle(this.parentNode); return false;" class="picsbutton hide">Save</a>
+						<s:select list="getAddableFlags(0)" name="newFlag" value="flag" cssClass="hide"></s:select>
+						<span class="hide"> flag if </span>
+						<s:property value="criteria.descriptionBeforeHurdle" />
+						<s:if test="criteria.dataType != 'boolean'">
+							<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
+							<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="5"
+								class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);" />
+						</s:if>
+						<s:property value="criteria.descriptionAfterHurdle" />
 					</s:if>
-					<s:property value="criteria.descriptionAfterHurdle" />
-				</s:if>
-				<s:else>
-					<s:property value="replaceHurdle()" />
-				</s:else>
+					<s:else>
+						<s:property value="replaceHurdle()" />
+					</s:else>
+				</td>
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
 				<s:if test="canEditFlags()">
 					<td class="center">
