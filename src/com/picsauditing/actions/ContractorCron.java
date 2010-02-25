@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
@@ -267,26 +268,27 @@ public class ContractorCron extends PicsActionSupport {
 
 		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
 				.getOperatorAccount().getId());
-		// Save changes into table
+		// update/delete
 		final Iterator<FlagData> dbIterator = flagData.iterator();
 		while (dbIterator.hasNext()) {
 			FlagData fromDB = dbIterator.next();
-			if (changes.contains(fromDB)) {
-				for (FlagData change : changes) {
-					if (fromDB.equals(change)) {
-						fromDB.update(change);
-						flagDataDAO.save(fromDB);
-					}
+			FlagData found = null;
+			
+			for (FlagData change : changes) {
+				if (fromDB.equals(change)) {
+					fromDB.update(change);
+					found = change;
 				}
-				changes.remove(fromDB);
-			} else {
-				dbIterator.remove();
-				flagDataDAO.remove(fromDB);
 			}
+			
+			if (found != null)
+				changes.remove(found); // update was performed
+			else
+				dbIterator.remove();
 		}
-		for (FlagData changeToInsert : changes) {
-			flagDataDAO.save(changeToInsert);
-		}
+		
+		// merging remaining changes (inserts)
+		flagData.addAll(changes);
 
 		if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
@@ -432,12 +434,12 @@ public class ContractorCron extends PicsActionSupport {
 		for (OperatorAccount corporate : corporateSet) {
 			ContractorOperator newCo = new ContractorOperator();
 			newCo.setCreationDate(new Date());
-			newCo.setFlagColor(rollupData.get(corporate));
 			newCo.setUpdateDate(new Date());
+			newCo.setFlagColor(rollupData.get(corporate));
 			newCo.setOperatorAccount(corporate);
 			newCo.setContractorAccount(contractor);
-			//newCo.setCreatedBy(new User());
-			//newCo.setUpdatedBy(new User());
+			newCo.setCreatedBy(new User(User.SYSTEM));
+			newCo.setUpdatedBy(new User(User.SYSTEM));
 			contractorOperatorDAO.save(newCo);
 		}
 	}
