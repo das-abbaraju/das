@@ -178,8 +178,18 @@
 		</s:if> 
 		<s:if test="permissions.admin">
 			<div>
-				<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
-				<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				<s:if test="#cao.operator.autoApproveInsurance && #cao.flag.green">
+					<input type="button" name="button" class="picsbutton positive" value="Approve" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" name="button" class="picsbutton negative grey" value="Reject" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				</s:if>
+				<s:elseif test="#cao.operator.autoApproveInsurance && #cao.flag.red">
+					<input type="button" name="button" class="picsbutton positive grey" value="Approve" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				</s:elseif>
+				<s:else>
+					<input type="button" name="button" class="picsbutton positive" value="Verify" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+					<input type="button" name="button" class="picsbutton negative" value="Reject" onclick="saveCao('#cao_form<s:property value="#cao.id"/>', this.value);return false;"/>
+				</s:else>
 			</div>
 			<br clear="all"/>
 			<label class="policy">Administrative Notes:</label><br/>

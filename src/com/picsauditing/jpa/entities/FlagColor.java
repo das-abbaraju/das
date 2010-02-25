@@ -62,4 +62,12 @@ public enum FlagColor {
 	public boolean isRed() {
 		return this.equals(Red);
 	}
+
+	public boolean isAmber() {
+		return this.equals(Amber);
+	}
+
+	public boolean isGreen() {
+		return this.equals(Green);
+	}
 }
