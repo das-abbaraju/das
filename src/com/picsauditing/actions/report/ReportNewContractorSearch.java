@@ -2,6 +2,8 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
@@ -161,5 +163,18 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 		
 		return overallFlag;
+	}
+	
+	public boolean worksForOperator(int contractorID) {
+		// Check the query for an existing flag in the database lookup
+		for (BasicDynaBean d : data) {
+			if (d.get("id").equals(contractorID)) {
+				if (d.get("flag") != null)
+					// Since the flag exists, the contractor should be working for the operator
+					return true;
+			}
+		}
+		
+		return false;
 	}
 }

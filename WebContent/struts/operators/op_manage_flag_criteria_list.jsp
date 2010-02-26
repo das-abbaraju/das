@@ -21,9 +21,10 @@
 					<s:if test="canEditFlags()">
 						<a href="#" onclick="editCriteria(this.parentNode); return false;" class="hover"
 							style="display:none; float:right;">[edit]</a>
-						<a href="#" onclick="submitHurdle(this.parentNode); return false;" class="picsbutton hide">Save</a>
-						<s:select list="getAddableFlags(0)" name="newFlag" value="flag" cssClass="hide"></s:select>
-						<span class="hide"> flag if </span>
+						<span class="hide">
+							<a href="#" onclick="submitHurdle(this.parentNode); return false;" class="picsbutton">Save</a>
+							<s:select list="getAddableFlags(0)" name="newFlag" value="flag"></s:select> flag if
+						</span>
 						<s:property value="criteria.descriptionBeforeHurdle" />
 						<s:if test="criteria.dataType != 'boolean'">
 							<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
