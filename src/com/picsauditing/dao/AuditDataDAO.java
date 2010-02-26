@@ -141,8 +141,9 @@ public class AuditDataDAO extends PicsDAO {
 		// tryQuery(sqlOperators, auditID);
 
 		// Get the list of questions that these operators require
-		String sqlQuestions = "SELECT t.auditQuestion FROM AuditQuestionOperatorAccount t "
-				+ "WHERE t.operatorAccount IN (" + sqlOperators + ")";
+		String sqlQuestions = "SELECT f.question FROM FlagCriteria f "
+				+ "WHERE f.validationRequired = 1 AND f.question IS NOT NULL AND f.id IN " 
+				+ "(SELECT fo.criteria.id FROM FlagCriteriaOperator fo WHERE fo.operator IN  (" + sqlOperators + ")) ";
 		// tryQuery(sqlQuestions, auditID);
 
 		// For each question (including the safetyManual), get the ones answered
