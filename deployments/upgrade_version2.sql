@@ -419,3 +419,5 @@ where f.oshatype is not null
 and f.questionid is null 
 and f.audittypeID is null);
 
+-- clean up the generalcontractors table dates
+update generalcontractors set creationDate = null where creationDate = '0000-00-00 00:00:00'
