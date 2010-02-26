@@ -64,7 +64,7 @@ public class AuditFileUpload extends AuditActionSupport {
 
 			if (fileID > 0 && button.startsWith("Delete")) {
 				if (contractorAuditFile.isReviewed()) {
-					addActionError("Failed to remove the file reviewed by the Auditor.");
+					addActionError("Failed to remove the file reviewed by the Safety Professional.");
 					return SUCCESS;
 				}
 				try {

@@ -54,7 +54,7 @@ public enum OpPerms {
 	EditUsersPics("Manage PICS User Accounts", "Edit user accounts on the PICS Admin account", true, true, true, false, false),
 	// Audits
 	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, true, true, false, false),
-	AssignAudits("Audit Assignment", "Allows users to assign office, desktop, and other audits to PICS auditors", true, false, true, false, false),
+	AssignAudits("Audit Assignment", "Allows users to assign office, desktop, and other audits to PICS Safety Professionals", true, false, true, false, false),
 	AuditVerification("Audit Verification", "Verify answers to OSHA, EMR, and other Audit data ", true, false, true, false, false),
 	OfficeAuditCalendar("Office Audit Calendar", "Allows users to view the Office Audit Calendar", false, false, true, false, true),
 	ViewFullPQF("View PQF Work History", "Can view the PQF category Work History, which contains financial and other sensitive information", false, false, true, false, false),
@@ -62,7 +62,7 @@ public enum OpPerms {
 	AuditCopy("Audit Copy", "Can Copy Audit from one Contractor to another Contractor", false, false, true, false, false),
 	MyCalendar("My Calendar", "View and Edit your Calendar", true, true, true, false, false),
 	Holidays("Holidays", "Manage the Holiday schedule for PICS", false, false, true, false, false),
-	ManageCalendars("Manage Auditor Calendars", "Allows user to edit all auditor calendars", true, true, true, false, false),
+	ManageCalendars("Manage Safety Professional Calendars", "Allows user to edit all Safety Professional calendars", true, true, true, false, false),
 
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates", true, true, true, false, true),
@@ -82,7 +82,7 @@ public enum OpPerms {
 	SwitchUser("Switch to User", "Can auto login as another user", false, false, true, false, false),
 
 	ManageWebcam("Webcam Management", "Can view and edit PICS' inventory of web cameras", true, true, true, false, false),
-	AuditorPayments("Auditor Payments", "Create and manage independent contractor payments for audits.", true, true, true, false, false),
+	AuditorPayments("Safety Professional Payments", "Create and manage independent contractor payments for audits.", true, true, true, false, false),
 
 	// Manage User Account Roles
 	UserRolePicsOperator("User Roles PICS Operator", "Allow PICS users to assign the users to a Role.", true, true, true, false, false),

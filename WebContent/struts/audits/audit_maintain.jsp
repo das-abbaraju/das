@@ -18,7 +18,7 @@
 	<ol>
 		<li><label>Audit Status:</label>
 			<s:select name="conAudit.auditStatus" list="@com.picsauditing.jpa.entities.AuditStatus@values()"/></li>
-		<li><label>Auditor:</label>
+		<li><label>Safety Professional:</label>
 			<s:select name="conAudit.auditor.id" list="auditorList" listKey="id" listValue="name"/></li>
 		<li><label>Audit Location:</label>
 			<s:textfield name="conAudit.auditLocation"/></li>
@@ -47,7 +47,7 @@
 			<s:textfield name="conAudit.closedDate" value="%{conAudit.closedDate && getText('dates', {conAudit.closedDate})}"/></li>
 		<li><label>Contractor Confirmation:</label>
 			<s:textfield name="conAudit.contractorConfirm" value="%{conAudit.contractorConfirm && getText('dates', {conAudit.contractorConfirm})}"/></li>
-		<li><label>Auditor Confirmation:</label>
+		<li><label>Safety Professional Confirmation:</label>
 			<s:textfield name="conAudit.auditorConfirm" value="%{conAudit.auditorConfirm && getText('dates', {conAudit.auditorConfirm})}"/></li>
 		<li style="font-style: italic;">* Dates are in this format: 01/31/08 12:03 AM</li>
 	</ol>

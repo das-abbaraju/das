@@ -119,12 +119,12 @@
 		</s:if>
 		<s:if test="permissions.picsEmployee">
 			<s:if test="conAudit.auditType.hasAuditor">
-				<li><label>Auditor:</label>
+				<li><label>Safety Professional:</label>
 					<s:if test="conAudit.auditor.id > 0"><s:property value="conAudit.auditor.name" /></s:if>
 					<s:else><a href="AuditAssignments.action?auditID=<s:property value="auditID"/>">Not Assigned</a></s:else>
 				</li>
 				<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
-					<li><label>Closing Auditor:</label>
+					<li><label>Closing Safety Professional:</label>
 						<s:property value="conAudit.closingAuditor.name" />
 					</li>
 				</s:if>

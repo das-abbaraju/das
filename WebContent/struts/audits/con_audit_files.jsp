@@ -26,14 +26,14 @@ function showAuditUpload(auditID, fileID, desc, question) {
 
 <s:include value="../actionMessages.jsp" />
 <div class="info">
-<b>Click on the Open Requirement(s) below to upload supporting documentation. If you have any further questions or believe that a section does not apply to your company, please contact the auditor below.
-<br/>*** Please allow up to 3 days for an auditor to review your files. ***</b>   
+<b>Click on the Open Requirement(s) below to upload supporting documentation. If you have any further questions or believe that a section does not apply to your company, please contact the safety professional below.
+<br/>*** Please allow up to 3 days for a safety professional to review your files. ***</b>   
 </div>
 <ul>
 <h3><s:property value="conAudit.auditType.auditName" />
 #<s:property value="conAudit.id" /></h3>
 
-<li style="list-style-type: none;"><b>Auditor: </b> 
+<li style="list-style-type: none;"><b>Safety Professional: </b> 
 	<s:if test="conAudit.closingAuditor != null"><s:property value="conAudit.closingAuditor.name"/></s:if>
 	<s:else><s:property value="conAudit.auditor.name"/></s:else>
 </li>
@@ -69,7 +69,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 							</s:else>	
 							<br/>
 							<s:if test="!comment.toString().equals('null')">
-								<span class="redMain"><b>Auditor Comment : </b><s:property value="comment" escape="false"/></span>
+								<span class="redMain"><b>Safety Professional Comment : </b><s:property value="comment" escape="false"/></span>
 							</s:if>
 							<s:if test="permissions.auditor">
 								<s:set name="catData" value="getAuditCatData(#data.audit.id,#data.question.subCategory.category.id)"/>

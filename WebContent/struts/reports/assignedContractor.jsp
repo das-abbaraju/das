@@ -34,7 +34,7 @@
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','a.creationDate DESC');">Registration</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','c.welcomeAuditor_id DESC,a.name');">Auditor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','c.welcomeAuditor_id DESC,a.name');">Safety Professional</a></td>
 				<td width="20"></td>
 				<s:if test="showContact">
 					<td>Primary Contact</td>
@@ -62,7 +62,7 @@
 				<td>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('welcomeAuditor_id')}"
-						id="%{'auditor_'.concat([0].get('id'))}" onchange="saveContractor('%{[0].get('id')}');" headerKey="" headerValue="- Auditor -" />
+						id="%{'auditor_'.concat([0].get('id'))}" onchange="saveContractor('%{[0].get('id')}');" headerKey="" headerValue="- Safety Professional -" />
 				</td>
 				<td class="center" id="assignDate_<s:property value="[0].get('id')"/>">
 				</td>

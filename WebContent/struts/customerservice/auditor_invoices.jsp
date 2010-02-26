@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Auditor Invoices</title>
+<title>Safety Professional Invoices</title>
 <link rel="stylesheet" href="css/reports.css?v=20091231" />
 <s:include value="../jquery.jsp"/>
 
@@ -24,7 +24,7 @@ function getDetail(auditorID, paidDate) {
 	<thead>
 	<tr>
 		<td>Paid</td>
-		<td>Auditor</td>
+		<td>Safety Professional</td>
 		<td>Audits</td>
 	</tr>
 	</thead>

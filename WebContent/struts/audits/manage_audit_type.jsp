@@ -63,7 +63,7 @@ $(function(){
 						<li><label>Is Scheduled:</label>
 							<s:checkbox name="auditType.scheduled" />
 						</li>
-						<li><label>Has Auditor:</label>
+						<li><label>Has Safety Professional:</label>
 							<s:checkbox name="auditType.hasAuditor" />
 						</li>
 						<li><label>Contractor Can View:</label>

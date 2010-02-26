@@ -57,7 +57,7 @@ $(function() {
 					function(json) {
 						callback(json.events);
 						$table = $('<table class="report" />');
-						$table.append('<thead><tr><td>Auditor</td><td>Number of Audits</td></tr></thead>');
+						$table.append('<thead><tr><td>Safety Professional</td><td>Number of Audits</td></tr></thead>');
 						$.each(json.auditorCount, function (k, v) {
 								if (k != 'Total')
 									$table.append('<tr><td>'+k+'</td><td>'+v+'</td></tr>');

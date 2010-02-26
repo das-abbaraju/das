@@ -262,7 +262,7 @@
 
 	<s:if test="filter.showAuditor">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_auditorId'); return false;">Auditors</a> =
+			onclick="toggleBox('form1_auditorId'); return false;">Safety Professionals</a> =
 		<span id="form1_auditorId_query">ALL</span><br />
 		<span id="form1_auditorId_select" style="display: none"
 			class="clearLink"> <s:select name="filter.auditorId"
@@ -276,7 +276,7 @@
 	<s:if test="filter.showClosingAuditor">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_closingAuditorId'); return false;">Closing
-		Auditors</a> = <span id="form1_closingAuditorId_query">ALL</span><br />
+		Safety Professionals</a> = <span id="form1_closingAuditorId_query">ALL</span><br />
 		<span id="form1_closingAuditorId_select" style="display: none"
 			class="clearLink"> <s:select name="filter.closingAuditorId"
 			cssClass="forms" list="auditorList" listKey="id" listValue="name"

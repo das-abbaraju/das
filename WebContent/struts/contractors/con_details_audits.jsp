@@ -11,7 +11,7 @@
 	<tr>
 		<th>Type</th>
 		<th>Created</th>
-		<th>Auditor</th>
+		<th>Safety Professional</th>
 		<th>Scheduled</th>
 		<th>Submitted</th>
 		<th>Closed</th>

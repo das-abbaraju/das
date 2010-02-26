@@ -29,7 +29,7 @@
 	    <td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');" >Status</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.percentComplete');" >Comp%</a></td>
 	    <s:if test="%{value = (!permissions.operator && !permissions.corporate)}">
-	    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Auditor</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Safety Professional</a></td>
 	    </s:if>
 		<s:if test="showContact">
 			<td>Primary Contact</td>

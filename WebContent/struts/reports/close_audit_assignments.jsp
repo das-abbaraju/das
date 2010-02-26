@@ -36,8 +36,8 @@
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','atype.auditName');">Type</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Submitted</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC');">Auditor</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','closingAuditorID DESC,name');">Closing Auditor</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC');">Safety Professional</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','closingAuditorID DESC,name');">Closing Safety Professional</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
 				<td align="center">Notes</td>
 				<td></td>
@@ -54,7 +54,7 @@
 				<td><nobr>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{get('closingAuditorID')}"
-						id="%{'auditor_'.concat(get('auditID'))}" headerKey="" headerValue="- Auditor -"/>
+						id="%{'auditor_'.concat(get('auditID'))}" headerKey="" headerValue="- Safety Professional -"/>
 				</nobr></td>
 				<td class="center">
 					<nobr><s:property value="%{getBetterDate( get('assignedDate'), 'MM/dd/yy hh:mm:ss a.000')}" /></nobr>

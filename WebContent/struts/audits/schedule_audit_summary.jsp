@@ -36,7 +36,7 @@
 	<li><div class="alert">Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $150 rescheduling fee.</div></li>
 </ol>
 </fieldset>
-<fieldset class="form"><legend><span>PICS Auditor</span></legend>
+<fieldset class="form"><legend><span>PICS Safety Professional</span></legend>
 <ol>
 		<li><label>Name:</label> <s:property value="conAudit.auditor.name" /></li>
 		<li><label>Email:</label> <s:property value="conAudit.auditor.email" /></li>

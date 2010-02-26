@@ -86,8 +86,8 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR)) {
-			subMenu.addChild("Auditor Invoices", "AuditorInvoices.action");
-			subMenu.addChild("Create Auditor Invoices", "CreateAuditorInvoices.action");
+			subMenu.addChild("Safety Pro Invoices", "AuditorInvoices.action");
+			subMenu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action");
 		}
 
 		if (permissions.hasPermission(OpPerms.ContractorDetails)) {

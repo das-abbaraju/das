@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Create Auditor Invoices</title>
+<title>Create Safety Professional Invoices</title>
 <link rel="stylesheet" href="css/reports.css?v=20091231" />
 </head>
 <body>
-<h1>Create Auditor Invoices</h1>
+<h1>Create Safety Professional Invoices</h1>
 
 <s:include value="../actionMessages.jsp" />
 
@@ -17,7 +17,7 @@
 <table class="report">
 <thead>
 	<tr>
-		<th>Auditor</th>
+		<th>Safety Professional</th>
 		<th>Contractor</th>
 		<th>Audit</th>
 		<th>Type</th>

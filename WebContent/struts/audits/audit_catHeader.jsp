@@ -50,7 +50,7 @@
 		<div class="alert">Your <s:property value="conAudit.auditType.auditName" /> is about to expire, please review every section and re-submit it.</div>
 	</s:if>
 	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100">
-		<div class="info">The PICS auditor has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
+		<div class="info">The PICS safety professional has submitted your <s:property value="conAudit.auditType.auditName"/>. There are 
 			<a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID" />" title="Click to see ALL Open Requirements">Open Requirements</a>
 			that need your attention.
 		</div>

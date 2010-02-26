@@ -82,7 +82,7 @@
 </table>
 <s:if test="!@com.picsauditing.util.Strings@isEmpty(auditorNotes)">
 	<div class="info">
-		<b>Auditor Notes:</b> <s:property value="auditorNotes"/>
+		<b>Safety Professional Notes:</b> <s:property value="auditorNotes"/>
 	</div>
 </s:if>
 <s:if test="conAudit.auditType.pqf">

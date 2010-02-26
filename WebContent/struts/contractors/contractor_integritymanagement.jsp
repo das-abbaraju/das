@@ -104,7 +104,7 @@ function showAddAudit() {
 		<th>For</th>
 		<th>Closed</th>
 		<th>Operator</th>
-		<th>Auditor</th>
+		<th>Safety Professional</th>
 		<th>Expires</th>
 		<th>View</th>
 	</tr>

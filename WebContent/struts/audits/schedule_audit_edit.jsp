@@ -91,7 +91,7 @@ $(function(){
 			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
 		<li><label>Audit Time:</label> <s:textfield name="scheduledDateTime"
 			value="%{formatDate(conAudit.scheduledDate, 'h:mm a')}" cssClass="time"/> <s:property value="permissions.timezone.displayName"/></li>
-		<li><label>Auditor:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
+		<li><label>Safety Professional:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
 		<li><label>Location:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
 			list="#{false: 'Web', true: 'On Site (address below)'}" /></li>
 		<s:if test="conAudit.contractorAccount.webcam.id > 0">

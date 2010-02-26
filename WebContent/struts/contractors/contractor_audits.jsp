@@ -27,7 +27,7 @@
 		<th>For</th>
 		<th>Created</th>
 		<th>Operator</th>
-		<th>Auditor</th>
+		<th>Safety Professional</th>
 		<th>Scheduled</th>
 		<th>Submitted</th>
 		<th>Closed</th>
@@ -109,7 +109,7 @@
 		<th>For</th>
 		<th>Created</th>
 		<th>Operator</th>
-		<th>Auditor</th>
+		<th>Safety Professional</th>
 		<th>Scheduled</th>
 		<th>Submitted</th>
 		<th>Closed</th>

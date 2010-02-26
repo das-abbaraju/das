@@ -15,7 +15,7 @@
 	<br clear="all" />
 
 	<div class="filterOption"><a href="#"
-		onclick="toggleBox('auditorId'); return false;">Auditors</a> = <span
+		onclick="toggleBox('auditorId'); return false;">Safety Professionals</a> = <span
 		id="auditorId_query">ALL</span><br />
 	<span id="auditorId_select" style="display: none" class="clearLink">
 	<s:action name="AuditorsGet" executeResult="true">
