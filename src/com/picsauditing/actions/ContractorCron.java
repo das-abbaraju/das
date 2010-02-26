@@ -122,7 +122,6 @@ public class ContractorCron extends PicsActionSupport {
 			runAuditBuilder(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-			runPolicies(contractor);
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
@@ -147,6 +146,7 @@ public class ContractorCron extends PicsActionSupport {
 				}
 				runCorporateRollup(contractor, corporateSet);
 			}
+			runPolicies(contractor);
 
 			if (steps != null && steps.length > 0) {
 				contractor.setNeedsRecalculation(false);
@@ -358,13 +358,13 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		for (ContractorOperator co : contractor.getOperators()) {
-			OperatorAccount inheritInsurance = co.getOperatorAccount().getInheritInsurance();
-			flagDataCalculator.setOperatorCriteria(inheritInsurance.getFlagCriteria());
+			OperatorAccount inheritInsuranceCriteria = co.getOperatorAccount().getInheritInsuranceCriteria();
+			flagDataCalculator.setOperatorCriteria(inheritInsuranceCriteria.getFlagCriteria());
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
 				if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.isVisible()) {
-							if (cao.getOperator().equals(inheritInsurance)
+							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
 									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
 								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
 

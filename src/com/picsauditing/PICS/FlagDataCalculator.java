@@ -94,9 +94,11 @@ public class FlagDataCalculator {
 				for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
 					if (conAudit.getAuditType().equals(criteria.getAuditType())) {
 						if (criteria.getAuditType().getClassType().isPolicy()) {
-							// Calculating the Policy status is much more complex
+							// Calculating the Policy status is much more
+							// complex
 							if (!opCriteria.getOperator().getCanSeeInsurance().isTrue())
-								// Don't flag for operators that don't subscribe to InsureGUARD
+								// Don't flag for operators that don't subscribe
+								// to InsureGUARD
 								return false;
 							if (!conAudit.getAuditStatus().isExpired()) {
 								OperatorAccount insuranceParent = opCriteria.getOperator().getInheritInsurance();
@@ -116,13 +118,16 @@ public class FlagDataCalculator {
 						}
 					}
 				}
-				// TODO What is this for exactly? Do we still need Works for Operator??
-				// This is a check for Search For New. If the contractor doesn't work for the operator,
-				// or is bid only, we shouldn't flag on the audits they don't have.
+				// TODO What is this for exactly? Do we still need Works for
+				// Operator??
+				// This is a check for Search For New. If the contractor doesn't
+				// work for the operator,
+				// or is bid only, we shouldn't flag on the audits they don't
+				// have.
 				if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
 					return false;
 				}
-				
+
 				return criteria.isFlaggableWhenMissing();
 			}
 		}
@@ -141,8 +146,10 @@ public class FlagDataCalculator {
 		// if("AMBest".equals(questionType)) {
 		// boolean flag1 = false;
 		// boolean flag2 = false;
-		// int ratings = Integer.parseInt(answer.substring(0, answer.indexOf('|')));
-		// int bestClass = Integer.parseInt(answer.substring(value.indexOf('|')+ 1,answer.length()));
+		// int ratings = Integer.parseInt(answer.substring(0,
+		// answer.indexOf('|')));
+		// int bestClass = Integer.parseInt(answer.substring(value.indexOf('|')+
+		// 1,answer.length()));
 		// if(getAMBestRatings() > 0)
 		// flag1 = ratings > getAMBestRatings();
 		// if(getAMBestClass() > 0)
@@ -162,7 +169,8 @@ public class FlagDataCalculator {
 		//
 		// public int getAMBestClass() {
 		// if(!Strings.isEmpty(value)) {
-		// return Integer.parseInt(value.substring(value.indexOf('|')+ 1,value.length()));
+		// return Integer.parseInt(value.substring(value.indexOf('|')+
+		// 1,value.length()));
 		// }
 		// return 0;
 		// }
@@ -335,16 +343,19 @@ public class FlagDataCalculator {
 			if (key.getQuestion() != null && key.getQuestion().getAuditType().equals(auditType)) {
 				PicsLogger.log(" --- " + key.getQuestion());
 				FlagCriteriaOperator opCriteria = operatorCriteria.get(key);
-				if (isFlagged(opCriteria, contractorCriteria.get(key))) {
-					PicsLogger.log(" --- " + opCriteria.getFlag() + " " + key.getQuestion());
-					flag = FlagColor.getWorseColor(flag, opCriteria.getFlag());
-					if (flag.isRed())
-						// Exit early
-						return flag;
-				} else {
-					PicsLogger.log(" --- Green " + key.getQuestion());
-					if (flag == null)
-						flag = FlagColor.Green;
+				FlagCriteriaContractor conCriteria = contractorCriteria.get(key);
+				if (conCriteria != null) {
+					if (isFlagged(opCriteria, conCriteria)) {
+						PicsLogger.log(" --- " + opCriteria.getFlag() + " " + key.getQuestion());
+						flag = FlagColor.getWorseColor(flag, opCriteria.getFlag());
+						if (flag.isRed())
+							// Exit early
+							return flag;
+					} else {
+						PicsLogger.log(" --- Green " + key.getQuestion());
+						if (flag == null)
+							flag = FlagColor.Green;
+					}
 				}
 			}
 		}
@@ -368,11 +379,11 @@ public class FlagDataCalculator {
 	public void setOverrides(Map<FlagCriteria, FlagDataOverride> overrides) {
 		this.overrides = overrides;
 	}
-	
+
 	public boolean isWorksForOperator() {
 		return worksForOperator;
 	}
-	
+
 	public void setWorksForOperator(boolean worksForOperator) {
 		this.worksForOperator = worksForOperator;
 	}
