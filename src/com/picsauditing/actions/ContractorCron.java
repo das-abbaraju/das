@@ -127,22 +127,24 @@ public class ContractorCron extends PicsActionSupport {
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
 				for (ContractorOperator co : contractor.getOperators()) {
-					OperatorAccount operator = co.getOperatorAccount();
-					for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
-						PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
-								+ flagCriteriaOperator.getCriteria().getCategory());
-					}
-
-					for (AuditOperator auditOperator : operator.getVisibleAudits())
-						PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
-
-					if (runStep(ContractorCronStep.CorporateRollup)) {
-						for (Facility facility : operator.getCorporateFacilities()) {
-							corporateSet.add(facility.getCorporate());
+					if (!co.getOperatorAccount().isCorporate()) {
+						OperatorAccount operator = co.getOperatorAccount();
+						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+									+ flagCriteriaOperator.getCriteria().getCategory());
 						}
+
+						for (AuditOperator auditOperator : operator.getVisibleAudits())
+							PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
+
+						if (runStep(ContractorCronStep.CorporateRollup)) {
+							for (Facility facility : operator.getCorporateFacilities()) {
+								corporateSet.add(facility.getCorporate());
+							}
+						}
+						runFlag(co);
+						runWaitingOn(co);
 					}
-					runFlag(co);
-					runWaitingOn(co);
 				}
 				runCorporateRollup(contractor, corporateSet);
 			}
@@ -259,36 +261,13 @@ public class ContractorCron extends PicsActionSupport {
 		flagDataCalculator.setOverrides(overrides);
 
 		List<FlagData> changes = flagDataCalculator.calculate();
-
+		co.getFlagDatas().addAll(changes); 
+		
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
 		for (FlagData change : changes) {
 			overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
-
-		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
-				.getOperatorAccount().getId());
-		// update/delete
-		final Iterator<FlagData> dbIterator = flagData.iterator();
-		while (dbIterator.hasNext()) {
-			FlagData fromDB = dbIterator.next();
-			FlagData found = null;
-			
-			for (FlagData change : changes) {
-				if (fromDB.equals(change)) {
-					fromDB.update(change);
-					found = change;
-				}
-			}
-			
-			if (found != null)
-				changes.remove(found); // update was performed
-			else
-				dbIterator.remove();
-		}
-		
-		// merging remaining changes (inserts)
-		flagData.addAll(changes);
 
 		if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
@@ -308,6 +287,7 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagColor(co.getForceFlag());
 			co.setFlagLastUpdated(new Date());
 		}
+		contractorOperatorDAO.save(co);
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {
@@ -358,18 +338,20 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		for (ContractorOperator co : contractor.getOperators()) {
-			OperatorAccount inheritInsuranceCriteria = co.getOperatorAccount().getInheritInsuranceCriteria();
-			flagDataCalculator.setOperatorCriteria(inheritInsuranceCriteria.getFlagCriteria());
-			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
-				if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
-					for (ContractorAuditOperator cao : audit.getOperators()) {
-						if (cao.isVisible()) {
-							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
-									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
+			if (!co.getOperatorAccount().isCorporate()) {
+				OperatorAccount inheritInsuranceCriteria = co.getOperatorAccount().getInheritInsuranceCriteria();
+				flagDataCalculator.setOperatorCriteria(inheritInsuranceCriteria.getFlagCriteria());
+				for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
+					if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
+						for (ContractorAuditOperator cao : audit.getOperators()) {
+							if (cao.isVisible()) {
+								if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
+										&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
+									FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
 
-								cao.setFlag(flagColor);
-								dao.save(cao);
+									cao.setFlag(flagColor);
+									dao.save(cao);
+								}
 							}
 						}
 					}
@@ -379,10 +361,10 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
-		if (!runStep(ContractorCronStep.AuditCategory))
+		if (!runStep(ContractorCronStep.CorporateRollup))
 			return;
 
-		// rolls up every flag color to root 
+		// rolls up every flag color to root
 		Map<OperatorAccount, FlagColor> rollupData = new HashMap<OperatorAccount, FlagColor>();
 		Map<OperatorAccount, ContractorOperator> corporateCOs = new HashMap<OperatorAccount, ContractorOperator>();
 
@@ -404,32 +386,33 @@ public class ContractorCron extends PicsActionSupport {
 					rollupData.put(operator, coOperator.getFlagColor());
 				}
 			} else { // just rollup data, will be checked later
-				OperatorAccount parent = operator.getParent();
-				if(parent != null) { // we have a corporate parent
+				for (Facility facility : operator.getCorporateFacilities()) {
+					OperatorAccount parent = facility.getCorporate();
 					FlagColor worstColor = FlagColor.getWorseColor(coOperator.getFlagColor(), rollupData.get(parent));
 					rollupData.put(parent, worstColor);
 				}
 			}
 		}
-		
+
 		// ensuring that data is updated from hub to primaryCorporate in rollup
-		for(OperatorAccount corporate : corporateCOs.keySet()){
-			// rollup data should contain all entries for corporate, including those not in corporateSet
+		for (OperatorAccount corporate : corporateCOs.keySet()) {
+			// rollup data should contain all entries for corporate, including
+			// those not in corporateSet
 			OperatorAccount parent = corporate.getParent();
-			if(parent != null) { // we have a corporate parent
+			if (parent != null) { // we have a corporate parent
 				FlagColor worstColor = FlagColor.getWorseColor(rollupData.get(corporate), rollupData.get(parent));
 				rollupData.put(parent, worstColor);
 			}
 		}
-		
+
 		// rollup finished, updating corporate values
-		for(OperatorAccount corporate : corporateCOs.keySet())
+		for (OperatorAccount corporate : corporateCOs.keySet())
 			corporateCOs.get(corporate).setFlagColor(rollupData.get(corporate));
 
 		// removing corporateSet entries based on contractor CO data
 		for (OperatorAccount corporate : corporateCOs.keySet())
 			corporateSet.remove(corporate);
-		
+
 		// whatever left in corporateSet needs to be inserted
 		for (OperatorAccount corporate : corporateSet) {
 			ContractorOperator newCo = new ContractorOperator();

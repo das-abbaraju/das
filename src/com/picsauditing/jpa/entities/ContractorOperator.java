@@ -1,13 +1,17 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +35,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private WaitingOn waitingOn = WaitingOn.None;
 	private Date processCompletion;
 	private String relationshipType;
+	private List<FlagData> flagDatas;
 
 	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
@@ -160,5 +165,16 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setRelationshipType(String relationshipType) {
 		this.relationshipType = relationshipType;
+	}
+
+
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
+	@JoinColumns({@JoinColumn(name="opID", referencedColumnName = "genID"), @JoinColumn(name="conID", referencedColumnName="subID")})
+	public List<FlagData> getFlagDatas() {
+		return flagDatas;
+	}
+
+	public void setFlagDatas(List<FlagData> flagDatas) {
+		this.flagDatas = flagDatas;
 	}
 }
