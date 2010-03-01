@@ -457,6 +457,10 @@ and
 (	(k.oshaRateType = 'Neer' and fo.neerhurdleType = 'Absolute')
 );
 
+-- Update the flag_criteria_operator percentAffected to 0
+update flag_criteria_operator 
+set percentAffected = 0
+where percentAffected is null;
 
 update flag_criteria_operator set createdBy = 1
 where createdBy is null;
