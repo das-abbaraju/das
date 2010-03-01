@@ -1,35 +1,32 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FlagDataDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
-	protected AuditCategoryDataDAO auditCategoryDataDAO;
-	protected AuditQuestionDAO auditQuestionDAO;
 	protected FlagDataDAO flagDataDAO;
+	protected FlagDataOverrideDAO flagDataOverrideDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -39,16 +36,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected FlagColor forceFlag;
 	protected String forceNote;
 	protected boolean overrideAll = false;
+	protected int dataID;
 	protected List<FlagData> flagData;
+	protected Map<FlagCriteria, FlagDataOverride> flagDataOverride;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDao,AuditCategoryDataDAO auditCategoryDataDAO,
-			AuditQuestionDAO auditQuestionDAO,FlagDataDAO flagDataDAO) {
+			ContractorOperatorDAO contractorOperatorDao, FlagDataDAO flagDataDAO,
+			FlagDataOverrideDAO flagDataOverrideDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
-		this.auditCategoryDataDAO = auditCategoryDataDAO;
-		this.auditQuestionDAO = auditQuestionDAO;
 		this.flagDataDAO = flagDataDAO;
+		this.flagDataOverrideDAO = flagDataOverrideDAO;
 	}
 
 	public String execute() throws Exception {
@@ -65,12 +63,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (opID == 0)
 			opID = permissions.getAccountId();
 
-		// If the contractor isn't assigned to this facility (in
-		// generalcontractors table)
-		// then the following will throw an exception
-		// We must either re-engineer the way we query co's and their flags
-		// or merge the gc and flag tables into one (I prefer the latter) Trevor
-		// 5/29/08
 		co = contractorOperatorDao.find(id, opID);
 		if (co == null) {
 			addActionError("This contractor doesn't work at the given site");
@@ -139,6 +131,47 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						}
 					}
 				}
+			} else if ("Force Data Override".equals(button)) {
+				FlagData flagData = flagDataDAO.find(dataID);
+				if (forceFlag.equals(flagData.getFlag()))
+					addActionError("You didn't change the flag color");
+				if (forceEnd == null)
+					addActionError("You didn't specify an end date");
+				if (getActionErrors().size() > 0) {
+					PicsLogger.stop();
+					return SUCCESS;
+				}
+
+				FlagDataOverride flagOverride = new FlagDataOverride();
+				flagOverride.setContractor(contractor);
+				flagOverride.setOperator(co.getOperatorAccount());
+				if(overrideAll) {
+					flagOverride.setOperator(new OperatorAccount());
+					flagOverride.getOperator().setId(permissions.getAccountId());
+				}
+				flagOverride.setForceflag(forceFlag);
+				flagOverride.setForceEnd(forceEnd);
+				flagOverride.setCriteria(flagData.getCriteria());
+				flagOverride.setAuditColumns(permissions);
+				flagDataOverrideDAO.save(flagOverride);
+
+				noteText = "Forced the flag to " + forceFlag + " for criteria " + flagData.getCriteria().getLabel()
+						+ " for " + co.getOperatorAccount().getName();
+			} else if ("Cancel Data Override".equals(button)) {
+				FlagData flagData = flagDataDAO.find(dataID); 
+				noteText = "Removed the Force flag for criteria " + flagData.getCriteria().getLabel()
+				+ " for " + co.getOperatorAccount().getName();
+				
+				FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
+				if(flagDataOverride != null) {
+					if(flagDataOverride.getOperator().equals(co.getOperatorAccount()))
+						flagDataOverrideDAO.remove(flagDataOverride);
+				}
+				if (overrideAll == true) {
+					if(flagDataOverride.getOperator().getId() == permissions.getAccountId()) {
+						flagDataOverrideDAO.remove(flagDataOverride);
+					}
+				}
 			}
 			note.setSummary(noteText);
 			getNoteDao().save(note);
@@ -163,7 +196,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public void setCo(ContractorOperator co) {
 		this.co = co;
 	}
-	
+
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
@@ -208,32 +241,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.overrideAll = overrideAll;
 	}
 
-	public String getYesterday() {
-		Calendar date = Calendar.getInstance();
-		date.add(Calendar.DAY_OF_YEAR, -1);
-		return DateBean.format(date.getTime(), "M/d/yyyy");
+	public int getDataID() {
+		return dataID;
 	}
 
-	public AuditCatData getAuditCatData(int auditID, int questionID) {
-		AuditQuestion auditQuestion = auditQuestionDAO.find(questionID);
-		if (isCanSeeAudit(auditQuestion.getAuditType())) {
-			int catID = auditQuestion.getSubCategory().getCategory().getId();
-			List<AuditCatData> aList = auditCategoryDataDAO.findAllAuditCatData(auditID, catID);
-			if (aList != null && aList.size() > 0) {
-				return aList.get(0);
-			}
-		}
-		return null;
-	}
-
-	public int getShaTypeID() {
-		OshaType shaType = co.getOperatorAccount().getOshaType();
-		if (shaType.equals(OshaType.COHS))
-			return AuditCategory.CANADIAN_STATISTICS;
-		if (shaType.equals(OshaType.MSHA))
-			return AuditCategory.MSHA;
-		else
-			return AuditCategory.OSHA_AUDIT;
+	public void setDataID(int dataID) {
+		this.dataID = dataID;
 	}
 
 	public boolean isCanSeeAudit(AuditType auditType) {
@@ -243,19 +256,63 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return true;
 		return false;
 	}
-	
+
 	public List<FlagData> getFlagData() {
-		if(flagData == null)
+		if (flagData == null)
 			flagData = flagDataDAO.findByContractorAndOperator(contractor.getId(), opID);
 		return flagData;
 	}
-	
-	public boolean isOshaFlagged() {
-		for(FlagData flagDatas : getFlagData()) {
-			if(flagDatas.getCriteria().getOshaType() != null) {
-				return true;
+
+	public Map<FlagCriteria, FlagDataOverride> getFlagDataOverrides() {
+		if (flagDataOverride == null)
+			flagDataOverride = flagDataOverrideDAO.findByContractorAndOperator(contractor, co.getOperatorAccount());
+		return flagDataOverride;
+	}
+
+	public List<FlagData> getAuditCriteria() {
+		List<FlagData> audits = new ArrayList<FlagData>();
+		for (FlagData flagData : getFlagData()) {
+			if (flagData.getCriteria().getAuditType() != null
+					&& !flagData.getCriteria().getAuditType().getClassType().isPolicy()) {
+				audits.add(flagData);
+			}
+
+		}
+		return audits;
+	}
+
+	public List<FlagData> getInsuranceCriteria() {
+		List<FlagData> insurance = new ArrayList<FlagData>();
+		for (FlagData flagData : getFlagData()) {
+			if (flagData.getCriteria().getAuditType() != null
+					&& flagData.getCriteria().getAuditType().getClassType().isPolicy()) {
+				insurance.add(flagData);
+			}
+
+		}
+		return insurance;
+	}
+
+	public List<FlagData> getSafetyCriteria() {
+		List<FlagData> safety = new ArrayList<FlagData>();
+		for (FlagData flagData : getFlagData()) {
+			if ((flagData.getCriteria().getQuestion() != null && !flagData.getCriteria().getQuestion().getAuditType()
+					.getClassType().isPolicy())
+					|| flagData.getCriteria().getOshaType() != null) {
+				safety.add(flagData);
+			}
+
+		}
+		return safety;
+	}
+
+	public FlagDataOverride isFlagDataOverride(FlagData flagData) {
+		if (getFlagDataOverrides() != null) {
+			FlagDataOverride flOverride = getFlagDataOverrides().get(flagData.getCriteria());
+			if (flOverride != null && flOverride.isInForce()) {
+				return flOverride;
 			}
 		}
-		return false;
+		return null;
 	}
 }

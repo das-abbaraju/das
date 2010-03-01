@@ -6,6 +6,20 @@
 <title>Flag Status for <s:property value="contractor.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<style type="text/css">
+table.report a {
+	text-decoration: underline;
+}
+
+.hide {
+	display: none;
+}
+
+.hover {
+	margin-left: 10px;
+	display: none;
+}
+</style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 $(function() {
@@ -40,7 +54,7 @@ $(function() {
 					<s:if test="permissions.corporate">
 						<s:checkbox name="overrideAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label><br/>
 					</s:if>
-					Reason:<br><s:textarea name="forceNote" value="" rows="4" cols="15"></s:textarea>
+					Reason:<br><s:textarea name="forceNote" value="" rows="3" cols="15"></s:textarea>
 					<div>
 						<button class="picsbutton positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
 					</div>
@@ -94,162 +108,205 @@ $(function() {
 </div>
 </s:if>
 
+
 <table class="report" style="clear: none;">
 	<thead>
 		<tr>
 			<td>Flag</td>
-			<td>Requirement</td>
-			<td>Upcoming</td>
+			<td>Description</td>
+			<td>Value</td>
 		</tr>
 	</thead>
 	<s:iterator id="data" value="flagData">
-		<s:if test="#data.criteria.auditType != null">
+		<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber'">
 			<tr class="<s:property value="#data.flag" />">
-				<td class="center"><s:property value="#data.flag.smallIcon"
-					escape="false" />
-				</td>
-				<td><s:property value="#data.criteria.auditType.auditName" /></td>
 				<td>
-					<s:iterator id="con" value="contractor.audits">
-						<s:if test="#data.criteria.auditType == #con.auditType">
-							<s:if test="#data.criteria.auditType.classType.policy && !(#con.auditStatus.expired)">
-								<s:iterator value="#con.operators">
-									<s:if test="visible && (opID == operator)">
-										<s:if test="!status.approved && !status.notApplicable">
-											<s:if test="isCanSeeAudit(auditType)">
-												<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditType.auditName" /></a>
+					<s:property value="#data.flag.smallIcon"
+						escape="false" />
+					<s:if test="opID == permissions.getAccountId() || permissions.corporate">	
+						<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
+						<s:if test="#flagoverride != null">
+							<s:form>
+								Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+								<br/>
+								<s:hidden name="id" value="%{contractor.id}" />
+								<s:hidden name="opID" 	/>
+								<s:hidden name="dataID" value="%{#data.id}"/>
+								<pics:permission perm="EditForcedFlags">
+									<s:if test="permissions.corporate">
+										<s:checkbox name="overrideAll"/><label>Check to Cancel the Force Flag Color at all your Facilities in your database</label><br/>
+									</s:if>
+									<div>
+										<button class="picsbutton positive" type="submit" name="button" value="Cancel Data Override">Cancel Data Override</button>
+									</div>
+									<br />
+								</pics:permission>
+							</s:form>
+						</s:if>
+						<s:else>
+							<pics:permission perm="EditForcedFlags">
+								<div id="override_flagdata" style="display: none">
+								<s:form id="form_override">
+									<s:hidden name="id" value="%{contractor.id}" />
+									<s:hidden name="opID" />
+									<s:hidden name="dataID" value="%{#data.id}"/>
+									<s:select list="flagList" name="forceFlag" />
+									until 
+									<input id="forceEnd1" name="forceEnd" size="8" type="text" class="datepicker"/>
+									<br/>
+									<s:if test="permissions.corporate">
+										<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
+									</s:if>
+									<div>
+										<button class="picsbutton positive" type="submit" name="button" value="Force Data Override">Force Data Override</button>
+									</div>
+								</s:form>
+								<a href="#" onclick="$('#override_link_flagdata').show(); $('#override_flagdata').hide(); return false;">Nevermind</a>
+								</div>
+								<a id="override_link_flagdata" href="#" onclick="$('#override_flagdata').show(); $('#override_link_flagdata').hide(); return false;">Manually Force Flag Color</a>
+							</pics:permission>
+						</s:else>
+					</s:if>
+					<s:else>
+						<s:if test="#flagoverride != null">
+						<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
+							Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+						</s:form>
+						</s:if>
+					</s:else>
+				</td>
+				<td>
+					<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
+						<s:if test="#opCriteria.criteria == #data.criteria && #opCriteria.flag == #data.flag">
+							<s:property value="#opCriteria.replaceHurdle()"/>
+						</s:if>
+					</s:iterator>
+				</td>
+				<td>
+					<s:if test="#data.criteria.auditType != null">
+						<s:iterator id="audit" value="contractor.audits">
+							<s:if test="#data.criteria.auditType == #audit.auditType">
+								<s:if test="#data.criteria.auditType.classType.policy && !(#audit.auditStatus.expired)">
+									<s:iterator value="#audit.operators">
+										<s:if test="visible && (co.operatorAccount.inheritInsurance == operator)">
+											<s:if test="isCanSeeAudit(#audit.auditType)">
+												<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
 												<s:property value="status"/><br/>
 											</s:if>
 										</s:if>
-									</s:if>
-								</s:iterator>
-							</s:if>
-							<s:else>
-								<s:if test="#con.auditStatus.pendingSubmitted || #con.auditStatus.incomplete">
-									<s:if test="isCanSeeAudit(auditType)">
-										<a href="Audit.action?auditID=<s:property value="#con.id" />"><s:property value="auditFor" /> <s:property value="auditType.auditName" /></a>
-									</s:if>
-									<s:property value="auditStatus" /><br />
+									</s:iterator>
 								</s:if>
-							</s:else>
-						</s:if>
-					</s:iterator>
+								<s:else>
+									<s:if test="#audit.auditStatus.pendingSubmitted || #audit.auditStatus.incomplete">
+										<s:if test="isCanSeeAudit(#audit.auditType)">
+											<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditFor" /> <s:property value="#audit.auditType.auditName" /></a>
+										</s:if>
+										<s:property value="#audit.auditStatus" /><br />
+									</s:if>
+								</s:else>
+							</s:if>
+						</s:iterator>
+					</s:if>
+					<s:else>
+						<s:iterator id="conCriteria" value="contractor.flagCriteria">					
+							<s:if test="#data.criteria == #conCriteria.criteria">
+								<s:if test="#data.criteria.dataType == 'number'">
+									<s:property value="format(#conCriteria.answer)" />
+								</s:if>
+								<s:else>
+									<s:property value="#conCriteria.answer" />
+								</s:else>  
+							</s:if>	
+						</s:iterator>
+					</s:else>
 				</td>
 			</tr>
 		</s:if>
 	</s:iterator>
 	
-	<pics:permission perm="ManageOperators">
-		<tr><td colspan="3" class="center">
-			Operator Matrix <br />
+	<tr><td colspan="3" class="center">
+		<pics:permission perm="ManageOperators">
+			To Edit the Criteria <br />
 			[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">For Audits</a>]
 			[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">For Policies</a>]
-		</td></tr>
-	</pics:permission>
+		</pics:permission>
+		<pics:permission perm="EditFlagCriteria">
+			[<a 
+			href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">For Flag Criteria</a>]		
+		</pics:permission>
+	</td></tr>
 </table>
 
-<s:if test="oshaFlagged">
-	<table class="report" style="clear: none">
-		<thead>
-			<tr>
-				<td>Flag</td>
-				<td>OshaRateType</td>
-				<td>MultiYearScope</td>
-				<td>Value</td>
-				<td>Verified</td>
-				<td>Criteria</td>
-				<td></td>
-			</tr>
-		</thead>
-		<s:iterator id="data" value="flagData">
-			<s:if test="#data.criteria.oshaType != null && #data.criteria.oshaType == co.operatorAccount.oshaType">		
-				<tr class="<s:property value="#data.flag" />">
-					<td class="center"><s:property
-						value="#data.flag.smallIcon" escape="false" /></td>
-					<td><s:property value="#data.criteria.oshaRateType.description" /></td>
-					<td><s:property value="#data.criteria.multiYearScope" /></td>
-					<s:iterator id="conCriteria" value="contractor.flagCriteria">					
-						<s:if test="#data.criteria == #conCriteria.criteria">
-							<td class="right">
-								<s:property value="#conCriteria.answer" />  
-							</td>
-							<td>
-								<s:if test="#conCriteria.verified">Verified</s:if>
-								<s:else>Unverified</s:else>
-							</td>	
-						</s:if>	
-						</s:iterator>
-					<td>> 
-						<s:if test="#data.criteria.allowCustomValue == false">
-							<s:property value="#data.criteria.defaultValue"/>
-						</s:if>
-						<s:else>
-							<s:iterator id="opCriteria" value="co.operatorAccount.flagQuestionCriteriaInherited">
-								<s:if test="#opCriteria.criteria == #data.criteria">
-									<s:property value="#opCriteria.hurdle"/> = <s:property value="#opCriteria.flag"/>
-								</s:if>
-							</s:iterator>
-						</s:else>
-					</td>
-					<td>Link to Audit</td>
-				</tr>
-			</s:if>
-		</s:iterator>
-	</table>
-</s:if>
-
-<table class="report" style="clear: none">
-	<thead>
-		<tr>
-			<td>Flag</td>
-			<td>Answer</td>
-			<td>Criteria</td>
-			<td>For</td>
-			<td>Question</td>
-			<td></td>
-		</tr>
-	</thead>
-	<s:iterator id="data" value="flagData">
-		<s:if test="#data.criteria.question != null && !#data.criteria.question.auditType.classType.policy">
-			<tr class="<s:property value="#data.flag" />">
-				<td class="center"><s:property
-					value="#data.flag.smallIcon" escape="false" /></td>
-				<td class="center">
-					<s:iterator id="conCriteria" value="contractor.flagCriteria">					
-						<s:if test="#data.criteria == #conCriteria.criteria">
-							<s:property value="#conCriteria.answer" />
-						</s:if>
-					</s:iterator>				
-				</td>
-				<td><s:property value="#data.criteria.comparison"/> 
-					<s:iterator id="opCriteria" value="co.operatorAccount.flagQuestionCriteriaInherited">
-						<s:if test="#opCriteria.criteria == #data.criteria">
-							<s:if test="!#data.criteria.allowCustomValue">
-								<s:property value="#data.criteria.defaultValue"/>
-							</s:if>
-							<s:else>
-								<s:property value="#opCriteria.hurdle"/> 
-							</s:else>
-							= <s:property value="#opCriteria.flag"/>
-						</s:if>
+<table style="width: 75%">
+	<tr>
+		<s:if test="auditCriteria.size() > 0">
+			<td>
+				<table class="report" style="position: static;">
+					<thead>
+						<tr>
+							<td>Flag</td>
+							<td>Audits</td>
+						</tr>
+					</thead>
+					<s:iterator value="auditCriteria">
+						<tr>
+							<td><s:property value="flag.smallIcon" escape="false"/></td>
+							<td><s:property value="criteria.auditType.auditName" /></td>			
+						</tr>
 					</s:iterator>
-				</td>
-				<td><s:property value="#data.criteria.question.auditType.auditName" /> <s:property value="#data.criteria.multiYearScope" /></td>
-				<td>
-					<s:property value="#data.criteria.question.question" escape="false" />
-				</td>
-				<td>
-					Link to Audit
-				</td>
-			</tr>
+				</table>
+			</td>
 		</s:if>
-	</s:iterator>
-	<pics:permission perm="EditFlagCriteria">
-		<tr><td colspan="5" class="center"><a 
-			href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">Edit Flag Criteria</a></td></tr>
-	</pics:permission>
+		<s:if test="safetyCriteria.size() > 0">
+			<td>
+				<table class="report" style="position: static;">
+					<thead>
+						<tr>
+							<td>Flag</td>
+							<td>Safety</td>
+						</tr>
+					</thead>
+					<s:iterator id="data" value="safetyCriteria">
+						<tr>
+							<td><s:property value="flag.smallIcon" escape="false"/></td>
+							<td>
+								<s:iterator id="conCriteria" value="contractor.flagCriteria">					
+									<s:if test="#data.criteria == #conCriteria.criteria">
+										<s:if test="criteria.dataType == 'number'">
+											<s:property value="format(#conCriteria.answer)" />
+										</s:if>
+										<s:else>
+											<s:property value="#conCriteria.answer" />
+										</s:else>  
+									</s:if>	
+								</s:iterator>
+								- <s:property value="criteria.label" />
+							</td>			
+						</tr>
+					</s:iterator>
+				</table>
+			</td>
+		</s:if>
+		<s:if test="insuranceCriteria.size() > 0">
+			<td>
+				<table class="report" style="position: static;">
+					<thead>
+						<tr>
+							<td>Flag</td>
+							<td>Insurance</td>
+						</tr>
+					</thead>
+					<s:iterator value="insuranceCriteria">
+						<tr>
+							<td><s:property value="flag.smallIcon" escape="false"/></td>
+							<td><s:property value="criteria.auditType.auditName" /></td>			
+						</tr>
+					</s:iterator>
+				</table>
+			</td>
+		</s:if>
+	</tr>
 </table>
-
 
 <s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 	<s:if test="co.workStatusPending">
