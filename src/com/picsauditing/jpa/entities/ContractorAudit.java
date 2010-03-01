@@ -374,11 +374,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public boolean isAboutToExpire() {
 		if (expiresDate == null)
 			return false;
-		Calendar current = Calendar.getInstance();
-		Calendar expires = Calendar.getInstance();
-		expires.setTime(expiresDate);
 
-		if (current.get(Calendar.MONTH) < Calendar.MARCH && current.get(Calendar.YEAR) == expires.get(Calendar.YEAR))
+		if(DateBean.getDateDifference(expiresDate) <= 60)
 			return true;
 
 		return false;
