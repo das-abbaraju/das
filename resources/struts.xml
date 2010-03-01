@@ -586,7 +586,13 @@
 		<!-- REPORTS Other -->
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
+			<param name="filter.ajax">true</param>
 			<result>struts/reports/newContractor_operator.jsp</result>
+		</action>
+		
+		<action name="NewContractorSearchAjax"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
+			<result>struts/reports/newContractor_operator_data.jsp</result>
 		</action>
 		
 		<action name="NewContractorSearchCSV"
