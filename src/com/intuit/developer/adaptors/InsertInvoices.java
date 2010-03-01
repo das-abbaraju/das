@@ -13,7 +13,6 @@ import javax.xml.bind.Unmarshaller;
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
@@ -31,11 +30,10 @@ public class InsertInvoices extends CustomerAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
-		Currency currency = Currency.getFromISO(currentSession.getCountry());
 		
 		List<Invoice> invoices = getInvoiceDao().findWhere(
 				"i.account.qbListID is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-						+ "AND i.account.qbListID not like 'NOLOAD%' AND i.currency = '"+ currency + "'", 10);
+						+ "AND i.account.qbListID not like 'NOLOAD%'", 10);
 
 		// no work to do
 		if (invoices.size() == 0) {

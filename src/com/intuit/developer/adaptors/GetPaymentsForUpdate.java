@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
@@ -20,10 +19,9 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
-		Currency currency = Currency.getFromISO(currentSession.getCountry());
 
 		String where = "p.account.qbListID is not null AND p.qbListID is not null " +
-				" AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency = '"+ currency + "'";
+				" AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true";
 		List<Payment> payments = getPaymentDao().findWhere(where, 10);
 
 		if (payments.size() > 0) {

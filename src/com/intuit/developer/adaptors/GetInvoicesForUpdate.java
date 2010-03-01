@@ -4,17 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 
 public class GetInvoicesForUpdate extends InvoiceAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
-		Currency currency = Currency.getFromISO(currentSession.getCountry());
 
 		String where = "i.account.qbListID is not null AND i.qbListID is not null " +
-				" AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true AND i.currency = '"+ currency + "'";
+				" AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true";
 		List<Invoice> invoices = getInvoiceDao().findWhere(where, 10);
 
 		if (invoices.size() > 0) {

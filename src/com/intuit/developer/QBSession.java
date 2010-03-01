@@ -18,7 +18,6 @@ public class QBSession {
 	private boolean processingSomething = false;
 	private QBIntegrationWorkFlow currentStep = null;
 	private String lastError = null;
-	private String country = null;
 
 	private List<ContractorAccount> toInsert = null;
 	private List<Invoice> invoicesToInsert = null;
@@ -144,13 +143,5 @@ public class QBSession {
 
 	public void setToUpdatePayment(Map<String, ReceivePaymentRet> toUpdatePayment) {
 		this.toUpdatePayment = toUpdatePayment;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
 	}
 }

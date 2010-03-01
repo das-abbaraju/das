@@ -24,15 +24,9 @@ public class InsertContractors extends CustomerAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
-		String country = currentSession.getCountry();
-		String where = " AND";
-		if (country.equals("CA"))
-			where += " a.country.isoCode = 'CA'";
-		else
-			where += " a.country.isoCode != 'CA'";
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true and a.qbListID is null" + where);
+				"a.qbSync = true and a.qbListID is null");
 
 		// no work to do
 		if (contractors.size() == 0) {

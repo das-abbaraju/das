@@ -72,19 +72,12 @@ public class QBWebConnectorSvcSkeleton {
 				}
 			}
 			
-			if(!Strings.isEmpty(authenticate.getStrUserName()) 
+			if("PICSQBLOADER".equals(authenticate.getStrUserName()) 
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 				
 				QBSession session = new QBSession();
 				session.setSessionId(GUID.asString());
 				session.setLastRequest(new Date());
-				// Setting Session Country for US
-				if (authenticate.getStrUserName().equals("PICSQBLOADER"))
-					session.setCountry("US");
-
-				// Setting Session Country for CA
-				if (authenticate.getStrUserName().equals("PICSQBLOADERCA"))
-					session.setCountry("CA");
 				
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();
