@@ -12,12 +12,12 @@ import com.picsauditing.jpa.entities.FlagData;
 @SuppressWarnings("unchecked")
 public class FlagDataDAO extends PicsDAO {
 
-	public FlagData find(String id) {
+	public FlagData find(int id) {
 		return em.find(FlagData.class, id);
 	}
 
 	public List<FlagData> findByContractorAndOperator(int conID, int opID) {
-		Query query = em.createQuery("FROM FlagData d WHERE contractor.id = ? AND operator.id = ? ORDER BY d.flag");
+		Query query = em.createQuery("FROM FlagData d WHERE contractor.id = ? AND operator.id = ? ORDER BY d.criteria.category");
 		query.setParameter(1, conID);
 		query.setParameter(2, opID);
 		return query.getResultList();

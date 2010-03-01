@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 @SuppressWarnings("unchecked")
 public class FlagDataOverrideDAO extends PicsDAO {
 
-	public FlagDataOverride find(String id) {
+	public FlagDataOverride find(int id) {
 		return em.find(FlagDataOverride.class, id);
 	}
 
