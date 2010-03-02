@@ -69,6 +69,7 @@ public class ContractorCron extends PicsActionSupport {
 	private FlagDataCalculator flagDataCalculator;
 
 	private int conID = 0;
+	private int opID = 0;
 	private ContractorCronStep[] steps = null;
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
@@ -95,13 +96,14 @@ public class ContractorCron extends PicsActionSupport {
 			PicsLogger.addRuntimeRule("ContractorCron");
 
 		PicsLogger.start("ContractorCron");
+		output = "Updated flags";
 
 		if (conID > 0) {
-			run(conID);
+			run(conID, opID);
 		} else {
 			List<Integer> list = contractorDAO.findContractorsNeedingRecalculation();
 			for (Integer conID : list) {
-				run(conID);
+				run(conID, opID);
 			}
 			addActionMessage("ContractorCron processed " + list.size() + " record(s)");
 		}
@@ -111,7 +113,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	@Transactional
-	private void run(int conID) {
+	private void run(int conID, int opID) {
 		try {
 			ContractorAccount contractor = contractorDAO.find(conID);
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
@@ -128,21 +130,28 @@ public class ContractorCron extends PicsActionSupport {
 				for (ContractorOperator co : contractor.getOperators()) {
 					if (!co.getOperatorAccount().isCorporate()) {
 						OperatorAccount operator = co.getOperatorAccount();
-						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
-							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
-									+ flagCriteriaOperator.getCriteria().getCategory());
-						}
-
-						for (AuditOperator auditOperator : operator.getVisibleAudits())
-							PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
-
-						if (runStep(ContractorCronStep.CorporateRollup)) {
-							for (Facility facility : operator.getCorporateFacilities()) {
-								corporateSet.add(facility.getCorporate());
+						// If the opID is 0, run through all the operators.
+						// If the opID > 0, run through just that operator.
+						if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
+							for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+								PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+										+ flagCriteriaOperator.getCriteria().getCategory());
 							}
+	
+							for (AuditOperator auditOperator : operator.getVisibleAudits())
+								PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
+	
+							if (runStep(ContractorCronStep.CorporateRollup)) {
+								for (Facility facility : operator.getCorporateFacilities()) {
+									corporateSet.add(facility.getCorporate());
+								}
+							}
+							runFlag(co);
+							runWaitingOn(co);
+							
+							if (opID > 0)
+								break;
 						}
-						runFlag(co);
-						runWaitingOn(co);
 					}
 				}
 				runCorporateRollup(contractor, corporateSet);
@@ -432,6 +441,14 @@ public class ContractorCron extends PicsActionSupport {
 
 	public void setConID(int conID) {
 		this.conID = conID;
+	}
+	
+	public int getOpID() {
+		return opID;
+	}
+	
+	public void setOpID(int opID) {
+		this.opID = opID;
 	}
 
 	public ContractorCronStep[] getStepValues() {
