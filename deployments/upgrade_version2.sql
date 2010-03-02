@@ -25,6 +25,24 @@ ALTER TABLE `accounts`
 	DROP COLUMN `sendActivationEmail_B`, 
 	DROP COLUMN `activationEmails_B`;
 
+ALTER TABLE `accounts` 
+	CHANGE `name` `name` varchar(50)  COLLATE latin1_swedish_ci NOT NULL after `type`, 
+	CHANGE `country` `country` varchar(25)  COLLATE latin1_swedish_ci NULL after `zip`, 
+	CHANGE `phone` `phone` varchar(30)  COLLATE latin1_swedish_ci NULL after `country`, 
+	CHANGE `phone2` `phone2` varchar(35)  COLLATE latin1_swedish_ci NULL after `phone`, 
+	CHANGE `fax` `fax` varchar(30)  COLLATE latin1_swedish_ci NULL after `phone2`, 
+	CHANGE `contactID` `contactID` mediumint(9)   NULL after `fax`, 
+	CHANGE `email` `email` varchar(50)  COLLATE latin1_swedish_ci NULL after `contactID`, 
+	CHANGE `web_URL` `web_URL` varchar(50)  COLLATE latin1_swedish_ci NULL after `email`, 
+	CHANGE `industry` `industry` varchar(50)  COLLATE latin1_swedish_ci NULL after `web_URL`, 
+	CHANGE `naics` `naics` varchar(10)  COLLATE latin1_swedish_ci NOT NULL DEFAULT '0' after `industry`, 
+	CHANGE `naicsValid` `naicsValid` tinyint(4)   NOT NULL DEFAULT '0' after `naics`, 
+	CHANGE `dbaName` `dbaName` varchar(100)  COLLATE latin1_swedish_ci NULL after `naicsValid`, 
+	CHANGE `nameIndex` `nameIndex` varchar(50)  COLLATE latin1_swedish_ci NULL after `dbaName`, 
+	CHANGE `qbListID` `qbListID` varchar(25)  COLLATE latin1_swedish_ci NULL after `nameIndex`, 
+	CHANGE `qbSync` `qbSync` tinyint(4)   NOT NULL DEFAULT '1' after `qbListID`, 
+	CHANGE `reason` `reason` varchar(100)  COLLATE latin1_swedish_ci NULL after `qbSync`, COMMENT='';
+
 CREATE TABLE `app_page_logger`(
 	`id` bigint(10) unsigned NOT NULL  auto_increment , 
 	`startTime` datetime NOT NULL  , 
@@ -38,7 +56,7 @@ CREATE TABLE `app_page_logger`(
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 ALTER TABLE `email_template` 
-	ADD COLUMN `recipient` varchar(10)  COLLATE latin1_swedish_ci NULL after `html`, COMMENT='';
+	ADD COLUMN `recipient` varchar(10)  COLLATE latin1_swedish_ci NULL;
 
 CREATE TABLE `flag_criteria_contractor`(
 	`id` int(10) unsigned NOT NULL  auto_increment , 
@@ -116,14 +134,54 @@ ALTER TABLE `generalcontractors`
 	ADD COLUMN `flagLastUpdated` datetime   NULL after `processCompletion`, 
 	DROP COLUMN `forceBegin`;
 
+ALTER TABLE `generalcontractors` 
+	CHANGE `creationDate` `creationDate` datetime   NULL after `createdBy`, 
+	CHANGE `updatedBy` `updatedBy` int(11)   NULL after `creationDate`, 
+	CHANGE `updateDate` `updateDate` datetime   NULL after `updatedBy`;
+	
 ALTER TABLE `operators` 
 	DROP COLUMN `activationEmails`, 
 	DROP COLUMN `doSendActivationEmail`;
 
 ALTER TABLE `pqfquestions` 
+	CHANGE `createdBy` `createdBy` int(11)   NULL after `number`, 
+	CHANGE `updatedBy` `updatedBy` int(11)   NULL after `createdBy`, 
+	CHANGE `creationDate` `creationDate` datetime   NOT NULL after `updatedBy`, 
+	CHANGE `updateDate` `updateDate` datetime   NOT NULL after `creationDate`, 
+	CHANGE `effectiveDate` `effectiveDate` date   NOT NULL after `updateDate`, 
+	CHANGE `expirationDate` `expirationDate` date   NOT NULL after `effectiveDate`, 
+	CHANGE `hasRequirement` `hasRequirement` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `expirationDate`, 
+	CHANGE `okAnswer` `okAnswer` varchar(50)  COLLATE latin1_swedish_ci NULL after `hasRequirement`, 
+	CHANGE `isRequired` `isRequired` enum('No','Yes','Depends')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `okAnswer`, 
+	CHANGE `isVisible` `isVisible` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `isRequired`, 
+	CHANGE `dependsOnQID` `dependsOnQID` smallint(6)   NULL after `isVisible`, 
+	CHANGE `dependsOnAnswer` `dependsOnAnswer` varchar(100)  COLLATE latin1_swedish_ci NULL after `dependsOnQID`, 
+	CHANGE `questionType` `questionType` varchar(50)  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Text' after `dependsOnAnswer`, 
+	CHANGE `title` `title` varchar(250)  COLLATE latin1_swedish_ci NULL after `questionType`, 
+	CHANGE `columnHeader` `columnHeader` varchar(30)  COLLATE latin1_swedish_ci NULL after `title`, 
+	CHANGE `isGroupedWithPrevious` `isGroupedWithPrevious` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `columnHeader`, 
+	CHANGE `isRedFlagQuestion` `isRedFlagQuestion` enum('No','Yes')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No' after `isGroupedWithPrevious`, 
+	CHANGE `link` `link` varchar(250)  COLLATE latin1_swedish_ci NULL after `isRedFlagQuestion`, 
+	CHANGE `linkText` `linkText` varchar(250)  COLLATE latin1_swedish_ci NULL after `link`, 
+	CHANGE `linkURL1` `linkURL1` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText`, 
+	CHANGE `linkText1` `linkText1` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL1`, 
+	CHANGE `linkURL2` `linkURL2` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText1`, 
+	CHANGE `linkText2` `linkText2` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL2`, 
+	CHANGE `linkURL3` `linkURL3` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText2`, 
+	CHANGE `linkText3` `linkText3` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL3`, 
+	CHANGE `linkURL4` `linkURL4` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText3`, 
+	CHANGE `linkText4` `linkText4` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL4`, 
+	CHANGE `linkURL5` `linkURL5` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText4`, 
+	CHANGE `linkText5` `linkText5` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL5`, 
+	CHANGE `linkURL6` `linkURL6` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkText5`, 
+	CHANGE `linkText6` `linkText6` varchar(255)  COLLATE latin1_swedish_ci NULL after `linkURL6`, 
+	CHANGE `uniqueCode` `uniqueCode` varchar(50)  COLLATE latin1_swedish_ci NULL after `linkText6`, 
+	CHANGE `showComment` `showComment` tinyint(4)   NOT NULL DEFAULT '0' after `uniqueCode`, 
+	CHANGE `riskLevel` `riskLevel` tinyint(4)   NULL after `showComment`, 
+	CHANGE `helpPage` `helpPage` varchar(100)  COLLATE latin1_swedish_ci NULL after `riskLevel`, 
+	CHANGE `countries` `countries` varchar(100)  COLLATE latin1_swedish_ci NULL after `helpPage`, 
 	DROP COLUMN `question`, 
-	DROP COLUMN `requirement`; 
-
+	DROP COLUMN `requirement`;
 
 update accounts set status = 'Active';
 update accounts set status = 'Pending' WHERE active = 'N';
