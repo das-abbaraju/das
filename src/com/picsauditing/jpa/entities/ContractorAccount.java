@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -505,7 +506,7 @@ public class ContractorAccount extends Account implements JSONable {
 		if (emrs != null)
 			return emrs;
 
-		emrs = new HashMap<String, AuditData>();
+		emrs = new TreeMap<String, AuditData>();
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 3) {
