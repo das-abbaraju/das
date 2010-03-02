@@ -220,7 +220,7 @@ where ao.auditTypeid not in (1,11)
 and ao.canSee = 1 
 and ao.minriskLevel > 0;
 
-update flag_criteria_operator set flag = 'Red' where flag = '';
+delete from flag_criteria_operator where flag = '';
 
 -- updating the flag_criteria_opertor for Non-EMR questions 
 
