@@ -34,6 +34,7 @@
 	<thead>
 		<tr>
 			<th>Contractor</th>
+			<th>Overall Color</th>
 			<s:iterator value="flagCriteria">
 				<th title="<s:property value="description"/>"><s:property value="label"/></th>
 			</s:iterator>
@@ -41,8 +42,11 @@
 	</thead>
 	<s:iterator value="contractorCriteria" id="conmap">
 	<tr>
-		<td>
+		<td class="<s:property value="overall.get(#conmap.key)"/>">
 			<s:property value="#conmap.key.name"/>
+		</td>
+		<td>
+			<s:property value="overall.get(#conmap.key).smallIcon" escape="false"/>
 		</td>
 		<s:iterator value="flagCriteria" id="criteria">
 			<td>

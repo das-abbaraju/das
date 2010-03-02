@@ -14,10 +14,12 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.search.SelectAccount;
 
+@SuppressWarnings("serial")
 public class OperatorFlagMatrix extends ReportAccount {
 
 	private Map<ContractorAccount, Map<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>> contractorCriteria = new TreeMap<ContractorAccount, Map<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>>();
 	private Set<FlagCriteria> flagCriteria = new TreeSet<FlagCriteria>();
+	private Map<ContractorAccount, FlagColor> overall = new TreeMap<ContractorAccount, FlagColor>();
 
 	@Override
 	protected void buildQuery() {
@@ -44,6 +46,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addField("fcc.answer");
 		sql.addField("fd.id dataID");
 		sql.addField("fd.flag");
+		sql.addField("gc.flag overallFlag");
 
 		sql.setLimit(10000);
 
@@ -66,6 +69,9 @@ public class OperatorFlagMatrix extends ReportAccount {
 			final ContractorAccount con = new ContractorAccount(Integer.parseInt(d.get("conID").toString()));
 			con.setType("Contractor");
 			con.setName((String) d.get("conName"));
+
+			overall.put(con, FlagColor.valueOf(d.get("overallFlag").toString()));
+
 			if (contractorCriteria.get(con) == null)
 				contractorCriteria.put(con, new TreeMap<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>());
 
@@ -88,7 +94,6 @@ public class OperatorFlagMatrix extends ReportAccount {
 			}
 
 			contractorCriteria.get(con).put(criteria, new TreeMap<FlagCriteriaContractor, FlagData>() {
-
 				{
 					put(criteriaContractor, dat);
 				}
@@ -104,5 +109,13 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	public Set<FlagCriteria> getFlagCriteria() {
 		return flagCriteria;
+	}
+
+	public Map<ContractorAccount, FlagColor> getOverall() {
+		return overall;
+	}
+
+	public void setOverall(Map<ContractorAccount, FlagColor> overall) {
+		this.overall = overall;
 	}
 }
