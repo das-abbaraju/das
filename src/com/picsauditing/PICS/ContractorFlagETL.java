@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -97,18 +96,15 @@ public class ContractorFlagETL {
 
 			if (flagCriteria.getQuestion() != null) {
 				if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-					Map<String, AuditData> auditsOfThisEMRType = new TreeMap<String, AuditData>(contractor.getEmrs());
-					List<AuditData> years = new ArrayList<AuditData>(auditsOfThisEMRType.values());
-					years = new ArrayList<AuditData>(years); // reordering years
+					Map<String, AuditData> auditsOfThisEMRType = contractor.getEmrs();
+
+					List<AuditData> years = new ArrayList<AuditData>();
+					for (String year : auditsOfThisEMRType.keySet()) {
+						if (!year.equals("Average"))
+							years.add(auditsOfThisEMRType.get(year));
+					}
+
 					if (years != null && years.size() > 0) {
-						if (years.size() > 3) {
-							// Removing year which is not needed for transition
-							// years
-							if (!years.get(0).isVerified())
-								years.remove(0);
-							else
-								years.remove(3);
-						}
 
 						Float answer = null;
 						boolean verified = true; // Has the data been verified?
@@ -116,31 +112,26 @@ public class ContractorFlagETL {
 						try {
 							switch (flagCriteria.getMultiYearScope()) {
 							case ThreeYearAverage:
-								answer = 0.0f;
-								for (AuditData year : years) {
-									answer += Float.valueOf(year.getAnswer());
-									if (!year.isVerified())
-										verified = false;
-								}
-								answer /= (float) years.size();
-
+								AuditData average = auditsOfThisEMRType.get("Average");
+								answer = (average != null) ? Float.valueOf(average.getAnswer()) : null;
 								break;
 							case ThreeYearsAgo:
 								if (years.size() >= 3) {
-									answer = Float.valueOf(years.get(2).getAnswer());
-									verified = years.get(2).isVerified();
+									answer = Float.valueOf(years.get(years.size() - 3).getAnswer());
+									verified = years.get(years.size() - 3).isVerified();
 								}
 								break;
 							case TwoYearsAgo:
 								if (years.size() >= 2) {
-									answer = Float.valueOf(years.get(1).getAnswer());
-									System.out.println(years.get(1).getId());
-									verified = years.get(1).isVerified();
+									answer = Float.valueOf(years.get(years.size() - 2).getAnswer());
+									verified = years.get(years.size() - 2).isVerified();
 								}
 								break;
 							case LastYearOnly:
-								answer = Float.valueOf(years.get(0).getAnswer());
-								verified = years.get(0).isVerified();
+								if (years.size() >= 1) {
+									answer = Float.valueOf(years.get(years.size() - 1).getAnswer());
+									verified = years.get(years.size() - 1).isVerified();
+								}
 								break;
 							default:
 								throw new RuntimeException("Invalid MultiYear scope of "
@@ -150,12 +141,19 @@ public class ContractorFlagETL {
 							}
 
 							/*
-							 * Legacy code From FlagCalculator2 OshaAudit oshaAvg = contractor
-							 * .getOshas().get(OshaType.OSHA).get(OshaAudit.AVG); AuditData emrAvg =
-							 * contractor.getEmrs().get(OshaAudit.AVG); if(emrAvg != null &&
-							 * !Strings.isEmpty(emrAvg.getAnswer())) contractor.setEmrAverage
-							 * (Float.valueOf(emrAvg.getAnswer()).floatValue()); if (oshaAvg != null) {
-							 * contractor.setTrirAverage(oshaAvg. getRecordableTotalRate ()); contractor.setLwcrAverage(
+							 * Legacy code From FlagCalculator2 OshaAudit
+							 * oshaAvg = contractor
+							 * .getOshas().get(OshaType.OSHA
+							 * ).get(OshaAudit.AVG); AuditData emrAvg =
+							 * contractor.getEmrs().get(OshaAudit.AVG);
+							 * if(emrAvg != null &&
+							 * !Strings.isEmpty(emrAvg.getAnswer()))
+							 * contractor.setEmrAverage
+							 * (Float.valueOf(emrAvg.getAnswer()).floatValue());
+							 * if (oshaAvg != null) {
+							 * contractor.setTrirAverage(oshaAvg.
+							 * getRecordableTotalRate ());
+							 * contractor.setLwcrAverage(
 							 * oshaAvg.getLostWorkCasesRate ()); }
 							 */
 
@@ -176,7 +174,7 @@ public class ContractorFlagETL {
 					// find answer in answermap if it exists to related question
 					// can be null
 					final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
-					if (auditData != null && auditData.getAnswer() != null && auditData.getAnswer().length() > 0) {
+					if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
 						FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, "");
 						String answer = parseAnswer(flagCriteria, auditData);
 						fcc.setVerified(auditData.isVerified());
@@ -272,7 +270,8 @@ public class ContractorFlagETL {
 			}
 		}
 		if ("AMBest".equals(qType)) {
-			// AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+			// AmBestDAO amBestDAO = (AmBestDAO)
+			// SpringUtils.getBean("AmBestDAO");
 			// AmBest amBest = amBestDAO.findByNaic(answer.getComment());
 			// if(amBest != null) {
 			// if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()))
