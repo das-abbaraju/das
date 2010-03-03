@@ -202,7 +202,7 @@ public class ContractorFlagETL {
 
 		}
 
-		BaseTable.insertUpdateDelete(contractor.getFlagCriteria(), changes);		
+		BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes);		
 	}
 
 	public String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {

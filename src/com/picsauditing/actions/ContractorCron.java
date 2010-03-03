@@ -296,7 +296,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
 				.getOperatorAccount().getId());
-		BaseTable.insertUpdateDelete(flagData, changes);
+		BaseTable.insertUpdateDeleteExplicit(flagData, changes, flagDataDAO);
 
 		for (FlagData fd : flagData) {
 			flagDataDAO.save(fd);

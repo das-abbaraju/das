@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -20,9 +21,12 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.PicsDAO;
 
+@SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
 public abstract class BaseTable implements JSONable, Serializable {
@@ -165,9 +169,9 @@ public abstract class BaseTable implements JSONable, Serializable {
 	}
 
 	// UPDATE must be Overridden in the inheriting class
-	public static <T extends BaseTable> void insertUpdateDelete(Collection<T> daoLinkedList, Collection<T> changes) {
+	public static <T extends BaseTable> void insertUpdateDeleteManaged(Collection<T> dbLinkedList, Collection<T> changes) {
 		// update/delete
-		final Iterator<T> dbIterator = daoLinkedList.iterator();
+		final Iterator<T> dbIterator = dbLinkedList.iterator();
 		while (dbIterator.hasNext()) {
 			T fromDB = dbIterator.next();
 			T found = null;
@@ -181,11 +185,46 @@ public abstract class BaseTable implements JSONable, Serializable {
 
 			if (found != null)
 				changes.remove(found); // update was performed
-			else
+			else {
 				dbIterator.remove();
+			}
 		}
 
-		// merging remaining changes (inserts)
-		daoLinkedList.addAll(changes);
+		// merging remaining changes (updates/inserts)
+		dbLinkedList.addAll(changes);
+	}
+	
+	// UPDATE must be Overridden in the inheriting class
+	public static <T extends BaseTable> void insertUpdateDeleteExplicit(Collection<T> unLinkedList, Collection<T> changes, PicsDAO dao) {
+		// update/delete
+		Collection<T> deletes = new ArrayList<T>();
+		final Iterator<T> dbIterator = unLinkedList.iterator();
+		while (dbIterator.hasNext()) {
+			T fromDB = dbIterator.next();
+			T found = null;
+
+			for (T change : changes) {
+				if (fromDB.equals(change)) {
+					fromDB.update(change);
+					found = change;
+				}
+			}
+
+			if (found != null)
+				changes.remove(found); // update was performed
+			else {
+				deletes.add(fromDB);
+				dbIterator.remove();
+			}
+		}
+
+		// merging remaining changes (updates/inserts)
+		unLinkedList.addAll(changes);
+		for(T insertOrUpdate : unLinkedList)
+			dao.save(insertOrUpdate);
+		
+		// performing deletes
+		for(T delete : deletes)
+			dao.remove(delete);
 	}
 }
