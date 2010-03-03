@@ -160,7 +160,7 @@ public class ContractorWidget extends ContractorActionSupport {
 						String text;
 						if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
 							text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-									+ "'>click here to schedule your Office Audit</a>";
+									+ "'>click here to schedule your Implementation Audit</a>";
 						} else {
 							text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upcoming "
 									+ conAudit.getAuditType().getAuditName() + "</a>";

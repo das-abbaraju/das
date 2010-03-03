@@ -90,9 +90,9 @@ jQuery(function(){
 		<div class="target_recipient" onclick="selectList('Audit');">
 			<h2>Contractors by Audit</h2>
 			<ul class="samples" title="Sample emails you might send to contractors regarding one of their audits">
-				<li><span>"Thank you for completing your Audit"</span> to contractors who have completed a Desktop or Office Audit this month</li>
+				<li><span>"Thank you for completing your Audit"</span> to contractors who have completed a Manual or Implementation Audit this month</li>
 				<li><span>"Reminder to complete PQF"</span> to contractors with an outstanding PQF audit to complete</li>
-				<li><span>"Reminder to close requirements"</span> to contractors with open requirements on a Desktop, Office, or Field audit</li>
+				<li><span>"Reminder to close requirements"</span> to contractors with open requirements on a Manual, Implementation, or Field audit</li>
 			</ul>
 			
 			<span class="footer_instruction">* One email per audit</span>

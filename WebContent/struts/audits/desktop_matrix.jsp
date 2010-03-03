@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Desktop Matrix</title>
+<title>Manual Audit Matrix</title>
 <s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
 <style>
@@ -18,11 +18,11 @@ function clearSelected(name) {
 </script>
 </head>
 <body>
-<h1>Desktop Matrix</h1>
+<h1>Manual Audit Matrix</h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ManagePQFMatrix.action">PQF Matrix</a></li>
-	<li><a href="ManageDesktopMatrix.action" class="current">Desktop Matrix</a></li>
+	<li><a href="ManageDesktopMatrix.action" class="current">Manual Audit Matrix</a></li>
 </ul>
 </div>
 
@@ -60,7 +60,7 @@ function clearSelected(name) {
 	<table class="report">
 	<thead>
 	<tr>
-		<th>Desktop Category</th>
+		<th>Manual Audit Category</th>
 	<s:iterator value="questions">
 		<th><s:property value="question" /></th>
 	</s:iterator>
@@ -80,7 +80,7 @@ function clearSelected(name) {
 	</tbody>
 	<thead>
 	<tr>
-		<th>Desktop Category</th>
+		<th>Manual Audit Category</th>
 	<s:iterator value="questions">
 		<th><s:property value="question" /></th>
 	</s:iterator>

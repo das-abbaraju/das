@@ -54,9 +54,9 @@ public enum OpPerms {
 	EditUsersPics("Manage PICS User Accounts", "Edit user accounts on the PICS Admin account", true, true, true, false, false),
 	// Audits
 	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, true, true, false, false),
-	AssignAudits("Audit Assignment", "Allows users to assign office, desktop, and other audits to PICS Safety Professionals", true, false, true, false, false),
+	AssignAudits("Audit Assignment", "Allows users to assign implementation Audit, manual Audit, and other audits to PICS Safety Professionals", true, false, true, false, false),
 	AuditVerification("Audit Verification", "Verify answers to OSHA, EMR, and other Audit data ", true, false, true, false, false),
-	OfficeAuditCalendar("Office Audit Calendar", "Allows users to view the Office Audit Calendar", false, false, true, false, true),
+	OfficeAuditCalendar("Implementation Audit Calendar", "Allows users to view the Implementation Audit Calendar", false, false, true, false, true),
 	ViewFullPQF("View PQF Work History", "Can view the PQF category Work History, which contains financial and other sensitive information", false, false, true, false, false),
 	AuditEdit("Contractor Audit (System)", "Can view and edit all fields related to an audit", true, true, true, false, false),
 	AuditCopy("Audit Copy", "Can Copy Audit from one Contractor to another Contractor", false, false, true, false, false),

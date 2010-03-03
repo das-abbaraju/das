@@ -22,7 +22,7 @@ function clearSelected(name) {
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="ManagePQFMatrix.action" class="current">PQF Matrix</a></li>
-	<li><a href="ManageDesktopMatrix.action">Desktop Matrix</a></li>
+	<li><a href="ManageDesktopMatrix.action">Manual Audit Matrix</a></li>
 </ul>
 </div>
 
