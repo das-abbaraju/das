@@ -313,10 +313,8 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		WaitingOn waitingOn = null; // calcSingle.calculateWaitingOn();
-		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
-				.getOperatorAccount().getId());
-		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
-		waitingOn = flagDataCalculator.calculateWaitingOn(flagData);
+		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagAuditCriteriaInherited());
+		waitingOn = flagDataCalculator.calculateWaitingOn(co);
 
 		if (!waitingOn.equals(co.getWaitingOn())) {
 			OperatorAccount operator = co.getOperatorAccount();
