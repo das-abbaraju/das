@@ -283,11 +283,11 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					addActionError("Please add a permission to this user");
 					return SUCCESS;
 				}
-
-				// Send activation email if set
-				if (sendActivationEmail && user.getId() == 0)
-					addActionMessage(AccountRecovery.sendActivationEmail(user,permissions));
 			}
+
+			// Send activation email if set
+			if (sendActivationEmail && user.getId() == 0)
+				addActionMessage(AccountRecovery.sendActivationEmail(user,permissions));
 
 			try {
 				user = userDAO.save(user);
