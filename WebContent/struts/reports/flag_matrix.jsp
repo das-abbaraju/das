@@ -7,13 +7,13 @@
 <s:include value="reportHeader.jsp"/>
 <style>
 .Red {
-	color: #CC0000;
+	color: #CC0000 !important;
 }
 .Amber {
-	color: #FFCC33;
+	color: #FFCC33 !important;
 }
 .Green {
-	color: #339900;
+	color: #339900 !important;
 }
 .flag_override {
 	cursor: pointer;
@@ -22,19 +22,10 @@
 </head>
 <body>
 
-<s:include value="../operators/opHeader.jsp"/>
-
-<s:if test="permissions.admin">
-	<s:form id="operatorForm">
-		<s:select name="id" list="filter.operatorList" listKey="id" listValue="name" headerKey="" headerValue=" - Operator - " onchange="$('form#operatorForm').submit();"/>
-	</s:form>
-</s:if>
-
 <table class="report">
 	<thead>
 		<tr>
 			<th>Contractor</th>
-			<th>Overall Color</th>
 			<s:iterator value="flagCriteria">
 				<th title="<s:property value="description"/>"><s:property value="label"/></th>
 			</s:iterator>
@@ -42,11 +33,11 @@
 	</thead>
 	<s:iterator value="contractorCriteria" id="conmap">
 	<tr>
-		<td class="<s:property value="overall.get(#conmap.key)"/>">
-			<s:property value="#conmap.key.name"/>
-		</td>
 		<td>
-			<s:property value="overall.get(#conmap.key).smallIcon" escape="false"/>
+			<a href="ContractorFlag.action?id=<s:property value="#conmap.key.id"/>&opID=<s:property value="id"/>" class="<s:property value="overall.get(#conmap.key)"/>">
+				<s:property value="overall.get(#conmap.key).smallIcon" escape="false"/>
+				<s:property value="#conmap.key.name"/>
+			</a>
 		</td>
 		<s:iterator value="flagCriteria" id="criteria">
 			<td>

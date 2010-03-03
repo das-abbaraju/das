@@ -21,6 +21,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 	private Set<FlagCriteria> flagCriteria = new TreeSet<FlagCriteria>();
 	private Map<ContractorAccount, FlagColor> overall = new TreeMap<ContractorAccount, FlagColor>();
 
+	private int id;
+
 	@Override
 	protected void buildQuery() {
 		sql = new SelectAccount();
@@ -50,14 +52,11 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 		sql.setLimit(10000);
 
-		int opID = 0;
 		if (permissions.isOperatorCorporate()) {
-			opID = permissions.getAccountId();
-		} else {
-			opID = getParameter("id");
+			id = permissions.getAccountId();
 		}
 
-		sql.addWhere("o.id = " + opID);
+		sql.addWhere("o.id = " + id);
 	}
 
 	@Override
@@ -117,5 +116,13 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	public void setOverall(Map<ContractorAccount, FlagColor> overall) {
 		this.overall = overall;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }
