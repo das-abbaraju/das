@@ -51,7 +51,6 @@
 		<s:iterator value="flagCriteria" id="criteria">
 			<td>
 				<s:iterator value="#conmap.value.get(#criteria)">
-					<span class="flag_override" onclick="alert('override flag <s:property value="#conmap.key.id"/>')">
 					<s:if test="#criteria.dataType == 'boolean'">
 						<s:property value="value.flag.smallIcon" escape="false"/>
 					</s:if>
@@ -61,7 +60,6 @@
 					<s:else>
 						<span class="<s:property value="value.flag"/>"><s:property value="key.answer"/></span>
 					</s:else>
-					</span>
 				</s:iterator>
 			</td>
 		</s:iterator>
