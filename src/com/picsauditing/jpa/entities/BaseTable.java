@@ -3,7 +3,9 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -154,5 +156,36 @@ public abstract class BaseTable implements JSONable, Serializable {
 			System.out.println("Error comparing BaseTable objects: " + e.getMessage());
 			return false;
 		}
+	}
+
+	public void update(BaseTable b) {
+		setId(b.getId());
+		setUpdateDate(b.getUpdateDate());
+		setUpdatedBy(b.getUpdatedBy());
+	}
+
+	// UPDATE must be Overridden in the inheriting class
+	public static <T extends BaseTable> void insertUpdateDelete(Collection<T> daoLinkedList, Collection<T> changes) {
+		// update/delete
+		final Iterator<T> dbIterator = daoLinkedList.iterator();
+		while (dbIterator.hasNext()) {
+			T fromDB = dbIterator.next();
+			T found = null;
+
+			for (T change : changes) {
+				if (fromDB.equals(change)) {
+					fromDB.update(change);
+					found = change;
+				}
+			}
+
+			if (found != null)
+				changes.remove(found); // update was performed
+			else
+				dbIterator.remove();
+		}
+
+		// merging remaining changes (inserts)
+		daoLinkedList.addAll(changes);
 	}
 }

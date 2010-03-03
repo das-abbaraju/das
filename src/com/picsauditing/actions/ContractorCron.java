@@ -29,6 +29,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -269,8 +270,7 @@ public class ContractorCron extends PicsActionSupport {
 		flagDataCalculator.setOverrides(overrides);
 
 		List<FlagData> changes = flagDataCalculator.calculate();
-		co.getFlagDatas().addAll(changes); 
-		
+
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
 		for (FlagData change : changes) {
@@ -295,6 +295,16 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagColor(co.getForceFlag());
 			co.setFlagLastUpdated(new Date());
 		}
+
+		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
+				.getOperatorAccount().getId());
+		BaseTable.insertUpdateDelete(flagData, changes);
+
+		for(FlagData fd : flagData){
+			flagDataDAO.save(fd);
+		}
+		
+		co.setAuditColumns(new User(User.SYSTEM));
 		contractorOperatorDAO.save(co);
 	}
 

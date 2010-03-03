@@ -2,7 +2,6 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +11,7 @@ import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -202,32 +202,7 @@ public class ContractorFlagETL {
 
 		}
 
-		Set<FlagCriteriaContractor> currentFlagCriteria = contractor.getFlagCriteria();
-
-		// comparing list of changes to current flag criteria
-		Iterator<FlagCriteriaContractor> flagIter = currentFlagCriteria.iterator();
-		// performing update/delete
-		while (flagIter.hasNext()) {
-			FlagCriteriaContractor found = null;
-			FlagCriteriaContractor currentCriteria = flagIter.next();
-
-			for (FlagCriteriaContractor change : changes) {
-				if (currentCriteria.equals(change)) {
-					currentCriteria.update(change);
-					found = change;
-				}
-			}
-
-			if (found != null)
-				changes.remove(found); // update was performed
-			else
-				flagIter.remove();
-		}
-
-		// merging remaining changes (inserts)
-		currentFlagCriteria.addAll(changes);
-
-		// for(FlagCriteriaContractor fcc : currentFlagCriteria);
+		BaseTable.insertUpdateDelete(contractor.getFlagCriteria(), changes);		
 	}
 
 	public String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {

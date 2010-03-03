@@ -1,14 +1,11 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -63,26 +60,31 @@ public class FlagData extends BaseTable {
 		this.flag = flag;
 	}
 
-	public boolean equals(FlagData other) {
-		if (id > 0 && other.getId() > 0)
+	@Override
+	public boolean equals(Object other) {
+		FlagData fd = (FlagData) other;
+
+		if (id > 0 && fd.getId() > 0)
 			return super.equals(other);
 
-		if (!contractor.equals(other.getContractor()))
+		if (!contractor.equals(fd.getContractor()))
 			return false;
-		if (!operator.equals(other.getOperator()))
+		if (!operator.equals(fd.getOperator()))
 			return false;
-		if (!criteria.equals(other.getCriteria()))
+		if (!criteria.equals(fd.getCriteria()))
 			return false;
 		return true;
 	}
 
-	public void update(FlagData change) {
+	@Override
+	public void update(BaseTable change) {
+		FlagData fd = (FlagData) change;
 		if (!equals(change))
 			// Don't update flag data for the wrong contractor/operator/criteria
 			return;
 
-		if (!flag.equals(change.getFlag())) {
-			this.setFlag(change.getFlag());
+		if (!flag.equals(fd.getFlag())) {
+			this.setFlag(fd.getFlag());
 			this.setAuditColumns(new User(User.SYSTEM));
 		}
 	}

@@ -8,6 +8,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_contractor")
@@ -75,25 +77,36 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 	}
 
 	@Override
-	public String toString() {
-		return criteria.toString() + " (" + answer + ") for " + contractor.toString();
-	}
+	public boolean equals(Object other) {
+		FlagCriteriaContractor fcc = (FlagCriteriaContractor) other;
 
-	public boolean equals(FlagCriteriaContractor other) {
-		if (other.getId() > 0 && id > 0)
+		if (fcc.getId() > 0 && id > 0)
 			return super.equals(other);
-		if (!contractor.equals(other.getContractor()))
+		if (!contractor.equals(fcc.getContractor()))
 			return false;
-		if (!criteria.equals(other.getCriteria()))
+		if (!criteria.equals(fcc.getCriteria()))
 			return false;
 		return true;
 	}
 
-	public void update(FlagCriteriaContractor change) {
-		if (!answer.equals(change.getAnswer()))
-			answer = change.getAnswer();
-		if (verified != change.isVerified())
-			verified = change.isVerified();
+	@Override
+	public String toString() {
+		return criteria.toString() + " (" + answer + ") for " + contractor.toString();
+	}
+
+	@Override
+	public void update(BaseTable change) {
+		FlagCriteriaContractor fcc = (FlagCriteriaContractor) change;
+		if (!Strings.isEmpty(fcc.getAnswer())) {			
+			if (!answer.equals(fcc.getAnswer())){
+				answer = fcc.getAnswer();
+				setAuditColumns(new User(User.SYSTEM));
+			}
+			if (verified != fcc.isVerified()){
+				verified = fcc.isVerified();
+				setAuditColumns(new User(User.SYSTEM));
+			}
+		}
 	}
 
 	@Override
