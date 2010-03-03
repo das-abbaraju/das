@@ -96,7 +96,7 @@ public class ContractorView extends ContractorActionSupport {
 			}
 			
 			if(permissions.isOperator()) {
-				for(ContractorOperator cOperator : contractor.getOperators()) {
+				for(ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
 					if(cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
 						cOperator.setWorkStatus("Y");
 						cOperator.setAuditColumns(permissions);
@@ -136,7 +136,7 @@ public class ContractorView extends ContractorActionSupport {
 					operatorTags.remove(contractorTag.getTag());
 			}
 		}
-		if (contractor.getOperators() != null && contractor.getOperators().size() > 0) {
+		if (contractor.getNonCorporateOperators().size() > 0) {
 			auditBuilder.setUser(getUser());
 			auditBuilder.buildAudits(this.contractor);
 		}

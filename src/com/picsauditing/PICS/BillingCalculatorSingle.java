@@ -29,7 +29,7 @@ public class BillingCalculatorSingle {
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
-		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
 			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay()))
 				payingOperators.add(operator);
@@ -75,14 +75,14 @@ public class BillingCalculatorSingle {
 			if (feeID == InvoiceFee.FACILITIES1) {
 				Date now = new Date();
 				if (CONTRACT_RENEWAL_BASF.after(now)) {
-					for (ContractorOperator contractorOperator : contractor.getOperators()) {
+					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
 							feeID = 105;
 						}
 					}
 				}
 				if (CONTRACT_RENEWAL_BP_LUBRICANTS.after(now)) {
-					for (ContractorOperator contractorOperator : contractor.getOperators()) {
+					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BP Lubricants")) {
 							feeID = 105;	
 						}
@@ -99,7 +99,7 @@ public class BillingCalculatorSingle {
 		// We have at least one paying operator, let's see if they need to be
 		// audited
 
-		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
 			if (operator.getDoContractorsPay() != null && !operator.getDoContractorsPay().equals("No")) {
 				// See if this operator requires this contractor to be audited

@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.Strings;
@@ -119,6 +119,16 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setOperators(List<ContractorOperator> operators) {
 		this.operators = operators;
+	}
+
+	@Transient
+	public List<ContractorOperator> getNonCorporateOperators() {
+		return new Grepper<ContractorOperator>() {
+			@Override
+			public boolean check(ContractorOperator t) {
+				return !t.getOperatorAccount().isCorporate();
+			}
+		}.grep(this.operators);
 	}
 
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.REMOVE, CascadeType.MERGE })
@@ -700,6 +710,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public List<Invoice> getSortedInvoices() {
 		List<Invoice> sortedInvoiceList = new ArrayList<Invoice>(getInvoices());
 		Collections.sort(sortedInvoiceList, new Comparator<Invoice>() {
+
 			@Override
 			public int compare(Invoice invoiceOne, Invoice invoiceTwo) {
 
@@ -794,7 +805,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public Set<String> getCountries() {
 		Set<String> countries = new HashSet<String>();
-		for (ContractorOperator co : getOperators()) {
+		for (ContractorOperator co : getNonCorporateOperators()) {
 			try {
 				countries.add(co.getOperatorAccount().getCountry().getIsoCode());
 			} catch (Exception justIgnoreThisOperator) {

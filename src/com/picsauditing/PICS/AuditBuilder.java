@@ -137,7 +137,7 @@ public class AuditBuilder {
 		// Note: this is a lot of iterating over JPA Entities, my assumption
 		// is that the operators and auditTypes will be really cached well
 		Set<AuditType> auditTypeList = new HashSet<AuditType>();
-		for (ContractorOperator co : contractor.getOperators()) {
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			if (co.getOperatorAccount().getStatus().isActiveDemo()) {
 				// We used to also check to see that the contractor is approved,
 				// But now we just add in advance of being approved
@@ -301,7 +301,7 @@ public class AuditBuilder {
 
 		PicsLogger.log("Get a distinct set of (inherited) operators that are active and require insurance.");
 		Set<OperatorAccount> operatorSet = new HashSet<OperatorAccount>();
-		for (ContractorOperator co : contractor.getOperators()) {
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			if (co.getOperatorAccount().getStatus().isActiveDemo()
 					&& co.getOperatorAccount().getCanSeeInsurance().isTrue())
 				operatorSet.add(co.getOperatorAccount().getInheritInsurance());

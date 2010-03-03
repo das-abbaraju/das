@@ -109,7 +109,7 @@ public class ReportBiddingContractors extends ReportAccount {
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
-				Iterator<ContractorOperator> cIterator = cAccount.getOperators().iterator();
+				Iterator<ContractorOperator> cIterator = cAccount.getNonCorporateOperators().iterator();
 				while (cIterator.hasNext()) {
 					ContractorOperator co = cIterator.next();
 					if (co.getOperatorAccount().getId() == permissions.getAccountId()) {
@@ -174,7 +174,7 @@ public class ReportBiddingContractors extends ReportAccount {
 	}
 
 	public void approveContractor(ContractorAccount cAccount, int operatorID) {
-		for (ContractorOperator cOperator : cAccount.getOperators()) {
+		for (ContractorOperator cOperator : cAccount.getNonCorporateOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
 				cOperator.setWorkStatus("Y");
 				cOperator.setAuditColumns(permissions);

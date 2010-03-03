@@ -58,7 +58,7 @@ public class FlagCalculatorSingle {
 		FlagColor overrideColor = null;
 		boolean worksForOperator = false;
 		// First see if there are any forced flags for this operator
-		for (ContractorOperator co : contractor.getOperators()) {
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			if (co.getOperatorAccount().equals(operator)) {
 				worksForOperator = true;
 				// Found the operator, is it forced?
@@ -323,7 +323,7 @@ public class FlagCalculatorSingle {
 
 		ContractorOperator co = null;
 		// First see if there are any forced flags for this operator
-		for (ContractorOperator co2 : contractor.getOperators()) {
+		for (ContractorOperator co2 : contractor.getNonCorporateOperators()) {
 			if (co2.getOperatorAccount().equals(operator)) {
 				co = co2;
 				break;

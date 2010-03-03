@@ -55,7 +55,7 @@ public class FacilityChanger {
 		if (operator == null || operator.getId() == 0)
 			throw new Exception("Please set operator before calling add()");
 
-		for (ContractorOperator conOperator : contractor.getOperators()) {
+		for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 			if (conOperator.getOperatorAccount().equals(operator))
 				return;
 		}
@@ -124,28 +124,30 @@ public class FacilityChanger {
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
 		// if (!permissions.hasPermission(OpPerms.RemoveContractors))
 		// return false;
-		Iterator<ContractorOperator> iterator = contractor.getOperators().iterator();
+		Iterator<ContractorOperator> iterator = contractor.getNonCorporateOperators().iterator();
 		while (iterator.hasNext()) {
 			ContractorOperator co = iterator.next();
-			if (co.getOperatorAccount().equals(operator)) {
-				contractorOperatorDAO.remove(co);
-				contractor.getOperators().remove(co);
+			if (!co.getOperatorAccount().isCorporate()) {
+				if (co.getOperatorAccount().equals(operator)) {
+					contractorOperatorDAO.remove(co);
+					contractor.getOperators().remove(co);
 
-				addNote("Unlinked " + co.getContractorAccount().getName() + " from "
-						+ co.getOperatorAccount().getName() + "'s db");
+					addNote("Unlinked " + co.getContractorAccount().getName() + " from "
+							+ co.getOperatorAccount().getName() + "'s db");
 
-				contractor.setNeedsRecalculation(true);
+					contractor.setNeedsRecalculation(true);
 
-				contractorAccountDAO.save(contractor);
+					contractorAccountDAO.save(contractor);
 
-				if (!contractor.isAcceptsBids() && contractor.getStatus().isActiveDemo()) {
-					for (ContractorAudit cAudit : contractor.getAudits()) {
-						if (cAudit.getAuditType().isPqf()) {
-							auditBuilder.fillAuditCategories(cAudit, true);
+					if (!contractor.isAcceptsBids() && contractor.getStatus().isActiveDemo()) {
+						for (ContractorAudit cAudit : contractor.getAudits()) {
+							if (cAudit.getAuditType().isPqf()) {
+								auditBuilder.fillAuditCategories(cAudit, true);
+							}
 						}
 					}
+					return true;
 				}
-				return true;
 			}
 		}
 

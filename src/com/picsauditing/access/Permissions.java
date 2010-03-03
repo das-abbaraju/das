@@ -140,7 +140,7 @@ public class Permissions implements Serializable {
 
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
-				for (ContractorOperator co : contractor.getOperators()) {
+				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 					if (co.getOperatorAccount().getCountry() != null)
 						accountCountries.add(co.getOperatorAccount().getCountry().getIsoCode());
 				}

@@ -88,13 +88,13 @@ public class ContractorAccountDAOTest {
 	@Test
 	public void testFind() {
 		ContractorAccount contractoraccount = contractoraccountDAO.find(14);
-		List<ContractorOperator> operators = contractoraccount.getOperators();
+		List<ContractorOperator> operators = contractoraccount.getNonCorporateOperators();
 		assertTrue(operators.size() > 0);
 		for (ContractorOperator co : operators)
 			assertTrue(co.getOperatorAccount().getName().length() > 0);
 
 		ContractorAccount cached = contractoraccountDAO.find(14);
-		List<ContractorOperator> cachedOps = cached.getOperators();
+		List<ContractorOperator> cachedOps = cached.getNonCorporateOperators();
 		assertTrue(cachedOps.size() > 0);
 		for (ContractorOperator co : cachedOps)
 			assertTrue(co.getOperatorAccount().getName().length() > 0);

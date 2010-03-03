@@ -46,7 +46,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 		nextID = 0;
 		for (ContractorAudit conAudit : list) {
 			boolean requiresAudit = false;
-			for (ContractorOperator contractorOperator : conAudit.getContractorAccount().getOperators()) {
+			for (ContractorOperator contractorOperator : conAudit.getContractorAccount().getNonCorporateOperators()) {
 				if (contractorOperator.getOperatorAccount().getStatus().isActiveDemo()) {
 					for (AuditOperator auditOperator : contractorOperator.getOperatorAccount().getVisibleAudits()) {
 						if (conAudit.getAuditType() == auditOperator.getAuditType()

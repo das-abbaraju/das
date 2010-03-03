@@ -39,7 +39,7 @@ public class ContractorForms extends ContractorActionSupport {
 		
 		ids.add(Account.PicsID);
 		
-		for(ContractorOperator co : contractor.getOperators()) {
+		for(ContractorOperator co : contractor.getNonCorporateOperators()) {
 			// Add this contractor's operator(s)
 			ids.add(co.getOperatorAccount().getId());
 			for(Facility f : co.getOperatorAccount().getCorporateFacilities()) {

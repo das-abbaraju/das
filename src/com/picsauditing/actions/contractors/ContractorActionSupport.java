@@ -456,7 +456,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		Set<AuditType> aTypes = new HashSet<AuditType>();
 
 		if (permissions.isContractor()) {
-			for (ContractorOperator conOperator : contractor.getOperators()) {
+			for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 				for (AuditOperator aOperator : conOperator.getOperatorAccount().getVisibleAudits()) {
 					aTypes.add(aOperator.getAuditType());
 				}

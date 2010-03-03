@@ -205,7 +205,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public Set<AuditType> getRequiredAuditTypeNames() {
 		Set<AuditType> result = new HashSet<AuditType>();
-		for (ContractorOperator co : contractor.getOperators()) {
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
 				if (ao.getAuditType().getClassType().isPolicy()) {
 					if (permissions.isOperatorCorporate()

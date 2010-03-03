@@ -61,11 +61,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		// Only during registration - redirect if no requestedBy operator is set
 		if (permissions.isContractor() && contractor.getStatus().isPending() && contractor.getRequestedBy() == null) {
-			if (contractor.getOperators().size() == 1) {
-				contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
+			if (contractor.getNonCorporateOperators().size() == 1) {
+				contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 			} else {
 				String msg;
-				if (contractor.getOperators().size() == 0)
+				if (contractor.getNonCorporateOperators().size() == 0)
 					msg = "Please select the facilities that you work or will work at.";
 				else
 					msg = "Please select the operator that referred you to PICS before continuing.";

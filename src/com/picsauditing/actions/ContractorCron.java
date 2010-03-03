@@ -128,31 +128,29 @@ public class ContractorCron extends PicsActionSupport {
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
 				Set<OperatorAccount> corporateSet = new HashSet<OperatorAccount>();
-				for (ContractorOperator co : contractor.getOperators()) {
-					if (!co.getOperatorAccount().isCorporate()) {
-						OperatorAccount operator = co.getOperatorAccount();
-						// If the opID is 0, run through all the operators.
-						// If the opID > 0, run through just that operator.
-						if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
-							for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
-								PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
-										+ flagCriteriaOperator.getCriteria().getCategory());
-							}
-	
-							for (AuditOperator auditOperator : operator.getVisibleAudits())
-								PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
-	
-							if (runStep(ContractorCronStep.CorporateRollup)) {
-								for (Facility facility : operator.getCorporateFacilities()) {
-									corporateSet.add(facility.getCorporate());
-								}
-							}
-							runFlag(co);
-							runWaitingOn(co);
-							
-							if (opID > 0)
-								break;
+				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+					OperatorAccount operator = co.getOperatorAccount();
+					// If the opID is 0, run through all the operators.
+					// If the opID > 0, run through just that operator.
+					if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
+						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+									+ flagCriteriaOperator.getCriteria().getCategory());
 						}
+
+						for (AuditOperator auditOperator : operator.getVisibleAudits())
+							PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
+
+						if (runStep(ContractorCronStep.CorporateRollup)) {
+							for (Facility facility : operator.getCorporateFacilities()) {
+								corporateSet.add(facility.getCorporate());
+							}
+						}
+						runFlag(co);
+						runWaitingOn(co);
+
+						if (opID > 0)
+							break;
 					}
 				}
 				runCorporateRollup(contractor, corporateSet);
@@ -300,10 +298,10 @@ public class ContractorCron extends PicsActionSupport {
 				.getOperatorAccount().getId());
 		BaseTable.insertUpdateDelete(flagData, changes);
 
-		for(FlagData fd : flagData){
+		for (FlagData fd : flagData) {
 			flagDataDAO.save(fd);
 		}
-		
+
 		co.setAuditColumns(new User(User.SYSTEM));
 		contractorOperatorDAO.save(co);
 	}
@@ -353,21 +351,19 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.Policies))
 			return;
 
-		for (ContractorOperator co : contractor.getOperators()) {
-			if (!co.getOperatorAccount().isCorporate()) {
-				OperatorAccount inheritInsuranceCriteria = co.getOperatorAccount().getInheritInsuranceCriteria();
-				flagDataCalculator.setOperatorCriteria(inheritInsuranceCriteria.getFlagCriteria());
-				for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
-					if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
-						for (ContractorAuditOperator cao : audit.getOperators()) {
-							if (cao.isVisible()) {
-								if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
-										&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-									FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+			OperatorAccount inheritInsuranceCriteria = co.getOperatorAccount().getInheritInsuranceCriteria();
+			flagDataCalculator.setOperatorCriteria(inheritInsuranceCriteria.getFlagCriteria());
+			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
+				if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
+					for (ContractorAuditOperator cao : audit.getOperators()) {
+						if (cao.isVisible()) {
+							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
+									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
 
-									cao.setFlag(flagColor);
-									dao.save(cao);
-								}
+								cao.setFlag(flagColor);
+								dao.save(cao);
 							}
 						}
 					}
@@ -450,11 +446,11 @@ public class ContractorCron extends PicsActionSupport {
 	public void setConID(int conID) {
 		this.conID = conID;
 	}
-	
+
 	public int getOpID() {
 		return opID;
 	}
-	
+
 	public void setOpID(int opID) {
 		this.opID = opID;
 	}

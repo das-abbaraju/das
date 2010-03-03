@@ -450,7 +450,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			// Check to see if the CAO is visible
 			if (cao.isVisible()) {
 				// BASF Corporate still needs insurance
-				for (ContractorOperator co : getContractorAccount().getOperators()) {
+				for (ContractorOperator co : getContractorAccount().getNonCorporateOperators()) {
 					// Iterate over gencon tables
 					// co.getOperatorAccount() == BASF Abbotsford that's
 					// attached to Ancon Marine

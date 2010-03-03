@@ -98,7 +98,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				newFee = invoiceFeeDAO.find(newFee.getId());
 				contractor.setNewMembershipLevel(newFee);
 				int i = 0;
-				for (ContractorOperator conOperator : contractor.getOperators()) {
+				for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 					operatorIds[i] = conOperator.getOperatorAccount().getId();
 					i++;
 				}

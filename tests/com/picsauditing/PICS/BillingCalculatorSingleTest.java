@@ -127,7 +127,7 @@ public class BillingCalculatorSingleTest extends TestCase {
 
 		/***************************************************************************/
 
-		for (ContractorOperator o : contractor.getOperators()) {
+		for (ContractorOperator o : contractor.getNonCorporateOperators()) {
 			o.getOperatorAccount().getAudits().clear();
 		}
 

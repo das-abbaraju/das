@@ -69,7 +69,7 @@ public class ContractorDetails extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		if (contractor.getOperators() != null && contractor.getOperators().size() > 0) {
+		if (contractor.getNonCorporateOperators() != null && contractor.getNonCorporateOperators().size() > 0) {
 			auditBuilder.setUser(getUser());
 			auditBuilder.buildAudits(this.contractor);
 		}

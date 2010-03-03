@@ -154,7 +154,7 @@ public class BillingDetail extends ContractorActionSupport {
 	private String getOperatorsString() {
 		List<String> operatorsString = new ArrayList<String>();
 
-		for (ContractorOperator co : contractor.getOperators()) {
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
 
 			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))

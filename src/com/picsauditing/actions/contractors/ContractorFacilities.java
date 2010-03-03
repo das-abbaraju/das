@@ -63,8 +63,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			accountDao.save(contractor);
 		}
 
-		if (contractor.getOperators().size() == 1) {
-			contractor.setRequestedBy(contractor.getOperators().get(0).getOperatorAccount());
+		if (contractor.getNonCorporateOperators().size() == 1) {
+			contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 			accountDao.save(contractor);
 		}
 		if (button != null) {
