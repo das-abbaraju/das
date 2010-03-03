@@ -63,7 +63,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			return LOGIN;
 
 		// TODO check permissions
-		//tryPermissions(OpPerms.EditFlagCriteria);
+		// tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
 
@@ -111,15 +111,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setUpdatedBy(getUser());
 				fco.setFlag(newFlag);
 				boolean needsCalculation = false;
-				
+
 				if (!newHurdle.equals(fco.getHurdle())) {
 					fco.setHurdle(newHurdle);
 					needsCalculation = true;
 				}
-				
+
 				fco.setLastCalculated(null);
 				flagCriteriaOperatorDAO.save(fco);
-				
+
 				if (needsCalculation)
 					calculatePercentAffected(fco);
 
@@ -207,10 +207,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
-				flagCriteria = flagCriteriaDAO.findWhere("category like 'InsureGUARD' AND questionID IS NOT NULL ORDER BY label");
+				flagCriteria = flagCriteriaDAO
+						.findWhere("category like 'InsureGUARD' AND questionID IS NOT NULL ORDER BY label");
 			else
-				flagCriteria = flagCriteriaDAO.findWhere("(category NOT LIKE 'InsureGUARD' OR (category LIKE 'InsureGUARD'"
-						+ " AND auditTypeID IS NOT NULL)) ORDER BY category, label");
+				flagCriteria = flagCriteriaDAO
+						.findWhere("(category NOT LIKE 'InsureGUARD' OR (category LIKE 'InsureGUARD'"
+								+ " AND auditTypeID IS NOT NULL)) ORDER BY category, label");
 
 			for (FlagCriteria fc : flagCriteria) {
 				if (doNotAdd.contains(fc))
@@ -233,7 +235,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					AuditQuestion aq = fc.getQuestion();
 					if (auditTypes.contains(aq.getAuditType())) {
 						List<String> countries = Arrays.asList(aq.getCountriesArray());
-						// If there's a restriction by country, make sure that 
+						// If there's a restriction by country, make sure that
 						// the question matches the operator's country
 						// If there are no countries, just check if it's valid
 						// and it's visible
@@ -256,14 +258,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		// Filter out here?
 		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
-		
+
 		// Sort by category, description
 		Collections.sort(inheritedCriteria, new ByCategoryDescription());
-		
+
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();
 
-			// If we're looking for insurance, get only InsureGUARD Questions, not InsureGUARD audits
+			// If we're looking for insurance, get only InsureGUARD Questions,
+			// not InsureGUARD audits
 			if ((insurance && criteria.getCategory().equals("InsureGUARD") && criteria.getAuditType() != null)
 					|| (!insurance && criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() != null))
 				continue;
@@ -311,12 +314,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		addableFlags.add(FlagColor.Red);
 		addableFlags.add(FlagColor.Amber);
 		addableFlags.add(FlagColor.Green);
-		
+
 		// If the FlagCriteria is already used by the operator, remove that flag
 		for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
 			if (fco.getCriteria().getId() == criteriaId) {
 				addableFlags.remove(fco.getFlag());
-				
+
 				// Only audit questions can be green flagged.
 				if (fco.getCriteria().getAuditType() == null)
 					addableFlags.remove(FlagColor.Green);
@@ -338,10 +341,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			opList.add(fco);
 
 			FlagDataCalculator calculator = new FlagDataCalculator(conList);
+			calculator.setOperator(operator);
 			calculator.setOperatorCriteria(opList);
 			List<FlagData> flagged = calculator.calculate();
 
-			// Since we're testing on one criteria, there's only one FlagData item
+			// Since we're testing on one criteria, there's only one FlagData
+			// item
 			if (flagged.size() > 0 && flagged.get(0).getFlag().equals(fco.getFlag())) {
 				contractorsAffected.put(contractor, flagged);
 			}
@@ -360,11 +365,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		return affected;
 	}
-	
+
 	public boolean canEditFlags() {
 		try {
 			tryPermissions(OpPerms.EditFlagCriteria);
-			
+
 			if ((!insurance && !operator.equals(operator.getInheritFlagCriteria()))
 					|| (insurance && !operator.equals(operator.getInheritInsurance())))
 				return false;
@@ -372,16 +377,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			// Doesn't have the EditFlagCriteria permission
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public class ByCategoryDescription implements Comparator<FlagCriteriaOperator> {
 		public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
 			// If the categories are the same, order by description
 			if (o1.getCriteria().getCategory().equals(o2.getCriteria().getCategory()))
 				return o1.getCriteria().getDescription().compareTo(o2.getCriteria().getDescription());
-			
+
 			return o1.getCriteria().getCategory().compareTo(o2.getCriteria().getCategory());
 		}
 	}

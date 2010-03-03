@@ -247,13 +247,13 @@ public class FlagDataCalculatorTest extends TestCase {
 		fc.setDefaultValue("string");
 		fcCon.setAnswer("string");
 		assertNull(getSingle()); // Green
-		
+
 		fc.setComparison("!=");
 		assertEquals("Red", getSingle().getFlag().name());
-		
+
 		fcCon.setAnswer("new string");
 		assertNull(getSingle()); // Green
-		
+
 		fcCon.setAnswer("String");
 		assertNull(getSingle()); // Green
 	}
@@ -278,7 +278,7 @@ public class FlagDataCalculatorTest extends TestCase {
 		fcCon.setAnswer("2011-02-02");
 		assertEquals("Red", getSingle().getFlag().name());
 	}
-	
+
 	public void testPolicy() {
 		// Create a map of <Integer, List<CAO>>
 		AuditType at = new AuditType();
@@ -294,9 +294,9 @@ public class FlagDataCalculatorTest extends TestCase {
 		List<ContractorAuditOperator> caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
 		caoMap.put(at, caoList);
-		
+
 		assertEquals("Red", getSingle().getFlag().name());
-		
+
 		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 		cao = new ContractorAuditOperator();
 		cao.setStatus(CaoStatus.Approved);
@@ -304,7 +304,7 @@ public class FlagDataCalculatorTest extends TestCase {
 		caoList = new ArrayList<ContractorAuditOperator>();
 		caoList.add(cao);
 		caoMap.put(at, caoList);
-		
+
 		assertNull(getSingle()); // Green
 	}
 
@@ -312,7 +312,8 @@ public class FlagDataCalculatorTest extends TestCase {
 		conCrits.set(0, fcCon);
 		opCrits.set(0, fcOp);
 		calculator = new FlagDataCalculator(conCrits);
-//		calculator.setCaoMap(caoMap);
+		// calculator.setCaoMap(caoMap);
+		calculator.setOperator(fcOp.getOperator());
 		List<FlagData> data = calculator.calculate();
 
 		if (data.size() > 0)

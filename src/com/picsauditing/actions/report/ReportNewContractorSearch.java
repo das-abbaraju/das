@@ -12,7 +12,6 @@ import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -36,6 +35,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private FacilityChanger facilityChanger;
 	private List<FlagCriteriaOperator> opCriteria;
 	private Map<Integer, FlagColor> overallFlags;
+	private OperatorAccount operator = null;
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
 			OperatorAccountDAO operatorAccountDAO) {
@@ -53,7 +53,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			getFilter().setShowInParentCorporation(true);
 
 		getFilter().setShowInsuranceLimits(true);
-		
+
 		OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
 		opCriteria.addAll(operator.getFlagCriteriaInherited());
 	}
@@ -152,20 +152,21 @@ public class ReportNewContractorSearch extends ReportAccount {
 		overallFlags = new HashMap<Integer, FlagColor>();
 		List<Integer> conIDs = new ArrayList<Integer>();
 		FlagDataCalculator calculator;
-		
+
 		for (BasicDynaBean d : data) {
 			conIDs.add(Integer.parseInt(d.get("id").toString()));
 		}
-		
+
 		for (Integer conID : conIDs) {
 			Set<FlagCriteriaContractor> conCriteria = contractorAccountDAO.find(conID).getFlagCriteria();
 			calculator = new FlagDataCalculator(conCriteria);
+			calculator.setOperator(operator);
 			calculator.setOperatorCriteria(opCriteria);
-			
+
 			List<FlagData> flags = calculator.calculate();
 			// Assume the contractor is fine until we find different
 			FlagColor holdFlag = FlagColor.Green;
-			
+
 			for (FlagData flag : flags) {
 				if (flag.getFlag().equals(FlagColor.Red)) {
 					holdFlag = flag.getFlag();
@@ -174,28 +175,29 @@ public class ReportNewContractorSearch extends ReportAccount {
 					holdFlag = flag.getFlag();
 				}
 			}
-			
+
 			overallFlags.put(conID, holdFlag);
 		}
 	}
-	
+
 	public FlagColor getOverallFlag(int contractorID) {
 		if (overallFlags == null)
 			calculateOverallFlags();
-		
+
 		return overallFlags.get(contractorID);
 	}
-	
+
 	public boolean worksForOperator(int contractorID) {
 		// Check the query for an existing flag in the database lookup
 		for (BasicDynaBean d : data) {
 			if (d.get("id").equals(contractorID)) {
 				if (d.get("flag") != null)
-					// Since the flag exists, the contractor should be working for the operator
+					// Since the flag exists, the contractor should be working
+					// for the operator
 					return true;
 			}
 		}
-		
+
 		return false;
 	}
 }

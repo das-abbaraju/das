@@ -33,7 +33,7 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
-	private ContractorOperator co = null;
+	private OperatorAccount operator = null;
 
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	// Assume this is true for the contractor in question
@@ -60,8 +60,8 @@ public class FlagDataCalculator {
 
 					FlagData data = new FlagData();
 					data.setCriteria(key);
-					data.setContractor(co.getContractorAccount());
-					data.setOperator(co.getOperatorAccount());
+					data.setContractor(contractorCriteria.get(key).getContractor());
+					data.setOperator(operator);
 					data.setFlag(flag);
 					data.setAuditColumns(new User(User.SYSTEM));
 					dataSet.add(data);
@@ -384,11 +384,11 @@ public class FlagDataCalculator {
 		this.worksForOperator = worksForOperator;
 	}
 
-	public void setCo(ContractorOperator co) {
-		this.co = co;
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
 	}
 
-	public ContractorOperator getCo() {
-		return co;
+	public OperatorAccount getOperator() {
+		return operator;
 	}
 }
