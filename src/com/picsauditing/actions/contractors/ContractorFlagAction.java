@@ -164,6 +164,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				
 				FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
 				if(flagDataOverride != null) {
+					for (FlagCriteria flagCriteria : getFlagDataOverrides().keySet()) {
+						if (flagCriteria.equals(flagDataOverride.getCriteria())) {
+							getFlagDataOverrides().remove(flagCriteria);
+						}
+					}
 					if(flagDataOverride.getOperator().equals(co.getOperatorAccount()))
 						flagDataOverrideDAO.remove(flagDataOverride);
 				}

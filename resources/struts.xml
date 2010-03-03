@@ -239,6 +239,11 @@
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
+		
+		<action name="ContractorFlagAjax"
+			class="com.picsauditing.actions.contractors.ContractorFlagAction">
+			<result>struts/contractors/contractor_flag_data.jsp</result>
+		</action>
 
 		<action name="ContractorForms"
 			class="com.picsauditing.actions.forms.ContractorForms">
@@ -1305,6 +1310,10 @@
 
 		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">
 			<result>/struts/contractors/contractor_cron.jsp</result>
+		</action>
+		
+		<action name="ContractorCronAjax" class="com.picsauditing.actions.ContractorCron">
+			<result>/struts/blank.jsp</result>
 		</action>
 		
 		<action name="SubscriptionCron" class="com.picsauditing.actions.SubscriptionCron">

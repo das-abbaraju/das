@@ -97,7 +97,6 @@ public class ContractorCron extends PicsActionSupport {
 			PicsLogger.addRuntimeRule("ContractorCron");
 
 		PicsLogger.start("ContractorCron");
-		output = "Updated flags";
 
 		if (conID > 0) {
 			run(conID, opID);
