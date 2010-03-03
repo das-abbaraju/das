@@ -13,11 +13,13 @@ import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.ReportFilterAccount;
 
 /**
@@ -30,18 +32,18 @@ import com.picsauditing.util.ReportFilterAccount;
 public class ReportNewContractorSearch extends ReportAccount {
 	protected int id;
 	private ContractorAccountDAO contractorAccountDAO;
-	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 	private FacilityChanger facilityChanger;
 	private List<FlagCriteriaOperator> opCriteria;
 	private Map<Integer, FlagColor> overallFlags;
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
-			FlagCriteriaOperatorDAO flagCriteriaOperatorDAO) {
+			OperatorAccountDAO operatorAccountDAO) {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
-		this.flagCriteriaOperatorDAO = flagCriteriaOperatorDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -52,8 +54,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 		getFilter().setShowInsuranceLimits(true);
 		
-		if (permissions.isOperatorCorporate())
-			opCriteria = flagCriteriaOperatorDAO.findByOperator(permissions.getAccountId());
+		OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
+		opCriteria.addAll(operator.getFlagCriteriaInherited());
 	}
 
 	@Override
