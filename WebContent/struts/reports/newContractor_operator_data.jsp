@@ -22,8 +22,6 @@
 	Green flagged contractors have completed the PQF and Annual Updates. If your facility has more requirements, their flag will change once you add them. 
 </div>
 
-<% long now = System.currentTimeMillis(); %>
-
 <table class="report">
 	<thead>
 	<tr>
@@ -131,8 +129,6 @@
 		</tr>
 	</s:iterator>
 </table>
-
-<% System.out.println("Getting data: " + (System.currentTimeMillis() - now) + "ms"); %>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
