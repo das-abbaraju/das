@@ -54,7 +54,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 		getFilter().setShowInsuranceLimits(true);
 
-		OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
+		operator = operatorAccountDAO.find(permissions.getAccountId());
 		opCriteria.addAll(operator.getFlagCriteriaInherited());
 	}
 
