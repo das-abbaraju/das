@@ -261,7 +261,7 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		// get a list of overrides for this contractor and operator
 
-		co.getOperatorAccount().getInheritFlagCriteria();
+		flagDataCalculator.setCo(co);
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getInheritFlagCriteria().getFlagCriteria());
 		Map<FlagCriteria, FlagDataOverride> overrides = flagDataOverrideDAO.findByContractorAndOperator(co
 				.getContractorAccount(), co.getOperatorAccount());
@@ -296,11 +296,8 @@ public class ContractorCron extends PicsActionSupport {
 
 		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
 				.getOperatorAccount().getId());
-		BaseTable.insertUpdateDeleteExplicit(flagData, changes, flagDataDAO);
 
-		for (FlagData fd : flagData) {
-			flagDataDAO.save(fd);
-		}
+		BaseTable.insertUpdateDeleteExplicit(flagData, changes, flagDataDAO);
 
 		co.setAuditColumns(new User(User.SYSTEM));
 		contractorOperatorDAO.save(co);

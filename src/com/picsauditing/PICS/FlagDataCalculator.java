@@ -33,6 +33,7 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
+	private ContractorOperator co = null;
 
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	// Assume this is true for the contractor in question
@@ -54,14 +55,13 @@ public class FlagDataCalculator {
 						final FlagDataOverride override = overrides.get(key);
 						if (override.isInForce())
 							flag = override.getForceflag();
-					}
-					else if (flagged)
+					} else if (flagged)
 						flag = operatorCriteria.get(key).getFlag();
 
 					FlagData data = new FlagData();
 					data.setCriteria(key);
-					data.setContractor(contractorCriteria.get(key).getContractor());
-					data.setOperator(operatorCriteria.get(key).getOperator());
+					data.setContractor(co.getContractorAccount());
+					data.setOperator(co.getOperatorAccount());
 					data.setFlag(flag);
 					data.setAuditColumns(new User(User.SYSTEM));
 					dataSet.add(data);
@@ -122,20 +122,21 @@ public class FlagDataCalculator {
 					}
 				}
 				// We should not flag on Audits the contractors don't have
-				if(!hasAudit) {
+				if (!hasAudit) {
 					// This is a check for if the contractor doesn't
 					// work for the operator, or is a bid only
 					if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
 						return null;
 					}
 					// This is for adHocAudits added audits
-					if(opCriteria.getMinRiskLevel() == LowMedHigh.None) {
+					if (opCriteria.getMinRiskLevel() == LowMedHigh.None) {
 						return null;
 					}
 				}
 				return criteria.isFlaggableWhenMissing();
 			}
-			// The contractor's risk level is not high enough to flag on this audit. 
+			// The contractor's risk level is not high enough to flag on this
+			// audit.
 			return null;
 		} else {
 
@@ -277,8 +278,8 @@ public class FlagDataCalculator {
 		boolean waitingOnOperator = false;
 
 		for (FlagCriteria key : operatorCriteria.keySet()) {
-			for(ContractorAudit conAudit : contractor.getAudits()) {
-				if(key.getAuditType().equals(conAudit.getAuditType())) {
+			for (ContractorAudit conAudit : contractor.getAudits()) {
+				if (key.getAuditType().equals(conAudit.getAuditType())) {
 					AuditStatus auditStatus = conAudit.getAuditStatus();
 					if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 						if (!auditStatus.equals(AuditStatus.Expired)) {
@@ -320,7 +321,7 @@ public class FlagDataCalculator {
 						}
 					} // end of audits
 				}
-			}	
+			}
 		}
 		if (waitingOnPics)
 			return WaitingOn.PICS;
@@ -381,5 +382,13 @@ public class FlagDataCalculator {
 
 	public void setWorksForOperator(boolean worksForOperator) {
 		this.worksForOperator = worksForOperator;
+	}
+
+	public void setCo(ContractorOperator co) {
+		this.co = co;
+	}
+
+	public ContractorOperator getCo() {
+		return co;
 	}
 }
