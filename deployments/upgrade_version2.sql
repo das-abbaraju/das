@@ -217,8 +217,7 @@ ao.requiredForFlag,null as hurdle, null as percentAffected, null as lastcalculat
 join flag_criteria f on ao.auditTypeid = f.audittypeid
 join audit_type at on at.id = ao.audittypeid
 where ao.auditTypeid not in (1,11)
-and ao.canSee = 1 
-and ao.minriskLevel > 0;
+and ao.canSee = 1;
 
 delete from flag_criteria_operator where flag = '';
 
