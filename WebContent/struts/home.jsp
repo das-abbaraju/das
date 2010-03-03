@@ -21,6 +21,10 @@ function showPanel(panel) {
 
 	$('#'+panel+"_content").show();
 }
+
+$(function() {
+	$('#rebranding').show('slow');
+});
 </script>
 </head>
 <body>
@@ -31,6 +35,13 @@ function showPanel(panel) {
 <s:else>
 	<h1>Welcome to PICS Online <span class="sub"><s:property value="account.name" /></span></h1>
 </s:else>
+
+<s:if test="showRebranding">
+<div class="info" id="rebranding" style="display:none">
+	<a href="http://www.picsauditing.com/about/2010-rebranding/" target="_BLANK">PICS has new Branding and Service Names</a>
+</div>
+</s:if>
+
 <s:iterator value="columns">
 	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 		<s:iterator value="value">
