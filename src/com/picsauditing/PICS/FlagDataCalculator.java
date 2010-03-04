@@ -333,29 +333,21 @@ public class FlagDataCalculator {
 		return WaitingOn.None;
 	}
 
-	public FlagColor calculateCaoStatus(AuditType auditType) {
+	public FlagColor calculateCaoStatus(AuditType auditType, Set<FlagData> flagDatas) {
 		PicsLogger.log("Calculating recommendation for " + auditType);
 		FlagColor flag = null;
-		for (FlagCriteria key : operatorCriteria.keySet()) {
-			if (key.getQuestion() != null && key.getQuestion().getAuditType().equals(auditType)) {
-				PicsLogger.log(" --- " + key.getQuestion());
-				FlagCriteriaOperator opCriteria = operatorCriteria.get(key);
-				FlagCriteriaContractor conCriteria = contractorCriteria.get(key);
-				if (conCriteria != null) {
-					if (isFlagged(opCriteria, conCriteria)) {
-						PicsLogger.log(" --- " + opCriteria.getFlag() + " " + key.getQuestion());
-						flag = FlagColor.getWorseColor(flag, opCriteria.getFlag());
-						if (flag.isRed())
-							// Exit early
-							return flag;
-					} else {
-						PicsLogger.log(" --- Green " + key.getQuestion());
-						if (flag == null)
-							flag = FlagColor.Green;
-					}
-				}
+		for(FlagData flagData : flagDatas) {
+			if(flagData.getCriteria().getQuestion() != null 
+					&& flagData.getCriteria().getQuestion().getAuditType().equals(auditType)) {
+				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
+				if (flag.isRed())
+					PicsLogger.log(" --- " + flagData.getFlag() + " " + flagData.getCriteria().getQuestion());
+					return flag;
 			}
 		}
+		if (flag == null)
+			flag = FlagColor.Green;
+		
 		return flag;
 	}
 

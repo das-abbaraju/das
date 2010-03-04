@@ -258,7 +258,8 @@ public class ContractorCron extends PicsActionSupport {
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
 		for (FlagData change : changes) {
-			if (change.getCriteria().getQuestion() == null || !change.getCriteria().getCategory().equals("InsureGUARD"))
+			if (!(change.getCriteria().getQuestion() != null 
+					&& change.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()))
 				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
 
@@ -332,15 +333,13 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 
 		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-			OperatorAccount inheritInsuranceCriteria = co.getOperatorAccount().getInheritInsuranceCriteria();
-			flagDataCalculator.setOperatorCriteria(inheritInsuranceCriteria.getFlagCriteria());
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
 				if (audit.getAuditType().getClassType().isPolicy() && !audit.getAuditStatus().isExpired()) {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.isVisible()) {
 							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
 									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co.getFlagDatas());
 
 								cao.setFlag(flagColor);
 								dao.save(cao);
