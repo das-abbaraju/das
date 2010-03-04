@@ -13,17 +13,51 @@
 <script type="text/javascript">
 var caoID  = '<s:property value="caoID"/>';
 var certID = '<s:property value="certID"/>';
-function closePage() {
-<s:if test="changed">
-	try {
-		if (caoID > 0 && certID > 0)
-			window.opener.saveCert(certID, caoID);
-		else
-			window.opener.location.reload(true);
-	} catch(err) {}
-</s:if>
-	self.close();
+var message = 'You have NOT SAVED your file.\nPlease click CANCEL to STAY on This Page and then click SAVE to save your file.';
+var buttonClick = false;
+
+window.onbeforeunload = function (event) {
+	var fileBox = document.getElementById("fileTextbox");
+
+	if(!buttonClick && fileBox != null && fileBox.value != null && fileBox.value != "") {
+		if (typeof event == 'undefined') {
+			event = window.event;
+		}
+		if (event) {
+			event.returnValue = message;
+		}
+		return message;
+	}
 }
+
+function closePage() {
+	<s:if test="changed">
+		try {
+			if (caoID > 0 && certID > 0)
+				window.opener.saveCert(certID, caoID);
+			else
+				window.opener.location.reload(true);
+		} catch(err) {}
+	</s:if>
+
+	var fileBox = document.getElementById("fileTextbox");
+
+	buttonClick = false;
+	
+	if(fileBox != null && fileBox.value != null && fileBox.value != "") {
+		var confirmed = confirm(message);
+		if(confirmed){
+			buttonClick = true;
+			self.close();
+		}			
+	} else {
+		buttonClick = true;
+		self.close();
+	}
+
+	
+}
+
 </script>
 </head>
 <body>
@@ -43,7 +77,7 @@ function closePage() {
 					<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 						<div class="question">
 							<label>File:</label>
-							<s:file name="file" value="%{file}" size="50"></s:file><br />
+								<s:file id="fileTextbox" name="file" value="%{file}" size="50" ></s:file><br />
 						</div>
 					</s:if>
 					<s:if test="file != null && file.exists()">
@@ -64,14 +98,14 @@ function closePage() {
 					</div>
 					<div>
 						<div>
-							<button class="picsbutton" onclick="closePage(); return false;">Close and Return to Page</button>
+							<button class="picsbutton" onclick="buttonClick = true; closePage(); return false;">Close and Return to Page</button>
 							<s:if test="file != null && file.exists()">
 								<s:if test="certificate.caos == null || certificate.caos.size() == 0">
 									<button class="picsbutton negative" name="button" value="Delete" type="submit" 
-									onclick="return confirm('Are you sure you want to delete this file?');">DeleteFile</button>
+									onclick="buttonClick = true; return confirm('Are you sure you want to delete this file?');">DeleteFile</button>
 								</s:if>
 							</s:if>
-							<button class="picsbutton positive" name="button" value="Save" type="submit">Save</button>
+							<button class="picsbutton positive" name="button" value="Save" onclick="buttonClick = true;" type="submit">Save</button>
 						</div>
 					</div>
 					<s:if test="certificate.caos != null && certificate.caos.size() > 0">
