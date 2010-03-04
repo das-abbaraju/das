@@ -72,8 +72,15 @@
 			</tr>
 		</s:iterator>
 		</table>
-		<a href="AuditOperator.action?oID=<s:property value="operator.id"/>">Operator/Audit Matrix</a>
-		<a href="OperatorFlagCriteria.action?id=<s:property value="operator.id"/>">Flag Criteria</a>
+		<pics:permission perm="ManageOperators">
+			To Edit the Criteria <br />
+			[<a href="AuditOperator.action?oID=<s:property value="operator.inheritAudits.id" />">Audits</a>]
+			[<a href="AuditOperator.action?oID=<s:property value="operator.inheritInsurance.id" />">Policies</a>]
+		</pics:permission>
+		<pics:permission perm="EditFlagCriteria">
+			[<a 
+			href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">Flag Criteria</a>]		
+		</pics:permission>
 	</div>
 	<div id="tabs-users">
 		<s:iterator value="operator.users">
