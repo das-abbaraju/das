@@ -26,9 +26,6 @@ small {
 	float: left;
 	width: 33%;
 }
-.flaggedCriteria table {
-	margin: 15px auto;
-}
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
@@ -68,7 +65,7 @@ function checkSubmit(buttonName, dataID) {
 <s:include value="conHeader.jsp" />
 
 <div style="text-align: center; width: 100%">
-<s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; width: 200px">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
+<s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; width: 25%;">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property
@@ -136,7 +133,7 @@ function checkSubmit(buttonName, dataID) {
 </div>
 
 <s:if test="permissions.contractor">
-<div class="helpOnRight">
+<div class="helpOnRight" style="clear: right;">
 		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
 		If any requirements exceed the acceptable threshold or answer, those requirements will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
 		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.

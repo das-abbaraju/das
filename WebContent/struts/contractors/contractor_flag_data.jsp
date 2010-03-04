@@ -123,21 +123,21 @@ $(function() {
 			</tr>
 		</s:if>
 	</s:iterator>
-	
-	<tr><td colspan="3" class="center">
-		<pics:permission perm="ManageOperators">
-			To Edit the Criteria <br />
-			[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">For Audits</a>]
-			[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">For Policies</a>]
-		</pics:permission>
-		<pics:permission perm="EditFlagCriteria">
-			[<a 
-			href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">For Flag Criteria</a>]		
-		</pics:permission>
-	</td></tr>
+		<tr><td colspan="3" class="center">
+			<pics:permission perm="ManageOperators">
+				To Edit the Criteria <br />
+				[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">For Audits</a>]
+				[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">For Policies</a>]
+			
+			</pics:permission>
+			<pics:permission perm="EditFlagCriteria">
+				[<a 
+				href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">For Flag Criteria</a>]		
+			</pics:permission>
+		</td></tr>
 </table>
 
-<div style="width: 75%;">
+<div style="width: 66%;">
 	<s:if test="auditCriteria.size() > 0">
 		<div class="flaggedCriteria"><table class="report">
 			<thead>
