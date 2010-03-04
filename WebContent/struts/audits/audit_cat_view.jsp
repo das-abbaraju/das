@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+
 <s:set name="questionStillRequired" value="false" />
 <s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
 	<s:if test="#q.isRequired == 'Yes'">
@@ -6,11 +7,16 @@
 	</s:if>
 	<s:if test="#q.isRequired == 'Depends' && #q.dependsOnQuestion.id > 0">
 		<s:set name="dependsAnswer" value="answerMap.get(#q.dependsOnQuestion.id)" />
-		<s:if test="(#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')) || (#dependsAnswer == null) || (#q.dependsOnAnswer == #dependsAnswer.answer)">
+		<s:if test="#q.dependsOnAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
+        	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
+           	<s:set name="questionStillRequired" value="true" />
+        </s:if>
+		<s:if test="#dependsAnswer != null && #q.dependsOnAnswer == #dependsAnswer.answer">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>
 	</s:if>
 </s:if>
+
 <s:if test="questionStillRequired">
 	<span class="printrequired"><img src="images/yellow_star.gif"></span>
 </s:if>

@@ -119,8 +119,20 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					// Set the other one that isn't set
 					catDataID = catData.getId();
 					catID = catData.getCategory().getId();
-
-					answerMap = auditDataDao.findByCategory(auditID, catData.getCategory());
+					
+					List<Integer> questionIDs = new ArrayList<Integer>();
+					for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
+						for (AuditQuestion question : subCategory.getQuestions()) {
+							questionIDs.add(question.getId());
+							if ("Depends".equals(question.getIsRequired()) && question.getDependsOnQuestion() != null) {
+								int dependsOnQID = question.getDependsOnQuestion().getId();
+								questionIDs.add(dependsOnQID);
+							}
+						}
+					}
+					// Get a map of all answers in this audit
+					answerMap = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
+					
 					currentCategory = catData;
 
 					if (mode == null && catData.getRequiredCompleted() < catData.getNumRequired()) {
