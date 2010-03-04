@@ -98,22 +98,22 @@ $(function() {
 						<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 							<s:if test="#data.criteria == #conCriteria.criteria">
 								<s:if test="#data.criteria.dataType == 'number'">
-									<s:if test="#data.criteria.oshaRateType == @com.picsauditing.jpa.entities.OshaRateType@LwcrNaics">
+									<s:if test="#data.criteria.oshaRateType.toString() == 'LwcrNaics' || #data.criteria.oshaRateType.toString() == 'TrirNaics'">
 										Industry Average: <s:property value="format(#conCriteria.answer)" /><br />
 										Contractor Answer: <s:property value="format(#conCriteria.answer2)" />
 									</s:if>
-									<s:elseif test="#data.criteria.oshaRateType == @com.picsauditing.jpa.entities.OshaRateType@TrirNaics">
-										Class: <s:property value="format(#conCriteria.answer)" /><br />
-										Rating: <s:property value="format(#conCriteria.answer2)" />
-									</s:elseif>
 									<s:else>
 										<s:property value="format(#conCriteria.answer)" />
 									</s:else>
 								</s:if>
+								<s:elseif test="#data.criteria.question != null && #data.criteria.question.questionType = 'AMBest'">
+									Class: <s:property value="format(#conCriteria.answer)" /><br />
+									Rating: <s:property value="format(#conCriteria.answer2)" />
+								</s:elseif>
 								<s:else>
 									<s:property value="#conCriteria.answer" />
 								</s:else>
-								<s:if test="!#conCriteria.verified">
+								<s:if test="#data.criteria.dataType == 'number' && !#conCriteria.verified">
 									<br /><small>(Not Verified)</small>
 								</s:if>
 							</s:if>
@@ -194,7 +194,7 @@ $(function() {
 								</s:if>	
 							</s:iterator>
 							- <s:property value="criteria.label" />
-							<s:if test="!#conVerified">
+							<s:if test="criteria.dataType == 'number' && !#conVerified">
 								<br /><small>(Not Verified)</small>
 							</s:if>
 						</td>			
