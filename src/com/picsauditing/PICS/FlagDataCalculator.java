@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -372,8 +373,11 @@ public class FlagDataCalculator {
 		}
 	}
 
-	public void setOverrides(Map<FlagCriteria, FlagDataOverride> overrides) {
-		this.overrides = overrides;
+	public void setOverrides(Set<FlagDataOverride> overridesSet) {
+		Map<FlagCriteria, FlagDataOverride> overridesMap = new HashMap<FlagCriteria, FlagDataOverride>();
+		for(FlagDataOverride override : overridesSet)
+			overridesMap.put(override.getCriteria(), override);
+		this.overrides = overridesMap;
 	}
 
 	public boolean isWorksForOperator() {

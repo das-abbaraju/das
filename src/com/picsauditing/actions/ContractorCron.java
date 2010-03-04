@@ -23,8 +23,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.FlagDataDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -37,10 +35,8 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -61,8 +57,6 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
-	private FlagDataDAO flagDataDAO;
-	private FlagDataOverrideDAO flagDataOverrideDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
@@ -75,8 +69,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, FlagDataDAO flagDataDAO,
-			FlagDataOverrideDAO flagDataOverrideDAO, ContractorOperatorDAO contractorOperatorDAO) {
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, ContractorOperatorDAO contractorOperatorDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -84,8 +77,6 @@ public class ContractorCron extends PicsActionSupport {
 		this.auditPercentCalculator = auditPercentCalculator;
 		this.auditBuilder = auditBuilder;
 		this.contractorFlagETL = contractorFlagETL;
-		this.flagDataDAO = flagDataDAO;
-		this.flagDataOverrideDAO = flagDataOverrideDAO;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 	}
 
@@ -258,14 +249,10 @@ public class ContractorCron extends PicsActionSupport {
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
-		// get a list of overrides for this contractor and operator
 
 		flagDataCalculator.setOperator(co.getOperatorAccount());
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
-		Map<FlagCriteria, FlagDataOverride> overrides = flagDataOverrideDAO.findByContractorAndOperator(co
-				.getContractorAccount(), co.getOperatorAccount());
-		flagDataCalculator.setOverrides(overrides);
-
+		flagDataCalculator.setOverrides(co.getOverrides());
 		List<FlagData> changes = flagDataCalculator.calculate();
 
 		// Find overall flag color for this operator
@@ -294,13 +281,9 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagLastUpdated(new Date());
 		}
 
-		List<FlagData> flagData = flagDataDAO.findByContractorAndOperator(co.getContractorAccount().getId(), co
-				.getOperatorAccount().getId());
-
-		BaseTable.insertUpdateDeleteExplicit(flagData, changes, flagDataDAO);
+		BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes);
 
 		co.setAuditColumns(new User(User.SYSTEM));
-		contractorOperatorDAO.save(co);
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {

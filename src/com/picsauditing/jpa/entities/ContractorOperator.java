@@ -1,7 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,7 +36,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private WaitingOn waitingOn = WaitingOn.None;
 	private Date processCompletion;
 	private String relationshipType;
-	private List<FlagData> flagDatas;
+	private Set<FlagData> flagDatas = new HashSet<FlagData>();
+	private Set<FlagDataOverride> overrides = new HashSet<FlagDataOverride>();
 
 	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
@@ -58,8 +60,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	/**
-	 * Assume Yes if the operator approvesRelationships=No, otherwise this should default to P and then be approved or
-	 * rejected
+	 * Assume Yes if the operator approvesRelationships=No, otherwise this
+	 * should default to P and then be approved or rejected
 	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
@@ -167,14 +169,25 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.relationshipType = relationshipType;
 	}
 
-
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE })
-	@JoinColumns({@JoinColumn(name="opID", referencedColumnName = "genID"), @JoinColumn(name="conID", referencedColumnName="subID")})
-	public List<FlagData> getFlagDatas() {
+	@OneToMany(cascade = { CascadeType.ALL })
+	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
+			@JoinColumn(name = "conID", referencedColumnName = "subID") })
+	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
 	}
 
-	public void setFlagDatas(List<FlagData> flagDatas) {
+	public void setFlagDatas(Set<FlagData> flagDatas) {
 		this.flagDatas = flagDatas;
+	}
+
+	@OneToMany(cascade = { CascadeType.ALL })
+	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
+			@JoinColumn(name = "conID", referencedColumnName = "subID") })
+	public Set<FlagDataOverride> getOverrides() {
+		return overrides;
+	}
+
+	public void setOverrides(Set<FlagDataOverride> overrides) {
+		this.overrides = overrides;
 	}
 }

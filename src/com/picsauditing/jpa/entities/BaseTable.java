@@ -21,7 +21,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
@@ -171,7 +170,8 @@ public abstract class BaseTable implements JSONable, Serializable {
 	// UPDATE must be Overridden in the inheriting class
 	public static <T extends BaseTable> void insertUpdateDeleteManaged(Collection<T> dbLinkedList, Collection<T> changes) {
 		// update/delete
-		final Iterator<T> dbIterator = dbLinkedList.iterator();
+		Iterator<T> dbIterator = dbLinkedList.iterator();
+
 		while (dbIterator.hasNext()) {
 			T fromDB = dbIterator.next();
 			T found = null;
@@ -193,12 +193,16 @@ public abstract class BaseTable implements JSONable, Serializable {
 		// merging remaining changes (updates/inserts)
 		dbLinkedList.addAll(changes);
 	}
-	
+
 	// UPDATE must be Overridden in the inheriting class
-	public static <T extends BaseTable> void insertUpdateDeleteExplicit(Collection<T> unLinkedList, Collection<T> changes, PicsDAO dao) {
+	// IMPORTANT NOTE: Only use this as a necessity. Performance using this
+	// operation is severely degraded
+	// compared to the hibernate managed insert/update/delete above
+	public static <T extends BaseTable> void insertUpdateDeleteExplicit(Collection<T> unLinkedList,
+			Collection<T> changes, PicsDAO dao) {
 		// update/delete
 		Collection<T> deletes = new ArrayList<T>();
-		final Iterator<T> dbIterator = unLinkedList.iterator();
+		Iterator<T> dbIterator = unLinkedList.iterator();
 		while (dbIterator.hasNext()) {
 			T fromDB = dbIterator.next();
 			T found = null;
@@ -220,11 +224,11 @@ public abstract class BaseTable implements JSONable, Serializable {
 
 		// merging remaining changes (updates/inserts)
 		unLinkedList.addAll(changes);
-		for(T insertOrUpdate : unLinkedList)
+		for (T insertOrUpdate : unLinkedList)
 			dao.save(insertOrUpdate);
-		
+
 		// performing deletes
-		for(T delete : deletes)
+		for (T delete : deletes)
 			dao.remove(delete);
 	}
 }
