@@ -15,9 +15,11 @@
 	</s:if>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>
 	<li><a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.id"/>"
-		<s:if test="requestURI.contains('op_manage_flag_criteria')">class="current"</s:if>>Flag Criteria</a></li>
-	<li><a href="ManageInsuranceCriteriaOperator.action?id=<s:property value="operator.id"/>"
-		<s:if test="requestURI.contains('op_manage_flag_criteria')">class="current"</s:if>>Insurance Criteria</a></li>
+		<s:if test="requestURI.contains('op_manage_flag_criteria') && !insurance">class="current"</s:if>>Flag Criteria</a></li>
+	<s:if test="operator.canSeeInsurance.toString() == 'Yes'">
+		<li><a href="ManageInsuranceCriteriaOperator.action?id=<s:property value="operator.id"/>"
+			<s:if test="requestURI.contains('op_manage_flag_criteria') && insurance">class="current"</s:if>>Insurance Criteria</a></li>
+	</s:if>
 	<pics:permission perm="ContractorTags">
 		<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"
 			<s:if test="requestURI.contains('operator_tags')">class="current"</s:if>>Tags</a></li>
