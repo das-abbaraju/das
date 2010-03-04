@@ -11,6 +11,10 @@
         	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
            	<s:set name="questionStillRequired" value="true" />
         </s:if>
+        <s:if test="#q.dependsOnAnswer == 'NOTNULL' && #dependsAnswer != null">
+        	<% // If dependsOnQuestion is a textfield, textbox or a select box etc where the dependsOnAnswer is not null %>
+           	<s:set name="questionStillRequired" value="true" />
+        </s:if>
 		<s:if test="#dependsAnswer != null && #q.dependsOnAnswer == #dependsAnswer.answer">
 			<s:set name="questionStillRequired" value="true" />
 		</s:if>

@@ -38,10 +38,10 @@ public class AuditPercentCalculator {
 		}
 
 		catData.getCategory().setValidDate(catData.getAudit().getValidDate());
-		
+
 		Set<String> countries = catData.getAudit().getContractorAccount().getCountries();
 		catData.getCategory().setCountries(countries);
-		
+
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
@@ -91,6 +91,10 @@ public class AuditPercentCalculator {
 							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
 							if (otherAnswer == null)
 								isRequired = true;
+						} else if (question.getDependsOnAnswer().equals("NOTNULL")) {
+							AuditData otherAnswer = answers.get(question.getDependsOnQuestion().getId());
+							if (otherAnswer != null)
+								isRequired = true;
 						} else {
 							// This question is dependent on another question's
 							// answer
@@ -126,7 +130,7 @@ public class AuditPercentCalculator {
 							} else if (isRequired && catData.getAudit().getAuditType().isHasRequirements()) {
 								verifiedCount++;
 							}
-						}	
+						}
 					}
 
 					if ("Radio".equals(question.getQuestionType())) {
@@ -164,7 +168,7 @@ public class AuditPercentCalculator {
 			catData.setScore(scoreAverage);
 			catData.setScoreCount(scoreCount);
 		}
-		
+
 		catDataDao.save(catData);
 	}
 
