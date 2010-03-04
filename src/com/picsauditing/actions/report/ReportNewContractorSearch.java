@@ -1,7 +1,10 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +15,7 @@ import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -31,19 +35,22 @@ import com.picsauditing.util.ReportFilterAccount;
 public class ReportNewContractorSearch extends ReportAccount {
 	protected int id;
 	private ContractorAccountDAO contractorAccountDAO;
+	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
 	private OperatorAccountDAO operatorAccountDAO;
+	
 	private FacilityChanger facilityChanger;
 	private List<FlagCriteriaOperator> opCriteria;
 	private Map<Integer, FlagColor> overallFlags;
 	private OperatorAccount operator = null;
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
-			OperatorAccountDAO operatorAccountDAO) {
+			OperatorAccountDAO operatorAccountDAO, FlagCriteriaContractorDAO flagCriteriaContractorDAO) {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
+		this.flagCriteriaContractorDAO = flagCriteriaContractorDAO;
 	}
 
 	@Override
@@ -157,27 +164,39 @@ public class ReportNewContractorSearch extends ReportAccount {
 		for (BasicDynaBean d : data) {
 			conIDs.add(Integer.parseInt(d.get("id").toString()));
 		}
-
-		for (Integer conID : conIDs) {
-			Set<FlagCriteriaContractor> conCriteria = contractorAccountDAO.find(conID).getFlagCriteria();
-			calculator = new FlagDataCalculator(conCriteria);
-			calculator.setOperator(operator);
-			calculator.setOperatorCriteria(opCriteria);
-
-			List<FlagData> flags = calculator.calculate();
-			// Assume the contractor is fine until we find different
-			FlagColor holdFlag = FlagColor.Green;
-
-			for (FlagData flag : flags) {
-				if (flag.getFlag().equals(FlagColor.Red)) {
-					holdFlag = flag.getFlag();
-					break;
-				} else if (flag.getFlag().equals(FlagColor.Amber)) {
-					holdFlag = flag.getFlag();
+		
+		List<FlagCriteriaContractor> allConCriterias = flagCriteriaContractorDAO.findByContractorList(conIDs);
+		Collections.sort(conIDs);
+		Collections.sort(allConCriterias, new ByContractorID());
+		
+		int position = 0;
+		Set<FlagCriteriaContractor> conCriteria;
+		
+		for (int conID : conIDs) {
+			conCriteria = new HashSet<FlagCriteriaContractor>();
+			FlagColor overallColor = FlagColor.Green;
+			
+			while (position < allConCriterias.size() && allConCriterias.get(position).getContractor().getId() == conID) {
+				conCriteria.add(allConCriterias.get(position));
+				position++;
+			}
+			
+			if (conCriteria.size() > 0) {
+				calculator = new FlagDataCalculator(conCriteria);
+				calculator.setOperator(operator);
+				calculator.setOperatorCriteria(opCriteria);
+				List<FlagData> conFlags = calculator.calculate();
+				
+				for (FlagData conFlag : conFlags) {
+					if (conFlag.getFlag().equals(FlagColor.Red)) {
+						overallColor = FlagColor.Red;
+						break;
+					} else if (conFlag.getFlag().equals(FlagColor.Amber))
+						overallColor = FlagColor.Amber;
 				}
 			}
-
-			overallFlags.put(conID, holdFlag);
+			
+			overallFlags.put(conID, overallColor);
 		}
 	}
 
@@ -193,12 +212,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 		for (BasicDynaBean d : data) {
 			if (d.get("id").equals(contractorID)) {
 				if (d.get("flag") != null)
-					// Since the flag exists, the contractor should be working
-					// for the operator
+					// Since the flag exists, the contractor should be working for the operator
 					return true;
 			}
 		}
 
 		return false;
+	}
+	
+	private class ByContractorID implements Comparator<FlagCriteriaContractor> {
+		public int compare(FlagCriteriaContractor o1, FlagCriteriaContractor o2) {
+			return o1.getContractor().getId() - o2.getContractor().getId();
+		}
 	}
 }
