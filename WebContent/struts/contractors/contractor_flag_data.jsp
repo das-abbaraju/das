@@ -19,8 +19,7 @@ $(function() {
 		<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
 			<tr class="<s:property value="#data.flag" />">
 				<td>
-					<s:property value="#data.flag.smallIcon"
-						escape="false" />
+					<s:property value="#data.flag.smallIcon" escape="false" />
 					<s:if test="opID == permissions.getAccountId() || permissions.corporate">	
 						<s:if test="#flagoverride != null">
 							Manual Force Flag <s:property value="#flagoverride.forceflag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
@@ -100,18 +99,16 @@ $(function() {
 							<s:if test="#data.criteria == #conCriteria.criteria">
 								<s:if test="#data.criteria.dataType == 'number'">
 									<s:if test="#data.criteria.oshaRateType == @com.picsauditing.jpa.entities.OshaRateType@LwcrNaics">
-										Industry Average:
-									</s:if>
-									<s:elseif test="#data.criteria.oshaRateType == @com.picsauditing.jpa.entities.OshaRateType@TrirNaics">
-										Class:
-									</s:elseif>
-									<s:property value="format(#conCriteria.answer)" />
-									<s:if test="#data.criteria.oshaRateType == @com.picsauditing.jpa.entities.OshaRateType@LwcrNaics">
+										Industry Average: <s:property value="format(#conCriteria.answer)" /><br />
 										Contractor Answer: <s:property value="format(#conCriteria.answer2)" />
 									</s:if>
 									<s:elseif test="#data.criteria.oshaRateType == @com.picsauditing.jpa.entities.OshaRateType@TrirNaics">
+										Class: <s:property value="format(#conCriteria.answer)" /><br />
 										Rating: <s:property value="format(#conCriteria.answer2)" />
 									</s:elseif>
+									<s:else>
+										<s:property value="format(#conCriteria.answer)" />
+									</s:else>
 								</s:if>
 								<s:else>
 									<s:property value="#conCriteria.answer" />
