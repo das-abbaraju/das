@@ -73,7 +73,7 @@ function getFlag(selectObject) {
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
 	<div style="clear: left; margin: 10px 0px;">
 		<s:if test="canEditFlags()">
-			<a href="#" onclick="getAddQuestions(); return false;" class="picsbutton">Add New Criteria</a>
+			<a href="#" onclick="getAddQuestions(<s:if test="insurance">true</s:if>); return false;" class="picsbutton">Add New Criteria</a>
 		</s:if>
 		<span id="thinking"></span>
 	</div>

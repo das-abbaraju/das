@@ -2,6 +2,8 @@ package com.picsauditing.actions.operators;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +29,6 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-import edu.emory.mathcs.backport.java.util.Collections;
-
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
@@ -50,11 +49,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		this.flagCriteriaOperatorDAO = opCriteriaDAO;
 		this.flagCriteriaDAO = flagCriteriaDAO;
 
-		if (insurance)
-			subHeading = "Manage Insurance Criteria";
-		else
-			subHeading = "Manage Flag Criteria";
-
 		noteCategory = NoteCategory.Flags;
 	}
 
@@ -66,6 +60,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		// tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
+		
+		if (insurance)
+			subHeading = "Manage Insurance Criteria";
+		else
+			subHeading = "Manage Flag Criteria";
 
 		if (button != null) {
 			if (button.equals("questions") || button.equals("impact")) {
@@ -207,12 +206,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
-				flagCriteria = flagCriteriaDAO
-						.findWhere("category like 'InsureGUARD' AND questionID IS NOT NULL ORDER BY label");
+				flagCriteria = flagCriteriaDAO.findWhere("category like 'InsureGUARD' AND questionID IS NOT NULL ORDER BY label");
 			else
-				flagCriteria = flagCriteriaDAO
-						.findWhere("(category NOT LIKE 'InsureGUARD' OR (category LIKE 'InsureGUARD'"
-								+ " AND auditTypeID IS NOT NULL)) ORDER BY category, label");
+				flagCriteria = flagCriteriaDAO.findWhere("(category NOT LIKE 'InsureGUARD'"
+						+ " OR (category LIKE 'InsureGUARD' AND auditTypeID IS NOT NULL)) ORDER BY category, label");
 
 			for (FlagCriteria fc : flagCriteria) {
 				if (doNotAdd.contains(fc))
@@ -265,18 +262,22 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();
 
-			// If we're looking for insurance, get only InsureGUARD Questions,
-			// not InsureGUARD audits
-			if ((insurance && criteria.getCategory().equals("InsureGUARD") && criteria.getAuditType() != null)
-					|| (!insurance && criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() != null))
-				continue;
-
-			if (criteria.getOshaType() != null) {
-				if (!criteria.getOshaType().equals(operator.getOshaType()))
-					continue;
+			// If we're looking for insurance, get only InsureGUARD Questions, not InsureGUARD audits
+			if (insurance) {
+				if (criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() != null)
+					valid.add(inherited);
 			}
-
-			valid.add(inherited);
+			else {
+				// These are insurance questions, which should only show up on the insurance page
+				if (criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() == null)
+					continue;
+				// The criteria OSHA type should match up with the operator's OSHA type
+				if (criteria.getOshaType() != null && !criteria.getOshaType().equals(operator.getOshaType())) {
+					continue;
+				}
+				// Everything else is fine
+				valid.add(inherited);
+			}
 		}
 
 		return valid;

@@ -61,15 +61,20 @@ function getImpact(criteriaID) {
 		}
 	);
 }
-function getAddQuestions() {
+function getAddQuestions(insurance) {
 	var layer = '#addCriteria';
+	var destination = 'ManageFlagCriteriaOperatorAjax.action';
+	
+	if (insurance)
+		destination = 'ManageFlagCriteriaOperatorAjax.action?insurance=true';
+	
 	if ($(layer).is(':hidden')) {
 		var data= {
 			button: 'questions',
 			id: $('#form1_id').val()
 		};
 		startThinking({div:'thinking', message:'Fetching criteria...'});
-		$(layer).load('ManageFlagCriteriaOperatorAjax.action', data, 
+		$(layer).load(destination, data, 
 			function() {
 				stopThinking({div:'thinking'});
 				$(this).show('slow');

@@ -1362,6 +1362,12 @@
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
 		</action>
 		
+		<action name="ManageInsuranceCriteriaOperator"
+			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
+			<param name="insurance">true</param>
+			<result>struts/operators/op_manage_flag_criteria.jsp</result>
+		</action>
+		
 		<action name="ManageFlagCriteriaOperatorAjax"
 			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
 			<result>struts/operators/op_manage_flag_criteria_list.jsp</result>
