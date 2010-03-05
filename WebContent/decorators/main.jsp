@@ -17,6 +17,7 @@
 <%@ page import="java.sql.SQLException"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
+	String version = com.picsauditing.actions.PicsActionSupport.getVersion();
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
@@ -26,14 +27,15 @@
 <title>PICS - <decorator:title default="PICS" /></title>
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css" />
+<link rel="stylesheet" type="text/css" media="print" href="css/print.css?v=<%=version%>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=<%=version%>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=version%>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
+
 <script src="js/chrome.js" type="text/javascript" ></script>
-<script type="text/javascript" src="js/pics_main.js?v=20091231"></script>
-<script type="text/javascript" src="js/notes.js?v=20091231"></script>
+<script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
+<script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 
 <decorator:head />
 
@@ -80,7 +82,7 @@
 		<%= appProperty.getValue()%>
 	</div>
 <% } %>
-<div id="logo"><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_r3.jpg" alt="image" width="105" height="112" /></a></div>
+<div id="logo"><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a></div>
 </div></div></div>
 
 <!-- !begin navigation -->
