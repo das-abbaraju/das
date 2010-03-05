@@ -106,7 +106,7 @@ public class FlagCriteriaOperator extends BaseTable {
 	}
 	
 	@Transient 
-	public String replaceHurdle() {
+	public String getReplaceHurdle() {
 		return criteria.getDescription().replaceAll("\\{HURDLE\\}", criteriaValue());
 	}
 
@@ -120,6 +120,6 @@ public class FlagCriteriaOperator extends BaseTable {
 
 	@Override
 	public String toString() {
-		return replaceHurdle() + " for " + operator.toString();
+		return getReplaceHurdle() + " for " + operator.toString();
 	}
 }

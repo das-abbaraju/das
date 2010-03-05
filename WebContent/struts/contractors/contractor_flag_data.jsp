@@ -65,7 +65,7 @@ $(function() {
 				<td>
 					<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
 						<s:if test="#opCriteria.criteria == #data.criteria && #opCriteria.flag == #data.flag">
-							<s:property value="#opCriteria.replaceHurdle()"/>
+							<s:property value="#opCriteria.replaceHurdle"/>
 						</s:if>
 					</s:iterator>
 				</td>
