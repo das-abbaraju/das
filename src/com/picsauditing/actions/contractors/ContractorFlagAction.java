@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -37,7 +39,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected String forceNote;
 	protected boolean overrideAll = false;
 	protected int dataID;
-	protected List<FlagData> flagData;
+	protected Map<String, List<FlagData>> flagDataMap;
 	protected Map<FlagCriteria, FlagDataOverride> flagDataOverride;
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
@@ -262,53 +264,26 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
-	public List<FlagData> getFlagData() {
-		if (flagData == null)
-			flagData = flagDataDAO.findByContractorAndOperator(contractor.getId(), opID);
-		return flagData;
+	public Map<String, List<FlagData>> getflagDataMap() {
+		if (flagDataMap == null) {
+			flagDataMap = new TreeMap<String, List<FlagData>>();
+			Set<FlagData> flagData = co.getFlagDatas();
+			for(FlagData flagData2 : flagData) {
+				if(!flagData2.getCriteria().getCategory().equals("Insurance Criteria")) {
+					if(flagDataMap.get(flagData2.getCriteria().getCategory()) == null) {
+						flagDataMap.put(flagData2.getCriteria().getCategory(), new ArrayList<FlagData>());
+					}
+					flagDataMap.get(flagData2.getCriteria().getCategory()).add(flagData2);
+				}	
+			}
+		}
+		return flagDataMap;
 	}
 
 	public Map<FlagCriteria, FlagDataOverride> getFlagDataOverrides() {
 		if (flagDataOverride == null)
 			flagDataOverride = flagDataOverrideDAO.findByContractorAndOperator(contractor, co.getOperatorAccount());
 		return flagDataOverride;
-	}
-
-	public List<FlagData> getAuditCriteria() {
-		List<FlagData> audits = new ArrayList<FlagData>();
-		for (FlagData flagData : getFlagData()) {
-			if (flagData.getCriteria().getAuditType() != null
-					&& !flagData.getCriteria().getAuditType().getClassType().isPolicy()) {
-				audits.add(flagData);
-			}
-
-		}
-		return audits;
-	}
-
-	public List<FlagData> getInsuranceCriteria() {
-		List<FlagData> insurance = new ArrayList<FlagData>();
-		for (FlagData flagData : getFlagData()) {
-			if (flagData.getCriteria().getAuditType() != null
-					&& flagData.getCriteria().getAuditType().getClassType().isPolicy()) {
-				insurance.add(flagData);
-			}
-
-		}
-		return insurance;
-	}
-
-	public List<FlagData> getSafetyCriteria() {
-		List<FlagData> safety = new ArrayList<FlagData>();
-		for (FlagData flagData : getFlagData()) {
-			if ((flagData.getCriteria().getQuestion() != null && !flagData.getCriteria().getQuestion().getAuditType()
-					.getClassType().isPolicy())
-					|| flagData.getCriteria().getOshaType() != null) {
-				safety.add(flagData);
-			}
-
-		}
-		return safety;
 	}
 
 	public FlagDataOverride isFlagDataOverride(FlagData flagData) {
