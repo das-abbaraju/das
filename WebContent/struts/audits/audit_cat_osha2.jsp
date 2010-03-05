@@ -49,7 +49,7 @@
 		<th class="label"><s:property value="getText('modifiedWorkDay.'.concat(type))"/></th>
 		<td><s:property value="modifiedWorkDay"/></td>
 		<td><s:property value="%{format(modifiedWorkDay)}"/></td>
-		<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
+		<s:if test="type.toString().equals('OSHA') && corporate"><td><s:property value="getAverageOsha( type ).modifiedWorkDay"/></td><td>&nbsp;</td></s:if>
 	</tr>
 </s:if>
 <tr>

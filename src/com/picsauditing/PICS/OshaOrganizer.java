@@ -219,8 +219,10 @@ public class OshaOrganizer {
 					weightedFirstAidInjuries = osha.getFirstAidInjuries();
 					weightedModifiedWorkDay = osha.getModifiedWorkDay();
 
-					weightedCad7 += osha.getCad7();
-					weightedNeer += osha.getNeer();
+					if(osha.getCad7() != null)
+						weightedCad7 += osha.getCad7();
+					if(osha.getNeer() != null)
+						weightedNeer += osha.getNeer();
 				}
 			}
 
@@ -286,8 +288,10 @@ public class OshaOrganizer {
 					straightFirstAidInjuries = osha.getFirstAidInjuries();
 					straightModifiedWorkDay = osha.getModifiedWorkDay();
 
-					straightCad7 += osha.getCad7();
-					straightNeer += osha.getNeer();
+					if(osha.getCad7() != null)
+						straightCad7 += osha.getCad7();
+					if(osha.getNeer() != null)
+						straightNeer += osha.getNeer();
 
 					straightTrir = osha.getRecordableTotalRate();
 					straightLwcr = osha.getLostWorkCasesRate();

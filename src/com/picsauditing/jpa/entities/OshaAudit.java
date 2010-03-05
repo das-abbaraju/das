@@ -64,8 +64,8 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	private Float dart = null;
 	private Float severityRate = null;
 
-	private Float cad7 = 0.0f;
-	private Float neer = 0.0f;
+	private Float cad7;
+	private Float neer;
 	private int firstAidInjuries;
 	private int modifiedWorkDay;
 
