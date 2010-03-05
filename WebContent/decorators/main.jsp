@@ -207,8 +207,11 @@ try {
 	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
 	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
-		%><div class="pageStats">Page generated in: <%= ((float) totalTime )/ ((float) 1000) %> seconds.</div><%
-	} 
+		%><div class="pageStats">
+			App Version: <%=version%><br />
+			Process Time: <%= Math.round(totalTime/10)/100f%>s
+		</div><%
+	}
 %>
 <div id="footermain">
 <div id="footercontent">
