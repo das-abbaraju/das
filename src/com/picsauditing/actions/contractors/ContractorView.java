@@ -43,7 +43,8 @@ public class ContractorView extends ContractorActionSupport {
 	private int logoWidth = 0;
 
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO) {
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
+			ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.operatorTagDAO = operatorTagDAO;
@@ -68,14 +69,14 @@ public class ContractorView extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				accountDao.save(contractor);
 			}
-			
+
 		}
 
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
 		}
-		
-		if("Upgrade to Full Membership".equals(button)) {
+
+		if ("Upgrade to Full Membership".equals(button)) {
 			contractor.setAcceptsBids(false);
 			contractor.setRenew(true);
 			for (ContractorAudit cAudit : contractor.getAudits()) {
@@ -86,18 +87,18 @@ public class ContractorView extends ContractorActionSupport {
 				}
 			}
 			// Setting the payment Expires date to today
-			for(Invoice invoice : contractor.getInvoices()) {
-				for(InvoiceItem invoiceItem : invoice.getItems()) {
-					if(invoiceItem.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
+			for (Invoice invoice : contractor.getInvoices()) {
+				for (InvoiceItem invoiceItem : invoice.getItems()) {
+					if (invoiceItem.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
 						invoiceItem.setPaymentExpires(new Date());
 						invoiceItemDAO.save(invoiceItem);
 					}
 				}
 			}
-			
-			if(permissions.isOperator()) {
-				for(ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
-					if(cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
+
+			if (permissions.isOperator()) {
+				for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
+					if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
 						cOperator.setWorkStatus("Y");
 						cOperator.setAuditColumns(permissions);
 						contractorOperatorDAO.save(cOperator);
@@ -109,25 +110,26 @@ public class ContractorView extends ContractorActionSupport {
 			contractor.setNeedsRecalculation(true);
 			contractor.setAuditColumns(permissions);
 			accountDao.save(contractor);
-			
+
 			addNote(contractor, "Upgraded the Bid Only Account to a full membership.", NoteCategory.General);
-			
+
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(73); // Trial Contractor Account Approval 
+			emailBuilder.setTemplate(73); // Trial Contractor Account Approval
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			EmailSender.send(emailQueue);
-			
-			if(permissions.isContractor()) {
-				ServletActionContext.getResponse().sendRedirect("BillingDetail.action?id=" + contractor.getId()+"&button=Create");
+
+			if (permissions.isContractor()) {
+				ServletActionContext.getResponse().sendRedirect(
+						"BillingDetail.action?id=" + contractor.getId() + "&button=Create");
 				return BLANK;
 			}
 		}
-		
+
 		if (permissions.isOperator()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -146,33 +148,11 @@ public class ContractorView extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public int getLogoWidth() {
-		// System.out.println("getLogoWidth for " + contractor.getId());
-		if (contractor.getLogoFile() == null)
-			return 0;
-		if (contractor.getLogoFile().equals("No"))
-			return 0;
-
-		if (logoWidth == 0) {
-			String filename = getFtpDir() + "/logos/" + contractor.getLogoFile();
-			// System.out.println("filename = " + filename);
-			try {
-				logoWidth = Images.getWidth(filename);
-			} catch (IOException e) {
-				System.out.println("failed to get logo width of " + filename + ": " + e.getMessage());
-			}
-			// System.out.println("width = " + width);
-			if (logoWidth > 300)
-				logoWidth = 300;
-		}
-		return logoWidth;
-	}
-
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
 		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;
 
-		return operatorTagDAO.findByOperator(permissions.getAccountId(),true);
+		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
 
 	public int getTagId() {
@@ -190,16 +170,15 @@ public class ContractorView extends ContractorActionSupport {
 	public void setOperatorTags(List<OperatorTag> operatorTags) {
 		this.operatorTags = operatorTags;
 	}
-	
+
 	public boolean isCanUpgrade() {
-		if(permissions.isContractor())
+		if (permissions.isContractor())
 			return true;
-		if(permissions.seesAllContractors())
+		if (permissions.seesAllContractors())
 			return true;
-		if(permissions.isOperator() 
-				&& permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
+		if (permissions.isOperator() && permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
 			return true;
-		
+
 		return false;
 	}
 }

@@ -28,6 +28,13 @@
 		return false;
 	}
 </script>
+<style>
+img.contractor_logo {
+	max-width: 300px;
+	/* IE Image max-width */
+	width: expression(this.width > 300 ? 300 : true);
+}
+</style>
 </head>
 <body>
 <s:include value="conHeader.jsp" />
@@ -67,9 +74,7 @@
 		<div class="left infobox">
 			<div class="vcard">
 				<div class="adr">
-					<s:if test="logoWidth > 0">
-						<img src="ContractorLogo.action?id=<s:property value="id"/>" width="<s:property value="logoWidth"/>" />
-					</s:if>
+					<img src="ContractorLogo.action?id=<s:property value="id"/>" class="contractor_logo" />
 					<p class="fn org"><s:property value="contractor.name" /></p>
 					<s:if test="contractor.dbaName.length() > 0">
 						<p class="fn org">DBA <s:property value="contractor.dbaName" /></p>
