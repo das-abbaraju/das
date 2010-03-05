@@ -101,7 +101,7 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	border-style: inset;
 }
 
-fieldset.form input[type=text]:FOCUS, fieldset.form select:FOCUS {
+fieldset.form input[type=text]:FOCUS, fieldset.form input[type=password]:FOCUS, fieldset.form select:FOCUS {
 	color: #003768;
 	background-color: #FFE;
 }
