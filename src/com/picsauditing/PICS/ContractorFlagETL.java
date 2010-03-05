@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
@@ -16,6 +18,8 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.OshaRateType;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -176,9 +180,19 @@ public class ContractorFlagETL {
 					final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
 					if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
 						FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, "");
-						String answer = parseAnswer(flagCriteria, auditData);
-						fcc.setVerified(auditData.isVerified());
-						fcc.setAnswer(answer);
+						if(flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
+							AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+							AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
+							if(amBest != null) {
+								fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
+								fcc.setAnswer2(Integer.toString(amBest.getFinancialCode()));
+							}
+						}
+						else { 
+							fcc.setAnswer(parseAnswer(flagCriteria, auditData));
+							fcc.setVerified(auditData.isVerified());
+						}
+						
 						changes.add(fcc);
 					}
 				}
@@ -197,6 +211,15 @@ public class ContractorFlagETL {
 					changes.add(flagCriteriaContractor);
 					flagCriteriaContractor.setVerified(osha.isVerified(flagCriteria.getOshaType(), flagCriteria
 							.getMultiYearScope(), flagCriteria.getOshaRateType()));
+					
+					if(flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+						float answer2 = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), OshaRateType.LwcrAbsolute);
+						flagCriteriaContractor.setAnswer2(Float.toString(answer2));
+					}
+					if(flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+						float answer2 = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), OshaRateType.TrirAbsolute);
+						flagCriteriaContractor.setAnswer2(Float.toString(answer2));
+					}
 				}
 			}
 
@@ -243,17 +266,6 @@ public class ContractorFlagETL {
 				System.out.println("Failed to parse date [" + answer + "]");
 				return "";
 			}
-		}
-		if ("AMBest".equals(qType)) {
-			// AmBestDAO amBestDAO = (AmBestDAO)
-			// SpringUtils.getBean("AmBestDAO");
-			// AmBest amBest = amBestDAO.findByNaic(answer.getComment());
-			// if(amBest != null) {
-			// if(criteria.isFlagged(amBest.getRatingCode()+"|"+amBest.getFinancialCode()))
-			// isFlagged = true;
-			// }
-
-			return answer;
 		}
 		if ("string".equals(cType)) {
 			return answer;
