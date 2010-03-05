@@ -34,7 +34,7 @@
 						<s:property value="criteria.descriptionAfterHurdle" />
 					</s:if>
 					<s:else>
-						<s:property value="replaceHurdle()" />
+						<s:property value="replaceHurdle" />
 					</s:else>
 				</td>
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
