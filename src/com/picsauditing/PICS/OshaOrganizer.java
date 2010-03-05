@@ -156,7 +156,7 @@ public class OshaOrganizer {
 		case ThreeYearAverage:
 			String yearResult = null;
 			for (OshaAudit osha : data.get(type))
-				yearResult = (yearResult == null) ? osha.getConAudit().getAuditFor() : ", "
+				yearResult += (yearResult == null) ? "" + osha.getConAudit().getAuditFor() : ", "
 						+ osha.getConAudit().getAuditFor();
 
 			return yearResult;
@@ -164,7 +164,7 @@ public class OshaOrganizer {
 
 		throw new RuntimeException("OshaOrganizer.getAuditFor() is undefined for MultiYearScope = " + year);
 	}
-	
+
 	public OshaAudit getOshaAudit(OshaType type, MultiYearScope year) {
 		List<OshaAudit> yearIndex = data.get(type);
 		switch (year) {
@@ -182,113 +182,143 @@ public class OshaOrganizer {
 			if (index < 0)
 				return null;
 			return yearIndex.get(index);
+		case ThreeYearWeightedAverage:
+			OshaAudit weightedAvg = new OshaAudit();
+
+			int weightedManHours = 0;
+			int weightedFatalities = 0;
+			int weightedLostWorkCases = 0;
+			int weightedLostWorkDays = 0;
+			int weightedInjuryIllnessCases = 0;
+			int weightedRestrictedWorkCases = 0;
+			int weightedRecordableTotal = 0; // Total Recordable Incidents
+			int weightedFirstAidInjuries = 0;
+			int weightedModifiedWorkDay = 0;
+
+			float weightedCad7 = 0;
+			float weightedNeer = 0;
+
+			int weightedCount = 0;
+
+			for (OshaAudit osha : yearIndex) {
+				weightedAvg.setFactor(osha.getFactor());
+
+				if (osha.getManHours() > 0) {
+					weightedCount++;
+
+					// calculating cumulative values
+					weightedManHours += osha.getManHours();
+					weightedFatalities += osha.getFatalities();
+					weightedLostWorkCases += osha.getLostWorkCases();
+					weightedLostWorkDays += osha.getLostWorkDays();
+					weightedInjuryIllnessCases += osha.getInjuryIllnessCases();
+					weightedRestrictedWorkCases = osha.getRestrictedWorkCases();
+					weightedRecordableTotal = osha.getRecordableTotal(); // Total
+					// Recordable
+					// Incidents
+					weightedFirstAidInjuries = osha.getFirstAidInjuries();
+					weightedModifiedWorkDay = osha.getModifiedWorkDay();
+
+					weightedCad7 += osha.getCad7();
+					weightedNeer += osha.getNeer();
+				}
+			}
+
+			if (weightedCount == 0)
+				return null;
+
+			// setting cumulative values
+			weightedAvg.setManHours(weightedManHours);
+			weightedAvg.setFatalities(weightedFatalities);
+			weightedAvg.setLostWorkCases(weightedLostWorkCases);
+			weightedAvg.setLostWorkDays(weightedLostWorkDays);
+			weightedAvg.setInjuryIllnessCases(weightedInjuryIllnessCases);
+			weightedAvg.setRestrictedWorkCases(weightedRestrictedWorkCases);
+			weightedAvg.setRecordableTotal(weightedRecordableTotal);
+			weightedAvg.setFirstAidInjuries(weightedFirstAidInjuries);
+			weightedAvg.setModifiedWorkDay(weightedModifiedWorkDay);
+
+			// rate is based on the cumulative values, so final is weighted
+			weightedAvg.setRecordableTotalRate(weightedAvg.getRecordableTotalRate());
+			weightedAvg.setLostWorkCasesRate(weightedAvg.getLostWorkCasesRate());
+			weightedAvg.setRestrictedDaysAwayRate(weightedAvg.getRestrictedDaysAwayRate());
+			weightedAvg.setRestrictedOrJobTransferDays(weightedAvg.getRestrictedOrJobTransferDays());
+			weightedAvg.setCad7(weightedCad7 / (float) weightedCount);
+			weightedAvg.setNeer(weightedNeer / (float) weightedNeer);
+
+			return weightedAvg;
 		case ThreeYearAverage:
 			OshaAudit straightAvg = new OshaAudit();
 
-			float straightManHours = 0;
-			float straightFatalities = 0;
-			float straightInjuries = 0;
-			float straightLwc = 0;
-			float straightLwcr = 0;
-			float straightLwd = 0;
-			float straightTri = 0;
+			int straightManHours = 0;
+			int straightFatalities = 0;
+			int straightLostWorkCases = 0;
+			int straightLostWorkDays = 0;
+			int straightInjuryIllnessCases = 0;
+			int straightRestrictedWorkCases = 0;
+			int straightRecordableTotal = 0;
+			int straightFirstAidInjuries = 0;
+			int straightModifiedWorkDay = 0;
+
 			float straightTrir = 0;
-			float straightRwc = 0;
+			float straightLwcr = 0;
 			float straightDart = 0;
-			float straightNeer = 0;
+			float straightSeverityRate = 0;
 			float straightCad7 = 0;
+			float straightNeer = 0;
 
 			int straightCount = 0;
+
 			for (OshaAudit osha : yearIndex) {
+				straightAvg.setFactor(osha.getFactor());
+
 				if (osha.getManHours() > 0) {
 					straightCount++;
-					straightAvg.setFactor(osha.getFactor());
 
+					// calculating cumulative values
 					straightManHours += osha.getManHours();
 					straightFatalities += osha.getFatalities();
-					straightInjuries += osha.getInjuryIllnessCasesRate();
-					straightLwc += osha.getLostWorkCases();
-					straightLwcr += osha.getLostWorkCasesRate();
-					straightLwd += osha.getLostWorkDays();
-					straightTri += osha.getRecordableTotal();
-					straightTrir += osha.getRecordableTotalRate();
-					straightRwc += osha.getRestrictedWorkCases();
-					straightDart += osha.getRestrictedDaysAwayRate();
-					if (osha.getNeer() != null)
-						straightNeer += osha.getNeer();
-					if (osha.getCad7() != null)
-						straightCad7 += osha.getCad7();
+					straightLostWorkCases += osha.getLostWorkCases();
+					straightLostWorkDays += osha.getLostWorkDays();
+					straightInjuryIllnessCases += osha.getInjuryIllnessCases();
+					straightRestrictedWorkCases = osha.getRestrictedWorkCases();
+					straightRecordableTotal = osha.getRecordableTotal();
+					straightFirstAidInjuries = osha.getFirstAidInjuries();
+					straightModifiedWorkDay = osha.getModifiedWorkDay();
+
+					straightCad7 += osha.getCad7();
+					straightNeer += osha.getNeer();
+
+					straightTrir = osha.getRecordableTotalRate();
+					straightLwcr = osha.getLostWorkCasesRate();
+					straightDart = osha.getRestrictedDaysAwayRate();
+					straightSeverityRate = osha.getRestrictedOrJobTransferDays();
 				}
 			}
 
 			if (straightCount == 0)
 				return null;
 
-			straightAvg.setManHours(Math.round(straightManHours / straightCount));
-			straightAvg.setFatalities(Math.round(straightFatalities / straightCount));
-			straightAvg.setInjuryIllnessCases(Math.round(straightInjuries / straightCount));
-			straightAvg.setLostWorkCases(Math.round(straightLwc / straightCount));
-			straightAvg.setLostWorkCasesRate(straightLwcr / straightCount);
-			straightAvg.setLostWorkDays(Math.round(straightLwd / straightCount));
-			straightAvg.setRecordableTotal(Math.round(straightTri / straightCount));
-			straightAvg.setRecordableTotalRate(straightTrir / straightCount);
-			straightAvg.setRestrictedWorkCases(Math.round(straightRwc / straightCount));
-			straightAvg.setRestrictedDaysAwayRate(straightDart / straightCount);
-			straightAvg.setNeer(straightNeer / straightCount);
-			straightAvg.setCad7(straightCad7 / straightCount);
+			// setting cumulative values
+			straightAvg.setManHours(straightManHours);
+			straightAvg.setFatalities(straightFatalities);
+			straightAvg.setLostWorkCases(straightLostWorkCases);
+			straightAvg.setLostWorkDays(straightLostWorkDays);
+			straightAvg.setInjuryIllnessCases(straightInjuryIllnessCases);
+			straightAvg.setRestrictedWorkCases(straightRestrictedWorkCases);
+			straightAvg.setRecordableTotal(straightRecordableTotal);
+			straightAvg.setFirstAidInjuries(straightFirstAidInjuries);
+			straightAvg.setModifiedWorkDay(straightModifiedWorkDay);
+
+			// rate is based on the cumulative RATES, so final is NOT straight
+			straightAvg.setRecordableTotalRate(straightTrir / (float) straightCount);
+			straightAvg.setLostWorkCasesRate(straightLwcr / (float) straightCount);
+			straightAvg.setRestrictedDaysAwayRate(straightDart / (float) straightCount);
+			straightAvg.setRestrictedOrJobTransferDays(straightSeverityRate / (float) straightCount);
+			straightAvg.setCad7(straightCad7 / (float) straightCount);
+			straightAvg.setNeer(straightNeer / (float) straightNeer);
+
 			return straightAvg;
-		case ThreeYearWeightedAverage:
-			OshaAudit avg = new OshaAudit();
-
-			float manHours = 0;
-			float fatalities = 0;
-			float injuries = 0;
-			float lwc = 0;
-			float lwcr = 0;
-			float lwd = 0;
-			float tri = 0;
-			float rwc = 0;
-			float dart = 0;
-			float neer = 0;
-			float cad7 = 0;
-
-			int count = 0;
-			for (OshaAudit osha : yearIndex) {
-				if (osha.getManHours() > 0) {
-					count++;
-					avg.setFactor(osha.getFactor());
-
-					manHours += osha.getManHours();
-					fatalities += osha.getFatalities();
-					injuries += osha.getInjuryIllnessCases();
-					lwc += osha.getLostWorkCases();
-					lwd += osha.getLostWorkDays();
-					tri += osha.getRecordableTotal();
-					rwc += osha.getRestrictedWorkCases();
-					dart += osha.getRestrictedDaysAwayRate();
-					if (osha.getNeer() != null)
-						neer += osha.getNeer();
-					if (osha.getCad7() != null)
-						cad7 += osha.getCad7();
-				}
-			}
-
-			if (count == 0)
-				return null;
-
-			avg.setManHours(Math.round(manHours / count));
-			avg.setFatalities(Math.round(fatalities / count));
-			avg.setInjuryIllnessCases(Math.round(injuries / count));
-			avg.setLostWorkCases(Math.round(lwc / count));
-			avg.setLostWorkCasesRate(lwc * 200000 / (float)avg.getManHours());
-			avg.setLostWorkDays(Math.round(lwd / count));
-			avg.setRecordableTotal(Math.round(tri / count));
-			avg.setRecordableTotalRate(tri * 200000 / (float)avg.getManHours());
-			avg.setRestrictedWorkCases(Math.round(rwc / count));
-			avg.setRestrictedDaysAwayRate(dart * 200000 / (float)avg.getManHours());
-			avg.setNeer(neer / count);
-			avg.setCad7(cad7 / count);
-			return avg;
 		}
 		return null;
 	}

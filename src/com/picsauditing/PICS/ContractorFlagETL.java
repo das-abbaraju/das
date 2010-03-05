@@ -109,8 +109,8 @@ public class ContractorFlagETL {
 					}
 
 					if (years != null && years.size() > 0) {
-
 						Float answer = null;
+						String answer2 = null;
 						boolean verified = true; // Has the data been verified?
 
 						try {
@@ -118,23 +118,30 @@ public class ContractorFlagETL {
 							case ThreeYearAverage:
 								AuditData average = auditsOfThisEMRType.get("Average");
 								answer = (average != null) ? Float.valueOf(average.getAnswer()) : null;
+								for (String year : auditsOfThisEMRType.keySet()) {
+									if (!year.equals("Average"))
+										answer2 += (answer2 != null) ? ""+year : ", "+year;
+								}
 								break;
 							case ThreeYearsAgo:
 								if (years.size() >= 3) {
 									answer = Float.valueOf(years.get(years.size() - 3).getAnswer());
 									verified = years.get(years.size() - 3).isVerified();
+									answer2 = years.get(years.size() - 3).getAudit().getAuditFor();
 								}
 								break;
 							case TwoYearsAgo:
 								if (years.size() >= 2) {
 									answer = Float.valueOf(years.get(years.size() - 2).getAnswer());
 									verified = years.get(years.size() - 2).isVerified();
+									answer2 = years.get(years.size() - 2).getAudit().getAuditFor();
 								}
 								break;
 							case LastYearOnly:
 								if (years.size() >= 1) {
 									answer = Float.valueOf(years.get(years.size() - 1).getAnswer());
 									verified = years.get(years.size() - 1).isVerified();
+									answer2 = years.get(years.size() - 1).getAudit().getAuditFor();
 								}
 								break;
 							default:
@@ -151,6 +158,7 @@ public class ContractorFlagETL {
 							final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria,
 									answer.toString());
 							fcc.setVerified(verified);
+							fcc.setAnswer2(answer2);
 							changes.add(fcc);
 						} else {
 							if (flagCriteria.isFlaggableWhenMissing()) {
@@ -220,11 +228,16 @@ public class ContractorFlagETL {
 								+ osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
 										OshaRateType.TrirAbsolute);
 					}
+					
+					boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria
+							.getMultiYearScope(), flagCriteria.getOshaRateType());
+					flagCriteriaContractor.setVerified(verified);
+
+					if(verified){
+						answer2 += "<br/><span class=\"verified\">Verified</span>";
+					}						
 
 					flagCriteriaContractor.setAnswer2(answer2);
-
-					flagCriteriaContractor.setVerified(osha.isVerified(flagCriteria.getOshaType(), flagCriteria
-							.getMultiYearScope(), flagCriteria.getOshaRateType()));
 
 					changes.add(flagCriteriaContractor);
 				} else { // check if flaggable when missing
