@@ -3,7 +3,7 @@
 <head>
 <title>Registration Completion</title>
 <meta name="help" content="User_Manual_for_Contractors">
-<link rel="stylesheet" type="text/css" href="css/invoice.css?v=20091231"/>
+<link rel="stylesheet" type="text/css" href="css/invoice.css?v=<s:property value="version"/>"/>
 </head>
 <body>
 

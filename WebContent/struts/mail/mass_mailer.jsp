@@ -5,8 +5,8 @@
 <title>Mass Emailer</title>
 
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/mass_mailer.js?v=20091231"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231"/>
+<script type="text/javascript" src="js/mass_mailer.js?v=<s:property value="version"/>"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
 
 <script type="text/javascript">
 type = "<s:property value="type" />";

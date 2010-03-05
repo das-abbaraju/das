@@ -3,12 +3,12 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> - Payment <s:property value="payment.id" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="all" href="css/reports.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="all" href="css/notes.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="all" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="all" href="css/notes.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/payment_detail.js?v=20091231"></script>
+<script type="text/javascript" src="js/payment_detail.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 	<s:if test="payment == null">
 		var payment_amountApplied = 0.00;

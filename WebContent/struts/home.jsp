@@ -5,7 +5,7 @@
 <title>Home</title>
 <s:include value="jquery.jsp"/>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css" />
 <script type="text/javascript">
 function hidePanel(panel) {

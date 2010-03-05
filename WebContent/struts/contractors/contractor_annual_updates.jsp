@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>Annual Updates for <s:property value="contractor.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <s:push value="#subHeading='Contractor Annual Updates'"/>

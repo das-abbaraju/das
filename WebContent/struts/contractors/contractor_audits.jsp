@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>Audit/Evaluations for <s:property value="contractor.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
 <script type="text/javascript">

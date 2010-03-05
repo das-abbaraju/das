@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Create Safety Professional Invoices</title>
-<link rel="stylesheet" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <h1>Create Safety Professional Invoices</h1>

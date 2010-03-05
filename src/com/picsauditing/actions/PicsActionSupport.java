@@ -46,6 +46,10 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private Set<User> auditorList;
+	
+	public static final String getVersion() {
+		return "4.0";
+	}
 
 	protected void loadPermissions() {
 		loadPermissions(true);

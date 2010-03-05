@@ -8,7 +8,7 @@
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 function closePage() {
 	window.opener.location.reload();

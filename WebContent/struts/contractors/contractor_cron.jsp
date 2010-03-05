@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Contractor Cron</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 </head>
 <body>
 

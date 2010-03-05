@@ -4,8 +4,8 @@
 <html>
 <head>
 <title>View Forms &amp; Documents</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <s:include value="../contractors/conHeader.jsp"></s:include>

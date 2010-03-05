@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>Email Queue List</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox.css"/>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.2.1.pack.js"></script>

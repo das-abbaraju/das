@@ -2,8 +2,8 @@
 <html>
 <head>
 <title>Assign Webcams</title>
-<link rel="stylesheet" href="css/reports.css?v=20091231" />
-<link rel="stylesheet" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
 
 <s:if test="audit != null">

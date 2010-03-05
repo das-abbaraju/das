@@ -6,7 +6,7 @@
 <head>
 <title><s:property value="contractor.name" /></title>
 <meta name="help" content="User_Manual_for_Contractors">
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function changeState(country) {

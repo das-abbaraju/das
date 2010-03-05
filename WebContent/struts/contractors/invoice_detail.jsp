@@ -3,8 +3,8 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> - Invoice <s:property value="invoice.id" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="all" href="css/invoice.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="all" href="css/invoice.css?v=<s:property value="version"/>" />
 
 <style type="text/css" media="print">
 h1 {
@@ -54,7 +54,7 @@ input[type=submit] {
 			<td>
 			<table width="100%">
 				<tr>
-					<td width="146"><img src="images/logo.gif" width="146" height="146" /></td>
+					<td width="100"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></td>
 					<td style="padding: 10px;">PICS <br>
 					P.O. Box 51387 <br>
 					Irvine, CA 92619-1387</td>

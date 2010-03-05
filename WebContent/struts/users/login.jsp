@@ -3,7 +3,7 @@
 <head>
 <title>Login</title>
 <meta name="help" content="Logging_In">
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <style>
 fieldset.form input.login {
 	padding: 3px;

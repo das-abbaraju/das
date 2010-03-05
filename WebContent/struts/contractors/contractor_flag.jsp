@@ -4,8 +4,8 @@
 <html>
 <head>
 <title>Flag Status for <s:property value="contractor.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <style type="text/css">
 table.report a {
 	text-decoration: underline;

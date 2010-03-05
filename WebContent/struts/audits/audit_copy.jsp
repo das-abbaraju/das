@@ -4,9 +4,9 @@
 <html>
 <head>
 <title></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />

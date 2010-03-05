@@ -5,9 +5,9 @@
 <head>
 <title>Request New Contractor</title>
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css?v=20091231" />
+	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css?v=20091231" />
+	href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/notes.css" />
 <s:include value="../jquery.jsp"/>

@@ -4,7 +4,7 @@
 <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
 <title>Login</title>
 <meta name="accountrecovery" content="Account_Recovery">
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <style>
 fieldset.form label {
 	float: none;

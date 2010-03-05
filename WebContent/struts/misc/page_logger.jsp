@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Page Logging</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 </head>
 <body>

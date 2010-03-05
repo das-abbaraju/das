@@ -3,13 +3,13 @@
 <html>
 <head>
 <title><s:property value="contractor.name" /> Billing Detail</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
 
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript">
 	function runSearch() {

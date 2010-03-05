@@ -4,10 +4,10 @@
 <head>
 <title>Schedule Audit</title>
 <meta name="help" content="Scheduling_Audits">
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"></s:include>
-<script type="text/javascript" src="js/schedule_audit.js?v=20091231"></script>
+<script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 var auditID = <s:property value="conAudit.id"/>;
 var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';

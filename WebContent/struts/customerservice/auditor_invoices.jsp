@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Safety Professional Invoices</title>
-<link rel="stylesheet" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 
 <script type="text/javascript">

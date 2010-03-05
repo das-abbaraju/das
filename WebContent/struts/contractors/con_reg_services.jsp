@@ -7,13 +7,13 @@ display:none}
 </style>
 <title>Services Performed</title>
 
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/validateForms.js?v=20091231"></script>
-<script type="text/javascript" src="js/audit_cat_edit.js?v=20091231"></script>
+<script type="text/javascript" src="js/validateForms.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="js/audit_cat_edit.js?v=<s:property value="version"/>"></script>
 
 <script type="text/javascript">
 	var auditID = '<s:property value="auditID"/>';

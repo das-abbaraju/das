@@ -5,8 +5,8 @@
 <head>
 <title><s:property value="conAudit.auditType.auditName" /> for
 <s:property value="conAudit.contractor.name" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <s:include value="conHeader.jsp" />

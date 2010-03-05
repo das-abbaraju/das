@@ -5,7 +5,7 @@
 <head>
 <title>Manual Audit Matrix</title>
 <s:include value="../jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <style>
 td.selected {
 	background-color: #FEC;

@@ -4,12 +4,12 @@
 <head>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
-<script src="js/validate_contractor.js?v=20091231" type="text/javascript"></script>
+<script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
 
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=20091231"/>
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" /> 
-<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=20091231" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" /> 
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/summaryreport.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript">
 	function toggleVerify(auditId, questionId, answerId) {

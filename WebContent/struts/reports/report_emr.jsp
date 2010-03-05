@@ -3,7 +3,7 @@
 <head>
 <title>EMR Report</title>
 <s:include value="reportHeader.jsp" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <h1>EMR Report</h1>

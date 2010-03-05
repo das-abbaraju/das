@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Unsubscribe Email</title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=20091231" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 </head>
 <body>
 <s:if test="actionErrors.size > 0">
