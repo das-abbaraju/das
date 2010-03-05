@@ -40,8 +40,6 @@ public class ContractorView extends ContractorActionSupport {
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
-	private int logoWidth = 0;
-
 	public ContractorView(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditBuilder auditBuilder,
 			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO,
 			ContractorOperatorDAO contractorOperatorDAO, InvoiceItemDAO invoiceItemDAO) {
