@@ -426,7 +426,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public List<ContractorOperator> getActiveOperators() {
 		if (activeOperators == null)
 			activeOperators = accountDao.findOperators(contractor, permissions,
-					" AND operatorAccount.status IN ('Active','Demo') ");
+					" AND status IN ('Active','Demo') AND type IN ('Operator')");
 		return activeOperators;
 	}
 
