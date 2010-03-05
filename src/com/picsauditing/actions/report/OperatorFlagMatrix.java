@@ -7,21 +7,32 @@ import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectAccount;
 
 @SuppressWarnings("serial")
 public class OperatorFlagMatrix extends ReportAccount {
 
+	private OperatorAccountDAO operatorDAO;
+
+	private int id;
+	private OperatorAccount operator;
+
 	private Map<ContractorAccount, Map<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>> contractorCriteria = new TreeMap<ContractorAccount, Map<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>>();
 	private Set<FlagCriteria> flagCriteria = new TreeSet<FlagCriteria>();
 	private Map<ContractorAccount, FlagColor> overall = new TreeMap<ContractorAccount, FlagColor>();
+	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = new TreeMap<FlagCriteria, FlagCriteriaOperator>();
 
-	private int id;
+	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
+		this.operatorDAO = operatorDAO;
+	}
 
 	@Override
 	protected void buildQuery() {
@@ -52,7 +63,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 		sql.setLimit(10000);
 
-		if (permissions.isOperatorCorporate()) {
+		if (permissions.isOperator()) {
 			id = permissions.getAccountId();
 		}
 
@@ -63,6 +74,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 	public String execute() throws Exception {
 
 		super.execute();
+
+		operator = operatorDAO.find(id);
 
 		for (BasicDynaBean d : data) {
 			final ContractorAccount con = new ContractorAccount(Integer.parseInt(d.get("conID").toString()));
@@ -79,8 +92,16 @@ public class OperatorFlagMatrix extends ReportAccount {
 			criteria.setLabel((String) d.get("label"));
 			criteria.setDescription((String) d.get("description"));
 			criteria.setDataType(d.get("dataType").toString());
+			criteria.setDefaultValue(d.get("defaultValue").toString());
 
 			flagCriteria.add(criteria);
+
+			final FlagCriteriaOperator criteriaOperator = new FlagCriteriaOperator();
+			criteriaOperator.setCriteria(criteria);
+			criteriaOperator.setHurdle(d.get("hurdle").toString());
+			criteriaOperator.setOperator(operator);
+
+			operatorCriteria.put(criteria, criteriaOperator);
 
 			final FlagCriteriaContractor criteriaContractor = new FlagCriteriaContractor(con, criteria, d.get("answer")
 					.toString());
@@ -102,6 +123,22 @@ public class OperatorFlagMatrix extends ReportAccount {
 		return SUCCESS;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
+
 	public Map<ContractorAccount, Map<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>> getContractorCriteria() {
 		return contractorCriteria;
 	}
@@ -118,11 +155,12 @@ public class OperatorFlagMatrix extends ReportAccount {
 		this.overall = overall;
 	}
 
-	public int getId() {
-		return id;
+	public Map<FlagCriteria, FlagCriteriaOperator> getOperatorCriteria() {
+		return operatorCriteria;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setOperatorCriteria(Map<FlagCriteria, FlagCriteriaOperator> flagCriteriaOperator) {
+		this.operatorCriteria = flagCriteriaOperator;
 	}
+
 }

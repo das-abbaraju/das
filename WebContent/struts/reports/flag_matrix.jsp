@@ -22,12 +22,14 @@
 </head>
 <body>
 
+<s:include value="../operators/opHeader.jsp"/>
+
 <table class="report">
 	<thead>
 		<tr>
 			<th>Contractor</th>
-			<s:iterator value="flagCriteria">
-				<th title="<s:property value="description"/>"><s:property value="label"/></th>
+			<s:iterator value="flagCriteria" id="crit">
+				<th title="<s:property value="operatorCriteria.get(#crit).replaceHurdle"/>"><s:property value="#crit.label"/></th>
 			</s:iterator>
 		</tr>
 	</thead>
