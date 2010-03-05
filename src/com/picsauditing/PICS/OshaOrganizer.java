@@ -14,13 +14,14 @@ import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.log.PicsLogger;
 
 public class OshaOrganizer {
-	private Map<OshaType, Map<Integer, OshaAudit>> data = new HashMap<OshaType, Map<Integer, OshaAudit>>();
+	// OSHA Audits will be sorted by their auditYears
+	private Map<OshaType, ArrayList<OshaAudit>> data = new HashMap<OshaType, ArrayList<OshaAudit>>();
 
 	public OshaOrganizer(List<ContractorAudit> audits) {
 		PicsLogger.log("Constructing OshaOrganizer");
-		data.put(OshaType.OSHA, new HashMap<Integer, OshaAudit>());
-		data.put(OshaType.MSHA, new HashMap<Integer, OshaAudit>());
-		data.put(OshaType.COHS, new HashMap<Integer, OshaAudit>());
+		data.put(OshaType.OSHA, new ArrayList<OshaAudit>());
+		data.put(OshaType.MSHA, new ArrayList<OshaAudit>());
+		data.put(OshaType.COHS, new ArrayList<OshaAudit>());
 
 		for (ContractorAudit contractorAudit : audits) {
 			if (contractorAudit.getAuditType().isAnnualAddendum()
@@ -28,8 +29,9 @@ public class OshaOrganizer {
 							.isResubmitted())) {
 				for (OshaAudit osha : contractorAudit.getOshas()) {
 					if (osha.isCorporate()) {
-						data.get(osha.getType()).put(Integer.parseInt(contractorAudit.getAuditFor()), osha);
+						data.get(osha.getType()).add(osha);
 					}
+					Collections.sort(data.get(osha.getType()));
 				}
 			}
 		}
@@ -40,42 +42,51 @@ public class OshaOrganizer {
 	}
 
 	/**
-	 * If for a given OshaType, there are more than 3 valid year, then trim one of the years. We always trim either the
-	 * first year (2006) or the fourth year (2009). We trim the fourth year ONLY if it's not verified but all three
-	 * previous years are.
+	 * If for a given OshaType, there are more than 3 valid year, then trim one
+	 * of the years. We always trim either the first year (2006) or the fourth
+	 * year (2009). We trim the fourth year ONLY if it's not verified but all
+	 * three previous years are.
 	 * 
 	 * @param type
 	 */
 	private void trim(OshaType type) {
-		List<Integer> yearIndex = getYearIndex(type);
+		List<OshaAudit> yearIndex = data.get(type);
 		PicsLogger.log(type + " has [" + yearIndex.size() + "] entries");
-		if (yearIndex.size() < 4)
+		if (yearIndex.size() <= 4)
 			return;
 
-		if (yearIndex.size() > 4)
-			throw new RuntimeException("Found [" + yearIndex.size() + "] OshaAudits of type " + type);
-
-		// We have 4 years worth of data, get rid of either the first or the last
-		int firstYear = yearIndex.get(0);
-		int secondYear = yearIndex.get(1);
-		int thirdYear = yearIndex.get(2);
-		int fourthYear = yearIndex.get(3);
-		Map<Integer, OshaAudit> typeData = data.get(type);
-
-		if (!typeData.get(fourthYear).isVerified() && typeData.get(firstYear).isVerified()
-				&& typeData.get(secondYear).isVerified() && typeData.get(thirdYear).isVerified()) {
-			PicsLogger.log("removed fourthYear" + typeData.get(fourthYear).getConAudit().getAuditFor());
-			typeData.remove(fourthYear);
+		// We trim the fourth year ONLY if it's not verified but all three
+		// previous years are.
+		if (!yearIndex.get(yearIndex.size() - 2).isVerified() && yearIndex.get(yearIndex.size() - 3).isVerified()
+				&& yearIndex.get(yearIndex.size() - 4).isVerified() && yearIndex.get(yearIndex.size() - 5).isVerified()) {
+			PicsLogger.log("removed fourthYear" + yearIndex.get(3).getConAudit().getAuditFor());
+			data.get(type).remove(3);
 		} else {
-			PicsLogger.log("removed firstYear " + typeData.get(firstYear).getConAudit().getAuditFor());
-			typeData.remove(firstYear);
+			while (yearIndex.size() > 4)
+				yearIndex.remove(0);
 		}
 	}
 
-	public OshaAudit getOshaAudit(OshaType type, MultiYearScope year) {
-		Map<Integer, OshaAudit> typeData = data.get(type);
-		List<Integer> yearIndex = getYearIndex(type);
+	public boolean isVerified(OshaType type, MultiYearScope year, OshaRateType rateType) {
+		switch (year) {
+		case LastYearOnly:
+		case TwoYearsAgo:
+		case ThreeYearsAgo:
+		case ThreeYearWeightedAverage:
+			return data.get(type).get(data.get(type).size() - 1).isVerified();
+		case ThreeYearAverage:
+			for (OshaAudit osha : data.get(type)) {
+				if (!osha.isVerified())
+					return false;
+			}
+			return true;
+		}
+		return true;
+	}
 
+	public Float getRate(OshaType type, MultiYearScope year, OshaRateType rateType) {
+		List<OshaAudit> yearIndex = data.get(type);
+		PicsLogger.log("OshaOrganizer.getRate(" + type + "," + year + "," + rateType + ")");
 		switch (year) {
 		case LastYearOnly:
 		case TwoYearsAgo:
@@ -90,123 +101,67 @@ public class OshaOrganizer {
 			PicsLogger.log("Getting year " + year + " with index " + index);
 			if (index < 0)
 				return null;
-			return typeData.get(yearIndex.get(index));
-		case ThreeYearAverage:
-			throw new RuntimeException(
-					"Straight ThreeYearAverage is not supported via getOshaAudit(OshaType type, MultiYearScope year)");
+			return yearIndex.get(index).getRate(rateType);
 		case ThreeYearWeightedAverage:
-			OshaAudit avg = new OshaAudit();
-
-			float manHours = 0;
-			float fatalities = 0;
-			float injuries = 0;
-			float lwc = 0;
-			float lwcr = 0;
-			float lwd = 0;
-			float tri = 0;
-			// float trir = 0;
-			float rwc = 0;
-			float dart = 0;
-			float neer = 0;
-			float cad7 = 0;
-
-			int count = 0;
-			for (OshaAudit osha : typeData.values()) {
+			Float manHours = 0f,
+			value = 0f;
+			for (OshaAudit osha : data.get(type)) {
 				if (osha.getManHours() > 0) {
-					count++;
-					avg.setFactor(osha.getFactor());
-
 					manHours += osha.getManHours();
-					fatalities += osha.getFatalities();
-					injuries += osha.getInjuryIllnessCases();
-					lwc += osha.getLostWorkCases();
-					lwcr += osha.getLostWorkCasesRate();
-					lwd += osha.getLostWorkDays();
-					tri += osha.getRecordableTotal();
-					// trir += osha.getRecordableTotalRate();
-					rwc += osha.getRestrictedWorkCases();
-					dart += osha.getRestrictedDaysAwayRate();
-					if (osha.getNeer() != null)
-						neer += osha.getNeer();
-					if (osha.getCad7() != null)
-						cad7 += osha.getCad7();
+					value += osha.getValue(rateType);
 				}
 			}
 
-			if (count == 0)
+			if (manHours == 0f)
 				return null;
 
-			avg.setManHours(Math.round(manHours / count));
-			avg.setFatalities(Math.round(fatalities / count));
-			avg.setInjuryIllnessCases(Math.round(injuries / count));
-			avg.setLostWorkCases(Math.round(lwc / count));
-			avg.setLostWorkCasesRate(lwcr / count);
-			avg.setLostWorkDays(Math.round(lwd / count));
-			avg.setRecordableTotal(Math.round(tri / count));
-			// avg.setRecordableTotalRate(trir / count);
-			avg.setRestrictedWorkCases(Math.round(rwc / count));
-			avg.setRestrictedDaysAwayRate(dart / count);
-			avg.setNeer(neer / count);
-			avg.setCad7(cad7 / count);
-			return avg;
-		}
-		return null;
-	}
-
-	public boolean isVerified(OshaType type, MultiYearScope year, OshaRateType rateType) {
-		switch (year) {
-		case LastYearOnly:
-		case TwoYearsAgo:
-		case ThreeYearsAgo:
-		case ThreeYearWeightedAverage:
-			return getOshaAudit(type, year).isVerified();
+			return (value * 200000) / manHours;
 		case ThreeYearAverage:
-			for (OshaAudit osha : data.get(type).values()) {
-				if (!osha.isVerified())
-					return false;
-			}
-			return true;
-		}
-		return true;
-	}
-
-	public float getRate(OshaType type, MultiYearScope year, OshaRateType rateType) {
-		PicsLogger.log("OshaOrganizer.getRate(" + type + "," + year + "," + rateType + ")");
-		switch (year) {
-		case LastYearOnly:
-		case TwoYearsAgo:
-		case ThreeYearsAgo:
-		case ThreeYearWeightedAverage:
-			OshaAudit oshaAudit = getOshaAudit(type, year);
-			if (oshaAudit == null) {
-				PicsLogger.log("oshaAudit was missing");
-				return -1f;
-			}
-			PicsLogger.log("found oshaAudit = " + oshaAudit);
-			return oshaAudit.getRate(rateType);
-		case ThreeYearAverage:
-			int count = 0;
-			float rate = 0f;
-			for (OshaAudit osha : data.get(type).values()) {
+			int avgCount = 0;
+			Float rate = 0f;
+			for (OshaAudit osha : data.get(type)) {
 				if (osha.getManHours() > 0) {
-					count++;
+					avgCount++;
 					rate += osha.getRate(rateType);
 				}
 			}
 
-			if (count == 0)
-				return -1f;
+			if (avgCount == 0)
+				return null;
 
-			return rate / count;
+			return rate / avgCount;
 		}
 
-		throw new RuntimeException("getRate() is undefined for MultiYearScope = " + year);
+		throw new RuntimeException("OshaOrganizer.getRate() is undefined for MultiYearScope = " + year);
 	}
 
-	private List<Integer> getYearIndex(OshaType forType) {
-		List<Integer> yearIndex = new ArrayList<Integer>(data.get(forType).keySet());
-		Collections.sort(yearIndex);
-		return yearIndex;
-	}
+	public String getAuditFor(OshaType type, MultiYearScope year) {
+		List<OshaAudit> yearIndex = data.get(type);
+		switch (year) {
+		case LastYearOnly:
+		case TwoYearsAgo:
+		case ThreeYearsAgo:
+			int index = 0;
+			if (year.equals(MultiYearScope.LastYearOnly))
+				index = yearIndex.size() - 1;
+			if (year.equals(MultiYearScope.TwoYearsAgo))
+				index = yearIndex.size() - 2;
+			if (year.equals(MultiYearScope.ThreeYearsAgo))
+				index = yearIndex.size() - 3;
+			PicsLogger.log("Getting year " + year + " with index " + index);
+			if (index < 0)
+				return null;
+			return "Year: " + yearIndex.get(index).getConAudit().getAuditFor();
+		case ThreeYearWeightedAverage:
+		case ThreeYearAverage:
+			String yearResult = null;
+			for (OshaAudit osha : data.get(type))
+				yearResult = (yearResult == null) ? osha.getConAudit().getAuditFor() : ", "
+						+ osha.getConAudit().getAuditFor();
 
+			return yearResult;
+		}
+
+		throw new RuntimeException("OshaOrganizer.getAuditFor() is undefined for MultiYearScope = " + year);
+	}
 }

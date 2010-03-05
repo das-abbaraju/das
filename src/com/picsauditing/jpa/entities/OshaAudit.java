@@ -26,7 +26,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "osha_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class OshaAudit implements java.io.Serializable {
+public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	private static final long serialVersionUID = -4451146415122493617L;
 
 	/**
@@ -481,5 +481,10 @@ public class OshaAudit implements java.io.Serializable {
 					+ " specified for osha audit id " + getId() + ", contractor id "
 					+ conAudit.getContractorAccount().getId());
 		}
+	}
+
+	@Override
+	public int compareTo(OshaAudit o) {
+		return (this.getConAudit().getAuditFor().compareTo(o.getConAudit().getAuditFor()));
 	}
 }

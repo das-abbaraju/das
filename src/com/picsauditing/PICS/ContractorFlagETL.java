@@ -143,24 +143,6 @@ public class ContractorFlagETL {
 										+ " specified for flag criteria id " + flagCriteria.getId()
 										+ ", contractor id " + contractor.getId());
 							}
-
-							/*
-							 * Legacy code From FlagCalculator2 OshaAudit
-							 * oshaAvg = contractor
-							 * .getOshas().get(OshaType.OSHA
-							 * ).get(OshaAudit.AVG); AuditData emrAvg =
-							 * contractor.getEmrs().get(OshaAudit.AVG);
-							 * if(emrAvg != null &&
-							 * !Strings.isEmpty(emrAvg.getAnswer()))
-							 * contractor.setEmrAverage
-							 * (Float.valueOf(emrAvg.getAnswer()).floatValue());
-							 * if (oshaAvg != null) {
-							 * contractor.setTrirAverage(oshaAvg.
-							 * getRecordableTotalRate ());
-							 * contractor.setLwcrAverage(
-							 * oshaAvg.getLostWorkCasesRate ()); }
-							 */
-
 						} catch (NumberFormatException e) {
 							answer = 0.0f;
 						}
@@ -170,6 +152,13 @@ public class ContractorFlagETL {
 									answer.toString());
 							fcc.setVerified(verified);
 							changes.add(fcc);
+						} else {
+							if (flagCriteria.isFlaggableWhenMissing()) {
+								FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+										flagCriteria, null);
+								flagCriteriaContractor.setAnswer2(null);
+								changes.add(flagCriteriaContractor);
+							}
 						}
 					}
 
@@ -180,20 +169,26 @@ public class ContractorFlagETL {
 					final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
 					if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
 						FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, "");
-						if(flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
+						if (flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
 							AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
 							AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
-							if(amBest != null) {
+							if (amBest != null) {
 								fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
 								fcc.setAnswer2(Integer.toString(amBest.getFinancialCode()));
 							}
-						}
-						else { 
+						} else {
 							fcc.setAnswer(parseAnswer(flagCriteria, auditData));
 							fcc.setVerified(auditData.isVerified());
 						}
-						
+
 						changes.add(fcc);
+					} else {
+						if (flagCriteria.isFlaggableWhenMissing()) {
+							FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+									flagCriteria, null);
+							flagCriteriaContractor.setAnswer2(null);
+							changes.add(flagCriteriaContractor);
+						}
 					}
 				}
 			} // end of questions
@@ -201,31 +196,46 @@ public class ContractorFlagETL {
 			// Checking OSHA
 			if (flagCriteria.getOshaType() != null) {
 				OshaOrganizer osha = contractor.getOshaOrganizer();
-				float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria
+				Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria
 						.getOshaRateType());
 				PicsLogger.log("Answer = " + answer);
 
-				if (answer >= 0) {
+				if (answer != null) {
 					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, Float.toString(answer));
-					changes.add(flagCriteriaContractor);
+
+					String answer2 = osha.getAuditFor(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
+
+					// Appending absolute answer for answer2 for Naics OSHAs
+					if (flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+						answer2 += "<br/>Contractor Answer: "
+								+ osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+										OshaRateType.LwcrAbsolute);
+					} else if (flagCriteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+						answer2 += "<br/>Contractor Answer: "
+								+ osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+										OshaRateType.TrirAbsolute);
+					}
+
+					flagCriteriaContractor.setAnswer2(answer2);
+
 					flagCriteriaContractor.setVerified(osha.isVerified(flagCriteria.getOshaType(), flagCriteria
 							.getMultiYearScope(), flagCriteria.getOshaRateType()));
-					
-					if(flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-						float answer2 = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), OshaRateType.LwcrAbsolute);
-						flagCriteriaContractor.setAnswer2(Float.toString(answer2));
-					}
-					if(flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-						float answer2 = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), OshaRateType.TrirAbsolute);
-						flagCriteriaContractor.setAnswer2(Float.toString(answer2));
+
+					changes.add(flagCriteriaContractor);
+				} else { // check if flaggable when missing
+					if (flagCriteria.isFlaggableWhenMissing()) {
+						FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+								flagCriteria, null);
+						flagCriteriaContractor.setAnswer2(null);
+						changes.add(flagCriteriaContractor);
 					}
 				}
 			}
 
 		}
 
-		BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes);		
+		BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes);
 	}
 
 	public String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {
