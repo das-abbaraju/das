@@ -98,23 +98,13 @@ $(function() {
 						<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 							<s:if test="#data.criteria == #conCriteria.criteria">
 								<s:if test="#data.criteria.dataType == 'number'">
-									<s:if test="#data.criteria.oshaRateType.toString() == 'LwcrNaics' || #data.criteria.oshaRateType.toString() == 'TrirNaics'">
-										Industry Average: <s:property value="format(#conCriteria.answer)" /><br />
-										Contractor Answer: <s:property value="format(#conCriteria.answer2)" />
-									</s:if>
-									<s:else>
-										<s:property value="format(#conCriteria.answer)" />
-									</s:else>
+									<s:property value="format(#conCriteria.answer)" />
 								</s:if>
-								<s:elseif test="#data.criteria.question != null && #data.criteria.question.questionType = 'AMBest'">
-									Class: <s:property value="format(#conCriteria.answer)" /><br />
-									Rating: <s:property value="format(#conCriteria.answer2)" />
-								</s:elseif>
 								<s:else>
 									<s:property value="#conCriteria.answer" />
 								</s:else>
-								<s:if test="#data.criteria.dataType == 'number' && !#conCriteria.verified">
-									<br /><small>(Not Verified)</small>
+								<s:if test="#conCriteria.answer2.length() > 0">
+									<br /><s:property value="#data.answer2" escape="true"/>
 								</s:if>
 							</s:if>
 						</s:iterator>
@@ -194,8 +184,8 @@ $(function() {
 								</s:if>	
 							</s:iterator>
 							- <s:property value="criteria.label" />
-							<s:if test="criteria.dataType == 'number' && !#conVerified">
-								<br /><small>(Not Verified)</small>
+							<s:if test="#conCriteria.answer2.length() > 0">
+								<br /><s:property value="#data.answer2" escape="true"/>
 							</s:if>
 						</td>			
 					</tr>

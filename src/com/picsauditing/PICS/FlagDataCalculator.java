@@ -152,40 +152,6 @@ public class FlagDataCalculator {
 				}
 			}
 
-			// TODO If criteria is AMBEST
-			// if("AMBest".equals(questionType)) {
-			// boolean flag1 = false;
-			// boolean flag2 = false;
-			// int ratings = Integer.parseInt(answer.substring(0,
-			// answer.indexOf('|')));
-			// int bestClass =
-			// Integer.parseInt(answer.substring(value.indexOf('|')+
-			// 1,answer.length()));
-			// if(getAMBestRatings() > 0)
-			// flag1 = ratings > getAMBestRatings();
-			// if(getAMBestClass() > 0)
-			// flag2 = bestClass < getAMBestClass();
-			// if(flag1 || flag2)
-			// return true;
-			//						
-			// return false;
-			// }
-
-			// public int getAMBestRatings() {
-			// if(!Strings.isEmpty(value)) {
-			// return Integer.parseInt(value.substring(0, value.indexOf('|')));
-			// }
-			// return 0;
-			// }
-			//
-			// public int getAMBestClass() {
-			// if(!Strings.isEmpty(value)) {
-			// return Integer.parseInt(value.substring(value.indexOf('|')+
-			// 1,value.length()));
-			// }
-			// return 0;
-			// }
-
 			final String dataType = criteria.getDataType();
 			final String comparison = criteria.getComparison();
 			try {
@@ -337,7 +303,7 @@ public class FlagDataCalculator {
 		PicsLogger.log("Calculating recommendation for " + auditType);
 		FlagColor flag = null;
 		for(FlagData flagData : flagDatas) {
-			if(flagData.getCriteria().getQuestion() != null 
+			if(flagData.getCriteria().getCategory().equals("Insurance Criteria") 
 					&& flagData.getCriteria().getQuestion().getAuditType().equals(auditType)) {
 				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
 				if (flag.isRed())

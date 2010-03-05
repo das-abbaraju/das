@@ -173,8 +173,12 @@ public class ContractorFlagETL {
 							AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
 							AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
 							if (amBest != null) {
-								fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
-								fcc.setAnswer2(Integer.toString(amBest.getFinancialCode()));
+								if(flagCriteria.getLabel().contains("Rating")) {
+									fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
+								}
+								if(flagCriteria.getLabel().contains("Class")) {
+									fcc.setAnswer(Integer.toString(amBest.getFinancialCode()));
+								}
 							}
 						} else {
 							fcc.setAnswer(parseAnswer(flagCriteria, auditData));
