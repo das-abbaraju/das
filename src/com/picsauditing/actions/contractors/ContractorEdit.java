@@ -416,7 +416,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		note.setAuditColumns(permissions);
 		note.setSummary(userName + " changed the risk level to " + newRiskLevel + " from " + oldRiskLevel);
 		note.setNoteCategory(NoteCategory.General);
-		note.setCanContractorView(true);
+		note.setCanContractorView(false);
 		note.setViewableById(Account.EVERYONE);
 
 		contractor.setRiskLevel(riskLevel);

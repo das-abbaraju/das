@@ -77,7 +77,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 			// Update the note and save it in the database.
 			note.setNoteCategory(NoteCategory.General);
-			note.setCanContractorView(true);
+			note.setCanContractorView(false);
 			note.setViewableById(Account.EVERYONE);
 			note.setAccount(cAccount);
 			note.setAuditColumns(permissions);
