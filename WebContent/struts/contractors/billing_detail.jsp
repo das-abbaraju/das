@@ -46,13 +46,18 @@
 			<ul style="position: relative; left: 11em; list-style-type: disc;">
 				<s:iterator value="contractor.operators">
 					<s:if test="operatorAccount.status.activeDemo">
-						<li><s:if test="permissions.admin">
-							<a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />"><s:property
-								value="operatorAccount.name" /></a>
-						</s:if> <s:else>
-							<a href="ContractorFlag.action?opID=<s:property value="operatorAccount.id" />"><s:property
-								value="operatorAccount.name" /></a>
-						</s:else></li>
+						<li>
+							<s:if test="permissions.admin">
+								<a href="AuditOperator.action?oID=<s:property value="operatorAccount.id" />">
+									<s:property value="operatorAccount.name" />
+								</a>
+							</s:if>
+							<s:else>
+								<a href="ContractorFlag.action?opID=<s:property value="operatorAccount.id" />">
+									<s:property value="operatorAccount.name" />
+								</a>
+							</s:else>
+						</li>
 					</s:if>
 				</s:iterator>
 			</ul>
@@ -112,6 +117,7 @@
 		</s:if>
 		<fieldset class="form bottom"><legend><span>Transaction History</span></legend>
 		<ol>
+			<li>
 			<table class="report">
 				<thead>
 					<tr>
@@ -160,6 +166,7 @@
 					</s:iterator>
 				</tbody>
 			</table>
+			</li>
 		</ol>
 		</fieldset>
 		</td>
