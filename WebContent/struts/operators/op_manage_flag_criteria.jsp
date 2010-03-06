@@ -62,24 +62,43 @@ function getFlag(selectObject) {
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<div id="dialog" style="display:none"></div>
+<s:if test="permissions.operatorCorporate">
+	<s:if test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
+		<div id="info">Flag Criteria inherited from <s:property value="operator.inheritFlagCriteria.name" /></div>
+	</s:if>
+	<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
+		<div id="info">Insurance Criteria inherited from <s:property value="operator.inheritInsuranceCriteria.name" /></div>
+	</s:if>
+</s:if>
 
 <div style="vertical-align: top">
 <s:form id="form1" method="get">
 	<s:hidden name="id" />
+	<s:hidden name="insurance" />
 	<div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
 	<div id="growlBox"></div>
-	<div id="impactDiv"></div>
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
-	<div style="clear: left; margin: 10px 0px;">
-		<s:if test="canEditFlags()">
-			<a href="#" onclick="getAddQuestions(<s:if test="insurance">true</s:if>); return false;" class="picsbutton">Add New Criteria</a>
-		</s:if>
-		<span id="thinking"></span>
-	</div>
-	<div id="addCriteria" style="display:none"></div>
+	<s:if test="canEditFlags()">
+		<div id="impactDiv"></div>
+		<div style="clear: left; margin: 10px 0px;">
+				<a href="#" onclick="getAddQuestions(<s:if test="insurance">true</s:if>); return false;" class="picsbutton">Add New Criteria</a>
+			<span id="thinking"></span>
+		</div>
+		<div id="addCriteria" style="display:none"></div>
+	</s:if>
 </s:form>
 </div>
+
+<s:if test="permissions.admin">
+	<s:if test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
+		Flag Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">
+			<s:property value="operator.inheritFlagCriteria.name" /></a>
+	</s:if>
+	<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
+		Insurance Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritInsuranceCriteria.id" />">
+			<s:property value="operator.inheritInsuranceCriteria.name" /></a>
+	</s:if>
+</s:if>
 
 </body>
 </html>

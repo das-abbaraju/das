@@ -3,6 +3,8 @@ package com.picsauditing.util;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -360,6 +362,32 @@ public class Strings {
 			return formatShort(value / 1000000) + "M";
 		}
 		return formatShort(value / 1000000000) + "B";
+	}
+	
+	public static String formatDecimalComma(String decimalNumber) {
+		try {
+			Double value = Double.parseDouble(decimalNumber);
+			NumberFormat nf = new DecimalFormat("#,##0.##");
+			
+			decimalNumber = nf.format(value);
+		} catch (Exception e) {
+			System.out.println("Could not parse number: " + decimalNumber);
+		}
+		
+		return decimalNumber;
+	}
+	
+	public static String formatNumber(String numberWithCommas) {
+		NumberFormat nf = NumberFormat.getInstance();
+		
+		try {
+			Number value = nf.parse(numberWithCommas);
+			numberWithCommas = value.toString();
+		} catch (Exception e) {
+			System.out.println("Could not parse string: " + numberWithCommas);
+		}
+		
+		return numberWithCommas;
 	}
 
 	private static String trimTrailingZeros(String number) {

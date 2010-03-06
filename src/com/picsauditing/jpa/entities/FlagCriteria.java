@@ -34,6 +34,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private boolean allowCustomValue = false;
 	private String dataType = "string";
 	private boolean flaggableWhenMissing = false;
+	private boolean insurance = false;
 
 	public static final String BOOLEAN = "boolean";
 	public static final String NUMBER = "number";
@@ -180,6 +181,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	public void setFlaggableWhenMissing(boolean flaggableWhenMissing) {
 		this.flaggableWhenMissing = flaggableWhenMissing;
+	}
+	
+	public boolean isInsurance() {
+		return insurance;
+	}
+	
+	public void setInsurance(boolean insurance) {
+		this.insurance = insurance;
 	}
 
 	@Override

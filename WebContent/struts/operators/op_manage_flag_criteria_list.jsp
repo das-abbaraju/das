@@ -4,23 +4,26 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th>Category</th>
+			<s:if test="!insurance">
+				<th>Category</th>
+			</s:if>
 			<th>Description</th>
 			<th>Flag</th>
 			<s:if test="canEditFlags()">
 				<th title="Click percentage to see impact."><nobr>% Affected</nobr></th>
+				<th>Edit</th>
 				<th>Remove</th>
 			</s:if>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="criteriaList">
-			<tr<s:if test="canEditFlags()"> id="<s:property value="id" />" class="clickable"</s:if>>
-				<td><s:property value="criteria.category" /></td>
-				<td<s:if test="canEditFlags()"> onmouseover="$(this).find('.hover').show();" onmouseout="$(this).find('.hover').hide();"</s:if>>
+			<tr id="<s:property value="id" />">
+				<s:if test="!insurance">
+					<td><s:property value="criteria.category" /></td>
+				</s:if>
+				<td>
 					<s:if test="canEditFlags()">
-						<a href="#" onclick="editCriteria(this.parentNode); return false;" class="hover"
-							style="display:none; float:right;">[edit]</a>
 						<span class="hide">
 							<a href="#" onclick="submitHurdle(this.parentNode.parentNode); return false;" class="picsbutton">Save</a>
 							<s:select list="getAddableFlags(0)" name="newFlag" value="flag"></s:select> flag if
@@ -28,7 +31,7 @@
 						<s:property value="criteria.descriptionBeforeHurdle" />
 						<s:if test="criteria.dataType != 'boolean'">
 							<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
-							<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="5"
+							<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="10"
 								class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);" />
 						</s:if>
 						<s:property value="criteria.descriptionAfterHurdle" />
@@ -44,6 +47,9 @@
 							class="hideOld">
 							<s:property value="getPercentAffected(id)" />%</a>
 						<span class="newImpact"></span>
+					</td>
+					<td class="center">
+						<a href="#" class="edit" onclick="editCriteria(<s:property value="id" />); return false;"></a>
 					</td>
 					<td class="center">
 						<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>

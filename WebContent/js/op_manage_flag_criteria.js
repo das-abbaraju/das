@@ -1,5 +1,6 @@
 function checkSubmit(criteriaID) {
 	var checked = confirm('Are you sure you want to remove this criteria?');
+	var insurance = $("#form1_insurance").val();
 
 	if (checked == true) {
 		var data = {
@@ -7,11 +8,12 @@ function checkSubmit(criteriaID) {
 				id: $('#form1_id').val(),
 				criteriaID: criteriaID
 			};
-		$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data);
+		$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data);
 	}
 }
 function addCriteria(criteriaID) {
 	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
+	var insurance = $("#form1_insurance").val();
 	startThinking({div:'thinking', message:'Adding criteria...'});
 	
 	var data = {
@@ -22,7 +24,7 @@ function addCriteria(criteriaID) {
 			newHurdle: hurdle == null ? '' : hurdle
 		};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data, 
+	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				$('#addCriteria').hide('slow');
 				stopThinking({div:'thinking'});
@@ -33,6 +35,8 @@ function submitHurdle(tdCell) {
 	var criteriaID = tdCell.parentNode.id;
 	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
 	var flag = $('#'+criteriaID).find("[name='newFlag']").val();
+	var insurance = $("#form1_insurance").val();
+	
 	startThinking({div:'thinking', message:'Saving changes...'});
 	
 	var data = {
@@ -43,7 +47,7 @@ function submitHurdle(tdCell) {
 			newFlag: flag
 	};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action', data,
+	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data,
 		function() { stopThinking({div:'thinking'}); }
 	);
 }
@@ -62,19 +66,15 @@ function getImpact(criteriaID) {
 	);
 }
 function getAddQuestions(insurance) {
-	var layer = '#addCriteria';
-	var destination = 'ManageFlagCriteriaOperatorAjax.action';
+	var insurance = $("#form1_insurance").val();
 	
-	if (insurance)
-		destination = 'ManageFlagCriteriaOperatorAjax.action?insurance=true';
-	
-	if ($(layer).is(':hidden')) {
+	if ($('#addCriteria').is(':hidden')) {
 		var data= {
 			button: 'questions',
 			id: $('#form1_id').val()
 		};
 		startThinking({div:'thinking', message:'Fetching criteria...'});
-		$(layer).load(destination, data, 
+		$(layer).load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				stopThinking({div:'thinking'});
 				$(this).show('slow');
@@ -85,22 +85,20 @@ function getAddQuestions(insurance) {
 	}
 }
 
-function editCriteria(tdCell) {
-	var id = tdCell.parentNode.id;
+function editCriteria(id) {
+	$(".hide").hide();
+	$(".hurdle").show();
+	
+	if ($("#"+id).find(".hideOld").is(":visible")) {
+		$("#"+id).find(".hideOld").hide();
+		$("#"+id).find(".hide").show();
+		$("#"+id).find(".hurdle").hide();
+	} else {
+		$("#"+id).find("input").val($("#"+id).find(".hurdle").text());
+		$(".hideOld").show();
+	}
 	
 	$("#"+id).find("span.newImpact").html("");
-	$(tdCell).find(".hide").toggle();
-	$("#"+id+" .hideOld").toggle();
-	
-	if ($("#"+id+" .hideOld").is(":hidden")) {
-		$(tdCell).find(".hurdle").toggle();
-		$(tdCell).find(".hover").text("[cancel]");
-		$(tdCell).find("input").val($(tdCell).find(".hurdle").text());
-	}
-	else {
-		$(tdCell).find(".hurdle").toggle();
-		$(tdCell).find(".hover").text("[edit]");
-	}
 }
 
 function calculateImpact(criteriaID, newHurdle) {

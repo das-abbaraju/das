@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.util.Strings;
 
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
@@ -94,7 +95,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setAuditColumns(permissions);
 				fco.setCriteria(fc);
 				fco.setFlag(newFlag);
-				fco.setHurdle(newHurdle);
+				fco.setHurdle(Strings.formatNumber(newHurdle));
 				fco.setOperator(operator);
 				flagCriteriaOperatorDAO.save(fco);
 				calculatePercentAffected(fco);
@@ -206,10 +207,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
-				flagCriteria = flagCriteriaDAO.findWhere("category like 'InsureGUARD' AND questionID IS NOT NULL ORDER BY label");
+				flagCriteria = flagCriteriaDAO.findWhere("insurance = 1 ORDER BY label");
 			else
-				flagCriteria = flagCriteriaDAO.findWhere("(category NOT LIKE 'InsureGUARD'"
-						+ " OR (category LIKE 'InsureGUARD' AND auditTypeID IS NOT NULL)) ORDER BY category, label");
+				flagCriteria = flagCriteriaDAO.findWhere("insurance = 0 ORDER BY category, label");
 
 			for (FlagCriteria fc : flagCriteria) {
 				if (doNotAdd.contains(fc))
@@ -264,12 +264,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 			// If we're looking for insurance, get only InsureGUARD Questions, not InsureGUARD audits
 			if (insurance) {
-				if (criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() != null)
+				if (criteria.isInsurance())
 					valid.add(inherited);
 			}
 			else {
 				// These are insurance questions, which should only show up on the insurance page
-				if (criteria.getCategory().equals("InsureGUARD") && criteria.getQuestion() == null)
+				if (criteria.isInsurance())
 					continue;
 				// The criteria OSHA type should match up with the operator's OSHA type
 				if (criteria.getOshaType() != null && !criteria.getOshaType().equals(operator.getOshaType())) {
@@ -314,16 +314,11 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		// Get all flags
 		addableFlags.add(FlagColor.Red);
 		addableFlags.add(FlagColor.Amber);
-		addableFlags.add(FlagColor.Green);
 
 		// If the FlagCriteria is already used by the operator, remove that flag
 		for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
 			if (fco.getCriteria().getId() == criteriaId) {
 				addableFlags.remove(fco.getFlag());
-
-				// Only audit questions can be green flagged.
-				if (fco.getCriteria().getAuditType() == null)
-					addableFlags.remove(FlagColor.Green);
 			}
 		}
 
