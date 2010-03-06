@@ -44,7 +44,7 @@
 			<li><label>Facilities:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
 			<br />
 			<ul style="position: relative; left: 11em; list-style-type: disc;">
-				<s:iterator value="contractor.operators">
+				<s:iterator value="contractor.nonCorporateOperators">
 					<s:if test="operatorAccount.status.activeDemo">
 						<li>
 							<s:if test="permissions.admin">
