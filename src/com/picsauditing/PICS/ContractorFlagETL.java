@@ -84,17 +84,18 @@ public class ContractorFlagETL {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
 							if (flagCriteria.getAuditType().getId() == AuditType.DA
 									&& !isHasOqEmployees(contractor.getId()))
-								hasProperStatus = true;
+								hasProperStatus = null;
 							else if (flagCriteria.getAuditType().getId() == AuditType.COR
 									&& !isHasCOR(contractor.getId()))
-								hasProperStatus = true;
+								hasProperStatus = null;
 							else if (ca.getAuditStatus().isActiveResubmittedExempt())
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
 								hasProperStatus = true;
 						}
 					}
-					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus.toString()));
+					if(hasProperStatus != null)
+						changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus.toString()));
 				}
 			}
 
