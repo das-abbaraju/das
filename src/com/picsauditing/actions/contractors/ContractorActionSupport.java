@@ -419,7 +419,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
-			operators = accountDao.findOperators(contractor, permissions, "");
+			operators = accountDao.findOperators(contractor, permissions, " AND type IN ('Operator')");
 		return operators;
 	}
 
