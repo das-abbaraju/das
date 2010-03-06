@@ -110,7 +110,7 @@ public class ContractorFlagETL {
 
 					if (years != null && years.size() > 0) {
 						Float answer = null;
-						String answer2 = null;
+						String answer2 = "";
 						boolean verified = true; // Has the data been verified?
 
 						try {
@@ -120,7 +120,7 @@ public class ContractorFlagETL {
 								answer = (average != null) ? Float.valueOf(average.getAnswer()) : null;
 								for (String year : auditsOfThisEMRType.keySet()) {
 									if (!year.equals("Average"))
-										answer2 += (answer2 != null) ? ""+year : ", "+year;
+										answer2 += (answer2.isEmpty()) ? year : ", "+year;
 								}
 								break;
 							case ThreeYearsAgo:
@@ -230,7 +230,7 @@ public class ContractorFlagETL {
 					}
 					
 					boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria
-							.getMultiYearScope(), flagCriteria.getOshaRateType());
+							.getMultiYearScope());
 					flagCriteriaContractor.setVerified(verified);
 
 					if(verified){
