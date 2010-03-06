@@ -231,6 +231,9 @@
 					<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 			</s:if>
 		</pics:permission>
+		<pics:permission perm="DevelopmentEnvironment">
+			<li><a href="ContractorCron.action?conID=<s:property value="id" />">Contractor Cron</a></li>
+		</pics:permission>
 	</s:if>
 	<s:elseif test="permissions.contractor">
 		<pics:permission perm="ContractorAdmin">
