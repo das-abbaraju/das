@@ -313,6 +313,10 @@
 					<label>Validation Required:</label>
 					<s:checkbox name="criteria.validationRequired"/>
 				</li>
+				<li>
+					<label>Insurance Criteria:</label>
+					<s:checkbox name="criteria.insurance"/>
+				</li>
 			</ol>
 		</fieldset>
 	</form>

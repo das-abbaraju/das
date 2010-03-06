@@ -214,6 +214,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		json.put("defaultValue", defaultValue);
 		json.put("allowCustomValue", allowCustomValue);
 		json.put("dataType", dataType);
+		json.put("insurance", insurance);
 
 		return json;
 	}

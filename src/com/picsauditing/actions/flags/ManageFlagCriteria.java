@@ -56,7 +56,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "serial" })
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
