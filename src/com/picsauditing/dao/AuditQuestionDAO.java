@@ -6,6 +6,8 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.Strings;
 
@@ -34,6 +36,7 @@ public class AuditQuestionDAO extends PicsDAO {
 
 	/**
 	 * Get the first 100 results that match the criteria
+	 * 
 	 * @param where
 	 * @return
 	 */
@@ -46,6 +49,19 @@ public class AuditQuestionDAO extends PicsDAO {
 		query.setMaxResults(100);
 		return query.getResultList();
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AuditQuestion> findByQuestion(String question, Permissions permissions) {
+		String where = "SELECT auditQuestion FROM AuditQuestionText t WHERE t.question LIKE ? AND t.auditQuestion.isVisible = 'Yes'";
+		if (permissions.isOperatorCorporate()) {
+			where += " AND t.auditQuestion.subCategory.category.auditType.id IN ("
+					+ Strings.implode(permissions.getCanSeeAudit(), ",") + ")";
+		}
+		Query query = em.createQuery(where);
+		query.setParameter(1, "%" + Utilities.escapeQuotes(question) + "%");
+
+		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -75,19 +91,19 @@ public class AuditQuestionDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findQuestionsByUniqueCodes(List<String> uniqueCodes) {
 		StringBuilder sb = new StringBuilder("SELECT t FROM AuditQuestion t WHERE t.uniqueCode in ( ");
-		
-		for( String code : uniqueCodes ) {
+
+		for (String code : uniqueCodes) {
 			sb.append("'");
 			sb.append(code);
 			sb.append("',");
 		}
-		sb.deleteCharAt(sb.length() -1 );  //kill the last comma
+		sb.deleteCharAt(sb.length() - 1); // kill the last comma
 		sb.append(")");
-		
-		Query query = em.createQuery( sb.toString() );
-				
+
+		Query query = em.createQuery(sb.toString());
+
 		return query.getResultList();
-		
+
 	}
-	
+
 }

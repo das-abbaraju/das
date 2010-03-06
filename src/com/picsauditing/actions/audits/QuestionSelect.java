@@ -34,14 +34,10 @@ public class QuestionSelect extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
-		String where = "question LIKE '%" + Utilities.escapeQuotes(questionName) + "%' AND t.isVisible = 'Yes'";
 		loadPermissions();
-		if (permissions.isOperator() || permissions.isCorporate()) {
-			where += " AND subCategory.category.auditType.id IN (" + Strings.implode(permissions.getCanSeeAudit(), ",")
-					+ ")";
-		}
+
 		questions = new TreeSet<AuditQuestion>();
-		List<AuditQuestion> questionList = auditQuestionDAO.findWhere(where);
+		List<AuditQuestion> questionList = auditQuestionDAO.findByQuestion(questionName, permissions);
 		for (AuditQuestion q : questionList) {
 			if (q.getAuditType().isPqf() && !permissions.seesAllContractors()) {
 				for (AuditCatOperator auditCatOperator : getAuditCatOperatorList()) {
