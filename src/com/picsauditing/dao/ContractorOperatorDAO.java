@@ -69,7 +69,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 				return null;
 			where = " AND operatorAccount.id IN (" + ids + ")";
 		}
-		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? " + where
+		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? AND operatorAccount.type IN ('Operator')" + where
 				+ " ORDER BY operatorAccount.name");
 		query.setParameter(1, conID);
 		return query.getResultList();
