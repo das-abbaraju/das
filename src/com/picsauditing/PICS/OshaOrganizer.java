@@ -50,23 +50,21 @@ public class OshaOrganizer {
 	 * @param type
 	 */
 	private void trim(OshaType type) {
-		List<OshaAudit> yearIndex = data.get(type);
-		PicsLogger.log(type + " has [" + yearIndex.size() + "] entries");
-		if (yearIndex.size() <= 3)
+		List<OshaAudit> list = data.get(type);
+		PicsLogger.log(type + " has [" + list.size() + "] entries");
+		if (list.size() < 4)
 			return;
-
-		if (yearIndex.size() > 4)
-			throw new RuntimeException("Found [" + yearIndex.size() + "] OshaAudits of type " + type);
-
-		// We trim the fourth year ONLY if it's not verified but all three
-		// previous years are.
-		if (!yearIndex.get(yearIndex.size() - 1).isVerified() && yearIndex.get(yearIndex.size() - 2).isVerified()
-				&& yearIndex.get(yearIndex.size() - 3).isVerified() && yearIndex.get(yearIndex.size() - 4).isVerified()) {
-			PicsLogger.log("removed fourthYear" + yearIndex.get(3).getConAudit().getAuditFor());
-			data.get(type).remove(3);
+		if (list.size() > 4)
+			throw new RuntimeException("Found [" + list.size() + "] OshaAudits of type " + type);
+		
+		// We have 4 years worth of data, get rid of either the first or the last
+		// We trim the fourth year ONLY if it's not verified but all three previous years are.
+		if (!list.get(3).isVerified() && list.get(2).isVerified()
+				&& list.get(1).isVerified() && list.get(0).isVerified()) {
+			PicsLogger.log("removed fourthYear" + list.get(3).getConAudit().getAuditFor());
+			list.remove(3);
 		} else {
-			if (yearIndex.size() > 3)
-				yearIndex.remove(0);
+			list.remove(0);
 		}
 	}
 
