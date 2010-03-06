@@ -81,7 +81,7 @@ function getFlag(selectObject) {
 	<s:if test="canEditFlags()">
 		<div id="impactDiv"></div>
 		<div style="clear: left; margin: 10px 0px;">
-				<a href="#" onclick="getAddQuestions(<s:if test="insurance">true</s:if>); return false;" class="picsbutton">Add New Criteria</a>
+			<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
 			<span id="thinking"></span>
 		</div>
 		<div id="addCriteria" style="display:none"></div>

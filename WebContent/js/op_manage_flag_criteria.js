@@ -65,7 +65,7 @@ function getImpact(criteriaID) {
 		}
 	);
 }
-function getAddQuestions(insurance) {
+function getAddQuestions() {
 	var insurance = $("#form1_insurance").val();
 	
 	if ($('#addCriteria').is(':hidden')) {
@@ -74,14 +74,14 @@ function getAddQuestions(insurance) {
 			id: $('#form1_id').val()
 		};
 		startThinking({div:'thinking', message:'Fetching criteria...'});
-		$(layer).load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
+		$('#addCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
 			function() {
 				stopThinking({div:'thinking'});
 				$(this).show('slow');
 			}
 		);
 	} else {
-		$(layer).hide('slow');
+		$('#addCriteria').hide('slow');
 	}
 }
 
