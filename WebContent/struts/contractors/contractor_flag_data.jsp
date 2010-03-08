@@ -98,7 +98,7 @@ $(function() {
 						</s:if>
 						<s:else>
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
-								<s:if test="#data.criteria == #conCriteria.criteria">
+								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
 									<s:if test="#data.criteria.dataType == 'number'">
 										<s:property value="format(#conCriteria.answer)" />
 									</s:if>
@@ -106,7 +106,7 @@ $(function() {
 										<s:property value="#conCriteria.answer" />
 									</s:else>
 									<s:if test="#conCriteria.answer2.length() > 0">
-										<br /><s:property value="#data.answer2" escape="true"/>
+										<br /><s:property value="#conCriteria.answer2" escape="false"/>
 									</s:if>
 								</s:if>
 							</s:iterator>
@@ -145,20 +145,20 @@ $(function() {
 							<s:property value="criteria.auditType.auditName" />
 						</s:if>
 						<s:else>
+							<s:property value="criteria.label" /> - 
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
-								<s:if test="#data.criteria == #conCriteria.criteria">
+								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
 									<s:if test="criteria.dataType == 'number'">
 										<s:property value="format(#conCriteria.answer)" />
 									</s:if>
 									<s:else>
 										<s:property value="#conCriteria.answer" />
 									</s:else>
+									<s:if test="#conCriteria.answer2.length() > 0">
+										<br /><s:property value="#conCriteria.answer2" escape="false"/>
+									</s:if>
 								</s:if>	
 							</s:iterator>
-							- <s:property value="criteria.label" />
-							<s:if test="#conCriteria.answer2.length() > 0">
-								<br /><s:property value="#data.answer2" escape="true"/>
-							</s:if>
 						</s:else>
 					</td>			
 				</tr>
