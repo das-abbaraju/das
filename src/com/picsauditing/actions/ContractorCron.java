@@ -258,7 +258,7 @@ public class ContractorCron extends PicsActionSupport {
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
 		for (FlagData change : changes) {
-			if (!change.getCriteria().getCategory().equals("Insurance Criteria"))
+			if (!change.getCriteria().isInsurance())
 				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
 

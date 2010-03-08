@@ -303,7 +303,7 @@ public class FlagDataCalculator {
 		PicsLogger.log("Calculating recommendation for " + auditType);
 		FlagColor flag = null;
 		for(FlagData flagData : flagDatas) {
-			if(flagData.getCriteria().getCategory().equals("Insurance Criteria") 
+			if(flagData.getCriteria().isInsurance() 
 					&& flagData.getCriteria().getQuestion().getAuditType().equals(auditType)) {
 				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
 				if (flag.isRed())

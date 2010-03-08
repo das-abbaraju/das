@@ -269,7 +269,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			flagDataMap = new TreeMap<String, List<FlagData>>();
 			Set<FlagData> flagData = co.getFlagDatas();
 			for(FlagData flagData2 : flagData) {
-				if(!flagData2.getCriteria().getCategory().equals("Insurance Criteria")) {
+				if(!flagData2.getCriteria().isInsurance()) {
 					if(flagDataMap.get(flagData2.getCriteria().getCategory()) == null) {
 						flagDataMap.put(flagData2.getCriteria().getCategory(), new ArrayList<FlagData>());
 					}
