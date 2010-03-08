@@ -113,7 +113,10 @@ public class Permissions implements Serializable {
 			phone = user.getPhone();
 			fax = user.getFax();
 			locale = ActionContext.getContext().getLocale();
-			country = user.getAccount().getCountry().getIsoCode();
+			if (user.getAccount().getCountry() != null)
+				country = user.getAccount().getCountry().getIsoCode();
+			else
+				country = "";
 
 			setTimeZone(user);
 
