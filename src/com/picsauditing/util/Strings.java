@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -367,9 +366,17 @@ public class Strings {
 	public static String formatDecimalComma(String decimalNumber) {
 		try {
 			Double value = Double.parseDouble(decimalNumber);
-			NumberFormat nf = new DecimalFormat("#,##0.##");
+			DecimalFormat df;
 			
-			decimalNumber = nf.format(value);
+			if (value >= 100)
+				df = new DecimalFormat("#,##0");
+			else
+				df = new DecimalFormat("0.00");
+			
+			if (value != 0)
+				decimalNumber = df.format(value);
+			else
+				return "0";
 		} catch (Exception e) {
 			System.out.println("Could not parse number: " + decimalNumber);
 		}
@@ -377,17 +384,20 @@ public class Strings {
 		return decimalNumber;
 	}
 	
-	public static String formatNumber(String numberWithCommas) {
-		NumberFormat nf = NumberFormat.getInstance();
-		
+	public static String formatNumber(String number) {
+		// Returns only digits and decimal points
+		number = number.replaceAll("[^\\d\\.]", "");
+		// Make sure that number doesn't have more than one decimal point
 		try {
-			Number value = nf.parse(numberWithCommas);
-			numberWithCommas = value.toString();
+			String n1 = number.substring(0, number.indexOf(".") + 1);
+			String n2 = number.substring(number.indexOf(".") + 1, number.length());
+			n2 = n2.replace(".", "");
+			number = n1 + n2;
 		} catch (Exception e) {
-			System.out.println("Could not parse string: " + numberWithCommas);
+			System.out.println("Error parsing: " + number);
 		}
 		
-		return numberWithCommas;
+		return number;
 	}
 
 	private static String trimTrailingZeros(String number) {

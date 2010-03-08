@@ -38,7 +38,7 @@
 						<s:select name="newHurdle" list="#{'true':'True','false':'False'}" value="defaultValue"></s:select>
 					</s:if>
 					<s:elseif test="dataType == 'number'">
-						<input name="newHurdle" type="text" value="<s:property value="defaultValue" />" size="10" />
+						<input name="newHurdle" type="text" value="<s:property value="getFormattedDefaultValue(defaultValue)" />" size="10" />
 					</s:elseif>
 					<s:elseif test="dataType == 'date'">
 						<s:property value="comparison" />

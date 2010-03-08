@@ -352,7 +352,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		if (contractorsAffected.size() > 0) {
 			affected = ((float) contractorsAffected.size() / (float) totalContractors) * 100;
-			String test = new DecimalFormat("0.#").format((double) affected);
+			String test = new DecimalFormat("#0.0").format((double) affected);
 			affected = Float.parseFloat(test);
 		}
 
@@ -369,14 +369,19 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			if ((!insurance && !operator.equals(operator.getInheritFlagCriteria()))
 					|| (insurance && !operator.equals(operator.getInheritInsurance())))
 				return false;
+			
+			// User has the permission
+			return true;
 		} catch (Exception e) {
 			// Doesn't have the EditFlagCriteria permission
 			return false;
 		}
-
-		return true;
 	}
-
+	
+	public String getFormattedDefaultValue(String defaultValue) {
+		return Strings.formatDecimalComma(defaultValue);
+	}
+	
 	public class ByCategoryDescription implements Comparator<FlagCriteriaOperator> {
 		public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
 			// If the categories are the same, order by description
