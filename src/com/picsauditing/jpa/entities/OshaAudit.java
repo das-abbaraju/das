@@ -426,7 +426,7 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	}
 
 	@Transient
-	public float getRate(OshaRateType rateType) {
+	public Float getRate(OshaRateType rateType) {
 		// expecting that the caller already knows the type of rate they expect
 		// (i.e. caller knows it is a COHS and therefore expects COHS rateTypes
 		// to be valid)
@@ -442,7 +442,7 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 		case TrirNaics:
 			return (getRecordableTotalRate() / conAudit.getContractorAccount().getNaics().getTrir()) * 100;
 		case Fatalities:
-			return getFatalities();
+			return (float)getFatalities();
 		case Cad7:
 			return getCad7();
 		case Neer:
@@ -455,23 +455,23 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	}
 
 	@Transient
-	public float getValue(OshaRateType rateType) {
+	public Float getValue(OshaRateType rateType) {
 		// expecting that the caller already knows the type of rate they expect
 		// (i.e. caller knows it is a COHS and therefore expects COHS rateTypes
 		// to be valid)
 		switch (rateType) {
 		case SeverityRate:
-			return (type.equals(OshaType.OSHA) ? lostWorkDays + modifiedWorkDay : lostWorkDays);
+			return (float)(type.equals(OshaType.OSHA) ? lostWorkDays + modifiedWorkDay : lostWorkDays);
 		case LwcrAbsolute:
-			return getLostWorkCases();
+			return (float)getLostWorkCases();
 		case LwcrNaics:
 			return (getLostWorkCases()*100)/conAudit.getContractorAccount().getNaics().getLwcr();
 		case TrirAbsolute:
-			return getRecordableTotal();
+			return (float)getRecordableTotal();
 		case TrirNaics:
 			return (getRecordableTotal()*100)/conAudit.getContractorAccount().getNaics().getTrir();
 		case Fatalities:
-			return getFatalities();
+			return (float)getFatalities();
 		case Cad7:
 			return getCad7();
 		case Neer:
