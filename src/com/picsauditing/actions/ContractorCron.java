@@ -107,13 +107,13 @@ public class ContractorCron extends PicsActionSupport {
 	private void run(int conID, int opID) {
 		try {
 			ContractorAccount contractor = contractorDAO.find(conID);
-			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
 			runBilling(contractor);
 			runAuditCategory(contractor);
 			runAuditBuilder(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
