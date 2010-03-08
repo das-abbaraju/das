@@ -121,28 +121,28 @@ public class ContractorFlagETL {
 								answer = (average != null) ? Float.valueOf(average.getAnswer()) : null;
 								for (String year : auditsOfThisEMRType.keySet()) {
 									if (!year.equals("Average"))
-										answer2 += (answer2.isEmpty()) ? year : ", "+year;
+										answer2 += (answer2.isEmpty()) ? "Years: "+year : ", "+year;
 								}
 								break;
 							case ThreeYearsAgo:
 								if (years.size() >= 3) {
 									answer = Float.valueOf(years.get(years.size() - 3).getAnswer());
 									verified = years.get(years.size() - 3).isVerified();
-									answer2 = years.get(years.size() - 3).getAudit().getAuditFor();
+									answer2 = "Year: "+years.get(years.size() - 3).getAudit().getAuditFor();
 								}
 								break;
 							case TwoYearsAgo:
 								if (years.size() >= 2) {
 									answer = Float.valueOf(years.get(years.size() - 2).getAnswer());
 									verified = years.get(years.size() - 2).isVerified();
-									answer2 = years.get(years.size() - 2).getAudit().getAuditFor();
+									answer2 = "Year: "+years.get(years.size() - 2).getAudit().getAuditFor();
 								}
 								break;
 							case LastYearOnly:
 								if (years.size() >= 1) {
 									answer = Float.valueOf(years.get(years.size() - 1).getAnswer());
 									verified = years.get(years.size() - 1).isVerified();
-									answer2 = years.get(years.size() - 1).getAudit().getAuditFor();
+									answer2 = "Year: "+years.get(years.size() - 1).getAudit().getAuditFor();
 								}
 								break;
 							default:
