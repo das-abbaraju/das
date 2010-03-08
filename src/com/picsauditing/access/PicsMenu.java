@@ -200,6 +200,7 @@ public class PicsMenu {
 			subMenu.addChild("Clear Cache", "ClearCache.action");
 			subMenu.addChild("Cron", "Cron.action");
 			subMenu.addChild("Contractor Cron", "ContractorCron.action");
+			subMenu.addChild("Con/Op Flag Differences", "ContractorFlagDifference.action");
 			subMenu.addChild("Mail Cron", "MailCron.action");
 			subMenu.addChild("Subscription Cron", "SubscriptionCron.action");
 			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilderCron.action");

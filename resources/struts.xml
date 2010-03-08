@@ -1347,6 +1347,10 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="ContractorFlagDifference" class="com.picsauditing.actions.ContractorFlagDifference">
+			<result>/struts/misc/conop_flag_diff.jsp</result>
+		</action>
+
 		<!-- Other Stuff -->
 		<action name="AuditOperator"
 			class="com.picsauditing.actions.audits.AuditOperatorList">
