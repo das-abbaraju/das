@@ -24,7 +24,8 @@ small {
 }
 .flaggedCriteria {
 	float: left;
-	width: 33%;
+	margin-right: 10px;
+	margin-bottom: 10px;
 }
 </style>
 <s:include value="../jquery.jsp" />

@@ -295,4 +295,19 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return null;
 	}
+	
+	public boolean isDisplayTable() {
+		if (getflagDataMap() != null) {
+			for (String category : flagDataMap.keySet()) {
+				for (FlagData flagData : flagDataMap.get(category)) {
+					if (flagData.getFlag().equals(FlagColor.Red) || flagData.getFlag().equals(FlagColor.Amber) ||
+							isFlagDataOverride(flagData) != null) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 }

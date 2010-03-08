@@ -5,7 +5,7 @@ $(function() {
 	$('.datepicker').datepicker();
 })
 </script>
-
+<s:if test="displayTable">
 <table class="report" style="clear: none;">
 	<thead>
 		<tr>
@@ -14,6 +14,7 @@ $(function() {
 			<td>Value</td>
 		</tr>
 	</thead>
+	<tbody>
 	<s:iterator id="key" value="flagDataMap.keySet()">
 		<s:iterator id="data" value="flagDataMap.get(#key)">
 			<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
@@ -66,7 +67,7 @@ $(function() {
 					<td>
 						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
 							<s:if test="#opCriteria.criteria == #data.criteria && #opCriteria.flag == #data.flag">
-								<s:property value="#opCriteria.replaceHurdle()"/>
+								<s:property value="#opCriteria.replaceHurdle"/>
 							</s:if>
 						</s:iterator>
 					</td>
@@ -115,21 +116,16 @@ $(function() {
 			</s:if>
 		</s:iterator>
 	</s:iterator>
-		<tr><td colspan="3" class="center">
-			<pics:permission perm="ManageOperators">
-				To Edit the Criteria <br />
-				[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritAudits.id" />">For Audits</a>]
-				[<a href="AuditOperator.action?oID=<s:property value="co.operatorAccount.inheritInsurance.id" />">For Policies</a>]
-			
-			</pics:permission>
-			<pics:permission perm="EditFlagCriteria">
-				[<a 
-				href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">For Flag Criteria</a>]		
-			</pics:permission>
-		</td></tr>
+	<tr><td colspan="3" class="center">
+		<pics:permission perm="EditFlagCriteria">
+			[<a 
+			href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">For Flag Criteria</a>]		
+		</pics:permission>
+	</td></tr>
+	</tbody>
 </table>
-
-<br/>
+</s:if>
+<div class="clear"></div>
 <div style="width: 100%;">
 	<s:iterator id="key" value="flagDataMap.keySet()">
 		<div class="flaggedCriteria"><table class="report">

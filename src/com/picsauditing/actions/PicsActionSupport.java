@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
@@ -215,7 +216,8 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	static public String format(float number) {
-		return new DecimalFormat("#,##0.00").format(number);
+		//return new DecimalFormat("#,##0.00").format(number);
+		return Strings.formatDecimalComma(number + "");
 	}
 
 	static public String format(float number, String mask) {
