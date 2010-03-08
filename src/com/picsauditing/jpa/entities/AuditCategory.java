@@ -46,8 +46,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	List<AuditSubCategory> subCategories;
 
 	/**
-	 * This is a transient field that allows us to figure out which categories, subcategories and questions should be
-	 * displayed
+	 * This is a transient field that allows us to figure out which categories,
+	 * subcategories and questions should be displayed
 	 */
 	private Date validDate = null;
 	private Set<String> countries = null;
@@ -115,6 +115,15 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 			if (Strings.isInCountries(subCategory.getCountries(), countries) && subCategory.hasValidQuestions())
 				list.add(subCategory);
 		return list;
+	}
+
+	@Transient
+	public boolean hasValidSubcategories() {
+		for (AuditSubCategory subCategory : subCategories) {
+			if (subCategory.hasValidQuestions())
+				return true;
+		}
+		return false;
 	}
 
 	@Transient
