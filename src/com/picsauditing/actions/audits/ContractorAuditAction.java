@@ -43,10 +43,13 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 	private int applyCategoryID = 0;
 	private int removeCategoryID = 0;
 
-	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO) {
-		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder, certificateDao);
+	public ContractorAuditAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
+			OshaAuditDAO oshaAuditDAO) {
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
+				certificateDao);
 		this.contractorAuditOperatorDAO = contractorAuditOperatorDAO;
 		this.oshaAuditDAO = oshaAuditDAO;
 	}
@@ -85,36 +88,35 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 				}
 			}
 		}
-		
-		if(conAudit.getAuditType().isAnnualAddendum() 
-				&& conAudit.getAuditStatus().isSubmitted()) {
+
+		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isSubmitted()) {
 			Set<Integer> catIds = new HashSet<Integer>();
-			for(AuditCatData auditCatData : conAudit.getCategories()) {
-				if(auditCatData.isAppliesB()) {
+			for (AuditCatData auditCatData : conAudit.getCategories()) {
+				if (auditCatData.isAppliesB() && auditCatData.getCategory().hasValidSubcategories()) {
 					catIds.add(auditCatData.getCategory().getId());
 				}
 			}
-			
-			if(!catIds.contains(AuditCategory.OSHA_AUDIT)) {
+
+			if (!catIds.contains(AuditCategory.OSHA_AUDIT)) {
 				removeShaData(OshaType.OSHA, conAudit.getId());
 			}
-			if(!catIds.contains(AuditCategory.MSHA)) {
+			if (!catIds.contains(AuditCategory.MSHA)) {
 				removeShaData(OshaType.MSHA, conAudit.getId());
 			}
-			if(!catIds.contains(AuditCategory.CANADIAN_STATISTICS)) {
+			if (!catIds.contains(AuditCategory.CANADIAN_STATISTICS)) {
 				removeShaData(OshaType.COHS, conAudit.getId());
 			}
-			if(!catIds.contains(AuditCategory.EMR)) {
-				removeData(AuditCategory.EMR , conAudit.getId());
+			if (!catIds.contains(AuditCategory.EMR)) {
+				removeData(AuditCategory.EMR, conAudit.getId());
 			}
-			if(!catIds.contains(AuditCategory.LOSS_RUN)) {
+			if (!catIds.contains(AuditCategory.LOSS_RUN)) {
 				removeData(AuditCategory.LOSS_RUN, conAudit.getId());
 			}
-			if(!catIds.contains(AuditCategory.WCB)) {
+			if (!catIds.contains(AuditCategory.WCB)) {
 				removeData(AuditCategory.WCB, conAudit.getId());
 			}
 		}
-		
+
 		super.execute();
 
 		if (this.conAudit.getAuditType().getId() == AuditType.NCMS)
@@ -168,29 +170,29 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 
 		return menu;
 	}
-	
+
 	public String getAuditorNotes() {
 		AuditData auditData = null;
-		if(conAudit.getAuditType().isDesktop()) {
+		if (conAudit.getAuditType().isDesktop()) {
 			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 1461);
 		}
-		if(conAudit.getAuditType().getId() == 3) {
+		if (conAudit.getAuditType().getId() == 3) {
 			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2432);
 		}
-		if(auditData != null)
+		if (auditData != null)
 			return auditData.getAnswer();
 
-		return null;	
+		return null;
 	}
-	
+
 	private void removeShaData(OshaType oshaType, int auditID) {
 		oshaAuditDAO.removeByType(auditID, oshaType);
 	}
-	
+
 	private void removeData(int categoryID, int auditID) {
 		List<AuditData> data = auditDataDao.findDataByCategory(auditID, categoryID);
 		Iterator<AuditData> aIterator = data.iterator();
-		while(aIterator.hasNext()) {
+		while (aIterator.hasNext()) {
 			AuditData auditData = aIterator.next();
 			aIterator.remove();
 			auditDataDao.remove(auditData.getId());
