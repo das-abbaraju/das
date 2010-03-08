@@ -173,14 +173,14 @@ public class ContractorCron extends PicsActionSupport {
 
 				body.append(sw.toString());
 
-				sendMail(body.toString());
+				sendMail(body.toString(), conID);
 			} else {
 				addActionError(sw.toString());
 			}
 		}
 	}
 
-	private void sendMail(String message) {
+	private void sendMail(String message, int conID) {
 		try {
 			EmailQueue email = new EmailQueue();
 			email.setToAddresses("errors@picsauditing.com");
