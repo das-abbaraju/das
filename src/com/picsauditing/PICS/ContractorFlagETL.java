@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -222,12 +223,12 @@ public class ContractorFlagETL {
 					// Appending absolute answer for answer2 for Naics OSHAs
 					if (flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
 						answer2 += "<br/>Contractor Answer: "
-								+ osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-										OshaRateType.LwcrAbsolute);
+								+ PicsActionSupport.format(osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+										OshaRateType.LwcrAbsolute));
 					} else if (flagCriteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
 						answer2 += "<br/>Contractor Answer: "
-								+ osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-										OshaRateType.TrirAbsolute);
+								+ PicsActionSupport.format(osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+										OshaRateType.TrirAbsolute));
 					}
 					
 					boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria

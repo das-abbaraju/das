@@ -244,6 +244,17 @@ public class OshaOrganizer {
 			weightedAvg.setRestrictedOrJobTransferDays(weightedAvg.getRestrictedOrJobTransferDays());
 			weightedAvg.setCad7(weightedCad7 / (float) weightedCount);
 			weightedAvg.setNeer(weightedNeer / (float) weightedNeer);
+			
+			// setting individual values to their average value for display
+			weightedAvg.setManHours(weightedAvg.getManHours()/weightedCount);
+			weightedAvg.setFatalities(weightedAvg.getFatalities()/weightedCount);
+			weightedAvg.setLostWorkCases(weightedAvg.getLostWorkCases()/weightedCount);
+			weightedAvg.setLostWorkDays(weightedAvg.getLostWorkDays()/weightedCount);
+			weightedAvg.setInjuryIllnessCases(weightedAvg.getInjuryIllnessCases()/weightedCount);
+			weightedAvg.setRestrictedWorkCases(weightedAvg.getRestrictedWorkCases()/weightedCount);
+			weightedAvg.setRecordableTotal(weightedAvg.getRecordableTotal()/weightedCount);
+			weightedAvg.setFirstAidInjuries(weightedAvg.getFirstAidInjuries()/weightedCount);
+			weightedAvg.setModifiedWorkDay(weightedAvg.getModifiedWorkDay()/weightedCount);
 
 			return weightedAvg;
 		case ThreeYearAverage:
@@ -318,6 +329,17 @@ public class OshaOrganizer {
 			straightAvg.setRestrictedOrJobTransferDays(straightSeverityRate / (float) straightCount);
 			straightAvg.setCad7(straightCad7 / (float) straightCount);
 			straightAvg.setNeer(straightNeer / (float) straightNeer);
+			
+			// setting individual values to their average value for display
+			straightAvg.setManHours(straightAvg.getManHours()/straightCount);
+			straightAvg.setFatalities(straightAvg.getFatalities()/straightCount);
+			straightAvg.setLostWorkCases(straightAvg.getLostWorkCases()/straightCount);
+			straightAvg.setLostWorkDays(straightAvg.getLostWorkDays()/straightCount);
+			straightAvg.setInjuryIllnessCases(straightAvg.getInjuryIllnessCases()/straightCount);
+			straightAvg.setRestrictedWorkCases(straightAvg.getRestrictedWorkCases()/straightCount);
+			straightAvg.setRecordableTotal(straightAvg.getRecordableTotal()/straightCount);
+			straightAvg.setFirstAidInjuries(straightAvg.getFirstAidInjuries()/straightCount);
+			straightAvg.setModifiedWorkDay(straightAvg.getModifiedWorkDay()/straightCount);
 
 			return straightAvg;
 		}
