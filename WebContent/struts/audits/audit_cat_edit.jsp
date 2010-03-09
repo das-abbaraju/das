@@ -96,8 +96,10 @@
 			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'State'">
+		<!-- TODO remove -->
+		<s:set name="state_header" value="#q.question.contains('State') ? #q.question.contains('Province') ? 'State / Province' : 'State' : #q.question.contains('Province') ? 'Province' : 'State' "/>
 		<s:select list="getStateList(#q.countries)" value="%{#a.answer}" name="answer%{#divID}" 
-			headerKey="" headerValue="- State -" listKey="isoCode" listValue="name"
+			headerKey="" headerValue=" - %{#state_header} - " listKey="isoCode" listValue="name"
 			onchange="saveAnswer('%{#divID}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Country'">
