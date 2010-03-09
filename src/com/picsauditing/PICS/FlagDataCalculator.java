@@ -256,7 +256,7 @@ public class FlagDataCalculator {
 								// This is a Policy, find the CAO for this
 								// operator
 								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(operator) && cao.isVisible()) {
+									if (cao.getOperator().equals(operator.getInheritInsurance()) && cao.isVisible()) {
 										if (cao.getStatus().isPending()) {
 											return WaitingOn.Contractor;
 										}
