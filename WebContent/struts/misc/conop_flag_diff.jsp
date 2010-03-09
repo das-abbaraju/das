@@ -22,12 +22,12 @@ function isOk(conid,opid, flag) {
 <table class="report">
 	<thead>
 		<tr>
-			<td>Contractor</td>
-			<td>Operator</td>
-			<td>New Flag Color</td>
-			<td>Old Flag Color</td>
-			<td>New WaitingOn</td>
-			<td>Old WaitingOn</td>
+			<td><a href="?button=contractor">Contractor</a></td>
+			<td><a href="?button=operator">Operator</a></td>
+			<td><a href="?button=newFlag">New Flag Color</a></td>
+			<td><a href="?button=oldFlag">Old Flag Color</a></td>
+			<td><a href="?button=newWaitingOn">New WaitingOn</a></td>
+			<td><a href="?button=oldWaitingOn">Old WaitingOn</a></td>
 			<td></td>
 		</tr>
 	</thead>
