@@ -52,6 +52,20 @@
 			<span class="checked"></span>
 		</s:if>
 	</s:elseif>
+	<s:elseif test="#q.questionType == 'Country'">
+		<s:iterator value="countryList">
+			<s:if test="isoCode == #a.answer">
+				<s:property value="name"/>
+			</s:if>
+		</s:iterator>
+	</s:elseif>
+	<s:elseif test="#q.questionType == 'State'">
+		<s:iterator value="stateList">
+			<s:if test="isoCode == #a.answer">
+				<s:property value="name"/>
+			</s:if>
+		</s:iterator>
+	</s:elseif>
 	<s:elseif test="#q.questionType == 'AMBest'">
 		<s:property value="#a.answer" />
 		<s:if test="#a.commentLength">
