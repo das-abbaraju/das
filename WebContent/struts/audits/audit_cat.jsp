@@ -96,9 +96,9 @@ label.policy {
 								Sub Category <s:property value="category.number"/>.<s:property value="number"/> - 
 								<s:property value="subCategory" escape="false"/>
 							</h3>
-							<s:if test="helpText != null && helpText.length() > 0">
-								<div class="alert"><s:property value="helpText"/></div>
-							</s:if>
+						</s:if>
+						<s:if test="helpText != null && helpText.length() > 0">
+							<div class="alert"><s:property value="helpText"/></div>
 						</s:if>
 						<s:iterator value="questions">
 							<s:if test="valid">
