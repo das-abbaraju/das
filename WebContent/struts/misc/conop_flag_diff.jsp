@@ -39,22 +39,22 @@ function isOk(conid,opid, flag) {
 			<td>
 				<s:property value="get('OperatorName')" />
 			</td>
-			<td>
+			<td <s:if test="get('oldColor') != get('newColor')"> style="background-color: YELLOW" </s:if>>
 				<a href="ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
 					<s:property value="get('newColor')" />			
 				</a>
 			</td>
-			<td>
+			<td <s:if test="get('oldColor') != get('newColor')"> style="background-color: YELLOW" </s:if>>
 				<a href="http://www.picsauditing.com/app/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
 					<s:property value="get('oldColor')" />			
 				</a>
 			</td>
-			<td>
+			<td <s:if test="get('oldwaitingOn') != get('newwaitingon')"> style="background-color: YELLOW" </s:if>>
 				<a href="ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
 					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('newwaitingon'))" />			
 				</a>
 			</td>
-			<td>
+			<td <s:if test="get('oldwaitingOn') != get('newwaitingon')"> style="background-color: YELLOW" </s:if>>
 				<a href="http://www.picsauditing.com/app/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
 					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('oldwaitingOn'))" />
 				</a>
