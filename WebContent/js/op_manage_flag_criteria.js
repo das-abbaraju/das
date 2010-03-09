@@ -90,12 +90,13 @@ function editCriteria(id) {
 	$(".hurdle").show();
 	
 	if ($("#"+id).find(".hideOld").is(":visible")) {
+		$(".hideOld").show();
 		$("#"+id).find(".hideOld").hide();
 		$("#"+id).find(".hide").show();
 		$("#"+id).find(".hurdle").hide();
 	} else {
 		$("#"+id).find("input").val($("#"+id).find(".hurdle").text());
-		$(".hideOld").show();
+		$("#"+id).find(".hideOld").show();
 	}
 	
 	$("#"+id).find("span.newImpact").html("");

@@ -1,6 +1,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.datepicker').datepicker();
+});
+</script>
+
 <table class="report">
 	<thead>
 		<tr>
@@ -31,8 +37,17 @@
 						<s:property value="criteria.descriptionBeforeHurdle" />
 						<s:if test="criteria.dataType != 'boolean'">
 							<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
-							<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="10"
-								class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);" />
+							<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
+								<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="10"
+									class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
+									<s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
+							</s:if>
+							<s:elseif test="criteria.dataType == 'string'">
+								<span class="hide">
+									<s:radio list="#{'Yes':'Yes','No':'No'}" value="criteriaValue()" 
+										onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"></s:radio>
+								</span>
+							</s:elseif>
 						</s:if>
 						<s:property value="criteria.descriptionAfterHurdle" />
 					</s:if>
