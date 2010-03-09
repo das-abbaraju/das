@@ -272,12 +272,10 @@ public class FlagDataCalculator {
 								} // for cao
 							} // end of policies
 						} else {
-							boolean hasProperStatus = false;
-							if(auditStatus.isActiveResubmittedExempt())
-								hasProperStatus = true;
-							if(!key.isValidationRequired() && auditStatus.isSubmitted())
-								hasProperStatus = true;
-							if (!hasProperStatus) {
+							AuditStatus requiredStatus = AuditStatus.Active; 
+							if(!key.isValidationRequired())
+								requiredStatus = AuditStatus.Submitted;
+							if (!auditStatus.isComplete(requiredStatus)) {
 								if (conAudit.getAuditType().getClassType().isPqf()
 										|| conAudit.getAuditType().isAnnualAddendum()) {
 									if (auditStatus.isPending() || auditStatus.isIncomplete())
