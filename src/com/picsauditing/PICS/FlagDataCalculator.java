@@ -245,48 +245,59 @@ public class FlagDataCalculator {
 		boolean waitingOnOperator = false;
 
 		for (FlagCriteria key : operatorCriteria.keySet()) {
-			for (ContractorAudit conAudit : contractor.getAudits()) {
-				if (key.getAuditType().equals(conAudit.getAuditType())) {
-					AuditStatus auditStatus = conAudit.getAuditStatus();
-					if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-						if (!auditStatus.equals(AuditStatus.Expired)) {
-							// This is a Policy, find the CAO for this
-							// operator
-							for (ContractorAuditOperator cao : conAudit.getOperators()) {
-								if (cao.getOperator().equals(operator) && cao.isVisible()) {
-									if (cao.getStatus().isPending()) {
+			FlagCriteriaOperator fOperator = operatorCriteria.get(key);
+			if (contractor.getRiskLevel().ordinal() >= fOperator.getMinRiskLevel().ordinal()
+					&& !fOperator.getFlag().equals(FlagColor.Green)) {
+				for (ContractorAudit conAudit : contractor.getAudits()) {
+					if (key.getAuditType().equals(conAudit.getAuditType())) {
+						AuditStatus auditStatus = conAudit.getAuditStatus();
+						if (conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+							if (!auditStatus.equals(AuditStatus.Expired)) {
+								// This is a Policy, find the CAO for this
+								// operator
+								for (ContractorAuditOperator cao : conAudit.getOperators()) {
+									if (cao.getOperator().equals(operator) && cao.isVisible()) {
+										if (cao.getStatus().isPending()) {
+											return WaitingOn.Contractor;
+										}
+										if (cao.getStatus().isSubmitted()) {
+											waitingOnPics = true;
+										}
+										if (cao.getStatus().isVerified()) {
+											waitingOnOperator = true;
+										}
+										if (cao.getStatus().isRejected())
+											return WaitingOn.Contractor;
+									} // if
+								} // for cao
+							} // end of policies
+						} else {
+							boolean hasProperStatus = false;
+							if(auditStatus.isActiveResubmittedExempt())
+								hasProperStatus = true;
+							if(!key.isValidationRequired() && auditStatus.isSubmitted())
+								hasProperStatus = true;
+							if (!hasProperStatus) {
+								if (conAudit.getAuditType().getClassType().isPqf()
+										|| conAudit.getAuditType().isAnnualAddendum()) {
+									if (auditStatus.isPending() || auditStatus.isIncomplete())
+										// The contractor still needs to submit
+										// their PQF
 										return WaitingOn.Contractor;
-									}
-									if (cao.getStatus().isSubmitted()) {
-										waitingOnPics = true;
-									}
-									if (cao.getStatus().isVerified()) {
-										waitingOnOperator = true;
-									}
-									if (cao.getStatus().isRejected())
+									waitingOnPics = true;
+								} else if (conAudit.getAuditType().getId() == AuditType.OFFICE)
+									// either needs to schedule the audit or
+									// close out RQs
+									return WaitingOn.Contractor;
+								else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
+									if (auditStatus.equals(AuditStatus.Submitted))
+										// contractor needs to close out RQs
 										return WaitingOn.Contractor;
-								} // if
-							} // for cao
-						} // end of policies
-					} else {
-						if (conAudit.getAuditType().getClassType().isPqf()
-								|| conAudit.getAuditType().isAnnualAddendum()) {
-							if (auditStatus.isPending() || auditStatus.isIncomplete())
-								// The contractor still needs to submit
-								// their PQF
-								return WaitingOn.Contractor;
-							waitingOnPics = true;
-						} else if (conAudit.getAuditType().getId() == AuditType.OFFICE)
-							// either needs to schedule the audit or
-							// close out RQs
-							return WaitingOn.Contractor;
-						else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-							if (auditStatus.equals(AuditStatus.Submitted))
-								// contractor needs to close out RQs
-								return WaitingOn.Contractor;
-							waitingOnPics = true;
+									waitingOnPics = true;
+								}
+							}
 						}
-					} // end of audits
+					}// end of audits
 				}
 			}
 		}
@@ -302,18 +313,18 @@ public class FlagDataCalculator {
 	public FlagColor calculateCaoStatus(AuditType auditType, Set<FlagData> flagDatas) {
 		PicsLogger.log("Calculating recommendation for " + auditType);
 		FlagColor flag = null;
-		for(FlagData flagData : flagDatas) {
-			if(flagData.getCriteria().isInsurance() 
+		for (FlagData flagData : flagDatas) {
+			if (flagData.getCriteria().isInsurance()
 					&& flagData.getCriteria().getQuestion().getAuditType().equals(auditType)) {
 				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
 				if (flag.isRed())
 					PicsLogger.log(" --- " + flagData.getFlag() + " " + flagData.getCriteria().getQuestion());
-					return flag;
+				return flag;
 			}
 		}
 		if (flag == null)
 			flag = FlagColor.Green;
-		
+
 		return flag;
 	}
 
@@ -333,7 +344,7 @@ public class FlagDataCalculator {
 
 	public void setOverrides(Set<FlagDataOverride> overridesSet) {
 		Map<FlagCriteria, FlagDataOverride> overridesMap = new HashMap<FlagCriteria, FlagDataOverride>();
-		for(FlagDataOverride override : overridesSet)
+		for (FlagDataOverride override : overridesSet)
 			overridesMap.put(override.getCriteria(), override);
 		this.overrides = overridesMap;
 	}
