@@ -293,7 +293,7 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	 */
 	public float getLostWorkCasesRate() {
 		if (lwcr == null)
-			lwcr = calculateRate(lostWorkCases);
+			return calculateRate(lostWorkCases);
 		return lwcr;
 	}
 
@@ -324,7 +324,7 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	 */
 	public float getRecordableTotalRate() {
 		if (trir == null)
-			trir = calculateRate(recordableTotal);
+			return calculateRate(recordableTotal);
 		return trir;
 	}
 
@@ -341,7 +341,7 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	 */
 	public Float getRestrictedDaysAwayRate() {
 		if (dart == null)
-			dart = calculateRate(lostWorkCases + restrictedWorkCases);
+			return calculateRate(lostWorkCases + restrictedWorkCases);
 		return dart;
 	}
 
@@ -359,9 +359,9 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	public Float getRestrictedOrJobTransferDays() {
 		if (severityRate == null) {
 			if (type.equals(OshaType.OSHA)) {
-				severityRate = calculateRate(lostWorkDays + modifiedWorkDay);
+				return calculateRate(lostWorkDays + modifiedWorkDay);
 			} else {
-				severityRate = calculateRate(lostWorkDays);
+				return calculateRate(lostWorkDays);
 			}
 		}
 		return severityRate;
