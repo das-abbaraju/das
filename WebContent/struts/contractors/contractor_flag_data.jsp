@@ -125,10 +125,11 @@ $(function() {
 	</tbody>
 </table>
 </s:if>
-<div class="clear"></div>
-<div style="width: 100%;">
+
+<table class="flagCategories">
+	<tr>
 	<s:iterator id="key" value="flagDataMap.keySet()">
-		<div class="flaggedCriteria"><table class="report">
+		<td><table class="report">
 			<thead>
 				<tr>
 					<td>Flag</td>
@@ -163,6 +164,7 @@ $(function() {
 					</td>			
 				</tr>
 			</s:iterator>
-		</table></div>
+		</table></td>
 	</s:iterator>
-</div>
+	</tr>
+</table>

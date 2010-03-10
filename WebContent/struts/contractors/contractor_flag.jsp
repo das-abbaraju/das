@@ -23,10 +23,9 @@ table.report a {
 small {
 	font-size: x-small;
 }
-.flaggedCriteria {
-	float: left;
-	margin-right: 10px;
-	margin-bottom: 10px;
+.flagCategories tr td {
+	padding-right: 10px;
+	padding-bottom: 10px;
 }
 </style>
 <s:include value="../jquery.jsp" />
