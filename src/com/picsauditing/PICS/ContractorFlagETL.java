@@ -108,8 +108,6 @@ public class ContractorFlagETL {
 							years.add(auditsOfThisEMRType.get(year));
 					}
 
-					trim(years);
-
 					if (years != null && years.size() > 0) {
 						Float answer = null;
 						String answer2 = "";
@@ -120,9 +118,9 @@ public class ContractorFlagETL {
 							case ThreeYearAverage:
 								AuditData average = auditsOfThisEMRType.get("Average");
 								answer = (average != null) ? Float.valueOf(average.getAnswer()) : null;
-								for (String year : auditsOfThisEMRType.keySet()) {
-									if (!year.equals("Average"))
-										answer2 += (answer2.isEmpty()) ? "Years: " + year : ", " + year;
+								for (AuditData year : years) {
+									answer2 += (answer2.isEmpty()) ? "Years: " + year.getAudit().getAuditFor() : ", "
+											+ year.getAudit().getAuditFor();
 									if (!average.isVerified())
 										verified = false;
 								}
@@ -303,24 +301,5 @@ public class ContractorFlagETL {
 	private boolean isHasCOR(int conID) {
 		AuditData answer = auditDataDao.findAnswerByConQuestion(conID, AuditQuestion.COR);
 		return (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer()));
-	}
-
-	private void trim(List<AuditData> list) {
-		if (list.size() < 4)
-			return;
-		if (list.size() > 4)
-			throw new RuntimeException("Found [" + list.size() + "] EMRs");
-
-		// We have 4 years worth of data, get rid of either the first or the
-		// last
-		// We trim the fourth year ONLY if it's not verified but all three
-		// previous years are.
-		if (!list.get(3).isVerified() && list.get(2).isVerified() && list.get(1).isVerified()
-				&& list.get(0).isVerified()) {
-			PicsLogger.log("removed fourthYear" + list.get(3).getAudit().getAuditFor());
-			list.remove(3);
-		} else {
-			list.remove(0);
-		}
 	}
 }

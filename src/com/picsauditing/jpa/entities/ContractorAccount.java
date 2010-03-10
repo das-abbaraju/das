@@ -38,6 +38,7 @@ import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 @Entity
@@ -532,12 +533,34 @@ public class ContractorAccount extends Account implements JSONable {
 
 			}
 		}
+		
+		AuditData result = trim(new ArrayList<AuditData>(emrs.values()));
+		emrs.remove(result.getAudit().getAuditFor());
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		if (avg != null && !Strings.isEmpty(avg.getAnswer()))
 			emrs.put(OshaAudit.AVG, avg);
 
 		return emrs;
+	}
+	
+	private AuditData trim(List<AuditData> list) {
+		if (list.size() < 4)
+			return null;
+		if (list.size() > 4)
+			throw new RuntimeException("Found [" + list.size() + "] EMRs");
+
+		// We have 4 years worth of data, get rid of either the first or the
+		// last
+		// We trim the fourth year ONLY if it's not verified but all three
+		// previous years are.
+		if (!list.get(3).isVerified() && list.get(2).isVerified() && list.get(1).isVerified()
+				&& list.get(0).isVerified()) {
+			PicsLogger.log("removed fourthYear" + list.get(3).getAudit().getAuditFor());
+			return list.get(3);
+		} else {
+			return list.get(0);
+		}
 	}
 
 	@Transient
