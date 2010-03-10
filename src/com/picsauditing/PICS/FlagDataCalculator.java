@@ -65,7 +65,7 @@ public class FlagDataCalculator {
 							flag = override.getForceflag();
 					} else if (flagged)
 						flag = operatorCriteria.get(key).getFlag();
-
+					
 					FlagData data = new FlagData();
 					data.setCriteria(key);
 					data.setContractor(contractorCriteria.get(key).getContractor());
@@ -148,19 +148,12 @@ public class FlagDataCalculator {
 			return null;
 		} else {
 
-			// Check for License Verifications
-			if (criteria.getQuestion() != null) {
-				int questionID = criteria.getQuestion().getId();
-				if (questionID == 401 || questionID == 755) {
-					// Check if answers have been verified... if yes, return
-					// false
-					// (don't flag)
-					return !conCriteria.isVerified();
-				}
-			}
-
+			if (criteria.isValidationRequired() && !conCriteria.isVerified())
+				return true;
+				
 			final String dataType = criteria.getDataType();
 			final String comparison = criteria.getComparison();
+
 			try {
 				if (dataType.equals("boolean")) {
 					return (Boolean.parseBoolean(answer) == Boolean.parseBoolean(hurdle));
@@ -212,10 +205,9 @@ public class FlagDataCalculator {
 				return true;
 			}
 		}
-
 		return false;
 	}
-
+	
 	public WaitingOn calculateWaitingOn(ContractorOperator co) {
 
 		ContractorAccount contractor = co.getContractorAccount();
