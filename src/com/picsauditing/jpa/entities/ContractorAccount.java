@@ -519,7 +519,7 @@ public class ContractorAccount extends Account implements JSONable {
 		emrs = new TreeMap<String, AuditData>();
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
-			if (number < 3) {
+			if (number < 4) {
 
 				// Store the EMR rates into a map for later use
 				for (AuditData answer : audit.getData())

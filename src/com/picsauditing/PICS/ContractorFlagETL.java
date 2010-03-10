@@ -108,6 +108,8 @@ public class ContractorFlagETL {
 							years.add(auditsOfThisEMRType.get(year));
 					}
 
+					trim(years);
+
 					if (years != null && years.size() > 0) {
 						Float answer = null;
 						String answer2 = "";
@@ -121,7 +123,7 @@ public class ContractorFlagETL {
 								for (String year : auditsOfThisEMRType.keySet()) {
 									if (!year.equals("Average"))
 										answer2 += (answer2.isEmpty()) ? "Years: " + year : ", " + year;
-									if(!average.isVerified())
+									if (!average.isVerified())
 										verified = false;
 								}
 								break;
@@ -160,13 +162,13 @@ public class ContractorFlagETL {
 							final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria,
 									answer.toString());
 							fcc.setVerified(verified);
-							
+
 							// conditionally add verified tag
-							if(verified){
+							if (verified) {
 								answer2 += "<br/><span class=\"verified\">Verified</span>";
 							}
 							fcc.setAnswer2(answer2);
-							
+
 							changes.add(fcc);
 						} else {
 							if (flagCriteria.isFlaggableWhenMissing()) {
@@ -301,5 +303,24 @@ public class ContractorFlagETL {
 	private boolean isHasCOR(int conID) {
 		AuditData answer = auditDataDao.findAnswerByConQuestion(conID, AuditQuestion.COR);
 		return (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer()));
+	}
+
+	private void trim(List<AuditData> list) {
+		if (list.size() < 4)
+			return;
+		if (list.size() > 4)
+			throw new RuntimeException("Found [" + list.size() + "] EMRs");
+
+		// We have 4 years worth of data, get rid of either the first or the
+		// last
+		// We trim the fourth year ONLY if it's not verified but all three
+		// previous years are.
+		if (!list.get(3).isVerified() && list.get(2).isVerified() && list.get(1).isVerified()
+				&& list.get(0).isVerified()) {
+			PicsLogger.log("removed fourthYear" + list.get(3).getAudit().getAuditFor());
+			list.remove(3);
+		} else {
+			list.remove(0);
+		}
 	}
 }
