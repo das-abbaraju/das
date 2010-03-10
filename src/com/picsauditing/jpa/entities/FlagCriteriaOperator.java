@@ -24,7 +24,7 @@ public class FlagCriteriaOperator extends BaseTable {
 	private FlagCriteria criteria;
 	private FlagColor flag = FlagColor.Red;
 	private String hurdle;
-	private float percentAffected = 0;
+	private int affected = 0;
 	private Date lastCalculated;
 	private LowMedHigh minRiskLevel = LowMedHigh.None;
 
@@ -66,12 +66,12 @@ public class FlagCriteriaOperator extends BaseTable {
 		this.hurdle = hurdle;
 	}
 
-	public float getPercentAffected() {
-		return percentAffected;
+	public int getAffected() {
+		return affected;
 	}
 
-	public void setPercentAffected(float percentAffected) {
-		this.percentAffected = percentAffected;
+	public void setAffected(int affected) {
+		this.affected = affected;
 	}
 
 	public Date getLastCalculated() {

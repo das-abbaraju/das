@@ -1,6 +1,5 @@
 package com.picsauditing.actions.operators;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,8 +18,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
@@ -34,6 +31,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
 
 	private boolean insurance = false;
+	private boolean canEdit = false;
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	private FlagCriteriaDAO flagCriteriaDAO;
 	private int criteriaID;
@@ -42,7 +40,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private String newComparison;
 
 	private List<FlagCriteria> addableCriteria = null;
-	private Map<Integer, List<ContractorAccount>> affectingCriteria = new TreeMap<Integer, List<ContractorAccount>>();
 
 	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
 			FlagCriteriaDAO flagCriteriaDAO) {
@@ -56,16 +53,19 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		// TODO check permissions
-		// tryPermissions(OpPerms.EditFlagCriteria);
+		
+		// This is a risk, we need to test this on several operator accounts to make sure they actually have this permission. 3/10/10 Trevor
+		tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
 		
-		if (insurance)
+		if (insurance) {
+			canEdit = operator.equals(operator.getInheritInsurance());
 			subHeading = "Manage Insurance Criteria";
-		else
+		} else {
+			canEdit = operator.equals(operator.getInheritFlagCriteria());
 			subHeading = "Manage Flag Criteria";
+		}
 
 		if (button != null) {
 			if (button.equals("questions") || button.equals("impact")) {
@@ -73,8 +73,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			}
 			if (button.equals("calculateSingle")) {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
-				fco.setHurdle(newHurdle);
-				output = calculatePercentAffected(fco) + "%";
+				if (!Strings.isEmpty(newHurdle))
+					fco.setHurdle(newHurdle);
+				int size = calculateAffectedList(fco).size();
+				output = Integer.toString(size);
+				if (Strings.isEmpty(newHurdle)) {
+					fco.setAffected(size);
+					fco.setLastCalculated(new Date());
+					flagCriteriaOperatorDAO.save(fco);
+				}
 				return BLANK;
 			}
 			if (button.equals("delete")) {
@@ -98,7 +105,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setHurdle(Strings.formatNumber(newHurdle));
 				fco.setOperator(operator);
 				flagCriteriaOperatorDAO.save(fco);
-				calculatePercentAffected(fco);
 
 				String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
 						+ fc.getDescriptionBeforeHurdle() + newHurdle + fc.getDescriptionAfterHurdle() + ", "
@@ -110,18 +116,13 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setUpdateDate(new Date());
 				fco.setUpdatedBy(getUser());
 				fco.setFlag(newFlag);
-				boolean needsCalculation = false;
 
 				if (!newHurdle.equals(fco.getHurdle())) {
 					fco.setHurdle(newHurdle);
-					needsCalculation = true;
 				}
 
 				fco.setLastCalculated(null);
 				flagCriteriaOperatorDAO.save(fco);
-
-				if (needsCalculation)
-					calculatePercentAffected(fco);
 
 				FlagCriteria fc = fco.getCriteria();
 				String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "
@@ -174,6 +175,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		this.newComparison = newComparison;
 	}
 
+	public boolean isCanEdit() {
+		return canEdit;
+	}
+	
 	public List<FlagCriteria> getAddableCriterias() {
 		if (addableCriteria == null) {
 			addableCriteria = new ArrayList<FlagCriteria>();
@@ -283,32 +288,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return valid;
 	}
 
-	public List<ContractorAccount> getAffectedByCriteria(int id) {
-		if (affectingCriteria.keySet().size() == 0) {
-			calculatePercentAffected(flagCriteriaOperatorDAO.find(id));
-		}
-
-		if (affectingCriteria.containsKey(id))
-			return affectingCriteria.get(id);
-
-		return null;
-	}
-
-	public float getPercentAffected(int id) {
-		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(id);
-
-		if (fco.isNeedsRecalc()) {
-			float affected = calculatePercentAffected(fco);
-
-			fco.setPercentAffected(affected);
-			fco.setLastCalculated(new Date());
-			flagCriteriaOperatorDAO.save(fco);
-
-			return affected;
-		} else
-			return fco.getPercentAffected();
-	}
-
 	public List<FlagColor> getAddableFlags(int criteriaId) {
 		List<FlagColor> addableFlags = new ArrayList<FlagColor>();
 		// Get all flags
@@ -325,59 +304,24 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return addableFlags;
 	}
 
-	private float calculatePercentAffected(FlagCriteriaOperator fco) {
-		List<ContractorOperator> contractorOperators = operator.getContractorOperators();
-		Map<ContractorAccount, List<FlagData>> contractorsAffected = new TreeMap<ContractorAccount, List<FlagData>>();
-		int totalContractors = contractorOperators.size();
-
-		for (ContractorOperator co : contractorOperators) {
-			ContractorAccount contractor = co.getContractorAccount();
-			List<FlagCriteriaContractor> conList = new ArrayList<FlagCriteriaContractor>(contractor.getFlagCriteria());
-			List<FlagCriteriaOperator> opList = new ArrayList<FlagCriteriaOperator>();
-			opList.add(fco);
-
-			FlagDataCalculator calculator = new FlagDataCalculator(conList);
-			calculator.setOperator(operator);
-			calculator.setOperatorCriteria(opList);
-			List<FlagData> flagged = calculator.calculate();
-
-			// Since we're testing on one criteria, there's only one FlagData
-			// item
-			if (flagged.size() > 0 && flagged.get(0).getFlag().equals(fco.getFlag())) {
-				contractorsAffected.put(contractor, flagged);
+	private List<FlagCriteriaContractor> calculateAffectedList(FlagCriteriaOperator fco) {
+		List<FlagCriteriaContractor> fccList = flagCriteriaOperatorDAO.getContractorCriteria(fco);
+		List<FlagCriteriaContractor> affected = new ArrayList<FlagCriteriaContractor>();
+		
+		for (FlagCriteriaContractor fcc : fccList) {
+			FlagDataCalculator calculator = new FlagDataCalculator(fcc, fco);
+			List<FlagData> flagList = calculator.calculate();
+			if (flagList.size() > 0) {
+				FlagData flagged = flagList.get(0);
+	
+				if (flagged.getFlag().equals(fco.getFlag()))
+					affected.add(fcc);
 			}
 		}
-
-		float affected = 0;
-
-		if (contractorsAffected.size() > 0) {
-			affected = ((float) contractorsAffected.size() / (float) totalContractors) * 100;
-			String test = new DecimalFormat("#0.0").format((double) affected);
-			affected = Float.parseFloat(test);
-		}
-
-		// Add to the map?
-		affectingCriteria.put(fco.getId(), new ArrayList<ContractorAccount>(contractorsAffected.keySet()));
 
 		return affected;
 	}
 
-	public boolean canEditFlags() {
-		try {
-			tryPermissions(OpPerms.EditFlagCriteria);
-
-			if ((!insurance && !operator.equals(operator.getInheritFlagCriteria()))
-					|| (insurance && !operator.equals(operator.getInheritInsurance())))
-				return false;
-			
-			// User has the permission
-			return true;
-		} catch (Exception e) {
-			// Doesn't have the EditFlagCriteria permission
-			return false;
-		}
-	}
-	
 	public String getFormattedDefaultValue(String defaultValue) {
 		return Strings.formatDecimalComma(defaultValue);
 	}

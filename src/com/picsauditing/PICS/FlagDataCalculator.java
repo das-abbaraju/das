@@ -44,6 +44,13 @@ public class FlagDataCalculator {
 		setContractorCriteria(contractorCriteria);
 	}
 
+	public FlagDataCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria) {
+		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
+		contractorCriteria.put(conCriteria.getCriteria(), conCriteria);
+		operatorCriteria = new HashMap<FlagCriteria, FlagCriteriaOperator>();
+		operatorCriteria.put(opCriteria.getCriteria(), opCriteria);
+	}
+	
 	public List<FlagData> calculate() {
 		List<FlagData> dataSet = new ArrayList<FlagData>();
 

@@ -118,6 +118,21 @@ function calculateImpact(criteriaID, newHurdle) {
 	);
 }
 
+function updatePercentAffected(criteriaID) {
+	var data = {
+			button: 'calculateSingle',
+			id: $('#form1_id').val(),
+			criteriaID: criteriaID
+		};
+		
+		//startThinking({div:'thinking', message:'Calculating impact...'});
+		$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data,
+			function() {
+				//stopThinking({div:'thinking'});
+			}
+		);
+}
+
 var wait = function(){
     var timer = 0;
     return function(criteriaID, newHurdle, ms){

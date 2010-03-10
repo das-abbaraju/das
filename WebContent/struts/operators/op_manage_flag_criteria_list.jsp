@@ -15,7 +15,7 @@ $(document).ready(function() {
 			</s:if>
 			<th>Description</th>
 			<th>Flag</th>
-			<s:if test="canEditFlags()">
+			<s:if test="canEdit">
 				<th title="Click percentage to see impact."><nobr>% Affected</nobr></th>
 				<th>Edit</th>
 				<th>Remove</th>
@@ -29,7 +29,7 @@ $(document).ready(function() {
 					<td><s:property value="criteria.category" /></td>
 				</s:if>
 				<td>
-					<s:if test="canEditFlags()">
+					<s:if test="canEdit">
 						<span class="hide">
 							<a href="#" onclick="submitHurdle(this.parentNode.parentNode); return false;" class="picsbutton">Save</a>
 							<s:select list="getAddableFlags(0)" name="newFlag" value="flag"></s:select> flag if
@@ -56,12 +56,13 @@ $(document).ready(function() {
 					</s:else>
 				</td>
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
-				<s:if test="canEditFlags()">
+				<s:if test="canEdit">
 					<td class="center">
 						<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact."
-							class="hideOld">
-							<s:property value="getPercentAffected(id)" />%</a>
+							class="hideOld oldImpact">
+							<s:property value="affected" /></a>
 						<span class="newImpact"></span>
+						<script type="text/javascript">updatePercentAffected(<s:property value="id" />);</script>
 					</td>
 					<td class="center">
 						<a href="#" class="edit" onclick="editCriteria(<s:property value="id" />); return false;"></a>
