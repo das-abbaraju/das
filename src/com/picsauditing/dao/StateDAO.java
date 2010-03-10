@@ -34,12 +34,17 @@ public class StateDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<State> findByCountries(Collection<String> countries) {
-		Query query = em.createQuery("FROM State WHERE country.isoCode IN (:countries)").setParameter("countries", countries);
+	public List<State> findByCountries(Collection<String> countries, boolean negative) {
+		String q = "FROM State WHERE country.isoCode ";
+		if (negative)
+			q += "NOT ";
+		q += "IN (:countries)";
+
+		Query query = em.createQuery(q).setParameter("countries", countries);
 
 		return query.getResultList();
 	}
-	
+
 	public List<State> findByCSR(int csrID) {
 		Query query = em.createQuery("FROM State WHERE csr.id = ?");
 		query.setParameter(1, csrID);

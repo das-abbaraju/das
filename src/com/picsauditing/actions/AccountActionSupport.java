@@ -155,8 +155,14 @@ public class AccountActionSupport extends PicsActionSupport {
 		List<State> result;
 		if (countries == null)
 			result = getStateDAO().findAll();
-		else
-			result = getStateDAO().findByCountries(Arrays.asList(countries.split("[|]")));
+		else {
+			boolean negative = false;
+			if (countries.startsWith("!")) {
+				countries = countries.replace("!", "");
+				negative = true;
+			}
+			result = getStateDAO().findByCountries(Arrays.asList(countries.split("[|]")), negative);
+		}
 		return result;
 	}
 
@@ -170,7 +176,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		}
 		return true;
 	}
-	
+
 	public AccountStatus[] getStatusList() {
 		return AccountStatus.values();
 	}
