@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectAccount;
 
@@ -32,6 +33,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
 		this.operatorDAO = operatorDAO;
+		this.listType = ListType.Operator;
 	}
 
 	@Override
