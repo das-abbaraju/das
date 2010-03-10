@@ -435,7 +435,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		List<State> result;
 		if (permissions.getAccountCountries().size() > 0)
-			result = stateDAO.findByCountries(permissions.getAccountCountries());
+			result = stateDAO.findByCountries(permissions.getAccountCountries(), false);
 		else
 			result = stateDAO.findAll();
 
