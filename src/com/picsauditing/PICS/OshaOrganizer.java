@@ -2,10 +2,12 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -182,6 +184,9 @@ public class OshaOrganizer {
 			return (yearIndex.size() > 2) ? yearIndex.get(0) : null;
 		case ThreeYearWeightedAverage:
 			OshaAudit weightedAvg = new OshaAudit();
+			
+			boolean weightedAllVerified = true;
+			Date weightedLastVerified = new Date();
 
 			int weightedManHours = 0;
 			int weightedFatalities = 0;
@@ -200,6 +205,12 @@ public class OshaOrganizer {
 
 			for (OshaAudit osha : yearIndex) {
 				weightedAvg.setFactor(osha.getFactor());
+				// Need to set a proper verification value on average OSHAs
+				// for inserting verified tag in ContractorFlagETL answer2
+				if(!osha.isVerified())
+					weightedAllVerified = false;
+				if(osha.getVerifiedDate() != null)
+					weightedLastVerified = osha.getVerifiedDate();
 
 				if (osha.getManHours() > 0) {
 					weightedCount++;
@@ -225,6 +236,10 @@ public class OshaOrganizer {
 
 			if (weightedCount == 0)
 				return null;
+			
+			// If all are verified, set verified to last recorded date
+			if(weightedAllVerified)
+				weightedAvg.setVerifiedDate(weightedLastVerified);
 
 			// setting cumulative values
 			weightedAvg.setManHours(weightedManHours);
@@ -260,6 +275,9 @@ public class OshaOrganizer {
 		case ThreeYearAverage:
 			OshaAudit straightAvg = new OshaAudit();
 
+			boolean straightAllVerified = true;
+			Date straightLastVerified = null;
+			
 			int straightManHours = 0;
 			int straightFatalities = 0;
 			int straightLostWorkCases = 0;
@@ -281,6 +299,13 @@ public class OshaOrganizer {
 
 			for (OshaAudit osha : yearIndex) {
 				straightAvg.setFactor(osha.getFactor());
+				
+				// Need to set a proper verification value on average OSHAs
+				// for inserting verified tag in ContractorFlagETL answer2
+				if(!osha.isVerified())
+					straightAllVerified = false;
+				if(osha.getVerifiedDate() != null)
+					straightLastVerified = osha.getVerifiedDate();
 
 				if (osha.getManHours() > 0) {
 					straightCount++;
@@ -311,6 +336,10 @@ public class OshaOrganizer {
 			if (straightCount == 0)
 				return null;
 
+			// If all are verified, set verified to last recorded date
+			if(straightAllVerified)
+				straightAvg.setVerifiedDate(straightLastVerified);
+			
 			// setting cumulative values
 			straightAvg.setManHours(straightManHours);
 			straightAvg.setFatalities(straightFatalities);
@@ -344,5 +373,28 @@ public class OshaOrganizer {
 			return straightAvg;
 		}
 		return null;
+	}
+	
+	public String getAnswer2(OshaType type, MultiYearScope year, OshaRateType rateType){
+		String auditFor = getAuditFor(type,year);
+		
+		// decorate
+		// Appending absolute answer for answer2 for Naics OSHAs
+		if (rateType.equals(OshaRateType.LwcrNaics)) {
+			auditFor += "<br/>Contractor Answer: "
+					+ PicsActionSupport.format(getRate(type, year,
+							OshaRateType.LwcrAbsolute));
+		} else if (rateType.equals(OshaRateType.TrirNaics)) {
+			auditFor += "<br/>Contractor Answer: "
+					+ PicsActionSupport.format(getRate(type, year,
+							OshaRateType.TrirAbsolute));
+		}
+		
+		// conditionally add verified tag
+		if(isVerified(type, year)){
+			auditFor += "<br/><span class=\"verified\">Verified</span>";
+		}
+		
+		return auditFor;
 	}
 }

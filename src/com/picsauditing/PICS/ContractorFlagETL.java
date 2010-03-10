@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -19,7 +18,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -95,7 +93,7 @@ public class ContractorFlagETL {
 								hasProperStatus = true;
 						}
 					}
-					if(hasProperStatus != null)
+					if (hasProperStatus != null)
 						changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus.toString()));
 				}
 			}
@@ -122,28 +120,30 @@ public class ContractorFlagETL {
 								answer = (average != null) ? Float.valueOf(average.getAnswer()) : null;
 								for (String year : auditsOfThisEMRType.keySet()) {
 									if (!year.equals("Average"))
-										answer2 += (answer2.isEmpty()) ? "Years: "+year : ", "+year;
+										answer2 += (answer2.isEmpty()) ? "Years: " + year : ", " + year;
+									if(!average.isVerified())
+										verified = false;
 								}
 								break;
 							case ThreeYearsAgo:
 								if (years.size() >= 3) {
 									answer = Float.valueOf(years.get(years.size() - 3).getAnswer());
 									verified = years.get(years.size() - 3).isVerified();
-									answer2 = "Year: "+years.get(years.size() - 3).getAudit().getAuditFor();
+									answer2 = "Year: " + years.get(years.size() - 3).getAudit().getAuditFor();
 								}
 								break;
 							case TwoYearsAgo:
 								if (years.size() >= 2) {
 									answer = Float.valueOf(years.get(years.size() - 2).getAnswer());
 									verified = years.get(years.size() - 2).isVerified();
-									answer2 = "Year: "+years.get(years.size() - 2).getAudit().getAuditFor();
+									answer2 = "Year: " + years.get(years.size() - 2).getAudit().getAuditFor();
 								}
 								break;
 							case LastYearOnly:
 								if (years.size() >= 1) {
 									answer = Float.valueOf(years.get(years.size() - 1).getAnswer());
 									verified = years.get(years.size() - 1).isVerified();
-									answer2 = "Year: "+years.get(years.size() - 1).getAudit().getAuditFor();
+									answer2 = "Year: " + years.get(years.size() - 1).getAudit().getAuditFor();
 								}
 								break;
 							default:
@@ -160,7 +160,13 @@ public class ContractorFlagETL {
 							final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria,
 									answer.toString());
 							fcc.setVerified(verified);
+							
+							// conditionally add verified tag
+							if(verified){
+								answer2 += "<br/><span class=\"verified\">Verified</span>";
+							}
 							fcc.setAnswer2(answer2);
+							
 							changes.add(fcc);
 						} else {
 							if (flagCriteria.isFlaggableWhenMissing()) {
@@ -183,10 +189,10 @@ public class ContractorFlagETL {
 							AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
 							AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
 							if (amBest != null) {
-								if(flagCriteria.getLabel().contains("Rating")) {
+								if (flagCriteria.getLabel().contains("Rating")) {
 									fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
 								}
-								if(flagCriteria.getLabel().contains("Class")) {
+								if (flagCriteria.getLabel().contains("Class")) {
 									fcc.setAnswer(Integer.toString(amBest.getFinancialCode()));
 								}
 							}
@@ -218,28 +224,12 @@ public class ContractorFlagETL {
 					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
 							flagCriteria, Float.toString(answer));
 
-					String answer2 = osha.getAuditFor(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
-
-					// Appending absolute answer for answer2 for Naics OSHAs
-					if (flagCriteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-						answer2 += "<br/>Contractor Answer: "
-								+ PicsActionSupport.format(osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-										OshaRateType.LwcrAbsolute));
-					} else if (flagCriteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-						answer2 += "<br/>Contractor Answer: "
-								+ PicsActionSupport.format(osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-										OshaRateType.TrirAbsolute));
-					}
-					
-					boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria
-							.getMultiYearScope());
-					flagCriteriaContractor.setVerified(verified);
-
-					if(verified){
-						answer2 += "<br/><span class=\"verified\">Verified</span>";
-					}						
-
+					String answer2 = osha.getAnswer2(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+							flagCriteria.getOshaRateType());
 					flagCriteriaContractor.setAnswer2(answer2);
+
+					boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
+					flagCriteriaContractor.setVerified(verified);
 
 					changes.add(flagCriteriaContractor);
 				} else { // check if flaggable when missing
