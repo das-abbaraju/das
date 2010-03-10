@@ -28,7 +28,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		
 		String where = "WHERE (gc.flag != f.flag OR gc.waitingOn != f.waitingOn) "
 			  + "AND con.status = 'Active' "
-			  + "AND con.status = 'Active' "
+			  + "AND con.type = 'Contractor' "
 			  + "AND op.status = 'Active' "
 			  + "AND op.type = 'Operator' "
 			  + "AND fd.id IS NULL ";
