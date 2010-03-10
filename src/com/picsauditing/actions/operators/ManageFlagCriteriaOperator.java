@@ -104,6 +104,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				fco.setFlag(newFlag);
 				fco.setHurdle(Strings.formatNumber(newHurdle));
 				fco.setOperator(operator);
+				fco.setAffected(calculateAffectedList(fco).size());
 				flagCriteriaOperatorDAO.save(fco);
 
 				String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
@@ -304,6 +305,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return addableFlags;
 	}
 
+	public List<FlagCriteriaContractor> calculateAffectedList() {
+		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
+		
+		return calculateAffectedList(fco);
+	}
+	
 	private List<FlagCriteriaContractor> calculateAffectedList(FlagCriteriaOperator fco) {
 		List<FlagCriteriaContractor> fccList = flagCriteriaOperatorDAO.getContractorCriteria(fco);
 		List<FlagCriteriaContractor> affected = new ArrayList<FlagCriteriaContractor>();
@@ -313,12 +320,13 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagData> flagList = calculator.calculate();
 			if (flagList.size() > 0) {
 				FlagData flagged = flagList.get(0);
-	
+				
 				if (flagged.getFlag().equals(fco.getFlag()))
 					affected.add(fcc);
 			}
 		}
-
+		
+		Collections.sort(affected, new ByContractorName());
 		return affected;
 	}
 
@@ -326,13 +334,19 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return Strings.formatDecimalComma(defaultValue);
 	}
 	
-	public class ByCategoryDescription implements Comparator<FlagCriteriaOperator> {
+	private class ByCategoryDescription implements Comparator<FlagCriteriaOperator> {
 		public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
 			// If the categories are the same, order by description
 			if (o1.getCriteria().getCategory().equals(o2.getCriteria().getCategory()))
 				return o1.getCriteria().getDescription().compareTo(o2.getCriteria().getDescription());
 
 			return o1.getCriteria().getCategory().compareTo(o2.getCriteria().getCategory());
+		}
+	}
+	
+	private class ByContractorName implements Comparator<FlagCriteriaContractor> {
+		public int compare(FlagCriteriaContractor arg0, FlagCriteriaContractor arg1) {
+			return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
 		}
 	}
 }

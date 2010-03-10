@@ -53,15 +53,16 @@ function submitHurdle(tdCell) {
 }
 function getImpact(criteriaID) {
 	var data = {
-			button: 'impact',
-			id: $('#form1_id').val(),
-			criteriaID: criteriaID
-		};
-	startThinking({div:'thinking', message:'Fetching impact...'});
-	$('#impactDiv').load('ManageFlagCriteriaOperatorAjax.action', data,
+		button: 'impact',
+		id: $('#form1_id').val(),
+		criteriaID: criteriaID
+	};
+	
+	startThinking({div:'thinking', message:'Getting impacted contractors...'});
+	$('#impactDiv').load('ManageFlagCriteriaOperatorAjax.action', data, 
 		function() {
-			stopThinking({div:'thinking'});
 			$(this).show('slow');
+			stopThinking({div:'thinking'});
 		}
 	);
 }
@@ -118,19 +119,14 @@ function calculateImpact(criteriaID, newHurdle) {
 	);
 }
 
-function updatePercentAffected(criteriaID) {
+function updateAffected(criteriaID) {
 	var data = {
-			button: 'calculateSingle',
-			id: $('#form1_id').val(),
-			criteriaID: criteriaID
-		};
-		
-		//startThinking({div:'thinking', message:'Calculating impact...'});
-		$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data,
-			function() {
-				//stopThinking({div:'thinking'});
-			}
-		);
+		button: 'calculateSingle',
+		id: $('#form1_id').val(),
+		criteriaID: criteriaID
+	};
+	
+	$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data);
 }
 
 var wait = function(){

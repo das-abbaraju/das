@@ -16,7 +16,7 @@ $(document).ready(function() {
 			<th>Description</th>
 			<th>Flag</th>
 			<s:if test="canEdit">
-				<th title="Click percentage to see impact."><nobr>% Affected</nobr></th>
+				<th><nobr># Affected</nobr></th>
 				<th>Edit</th>
 				<th>Remove</th>
 			</s:if>
@@ -24,7 +24,7 @@ $(document).ready(function() {
 	</thead>
 	<tbody>
 		<s:iterator value="criteriaList">
-			<tr id="<s:property value="id" />">
+			<tr id="<s:property value="id" />" <s:if test="needsRecalc">class="recalc"</s:if>>
 				<s:if test="!insurance">
 					<td><s:property value="criteria.category" /></td>
 				</s:if>
@@ -58,11 +58,12 @@ $(document).ready(function() {
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
 				<s:if test="canEdit">
 					<td class="center">
-						<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click percentage to see impact."
-							class="hideOld oldImpact">
-							<s:property value="affected" /></a>
+						<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click to see a list of contractors impacted."
+							class="hideOld oldImpact"><s:property value="affected" /></a>
 						<span class="newImpact"></span>
-						<script type="text/javascript">updatePercentAffected(<s:property value="id" />);</script>
+						<s:if test="needsRecalc">
+							<script type="text/javascript">updateAffected(<s:property value="id" />);</script>
+						</s:if>
 					</td>
 					<td class="center">
 						<a href="#" class="edit" onclick="editCriteria(<s:property value="id" />); return false;"></a>
@@ -71,7 +72,7 @@ $(document).ready(function() {
 						<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>
 					</td>
 				</s:if>
-			</tr>
+			
 		</s:iterator>
 	</tbody>
 </table>

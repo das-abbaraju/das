@@ -78,7 +78,7 @@ function getFlag(selectObject) {
 	<div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
 	<div id="growlBox"></div>
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
-	<s:if test="canEditFlags()">
+	<s:if test="canEdit">
 		<div id="impactDiv"></div>
 		<div style="clear: left; margin: 10px 0px;">
 			<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
