@@ -62,7 +62,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addField("fd.id dataID");
 		sql.addField("fd.flag");
 		sql.addField("gc.flag overallFlag");
-		
+
 		report.setLimit(100000);
 
 		if (permissions.isOperator()) {
@@ -100,7 +100,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 			final FlagCriteriaOperator criteriaOperator = new FlagCriteriaOperator();
 			criteriaOperator.setCriteria(criteria);
-			criteriaOperator.setHurdle(d.get("hurdle").toString());
+			if (d.get("hurdle") == null)
+				criteriaOperator.setHurdle(d.get("hurdle").toString());
 			criteriaOperator.setOperator(operator);
 
 			operatorCriteria.put(criteria, criteriaOperator);
