@@ -12,5 +12,8 @@
 				<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
 			</tr>
 		</s:iterator>
+		<s:if test="calculateAffectedList().size() == 0">
+			<tr><td colspan="2" class="center">No Impact</td></tr>
+		</s:if>
 	</tbody>
 </table>

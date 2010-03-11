@@ -86,7 +86,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		if (isDebugging())
 			PicsLogger.addRuntimeRule("ContractorCron");
-
+		
 		PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
@@ -98,8 +98,13 @@ public class ContractorCron extends PicsActionSupport {
 			}
 			addActionMessage("ContractorCron processed " + list.size() + " record(s)");
 		}
-
+		
 		PicsLogger.stop();
+		
+		if (button != null && button.equals("ConFlag")) {
+			return redirect("ContractorFlag.action?id=" + conID + "&opID=" + opID);
+		}
+		
 		return SUCCESS;
 	}
 

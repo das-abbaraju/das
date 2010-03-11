@@ -112,7 +112,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						}
 					}
 				}
-
+				
+				contractorOperatorDao.save(co);
+				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&button=ConFlag&steps=Flag&steps=WaitingOn");
 			} else if (button.equalsIgnoreCase("Cancel Override")) {
 				co.setForceEnd(null);
 				co.setForceFlag(null);
@@ -133,6 +135,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						}
 					}
 				}
+				
+				contractorOperatorDao.save(co);
+				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&button=ConFlag&steps=Flag&steps=WaitingOn");
 			} else if ("Force Data Override".equals(button)) {
 				FlagData flagData = flagDataDAO.find(dataID);
 				if (forceFlag.equals(flagData.getFlag()))
