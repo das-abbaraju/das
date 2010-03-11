@@ -126,6 +126,7 @@ function updateAffected(criteriaID) {
 		criteriaID: criteriaID
 	};
 	
+	$('#'+criteriaID).find('a.oldImpact').html('<img src="images/ajax_process.gif" alt="Loading image" />');
 	$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data);
 }
 

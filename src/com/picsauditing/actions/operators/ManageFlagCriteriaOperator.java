@@ -213,7 +213,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
-				flagCriteria = flagCriteriaDAO.findWhere("insurance = 1 ORDER BY displayOrder, category, labe");
+				flagCriteria = flagCriteriaDAO.findWhere("insurance = 1 ORDER BY displayOrder, category, label");
 			else
 				flagCriteria = flagCriteriaDAO.findWhere("insurance = 0 ORDER BY displayOrder, category, label");
 
@@ -263,7 +263,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
 
 		// Sort by category, description
-		Collections.sort(inheritedCriteria, new ByCategoryDescription());
+		Collections.sort(inheritedCriteria, new ByOrderCategoryLabel());
 
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();
@@ -334,13 +334,20 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return Strings.formatDecimalComma(defaultValue);
 	}
 	
-	private class ByCategoryDescription implements Comparator<FlagCriteriaOperator> {
+	private class ByOrderCategoryLabel implements Comparator<FlagCriteriaOperator> {
 		public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
-			// If the categories are the same, order by description
-			if (o1.getCriteria().getCategory().equals(o2.getCriteria().getCategory()))
-				return o1.getCriteria().getDescription().compareTo(o2.getCriteria().getDescription());
-
-			return o1.getCriteria().getCategory().compareTo(o2.getCriteria().getCategory());
+			FlagCriteria f1 = o1.getCriteria();
+			FlagCriteria f2 = o2.getCriteria();
+			
+			// Display order matches, sort by category
+			if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
+				// If category matches, sort by label
+				if (f1.getCategory().equals(f2.getCategory())) {
+					return f1.getLabel().compareTo(f2.getLabel());
+				} else
+					return f1.getCategory().compareTo(f2.getCategory());
+			} else
+				return f1.getDisplayOrder() - f2.getDisplayOrder();
 		}
 	}
 	

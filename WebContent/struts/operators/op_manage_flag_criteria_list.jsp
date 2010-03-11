@@ -35,7 +35,7 @@ $(document).ready(function() {
 							<s:select list="getAddableFlags(0)" name="newFlag" value="flag"></s:select> flag if
 						</span>
 						<s:property value="criteria.descriptionBeforeHurdle" />
-						<s:if test="criteria.dataType != 'boolean'">
+						<s:if test="criteria.dataType != 'boolean' && criteria.allowCustomValue">
 							<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
 							<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
 								<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="10"
@@ -54,6 +54,9 @@ $(document).ready(function() {
 					<s:else>
 						<s:property value="replaceHurdle" />
 					</s:else>
+					<s:if test="flag.toString() == 'Green'">
+						<div class="alert">Warning: Green flagged criteria will be ignored in flagging contractors. Please remove this criteria.</div>
+					</s:if>
 				</td>
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
 				<s:if test="canEdit">
@@ -62,7 +65,7 @@ $(document).ready(function() {
 							class="hideOld oldImpact"><s:property value="affected" /></a>
 						<span class="newImpact"></span>
 						<s:if test="needsRecalc">
-							<script type="text/javascript">updateAffected(<s:property value="id" />);</script>
+							<script type="text/javascript">setTimeout('updateAffected('+<s:property value="id" />+')', 500);</script>
 						</s:if>
 					</td>
 					<td class="center">
