@@ -185,7 +185,11 @@ public class Strings {
 		Matcher matcher = pattern.matcher(query);
 		while (matcher.find()) {
 			String idString = matcher.group(1);
-			return Integer.parseInt(idString);
+			try {
+				return Integer.parseInt(idString);
+			} catch (NumberFormatException e) {
+				return 0;
+			}
 		}
 		return 0;
 	}
@@ -362,17 +366,17 @@ public class Strings {
 		}
 		return formatShort(value / 1000000000) + "B";
 	}
-	
+
 	public static String formatDecimalComma(String decimalNumber) {
 		try {
 			Double value = Double.parseDouble(decimalNumber);
 			DecimalFormat df;
-			
+
 			if (value >= 100)
 				df = new DecimalFormat("#,##0");
 			else
 				df = new DecimalFormat("0.00");
-			
+
 			if (value != 0)
 				decimalNumber = df.format(value);
 			else
@@ -380,10 +384,10 @@ public class Strings {
 		} catch (Exception e) {
 			System.out.println("Could not parse number: " + decimalNumber);
 		}
-		
+
 		return decimalNumber;
 	}
-	
+
 	public static String formatNumber(String number) {
 		// Returns only digits and decimal points
 		number = number.replaceAll("[^\\d\\.]", "");
@@ -396,7 +400,7 @@ public class Strings {
 		} catch (Exception e) {
 			System.out.println("Error parsing: " + number);
 		}
-		
+
 		return number;
 	}
 

@@ -194,6 +194,7 @@ public class StringsTest extends TestCase {
 	public void testExtractAccountID() {
 		assertEquals(123456, Strings.extractAccountID("123456"));
 		assertEquals(123456, Strings.extractAccountID("123456.7"));
+		assertEquals(0, Strings.extractAccountID("123412341234123412341"));
 		assertEquals(0, Strings.extractAccountID("Bob's Cranes"));
 		assertEquals(0, Strings.extractAccountID("1 Micro"));
 	}
