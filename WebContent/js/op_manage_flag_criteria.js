@@ -119,19 +119,14 @@ function calculateImpact(criteriaID, newHurdle) {
 	);
 }
 
-function updateAffected(idArray, index) {
-	var criteriaID = idArray[index];
-	
+function updateAffected(criteriaID) {
 	var data = {
 		button: 'calculateSingle',
 		id: $('#form1_id').val(),
 		criteriaID: criteriaID
 	};
 	
-	$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data, function() {
-		if (idArray[index + 1])
-			updateAffected(idArray, index + 1);
-	});
+	$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data);
 }
 
 var wait = function(){
