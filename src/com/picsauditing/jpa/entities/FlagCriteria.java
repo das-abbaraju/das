@@ -211,6 +211,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		JSONObject json = super.toJSON(full);
 
 		json.put("category", category);
+		json.put("displayOrder", displayOrder);
 		json.put("question", question == null ? null : question.toJSON(full));
 		json.put("auditType", auditType == null ? null : auditType.toJSON(full));
 		json.put("oshaType", oshaType == null ? null : oshaType.toString());
@@ -230,9 +231,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	@Override
 	public int compareTo(FlagCriteria o) {
-		int res = label.compareTo(o.label);
-		if (res == 0)
-			res = description.compareTo(o.description);
-		return res;
+
+		return ((Integer) displayOrder).compareTo(o.displayOrder);
 	}
 }

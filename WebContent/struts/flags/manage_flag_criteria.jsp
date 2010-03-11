@@ -71,6 +71,7 @@
 			aaSorting: [[1, 'asc']],
 			aoColumns: [
 			            {bVisible: false},
+			            {bVisible: false},
 			            null,
 			            null,
 			            null
@@ -121,9 +122,9 @@
 									$.gritter.add(data.gritter);
 								if (data.result == 'success') {
 									if (newItem) {
-										dtable.fnAddData([data.criteria.id, data.criteria.category, data.criteria.label, data.criteria.description]);
+										dtable.fnAddData([data.criteria.id, data.criteria.displayOrder, data.criteria.category, data.criteria.label, data.criteria.description]);
 									} else {
-										dtable.fnUpdate([data.criteria.id, data.criteria.category, data.criteria.label, data.criteria.description], $('#criteria_'+data.criteria.id)[0])
+										dtable.fnUpdate([data.criteria.id, data.criteria.displayOrder, data.criteria.category, data.criteria.label, data.criteria.description], $('#criteria_'+data.criteria.id)[0])
 									}
 									criteria_dialog.dialog('close');
 								} else {
@@ -161,7 +162,6 @@
 
 <style>
 #item input[type=text], #item textarea {
-	width: 60%;
 	font-size: normal;
 }
 .mcdropdown_wrapper {
@@ -184,6 +184,7 @@
 	<thead>
 		<tr>
 			<th>ID</th>
+			<th>Display Order</th>
 			<th>Category</th>
 			<th>Label</th>
 			<th>Description</th>
@@ -192,6 +193,7 @@
 	<s:iterator value="criteriaList">
 		<tr>
 			<td><s:property value="id"/></td>
+			<td><s:property value="displayOrder"/></td>
 			<td><nobr><s:property value="category"/></nobr></td>
 			<td><nobr><s:property value="label"/></nobr></td>
 			<td><s:property value="description"/></td>
@@ -211,6 +213,10 @@
 				<li>
 					<label>Label:</label>
 					<s:textfield name="criteria.label"/>
+				</li>
+				<li>
+					<label>Display Order:</label>
+					<s:textfield name="criteria.displayOrder"/>
 				</li>
 				<li>
 					<label>Description:</label>

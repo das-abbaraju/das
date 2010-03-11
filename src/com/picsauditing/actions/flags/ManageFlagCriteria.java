@@ -131,20 +131,38 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 					return JSON;
 				}
 
-				criteriaDAO.save(criteria);
+				try {
+					criteriaDAO.save(criteria);
 
-				json = new JSONObject() {
-					{
-						put("result", "success");
-						put("gritter", new JSONObject() {
-							{
-								put("title", "Criteria Saved");
-								put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
-							}
-						});
-						put("criteria", criteria.toJSON());
-					}
-				};
+					json = new JSONObject() {
+						{
+							put("result", "success");
+							put("gritter", new JSONObject() {
+								{
+									put("title", "Criteria Saved");
+									put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
+								}
+							});
+							put("criteria", criteria.toJSON());
+						}
+					};
+				} catch (final Exception e) {
+					json = new JSONObject() {
+						{
+							put("result", "failure");
+							put("gritter", new JSONObject() {
+								{
+									put("title", "Criteria Not Saved!");
+									put("text", "Flag Criteria " + criteria.getLabel() + " not saved. "
+											+ e.getMessage());
+								}
+							});
+							put("criteria", criteria.toJSON());
+						}
+					};
+					
+					return JSON;
+				}
 			} else {
 				json = new JSONObject() {
 					{
@@ -163,7 +181,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 
 		if ("delete".equals(button)) {
-
 			if (criteria != null) {
 				final int criteriaID = criteria.getId();
 
