@@ -61,9 +61,6 @@ $(document).ready(function() {
 						<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click to see a list of contractors impacted."
 							class="hideOld oldImpact"><s:property value="affected" /></a>
 						<span class="newImpact"></span>
-						<s:if test="needsRecalc">
-							<script type="text/javascript">updateAffected(<s:property value="id" />);</script>
-						</s:if>
 					</td>
 					<td class="center">
 						<a href="#" class="edit" onclick="editCriteria(<s:property value="id" />); return false;"></a>
@@ -76,3 +73,12 @@ $(document).ready(function() {
 		</s:iterator>
 	</tbody>
 </table>
+<script type="text/javascript">
+	var idArray = new Array();
+	$('#criteriaDiv tr.recalc').each(function() {
+		idArray.push($(this).attr('id'));
+	});
+
+	if (idArray[0])
+		updateAffected(idArray, 0);
+</script>
