@@ -70,4 +70,14 @@ public enum FlagColor {
 	public boolean isGreen() {
 		return this.equals(Green);
 	}
+	
+	public boolean isWorseThan(FlagColor flagColor2) {
+		if (flagColor2 == null)
+			return true;
+		
+		if(this.compareTo(flagColor2) < 0)
+			return true;
+		
+		return false;
+	}
 }

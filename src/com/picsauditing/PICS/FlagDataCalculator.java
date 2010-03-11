@@ -32,7 +32,7 @@ import com.picsauditing.util.log.PicsLogger;
 
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
-	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = null;
+	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, FlagDataOverride> overrides = null;
 	private OperatorAccount operator = null;
 
@@ -47,37 +47,44 @@ public class FlagDataCalculator {
 	public FlagDataCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria) {
 		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
 		contractorCriteria.put(conCriteria.getCriteria(), conCriteria);
-		operatorCriteria = new HashMap<FlagCriteria, FlagCriteriaOperator>();
-		operatorCriteria.put(opCriteria.getCriteria(), opCriteria);
+		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
+		if (operatorCriteria.get(opCriteria.getCriteria()) == null)
+			operatorCriteria.put(opCriteria.getCriteria(), new ArrayList<FlagCriteriaOperator>());
+		operatorCriteria.get(opCriteria.getCriteria()).add(opCriteria);
 	}
 	
 	public List<FlagData> calculate() {
-		List<FlagData> dataSet = new ArrayList<FlagData>();
+		Map<FlagCriteria, FlagData> dataSet = new HashMap<FlagCriteria, FlagData>();
 
 		for (FlagCriteria key : operatorCriteria.keySet()) {
-			FlagColor flag = FlagColor.Green;
-			if (contractorCriteria.containsKey(key)) {
-				Boolean flagged = isFlagged(operatorCriteria.get(key), contractorCriteria.get(key));
-				if (flagged != null) {
-					if (overrides != null && overrides.containsKey(key)) {
-						final FlagDataOverride override = overrides.get(key);
-						if (override.isInForce())
-							flag = override.getForceflag();
-					} else if (flagged)
-						flag = operatorCriteria.get(key).getFlag();
-					
-					FlagData data = new FlagData();
-					data.setCriteria(key);
-					data.setContractor(contractorCriteria.get(key).getContractor());
-					data.setOperator(operator);
-					data.setFlag(flag);
-					data.setAuditColumns(new User(User.SYSTEM));
-					dataSet.add(data);
+			for(FlagCriteriaOperator fco : operatorCriteria.get(key)) {
+				FlagColor flag = FlagColor.Green;
+				if (contractorCriteria.containsKey(key)) {
+					Boolean flagged = isFlagged(fco, contractorCriteria.get(key));
+					if (flagged != null) {
+						if (overrides != null && overrides.containsKey(key)) {
+							final FlagDataOverride override = overrides.get(key);
+							if (override.isInForce())
+								flag = override.getForceflag();
+						} else if (flagged)
+							flag = fco.getFlag();
+						
+						FlagData data = new FlagData();
+						data.setCriteria(key);
+						data.setContractor(contractorCriteria.get(key).getContractor());
+						data.setOperator(operator);
+						data.setFlag(flag);
+						data.setAuditColumns(new User(User.SYSTEM));
+						if (dataSet.get(key) == null)
+							dataSet.put(key, data);
+						else if(dataSet.get(key).getFlag().isWorseThan(flag))
+							dataSet.put(key, data);
+					}
 				}
 			}
 		}
 
-		return dataSet;
+		return new ArrayList<FlagData>(dataSet.values());
 	}
 
 	/**
@@ -244,7 +251,7 @@ public class FlagDataCalculator {
 		boolean waitingOnOperator = false;
 
 		for (FlagCriteria key : operatorCriteria.keySet()) {
-			FlagCriteriaOperator fOperator = operatorCriteria.get(key);
+			FlagCriteriaOperator fOperator = operatorCriteria.get(key).get(0);
 			if (contractor.getRiskLevel().ordinal() >= fOperator.getMinRiskLevel().ordinal()
 					&& !fOperator.getFlag().equals(FlagColor.Green)) {
 				for (ContractorAudit conAudit : contractor.getAudits()) {
@@ -333,9 +340,11 @@ public class FlagDataCalculator {
 	}
 
 	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
-		operatorCriteria = new HashMap<FlagCriteria, FlagCriteriaOperator>();
+		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator value : list) {
-			operatorCriteria.put(value.getCriteria(), value);
+			if(operatorCriteria.get(value.getCriteria()) == null)
+				operatorCriteria.put(value.getCriteria(), new ArrayList<FlagCriteriaOperator>());
+			operatorCriteria.get(value.getCriteria()).add(value);
 		}
 	}
 
