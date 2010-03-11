@@ -32,12 +32,17 @@ public class OperatorFlagMatrix extends ReportAccount {
 	private Map<FlagCriteria, FlagCriteriaOperator> operatorCriteria = new TreeMap<FlagCriteria, FlagCriteriaOperator>();
 
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
+		setReportName("Contractor Operator Flag Matrix");
 		this.operatorDAO = operatorDAO;
 		this.listType = ListType.Operator;
 	}
 
 	@Override
 	protected void buildQuery() {
+
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+
 		sql = new SelectAccount();
 		sql.addJoin("JOIN operators o ON a.id = o.id");
 		sql.addJoin("JOIN flag_criteria_operator fco ON fco.opID = o.inheritFlagCriteria");
@@ -63,13 +68,11 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addField("fd.flag");
 		sql.addField("gc.flag overallFlag");
 
-		report.setLimit(100000);
+		addFilterToSQL();
 
-		if (permissions.isOperator()) {
-			id = permissions.getAccountId();
-		}
+		report.setLimit(-1);
 
-		sql.addWhere("o.id = " + id);
+		sql.addWhere("o.id = " + permissions.getAccountId());
 	}
 
 	@Override
@@ -84,7 +87,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 			con.setType("Contractor");
 			con.setName((String) d.get("conName"));
 
-			overall.put(con, FlagColor.valueOf(d.get("overallFlag").toString()));
+			overall.put(con, FlagColor.valueOf((String) d.get("overallFlag")));
 
 			if (contractorCriteria.get(con) == null)
 				contractorCriteria.put(con, new TreeMap<FlagCriteria, Map<FlagCriteriaContractor, FlagData>>());
@@ -93,27 +96,26 @@ public class OperatorFlagMatrix extends ReportAccount {
 			criteria.setId(Integer.parseInt(d.get("criteriaID").toString()));
 			criteria.setLabel((String) d.get("label"));
 			criteria.setDescription((String) d.get("description"));
-			criteria.setDataType(d.get("dataType").toString());
-			criteria.setDefaultValue(d.get("defaultValue").toString());
+			criteria.setDataType((String) d.get("dataType"));
+			criteria.setDefaultValue((String) d.get("defaultValue"));
 
 			flagCriteria.add(criteria);
 
 			final FlagCriteriaOperator criteriaOperator = new FlagCriteriaOperator();
 			criteriaOperator.setCriteria(criteria);
-			if (d.get("hurdle") != null)
-				criteriaOperator.setHurdle(d.get("hurdle").toString());
+			criteriaOperator.setHurdle((String) d.get("hurdle"));
 			criteriaOperator.setOperator(operator);
 
 			operatorCriteria.put(criteria, criteriaOperator);
 
-			final FlagCriteriaContractor criteriaContractor = new FlagCriteriaContractor(con, criteria, d.get("answer")
-					.toString());
+			final FlagCriteriaContractor criteriaContractor = new FlagCriteriaContractor(con, criteria, (String) d
+					.get("answer"));
 			criteriaContractor.setId(Integer.parseInt(d.get("fccID").toString()));
 
 			final FlagData dat = new FlagData();
 			if (d.get("dataID") != null) {
 				dat.setId(Integer.parseInt(d.get("dataID").toString()));
-				dat.setFlag(d.get("flag") == null ? null : FlagColor.valueOf(d.get("flag").toString()));
+				dat.setFlag(d.get("flag") == null ? null : FlagColor.valueOf((String) d.get("flag")));
 			}
 
 			contractorCriteria.get(con).put(criteria, new TreeMap<FlagCriteriaContractor, FlagData>() {

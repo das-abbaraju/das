@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<s:include value="../operators/opHeader.jsp"/>
+<s:include value="filters.jsp"/>
 
 <table class="report">
 	<thead>

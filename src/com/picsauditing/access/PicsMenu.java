@@ -62,23 +62,24 @@ public class PicsMenu {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild("Search For New", url);
 		}
-		if(permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
+		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 			subMenu.addChild("Bid Only Account", "BiddingContractorSearch.action");
 		}
 		if (permissions.isCorporate())
 			subMenu.addChild("By Flag", "ReportContractorOperatorFlag.action");
 		if (permissions.isCorporate() || permissions.getCorporateParent().size() > 0)
 			subMenu.addChild("By Operator", "ReportContractorOperatorFlagMatrix.action");
+		subMenu.addChild("Flag Matrix", "OperatorFlagMatrix.action");
 		if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
 			subMenu.addChild("Archived Accounts", "ArchivedContractorAccounts.action");
 			subMenu.addChild("Delinquent Accounts", "DelinquentContractorAccounts.action");
 		}
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
-		
-		if(permissions.isPicsEmployee() || permissions.isOperatorCorporate())
+
+		if (permissions.isPicsEmployee() || permissions.isOperatorCorporate())
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
-		
+
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {
 			subMenu.addChild("My Audits", "AuditListAuditor.action");
@@ -102,10 +103,10 @@ public class PicsMenu {
 			subMenu.addChild("Audit Calendar", "AuditCalendar.action");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Answer Updates", "AuditDataUpdates.action");
-		if(permissions.isAuditor()) {
+		if (permissions.isAuditor()) {
 			subMenu.addChild("Close Open Reqs", "ReportOpenRequirements.action");
 		}
-		
+
 		subMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
 			subMenu.addChild("Assign Contractors", "ContractorAssigned.action");
@@ -156,7 +157,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Manual Audit Matrix", "ManageDesktopMatrix.action");
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
-			subMenu.addChild("Manage Flag Criteria","ManageFlagCriteria.action");
+			subMenu.addChild("Manage Flag Criteria", "ManageFlagCriteria.action");
 		}
 
 		if (permissions.seesAllContractors()) {
@@ -171,7 +172,7 @@ public class PicsMenu {
 			subMenu.addChild("Email Queue", "EmailQueueList.action");
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-			//subMenu.addChild("Flag Criteria", "OperatorFlagCriteria.action");
+			// subMenu.addChild("Flag Criteria", "OperatorFlagCriteria.action");
 			subMenu.addChild("Flag Criteria", "ManageFlagCriteriaOperator.action");
 			// Visible CAOs uses visible inherited insurance criteria
 			if (permissions.getVisibleCAOs().size() > 0)
@@ -184,10 +185,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditProfile)) {
 			subMenu.addChild("Edit Profile", "ProfileEdit.action");
 		}
-		if(permissions.hasPermission(OpPerms.EditAccountDetails))
-			subMenu.addChild("Edit Account", "FacilitiesEdit.action?id="+permissions.getAccountId());
+		if (permissions.hasPermission(OpPerms.EditAccountDetails))
+			subMenu.addChild("Edit Account", "FacilitiesEdit.action?id=" + permissions.getAccountId());
 
-		
 		// Add a new permission for this
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
@@ -219,7 +219,7 @@ public class PicsMenu {
 		subMenu = menu.addChild("Reports");
 		// TODO - remove these hacks
 		if (permissions.getAccountId() == 10569 || permissions.getAccountId() == 10565) {
-			subMenu.addChild("Orientation Video Report","report_orientation.jsp");
+			subMenu.addChild("Orientation Video Report", "report_orientation.jsp");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
