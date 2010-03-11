@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ManageFlagCriteria extends PicsActionSupport implements Preparable {
 
 	private AuditTypeDAO auditTypeDAO;
@@ -55,7 +56,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -195,6 +196,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 			return JSON;
 		}
+
 		return SUCCESS;
 	}
 
@@ -284,26 +286,11 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return flagQuestionMap;
 	}
 
-	public List<String> getComparisonList() {
-		return new ArrayList<String>() {
-			{
-				add("=");
-				add("!=");
-				add("NOT EMPTY");
-				add("<");
-				add(">");
-			}
-		};
+	public String[] getComparisonList() {
+		return new String[] { "=", "!=", "NOT EMPTY", "<", ">" };
 	}
 
-	public List<String> getDatatypeList() {
-		return new ArrayList<String>() {
-			{
-				add(FlagCriteria.BOOLEAN);
-				add(FlagCriteria.DATE);
-				add(FlagCriteria.NUMBER);
-				add(FlagCriteria.STRING);
-			}
-		};
+	public String[] getDatatypeList() {
+		return new String[] { FlagCriteria.BOOLEAN, FlagCriteria.DATE, FlagCriteria.NUMBER, FlagCriteria.STRING };
 	}
 }
