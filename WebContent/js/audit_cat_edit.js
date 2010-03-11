@@ -124,10 +124,7 @@ function reloadQuestion(divId) {
 	};
 
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
-	$(divName).load('AuditDataSaveAjax.action',data, function(response, status){
-		if (status=='success')
-			$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-	});
+	$(divName).load('AuditDataSaveAjax.action',data);
 	return true;
 }
 
