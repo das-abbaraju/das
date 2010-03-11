@@ -21,6 +21,7 @@ import org.json.simple.JSONObject;
 public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> {
 
 	private String category;
+	private int displayOrder = 999;
 	private AuditQuestion question;
 	private AuditType auditType;
 	private OshaType oshaType;
@@ -47,6 +48,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
 	@ManyToOne
@@ -182,11 +191,11 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	public void setFlaggableWhenMissing(boolean flaggableWhenMissing) {
 		this.flaggableWhenMissing = flaggableWhenMissing;
 	}
-	
+
 	public boolean isInsurance() {
 		return insurance;
 	}
-	
+
 	public void setInsurance(boolean insurance) {
 		this.insurance = insurance;
 	}
