@@ -1,6 +1,8 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 
 		if (button != null) {
+			if (button.equalsIgnoreCase("Recalculate Now")) {
+				co.setFlagLastUpdated(new Date());
+				contractorOperatorDao.save(co);
+				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID
+					+ "&button=ConFlag&steps=Flag&steps=WaitingOn");
+			}
+			
 			permissions.tryPermission(OpPerms.EditForcedFlags);
 
 			Note note = new Note();
@@ -185,6 +194,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					}
 				}
 			}
+			
 			note.setSummary(noteText);
 			getNoteDao().save(note);
 		}
@@ -273,13 +283,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (flagDataMap == null) {
 			flagDataMap = new TreeMap<String, List<FlagData>>();
 			Set<FlagData> flagData = co.getFlagDatas();
-			for(FlagData flagData2 : flagData) {
+			
+			List<FlagData> flagDataList = new ArrayList<FlagData>(flagData);
+			Collections.sort(flagDataList, new ByOrderCategoryLabel());
+			
+			for(FlagData flagData2 : flagDataList) {
 				if(!flagData2.getCriteria().isInsurance()) {
 					if(flagDataMap.get(flagData2.getCriteria().getCategory()) == null) {
 						flagDataMap.put(flagData2.getCriteria().getCategory(), new ArrayList<FlagData>());
 					}
 					flagDataMap.get(flagData2.getCriteria().getCategory()).add(flagData2);
-				}	
+				}
 			}
 		}
 		return flagDataMap;
@@ -314,5 +328,20 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		
 		return false;
+	}
+	
+	private class ByOrderCategoryLabel implements Comparator<FlagData> {
+		public int compare(FlagData o1, FlagData o2) {
+			FlagCriteria f1 = o1.getCriteria();
+			FlagCriteria f2 = o2.getCriteria();
+			
+			if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
+				if (f1.getCategory().equals(f2.getCategory())) {
+					return f1.getLabel().compareTo(f2.getLabel());
+				} else
+					return f1.getCategory().compareTo(f2.getCategory());
+			} else
+				return f1.getDisplayOrder() - f2.getDisplayOrder();
+		}
 	}
 }

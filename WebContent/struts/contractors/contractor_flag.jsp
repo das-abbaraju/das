@@ -66,11 +66,18 @@ function checkSubmit(buttonName, dataID) {
 <s:include value="conHeader.jsp" />
 
 <div style="text-align: center; width: 100%">
-<s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; width: 25%;">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
+<div class="info" style="float: right; clear: right; width: 25%;">
+<s:form>
+	<s:hidden name="id" />
+	<s:hidden name="opID" />
+	This contractor's flags were last recalculated <s:date name="co.flagLastUpdated" nice="true" /><br />
+	<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
+</s:form>
+</div>
+<s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; clear: right; width: 25%;">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
 <table style="text-align: center;">
 	<tr>
-		<td rowspan="2" style="vertical-align: middle;"><s:property
-			value="co.flagColor.bigIcon" escape="false" /></td>
+		<td rowspan="2" style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
 		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b>
 		<br/><a href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status" class="help">What does this mean?</a><br/></td>
 	</tr>
@@ -82,7 +89,7 @@ function checkSubmit(buttonName, dataID) {
 					Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
 					<br/>
 					<s:hidden name="id" />
-					<s:hidden name="opID" 	/>
+					<s:hidden name="opID" />
 					<pics:permission perm="EditForcedFlags">
 						<s:if test="permissions.corporate">
 							<s:checkbox name="overrideAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label><br/>
