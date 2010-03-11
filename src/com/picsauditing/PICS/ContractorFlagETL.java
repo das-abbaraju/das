@@ -152,8 +152,15 @@ public class ContractorFlagETL {
 										+ " specified for flag criteria id " + flagCriteria.getId()
 										+ ", contractor id " + contractor.getId());
 							}
-						} catch (NumberFormatException e) {
-							answer = 0.0f;
+						} catch (Throwable t) {
+							PicsLogger.log("Could not cast contractor: " + contractor.getId() + " and answer: "
+									+ ((answer != null) ? answer : "null") + " to a value for criteria: "
+									+ flagCriteria.getId());
+
+							answer = null; // contractor errored out somewhere
+							// during the process of creating
+							// their data
+							// do not want to enter partially corrupt data
 						}
 
 						if (answer != null) {
