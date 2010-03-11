@@ -17,7 +17,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.util.Strings;
 
@@ -199,8 +198,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return SUCCESS;
 	}
 
-	public List<BaseTable> getCriteriaList() {
-		return criteriaDAO.findAll(FlagCriteria.class);
+	public List<FlagCriteria> getCriteriaList() {
+		return criteriaDAO.findAll();
 	}
 
 	public FlagCriteria getCriteria() {

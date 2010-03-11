@@ -213,9 +213,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			List<FlagCriteria> flagCriteria = null;
 
 			if (insurance)
-				flagCriteria = flagCriteriaDAO.findWhere("insurance = 1 ORDER BY label");
+				flagCriteria = flagCriteriaDAO.findWhere("insurance = 1 ORDER BY displayOrder, category, labe");
 			else
-				flagCriteria = flagCriteriaDAO.findWhere("insurance = 0 ORDER BY category, label");
+				flagCriteria = flagCriteriaDAO.findWhere("insurance = 0 ORDER BY displayOrder, category, label");
 
 			for (FlagCriteria fc : flagCriteria) {
 				if (doNotAdd.contains(fc))

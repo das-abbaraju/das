@@ -50,14 +50,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		this.category = category;
 	}
 
-	public int getDisplayOrder() {
-		return displayOrder;
-	}
-
-	public void setDisplayOrder(int displayOrder) {
-		this.displayOrder = displayOrder;
-	}
-
 	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = true)
 	public AuditQuestion getQuestion() {
@@ -198,6 +190,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	public void setInsurance(boolean insurance) {
 		this.insurance = insurance;
+	}
+
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
 	@Override
