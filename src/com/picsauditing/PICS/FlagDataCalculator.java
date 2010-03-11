@@ -184,7 +184,7 @@ public class FlagDataCalculator {
 
 				if (dataType.equals("string")) {
 					if (comparison.equals("NOT EMPTY"))
-						return !Strings.isEmpty(answer);
+						return Strings.isEmpty(answer);
 					if (comparison.equals("="))
 						return hurdle.equals(answer);
 				}
