@@ -535,7 +535,8 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		
 		AuditData result = trim(new ArrayList<AuditData>(emrs.values()));
-		emrs.remove(result.getAudit().getAuditFor());
+		if(result != null)
+			emrs.remove(result.getAudit().getAuditFor());
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
 		if (avg != null && !Strings.isEmpty(avg.getAnswer()))
