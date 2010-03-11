@@ -111,6 +111,7 @@ public class Home extends ContractorActionSupport {
 
 			// The account has not seen the notice
 			Cookie PICS_NEW = new Cookie("PICS_NEW", "1");
+			PICS_NEW.setMaxAge(3600 * 24 * 30);
 			ServletActionContext.getResponse().addCookie(PICS_NEW);
 			return true;
 		}
