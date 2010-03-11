@@ -1,12 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:if test="#a.id > 0">
-	<s:set name="divID" value="'a'+#a.id" />
-</s:if>
-<s:else>
-	<s:set name="divID" value="'q'+#q.id" />
-</s:else>
+<s:set name="divID" value="'q'+#q.id" />
 
-<div class="thinking" id="thinking_<s:property value="#divID"/>"></div>
+<div class="thinking" id="thinking_<s:property value="#q.id"/>"></div>
 
 <s:set name="questionStillRequired" value="false" />
 <s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
@@ -52,84 +47,84 @@
 </s:if>
 
 <div class="answer">
-	<input type="hidden" id="<s:property value="#divID"/>_answerID" value="<s:property value="#a.id"/>" />
-	<input type="hidden" id="<s:property value="#divID"/>_questionID" value="<s:property value="#q.id"/>" />
+	<input type="hidden" id="<s:property value="#q.id"/>_answerID" value="<s:property value="#a.id"/>" />
+	<input type="hidden" id="<s:property value="#q.id"/>_questionID" value="<s:property value="#q.id"/>" />
 	
 	<s:if test="#q.questionType == 'Text Area'">
-		<s:textarea cols="70" rows="4" name="answer%{#divID}" value="%{#a.answer}" cssStyle="margin-left: 80px; width: 100%;"
-			onchange="saveAnswer('%{#divID}', this);">
+		<s:textarea cols="70" rows="4" name="answer%{#q.id}" value="%{#a.answer}" cssStyle="margin-left: 80px; width: 100%;"
+			onchange="saveAnswer('%{#q.id}', this);">
 		</s:textarea>
 	</s:if>
 	<s:if test="#q.questionType == 'Text'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#divID}', this);"/>
+		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="30" 
+			onchange="saveAnswer('%{#q.id}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Additional Insured'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#divID}', this);"/>
+		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="30" 
+			onchange="saveAnswer('%{#q.id}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Date'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="8" 
-			onchange="saveAnswer('%{#divID}', this);"/>
+		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="8" 
+			onchange="saveAnswer('%{#q.id}', this);"/>
 			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 	</s:if>
 	<s:if test="#q.questionType == 'License'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="30" 
-			onchange="saveAnswer('%{#divID}', this);"/>
+		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="30" 
+			onchange="saveAnswer('%{#q.id}', this);"/>
 		<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />			
 	</s:if>
 	<s:if test="#q.questionType == 'Check Box' || #q.questionType == 'Industry' || #q.questionType == 'Main Work'">
-		<s:checkbox fieldValue="X" value="#a.id > 0 && #a.answer.length() == 1" name="answer%{#divID}"
-			onclick="saveAnswer('%{#divID}', this);" />
+		<s:checkbox fieldValue="X" value="#a.id > 0 && #a.answer.length() == 1" name="answer%{#q.id}"
+			onclick="saveAnswer('%{#q.id}', this);" />
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No'">
-		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No'}" name="answer%{#divID}" value="%{#a.answer}" 
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
+		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No'}" name="answer%{#q.id}" value="%{#a.answer}" 
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Yes/No/NA'">
-		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#divID}" value="%{#a.answer}" 
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
+		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'Yes':'Yes','No':'No','NA':'NA'}" name="answer%{#q.id}" value="%{#a.answer}" 
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'Office Location'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#{'No':'No','Yes':'Yes','Yes with Office':'Yes with Office'}" 
-			name="answer%{#divID}" value="%{#a.answer}"
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"></s:radio>
+			name="answer%{#q.id}" value="%{#a.answer}"
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"></s:radio>
 	</s:if>
 	<s:if test="#q.questionType == 'State'">
 		<!-- TODO remove -->
 		<s:set name="state_header" value="#q.question.contains('State') ? #q.question.contains('Province') ? 'State / Province' : 'State' : #q.question.contains('Province') ? 'Province' : 'State' "/>
-		<s:select list="getStateList(#q.countries)" value="%{#a.answer}" name="answer%{#divID}" 
+		<s:select list="getStateList(#q.countries)" value="%{#a.answer}" name="answer%{#q.id}" 
 			headerKey="" headerValue=" - %{#state_header} - " listKey="isoCode" listValue="name"
-			onchange="saveAnswer('%{#divID}', this);"></s:select>
+			onchange="saveAnswer('%{#q.id}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Country'">
-		<s:select list="countryList" value="%{#a.answer}" name="answer%{#divID}" 
+		<s:select list="countryList" value="%{#a.answer}" name="answer%{#q.id}" 
 			listKey="isoCode" listValue="english"
 			headerKey="" headerValue="- Country -"
-			onchange="saveAnswer('%{#divID}', this);"></s:select>
+			onchange="saveAnswer('%{#q.id}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Money'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
-			onchange="saveAnswer('%{#divID}', this);" cssClass="number" />
+		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="19" 
+			onchange="saveAnswer('%{#q.id}', this);" cssClass="number" />
 	</s:if>
 	<s:if test="#q.questionType == 'Decimal Number'">
-		<s:textfield name="answer%{#divID}" value="%{#a.answer}" size="19" 
-			onchange="saveAnswer('%{#divID}', this)" cssClass="number" />
+		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="19" 
+			onchange="saveAnswer('%{#q.id}', this)" cssClass="number" />
 	</s:if>
 	<s:if test="#q.questionType == 'Service'">
-		<nobr><s:checkbox fieldValue="C" value="%{#a.answer.indexOf('C') != -1}" name="answer%{#divID}_C" 
-			onclick="saveAnswer('%{#divID}', this);" /> C</nobr>
-		<nobr><s:checkbox fieldValue="S" value="%{#a.answer.indexOf('S') != -1}" name="answer%{#divID}_S" 
-			onclick="saveAnswer('%{#divID}', this);" /> S</nobr>
+		<nobr><s:checkbox fieldValue="C" value="%{#a.answer.indexOf('C') != -1}" name="answer%{#q.id}_C" 
+			onclick="saveAnswer('%{#q.id}', this);" /> C</nobr>
+		<nobr><s:checkbox fieldValue="S" value="%{#a.answer.indexOf('S') != -1}" name="answer%{#q.id}_S" 
+			onclick="saveAnswer('%{#q.id}', this);" /> S</nobr>
 	</s:if>
 	<s:if test="#q.questionType == 'Radio'">
 		<s:radio theme="pics" cssClass="question_%{#q.id}" list="#q.optionsVisible" listKey="optionName" listValue="optionName" 
-			value="#a.answer" name="answer%{#divID}" 
-			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#divID}', this);"/>
+			value="#a.answer" name="answer%{#q.id}" 
+			onclick="$('.question_%{#q.id}').attr({'disabled':'disabled'}); saveAnswer('%{#q.id}', this);"/>
 	</s:if>
 	<s:if test="#q.questionType == 'AMBest'">
 		<input type="hidden" id="ambest_naic_code" />
-		<s:textfield id="ambest_autocomplete" name="answer%{#divID}" value="%{#a.answer}" size="75" />
+		<s:textfield id="ambest_autocomplete" name="answer%{#q.id}" value="%{#a.answer}" size="75" />
 		
 		<script type="text/javascript"> 
 			$('#ambest_autocomplete').autocomplete('AmBestSuggestAjax.action',
@@ -143,7 +138,7 @@
 						$('#ambest_naic_code').val(data[2]);
 					else
 						$('#ambest_naic_code').val("");
-					saveAnswerComment('<s:property value="%{#divID}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
+					saveAnswerComment('<s:property value="%{#q.id}"/>', $('#ambest_autocomplete')[0], $('#ambest_naic_code'));
 				});
 		</script>
 		
@@ -172,7 +167,7 @@
 				value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" 
 				onclick="showFileUpload('<s:property value="#a.id"/>', 
 					'<s:property value="#q.id"/>', 
-					'<s:property value="#divID"/>');"
+					'<s:property value="#q.id"/>');"
 				title="Opens in new window (please disable your popup blocker)" />
 		</nobr>
 	</s:if>
@@ -197,10 +192,10 @@
 	<s:if test="#q.showComment || mode == 'Verify'">
 		<br/>
 		<label>Comments:</label>
-		<input type="button" class="picsbutton positive" value="Save Comment" onclick="saveAnswerComment('<s:property value="#divID"/>', null, $('#answer<s:property value="#divID"/>'));"/>
-		<s:textarea name="answer%{#divID}" id="answer%{#divID}" cssClass="richText" value="%{#a.comment}" rows="6" cols="80"/>
+		<input type="button" class="picsbutton positive" value="Save Comment" onclick="saveAnswerComment('<s:property value="#q.id"/>', null, $('#answer<s:property value="#q.id"/>'));"/>
+		<s:textarea name="answer%{#q.id}" id="answer%{#q.id}" cssClass="richText" value="%{#a.comment}" rows="6" cols="80"/>
 		<script type="text/javascript">
-			$('#answer<s:property value="#divID"/>').wysiwyg();	
+			$('#answer<s:property value="#q.id"/>').wysiwyg();	
 		</script>
 	</s:if>
 </div>
@@ -230,5 +225,7 @@
 	class="verified">Verified on <s:date name="#a.dateVerified"
 	format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
 </s:if>
+<div class="dependentQuestions" ><s:iterator value="#q.dependentQuestions"><s:if test="#q.subCategory.category == subCategory.category">,<s:property value="id"/></s:if></s:iterator></div>
+
 <br clear="all">
 <div class="clear"></div>

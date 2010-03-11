@@ -64,12 +64,6 @@ div.thinking {
 	font-weight: bold;
 }
 
-#content div.tuple {
-	margin-left: 10px;
-	border-bottom: 1px dashed #A84D10;
-	width: 100%;
-}
-
 input.number {
 	text-align: right;
 	padding-right: 10px;

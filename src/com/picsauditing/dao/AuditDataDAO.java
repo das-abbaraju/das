@@ -16,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.AnswerMapByAudits;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -48,16 +46,6 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public AnswerMap findByCategory(int auditID, AuditCategory category) {
-		Query query = em
-				.createQuery("FROM AuditData d "
-						+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category = :category ORDER BY d.creationDate");
-		query.setParameter("auditID", auditID);
-		query.setParameter("category", category);
-
-		return mapData(query.getResultList());
-	}
-
 	public List<AuditData> findDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("FROM AuditData d "
 				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category.id = :category ");
@@ -65,12 +53,6 @@ public class AuditDataDAO extends PicsDAO {
 		query.setParameter("category", categoryID);
 
 		return query.getResultList();
-	}
-
-	public AnswerMap findByCategory(int auditID, int categoryID) {
-		AuditCategory auditCategory = new AuditCategory();
-		auditCategory.setId(categoryID);
-		return findByCategory(auditID, auditCategory);
 	}
 
 	/**
@@ -175,58 +157,6 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	public Map<Integer, AnswerMap> findAnswersQuestionList(List<Integer> auditIds, List<AuditQuestion> questions) {
-		List<Integer> questionIDs = new Vector<Integer>();
-		for (AuditQuestion q : questions) {
-			questionIDs.add(q.getId());
-		}
-		return findAnswers(auditIds, questionIDs);
-	}
-
-	public Map<Integer, AnswerMap> findAnswers(List<Integer> auditIds, List<Integer> questionIds) {
-		if (questionIds.size() == 0)
-			return null;
-
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + Strings.implode(auditIds)
-				+ " ) and question.id IN (" + Strings.implode(questionIds) + ") ");
-
-		Map<Integer, AnswerMap> response = new HashMap<Integer, AnswerMap>();
-		List<AuditData> results = query.getResultList();
-
-		for (AuditData row : results) {
-			int auditID = row.getAudit().getId();
-			if (!response.containsKey(auditID))
-				response.put(auditID, new AnswerMap());
-			response.get(auditID).add(row);
-		}
-		return response;
-	}
-
-	public AnswerMapByAudits findAnswersByAudits(List<ContractorAudit> audits, List<Integer> questionIds) {
-		if (questionIds != null && questionIds.size() == 0)
-			return null;
-
-		List<Integer> auditIds = new Vector<Integer>();
-
-		for (ContractorAudit audit : audits) {
-			auditIds.add(audit.getId());
-		}
-
-		Query query = null;
-
-		if (questionIds != null && questionIds.size() > 0) {
-			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + Strings.implode(auditIds)
-					+ " ) and question.id IN (" + Strings.implode(questionIds) + ") ");
-		} else {
-			query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id in (" + Strings.implode(auditIds)
-					+ " ) ");
-
-		}
-
-		List<AuditData> results = query.getResultList();
-		return AuditDataDAO.buildAnswerMapByAudits(results);
-	}
-
 	public Map<Integer, AuditData> findAnswersForSafetyManual(int conID, int questionId) {
 		Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
 		Query query = em
@@ -249,25 +179,6 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public AnswerMap findAnswersByAuditAndUniqueCode(int auditId, String uniqueCode) {
-
-		Query query = em
-				.createQuery("SELECT d FROM AuditData d JOIN AuditQuestion q WHERE d.audit.id = ? AND q.uniqueCode = ? ");
-
-		query.setParameter(1, auditId);
-		query.setParameter(2, uniqueCode);
-		return mapData(query.getResultList());
-	}
-
-	public List<AuditData> findAnswersByContractorAndUniqueCode(int conId, String uniqueCode) {
-		Query query = em.createQuery("SELECT d FROM AuditData d JOIN d.question q "
-				+ "WHERE d.audit.contractorAccount.id = ? AND q.uniqueCode = ? ");
-
-		query.setParameter(1, conId);
-		query.setParameter(2, uniqueCode);
-		return query.getResultList();
-	}
-
 	/**
 	 * 
 	 * @param auditIds
@@ -287,42 +198,13 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	static public AnswerMapByAudits buildAnswerMapByAudits(List<AuditData> results) {
-		AnswerMapByAudits response = new AnswerMapByAudits();
-
-		ContractorAudit audit = null;
-		List<AuditData> temp = new Vector<AuditData>();
-
-		for (AuditData data : results) {
-			if (audit == null) {
-				audit = data.getAudit();
-			}
-
-			if (data.getAudit().getId() != audit.getId()) {
-				response.put(audit, mapData(temp));
-				temp = new Vector<AuditData>();
-				audit = data.getAudit();
-			}
-
-			temp.add(data);
-		}
-
-		if (audit != null) {
-			response.put(audit, mapData(temp));
-		}
-		return response;
-	}
-
 	/**
 	 * Convert a ResultList into an AnswerMap
 	 * 
 	 * @return
 	 */
 	static private AnswerMap mapData(List<AuditData> result) {
-		AnswerMap indexedResult = new AnswerMap();
-		for (AuditData row : result)
-			indexedResult.add(row);
-		return indexedResult;
+		return new AnswerMap(result);
 	}
 
 	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {

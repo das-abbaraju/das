@@ -34,6 +34,7 @@ import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
 public class AuditDataSave extends AuditActionSupport {
+
 	private static final long serialVersionUID = 1103112846482868309L;
 	private AuditData auditData = null;
 	private AnswerMap answerMap;
@@ -68,7 +69,19 @@ public class AuditDataSave extends AuditActionSupport {
 				return LOGIN;
 
 			getUser();
-			if (auditData.getId() == 0) {
+			
+			AuditData newCopy = null;
+			if (auditData.getId() > 0) {
+				newCopy = auditDataDao.find(auditData.getId());
+			} else {
+				if (auditData.getAudit() == null)
+					throw new Exception("Missing Audit");
+				if (auditData.getQuestion() == null)
+					throw new Exception("Missing Question");
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion().getId());
+			}
+			
+			if (newCopy == null) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 				auditData.setQuestion(question);
@@ -76,7 +89,6 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
-				AuditData newCopy = auditDataDao.find(auditData.getId());
 				if (auditData.getAnswer() != null) {
 					// if answer is being set, then
 					// we are not currently verifying
@@ -132,8 +144,12 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			auditID = auditData.getAudit().getId();
+			// Load Dependent questions
+			auditData.getQuestion().getDependsOnQuestion();
+			auditData.getQuestion().getDependentQuestions();
 			auditData.setAuditColumns(permissions);
 			if ("reload".equals(button)) {
+				loadAnswerMap();
 				return SUCCESS;
 			}
 			if (auditData.getQuestion().getId() == 57) {
@@ -175,17 +191,18 @@ public class AuditDataSave extends AuditActionSupport {
 					if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						Date expiresDate = DateBean.parseDate(auditData.getAnswer());
-						if(!DateBean.isNullDate(expiresDate))
+						if (!DateBean.isNullDate(expiresDate))
 							tempAudit.setExpiresDate(expiresDate);
-						// In case the answer is not a valid date we add 1 year to the policy's creation date.
-						if(tempAudit.getExpiresDate() == null) {
+						// In case the answer is not a valid date we add 1 year
+						// to the policy's creation date.
+						if (tempAudit.getExpiresDate() == null) {
 							tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
 						}
 					}
 					if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
 							&& !StringUtils.isEmpty(auditData.getAnswer())) {
 						Date creationDate = DateBean.parseDate(auditData.getAnswer());
-						if(!DateBean.isNullDate(creationDate))
+						if (!DateBean.isNullDate(creationDate))
 							tempAudit.setCreationDate(creationDate);
 					}
 
@@ -200,8 +217,8 @@ public class AuditDataSave extends AuditActionSupport {
 						auditDao.save(tempAudit);
 					}
 				}
-				if(tempAudit.getAuditType().getId() == AuditType.COR) {
-					if(auditData.getQuestion().getId() == 2950) {
+				if (tempAudit.getAuditType().getId() == AuditType.COR) {
+					if (auditData.getQuestion().getId() == 2950) {
 						tempAudit.setAuditFor(auditData.getAnswer());
 						auditDao.save(tempAudit);
 					}
@@ -229,19 +246,25 @@ public class AuditDataSave extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit);
 			}
 
-			List<Integer> questionIds = new ArrayList<Integer>();
-			questionIds.add(auditData.getQuestion().getId());
-			if (auditData.getQuestion().getIsRequired().equals("Depends"))
-				questionIds.add(auditData.getQuestion().getDependsOnQuestion().getId());
-			answerMap = auditDataDao.findAnswers(auditID, questionIds);
+			loadAnswerMap();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			addActionError(e.getMessage());
 			return BLANK;
 		}
-
+		if (auditData.getQuestion().getDependentQuestions() != null)
+			System.out.println("Found " + auditData.getQuestion().getDependentQuestions().size()
+					+ " dependent Questions for " + auditData.getQuestion());
 		return SUCCESS;
+	}
+
+	private void loadAnswerMap() {
+		List<Integer> questionIds = new ArrayList<Integer>();
+		questionIds.add(auditData.getQuestion().getId());
+		if (auditData.getQuestion().getIsRequired().equals("Depends"))
+			questionIds.add(auditData.getQuestion().getDependsOnQuestion().getId());
+		answerMap = auditDataDao.findAnswers(auditID, questionIds);
 	}
 
 	public String getMode() {
@@ -295,7 +318,7 @@ public class AuditDataSave extends AuditActionSupport {
 		return list;
 	}
 
-	public boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
+	private boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
 		// Null or blank answers are always OK
 		String answer = auditData.getAnswer();
 		if (Strings.isEmpty(answer))

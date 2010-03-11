@@ -109,6 +109,13 @@
 <div id="bodyholder">
 <div id="content">
 <div id="helpbox">
+<%
+	String chatIcon = URLUtils.getProtocol( request ) + 
+		"://server.iad.liveperson.net/hc/90511184/?cmd=repstate&amp;site=90511184&amp;channel=web&amp;ver=1&amp;imageUrl=" + 
+		URLUtils.getProtocol(request) + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a";
+	if ("1".equals(System.getProperty("pics.debug")))
+		chatIcon = "";
+%>
 	<a href="http://help.picsauditing.com/wiki/<decorator:getProperty property="meta.help"
 		default="Help_Center" />" target="_BLANK">Help Center</a>
 	<a id="_lpChatBtn"
@@ -118,10 +125,7 @@
 	target='chat90511184'
 	onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
 </div>
-<div id="chatIcon" style="display: none;">
-	<img src='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=repstate&amp;site=90511184&amp;channel=web&amp;ver=1&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 
-	name='hcIcon' border=0 />
-</div>
+<div id="chatIcon" style="display: none;"><img src='<%=chatIcon%>'/></div>
 <!-- !begin content -->
 <decorator:body />
 <div><br clear="both"></br></div>

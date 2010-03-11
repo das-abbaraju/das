@@ -13,7 +13,7 @@
 <script type="text/javascript">
 function closePage() {
 	try {
-		opener.reloadQuestion('<s:property value="divId"/>', '<s:property value="answer.id"/>');
+		opener.reloadQuestion('<s:property value="divId"/>');
 		opener.focus();
 	} catch(err) {}
 	self.close();

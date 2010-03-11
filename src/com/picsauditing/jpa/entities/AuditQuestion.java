@@ -82,6 +82,8 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	private String helpPage;
 	private String countries;
 
+	private List<AuditQuestion> dependentQuestions;
+
 	@Transient
 	public AuditType getAuditType() {
 		return subCategory.getCategory().getAuditType();
@@ -368,6 +370,15 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 		this.uniqueCode = uniqueCode;
 	}
 
+	@OneToMany(mappedBy = "dependsOnQuestion")
+	public List<AuditQuestion> getDependentQuestions() {
+		return dependentQuestions;
+	}
+	
+	public void setDependentQuestions(List<AuditQuestion> dependentQuestions) {
+		this.dependentQuestions = dependentQuestions;
+	}
+	
 	@OneToMany(mappedBy = "auditQuestion")
 	@OrderBy("number")
 	public List<AuditQuestionOption> getOptions() {

@@ -854,7 +854,6 @@
 		<action name="AuditDataSaveAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">
 			<result>struts/audits/audit_cat_edit_ajax.jsp</result>
-			<result name="tuple">struts/audits/audit_cat_tuples_ajax.jsp</result>
 		</action>
 		<action name="AuditToggleVerifyAjax"
 			class="com.picsauditing.actions.audits.AuditDataSave">

@@ -38,22 +38,16 @@ function saveAnswer(divId, elm) {
 function saveAnswerComment(divId, answerElm, commentElm) {
 	if (catDataID == 0) return;
 
-	var	answerid = $('#'+divId + '_answerID').val();
 	var	questionid = $('#'+divId + '_questionID').val();
 	
 	var divName = '#node_'+questionid;
 	var data = {
 			'catDataID':catDataID,
 			'auditData.audit.id':auditID,
+			'auditData.question.id':questionid,
 			'mode':mode
 	};
 	
-	if (answerid > 0) {
-		data['auditData.id'] = answerid;
-	}
-	else {
-		data['auditData.question.id'] = questionid;
-	}	
 	if (answerElm != null) {
 		var thevalue = '';
 		if( answerElm.type == 'checkbox') {
@@ -95,17 +89,28 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 	}
 	
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
+	var dependents = $(divName).find(".dependentQuestions").html();
+	var depends = dependents.split(",");
+	var x=0;
+	for (x=1; x < depends.length; x++) {
+		startThinking({div:'thinking_' + depends[x], message: "Recalculating Requirement"});
+		$('#node_'+depends[x]).find(":input").attr("disabled", true);
+	}
 	
 	$(divName).load('AuditDataSaveAjax.action', data, function(response, status) {
-			if (status=='success')
+			if (status=='success') {
 				$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-			else
+				for (x=1; x < depends.length; x++) {
+					reloadQuestion(depends[x]);
+				}
+			} else {
 				alert('Failed to save answer ');
+			}
 		});
 	return true;
 }
 
-function reloadQuestion(divId, answerid) {
+function reloadQuestion(divId) {
 	if (catDataID == 0) return;
 	var	questionid = $('#'+divId + '_questionID').val();
 	
@@ -114,15 +119,10 @@ function reloadQuestion(divId, answerid) {
 			button:'reload',
 			catDataID:catDataID,
 			'auditData.audit.id':auditID,
+			'auditData.question.id':questionid,
 			'mode':mode
 	};
 
-	if (answerid > 0) {
-		data['auditData.id']=answerid;
-	}
-	else {
-		data['auditData.question.id']=questionid;
-	}
 	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
 	$(divName).load('AuditDataSaveAjax.action',data, function(response, status){
 		if (status=='success')
