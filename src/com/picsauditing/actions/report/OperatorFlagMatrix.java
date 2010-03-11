@@ -100,7 +100,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 			final FlagCriteriaOperator criteriaOperator = new FlagCriteriaOperator();
 			criteriaOperator.setCriteria(criteria);
-			if (d.get("hurdle") == null)
+			if (d.get("hurdle") != null)
 				criteriaOperator.setHurdle(d.get("hurdle").toString());
 			criteriaOperator.setOperator(operator);
 
