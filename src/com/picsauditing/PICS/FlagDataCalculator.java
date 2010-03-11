@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -52,12 +51,12 @@ public class FlagDataCalculator {
 			operatorCriteria.put(opCriteria.getCriteria(), new ArrayList<FlagCriteriaOperator>());
 		operatorCriteria.get(opCriteria.getCriteria()).add(opCriteria);
 	}
-	
+
 	public List<FlagData> calculate() {
 		Map<FlagCriteria, FlagData> dataSet = new HashMap<FlagCriteria, FlagData>();
 
 		for (FlagCriteria key : operatorCriteria.keySet()) {
-			for(FlagCriteriaOperator fco : operatorCriteria.get(key)) {
+			for (FlagCriteriaOperator fco : operatorCriteria.get(key)) {
 				FlagColor flag = FlagColor.Green;
 				if (contractorCriteria.containsKey(key)) {
 					Boolean flagged = isFlagged(fco, contractorCriteria.get(key));
@@ -68,7 +67,7 @@ public class FlagDataCalculator {
 								flag = override.getForceflag();
 						} else if (flagged)
 							flag = fco.getFlag();
-						
+
 						FlagData data = new FlagData();
 						data.setCriteria(key);
 						data.setContractor(contractorCriteria.get(key).getContractor());
@@ -77,7 +76,7 @@ public class FlagDataCalculator {
 						data.setAuditColumns(new User(User.SYSTEM));
 						if (dataSet.get(key) == null)
 							dataSet.put(key, data);
-						else if(dataSet.get(key).getFlag().isWorseThan(flag))
+						else if (dataSet.get(key).getFlag().isWorseThan(flag))
 							dataSet.put(key, data);
 					}
 				}
@@ -157,7 +156,7 @@ public class FlagDataCalculator {
 
 			if (criteria.isValidationRequired() && !conCriteria.isVerified())
 				return true;
-				
+
 			final String dataType = criteria.getDataType();
 			final String comparison = criteria.getComparison();
 
@@ -191,14 +190,13 @@ public class FlagDataCalculator {
 				}
 
 				if (dataType.equals("date")) {
-					SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-					Date conDate = (Date) date.parse(answer);
+					Date conDate = DateBean.parseDate(answer);
 					Date opDate;
 
 					if (hurdle.equals("Today"))
 						opDate = new Date();
 					else
-						opDate = (Date) date.parse(hurdle);
+						opDate = DateBean.parseDate(hurdle);
 
 					if (comparison.equals("<"))
 						return conDate.before(opDate);
@@ -214,7 +212,7 @@ public class FlagDataCalculator {
 		}
 		return false;
 	}
-	
+
 	public WaitingOn calculateWaitingOn(ContractorOperator co) {
 
 		ContractorAccount contractor = co.getContractorAccount();
@@ -278,8 +276,8 @@ public class FlagDataCalculator {
 								} // for cao
 							} // end of policies
 						} else {
-							AuditStatus requiredStatus = AuditStatus.Active; 
-							if(!key.isValidationRequired())
+							AuditStatus requiredStatus = AuditStatus.Active;
+							if (!key.isValidationRequired())
 								requiredStatus = AuditStatus.Submitted;
 							if (!auditStatus.isComplete(requiredStatus)) {
 								if (conAudit.getAuditType().getClassType().isPqf()
@@ -342,7 +340,7 @@ public class FlagDataCalculator {
 	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator value : list) {
-			if(operatorCriteria.get(value.getCriteria()) == null)
+			if (operatorCriteria.get(value.getCriteria()) == null)
 				operatorCriteria.put(value.getCriteria(), new ArrayList<FlagCriteriaOperator>());
 			operatorCriteria.get(value.getCriteria()).add(value);
 		}
