@@ -116,12 +116,6 @@ $(function() {
 			</s:if>
 		</s:iterator>
 	</s:iterator>
-	<tr><td colspan="3" class="center">
-		<pics:permission perm="EditFlagCriteria">
-			[<a 
-			href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">For Flag Criteria</a>]		
-		</pics:permission>
-	</td></tr>
 	</tbody>
 </table>
 </s:if>

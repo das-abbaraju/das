@@ -23,9 +23,8 @@ table.report a {
 small {
 	font-size: x-small;
 }
-.flagCategories tr td {
+.flagCategories td {
 	padding-right: 10px;
-	padding-bottom: 10px;
 }
 </style>
 <s:include value="../jquery.jsp" />
@@ -66,20 +65,27 @@ function checkSubmit(buttonName, dataID) {
 <s:include value="conHeader.jsp" />
 
 <div style="text-align: center; width: 100%">
-<div class="info" style="float: right; clear: right; width: 25%;">
-<s:form>
-	<s:hidden name="id" />
-	<s:hidden name="opID" />
-	This contractor's flags were last recalculated <s:date name="co.flagLastUpdated" nice="true" /><br />
-	<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
-</s:form>
-</div>
+<s:if test="permissions.operatorCorporate || permissions.admin">
+	<div class="info" style="float: right; clear: right; width: 25%;">
+	<s:form>
+		<s:hidden name="id" />
+		<s:hidden name="opID" />
+		This contractor's flags were last calculated <s:date name="co.flagLastUpdated" nice="true" /><br />
+		<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
+	</s:form>
+	</div>
+</s:if>
 <s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; clear: right; width: 25%;">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
-		<td style="vertical-align: middle;"><b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b>
-		<br/><a href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status" class="help">What does this mean?</a><br/></td>
+		<td style="vertical-align: middle;">
+			<b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b>
+			<pics:permission perm="EditFlagCriteria">
+				(<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">View Flag Criteria</a>)		
+			</pics:permission>
+			<br/><a href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status" class="help">What does this mean?</a><br/>
+		</td>
 	</tr>
 	<tr>
 		<td>
