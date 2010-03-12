@@ -161,8 +161,8 @@ public class FlagDataCalculator {
 				}
 
 				if (dataType.equals("number")) {
-					float answer2 = Float.parseFloat(answer);
-					float hurdle2 = Float.parseFloat(hurdle);
+					float answer2 = Float.parseFloat(answer.replace(",", ""));
+					float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
 					if (comparison.equals(">"))
