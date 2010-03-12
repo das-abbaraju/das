@@ -56,12 +56,14 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findAll() {
-		// I'm not sure we actually want to do this very often at all, I want to know how long it takes
+		// I'm not sure we actually want to do this very often at all, I want to
+		// know how long it takes
 		long start = new Date().getTime();
 		Query query = em.createQuery("SELECT id ContractorAccount WHERE status IN ('Active','Demo')");
 		List<Integer> list = query.getResultList();
 		long elapsed = new Date().getTime() - start;
-		System.out.println("ContractorAccountDAO.findAll() found " + list.size() + " contractors ids in " + elapsed + "ms");
+		System.out.println("ContractorAccountDAO.findAll() found " + list.size() + " contractors ids in " + elapsed
+				+ "ms");
 		return list;
 	}
 
@@ -114,8 +116,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<Integer> findIdsByOperator(OperatorAccount opAccount) {
-		String where = "SELECT a.id from ContractorAccount a WHERE a IN (SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount = ?)";
-		Query query = em.createQuery(where);
+		String q = "SELECT a.id from ContractorAccount a WHERE a IN"
+				+ " (SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount = ? AND co.flagColor IN ('Red', 'Amber'))";
+		Query query = em.createQuery(q);
 		query.setParameter(1, opAccount);
 
 		return query.getResultList();

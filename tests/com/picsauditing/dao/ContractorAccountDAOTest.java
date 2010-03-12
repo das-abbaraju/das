@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Industry;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 
@@ -64,7 +65,7 @@ public class ContractorAccountDAOTest {
 		contractoraccount.setFax("999-999-9999");
 		contractoraccount.setWebUrl("www.picsauditing.com");
 		contractoraccount.setIndustry(Industry.Construction);
-		//contractoraccount.setActive('y');
+		// contractoraccount.setActive('y');
 		contractoraccount.setStatus(AccountStatus.Active);
 		contractoraccount.setCreatedBy(new User(1100));
 		contractoraccount.setCreationDate(new Date());
@@ -117,5 +118,15 @@ public class ContractorAccountDAOTest {
 		// System.out.println(operator.getOperatorAccount().getName());
 		// }
 		assertEquals("ECI (Ecology Control Inc.)", contractoraccount.getName());
+	}
+
+	@Test
+	public void testFindIdsByOperator() {
+		OperatorAccount op = new OperatorAccount();
+		op.setId(950);
+
+		List<Integer> contractors = contractoraccountDAO.findIdsByOperator(op);
+
+		assertTrue(contractors.size() > 0);
 	}
 }
