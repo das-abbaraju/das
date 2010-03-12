@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -32,7 +33,7 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 		setAuditColumns(new User(User.SYSTEM));
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "conID", nullable = false)
 	public ContractorAccount getContractor() {
 		return contractor;

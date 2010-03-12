@@ -18,15 +18,16 @@ public class FlagCriteriaOperatorDAO extends PicsDAO {
 	}
 
 	public List<FlagCriteriaOperator> findByOperator(int opID) {
-		Query query = em
-				.createQuery("FROM FlagCriteriaOperator d WHERE operator.id = ? ORDER BY criteria.category, criteria.label");
+		Query query = em.createQuery("FROM FlagCriteriaOperator d "
+				+ "WHERE operator.id = ? ORDER BY criteria.category, criteria.label");
 		query.setParameter(1, opID);
 		return query.getResultList();
 	}
 
 	public List<FlagCriteriaContractor> getContractorCriteria(FlagCriteriaOperator fco) {
-		Query query = em.createQuery("SELECT d FROM FlagCriteriaContractor d WHERE d.criteria = :criteria " +
-				"AND d.contractor IN (SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount = :operator)");
+		Query query = em.createQuery("FROM FlagCriteriaContractor d WHERE d.criteria = :criteria "
+				+ "AND d.contractor IN (SELECT co.contractorAccount "
+				+ "FROM ContractorOperator co WHERE co.operatorAccount = :operator)");
 		query.setParameter("criteria", fco.getCriteria());
 		query.setParameter("operator", fco.getOperator());
 		return query.getResultList();

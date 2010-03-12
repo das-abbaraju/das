@@ -31,6 +31,7 @@ function addCriteria(criteriaID) {
 			}
 		);
 }
+
 function submitHurdle(tdCell) {
 	var criteriaID = tdCell.parentNode.id;
 	var hurdle = $('#'+criteriaID).find("[name='newHurdle']").val();
@@ -49,21 +50,6 @@ function submitHurdle(tdCell) {
 	
 	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data,
 		function() { stopThinking({div:'thinking'}); }
-	);
-}
-function getImpact(criteriaID) {
-	var data = {
-		button: 'impact',
-		id: $('#form1_id').val(),
-		criteriaID: criteriaID
-	};
-	
-	startThinking({div:'thinking', message:'Getting impacted contractors...'});
-	$('#impactDiv').load('ManageFlagCriteriaOperatorAjax.action', data, 
-		function() {
-			$(this).show('slow');
-			stopThinking({div:'thinking'});
-		}
 	);
 }
 function getAddQuestions() {
@@ -103,31 +89,42 @@ function editCriteria(id) {
 	$("#"+id).find("span.newImpact").html("");
 }
 
-function calculateImpact(criteriaID, newHurdle) {
+function getImpact(fcoID) {
 	var data = {
-		button: 'calculateSingle',
-		id: $('#form1_id').val(),
-		criteriaID: criteriaID,
-		newHurdle: newHurdle
+		fcoID: fcoID
+	};
+	
+	startThinking({div:'thinking', message:'Getting impacted contractors...'});
+	$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', data, 
+		function() {
+			$(this).show('slow');
+			stopThinking({div:'thinking'});
+		}
+	);
+}
+function calculateImpact(fcoID, newHurdle) {
+	var data = {
+		button: 'count',
+		newHurdle: newHurdle,
+		fcoID: fcoID
 	};
 	
 	startThinking({div:'thinking', message:'Calculating impact...'});
-	$('#'+criteriaID).find('span.newImpact').load('ManageFlagCriteriaOperatorAjax.action', data,
+	$('#'+fcoID).find('span.newImpact').load('OperatorFlagsCalculatorAjax.action', data,
 		function() {
 			stopThinking({div:'thinking'});
 		}
 	);
 }
 
-function updateAffected(criteriaID) {
+function updateAffected(fcoID) {
 	var data = {
-		button: 'calculateSingle',
-		id: $('#form1_id').val(),
-		criteriaID: criteriaID
+		button: 'count',
+		fcoID: fcoID
 	};
 	
-	$('#'+criteriaID).find('a.oldImpact').html('<img src="images/ajax_process.gif" alt="Loading image" />');
-	$('#'+criteriaID).find('a.oldImpact').load('ManageFlagCriteriaOperatorAjax.action', data);
+	$('#'+fcoID).find('a.oldImpact').html('<img src="images/ajax_process.gif" alt="Loading image" />');
+	$('#'+fcoID).find('a.oldImpact').load('OperatorFlagsCalculatorAjax.action', data);
 }
 
 var wait = function(){

@@ -239,6 +239,16 @@
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
+		
+		<action name="ContractorOverrideAjax"
+			class="com.picsauditing.actions.contractors.ContractorFlagAction">
+			<result>struts/contractors/contractor_flag_data.jsp</result>
+		</action>
+
+		<action name="OperatorFlagsCalculatorAjax"
+			class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
+			<result>struts/operators/op_manage_flag_criteria_impact.jsp</result>
+		</action>
 
 		<action name="ContractorForms"
 			class="com.picsauditing.actions.forms.ContractorForms">
@@ -1374,9 +1384,7 @@
 		<action name="ManageFlagCriteriaOperatorAjax"
 			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
 			<result>struts/operators/op_manage_flag_criteria_list.jsp</result>
-			<result name="impact">struts/operators/op_manage_flag_criteria_impact.jsp</result>
 			<result name="questions">struts/operators/op_manage_flag_criteria_questions.jsp</result>
-			<result name="calculateSingle">struts/blank.jsp</result>
 		</action>
 
 		<!-- Flags -->

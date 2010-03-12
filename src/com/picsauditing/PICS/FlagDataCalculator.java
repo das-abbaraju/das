@@ -71,6 +71,7 @@ public class FlagDataCalculator {
 						FlagData data = new FlagData();
 						data.setCriteria(key);
 						data.setContractor(contractorCriteria.get(key).getContractor());
+						data.setCriteriaContractor(contractorCriteria.get(key));
 						data.setOperator(operator);
 						data.setFlag(flag);
 						data.setAuditColumns(new User(User.SYSTEM));
@@ -131,6 +132,8 @@ public class FlagDataCalculator {
 			}
 			
 			// Policies are much harder because we have to look at CAOs
+			if (conCriteria.getContractor().getAudits() == null)
+				return null;
 			for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
 				if (conAudit.getAuditType().equals(criteria.getAuditType())) {
 					if (!conAudit.getAuditStatus().isExpired()) {

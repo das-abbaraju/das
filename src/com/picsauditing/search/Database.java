@@ -10,8 +10,10 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
 import com.picsauditing.PICS.DBBean;
+import com.picsauditing.jpa.entities.User;
 
 public class Database {
+
 	private int allRows = 0;
 
 	@SuppressWarnings("unchecked")
@@ -43,11 +45,11 @@ public class Database {
 		try {
 			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = stmt.getGeneratedKeys();
-			
-			long id=-1;
-			while (rs.next()) { 
+
+			long id = -1;
+			while (rs.next()) {
 				id = rs.getLong(1);
-			} 
+			}
 			return id;
 		} finally {
 			stmt.close();
@@ -62,12 +64,21 @@ public class Database {
 			return stmt.executeUpdate(sql);
 		} finally {
 			stmt.close();
-		    Conn.close();
+			Conn.close();
 		}
 	}
-	
+
 	public int getAllRows() {
 		return allRows;
 	}
 
+	static public int toInt(BasicDynaBean row, String columnName) {
+		Object value = row.get(columnName);
+		return Integer.parseInt(value.toString());
+	}
+
+	public static boolean toBoolean(BasicDynaBean row, String columnName) {
+		Object value = row.get(columnName);
+		return Boolean.parseBoolean(value.toString());
+	}
 }

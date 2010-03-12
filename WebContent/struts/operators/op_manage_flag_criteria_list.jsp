@@ -65,7 +65,7 @@ $(document).ready(function() {
 							class="hideOld oldImpact"><s:property value="affected" /></a>
 						<span class="newImpact"></span>
 						<s:if test="needsRecalc">
-							<script type="text/javascript">setTimeout('updateAffected('+<s:property value="id" />+')', 500);</script>
+							<script type="text/javascript">updateAffected('<s:property value="id" />');</script>
 						</s:if>
 					</td>
 					<td class="center">
