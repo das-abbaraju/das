@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.User;
 
 public class BillingCalculatorSingle {
 	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-05-31");
+	public static final Date CONTRACT_RENEWAL_TIMKEN_CANADA_9986 = DateBean.parseDate("2010-05-31");
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2011-12-31");
 	public static final Date CONTRACT_RENEWAL_NEWBELGIUM = DateBean.parseDate("2010-03-31");
 	public static final Date CONTRACT_RENEWAL_BP_LUBRICANTS = DateBean.parseDate("2010-04-30");
@@ -300,6 +301,8 @@ public class BillingCalculatorSingle {
 		if (CONTRACT_RENEWAL_NEWBELGIUM.after(now) && requestedBy.getId() == 5147)
 			return true;
 		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
+			return true;
+		if (CONTRACT_RENEWAL_TIMKEN_CANADA_9986.after(now) && requestedBy.getId() == 9986)
 			return true;
 		if (CONTRACT_RENEWAL_BASF.after(now) && requestedBy.getName().startsWith("BASF"))
 			return true;
