@@ -324,4 +324,32 @@ public class StringsTest extends TestCase {
 		assertFalse(Strings.isInCountries(expression, usOnly));
 		assertFalse(Strings.isInCountries(expression, all));
 	}
+	
+	public void testEditDistance() {
+		assertEquals(Strings.editDistance("Tom", "Time"), 2);
+		assertEquals(Strings.editDistance("Tom", "Tom"), 0);
+		assertEquals(Strings.editDistance("Angel", "Angle"), 2);
+		assertEquals(Strings.editDistance("Total", "Angle"), 5);
+		assertEquals(Strings.editDistance("Empty", ""), 5);
+		assertEquals(Strings.editDistance("A", "B"), 1);
+		assertEquals(Strings.editDistance("", ""), 0);
+	}
+	
+	public void testSimilarTo() {
+			assertFalse(Strings.similarTo("Tom", "Time", 0));
+			assertFalse(Strings.similarTo("Tom", "Time", 1));
+			assertTrue(Strings.similarTo("Tom", "Time", 2));
+			assertTrue(Strings.similarTo("Tom", "Time", 3));
+			assertTrue(Strings.similarTo("Tom", "Time", 4));
+			assertTrue(Strings.similarTo("Tom", "Time", 5));
+			assertTrue(Strings.similarTo("Tom", "Tom", 0)); // exact matching
+			assertTrue(Strings.similarTo("Tom", "Tom", 1));
+			assertFalse(Strings.similarTo("Empty", "", 4));
+			assertTrue(Strings.similarTo("Empty", "", 5));
+			assertTrue(Strings.similarTo("Empty", "", 6));
+			assertFalse(Strings.similarTo("A", "B", 0));
+			assertTrue(Strings.similarTo("A", "B", 1));
+			assertTrue(Strings.similarTo("A", "B", 2));
+			assertTrue(Strings.similarTo("", "", 0));
+	}
 }
