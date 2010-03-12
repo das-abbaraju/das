@@ -28,7 +28,7 @@ public class OshaOrganizer {
 		for (ContractorAudit contractorAudit : audits) {
 			if (contractorAudit.getAuditType().isAnnualAddendum()
 					&& (contractorAudit.getAuditStatus().isActiveSubmitted() || contractorAudit.getAuditStatus()
-							.isResubmitted())) {
+							.isResubmitted() || contractorAudit.getAuditStatus().isIncomplete())) {
 				for (OshaAudit osha : contractorAudit.getOshas()) {
 					if (osha.isCorporate()) {
 						data.get(osha.getType()).add(osha);
