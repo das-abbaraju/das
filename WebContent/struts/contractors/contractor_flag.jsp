@@ -29,34 +29,9 @@ small {
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
-function checkSubmit(buttonName, dataID) {
-	var conID = $('#form_override_id').val();
-	var opID = $('#form_override_opID').val();
-	var forceFlag = $('#override_flagdata_'+dataID).find("[name='forceFlag']").val();
-	var forceEnd = $('#override_flagdata_'+dataID).find("[name='forceEnd']").val();
-
-	var data = {
-		button: buttonName,
-		dataID: dataID,
-		id: conID,
-		opID: opID,
-		forceFlag: (forceFlag == null) ? '' : forceFlag,
-		forceEnd: (forceEnd == null) ? '' : forceEnd
-	}
-
-	$('#contractor_flag_data').load('ContractorFlagAjax.action?id='+conID+'&opID='+opID, data,
-		function() {
-			startThinking({div:'thinking', message:'Updating Flags...'});
-			$.ajax({ url:'ContractorCronAjax.action?conID='+conID+'&opID='+opID+'&steps=Flag&steps=WaitingOn',
-				success: function () {
-					stopThinking({div:'thinking'});
-					if (buttonName == "Cancel Data Override")
-						$('#contractor_flag_data').load('ContractorFlagAjax.action?id='+conID+'&opID='+opID);
-				}}
-			);
-		}
-	);
-}
+$(function() {
+	$('.datepicker').datepicker();
+})
 </script>
 </head>
 <body>
@@ -64,6 +39,7 @@ function checkSubmit(buttonName, dataID) {
 <s:push value="#subHeading='Flag Status'" />
 <s:include value="conHeader.jsp" />
 
+<!-- OVERALL FLAG -->
 <div style="text-align: center; width: 100%">
 <s:if test="permissions.operatorCorporate || permissions.admin">
 	<div class="info" style="float: right; clear: right; width: 25%;">
@@ -155,7 +131,166 @@ function checkSubmit(buttonName, dataID) {
 </s:if>
 
 <span id="thinking"></span>
-<div id="contractor_flag_data"><s:include value="contractor_flag_data.jsp"></s:include></div>
+
+<!-- OVERRIDES -->
+<s:if test="displayTable">
+<table class="report" style="clear: none;">
+	<thead>
+		<tr>
+			<td>Flag</td>
+			<td>Description</td>
+			<td>Value</td>
+		</tr>
+	</thead>
+	<tbody>
+	<s:iterator id="key" value="flagDataMap.keySet()">
+		<s:iterator id="data" value="flagDataMap.get(#key)">
+			<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
+			<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
+				<tr class="<s:property value="#data.flag" />">
+					<td>
+						<s:property value="#data.flag.smallIcon" escape="false" />
+						<s:if test="opID == permissions.getAccountId() || permissions.corporate">	
+							<pics:permission perm="EditForcedFlags">
+								<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
+									onclick="$('#'+<s:property value="%{#data.id}" />+'_override').toggle(); return false;">
+									<s:if test="#flagoverride != null">
+										Flag has been forced
+									</s:if>
+									<s:else>
+										Override
+									</s:else>
+								</a>
+							</pics:permission>
+						</s:if>
+						<s:else>
+							<s:if test="#flagoverride != null">
+								Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+							</s:if>
+						</s:else>
+					</td>
+					<td>
+						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
+							<s:if test="#opCriteria.criteria == #data.criteria">
+								<s:property value="#opCriteria.replaceHurdle"/>
+							</s:if>
+						</s:iterator>
+					</td>
+					<td>
+						<s:if test="#data.criteria.auditType != null">
+							<s:iterator id="audit" value="contractor.audits">
+								<s:if test="#data.criteria.auditType == #audit.auditType">
+									<s:if test="#data.criteria.auditType.classType.policy && !(#audit.auditStatus.expired)">
+										<s:iterator value="#audit.operators">
+											<s:if test="visible && (co.operatorAccount.inheritInsurance == operator)">
+												<s:if test="isCanSeeAudit(#audit.auditType)">
+													<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
+													<s:property value="status"/><br/>
+												</s:if>
+											</s:if>
+										</s:iterator>
+									</s:if>
+									<s:else>
+										<s:if test="#audit.auditStatus.pendingSubmitted || #audit.auditStatus.incomplete">
+											<s:if test="isCanSeeAudit(#audit.auditType)">
+												<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditFor" /> <s:property value="#audit.auditType.auditName" /></a>
+											</s:if>
+											<s:property value="#audit.auditStatus" /><br />
+										</s:if>
+									</s:else>
+								</s:if>
+							</s:iterator>
+						</s:if>
+						<s:else>
+							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
+								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
+									<s:if test="#data.criteria.dataType == 'number'">
+										<s:property value="format(#conCriteria.answer)" />
+									</s:if>
+									<s:else>
+										<s:property value="#conCriteria.answer" />
+									</s:else>
+									<s:if test="#conCriteria.answer2.length() > 0">
+										<br /><s:property value="#conCriteria.answer2" escape="false"/>
+									</s:if>
+								</s:if>
+							</s:iterator>
+						</s:else>
+					</td>
+				</tr>
+				<pics:permission perm="EditForcedFlags">
+					<tr id="<s:property value="%{#data.id}" />_override" style="display: none">
+						<td colspan="3"><form method="post">
+							<s:hidden value="%{#data.id}" name="dataID" />
+							<s:if test="#flagoverride != null">
+								Manual Force Flag <s:property value="#flagoverride.forceflag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />.
+								<pics:permission perm="EditForcedFlags">
+									<s:if test="permissions.corporate">
+										<s:checkbox name="overrideAll"/><label>Check to Cancel the Force Flag Color at all your Facilities in your database</label>
+									</s:if>
+									&nbsp;Reason for Cancelling: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
+									<input type="submit" value="Cancel Data Override" class="picsbutton positive" name="button" />
+								</pics:permission>
+							</s:if>
+							<s:else>
+								<s:select list="flagList" name="forceFlag" /> until 
+								<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
+								Reason for Forcing: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
+								<button class="picsbutton positive" type="submit" name="button" value="Force Data Override">Force Data Override</button>
+							</s:else>
+						</form></td>
+					</tr>
+				</pics:permission>
+			</s:if>
+		</s:iterator>
+	</s:iterator>
+	</tbody>
+</table>
+</s:if>
+
+<!-- ALL FLAGS -->
+<table class="flagCategories">
+	<tr>
+	<s:iterator id="key" value="flagDataMap.keySet()">
+		<td><table class="report">
+			<thead>
+				<tr>
+					<td>Flag</td>
+					<td><s:property value="#key"/></td>
+				</tr>
+			</thead>
+			<s:iterator id="data" value="flagDataMap.get(#key)">
+				<tr>
+					<td class="center">
+						<s:property value="flag.smallIcon" escape="false"/>
+					</td>
+					<td>
+						<s:if test="criteria.auditType != null">
+							<s:property value="criteria.auditType.auditName" />
+						</s:if>
+						<s:else>
+							<s:property value="criteria.label" /> - 
+							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
+								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
+									<s:if test="criteria.dataType == 'number'">
+										<s:property value="format(#conCriteria.answer)" />
+									</s:if>
+									<s:else>
+										<s:property value="#conCriteria.answer" />
+									</s:else>
+									<s:if test="#conCriteria.answer2.length() > 0">
+										<br /><s:property value="#conCriteria.answer2" escape="false"/>
+									</s:if>
+								</s:if>	
+							</s:iterator>
+						</s:else>
+					</td>			
+				</tr>
+			</s:iterator>
+		</table></td>
+	</s:iterator>
+	</tr>
+</table>
 
 <s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 	<s:if test="co.workStatusPending">

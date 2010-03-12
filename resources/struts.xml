@@ -239,11 +239,6 @@
 			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
-		
-		<action name="ContractorFlagAjax"
-			class="com.picsauditing.actions.contractors.ContractorFlagAction">
-			<result>struts/contractors/contractor_flag_data.jsp</result>
-		</action>
 
 		<action name="ContractorForms"
 			class="com.picsauditing.actions.forms.ContractorForms">
@@ -365,6 +360,11 @@
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
+		</action>
+		
+		<action name="RequestNewContractorAjax"
+			class="com.picsauditing.actions.contractors.RequestNewContractor">
+			<result>/struts/blank.jsp</result>
 		</action>
 		
 		<action name="OperatorUserListAjax"

@@ -89,7 +89,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			note.setNoteCategory(noteCategory);
 			note.setViewableByOperator(permissions);
 			note.setCanContractorView(true);
-			note.setBody(forceNote);
 
 			String noteText = "";
 			if (button.equalsIgnoreCase("Force Flag")) {
@@ -121,9 +120,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						}
 					}
 				}
-				
-				contractorOperatorDao.save(co);
-				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&button=ConFlag&steps=Flag&steps=WaitingOn");
 			} else if (button.equalsIgnoreCase("Cancel Override")) {
 				co.setForceEnd(null);
 				co.setForceFlag(null);
@@ -144,9 +140,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						}
 					}
 				}
-				
-				contractorOperatorDao.save(co);
-				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&button=ConFlag&steps=Flag&steps=WaitingOn");
 			} else if ("Force Data Override".equals(button)) {
 				FlagData flagData = flagDataDAO.find(dataID);
 				if (forceFlag.equals(flagData.getFlag()))
@@ -195,8 +188,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				}
 			}
 			
+			co.setFlagLastUpdated(new Date());
+			contractorOperatorDao.save(co);
 			note.setSummary(noteText);
+			
+			if (forceNote != null && !forceNote.equals(""))
+				note.setBody(forceNote);
+			
 			getNoteDao().save(note);
+			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&button=ConFlag&steps=Flag&steps=WaitingOn");
 		}
 
 		PicsLogger.stop();
