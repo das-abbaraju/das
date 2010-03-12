@@ -185,6 +185,8 @@ public class FlagDataCalculator {
 				if (dataType.equals("string")) {
 					if (comparison.equals("NOT EMPTY"))
 						return Strings.isEmpty(answer);
+					if (comparison.equalsIgnoreCase("contains"))
+						return answer.contains(hurdle);
 					if (comparison.equals("="))
 						return hurdle.equals(answer);
 				}
