@@ -490,7 +490,7 @@ public class Strings {
 		return d[m.length()][n.length()];
 	}
 
-	public static boolean similarTo(String m, String n, int characterDifferenceThreshold) {
+	public static boolean isSimilarTo(String m, String n, int characterDifferenceThreshold) {
 		return (editDistance(m, n) <= characterDifferenceThreshold) ? true : false;
 	}
 }

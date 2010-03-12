@@ -30,7 +30,7 @@ public class StringsTest extends TestCase {
 	public StringsTest(String name) {
 		super(name);
 	}
-	
+
 	public void testEmail() {
 		try {
 			Address[] addresses = InternetAddress.parse("tallred@picsauditing.com");
@@ -85,28 +85,29 @@ public class StringsTest extends TestCase {
 		String source = "mypassword";
 		String source2 = "mypassword";
 		System.out.println(Strings.hash("@Irvine1" + 2357));
-		
+
 		// Checking the two hashes are equal
 		assertTrue(Strings.hash(source).equals(Strings.hash(source2)));
 		assertTrue(Strings.hash(source2).equals(Strings.hash(source)));
-		
+
 		// Checking similar strings are not equal
 		assertFalse(Strings.hash(source).equals("mypasswor"));
 		assertFalse(Strings.hash(source).equals("ypassword"));
-		
+
 		// Old hash function -- updated to SHA1
-		//assertTrue(Strings.hash("").length() == 28);
+		// assertTrue(Strings.hash("").length() == 28);
 		// Zero-length strings should be encoded
 		assertTrue(Strings.hash("").length() == 40);
-		
+
 		// Strings longer than 28 bytes (size of return hash) should be encoded
-		//assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length() == 28);
+		// assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length()
+		// == 28);
 		// Strings longer than 40 bytes (size of return hash) should be encoded
 		assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./1234567890-=").length() == 40);
 		// Check appended seeds are equal
 		int val = 121314;
 		int val2 = 121314;
-		assertTrue(Strings.hash(source+val).equals(Strings.hash(source+val2)));
+		assertTrue(Strings.hash(source + val).equals(Strings.hash(source + val2)));
 	}
 
 	@Test
@@ -130,58 +131,57 @@ public class StringsTest extends TestCase {
 	@Test
 	public void testNotes() throws Exception {
 		String noteText = FileUtils.readFile("tests/test_notes.txt");
-		
-		BufferedReader reader = new BufferedReader( new StringReader(noteText) );
-		
+
+		BufferedReader reader = new BufferedReader(new StringReader(noteText));
+
 		String line;
 		List<Note> notes = new Vector<Note>();
 		List<Note> thisSet = new Vector<Note>();
 		List<List<Note>> badNotes = new Vector<List<Note>>();
-		
-		while( ( line = reader.readLine() ) != null ) {
+
+		while ((line = reader.readLine()) != null) {
 			Note note = new Note();
 			note.setOriginalText(line);
 			notes.add(note);
 		}
-		
-		for( Note note : notes ) {
+
+		for (Note note : notes) {
 			try {
-				
+
 				note.convertNote();
-				
-				if( thisSet.size() > 1 ) {
+
+				if (thisSet.size() > 1) {
 					badNotes.add(new Vector<Note>(thisSet));
 				}
 				thisSet.clear();
 				thisSet.add(note);
-			}
-			catch( Exception e ) {
+			} catch (Exception e) {
 				thisSet.add(note);
 			}
 		}
-		
-		for( List<Note> badSet : badNotes ) {
+
+		for (List<Note> badSet : badNotes) {
 			System.out.println("================================");
-			for( Note note : badSet ) {
+			for (Note note : badSet) {
 				System.out.println(note.getOriginalText());
 			}
 			System.out.println("================================");
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testParseFloat() {
-		NumberFormat format = new DecimalFormat("#,##0"); 
-		
+		NumberFormat format = new DecimalFormat("#,##0");
+
 		String answer = "1234567890";
-		
+
 		BigDecimal value = new BigDecimal(answer);
 		String valueString = format.format(value);
-		
+
 		assertEquals("1,234,567,890", valueString);
 	}
-	
+
 	@Test
 	public void testPhoneStripper() {
 		assertEquals("9112223333", Strings.stripPhoneNumber("(911)222-3333"));
@@ -189,7 +189,7 @@ public class StringsTest extends TestCase {
 		assertEquals("8002223333", Strings.stripPhoneNumber("1(800) 222-3333"));
 		assertEquals("9112223333", Strings.stripPhoneNumber("911.222.3333 x4"));
 	}
-	
+
 	@Test
 	public void testExtractAccountID() {
 		assertEquals(123456, Strings.extractAccountID("123456"));
@@ -210,16 +210,15 @@ public class StringsTest extends TestCase {
 
 	public void testIndexName() {
 		assertEquals(null, oldIndexName(null));
-		assertEquals("HBOBQJOHNS5STARCRANEINCBJCRANE", 
-				oldIndexName(" H. Bob & Q. John's 5 Star Crane Inc./BJ Crane"));
+		assertEquals("HBOBQJOHNS5STARCRANEINCBJCRANE", oldIndexName(" H. Bob & Q. John's 5 Star Crane Inc./BJ Crane"));
 		assertEquals("QWERTYASDFZXCV", oldIndexName("QWERTYASDFZXCV"));
 	}
-	
+
 	private String oldIndexName(String name) {
 		if (name == null)
 			return null;
 		name = name.toUpperCase();
-		
+
 		String expression = "[A-Z0-9]+";
 		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
 		Matcher matcher = pattern.matcher(name);
@@ -232,7 +231,7 @@ public class StringsTest extends TestCase {
 
 		return buf.toString();
 	}
-	
+
 	@Test
 	public void testIndexNameTrim() {
 		// Test indexName with spaces
@@ -243,17 +242,18 @@ public class StringsTest extends TestCase {
 		assertEquals("LEBLANC THERIOT EQUIP CO", indexName("LeBlanc & Theriot Equip. Co., Inc."));
 		assertEquals("AHC SERVICES", indexName("AHC Services, L.L.C. "));
 		assertEquals("COMPLETE DATACOM", indexName("Complete DataCom,LLC"));
-		assertEquals("NOHS NATIONAL OCCUPATIONAL HEALTH SERVICES", indexName("NOHS (National Occupational Health Services, LLC)"));
+		assertEquals("NOHS NATIONAL OCCUPATIONAL HEALTH SERVICES",
+				indexName("NOHS (National Occupational Health Services, LLC)"));
 		assertEquals("DESALTERS", indexName("DESALTERS-LLC"));
 		assertEquals("EUROPEAN MACHINE TOOLS", indexName("European Machine Tools.LLC"));
 		assertEquals("AAK MECHANICAL", indexName("AAK Mechanical, In.c"));
 		assertEquals("QUOTED COMPANY", indexName("The \"Quoted\" Company"));
 	}
-	
+
 	private String indexName(String name) {
 		if (name == null)
 			return null;
-		
+
 		name = name.toUpperCase();
 		name = name.replaceAll("[\\'\\\"]", "");
 		name = name.replaceAll("\\W", " ");
@@ -266,11 +266,11 @@ public class StringsTest extends TestCase {
 
 		return name;
 	}
-	
+
 	public void testMd5() {
 		assertEquals("593b069af7c100f8ee335184c763fad1", Strings.md5("e4d909c290d0fb1ca068ffaddf22cbd0|20080516190549"));
 	}
-	
+
 	public void testFormat() {
 		assertEquals("0", Strings.formatShort(0.000001234f));
 		assertEquals("0.001", Strings.formatShort(0.001235678f));
@@ -304,27 +304,27 @@ public class StringsTest extends TestCase {
 		all.add("CA");
 		all.add("FR");
 		all.add("DE");
-		
+
 		String expression = "";
 		assertTrue(Strings.isInCountries(expression, null));
 		assertTrue(Strings.isInCountries(expression, usOnly));
-		
+
 		expression = "|US|";
 		assertTrue(Strings.isInCountries(expression, usOnly));
 		assertFalse(Strings.isInCountries(expression, franceOnly));
-		
+
 		expression = "|US|FR|";
 		assertTrue(Strings.isInCountries(expression, usOnly));
 		assertFalse(Strings.isInCountries(expression, germanyOnly));
 		assertTrue(Strings.isInCountries(expression, usAndCanada));
 		assertTrue(Strings.isInCountries(expression, all));
-		
+
 		expression = "!|CA|US|";
 		assertTrue(Strings.isInCountries(expression, franceOnly));
 		assertFalse(Strings.isInCountries(expression, usOnly));
 		assertFalse(Strings.isInCountries(expression, all));
 	}
-	
+
 	public void testEditDistance() {
 		assertEquals(Strings.editDistance("Tom", "Time"), 2);
 		assertEquals(Strings.editDistance("Tom", "Tom"), 0);
@@ -334,22 +334,22 @@ public class StringsTest extends TestCase {
 		assertEquals(Strings.editDistance("A", "B"), 1);
 		assertEquals(Strings.editDistance("", ""), 0);
 	}
-	
+
 	public void testSimilarTo() {
-			assertFalse(Strings.similarTo("Tom", "Time", 0));
-			assertFalse(Strings.similarTo("Tom", "Time", 1));
-			assertTrue(Strings.similarTo("Tom", "Time", 2));
-			assertTrue(Strings.similarTo("Tom", "Time", 3));
-			assertTrue(Strings.similarTo("Tom", "Time", 4));
-			assertTrue(Strings.similarTo("Tom", "Time", 5));
-			assertTrue(Strings.similarTo("Tom", "Tom", 0)); // exact matching
-			assertTrue(Strings.similarTo("Tom", "Tom", 1));
-			assertFalse(Strings.similarTo("Empty", "", 4));
-			assertTrue(Strings.similarTo("Empty", "", 5));
-			assertTrue(Strings.similarTo("Empty", "", 6));
-			assertFalse(Strings.similarTo("A", "B", 0));
-			assertTrue(Strings.similarTo("A", "B", 1));
-			assertTrue(Strings.similarTo("A", "B", 2));
-			assertTrue(Strings.similarTo("", "", 0));
+		assertFalse(Strings.isSimilarTo("Tom", "Time", 0));
+		assertFalse(Strings.isSimilarTo("Tom", "Time", 1));
+		assertTrue(Strings.isSimilarTo("Tom", "Time", 2));
+		assertTrue(Strings.isSimilarTo("Tom", "Time", 3));
+		assertTrue(Strings.isSimilarTo("Tom", "Time", 4));
+		assertTrue(Strings.isSimilarTo("Tom", "Time", 5));
+		assertTrue(Strings.isSimilarTo("Tom", "Tom", 0)); // exact matching
+		assertTrue(Strings.isSimilarTo("Tom", "Tom", 1));
+		assertFalse(Strings.isSimilarTo("Empty", "", 4));
+		assertTrue(Strings.isSimilarTo("Empty", "", 5));
+		assertTrue(Strings.isSimilarTo("Empty", "", 6));
+		assertFalse(Strings.isSimilarTo("A", "B", 0));
+		assertTrue(Strings.isSimilarTo("A", "B", 1));
+		assertTrue(Strings.isSimilarTo("A", "B", 2));
+		assertTrue(Strings.isSimilarTo("", "", 0));
 	}
 }
