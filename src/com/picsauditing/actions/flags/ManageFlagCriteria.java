@@ -304,7 +304,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	}
 
 	public String[] getComparisonList() {
-		return new String[] { "=", "!=", "NOT EMPTY", "<", ">" };
+		return new String[] { "=", "!=", "NOT EMPTY", "CONTAINS", "<", ">" };
 	}
 
 	public String[] getDatatypeList() {
