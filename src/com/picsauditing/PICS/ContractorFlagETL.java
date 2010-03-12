@@ -78,23 +78,21 @@ public class ContractorFlagETL {
 					changes.add(new FlagCriteriaContractor(contractor, flagCriteria, (count >= 3 ? "true" : "false")));
 				} else {
 					// Any other audit, PQF/IM/Desktop/D&A/COR
-					Boolean hasProperStatus = false;
+					Boolean hasProperStatus = null;
 					for (ContractorAudit ca : contractor.getAudits()) {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
-							if (flagCriteria.getAuditType().getId() == AuditType.DA
-									&& !isHasOqEmployees(contractor.getId()))
-								hasProperStatus = null;
-							else if (flagCriteria.getAuditType().getId() == AuditType.COR
-									&& !isHasCOR(contractor.getId()))
-								hasProperStatus = null;
-							else if (ca.getAuditStatus().isActiveResubmittedExempt())
+							// I have a matching audit
+							if (hasProperStatus == null)
+								hasProperStatus = false;
+							if (ca.getAuditStatus().isActiveResubmittedExempt())
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
 								hasProperStatus = true;
 						}
 					}
-					if (hasProperStatus != null)
-						changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus.toString()));
+					// isFlaggableWhenMissing would be really useful for Manual Audits or Implementation Audits
+					if (hasProperStatus != null || flagCriteria.isFlaggableWhenMissing())
+						changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus == null ? "null" : hasProperStatus.toString()));
 				}
 			}
 

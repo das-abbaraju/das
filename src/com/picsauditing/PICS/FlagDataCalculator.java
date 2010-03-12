@@ -105,52 +105,47 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
-			boolean hasAudit = false;
-			if (opCriteria.getMinRiskLevel().compareTo(conCriteria.getContractor().getRiskLevel()) <= 0) {
-				for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
-					if (conAudit.getAuditType().equals(criteria.getAuditType())) {
-						hasAudit = true;
-						if (criteria.getAuditType().getClassType().isPolicy()) {
-							// Calculating the Policy status is much more
-							// complex
-							if (!opCriteria.getOperator().getCanSeeInsurance().isTrue())
-								// Don't flag for operators that don't subscribe
-								// to InsureGUARD
-								return false;
-							if (!conAudit.getAuditStatus().isExpired()) {
-								OperatorAccount insuranceParent = opCriteria.getOperator().getInheritInsurance();
-								for (ContractorAuditOperator cao : conAudit.getOperators()) {
-									if (cao.getOperator().equals(insuranceParent)) {
-										// We've found the applicable cao
-										if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
-											return false;
-										else
-											return true;
-									}
-								}
+			if (opCriteria.getMinRiskLevel().equals(LowMedHigh.None)) {
+				return null;
+			}
+			if (opCriteria.getMinRiskLevel().ordinal() > conCriteria.getContractor().getRiskLevel().ordinal()) {
+				return null;
+			}
+			if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
+				// This is a check for if the contractor doesn't
+				// work for the operator (Search for new), or is a bid only
+				if (!criteria.getAuditType().isPqf() && !criteria.getAuditType().isAnnualAddendum())
+					// Ignore all audit requirements other than PQF and AU
+					return null;
+			}
+
+			if (!criteria.getAuditType().getClassType().isPolicy()) {
+				// All other Audits, PQF, etc, flag if it's missing
+				// return conCriteria.getAnswer().equals("false");
+				if (conCriteria.getAnswer().equals("true")) {
+					// We have this audit, don't flag
+					return false;
+				}
+				// Audit is missing, but do we require it?
+				return true;
+			}
+			
+			// Policies are much harder because we have to look at CAOs
+			for (ContractorAudit conAudit : conCriteria.getContractor().getAudits()) {
+				if (conAudit.getAuditType().equals(criteria.getAuditType())) {
+					if (!conAudit.getAuditStatus().isExpired()) {
+						for (ContractorAuditOperator cao : conAudit.getOperators()) {
+							if (cao.getOperator().equals(opCriteria.getOperator())) {
+								// We've found the applicable cao
+								if (cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())
+									return false;
+								else
+									return true;
 							}
-						} else {
-							// All other Audits, PQF, etc, flag if it's missing
-							return conCriteria.getAnswer().equals("false");
 						}
 					}
 				}
-				// We should not flag on Audits the contractors don't have
-				if (!hasAudit) {
-					// This is a check for if the contractor doesn't
-					// work for the operator, or is a bid only
-					if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
-						return null;
-					}
-					// This is for adHocAudits added audits
-					if (opCriteria.getMinRiskLevel() == LowMedHigh.None) {
-						return null;
-					}
-				}
-				return criteria.isFlaggableWhenMissing();
 			}
-			// The contractor's risk level is not high enough to flag on this
-			// audit.
 			return null;
 		} else {
 
@@ -207,12 +202,12 @@ public class FlagDataCalculator {
 					if (comparison.equals("="))
 						return conDate.equals(opDate);
 				}
+				return false;
 			} catch (Exception e) {
 				System.out.println("Datatype is " + dataType + " but values were not " + dataType + "s");
 				return true;
 			}
 		}
-		return false;
 	}
 
 	public WaitingOn calculateWaitingOn(ContractorOperator co) {
