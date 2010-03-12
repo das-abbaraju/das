@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
 public class BillingCalculatorSingle {
-	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-05-31");
+	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-03-31");
 	public static final Date CONTRACT_RENEWAL_TIMKEN_CANADA_9986 = DateBean.parseDate("2010-05-31");
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2011-12-31");
 	public static final Date CONTRACT_RENEWAL_NEWBELGIUM = DateBean.parseDate("2010-03-31");
