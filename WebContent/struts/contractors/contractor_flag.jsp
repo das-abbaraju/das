@@ -26,6 +26,10 @@ small {
 .flagCategories td {
 	padding-right: 10px;
 }
+
+.details {
+	display: none;
+}
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
@@ -248,8 +252,10 @@ $(function() {
 </table>
 </s:if>
 
+<a href="#" onclick="$('.details').toggle('slow'); return false;">Toggle details</a>
+
 <!-- ALL FLAGS -->
-<table class="flagCategories">
+<table class="flagCategories details">
 	<tr>
 	<s:iterator id="key" value="flagDataMap.keySet()">
 		<td><table class="report">
@@ -301,7 +307,7 @@ $(function() {
 	</s:if>
 </s:if>
 
-<div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
+<div id="notesList" class="details"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 <div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
