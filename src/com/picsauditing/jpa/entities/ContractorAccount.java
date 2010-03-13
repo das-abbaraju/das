@@ -568,7 +568,9 @@ public class ContractorAccount extends Account implements JSONable {
 	public List<ContractorAudit> getSortedAudits() {
 		List<ContractorAudit> annualAList = new ArrayList<ContractorAudit>();
 		for (ContractorAudit contractorAudit : getAudits()) {
-			if (contractorAudit.getAuditType().isAnnualAddendum() && !contractorAudit.getAuditStatus().isExpired()) {
+			if (contractorAudit.getAuditType().isAnnualAddendum() && 
+					(contractorAudit.getAuditStatus().isActiveSubmitted() || contractorAudit.getAuditStatus()
+					.isResubmitted() || contractorAudit.getAuditStatus().isIncomplete())) {
 				annualAList.add(contractorAudit);
 			}
 		}

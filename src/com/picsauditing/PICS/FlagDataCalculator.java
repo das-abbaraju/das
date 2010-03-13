@@ -319,9 +319,10 @@ public class FlagDataCalculator {
 			if (flagData.getCriteria().isInsurance()
 					&& flagData.getCriteria().getQuestion().getAuditType().equals(auditType)) {
 				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
-				if (flag.isRed())
+				if (flag.isRed()) {
 					PicsLogger.log(" --- " + flagData.getFlag() + " " + flagData.getCriteria().getQuestion());
-				return flag;
+					return flag;
+				}
 			}
 		}
 		if (flag == null)
