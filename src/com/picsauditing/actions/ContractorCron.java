@@ -66,6 +66,7 @@ public class ContractorCron extends PicsActionSupport {
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
+	private int limit = 10;
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
@@ -92,7 +93,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (conID > 0) {
 			run(conID, opID);
 		} else {
-			List<Integer> list = contractorDAO.findContractorsNeedingRecalculation();
+			List<Integer> list = contractorDAO.findContractorsNeedingRecalculation(limit);
 			for (Integer conID : list) {
 				run(conID, opID);
 			}
@@ -457,5 +458,10 @@ public class ContractorCron extends PicsActionSupport {
 			if (candidate.equals(step) || candidate.equals(ContractorCronStep.All))
 				return true;
 		return false;
+	}
+	
+	
+	public void setLimit(int limit) {
+		this.limit = limit;
 	}
 }

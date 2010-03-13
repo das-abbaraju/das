@@ -179,20 +179,20 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	/**
 	 * Find ids for all active contractors who either need recalculation but
-	 * haven't been calculated in the past 30 minutes or haven't been calculated
+	 * haven't been calculated in the past 15 minutes or haven't been calculated
 	 * in the past week
 	 * 
 	 * @return
 	 */
-	public List<Integer> findContractorsNeedingRecalculation() {
+	public List<Integer> findContractorsNeedingRecalculation(int limit) {
 		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND ("
 				+ "c.lastRecalculation < :lastRunDate " + "OR c.lastRecalculation IS NULL) "
 				+ "ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
-		query.setMaxResults(10);
+		query.setMaxResults(limit);
 
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, -10);
+		calendar.add(Calendar.MINUTE, -15);
 		query.setParameter("lastRunDate", calendar.getTime());
 
 		return query.getResultList();
