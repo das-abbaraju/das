@@ -65,6 +65,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addField("a.acceptsBids");
 		sql.addField("c.riskLevel");
 		sql.addField("fcc.answer");
+		sql.addField("fcc.verified");
 		sql.addOrderBy("a.name");
 
 		List<BasicDynaBean> results = db.select(sql.toString(), false);
@@ -116,6 +117,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 				FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteriaOperator.getCriteria(), row
 						.get("answer").toString());
+				fcc.setVerified(Database.toBoolean(row, "verified"));
 
 				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
 				List<FlagData> conResults = calculator.calculate();
