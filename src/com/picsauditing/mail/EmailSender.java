@@ -2,6 +2,7 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 
+import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
@@ -43,10 +44,12 @@ public class EmailSender {
 					PicsLogger.log("using Gmail to send email from " + getDefaultSender());
 					gmailSender = new GMailSender(getGmailUsername(), defaultPassword);
 				}
+				gmailSender.setAttachmentDAO((EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO"));
 				gmailSender.sendMail(email);
 			} else {
 				PicsLogger.log("using localhost sendmail to send");
 				SendMail sendMail = new SendMail();
+				sendMail.setAttachmentDAO((EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO"));
 				sendMail.send(email);
 			}
 			email.setStatus(EmailStatus.Sent);

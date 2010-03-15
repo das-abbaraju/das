@@ -1,23 +1,34 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
@@ -34,6 +45,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected CountryDAO countryDAO;
 	protected StateDAO stateDAO;
 	protected ContractorAccountDAO contractorAccountDAO;
+	protected EmailAttachmentDAO emailAttachmentDAO;
 	private int requestID;
 	protected Country country;
 	protected State state;
@@ -42,16 +54,19 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected int conID;
 	protected int opID;
 	protected ContractorAccount conAccount = null;
+	protected String formName = null;
+	protected String[] filenames = null;
 
 	public RequestNewContractor(ContractorRegistrationRequestDAO contractorRegistrationRequestDAO,
 			OperatorAccountDAO operatorAccountDAO, UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO,
-			ContractorAccountDAO contractorAccountDAO) {
+			ContractorAccountDAO contractorAccountDAO, EmailAttachmentDAO emailAttachmentDAO) {
 		this.contractorRegistrationRequestDAO = contractorRegistrationRequestDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.userDAO = userDAO;
 		this.countryDAO = countryDAO;
 		this.stateDAO = stateDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.emailAttachmentDAO = emailAttachmentDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -156,6 +171,27 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(80);
 					EmailSender.send(emailQueue);
+					
+					if (filenames != null) {
+						for (String filename : filenames) {
+							try {
+								EmailAttachment attachment = new EmailAttachment();
+								File file = new File(getFtpDir() + "/forms/" + filename);
+
+								byte[] bytes = new byte[(int) file.length()];
+								FileInputStream fis = new FileInputStream(file);
+								fis.read(bytes);
+
+								attachment.setFileName(getFtpDir() + "/forms/" + filename);
+								attachment.setContent(bytes);
+								attachment.setFileSize((int) file.length());
+								attachment.setEmailQueue(emailQueue);
+								emailAttachmentDAO.save(attachment);
+							} catch (Exception e) {
+								System.out.println("Unable to open file: /forms/" + filename);
+							}
+						}
+					}
 				}
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
@@ -254,6 +290,22 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public ContractorAccount getConAccount() {
 		return conAccount;
 	}
+	
+	public String getFormName() {
+		return formName;
+	}
+	
+	public void setFormName(String formName) {
+		this.formName = formName;
+	}
+	
+	public String[] getFilenames() {
+		return filenames;
+	}
+	
+	public void setFilenames(String[] filenames) {
+		this.filenames = filenames;
+	}
 
 	public User getAssignedCSR() {
 		if (newContractor.getId() > 0 && newContractor.getHandledBy().equals(WaitingOn.PICS)) {
@@ -263,5 +315,38 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				return newContractor.getState().getCsr();
 		}
 		return null;
+	}
+	
+	public boolean isFormsViewable() {
+		return permissions.hasPermission(OpPerms.FormsAndDocs);
+	}
+	
+	public List<OperatorForm> getForms() {
+		List<OperatorForm> forms = null;
+		
+		if (permissions.isOperatorCorporate() || permissions.isAdmin()) {
+			OperatorAccount operator = newContractor.getRequestedBy();
+			Set<OperatorForm> inheritedFrom = new HashSet<OperatorForm>();
+			
+			inheritedFrom.addAll(operator.getInheritAuditCategories().getOperatorForms());
+			inheritedFrom.addAll(operator.getInheritAudits().getOperatorForms());
+			inheritedFrom.addAll(operator.getInheritFlagCriteria().getOperatorForms());
+			inheritedFrom.addAll(operator.getInheritInsurance().getOperatorForms());
+			inheritedFrom.addAll(operator.getInheritInsuranceCriteria().getOperatorForms());
+			
+			forms = new ArrayList<OperatorForm>(inheritedFrom);
+		}
+		
+		Collections.sort(forms, new ByFacilityName());
+		return forms;
+	}
+	
+	private class ByFacilityName implements Comparator<OperatorForm> {
+		public int compare(OperatorForm o1, OperatorForm o2) {
+			if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)
+				return (o1.getFormName().compareTo(o2.getFormName()));
+			
+			return o1.getAccount().getName().compareTo(o2.getAccount().getName());
+		}
 	}
 }

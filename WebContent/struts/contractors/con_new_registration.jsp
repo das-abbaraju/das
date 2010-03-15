@@ -4,16 +4,32 @@
 <html>
 <head>
 <title>Request New Contractor</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/notes.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<style type="text/css">
+#operatorForms {
+	overflow: auto;
+	background-color: white;
+}
+
+#hidden #operatorForms {
+	display: none;
+}
+
+#attachment {
+	display: inline-block;
+	vertical-align: top;
+}
+</style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript">
+$(document).ready(function() {
+	$('.fancybox').fancybox();
+});
+
 $(function() {
 	changeState($("#newContractorCountry").val());
 	$('.datepicker').datepicker();
@@ -43,6 +59,22 @@ function checkUserOther() {
 	else
 		$("#requestedByOtherUser").hide();
 }
+
+function addAttachment(formName, filename) {
+	$.fancybox.close();
+	var id = filename.substring(0, filename.indexOf('.'));
+	
+	var attachment = '<span id="' + id + '"><a href="#" class="remove" onclick="removeAttachment(\'' + id
+		+ '\'); return false;">' + formName + '</a><input type="hidden" id="' + id + '_input" name="filenames" value="'
+		+ filename + '" /><br /></span>';
+	
+	$('#attachment').append(attachment);
+	$('#'+id+'_input').val(filename);
+}
+
+function removeAttachment(id) {
+	$('span#'+id).remove();
+}
 </script>
 </head>
 <body>
@@ -56,7 +88,6 @@ function checkUserOther() {
 		Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>.</div>
 </s:if>
 
-
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
 	<fieldset class="form"><legend><span>Details</span></legend>
@@ -68,19 +99,21 @@ function checkUserOther() {
 		<li><label>Phone:</label>
 			<s:textfield name="newContractor.phone" size="20" /><span class="redMain">*</span>
 			<s:if test="newContractor.id > 0">
-				<input type="submit"
-				class="picsbutton positive" name="button" value="Contacted By Phone" />
+				<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
 			</s:if>
 		</li>
-		<li><label for="saveContractorForm_newContractor_email">Email:</label>
-			 <s:textfield name="newContractor.email" size="30" />
+		<li><label for="email">Email:</label>
+			<s:textfield name="newContractor.email" size="30" id="email" />
 			<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
-				<input type="submit" class="picsbutton positive"
-				name="button" value="Send Email" />
+				<input type="submit" value="Send Email" name="button" class="picsbutton" />
+				<s:if test="formsViewable && attachment == null && forms.size() > 0">
+					<a href="#operatorForms" class="picsbutton fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
+					<div id="attachment" style="width: 350px"></div>
+				</s:if>
 			</s:if>
 		</li>
-		<li><label for="saveContractorForm_newContractor_taxID">Tax
-			ID:</label> <s:textfield name="newContractor.taxID" size="9" maxLength="9" /></li>
+		<li><label for="taxID">Tax ID:</label>
+			<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" /></li>
 		<s:if test="assignedCSR != null">
 			<li><label>Assigned PICS CSR:</label>
 				<s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/>
@@ -88,31 +121,27 @@ function checkUserOther() {
 		</s:if>	
 	</ol>
 	</fieldset>
-	<fieldset class="form"><legend><span>Primary
-		Address</span></legend>
+	<fieldset class="form"><legend><span>Primary Address</span></legend>
 	<ol>
-		<li><label for="saveContractorForm_newContractor_address">Address:</label>
-			<s:textfield name="newContractor.address" size="35" /></li>
-		<li><label for="saveContractorForm_newContractor_city">City:</label>
-			<s:textfield name="newContractor.city" size="20" /></li>
-		<li><label for="saveContractorForm_newContractor_zip">Zip:</label>
-			<s:textfield name="newContractor.zip" size="7" /></li>
-		<li><label for="newContractorCountry">Country:</label> <s:select
-			list="countryList" name="country.isoCode" id="newContractorCountry"
-			listKey="isoCode" listValue="name"
-			value="%{newContractor.country.isoCode}"
-			onchange="countryChanged(this.value)" /><span class="redMain">*</span></li>
+		<li><label for="address">Address:</label>
+			<s:textfield name="newContractor.address" size="35" id="address" /></li>
+		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" /></li>
+		<li><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /></li>
+		<li><label for="newContractorCountry">Country:</label>
+			<s:select
+				list="countryList" name="country.isoCode" id="newContractorCountry"
+				listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
+				onchange="countryChanged(this.value)" />
+			<span class="redMain">*</span></li>
 		<li id="state_li"></li>
 	</ol>
 	</fieldset>
-	<fieldset class="form"><legend><span>User
-		Information</span></legend>
+	<fieldset class="form"><legend><span>User Information</span></legend>
 	<ol>
-		<li><label>Requested
-			By Account:</label><s:select list="operatorsWithCorporate" headerKey="0" 
-				headerValue="- Select a Operator -" name="requestedOperator" 
-				value="%{newContractor.requestedBy.id}" listKey="id" listValue="name" 
-				onchange="updateUsersList();" />
+		<li><label>Requested By Account:</label>
+			<s:select list="operatorsWithCorporate" headerKey="0" headerValue="- Select a Operator -"
+				name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
+				value="%{newContractor.requestedBy.id}" />
 			<span class="redMain">*</span>
 		</li>
 		<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
@@ -135,13 +164,10 @@ function checkUserOther() {
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />
 		</li>
 		<s:if test="newContractor.id > 0">
-			<li><label>Last
-				Contacted By:</label> <s:property value="newContractor.lastContactedBy.name"
-				/><br /></li>
-			<li><label>Date
-				Contacted:</label><s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" />
-				<br />
-			</li>
+			<li><label>Last Contacted By:</label>
+				<s:property value="newContractor.lastContactedBy.name" /><br /></li>
+			<li><label>Date	Contacted:</label>
+				<s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" /><br /></li>
 		</s:if>
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
@@ -150,32 +176,56 @@ function checkUserOther() {
 			<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
 		</li>
 		<s:if test="newContractor.id > 0">
-			<li><label>#
-				of Times Contacted:</label><s:property value="newContractor.contactCount"/></li>
-		<li><label>Matches Found in PICS:</label>
-			<s:property value="newContractor.matchCount"/></li>
-		<li><label>PICS Contractor ID:</label>
-			<s:if test="permissions.admin">
-				<s:textfield name="conID" value="%{newContractor.contractor.id}" size="7" />
-			</s:if>
-			<s:if test="conAccount != null">
-				<a href="ContractorView.action?id=<s:property value="conAccount.id"/>"><s:property value="conAccount.name"/></a>
-			</s:if>
-		</li>
+			<li><label># of Times Contacted:</label>
+				<s:property value="newContractor.contactCount"/></li>
+			<li><label>Matches Found in PICS:</label>
+				<s:property value="newContractor.matchCount"/></li>
+			<li><label>PICS Contractor ID:</label>
+				<s:if test="permissions.admin">
+					<s:textfield name="conID" value="%{newContractor.contractor.id}" size="7" />
+				</s:if>
+				<s:if test="conAccount != null">
+					<a href="ContractorView.action?id=<s:property value="conAccount.id"/>">
+					<s:property value="conAccount.name"/></a>
+				</s:if>
+			</li>
 		</s:if>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
 	 <div>	
-	  	<input
-		type="submit" class="picsbutton positive" name="button" value="Save" />
+	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
 	  	<s:if test="newContractor.id > 0">
-		  	<input
-			type="submit" class="picsbutton negative" name="button" value="Close Request" />
+		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
 		</s:if>
 	</div>	
 	</fieldset>
 </s:form>
+
+<div style="display: none" id="load"></div>
+
+<s:if test="formsViewable && forms.size() > 0">
+<div id="hidden"><div id="operatorForms">
+	<table class="report">
+		<thead>
+			<tr>
+				<th colspan="2">Forms</th>
+				<th>Facility</th>
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="forms" status="stat">
+				<tr>
+					<td class="right"><s:property value="#stat.index + 1" /></td>
+					<td><a href="#" onclick="addAttachment('<s:property value="formName" />','<s:property value="file" />'); return false;">
+						<s:property value="formName" /></a></td>
+					<td><s:property value="account.name" /></td>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
+</div></div>
+</s:if>
 
 </body>
 </html>
