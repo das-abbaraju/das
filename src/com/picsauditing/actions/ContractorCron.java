@@ -87,7 +87,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		if (isDebugging())
 			PicsLogger.addRuntimeRule("ContractorCron");
-		
+
 		PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
@@ -99,13 +99,13 @@ public class ContractorCron extends PicsActionSupport {
 			}
 			addActionMessage("ContractorCron processed " + list.size() + " record(s)");
 		}
-		
+
 		PicsLogger.stop();
-		
+
 		if (button != null && button.equals("ConFlag")) {
 			return redirect("ContractorFlag.action?id=" + conID + "&opID=" + opID);
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -119,6 +119,13 @@ public class ContractorCron extends PicsActionSupport {
 			runAuditBuilder(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+
+			if (steps != null && steps.length > 0) {
+				contractor.setNeedsRecalculation(false);
+				contractor.setLastRecalculation(new Date());
+				dao.save(contractor);
+			}
+
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
@@ -151,16 +158,14 @@ public class ContractorCron extends PicsActionSupport {
 				}
 				runCorporateRollup(contractor, corporateSet);
 			}
-			runPolicies(contractor);
-
 			if (steps != null && steps.length > 0) {
-				contractor.setNeedsRecalculation(false);
-				contractor.setLastRecalculation(new Date());
 				dao.save(contractor);
-
 				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
 						+ " successfully");
 			}
+
+			runPolicies(contractor);
+
 		} catch (Throwable t) {
 			StringWriter sw = new StringWriter();
 			t.printStackTrace(new PrintWriter(sw));
@@ -344,7 +349,8 @@ public class ContractorCron extends PicsActionSupport {
 						if (cao.isVisible()) {
 							if (cao.getOperator().equals(co.getOperatorAccount().getInheritInsurance())
 									&& (cao.getStatus().isSubmitted() || cao.getStatus().isVerified())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
+										.getFlagDatas());
 
 								cao.setFlag(flagColor);
 								dao.save(cao);
@@ -459,8 +465,7 @@ public class ContractorCron extends PicsActionSupport {
 				return true;
 		return false;
 	}
-	
-	
+
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}

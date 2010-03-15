@@ -104,7 +104,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.id = id;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
 	}
@@ -113,7 +113,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.audits = audits;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE, CascadeType.REFRESH })
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
