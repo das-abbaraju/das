@@ -297,14 +297,4 @@ public class ContractorFlagETL {
 		System.out.println("Failed to parse type " + cType + " " + qType);
 		return "";
 	}
-
-	private boolean isHasOqEmployees(int conID) {
-		AuditData answer = auditDataDao.findAnswerByConQuestion(conID, AuditQuestion.OQ_EMPLOYEES);
-		return (answer != null && !Strings.isEmpty(answer.getAnswer()) && "Yes".equals(answer.getAnswer()));
-	}
-
-	private boolean isHasCOR(int conID) {
-		AuditData answer = auditDataDao.findAnswerByConQuestion(conID, AuditQuestion.COR);
-		return (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer()));
-	}
 }
