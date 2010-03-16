@@ -8,6 +8,15 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css" />
 
+<style>
+img.contractor_logo {
+	float: left;
+	max-width: 300px;
+	/* IE Image max-width */
+	width: expression(this.width > 300 ? 300 : true);
+}
+</style>
+
 </head>
 <body>
 
@@ -90,7 +99,8 @@
 				Description
 			</div>
 			<div class="panel_content">
-				
+				<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
+				<s:property value="contractor.description"/>
 			</div>
 		</div>
 	</div>
