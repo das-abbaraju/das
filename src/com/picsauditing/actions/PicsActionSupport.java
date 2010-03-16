@@ -47,7 +47,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
 	private Set<User> auditorList;
-	
+
 	public static final String getVersion() {
 		return "4.0";
 	}
@@ -197,6 +197,10 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		return dateFormat.format(serverDate);
 	}
 
+	public String getFuzzyDate(Date d) {
+		return DateBean.getFuzzyDate(d);
+	}
+
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
@@ -216,7 +220,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	}
 
 	static public String format(float number) {
-		//return new DecimalFormat("#,##0.00").format(number);
+		// return new DecimalFormat("#,##0.00").format(number);
 		return Strings.formatDecimalComma(number + "");
 	}
 

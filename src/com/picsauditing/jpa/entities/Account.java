@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -453,6 +454,16 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setPrimaryContact(User user) {
 		this.primaryContact = user;
+	}
+
+	@Transient
+	public Date getLastLogin() {
+		Date d = null;
+		for (User u : users) {
+			if (d == null || (u.getLastLogin() != null && u.getLastLogin().after(d)))
+				d = u.getLastLogin();
+		}
+		return d;
 	}
 
 	@Override

@@ -19,8 +19,8 @@ div.co_flag {
 	float: left;
 	text-align: center;
 	height: 100%;
-	width: 10%;
-	margin: 2%;
+	width: 40px;
+	margin: 10px 20px 10px 5px;
 }
 div.co_select {
 	clear: left;
@@ -53,9 +53,9 @@ span.other_operator {
 					<div class="co_problems">
 						<s:if test="problems.size > 0">
 							<p>Problems:
-								<ul>
+								<ul style="list-style: none">
 									<s:iterator value="problems">
-										<li><s:property value="critieria.label"/></li>
+										<li><s:property value="flag.smallIcon" escape="false"/> <s:property value="criteria.label"/></li>
 									</s:iterator>
 								</ul>
 							</p>
@@ -64,10 +64,10 @@ span.other_operator {
 							<s:property value="co.waitingOn"/>
 						</p>
 						<p>Works In:
-							<s:property value="contractor.worksIn"/>
+							<s:property value="contractor.state.name"/>
 						</p>
 						<p>Last Login:
-							<s:property value="contractor.lastLogin"/>
+							<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 						</p>
 					</div>
 				</s:if>

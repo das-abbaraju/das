@@ -165,23 +165,23 @@ public class DateBean {
 		cal.add(Calendar.DAY_OF_YEAR, 1);
 		return cal.getTime();
 	}
-	
+
 	public static Date getLatestDate(Date d1, Date d2) {
 		if (d1 == null)
 			return d2;
-		
+
 		if (d2 == null)
 			return d1;
-		
+
 		if (d1.after(d2))
 			return d1;
-		
+
 		return d2;
 	}
-	
+
 	/**
-	 * This allows setting the new year rollover before jan 1. To set the rollover date, update currentYearStart in
-	 * web.xml.
+	 * This allows setting the new year rollover before jan 1. To set the
+	 * rollover date, update currentYearStart in web.xml.
 	 * 
 	 * @param strCurrentYearStart
 	 * @return
@@ -303,7 +303,8 @@ public class DateBean {
 	}
 
 	/**
-	 * Calculate the number of days until the date Positive numbers are in the future. Negative numbers are in the past.
+	 * Calculate the number of days until the date Positive numbers are in the
+	 * future. Negative numbers are in the past.
 	 * 
 	 * @param firstDate
 	 * @return
@@ -311,6 +312,40 @@ public class DateBean {
 	public static int getDateDifference(Date firstDate) {
 		Calendar cal = Calendar.getInstance();
 		return DateBean.getDateDifference(cal.getTime(), firstDate);
+	}
+
+	public static String getFuzzyDate(Date d) {
+		Calendar now = Calendar.getInstance();
+		Calendar then = Calendar.getInstance();
+		then.setTime(d);
+		long diff = now.getTimeInMillis() - then.getTimeInMillis();
+
+		long SECONDS = 1000;
+		long MINUTES = SECONDS * 60;
+		long HOURS = MINUTES * 60;
+		long DAYS = HOURS * 24;
+		long WEEKS = DAYS * 7;
+		long MONTHS = DAYS * 30;
+		long YEARS = DAYS * 365;
+
+		String fuzzy = "";
+		if (diff < MINUTES)
+			fuzzy = "Today";
+		else if (diff < HOURS)
+			fuzzy = diff / MINUTES + " minutes ago";
+		else if (diff < DAYS)
+			fuzzy = diff / HOURS + " hours ago";
+		else if (diff < WEEKS)
+			fuzzy = diff / DAYS + " days ago";
+		else if (diff < MONTHS)
+			fuzzy = diff / WEEKS + " weeks ago";
+		else if (diff < YEARS)
+			fuzzy = diff / MONTHS + " months ago";
+		else
+			fuzzy = diff / YEARS + " years ago";
+
+		return fuzzy;
+
 	}
 
 	public static Date parseDate(String dateString) {
@@ -330,11 +365,13 @@ public class DateBean {
 			try {
 				df.applyPattern(pattern);
 				d = df.parse(dateString);
-				// System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d,
+				// System.out.println("parseDate (SUCCESS): from " + dateString
+				// + " into " + DateBean.format(d,
 				// "yyyy-MM-dd"));
 				break;
 			} catch (ParseException e) {
-				// System.out.println(e.getMessage() + " using pattern: " + pattern);
+				// System.out.println(e.getMessage() + " using pattern: " +
+				// pattern);
 			}
 		}
 		if (d == null)
@@ -366,11 +403,13 @@ public class DateBean {
 				try {
 					df.applyPattern(pattern + " " + timePattern);
 					d = df.parse(dateString);
-					// System.out.println("parseDate (SUCCESS): from " + dateString + " into " + DateBean.format(d,
+					// System.out.println("parseDate (SUCCESS): from " +
+					// dateString + " into " + DateBean.format(d,
 					// "yyyy-MM-dd"));
 					break outerLoop;
 				} catch (ParseException e) {
-					// System.out.println(e.getMessage() + " using pattern: " + pattern);
+					// System.out.println(e.getMessage() + " using pattern: " +
+					// pattern);
 				}
 			}
 		}
@@ -407,7 +446,7 @@ public class DateBean {
 		cal.setTime(startDate);
 		cal.add(field, amount);
 		return cal.getTime();
-	}	
+	}
 
 	/**
 	 * Get the first date of a month before
@@ -428,8 +467,8 @@ public class DateBean {
 	}
 
 	/**
-	 * this will not roll to the next march. it will increment by a year and then go to march. Jan 1 2009 will return
-	 * March 1 2010
+	 * this will not roll to the next march. it will increment by a year and
+	 * then go to march. Jan 1 2009 will return March 1 2010
 	 */
 
 	public static Date getMarchOfNextYear(Date startDate) {
@@ -484,18 +523,19 @@ public class DateBean {
 		c2.setTimeZone(sourceTimeZone);
 		c2.set(c1.get(Calendar.YEAR), c1.get(Calendar.MONTH), c1.get(Calendar.DAY_OF_MONTH), c1
 				.get(Calendar.HOUR_OF_DAY), c1.get(Calendar.MINUTE), c1.get(Calendar.SECOND));
-		// For some reason, this next line is required or the conversion won't work.
+		// For some reason, this next line is required or the conversion won't
+		// work.
 		c2.get(Calendar.HOUR_OF_DAY);
 		c2.setTimeZone(destinationTimeZone);
 		return c2.getTime();
 	}
-	
+
 	public static String prettyDate(Date dateValue) {
 		long msToUnlock = dateValue.getTime() - new Date().getTime();
-		
+
 		String ago = (msToUnlock < 0) ? " ago" : "";
 		msToUnlock = Math.abs(msToUnlock);
-		
+
 		String period = "";
 		int value = Math.round(msToUnlock / 1000);
 		if (value <= 70) {
@@ -524,9 +564,10 @@ public class DateBean {
 			period += "s";
 		return value + " " + period + ago;
 	}
-	
+
 	/**
 	 * Get the first date of a month before or the closest sunday before
+	 * 
 	 * @param startDate
 	 * @return
 	 */
@@ -539,7 +580,7 @@ public class DateBean {
 		sunday.set(Calendar.DAY_OF_WEEK, 1);
 		int closestmonth = DateBean.getDateDifference(startDate, month.getTime());
 		int closestsunday = DateBean.getDateDifference(startDate, sunday.getTime());
-		if(closestmonth > closestsunday)
+		if (closestmonth > closestsunday)
 			return month.getTime();
 		else
 			return sunday.getTime();
