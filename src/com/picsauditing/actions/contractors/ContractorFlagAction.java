@@ -79,7 +79,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				co.setFlagLastUpdated(new Date());
 				contractorOperatorDao.save(co);
 				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID
-					+ "&button=ConFlag&steps=Flag&steps=WaitingOn");
+					+ "&button=ConFlag&steps=All");
 			}
 			
 			permissions.tryPermission(OpPerms.EditForcedFlags);
