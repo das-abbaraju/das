@@ -121,8 +121,13 @@ img.contractor_logo {
 			<div class="panel_header">
 				Open Tasks
 			</div>
-			<div class="panel_content">
-				
+			<div class="panel_content" id="con_tasks">
+				<script type="text/javascript">
+					$(function() {
+							$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
+						}
+					);
+				</script>
 			</div>
 		</div>
 	</div>
