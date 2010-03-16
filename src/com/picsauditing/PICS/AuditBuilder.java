@@ -111,7 +111,7 @@ public class AuditBuilder {
 		// Only ever create ONE PQF audit
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit conAudit : currentAudits) {
-			if (conAudit.getAuditType().getClassType().isPqf()) {
+			if (conAudit.getAuditType().isPqf()) {
 				if (conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
 					// This should never happen...but just in case
 					conAudit.changeStatus(AuditStatus.Pending, user);
@@ -172,6 +172,11 @@ public class AuditBuilder {
 						if (auditType.isRenewable()) {
 							// This audit should not be renewed but we already have one
 							found = true;
+							if (conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
+								// This should never happen...but just in case
+								conAudit.changeStatus(AuditStatus.Pending, user);
+								cAuditDAO.save(conAudit);
+							}
 						} else {
 							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
 								// The audit is still valid for at least another 60 days
