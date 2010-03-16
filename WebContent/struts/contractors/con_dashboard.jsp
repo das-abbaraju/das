@@ -141,8 +141,8 @@ img.contractor_logo {
 				<ul style="list-style-type: none; float: left;">
 					<s:iterator value="value">
 					<li>
-						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-							><s:property value="flagColor.smallIcon" escape="false" />
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+							<s:property value="flagColor.smallIcon" escape="false" />
 						</a>
 						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
 							<s:if test="permissions.admin"> 
@@ -153,7 +153,9 @@ img.contractor_logo {
 							<s:else>
 								title="Waiting On '<s:property value="waitingOn"/>'"
 							</s:else>
-							><s:property value="operatorAccount.name" /></a>
+							>
+							<s:property value="operatorAccount.name" />
+						</a>
 					</li>
 					</s:iterator>
 				</ul>
