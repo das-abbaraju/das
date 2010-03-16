@@ -137,7 +137,27 @@ img.contractor_logo {
 				Other Locations
 			</div>
 			<div class="panel_content">
-				
+				<s:iterator value="activeOperatorsMap">
+				<ul style="list-style-type: none; float: left;">
+					<s:iterator value="value">
+					<li>
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+							><s:property value="flagColor.smallIcon" escape="false" />
+						</a>
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+							<s:if test="permissions.admin"> 
+								title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
+								rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+								class="operatorQuick"
+							</s:if>
+							<s:else>
+								title="Waiting On '<s:property value="waitingOn"/>'"
+							</s:else>
+							><s:property value="operatorAccount.name" /></a>
+					</li>
+					</s:iterator>
+				</ul>
+				</s:iterator>
 			</div>
 		</div>
 	</div>

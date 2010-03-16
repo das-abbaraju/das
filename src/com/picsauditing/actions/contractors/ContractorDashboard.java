@@ -1,12 +1,15 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
@@ -49,5 +52,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public List<AuditData> getServicesPerformed() {
 		return dataDAO.findServicesPerformed(id);
+	}
+
+	public Map<Integer, List<ContractorOperator>> getActiveOperatorsMap() {
+
+		Map<Integer, List<ContractorOperator>> result = new TreeMap<Integer, List<ContractorOperator>>();
+		List<ContractorOperator> ops = getActiveOperators();
+
+		result.put(0, ops.subList(0, ops.size() / 2));
+		result.put(1, ops.subList(ops.size() / 2, ops.size()));
+
+		return result;
 	}
 }
