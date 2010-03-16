@@ -38,7 +38,17 @@
 						<s:select name="newHurdle" list="#{'true':'True','false':'False'}" value="defaultValue"></s:select>
 					</s:if>
 					<s:elseif test="dataType == 'number'">
-						<input name="newHurdle" type="text" value="<s:property value="getFormattedDefaultValue(defaultValue)" />" size="10" />
+						<s:if test="question.questionType == 'AMBest'">
+							<s:if test="label.contains(\"Class\")">
+								<s:select name="newHurdle" list="ambestClasses" value="defaultValue"></s:select>
+							</s:if>
+							<s:if test="label.contains(\"Rating\")">
+								<s:select name="newHurdle" list="ambestRatings" value="defaultValue"></s:select>
+							</s:if>
+						</s:if>
+						<s:else>
+							<input name="newHurdle" type="text" value="<s:property value="getFormattedDefaultValue(defaultValue)" />" size="10" />
+						</s:else>
 					</s:elseif>
 					<s:elseif test="dataType == 'date'">
 						<s:property value="comparison" />

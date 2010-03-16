@@ -1,5 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.TreeMap;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -233,5 +237,17 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	public int compareTo(FlagCriteria o) {
 
 		return ((Integer) displayOrder).compareTo(o.displayOrder);
+	}
+
+	@Transient
+	public Collection<String> getAmbestRatings(){
+		return new TreeMap<Integer, String>(AmBest.ratingMap).values();
+	}
+	
+	@Transient
+	public Collection<String> getAmbestClasses(){
+		TreeMap<Integer, String> reverseClasses = new TreeMap<Integer, String>(Collections.reverseOrder());
+		reverseClasses.putAll(AmBest.financialMap);
+		return reverseClasses.values();
 	}
 }
