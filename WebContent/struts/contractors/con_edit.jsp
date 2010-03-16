@@ -188,7 +188,7 @@ $(function() {
 					</li>
 					<li><label>Upgrade Date:</label>
 						<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" 
-							value="<s:date name="contractor.membershipDate" format="MM/dd/yyyy" />" />
+							value="<s:date name="contractor.lastUpgradeDate" format="MM/dd/yyyy" />" />
 					</li>
 				</ol>
 				</fieldset>
