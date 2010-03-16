@@ -7,24 +7,23 @@ import java.util.TreeMap;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
 
-	private OperatorAccountDAO operatorDAO;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO dataDAO;
 
-	private OperatorAccount operator;
+	private ContractorOperator co;
 	private int opID;
 
 	public ContractorDashboard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			OperatorAccountDAO operatorDAO, AuditDataDAO dataDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO) {
 		super(accountDao, auditDao);
-		this.operatorDAO = operatorDAO;
+		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.dataDAO = dataDAO;
 		this.subHeading = "Contractor Dashboard";
 	}
@@ -35,15 +34,20 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return LOGIN_AJAX;
 
 		if (opID > 0)
-			operator = operatorDAO.find(opID);
+			co = contractorOperatorDAO.find(id, opID);
 		else if (permissions.isOperator())
-			operator = operatorDAO.find(permissions.getAccountId());
+			co = contractorOperatorDAO.find(id, permissions.getAccountId());
+
+		if (co == null) {
+			addActionError("This contractor doesn't work at the given site");
+			return BLANK;
+		}
 
 		return super.execute();
 	}
 
-	public OperatorAccount getOperator() {
-		return operator;
+	public ContractorOperator getCo() {
+		return co;
 	}
 
 	public void setOpID(int opID) {
