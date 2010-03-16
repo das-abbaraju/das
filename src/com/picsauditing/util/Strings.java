@@ -417,11 +417,11 @@ public class Strings {
 	}
 
 	/**
-	 * Is country contained in the expression
+	 * Is countries contained in the expression
 	 * 
 	 * @param expression
 	 *            like !|CA|FR|
-	 * @param country
+	 * @param countries
 	 *            like US
 	 * @return
 	 */
@@ -431,14 +431,21 @@ public class Strings {
 		if (isEmpty(expression))
 			return true;
 
-		boolean contains = false;
-		for (String country : countries) {
-			if (expression.contains("|" + country + "|"))
-				contains = true;
+		if (expression.substring(0, 1).equals("!")) {
+			String[] notInCountries = expression.substring(1).split("\\|");
+			for (String country : notInCountries) {
+				if(countries.contains(country))
+					countries.remove(country);
+			}
+			return countries.size() > 0;
 		}
-		if (expression.substring(0, 1).equals("!"))
-			contains = !contains;
-		return contains;
+		else {
+			for (String country : countries) {
+				if (expression.contains("|" + country + "|"))
+					return true;
+			}
+			return false;
+		}
 	}
 
 	public static String getCountry(String expression) {

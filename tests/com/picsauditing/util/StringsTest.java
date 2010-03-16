@@ -322,7 +322,13 @@ public class StringsTest extends TestCase {
 		expression = "!|CA|US|";
 		assertTrue(Strings.isInCountries(expression, franceOnly));
 		assertFalse(Strings.isInCountries(expression, usOnly));
-		assertFalse(Strings.isInCountries(expression, all));
+		assertTrue(Strings.isInCountries(expression, all));
+
+		expression = "!|US|";
+		usOnly.add("US");
+		assertFalse(Strings.isInCountries(expression, usOnly));
+		boolean inCountries = Strings.isInCountries(expression, usAndCanada);
+		assertTrue(inCountries);
 	}
 
 	public void testEditDistance() {
