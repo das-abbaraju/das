@@ -1,5 +1,7 @@
 #content div.column {
 	float: left;
+	width: 46%;
+	margin-right: 2%;
 }
 
 #content div.panel_placeholder {
