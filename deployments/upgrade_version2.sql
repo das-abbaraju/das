@@ -201,13 +201,14 @@ ao.requiredForFlag,null as hurdle, null as percentAffected, null as lastcalculat
 join flag_criteria f on ao.auditTypeid = f.audittypeid
 join audit_type at on at.id = ao.audittypeid
 where
-(ao.auditTypeid in (1,11) AND 
+(ao.auditTypeid in (1,11) AND
 	(
 		(ao.requiredAuditStatus = 'Active' and f.validationRequired = 1) 
 		or
 		(ao.requiredAuditStatus = 'Submitted' and f.validationRequired = 0)
 	)
 )
+AND ao.requiredForFlag != 'Green'
 and ao.canSee = 1;
 
 -- insert data for non PQF and Annual Updates
@@ -217,6 +218,7 @@ ao.requiredForFlag,null as hurdle, null as percentAffected, null as lastcalculat
 join flag_criteria f on ao.auditTypeid = f.audittypeid
 join audit_type at on at.id = ao.audittypeid
 where ao.auditTypeid not in (1,11)
+AND ao.requiredForFlag != 'Green'
 and ao.canSee = 1;
 
 delete from flag_criteria_operator where flag = '';
@@ -601,6 +603,8 @@ RENAME TABLE flagoshacriteria to old_flagoshacriteria;
 
 DROP TABLE `pqfquestion_operator`;
 DROP TABLE `temp_user`;
+drop table `temp_contractor_audit`;
+drop table `temp_expired_audits`;
 DROP TABLE `temp_user_duplicates`;
 
 -- Deleting all data other than past 7 days, sundays and 1st of every month for 17 Weeks
@@ -610,3 +614,6 @@ where creationDate < DATE_SUB(NOW(),INTERVAL 7 DAY)
 and DAYOFMONTH(creationDate) != 1
 and DAYOFWEEK(creationDate) != 1
 limit 100000;
+
+ALTER TABLE `flag_criteria_operator` 
+	ADD COLUMN `affected` smallint(4) unsigned   NOT NULL DEFAULT '0' after `minRiskLevel`;
