@@ -15,22 +15,55 @@ img.contractor_logo {
 	/* IE Image max-width */
 	width: expression(this.width > 180 ? 180 : true);
 }
+div.co_flag {
+	float: left;
+	text-align: center;
+	height: 100%;
+	width: 10%;
+	margin: 2%;
+}
+div.co_select {
+	clear: left;
+}
 </style>
 
 </head>
 <body>
 
 <s:include value="conHeader.jsp"/>
-
-<div class="column">
+<table>
+<tr>
+<td>
 	<!-- Operator Flag Status -->
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Contractor Status at <s:property value="operator.name"/>
+				Contractor Status at <s:property value="co.operatorAccount.name"/>
 			</div>
 			<div class="panel_content">
-				
+				<s:if test="co != null">
+					<div class="co_flag">
+						<s:property value="co.flagColor.bigIcon" escape="false"/> <br />
+						<s:property value="co.flagColor"/> <br />
+						<a href="#">Force</a>
+					</div>
+					<div class="co_problems">
+						Problems:
+						<ul>
+							<s:iterator value="problems">
+								<li><s:property value="critieria.label"/></li>
+							</s:iterator>
+						</ul>
+					</div>
+				</s:if>
+				<div class="co_select">
+					<nobr>
+					Viewing Dashboard as: 
+					<s:select list="contractor.operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
+						headerKey="" headerValue=" - Operator - "
+							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>.
+					</nobr>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -39,6 +72,17 @@ img.contractor_logo {
 		<div class="panel">
 			<div class="panel_header">
 				DocuGUARD
+			</div>
+			<div class="panel_content">
+				
+			</div>
+		</div>
+	</div>
+	<!-- AuditGUARD -->
+	<div class="panel_placeholder">
+		<div class="panel">
+			<div class="panel_header">
+				AuditGUARD
 			</div>
 			<div class="panel_content">
 				
@@ -56,11 +100,11 @@ img.contractor_logo {
 			</div>
 		</div>
 	</div>
-	<!-- Regulatory Data -->
+	<!-- Statistics -->
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Regulatory Data
+				Statistics
 			</div>
 			<div class="panel_content">
 				
@@ -78,9 +122,11 @@ img.contractor_logo {
 			</div>
 		</div>
 	</div>
-</div>
+</td>
 
-<div class="column">
+<td width="15px"></td>
+
+<td>
 	<!-- Contact Info -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -179,7 +225,9 @@ img.contractor_logo {
 			</div>
 		</div>
 	</div>
-</div>
+</td>
+</tr>
+</table>
 
 </body>
 

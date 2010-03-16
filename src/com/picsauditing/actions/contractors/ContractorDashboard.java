@@ -8,23 +8,27 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FlagData;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
 
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO dataDAO;
+	private FlagDataDAO flagDataDAO;
 
 	private ContractorOperator co;
 	private int opID;
 
 	public ContractorDashboard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.dataDAO = dataDAO;
+		this.flagDataDAO = flagDataDAO;
 		this.subHeading = "Contractor Dashboard";
 	}
 
@@ -33,21 +37,20 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN_AJAX;
 
-		if (opID > 0)
-			co = contractorOperatorDAO.find(id, opID);
-		else if (permissions.isOperator())
-			co = contractorOperatorDAO.find(id, permissions.getAccountId());
+		if (opID == 0 && permissions.isOperator())
+			opID = permissions.getAccountId();
 
-		if (co == null) {
-			addActionError("This contractor doesn't work at the given site");
-			return BLANK;
-		}
+		co = contractorOperatorDAO.find(id, opID);
 
 		return super.execute();
 	}
 
 	public ContractorOperator getCo() {
 		return co;
+	}
+
+	public int getOpID() {
+		return opID;
 	}
 
 	public void setOpID(int opID) {
@@ -67,5 +70,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 		result.put(1, ops.subList(ops.size() / 2, ops.size()));
 
 		return result;
+	}
+
+	public List<FlagData> getProblems() {
+		return flagDataDAO.findProblems(id, opID);
 	}
 }

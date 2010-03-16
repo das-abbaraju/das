@@ -187,7 +187,7 @@
 			class="com.picsauditing.actions.contractors.ContractorView">
 			<result>struts/contractors/con_view.jsp</result>
 		</action>
-		
+
 		<action name="ContractorDetails"
 			class="com.picsauditing.actions.contractors.ContractorDetails">
 			<result>struts/contractors/con_details.jsp</result>

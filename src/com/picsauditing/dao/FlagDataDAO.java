@@ -28,5 +28,12 @@ public class FlagDataDAO extends PicsDAO {
 		query.setParameter("opID", opID);
 		return query.getResultList();
 	}
+	
+	public List<FlagData> findProblems(int conID, int opID) {
+		Query query = em.createQuery("FROM FlagData d WHERE contractor.id = ? AND operator.id = ? AND flag = 'Red' ORDER BY d.criteria.category");
+		query.setParameter(1, conID);
+		query.setParameter(2, opID);
+		return query.getResultList();
+	}
 
 }
