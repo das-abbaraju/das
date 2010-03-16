@@ -208,9 +208,15 @@ $(function() {
 						<s:else>
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-									<s:if test="#data.criteria.dataType == 'number'">
-										<s:property value="format(#conCriteria.answer)" />
+									<s:if test="#data.criteria.description.contains('AMB Class')">
+										<s:property value="getAmBestClass(#conCriteria.answer)" />
 									</s:if>
+									<s:elseif test="#data.criteria.description.contains('AMB Rating')">
+										<s:property value="getAmBestRating(#conCriteria.answer)" />
+									</s:elseif>
+									<s:elseif test="#data.criteria.dataType == 'number'">
+										<s:property value="format(#conCriteria.answer)" />
+									</s:elseif>
 									<s:else>
 										<s:property value="#conCriteria.answer" />
 									</s:else>
@@ -278,9 +284,15 @@ $(function() {
 							<s:property value="criteria.label" /> - 
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-									<s:if test="criteria.dataType == 'number'">
-										<s:property value="format(#conCriteria.answer)" />
+									<s:if test="#data.criteria.description.contains('AMB Class')">
+										<s:property value="getAmBestClass(#conCriteria.answer)" />
 									</s:if>
+									<s:elseif test="#data.criteria.description.contains('AMB Rating')">
+										<s:property value="getAmBestRating(#conCriteria.answer)" />
+									</s:elseif>
+									<s:elseif test="#data.criteria.dataType == 'number'">
+										<s:property value="format(#conCriteria.answer)" />
+									</s:elseif>
 									<s:else>
 										<s:property value="#conCriteria.answer" />
 									</s:else>

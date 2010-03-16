@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -303,6 +304,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (flagDataOverride == null)
 			flagDataOverride = flagDataOverrideDAO.findByContractorAndOperator(contractor, co.getOperatorAccount());
 		return flagDataOverride;
+	}
+	
+	public String getAmBestRating(String value) {
+		int rating = (int) Float.parseFloat(value);
+		return AmBest.ratingMap.get(rating);
+	}
+	
+	public String getAmBestClass(String value) {
+		int classValue = (int) Float.parseFloat(value);
+		return AmBest.financialMap.get(classValue);
 	}
 
 	public FlagDataOverride isFlagDataOverride(FlagData flagData) {
