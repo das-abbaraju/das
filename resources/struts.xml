@@ -199,6 +199,11 @@
 			<result name="audits">struts/contractors/con_details_audits.jsp</result>
 		</action>
 		
+		<action name="ContractorDashboard"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
+			<result>/struts/contractors/con_dashboard.jsp</result>
+		</action>
+		
 
 		<action name="AuditPdfConverter"
 			class="com.picsauditing.actions.contractors.AuditPdfConverter">
