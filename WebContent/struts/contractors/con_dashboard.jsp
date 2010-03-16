@@ -25,6 +25,9 @@ div.co_flag {
 div.co_select {
 	clear: left;
 }
+span.other_operator {
+	float: left;
+}
 </style>
 
 </head>
@@ -38,22 +41,34 @@ div.co_select {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Contractor Status at <s:property value="co.operatorAccount.name"/>
+				Contractor Status <s:if test="co != null">at <s:property value="co.operatorAccount.name"/></s:if>
 			</div>
 			<div class="panel_content">
 				<s:if test="co != null">
 					<div class="co_flag">
-						<s:property value="co.flagColor.bigIcon" escape="false"/> <br />
-						<s:property value="co.flagColor"/> <br />
-						<a href="#">Force</a>
+						<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
+						<p><s:property value="co.flagColor"/></p>
+						<p><a href="#">Force</a></p>
 					</div>
 					<div class="co_problems">
-						Problems:
-						<ul>
-							<s:iterator value="problems">
-								<li><s:property value="critieria.label"/></li>
-							</s:iterator>
-						</ul>
+						<s:if test="problems.size > 0">
+							<p>Problems:
+								<ul>
+									<s:iterator value="problems">
+										<li><s:property value="critieria.label"/></li>
+									</s:iterator>
+								</ul>
+							</p>
+						</s:if>
+						<p>Waiting On:
+							<s:property value="co.waitingOn"/>
+						</p>
+						<p>Works In:
+							<s:property value="contractor.worksIn"/>
+						</p>
+						<p>Last Login:
+							<s:property value="contractor.lastLogin"/>
+						</p>
 					</div>
 				</s:if>
 				<div class="co_select">
@@ -61,10 +76,13 @@ div.co_select {
 					Viewing Dashboard as: 
 					<s:select list="contractor.operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
 						headerKey="" headerValue=" - Operator - "
-							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>.
+							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
 					</nobr>
 				</div>
+				
+				<div class="clear"></div>
 			</div>
+			
 		</div>
 	</div>
 	<!-- DocuGUARD -->
@@ -75,6 +93,7 @@ div.co_select {
 			</div>
 			<div class="panel_content">
 				
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -86,6 +105,7 @@ div.co_select {
 			</div>
 			<div class="panel_content">
 				
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -97,6 +117,7 @@ div.co_select {
 			</div>
 			<div class="panel_content">
 				
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -108,6 +129,7 @@ div.co_select {
 			</div>
 			<div class="panel_content">
 				
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -119,6 +141,7 @@ div.co_select {
 			</div>
 			<div class="panel_content">
 				
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -161,6 +184,8 @@ div.co_select {
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
 				<p>Services Performed: <s:iterator value="servicesPerformed" status="stat"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:iterator></p>
 				<p>Tags: <s:iterator value="contractor.operatorTags" status="stat"><strong><s:property value="tag.tag"/></strong><s:if test="!#stat.last">, </s:if></s:iterator></p>
+				
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -173,6 +198,7 @@ div.co_select {
 			<div class="panel_content">
 				<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
 				<s:property value="contractor.description"/>
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
@@ -183,10 +209,9 @@ div.co_select {
 				Other Locations
 			</div>
 			<div class="panel_content">
-				<s:iterator value="activeOperatorsMap">
-				<ul style="list-style-type: none; float: left;">
-					<s:iterator value="value">
-					<li>
+				<s:iterator value="activeOperators">
+					<span class="other_operator">
+						<nobr>
 						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
 							<s:property value="flagColor.smallIcon" escape="false" />
 						</a>
@@ -202,10 +227,15 @@ div.co_select {
 							>
 							<s:property value="operatorAccount.name" />
 						</a>
-					</li>
-					</s:iterator>
-				</ul>
+						</nobr>
+					</span>
 				</s:iterator>
+				<script type="text/javascript">
+					$(function() {
+						$('.other_operator').equalWidth();
+					});
+				</script>
+				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
