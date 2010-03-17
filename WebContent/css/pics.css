@@ -926,3 +926,8 @@ button .ui-icon {
 	float: left;
 	margin-right: 0.5em;
 }
+
+/****** No - Linewrap *******/
+.nobr {
+	white-space: nowrap;
+}

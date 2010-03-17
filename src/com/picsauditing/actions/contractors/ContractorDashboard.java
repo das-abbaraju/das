@@ -1,23 +1,26 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.AuditBuilder;
+import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagData;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
 
+	private AuditBuilder auditBuilder;
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO dataDAO;
 	private FlagDataDAO flagDataDAO;
@@ -25,9 +28,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private ContractorOperator co;
 	private int opID;
 
-	public ContractorDashboard(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
+	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
+	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
+
+	private ContractorFlagCriteriaList criteriaList;
+
+	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO) {
 		super(accountDao, auditDao);
+		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.dataDAO = dataDAO;
 		this.flagDataDAO = flagDataDAO;
@@ -39,12 +49,32 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (!forceLogin())
 			return LOGIN_AJAX;
 
+		findContractor();
+
+		if (contractor.getNonCorporateOperators().size() > 0) {
+			auditBuilder.setUser(getUser());
+			auditBuilder.buildAudits(this.contractor);
+		}
+
 		if (opID == 0 && permissions.isOperator())
 			opID = permissions.getAccountId();
 
 		co = contractorOperatorDAO.find(id, opID);
 
-		return super.execute();
+		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
+			if (permissions.canSeeAudit(audit.getAuditType())) {
+				if (audit.getAuditType().getClassType().isPolicy())
+					insureGUARD.add(audit);
+				else if (audit.getAuditType().getClassType().isPqf() || audit.getAuditType().isAnnualAddendum())
+					docuGUARD.add(audit);
+				else
+					auditGUARD.add(audit);
+			}
+		}
+
+		criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, opID));
+
+		return SUCCESS;
 	}
 
 	public ContractorOperator getCo() {
@@ -57,6 +87,18 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public void setOpID(int opID) {
 		this.opID = opID;
+	}
+
+	public List<ContractorAudit> getDocuGUARD() {
+		return docuGUARD;
+	}
+
+	public List<ContractorAudit> getAuditGUARD() {
+		return auditGUARD;
+	}
+
+	public List<ContractorAudit> getInsureGUARD() {
+		return insureGUARD;
 	}
 
 	public List<AuditData> getServicesPerformed() {
@@ -78,16 +120,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return flagDataDAO.findProblems(id, opID);
 	}
 
-	public Map<String, Set<FlagData>> getFlaggableData() {
-		Map<String, Set<FlagData>> result = new TreeMap<String, Set<FlagData>>();
-
-		for (FlagData fd : flagDataDAO.findByContractorAndOperator(id, opID)) {
-			if (result.get(fd.getCriteria().getCategory()) == null)
-				result.put(fd.getCriteria().getCategory(), new LinkedHashSet<FlagData>());
-
-			result.get(fd.getCriteria().getCategory()).add(fd);
-		}
-
-		return result;
+	public ContractorFlagCriteriaList getCriteriaList() {
+		return criteriaList;
 	}
 }

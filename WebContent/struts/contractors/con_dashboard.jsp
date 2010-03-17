@@ -36,8 +36,8 @@ div.flagData {
 	float: left;
 	margin: 2px;
 }
-span.other_operator {
-	float: left;
+ul {
+	list-style: none;
 }
 </style>
 
@@ -64,7 +64,7 @@ span.other_operator {
 					<div class="co_problems">
 						<s:if test="problems.size() > 0">
 							<p>Problems:
-								<ul style="list-style: none; margin-left: 10px;">
+								<ul style="margin-left: 10px;">
 									<s:iterator value="problems">
 										<li><s:property value="flag.smallIcon" escape="false"/> <s:property value="criteria.label"/></li>
 									</s:iterator>
@@ -95,6 +95,7 @@ span.other_operator {
 			
 		</div>
 	</div>
+	<s:if test="docuGUARD.size() > 0">
 	<!-- DocuGUARD -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -102,11 +103,17 @@ span.other_operator {
 				DocuGUARD
 			</div>
 			<div class="panel_content">
-				
+				<ul>
+				<s:iterator value="docuGUARD">
+					<li><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/> <s:property value="auditFor"/></a></li>
+				</s:iterator>
+				</ul>
 				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
+	</s:if>
+	<s:if test="auditGUARD.size() > 0">
 	<!-- AuditGUARD -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -114,11 +121,17 @@ span.other_operator {
 				AuditGUARD
 			</div>
 			<div class="panel_content">
-				
+				<ul>
+				<s:iterator value="auditGUARD">
+					<li><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/> <s:property value="auditFor"/></a></li>
+				</s:iterator>
+				</ul>
 				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
+	</s:if>
+	<s:if test="insureGUARD.size() > 0">
 	<!-- InsureGUARD -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -126,11 +139,16 @@ span.other_operator {
 				InsureGUARD
 			</div>
 			<div class="panel_content">
-				
+				<ul>
+				<s:iterator value="insureGUARD">
+					<li><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/> <s:property value="auditFor"/></a></li>
+				</s:iterator>
+				</ul>
 				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
+	</s:if>
 	<!-- Statistics -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -151,12 +169,12 @@ span.other_operator {
 			</div>
 			<div class="panel_content">
 				<div class="clear" style="height: 0px; overflow: hidden"></div>
-				<s:iterator value="flaggableData">
+				<s:iterator value="criteriaList.categories" id="datacat">
 					<div class="flagData">
-						<strong><s:property value="key"/>:</strong>
-						<ul style="list-style: none">
-						<s:iterator value="value">
-							<li><s:property value="flag.smallIcon" escape="false"/> <s:property value="criteria.label"/></li>
+						<strong><s:property value="#datacat"/></strong>
+						<ul>
+						<s:iterator value="criteriaList.getCriteria(#datacat)" id="datacrit">
+							<li><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></li>
 						</s:iterator>
 						</ul>
 					</div>
@@ -233,30 +251,30 @@ span.other_operator {
 				Other Locations
 			</div>
 			<div class="panel_content">
+				<ul id="other_operator">
 				<s:iterator value="activeOperators">
-					<span class="other_operator">
-						<nobr>
-						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+					<li>
+					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
 							<s:property value="flagColor.smallIcon" escape="false" />
-						</a>
-						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-							<s:if test="permissions.admin"> 
-								title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
-								rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
-								class="operatorQuick"
-							</s:if>
-							<s:else>
-								title="Waiting On '<s:property value="waitingOn"/>'"
-							</s:else>
-							>
-							<s:property value="operatorAccount.name" />
-						</a>
-						</nobr>
-					</span>
+					</a>
+					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+						<s:if test="permissions.admin"> 
+							title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
+							rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+							class="operatorQuick"
+						</s:if>
+						<s:else>
+							title="Waiting On '<s:property value="waitingOn"/>'"
+						</s:else>
+						>
+						<s:property value="operatorAccount.name" />
+					</a>
+					</li>
 				</s:iterator>
+				</ul>
 				<script type="text/javascript">
 					$(function() {
-						$('.other_operator').equalWidth();
+						$('ul#other_operator li').addClass('nobr').equalWidth().css({'float':'left'});
 					});
 				</script>
 				<div class="clear"></div>

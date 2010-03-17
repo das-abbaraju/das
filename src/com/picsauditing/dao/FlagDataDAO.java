@@ -20,7 +20,7 @@ public class FlagDataDAO extends PicsDAO {
 		String q = "FROM FlagData d WHERE contractor.id = ? ";
 		if (opID > 0)
 			q += "AND operator.id = ? ";
-		q += "ORDER BY d.criteria.category";
+		q += "ORDER BY d.criteria.displayOrder";
 		Query query = em.createQuery(q);
 		query.setParameter(1, conID);
 		if (opID > 0)
