@@ -168,10 +168,11 @@ public abstract class BaseTable implements JSONable, Serializable {
 	}
 
 	// UPDATE must be Overridden in the inheriting class
-	public static <T extends BaseTable> void insertUpdateDeleteManaged(Collection<T> dbLinkedList, Collection<T> changes) {
+	public static <T extends BaseTable> Collection<T> insertUpdateDeleteManaged(Collection<T> dbLinkedList, Collection<T> changes) {
 		// update/delete
 		Iterator<T> dbIterator = dbLinkedList.iterator();
-
+		Collection<T> removalList = new ArrayList<T>();
+		
 		while (dbIterator.hasNext()) {
 			T fromDB = dbIterator.next();
 			T found = null;
@@ -186,12 +187,14 @@ public abstract class BaseTable implements JSONable, Serializable {
 			if (found != null)
 				changes.remove(found); // update was performed
 			else {
-				dbIterator.remove();
+				removalList.add(fromDB);
 			}
 		}
-
+		
 		// merging remaining changes (updates/inserts)
 		dbLinkedList.addAll(changes);
+		
+		return removalList;
 	}
 
 	// UPDATE must be Overridden in the inheriting class
