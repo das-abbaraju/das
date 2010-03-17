@@ -1,10 +1,10 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -83,7 +83,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		for (FlagData fd : flagDataDAO.findByContractorAndOperator(id, opID)) {
 			if (result.get(fd.getCriteria().getCategory()) == null)
-				result.put(fd.getCriteria().getCategory(), new TreeSet<FlagData>());
+				result.put(fd.getCriteria().getCategory(), new LinkedHashSet<FlagData>());
 
 			result.get(fd.getCriteria().getCategory()).add(fd);
 		}

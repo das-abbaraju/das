@@ -82,14 +82,14 @@ span.other_operator {
 						</p>
 					</div>
 				</s:if>
+				<s:if test="!permissions.operatorCorporate">
 				<div class="co_select">
-					<nobr>
 					Viewing Dashboard as: 
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
 						headerKey="" headerValue=" - Operator - "
 							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
-					</nobr>
 				</div>
+				</s:if>
 				<div class="clear"></div>
 			</div>
 			
@@ -150,7 +150,7 @@ span.other_operator {
 				Flaggable Data
 			</div>
 			<div class="panel_content">
-				<div class="clear"></div>
+				<div class="clear" style="height: 0px; overflow: hidden"></div>
 				<s:iterator value="flaggableData">
 					<div class="flagData">
 						<strong><s:property value="key"/>:</strong>
@@ -209,7 +209,6 @@ span.other_operator {
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
 				<p>Services Performed: <s:iterator value="servicesPerformed" status="stat"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:iterator></p>
 				<p>Tags: <s:iterator value="contractor.operatorTags" status="stat"><strong><s:property value="tag.tag"/></strong><s:if test="!#stat.last">, </s:if></s:iterator></p>
-				
 				<div class="clear"></div>
 			</div>
 		</div>
@@ -264,6 +263,7 @@ span.other_operator {
 			</div>
 		</div>
 	</div>
+	<s:if test="permissions.contractor">
 	<!-- Open Tasks -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -271,6 +271,7 @@ span.other_operator {
 				Open Tasks
 			</div>
 			<div class="panel_content" id="con_tasks">
+				<div class="inprogress"></div>
 				<script type="text/javascript">
 					$(function() {
 							$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
@@ -280,6 +281,7 @@ span.other_operator {
 			</div>
 		</div>
 	</div>
+	</s:if>
 </td>
 </tr>
 </table>
