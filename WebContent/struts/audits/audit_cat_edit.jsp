@@ -225,7 +225,6 @@
 	class="verified">Verified on <s:date name="#a.dateVerified"
 	format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
 </s:if>
-<div class="dependentQuestions" ><s:iterator value="#q.dependentQuestions"><s:if test="#q.subCategory.category == subCategory.category">,<s:property value="id"/></s:if></s:iterator></div>
 
 <br clear="all">
 <div class="clear"></div>

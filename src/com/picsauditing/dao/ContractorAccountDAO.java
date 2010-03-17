@@ -191,6 +191,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, -15);
 		query.setParameter("lastRunDate", calendar.getTime());
