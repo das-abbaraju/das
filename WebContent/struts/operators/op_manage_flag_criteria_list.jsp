@@ -36,18 +36,32 @@ $(document).ready(function() {
 						</span>
 						<s:property value="criteria.descriptionBeforeHurdle" />
 						<s:if test="criteria.dataType != 'boolean' && criteria.allowCustomValue">
-							<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
-							<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
-								<input type="text" value="<s:property value="criteriaValue()" />" name="newHurdle" size="10"
-									class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
-									<s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
+							<s:if test="criteria.question.questionType == 'AMBest'">
+								<s:if test="criteria.label.contains('Class')">
+									<span class="hurdle"><b><s:property value="getAmBestClass(criteriaValue())" /></b></span>
+									<s:select name="newHurdle" list="@com.picsauditing.jpa.entities.AmBest@financialMap"
+										value="criteriaValue()" cssClass="hide"></s:select>
+								</s:if>
+								<s:if test="criteria.label.contains('Rating')">
+									<span class="hurdle"><b><s:property value="getAmBestRating(criteriaValue())" /></b></span>
+									<s:select name="newHurdle" list="@com.picsauditing.jpa.entities.AmBest@ratingMap"
+										value="criteriaValue()" cssClass="hide"></s:select>
+								</s:if>
 							</s:if>
-							<s:elseif test="criteria.dataType == 'string'">
-								<span class="hide">
-									<s:radio list="#{'Yes':'Yes','No':'No'}" value="criteriaValue()" 
-										onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"></s:radio>
-								</span>
-							</s:elseif>
+							<s:else>
+								<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
+								<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
+									<input type="text" value="<s:property value="getFormatted(criteriaValue())" />" name="newHurdle" size="10"
+										class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
+										<s:if test="criteria.dataType == 'date'">class="datepicker"</s:if> />
+								</s:if>
+								<s:elseif test="criteria.dataType == 'string'">
+									<span class="hide">
+										<s:radio list="#{'Yes':'Yes','No':'No'}" value="criteriaValue()" 
+											onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"></s:radio>
+									</span>
+								</s:elseif>
+							</s:else>
 						</s:if>
 						<s:property value="criteria.descriptionAfterHurdle" />
 					</s:if>
@@ -69,10 +83,10 @@ $(document).ready(function() {
 						</s:if>
 					</td>
 					<td class="center">
-						<a href="#" class="edit" onclick="editCriteria(<s:property value="id" />); return false;"></a>
+						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;"><img src="images/edit_pencil.png" alt="Edit" /></a>
 					</td>
 					<td class="center">
-						<a href="#" class="remove" onclick="checkSubmit(<s:property value="id" />); return false;"></a>
+						<a href="#" onclick="checkSubmit(<s:property value="id" />); return false;"><img src="images/cross.png" alt="Remove" /></a>
 					</td>
 				</s:if>
 			

@@ -16,7 +16,7 @@
 	<s:iterator value="addableCriterias">
 		<tr id="<s:property value="id" />">
 			<td class="center">
-				<a href="#" class="add" onclick="addCriteria(<s:property value="id" />); return false;"></a>
+				<a href="#" onclick="addCriteria(<s:property value="id" />); return false;"><img src="images/plus.png" alt="Add" /></a>
 			</td>
 			<td><nobr>
 				<s:if test="getAddableFlags(id).size() == 1">
@@ -39,15 +39,15 @@
 					</s:if>
 					<s:elseif test="dataType == 'number'">
 						<s:if test="question.questionType == 'AMBest'">
-							<s:if test="label.contains(\"Class\")">
-								<s:select name="newHurdle" list="ambestClasses" value="defaultValue"></s:select>
+							<s:if test="label.contains('Class')">
+								<s:select name="newHurdle" list="@com.picsauditing.jpa.entities.AmBest@financialMap" value="defaultValue"></s:select>
 							</s:if>
-							<s:if test="label.contains(\"Rating\")">
-								<s:select name="newHurdle" list="ambestRatings" value="defaultValue"></s:select>
+							<s:if test="label.contains('Rating')">
+								<s:select name="newHurdle" list="@com.picsauditing.jpa.entities.AmBest@ratingMap" value="defaultValue"></s:select>
 							</s:if>
 						</s:if>
 						<s:else>
-							<input name="newHurdle" type="text" value="<s:property value="getFormattedDefaultValue(defaultValue)" />" size="10" />
+							<input name="newHurdle" type="text" value="<s:property value="getFormatted(defaultValue)" />" size="10" />
 						</s:else>
 					</s:elseif>
 					<s:elseif test="dataType == 'date'">

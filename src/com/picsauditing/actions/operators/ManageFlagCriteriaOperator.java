@@ -15,6 +15,7 @@ import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
@@ -180,6 +181,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return canEdit;
 	}
 	
+	public int getIntValue(String value) {
+		return (int) Float.parseFloat(value);
+	}
+	
 	public List<FlagCriteria> getAddableCriterias() {
 		if (addableCriteria == null) {
 			addableCriteria = new ArrayList<FlagCriteria>();
@@ -330,8 +335,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		return affected;
 	}
 
-	public String getFormattedDefaultValue(String defaultValue) {
-		return Strings.formatDecimalComma(defaultValue);
+	public String getFormatted(String value) {
+		return Strings.formatDecimalComma(value);
+	}
+	
+	public String getAmBestRating(String value) {
+		return AmBest.ratingMap.get(Integer.parseInt(value));
+	}
+	
+	public String getAmBestClass(String value) {
+		return AmBest.financialMap.get(Integer.parseInt(value));
 	}
 	
 	private class ByOrderCategoryLabel implements Comparator<FlagCriteriaOperator> {
