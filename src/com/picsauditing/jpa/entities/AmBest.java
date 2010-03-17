@@ -1,8 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 @Entity
 public class AmBest {
 
-	public static Map<Integer, String> financialMap = new HashMap<Integer, String>() {
+	public static Map<Integer, String> financialMap = new TreeMap<Integer, String>() {
 		{
 			put(1, "I");
 			put(2, "II");
@@ -35,7 +35,7 @@ public class AmBest {
 		}
 	};
 
-	public static Map<Integer, String> ratingMap = new HashMap<Integer, String>() {
+	public static Map<Integer, String> ratingMap = new TreeMap<Integer, String>() {
 		{
 			put(10, "A++");
 			put(11, "A+");
@@ -163,7 +163,7 @@ public class AmBest {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	
+
 	@Override
 	public String toString() {
 		return naic + " " + companyName + " R:" + ratingMap.get(ratingCode) + " F:" + financialMap.get(financialCode);
