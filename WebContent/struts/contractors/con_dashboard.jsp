@@ -47,7 +47,7 @@ ul {
 <s:include value="conHeader.jsp"/>
 <table>
 <tr>
-<td style="vertical-align:top">
+<td style="vertical-align:top; width: 48%">
 	<!-- Operator Flag Status -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -105,7 +105,12 @@ ul {
 			<div class="panel_content">
 				<ul>
 				<s:iterator value="docuGUARD">
-					<li><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/> <s:property value="auditFor"/></a></li>
+					<li>
+						<a href="Audit.action?auditID=<s:property value="id"/>">
+							<s:property value="auditType.auditName"/>
+							<s:property value="auditFor"/>
+						</a>
+					</li>
 				</s:iterator>
 				</ul>
 				<div class="clear"></div>
@@ -123,7 +128,14 @@ ul {
 			<div class="panel_content">
 				<ul>
 				<s:iterator value="auditGUARD">
-					<li><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/> <s:property value="auditFor"/></a></li>
+					<li>
+						<a href="Audit.action?auditID=<s:property value="id"/>">
+							<s:property value="auditType.auditName"/>
+							<s:property value="auditFor"/>
+						</a>
+						<s:property value="statusDescription"/>
+						<s:property value="getText('ActiveVerifyPqfAU', [audit.auditType.classType])"/>
+					</li>
 				</s:iterator>
 				</ul>
 				<div class="clear"></div>
@@ -141,7 +153,12 @@ ul {
 			<div class="panel_content">
 				<ul>
 				<s:iterator value="insureGUARD">
-					<li><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/> <s:property value="auditFor"/></a></li>
+					<li>
+						<a href="Audit.action?auditID=<s:property value="id"/>">
+							<s:property value="auditType.auditName"/>
+							<s:property value="auditFor"/>
+						</a>
+					</li>
 				</s:iterator>
 				</ul>
 				<div class="clear"></div>
@@ -192,7 +209,7 @@ ul {
 
 <td width="15px"></td>
 
-<td style="vertical-align:top">
+<td style="vertical-align:top; width: 48%">
 	<!-- Contact Info -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -251,9 +268,10 @@ ul {
 				Other Locations
 			</div>
 			<div class="panel_content">
-				<ul id="other_operator">
+				<ul>
 				<s:iterator value="activeOperators">
 					<li>
+					<span class="other_operator">
 					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
 							<s:property value="flagColor.smallIcon" escape="false" />
 					</a>
@@ -269,12 +287,13 @@ ul {
 						>
 						<s:property value="operatorAccount.name" />
 					</a>
+					</span>
 					</li>
 				</s:iterator>
 				</ul>
 				<script type="text/javascript">
 					$(function() {
-						$('ul#other_operator li').addClass('nobr').equalWidth().css({'float':'left'});
+						$('span.other_operator').addClass('nobr').equalWidth().css({'float':'left'});
 					});
 				</script>
 				<div class="clear"></div>
