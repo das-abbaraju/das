@@ -40,6 +40,16 @@ public class ContractorFlagCriteriaList {
 		return categoryMap.get(category);
 	}
 
+	public FlagColor getWorstColor(FlagCriteria criteria) {
+		FlagColor worst = null;
+		for (FlagData flagData : getFlags(criteria)) {
+			worst = FlagColor.getWorseColor(worst, flagData.getFlag());
+			if (worst.isRed())
+				return worst;
+		}
+		return worst;
+	}
+
 	public List<FlagData> getFlags(FlagCriteria criteria) {
 		return criteriaMap.get(criteria);
 	}
