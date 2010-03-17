@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -55,7 +56,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		
-		// This is a risk, we need to test this on several operator accounts to make sure they actually have this permission. 3/10/10 Trevor
 		tryPermissions(OpPerms.EditFlagCriteria);
 
 		findOperator();
@@ -74,8 +74,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			}
 			if (button.equals("calculateSingle")) {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
-				if (!Strings.isEmpty(newHurdle))
+				if (!Strings.isEmpty(newHurdle)) {
+					tryPermissions(OpPerms.EditFlagCriteria, OpType.Edit);
 					fco.setHurdle(newHurdle);
+				}
 				int size = calculateAffectedList(fco).size();
 				output = Integer.toString(size);
 				if (Strings.isEmpty(newHurdle)) {
@@ -85,6 +87,8 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				}
 				return BLANK;
 			}
+			// The rest of these button actions all require Edit
+			tryPermissions(OpPerms.EditFlagCriteria, OpType.Edit);
 			if (button.equals("delete")) {
 				FlagCriteriaOperator remove = flagCriteriaOperatorDAO.find(criteriaID);
 

@@ -27,8 +27,8 @@ public enum OpPerms {
 	ViewTrialAccounts("View Bid Only Account Contractors", "Allows users to approve or reject contractors who are bidding for work at their facility.", true, false, true, false, true),
 
 	// Red Flag
-	EditFlagCriteria("Red Flag Criteria", "Allows users to edit the criteria for flagging contractors as Red or Amber. Read access grants the ability to Edit the criteria", false, false, true, false, true),
-	EditForcedFlags("Force Flag Color", "Allows users to force a contractor's flag color for a given period of time. Only Read access is used currently", true, false, true, false, true),
+	EditFlagCriteria("Manage Flag Criteria", "Allows users to view or edit the criteria for flagging contractors Red or Amber.", true, false, true, false, true),
+	EditForcedFlags("Force Flag Color", "Allows users to force a contractor's flag color for a given period of time. Only Read access is used currently.", true, false, true, false, true),
 
 	// TODO - consider removing this completely
 	EditNotes("Contractor Notes", "Allows users to add notes to a contractor's account. Allows Users to view/add/edit/delete notes.", true, true, true, false, true),

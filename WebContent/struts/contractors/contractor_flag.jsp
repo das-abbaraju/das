@@ -58,13 +58,17 @@ $(function() {
 <s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; clear: right; width: 25%;">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
 <table style="text-align: center;">
 	<tr>
-		<td rowspan="2" style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
+		<td style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
+		<td style="width: 10px;">&nbsp;</td>
 		<td style="vertical-align: middle;">
-			<b>Overall Flag Status at <s:property value="co.operatorAccount.name"/></b>
+			<b>Flag Status<br />at
 			<pics:permission perm="EditFlagCriteria">
-				(<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />">View Flag Criteria</a>)		
+				<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />"><s:property value="co.operatorAccount.name"/></a>		
 			</pics:permission>
-			<br/><a href="http://help.picsauditing.com/wiki/Reviewing_Flag_Status" class="help">What does this mean?</a><br/>
+			<pics:permission perm="EditFlagCriteria" negativeCheck="true">
+				<s:property value="co.operatorAccount.name"/>
+			</pics:permission>
+			</b>
 		</td>
 	</tr>
 	<tr>
