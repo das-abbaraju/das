@@ -13,7 +13,7 @@
 		if (width > max_width)
 			max_width = width;
 	});
-	$(this).width(max_width + 5);
+	$(this).width(max_width + 10);
 
 	return $(this);
   }

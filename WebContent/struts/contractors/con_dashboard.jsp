@@ -22,8 +22,19 @@ div.co_flag {
 	width: 40px;
 	margin: 10px 20px 10px 5px;
 }
+div.co_problems {
+	float: left;
+}
 div.co_select {
 	clear: left;
+	border-top: 1px solid #cecece;
+	margin: 2px;
+	padding: 2px;
+	text-align: center;
+}
+div.flagData {
+	float: left;
+	margin: 2px;
 }
 span.other_operator {
 	float: left;
@@ -36,7 +47,7 @@ span.other_operator {
 <s:include value="conHeader.jsp"/>
 <table>
 <tr>
-<td>
+<td style="vertical-align:top">
 	<!-- Operator Flag Status -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -51,9 +62,9 @@ span.other_operator {
 						<p><a href="#">Force</a></p>
 					</div>
 					<div class="co_problems">
-						<s:if test="problems.size > 0">
+						<s:if test="problems.size() > 0">
 							<p>Problems:
-								<ul style="list-style: none">
+								<ul style="list-style: none; margin-left: 10px;">
 									<s:iterator value="problems">
 										<li><s:property value="flag.smallIcon" escape="false"/> <s:property value="criteria.label"/></li>
 									</s:iterator>
@@ -74,12 +85,11 @@ span.other_operator {
 				<div class="co_select">
 					<nobr>
 					Viewing Dashboard as: 
-					<s:select list="contractor.operators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
+					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
 						headerKey="" headerValue=" - Operator - "
 							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
 					</nobr>
 				</div>
-				
 				<div class="clear"></div>
 			</div>
 			
@@ -140,7 +150,22 @@ span.other_operator {
 				Flaggable Data
 			</div>
 			<div class="panel_content">
-				
+				<div class="clear"></div>
+				<s:iterator value="flaggableData">
+					<div class="flagData">
+						<strong><s:property value="key"/>:</strong>
+						<ul style="list-style: none">
+						<s:iterator value="value">
+							<li><s:property value="flag.smallIcon" escape="false"/> <s:property value="criteria.label"/></li>
+						</s:iterator>
+						</ul>
+					</div>
+				</s:iterator>
+				<script type="text/javascript">
+					$(function() {
+						$('div.flagData').equalWidth();
+					});
+				</script>
 				<div class="clear"></div>
 			</div>
 		</div>
@@ -149,7 +174,7 @@ span.other_operator {
 
 <td width="15px"></td>
 
-<td>
+<td style="vertical-align:top">
 	<!-- Contact Info -->
 	<div class="panel_placeholder">
 		<div class="panel">

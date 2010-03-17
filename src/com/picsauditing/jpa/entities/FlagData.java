@@ -15,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "flag_data")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagData extends BaseTable {
+public class FlagData extends BaseTable implements Comparable<FlagData> {
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -98,5 +98,10 @@ public class FlagData extends BaseTable {
 			this.setFlag(fd.getFlag());
 			this.setAuditColumns(new User(User.SYSTEM));
 		}
+	}
+
+	@Override
+	public int compareTo(FlagData o) {
+		return criteria.compareTo(o.criteria);
 	}
 }
