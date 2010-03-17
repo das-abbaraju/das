@@ -32,10 +32,6 @@ div.co_select {
 	padding: 2px;
 	text-align: center;
 }
-div.flagData {
-	float: left;
-	margin: 2px;
-}
 ul {
 	list-style: none;
 }
@@ -83,7 +79,7 @@ ul {
 					</div>
 				</s:if>
 				<s:if test="!permissions.operatorCorporate">
-				<div class="co_select">
+				<div class="co_select nobr">
 					Viewing Dashboard as: 
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
 						headerKey="" headerValue=" - Operator - "
@@ -95,46 +91,22 @@ ul {
 			
 		</div>
 	</div>
-	<s:if test="docuGUARD.size() > 0">
-	<!-- DocuGUARD -->
+	<s:iterator value="#{'DocuGUARD': docuGUARD, 'AuditGUARD': auditGUARD, 'InsureGUARD': insureGUARD}">
+	<s:if test="value.size() > 0">
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				DocuGUARD
+				<s:property value="key"/>
 			</div>
 			<div class="panel_content">
 				<ul>
-				<s:iterator value="docuGUARD">
-					<li>
-						<a href="Audit.action?auditID=<s:property value="id"/>">
-							<s:property value="auditType.auditName"/>
-							<s:property value="auditFor"/>
-						</a>
-					</li>
-				</s:iterator>
-				</ul>
-				<div class="clear"></div>
-			</div>
-		</div>
-	</div>
-	</s:if>
-	<s:if test="auditGUARD.size() > 0">
-	<!-- AuditGUARD -->
-	<div class="panel_placeholder">
-		<div class="panel">
-			<div class="panel_header">
-				AuditGUARD
-			</div>
-			<div class="panel_content">
-				<ul>
-				<s:iterator value="auditGUARD">
+				<s:iterator value="value">
 					<li>
 						<a href="Audit.action?auditID=<s:property value="id"/>">
 							<s:property value="auditType.auditName"/>
 							<s:property value="auditFor"/>
 						</a>
 						<s:property value="statusDescription"/>
-						<s:property value="getText('ActiveVerifyPqfAU', [audit.auditType.classType])"/>
 					</li>
 				</s:iterator>
 				</ul>
@@ -143,29 +115,7 @@ ul {
 		</div>
 	</div>
 	</s:if>
-	<s:if test="insureGUARD.size() > 0">
-	<!-- InsureGUARD -->
-	<div class="panel_placeholder">
-		<div class="panel">
-			<div class="panel_header">
-				InsureGUARD
-			</div>
-			<div class="panel_content">
-				<ul>
-				<s:iterator value="insureGUARD">
-					<li>
-						<a href="Audit.action?auditID=<s:property value="id"/>">
-							<s:property value="auditType.auditName"/>
-							<s:property value="auditFor"/>
-						</a>
-					</li>
-				</s:iterator>
-				</ul>
-				<div class="clear"></div>
-			</div>
-		</div>
-	</div>
-	</s:if>
+	</s:iterator>
 	<!-- Statistics -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -191,16 +141,11 @@ ul {
 						<strong><s:property value="#datacat"/></strong>
 						<ul>
 						<s:iterator value="criteriaList.getCriteria(#datacat)" id="datacrit">
-							<li><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></li>
+							<li><span><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></span></li>
 						</s:iterator>
 						</ul>
 					</div>
 				</s:iterator>
-				<script type="text/javascript">
-					$(function() {
-						$('div.flagData').equalWidth();
-					});
-				</script>
 				<div class="clear"></div>
 			</div>
 		</div>
