@@ -128,9 +128,6 @@ ul {
 						<p>Waiting On:
 							<s:property value="co.waitingOn"/>
 						</p>
-						<p>Works In:
-							<s:property value="contractor.state.name"/>
-						</p>
 					</s:if>
 					<p>Last Login:
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
@@ -226,6 +223,7 @@ ul {
 			<div class="panel_content">
 				<div class="clear" style="height: 0px; overflow: hidden"></div>
 				<s:iterator value="criteriaList.categories" id="datacat">
+					<s:if test="#datacat != 'Insurance Criteria'">
 					<div class="flagData">
 						<strong><s:property value="#datacat"/></strong>
 						<ul>
@@ -234,6 +232,7 @@ ul {
 						</s:iterator>
 						</ul>
 					</div>
+					</s:if>
 				</s:iterator>
 				<div class="clear"></div>
 			</div>
@@ -350,42 +349,46 @@ ul {
 			</div>
 		</div>
 	</div>
-	<!-- Other Locations -->
-	<div class="panel_placeholder">
-		<div class="panel">
-			<div class="panel_header">
-				Other Locations
-			</div>
-			<div class="panel_content">
-				<s:iterator value="activeOperatorsMap">
-					<ul>
-					<s:iterator value="value">
-						<li>
-						<span class="other_operator">
-						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
-								<s:property value="flagColor.smallIcon" escape="false" />
-						</a>
-						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-							<s:if test="permissions.admin"> 
-								title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
-								rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
-								class="operatorQuick"
+	<s:if test="permissions.admin || activeOperators.size() > 1">
+		<!-- Other Locations -->
+		<div class="panel_placeholder">
+			<div class="panel">
+				<div class="panel_header">
+					All Locations
+				</div>
+				<div class="panel_content">
+					<s:iterator value="activeOperatorsMap">
+						<ul>
+						<s:iterator value="value">
+							<s:if test="permission.accountId != operatorAccount.id">
+								<li>
+								<span class="other_operator">
+								<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+										<s:property value="flagColor.smallIcon" escape="false" />
+								</a>
+								<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+									<s:if test="permissions.admin"> 
+										title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
+										rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+										class="operatorQuick"
+									</s:if>
+									<s:else>
+										title="Waiting On '<s:property value="waitingOn"/>'"
+									</s:else>
+									>
+									<s:property value="operatorAccount.name" />
+								</a>
+								</span>
+								</li>
 							</s:if>
-							<s:else>
-								title="Waiting On '<s:property value="waitingOn"/>'"
-							</s:else>
-							>
-							<s:property value="operatorAccount.name" />
-						</a>
-						</span>
-						</li>
+						</s:iterator>
+						</ul>
 					</s:iterator>
-					</ul>
-				</s:iterator>
-				<div class="clear"></div>
+					<div class="clear"></div>
+				</div>
 			</div>
 		</div>
-	</div>
+	</s:if>
 	<s:if test="permissions.admin">
 	<!-- Open Tasks -->
 	<div class="panel_placeholder">
