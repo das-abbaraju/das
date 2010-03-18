@@ -9,6 +9,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditOperatorDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -22,13 +23,16 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 	private AuditOperatorDAO dao;
 	private ContractorAccountDAO cAccountDAO;
 	private FlagCriteriaOperatorDAO fcoDAO;
+	private OperatorAccountDAO opDAO;
 	private int operatorID;
 	private int auditTypeID;
 
-	public AuditOperatorSave(AuditOperatorDAO dao, ContractorAccountDAO cAccountDAO, FlagCriteriaOperatorDAO fcoDAO) {
+	public AuditOperatorSave(AuditOperatorDAO dao, ContractorAccountDAO cAccountDAO, FlagCriteriaOperatorDAO fcoDAO,
+			OperatorAccountDAO opDAO) {
 		this.dao = dao;
 		this.cAccountDAO = cAccountDAO;
 		this.fcoDAO = fcoDAO;
+		this.opDAO = opDAO;
 	}
 
 	public String execute() {
@@ -56,8 +60,14 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 		ao = dao.save(ao);
 
 		if (!foundCriteria) {
-			String message = ao.getOperatorAccount().getName() + " has no flag criteria for "
-				+ ao.getAuditType().getAuditName();
+			String message = "";
+			
+			if (ao.getOperatorAccount().getName() == null)
+				message = opDAO.find(ao.getOperatorAccount().getId()).getName();
+			else
+				message = ao.getOperatorAccount().getName();
+
+			message += " has no flag criteria for " + ao.getAuditType().getAuditName();
 			
 			if (permissions.hasPermission(OpPerms.ManageOperators))
 				message += "<br />To set up flag criteria, <a href=\"ManageFlagCriteria.action\">click here</a>";

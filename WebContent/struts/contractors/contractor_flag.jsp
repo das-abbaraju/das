@@ -25,10 +25,15 @@ small {
 }
 .flagCategories td {
 	padding-right: 10px;
+	vertical-align: top;
 }
 
 .details {
 	display: none;
+}
+
+div.info {
+	text-align: center;
 }
 </style>
 <s:include value="../jquery.jsp" />
@@ -55,7 +60,6 @@ function checkReason(id) {
 <s:include value="conHeader.jsp" />
 
 <!-- OVERALL FLAG -->
-<div style="text-align: center; width: 100%">
 <s:if test="(permissions.operatorCorporate || permissions.admin) && !co.forcedFlag">
 	<div class="info" style="float: right; clear: right; width: 25%;">
 	<s:form>
@@ -140,7 +144,6 @@ function checkReason(id) {
 		</td>
 	</tr>
 </table>
-</div>
 
 <s:if test="permissions.contractor">
 <div class="helpOnRight" style="clear: right;">

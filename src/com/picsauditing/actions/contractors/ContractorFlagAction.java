@@ -330,7 +330,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public String getContractorAnswer(FlagCriteriaContractor fcc, boolean addLabel) {
 		FlagCriteria fc = fcc.getCriteria();
 		String answer = fcc.getAnswer();
-		String answer2 = fcc.getAnswer2();
 		
 		if (fc.getDescription().contains("AMB Class"))
 			answer = getAmBestClass(answer);
@@ -340,10 +339,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			answer = Strings.formatDecimalComma(answer);
 		
 		if (addLabel)
-			answer = fc.getLabel() + " - " + fcc.getAnswer();
+			answer = fc.getLabel() + " - " + answer;
 		
-		if (!Strings.isEmpty(answer2)) {
-			String[] exploded = answer2.split("<br/>");
+		if (!Strings.isEmpty(fcc.getAnswer2())) {
+			String[] exploded = fcc.getAnswer2().split("<br/>");
 			String year = null;
 			String conAnswer = null;
 			String verified = null;
