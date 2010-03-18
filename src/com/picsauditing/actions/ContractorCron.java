@@ -46,6 +46,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.mail.SendMail;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -111,9 +112,9 @@ public class ContractorCron extends PicsActionSupport {
 
 	@Transactional
 	private void run(int conID, int opID) {
-		try {
-			ContractorAccount contractor = contractorDAO.find(conID);
+		ContractorAccount contractor = contractorDAO.find(conID);
 
+		try {
 			runBilling(contractor);
 			runAuditCategory(contractor);
 			runAuditBuilder(contractor);
@@ -167,6 +168,11 @@ public class ContractorCron extends PicsActionSupport {
 
 			if (!isDebugging()) {
 				addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
+				// In case this contractor errored out while running contractor cron 
+				// we bump the last recalculation date to 1 day in future.
+				contractor.setNeedsRecalculation(false);
+				contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
+				dao.save(contractor);
 
 				StringBuffer body = new StringBuffer();
 
@@ -188,14 +194,14 @@ public class ContractorCron extends PicsActionSupport {
 
 	private void sendMail(String message, int conID) {
 		try {
+			SendMail sendMail = new SendMail();
 			EmailQueue email = new EmailQueue();
 			email.setToAddresses("errors@picsauditing.com");
-			email.setPriority(30);
+			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
 			email.setSubject("Error in ContractorCron for conID = " + conID);
 			email.setBody(message);
 			email.setCreationDate(new Date());
-			EmailSender sender = new EmailSender();
-			sender.sendNow(email);
+			sendMail.send(email);
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			System.out.println("Error sending email");
 			System.out.println(notMuchWeCanDoButLogIt);
