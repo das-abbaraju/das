@@ -32,6 +32,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
 
+	List<FlagData> problems;
+
 	private ContractorFlagCriteriaList criteriaList;
 
 	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
@@ -117,7 +119,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	public List<FlagData> getProblems() {
-		return flagDataDAO.findProblems(id, opID);
+		if (problems == null)
+			problems = flagDataDAO.findProblems(id, opID);
+
+		return problems;
 	}
 
 	public ContractorFlagCriteriaList getCriteriaList() {
