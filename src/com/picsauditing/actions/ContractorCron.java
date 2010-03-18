@@ -167,8 +167,9 @@ public class ContractorCron extends PicsActionSupport {
 
 			if (!isDebugging()) {
 				addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
-				// In case this contractor errored out while running contractor cron 
+				// In case this contractor errored out while running contractor cron
 				// we bump the last recalculation date to 1 day in future.
+				dao.refresh(contractor);
 				contractor.setNeedsRecalculation(false);
 				contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
 				dao.save(contractor);
@@ -292,12 +293,12 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagLastUpdated(new Date());
 		}
 
-	   Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
-	   while(flagDataList.hasNext()) {
-		   FlagData flagData = flagDataList.next();
-		   co.getFlagDatas().remove(flagData);
-		   dao.remove(flagData);
-	   }
+		Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
+		while (flagDataList.hasNext()) {
+			FlagData flagData = flagDataList.next();
+			co.getFlagDatas().remove(flagData);
+			dao.remove(flagData);
+		}
 		co.setAuditColumns(new User(User.SYSTEM));
 	}
 
