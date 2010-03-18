@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:property value="contractor.name" />'s Dashboard</title>
+<title><s:property value="contractor.name" /></title>
 
 <s:include value="../jquery.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
