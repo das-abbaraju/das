@@ -17,7 +17,6 @@ import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaRateType;
@@ -38,7 +37,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
 
-	List<FlagData> problems;
+	private ContractorFlagCriteriaList problems;
 
 	private ContractorFlagCriteriaList criteriaList;
 
@@ -71,6 +70,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		co = contractorOperatorDAO.find(id, opID);
 
+		if (contractor.getNonCorporateOperators().size() == 1) {
+			co = contractor.getNonCorporateOperators().get(0);
+			opID = co.getOperatorAccount().getId();
+		}
+
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
 			if (permissions.canSeeAudit(audit.getAuditType())) {
 				if (audit.getAuditType().getClassType().isPolicy())
@@ -81,8 +85,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 					auditGUARD.add(audit);
 			}
 		}
-
-		criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, opID));
 
 		oshaAudits = new LinkedHashMap<String, Map<String, String>>();
 
@@ -146,14 +148,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return result;
 	}
 
-	public List<FlagData> getProblems() {
+	public ContractorFlagCriteriaList getProblems() {
 		if (problems == null)
-			problems = flagDataDAO.findProblems(id, opID);
+			problems = new ContractorFlagCriteriaList(flagDataDAO.findProblems(id, opID));
 
 		return problems;
 	}
 
 	public ContractorFlagCriteriaList getCriteriaList() {
+		if (criteriaList == null)
+			criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, opID));
 		return criteriaList;
 	}
 

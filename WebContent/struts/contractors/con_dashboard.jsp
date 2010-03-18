@@ -87,27 +87,31 @@ ul {
 						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
 						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor"/></a></p>
 					</div>
-					<div class="co_problems">
-						<s:if test="problems.size() > 0">
-							<p>Problems:
-								<ul style="margin-left: 10px;">
-									<s:iterator value="problems">
-										<li><s:property value="flag.smallIcon" escape="false"/> <s:property value="criteria.label"/></li>
+				</s:if>
+				<div class="co_problems">
+					<s:if test="problems.categories.size() > 0">
+						<p>Problems:
+							<ul style="margin-left: 10px;">
+								<s:iterator value="problems.categories" id="probcat">
+									<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
+										<li><s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/> <s:property value="label"/> <s:property value="audit.auditFor"/></li>
 									</s:iterator>
-								</ul>
-							</p>
-						</s:if>
+								</s:iterator>
+							</ul>
+						</p>
+					</s:if>
+					<s:if test="co != null">
 						<p>Waiting On:
 							<s:property value="co.waitingOn"/>
 						</p>
 						<p>Works In:
 							<s:property value="contractor.state.name"/>
 						</p>
-						<p>Last Login:
-							<s:property value="getFuzzyDate(contractor.lastLogin)"/>
-						</p>
-					</div>
-				</s:if>
+					</s:if>
+					<p>Last Login:
+						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
+					</p>
+				</div>
 				<s:if test="!permissions.operatorCorporate">
 				<div class="co_select nobr">
 					Viewing Dashboard as: 
