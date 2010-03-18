@@ -90,6 +90,7 @@ function getFlag(selectObject) {
 </div>
 
 <s:if test="permissions.admin">
+	<div class="clear">
 	<s:if test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
 		Flag Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">
 			<s:property value="operator.inheritFlagCriteria.name" /></a>
@@ -98,6 +99,7 @@ function getFlag(selectObject) {
 		Insurance Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritInsuranceCriteria.id" />">
 			<s:property value="operator.inheritInsuranceCriteria.name" /></a>
 	</s:if>
+	</div>
 </s:if>
 
 </body>

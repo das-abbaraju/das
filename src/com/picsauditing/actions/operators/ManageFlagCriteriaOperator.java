@@ -57,7 +57,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		findOperator();
 		
 		if (insurance) {
-			canEdit = operator.equals(operator.getInheritInsurance())
+			canEdit = operator.equals(operator.getInheritInsuranceCriteria())
 				&& permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
 			subHeading = "Manage Insurance Criteria";
 		} else {
@@ -221,12 +221,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			if (doNotAdd.contains(fc))
 				continue;
 
-			// Booleans/Strings/Dates are either flagged or not, not ranges like numbers.
-			// These criteria should only have one flag, I think.
-			if (!fc.getDataType().equals("number")) {
-				if (existing.contains(fc))
-					continue;
-			}
+			// Everything but audits could have both red and amber flags
+			if (fc.getAuditType() != null && existing.contains(fc))
+				continue;
 
 			if (fc.getAuditType() != null && auditTypes.contains(fc.getAuditType())) {
 				// Check audits by matching up the audit types
