@@ -19,21 +19,21 @@ public class ContractorFlagDifference extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		
-		String sql = "SELECT gc.subID conID,con.name as ContractorName, gc.genID opID, op.name as OperatorName, gc.flag newColor, f.flag oldColor, gc.waitingOn newwaitingon, f.waitingon oldwaitingOn "
+		String sql = "SELECT SQL_CALC_FOUND_ROWS gc.subID conID,con.name as ContractorName, gc.genID opID, op.name as OperatorName, gc.flag newColor, f.flag oldColor, gc.waitingOn newwaitingon, f.waitingon oldwaitingOn "
 			  + "FROM generalcontractors gc "
 			  + "JOIN old_flags f ON gc.genID = f.opID AND gc.subID = f.conID "
 			  + "JOIN accounts op ON op.id = gc.genid "
 			  + "JOIN accounts con ON con.id = gc.subid "
 			  + "LEFT JOIN flag_dirty fd ON fd.conid = gc.subid AND fd.opId = gc.genid ";
 		
-		String where = "WHERE (gc.flag != f.flag OR gc.waitingOn != f.waitingOn) "
-			  + "AND con.status = 'Active' "
-			  + "AND con.type = 'Contractor' "
-			  + "AND op.status = 'Active' "
-			  + "AND op.type = 'Operator' "
-			  + "AND fd.id IS NULL ";
+		String baseWhere = "WHERE con.status = 'Active' "
+		  + "AND op.status = 'Active' "
+		  + "AND con.type = 'Contractor' "
+		  + "AND op.type = 'Operator' "
+		  + "AND fd.id IS NULL ";
 		
-		String orderBy = "ORDER BY conid,opid LIMIT 100";
+		String where = "AND gc.flag != f.flag";
+		String orderBy = "ORDER BY con.name, op.name";
 		
 		if ("delete".equals(button)) {
 			String insert = " INSERT INTO flag_dirty values (null,"+ conID +", "+ opID +" ,'"+ flag +"' ,'Good')";
@@ -42,72 +42,32 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		}
 		
 		if(("oldWaitingOn").equals(button)){
-			where = "WHERE (gc.waitingOn != f.waitingOn) "
-				  + "AND con.status = 'Active' "
-				  + "AND con.status = 'Active' "
-				  + "AND op.status = 'Active' "
-				  + "AND op.type = 'Operator' "
-				  + "AND fd.id IS NULL ";
-			
-			orderBy = "ORDER BY f.waitingOn,conid,opid LIMIT 100";
+			where = "AND gc.waitingOn != f.waitingOn";
+			orderBy = "ORDER BY f.waitingOn,con.name,op.name";
 		}
 		
 		if(("newWaitingOn").equals(button)){
-			where = "WHERE (gc.waitingOn != f.waitingOn) "
-				  + "AND con.status = 'Active' "
-				  + "AND con.status = 'Active' "
-				  + "AND op.status = 'Active' "
-				  + "AND op.type = 'Operator' "
-				  + "AND fd.id IS NULL ";
-			
-			orderBy = "ORDER BY gc.waitingOn,conid,opid LIMIT 100";
+			where = "AND gc.waitingOn != f.waitingOn";
+			orderBy = "ORDER BY gc.waitingOn,con.name,op.name";
 		}
 		
 		if(("oldFlag").equals(button)){
-			where = "WHERE (gc.flag != f.flag) "
-				  + "AND con.status = 'Active' "
-				  + "AND con.status = 'Active' "
-				  + "AND op.status = 'Active' "
-				  + "AND op.type = 'Operator' "
-				  + "AND fd.id IS NULL ";
-			
-			orderBy = "ORDER BY f.flag,conid,opid LIMIT 100";
+			orderBy = "ORDER BY f.flag,con.name,op.name";
 		}
 
 		if(("newFlag").equals(button)){
-			where = "WHERE (gc.flag != f.flag) "
-				  + "AND con.status = 'Active' "
-				  + "AND con.status = 'Active' "
-				  + "AND op.status = 'Active' "
-				  + "AND op.type = 'Operator' "
-				  + "AND fd.id IS NULL ";
-			
-			orderBy = "ORDER BY gc.flag,conid,opid LIMIT 100";
+			orderBy = "ORDER BY gc.flag,con.name,op.name";
 		}
 		
 		if(("contractor").equals(button)){
-			where = "WHERE (gc.flag != f.flag OR gc.waitingOn != f.waitingOn) "
-				  + "AND con.status = 'Active' "
-				  + "AND con.status = 'Active' "
-				  + "AND op.status = 'Active' "
-				  + "AND op.type = 'Operator' "
-				  + "AND fd.id IS NULL ";
-			
-			orderBy = "ORDER BY conid,opid LIMIT 100";
+			orderBy = "ORDER BY con.name,op.name";
 		}
 		
 		if(("operator").equals(button)){
-			where = "WHERE (gc.flag != f.flag OR gc.waitingOn != f.waitingOn) "
-				  + "AND con.status = 'Active' "
-				  + "AND con.status = 'Active' "
-				  + "AND op.status = 'Active' "
-				  + "AND op.type = 'Operator' "
-				  + "AND fd.id IS NULL ";
-			
-			orderBy = "ORDER BY opid,conid LIMIT 100";
+			orderBy = "ORDER BY con.name,op.name";
 		}
 		
-		sql += where + orderBy;
+		sql += baseWhere + where + orderBy + "  LIMIT 100";
 		
 		data = db.select(sql, true);
 		return SUCCESS;

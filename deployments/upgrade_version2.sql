@@ -592,6 +592,9 @@ ALTER TABLE `accounts`
 ALTER TABLE `flag_criteria_operator` 
 	ADD COLUMN `affected` smallint(4) unsigned   NOT NULL DEFAULT '0' after `minRiskLevel`;
 
+update useraccess set editFlag = 0 where accessType = 'EditFlagCriteria';
+update useraccess set editFlag = 1 where accessType = 'EditFlagCriteria' and userID IN (959);
+
 update generalcontractors, flags
 set generalcontractors.flag = flags.flag, 
 	generalcontractors.waitingOn = flags.waitingOn, 
