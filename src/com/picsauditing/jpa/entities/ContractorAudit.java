@@ -698,7 +698,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				synopsis = "Scheduled for " + DateBean.format(scheduledDate, "MM/dd/YYYY");
 		}
 
-		if (auditStatus.isPending()) {
+		if (!auditType.classType.isPolicy() && auditStatus.isPending()) {
 			if (auditType.isCanContractorEdit())
 				synopsis = "Waiting on contractor";
 			else

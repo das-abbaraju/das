@@ -50,7 +50,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.dataDAO = dataDAO;
 		this.flagDataDAO = flagDataDAO;
-		this.subHeading = "Contractor Dashboard";
+		this.subHeading = "Account Summary";
 	}
 
 	@Override
