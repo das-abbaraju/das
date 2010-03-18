@@ -120,7 +120,41 @@ ul {
 				Statistics
 			</div>
 			<div class="panel_content">
-				
+				<table class="report">
+					<thead>
+						<tr>
+							<th></th>
+							<s:iterator value="oshaAudits.keySet()">
+								<th><s:property/></th>
+							</s:iterator>
+							<th>Industry</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>TRIR</td>
+							<s:iterator value="oshaAudits">
+								<td><s:property value="format(value.get('TrirNaics'))"/></td>
+							</s:iterator>
+							<td></td>
+						</tr>
+						<tr>
+							<td>LWCR</td>
+							<s:iterator value="oshaAudits">
+								<td><s:property value="format(value.get('LwcrNaics'))"/></td>
+							</s:iterator>
+							<td></td>
+						</tr>
+						<tr>
+							<td>EMR</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
 				<div class="clear"></div>
 			</div>
 		</div>
