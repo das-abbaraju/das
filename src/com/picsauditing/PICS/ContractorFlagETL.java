@@ -8,7 +8,6 @@ import java.util.Set;
 
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
@@ -24,7 +23,6 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
-	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
 
 	private Set<FlagCriteria> distinctFlagCriteria = null;
@@ -32,10 +30,8 @@ public class ContractorFlagETL {
 	protected boolean hasOqEmployees = false;
 	protected boolean hasCOR = false;
 
-	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
-			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
+	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao) {
 		this.auditDataDao = auditDataDao;
-		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 
 		distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 
