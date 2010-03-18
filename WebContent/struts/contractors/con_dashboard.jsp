@@ -55,7 +55,7 @@ ul {
 					<div class="co_flag">
 						<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
 						<p><s:property value="co.flagColor"/></p>
-						<p><a href="#">Force</a></p>
+						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">Force</a></p>
 					</div>
 					<div class="co_problems">
 						<s:if test="problems.size() > 0">
@@ -102,11 +102,8 @@ ul {
 				<ul>
 				<s:iterator value="value">
 					<li>
-						<a href="Audit.action?auditID=<s:property value="id"/>">
-							<s:property value="auditType.auditName"/>
-							<s:property value="auditFor"/>
-						</a>
-						<s:property value="statusDescription"/>
+						<a href="Audit.action?auditID=<s:property value="id"/>">	<s:property value="auditType.auditName"/> <s:property value="auditFor"/></a>
+						<s:property value="synopsis"/>
 					</li>
 				</s:iterator>
 				</ul>
@@ -213,34 +210,31 @@ ul {
 				Other Locations
 			</div>
 			<div class="panel_content">
-				<ul>
-				<s:iterator value="activeOperators">
-					<li>
-					<span class="other_operator">
-					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
-							<s:property value="flagColor.smallIcon" escape="false" />
-					</a>
-					<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-						<s:if test="permissions.admin"> 
-							title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
-							rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
-							class="operatorQuick"
-						</s:if>
-						<s:else>
-							title="Waiting On '<s:property value="waitingOn"/>'"
-						</s:else>
-						>
-						<s:property value="operatorAccount.name" />
-					</a>
-					</span>
-					</li>
+				<s:iterator value="activeOperatorsMap">
+					<ul>
+					<s:iterator value="value">
+						<li>
+						<span class="other_operator">
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+								<s:property value="flagColor.smallIcon" escape="false" />
+						</a>
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+							<s:if test="permissions.admin"> 
+								title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
+								rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+								class="operatorQuick"
+							</s:if>
+							<s:else>
+								title="Waiting On '<s:property value="waitingOn"/>'"
+							</s:else>
+							>
+							<s:property value="operatorAccount.name" />
+						</a>
+						</span>
+						</li>
+					</s:iterator>
+					</ul>
 				</s:iterator>
-				</ul>
-				<script type="text/javascript">
-					$(function() {
-						$('span.other_operator').addClass('nobr').equalWidth().css({'float':'left'});
-					});
-				</script>
 				<div class="clear"></div>
 			</div>
 		</div>

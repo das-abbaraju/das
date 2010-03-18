@@ -32,7 +32,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit")
@@ -125,6 +124,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * Don't use this! Use changeStatus instead
+	 * 
 	 * @param auditStatus
 	 * @see ContractorAudit.changeStatus()
 	 */
@@ -166,14 +166,15 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		}
 		if (auditStatus.isExpired()) {
 			if (expiresDate == null)
-				// This should never happen, but if it does, let's just cleanup the date
+				// This should never happen, but if it does, let's just cleanup
+				// the date
 				expiresDate = new Date();
 		}
-		
+
 		setAuditColumns(user);
 		setAuditStatus(auditStatus);
 	}
-	
+
 	private void setExpirationDate() {
 		if (getExpiresDate() != null && !auditType.isRenewable())
 			// Example: Desktop with expiration date already set
@@ -251,7 +252,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public void setClosedDate(Date closedDate) {
 		this.closedDate = closedDate;
 	}
-	
+
 	@Temporal(TemporalType.DATE)
 	public Date getPaidDate() {
 		return paidDate;
@@ -375,7 +376,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		if (expiresDate == null)
 			return false;
 
-		if(DateBean.getDateDifference(expiresDate) <= 60)
+		if (DateBean.getDateDifference(expiresDate) <= 60)
 			return true;
 
 		return false;
@@ -383,9 +384,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	/**
 	 * 
-	 * @see isAboutToExpire() they are basically the same thing, 
-	 * but we decided to keep both since isAboutToExpire accounts 
-	 * for the year which is important when dealing with PQF class audits
+	 * @see isAboutToExpire() they are basically the same thing, but we decided
+	 *      to keep both since isAboutToExpire accounts for the year which is
+	 *      important when dealing with PQF class audits
 	 */
 	@Transient
 	public boolean willExpireSoon() {
@@ -415,7 +416,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				return assignedDate;
 			return creationDate;
 		}
-		if (auditStatus.equals(AuditStatus.Submitted) 
+		if (auditStatus.equals(AuditStatus.Submitted)
 				|| (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE))
 			return completedDate;
 		return closedDate;
@@ -525,7 +526,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public String getFullAddress() {
 		if (Strings.isEmpty(address))
 			return contractorAccount.getFullAddress();
-		
+
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
 		full.append(address);
@@ -619,7 +620,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	public Location getLocation() {
 		return new Location(latitude, longitude);
 	}
-	
+
 	public float getLatitude() {
 		return latitude;
 	}
@@ -665,11 +666,9 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 				statusDescription = this.getAuditType().getClassType() + " has not been started.";
 
 		if (auditStatus.isSubmitted())
-			if(contractorAccount.isAcceptsBids()) {
-				statusDescription = this.getAuditType().getClassType().toString()
-				+ " has been submitted.";
-			}
-			else if (auditType.isMustVerify())
+			if (contractorAccount.isAcceptsBids()) {
+				statusDescription = this.getAuditType().getClassType().toString() + " has been submitted.";
+			} else if (auditType.isMustVerify())
 				statusDescription = this.getAuditType().getClassType().toString()
 						+ " has been sent.  Awaiting verification.";
 			else
@@ -682,6 +681,44 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		if (auditStatus.isIncomplete())
 			statusDescription = "Rejected " + this.getAuditType().getClassType() + " during verification";
 		return statusDescription;
+	}
+
+	@Transient
+	public String getSynopsis() {
+		String synopsis = "";
+
+		if (isAboutToExpire()) {
+			synopsis = "Expires on " + DateBean.format(expiresDate, "MM/dd/YYYY");
+		}
+
+		if (auditType.isScheduled()) {
+			if (scheduledDate == null)
+				synopsis = "Waiting to be scheduled";
+			else if (scheduledDate.after(new Date()))
+				synopsis = "Pending for " + DateBean.format(scheduledDate, "MM/dd/YYYY");
+		}
+
+		if (auditStatus.isPending()) {
+			synopsis = "Waiting on Contractor since " + DateBean.format(updateDate, "MM/dd/YYYY");
+		}
+
+		if (auditStatus.isExempt()) {
+			synopsis = "Exempt";
+		}
+
+		if (auditStatus.isSubmitted()) {
+			if (!contractorAccount.isAcceptsBids()) {
+				if (auditType.isMustVerify())
+					synopsis = "Awaiting verification.";
+				else
+					synopsis = "Submitted pending requirements.";
+			}
+		}
+
+		if (auditStatus.isIncomplete())
+			synopsis = "Rejected";
+
+		return synopsis;
 	}
 
 	@Transient
@@ -699,7 +736,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 		return map.get(tempScore);
 	}
-	
+
 	@Transient
 	public int getAuditorPayment() {
 		if (auditType.isDesktop())
@@ -712,7 +749,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		}
 		return 0;
 	}
-	
 
 	public void setConductedOnsite(boolean conductedOnsite) {
 		auditLocation = conductedOnsite ? "Onsite" : "Web";
