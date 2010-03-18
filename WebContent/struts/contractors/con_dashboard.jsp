@@ -5,9 +5,30 @@
 <title><s:property value="contractor.name" /></title>
 
 <s:include value="../jquery.jsp" />
+<s:include value="../reports/reportHeader.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css" />
-
+<script type="text/javascript">
+	function removeTag(tagId) {
+		var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
+		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
+			.load('TagNameEditAjax.action', data, function(text, status) {
+					if (status=='success')
+						$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+				});
+		return false;
+	}
+	
+	function addTag() {
+		var data = {button: 'AddTag', tagId: $('#tagName').val(), id: <s:property value="id"/>};
+		$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
+			.load('TagNameEditAjax.action', data, function(text, status) {
+					if (status=='success')
+						$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+				});
+		return false;
+	}
+</script>
 <style>
 img.contractor_logo {
 	float: left;
