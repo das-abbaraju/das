@@ -1,7 +1,8 @@
 /* Navigation */
 #MainMenu {
 	height: 31px;
-	background: #FFFFFF url("../images/bmid_022.gif");
+	background-color: #5D9BCE;
+	background-image: url("../images/bmid_022.gif");
 	background-repeat: repeat-x;
 	margin: 0 0px 20px 0;
 	min-width: 1000px;
@@ -34,7 +35,7 @@
 }
 
 #tab a {
-	background: #000000 url("../images/bright_022.gif") no-repeat right top;
+	background: #5D9BCE url("../images/bright_022.gif") no-repeat right top;
 	margin: 0;
 	padding: 0;
 	text-decoration: none;
