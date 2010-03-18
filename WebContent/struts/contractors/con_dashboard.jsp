@@ -167,16 +167,16 @@ ul {
 						<tr>
 							<td>TRIR</td>
 							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('TrirNaics'))"/></td>
+								<td><s:property value="format(value.get('TrirAbsolute'))"/></td>
 							</s:iterator>
-							<td></td>
+							<td><s:property value="contractor.naics.trir"/></td>
 						</tr>
 						<tr>
 							<td>LWCR</td>
 							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('LwcrNaics'))"/></td>
+								<td><s:property value="format(value.get('LwcrAbsolute'))"/></td>
 							</s:iterator>
-							<td></td>
+							<td><s:property value="contractor.naics.lwcr"/></td>
 						</tr>
 						<tr>
 							<td>EMR</td>
@@ -265,12 +265,14 @@ ul {
 					<s:if test="contractor.primaryContact.phone.length() > 0"><p class="tel">&nbsp;&nbsp;Phone: <span class="value"><s:property value="contractor.primaryContact.phone" /></span></p></s:if>
 					<s:if test="contractor.primaryContact.fax.length() > 0"><p class="tel">&nbsp;&nbsp;Fax: <span class="value"><s:property value="contractor.primaryContact.fax" /></span></p></s:if>
  					<s:if test="contractor.primaryContact.email.length() > 0"><p class="email">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="contractor.primaryContact.email" />" class="value"><s:property value="contractor.primaryContact.email" /></a></p></s:if>
-					<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false"><p class="web"><strong>
-						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
-					</strong></p></s:if>
 				</div>
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
-				<p>Services Performed: <s:iterator value="servicesPerformed" status="stat"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:iterator></p>
+				<p>Services Performed: 
+					<s:iterator value="servicesPerformed" status="stat">
+						<strong><s:property value="question.question"/></strong>
+						<s:if test="!#stat.last">, </s:if>
+					</s:iterator>
+				</p>
 				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
 					<fieldset class="form">
 						<legend><span>Operator Tag Names: </span></legend>
@@ -292,7 +294,12 @@ ul {
 			</div>
 			<div class="panel_content">
 				<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
-				<s:property value="contractor.description"/>
+				<s:property value="contractor.descriptionHTML" escape="false" />
+				<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false">
+					<p class="web"><strong>
+						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
+					</strong></p>
+				</s:if>
 				<div class="clear"></div>
 			</div>
 		</div>
