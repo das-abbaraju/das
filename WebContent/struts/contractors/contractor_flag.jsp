@@ -35,7 +35,18 @@ small {
 <script type="text/javascript">
 $(function() {
 	$('.datepicker').datepicker();
-})
+});
+
+function checkReason(id) {
+	var text = $('#' + id + '_override').find('[name="forceNote"]').val();
+
+	if (text == null || text == '') {
+		alert("Please fill in reason");
+		return false;
+	} else {
+		return true;
+	}
+}
 </script>
 </head>
 <body>
@@ -45,12 +56,13 @@ $(function() {
 
 <!-- OVERALL FLAG -->
 <div style="text-align: center; width: 100%">
-<s:if test="permissions.operatorCorporate || permissions.admin">
+<s:if test="(permissions.operatorCorporate || permissions.admin) && !co.forcedFlag">
 	<div class="info" style="float: right; clear: right; width: 25%;">
 	<s:form>
 		<s:hidden name="id" />
 		<s:hidden name="opID" />
-		This contractor's flags were last calculated <s:date name="co.flagLastUpdated" nice="true" /><br />
+		<s:if test="co.flagLastUpdated != null">Contractor's flag last calculated <s:date name="co.flagLastUpdated" nice="true" />.<br /></s:if>
+		<s:else>Contractor's flag has not been calculated.<br /></s:else>
 		<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
 	</s:form>
 	</div>
@@ -63,7 +75,7 @@ $(function() {
 		<td style="vertical-align: middle;">
 			<b>Flag Status<br />at
 			<pics:permission perm="EditFlagCriteria">
-				<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />"><s:property value="co.operatorAccount.name"/></a>		
+				<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />" title="View Flag Criteria"><s:property value="co.operatorAccount.name"/></a>		
 			</pics:permission>
 			<pics:permission perm="EditFlagCriteria" negativeCheck="true">
 				<s:property value="co.operatorAccount.name"/>
@@ -72,7 +84,7 @@ $(function() {
 		</td>
 	</tr>
 	<tr>
-		<td>
+		<td colspan="3">
 		<s:if test="opID == permissions.getAccountId() || permissions.corporate">
 			<s:if test="co.forcedFlag">
 				<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
@@ -179,7 +191,7 @@ $(function() {
 					</td>
 					<td>
 						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
-							<s:if test="#opCriteria.criteria.id == #data.criteria.id && #opCriteria.flag == #data.flag">
+							<s:if test="#opCriteria.criteria.id == #data.criteria.id">
 								<s:property value="#opCriteria.replaceHurdle" />
 							</s:if>
 						</s:iterator>
@@ -212,21 +224,7 @@ $(function() {
 						<s:else>
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-									<s:if test="#data.criteria.description.contains('AMB Class')">
-										<s:property value="getAmBestClass(#conCriteria.answer)" />
-									</s:if>
-									<s:elseif test="#data.criteria.description.contains('AMB Rating')">
-										<s:property value="getAmBestRating(#conCriteria.answer)" />
-									</s:elseif>
-									<s:elseif test="#data.criteria.dataType == 'number'">
-										<s:property value="format(#conCriteria.answer)" />
-									</s:elseif>
-									<s:else>
-										<s:property value="#conCriteria.answer" />
-									</s:else>
-									<s:if test="#conCriteria.answer2.length() > 0">
-										<br /><s:property value="#conCriteria.answer2" escape="false"/>
-									</s:if>
+									<s:property value="getContractorAnswer(#conCriteria, false)" escape="false" />
 								</s:if>
 							</s:iterator>
 						</s:else>
@@ -243,14 +241,16 @@ $(function() {
 										<s:checkbox name="overrideAll"/><label>Check to Cancel the Force Flag Color at all your Facilities in your database</label>
 									</s:if>
 									&nbsp;Reason for Cancelling: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
-									<input type="submit" value="Cancel Data Override" class="picsbutton positive" name="button" />
+									<input type="submit" value="Cancel Data Override" class="picsbutton positive" name="button" 
+										onclick="return checkReason(<s:property value="%{#data.id}" />);" />
 								</pics:permission>
 							</s:if>
 							<s:else>
 								<s:select list="flagList" name="forceFlag" /> until 
 								<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
 								Reason for Forcing: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
-								<button class="picsbutton positive" type="submit" name="button" value="Force Data Override">Force Data Override</button>
+								<button class="picsbutton positive" type="submit" name="button" value="Force Data Override"
+									onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Data Override</button>
 							</s:else>
 						</form></td>
 					</tr>
@@ -285,24 +285,9 @@ $(function() {
 							<s:property value="criteria.auditType.auditName" />
 						</s:if>
 						<s:else>
-							<s:property value="criteria.label" /> - 
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-									<s:if test="#data.criteria.description.contains('AMB Class')">
-										<s:property value="getAmBestClass(#conCriteria.answer)" />
-									</s:if>
-									<s:elseif test="#data.criteria.description.contains('AMB Rating')">
-										<s:property value="getAmBestRating(#conCriteria.answer)" />
-									</s:elseif>
-									<s:elseif test="#data.criteria.dataType == 'number'">
-										<s:property value="format(#conCriteria.answer)" />
-									</s:elseif>
-									<s:else>
-										<s:property value="#conCriteria.answer" />
-									</s:else>
-									<s:if test="#conCriteria.answer2.length() > 0">
-										<br /><s:property value="#conCriteria.answer2" escape="false"/>
-									</s:if>
+									<s:property value="getContractorAnswer(#conCriteria, true)" escape="false" />
 								</s:if>	
 							</s:iterator>
 						</s:else>

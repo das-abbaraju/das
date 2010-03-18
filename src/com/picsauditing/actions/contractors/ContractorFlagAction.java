@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Note;
@@ -324,6 +325,51 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		}
 		return null;
+	}
+	
+	public String getContractorAnswer(FlagCriteriaContractor fcc, boolean addLabel) {
+		FlagCriteria fc = fcc.getCriteria();
+		String answer = fcc.getAnswer();
+		String answer2 = fcc.getAnswer2();
+		
+		if (fc.getDescription().contains("AMB Class"))
+			answer = getAmBestClass(answer);
+		else if (fc.getDescription().contains("AMB Rating")) 
+			answer = getAmBestRating(answer);
+		else if (fc.getDataType().equals(FlagCriteria.NUMBER))
+			answer = Strings.formatDecimalComma(answer);
+		
+		if (addLabel)
+			answer = fc.getLabel() + " - " + fcc.getAnswer();
+		
+		if (!Strings.isEmpty(answer2)) {
+			String[] exploded = answer2.split("<br/>");
+			String year = null;
+			String conAnswer = null;
+			String verified = null;
+			
+			for (String token : exploded) {
+				if (token.contains("Year"))
+					year = token;
+				if (token.contains("Contractor"))
+					conAnswer = token;
+				if (token.contains("Verified"))
+					verified = token;
+			}
+			
+			if (verified != null)
+				answer += "&nbsp;" + verified;
+			if (year != null) {
+				String front = "<span title=\"" + year;
+				
+				if (conAnswer != null)
+					answer += " " + conAnswer;
+				
+				answer = front + "\">" + answer + "</span>";
+			}
+		}
+		
+		return answer;
 	}
 	
 	public boolean isDisplayTable() {
