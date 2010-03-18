@@ -32,6 +32,9 @@ div.co_select {
 	padding: 2px;
 	text-align: center;
 }
+.hide_services {
+	display: none;
+}
 ul {
 	list-style: none;
 }
@@ -295,11 +298,32 @@ ul {
 					</strong></p>
 				</s:if>
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
-				<p>Services Performed: 
-					<s:iterator value="servicesPerformed" status="stat">
-						<strong><s:property value="question.question"/></strong>
-						<s:if test="!#stat.last">, </s:if>
-					</s:iterator>
+				<p id="services">Services Performed: 
+					<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count <= 20"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
+					<s:if test="servicesPerformed.size() > 20">
+						<span class="hide_services">
+							<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count > 20"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
+						</span>
+						<a href="#" id="more_services">Show more...</a>
+						<script type="text/javascript">
+							$(function() {
+									$('a#more_services').click(function(e) {
+											if ($(this).text() == 'Show more...') {
+												$('.hide_services').show();
+												$(this).text('Hide');
+											}
+											else {
+												$('.hide_services').hide();
+												$(this).text('Show more...');
+											}
+
+											e.preventDefault();
+										}
+									);
+								}
+							);
+						</script>
+					</s:if>
 				</p>
 				<div class="clear"></div>
 			</div>
