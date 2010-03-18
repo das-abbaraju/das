@@ -44,6 +44,7 @@ span.required {
 		left top;
 	color: #272;
 	font-weight: bold;
+	zoom: 1;
 }
 
 span.printrequired {
@@ -62,6 +63,7 @@ div.thinking {
 		left center;
 	color: #272;
 	font-weight: bold;
+	zoom: 1;
 }
 
 input.number {
@@ -74,6 +76,7 @@ span.verified {
 	padding-left: 20px;
 	background: transparent url(../images/okCheck.gif) no-repeat
 		left center;
+	zoom: 1;
 }
 
 span.unverified {
@@ -81,6 +84,7 @@ span.unverified {
 	padding-left: 20px;
 	background: transparent url(../images/notOkCheck.gif) no-repeat
 		left center;
+	zoom: 1;
 }
 
 span.boxed {
@@ -92,6 +96,7 @@ span.checked {
 	padding-left: 20px;
 	background: transparent url(../images/checkBoxTrue.gif) no-repeat
 		left center;
+	zoom: 1;
 }
 
 /** END Audit Data ***/

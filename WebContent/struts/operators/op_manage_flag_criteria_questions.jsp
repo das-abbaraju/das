@@ -16,7 +16,7 @@
 	<s:iterator value="addableCriterias">
 		<tr id="<s:property value="id" />">
 			<td class="center">
-				<a href="#" onclick="addCriteria(<s:property value="id" />); return false;"><img src="images/plus.png" alt="Add" /></a>
+				<a href="#" onclick="addCriteria(<s:property value="id" />); return false;" class="add"></a>
 			</td>
 			<td><nobr>
 				<s:if test="getAddableFlags(id).size() == 1">

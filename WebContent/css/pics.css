@@ -300,7 +300,8 @@ a[href $=".doc"] {
 	padding-left: 14px;
 	padding-right: 0;
 	padding-top: 0;
-	padding-bottom: 0
+	padding-bottom: 0;
+	zoom: 1;
 }
 
 a[href $=".pdf"],a.pdf {
@@ -308,7 +309,8 @@ a[href $=".pdf"],a.pdf {
 	padding-left: 14px;
 	padding-right: 0;
 	padding-top: 0;
-	padding-bottom: 0
+	padding-bottom: 0;
+	zoom: 1;
 }
 
 a[href $=".xls"],a.excel {
@@ -316,7 +318,8 @@ a[href $=".xls"],a.excel {
 	padding-left: 14px;
 	padding-right: 0;
 	padding-top: 0;
-	padding-bottom: 0
+	padding-bottom: 0;
+	zoom: 1;
 }
 
 a.email {
@@ -324,13 +327,15 @@ a.email {
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
-	padding-bottom: 0
+	padding-bottom: 0;
+	zoom: 1;
 }
 
 a.ext {
 	padding-right: 13px;
 	margin-right: 2px;
 	background: url('../images/icon_link_ext.png') no-repeat right center;
+	zoom: 1;
 }
 
 a.print {
@@ -339,49 +344,57 @@ a.print {
 	background: url('../images/print_icon.gif') no-repeat left center;;
 	padding-right: 3px;
 	padding-top: 3px;
-	padding-bottom: 3px
+	padding-bottom: 3px;
+	zoom: 1;
 }
 
 a.refresh {
 	padding-left: 25px;
 	margin-left: 0px;
 	background: url('../images/refresh_icon.jpg') no-repeat left center;
+	zoom: 1;
 }
 
 a.remove {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/cross.png') no-repeat left center;
+	zoom: 1;
 }
 
 a.add {
 	padding-left: 18px;
 	margin-left: 2px;
 	background: url('../images/plus.png') no-repeat left center;
+	zoom: 1;
 }
 
 a.edit {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/edit_pencil.png') no-repeat left center;
+	zoom: 1;
 }
 
 a.verify {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/okCheck.gif') no-repeat left center;
+	zoom: 1;
 }
 
 a.view {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/edit_pencil.png') no-repeat left center;
+	zoom: 1;
 }
 
 a.help {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/help.gif') no-repeat left center;
+	zoom: 1;
 }
 
 a.insurance span {
@@ -391,10 +404,12 @@ a.insurance span {
 	width: 20px;
 	cursor: pointer;
 	background: url('../images/icon_insurance.gif') no-repeat left center;
+	zoom: 1;
 }
 
 label.tooltipped {
 	background: url('../images/icon_text_alert.png') no-repeat left center;
+	zoom: 1;
 }
 
 /******************** Styles for vCard  ************************/ /*
@@ -407,13 +422,15 @@ p.email a {
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
-	padding-bottom: 0
+	padding-bottom: 0;
+	zoom: 1;
 }
 
 p.url a {
 	padding-right: 13px;
 	margin-right: 2px;
 	background: url('../images/icon_link_ext.png') no-repeat right center;
+	zoom: 1;
 }
 
 div.contact {
@@ -484,6 +501,7 @@ ul#navlist {
 	background-position: right;
 	background-repeat: no-repeat;
 	padding-right: 18px;
+	zoom: 1;
 }
 
 #navlist a.current {
@@ -556,18 +574,21 @@ div#info,div.info {
 	border-top: 2px solid #b7d2f2;
 	border-bottom: 2px solid #b7d2f2;
 	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
+	zoom: 1;
 }
 
 div#alert,div.alert {
 	border-top: 2px solid #D0AE10;
 	border-bottom: 2px solid #D0AE10;
 	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
+	zoom: 1;
 }
 
 div#error,div.error {
 	border-top: 2px solid #feabab;
 	border-bottom: 2px solid #feabab;
 	background: #ffdfdf url('../images/icon-error.gif') no-repeat 10px 10px;
+	zoom: 1;
 }
 
 td.money,th.money {
@@ -719,6 +740,7 @@ span.hoverhelp {
 	font-size: 11px;
 	line-height: 18px;
 	color: #333;
+	zoom: 1;
 }
 
 span.hoverhelp a {
@@ -749,6 +771,7 @@ span.block:hover .hoverhelp {
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/help.gif') no-repeat left center;
+	zoom: 1;
 }
 
 #helpbox a,a:active,a:hover,a:visited {
@@ -778,6 +801,7 @@ span.block:hover .hoverhelp {
 	font-size: 12px;
 	background: #dbe7f8 url('../images/icon-info.gif') no-repeat 10px 10px;
 	width: 25%;
+	zoom: 1;
 }
 
 #unsupportedBrowser {

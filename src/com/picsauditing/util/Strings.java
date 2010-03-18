@@ -404,7 +404,7 @@ public class Strings {
 		return number;
 	}
 
-	private static String trimTrailingZeros(String number) {
+	public static String trimTrailingZeros(String number) {
 		if (!number.contains(".")) {
 			return number;
 		}

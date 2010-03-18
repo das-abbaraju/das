@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_operator")
@@ -107,7 +109,7 @@ public class FlagCriteriaOperator extends BaseTable {
 	
 	@Transient 
 	public String getReplaceHurdle() {
-		return criteria.getDescription().replaceAll("\\{HURDLE\\}", criteriaValue());
+		return criteria.getDescription().replaceAll("\\{HURDLE\\}", Strings.formatDecimalComma(criteriaValue()));
 	}
 
 	@Transient 

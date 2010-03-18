@@ -49,7 +49,7 @@ $(document).ready(function() {
 								</s:if>
 							</s:if>
 							<s:else>
-								<span class="hurdle"><b><s:property value="criteriaValue()" /></b></span>
+								<span class="hurdle"><b><s:property value="getFormatted(criteriaValue())" /></b></span>
 								<s:if test="criteria.dataType == 'number' || criteria.dataType == 'date'">	
 									<input type="text" value="<s:property value="getFormatted(criteriaValue())" />" name="newHurdle" size="10"
 										class="hide" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
@@ -83,10 +83,10 @@ $(document).ready(function() {
 						</s:if>
 					</td>
 					<td class="center">
-						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;"><img src="images/edit_pencil.png" alt="Edit" /></a>
+						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;" class="edit"></a>
 					</td>
 					<td class="center">
-						<a href="#" onclick="checkSubmit(<s:property value="id" />); return false;"><img src="images/cross.png" alt="Remove" /></a>
+						<a href="#" onclick="checkSubmit(<s:property value="id" />); return false;" class="remove"></a>
 					</td>
 				</s:if>
 			
