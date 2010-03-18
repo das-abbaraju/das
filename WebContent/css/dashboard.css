@@ -63,7 +63,6 @@ a:hover.panel_edit {
 	overflow:hidden;
 	padding: 3px;
 	margin: 0px;
-	min-height: 100px;
 }
 #content div.panel_footer {
 	text-align:center;
