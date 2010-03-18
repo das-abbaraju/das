@@ -32,7 +32,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		  + "AND op.type = 'Operator' "
 		  + "AND fd.id IS NULL ";
 		
-		String where = "AND gc.flag != f.flag";
+		String where = "AND gc.flag != f.flag ";
 		String orderBy = "ORDER BY con.name, op.name";
 		
 		if ("delete".equals(button)) {
