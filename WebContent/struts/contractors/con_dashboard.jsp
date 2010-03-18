@@ -139,7 +139,7 @@ ul {
 				<ul>
 				<s:iterator value="value">
 					<li>
-						<a href="Audit.action?auditID=<s:property value="id"/>">	<s:property value="auditType.auditName"/> <s:property value="auditFor"/></a>
+						<a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/><s:if test="auditFor != null"> <s:property value="auditFor"/></s:if></a>
 						<s:property value="synopsis"/>
 					</li>
 				</s:iterator>
