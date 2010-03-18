@@ -386,7 +386,7 @@ ul {
 			</div>
 		</div>
 	</div>
-	<s:if test="permissions.contractor">
+	<s:if test="permissions.admin">
 	<!-- Open Tasks -->
 	<div class="panel_placeholder">
 		<div class="panel">

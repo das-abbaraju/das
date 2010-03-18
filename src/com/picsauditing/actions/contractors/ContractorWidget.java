@@ -63,7 +63,7 @@ public class ContractorWidget extends ContractorActionSupport {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
 
-			if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
+			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
 				if (contractor.getUsers().size() == 1
 						&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
 					openTasks
@@ -84,7 +84,7 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 
-			if (permissions.hasPermission(OpPerms.ContractorBilling)) {
+			if (permissions.hasPermission(OpPerms.ContractorBilling) || permissions.isAdmin()) {
 				String billingStatus = contractor.getBillingStatus();
 				if ("Upgrade".equals(billingStatus)
 						|| ("Renewal".equals(billingStatus) && contractor.getMembershipLevel().getId() == InvoiceFee.BIDONLY)) {
@@ -116,7 +116,7 @@ public class ContractorWidget extends ContractorActionSupport {
 			String auditName;
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
-				if (permissions.hasPermission(OpPerms.ContractorSafety)) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 					if (conAudit.getAuditType().getClassType().isPqf()) {
 						if (conAudit.getAuditType().isPqf())
 							auditName = "Pre-Qualification Form";
@@ -176,7 +176,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					}
 				}
 
-				if (permissions.hasPermission(OpPerms.ContractorInsurance)) {
+				if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
 					if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
 						Set<String> pendingOperators = new TreeSet<String>();
 						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
@@ -215,7 +215,7 @@ public class ContractorWidget extends ContractorActionSupport {
 
 			}
 
-			if (permissions.hasPermission(OpPerms.ContractorSafety)) {
+			if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 				if (!contractor.isNaicsValid() && contractor.getCountries().contains("US")) {
 					AuditCatData auditCatData = getAuditCatData(contractor);
 					if (auditCatData != null)
