@@ -120,12 +120,6 @@ public class ContractorCron extends PicsActionSupport {
 			runTradeETL(contractor);
 			runContractorETL(contractor);
 
-			if (steps != null && steps.length > 0) {
-				contractor.setNeedsRecalculation(false);
-				contractor.setLastRecalculation(new Date());
-				dao.save(contractor);
-			}
-
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
@@ -151,7 +145,6 @@ public class ContractorCron extends PicsActionSupport {
 						}
 						runFlag(co);
 						runWaitingOn(co);
-
 						if (opID > 0)
 							break;
 					}
@@ -159,6 +152,8 @@ public class ContractorCron extends PicsActionSupport {
 				runCorporateRollup(contractor, corporateSet);
 			}
 			if (steps != null && steps.length > 0) {
+				contractor.setNeedsRecalculation(false);
+				contractor.setLastRecalculation(new Date());
 				dao.save(contractor);
 				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
 						+ " successfully");
@@ -292,8 +287,12 @@ public class ContractorCron extends PicsActionSupport {
 			co.setFlagLastUpdated(new Date());
 		}
 
-		BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes);
-
+	   Iterator<FlagData> flagDataList = BaseTable.insertUpdateDeleteManaged(co.getFlagDatas(), changes).iterator();
+	   while(flagDataList.hasNext()) {
+		   FlagData flagData = flagDataList.next();
+		   co.getFlagDatas().remove(flagData);
+		   dao.remove(flagData);
+	   }
 		co.setAuditColumns(new User(User.SYSTEM));
 	}
 
