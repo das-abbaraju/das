@@ -2,12 +2,14 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
@@ -23,6 +25,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
+	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	private AuditDataDAO auditDataDao;
 
 	private Set<FlagCriteria> distinctFlagCriteria = null;
@@ -30,8 +33,10 @@ public class ContractorFlagETL {
 	protected boolean hasOqEmployees = false;
 	protected boolean hasCOR = false;
 
-	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao) {
+	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
+			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
 		this.auditDataDao = auditDataDao;
+		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 
 		distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 
@@ -90,9 +95,11 @@ public class ContractorFlagETL {
 								hasProperStatus = true;
 						}
 					}
-					// isFlaggableWhenMissing would be really useful for Manual Audits or Implementation Audits
+					// isFlaggableWhenMissing would be really useful for Manual
+					// Audits or Implementation Audits
 					if (hasProperStatus != null || flagCriteria.isFlaggableWhenMissing())
-						changes.add(new FlagCriteriaContractor(contractor, flagCriteria, hasProperStatus == null ? "null" : hasProperStatus.toString()));
+						changes.add(new FlagCriteriaContractor(contractor, flagCriteria,
+								hasProperStatus == null ? "null" : hasProperStatus.toString()));
 				}
 			}
 
@@ -249,7 +256,13 @@ public class ContractorFlagETL {
 
 		}
 
-		BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes);
+		Iterator<FlagCriteriaContractor> flagDataList = BaseTable.insertUpdateDeleteManaged(
+				contractor.getFlagCriteria(), changes).iterator();
+		while (flagDataList.hasNext()) {
+			FlagCriteriaContractor flagData = flagDataList.next();
+			contractor.getFlagCriteria().remove(flagData);
+			flagCriteriaContractorDao.remove(flagData);
+		}
 	}
 
 	public String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {
