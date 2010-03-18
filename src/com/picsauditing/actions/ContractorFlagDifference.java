@@ -15,6 +15,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 	protected int opID;
 	protected String flag;
 	protected boolean switchOrder = false;
+	private int rowCount = 0;
 	
 	@Override
 	public String execute() throws Exception {
@@ -64,12 +65,13 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		}
 		
 		if(("operator").equals(button)){
-			orderBy = "ORDER BY con.name,op.name";
+			orderBy = "ORDER BY op.name,con.name";
 		}
 		
-		sql += baseWhere + where + orderBy + "  LIMIT 100";
-		
+		sql += baseWhere + where + " " + orderBy + "  LIMIT 100";
+		System.out.println(sql);
 		data = db.select(sql, true);
+		rowCount  = db.getAllRows();
 		return SUCCESS;
 	}
 	
@@ -99,5 +101,9 @@ public class ContractorFlagDifference extends PicsActionSupport {
 
 	public void setFlag(String flag) {
 		this.flag = flag;
+	}
+	
+	public int getRowCount() {
+		return rowCount;
 	}
 }

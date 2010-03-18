@@ -19,6 +19,8 @@ function isOk(conid,opid, flag) {
 <body>
 <h1>Contractor Operator Flag/Waiting On Differences</h1>
 
+<p><s:property value="rowCount"/> Differences</p>
+
 <table class="report">
 	<thead>
 		<tr>
