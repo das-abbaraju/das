@@ -182,10 +182,9 @@ ul {
 						</tr>
 						<tr>
 							<td>EMR</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<s:iterator value="contractor.emrs">
+								<td><s:property value="value.answer"/></td>
+							</s:iterator>
 							<td></td>
 						</tr>
 					</tbody>
