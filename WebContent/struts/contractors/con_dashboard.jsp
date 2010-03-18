@@ -52,38 +52,36 @@ ul {
 			</div>
 			<div class="panel_content">
 				<s:if test="contractor.status.pending">
-	<div class="alert">This contractor has not activated their account.</div>
-</s:if>
-<s:if test="contractor.status.deleted">
-	<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
-			because of the following reason: <s:property value="contractor.reason"/></s:if>.
-		<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
-	</div>
-</s:if>
-<s:if test="contractor.status.deactivated">
-	<div class="alert">This contractor was deactivated.
-	<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
-	</div>
-</s:if>
+					<div class="alert">This contractor has not activated their account.</div>
+				</s:if>
+				<s:if test="contractor.status.deleted">
+					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
+							because of the following reason: <s:property value="contractor.reason"/></s:if>.
+						<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+					</div>
+				</s:if>
+				<s:if test="contractor.status.deactivated">
+					<div class="alert">This contractor was deactivated.
+					<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+					</div>
+				</s:if>
+				
+				<s:if test="contractor.acceptsBids">
+					<s:if test="canUpgrade">
+						<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
+						Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
+					</s:if>
+					<s:else>
+						<div class="alert">This is a BID-ONLY Contractor Account.</div>
+					</s:else>
+				</s:if>
+				<s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
+					<div class="alert">This contractor has an outstanding invoice due</div>
+				</s:elseif>
+				<s:if test="permissions.admin && !contractor.mustPayB">
+					<div class="alert">This account has a lifetime free membership</div>
+				</s:if>
 
-<s:if test="contractor.acceptsBids">
-	<s:if test="canUpgrade">
-		<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
-		Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
-	</s:if>
-	<s:else>
-		<div class="alert">This is a BID-ONLY Contractor Account.</div>
-	</s:else>
-</s:if>
-<s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
-	<div class="alert">This contractor has an outstanding invoice due</div>
-</s:elseif>
-<s:if test="permissions.admin && !contractor.mustPayB">
-	<div class="alert">This account has a lifetime free membership</div>
-</s:if>
-				
-				
-				
 				<s:if test="co != null">
 					<div class="co_flag">
 						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
@@ -266,13 +264,6 @@ ul {
 					<s:if test="contractor.primaryContact.fax.length() > 0"><p class="tel">&nbsp;&nbsp;Fax: <span class="value"><s:property value="contractor.primaryContact.fax" /></span></p></s:if>
  					<s:if test="contractor.primaryContact.email.length() > 0"><p class="email">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="contractor.primaryContact.email" />" class="value"><s:property value="contractor.primaryContact.email" /></a></p></s:if>
 				</div>
-				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
-				<p>Services Performed: 
-					<s:iterator value="servicesPerformed" status="stat">
-						<strong><s:property value="question.question"/></strong>
-						<s:if test="!#stat.last">, </s:if>
-					</s:iterator>
-				</p>
 				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
 					<fieldset class="form">
 						<legend><span>Operator Tag Names: </span></legend>
@@ -300,6 +291,13 @@ ul {
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
 					</strong></p>
 				</s:if>
+				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
+				<p>Services Performed: 
+					<s:iterator value="servicesPerformed" status="stat">
+						<strong><s:property value="question.question"/></strong>
+						<s:if test="!#stat.last">, </s:if>
+					</s:iterator>
+				</p>
 				<div class="clear"></div>
 			</div>
 		</div>
