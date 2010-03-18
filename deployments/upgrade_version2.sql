@@ -589,6 +589,9 @@ ALTER TABLE `audit_operator`
 ALTER TABLE `accounts` 
 	DROP COLUMN `active`;
 
+ALTER TABLE `flag_criteria_operator` 
+	ADD COLUMN `affected` smallint(4) unsigned   NOT NULL DEFAULT '0' after `minRiskLevel`;
+
 update generalcontractors, flags
 set generalcontractors.flag = flags.flag, 
 	generalcontractors.waitingOn = flags.waitingOn, 
@@ -615,8 +618,3 @@ and DAYOFMONTH(creationDate) != 1
 and DAYOFWEEK(creationDate) != 1
 limit 100000;
 
--- Classes are saved in natural order (1-lowest, 15-highest), so need to use '<' on flag criteria for AMB questions
-update flag_criteria set comparison = '<' where id in (600,601,602,603,604,605,606,607,608,609,610,611,612,613);
-
-ALTER TABLE `flag_criteria_operator` 
-	ADD COLUMN `affected` smallint(4) unsigned   NOT NULL DEFAULT '0' after `minRiskLevel`;
