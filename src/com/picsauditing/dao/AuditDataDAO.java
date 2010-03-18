@@ -68,8 +68,8 @@ public class AuditDataDAO extends PicsDAO {
 			return indexedResult;
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = ? "
-				+ "AND d.audit.auditStatus IN ('Pending','Submitted','Resubmitted','Active') "
-				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.auditStatus DESC");
+				+ "AND d.audit.auditStatus NOT IN ('Expired','Exempt') "
+				+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") ORDER BY d.audit.auditStatus DESC");
 		// Sort it first by Submitted, then by Active, so when we load the map
 		// the Active values will override the Submitted ones
 		query.setParameter(1, conID);
