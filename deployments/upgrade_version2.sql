@@ -609,6 +609,7 @@ DROP TABLE `temp_user`;
 drop table `temp_contractor_audit`;
 drop table `temp_expired_audits`;
 DROP TABLE `temp_user_duplicates`;
+DROP TABLE `account_name`;
 
 -- Deleting all data other than past 7 days, sundays and 1st of every month for 17 Weeks
 -- Need to run this once
