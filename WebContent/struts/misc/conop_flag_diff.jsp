@@ -33,33 +33,25 @@ function isOk(conid,opid, flag) {
 	</thead>
 	<s:iterator value="data">
 		<tr id="tr<s:property value="get('conID')"/>_<s:property value="get('opID')" />">
-			<td>
-				<s:property value="get('ContractorName')" />
-			</td>
-			<td>
-				<s:property value="get('OperatorName')" />
+			<td><s:property value="get('ContractorName')" /></td>
+			<td><s:property value="get('OperatorName')" /></td>
+			<td <s:if test="get('oldColor') != get('newColor')"> style="background-color: YELLOW" </s:if>>
+				<a href="ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="alpha">
+					<s:property value="get('newColor')" /></a>
 			</td>
 			<td <s:if test="get('oldColor') != get('newColor')"> style="background-color: YELLOW" </s:if>>
-				<a href="ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
-					<s:property value="get('newColor')" />			
-				</a>
-			</td>
-			<td <s:if test="get('oldColor') != get('newColor')"> style="background-color: YELLOW" </s:if>>
-				<a href="http://www.picsauditing.com/app/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
-					<s:property value="get('oldColor')" />			
-				</a>
+				<a href="http://www.picsauditing.com/app/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="live">
+					<s:property value="get('oldColor')" /></a>
 			</td>
 			<td <s:if test="get('oldwaitingOn') != get('newwaitingon')"> style="background-color: YELLOW" </s:if>>
 				<a href="ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
-					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('newwaitingon'))" />			
-				</a>
+					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('newwaitingon'))" /></a>
 			</td>
 			<td <s:if test="get('oldwaitingOn') != get('newwaitingon')"> style="background-color: YELLOW" </s:if>>
-				<a href="http://www.picsauditing.com/app/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />">
-					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('oldwaitingOn'))" />
-				</a>
+				<a href="http://www.picsauditing.com/app/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="alpha">
+					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('oldwaitingOn'))" /></a>
 			</td>
-			<td><a href="#" onclick="isOk(<s:property value="get('conID')" />,<s:property value="get('opID')" />, '<s:property value="get('newColor')" />'); return false;"><img src="images/cross.png" /></a></td>
+			<td><a href="#" onclick="isOk(<s:property value="get('conID')" />,<s:property value="get('opID')" />, '<s:property value="get('newColor')" />'); return false;" target="live"><img src="images/cross.png" /></a></td>
 		</tr>
 	</s:iterator>
 </table>
