@@ -2,7 +2,6 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -256,13 +255,8 @@ public class ContractorFlagETL {
 
 		}
 
-		Iterator<FlagCriteriaContractor> flagDataList = BaseTable.insertUpdateDeleteManaged(
-				contractor.getFlagCriteria(), changes).iterator();
-		while (flagDataList.hasNext()) {
-			FlagCriteriaContractor flagData = flagDataList.next();
-			contractor.getFlagCriteria().remove(flagData);
-			flagCriteriaContractorDao.remove(flagData);
-		}
+		BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes);
+
 	}
 
 	public String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {
