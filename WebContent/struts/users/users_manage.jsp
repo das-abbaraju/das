@@ -170,7 +170,6 @@ div.autocomplete ul li {
 		<s:hidden name="isGroup" />
 		<s:hidden name="isActive" />
 		<s:hidden name="user.isGroup" />
-		<s:hidden name="sendActivationEmail"/>
 		<s:if test="user.isGroup.toString() == 'Yes'">
 			<s:hidden name="user.isActive" />
 		</s:if>
