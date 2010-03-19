@@ -69,6 +69,15 @@ ul {
 	<div class="info">This is your profile page that the operators see when they look up your account. 
 	Use the dropdown below to view the page from your operator's point of view.</div>
 </s:if>
+<s:if test="contractor.acceptsBids">
+	<s:if test="canUpgrade">
+		<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
+		Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
+	</s:if>
+	<s:else>
+		<div class="alert">This is a BID-ONLY Contractor Account.</div>
+	</s:else>
+</s:if>
 
 <table>
 <tr>
@@ -80,35 +89,11 @@ ul {
 				Contractor Status <s:if test="co != null">at <s:property value="co.operatorAccount.name"/></s:if>
 			</div>
 			<div class="panel_content">
-				<s:if test="contractor.status.pending">
-					<div class="alert">This contractor has not activated their account.</div>
+				<s:if test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
+					<p>This contractor has an outstanding invoice due</p>
 				</s:if>
-				<s:if test="contractor.status.deleted">
-					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
-							because of the following reason: <s:property value="contractor.reason"/></s:if>.
-						<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
-					</div>
-				</s:if>
-				<s:if test="contractor.status.deactivated">
-					<div class="alert">This contractor was deactivated.
-					<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
-					</div>
-				</s:if>
-				
-				<s:if test="contractor.acceptsBids">
-					<s:if test="canUpgrade">
-						<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
-						Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
-					</s:if>
-					<s:else>
-						<div class="alert">This is a BID-ONLY Contractor Account.</div>
-					</s:else>
-				</s:if>
-				<s:elseif test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
-					<div class="alert">This contractor has an outstanding invoice due</div>
-				</s:elseif>
 				<s:if test="permissions.admin && !contractor.mustPayB">
-					<div class="alert">This account has a lifetime free membership</div>
+					<p>This account has a lifetime free membership</p>
 				</s:if>
 
 				<s:if test="co != null">
@@ -118,9 +103,6 @@ ul {
 					</div>
 				</s:if>
 				<div class="co_problems">
-					<s:if test="permissions.admin">
-						<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
-					</s:if>
 					<s:if test="problems.categories.size() > 0">
 						<p>Problems:
 							<ul style="margin-left: 10px;">
@@ -284,6 +266,9 @@ ul {
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
 					</strong>
 				</p>
+				<s:if test="permissions.admin">
+					<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
+				</s:if>
 				<p>PICS CSR: 
 					<strong>
 						<s:property value="contractor.auditor.name" />/ <s:property value="contractor.auditor.phone" />/
