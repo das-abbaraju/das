@@ -58,7 +58,8 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		
 		// findOperator() uses the operator associated with the permissions object.
 		// We just want the operator that was passed in.
-		if (operator.getId() != getParameter("id")) {
+		int newID = getParameter("id");
+		if (newID > 0 && operator.getId() != newID) {
 			operator = operatorDao.find(getParameter("id"));
 			account = operator;
 		}
