@@ -187,7 +187,7 @@ ul {
 						<tr>
 							<th></th>
 							<s:iterator value="oshaAudits.keySet()" id="val">
-								<th<s:if test="#val == 'W AVG'"> title="Weighted average factors in the fluctuation in man hours between years"</s:if>><s:property value="#val"/></th>
+								<th<s:if test="#val == 'W Average'"> title="Weighted average factors in the fluctuation in man hours between years"</s:if>><s:property value="#val"/></th>
 							</s:iterator>
 							<th>Industry</th>
 						</tr>
@@ -217,7 +217,7 @@ ul {
 						<tr>
 							<td>Man Hours</td>
 							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('manhours'))"/></td>
+								<td><s:property value="format(value.get('Man Hours'))"/></td>
 							</s:iterator>
 							<td></td>
 						</tr>

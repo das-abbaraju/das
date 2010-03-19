@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
@@ -204,9 +206,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 				String auditFor = "";
 				if (audit.getConAudit() == null) {
 					if (scope.equals(MultiYearScope.ThreeYearAverage))
-						auditFor = "AVG";
+						auditFor = "Average";
 					else if (scope.equals(MultiYearScope.ThreeYearWeightedAverage))
-						auditFor = "W AVG";
+						auditFor = "W Average";
 				} else
 					auditFor = audit.getConAudit().getAuditFor();
 
@@ -321,4 +323,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return f.exists();
 	}
+	
+	public class OshaDisplay {
+		Set<String> auditFor = new LinkedHashSet<String>();
+		Map<OshaRateType, String> valueMap = new LinkedHashMap<OshaRateType, String>();
+		
+		public OshaDisplay() {
+			
+		}
+	}
+		
 }
