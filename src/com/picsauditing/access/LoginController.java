@@ -215,12 +215,12 @@ public class LoginController extends PicsActionSupport {
 					user.setFailedAttempts(0);
 					user.setLockUntil(calendar.getTime());
 					return "The password is not correct and the account has now been locked. <a href=\"http://www.picsauditing.com/AccountRecovery.action?username="
-							+ user.getUsername() + "&button=Reset+Password\">Click here to reset your password</a>";
+							+ user.getUsername() + "\">Click here to reset your password</a>";
 				}
 				return "The password is not correct. You have " + (8 - user.getFailedAttempts())
 						+ " attempts remaining before your account will be locked for one hour. "
 						+ "<a href=\"http://www.picsauditing.com/AccountRecovery.action?username=" + user.getUsername()
-						+ "&button=Reset+Password\">Click here to reset your password</a>";
+						+ "\">Click here to reset your password</a>";
 			}
 		} else {
 			if (user.getResetHash() == null) {
