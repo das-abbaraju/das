@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 
 @SuppressWarnings("serial")
 public class ReportAuditDataUpdate extends ReportContractorAudits {
@@ -13,15 +12,18 @@ public class ReportAuditDataUpdate extends ReportContractorAudits {
 
 	@Override
 	public void buildQuery() {
-		auditTypeClass = AuditTypeClass.Policy;
 		super.buildQuery();
 		
 		sql.addField("pq.updateDate");
 		sql.addField("pq.answer");
-		sql.addField("p.question");
+		sql.addField("pt.question");
 		sql.addJoin("JOIN pqfdata pq on pq.auditID = ca.id");
-		sql.addJoin("JOIN pqfquestions p on p.id = pq.questionID");
+		sql.addJoin("JOIN pqfquestion_text pt on pt.questionID = pq.questionID");
 		sql.addWhere("pq.updateDate > ca.completedDate");
+		sql.addWhere("a.status = 'Active'");
+		if(getFilter().getAuditTypeID() == null) {
+			sql.addWhere("atype.id = 1");
+		}
 		orderByDefault = "pq.updateDate DESC";
 		
 		getFilter().setShowPolicyType(true);
