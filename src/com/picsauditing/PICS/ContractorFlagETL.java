@@ -72,6 +72,8 @@ public class ContractorFlagETL {
 						if (ca.getAuditType().equals(flagCriteria.getAuditType())) {
 							if (ca.getAuditStatus().isActiveResubmittedExempt())
 								count++;
+							else if (ca.getAuditStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+								count++;
 						}
 					}
 
@@ -87,6 +89,8 @@ public class ContractorFlagETL {
 							if (ca.getAuditStatus().isActiveResubmittedExempt())
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
+								hasProperStatus = true;
+							else if (ca.getAuditType().getClassType().isPqf() && ca.getAuditStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
 								hasProperStatus = true;
 						}
 					}
