@@ -202,7 +202,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (audit != null) {
 				String auditFor = audit.getConAudit() == null ? "AVG" : audit.getConAudit().getAuditFor();
 
-				for (OshaRateType rateType : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute }) {
+				for (OshaRateType rateType : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities }) {
 					if (oshaAudits.get(auditFor) == null)
 						oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
 

@@ -202,6 +202,13 @@ ul {
 							<td><s:property value="contractor.naics.lwcr"/></td>
 						</tr>
 						<tr>
+							<td>Fatalities</td>
+							<s:iterator value="oshaAudits">
+								<td><s:property value="format(value.get('Fatalities'))"/></td>
+							</s:iterator>
+							<td></td>
+						</tr>
+						<tr>
 							<td>EMR</td>
 							<s:iterator value="contractor.emrs">
 								<td><s:property value="value.answer"/></td>
@@ -243,11 +250,11 @@ ul {
 <td width="15px"></td>
 
 <td style="vertical-align:top; width: 48%">
-	<!-- Contact Info -->
+	<!-- Contractor Info -->
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Contact Info
+				Contractor Info
 			</div>
 			<div class="panel_content">
 				<h4><s:property value="contractor.name" />
@@ -273,6 +280,17 @@ ul {
 				</p>
 				<p>Risk Level: <strong><s:property value="contractor.riskLevel"/></strong></p>
 				
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>	
+	<!-- Contact Info -->
+	<div class="panel_placeholder">
+		<div class="panel">
+			<div class="panel_header">
+				Contact Info
+			</div>
+			<div class="panel_content">
 				<p><span class="street-address"><s:property value="contractor.address" /></span><br />
 					<span class="locality"><s:property value="contractor.city" /></span>, 
 					<span class="region"><s:property value="contractor.state.isoCode" /></span> 
@@ -285,10 +303,13 @@ ul {
 					<p class="tel">Main Phone: <span class="value"><s:property value="contractor.phone" /></span></p>
 					<s:if test="contractor.fax" ><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
 					<s:if test="contractor.webUrl.length() > 0" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
-					<p class="contact">Contact: <span class="value"><s:property value="contractor.primaryContact.name" /></span></p>
-					<s:if test="contractor.primaryContact.phone.length() > 0"><p class="tel">&nbsp;&nbsp;Phone: <span class="value"><s:property value="contractor.primaryContact.phone" /></span></p></s:if>
-					<s:if test="contractor.primaryContact.fax.length() > 0"><p class="tel">&nbsp;&nbsp;Fax: <span class="value"><s:property value="contractor.primaryContact.fax" /></span></p></s:if>
- 					<s:if test="contractor.primaryContact.email.length() > 0"><p class="email">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="contractor.primaryContact.email" />" class="value"><s:property value="contractor.primaryContact.email" /></a></p></s:if>
+					<s:iterator value="contractor.users">
+					<p class="contact">Contact: <span class="value"><s:property value="name" /><s:if test="contractor.primaryContact.id == id"> (Primary)</s:if></span></p>
+					<p class="tel">&nbsp;&nbsp;Role(s): <s:iterator value="ownedPermissions" status="stat"><s:property value="opPerm.description"/><s:if test="!#stat.last">, </s:if></s:iterator></p>
+					<s:if test="phone.length() > 0"><p class="tel">&nbsp;&nbsp;Phone: <span class="value"><s:property value="phone" /></span></p></s:if>
+					<s:if test="fax.length() > 0"><p class="tel">&nbsp;&nbsp;Fax: <span class="value"><s:property value="fax" /></span></p></s:if>
+					<s:if test="email.length() > 0"><p class="email">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="email" />" class="value"><s:property value="email" /></a></p></s:if>
+					</s:iterator>
 				</div>
 				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
 					<fieldset class="form">
