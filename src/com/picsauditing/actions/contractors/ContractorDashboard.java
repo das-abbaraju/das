@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -312,5 +313,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return true;
 
 		return false;
+	}
+
+	public boolean isShowLogo() {
+		File f = new File(getFtpDir() + "/logos/" + contractor.getLogoFile());
+
+		return f.exists();
 	}
 }

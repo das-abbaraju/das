@@ -342,7 +342,9 @@ ul {
 				Description
 			</div>
 			<div class="panel_content">
-				<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
+				<s:if test="showLogo">
+					<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
+				</s:if>
 				<s:property value="contractor.descriptionHTML" escape="false" />
 				<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false">
 					<p class="web"><strong>
