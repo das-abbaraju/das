@@ -43,7 +43,7 @@ table.report a {
 }
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/op_manage_flag_criteria.js?v=20100219"></script>
+<script type="text/javascript" src="js/op_manage_flag_criteria.js"></script>
 <script type="text/javascript">
 function getFlag(selectObject) {
 	var flagColor = $(selectObject).find("option:selected").val();
