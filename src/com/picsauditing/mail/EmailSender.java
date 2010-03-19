@@ -44,12 +44,10 @@ public class EmailSender {
 					PicsLogger.log("using Gmail to send email from " + getDefaultSender());
 					gmailSender = new GMailSender(getGmailUsername(), defaultPassword);
 				}
-				gmailSender.setAttachmentDAO((EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO"));
 				gmailSender.sendMail(email);
 			} else {
 				PicsLogger.log("using localhost sendmail to send");
 				SendMail sendMail = new SendMail();
-				sendMail.setAttachmentDAO((EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO"));
 				sendMail.send(email);
 			}
 			email.setStatus(EmailStatus.Sent);

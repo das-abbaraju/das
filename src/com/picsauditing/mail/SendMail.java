@@ -1,28 +1,20 @@
 package com.picsauditing.mail;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
-import com.picsauditing.dao.EmailAttachmentDAO;
-import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 
 public class SendMail {
 
 	private Session session;
-	private EmailAttachmentDAO attachmentDAO;
-	
+
 	public SendMail() {
 		Properties p = System.getProperties();
 		p.put("mail.transport.protocol", "smtp");
@@ -45,32 +37,7 @@ public class SendMail {
 
 		message.setSubject(email.getSubject());
 		message.setDataHandler(handler);
-		
-		List<EmailAttachment> attachments = attachmentDAO.findByEmailID(email.getId());
 
-		if (attachments != null && attachments.size() > 0) {
-			Multipart mp = new MimeMultipart();
-			MimeBodyPart mbp = new MimeBodyPart();
-			
-			// Add in the text in the email
-			mbp.setText(email.getBody());
-			mp.addBodyPart(mbp);
-			
-			for (EmailAttachment attachment : attachments) {
-				mbp = new MimeBodyPart();
-				FileDataSource fds = new FileDataSource(attachment.getFileName());
-				mbp.setDataHandler(new DataHandler(fds));
-				mbp.setFileName(fds.getName());
-				mp.addBodyPart(mbp);
-			}
-			
-			message.setContent(mp);
-		}
-		
 		Transport.send(message);
-	}
-	
-	public void setAttachmentDAO(EmailAttachmentDAO attachmentDAO) {
-		this.attachmentDAO = attachmentDAO;
 	}
 }

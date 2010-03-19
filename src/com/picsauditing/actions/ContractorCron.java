@@ -22,6 +22,7 @@ import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
@@ -46,6 +47,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -184,7 +186,6 @@ public class ContractorCron extends PicsActionSupport {
 				body.append("\n");
 
 				body.append(sw.toString());
-
 				sendMail(body.toString(), conID);
 			} else {
 				addActionError(sw.toString());

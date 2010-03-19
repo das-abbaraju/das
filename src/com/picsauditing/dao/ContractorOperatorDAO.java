@@ -56,7 +56,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("FROM ContractorOperator WHERE " + where + " ORDER BY contractorAccount.name");
+		Query query = em.createQuery("FROM ContractorOperator " + where + " ORDER BY contractorAccount.name");
 		return query.getResultList();
 	}
 
