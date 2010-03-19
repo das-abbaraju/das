@@ -54,7 +54,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 			Boolean response = recaptcha.isRecaptchaResponseValid();
 			if (response == null) {
-				addActionError("Problem communication with ReCaptcha server. Please refresh this page and retry again.");
+				addActionError("Problem communicating with ReCaptcha server. Please refresh this page and retry again.");
 				return SUCCESS;
 			}
 
