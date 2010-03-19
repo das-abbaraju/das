@@ -136,7 +136,7 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 				}
 
-				if (auditData.getComment() != null) {
+				if (!Strings.isEmpty(auditData.getComment())) {
 					newCopy.setComment(auditData.getComment());
 				}
 
