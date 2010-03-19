@@ -12,6 +12,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
 import com.picsauditing.util.SpringUtils;
@@ -42,9 +43,13 @@ public class QBXmlAdaptor {
 
 	protected StringWriter makeWriter() {
 		StringWriter stringWriter = new StringWriter();
-
-		// stringWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><?qbxml version=\"8.0\"?>");
-		stringWriter.write("<?xml version=\"1.0\" ?><?qbxml version=\"8.0\"?>");
+		AppProperty utf = getAppPropertyDao().find("PICSQBLOADER.use_utf");
+		if (utf != null && utf.getValue().equals("Y")) {
+			stringWriter
+					.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><?qbxml version=\"8.0\"?>");
+		} else {
+			stringWriter.write("<?xml version=\"1.0\" ?><?qbxml version=\"8.0\"?>");
+		}
 
 		return stringWriter;
 	}
@@ -142,16 +147,16 @@ public class QBXmlAdaptor {
 			billAddress.setAddr2(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
 			billAddress.setCity(contractor.getCity());
-			if(contractor.getState() != null)
+			if (contractor.getState() != null)
 				billAddress.setState(contractor.getState().getIsoCode());
 			billAddress.setPostalCode(contractor.getZip());
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-			billAddress.setAddr2("c/o " +
-					nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 39));
+			billAddress.setAddr2("c/o "
+					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 39));
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
 			billAddress.setCity(contractor.getBillingCity());
-			if(contractor.getBillingState() != null)
+			if (contractor.getBillingState() != null)
 				billAddress.setState(contractor.getBillingState().getIsoCode());
 			billAddress.setPostalCode(contractor.getBillingZip());
 		}
