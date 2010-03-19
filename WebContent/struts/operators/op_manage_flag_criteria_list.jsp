@@ -7,6 +7,7 @@ $(document).ready(function() {
 });
 </script>
 
+<s:if test="criteriaList.size() > 0">
 <table class="report">
 	<thead>
 		<tr>
@@ -93,3 +94,13 @@ $(document).ready(function() {
 		</s:iterator>
 	</tbody>
 </table>
+</s:if>
+<s:else>
+<div class="alert">This operator doesn't have any <s:if test="insurance">insurance</s:if><s:else>flag</s:else> criteria.</div>
+</s:else>
+<s:if test="canEdit">
+	<div style="clear: left; margin: 10px 0px;">
+		<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
+	</div>
+	<div id="addCriteria" style="display:none"></div>
+</s:if>

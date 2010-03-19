@@ -13,16 +13,15 @@ table.report a {
 }
 #impactDiv {
 	float: right;
-	clear: none;
+	clear: right;
 	width: 30%;
 }
 #impactDiv table.report {
 	float: right;
 }
 
-#criteriaDiv, #addCriteria {
+#criteriaDiv, #addCriteria, #childCriteria {
 	float: left;
-	clear: none;
 	width: 70%
 }
 
@@ -75,22 +74,38 @@ function getFlag(selectObject) {
 <s:form id="form1" method="get">
 	<s:hidden name="id" />
 	<s:hidden name="insurance" />
-	<div id="mainThinkingDiv" style="position: absolute; top: -15px; left: 20px;"></div>
-	<div id="growlBox"></div>
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
-	<s:if test="canEdit">
-		<div id="impactDiv"></div>
-		<div style="clear: left; margin: 10px 0px;">
-			<a href="#" onclick="getAddQuestions(); return false;" class="add">Add New Criteria</a>
-			<span id="thinking"></span>
-		</div>
-		<div id="addCriteria" style="display:none"></div>
+	<span id="thinking"></span>
+	<div id="impactDiv"></div>
+	<div id="childCriteria"></div>
+	<s:if test="(permissions.corporate || permissions.admin) && operator.operatorChildren.size() > 0">
+		<table class="report" style="float: left; clear: left;">
+			<thead><tr><th colspan="2">Linked Facility</th><th>Inherits Criteria From</th></tr></thead>
+			<tbody>
+			<s:iterator status="stat" id="linked" value="operator.operatorChildren">
+				<tr>
+					<td><s:property value="#stat.index + 1" /></td>
+					<td><s:property value="#linked.name" /></td>
+					<td>
+						<s:if test="insurance">
+							<a href="#" onclick="getChildCriteria(<s:property value="#linked.inheritInsuranceCriteria.id" />, '<s:property value="#linked.inheritInsuranceCriteria.name" />'); return false;">
+							<s:property value="#linked.inheritInsuranceCriteria.name" /></a>
+						</s:if>
+						<s:else>
+							<a href="#" onclick="getChildCriteria(<s:property value="#linked.inheritFlagCriteria.id" />, '<s:property value="#linked.inheritFlagCriteria.name" />'); return false;">
+								<s:property value="#linked.inheritFlagCriteria.name" /></a>
+						</s:else>
+					</td>
+				</tr>
+			</s:iterator>
+			</tbody>
+		</table>
 	</s:if>
 </s:form>
 </div>
 
 <s:if test="permissions.admin">
-	<div class="clear">
+	<div style="clear: left;">
 	<s:if test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
 		Flag Criteria inherited from <a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.inheritFlagCriteria.id" />">
 			<s:property value="operator.inheritFlagCriteria.name" /></a>

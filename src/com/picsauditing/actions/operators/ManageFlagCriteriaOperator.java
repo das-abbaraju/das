@@ -38,6 +38,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private FlagColor newFlag;
 	private String newHurdle;
 	private String newComparison;
+	private int childID;
 
 	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao, FlagCriteriaOperatorDAO opCriteriaDAO,
 			FlagCriteriaDAO flagCriteriaDAO) {
@@ -75,8 +76,16 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 
 		if (button != null) {
-			if (button.equals("questions") || button.equals("impact")) {
+			if (button.equals("questions")) {
 				return button;
+			}
+			if (button.equals("childOperator")) {
+				operator = operatorDao.find(childID);
+				System.out.println(getParameter("id"));
+				System.out.println(childID);
+				canEdit = permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit) && getParameter("id") == childID;
+				// Skip the tryPermissions so we don't get exceptions
+				return SUCCESS;
 			}
 			if (button.equals("calculateSingle")) {
 				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
@@ -185,6 +194,14 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 	public void setNewComparison(String newComparison) {
 		this.newComparison = newComparison;
+	}
+	
+	public int getChildID() {
+		return childID;
+	}
+	
+	public void setChildID(int childID) {
+		this.childID = childID;
 	}
 
 	public boolean isCanEdit() {

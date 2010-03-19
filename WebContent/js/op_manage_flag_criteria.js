@@ -118,13 +118,42 @@ function calculateImpact(fcoID, newHurdle) {
 }
 
 function updateAffected(fcoID) {
+	var result = "";
 	var data = {
 		button: 'count',
 		fcoID: fcoID
 	};
 	
 	$('#'+fcoID).find('a.oldImpact').html('<img src="images/ajax_process.gif" alt="Loading image" />');
-	$('#'+fcoID).find('a.oldImpact').load('OperatorFlagsCalculatorAjax.action', data);
+	
+	$.ajax({
+		url: "OperatorFlagsCalculatorAjax.action",
+		data: data,
+		success: function(msg) { $('#'+fcoID).find('a.oldImpact').html(jQuery.trim(msg)); }
+	});
+}
+
+function getChildCriteria(opID, opName) {
+	if (opID == $('#form1_id').val())
+		$('#childCriteria').empty();
+	else {
+		var insurance = $("#form1_insurance").val();
+		var data = {
+			button: 'childOperator',
+			id: $('#form1_id').val(),
+			childID: opID,
+			insurance: insurance
+		};
+		
+		startThinking({div:'thinking', message:'Fetching linked facility criteria...'});
+		$('#childCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
+			function() {
+				stopThinking({div:'thinking'});
+				$('#childCriteria').prepend('<a href="#" onclick="$(\'#childCriteria\').empty(); return false;" class="remove">'
+						+ opName + '</a>');
+			}
+		);
+	}
 }
 
 var wait = function(){
