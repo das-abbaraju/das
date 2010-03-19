@@ -169,7 +169,7 @@ public class Permissions implements Serializable {
 					}
 
 					if (operator.getCanSeeInsurance().isTrue())
-						visibleCAOs.add(operator.getInheritInsuranceCriteria().getId());
+						visibleCAOs.add(operator.getInheritInsurance().getId());
 
 					loadAuditTypes(operator);
 				}
@@ -183,7 +183,7 @@ public class Permissions implements Serializable {
 						operatorChildren.add(facility.getOperator().getId());
 
 						if (facility.getOperator().getCanSeeInsurance().isTrue())
-							visibleCAOs.add(facility.getOperator().getInheritInsuranceCriteria().getId());
+							visibleCAOs.add(facility.getOperator().getInheritInsurance().getId());
 
 						/*
 						 * NOTE!!! There is a big hole here with this logic If
