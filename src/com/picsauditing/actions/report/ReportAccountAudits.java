@@ -16,7 +16,7 @@ public class ReportAccountAudits extends ReportAccount {
 		getFilter().setShowMinorityOwned(true);
 
 		if (filterOn(getFilter().getInvoiceDueDate1()) || filterOn(getFilter().getInvoiceDueDate2())) {
-			sql.addJoin("JOIN invoice i ON a.id = i.accountID AND status = 'Unpaid' AND i.tableType = 'I'");
+			sql.addJoin("JOIN invoice i ON a.id = i.accountID AND i.status = 'Unpaid' AND i.tableType = 'I'");
 			if (filterOn(getFilter().getInvoiceDueDate1())) {
 				report.addFilter(new SelectFilterDate("invoiceDueDate1", "i.dueDate >= '?'", DateBean.format(
 						getFilter().getInvoiceDueDate1(), "M/d/yy")));
