@@ -225,6 +225,7 @@ ul {
 								<td><s:property value="value.answer"/></td>
 							</s:iterator>
 							<td></td>
+							<td></td>
 						</tr>
 					</tbody>
 				</table>
@@ -394,7 +395,7 @@ ul {
 					<s:iterator value="activeOperatorsMap">
 						<ul>
 						<s:iterator value="value">
-							<s:if test="permission.accountId != operatorAccount.id">
+							<s:if test="permissions.accountId != operatorAccount.id">
 								<li>
 								<span class="other_operator">
 								<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
