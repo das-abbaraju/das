@@ -137,7 +137,7 @@ ul {
 				</div>
 				<s:if test="!permissions.operatorCorporate && activeOperators.size() > 1">
 				<div class="co_select nobr">
-					Viewing Dashboard as: 
+					Select Operator: 
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
 						headerKey="" headerValue=" - Operator - "
 							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
