@@ -112,6 +112,9 @@ public class AuditOperator extends BaseTable {
 	 */
 	@Transient
 	public boolean isRequiredFor(ContractorAccount contractor) {
+		if(contractor.getRiskLevel() == null)
+			return false;
+		
 		return (canSee && minRiskLevel > 0 && minRiskLevel <= contractor.getRiskLevel().ordinal());
 	}
 }
