@@ -160,6 +160,10 @@ ul {
 			</div>
 			<div class="panel_content">
 				<ul>
+					<pics:permission perm="ContractorDetails">
+					<s:if test="key == 'DocuGUARD'">
+						<li><strong><a class="pdf" href="AuditPdfConverter.action?id=<s:property value="id"/>">Download PQF &amp; Annual Updates</a></strong></li></s:if>
+					</pics:permission>
 				<s:iterator value="value">
 					<li>
 						<a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.auditName"/><s:if test="auditFor != null"> <s:property value="auditFor"/></s:if></a>
@@ -296,7 +300,7 @@ ul {
 				Contact Info
 			</div>
 			<div class="panel_content">
-				<p><span class="street-address"><s:property value="contractor.address" /></span><br />
+				<p>Address: <br/><span class="street-address"><s:property value="contractor.address" /></span><br />
 					<span class="locality"><s:property value="contractor.city" /></span>, 
 					<span class="region"><s:property value="contractor.state.isoCode" /></span> 
 					<span class="postal-code"><s:property value="contractor.zip" /></span> <br />
