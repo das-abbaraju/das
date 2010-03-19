@@ -175,7 +175,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			auditBuilder.buildAudits(this.contractor);
 		}
 
-		if (opID == 0 && permissions.isOperator())
+		if (opID == 0 && permissions.isOperatorCorporate())
 			opID = permissions.getAccountId();
 
 		co = contractorOperatorDAO.find(id, opID);
