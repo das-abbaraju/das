@@ -210,16 +210,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 				} else
 					auditFor = audit.getConAudit().getAuditFor();
 
+				oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
 				for (OshaRateType rateType : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 						OshaRateType.Fatalities }) {
-					if (oshaAudits.get(auditFor) == null)
-						oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
 
 					oshaAudits.get(auditFor).put(rateType.toString(),
 							organizer.getRate(OshaType.OSHA, scope, rateType).toString());
 				}
 
-				oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
 				oshaAudits.get(auditFor).put("manhours", "" + audit.getManHours());
 			}
 
