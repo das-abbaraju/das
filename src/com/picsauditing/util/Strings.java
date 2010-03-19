@@ -328,7 +328,9 @@ public class Strings {
 	}// isValidEmail
 
 	public static String validUserName(String username) {
-		if (username.length() < 3)
+		if (Strings.isEmpty(username))
+			return "Your username cannot be empty.";
+		else if (username.length() < 3)
 			return "Your username entry is less than three characters. Please enter at least 3 characters for your username.";
 		else if (username.length() > 100)
 			return "Your username entry is longer than pics supports. Please shorten your username entry.";
@@ -434,12 +436,11 @@ public class Strings {
 		if (expression.substring(0, 1).equals("!")) {
 			String[] notInCountries = expression.substring(1).split("\\|");
 			for (String country : notInCountries) {
-				if(countries.contains(country))
+				if (countries.contains(country))
 					countries.remove(country);
 			}
 			return countries.size() > 0;
-		}
-		else {
+		} else {
 			for (String country : countries) {
 				if (expression.contains("|" + country + "|"))
 					return true;
