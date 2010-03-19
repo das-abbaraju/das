@@ -38,12 +38,12 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 			opIds = Strings.implode(ops, ",");
 		}	
 		
-		sql.addJoin("JOIN generalcontractors gencon on gencon.subid = a.id");
-		sql.addJoin("JOIN accounts operator on operator.id = gencon.genid");
+		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
+		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
-		sql.addField("gencon.flag");
-		sql.addField("lower(gencon.flag) AS lflag");
+		sql.addField("gc.flag");
+		sql.addField("lower(gc.flag) AS lflag");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.id in (" + opIds + ")");
 	}
