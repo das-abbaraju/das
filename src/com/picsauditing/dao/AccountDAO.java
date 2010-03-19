@@ -68,7 +68,7 @@ public class AccountDAO extends PicsDAO {
 		if (permissions.isOperatorCorporate())
 			where += ",'Pending') AND a.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")";
 		
-		Query query = em.createQuery("FROM Account a WHERE type IN ('Corporate','Operator') " + where + " ORDER BY a.type, a.name");
+		Query query = em.createQuery("FROM Account a WHERE type != 'Contractor' " + where + " ORDER BY a.type, a.name");
 		return query.getResultList();
 	}
 	
