@@ -24,7 +24,7 @@
 	</thead>
 		<s:iterator value="data">
 			<tr>
-				<td><s:property value="get('name')"/></td>
+				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="permissions.accountId"/>"><s:property value="get('name')"/></a></td>
 				<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@valueOf(get('overallFlag')).smallIcon" escape="false"/></td>
 				<s:iterator value="flagCriteria">
 					<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@valueOf(get('flag'+id)).smallIcon" escape="false"/></td>
