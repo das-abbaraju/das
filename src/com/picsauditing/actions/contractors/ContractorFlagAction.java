@@ -78,7 +78,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		if (button != null) {
 			if (button.equalsIgnoreCase("Recalculate Now")) {
-				co.setFlagLastUpdated(new Date());
 				contractorOperatorDao.save(co);
 				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID
 					+ "&button=ConFlag&steps=All");
