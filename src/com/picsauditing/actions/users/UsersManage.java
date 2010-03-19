@@ -235,10 +235,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					if (!conAdmin) {
 						// We need both now to remove data from the useraccess
 						// database
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin))
-								.getId());
+						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() > 1) {
+							user.getOwnedPermissions().remove(
+									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorAdmin));
+							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
+									OpPerms.ContractorAdmin)).getId());
+						} else {
+							addActionError("You must have at least one user with the "
+									+ OpPerms.ContractorAdmin.getDescription() + " permission");
+						}
 					}
 				}
 
@@ -247,10 +252,16 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
 				} else {
 					if (!conBilling) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
-						userAccessDAO.remove((userAccessDAO
-								.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling)).getId());
+						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
+							user.getOwnedPermissions().remove(
+									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorBilling));
+							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
+									OpPerms.ContractorBilling)).getId());
+						} else {
+							addActionError("You must have at least one user with the "
+									+ OpPerms.ContractorBilling.getDescription() + " permission");
+						}
+
 					}
 				}
 
@@ -259,11 +270,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
 				} else {
 					if (!conSafety) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
-						userAccessDAO
-								.remove((userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety))
-										.getId());
+						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() > 1) {
+							user.getOwnedPermissions().remove(
+									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorSafety));
+							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
+									OpPerms.ContractorSafety)).getId());
+						} else {
+							addActionError("You must have at least one user with the "
+									+ OpPerms.ContractorSafety.getDescription() + " permission");
+						}
 					}
 				}
 
@@ -272,10 +287,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 						user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
 				} else {
 					if (!conInsurance) {
-						user.getOwnedPermissions().remove(
-								userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
-						userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
-								OpPerms.ContractorInsurance)).getId());
+						if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() > 1) {
+							user.getOwnedPermissions().remove(
+									userAccessDAO.findByUserAndOpPerm(user.getId(), OpPerms.ContractorInsurance));
+							userAccessDAO.remove((userAccessDAO.findByUserAndOpPerm(user.getId(),
+									OpPerms.ContractorInsurance)).getId());
+						} else {
+							addActionError("You must have at least one user with the "
+									+ OpPerms.ContractorInsurance.getDescription() + " permission");
+						}
 					}
 				}
 
@@ -287,7 +307,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 			// Send activation email if set
 			if (sendActivationEmail && user.getId() == 0)
-				addActionMessage(AccountRecovery.sendActivationEmail(user,permissions));
+				addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
 
 			try {
 				user = userDAO.save(user);
