@@ -32,6 +32,7 @@
 <style>
 img.contractor_logo {
 	float: left;
+	padding: 20px;
 	max-width: 180px;
 	/* IE Image max-width */
 	width: expression(this.width > 180 ? 180 : true);
@@ -69,15 +70,6 @@ ul {
 	<div class="info">This is your profile page that the operators see when they look up your account. 
 	Use the dropdown below to view the page from your operator's point of view.</div>
 </s:if>
-<s:if test="contractor.acceptsBids">
-	<s:if test="canUpgrade">
-		<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
-		Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
-	</s:if>
-	<s:else>
-		<div class="alert">This is a BID-ONLY Contractor Account.</div>
-	</s:else>
-</s:if>
 
 <table>
 <tr>
@@ -89,11 +81,27 @@ ul {
 				Contractor Status <s:if test="co != null">at <s:property value="co.operatorAccount.name"/></s:if>
 			</div>
 			<div class="panel_content">
-				<s:if test="contractor.paymentOverdue && (permissions.admin || permissions.contractor)">
-					<p>This contractor has an outstanding invoice due</p>
+				<s:if test="contractor.status.pending">
+					<div class="alert">This contractor has not activated their account.</div>
+				</s:if>
+				<s:if test="contractor.status.deleted">
+					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0"> 
+							because of the following reason: <s:property value="contractor.reason"/></s:if>.
+						<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+					</div>
+				</s:if>
+				
+				<s:if test="contractor.acceptsBids">
+					<s:if test="canUpgrade">
+						<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
+						Click <a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a> to continue working at your selected facilities.</div>
+					</s:if>
+					<s:else>
+						<div class="alert">This is a BID-ONLY Contractor Account.</div>
+					</s:else>
 				</s:if>
 				<s:if test="permissions.admin && !contractor.mustPayB">
-					<p>This account has a lifetime free membership</p>
+					<div class="alert">This account has a lifetime free membership</div>
 				</s:if>
 
 				<s:if test="co != null">
@@ -103,6 +111,10 @@ ul {
 					</div>
 				</s:if>
 				<div class="co_problems">
+					<s:if test="permissions.admin">
+						<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
+						<s:if test="!contractor.acceptsBids && contractor.balance > 0"><p>Balance: $<s:property value="format(contractor.balance)"/></p></s:if>
+					</s:if>
 					<s:if test="problems.categories.size() > 0">
 						<p>Problems:
 							<ul style="margin-left: 10px;">
@@ -123,7 +135,7 @@ ul {
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>
 				</div>
-				<s:if test="!permissions.operatorCorporate">
+				<s:if test="!permissions.operatorCorporate && activeOperators.size() > 1">
 				<div class="co_select nobr">
 					Viewing Dashboard as: 
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
@@ -162,6 +174,7 @@ ul {
 	</div>
 	</s:if>
 	</s:iterator>
+	<s:if test="oshaAudits.size() > 0">
 	<!-- Statistics -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -202,6 +215,14 @@ ul {
 							<td></td>
 						</tr>
 						<tr>
+							<td>Man Hours</td>
+							<s:iterator value="oshaAudits">
+								<td><s:property value="format(value.get('manhours'))"/></td>
+							</s:iterator>
+							<td></td>
+						</tr>
+						<s:if test="contractor.emrs.size() > 0">
+						<tr>
 							<td>EMR</td>
 							<s:iterator value="contractor.emrs">
 								<td><s:property value="value.answer"/></td>
@@ -209,12 +230,15 @@ ul {
 							<td></td>
 							<td></td>
 						</tr>
+						</s:if>
 					</tbody>
 				</table>
 				<div class="clear"></div>
 			</div>
 		</div>
 	</div>
+	</s:if>
+	<s:if test="criteriaList.categories.size() > 0">
 	<!-- Flaggable Data -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -239,6 +263,7 @@ ul {
 			</div>
 		</div>
 	</div>
+	</s:if>
 </td>
 
 <td width="15px"></td>
@@ -266,17 +291,20 @@ ul {
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
 					</strong>
 				</p>
-				<s:if test="permissions.admin">
-					<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
-				</s:if>
 				<p>PICS CSR: 
-					<strong>
-						<s:property value="contractor.auditor.name" />/ <s:property value="contractor.auditor.phone" />/
-						<a href="mailto:<s:property value="contractor.auditor.email"/>"><s:property value="contractor.auditor.email"/></a>
-					</strong>
+					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
+					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<p>Risk Level: <strong><s:property value="contractor.riskLevel"/></strong></p>
-				
+				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
+					<fieldset class="form">
+						<legend><span>Operator Tag Names: </span></legend>
+						<ol><div id="conoperator_tags">
+							<s:include value="contractorOperator_tags.jsp" />
+							</div>
+						</ol>
+					</fieldset>
+				</s:if>	
 				<div class="clear"></div>
 			</div>
 		</div>
@@ -288,32 +316,26 @@ ul {
 				Contact Info
 			</div>
 			<div class="panel_content">
-				<p>Address: <br/><span class="street-address"><s:property value="contractor.address" /></span><br />
+				<p>Address: [<a
+					href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
+					target="_blank">Show Map</a>]<br/>
+					<span class="street-address"><s:property value="contractor.address" /></span><br />
 					<span class="locality"><s:property value="contractor.city" /></span>, 
 					<span class="region"><s:property value="contractor.state.isoCode" /></span> 
 					<span class="postal-code"><s:property value="contractor.zip" /></span> <br />
-					[<a
-					href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
-					target="_blank">Show Map</a>]
 				</p>
 				<div class="telecommunications">
 					<p class="tel">Main Phone: <span class="value"><s:property value="contractor.phone" /></span></p>
 					<s:if test="contractor.fax" ><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
 					<s:if test="contractor.webUrl.length() > 0" ><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
-					<p class="contact">Contact: <s:property value="contractor.primaryContact.name" /></p>
-					<s:if test="contractor.primaryContact.phone.length() > 0"><p class="tel">&nbsp;&nbsp;Phone: <s:property value="contractor.primaryContact.phone" /></p></s:if>
-					<s:if test="contractor.primaryContact.fax.length() > 0"><p class="tel">&nbsp;&nbsp;Fax: <s:property value="contractor.primaryContact.fax" /></p></s:if>
-					<s:if test="contractor.primaryContact.email.length() > 0"><p class="email">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="contractor.primaryContact.email" />"><s:property value="contractor.primaryContact.email" /></a></p></s:if>
+					<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">
+					<p class="contact"><s:if test="contractor.primaryContact.id == id">Primary </s:if>Contact: <span class="value"><s:property value="name" /></span></p>
+					<p class="tel">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="email" />" class="email"><s:property value="email" /></a>
+						<s:if test="phone.length() > 0"> / Phone: <s:property value="phone" /></s:if>
+						<s:if test="fax.length() > 0"> / Fax: <s:property value="fax" /></s:if>
+					</p>
+					</s:iterator>
 				</div>
-				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
-					<fieldset class="form">
-						<legend><span>Operator Tag Names: </span></legend>
-						<ol><div id="conoperator_tags">
-							<s:include value="contractorOperator_tags.jsp" />
-							</div>
-						</ol>
-					</fieldset>
-				</s:if>	
 				<div class="clear"></div>
 			</div>
 		</div>
@@ -328,18 +350,18 @@ ul {
 				<s:if test="showLogo">
 					<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
 				</s:if>
+				<p>Primary Industry: <strong><s:property value="contractor.industry"/></strong></p>
 				<s:property value="contractor.descriptionHTML" escape="false" />
 				<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false">
 					<p class="web"><strong>
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
 					</strong></p>
 				</s:if>
-				<p>Primary Industry: <strong><s:property value="contractor.industry"/> (<s:property value="contractor.naics.code"/>)</strong></p>
 				<p id="services">Services Performed: 
-					<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count <= 20"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
-					<s:if test="servicesPerformed.size() > 20">
+					<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count <= 5"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
+					<s:if test="servicesPerformed.size() > 5">
 						<span class="hide_services">
-							<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count > 20"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
+							<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count > 5"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
 						</span>
 						<a href="#" id="more_services">Show more...</a>
 						<script type="text/javascript">

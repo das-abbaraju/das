@@ -218,6 +218,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 					oshaAudits.get(auditFor).put(rateType.toString(),
 							organizer.getRate(OshaType.OSHA, scope, rateType).toString());
 				}
+
+				oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
+				oshaAudits.get(auditFor).put("manhours", "" + audit.getManHours());
 			}
 
 		}
