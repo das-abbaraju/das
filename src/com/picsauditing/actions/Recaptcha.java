@@ -30,26 +30,21 @@ public class Recaptcha extends PicsActionSupport {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		String remoteAddr = ServletActionContext.getRequest().getRemoteAddr();
 
-		// ReCaptchaImpl can fail to initialize properly. If this is the case,
-		// retry and then quit if initialization cannot be done
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+
+		reCaptcha.setPrivateKey("6Lev0woAAAAAAIrXy4lxh5eOtaUq0W42iqP767zx");
+
+		String challenge = request.getParameter("recaptcha_challenge_field");
+		String uresponse = request.getParameter("recaptcha_response_field");
 		for (int failures = 0; failures <= 4; failures++) {
 			try {
-				ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-
-				reCaptcha.setPrivateKey("6Lev0woAAAAAAIrXy4lxh5eOtaUq0W42iqP767zx");
-
-				String challenge = request.getParameter("recaptcha_challenge_field");
-				String uresponse = request.getParameter("recaptcha_response_field");
+				// ReCaptchaImpl can fail to checkAnswer. If this is the case,
+				// retry and then quit if initialization cannot be done
 				ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
-
 				return reCaptchaResponse.isValid();
 			} catch (Exception e) {
-				if (failures >= 4) {
-					return null; // just quit, >100ms passed w/ no proper
-					// initialization
-				}
 				try {
-					Thread.sleep(20);
+					Thread.sleep(50);
 				} catch (InterruptedException e1) {
 					// Should never get interrupted
 					e1.printStackTrace();
