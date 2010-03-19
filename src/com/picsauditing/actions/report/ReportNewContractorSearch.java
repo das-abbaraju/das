@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -63,7 +64,10 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 		operator = operatorAccountDAO.find(permissions.getAccountId());
 		opCriteria = new ArrayList<FlagCriteriaOperator>();
-		opCriteria.addAll(operator.getFlagCriteriaInherited());
+		
+		if (operator != null && operator.getFlagCriteriaInherited() != null) {
+			opCriteria.addAll(operator.getFlagCriteriaInherited());
+		}
 	}
 
 	@Override
@@ -110,6 +114,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	public String execute() throws Exception {
+		if (!permissions.isOperatorCorporate())
+			throw new NoRightsException("Operator or Corporate");
+		
 		// getFilter().setPrimaryInformation(true);
 		// getFilter().setTradeInformation(true);
 		getFilter().setShowMinorityOwned(true);
