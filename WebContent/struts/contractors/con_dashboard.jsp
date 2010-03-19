@@ -118,6 +118,9 @@ ul {
 					</div>
 				</s:if>
 				<div class="co_problems">
+					<s:if test="permissions.admin">
+						<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
+					</s:if>
 					<s:if test="problems.categories.size() > 0">
 						<p>Problems:
 							<ul style="margin-left: 10px;">
