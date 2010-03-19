@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -65,6 +66,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		contractor.setNeedsRecalculation(true);
 		contractor.setLastRecalculation(null);
 		accountDao.save(contractor);
+		noteCategory = NoteCategory.Flags;
 
 		if (opID == 0)
 			opID = permissions.getAccountId();

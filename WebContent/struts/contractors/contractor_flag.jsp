@@ -71,11 +71,10 @@ function checkReason(id) {
 	</s:form>
 	</div>
 </s:if>
-<s:if test="co.waitingOn.ordinal() > 0"><div class="info" style="float: right; clear: right; width: 25%;">Currently waiting on <b><s:property value="co.waitingOn"/></b></div></s:if>
 <table style="text-align: center;">
 	<tr>
-		<td style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
-		<td style="width: 10px;">&nbsp;</td>
+		<td rowspan="2" style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
+		<td rowspan="2" style="width: 10px;">&nbsp;</td>
 		<td style="vertical-align: middle;">
 			<b>Flag Status<br />at
 			<pics:permission perm="EditFlagCriteria">
@@ -87,6 +86,7 @@ function checkReason(id) {
 			</b>
 		</td>
 	</tr>
+	<tr><td>Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
 	<tr>
 		<td colspan="3">
 		<s:if test="opID == permissions.getAccountId() || permissions.corporate">
@@ -144,6 +144,11 @@ function checkReason(id) {
 		</td>
 	</tr>
 </table>
+<s:if test="co.flagColor.toString() == 'Green'">
+	<div class="info" style="width: 50%; text-align: left">
+		Congratulations, you've completed all the requirements for <s:property value="co.operatorAccount.name" />.<br />We will email you if there are any changes.
+	</div>
+</s:if>
 
 <s:if test="permissions.contractor">
 <div class="helpOnRight" style="clear: right;">
@@ -194,7 +199,7 @@ function checkReason(id) {
 					</td>
 					<td>
 						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
-							<s:if test="#opCriteria.criteria.id == #data.criteria.id">
+							<s:if test="#opCriteria.criteria.id == #data.criteria.id && (#flagoverride == null && #opCriteria.flag == #data.flag)">
 								<s:property value="#opCriteria.replaceHurdle" />
 							</s:if>
 						</s:iterator>
@@ -265,7 +270,7 @@ function checkReason(id) {
 </table>
 </s:if>
 
-<a href="#" onclick="$('.details').toggle('slow'); return false;">Toggle details</a>
+<a href="#" id="showDetails" onclick="$('.details').show('slow'); $('#showDetails').hide(); return false;">Show more details...</a>
 
 <!-- ALL FLAGS -->
 <table class="flagCategories details">
