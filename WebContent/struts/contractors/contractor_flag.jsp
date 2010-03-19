@@ -65,7 +65,7 @@ function checkReason(id) {
 	<s:form>
 		<s:hidden name="id" />
 		<s:hidden name="opID" />
-		<s:if test="co.flagLastUpdated != null">Contractor's flag last calculated <s:date name="co.flagLastUpdated" nice="true" />.<br /></s:if>
+		<s:if test="contractor.lastRecalculation != null">Contractor's flag last calculated <s:date name="contractor.lastRecalculation" nice="true" />.<br /></s:if>
 		<s:else>Contractor's flag has not been calculated.<br /></s:else>
 		<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
 	</s:form>
