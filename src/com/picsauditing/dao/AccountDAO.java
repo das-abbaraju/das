@@ -56,17 +56,17 @@ public class AccountDAO extends PicsDAO {
 	}
 	
 	public List<Account> findViewableOperators(Permissions permissions) {
-		String where = "AND a.status = ('Active'";
+		String where = "AND a.status IN ('Active'";
 		
 		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
 			where += ",'Demo'";
 
 		if (permissions.isAdmin())
-			where = ",'Pending')";
+			where += ",'Pending')";
 		if (permissions.isContractor())
-			where = ")";
+			where += ")";
 		if (permissions.isOperatorCorporate())
-			where = ",'Pending') AND a.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")";
+			where += ",'Pending') AND a.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")";
 		
 		Query query = em.createQuery("FROM Account a WHERE type IN ('Corporate','Operator') " + where + " ORDER BY a.type, a.name");
 		return query.getResultList();

@@ -253,9 +253,6 @@ public class AuditDataSave extends AuditActionSupport {
 			addActionError(e.getMessage());
 			return BLANK;
 		}
-		if (auditData.getQuestion().getDependentQuestions() != null)
-			System.out.println("Found " + auditData.getQuestion().getDependentQuestions().size()
-					+ " dependent Questions for " + auditData.getQuestion());
 		return SUCCESS;
 	}
 
