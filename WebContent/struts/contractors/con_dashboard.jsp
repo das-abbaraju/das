@@ -65,6 +65,11 @@ ul {
 <body>
 
 <s:include value="conHeader.jsp"/>
+<s:if test="permissions.contractor">
+	<div class="info">This is your profile page that the operators see when they look up your account. 
+	Use the dropdown below to view the page from your operator's point of view.</div>
+</s:if>
+
 <table>
 <tr>
 <td style="vertical-align:top; width: 48%">

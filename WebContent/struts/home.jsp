@@ -42,10 +42,12 @@ $(function() {
 </div>
 </s:if>
 
-<div class="info">
-	Your contractor flags may have changed this is due to incomplete 2009 annual updates. Click here   
-	<a href="ReportAuditList.action?filter.auditStatus=Pending&filter.auditStatus=Incomplete&filter.auditStatus=Submitted&filter.auditTypeID=11" target="_BLANK">to view list of incomplete annual updates</a>
-</div>
+<s:if test="permissions.operatorCorporate">
+	<div class="info">
+		Your contractor flags may have changed this is due to incomplete 2009 annual updates. Click here   
+		<a href="ReportAuditList.action?filter.auditStatus=Pending&filter.auditStatus=Incomplete&filter.auditStatus=Submitted&filter.auditTypeID=11" target="_BLANK">to view list of incomplete annual updates</a>
+	</div>
+</s:if>
 
 <s:iterator value="columns">
 	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
