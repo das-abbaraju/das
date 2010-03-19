@@ -52,7 +52,13 @@ public class AccountRecovery extends PicsActionSupport {
 				return SUCCESS;
 			}
 
-			if (!recaptcha.isRecaptchaResponseValid()) {
+			Boolean response = recaptcha.isRecaptchaResponseValid();
+			if (response == null) {
+				addActionError("Problem communication with ReCaptcha server. Please refresh this page and retry again.");
+				return SUCCESS;
+			}
+
+			if (!response) {
 				addActionError("Find Username reCaptcha verification does not match");
 				return SUCCESS;
 			}
@@ -81,7 +87,13 @@ public class AccountRecovery extends PicsActionSupport {
 				return SUCCESS;
 			}
 
-			if (!recaptcha.isRecaptchaResponseValid()) {
+			Boolean response = recaptcha.isRecaptchaResponseValid();
+			if (response == null) {
+				addActionError("Problem communication with ReCaptcha server. Please refresh this page and retry again.");
+				return SUCCESS;
+			}
+
+			if (!response) {
 				addActionError("Reset Password reCaptcha verification does not match");
 				return SUCCESS;
 			}
@@ -129,7 +141,7 @@ public class AccountRecovery extends PicsActionSupport {
 			return "An error occurred in sending the password reset email.";
 		}
 	}
-	
+
 	static public String sendActivationEmail(User user, Permissions permission) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -142,7 +154,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
 			emailBuilder.setPermissions(permission);
-			
+
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
