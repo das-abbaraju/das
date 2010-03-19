@@ -718,8 +718,8 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			}
 		}
 
-		if (auditStatus.isIncomplete())
-			synopsis = "Rejected";
+		if (auditStatus.isActive() || auditStatus.isResubmitted() || auditStatus.isIncomplete())
+			synopsis = auditStatus.toString();
 
 		return synopsis;
 	}
