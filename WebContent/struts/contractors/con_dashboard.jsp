@@ -181,7 +181,6 @@ ul {
 	</s:if>
 	</s:iterator>
 	<!-- Statistics -->
-	
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
@@ -192,8 +191,8 @@ ul {
 					<thead>
 						<tr>
 							<th></th>
-							<s:iterator value="oshaAudits.keySet()">
-								<th><s:property/></th>
+							<s:iterator value="oshaAudits.keySet()" id="val">
+								<th<s:if test="#val == 'W AVG'"> title="Weighted average factors in the fluctuation in man hours between years"</s:if>><s:property value="#val"/></th>
 							</s:iterator>
 							<th>Industry</th>
 						</tr>

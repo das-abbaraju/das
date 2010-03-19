@@ -67,15 +67,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private Map<String, Map<String, String>> oshaAudits;
 
 	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO, OperatorTagDAO operatorTagDAO,
-			ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO,
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.dataDAO = dataDAO;
 		this.flagDataDAO = flagDataDAO;
-		this.operatorTagDAO= operatorTagDAO;
-		this.contractorTagDAO= contractorTagDAO;
+		this.operatorTagDAO = operatorTagDAO;
+		this.contractorTagDAO = contractorTagDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
 		this.subHeading = "Account Summary";
 	}
@@ -103,7 +103,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
 		}
-		
+
 		if ("Upgrade to Full Membership".equals(button)) {
 			contractor.setAcceptsBids(false);
 			contractor.setRenew(true);
@@ -157,7 +157,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-		
+
 		if (permissions.isOperator()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -197,12 +197,20 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		OshaOrganizer organizer = contractor.getOshaOrganizer();
 		for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
-				MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearWeightedAverage }) {
+				MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage, MultiYearScope.ThreeYearWeightedAverage }) {
 			OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
 			if (audit != null) {
-				String auditFor = audit.getConAudit() == null ? "AVG" : audit.getConAudit().getAuditFor();
+				String auditFor = "";
+				if (audit.getConAudit() == null) {
+					if (scope.equals(MultiYearScope.ThreeYearAverage))
+						auditFor = "AVG";
+					else if (scope.equals(MultiYearScope.ThreeYearWeightedAverage))
+						auditFor = "W AVG";
+				} else
+					auditFor = audit.getConAudit().getAuditFor();
 
-				for (OshaRateType rateType : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities }) {
+				for (OshaRateType rateType : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
+						OshaRateType.Fatalities }) {
 					if (oshaAudits.get(auditFor) == null)
 						oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
 
@@ -271,7 +279,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public Map<String, Map<String, String>> getOshaAudits() {
 		return oshaAudits;
 	}
-	
+
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
 		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;

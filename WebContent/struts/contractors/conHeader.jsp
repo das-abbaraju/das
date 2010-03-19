@@ -20,16 +20,11 @@
 		<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" 
 			onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Contractor Details</a>
 	</li>
-	<s:if test="permissions.operator">
-		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
-		Status</a></li>
-	</s:if>
-	<s:else>
+	<s:if test="!permissions.operator">
 		<li><a
 			href="ContractorFacilities.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>Facilities</a></li>
-	</s:else>
+	</s:if>
 	<s:if test="permissions.contractor">
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms & Docs</a></li>
@@ -218,6 +213,11 @@
 <ul>
 	<li><a href="ContractorView.action?id=<s:property value="id" />"
 		<s:if test="requestURI.contains('con_view')">class="current"</s:if>><span>Account Summary</span></a></li>
+	<s:if test="permissions.operator">
+		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
+		Status</a></li>
+	</s:if>
 	<s:if test="!permissions.contractor">
 		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
