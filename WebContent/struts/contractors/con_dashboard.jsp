@@ -175,11 +175,11 @@ ul {
 	</s:if>
 	</s:iterator>
 	<s:if test="oshaAudits.size() > 0">
-	<!-- Statistics -->
+	<!-- Statistics OLD-->
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Statistics
+				Statistics OLD
 			</div>
 			<div class="panel_content">
 				<table class="report">
@@ -238,6 +238,38 @@ ul {
 		</div>
 	</div>
 	</s:if>
+	<pics:permission perm="DevelopmentEnvironment">
+	<!-- Statistics -->
+	<div class="panel_placeholder">
+		<div class="panel">
+			<div class="panel_header">
+				Statistics
+			</div>
+			<div class="panel_content">
+				<table class="report">
+					<thead>
+						<tr>
+							<td></td>
+							<s:iterator value="oshaDisplay.auditForSet">
+								<td><s:property/></td>
+							</s:iterator>
+						</tr>
+					</thead>
+					<s:iterator value="oshaDisplay.rateTypeSet" id="rateType">
+						<tr>
+							<td><s:property/></td>
+							<s:iterator value="oshaDisplay.auditForSet" id="auditFor">
+								<td><s:property value="oshaDisplay.getData(#auditFor, #rateType)"/></td>
+							</s:iterator>
+						</tr>
+					</s:iterator>
+				</table>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	</pics:permission>	
+	
 	<s:if test="criteriaList.categories.size() > 0">
 	<!-- Flaggable Data -->
 	<div class="panel_placeholder">

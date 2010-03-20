@@ -106,13 +106,13 @@ public class FlagCriteriaOperator extends BaseTable {
 
 		return true;
 	}
-	
-	@Transient 
+
+	@Transient
 	public String getReplaceHurdle() {
 		return criteria.getDescription().replaceAll("\\{HURDLE\\}", Strings.formatDecimalComma(criteriaValue()));
 	}
 
-	@Transient 
+	@Transient
 	public String criteriaValue() {
 		if (criteria.isAllowCustomValue() && hurdle != null)
 			return hurdle;
@@ -123,5 +123,16 @@ public class FlagCriteriaOperator extends BaseTable {
 	@Override
 	public String toString() {
 		return getReplaceHurdle() + " for " + operator.toString();
+	}
+
+	@Transient
+	public String getShortDescription() {
+		String desc = criteria.getComparison() + " ";
+		if (criteria.isAllowCustomValue() && !Strings.isEmpty(hurdle))
+			desc += hurdle;
+		else
+			desc += criteria.getDefaultValue();
+
+		return desc;
 	}
 }

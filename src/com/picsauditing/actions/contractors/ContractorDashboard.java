@@ -14,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
+import com.picsauditing.PICS.DoubleMap;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -31,6 +32,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -68,6 +70,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private ContractorFlagCriteriaList criteriaList;
 
 	private Map<String, Map<String, String>> oshaAudits;
+
+	private OshaDisplay oshaDisplay;
 
 	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO,
@@ -196,6 +200,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 
+		// auditFor ==> Rate Type ==> value
 		oshaAudits = new LinkedHashMap<String, Map<String, String>>();
 
 		OshaOrganizer organizer = contractor.getOshaOrganizer();
@@ -323,14 +328,107 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return f.exists();
 	}
-	
+
+	public OshaDisplay getOshaDisplay() {
+		if (oshaDisplay == null) {
+			if (co == null)
+				oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), getActiveOperators());
+			else
+				oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), new ArrayList<ContractorOperator>() {
+					{
+						add(co);
+					}
+				});
+		}
+
+		return oshaDisplay;
+	}
+
 	public class OshaDisplay {
-		Set<String> auditFor = new LinkedHashSet<String>();
-		Map<OshaRateType, String> valueMap = new LinkedHashMap<OshaRateType, String>();
-		
-		public OshaDisplay() {
-			
+
+		Set<String> auditForSet = new LinkedHashSet<String>();
+		Set<String> rateTypeSet = new LinkedHashSet<String>();
+
+		private DoubleMap<String, String, String> data = new DoubleMap<String, String, String>();
+
+		public OshaDisplay(OshaOrganizer organizer, List<ContractorOperator> operators) {
+
+			rateTypeSet.add(OshaRateType.TrirAbsolute.getDescription());
+			for (ContractorOperator contractorOperator : operators) {
+				rateTypeSet.add(contractorOperator.getOperatorAccount().getName() + " TRIR");
+			}
+			rateTypeSet.add(OshaRateType.LwcrAbsolute.getDescription());
+			for (ContractorOperator contractorOperator : operators) {
+				rateTypeSet.add(contractorOperator.getOperatorAccount().getName() + " LWCR");
+			}
+			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
+			rateTypeSet.add("Hours Worked");
+
+			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
+					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage,
+					MultiYearScope.ThreeYearWeightedAverage }) {
+				OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
+				if (audit != null) {
+					String auditFor = findAuditFor(organizer, scope);
+
+					auditForSet.add(auditFor);
+
+					for (OshaRateType rate : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
+							OshaRateType.Fatalities }) {
+						data
+								.put(auditFor, rate.getDescription(), format(organizer.getRate(OshaType.OSHA, scope,
+										rate)));
+					}
+
+					data.put(auditFor, "Hours Worked", format(audit.getManHours()));
+
+				}
+			}
+
+			String ind = "Industry";
+			auditForSet.add(ind);
+			data.put(ind, OshaRateType.TrirAbsolute.getDescription(), format(contractor.getNaics().getTrir()));
+			data.put(ind, OshaRateType.LwcrAbsolute.getDescription(), format(contractor.getNaics().getLwcr()));
+
+			for (ContractorOperator contractorOperator : operators) {
+				for (FlagCriteriaOperator fco : contractorOperator.getOperatorAccount().getFlagCriteriaInherited()) {
+					if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
+							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
+						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
+						String auditFor = findAuditFor(organizer, scope);
+						String suffix = OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType()) ? " TRIR"
+								: " LWCR";
+						data.put(auditFor, contractorOperator.getOperatorAccount().getName() + suffix, fco.getShortDescription());
+					}
+				}
+			}
+
+		}
+
+		private String findAuditFor(OshaOrganizer organizer, MultiYearScope scope) {
+			OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
+			String auditFor = "";
+			if (audit.getConAudit() == null) {
+				if (scope.equals(MultiYearScope.ThreeYearAverage))
+					auditFor = "Average";
+				else if (scope.equals(MultiYearScope.ThreeYearWeightedAverage))
+					auditFor = "W Average";
+			} else
+				auditFor = audit.getConAudit().getAuditFor();
+			return auditFor;
+		}
+
+		public Set<String> getAuditForSet() {
+			return auditForSet;
+		}
+
+		public Set<String> getRateTypeSet() {
+			return rateTypeSet;
+		}
+
+		public String getData(String k1, String k2) {
+			return data.get(k1, k2);
 		}
 	}
-		
+
 }
