@@ -82,6 +82,8 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 				e.printStackTrace();
 				return INPUT;
 			}
+			osha.getConAudit().setLastRecalculation(null);
+			auditDao.save(osha.getConAudit());
 			oshaDAO.remove(id);
 			return SUCCESS;
 		}
