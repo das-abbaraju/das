@@ -92,7 +92,7 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isSubmitted()) {
 			Set<Integer> catIds = new HashSet<Integer>();
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
-				if (auditCatData.isAppliesB() && auditCatData.getCategory().hasValidSubcategories()) {
+				if (auditCatData.isAppliesB()) {
 					catIds.add(auditCatData.getCategory().getId());
 				}
 			}
