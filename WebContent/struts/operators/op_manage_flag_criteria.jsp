@@ -77,10 +77,14 @@ function getFlag(selectObject) {
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
 	<span id="thinking"></span>
 	<div id="impactDiv"></div>
-	<div id="childCriteria"></div>
 	<s:if test="(permissions.corporate || permissions.admin) && operator.operatorChildren.size() > 0">
+		<div class="info" style="width: 70%">
+			Below is a list of all accounts that are linked to your corporate account, together with the link to their flag criteria.
+			Click on the flag criteria links for more details.
+		</div>
+		<div id="childCriteria"></div>
 		<table class="report" style="float: left; clear: left;">
-			<thead><tr><th colspan="2">Linked Facility</th><th>Inherits Criteria From</th></tr></thead>
+			<thead><tr><th colspan="2">Linked Accounts</th><th>Inherits <s:if test="insurance">Insurance</s:if><s:else>Flag</s:else> Criteria From</th></tr></thead>
 			<tbody>
 			<s:iterator status="stat" id="linked" value="operator.operatorChildren">
 				<tr>

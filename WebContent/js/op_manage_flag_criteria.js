@@ -94,6 +94,7 @@ function getImpact(fcoID) {
 		fcoID: fcoID
 	};
 	
+	$('#impactDiv').empty();
 	startThinking({div:'thinking', message:'Getting impacted contractors...'});
 	$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', data, 
 		function() {
