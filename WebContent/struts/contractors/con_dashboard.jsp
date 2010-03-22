@@ -250,14 +250,14 @@ ul {
 					<thead>
 						<tr>
 							<td></td>
-							<s:iterator value="oshaDisplay.auditForSet">
-								<td><s:property/></td>
+							<s:iterator value="oshaDisplay.auditForSet" id="auditFor">
+								<td><s:property value="#auditFor"/></td>
 							</s:iterator>
 						</tr>
 					</thead>
 					<s:iterator value="oshaDisplay.rateTypeSet" id="rateType">
 						<tr>
-							<td><s:property/></td>
+							<td><s:property value="#rateType" escape="false"/></td>
 							<s:iterator value="oshaDisplay.auditForSet" id="auditFor">
 								<td><s:property value="oshaDisplay.getData(#auditFor, #rateType)"/></td>
 							</s:iterator>
