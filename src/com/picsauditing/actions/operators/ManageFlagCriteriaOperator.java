@@ -81,8 +81,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			}
 			if (button.equals("childOperator")) {
 				operator = operatorDao.find(childID);
-				System.out.println(getParameter("id"));
-				System.out.println(childID);
 				canEdit = permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit) && getParameter("id") == childID;
 				// Skip the tryPermissions so we don't get exceptions
 				return SUCCESS;
