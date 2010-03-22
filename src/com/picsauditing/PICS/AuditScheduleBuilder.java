@@ -49,7 +49,7 @@ public class AuditScheduleBuilder {
 	}
 
 	public void build() {
-		PicsLogger.start("AuditScheduleBuilder", false);
+		PicsLogger.start("AuditScheduleBuilder");
 
 		PicsLogger.log("Get all my data into RAM");
 
