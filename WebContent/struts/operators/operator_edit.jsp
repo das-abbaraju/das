@@ -44,7 +44,7 @@ $(function() {
 
 		<div class="alert">This operator doesn't have any flag criteria
 		defined. Please <a
-			href="OperatorFlagCriteria.action?id=<s:property value="id"/>">double
+			href="ManageFlagCriteriaOperator.action?id=<s:property value="id"/>">double
 		check the configuration</a>.</div>
 	</s:if>
 </s:if>
