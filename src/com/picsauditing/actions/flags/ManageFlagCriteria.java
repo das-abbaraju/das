@@ -265,14 +265,14 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	}
 
 	public List<AuditQuestion> getFlagQuestionList() {
-		return questionDAO.findWhere("isRedFlagQuestion = 'Yes'");
+		return questionDAO.findFlaggableQuestions();
 	}
 
 	@SuppressWarnings("unchecked")
 	public Map getFlagQuestionMap() {
 		Map<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>> flagQuestionMap = new TreeMap<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>>();
 
-		for (AuditQuestion question : questionDAO.findWhere("isRedFlagQuestion = 'Yes'")) {
+		for (AuditQuestion question : questionDAO.findFlaggableQuestions()) {
 			if (flagQuestionMap.get(question.getAuditType().getClassType()) == null) {
 				flagQuestionMap.put(question.getAuditType().getClassType(),
 						new TreeMap<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>());

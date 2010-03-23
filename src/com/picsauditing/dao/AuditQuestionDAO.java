@@ -52,6 +52,13 @@ public class AuditQuestionDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<AuditQuestion> findFlaggableQuestions() {
+		Query query = em.createQuery("SELECT t FROM AuditQuestion t WHERE isRedFlagQuestion = 'Yes' ORDER BY "
+				+ "t.subCategory.category.number,t.subCategory.number,t.number");
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<AuditQuestion> findByQuestion(String question, Permissions permissions) {
 		String where = "SELECT auditQuestion FROM AuditQuestionText t WHERE t.question LIKE ? AND t.auditQuestion.isVisible = 'Yes'";
 		if (permissions.isOperatorCorporate()) {
