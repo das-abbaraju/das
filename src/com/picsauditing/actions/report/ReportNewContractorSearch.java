@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
@@ -109,7 +110,11 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.state");
 		sql.addField("a.phone");
 		sql.addWhere("a.status != 'Deleted'");
-		sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
+		
+		if (!Strings.isEmpty(getOrderBy()))
+			sql.addOrderBy(getOrderBy());
+		else
+			sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
 	}
 
 	@Override
