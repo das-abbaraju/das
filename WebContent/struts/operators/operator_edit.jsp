@@ -84,6 +84,9 @@ $(function() {
 					name="operator.address" size="35" /></li>
 				<li><label>City:</label> <s:textfield name="operator.city"
 					size="20" /></li>
+				<s:if test="permissions.admin && operator.operator">
+					Please select the country that this operator works in. The contractor's audit configuration is based it. 
+				</s:if>
 				<li><label>Country:</label> <s:select 
 					list="countryList"
 					id="opCountry"
