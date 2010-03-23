@@ -328,14 +328,14 @@ public class MassMailer extends PicsActionSupport {
 			EmailTemplate temp = emailTemplateDAO.find(templateID);
 			String recipientType = temp.getRecipient();
 			
-			if (recipientType.equals("Billing"))
+			if (recipientType == null || recipientType.startsWith("Admin"))
+				recipient = OpPerms.ContractorAdmin;
+			else if (recipientType.equals("Billing"))
 				recipient = OpPerms.ContractorBilling;
 			else if (recipientType.equals("Safety"))
 				recipient = OpPerms.ContractorSafety;
 			else if (recipientType.equals("Insurance"))
 				recipient = OpPerms.ContractorInsurance;
-			else
-				recipient = OpPerms.ContractorAdmin;
 			
 			return recipient;
 		}
