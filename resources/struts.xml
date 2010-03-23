@@ -1391,6 +1391,11 @@
 			<result>struts/operators/op_manage_flag_criteria_list.jsp</result>
 			<result name="questions">struts/operators/op_manage_flag_criteria_questions.jsp</result>
 		</action>
+		
+		<action name="OperatorFlagsCalculatorCSV"
+			class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<!-- Flags -->
 		<action name="ManageFlagCriteria"

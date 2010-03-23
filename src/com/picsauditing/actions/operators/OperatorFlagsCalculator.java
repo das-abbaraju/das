@@ -8,7 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.actions.PicsActionSupport;
@@ -138,6 +149,20 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			output = "" + affected.size();
 			return BLANK;
 		}
+		
+		if ("download".equals(button)) {
+			String filename = "AffectedContractors.xls";
+			
+			HSSFWorkbook wb = createWorkbook();
+			
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
+		}
 
 		return SUCCESS;
 	}
@@ -164,5 +189,72 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 	public List<FlagData> getAffected() {
 		return affected;
+	}
+	
+	private HSSFWorkbook createWorkbook() {
+		int columns = flagCriteriaOperator.getCriteria().isAllowCustomValue() ? 2 : 1;
+		int rows = 1;
+		
+		// Create spreadsheet here
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet("Affected Contractors");
+		
+		// Set header font and style
+		HSSFFont headerFont = wb.createFont();
+		HSSFCellStyle headerStyle = wb.createCellStyle();
+		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		headerStyle.setFont(headerFont);
+		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		
+		// Set normal font and style
+		HSSFFont normalFont = wb.createFont();
+		HSSFCellStyle normalStyle = wb.createCellStyle();
+		normalStyle.setFont(normalFont);
+		normalStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		
+		// Set number style
+		HSSFCellStyle numberStyle = wb.createCellStyle();
+		numberStyle.setFont(normalFont);
+		numberStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		
+		// Print out the data
+		for (FlagData data : affected) {
+			HSSFRow row = sheet.createRow(rows);
+			HSSFCell cell = row.createCell(0);
+			cell.setCellValue(rows);
+			cell.setCellStyle(numberStyle);
+			
+			// Contractor name
+			cell = row.createCell(1);
+			cell.setCellValue(new HSSFRichTextString(data.getContractor().getName()));
+			cell.setCellStyle(normalStyle);
+			
+			// If this is a number datatype, print out the number
+			if (columns > 1) {
+				cell = row.createCell(2);
+				cell.setCellValue(Double.parseDouble(Strings.formatDecimalComma(data.getCriteriaContractor().getAnswer())));
+				cell.setCellStyle(numberStyle);
+			}
+			
+			rows++;
+		}
+		
+		// Space out properly
+		HSSFCell cell = sheet.createRow(0).createCell(1);
+		cell.setCellValue(new HSSFRichTextString(flagCriteriaOperator.getReplaceHurdle()));
+		cell.setCellStyle(headerStyle);
+		sheet.autoSizeColumn((short) 0);
+		sheet.autoSizeColumn((short) 1);
+
+		if (columns > 1)
+			sheet.autoSizeColumn((short) 2);
+		
+		// Merge writes over the middle cell
+		cell = sheet.createRow(0).createCell(0);
+		cell.setCellValue(new HSSFRichTextString(flagCriteriaOperator.getReplaceHurdle()));
+		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, columns));
+		cell.setCellStyle(headerStyle);
+		
+		return wb;
 	}
 }

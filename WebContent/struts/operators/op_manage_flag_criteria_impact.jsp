@@ -28,6 +28,8 @@
 					</s:if>
 				</tr>
 			</s:iterator>
+			<tr><td colspan="3" class="center"><a href="#" onclick="downloadImpact(<s:property value="flagCriteriaOperator.id"/>); return false;"
+					class="excel">Download this list</a></td></tr>
 		</s:else>
 	</tbody>
 </table>

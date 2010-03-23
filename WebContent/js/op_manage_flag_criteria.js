@@ -103,6 +103,17 @@ function getImpact(fcoID) {
 		}
 	);
 }
+
+function downloadImpact(fcoID) {
+	var data = {
+		fcoID: fcoID,
+		button: 'download'
+	};
+	
+	newurl = "OperatorFlagsCalculatorCSV.action?fcoID=" + fcoID + "&button=download";
+	popupWin = window.open(newurl, 'OperatorFlagsCalculator', '');
+}
+
 function calculateImpact(fcoID, newHurdle) {
 	var data = {
 		button: 'count',
