@@ -67,10 +67,11 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 			else
 				message = ao.getOperatorAccount().getName();
 
-			message += " has no flag criteria for " + ao.getAuditType().getAuditName();
+			message += " has no flag criteria for this audit.";
 			
 			if (permissions.hasPermission(OpPerms.ManageOperators))
-				message += "<br />To set up flag criteria, <a href=\"ManageFlagCriteria.action\">click here</a>";
+				message += "<br />To set up flag criteria, <a href=\"ManageFlagCriteriaOperator.action?id="
+					+ ao.getOperatorAccount().getId() + "\">click here</a>";
 			
 			addActionMessage(message);
 		}

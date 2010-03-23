@@ -117,10 +117,20 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			if (button.equals("add") && criteriaID > 0) {
 				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
 				FlagCriteriaOperator fco = new FlagCriteriaOperator();
+				
+				List<AuditOperator> audits = operator.getAudits();
+				for (AuditOperator audit : audits) {
+					if (fc.getAuditType() != null && fc.getAuditType().equals(audit.getAuditType()))
+						fco.setMinRiskLevel(LowMedHigh.getMap().get(audit.getMinRiskLevel()));
+				}
+				
 				fco.setAuditColumns(permissions);
 				fco.setCriteria(fc);
 				fco.setFlag(newFlag);
-				fco.setHurdle(Strings.formatNumber(newHurdle));
+					
+				if (!newHurdle.equals("undefined"))
+					fco.setHurdle(Strings.formatNumber(newHurdle));
+				
 				fco.setOperator(operator);
 				fco.setAffected(calculateAffectedList(fco).size());
 				flagCriteriaOperatorDAO.save(fco);
