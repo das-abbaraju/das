@@ -100,7 +100,7 @@ ul {
 						<div class="alert">This is a BID-ONLY Contractor Account.</div>
 					</s:else>
 				</s:if>
-				<s:if test="permissions.admin && !contractor.mustPayB">
+				<s:if test="permissions.admin && !contractor.mustPayB && contractor.status.active">
 					<div class="alert">This account has a lifetime free membership</div>
 				</s:if>
 
