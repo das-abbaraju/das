@@ -38,10 +38,12 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -254,10 +256,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 								Subscription.ContractorRegistration, operatorID);
 						Set<String> emails = new HashSet<String>();
 						for (EmailSubscription subscription : subscriptions) {
-							emails.add(subscription.getUser().getEmail());
+							if (!subscription.getTimePeriod().equals(SubscriptionTimePeriod.None))
+								emails.add(subscription.getUser().getEmail());
+							else {
+								// only want to access dao if no subscription exists (very slow operation)
+								OperatorAccount operator = operatorAccountDAO.find(operatorID);
+								if(operator != null && operator.getPrimaryContact() != null)
+									emails.add(operator.getPrimaryContact().getEmail());
+							}
 						}
 						if (emails.size() > 0)
 							emailAddresses.addAll(emails);
+						else
+							addActionError("No primary contact or 'Contractor Registration' Subscriber for Operator ID: "
+									+ operatorID);
 					}
 
 					if (emailAddresses.size() > 0) {
