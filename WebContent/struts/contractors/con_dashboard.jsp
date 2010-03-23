@@ -420,7 +420,7 @@ ul {
 			</div>
 		</div>
 	</div>
-	<s:if test="activeOperators.size() > 1">
+	<s:if test="activeOperators.size() > 1 || permissions.admin">
 		<!-- Other Locations -->
 		<div class="panel_placeholder">
 			<div class="panel">
