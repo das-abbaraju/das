@@ -61,7 +61,7 @@ public class AccountDAO extends PicsDAO {
 		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
 			where += ",'Demo'";
 
-		if (permissions.isAdmin())
+		if (permissions.isAdmin() || permissions.isAuditor())
 			where += ",'Pending')";
 		if (permissions.isContractor())
 			where += ")";

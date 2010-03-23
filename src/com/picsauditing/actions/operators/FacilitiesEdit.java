@@ -206,6 +206,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 									Facility facility = new Facility();
 									facility.setCorporate(operator);
 									facility.setOperator(opAccount);
+									facility.setAuditColumns(permissions);
 									facilitiesDAO.save(facility);
 									operator.getOperatorFacilities().add(facility);
 									if (opAccount.getParent() == null) {
