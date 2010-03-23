@@ -23,10 +23,10 @@ public class IntConverter extends EnumConverter {
 		if( test == null ) {
 			if( arg1.length > 0 ) {
 				String temp = arg1[0];
-				temp = temp.replaceAll( "\\." , "" );
 				temp = temp.replaceAll( "\\," , "" );
+				temp = temp.replaceAll( " " , "" );
 				try {
-					test = Integer.parseInt(temp);
+					test = (Math.round(Float.parseFloat(temp)));
 				}
 				catch( Exception e ) {
 					test = performFallbackConversion(arg0, arg1, arg2);
