@@ -193,6 +193,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%?%'", accountName));
+			sql.addField("a.dbaName");
 		}
 
 		String statusList = Strings.implodeForDB(f.getStatus(), ",");

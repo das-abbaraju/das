@@ -26,6 +26,7 @@
 	<thead>
 	<tr>
 		<td colspan="2"><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
+		<td>DBA Name</td>
 		<s:if test="permissions.operator">
 			<td><a href="javascript: changeOrderBy('form1','flag DESC, a.name');">Flag</a></td>
 			<s:if test="operatorAccount.approvesRelationships">
@@ -57,6 +58,7 @@
 				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
 				><s:property value="[0].get('name')" /></a></s:if>
 				<s:else><s:property value="[0].get('name')" /></s:else></td>
+			<td><s:property value="[0].get('dbaName')" /></td>
 			<s:if test="permissions.operator">
 				<td class="center">
 					<s:if test="worksForOperator([0].get('id'))">
