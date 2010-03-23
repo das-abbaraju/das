@@ -17,7 +17,7 @@ import com.picsauditing.util.chart.MultiSeriesConverterHistogram;
 public class GraphEmrRates extends ChartMSAction {
 	private ChartType chartType = ChartType.MSLine;
 	private String flashChart;
-	private String[] years = { "2008" };
+	private String[] years = { "2008", "2009" };
 
 	public String execute() throws Exception {
 		if (!forceLogin())
