@@ -228,17 +228,17 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.RiskRank))
 			subMenu.addChild("Contractor Risk Level", "ReportContractorRiskLevel.action");
 		if (permissions.hasPermission(OpPerms.EMRReport)) {
-			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action?years=2008");
-			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2008");
+			subMenu.addChild("EMR Rates (Graph)", "GraphEmrRates.action?years=2009");
+			subMenu.addChild("EMR Rates", "ReportEmrRates.action?filter.auditFor=2009");
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
-			final String url = "ReportFatalities.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			final String url = "ReportFatalities.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Fatalities", url);
 		}
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport))
 			subMenu.addChild("Forced Flags", "ReportContractorsWithForcedFlags.action");
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
-			final String url = "ReportIncidenceRate.action?filter.auditFor=2008&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			final String url = "ReportIncidenceRate.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Incidence Rates", url);
 		}
 		if (permissions.seesAllContractors())
