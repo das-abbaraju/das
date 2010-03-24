@@ -37,6 +37,8 @@ public class ReportAccountAudits extends ReportAccount {
 				sql.addJoin("LEFT JOIN pqfdata pd2354 ON ca1.id = pd2354.auditID AND pd2354.questionID = 2354");
 				sql.addJoin("LEFT JOIN pqfdata pd2373 ON ca1.id = pd2373.auditID AND pd2373.questionID = 2373");
 			}
+			// Stop duplicates from appearing
+			sql.addGroupBy("a.name");
 		}
 		if (permissions.isOperator()) {
 			sql.addField("gc.waitingOn");
