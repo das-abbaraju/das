@@ -45,8 +45,8 @@ public class QBXmlAdaptor {
 		StringWriter stringWriter = new StringWriter();
 		AppProperty utf = getAppPropertyDao().find("PICSQBLOADER.use_utf");
 		if (utf != null && utf.getValue().equals("Y")) {
-			stringWriter
-					.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><?qbxml version=\"8.0\"?>");
+			stringWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?><?qbxml version=\"8.0\"?>");
+			// .write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><?qbxml version=\"8.0\"?>");
 		} else {
 			stringWriter.write("<?xml version=\"1.0\" ?><?qbxml version=\"8.0\"?>");
 		}
