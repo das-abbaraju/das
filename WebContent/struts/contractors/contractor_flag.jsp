@@ -60,12 +60,12 @@ function checkReason(id) {
 <s:include value="conHeader.jsp" />
 
 <!-- OVERALL FLAG -->
-<s:if test="(permissions.operatorCorporate || permissions.admin) && !co.forcedFlag">
+<s:if test="!co.forcedFlag">
 	<div class="info" style="float: right; clear: right; width: 25%;">
 	<s:form>
 		<s:hidden name="id" />
 		<s:hidden name="opID" />
-		<s:if test="contractor.lastRecalculation != null">Contractor's flag last calculated <s:date name="contractor.lastRecalculation" nice="true" />.<br /></s:if>
+		<s:if test="contractor.lastRecalculation != null"><s:if test="permissions.admin || permissions.operatorCorporate">Contractor's flag</s:if><s:else>Flag</s:else> last calculated <s:date name="contractor.lastRecalculation" nice="true" />.<br /></s:if>
 		<s:else>Contractor's flag has not been calculated.<br /></s:else>
 		<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
 	</s:form>
