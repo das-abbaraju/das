@@ -60,7 +60,7 @@ function previewEmail() {
 		
 		var data = {
 				button:'MailPreviewAjax',
-				previewID: id,
+				previewID: id[0],
 				type: type,
 				templateSubject: $('#templateSubject').val(),
 				templateBody: $('#templateBody').val(),
