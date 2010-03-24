@@ -106,8 +106,14 @@ ul {
 
 				<s:if test="co != null">
 					<div class="co_flag">
-						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
-						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor"/></a></p>
+						<s:if test="permissions.corporate">
+							<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
+							<p><s:property value="co.flagColor"/></p>
+						</s:if>
+						<s:else>
+							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
+							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor"/></a></p>
+						</s:else>
 					</div>
 				</s:if>
 				<div class="co_problems">
