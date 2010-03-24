@@ -380,11 +380,13 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
-
+		
 		// Users only after this point
-		if (user.getUsername() == null || user.getUsername().length() < 3)
-			addActionError("Please choose a Username at least 3 characters long.");
-
+		boolean hasduplicate = userDAO.duplicateUsername(user.getUsername().trim(), user.getId());
+		if(hasduplicate) {
+			addActionError("This username is NOT available. Please choose a different one.");
+		}
+		
 		String result = Strings.validUserName(user.getUsername().trim());
 		if (!result.equals("valid"))
 			addActionError(result);
