@@ -9,6 +9,7 @@
 			<s:if test="!insurance">
 				<th>Category</th>
 			</s:if>
+			<th>Type</th>
 			<th>Description</th>
 		</tr>
 	</thead>
@@ -31,6 +32,16 @@
 			<s:if test="!insurance">
 				<td><s:property value="category" /></td>
 			</s:if>
+			<td>
+				<s:if test="auditType != null">
+					<a href="ManageAuditType.action?id=<s:property value="auditType.id" />">
+						<s:property value="auditType.auditName" /></a></s:if>
+				<s:elseif test="question != null">
+					<a href="ManageAuditType.action?id=<s:property value="question.auditType.id" />">
+						<s:property value="question.auditType.auditName" /></a>
+				</s:elseif>
+				<s:elseif test="oshaType != null"><s:property value="oshaType.toString()" /></s:elseif>
+			</td>
 			<td>
 				<s:if test="allowCustomValue">
 					<s:property value="descriptionBeforeHurdle" />

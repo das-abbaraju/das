@@ -20,7 +20,7 @@ table.report a {
 	float: right;
 }
 
-#criteriaDiv, #addCriteria, #corporateList {
+#criteriaDiv, #corporateList {
 	float: left;
 	width: 70%
 }
