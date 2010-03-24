@@ -129,7 +129,7 @@
 			<li><label>Safety Manual:</label>
 				<s:if test="hasSafetyManual">
 						<s:iterator value="safetyManualLink.values()">
-							<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">Uploaded (<s:date name="audit.creationDate" format="MMM yyyy"/>)</a>
+							<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&answer.id=<s:property value="id"/>" target="_BLANK">Uploaded (<s:date name="updateDate" format="MMM yyyy"/>)</a>
 						</s:iterator>
 				</s:if>
 				<s:else>Not Uploaded</s:else>
