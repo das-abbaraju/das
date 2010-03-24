@@ -77,7 +77,7 @@ function getFlag(selectObject) {
 	<div id="criteriaDiv"><s:include value="op_manage_flag_criteria_list.jsp"></s:include></div>
 	<span id="thinking"></span>
 	<div id="impactDiv"></div>
-	<s:if test="(permissions.corporate || permissions.admin) && operator.operatorChildren.size() > 0">
+	<s:if test="(permissions.corporate || permissions.admin) && operator.operatorFacilities.size() > 0">
 		<div id="corporateList">
 			<div class="info">
 				Below is a list of all accounts that are linked to your corporate account, together with the link to their flag criteria.
@@ -87,18 +87,19 @@ function getFlag(selectObject) {
 			<table class="report">
 				<thead><tr><th colspan="2">Linked Accounts</th><th>Inherits <s:if test="insurance">Insurance</s:if><s:else>Flag</s:else> Criteria From</th></tr></thead>
 				<tbody>
-				<s:iterator status="stat" id="linked" value="operator.operatorChildren">
+				<s:iterator status="stat" id="linked" value="operator.operatorFacilities">
+					<s:set name="facility" value="#linked.operator" />
 					<tr>
 						<td><s:property value="#stat.index + 1" /></td>
-						<td><s:property value="#linked.name" /></td>
+						<td><s:property value="#facility.name" /></td>
 						<td>
 							<s:if test="insurance">
-								<a href="#" onclick="getChildCriteria(<s:property value="#linked.inheritInsuranceCriteria.id" />, '<s:property value="#linked.inheritInsuranceCriteria.name" />'); return false;">
-								<s:property value="#linked.inheritInsuranceCriteria.name" /></a>
+								<a href="#" onclick="getChildCriteria(<s:property value="#facility.inheritInsuranceCriteria.id" />, '<s:property value="#facility.inheritInsuranceCriteria.name" />'); return false;">
+								<s:property value="#facility.inheritInsuranceCriteria.name" /></a>
 							</s:if>
 							<s:else>
-								<a href="#" onclick="getChildCriteria(<s:property value="#linked.inheritFlagCriteria.id" />, '<s:property value="#linked.inheritFlagCriteria.name" />'); return false;">
-									<s:property value="#linked.inheritFlagCriteria.name" /></a>
+								<a href="#" onclick="getChildCriteria(<s:property value="#facility.inheritFlagCriteria.id" />, '<s:property value="#facility.inheritFlagCriteria.name" />'); return false;">
+									<s:property value="#facility.inheritFlagCriteria.name" /></a>
 							</s:else>
 						</td>
 					</tr>
