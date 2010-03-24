@@ -35,7 +35,7 @@ public class FlagDataDAO extends PicsDAO {
 	}
 
 	public List<FlagData> findProblems(int conID, int opID) {
-		String q = "FROM FlagData d WHERE contractor.id = ? ";
+		String q = "FROM FlagData d WHERE d.criteria.insurance = 0 AND contractor.id = ? ";
 		if (opID > 0)
 			q += "AND operator.id = ? ";
 		q += "AND flag IN ('Red', 'Amber') ORDER BY d.criteria.displayOrder";
