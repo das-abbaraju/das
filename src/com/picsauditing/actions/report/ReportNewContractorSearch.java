@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
@@ -26,6 +25,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.ReportFilterAccount;
+import com.picsauditing.util.Strings;
 
 /**
  * Used by operators to search for new contractors
