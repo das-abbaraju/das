@@ -46,7 +46,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private InvoiceFeeDAO invoiceFeeDAO;
 	private PaymentDAO paymentDAO;
 	private NoteDAO noteDAO;
-	private ContractorAccountDAO conAccountDAO;
 
 	private int newFeeId;
 
@@ -192,7 +191,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							// Activate the contractor
 							BillingCalculatorSingle.activateContractor(contractor, invoice);
 							contractor.syncBalance();
-							conAccountDAO.save(contractor);
+							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
 									+ invoice.getTotalAmount());
@@ -309,10 +308,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		try {
 			CreditCard creditCard = paymentService.getCreditCard(id);
 			ccNumber = creditCard.getCardNumber();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		return ccNumber;
 	}
-	
+
 	public User getBillingUser() {
 		return contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
 	}
