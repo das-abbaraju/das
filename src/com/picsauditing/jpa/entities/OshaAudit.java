@@ -68,6 +68,8 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	private Float neer;
 	private int firstAidInjuries;
 	private int modifiedWorkDay;
+	private int vehicleIncidents;
+	private int totalkmDriven;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -265,6 +267,22 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 
 	public void setModifiedWorkDay(int modifiedWorkDay) {
 		this.modifiedWorkDay = modifiedWorkDay;
+	}
+
+	public int getVehicleIncidents() {
+		return vehicleIncidents;
+	}
+
+	public void setVehicleIncidents(int vehicleIncidents) {
+		this.vehicleIncidents = vehicleIncidents;
+	}
+
+	public int getTotalkmDriven() {
+		return totalkmDriven;
+	}
+
+	public void setTotalkmDriven(int totalkmDriven) {
+		this.totalkmDriven = totalkmDriven;
 	}
 
 	/**

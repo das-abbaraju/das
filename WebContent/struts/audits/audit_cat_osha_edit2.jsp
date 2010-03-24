@@ -71,6 +71,14 @@
 	<td><s:textfield name="osha.firstAidInjuries" value="%{firstAidInjuries}" cssClass="osha"/></td>
 </tr>
 <tr>
+	<th class="label"><s:property value="getText('vehicleIncidents.'.concat(type))"/></th>
+	<td><s:textfield name="osha.vehicleIncidents" value="%{vehicleIncidents}" cssClass="osha"/></td>
+</tr>
+<tr>
+	<th class="label"><s:property value="getText('totalkmDriven.'.concat(type))"/></th>
+	<td><s:textfield name="osha.totalkmDriven" value="%{totalkmDriven}" cssClass="osha"/></td>
+</tr>
+<tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td><s:textfield name="osha.cad7" value="%{cad7}" cssClass="osha"/></td>
 </tr>

@@ -105,16 +105,24 @@
 
 <s:if test="category.id == 158">
 <tr>
+	<th class="label"><s:property value="getText('vehicleIncidents.'.concat(type))"/></th>
+	<td><s:property value="vehicleIncidents"/></td>
+	<td>&nbsp;</td>
+</tr>
+<tr>
+	<th class="label"><s:property value="getText('totalkmDriven.'.concat(type))"/></th>
+	<td><s:property value="totalkmDriven"/></td>
+	<td>&nbsp;</td>
+</tr>
+<tr>
 	<th class="label"><s:property value="getText('cad7.'.concat(type))"/></th>
 	<td><s:property value="cad7"/></td>
 	<td>&nbsp;</td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
 <tr>
 	<th class="label"><s:property value="getText('neer.'.concat(type))"/></th>
 	<td><s:property value="neer"/></td>
 	<td>&nbsp;</td>
-	<s:if test="type.toString().equals('OSHA') && corporate"><td>&nbsp;</td></s:if>
 </tr>
 </s:if>
 
