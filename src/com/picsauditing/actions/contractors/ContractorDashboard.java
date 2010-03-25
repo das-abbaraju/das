@@ -104,7 +104,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				accountDao.save(contractor);
 			}
-
 		}
 
 		if ("RemoveTag".equals(button)) {
@@ -335,7 +334,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 				oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), getActiveOperators());
 			else
 				oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), new ArrayList<ContractorOperator>() {
-
 					{
 						add(co);
 					}
@@ -403,7 +401,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 					}
 				}
 			}
-
 		}
 
 		private String getOperatorDisplay(ContractorOperator contractorOperator, String type) {
@@ -435,5 +432,4 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return data.get(k1, k2);
 		}
 	}
-
 }
