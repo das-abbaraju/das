@@ -10,6 +10,11 @@
 
 <s:include value="filters.jsp" />
 
+<div class="right">
+	<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		href="javascript: download('ReportContractorLicenses');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
+</div>
+
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
@@ -18,6 +23,11 @@
 	<tr>
 		<td colspan="2">Contractor Name</td>
 		<td>PQF</td>
+		<s:if test="filter.primaryInformation">
+			<td>Primary Contact</td>
+			<td>Phone</td>
+			<td>Email</td>
+		</s:if>
 		<s:if test="permissions.operator">
 			<td>Flag</td>
 		</s:if>
@@ -37,6 +47,11 @@
 			<td>
 				<a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="[0].get('auditStatus')"/></a>
 			</td>
+			<s:if test="filter.primaryInformation">
+				<td><s:property value="[0].get('contactname')"/></td>
+				<td><s:property value="[0].get('contactphone')"/></td>
+				<td><s:property value="[0].get('contactemail')"/></td>
+			</s:if>
 			<s:if test="permissions.operator">
 			<td class="center">
 				<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>" title="Click to view Flag Color details">

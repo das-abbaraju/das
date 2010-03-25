@@ -390,7 +390,7 @@
 	<s:if test="filter.showConLicense">
 		<br clear="all" />
 		<div class="filterOption"><s:select name="filter.validLicense"
-			list="#{'Valid':'Valid','UnValid':'UnValid','All':'All'}"
+			list="#{'Valid':'Valid','UnValid':'Invalid','All':'All'}"
 			cssClass="forms" /></div>
 	</s:if>
 

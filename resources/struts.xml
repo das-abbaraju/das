@@ -701,6 +701,12 @@
 			class="com.picsauditing.actions.report.ReportContractorLicenses">
 			<result>/struts/reports/report_licenses.jsp</result>
 		</action>
+		
+		<action name="ReportContractorLicensesCSV"
+			class="com.picsauditing.actions.report.ReportContractorLicenses">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<action name="ReportContractorOperatorFlagMatrix"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlagMatrix">
