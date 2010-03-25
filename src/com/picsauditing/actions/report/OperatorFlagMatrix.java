@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.PICS.DoubleMap;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -24,6 +25,14 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	private TableDisplay tableDisplay;
 
+	@Override
+	protected void checkPermissions() throws Exception {
+		super.checkPermissions();
+		
+		if (!permissions.isOperatorCorporate())
+			throw new NoRightsException("You must be an operator to view this page");
+	}
+	
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
 		setReportName("Contractor Operator Flag Matrix");
 		this.listType = ListType.Operator;
