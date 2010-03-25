@@ -8,22 +8,24 @@
 </head>
 <body>
 
+<a class="excel" href="OperatorFlagMatrixCSV.action" target="_BLANK">Download Report</a>
+
 <table class="report">
 	<thead>
 		<tr>
 			<th>Contractor</th>
-			<s:iterator value="tableDisplay.headers" id="header">
-				<th><s:property value="#header"/></th>
+			<s:iterator value="tableDisplay.columns" id="column">
+				<th><s:property value="#column"/></th>
 			</s:iterator>
 		</tr>
 	</thead>
-		<s:iterator value="tableDisplay.columns" id="column">
+		<s:iterator value="tableDisplay.rows" id="row">
 			<tr>
-				<td><a href="ContractorView.action?id=<s:property value="tableDisplay.columnIds.get(#column)"/>"
-						rel="ContractorQuickAjax.action?id=<s:property value="tableDisplay.columnIds.get(#column)"/>"
-						class="contractorQuick" title="<s:property value="#column"/>"><s:property value="#column"/></a></td>
-				<s:iterator value="tableDisplay.headers" id="header">
-					<td><s:property value="tableDisplay.getContent(#column, #header)" escape="false"/></td>
+				<td><a href="ContractorView.action?id=<s:property value="tableDisplay.rowIds.get(#row)"/>"
+						rel="ContractorQuickAjax.action?id=<s:property value="tableDisplay.rowIds.get(#row)"/>"
+						class="contractorQuick" title="<s:property value="#row"/>"><s:property value="#row"/></a></td>
+				<s:iterator value="tableDisplay.columns" id="column">
+					<td><s:property value="tableDisplay.getContentIcon(#row, #column)" escape="false"/></td>
 				</s:iterator>
 			</tr>
 		</s:iterator>

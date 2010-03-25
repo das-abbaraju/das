@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -7,7 +8,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.DoubleMap;
 import com.picsauditing.access.NoRightsException;
@@ -28,11 +40,11 @@ public class OperatorFlagMatrix extends ReportAccount {
 	@Override
 	protected void checkPermissions() throws Exception {
 		super.checkPermissions();
-		
+
 		if (!permissions.isOperatorCorporate())
 			throw new NoRightsException("You must be an operator to view this page");
 	}
-	
+
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
 		setReportName("Contractor Operator Flag Matrix");
 		this.listType = ListType.Operator;
@@ -70,6 +82,26 @@ public class OperatorFlagMatrix extends ReportAccount {
 		report.setLimit(100000);
 	}
 
+	@Override
+	protected String returnResult() throws IOException {
+		if (download) {
+			HSSFWorkbook wb = getTableDisplay().buildWorkbook();
+			String filename = getReportName();
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+
+			return null;
+		} else {
+			return super.returnResult();
+		}
+	}
+
 	public Set<FlagCriteria> getFlagCriteria() {
 		return flagCriteria;
 	}
@@ -83,24 +115,23 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	public class TableDisplay {
 
-		private Set<String> columns = new TreeSet<String>();
-		private Map<String, String> columnIds = new HashMap<String, String>();
-		private Set<String> headers = new LinkedHashSet<String>();
-		private Map<String, String> headerHover = new HashMap<String, String>();
+		private Set<String> rows = new TreeSet<String>();
+		private Map<String, String> rowIds = new HashMap<String, String>();
+		private Set<String> columns = new LinkedHashSet<String>();
+		private Map<String, String> columnHover = new HashMap<String, String>();
 
 		private DoubleMap<String, String, String> content = new DoubleMap<String, String, String>();
 
 		public TableDisplay(List<BasicDynaBean> data) {
 			for (final BasicDynaBean d : data) {
-				columns.add(d.get("name").toString());
+				rows.add(d.get("name").toString());
 
-				columnIds.put(d.get("name").toString(), d.get("id").toString());
+				rowIds.put(d.get("name").toString(), d.get("id").toString());
 
-				headers.add(d.get("label").toString());
-				headerHover.put(d.get("label").toString(), d.get("label").toString());
+				columns.add(d.get("label").toString());
+				columnHover.put(d.get("label").toString(), d.get("label").toString());
 
-				content.put(d.get("name").toString(), d.get("label").toString(), FlagColor.valueOf(
-						d.get("flag").toString()).getSmallIcon());
+				content.put(d.get("name").toString(), d.get("label").toString(), d.get("flag").toString());
 			}
 		}
 
@@ -108,20 +139,81 @@ public class OperatorFlagMatrix extends ReportAccount {
 			return content.get(k1, k2);
 		}
 
+		public String getContentIcon(String k1, String k2) {
+			try {
+				return FlagColor.valueOf(content.get(k1, k2)).getSmallIcon();
+			} catch (Exception e) {
+				return "";
+			}
+		}
+
+		public Set<String> getRows() {
+			return rows;
+		}
+
+		public Map<String, String> getRowIds() {
+			return rowIds;
+		}
+
 		public Set<String> getColumns() {
 			return columns;
 		}
 
-		public Map<String, String> getColumnIds() {
-			return columnIds;
+		public Map<String, String> getColumnHover() {
+			return columnHover;
 		}
 
-		public Set<String> getHeaders() {
-			return headers;
-		}
+		public HSSFWorkbook buildWorkbook() {
+			HSSFWorkbook wb = new HSSFWorkbook();
+			HSSFSheet sheet = wb.createSheet();
 
-		public Map<String, String> getHeaderHover() {
-			return headerHover;
+			HSSFDataFormat df = wb.createDataFormat();
+			HSSFFont font = wb.createFont();
+			font.setFontHeightInPoints((short) 12);
+
+			HSSFFont headerFont = wb.createFont();
+			headerFont.setFontHeightInPoints((short) 12);
+			headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+			HSSFCellStyle headerStyle = wb.createCellStyle();
+			headerStyle.setFont(headerFont);
+			headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+			wb.setSheetName(0, getReportName());
+
+			int rowNumber = 0;
+
+			{
+				// Add the Column Headers to the top of the report
+				int columnCount = 1;
+				HSSFRow r = sheet.createRow(rowNumber);
+				rowNumber++;
+				for (String col : this.columns) {
+					HSSFCell c = r.createCell(columnCount++);
+					c.setCellValue(new HSSFRichTextString(col));
+					c.setCellStyle(headerStyle);
+				}
+			}
+
+			for (String row : rows) {
+				HSSFRow r = sheet.createRow(rowNumber++);
+				int colNumber = 0;
+				HSSFCell header = r.createCell(colNumber++);
+				header.setCellValue(new HSSFRichTextString(row));
+				for (String col : columns) {
+					HSSFCell c = r.createCell(colNumber++);
+					c.setCellValue(new HSSFRichTextString(content.get(row, col)));
+				}
+			}
+
+			for (short c = 0; c < columns.size(); c++) {
+				HSSFCellStyle cellStyle = wb.createCellStyle();
+				cellStyle.setDataFormat(df.getFormat("@"));
+				sheet.setDefaultColumnStyle(c, cellStyle);
+				sheet.autoSizeColumn(c);
+			}
+
+			return wb;
 		}
 	}
 }
