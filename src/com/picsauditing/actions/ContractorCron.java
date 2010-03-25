@@ -9,7 +9,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,6 @@ import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
@@ -47,7 +48,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -169,7 +169,8 @@ public class ContractorCron extends PicsActionSupport {
 
 			if (!isDebugging()) {
 				addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
-				// In case this contractor errored out while running contractor cron
+				// In case this contractor errored out while running contractor
+				// cron
 				// we bump the last recalculation date to 1 day in future.
 				dao.refresh(contractor);
 				contractor.setNeedsRecalculation(false);
@@ -372,12 +373,22 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CorporateRollup))
 			return;
 
-		// rolls up every flag color to root
-		Map<OperatorAccount, FlagColor> rollupData = new HashMap<OperatorAccount, FlagColor>();
-		Map<OperatorAccount, ContractorOperator> corporateCOs = new HashMap<OperatorAccount, ContractorOperator>();
+		// // rolls up every flag color to root
+		Map<OperatorAccount, FlagColor> corporateRollupData = new HashMap<OperatorAccount, FlagColor>();
+		// existingCorpCOs is really two related, but separate sets mashed
+		// together that will be used
+		// for determining inserts from the CorporateSet (OperatorAccount)
+		// and managed insert/up/del off the linked COs (ContractorOperator)
+		Map<OperatorAccount, ContractorOperator> existingCorpCOchanges = new HashMap<OperatorAccount, ContractorOperator>();
+		Queue<OperatorAccount> corporateUpdateQueue = new LinkedBlockingQueue<OperatorAccount>();
+		Set<ContractorOperator> removalSet = new HashSet<ContractorOperator>();
 
-		// rolling up data to map
-		Iterator<ContractorOperator> coIter = contractor.getOperators().iterator();
+		Set<ContractorOperator> dblinkedCOs = new HashSet<ContractorOperator>();
+		dblinkedCOs.addAll(contractor.getOperators());
+
+		// rolling up data to map, getOperators is linked
+		Iterator<ContractorOperator> coIter = dblinkedCOs.iterator();
+
 		while (coIter.hasNext()) {
 			ContractorOperator coOperator = coIter.next();
 			OperatorAccount operator = coOperator.getOperatorAccount();
@@ -387,52 +398,82 @@ public class ContractorCron extends PicsActionSupport {
 					// if we have a corporate account in my operator list that
 					// is not in the corporate rollup data map
 					// it shouldn't be in my operator list and should be deleted
+					removalSet.add(coOperator);
 					coIter.remove();
 				} else {
-					// found a corporate CO
-					corporateCOs.put(operator, coOperator);
-					rollupData.put(operator, coOperator.getFlagColor());
+					// will remove existing from Primary CorporateSet to
+					// determine inserts
+					existingCorpCOchanges.put(operator, coOperator);
 				}
-			} else { // just rollup data, will be checked later
-				for (Facility facility : operator.getCorporateFacilities()) {
-					OperatorAccount parent = facility.getCorporate();
-					FlagColor worstColor = FlagColor.getWorseColor(coOperator.getFlagColor(), rollupData.get(parent));
-					rollupData.put(parent, worstColor);
-				}
+			} else { // determining first level of corporate data, and setting
+				// up queue to iterate over rest of corporate levels
+
+				// CO stuff
+				// roll up first-level Operator CO data
+				if (operator.getCorporateFacilities() != null) {
+					for (Facility facility : operator.getCorporateFacilities()) {
+						OperatorAccount parent = facility.getCorporate();
+
+						corporateUpdateQueue.add(parent);
+
+						// if CO data does not already exist, assume green flag
+						// then if CO data is found later, will be updated to
+						// proper flag color
+						FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+								.get(parent) : FlagColor.Green;
+						FlagColor operatorFacilityColor = coOperator.getFlagColor();
+						FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
+						corporateRollupData.put(parent, worstColor);
+					}
+				} // otherwise operator has no one to roll up to
 			}
 		}
 
-		// ensuring that data is updated from hub to primaryCorporate in rollup
-		for (OperatorAccount corporate : corporateCOs.keySet()) {
-			// rollup data should contain all entries for corporate, including
-			// those not in corporateSet
+		// Breadth first update of all corporate levels
+		while (!corporateUpdateQueue.isEmpty()) {
+			// grab first element off of queue
+			OperatorAccount corporate = corporateUpdateQueue.remove();
 			OperatorAccount parent = corporate.getParent();
-			if (parent != null) { // we have a corporate parent
-				FlagColor worstColor = FlagColor.getWorseColor(rollupData.get(corporate), rollupData.get(parent));
-				rollupData.put(parent, worstColor);
-			}
+
+			if (parent != null) {
+				FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+						.get(parent) : FlagColor.Green;
+				FlagColor currentFacilityColor = corporateRollupData.get(corporate);
+
+				FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, currentFacilityColor);
+				corporateRollupData.put(parent, worstColor);
+
+				// putting parent at the end of the queue for later calculation
+				corporateUpdateQueue.add(parent);
+			} // otherwise just remove entry
 		}
 
-		// rollup finished, updating corporate values
-		for (OperatorAccount corporate : corporateCOs.keySet())
-			corporateCOs.get(corporate).setFlagColor(rollupData.get(corporate));
-
-		// removing corporateSet entries based on contractor CO data
-		for (OperatorAccount corporate : corporateCOs.keySet())
+		// Corporate update should be successful, now write out entries
+		// for all entries that exist in my existingCorpCOchanges (linked).
+		// Update entries based off of corporateRollupData.
+		for (OperatorAccount corporate : existingCorpCOchanges.keySet()) {
+			existingCorpCOchanges.get(corporate).setFlagColor(corporateRollupData.get(corporate));
 			corporateSet.remove(corporate);
+		}
 
-		// whatever left in corporateSet needs to be inserted
+		// whats left in corporateSet is inserts
 		for (OperatorAccount corporate : corporateSet) {
 			ContractorOperator newCo = new ContractorOperator();
 			newCo.setCreationDate(new Date());
 			newCo.setUpdateDate(new Date());
-			newCo.setFlagColor(rollupData.get(corporate));
+			newCo.setFlagColor(corporateRollupData.get(corporate));
 			newCo.setOperatorAccount(corporate);
 			newCo.setContractorAccount(contractor);
 			newCo.setCreatedBy(new User(User.SYSTEM));
 			newCo.setUpdatedBy(new User(User.SYSTEM));
 			contractorOperatorDAO.save(newCo);
 		}
+
+		// delete orphans
+		for (ContractorOperator removal : removalSet)
+			//contractorOperatorDAO.remove(removal);
+
+		contractorDAO.save(contractor);
 	}
 
 	public int getConID() {
