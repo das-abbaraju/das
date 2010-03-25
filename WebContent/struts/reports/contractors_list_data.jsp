@@ -61,10 +61,10 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
+			<td><pics:permission perm="ContractorDetails"><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
 					class="contractorQuick account<s:property value="get('status')" />" title="<s:property value="get('name')" />"
-					><s:property value="get('name')" /></a></td>
+					></pics:permission><s:property value="get('name')" /><pics:permission perm="ContractorDetails"></a></pics:permission></td>
 			<pics:permission perm="AllContractors">
 				<td><a
 					href="ContractorEdit.action?id=<s:property value="get('id')"/>"
@@ -85,11 +85,11 @@
 			</pics:permission>
 			<s:if test="permissions.operator">
 				<td class="center">
-					<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-						title="<s:property value="get('flag')"/> - Click to view details"><img 
-						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
+					<pics:permission perm="ContractorDetails"><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
+						title="<s:property value="get('flag')"/> - Click to view details"></pics:permission><img 
+						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"><pics:permission perm="ContractorDetails"></a></pics:permission>
 				</td>
-				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/></a></td>
+				<td><pics:permission perm="ContractorDetails"><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ></pics:permission><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/><pics:permission perm="ContractorDetails"></a></pics:permission></td>
 				<s:if test="operatorAccount.approvesRelationships">
 					<pics:permission perm="ViewUnApproved">
 						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
