@@ -8,32 +8,26 @@
 </head>
 <body>
 
-<s:include value="filters.jsp"/>
-
-<s:property value="report.getPageLinksWithDynamicForm()" escape="false"/>
-
 <table class="report">
 	<thead>
 		<tr>
 			<th>Contractor</th>
-			<th>Overall Color</th>
-			<s:iterator value="flagCriteria">
-				<th><s:property value="label"/></th>
+			<s:iterator value="tableDisplay.headers" id="header">
+				<th title="<s:property value="tableDisplay.headerHover.get(#header)"/>"><s:property value="#header"/></th>
 			</s:iterator>
 		</tr>
 	</thead>
-		<s:iterator value="data">
+		<s:iterator value="tableDisplay.columns" id="column">
 			<tr>
-				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="permissions.accountId"/>"><s:property value="get('name')"/></a></td>
-				<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@valueOf(get('overallFlag')).smallIcon" escape="false"/></td>
-				<s:iterator value="flagCriteria">
-					<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@valueOf(get('flag'+id)).smallIcon" escape="false"/></td>
+				<td><a href="ContractorView.action?id=<s:property value="tableDisplay.columnIds.get(#column)"/>"
+						rel="ContractorQuickAjax.action?id=<s:property value="tableDisplay.columnIds.get(#column)"/>"
+						class="contractorQuick" title="<s:property value="#column"/>"><s:property value="#column"/></a></td>
+				<s:iterator value="tableDisplay.headers" id="header">
+					<td><s:property value="tableDisplay.getContent(#column, #header)" escape="false"/></td>
 				</s:iterator>
 			</tr>
 		</s:iterator>
 </table>
-
-<s:property value="report.getPageLinksWithDynamicForm()" escape="false"/>
 
 </body>
 </html>
