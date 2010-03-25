@@ -13,7 +13,7 @@
 		<tr>
 			<th>Contractor</th>
 			<s:iterator value="tableDisplay.headers" id="header">
-				<th title="<s:property value="tableDisplay.headerHover.get(#header)"/>"><s:property value="#header"/></th>
+				<th><s:property value="#header"/></th>
 			</s:iterator>
 		</tr>
 	</thead>
