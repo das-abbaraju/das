@@ -87,7 +87,12 @@
 			class="com.picsauditing.actions.PageLogger">
 			<result>struts/misc/page_logger.jsp</result>
 		</action>
-		
+
+		<action name="Download" class="com.picsauditing.actions.files.Download">
+			<result name="stream" type="stream"></result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>

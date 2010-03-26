@@ -12,6 +12,7 @@ import java.security.MessageDigest;
 import java.util.Scanner;
 
 public class FileUtils {
+
 	/**
 	 * Save an existing File object to the file system at a particular location
 	 * 
@@ -87,6 +88,7 @@ public class FileUtils {
 
 	static public File[] getSimilarFiles(File folder, final String fileName) {
 		File[] fileList = folder.listFiles(new FilenameFilter() {
+
 			@Override
 			public boolean accept(File dir, String name) {
 				return !(new File(dir, name).isDirectory())
@@ -123,6 +125,13 @@ public class FileUtils {
 
 		}
 		return thisDir;
+	}
+
+	public static String getExtension(String fileName) {
+		int index = fileName.lastIndexOf(".");
+		if (index == -1)
+			return "";
+		return fileName.substring(index+1);
 	}
 
 	static public boolean checkFileExtension(String extension) {

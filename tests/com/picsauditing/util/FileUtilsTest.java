@@ -39,4 +39,10 @@ public class FileUtilsTest extends TestCase {
 		assertEquals("1.2 MB", FileUtils.size(1234000));
 		assertEquals("1.2 GB", FileUtils.size(1234000000));
 	}
+	
+	public void testGetExtension() {
+		assertEquals(FileUtils.getExtension("filename.gif"), "gif");
+		assertEquals(FileUtils.getExtension("filename.jpeg"), "jpeg");
+		assertEquals(FileUtils.getExtension("filename"), "");
+	}
 }
