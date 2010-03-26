@@ -6,10 +6,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -119,6 +121,7 @@ public class FileBase {
 	}
 
 	@Lob
+	@Basic(fetch=FetchType.LAZY)
 	public byte[] getFileData() {
 		return fileData;
 	}
