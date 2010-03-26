@@ -309,6 +309,24 @@ public class FileUtils {
 		}
 	}
 
+	public static String getFileSHA(File file) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-1");
+			InputStream is = new FileInputStream(file);
+			byte[] buffer = new byte[8192];
+			int read = 0;
+			while ((read = is.read(buffer)) > 0) {
+				digest.update(buffer, 0, read);
+			}
+			is.close();
+			byte[] sha = digest.digest();
+			BigInteger bigInt = new BigInteger(1, sha);
+			return bigInt.toString(16);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public static byte[] getBytesFromFile(File file) throws IOException {
 		InputStream is = new FileInputStream(file);
 
