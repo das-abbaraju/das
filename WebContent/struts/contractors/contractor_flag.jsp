@@ -71,6 +71,15 @@ function checkReason(id) {
 	</s:form>
 	</div>
 </s:if>
+
+<s:if test="permissions.contractor">
+<div class="helpOnRight" style="clear: right;">
+		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
+		If any requirements exceed the acceptable threshold or answer, those requirements will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
+		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
+</div>
+</s:if>
+
 <table style="text-align: center;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
@@ -148,14 +157,6 @@ function checkReason(id) {
 	<div class="info" style="width: 50%; text-align: left">
 		Congratulations, you've completed all the requirements for <s:property value="co.operatorAccount.name" />.<br />We will email you if there are any changes.
 	</div>
-</s:if>
-
-<s:if test="permissions.contractor">
-<div class="helpOnRight" style="clear: right;">
-		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
-		If any requirements exceed the acceptable threshold or answer, those requirements will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
-		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
-</div>
 </s:if>
 
 <span id="thinking"></span>

@@ -141,7 +141,12 @@ function updateAffected(fcoID) {
 	$.ajax({
 		url: "OperatorFlagsCalculatorAjax.action",
 		data: data,
-		success: function(msg) { $('#'+fcoID).find('a.oldImpact').html(jQuery.trim(msg)); }
+		success: function(msg) {
+			if (msg.search(/error/i) == -1)
+				$('#'+fcoID).find('a.oldImpact').html(jQuery.trim(msg));
+			else
+				$('#'+fcoID).find('a.oldImpact').replaceWith('<a href="#" class="oldImpact" onclick="window.location.reload();">Reload</a>');
+		}
 	});
 }
 

@@ -203,6 +203,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		HSSFFont headerFont = wb.createFont();
 		HSSFCellStyle headerStyle = wb.createCellStyle();
 		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		headerFont.setFontHeightInPoints((short) 12);
 		headerStyle.setFont(headerFont);
 		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		

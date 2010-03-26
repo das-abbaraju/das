@@ -27,7 +27,7 @@
 	</s:if>
 	<s:if test="permissions.contractor">
 		<li><a href="ContractorForms.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms & Docs</a></li>
+			<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>Forms &amp; Docs</a></li>
 	</s:if>
 	<s:iterator value="#auditMenu">
 		<li>
@@ -224,6 +224,9 @@
 	<s:if test="permissions.admin">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
+		<pics:permission perm="AuditVerification">
+			<li><a id="conEditLink" href="VerifyView.action?id=<s:property value="id" />"><span>PQF Verification</span></a></li>
+		</pics:permission>
 		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		<s:if test="!contractor.status.demo">
 			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
