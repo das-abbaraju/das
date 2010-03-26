@@ -65,7 +65,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 			try {
 				emailBuilder.setTemplate(86); // Username Reminder
-				emailBuilder.setFromAddress("info@picsauditing.com");
+				emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 				emailBuilder.addToken("users", matchingUsers);
 				emailBuilder.setToAddresses(email);
 				emailBuilder.addToken("username", matchingUsers.get(0).getName());
@@ -122,7 +122,7 @@ public class AccountRecovery extends PicsActionSupport {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
-			emailBuilder.setFromAddress("info@picsauditing.com");
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			emailBuilder.addToken("user", user);
 
 			String confirmLink = "http://www.picsauditing.com/Login.action?username="
@@ -146,9 +146,9 @@ public class AccountRecovery extends PicsActionSupport {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
-			emailBuilder.setFromAddress("info@picsauditing.com");
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			emailBuilder.addToken("user", user);
-
+			emailBuilder.addToken("accountname", user.getAccount().getName());
 			String confirmLink = "http://www.picsauditing.com/Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);

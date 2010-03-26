@@ -30,7 +30,7 @@ public class EventSubscriptionBuilder {
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
 			builder.setTemplate(templateID);
-			builder.setFromAddress("info@picsauditing.com");
+			builder.setFromAddress("PICS Customer Service <info@picsauditing.com>");
 			builder.addToken("contractor", co.getContractorAccount());
 			builder.addToken("operator", co.getOperatorAccount());
 			String seed = "u" + subscription.getUser().getId() + "t" + templateID;
@@ -71,7 +71,7 @@ public class EventSubscriptionBuilder {
 		Collections.sort(operatorsString);
 
 		emailBuilder.addToken("operators", "Your current list of Operators: " + Strings.implode(operatorsString, ", "));
-		emailBuilder.setFromAddress("billing@picsauditing.com");
+		emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 
 		List<String> emailAddresses = new ArrayList<String>();
 

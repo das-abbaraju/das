@@ -19,6 +19,7 @@ import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditorAvailability;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -193,7 +194,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			conAudit.setScheduledDate(availabilitySelected.getStartDate());
 			conAudit.setAuditor(availabilitySelected.getUser());
-			if(permissions.isContractor())
+			if (permissions.isContractor())
 				conAudit.setContractorConfirm(new Date());
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 			auditDao.save(conAudit);
@@ -206,13 +207,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				emailBuilder.setTemplate(15);
-				emailBuilder.setUser(conAudit.getContractorAccount().getUsers().get(0));
+				ContractorAccount contractor = conAudit.getContractorAccount();
+				emailBuilder.setUser((contractor.getPrimaryContact() != null) ? contractor.getPrimaryContact()
+						: conAudit.getContractorAccount().getUsers().get(0));
 
 				String seed = "c" + conAudit.getContractorAccount().getId() + "id" + conAudit.getId();
 				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&auditID=" + conAudit.getId()
 						+ "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
-
+				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				EmailSender.send(email);
 			}
@@ -227,7 +230,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 						+ "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setUser(conAudit.getAuditor());
-
+				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
 				EmailSender.send(email);

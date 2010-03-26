@@ -9,6 +9,7 @@
 <%@page import="com.picsauditing.jpa.entities.User"%>
 <%@page import="com.picsauditing.jpa.entities.NoteCategory"%>
 <%@page import="com.picsauditing.jpa.entities.Account"%>
+<%@page import="com.picsauditing.access.OpPerms"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 <%
 String id = request.getParameter("id");
@@ -19,9 +20,10 @@ ContractorAccount contractor = dao.find(Integer.parseInt(id));
 EmailBuilder emailBuilder = new EmailBuilder();
 emailBuilder.setTemplate(2); // Welcome Email
 emailBuilder.setPermissions(permissions);
-emailBuilder.setContractor(contractor);
+emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 EmailQueue emailQueue = emailBuilder.build();
 emailQueue.setPriority(90);
+emailQueue.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 EmailSender.send(emailQueue);
 
 NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");

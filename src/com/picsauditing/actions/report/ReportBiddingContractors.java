@@ -105,7 +105,8 @@ public class ReportBiddingContractors extends ReportAccount {
 				}
 
 				templateId = 73; // Trial Contractor Account Approval
-				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName() + " and notified contractor via email.";
+				summary = "Upgraded and Approved the Bid Only Account for " + permissions.getAccountName()
+						+ " and notified contractor via email.";
 			}
 			if ("Reject".equals(button)) {
 				cAccount.setRenew(false);
@@ -145,6 +146,8 @@ public class ReportBiddingContractors extends ReportAccount {
 					emailBuilder.addToken("permissions", permissions);
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(100);
+					emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
+							: "PICS Info <info@picsauditing.com>");
 					EmailSender.send(emailQueue);
 					addActionMessage(summary);
 				} catch (Exception e) {

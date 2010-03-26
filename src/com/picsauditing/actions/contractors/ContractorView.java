@@ -119,6 +119,7 @@ public class ContractorView extends ContractorActionSupport {
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
+			emailQueue.setFromAddress("billing@picsauditing.com");
 			EmailSender.send(emailQueue);
 
 			if (permissions.isContractor()) {

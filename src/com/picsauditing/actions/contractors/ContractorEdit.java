@@ -284,6 +284,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
 						emailBuilder.setCcAddresses("");
 						emailBuilder.setToAddresses("aharker@picsauditing.com");
+						emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 						EmailQueue email = emailBuilder.build();
 						email.setPriority(50);
 						emailQueueDAO.save(email);

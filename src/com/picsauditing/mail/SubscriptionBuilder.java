@@ -88,7 +88,7 @@ public abstract class SubscriptionBuilder {
 		if (tokens.size() > 0) {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
-			emailBuilder.setFromAddress("info@picsauditing.com");
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			// TODO remove this after we update the templates from username to
 			// user.name
 			emailBuilder.addToken("username", user.getName());

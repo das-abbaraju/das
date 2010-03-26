@@ -92,7 +92,7 @@
 			} catch (Exception e) {
 				System.out.println("PICS Exception Handler ... sending email via sendMail");
 				SendMail sendMail = new SendMail();
-				mail.setFromAddress("PICS Exception Handler <info@picsauditing.com>");
+				mail.setFromAddress("\"PICS Exception Handler\"<info@picsauditing.com>");
 				sendMail.send(mail);
 				System.out.println(mail.getBody());
 			}

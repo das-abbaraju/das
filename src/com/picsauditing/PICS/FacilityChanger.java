@@ -87,6 +87,7 @@ public class FacilityChanger {
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("operator", operator);
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			EmailSender.send(emailQueue);

@@ -117,7 +117,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						// Insurance Policy rejected by PICS
 						emailBuilder.setTemplate(52);
 						emailBuilder.setPermissions(permissions);
-						emailBuilder.setFromAddress(permissions.getEmail());
+						emailBuilder.setFromAddress("\""+permissions.getName() + "\"<" + permissions.getEmail() + ">");
 						emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorInsurance);
 						emailBuilder.addToken("cao", cao);
 						EmailSender.send(emailBuilder.build());

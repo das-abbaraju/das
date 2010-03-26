@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +94,8 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(),
-				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124, 125));
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer> asList(69, 71, 1616,
+				57, 103, 104, 123, 124, 125));
 		return SUCCESS;
 	}
 
@@ -111,8 +110,7 @@ public class VerifyView extends ContractorActionSupport {
 				sb.append("-------------------------------");
 				sb.append("\n");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.getType().equals(OshaType.OSHA) 
-							&& oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
+					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
 						sb.append("OSHA : ");
 						sb.append(oshaAudit.getComment());
 						sb.append("\n");
@@ -150,6 +148,8 @@ public class VerifyView extends ContractorActionSupport {
 		this.findContractor();
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(11); // PQF Verification
+		emailBuilder
+				.setFromAddress(contractor.getAuditor().getName() + " <" + contractor.getAuditor().getEmail() + ">");
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		emailBuilder.addToken("missing_items", addMissingItemsToEmail());
@@ -167,11 +167,15 @@ public class VerifyView extends ContractorActionSupport {
 		if (emailBody == null && emailSubject == null) {
 			emailBuilder.setTemplate(11);
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
+			emailBuilder.setFromAddress("\""+contractor.getAuditor().getName() + "\"<" + contractor.getAuditor().getEmail()
+					+ ">");
 		} else {
 			EmailTemplate emailTemplate = new EmailTemplate();
 			emailTemplate.setId(11);
 			emailTemplate.setBody(emailBody);
 			emailTemplate.setSubject(emailSubject);
+			emailBuilder.setFromAddress("\""+contractor.getAuditor().getName() + "\"<" + contractor.getAuditor().getEmail()
+					+ ">");
 			emailBuilder.setTemplate(emailTemplate);
 		}
 		EmailSender.send(emailBuilder.build());

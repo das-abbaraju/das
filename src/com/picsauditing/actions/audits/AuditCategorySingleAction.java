@@ -144,6 +144,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setTemplate(13); // Audits Thank You
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
+				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailSender.send(emailBuilder.build());
 
 				notes = " Submitted " + conAudit.getAuditType().getAuditName();

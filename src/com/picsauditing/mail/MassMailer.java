@@ -146,7 +146,7 @@ public class MassMailer extends PicsActionSupport {
 				EmailTemplate template = buildEmailTemplate();
 				// TODO we may want to offer sending from another email
 				// other than their own
-				emailBuilder.setFromAddress(permissions.getEmail());
+				emailBuilder.setFromAddress("\""+permissions.getName()+"\"<"+permissions.getEmail()+">");
 				emailBuilder.setTemplate(template);
 
 				for (Integer id : ids) {

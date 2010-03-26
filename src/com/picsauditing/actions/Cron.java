@@ -495,10 +495,11 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setTemplate(70);
 			// No Action Email Notification - Contractor
 			emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
 			emailQueueDAO.save(email);
-
+			
 			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),
 					NoteCategory.General);
 		}

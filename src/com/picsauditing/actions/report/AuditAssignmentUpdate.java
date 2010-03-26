@@ -127,7 +127,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				String confirmLink = serverName+"ScheduleAuditUpdate.action?type=c&auditID=" + contractorAudit.getId() + 
 					"&key="	+ Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
-				
+				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				EmailSender.send(email);
 			}
@@ -142,7 +142,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				String confirmLink = serverName+"ScheduleAuditUpdate.action?type=a&auditID=" + contractorAudit.getId() + 
 					"&key="	+ Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
-				
+				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
 				EmailSender.send(email);

@@ -170,6 +170,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					emailBuilder.setToAddresses(newContractor.getEmail());
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(80);
+					emailQueue.setFromAddress(getAssignedCSR().getEmail());
 					EmailSender.send(emailQueue);
 					
 					if (filenames != null) {

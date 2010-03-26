@@ -18,7 +18,7 @@
 <ul id="navlist">
 	<li>
 		<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" 
-			onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Contractor Details</a>
+			onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Account Details</a>
 	</li>
 	<s:if test="!permissions.operator">
 		<li><a
