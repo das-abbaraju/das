@@ -185,7 +185,7 @@ ul {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Statistics OLD
+				Statistics
 			</div>
 			<div class="panel_content">
 				<table class="report">
