@@ -15,6 +15,12 @@ public class FileDAO extends PicsDAO {
 			try {
 				FileBase o2 = find(o.getTableType(), o.getForeignKeyID());
 				if (o2.getModifiedDate().after(o.getModifiedDate())) {
+					// Don't ever overwrite a newer file with an older file
+					o = o2;
+					return o;
+				}
+				if (o2.getFileHash().equals(o.getFileHash())) {
+					// Don't ever overwrite the same file
 					o = o2;
 					return o;
 				}
