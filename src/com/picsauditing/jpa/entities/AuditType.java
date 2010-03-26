@@ -29,6 +29,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int ANNUALADDENDUM = 11;
 	public static final int HUNTSMAN_EBIX = 31;
 	public static final int COR = 72;
+	public static final int SUPPLEMENTCOR = 84;
 	
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 

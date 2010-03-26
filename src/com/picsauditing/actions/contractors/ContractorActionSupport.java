@@ -229,7 +229,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getId() == AuditType.COR && !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
+				if ((audit.getAuditType().getId() == AuditType.COR || audit.getAuditType().getId() == AuditType.SUPPLEMENTCOR) 
+						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					String linkText = audit.getAuditType().getAuditName()
 							+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
@@ -360,7 +361,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			operators = null;
 
 		AuditData answer = getAuditDataDAO().findAnswerByConQuestion(id, AuditQuestion.COR);
-		if (answer != null && !Strings.isEmpty(answer.getAnswer()) && Boolean.parseBoolean(answer.getAnswer())) {
+		if (answer != null && "Yes".equals(answer.getAnswer())) {
 			hasCOR = true;
 		}
 

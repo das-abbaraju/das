@@ -153,7 +153,21 @@ public class AuditBuilder {
 				}
 			}
 		}
-
+		
+		// Checking to see if the supplement COR should be required for this contractor 
+		ContractorAudit corAudit = null;
+		if(hasCOR != null && "Yes".equals(hasCOR.getAnswer())) {
+			for(ContractorAudit audit : currentAudits) {
+				if(audit.getAuditType().getId() == AuditType.COR 
+						&& auditTypeList.contains(audit.getAuditType())) {
+					{
+						corAudit = audit;
+						break;
+					}
+				}
+			}	
+		}
+		
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
 			if (auditType.getId() == AuditType.ANNUALADDENDUM) {
@@ -213,6 +227,12 @@ public class AuditBuilder {
 					case AuditType.COR:
 						if(hasCOR == null 
 								|| !"Yes".equals(hasCOR.getAnswer()))
+							insertNow = false;
+						break;
+					case AuditType.SUPPLEMENTCOR:
+						if(corAudit == null)
+							insertNow = false;
+						else if(!corAudit.getAuditStatus().isActive())
 							insertNow = false;
 						break;
 					default:
