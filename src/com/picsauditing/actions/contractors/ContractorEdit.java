@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -20,6 +21,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.FileDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -32,6 +34,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.FileBase;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -51,6 +54,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
 	private File logo = null;
+	private String logoContentType = null;
 	private String logoFileName = null;
 	private File brochure = null;
 	private String brochureFileName = null;
@@ -67,11 +71,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected State state;
 	protected State billingState;
 	protected int contactID;
+	protected FileDAO fileDAO;
 
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
 			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
-			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO) {
+			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, FileDAO fileDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -81,6 +86,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.emailQueueDAO = emailQueueDAO;
 		this.noteDAO = noteDAO;
 		this.subscriptionDAO = subscriptionDAO;
+		this.fileDAO = fileDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -139,9 +145,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 							addActionError("Logos must be a jpg, gif or png image");
 							return SUCCESS;
 						}
-						String fileName = "logo_" + contractor.getId();
-						FileUtils.moveFile(logo, ftpDir, "/logos/", fileName, extension, true);
-						contractor.setLogoFile(fileName + "." + extension);
+						
+						FileBase fileBase = new FileBase(logo, logoContentType, logoFileName, PICSFileType.logos, id);
+						fileDAO.save(fileBase);
+						// TODO add Logo Hash
+						//contractor.setLogoHash(fileBase.getFileHash());
 					}
 
 					if (brochure != null) {
@@ -184,7 +192,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						contractor.setPrimaryContact(userDAO.find(contactID));
 					}
 
-					contractor = accountDao.save(contractor);
+					accountDao.save(contractor);
 
 					addActionMessage("Successfully modified " + contractor.getName());
 				}
@@ -333,6 +341,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void setLogoContentType(String logoContentType) {
+		this.logoContentType = logoContentType;
 	}
 
 	public void setLogoFileName(String logoFileName) {

@@ -51,7 +51,7 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 			}
 		}
 
-		ca = dao.save(ca);
+		dao.save(ca);
 		return SUCCESS;
 	}
 

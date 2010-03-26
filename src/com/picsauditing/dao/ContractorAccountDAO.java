@@ -24,26 +24,6 @@ import com.picsauditing.util.Strings;
 @Transactional
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
-	public ContractorAccount save(ContractorAccount o) {
-		if (o.getId() == 0) {
-			em.persist(o);
-		} else {
-			o = em.merge(o);
-		}
-		return o;
-	}
-
-	public void remove(int id) {
-		ContractorAccount row = find(id);
-		remove(row);
-	}
-
-	public void remove(ContractorAccount row) {
-		if (row != null) {
-			em.remove(row);
-		}
-	}
-
 	public void remove(ContractorAccount row, String ftpDir) {
 		FileUtils.deleteFile(ftpDir + "/logos/" + row.getLogoFile());
 		String filename = "brochure_" + row.getId() + "." + row.getBrochureFile();
