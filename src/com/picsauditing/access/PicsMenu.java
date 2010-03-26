@@ -70,7 +70,7 @@ public class PicsMenu {
 		if (permissions.isCorporate() || permissions.getCorporateParent().size() > 0)
 			subMenu.addChild("By Operator", "ReportContractorOperatorFlagMatrix.action");
 		if (permissions.isOperatorCorporate())
-			subMenu.addChild("Flag Matrix", "OperatorFlagMatrix.action");
+			subMenu.addChild("Flag Criteria by Contractor", "OperatorFlagMatrix.action");
 		if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
 			subMenu.addChild("Archived Accounts", "ArchivedContractorAccounts.action");
 			subMenu.addChild("Delinquent Accounts", "DelinquentContractorAccounts.action");
