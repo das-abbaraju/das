@@ -180,71 +180,7 @@ ul {
 	</div>
 	</s:if>
 	</s:iterator>
-	<s:if test="oshaAudits.size() > 0">
-	<!-- Statistics OLD-->
-	<div class="panel_placeholder">
-		<div class="panel">
-			<div class="panel_header">
-				Statistics
-			</div>
-			<div class="panel_content">
-				<table class="report">
-					<thead>
-						<tr>
-							<th></th>
-							<s:iterator value="oshaAudits.keySet()" id="val">
-								<th<s:if test="#val == 'W Average'"> title="Weighted average factors in the fluctuation in man hours between years"</s:if>><s:property value="#val"/></th>
-							</s:iterator>
-							<th>Industry</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>TRIR</td>
-							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('TrirAbsolute'))"/></td>
-							</s:iterator>
-							<td><s:property value="contractor.naics.trir"/></td>
-						</tr>
-						<tr>
-							<td>LWCR</td>
-							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('LwcrAbsolute'))"/></td>
-							</s:iterator>
-							<td><s:property value="contractor.naics.lwcr"/></td>
-						</tr>
-						<tr>
-							<td>Fatalities</td>
-							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('Fatalities'))"/></td>
-							</s:iterator>
-							<td></td>
-						</tr>
-						<tr>
-							<td>Man Hours</td>
-							<s:iterator value="oshaAudits">
-								<td><s:property value="format(value.get('Man Hours'))"/></td>
-							</s:iterator>
-							<td></td>
-						</tr>
-						<s:if test="contractor.emrs.size() > 0">
-						<tr>
-							<td>EMR</td>
-							<s:iterator value="contractor.emrs">
-								<td><s:property value="value.answer"/></td>
-							</s:iterator>
-							<td></td>
-							<td></td>
-						</tr>
-						</s:if>
-					</tbody>
-				</table>
-				<div class="clear"></div>
-			</div>
-		</div>
-	</div>
-	</s:if>
-	<pics:permission perm="DevelopmentEnvironment">
+	<s:if test="oshaDisplay.hasData">
 	<!-- Statistics -->
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -274,7 +210,7 @@ ul {
 			</div>
 		</div>
 	</div>
-	</pics:permission>	
+	</s:if>
 	
 	<s:if test="criteriaList.categories.size() > 0">
 	<!-- Flaggable Data -->

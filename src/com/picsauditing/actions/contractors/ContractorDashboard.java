@@ -70,8 +70,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private ContractorFlagCriteriaList criteriaList;
 
-	private Map<String, Map<String, String>> oshaAudits;
-
 	private OshaDisplay oshaDisplay;
 
 	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
@@ -201,36 +199,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 
-		// auditFor ==> Rate Type ==> value
-		oshaAudits = new LinkedHashMap<String, Map<String, String>>();
-
-		OshaOrganizer organizer = contractor.getOshaOrganizer();
-		for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
-				MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage, MultiYearScope.ThreeYearWeightedAverage }) {
-			OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
-			if (audit != null) {
-				String auditFor = "";
-				if (audit.getConAudit() == null) {
-					if (scope.equals(MultiYearScope.ThreeYearAverage))
-						auditFor = "Average";
-					else if (scope.equals(MultiYearScope.ThreeYearWeightedAverage))
-						auditFor = "W Average";
-				} else
-					auditFor = audit.getConAudit().getAuditFor();
-
-				oshaAudits.put(auditFor, new LinkedHashMap<String, String>());
-				for (OshaRateType rateType : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
-						OshaRateType.Fatalities }) {
-
-					oshaAudits.get(auditFor).put(rateType.toString(),
-							organizer.getRate(OshaType.OSHA, scope, rateType).toString());
-				}
-
-				oshaAudits.get(auditFor).put("manhours", "" + audit.getManHours());
-			}
-
-		}
-
 		return SUCCESS;
 	}
 
@@ -284,10 +252,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (criteriaList == null)
 			criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, opID));
 		return criteriaList;
-	}
-
-	public Map<String, Map<String, String>> getOshaAudits() {
-		return oshaAudits;
 	}
 
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
@@ -450,6 +414,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		public String getData(String k1, String k2) {
 			return data.get(k1, k2);
+		}
+
+		public boolean isHasData() {
+			return rateTypeSet.size() > 0 && auditForSet.size() > 0;
 		}
 	}
 }
