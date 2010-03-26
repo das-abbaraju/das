@@ -1522,5 +1522,10 @@
 
 		-->
 		<!-- Remember to Categorize your new Struts pages -->
+		
+		<action name="FileConversionEngine" class="com.picsauditing.actions.files.FileConversionEngine">
+			<result>/struts/blank.jsp</result>
+		</action>
+		
 	</package>
 </struts>

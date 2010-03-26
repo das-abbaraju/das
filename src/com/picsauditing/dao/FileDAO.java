@@ -14,6 +14,10 @@ public class FileDAO extends PicsDAO {
 		if (o.getId() == 0) {
 			try {
 				FileBase o2 = find(o.getTableType(), o.getForeignKeyID());
+				if (o2.getModifiedDate().after(o.getModifiedDate())) {
+					o = o2;
+					return o;
+				}
 				em.remove(o2);
 				em.flush();
 			} catch (Exception noFileFound) {
