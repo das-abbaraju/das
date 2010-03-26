@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -25,6 +26,7 @@ import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.util.Strings;
@@ -70,7 +72,7 @@ public class ContractorWidget extends ContractorActionSupport {
 							.add("PICS now requires contractors to have two or more users to help maintain their account."
 									+ "Please click here <a href=\"UsersManage.action\"> to add a new user</a>");
 				}
-				
+
 				if (contractor.isAcceptsBids()) {
 					String due = null;
 					try {
@@ -114,99 +116,117 @@ public class ContractorWidget extends ContractorActionSupport {
 				}
 			}
 			String auditName;
+			Set<AuditType> auditTypeList = new HashSet<AuditType>();
+			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+				if (co.getOperatorAccount().getStatus().isActiveDemo()) {
+					for (AuditOperator ao : co.getOperatorAccount().getVisibleAudits()) {
+						if (ao.isRequiredFor(contractor) && ao.getAuditType().getId() != AuditType.PQF
+								&& ao.getAuditType().getId() != AuditType.WELCOME) {
+							auditTypeList.add(ao.getAuditType());
+						}
+					}
+				}
+			}
+
 			for (ContractorAudit conAudit : getActiveAudits()) {
 				// TODO get the Tasks to show up right for OSHA/EMR
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-					if (conAudit.getAuditType().getClassType().isPqf()) {
-						if (conAudit.getAuditType().isPqf())
-							auditName = "Pre-Qualification Form";
-						else
-							auditName = conAudit.getAuditType().getAuditName();
-						if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
-							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">complete and submit your " + auditName + "</a>");
-						} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
-							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">review and re-submit your " + auditName + "</a>");
-						}
-					}
-					if (conAudit.getAuditType().isAnnualAddendum()
-							&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
-						String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-								+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
-								+ " </a>";
-						if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1))) {
-							text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
-						}
-						openTasks.add(text);
 
-					}
-
-					if (conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted()
-							&& conAudit.getPercentVerified() < 100) {
-						String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID=" + conAudit.getId()
-								+ "\">open requirements from your recent " + conAudit.getAuditType().getAuditName()
-								+ "</a>";
-						if (!openReq) {
-							text += "<br/>NOTE: Open requirements can be uploaded online.";
-							openReq = true;
-						}
-						openTasks.add(text);
-					}
-
-					if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
-							&& conAudit.getAuditType().isCanContractorView()
-							&& !conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().isHasAuditor()) {
-						String text;
-						if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
-							text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-									+ "'>click here to schedule your Implementation Audit</a>";
-						} else {
-							text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId() + "\">upcoming "
-									+ conAudit.getAuditType().getAuditName() + "</a>";
-							try {
-								text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
-							} catch (Exception e) {
+					if (conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded()
+							|| auditTypeList.contains(conAudit.getAuditType())) {
+						if (conAudit.getAuditType().getClassType().isPqf()) {
+							if (conAudit.getAuditType().isPqf())
+								auditName = "Pre-Qualification Form";
+							else
+								auditName = conAudit.getAuditType().getAuditName();
+							if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
+								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">complete and submit your " + auditName + "</a>");
+							} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
+								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">review and re-submit your " + auditName + "</a>");
 							}
-							if (conAudit.getAuditor() != null)
-								text += " with " + conAudit.getAuditor().getName();
+						}
+						if (conAudit.getAuditType().isAnnualAddendum()
+								&& (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete())) {
+							String text = "Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+									+ "\">upload and submit your EMR and/or OSHA forms for " + conAudit.getAuditFor()
+									+ " </a>";
+							if (conAudit.getAuditFor().equals(Integer.toString(DateBean.getCurrentYear() - 1))) {
+								text += "<br/><b>NOTE: <a href=\"http://help.picsauditing.com/wiki/Annual_Updates\">Click here to watch the Annual Update tutorial</a></b>";
+							}
+							openTasks.add(text);
+
 						}
 
-						openTasks.add(text);
-					}
-				}
+						if (conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted()
+								&& conAudit.getPercentVerified() < 100) {
+							String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
+									+ conAudit.getId() + "\">open requirements from your recent "
+									+ conAudit.getAuditType().getAuditName() + "</a>";
+							if (!openReq) {
+								text += "<br/>NOTE: Open requirements can be uploaded online.";
+								openReq = true;
+							}
+							openTasks.add(text);
+						}
 
-				if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
-					if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
-						Set<String> pendingOperators = new TreeSet<String>();
-						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
-							if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
-								AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
-										cAuditOperator.getAudit().getAuditType().getId());
-								if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
-									pendingOperators.add(cAuditOperator.getOperator().getName());
+						if (conAudit.getAuditStatus().equals(AuditStatus.Pending)
+								&& conAudit.getAuditType().isCanContractorView()
+								&& !conAudit.getAuditType().isCanContractorEdit()
+								&& conAudit.getAuditType().isHasAuditor()) {
+							String text;
+							if (conAudit.getAuditType().getId() == AuditType.OFFICE
+									&& conAudit.getScheduledDate() == null) {
+								text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
+										+ "'>click here to schedule your Implementation Audit</a>";
+							} else {
+								text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + "</a>";
+								try {
+									text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
+								} catch (Exception e) {
+								}
+								if (conAudit.getAuditor() != null)
+									text += " with " + conAudit.getAuditor().getName();
+							}
+
+							openTasks.add(text);
+						}
+					}
+
+					if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
+						if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
+							Set<String> pendingOperators = new TreeSet<String>();
+							for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
+								if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
+									AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
+											cAuditOperator.getAudit().getAuditType().getId());
+									if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
+										pendingOperators.add(cAuditOperator.getOperator().getName());
+									}
 								}
 							}
-						}
 
-						if (pendingOperators.size() > 0) {
-							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
-									+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
-						}
+							if (pendingOperators.size() > 0) {
+								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
+										+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
+							}
 
-						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
-							if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
-								AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
-										cAuditOperator.getAudit().getAuditType().getId());
-								if (ao.isCanSee() && ao.getMinRiskLevel() > 0
-										&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
-									String Text = "<a href=\"Audit.action?auditID=" + conAudit.getId()
-											+ "\">Update your " + conAudit.getAuditType().getAuditName()
-											+ " Policy rejected by </a> " + cAuditOperator.getOperator().getName();
-									if (!Strings.isEmpty(cAuditOperator.getNotes()))
-										Text += " for reason " + cAuditOperator.getNotes();
-									openTasks.add(Text);
+							for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
+								if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
+									AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
+											cAuditOperator.getAudit().getAuditType().getId());
+									if (ao.isCanSee() && ao.getMinRiskLevel() > 0
+											&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
+										String Text = "<a href=\"Audit.action?auditID=" + conAudit.getId()
+												+ "\">Update your " + conAudit.getAuditType().getAuditName()
+												+ " Policy rejected by </a> " + cAuditOperator.getOperator().getName();
+										if (!Strings.isEmpty(cAuditOperator.getNotes()))
+											Text += " for reason " + cAuditOperator.getNotes();
+										openTasks.add(Text);
+									}
 								}
 							}
 						}
