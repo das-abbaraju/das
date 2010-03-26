@@ -3,8 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
-import com.picsauditing.PICS.DoubleMap;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -311,23 +309,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public class OshaDisplay {
 
-		Set<String> auditForSet = new LinkedHashSet<String>();
-		Set<String> rateTypeSet = new LinkedHashSet<String>();
+		private Set<String> auditForSet = new LinkedHashSet<String>();
+		private Set<String> rateTypeSet = new LinkedHashSet<String>();
 
-		private DoubleMap<String, String, String> data = new DoubleMap<String, String, String>();
+		private Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 
 		public OshaDisplay(OshaOrganizer organizer, List<ContractorOperator> operators) {
-
-			rateTypeSet.add(OshaRateType.TrirAbsolute.getDescription());
-			for (ContractorOperator contractorOperator : operators) {
-				rateTypeSet.add(getOperatorDisplay(contractorOperator, " TRIR"));
-			}
-			rateTypeSet.add(OshaRateType.LwcrAbsolute.getDescription());
-			for (ContractorOperator contractorOperator : operators) {
-				rateTypeSet.add(getOperatorDisplay(contractorOperator, " LWCR"));
-			}
-			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
-			rateTypeSet.add("Man Hours");
 
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage,
@@ -340,19 +327,17 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 					for (OshaRateType rate : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 							OshaRateType.Fatalities }) {
-						data
-								.put(auditFor, rate.getDescription(), format(organizer.getRate(OshaType.OSHA, scope,
-										rate)));
+						put(rate.getDescription(), auditFor, format(organizer.getRate(OshaType.OSHA, scope, rate)));
 					}
 
-					data.put(auditFor, "Man Hours", format(audit.getManHours()));
+					put("Man Hours", auditFor, format(audit.getManHours()));
 				}
 			}
 
 			String ind = "Industry";
 			auditForSet.add(ind);
-			data.put(ind, OshaRateType.TrirAbsolute.getDescription(), format(contractor.getNaics().getTrir()));
-			data.put(ind, OshaRateType.LwcrAbsolute.getDescription(), format(contractor.getNaics().getLwcr()));
+			put(OshaRateType.TrirAbsolute.getDescription(), ind, format(contractor.getNaics().getTrir()));
+			put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(contractor.getNaics().getLwcr()));
 
 			for (ContractorOperator contractorOperator : operators) {
 				for (FlagCriteriaOperator fco : contractorOperator.getOperatorAccount().getFlagCriteriaInherited()) {
@@ -363,26 +348,45 @@ public class ContractorDashboard extends ContractorActionSupport {
 						if (auditFor != null) {
 							String suffix = OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType()) ? " TRIR"
 									: " LWCR";
-							data.put(auditFor, getOperatorDisplay(contractorOperator, suffix), fco
-									.getShortDescription());
+							put(getOperatorDisplay(contractorOperator, suffix), auditFor, fco.getShortDescription());
 						}
 					}
 				}
 			}
 
-			// clear the empty rows
-			for (Iterator<String> rates = rateTypeSet.iterator(); rates.hasNext();) {
-				String rate = rates.next();
-				boolean empty = true;
-				for (String auditFor : auditForSet) {
-					if (data.get(auditFor, rate) != null) {
-						empty = false;
-						break;
-					}
-				}
-				if (empty)
-					rates.remove();
+			buildRateTypeSet(operators);
+		}
+
+		private void put(String k1, String k2, String v) {
+			if (data.get(k1) == null)
+				data.put(k1, new HashMap<String, String>());
+
+			data.get(k1).put(k2, v);
+		}
+
+		public String getData(String k1, String k2) {
+			try {
+				return data.get(k1).get(k2);
+			} catch (Exception e) {
+				return null;
 			}
+		}
+
+		private void buildRateTypeSet(List<ContractorOperator> operators) {
+			rateTypeSet.add(OshaRateType.TrirAbsolute.getDescription());
+			for (ContractorOperator contractorOperator : operators) {
+				String disp = getOperatorDisplay(contractorOperator, " TRIR");
+				if (data.get(disp) != null)
+					rateTypeSet.add(disp);
+			}
+			rateTypeSet.add(OshaRateType.LwcrAbsolute.getDescription());
+			for (ContractorOperator contractorOperator : operators) {
+				String disp = getOperatorDisplay(contractorOperator, " LWCR");
+				if (data.get(disp) != null)
+					rateTypeSet.add(disp);
+			}
+			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
+			rateTypeSet.add("Man Hours");
 		}
 
 		private String getOperatorDisplay(ContractorOperator contractorOperator, String suffix) {
@@ -410,10 +414,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		public Set<String> getRateTypeSet() {
 			return rateTypeSet;
-		}
-
-		public String getData(String k1, String k2) {
-			return data.get(k1, k2);
 		}
 
 		public boolean isHasData() {
