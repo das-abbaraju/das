@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -362,14 +363,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 				rateTypeSet.add(getOperatorDisplay(contractorOperator, " LWCR"));
 			}
 			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
-			rateTypeSet.add("Hours Worked");
+			rateTypeSet.add("Man Hours");
 
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage,
 					MultiYearScope.ThreeYearWeightedAverage }) {
 				OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
-				if (audit != null) {
-					String auditFor = findAuditFor(organizer, scope);
+				String auditFor = findAuditFor(organizer, scope);
+				if (auditFor != null) {
 
 					auditForSet.add(auditFor);
 
@@ -380,8 +381,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 										rate)));
 					}
 
-					data.put(auditFor, "Hours Worked", format(audit.getManHours()));
-
+					data.put(auditFor, "Man Hours", format(audit.getManHours()));
 				}
 			}
 
@@ -396,22 +396,41 @@ public class ContractorDashboard extends ContractorActionSupport {
 							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
 						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 						String auditFor = findAuditFor(organizer, scope);
-						String suffix = OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType()) ? " TRIR"
-								: " LWCR";
-						data.put(auditFor, getOperatorDisplay(contractorOperator, suffix), fco.getShortDescription());
+						if (auditFor != null) {
+							String suffix = OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType()) ? " TRIR"
+									: " LWCR";
+							data.put(auditFor, getOperatorDisplay(contractorOperator, suffix), fco
+									.getShortDescription());
+						}
 					}
 				}
 			}
+
+			// clear the empty rows
+			for (Iterator<String> rates = rateTypeSet.iterator(); rates.hasNext();) {
+				String rate = rates.next();
+				boolean empty = true;
+				for (String auditFor : auditForSet) {
+					if (data.get(auditFor, rate) != null) {
+						empty = false;
+						break;
+					}
+				}
+				if (empty)
+					rates.remove();
+			}
 		}
 
-		private String getOperatorDisplay(ContractorOperator contractorOperator, String type) {
-			return "&nbsp;&nbsp;" + contractorOperator.getOperatorAccount().getName() + type;
+		private String getOperatorDisplay(ContractorOperator contractorOperator, String suffix) {
+			return "&nbsp;&nbsp;" + contractorOperator.getOperatorAccount().getName() + suffix;
 		}
 
 		private String findAuditFor(OshaOrganizer organizer, MultiYearScope scope) {
 			OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
 			String auditFor = "";
-			if (audit.getConAudit() == null) {
+			if (audit == null) {
+				auditFor = null;
+			} else if (audit.getConAudit() == null) {
 				if (scope.equals(MultiYearScope.ThreeYearAverage))
 					auditFor = "Average";
 				else if (scope.equals(MultiYearScope.ThreeYearWeightedAverage))
