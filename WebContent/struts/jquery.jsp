@@ -16,3 +16,10 @@
 
 <link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
 <link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	    if($.browser.mozilla) 
+	         $("form").attr("autocomplete", "off");
+	});
+</script>
