@@ -17,3 +17,11 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
+
+-- Changing account name velocity tag
+update email_template set body = 'Hello <DisplayName>,
+<MyName> has issued you a login for the ${user.account.name} account on PICS.
+Please log in using the following link to set your password.
+${confirmLink}
+Have a great week,
+<PICSSignature>' where id = 5;

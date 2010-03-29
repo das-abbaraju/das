@@ -125,6 +125,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			emailBuilder.addToken("user", user);
 
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			String confirmLink = "http://www.picsauditing.com/Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
@@ -148,8 +149,8 @@ public class AccountRecovery extends PicsActionSupport {
 			emailBuilder.setTemplate(5);
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			emailBuilder.addToken("user", user);
-			emailBuilder.addToken("accountname", user.getAccount().getName());
-			String confirmLink = "http://www.picsauditing.com/Login.action?username="
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+						String confirmLink = "http://www.picsauditing.com/Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
