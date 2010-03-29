@@ -31,6 +31,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends BaseTable implements java.io.Serializable, Comparable<Account>, JSONable {
+
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
@@ -327,7 +328,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	@Transient
 	public String getDescriptionHTML() {
-		return Utilities.escapeNewLines(this.description);
+		return Utilities.escapeHTML(this.description);
 	}
 
 	@OneToMany(mappedBy = "account")

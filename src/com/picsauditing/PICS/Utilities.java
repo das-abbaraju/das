@@ -7,49 +7,18 @@ package com.picsauditing.PICS;
 public class Utilities {
 
 	public static String escapeHTML(String value) {
-		if (value == null)
-			return "";
-		StringBuffer strval = new StringBuffer();
+		StringBuffer out = new StringBuffer();
 		for (int i = 0; i < value.length(); i++) {
-			char ch = value.charAt(i);
-			switch (ch) {
-			case '\'':
-				strval.append("\\'");
-				break;
-			case '"':
-				strval.append("\"");
-				break;
-			case '&':
-				strval.append("&");
-				break;
-			case '%':
-				strval.append(" ");
-				break;
-			case '<':
-				strval.append("<");
-				break;
-			case '>':
-				strval.append(">");
-				break;
-			case '\n':
-				strval.append("<br>");
-				break;
-			default:
-				if (ch > 126)
-					strval.append("&#" + String.valueOf(ch) + ";");
-				else
-					strval.append(ch);
-				break;
-			}// switch
-		}// for
-		// BJ 2-21-05 java can not reccognize ms apostrpohes, so must work
-		// backwards
-		// loop through to find where ms apostrpohes were converted to question
-		// marks, change to standard apostrophes
-		// int substart = strval.lastIndexOf("&#?;");
-		// strval.replace(substart,substart+3,"'");
-
-		return strval.toString();
+			char c = value.charAt(i);
+			if (c > 127 || c == '"' || c == '<' || c == '>' || c == '\'') {
+				out.append("&#" + (int) c + ";");
+			} else if (c == '\n') {
+				out.append("<br/>");
+			} else {
+				out.append(c);
+			}
+		}
+		return out.toString();
 	}// escapeHTML
 
 	public static String escapeNewLines(String value) {
