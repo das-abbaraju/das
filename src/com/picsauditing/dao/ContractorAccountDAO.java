@@ -295,4 +295,10 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		return query.getResultList();
 	}
+	
+	public List<ContractorAccount> findByContractorIds(List<Integer> conIDs) {
+		String ids = Strings.implodeForDB(conIDs, ",");
+		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.id in (" + ids + ")");
+		return query.getResultList();
+	}
 }
