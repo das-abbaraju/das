@@ -67,7 +67,7 @@ public class ReportUser extends ReportActionSupport {
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addField("a.name AS companyName");
 		sql.addField("a.type AS AcctType");
-		//sql.addWhere("u.isActive = 'Yes'");
+		// sql.addWhere("u.isActive = 'Yes'");
 		sql.addOrderBy("u.name");
 
 		if (isFiltered())
@@ -76,6 +76,7 @@ public class ReportUser extends ReportActionSupport {
 		return returnResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected String returnResult() throws IOException {
 		if (mailMerge && data != null && data.size() > 0) {
 			Set<Integer> ids = new HashSet<Integer>();
@@ -136,8 +137,8 @@ public class ReportUser extends ReportActionSupport {
 		// If we're searching by nameIndexes, we should use the nameIndex format
 		// on the company name users input
 		if (filterOn(f.getCompanyName())) {
-			report.addFilter(new SelectFilter("companyName", "a.nameIndex LIKE '%?%'",
-				Strings.indexName(f.getCompanyName())));
+			report.addFilter(new SelectFilter("companyName", "a.nameIndex LIKE '%?%'", Strings.indexName(f
+					.getCompanyName())));
 		}
 	}
 
