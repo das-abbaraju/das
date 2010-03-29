@@ -49,7 +49,9 @@
 <div class="answer">
 	<input type="hidden" id="<s:property value="#q.id"/>_answerID" value="<s:property value="#a.id"/>" />
 	<input type="hidden" id="<s:property value="#q.id"/>_questionID" value="<s:property value="#q.id"/>" />
-	
+	<s:if test="mode == 'Verify'">
+		<s:property value="%{#a.answer}"/>
+	</s:if>
 	<s:if test="#q.questionType == 'Text Area'">
 		<s:textarea cols="70" rows="4" name="answer%{#q.id}" value="%{#a.answer}" cssStyle="margin-left: 80px; width: 100%;"
 			onchange="saveAnswer('%{#q.id}', this);">
