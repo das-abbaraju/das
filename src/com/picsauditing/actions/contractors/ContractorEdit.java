@@ -145,11 +145,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 							addActionError("Logos must be a jpg, gif or png image");
 							return SUCCESS;
 						}
-						
+
 						FileBase fileBase = new FileBase(logo, logoContentType, logoFileName, PICSFileType.logos, id);
 						fileDAO.save(fileBase);
 						// TODO add Logo Hash
-						//contractor.setLogoHash(fileBase.getFileHash());
+						// contractor.setLogoHash(fileBase.getFileHash());
 					}
 
 					if (brochure != null) {
@@ -263,16 +263,21 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						List<EmailSubscription> subscriptions = subscriptionDAO.find(
 								Subscription.ContractorRegistration, operatorID);
 						Set<String> emails = new HashSet<String>();
+						boolean subscribed = false;
 						for (EmailSubscription subscription : subscriptions) {
-							if (!subscription.getTimePeriod().equals(SubscriptionTimePeriod.None))
+							if (!subscription.getTimePeriod().equals(SubscriptionTimePeriod.None)) {
 								emails.add(subscription.getUser().getEmail());
-							else {
-								// only want to access dao if no subscription exists (very slow operation)
-								OperatorAccount operator = operatorAccountDAO.find(operatorID);
-								if(operator != null && operator.getPrimaryContact() != null)
-									emails.add(operator.getPrimaryContact().getEmail());
+								subscribed = true;
 							}
 						}
+
+						// only want to access dao if no subscription exists
+						// (very slow operation)
+						// sending email to primary contact if no subscribers exist
+						OperatorAccount operator = operatorAccountDAO.find(operatorID);
+						if (!subscribed && operator != null && operator.getPrimaryContact() != null)
+							emails.add(operator.getPrimaryContact().getEmail());
+
 						if (emails.size() > 0)
 							emailAddresses.addAll(emails);
 						else
