@@ -2,8 +2,10 @@ package com.picsauditing.search;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.log.PicsLogger;
 
 public class SelectUserUnion extends SelectSQL {
+
 	private String userWhere = "";
 
 	public SelectUserUnion() {
@@ -14,10 +16,11 @@ public class SelectUserUnion extends SelectSQL {
 	 * Return the sql clause in this format:
 	 * 
 	 * SELECT {fields<String>} FROM users [WHERE {whereClause}] [GROUP BY
-	 * {groupByFields<String>] [HAVING {havingClause}] [ORDER BY {orderBys<String>}
-	 * [LIMIT {limit}|LIMIT {startRow}, {limit}]
+	 * {groupByFields<String>] [HAVING {havingClause}] [ORDER BY
+	 * {orderBys<String>} [LIMIT {limit}|LIMIT {startRow}, {limit}]
 	 */
 	public String toString() {
+		PicsLogger.start("SelectSQL");
 		if (fullClause.length() > 0)
 			return fullClause;
 
@@ -35,9 +38,8 @@ public class SelectUserUnion extends SelectSQL {
 		sql.append("\nFROM (\n");
 
 		String innerUnionSQL = "SELECT id, username, password, email, name, isActive, creationDate, lastLogin, accountID, phoneIndex as phone "
-				+ "FROM users where isGroup ='No' "
-				+ userWhere;
-		
+				+ "FROM users where isGroup ='No' " + userWhere;
+
 		sql.append(innerUnionSQL);
 
 		sql.append("\n) u");
@@ -50,7 +52,7 @@ public class SelectUserUnion extends SelectSQL {
 		if (whereClause.size() > 0) {
 			sql.append("\nWHERE 1");
 			for (String whereSQL : this.whereClause) {
-		
+
 				sql.append("\n AND (");
 				sql.append(whereSQL);
 				sql.append(") ");
@@ -77,7 +79,8 @@ public class SelectUserUnion extends SelectSQL {
 			}
 			sql.append(this.limit);
 		}
-		System.out.println(sql.toString());
+		PicsLogger.log(sql.toString());
+		PicsLogger.stop();
 
 		return sql.toString();
 	}
