@@ -105,14 +105,15 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			if (button.equals("delete")) {
 				FlagCriteriaOperator remove = flagCriteriaOperatorDAO.find(criteriaID);
 
-				if (remove.getOperator().equals(operator)) {
-					flagCriteriaOperatorDAO.remove(remove);
+				if (remove != null) {
+					if (remove.getOperator() != null && remove.getOperator().equals(operator))
+						flagCriteriaOperatorDAO.remove(remove);
+					
+					FlagCriteria fc = remove.getCriteria();
+					String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription()
+							+ ", " + remove.getFlag().toString() + " flagged";
+					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 				}
-
-				FlagCriteria fc = remove.getCriteria();
-				String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription()
-						+ ", " + remove.getFlag().toString() + " flagged";
-				addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 			}
 			if (button.equals("add") && criteriaID > 0) {
 				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
