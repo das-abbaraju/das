@@ -22,6 +22,7 @@ import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
@@ -52,14 +53,16 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected Country country;
 	protected State state;
 	protected int contactID;
+	protected UserSwitchDAO userSwitchDAO;
 
 	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
-			AccountUserDAO accountUserDAO, UserDAO userDAO) {
+			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO) {
 		super(operatorAccountDAO);
 		this.facilitiesDAO = facilitiesDAO;
 		this.formDAO = formDAO;
 		this.accountUserDAO = accountUserDAO;
 		this.userDAO = userDAO;
+		this.userSwitchDAO = userSwitchDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -252,12 +255,11 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 				addActionMessage("Successfully saved " + operator.getName());
 			}
 		}
-		
 
 		if (id == 0)
 			subHeading = "Add " + type;
 		else {
-			if(operator.getPrimaryContact() == null)
+			if (operator.getPrimaryContact() == null)
 				addActionError("Please add a primary contact to this account");
 		}
 
@@ -407,21 +409,35 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	}
 
 	public List<User> getPrimaryOperatorContactUsers() {
-		Set<User> userSet = new HashSet<User>();
+		Set<User> primaryContactSet = new TreeSet<User>();
 
-		userSet.addAll(userDAO.findByAccountID(operator.getId(), "Yes", "No"));
+		primaryContactSet.addAll(userDAO.findByAccountID(operator.getId(), "Yes", "No"));
+
+		// Include users that can switch to groups
+		Set<User> groupSet = new HashSet<User>();
+		groupSet.addAll(userDAO.findByAccountID(operator.getId(), "Yes", "Yes"));
+
+		Set<User> switchToSet = new HashSet<User>();
+		// Adding users that can switch to users on account
+		for (User u : primaryContactSet)
+			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		// Adding users that can switch to groups on account
+		for (User u : groupSet)
+			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		// Adding all SwitchTo users to primary contacts
+		primaryContactSet.addAll(switchToSet);
 
 		OperatorAccount parent = operator.getParent();
 		// Moving up the level hierarchy and finding associated users.
 		// Note: Cannot find users across same hierarchy level, only within
 		// current hierarchy level and parents.
 		while (parent != null) {
-			userSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
+			primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
 			parent = parent.getParent();
 		}
 
 		List<User> userList = new ArrayList<User>();
-		userList.addAll(userSet);
+		userList.addAll(primaryContactSet);
 
 		return userList;
 	}

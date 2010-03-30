@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -24,6 +25,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -62,6 +64,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected EmailQueueDAO emailQueueDAO;
 	protected NoteDAO noteDAO;
 	protected EmailSubscriptionDAO subscriptionDAO;
+	protected UserSwitchDAO userSwitchDAO;
 	protected int[] operatorIds = new int[300];
 	protected Country country;
 	protected State state;
@@ -71,7 +74,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public ContractorEdit(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, UserDAO userDAO,
 			InvoiceFeeDAO invoiceFeeDAO, OperatorAccountDAO operatorAccountDAO, EmailQueueDAO emailQueueDAO,
-			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO) {
+			NoteDAO noteDAO, EmailSubscriptionDAO subscriptionDAO, UserSwitchDAO userSwitchDAO) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -81,6 +84,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.emailQueueDAO = emailQueueDAO;
 		this.noteDAO = noteDAO;
 		this.subscriptionDAO = subscriptionDAO;
+		this.userSwitchDAO = userSwitchDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -265,7 +269,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 						// only want to access dao if no subscription exists
 						// (very slow operation)
-						// sending email to primary contact if no subscribers exist
+						// sending email to primary contact if no subscribers
+						// exist
 						OperatorAccount operator = operatorAccountDAO.find(operatorID);
 						if (!subscribed && operator != null && operator.getPrimaryContact() != null)
 							emails.add(operator.getPrimaryContact().getEmail());
@@ -405,7 +410,25 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public List<User> getUserList() {
-		return userDAO.findByAccountID(contractor.getId(), "Yes", "No");
+		Set<User> primaryContactSet = new TreeSet<User>();
+
+		primaryContactSet.addAll(userDAO.findByAccountID(contractor.getId(), "Yes", "No"));
+
+		// Include users that can switch to groups
+		Set<User> groupSet = new HashSet<User>();
+		groupSet.addAll(userDAO.findByAccountID(contractor.getId(), "Yes", "Yes"));
+
+		Set<User> switchToSet = new HashSet<User>();
+		// Adding users that can switch to users on account
+		for (User u : primaryContactSet)
+			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		// Adding users that can switch to groups on account
+		for (User u : groupSet)
+			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		// Adding all SwitchTo users to primary contacts
+		primaryContactSet.addAll(switchToSet);
+
+		return new ArrayList<User>(primaryContactSet);
 	}
 
 	public int getContactID() {

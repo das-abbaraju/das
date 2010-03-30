@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserSwitch;
 
 @Transactional
@@ -20,7 +21,7 @@ public class UserSwitchDAO extends PicsDAO {
 		}
 		return o;
 	}
-	
+
 	public void remove(UserSwitch row) {
 		if (row != null) {
 			em.remove(row);
@@ -39,6 +40,13 @@ public class UserSwitchDAO extends PicsDAO {
 
 	public List<UserSwitch> findBySwitchToId(int switchToId) {
 		Query query = em.createQuery("SELECT u FROM UserSwitch u WHERE u.switchTo.id = ?");
+		query.setParameter(1, switchToId);
+
+		return query.getResultList();
+	}
+
+	public List<User> findUsersBySwitchToId(int switchToId) {
+		Query query = em.createQuery("SELECT u.user FROM UserSwitch u WHERE u.switchTo.id = ?");
 		query.setParameter(1, switchToId);
 
 		return query.getResultList();
