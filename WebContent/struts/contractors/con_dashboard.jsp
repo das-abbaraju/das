@@ -58,6 +58,9 @@ div.co_select {
 ul {
 	list-style: none;
 }
+#conoperator_tags {
+	padding: 10px;
+}
 </style>
 
 </head>
@@ -144,7 +147,7 @@ ul {
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>
 				</div>
-				<s:if test="!permissions.operatorCorporate && activeOperators.size() > 1">
+				<s:if test="activeOperators.size() > 1">
 				<div class="co_select nobr">
 					Select Operator: 
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
@@ -202,9 +205,14 @@ ul {
 					</thead>
 					<s:iterator value="oshaDisplay.rateTypeSet" id="rateType">
 						<tr>
-							<td><s:property value="#rateType" escape="false"/></td>
+							<s:if test="#rateType.startsWith('P:')">
+								<td style="padding-left: 10px"><s:property value="#rateType.substring(2)" escape="false"/></td>
+							</s:if>
+							<s:else>
+								<td><s:property value="#rateType" escape="false"/></td>
+							</s:else>
 							<s:iterator value="oshaDisplay.auditForSet" id="auditFor">
-								<td><s:property value="oshaDisplay.getData(#rateType, #auditFor)"/></td>
+								<td><s:property value="oshaDisplay.getData(#rateType, #auditFor)" escape="false"/></td>
 							</s:iterator>
 						</tr>
 					</s:iterator>
@@ -274,13 +282,11 @@ ul {
 				</p>
 				<p>Risk Level: <strong><s:property value="contractor.riskLevel"/></strong></p>
 				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
-					<fieldset class="form">
-						<legend><span>Operator Tag Names: </span></legend>
-						<ol><div id="conoperator_tags">
-							<s:include value="contractorOperator_tags.jsp" />
-							</div>
-						</ol>
-					</fieldset>
+					<div><span>Operator Tag Names: </span>
+						<div id="conoperator_tags">
+						<s:include value="contractorOperator_tags.jsp" />
+						</div>
+					</div>
 				</s:if>	
 				<div class="clear"></div>
 			</div>

@@ -109,7 +109,11 @@ public class FlagCriteriaOperator extends BaseTable {
 
 	@Transient
 	public String getReplaceHurdle() {
-		return criteria.getDescription().replaceAll("\\{HURDLE\\}", Strings.formatDecimalComma(criteriaValue()));
+		String value = criteriaValue();
+		if (criteria.getDataType().equals(FlagCriteria.NUMBER))
+			value = Strings.formatDecimalComma(value);
+
+		return criteria.getDescription().replaceAll("\\{HURDLE\\}", value);
 	}
 
 	@Transient
@@ -128,10 +132,11 @@ public class FlagCriteriaOperator extends BaseTable {
 	@Transient
 	public String getShortDescription() {
 		String desc = criteria.getComparison() + " ";
-		if (criteria.isAllowCustomValue() && !Strings.isEmpty(hurdle))
-			desc += hurdle;
+
+		if (criteria.getDataType().equals(FlagCriteria.NUMBER))
+			desc += Strings.formatNumber(criteriaValue());
 		else
-			desc += criteria.getDefaultValue();
+			desc += criteriaValue();
 
 		return desc;
 	}

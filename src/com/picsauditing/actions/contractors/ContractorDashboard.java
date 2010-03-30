@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -37,6 +38,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaRateType;
@@ -294,14 +296,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public OshaDisplay getOshaDisplay() {
 		if (oshaDisplay == null) {
-			if (co == null)
-				oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), getActiveOperators());
-			else
-				oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), new ArrayList<ContractorOperator>() {
-					{
-						add(co);
-					}
-				});
+			oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), getActiveOperators());
 		}
 
 		return oshaDisplay;
@@ -314,7 +309,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		private Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 
-		public OshaDisplay(OshaOrganizer organizer, List<ContractorOperator> operators) {
+		public OshaDisplay(OshaOrganizer organizer, List<ContractorOperator> contractorOperators) {
 
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage,
@@ -330,7 +325,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 						put(rate.getDescription(), auditFor, format(organizer.getRate(OshaType.OSHA, scope, rate)));
 					}
 
-					put("Man Hours", auditFor, format(audit.getManHours()));
+					put("Hours Worked", auditFor, format(audit.getManHours()));
 				}
 			}
 
@@ -339,22 +334,37 @@ public class ContractorDashboard extends ContractorActionSupport {
 			put(OshaRateType.TrirAbsolute.getDescription(), ind, format(contractor.getNaics().getTrir()));
 			put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(contractor.getNaics().getLwcr()));
 
-			for (ContractorOperator contractorOperator : operators) {
-				for (FlagCriteriaOperator fco : contractorOperator.getOperatorAccount().getFlagCriteriaInherited()) {
+			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
+			for (ContractorOperator co : contractorOperators) {
+				inheritedOperators.add(co.getOperatorAccount().getInheritFlagCriteria());
+			}
+
+			for (OperatorAccount o : inheritedOperators) {
+				for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 					if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
-							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
+							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())
+							|| OshaRateType.Fatalities.equals(fco.getCriteria().getOshaRateType())) {
 						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 						String auditFor = findAuditFor(organizer, scope);
 						if (auditFor != null) {
-							String suffix = OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType()) ? " TRIR"
-									: " LWCR";
-							put(getOperatorDisplay(contractorOperator, suffix), auditFor, fco.getShortDescription());
+							String suffix = getOshaSuffix(fco.getCriteria().getOshaRateType());
+							String operatorDisplay = getOperatorDisplay(o, suffix);
+
+							if (getData(operatorDisplay, auditFor) != null)
+								put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
+										+ getFlagDescription(fco));
+							else
+								put(operatorDisplay, auditFor, getFlagDescription(fco));
 						}
 					}
 				}
 			}
 
-			buildRateTypeSet(operators);
+			buildRateTypeSet(inheritedOperators);
+		}
+		
+		private String getFlagDescription(FlagCriteriaOperator fco) {
+			return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 		}
 
 		private void put(String k1, String k2, String v) {
@@ -372,25 +382,41 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 
-		private void buildRateTypeSet(List<ContractorOperator> operators) {
+		private void buildRateTypeSet(Collection<OperatorAccount> operators) {
 			rateTypeSet.add(OshaRateType.TrirAbsolute.getDescription());
-			for (ContractorOperator contractorOperator : operators) {
-				String disp = getOperatorDisplay(contractorOperator, " TRIR");
+			for (OperatorAccount operatorAccount : operators) {
+				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.TrirAbsolute));
 				if (data.get(disp) != null)
 					rateTypeSet.add(disp);
 			}
 			rateTypeSet.add(OshaRateType.LwcrAbsolute.getDescription());
-			for (ContractorOperator contractorOperator : operators) {
-				String disp = getOperatorDisplay(contractorOperator, " LWCR");
+			for (OperatorAccount operatorAccount : operators) {
+				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.LwcrAbsolute));
 				if (data.get(disp) != null)
 					rateTypeSet.add(disp);
 			}
 			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
-			rateTypeSet.add("Man Hours");
+			for (OperatorAccount operatorAccount : operators) {
+				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.Fatalities));
+				if (data.get(disp) != null)
+					rateTypeSet.add(disp);
+			}
+			rateTypeSet.add("Hours Worked");
 		}
 
-		private String getOperatorDisplay(ContractorOperator contractorOperator, String suffix) {
-			return "&nbsp;&nbsp;" + contractorOperator.getOperatorAccount().getName() + suffix;
+		private String getOshaSuffix(OshaRateType rateType) {
+			if (OshaRateType.TrirAbsolute.equals(rateType))
+				return " TRIR";
+			else if (OshaRateType.LwcrAbsolute.equals(rateType))
+				return " LWCR";
+			else if (OshaRateType.Fatalities.equals(rateType))
+				return " Fatalities";
+
+			return "";
+		}
+
+		private String getOperatorDisplay(OperatorAccount operator, String suffix) {
+			return "P:" + operator.getName() + suffix;
 		}
 
 		private String findAuditFor(OshaOrganizer organizer, MultiYearScope scope) {
