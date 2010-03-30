@@ -444,9 +444,16 @@
 		
 		<action name="ContractorApproval"
 			class="com.picsauditing.actions.report.ReportContractorApproval">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ContractorApproval</param>
 			<result>struts/reports/report_con_approvals.jsp</result>
 		</action>
 		
+		<action name="ContractorApprovalAjax"
+			class="com.picsauditing.actions.report.ReportContractorApproval">
+			<result>struts/reports/report_con_approvals_data.jsp</result>
+		</action>
+
 		<action name="ReportNewRequestedContractor"
 			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
 			<result>struts/reports/report_con_new_registration.jsp</result>
