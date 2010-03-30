@@ -112,13 +112,12 @@ ul {
 							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
 							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor"/></a></p>
 						</s:else>
-					</div>
 					<s:if test="co.forcedFlag">
 						<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
 							Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
-							<br/>
 						</div>
 					</s:if>
+					</div>
 				</s:if>
 				<div class="co_problems">
 					<s:if test="permissions.admin">
