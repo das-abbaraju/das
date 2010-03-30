@@ -4,25 +4,32 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
+import com.picsauditing.dao.EmailAttachmentDAO;
+import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.util.SpringUtils;
 
 public class GMailSender extends javax.mail.Authenticator {
 	private String user;
 	private String password;
 	private Session session;
-//	private EmailAttachmentDAO attachmentDAO = null;
 
 	public GMailSender(String user, String password) {
 		this.user = user;
@@ -67,28 +74,30 @@ public class GMailSender extends javax.mail.Authenticator {
 		message.setSubject(email.getSubject());
 		message.setDataHandler(handler);
 
-//		if (attachmentDAO != null) {
-//			List<EmailAttachment> attachments = attachmentDAO.findByEmailID(email.getId());
-//
-//			if (attachments != null && attachments.size() > 0) {
-//				Multipart mp = new MimeMultipart();
-//				MimeBodyPart mbp = new MimeBodyPart();
-//
-//				// Add in the text in the email
-//				mbp.setText(email.getBody());
-//				mp.addBodyPart(mbp);
-//
-//				for (EmailAttachment attachment : attachments) {
-//					mbp = new MimeBodyPart();
-//					FileDataSource fds = new FileDataSource(attachment.getFileName());
-//					mbp.setDataHandler(new DataHandler(fds));
-//					mbp.setFileName(fds.getName());
-//					mp.addBodyPart(mbp);
-//				}
-//
-//				message.setContent(mp);
-//			}
-//		}
+		EmailAttachmentDAO attachmentDAO = (EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
+		
+		if (attachmentDAO != null) {
+			List<EmailAttachment> attachments = attachmentDAO.findByEmailID(email.getId());
+
+			if (attachments != null && attachments.size() > 0) {
+				Multipart mp = new MimeMultipart();
+				MimeBodyPart mbp = new MimeBodyPart();
+
+				// Add in the text in the email
+				mbp.setText(email.getBody());
+				mp.addBodyPart(mbp);
+
+				for (EmailAttachment attachment : attachments) {
+					mbp = new MimeBodyPart();
+					FileDataSource fds = new FileDataSource(attachment.getFileName());
+					mbp.setDataHandler(new DataHandler(fds));
+					mbp.setFileName(fds.getName());
+					mp.addBodyPart(mbp);
+				}
+
+				message.setContent(mp);
+			}
+		}
 
 		// DataSource ds = new ByteArrayDataSource(email.getBody().getBytes(),
 		// email.isHtml() ? "text/html" :
@@ -143,8 +152,4 @@ public class GMailSender extends javax.mail.Authenticator {
 			throw new IOException("Not Supported");
 		}
 	}
-
-//	public void setAttachmentDAO(EmailAttachmentDAO attachmentDAO) {
-//		this.attachmentDAO = attachmentDAO;
-//	}
 }

@@ -2,7 +2,6 @@ package com.picsauditing.mail;
 
 import java.util.Date;
 
-import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
