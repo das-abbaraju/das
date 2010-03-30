@@ -88,11 +88,6 @@
 			<result>struts/misc/page_logger.jsp</result>
 		</action>
 
-		<action name="Download" class="com.picsauditing.actions.files.Download">
-			<result name="stream" type="stream"></result>
-			<result name="input">/struts/blank.jsp</result>
-		</action>
-
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
 			<result>struts/home.jsp</result>
@@ -1523,7 +1518,7 @@
 		-->
 		<!-- Remember to Categorize your new Struts pages -->
 		
-		<action name="FileConversionEngine" class="com.picsauditing.actions.files.FileConversionEngine">
+		<action name="FileIndexingEngine" class="com.picsauditing.actions.files.FileIndexingEngine">
 			<result>/struts/blank.jsp</result>
 		</action>
 		

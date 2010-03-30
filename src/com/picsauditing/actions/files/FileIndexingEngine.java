@@ -6,20 +6,20 @@ import java.util.Date;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.FileDAO;
-import com.picsauditing.jpa.entities.FileBase;
+import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.jpa.entities.FileAttachment;
 import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
-public class FileConversionEngine extends PicsActionSupport {
+public class FileIndexingEngine extends PicsActionSupport {
 
-	private int limit = 10;
+	private int limit = 0;
 	private int counter = 0;
 
-	private FileDAO fileDAO;
+	private PicsDAO dao;
 
-	public FileConversionEngine(FileDAO fileDAO) {
-		this.fileDAO = fileDAO;
+	public FileIndexingEngine(PicsDAO dao) {
+		this.dao = dao;
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class FileConversionEngine extends PicsActionSupport {
 					String[] fileName = file.getName().split("[/_/.]");
 					if (fileName.length != 3)
 						throw new Exception("Invalid format");
-					FileBase fileBase = new FileBase();
+					FileAttachment fileBase = new FileAttachment();
 					fileBase.setFileHash(FileUtils.getFileSHA(file));
 					fileBase.setModifiedDate(new Date(file.lastModified()));
 					String extension = fileName[2];
@@ -54,12 +54,9 @@ public class FileConversionEngine extends PicsActionSupport {
 					fileBase.setTableType(PICSFileType.valueOf(fileName[0]));
 					fileBase.setForeignKeyID(foreignKeyID);
 					fileBase.setFileSize(file.length());
-					fileBase.setFileData(FileUtils.getBytesFromFile(file));
 
-					fileDAO.save(fileBase);
+					dao.save(fileBase);
 					addActionMessage("Saved file: " + fileBase.getFileName());
-					file.delete();
-					addActionMessage("Deleted file: " + file.getAbsolutePath());
 				} catch (Exception e) {
 					if (file.getAbsolutePath().endsWith("Thumbs.db"))
 						file.delete();
