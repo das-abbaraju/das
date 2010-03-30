@@ -28,7 +28,7 @@
 		<td colspan="2"><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
 		<td>DBA Name</td>
 		<s:if test="permissions.operator">
-			<td><a href="javascript: changeOrderBy('form1','flag DESC, a.name');">Flag</a></td>
+			<td><a href="javascript: changeOrderBy('form1','flag DESC,a.name');">Flag</a></td>
 			<s:if test="operatorAccount.approvesRelationships">
 				<pics:permission perm="ViewUnApproved">
 					<td><nobr>Approved</nobr></td>
@@ -51,85 +51,170 @@
 		<td>Insurance</td>
 	</tr>
 	</thead>
-	<s:iterator value="data" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><s:if test="get('genID') > 0"><a
-				href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
-				><s:property value="[0].get('name')" /></a></s:if>
-				<s:else><s:property value="[0].get('name')" /></s:else></td>
-			<td><s:property value="[0].get('dbaName')" /></td>
-			<s:if test="permissions.operator">
-				<td class="center">
-					<s:if test="worksForOperator([0].get('id'))">
-						<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0" />
-					</s:if>
-					<s:else>
-						<img width="12" height="15" border="0"
-							src="images/icon_<s:property value="getOverallFlag([0].get('id')).toString().toLowerCase()"/>Flag.gif" />
-					</s:else>
-				</td>
-				<s:if test="operatorAccount.approvesRelationships">
-					<pics:permission perm="ViewUnApproved">
-						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
-							value="[0].get('workStatus')" />
+	<tbody>
+		<s:if test="sortByFlags">
+			<s:iterator value="orderedByFlag" status="stat">
+				<tr>
+					<td class="right"><s:property value="#stat.index + pageIndex" /></td>
+					<td><s:if test="get('genID') > 0"><a
+						href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
+						><s:property value="[0].get('name')" /></a></s:if>
+						<s:else><s:property value="[0].get('name')" /></s:else></td>
+					<td><s:property value="[0].get('dbaName')" /></td>
+					<s:if test="permissions.operator">
+						<td class="center">
+							<s:if test="worksForOperator([0].get('id'))">
+								<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0" />
+							</s:if>
+							<s:else>
+								<img width="12" height="15" border="0"
+									src="images/icon_<s:property value="getOverallFlag([0].get('id')).toString().toLowerCase()"/>Flag.gif" />
+							</s:else>
 						</td>
-					</pics:permission>
-				</s:if>
-			</s:if>
-			<td class="center">
-				<s:if test="get('genID') > 0">
-					<pics:permission perm="RemoveContractors">
-						<s:if test="permissions.corporate">
-							<a class="remove" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Remove</a>
+						<s:if test="operatorAccount.approvesRelationships">
+							<pics:permission perm="ViewUnApproved">
+								<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
+									value="[0].get('workStatus')" />
+								</td>
+							</pics:permission>
+						</s:if>
+					</s:if>
+					<td class="center">
+						<s:if test="get('genID') > 0">
+							<pics:permission perm="RemoveContractors">
+								<s:if test="permissions.corporate">
+									<a class="remove" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Remove</a>
+								</s:if>
+								<s:else>
+									<a class="remove" href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
+								</s:else>
+							</pics:permission>
 						</s:if>
 						<s:else>
-							<a class="remove" href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
+							<pics:permission perm="AddContractors">
+								<s:if test="permissions.corporate">
+									<a class="add" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Add</a>
+								</s:if>
+								<s:else>
+									<a class="add" href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
+								</s:else>
+							</pics:permission>
 						</s:else>
-					</pics:permission>
-				</s:if>
-				<s:else>
-					<pics:permission perm="AddContractors">
-						<s:if test="permissions.corporate">
-							<a class="add" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Add</a>
+					</td>
+					<s:if test="showContact">
+						<td><s:property value="get('contactname')"/></td>
+						<td><s:property value="get('contactphone')"/></td>
+						<td><s:property value="get('contactemail')"/></td>
+						<td><s:property value="get('address')"/></td>
+						<td><s:property value="get('city')"/></td>
+						<td><s:property value="get('state')"/></td>
+						<td><s:property value="get('zip')"/></td>
+					</s:if>
+					<s:if test="showTrade">
+						<td><s:property value="get('main_trade')"/></td>
+					</s:if>
+					<td>
+						<s:if test="get('answer2074') != null">
+							<span style="font-size: 9px;">GL Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2074'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2079') != null">
+							<span style="font-size: 9px;">GL General Aggregate = <s:property value="getFormattedDollarAmount(get('answer2079'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2155') != null">
+							<span style="font-size: 9px;">AL Combined Single = <s:property value="getFormattedDollarAmount(get('answer2155'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2149') != null">
+							<span style="font-size: 9px;">WC Each Accident = <s:property value="getFormattedDollarAmount(get('answer2149'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2161') != null">
+							<span style="font-size: 9px;">EX Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2161'))"/></span>
+						</s:if>
+					</td>
+				</tr>
+			</s:iterator>
+		</s:if>
+		<s:else>
+			<s:iterator value="data" status="stat">
+				<tr>
+					<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+					<td><s:if test="get('genID') > 0"><a
+						href="ContractorView.action?id=<s:property value="[0].get('id')"/>"
+						><s:property value="[0].get('name')" /></a></s:if>
+						<s:else><s:property value="[0].get('name')" /></s:else></td>
+					<td><s:property value="[0].get('dbaName')" /></td>
+					<s:if test="permissions.operator">
+						<td class="center">
+							<s:if test="worksForOperator([0].get('id'))">
+								<img src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif" width="12" height="15" border="0" />
+							</s:if>
+							<s:else>
+								<img width="12" height="15" border="0"
+									src="images/icon_<s:property value="getOverallFlag([0].get('id')).toString().toLowerCase()"/>Flag.gif" />
+							</s:else>
+						</td>
+						<s:if test="operatorAccount.approvesRelationships">
+							<pics:permission perm="ViewUnApproved">
+								<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
+									value="[0].get('workStatus')" />
+								</td>
+							</pics:permission>
+						</s:if>
+					</s:if>
+					<td class="center">
+						<s:if test="get('genID') > 0">
+							<pics:permission perm="RemoveContractors">
+								<s:if test="permissions.corporate">
+									<a class="remove" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Remove</a>
+								</s:if>
+								<s:else>
+									<a class="remove" href="?button=remove&id=<s:property value="[0].get('id')"/>">Remove</a>
+								</s:else>
+							</pics:permission>
 						</s:if>
 						<s:else>
-							<a class="add" href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
+							<pics:permission perm="AddContractors">
+								<s:if test="permissions.corporate">
+									<a class="add" href="ContractorFacilities.action?id=<s:property value="[0].get('id')"/>">Add</a>
+								</s:if>
+								<s:else>
+									<a class="add" href="?button=add&id=<s:property value="[0].get('id')"/>">Add</a>
+								</s:else>
+							</pics:permission>
 						</s:else>
-					</pics:permission>
-				</s:else>
-			</td>
-			<s:if test="showContact">
-				<td><s:property value="get('contactname')"/></td>
-				<td><s:property value="get('contactphone')"/></td>
-				<td><s:property value="get('contactemail')"/></td>
-				<td><s:property value="get('address')"/></td>
-				<td><s:property value="get('city')"/></td>
-				<td><s:property value="get('state')"/></td>
-				<td><s:property value="get('zip')"/></td>
-			</s:if>
-			<s:if test="showTrade">
-				<td><s:property value="get('main_trade')"/></td>
-			</s:if>
-			<td>
-				<s:if test="get('answer2074') != null">
-					<span style="font-size: 9px;">GL Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2074'))"/></span> <br/>
-				</s:if>
-				<s:if test="get('answer2079') != null">
-					<span style="font-size: 9px;">GL General Aggregate = <s:property value="getFormattedDollarAmount(get('answer2079'))"/></span> <br/>
-				</s:if>
-				<s:if test="get('answer2155') != null">
-					<span style="font-size: 9px;">AL Combined Single = <s:property value="getFormattedDollarAmount(get('answer2155'))"/></span> <br/>
-				</s:if>
-				<s:if test="get('answer2149') != null">
-					<span style="font-size: 9px;">WC Each Accident = <s:property value="getFormattedDollarAmount(get('answer2149'))"/></span> <br/>
-				</s:if>
-				<s:if test="get('answer2161') != null">
-					<span style="font-size: 9px;">EX Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2161'))"/></span>
-				</s:if>
-			</td>
-		</tr>
-	</s:iterator>
+					</td>
+					<s:if test="showContact">
+						<td><s:property value="get('contactname')"/></td>
+						<td><s:property value="get('contactphone')"/></td>
+						<td><s:property value="get('contactemail')"/></td>
+						<td><s:property value="get('address')"/></td>
+						<td><s:property value="get('city')"/></td>
+						<td><s:property value="get('state')"/></td>
+						<td><s:property value="get('zip')"/></td>
+					</s:if>
+					<s:if test="showTrade">
+						<td><s:property value="get('main_trade')"/></td>
+					</s:if>
+					<td>
+						<s:if test="get('answer2074') != null">
+							<span style="font-size: 9px;">GL Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2074'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2079') != null">
+							<span style="font-size: 9px;">GL General Aggregate = <s:property value="getFormattedDollarAmount(get('answer2079'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2155') != null">
+							<span style="font-size: 9px;">AL Combined Single = <s:property value="getFormattedDollarAmount(get('answer2155'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2149') != null">
+							<span style="font-size: 9px;">WC Each Accident = <s:property value="getFormattedDollarAmount(get('answer2149'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2161') != null">
+							<span style="font-size: 9px;">EX Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2161'))"/></span>
+						</s:if>
+					</td>
+				</tr>
+			</s:iterator>
+		</s:else>
+	</tbody>
 </table>
 
 <div>

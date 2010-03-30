@@ -16,7 +16,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
@@ -39,8 +38,10 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private FacilityChanger facilityChanger;
 	private List<FlagCriteriaOperator> opCriteria;
 	private OperatorAccount operator = null;
-	private Map<FlagColor, List<ContractorAccount>> byFlagColor;
+	private Map<FlagColor, List<Integer>> byFlagColor;
 	private Map<Integer, FlagColor> byConID;
+	private boolean sortByFlags = false;
+	private int page = 1;
 
 	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
 			OperatorAccountDAO operatorAccountDAO) {
@@ -116,34 +117,43 @@ public class ReportNewContractorSearch extends ReportAccount {
 			try {
 				String[] flagColors = getFilter().getFlagStatus();
 				getFilter().setFlagStatus(null);
+				// Get the data right now for all contractors
 				buildQuery();
 				run(sql);
 				calculateOverallFlags();
 				List<Integer> conIDs = new ArrayList<Integer>();
 				
+				// Get contractors that end up with specified flags
 				for (String flagColor : flagColors) {
 					if (flagColor.equals("Green")) {
-						for (ContractorAccount con : byFlagColor.get(FlagColor.Green)) {
-							conIDs.add(con.getId());
+						for (Integer conID : byFlagColor.get(FlagColor.Green)) {
+							conIDs.add(conID);
 						}
 					}
 					else if (flagColor.equals("Amber")) {
-						for (ContractorAccount con : byFlagColor.get(FlagColor.Amber)) {
-							conIDs.add(con.getId());
+						for (Integer conID : byFlagColor.get(FlagColor.Amber)) {
+							conIDs.add(conID);
 						}
 					}
 					else {
-						for (ContractorAccount con : byFlagColor.get(FlagColor.Red)) {
-							conIDs.add(con.getId());
+						for (Integer conID : byFlagColor.get(FlagColor.Red)) {
+							conIDs.add(conID);
 						}
 					}
 				}
 				
+				// Limit the query to the contractors whose flags were chosen.
 				sql.addWhere("a.id IN (" + Strings.implode(conIDs) + ")");
 			} catch (Exception e) {
 				System.out.println("Error in SQL");
 			}
 		}
+		
+		if (getOrderBy().startsWith("flag")) {
+			setOrderBy("");
+			sortByFlags = true;
+		} else
+			sortByFlags = false;
 	}
 
 	@Override
@@ -196,51 +206,60 @@ public class ReportNewContractorSearch extends ReportAccount {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public boolean isSortByFlags() {
+		return sortByFlags;
+	}
+	
+	public int getPageIndex() {
+		return (page - 1) * 100 + 1;
+	}
 
 	public void calculateOverallFlags() {
 		byConID = new HashMap<Integer, FlagColor>();
-		byFlagColor = new HashMap<FlagColor, List<ContractorAccount>>();
+		byFlagColor = new HashMap<FlagColor, List<Integer>>();
 		List<Integer> conIDs = new ArrayList<Integer>();
-		List<ContractorAccount> red = new ArrayList<ContractorAccount>();
-		List<ContractorAccount> amber = new ArrayList<ContractorAccount>();
-		List<ContractorAccount> green = new ArrayList<ContractorAccount>();
+		List<Integer> red = new ArrayList<Integer>();
+		List<Integer> amber = new ArrayList<Integer>();
+		List<Integer> green = new ArrayList<Integer>();
 		FlagDataCalculator calculator;
 
 		for (BasicDynaBean d : data) {
-			if (d.get("flag") == null)
-				conIDs.add(Integer.parseInt(d.get("id").toString()));
+			conIDs.add(Integer.parseInt(d.get("id").toString()));
 		}
 		
-		List<ContractorAccount> contractors = contractorAccountDAO.findByContractorIds(conIDs);
-		for (ContractorAccount contractor : contractors) {
-			if (contractor.getFlagCriteria().size() > 0) {
-				calculator = new FlagDataCalculator(contractor.getFlagCriteria());
-				calculator.setOperatorCriteria(opCriteria);
-				List<FlagData> conData = calculator.calculate();
-				Collections.sort(conData, new ByFlagColor());
-				
-				if (conData.get(0).getFlag().equals(FlagColor.Red))
-					red.add(contractor);
-				else if (conData.get(0).getFlag().equals(FlagColor.Amber))
-					amber.add(contractor);
-				else
-					green.add(contractor);
-			} else
-				green.add(contractor);
-		}
-		
-		byFlagColor.put(FlagColor.Red, red);
-		byFlagColor.put(FlagColor.Amber, amber);
-		byFlagColor.put(FlagColor.Green, green);
-		
-		for (ContractorAccount con : red) {
-			byConID.put(con.getId(), FlagColor.Red);
-		}
-		for (ContractorAccount con : amber) {
-			byConID.put(con.getId(), FlagColor.Amber);
-		}
-		for (ContractorAccount con : green) {
-			byConID.put(con.getId(), FlagColor.Green);
+		if (conIDs.size() > 0) {
+			List<ContractorAccount> contractors = contractorAccountDAO.findByContractorIds(conIDs);
+			for (ContractorAccount contractor : contractors) {
+				if (contractor.getFlagCriteria().size() > 0) {
+					calculator = new FlagDataCalculator(contractor.getFlagCriteria());
+					calculator.setOperatorCriteria(opCriteria);
+					List<FlagData> conData = calculator.calculate();
+					Collections.sort(conData, new ByFlagColor());
+					
+					if (conData.get(0).getFlag().equals(FlagColor.Red))
+						red.add(contractor.getId());
+					else if (conData.get(0).getFlag().equals(FlagColor.Amber))
+						amber.add(contractor.getId());
+					else
+						green.add(contractor.getId());
+				} else
+					green.add(contractor.getId());
+			}
+			
+			byFlagColor.put(FlagColor.Red, red);
+			byFlagColor.put(FlagColor.Amber, amber);
+			byFlagColor.put(FlagColor.Green, green);
+			
+			for (Integer conID : red) {
+				byConID.put(conID, FlagColor.Red);
+			}
+			for (Integer conID : amber) {
+				byConID.put(conID, FlagColor.Amber);
+			}
+			for (Integer conID : green) {
+				byConID.put(conID, FlagColor.Green);
+			}
 		}
 	}
 
@@ -249,6 +268,47 @@ public class ReportNewContractorSearch extends ReportAccount {
 			calculateOverallFlags();
 		
 		return byConID.get(contractorID);
+	}
+	
+	public List<BasicDynaBean> getOrderedByFlag() {
+		page = getShowPage();
+		
+		try {
+			report.setLimit(100000);
+			setShowPage(1);
+			buildQuery();
+			run(sql);
+		} catch (Exception e) {
+			System.out.println("Error running SQL in getOrderedByFlag()");
+		}
+		// Green, Amber, then Red
+		List<BasicDynaBean> green = new ArrayList<BasicDynaBean>();
+		List<BasicDynaBean> amber = new ArrayList<BasicDynaBean>();
+		List<BasicDynaBean> red = new ArrayList<BasicDynaBean>();
+		
+		if (byFlagColor == null)
+			calculateOverallFlags();
+		
+		for (BasicDynaBean d : data) {
+			if (byFlagColor.get(FlagColor.Green).contains((Integer) d.get("id")))
+				green.add(d);
+			else if (byFlagColor.get(FlagColor.Amber).contains((Integer) d.get("id")))
+				amber.add(d);
+			else
+				red.add(d);
+		}
+		
+		Collections.sort(green, new ByContractorName());
+		Collections.sort(amber, new ByContractorName());
+		Collections.sort(red, new ByContractorName());
+		
+		green.addAll(amber);
+		green.addAll(red);
+		
+		report.setLimit(100);
+		
+		return green.subList(100 * (page - 1),
+			(100 * page < green.size()) ? (100 * page) : green.size() );
 	}
 
 	public boolean worksForOperator(int contractorID) {
@@ -268,6 +328,12 @@ public class ReportNewContractorSearch extends ReportAccount {
 		@Override
 		public int compare(FlagData o1, FlagData o2) {
 			return o2.getFlag().ordinal() - o1.getFlag().ordinal();
+		}
+	}
+	
+	private class ByContractorName implements Comparator<BasicDynaBean> {
+		public int compare(BasicDynaBean o1, BasicDynaBean o2) {
+			return ((String) o1.get("name")).compareToIgnoreCase((String) o2.get("name"));
 		}
 	}
 }
