@@ -40,12 +40,7 @@ img.contractor_logo {
 div.co_flag {
 	float: left;
 	text-align: center;
-	height: 100%;
-	width: 40px;
 	margin: 10px 20px 10px 5px;
-}
-div.co_force {
-	float: left;
 }
 div.co_problems {
 	float: left;
