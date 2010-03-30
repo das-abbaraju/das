@@ -35,12 +35,12 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 			sql.setFromTable("accounts a");
 			// Only send out results on the contractors in the general
 			// contractor table that have approved work status
-			sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID AND gc.genID" + o.getId());
+			sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID AND gc.genID = " + o.getId());
 			sql.addJoin("JOIN operators o ON gc.genID = o.id");
 			sql.addJoin("JOIN flag_archive f2 ON gc.subID = f2.conID AND gc.genID = f2.opID AND gc.flag <> f2.flag");
 
 			sql.addWhere("f2.creationDate = '" + df.format(timePeriod.getComparisonDate()) + "'");
-			sql.addWhere("((o.approvesRelationships = 'Yes' AND gc.workStatus = 'Y') OR (o.approvesRelationships = 'No'))");
+			sql.addWhere("(gc.workStatus = 'Y' OR o.approvesRelationships = 'No')");
 
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
