@@ -12,7 +12,7 @@
 		<s:else>
 			<s:iterator value="affected" status="stat">
 				<tr>
-					<td><s:property value="#stat.index + 1" /></td>
+					<td><s:property value="#stat.count" /></td>
 					<td><a href="ContractorView.action?id=<s:property value="contractor.id" />">
 						<s:property value="contractor.name" /></a></td>
 					<s:if test="criteria.allowCustomValue">
