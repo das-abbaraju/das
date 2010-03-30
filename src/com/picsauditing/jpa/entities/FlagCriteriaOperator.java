@@ -133,10 +133,14 @@ public class FlagCriteriaOperator extends BaseTable {
 	public String getShortDescription() {
 		String desc = criteria.getComparison() + " ";
 
+		String value = criteriaValue();
+		if (OshaRateType.Fatalities.equals(criteria.getOshaRateType()))
+			value = Strings.trimTrailingZeros(value);
+
 		if (criteria.getDataType().equals(FlagCriteria.NUMBER))
-			desc += Strings.formatNumber(criteriaValue());
+			desc += Strings.formatDecimalComma(value);
 		else
-			desc += criteriaValue();
+			desc += value;
 
 		return desc;
 	}
