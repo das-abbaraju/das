@@ -3,22 +3,20 @@ package com.picsauditing.actions.files;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.Map;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.dao.FileDAO;
 import com.picsauditing.jpa.entities.FileAttachment;
 import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
 public class FileIndexingEngine extends PicsActionSupport {
 
-	private int limit = 0;
-	private int counter = 0;
+	private FileDAO dao;
 
-	private PicsDAO dao;
-
-	public FileIndexingEngine(PicsDAO dao) {
+	public FileIndexingEngine(FileDAO dao) {
 		this.dao = dao;
 	}
 
@@ -33,10 +31,8 @@ public class FileIndexingEngine extends PicsActionSupport {
 	}
 
 	private void process(File directory) {
+		Map<String, FileAttachment> originals = dao.findByDirectory(directory.getAbsolutePath());
 		for (File file : directory.listFiles()) {
-			counter++;
-			if (counter > limit)
-				return;
 			if (file.isDirectory()) {
 				process(file);
 			} else {
@@ -45,31 +41,33 @@ public class FileIndexingEngine extends PicsActionSupport {
 					String[] fileName = file.getName().split("[/_/.]");
 					if (fileName.length != 3)
 						throw new Exception("Invalid format");
-					FileAttachment fileBase = new FileAttachment();
-					fileBase.setFileHash(FileUtils.getFileSHA(file));
-					fileBase.setModifiedDate(new Date(file.lastModified()));
-					String extension = fileName[2];
-					int foreignKeyID = Integer.parseInt(fileName[1]);
-					fileBase.setExtension(extension);
-					fileBase.setTableType(PICSFileType.valueOf(fileName[0]));
-					fileBase.setForeignKeyID(foreignKeyID);
-					fileBase.setFileSize(file.length());
+					FileAttachment originalAttachment = originals.get(file.getName());
+					if (originalAttachment == null
+							|| !originalAttachment.getModifiedDate().equals(new Date(file.lastModified()))
+							|| originalAttachment.getFileSize() != file.length()) {
+						FileAttachment fileBase = new FileAttachment();
+						fileBase.setModifiedDate(new Date(file.lastModified()));
+						String extension = fileName[2];
+						int foreignKeyID = Integer.parseInt(fileName[1]);
+						fileBase.setExtension(extension);
+						fileBase.setTableType(PICSFileType.valueOf(fileName[0]));
+						fileBase.setForeignKeyID(foreignKeyID);
+						fileBase.setFileSize(file.length());
+						fileBase.setFileName(file.getName());
+						fileBase.setDirectory(file.getParent());
+						fileBase.setFileHash(FileUtils.getFileSHA(file));
 
-					dao.save(fileBase);
-					addActionMessage("Saved file: " + fileBase.getFileName());
+						dao.save(fileBase);
+						originals.remove(file.getName());
+					}
 				} catch (Exception e) {
-					if (file.getAbsolutePath().endsWith("Thumbs.db"))
-						file.delete();
-					else
-						addActionError("Failed to move file: " + file.getAbsolutePath() + " " + e.getMessage());
 				}
 			}
 		}
-		if (directory.listFiles().length == 0)
-			directory.delete();
+
+		for (FileAttachment originalAttachment : originals.values()) {
+			dao.remove(originalAttachment);
+		}
 	}
 
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
 }

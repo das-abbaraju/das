@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.BaseTable;
 
 @Transactional
-public class PicsDAO {
+abstract public class PicsDAO {
 	protected EntityManager em;
 	protected QueryMetaData queryMetaData = null;
 
