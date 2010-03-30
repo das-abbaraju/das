@@ -194,10 +194,12 @@
 	<s:if test="#q.showComment || mode == 'Verify'">
 		<br/>
 		<label>Comments:</label>
-		<input type="button" class="picsbutton positive" value="Save Comment" onclick="saveAnswerComment('<s:property value="#q.id"/>', null, $('#answer<s:property value="#q.id"/>'));"/>
-		<s:textarea name="answer%{#q.id}" id="answer%{#q.id}" cssClass="richText" value="%{#a.comment}" rows="6" cols="80"/>
+		<input type="button" class="picsbutton positive" value="Save Comment" onclick="saveAnswerComment('<s:property value="#q.id"/>', null, $('#comment<s:property value="#q.id"/>'));"/>
+		<s:textarea name="answer%{#q.id}" id="comment%{#q.id}" cssClass="richText" value="%{#a.comment}" rows="6" cols="80"/>
 		<script type="text/javascript">
-			$('#answer<s:property value="#q.id"/>').wysiwyg();	
+			$(function() {
+				$('#comment<s:property value="#q.id"/>').wysiwyg();
+			});
 		</script>
 	</s:if>
 </div>
