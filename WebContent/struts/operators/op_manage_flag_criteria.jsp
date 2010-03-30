@@ -90,7 +90,7 @@ function getFlag(selectObject) {
 				<s:iterator status="stat" id="linked" value="operator.operatorFacilities">
 					<s:set name="facility" value="#linked.operator" />
 					<tr>
-						<td><s:property value="#stat.index + 1" /></td>
+						<td><s:property value="#stat.count" /></td>
 						<td><s:property value="#facility.name" /></td>
 						<td>
 							<s:if test="insurance">
