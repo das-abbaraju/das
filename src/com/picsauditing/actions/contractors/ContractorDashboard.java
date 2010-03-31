@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -69,6 +72,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private ContractorFlagCriteriaList problems;
 
 	private ContractorFlagCriteriaList criteriaList;
+
+	private Map<FlagColor, Integer> flagCounts;
 
 	private OshaDisplay oshaDisplay;
 
@@ -294,6 +299,28 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return f.exists();
 	}
 
+	public Map<FlagColor, Integer> getFlagCounts() {
+		if (flagCounts == null) {
+			flagCounts = new LinkedHashMap<FlagColor, Integer>();
+			flagCounts.put(FlagColor.Red, 0);
+			flagCounts.put(FlagColor.Amber, 0);
+			flagCounts.put(FlagColor.Green, 0);
+
+			for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+				flagCounts
+						.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
+			}
+
+			Iterator<Map.Entry<FlagColor, Integer>> iter = flagCounts.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry<FlagColor, Integer> entry = iter.next();
+				if (entry.getValue() <= 0)
+					iter.remove();
+			}
+		}
+		return flagCounts;
+	}
+
 	public OshaDisplay getOshaDisplay() {
 		if (oshaDisplay == null) {
 			oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), getActiveOperators());
@@ -362,7 +389,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			buildRateTypeSet(inheritedOperators);
 		}
-		
+
 		private String getFlagDescription(FlagCriteriaOperator fco) {
 			return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 		}

@@ -154,10 +154,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + pqfs.size() + "] PQFs");
 		}
 
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
-																									// the
-																									// Annual
-																									// Updates
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
+			// Add the Annual Updates
 			MenuComponent subMenu = new MenuComponent("Annual Update", "ConAnnualUpdates.action?id=" + id);
 			menu.add(subMenu);
 			Iterator<ContractorAudit> iter = auditList.iterator();
@@ -229,7 +227,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if ((audit.getAuditType().getId() == AuditType.COR || audit.getAuditType().getId() == AuditType.SUPPLEMENTCOR) 
+				if ((audit.getAuditType().getId() == AuditType.COR || audit.getAuditType().getId() == AuditType.SUPPLEMENTCOR)
 						&& !audit.getAuditStatus().equals(AuditStatus.Exempt)) {
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					String linkText = audit.getAuditType().getAuditName()
@@ -242,9 +240,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
-																									// All
-																									// Other
-																									// Audits
+			// All Other Audits
 			MenuComponent subMenu = new MenuComponent("Audits", "ConAuditList.action?id=" + id);
 			menu.add(subMenu);
 			for (ContractorAudit audit : auditList) {

@@ -146,6 +146,14 @@ ul {
 					<p>Last Login:
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>
+					<s:if test="activeOperators.size() > 1">
+						<p><a href="#all">Locations</a>:
+							<s:property value="contractor.nonCorporateOperators.size()"/>
+							<s:if test="flagCounts.size() > 0">
+								(<s:iterator value="flagCounts" status="stat"><s:property value="value"/> <s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if></s:iterator>)
+							</s:if>
+						</p>
+					</s:if>
 				</div>
 				<s:if test="activeOperators.size() > 1">
 				<div class="co_select nobr">
@@ -374,7 +382,7 @@ ul {
 	<s:if test="activeOperators.size() > 1 || permissions.admin">
 		<!-- All Locations -->
 		<div class="panel_placeholder">
-			<div class="panel">
+			<div class="panel" id="all">
 				<div class="panel_header">
 					All Locations
 				</div>
