@@ -626,4 +626,14 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			}
 		};
 	}
+	
+	public boolean isHasProfileEdit() {
+		for(UserAccess userAccess : user.getPermissions()) {
+			if(userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
+				return true;
+			}
+				
+		}
+		return false;
+	}
 }

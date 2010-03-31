@@ -201,9 +201,11 @@ div.autocomplete ul li {
 					Activation Email</label></li>
 				</s:if>
 				<s:if test="user.id > 0">
-					<li><label>&nbsp;</label> <a class="picsbutton"
-						href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send
-					Reset Password Email</a></li>
+					<s:if test="hasProfileEdit">
+						<li><label>&nbsp;</label> <a class="picsbutton"
+							href="?button=resetPassword&user.id=<s:property value="user.id"/>">Send
+						Reset Password Email</a></li>
+					</s:if>
 					<li><label>&nbsp;</label> <input id="manual_password"
 						type="checkbox" onclick="$('.user-password').toggle()">
 					<label for="manual_password" class="checkbox">Manually
