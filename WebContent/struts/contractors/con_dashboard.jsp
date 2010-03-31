@@ -372,7 +372,7 @@ ul {
 		</div>
 	</div>
 	<s:if test="activeOperators.size() > 1 || permissions.admin">
-		<!-- Other Locations -->
+		<!-- All Locations -->
 		<div class="panel_placeholder">
 			<div class="panel">
 				<div class="panel_header">
@@ -380,7 +380,7 @@ ul {
 				</div>
 				<div class="panel_content">
 					<s:iterator value="activeOperatorsMap">
-						<ul>
+						<ul style="float: left">
 						<s:iterator value="value">
 							<s:if test="permissions.accountId != operatorAccount.id">
 								<li>
