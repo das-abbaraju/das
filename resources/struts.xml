@@ -171,6 +171,11 @@
 			class="com.picsauditing.actions.contractors.BiddingConApprovalWidget">
 			<result>struts/widgets/con_biddingapproval.jsp</result>
 		</action>
+		
+		<action name="OperatorPicsContactsAjax"
+			class="com.picsauditing.actions.operators.OperatorPicsContactsWidget">
+			<result>struts/widgets/op_pics_contacts.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"

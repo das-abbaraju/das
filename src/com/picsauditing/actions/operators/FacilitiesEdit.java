@@ -441,12 +441,33 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 
 		return userList;
 	}
-
+	
 	public int getContactID() {
 		return contactID;
 	}
 
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
+	}
+	
+	public Map<UserAccountRole, List<String>> getAccountManagers() {
+		List<AccountUser> aus = operator.getAccountUsers();
+		List<String> ams = new ArrayList<String>();
+		List<String> srs = new ArrayList<String>();
+		
+		for (AccountUser au : aus) {
+			if (au.getRole().equals(UserAccountRole.PICSAccountRep))
+				ams.add(au.getUser().getName());
+			else
+				srs.add(au.getUser().getName());
+		}
+		
+		Map<UserAccountRole, List<String>> managers = new HashMap<UserAccountRole, List<String>>();
+		if (ams.size() > 0)
+			managers.put(UserAccountRole.PICSAccountRep, ams);
+		if (srs.size() > 0)
+			managers.put(UserAccountRole.PICSSalesRep, srs);
+		
+		return managers;
 	}
 }

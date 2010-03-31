@@ -25,3 +25,10 @@ Please log in using the following link to set your password.
 ${confirmLink}
 Have a great week,
 <PICSSignature>' where id = 5;
+
+-- Create new Widget for operators
+insert into `widget`(`widgetID`,`caption`,`widgetType`,`synchronous`,`url`,`requiredPermission`,`chartType`)
+values ( NULL,'PICS Contacts','Html','0','OperatorPicsContactsAjax.action',NULL,NULL);
+
+insert into `widget_user`(`id`,`widgetID`,`userID`,`expanded`,`column`,`sortOrder`,`customConfig`)
+values ( NULL,'25','616','1','1','3',NULL);
