@@ -29,7 +29,7 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 			opIds = Strings.implode(getFilter().getOperator(), ",");
 		}
 		else {
-			OperatorAccount corporate = (OperatorAccount) getUser().getAccount();
+			OperatorAccount corporate = (OperatorAccount) getAccount() ;
 			for( Facility child : corporate.getOperatorFacilities() ) {
 				if(child.getOperator().getStatus().isActiveDemo()) {
 					ops.add(child.getOperator().getId());
