@@ -167,6 +167,20 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 													// Registration
 					emailBuilder.addToken("newContractor", newContractor);
 					emailBuilder.addToken("csr", getAssignedCSR());
+					
+					// Point to the contractor registration page with some information pre-filled
+					String requestLink = "http://www.picsauditing.com/app/ContractorRegistration.action?button=request&rID="
+						+ newContractor.getId();
+					emailBuilder.addToken("requestLink", requestLink);
+
+					// Get who requested this account be created
+					String requestedBy;
+					if (newContractor.getRequestedByUser() != null)
+						requestedBy = newContractor.getRequestedByUser().getName();
+					else
+						requestedBy = newContractor.getRequestedByUserOther();
+					emailBuilder.addToken("requestedBy", requestedBy);
+
 					emailBuilder.setToAddresses(newContractor.getEmail());
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setPriority(80);

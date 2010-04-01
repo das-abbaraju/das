@@ -60,6 +60,7 @@ $(function(){
 <s:include value="registrationHeader.jsp"></s:include>
 <span class="redMain">* - Indicates required information</span>
 <s:form method="POST">
+<s:hidden name="rID" />
 	<br clear="all" />
 	<table>
 		<tr>
@@ -102,8 +103,15 @@ $(function(){
 						<li><label>City:</label> 
 							<s:textfield name="contractor.city" size="35" /><span class="redMain">*</span></li>
 						<li><label>Country:</label> <input type="text" disabled="disabled" id="country_display"/></li>
-						<li id="state_li">
-						</li>
+						<s:if test="contractor.state == null"><li id="state_li"></li></s:if>
+						<s:else>
+							<li><label>State:</label>
+								<s:select list="stateList" id="state_sel"
+								name="contractor.state.isoCode"
+								headerKey="" headerValue="- State -"
+								listKey="isoCode" listValue="name"
+								/><span class="redMain">*</span></li>
+						</s:else>
 						<li><label>Zip/Postal Code:</label>
 							<s:textfield name="contractor.zip" size="10" /><span class="redMain">*</span></li>
 					</ol>

@@ -6,11 +6,13 @@ import java.util.Vector;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -21,13 +23,16 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -39,22 +44,28 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected User user;
 	protected String password;
 	protected String confirmPassword;
+	protected int rID;
 
 	protected UserDAO userDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
 	protected NoteDAO noteDAO;
+	protected ContractorRegistrationRequestDAO requestDAO;
 	protected ContractorValidator contractorValidator;
+	protected FacilityChanger facilityChanger;
 
 	protected Country country;
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO, UserDAO userDAO) {
+			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO, UserDAO userDAO,
+			ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
 		this.noteDAO = noteDAO;
 		this.userDAO = userDAO;
+		this.requestDAO = requestDAO;
 		this.subHeading = "New Contractor Information";
+		this.facilityChanger = facilityChanger;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -63,6 +74,29 @@ public class ContractorRegistration extends ContractorActionSupport {
 		if (permissions.isLoggedIn()) {
 			addActionError("You must logout before trying to register a new contractor account");
 			return BLANK;
+		}
+		
+		if ("request".equalsIgnoreCase(button)) {
+			if (rID > 0) {
+				ContractorRegistrationRequest crr = requestDAO.find(rID);
+				
+				contractor = new ContractorAccount();
+				contractor.setName(crr.getName());
+				contractor.setPhone(crr.getPhone());
+				contractor.setTaxId(crr.getTaxID());
+				contractor.setAddress(crr.getAddress());
+				contractor.setCity(crr.getCity());
+				contractor.setZip(crr.getZip());
+				contractor.setCountry(crr.getCountry());
+				contractor.setState(crr.getState());
+				contractor.setRequestedBy(crr.getRequestedBy());
+				contractor.setTaxId(crr.getTaxID());
+				
+				user = new User();
+				user.setName(crr.getContact());
+				user.setEmail(crr.getEmail());
+				user.setPhone(crr.getPhone());
+			}
 		}
 
 		if ("Create Account".equalsIgnoreCase(button)) {
@@ -155,7 +189,40 @@ public class ContractorRegistration extends ContractorActionSupport {
 			Permissions permissions = new Permissions();
 			permissions.login(user);
 			ActionContext.getContext().getSession().put("permissions", permissions);
-
+			
+			// Update the Registration Request
+			if (rID > 0) {
+				ContractorRegistrationRequest crr = requestDAO.find(rID);
+				crr.setContractor(contractor);
+				crr.setMatchCount(1);
+				crr.setOpen(false);
+				crr.setAuditColumns();
+				crr.setHandledBy(WaitingOn.Operator);
+				requestDAO.save(crr);
+				
+				OperatorAccount operator = crr.getRequestedBy();
+				// Check to see if operator is just an operator,
+				// don't add contractors to corporate accounts
+				if (operator.isOperator()) {
+					contractor.setRequestedBy(crr.getRequestedBy());
+					facilityChanger.setContractor(contractor);
+					facilityChanger.setOperator(operator);
+					facilityChanger.setPermissions(permissions);
+					
+					facilityChanger.add();
+				}
+				
+				note = new Note();
+				note.setAccount(contractor);
+				note.setAuditColumns(new User(User.SYSTEM));
+				note.setSummary("Requested Contractor Registered");
+				note.setBody("Contractor '" + crr.getName() + "' registration requested by "
+						+ crr.getRequestedBy().getName() + " has registered.");
+				note.setPriority(LowMedHigh.Low);
+				note.setViewableById(Account.EVERYONE);
+				noteDAO.save(note);
+			}
+			
 			redirect("ContractorRegistrationServices.action?id=" + contractor.getId());
 			return BLANK;
 		}
@@ -209,6 +276,14 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+	
+	public int getrID() {
+		return rID;
+	}
+	
+	public void setrID(int rID) {
+		this.rID = rID;
 	}
 
 	public void addAuditCategories(ContractorAudit audit, int CategoryID) {
