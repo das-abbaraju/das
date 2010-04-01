@@ -153,7 +153,7 @@ function checkReason(id) {
 		</td>
 	</tr>
 </table>
-<s:if test="co.flagColor.toString() == 'Green'">
+<s:if test="co.flagColor.toString() == 'Green' && co.forceFlag == null && flagDataOverrides.keySet().size() == 0">
 	<div class="info" style="width: 50%; text-align: left">
 		Congratulations, you've completed all the requirements for <s:property value="co.operatorAccount.name" />.<br />We will email you if there are any changes.
 	</div>
