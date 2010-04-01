@@ -29,7 +29,7 @@
 				<td>PQF</td>
 			</s:if>
 		</pics:permission>
-		<s:if test="permissions.operator">
+		<s:if test="permissions.operatorCorporate">
 			<td><a
 				href="?orderBy=flag DESC">Flag</a></td>
 			<td>Waiting On</td>
@@ -83,7 +83,7 @@
 							</s:if></td>
 					</s:if>
 			</pics:permission>
-			<s:if test="permissions.operator">
+			<s:if test="permissions.operatorCorporate">
 				<td class="center">
 					<pics:permission perm="ContractorDetails"><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
 						title="<s:property value="get('flag')"/> - Click to view details"></pics:permission><img 

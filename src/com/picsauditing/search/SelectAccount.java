@@ -5,16 +5,17 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 /**
- * SELECT a.id, a.name, a.active
- * FROM accounts a
+ * SELECT a.id, a.name, a.active FROM accounts a
+ * 
  * @author Trevor
- *
+ * 
  */
 public class SelectAccount extends SelectSQL {
 	private Type type = null;
 
 	public static enum Type {
-		Operator, Contractor
+		Operator,
+		Contractor
 	}
 
 	private String startsWith = "";
@@ -77,29 +78,27 @@ public class SelectAccount extends SelectSQL {
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + name + " on q" + name + ".auditID = "+name+".id AND q" + name
+		join = join + "JOIN pqfdata q" + name + " on q" + name + ".auditID = " + name + ".id AND q" + name
 				+ ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + name + ".answer AS " + columnName);
 	}
 
 	public void addAuditQuestion(int questionID, int auditTypeID, boolean require) {
-		String name = "ca"+ questionID;
+		String name = "ca" + questionID;
 		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
 				+ ".auditTypeID = " + auditTypeID + " AND " + name
 				+ ".auditStatus IN ('Pending','Incomplete','Submitted','Active','Resubmitted')");
-	
+
 		String join = "";
 		if (!require)
 			join = "LEFT ";
-		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = "+ name +".id AND q" + questionID
-				+ ".questionID = " + questionID;
+		join = join + "JOIN pqfdata q" + questionID + " on q" + questionID + ".auditID = " + name + ".id AND q"
+				+ questionID + ".questionID = " + questionID;
 		this.addJoin(join);
 		this.addField("q" + questionID + ".answer AS answer" + questionID);
 	}
-	
-	
-	
+
 	/**
 	 * LEFT JOIN to pqfdata for this contractor and add q123.answer to the field
 	 * list
@@ -145,11 +144,12 @@ public class SelectAccount extends SelectSQL {
 	 * @param permissions
 	 */
 	public void setPermissions(Permissions permissions) {
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
 			if (!this.hasJoin("generalcontractors gc"))
-				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "+ permissions.getAccountId());
+				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
+						+ permissions.getAccountId());
 			this.addField("gc.workStatus");
 			this.addField("gc.flag");
 			this.addField("lower(gc.flag) AS lflag");
