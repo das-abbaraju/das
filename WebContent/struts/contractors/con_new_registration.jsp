@@ -55,9 +55,9 @@ function updateUsersList() {
 
 function checkUserOther() {
 	if ($("#requestedUser").val() == 0)
-		$("#requestedByOtherUser").show();
+		$("#requestedOther").show();
 	else
-		$("#requestedByOtherUser").hide();
+		$("#requestedOther").hide();
 }
 
 function addAttachment(formName, filename) {
@@ -151,7 +151,7 @@ function removeAttachment(id) {
 					id="requestedUser" name="requestedUser" value="%{newContractor.requestedByUser.id}"
 					headerKey="0" headerValue="- Other -" onclick="checkUserOther();" />
 				<span class="redMain">*</span>
-				<input type="text" name="newContractor.requestedByUserOther" id="requestedByOtherUser" size="20"
+				<input type="text" name="requestedOther" id="requestedOther" size="20"
 					<s:if test="newContractor.requestedByUser != null && newContractor.requestedBy.users != null">style="display:none;"</s:if>
 					value="<s:property value="newContractor.requestedByUserOther" />" />
 			</li>

@@ -51,6 +51,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected State state;
 	protected int requestedOperator;
 	protected int requestedUser;
+	protected String requestedOther = null;
 	protected int conID;
 	protected int opID;
 	protected ContractorAccount conAccount = null;
@@ -140,18 +141,19 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					newContractor.setState(state);
 				}
 				if (requestedOperator > 0
-						&& (newContractor.getRequestedBy() == null || requestedOperator != newContractor
-								.getRequestedBy().getId())) {
-					newContractor.setRequestedBy(new OperatorAccount());
-					newContractor.getRequestedBy().setId(requestedOperator);
+						&& (newContractor.getRequestedBy() == null
+								|| requestedOperator != newContractor.getRequestedBy().getId())) {
+					newContractor.setRequestedBy(operatorAccountDAO.find(requestedOperator));
 				}
 				if (requestedUser > 0
-						&& (newContractor.getRequestedByUser() == null || requestedUser != newContractor
-								.getRequestedByUser().getId())) {
-					newContractor.setRequestedByUser(new User(requestedUser));
+						&& (newContractor.getRequestedByUser() == null
+								|| requestedUser != newContractor.getRequestedByUser().getId())) {
+					newContractor.setRequestedByUser(userDAO.find(requestedUser));
 					newContractor.setRequestedByUserOther(null);
-				} else if (newContractor.getRequestedByUserOther() != null)
+				} else if (requestedOther != null) {
+					newContractor.setRequestedByUserOther(requestedOther);
 					newContractor.setRequestedByUser(null);
+				}
 				if (conID > 0
 						&& (newContractor.getContractor() == null || conID != newContractor.getContractor().getId())) {
 					newContractor.setContractor(new ContractorAccount(conID));
@@ -284,6 +286,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setRequestedUser(int requestedUser) {
 		this.requestedUser = requestedUser;
+	}
+	
+	public String getRequestedOther() {
+		return requestedOther;
+	}
+	
+	public void setRequestedOther(String requestedOther) {
+		this.requestedOther = requestedOther;
 	}
 
 	public int getConID() {

@@ -80,22 +80,29 @@ public class ContractorRegistration extends ContractorActionSupport {
 			if (rID > 0) {
 				ContractorRegistrationRequest crr = requestDAO.find(rID);
 				
-				contractor = new ContractorAccount();
-				contractor.setName(crr.getName());
-				contractor.setPhone(crr.getPhone());
-				contractor.setTaxId(crr.getTaxID());
-				contractor.setAddress(crr.getAddress());
-				contractor.setCity(crr.getCity());
-				contractor.setZip(crr.getZip());
-				contractor.setCountry(crr.getCountry());
-				contractor.setState(crr.getState());
-				contractor.setRequestedBy(crr.getRequestedBy());
-				contractor.setTaxId(crr.getTaxID());
-				
-				user = new User();
-				user.setName(crr.getContact());
-				user.setEmail(crr.getEmail());
-				user.setPhone(crr.getPhone());
+				if (crr.getContractor() == null) {
+					contractor = new ContractorAccount();
+					contractor.setName(crr.getName());
+					contractor.setPhone(crr.getPhone());
+					contractor.setTaxId(crr.getTaxID());
+					contractor.setAddress(crr.getAddress());
+					contractor.setCity(crr.getCity());
+					contractor.setZip(crr.getZip());
+					contractor.setCountry(crr.getCountry());
+					contractor.setState(crr.getState());
+					contractor.setRequestedBy(crr.getRequestedBy());
+					contractor.setTaxId(crr.getTaxID());
+					
+					user = new User();
+					user.setName(crr.getContact());
+					user.setEmail(crr.getEmail());
+					user.setPhone(crr.getPhone());
+				} else {
+					addActionError("You have already registered with PICS. <a href=\"Login.action\" title=\"Login to PICS\">"
+							+ "Click here to log in</a>. If you forgot your login information, <a href=\"AccountRecovery.action\">"
+							+ "click here to recover it</a>.");
+					return SUCCESS;
+				}
 			}
 		}
 
