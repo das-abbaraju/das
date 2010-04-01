@@ -106,6 +106,15 @@ ul {
 				</s:if>
 
 				<s:if test="co != null">
+					<s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
+						<s:if test="co.workStatusPending">
+							<div class="alert">The operator has not approved this contractor yet.</div>
+						</s:if>
+						<s:if test="co.workStatusRejected">
+							<div class="alert">The operator did not approve this contractor.</div>
+						</s:if>
+					</s:if>
+
 					<div class="co_flag">
 						<s:if test="permissions.corporate">
 							<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
