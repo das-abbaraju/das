@@ -276,7 +276,11 @@ public class ContractorCron extends PicsActionSupport {
 				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
 
-		if (!overallColor.equals(co.getFlagColor())) {
+		if (co.isForcedFlag()) { // operator has a forced flag
+			co.setFlagColor(co.getForceFlag());
+			co.setFlagLastUpdated(new Date());
+		}
+		else if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);
@@ -287,11 +291,6 @@ public class ContractorCron extends PicsActionSupport {
 			note.setViewableById(co.getOperatorAccount().getId());
 			dao.save(note);
 			co.setFlagColor(overallColor);
-			co.setFlagLastUpdated(new Date());
-		}
-
-		if (co.isForcedFlag()) { // operator has a forced flag
-			co.setFlagColor(co.getForceFlag());
 			co.setFlagLastUpdated(new Date());
 		}
 
