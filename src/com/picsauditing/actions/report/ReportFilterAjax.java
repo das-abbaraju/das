@@ -46,6 +46,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 				filter.setStatus(AccountStatus.Active); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Audit);
+				filter.setShowAuditFor(true);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.User)) {

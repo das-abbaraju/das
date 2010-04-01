@@ -468,7 +468,8 @@ public class ContractorCron extends PicsActionSupport {
 			contractorOperatorDAO.save(newCo);
 		}
 
-		// delete orphans
+		// delete orphans++++-
+		
 		for (ContractorOperator removal : removalSet)
 			//contractorOperatorDAO.remove(removal);
 
