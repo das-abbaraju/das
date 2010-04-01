@@ -217,10 +217,8 @@
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
 		Status</a></li>
 	</s:if>
-	<s:if test="!permissions.contractor">
-		<li><a href="ContractorNotes.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
-	</s:if>
+	<li><a href="ContractorNotes.action?id=<s:property value="id" />"
+		<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
 	<s:if test="permissions.admin">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
