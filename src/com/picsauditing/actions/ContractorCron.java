@@ -91,10 +91,10 @@ public class ContractorCron extends PicsActionSupport {
 		if (steps == null)
 			return SUCCESS;
 
-		if (isDebugging())
-			PicsLogger.addRuntimeRule("ContractorCron");
-
-		PicsLogger.start("ContractorCron");
+//		if (isDebugging())
+//			PicsLogger.addRuntimeRule("ContractorCron");
+//
+//		PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
 			run(conID, opID);
@@ -132,7 +132,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		PicsLogger.stop();
+//		PicsLogger.stop();
 
 		if (button != null && button.equals("ConFlag")) {
 			return redirect("ContractorFlag.action?id=" + conID + "&opID=" + opID);
@@ -162,13 +162,13 @@ public class ContractorCron extends PicsActionSupport {
 					// If the opID is 0, run through all the operators.
 					// If the opID > 0, run through just that operator.
 					if (opID == 0 || (opID > 0 && operator.getId() == opID)) {
-						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
-							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
-									+ flagCriteriaOperator.getCriteria().getCategory());
-						}
-
-						for (AuditOperator auditOperator : operator.getVisibleAudits())
-							PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
+//						for (FlagCriteriaOperator flagCriteriaOperator : operator.getFlagCriteriaInherited()) {
+//							PicsLogger.log(" flag criteria " + flagCriteriaOperator.getFlag() + " for "
+//									+ flagCriteriaOperator.getCriteria().getCategory());
+//						}
+//
+//						for (AuditOperator auditOperator : operator.getVisibleAudits())
+//							PicsLogger.log(" can see audit " + auditOperator.getAuditType().getAuditName());
 
 						if (runStep(ContractorCronStep.CorporateRollup)) {
 							for (Facility facility : operator.getCorporateFacilities()) {
