@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -164,13 +165,14 @@ public class ContractorAccountDAO extends PicsDAO {
 	 * 
 	 * @return
 	 */
-	public List<Integer> findContractorsNeedingRecalculation(int limit) {
+	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore) {
 		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND ("
-				+ "c.lastRecalculation < :lastRunDate " + "OR c.lastRecalculation IS NULL) "
-				+ "ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
+				+ "c.lastRecalculation < :lastRunDate " + "OR c.lastRecalculation IS NULL)";
+		if (contractorsToIgnore.size() > 0)
+			hql += " AND c.id NOT IN (" + Strings.implode(contractorsToIgnore) + ")";
+		hql += " ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
-
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, -15);
@@ -180,7 +182,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public long findNumberOfContractorsNeedingRecalculation() {
-		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE c.needsRecalculation = 1";
+		String hql = "SELECT COUNT(*) FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation = 1";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();

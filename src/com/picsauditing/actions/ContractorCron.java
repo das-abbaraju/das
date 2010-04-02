@@ -113,7 +113,12 @@ public class ContractorCron extends PicsActionSupport {
 					limit = (int) Math.round(64.0 + (totalQueueSize / 156.2) - (serverLoad * 17.42));
 
 					if (limit > 0) {
-						queue = contractorDAO.findContractorsNeedingRecalculation(limit);
+						Set<Integer> contractorsToIgnore = new HashSet<Integer>();
+						for (ContractorCron cron : manager) {
+							if (!cron.equals(this))
+								contractorsToIgnore.addAll(cron.getQueue());
+						}
+						queue = contractorDAO.findContractorsNeedingRecalculation(limit, contractorsToIgnore );
 
 						for (Integer conID : queue) {
 							run(conID, opID);

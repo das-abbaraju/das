@@ -8,16 +8,31 @@
 
 <h1>Contractor Cron</h1>
 <s:form method="GET">
-	<fieldset class="form">
-	<legend><span>Custom Options</span></legend>
+	<fieldset class="form"><legend><span>Custom
+	Options</span></legend>
 	<ol>
 		<li><label>Contractor ID:</label> <s:textfield name="conID" /></li>
-		<li><label>Steps:</label> <s:select name="steps" list="stepValues" multiple="5" /></li>
-		<li><button class="picsbutton positive" name="button" value="Run" type="submit">Run</button></li>
+		<li><label>Steps:</label> <s:select name="steps"
+			list="stepValues" multiple="5" /></li>
+		<li>
+		<button class="picsbutton positive" name="button" value="Run"
+			type="submit">Run</button>
+		</li>
 	</ol>
 	</fieldset>
 </s:form>
 
 <s:include value="../actionMessages.jsp" />
+
+<h2>Running Process(es):</h2>
+<ul>
+	<s:iterator value="manager">
+		<li><s:date name="startTime" nice="true" />:
+		<s:iterator value="queue">
+			<s:property value="[0]" />
+		</s:iterator></li>
+	</s:iterator>
+</ul>
+
 </body>
 </html>
