@@ -43,3 +43,15 @@ Thank you,
 <PICSSignature>',`createdBy`='951',`creationDate`='2010-01-14 16:36:12',`updatedBy`='951',
 `updateDate`='2010-01-14 16:36:12',`listType`='Contractor',`allowsVelocity`='1',`html`='0',
 `recipient`=NULL where `id`='83';
+
+-- insert into email subscription the PICSReleaseNotes for primary contacts for operators
+
+insert into email_subscription 
+select null,u.id,'PICSSystemNotifications','Event',NOw(),null,1,1,Now(),Now() from 
+accounts a 
+join users u on a.contactID = u.id
+where a.type in ('Operator','Corporate')
+and a.status = 'Active' and u.isActive = 'Yes'
+AND u.email not like '%picsauditing.com'
+AND length(u.email) > 0 and u.email like '%@%.%'
+group by u.email;

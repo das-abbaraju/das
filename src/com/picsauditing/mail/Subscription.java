@@ -55,7 +55,12 @@ public enum Subscription {
 	FinishPICSProcess(
 			"Contractor Completes the PICS process",
 			"This email notifies the contractor when they have completed the PICS process.",
-			false, true);
+			false, true),
+	PICSSystemNotifications(
+			"PICS System Notifications",
+			"This email notifies the users when there has been updates or changes to the PICS system.",
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event},
+			true, false);
 
 	private String description;
 	private String longDescription;
