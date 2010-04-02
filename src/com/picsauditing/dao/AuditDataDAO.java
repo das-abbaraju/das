@@ -78,13 +78,15 @@ public class AuditDataDAO extends PicsDAO {
 
 		for (AuditData row : result) {
 			int id = row.getQuestion().getId();
-			if (indexedResult.containsKey(id))
-				System.out.println("ERROR AuditDataDAO:findAnswersByContractor(" + conID + "," + id
-						+ ") returned more than one result!");
 			if (!Strings.isEmpty(row.getAudit().getAuditFor()))
 				throw new RuntimeException("ERROR AuditDataDAO:findAnswersByContractor(" + conID + "," + id
 						+ ") getAuditFor not empty for audit id: " + row.getAudit().getId());
-			indexedResult.put(id, row);
+			if (indexedResult.containsKey(id)) {
+				if (row.getCreationDate().after(indexedResult.get(id).getCreationDate()))
+					indexedResult.put(id, row);
+			} else {
+				indexedResult.put(id, row);
+			}
 		}
 		return indexedResult;
 	}
