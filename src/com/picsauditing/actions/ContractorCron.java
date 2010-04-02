@@ -103,13 +103,11 @@ public class ContractorCron extends PicsActionSupport {
 				manager.add(this);
 
 				double serverLoad = ServerInfo.getLoad();
-				if (manager.size() > 3) {
-					addActionError("Too many ContractorCrons running at once");
-				} else if (serverLoad > 4) {
+				if (serverLoad > 4) {
 					addActionError("Server Load is too high (" + serverLoad + ")");
 				} else {
 					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
-					// This is a formula
+					// This is a formula based on a multiple regression analysis of what we want. Not sure if it will work
 					limit = (int) Math.round(64.0 + (totalQueueSize / 156.2) - (serverLoad * 17.42));
 
 					if (limit > 0) {
