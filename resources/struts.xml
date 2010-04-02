@@ -1452,6 +1452,11 @@
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/blank.jsp</result>
 		</action>
+
+		<action name="ServerInfo"
+			class="com.picsauditing.actions.ServerInfo">
+			<result>struts/server_info.jsp</result>
+		</action>
 		
 		<!-- Insurance Reports -->
 		<action name="ReportPolicyList"
