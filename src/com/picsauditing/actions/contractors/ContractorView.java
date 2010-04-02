@@ -1,6 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +27,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.Images;
 
 @SuppressWarnings("serial")
 public class ContractorView extends ContractorActionSupport {
@@ -105,7 +103,7 @@ public class ContractorView extends ContractorActionSupport {
 				}
 			}
 
-			contractor.setNeedsRecalculation(true);
+			contractor.setNeedsRecalculation(1);
 			contractor.setAuditColumns(permissions);
 			accountDao.save(contractor);
 

@@ -102,7 +102,7 @@ public class ReportContractorApproval extends ReportAccount {
 							}
 						}
 
-						cAccount.setNeedsRecalculation(true);
+						cAccount.setNeedsRecalculation(1);
 						cAccount.setAuditColumns(permissions);
 						contractorAccountDAO.save(cAccount);
 

@@ -60,7 +60,7 @@ public class ManageCao extends ContractorActionSupport implements Preparable {
 				if (caoBefore != cao.getStatus())
 					ContractorAuditOperatorDAO.saveNoteAndEmail(cao, permissions);
 
-				contractor.setNeedsRecalculation(true);
+				contractor.setNeedsRecalculation(1);
 				accountDao.save(contractor);
 				
 				return BLANK;

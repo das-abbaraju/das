@@ -168,7 +168,7 @@ public class AuditDataSave extends AuditActionSupport {
 					tempAudit = auditData.getAudit();
 
 				ContractorAccount contractor = tempAudit.getContractorAccount();
-				contractor.setNeedsRecalculation(true);
+				contractor.setNeedsRecalculation(1);
 				if (tempAudit.getAuditType().isPqf()) {
 					if (auditData.getQuestion().getId() == 57) {
 						if (isValidNAICScode(auditData.getAnswer())) {

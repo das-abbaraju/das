@@ -63,7 +63,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		findContractor();
 
 		PicsLogger.start("ContractorFlagAction");
-		contractor.setNeedsRecalculation(true);
+		contractor.setNeedsRecalculation(1);
 		accountDao.save(contractor);
 		noteCategory = NoteCategory.Flags;
 
@@ -132,7 +132,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						if (!co.equals(co2) && co2.getForceFlag() != null) {
 							// cancel the flag for all my other operators for
 							// this contractor
-							contractor.setNeedsRecalculation(true);
+							contractor.setNeedsRecalculation(1);
 							co2.setForceEnd(null);
 							co2.setForceFlag(null);
 							co2.setAuditColumns(permissions);

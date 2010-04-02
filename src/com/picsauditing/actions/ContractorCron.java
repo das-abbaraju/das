@@ -181,7 +181,7 @@ public class ContractorCron extends PicsActionSupport {
 				runCorporateRollup(contractor, corporateSet);
 			}
 			if (steps != null && steps.length > 0) {
-				contractor.setNeedsRecalculation(false);
+				contractor.setNeedsRecalculation(0);
 				contractor.setLastRecalculation(new Date());
 				dao.save(contractor);
 				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
@@ -200,7 +200,7 @@ public class ContractorCron extends PicsActionSupport {
 				// cron
 				// we bump the last recalculation date to 1 day in future.
 				dao.refresh(contractor);
-				contractor.setNeedsRecalculation(false);
+				contractor.setNeedsRecalculation(0);
 				contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
 				dao.save(contractor);
 

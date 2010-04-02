@@ -397,7 +397,7 @@ public class Cron extends PicsActionSupport {
 											audit.setAuditStatus(status);
 											contractorAuditDAO.save(audit);
 
-											conAccount.setNeedsRecalculation(true);
+											conAccount.setNeedsRecalculation(1);
 											contractorAccountDAO.save(conAccount);
 										} else {
 											PicsLogger.log("No change for Ebix audit " + audit.getId()

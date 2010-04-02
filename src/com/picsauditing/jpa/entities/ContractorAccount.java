@@ -82,7 +82,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<Refund> refunds = new ArrayList<Refund>();
 	private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
 
-	private boolean needsRecalculation;
+	private int needsRecalculation;
 	private Date lastRecalculation;
 	private String tradesSelf;
 	private String tradesSub;
@@ -441,12 +441,23 @@ public class ContractorAccount extends Account implements JSONable {
 	 * 
 	 * @return
 	 */
-	public boolean isNeedsRecalculation() {
+	public int isNeedsRecalculation() {
 		return needsRecalculation;
 	}
 
-	public void setNeedsRecalculation(boolean needsRecalculation) {
+	public void setNeedsRecalculation(int needsRecalculation) {
 		this.needsRecalculation = needsRecalculation;
+	}
+
+	@Transient
+	public void incrementRecalculation() {
+		incrementRecalculation(1);
+	}
+
+	@Transient
+	public void incrementRecalculation(int increment) {
+		if (increment > 0)
+			this.needsRecalculation += increment;
 	}
 
 	/**
@@ -533,9 +544,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 			}
 		}
-		
+
 		AuditData result = trim(new ArrayList<AuditData>(emrs.values()));
-		if(result != null)
+		if (result != null)
 			emrs.remove(result.getAudit().getAuditFor());
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
@@ -544,7 +555,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return emrs;
 	}
-	
+
 	private AuditData trim(List<AuditData> list) {
 		if (list.size() < 4)
 			return null;
@@ -568,9 +579,10 @@ public class ContractorAccount extends Account implements JSONable {
 	public List<ContractorAudit> getSortedAudits() {
 		List<ContractorAudit> annualAList = new ArrayList<ContractorAudit>();
 		for (ContractorAudit contractorAudit : getAudits()) {
-			if (contractorAudit.getAuditType().isAnnualAddendum() && 
-					(contractorAudit.getAuditStatus().isActiveSubmitted() || contractorAudit.getAuditStatus()
-					.isResubmitted() || contractorAudit.getAuditStatus().isIncomplete())) {
+			if (contractorAudit.getAuditType().isAnnualAddendum()
+					&& (contractorAudit.getAuditStatus().isActiveSubmitted()
+							|| contractorAudit.getAuditStatus().isResubmitted() || contractorAudit.getAuditStatus()
+							.isIncomplete())) {
 				annualAList.add(contractorAudit);
 			}
 		}

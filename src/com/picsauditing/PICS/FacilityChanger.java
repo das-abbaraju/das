@@ -110,7 +110,7 @@ public class FacilityChanger {
 
 		contractor.setLastUpgradeDate(new Date());
 
-		contractor.setNeedsRecalculation(true);
+		contractor.setNeedsRecalculation(1);
 
 		contractorAccountDAO.save(contractor);
 	}
@@ -136,7 +136,7 @@ public class FacilityChanger {
 					addNote("Unlinked " + co.getContractorAccount().getName() + " from "
 							+ co.getOperatorAccount().getName() + "'s db");
 
-					contractor.setNeedsRecalculation(true);
+					contractor.setNeedsRecalculation(1);
 
 					contractorAccountDAO.save(contractor);
 
