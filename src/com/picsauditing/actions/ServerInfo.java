@@ -3,28 +3,24 @@ package com.picsauditing.actions;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
-import com.opensymphony.xwork2.Preparable;
-
 @SuppressWarnings("serial")
-public class ServerInfo extends PicsActionSupport implements Preparable {
-	private OperatingSystemMXBean os;
-
-	@Override
-	public void prepare() throws Exception {
-		os = ManagementFactory.getOperatingSystemMXBean();
-	}
+public class ServerInfo extends PicsActionSupport {
+	private static OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 
 	@Override
 	public String execute() throws Exception {
 		return SUCCESS;
 	}
 
-	public void setOs(OperatingSystemMXBean os) {
-		this.os = os;
+	public static void setOs(OperatingSystemMXBean os) {
+		ServerInfo.os = os;
 	}
 
-	public OperatingSystemMXBean getOs() {
+	public static OperatingSystemMXBean getOs() {
 		return os;
 	}
 
+	public static double getLoad() {
+		return os.getSystemLoadAverage();
+	}
 }
