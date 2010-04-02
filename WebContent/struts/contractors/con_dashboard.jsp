@@ -91,7 +91,6 @@ ul {
 						<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
 					</div>
 				</s:if>
-				
 				<s:if test="contractor.acceptsBids">
 					<s:if test="canUpgrade">
 						<div class="info">This is a BID-ONLY Account and will expire on <strong><s:date name="contractor.paymentExpires" format="M/d/yyyy" /></strong><br/>
@@ -157,7 +156,7 @@ ul {
 					</p>
 					<s:if test="activeOperators.size() > 1">
 						<p><a href="#all">Locations</a>:
-							<s:property value="contractor.nonCorporateOperators.size()"/>
+							<s:property value="activeOperators.size()"/>
 							<s:if test="flagCounts.size() > 0">
 								(<s:iterator value="flagCounts" status="stat"><s:property value="value"/> <s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if></s:iterator>)
 							</s:if>

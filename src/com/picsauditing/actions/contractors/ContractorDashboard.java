@@ -306,7 +306,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			flagCounts.put(FlagColor.Amber, 0);
 			flagCounts.put(FlagColor.Green, 0);
 
-			for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+			for (ContractorOperator contractorOperator : getActiveOperators()) {
 				flagCounts
 						.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
 			}
