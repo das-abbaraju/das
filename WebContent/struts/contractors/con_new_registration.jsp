@@ -120,7 +120,7 @@ function addToken(token) {
 		<li><label for="email">Email:</label>
 			<s:textfield name="newContractor.email" size="30" id="email" />
 			<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
-				<button onclick="$('#email_preview').toggle(); return false;" class="picsbutton">Preview Email</button>
+				<button onclick="$('#email_preview').toggle(); return false;" class="picsbutton">Edit Email</button>
 				<input type="submit" value="Send Email" name="button" class="picsbutton" />
 				<s:if test="formsViewable && attachment == null && forms.size() > 0">
 					<a href="#operatorForms" class="picsbutton fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
@@ -128,7 +128,7 @@ function addToken(token) {
 				</s:if>
 				<table id="email_preview">
 					<tr>
-						<td>Subject: <input id="email_subject" value="<s:property value="emailSubject" />" size="30"/></td>
+						<td>Subject: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
 						<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
 					</tr>
 					<tr><td colspan="2">

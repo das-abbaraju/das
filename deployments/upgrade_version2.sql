@@ -35,14 +35,10 @@ values ( NULL,'25','616','1','1','3',NULL);
 
 -- Update email template
 update `email_template` set `id`='83',`accountID`='1100',`templateName`='Operator Request for Registration',
-`subject`='Operator Request for Registration',`body`='${newContractor.name}
-Hello ${newContractor.contact},
-${requestedBy} of ${newContractor.requestedBy.name} has requested that you create an account with PICS to complete the auditing process. Please click on the link below to register an account with PICS.
-${requestLink}
-Thank you,
-<PICSSignature>',`createdBy`='951',`creationDate`='2010-01-14 16:36:12',`updatedBy`='951',
-`updateDate`='2010-01-14 16:36:12',`listType`='Contractor',`allowsVelocity`='1',`html`='0',
-`recipient`=NULL where `id`='83';
+`subject`='${newContractor.requestedBy.name} has requested you join PICS',
+`body`='${newContractor.name}\r\n\r\nHello, ${newContractor.contact}\r\n\r\n${requestedBy} of ${newContractor.requestedBy.name} has requested that you create an account with PICS to complete the auditing process. Please click on the link below to register an account with PICS.\r\n${requestLink}\r\n\r\nThank you,\r\n<PICSSignature>',
+`createdBy`='951',`creationDate`='2010-01-14 16:36:12',`updatedBy`='951',`updateDate`='2010-01-14 16:36:12',
+`listType`='Contractor',`allowsVelocity`='1',`html`='0',`recipient`=NULL where `id`='83';
 
 -- insert into email subscription the PICSReleaseNotes for primary contacts for operators
 

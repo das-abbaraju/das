@@ -212,16 +212,22 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					EmailBuilder emailBuilder = new EmailBuilder();
 					EmailTemplate emailTemplate = emailTemplateDAO.find(83); // Operator Request for Registration
 					// If the operator edited any part of the template, set it here.
-					if (!emailTemplate.getBody().equals(emailBody))
+					if (!Strings.isEmpty(emailBody))
 						emailTemplate.setBody(emailBody);
-					if (!emailTemplate.getSubject().equals(emailSubject))
+					if (!Strings.isEmpty(emailSubject))
 						emailTemplate.setSubject(emailSubject);
+					
 					// Replace custom tokens
 					emailBody = emailTemplate.getBody();
+					emailSubject = emailTemplate.getSubject();
+					
 					for (int i = 0; i < names.length; i++) {
 						emailBody = emailBody.replace("<" + names[i] + ">", velocityCodes[i]);
+						emailSubject = emailSubject.replace("<" + names[i] + ">", velocityCodes[i]);
 					}
 					emailTemplate.setBody(emailBody);
+					emailTemplate.setSubject(emailSubject);
+					
 					// Set the template
 					emailBuilder.setTemplate(emailTemplate);
 					emailBuilder.addToken("newContractor", newContractor);
@@ -384,7 +390,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String getEmailSubject() {
 		if (emailSubject == null) {
 			EmailTemplate template = emailTemplateDAO.find(83);
-			emailSubject = template.getSubject();
+			if (template.getSubject() != null)
+				emailSubject = template.getSubject();
+			else
+				emailSubject = "";
+		}
+		
+		for (int i = 0; i < velocityCodes.length; i++) {
+			emailSubject = emailSubject.replace(velocityCodes[i], "<" + names[i] + ">");
 		}
 		
 		return emailSubject;
@@ -412,7 +425,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 	
 	public User getAssignedCSR() {
-		if (newContractor.getId() > 0 && newContractor.getHandledBy().equals(WaitingOn.PICS)) {
+		if (newContractor.getId() > 0) {
 			if (newContractor.getCountry().getCsr() != null)
 				return newContractor.getCountry().getCsr();
 			else

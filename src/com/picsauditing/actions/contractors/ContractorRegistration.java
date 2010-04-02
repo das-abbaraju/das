@@ -217,6 +217,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 					facilityChanger.setPermissions(permissions);
 					
 					facilityChanger.add();
+					contractor.setNewMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 				}
 				
 				note = new Note();
