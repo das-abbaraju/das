@@ -498,8 +498,8 @@ public class DateBean {
 
 	public static String getBrainTreeDate() {
 		Date d = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddkkmmss");
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return sdf.format(d);
 	}
 
