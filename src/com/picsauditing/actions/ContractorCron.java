@@ -77,6 +77,7 @@ public class ContractorCron extends PicsActionSupport {
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, ContractorOperatorDAO contractorOperatorDAO) {
+		System.out.println("ContractorCron constructor");
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -88,21 +89,19 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
+		System.out.println("ContractorCron execute");
 		if (steps == null)
 			return SUCCESS;
-
-//		if (isDebugging())
-//			PicsLogger.addRuntimeRule("ContractorCron");
-//
-//		PicsLogger.start("ContractorCron");
 
 		if (conID > 0) {
 			run(conID, opID);
 		} else {
 			try {
+				System.out.println(" adding manager");
 				manager.add(this);
 
 				double serverLoad = ServerInfo.getLoad();
+				System.out.println(" server load = " + serverLoad);
 				if (serverLoad > 4) {
 					addActionError("Server Load is too high (" + serverLoad + ")");
 				} else {
@@ -126,24 +125,26 @@ public class ContractorCron extends PicsActionSupport {
 				}
 
 			} catch (Exception e) {
+				System.out.println(" ERROR" + e.getMessage());
 				throw e;
 			} finally {
+				System.out.println(" - removing manager");
 				manager.remove(this);
 			}
 		}
-
-//		PicsLogger.stop();
 
 		if (button != null && button.equals("ConFlag")) {
 			return redirect("ContractorFlag.action?id=" + conID + "&opID=" + opID);
 		}
 
+		System.out.println(" - SUCCESS");
 		return SUCCESS;
 	}
 
 	@Transactional
 	private void run(int conID, int opID) {
 		ContractorAccount contractor = contractorDAO.find(conID);
+		System.out.println(" - run " + conID + ", " + opID);
 
 		try {
 			runBilling(contractor);
@@ -267,7 +268,9 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditBuilder(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
+		System.out.println(" - starting buildAudits " + contractor.getId());
 		auditBuilder.buildAudits(contractor);
+		System.out.println(" - finished buildAudits " + contractor.getId());
 	}
 
 	private void runTradeETL(ContractorAccount contractor) {
