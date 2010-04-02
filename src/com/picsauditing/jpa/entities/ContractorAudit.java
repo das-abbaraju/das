@@ -724,6 +724,35 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return synopsis;
 	}
 
+	/**
+	 * Short description for insurance (need to know the opID)
+	 * 
+	 * @param opID
+	 * @return
+	 */
+	@Transient
+	public String getSynopsis(OperatorAccount o) {
+		String synopsis = "";
+
+		if (o.getId() > 0) {
+			for (ContractorAuditOperator cao : operators) {
+				if (cao.getOperator().getId() == o.getInheritInsurance().getId()) {
+					synopsis = cao.getStatus().toString();
+					break;
+				}
+			}
+		} else {
+			CaoStatus status = CaoStatus.Pending;
+			for (ContractorAuditOperator cao : operators) {
+				if (status.compareTo(cao.getStatus()) < 0)
+					status = cao.getStatus();
+			}
+			synopsis = status.toString();
+		}
+
+		return synopsis;
+	}
+
 	@Transient
 	public String getPrintableScore() {
 		int tempScore = Math.round(score);
