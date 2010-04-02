@@ -104,6 +104,7 @@ if (isSubmitted){
                     </table>
                   </form>
                 </td>
+<% if (permissions.hasPermission(OpPerms.FormsAndDocs, OpType.Edit)) {%>
                 <td align="center" valign="top" bgcolor="#FFFFFF" class="blueMain">
 				  <form action="manage_forms.jsp?isSubmitted=Yes&action=Update&id=<%=opID%>" method="post" name="form2" id="form2" enctype="multipart/form-data">
                     <table border="0" cellpadding="0" cellspacing="0" class="blueMain">
@@ -150,6 +151,7 @@ if (isSubmitted){
                     </table>
                   </form>
                 </td>
+<% } %>               
               </tr>
 <%		if (permissions.isAdmin()){%>
               <tr>
