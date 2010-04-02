@@ -54,6 +54,8 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
 
+	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
+
 	private PicsDAO dao;
 	private ContractorAccountDAO contractorDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
@@ -69,6 +71,8 @@ public class ContractorCron extends PicsActionSupport {
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
 	private int limit = 10;
+	final private Date startTime = new Date();
+	private List<Integer> queue;
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
@@ -95,11 +99,34 @@ public class ContractorCron extends PicsActionSupport {
 		if (conID > 0) {
 			run(conID, opID);
 		} else {
-			List<Integer> list = contractorDAO.findContractorsNeedingRecalculation(limit);
-			for (Integer conID : list) {
-				run(conID, opID);
+			try {
+				manager.add(this);
+
+				double serverLoad = ServerInfo.getLoad();
+				if (manager.size() > 3) {
+					addActionError("Too many ContractorCrons running at once");
+				} else if (serverLoad > 4) {
+					addActionError("Server Load is too high (" + serverLoad + ")");
+				} else {
+					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
+					// This is a formula
+					limit = (int) Math.round(64.0 + (totalQueueSize / 156.2) - (serverLoad * 17.42));
+
+					if (limit > 0) {
+						queue = contractorDAO.findContractorsNeedingRecalculation(limit);
+
+						for (Integer conID : queue) {
+							run(conID, opID);
+						}
+						addActionMessage("ContractorCron processed " + queue.size() + " record(s)");
+					}
+				}
+
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				manager.remove(this);
 			}
-			addActionMessage("ContractorCron processed " + list.size() + " record(s)");
 		}
 
 		PicsLogger.stop();
@@ -279,8 +306,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (co.isForcedFlag()) { // operator has a forced flag
 			co.setFlagColor(co.getForceFlag());
 			co.setFlagLastUpdated(new Date());
-		}
-		else if (!overallColor.equals(co.getFlagColor())) {
+		} else if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);
@@ -469,9 +495,9 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		// delete orphans++++-
-		
-		for (ContractorOperator removal : removalSet)
-			//contractorOperatorDAO.remove(removal);
+
+		// for (ContractorOperator removal : removalSet)
+		// contractorOperatorDAO.remove(removal);
 
 		contractorDAO.save(contractor);
 	}
@@ -513,7 +539,23 @@ public class ContractorCron extends PicsActionSupport {
 		return false;
 	}
 
+	public int getLimit() {
+		return limit;
+	}
+
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public static Set<ContractorCron> getManager() {
+		return manager;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public List<Integer> getQueue() {
+		return queue;
 	}
 }
