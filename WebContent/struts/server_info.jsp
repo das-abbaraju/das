@@ -56,4 +56,31 @@
 	</td>
 </tr>
 
+<tr>
+	<td>
+		Heap Memory Usage&nbsp;&nbsp;&nbsp;&nbsp;
+	</td>
+	<td>
+		<s:property value="heapMemoryUsage/1000000"/>Mb
+	</td>
+</tr>
+
+<tr>
+	<td>
+		Non-Heap Memory Usage&nbsp;&nbsp;&nbsp;&nbsp;
+	</td>
+	<td>
+		<s:property value="nonHeapMemoryUsage/1000000"/>Mb
+	</td>
+</tr>
+
+<tr>
+	<td>
+		Total Memory Usage&nbsp;&nbsp;&nbsp;&nbsp;
+	</td>
+	<td>
+		<s:property value="totalMemoryUsage/1000000"/>Mb
+	</td>
+</tr>
+
 </table>
