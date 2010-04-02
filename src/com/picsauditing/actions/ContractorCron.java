@@ -184,9 +184,11 @@ public class ContractorCron extends PicsActionSupport {
 				runCorporateRollup(contractor, corporateSet);
 			}
 			if (steps != null && steps.length > 0) {
-				contractor.setNeedsRecalculation(0);
-				contractor.setLastRecalculation(new Date());
-				dao.save(contractor);
+				if (opID == 0 && steps[0] == ContractorCronStep.All) {
+					contractor.setNeedsRecalculation(0);
+					contractor.setLastRecalculation(new Date());
+					dao.save(contractor);
+				}
 				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
 						+ " successfully");
 			}
