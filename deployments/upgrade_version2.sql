@@ -32,3 +32,14 @@ values ( NULL,'PICS Contacts','Html','0','OperatorPicsContactsAjax.action',NULL,
 
 insert into `widget_user`(`id`,`widgetID`,`userID`,`expanded`,`column`,`sortOrder`,`customConfig`)
 values ( NULL,'25','616','1','1','3',NULL);
+
+-- Update email template
+update `email_template` set `id`='83',`accountID`='1100',`templateName`='Operator Request for Registration',
+`subject`='Operator Request for Registration',`body`='${newContractor.name}
+Hello ${newContractor.contact},
+${requestedBy} of ${newContractor.requestedBy.name} has requested that you create an account with PICS to complete the auditing process. Please click on the link below to register an account with PICS.
+${requestLink}
+Thank you,
+<PICSSignature>',`createdBy`='951',`creationDate`='2010-01-14 16:36:12',`updatedBy`='951',
+`updateDate`='2010-01-14 16:36:12',`listType`='Contractor',`allowsVelocity`='1',`html`='0',
+`recipient`=NULL where `id`='83';

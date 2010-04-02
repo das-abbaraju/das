@@ -223,7 +223,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 				note.setAccount(contractor);
 				note.setAuditColumns(new User(User.SYSTEM));
 				note.setSummary("Requested Contractor Registered");
-				note.setBody("Contractor '" + crr.getName() + "' registration requested by "
+				note.setBody("Contractor '" + crr.getName() + "' requested by "
 						+ crr.getRequestedBy().getName() + " has registered.");
 				note.setPriority(LowMedHigh.Low);
 				note.setViewableById(Account.EVERYONE);

@@ -22,6 +22,16 @@
 	display: inline-block;
 	vertical-align: top;
 }
+
+#email_preview {
+	display: none;
+	margin-left: 11em;
+	cellspacing: 5px;
+}
+
+#email_preview td {
+	padding: 5px;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
@@ -75,6 +85,11 @@ function addAttachment(formName, filename) {
 function removeAttachment(id) {
 	$('span#'+id).remove();
 }
+
+function addToken(token) {
+	$('#email_body').val($('#email_body').val() + "<" + token + ">");
+	$('#email_body').focus();
+}
 </script>
 </head>
 <body>
@@ -105,11 +120,21 @@ function removeAttachment(id) {
 		<li><label for="email">Email:</label>
 			<s:textfield name="newContractor.email" size="30" id="email" />
 			<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
+				<button onclick="$('#email_preview').toggle(); return false;" class="picsbutton">Preview Email</button>
 				<input type="submit" value="Send Email" name="button" class="picsbutton" />
 				<s:if test="formsViewable && attachment == null && forms.size() > 0">
 					<a href="#operatorForms" class="picsbutton fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
-					<div id="attachment" style="width: 350px"></div>
+					<div id="attachment" style="float: right; clear: right;"></div>
 				</s:if>
+				<table id="email_preview">
+					<tr>
+						<td>Subject: <input id="email_subject" value="<s:property value="emailSubject" />" size="30"/></td>
+						<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
+					</tr>
+					<tr><td colspan="2">
+						<s:textarea cols="75" rows="10" name="emailBody" id="email_body"></s:textarea>
+					</td></tr>
+				</table>
 			</s:if>
 		</li>
 		<li><label for="taxID">Tax ID:</label>
