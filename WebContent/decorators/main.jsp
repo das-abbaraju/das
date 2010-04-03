@@ -125,7 +125,9 @@
 	target='chat90511184'
 	onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >Chat</a>
 </div>
+<% if (!Strings.isEmpty(chatIcon)) { %>
 <div id="chatIcon" style="display: none;"><img src='<%=chatIcon%>'/></div>
+<% } %>
 <!-- !begin content -->
 <decorator:body />
 <div><br clear="both"></br></div>
