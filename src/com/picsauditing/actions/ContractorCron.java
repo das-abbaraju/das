@@ -103,12 +103,12 @@ public class ContractorCron extends PicsActionSupport {
 				manager.add(this);
 
 				double serverLoad = ServerInfo.getLoad();
-				if (serverLoad > 4) {
+				if (serverLoad > 3) {
 					addActionError("Server Load is too high (" + serverLoad + ")");
 				} else {
 					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
 					// This is a formula based on a multiple regression analysis of what we want. Not sure if it will work
-					limit = (int) Math.round(64.0 + (totalQueueSize / 156.2) - (serverLoad * 17.42));
+					limit = (int) Math.round(64.0 + (totalQueueSize / 156.2) - (serverLoad * 17.42 * 2));
 
 					if (limit > 0) {
 						Set<Integer> contractorsToIgnore = new HashSet<Integer>();
