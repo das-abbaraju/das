@@ -21,6 +21,7 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -66,6 +67,7 @@ public class ContractorCron extends PicsActionSupport {
 	private AuditBuilder auditBuilder;
 	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
+	private AppPropertyDAO appPropertyDAO;
 
 	private int conID = 0;
 	private int opID = 0;
@@ -107,8 +109,13 @@ public class ContractorCron extends PicsActionSupport {
 					addActionError("Server Load is too high (" + serverLoad + ")");
 				} else {
 					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
+					
+					double limitDefault = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.default").getValue());
+					double limitQueue = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.queue").getValue());
+					double limitServerLoad = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.serverload").getValue());
+					
 					// This is a formula based on a multiple regression analysis of what we want. Not sure if it will work
-					limit = (int) Math.round(64.0 + (totalQueueSize / 156.2) - (serverLoad * 17.42 * 2));
+					limit = (int) Math.round(limitDefault + (totalQueueSize / limitQueue) - (serverLoad * limitServerLoad));
 
 					if (limit > 0) {
 						Set<Integer> contractorsToIgnore = new HashSet<Integer>();
