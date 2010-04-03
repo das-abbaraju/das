@@ -78,7 +78,8 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, ContractorOperatorDAO contractorOperatorDAO) {
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, ContractorOperatorDAO contractorOperatorDAO,
+			AppPropertyDAO appPropertyDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -87,6 +88,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.auditBuilder = auditBuilder;
 		this.contractorFlagETL = contractorFlagETL;
 		this.contractorOperatorDAO = contractorOperatorDAO;
+		this.appPropertyDAO = appPropertyDAO;
 	}
 
 	public String execute() throws Exception {
