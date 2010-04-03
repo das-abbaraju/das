@@ -28,8 +28,8 @@
 <ul>
 	<s:iterator value="manager">
 		<li><s:date name="startTime" nice="true" />:
-		<s:iterator value="queue">
-			<s:property value="[0]" />
+		<s:iterator value="queue" id="qConID">
+			<s:property value="#qConID" />
 		</s:iterator></li>
 	</s:iterator>
 </ul>
