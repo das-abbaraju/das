@@ -143,13 +143,15 @@ public class ReportNewContractorSearch extends ReportAccount {
 				}
 				
 				// Limit the query to the contractors whose flags were chosen.
+				if(conIDs.size() == 0)
+					conIDs.add(0);
 				sql.addWhere("a.id IN (" + Strings.implode(conIDs) + ")");
 			} catch (Exception e) {
 				System.out.println("Error in SQL");
 			}
 		}
 		
-		if (getOrderBy().startsWith("flag")) {
+		if (getOrderBy() != null && getOrderBy().startsWith("flag")) {
 			setOrderBy("");
 			sortByFlags = true;
 		} else
