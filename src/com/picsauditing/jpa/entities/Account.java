@@ -30,7 +30,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Account extends BaseTable implements java.io.Serializable, Comparable<Account>, JSONable {
+public class Account extends BaseTable implements Comparable<Account>, JSONable {
 
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
@@ -59,6 +59,7 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 	protected boolean acceptsBids;
 	private String description;
 	protected User primaryContact;
+	protected boolean requiresOQ = false;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -315,6 +316,18 @@ public class Account extends BaseTable implements java.io.Serializable, Comparab
 
 	public void setAcceptsBids(boolean acceptsBids) {
 		this.acceptsBids = acceptsBids;
+	}
+
+	/**
+	 * Are they subject to Operator Qualification regulation? 
+	 * @return
+	 */
+	public boolean isRequiresOQ() {
+		return requiresOQ;
+	}
+
+	public void setRequiresOQ(boolean requiresOQ) {
+		this.requiresOQ = requiresOQ;
 	}
 
 	@Column(name = "description", length = 65535)

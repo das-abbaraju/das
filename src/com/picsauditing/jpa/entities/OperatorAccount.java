@@ -31,6 +31,7 @@ import com.picsauditing.util.log.PicsLogger;
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorAccount extends Account {
+
 	public static final String DEFAULT_NAME = "- Operator -";
 
 	private OperatorAccount parent;
@@ -50,6 +51,7 @@ public class OperatorAccount extends Account {
 	private OshaType oshaType = OshaType.OSHA;
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
+	private int activationFee = 199;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
@@ -156,6 +158,14 @@ public class OperatorAccount extends Account {
 
 	public void setAutoApproveInsurance(boolean autoApproveInsurance) {
 		this.autoApproveInsurance = autoApproveInsurance;
+	}
+
+	public int getActivationFee() {
+		return activationFee;
+	}
+
+	public void setActivationFee(int activationFee) {
+		this.activationFee = activationFee;
 	}
 
 	@ManyToOne
