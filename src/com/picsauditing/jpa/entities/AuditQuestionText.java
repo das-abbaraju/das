@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "pqfquestion_text")
 public class AuditQuestionText extends BaseTable implements java.io.Serializable {
 	private AuditQuestion auditQuestion;
-	private Locale locale = Locale.ENGLISH;
+	private Locale locale = AuditQuestion.DEFAULT_LOCALE;
 	private String question;
 	private String requirement;
 

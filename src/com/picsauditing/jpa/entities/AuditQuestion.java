@@ -35,6 +35,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "pqfquestions")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion> {
+	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
 	static public final int OQ_EMPLOYEES = 894;
@@ -353,12 +354,28 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	@Transient
 	public void setDefaultQuestion(String question) {
-		addQuestion(Locale.ENGLISH, question);
+		AuditQuestionText qText = getQuestionText(DEFAULT_LOCALE);
+		if (qText == null) {
+			qText = new AuditQuestionText();
+			qText.setAuditQuestion(this);
+			qText.setLocale(DEFAULT_LOCALE);
+			questionTexts.add(qText);
+		}
+
+		qText.setQuestion(question);
 	}
 
 	@Transient
-	public void addQuestion(Locale locale, String question) {
-		questionTexts.add(new AuditQuestionText(this, question, locale));
+	public void setDefaultRequirement(String requirement) {
+		AuditQuestionText qText = getQuestionText(DEFAULT_LOCALE);
+		if (qText == null) {
+			qText = new AuditQuestionText();
+			qText.setAuditQuestion(this);
+			qText.setLocale(DEFAULT_LOCALE);
+			questionTexts.add(qText);
+		}
+
+		qText.setRequirement(requirement);
 	}
 
 	@Column(length = 50)
@@ -374,11 +391,11 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 	public List<AuditQuestion> getDependentQuestions() {
 		return dependentQuestions;
 	}
-	
+
 	public void setDependentQuestions(List<AuditQuestion> dependentQuestions) {
 		this.dependentQuestions = dependentQuestions;
 	}
-	
+
 	@OneToMany(mappedBy = "auditQuestion")
 	@OrderBy("number")
 	public List<AuditQuestionOption> getOptions() {
@@ -413,7 +430,7 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 			throw new Exception("Not Found");
 		} catch (Exception returnDefault) {
 			for (AuditQuestionText questionText : questionTexts) {
-				if (Locale.ENGLISH.equals(questionText.getLocale()))
+				if (DEFAULT_LOCALE.equals(questionText.getLocale()))
 					return questionText;
 			}
 		}

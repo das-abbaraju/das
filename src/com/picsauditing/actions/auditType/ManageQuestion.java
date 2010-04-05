@@ -36,6 +36,7 @@ public class ManageQuestion extends ManageSubCategory {
 
 	protected AuditQuestionText questionText;
 	protected String defaultQuestion;
+	protected String defaultRequirement;
 
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
 			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
@@ -82,7 +83,8 @@ public class ManageQuestion extends ManageSubCategory {
 			questionText.setAuditColumns(permissions);
 			questionTextDAO.save(questionText);
 			question.getQuestionTexts().add(questionText);
-			// TODO: This is a temporary fix - it will be changed when there is more time.
+			// TODO: This is a temporary fix - it will be changed when there is
+			// more time.
 			if (save()) {
 				addActionMessage("Successfully saved"); // default message
 			}
@@ -118,8 +120,16 @@ public class ManageQuestion extends ManageSubCategory {
 
 	public boolean save() {
 		if (question != null) {
-			if (question.getId() == 0 && !Strings.isEmpty(defaultQuestion)) {
-				question.setDefaultQuestion(defaultQuestion);
+			if (question.getId() == 0) {
+				if (!Strings.isEmpty(defaultQuestion))
+					question.setDefaultQuestion(defaultQuestion);
+				if (!Strings.isEmpty(defaultRequirement)) {
+					if (question.getQuestionText(AuditQuestion.DEFAULT_LOCALE) == null) {
+						addActionError("You cannot add a requirement without adding a question as well.");
+						return false;
+					}
+					question.setDefaultRequirement(defaultRequirement);
+				}
 			}
 			if (question.getQuestionTexts().size() == 0) {
 				this.addActionError("Question is required");
@@ -245,6 +255,14 @@ public class ManageQuestion extends ManageSubCategory {
 
 	public void setDefaultQuestion(String defaultQuestion) {
 		this.defaultQuestion = defaultQuestion;
+	}
+
+	public String getDefaultRequirement() {
+		return defaultRequirement;
+	}
+
+	public void setDefaultRequirement(String defaultRequirement) {
+		this.defaultRequirement = defaultRequirement;
 	}
 
 	public Locale[] getLocaleList() {

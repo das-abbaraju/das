@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ public class AuditQuestionDAOTest {
 		auditquestion.setSubCategory(new AuditSubCategory());
 		auditquestion.getSubCategory().setId(22);
 		auditquestion.setNumber(Short.parseShort("100"));
-		auditquestion.addQuestion(Locale.ENGLISH, "write junit test class");
+		auditquestion.setDefaultQuestion("write junit test class");
 		auditquestion.setHasRequirement(YesNo.No);
 		auditquestion.setOkAnswer("NA");
 		auditquestion.setIsRequired("Depends");

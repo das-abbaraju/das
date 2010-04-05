@@ -155,6 +155,30 @@ function showText(qID, textid) {
 		<li><label>OK Answer:</label>
 			<s:textfield name="question.okAnswer" />
 		</li>
+		<li><label>Requirement:</label>
+			<s:if test="question.id > 0">
+				<table class="report">
+				<thead>
+					<tr>
+						<th>Locale</th>
+						<th>Requirement</th>
+					</tr>
+				</thead>
+					<s:iterator value="question.questionTexts">
+					<tr class="clickable" onclick="showText(<s:property value="auditQuestion.id"/>, <s:property value="id"/>)">
+						<td><s:property value="locale"/></td>
+						<td><s:property value="requirement"/></td>
+					</tr>
+					</s:iterator>
+					<tr>
+						<td colspan="2" style="text-align:center"><a href="#" onclick="showText(<s:property value="id"/>, 0); return false;">Add New Translation</a></td>
+					</tr>
+				</table>
+			</s:if>
+			<s:else>
+				<s:textarea name="defaultRequirement" rows="3" cols="65"/>
+			</s:else>
+		</li>
 		<li><label>Flaggable:</label>
 			<s:checkbox name="question.isRedFlagQuestion" value="question.isRedFlagQuestion.name() == 'Yes' ? true : false"/>
 		</li>
