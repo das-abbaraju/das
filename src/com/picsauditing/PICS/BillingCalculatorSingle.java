@@ -26,6 +26,7 @@ public class BillingCalculatorSingle {
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
 	public static final Date CONTRACT_RENEWAL_NEWBELGIUM = DateBean.parseDate("2010-04-01");
 	public static final Date CONTRACT_RENEWAL_BP_LUBRICANTS = DateBean.parseDate("2010-05-01");
+	public static final Date CONTRACT_RENEWAL_LOREAL = DateBean.parseDate("2010-07-01");
 
 	static public void setPayingFacilities(ContractorAccount contractor) {
 
@@ -307,6 +308,10 @@ public class BillingCalculatorSingle {
 		if (CONTRACT_RENEWAL_BASF.after(now) && requestedBy.getName().startsWith("BASF"))
 			return true;
 		if (CONTRACT_RENEWAL_BP_LUBRICANTS.after(now) && requestedBy.getName().startsWith("BP Lubricants"))
+			return true;
+		if (CONTRACT_RENEWAL_LOREAL.after(now) 
+				&& (requestedBy.getId() == 10970 || requestedBy.getId() == 10969 
+						|| requestedBy.getId() == 10913))
 			return true;
 		return false;
 	}
