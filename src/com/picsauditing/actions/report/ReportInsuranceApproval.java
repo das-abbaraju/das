@@ -116,7 +116,7 @@ public class ReportInsuranceApproval extends ReportInsuranceSupport {
 
 					if (statusChanged) {
 						ContractorAccount contractor = existing.getAudit().getContractorAccount();
-						contractor.setNeedsRecalculation(1);
+						contractor.incrementRecalculation();
 						contractorAccountDAO.save(contractor);
 						updatedContractors.add(contractor.getName());
 						ContractorAuditOperatorDAO.saveNoteAndEmail(existing, permissions);

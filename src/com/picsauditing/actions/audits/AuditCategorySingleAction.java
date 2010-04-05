@@ -190,7 +190,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		auditDao.save(conAudit);
 
 		ContractorAccount contractorAccount = conAudit.getContractorAccount();
-		contractor.setNeedsRecalculation(1);
+		contractor.incrementRecalculation();
 		accountDao.save(contractorAccount);
 
 		return SUCCESS;

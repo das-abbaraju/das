@@ -145,7 +145,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 
-			contractor.setNeedsRecalculation(1);
+			contractor.incrementRecalculation();
 			contractor.setAuditColumns(permissions);
 			accountDao.save(contractor);
 

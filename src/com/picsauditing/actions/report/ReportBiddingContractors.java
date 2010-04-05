@@ -123,7 +123,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				summary = "Rejected Contractor for the Bid Only Account for " + permissions.getAccountName();
 			}
 
-			cAccount.setNeedsRecalculation(1);
+			cAccount.incrementRecalculation();
 			cAccount.setAuditColumns(permissions);
 			contractorAccountDAO.save(cAccount);
 

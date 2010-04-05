@@ -441,12 +441,17 @@ public class ContractorAccount extends Account implements JSONable {
 	 * 
 	 * @return
 	 */
-	public int isNeedsRecalculation() {
+	public int getNeedsRecalculation() {
 		return needsRecalculation;
 	}
 
 	public void setNeedsRecalculation(int needsRecalculation) {
 		this.needsRecalculation = needsRecalculation;
+	}
+
+	@Transient
+	public boolean isNeedsRecalculation() {
+		return needsRecalculation > 0;
 	}
 
 	@Transient

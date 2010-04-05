@@ -107,7 +107,7 @@ public class ConAuditSave extends AuditActionSupport {
 
 		conAudit = auditDao.save(conAudit);
 		ContractorAccount contractorAccount = conAudit.getContractorAccount();
-		contractor.setNeedsRecalculation(1);
+		contractor.incrementRecalculation();
 		accountDao.save(contractorAccount);
 		
 		return SUCCESS;

@@ -181,7 +181,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						return SUCCESS;
 					}
 					contractor.setQbSync(true);
-					contractor.setNeedsRecalculation(1);
+					contractor.incrementRecalculation();
 					contractor.setNameIndex();
 
 					if (contactID > 0 && contactID != contractor.getPrimaryContact().getId()) {
