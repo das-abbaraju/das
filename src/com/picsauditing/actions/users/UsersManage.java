@@ -628,6 +628,9 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	}
 	
 	public boolean isHasProfileEdit() {
+		if(user.getAccount().isContractor())
+			return true;
+		
 		for(UserAccess userAccess : user.getPermissions()) {
 			if(userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
 				return true;
