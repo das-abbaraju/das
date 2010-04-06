@@ -17,3 +17,10 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
+
+/** Update the requiresOQ for all contractors **/
+update accounts set requiresOQ = 1
+where id in (select distinct conid from contractor_audit ca
+join pqfdata pd on ca.id = pd.auditid
+where pd.questionid = 894
+and pd.answer = 'Yes');

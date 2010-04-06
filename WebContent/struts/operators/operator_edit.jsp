@@ -170,7 +170,8 @@ $(function() {
 					<li><label>Contractors pay:</label> <s:radio
 						list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}"
 						name="operator.doContractorsPay" theme="pics" /></li>
-
+					<li><label>Requires OQ:</label> <s:checkbox
+						name="operator.requiresOQ" /></li>
 				</ol>
 				</fieldset>
 				<fieldset class="form"><legend><span>Linked
