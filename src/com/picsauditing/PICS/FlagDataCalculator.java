@@ -106,6 +106,8 @@ public class FlagDataCalculator {
 
 		String answer = conCriteria.getAnswer();
 		if (criteria.getAuditType() != null) {
+			if(conCriteria.getContractor().getRiskLevel() == null)
+				return null;
 			if (opCriteria.getMinRiskLevel().equals(LowMedHigh.None)) {
 				return null;
 			}
