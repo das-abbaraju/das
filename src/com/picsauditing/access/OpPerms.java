@@ -91,7 +91,10 @@ public enum OpPerms {
 	ContractorAdmin("Admin", "Account, Users, Activation", false, false, false, true, false),
 	ContractorSafety("Safety", "PQF, Annual Updates, Audits, etc", false, false, false, true, false),
 	ContractorBilling("Billing", "Invoices, Payments, Credit Card", false, false, false, true, false),
-	ContractorInsurance("Insurance", "Insurance Certificates", false, false, false, true, false);
+	ContractorInsurance("Insurance", "Insurance Certificates", false, false, false, true, false),
+	
+	// Operator Qualification
+	ManageJobSites("Manage Job Sites", "Allows operators to view or edit their job sites.", true, true, false, false, true);
 
 	private String description;
 	private String helpText;
