@@ -615,16 +615,6 @@
 			<result>/struts/operators/operator_quick.jsp</result>
 		</action>
 		
-		<action name="ManageJobSites"
-			class="com.picsauditing.actions.operators.ManageJobSites">
-			<result>/struts/operators/op_job_sites.jsp</result>
-		</action>
-		
-		<action name="ManageJobSitesAjax"
-			class="com.picsauditing.actions.operators.ManageJobSites">
-			<result>/struts/operators/op_job_sites_tasks.jsp</result>
-		</action>
-
 		<!-- REPORTS Other -->
 		<action name="NewContractorSearch"
 			class="com.picsauditing.actions.report.ReportNewContractorSearch">
@@ -1524,9 +1514,18 @@
 			class="com.picsauditing.actions.users.ManageEmployees">
 			<result>struts/users/manage_employees.jsp</result>
 		</action>
+				
+		<action name="ManageJobSites"
+			class="com.picsauditing.actions.operators.ManageJobSites">
+			<result>/struts/operators/op_job_sites.jsp</result>
+		</action>
+		
+		<action name="ManageJobSitesAjax"
+			class="com.picsauditing.actions.operators.ManageJobSites">
+			<result>/struts/operators/op_job_sites_tasks.jsp</result>
+		</action>
 		
 		<!--  Development struts mappings -->
-
 		<action name="CertCleanUp"
 			class="com.picsauditing.actions.contractors.CertCleanUp">
 			<result>/struts/blank.jsp</result>
