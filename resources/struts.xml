@@ -614,6 +614,16 @@
 			class="com.picsauditing.actions.operators.OperatorActionSupport">
 			<result>/struts/operators/operator_quick.jsp</result>
 		</action>
+		
+		<action name="ManageJobSites"
+			class="com.picsauditing.actions.operators.ManageJobSites">
+			<result>/struts/operators/op_job_sites.jsp</result>
+		</action>
+		
+		<action name="ManageJobSitesAjax"
+			class="com.picsauditing.actions.operators.ManageJobSites">
+			<result>/struts/operators/op_job_sites_tasks.jsp</result>
+		</action>
 
 		<!-- REPORTS Other -->
 		<action name="NewContractorSearch"
