@@ -12,12 +12,13 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 	
 	@Override
 	protected void buildQuery() {
+		skipPermissions = true;
 		super.buildQuery();
 		
-		if (!permissions.isOperator())
-			// SelectAccount.setPermissions already adds this table for operators
-			sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
+		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
 		sql.addJoin("JOIN accounts o on gc.genid = o.id");
+		if(permissions.isOperator())
+			sql.addWhere("gc.genID = "+ permissions.getAccountId());
 		if (permissions.isCorporate())
 			sql.addJoin("JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId());
 		
