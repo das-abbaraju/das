@@ -358,4 +358,10 @@ public class StringsTest extends TestCase {
 		assertTrue(Strings.isSimilarTo("A", "B", 2));
 		assertTrue(Strings.isSimilarTo("", "", 0));
 	}
+
+	public void testMaskSSN() throws Exception {
+		String ssnMask = Strings.maskSSN("999999999");
+
+		assertEquals("XXX-XX-9999", ssnMask);
+	}
 }
