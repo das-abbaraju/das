@@ -1519,13 +1519,12 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		
-		<!-- JSON Stuff -->
-		
-		<action name="WebcamJSON"
-			class="com.picsauditing.actions.WebcamJSON">
-			<result>/struts/json.jsp</result>
+		<!-- Operator Qualifications -->
+		<action name="ManageEmployees"
+			class="com.picsauditing.actions.users.ManageEmployees">
+			<result>struts/users/manage_employees.jsp</result>
 		</action>
-
+		
 		<!--  Development struts mappings -->
 
 		<action name="CertCleanUp"

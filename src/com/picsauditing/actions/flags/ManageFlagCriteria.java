@@ -28,7 +28,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	private FlagCriteriaDAO criteriaDAO;
 
 	private FlagCriteria criteria;
-	private JSONObject json;
 
 	private AuditType auditType;
 	private AuditQuestion question;
@@ -160,7 +159,7 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 							put("criteria", criteria.toJSON());
 						}
 					};
-					
+
 					return JSON;
 				}
 			} else {
@@ -227,14 +226,6 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 	public void setCriteria(FlagCriteria criteria) {
 		this.criteria = criteria;
-	}
-
-	public JSONObject getJson() {
-		return json;
-	}
-
-	public void setJson(JSONObject json) {
-		this.json = json;
 	}
 
 	public AuditType getAuditType() {

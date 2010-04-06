@@ -36,7 +36,6 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private ContractorAuditDAO contractorAuditDAO;
 	private UserDAO userDAO;
 
-	private JSONObject json;
 	private String type = "Schedule";
 
 	private long start;
@@ -355,14 +354,6 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		}
 
 		return scheduledAudits;
-	}
-
-	public JSONObject getJson() {
-		return json;
-	}
-
-	public void setJson(JSONObject json) {
-		this.json = json;
 	}
 
 	public String getType() {

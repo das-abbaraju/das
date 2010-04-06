@@ -15,11 +15,9 @@ public class ContractorJson extends ContractorActionSupport {
 			return LOGIN;
 		findContractor();
 
-		return JSON;
-	}
+		json = contractor.toJSON(true);
 
-	public String getJson() {
-		return contractor.toJSON(true).toString();
+		return JSON;
 	}
 
 }

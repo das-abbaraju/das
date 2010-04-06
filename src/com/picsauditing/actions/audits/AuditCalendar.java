@@ -17,7 +17,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 public class AuditCalendar extends PicsActionSupport {
 	private ContractorAuditDAO contractorAuditDAO;
 
-	private JSONObject json = new JSONObject();
 	private Date start;
 	private Date end;
 
@@ -34,6 +33,7 @@ public class AuditCalendar extends PicsActionSupport {
 
 		if (button != null) {
 			if (button.equals("audits")) {
+				json = new JSONObject();
 				JSONArray events = new JSONArray();
 				List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(0, start, end, permissions);
 				auditorCount.put("Total", 0);
@@ -62,14 +62,6 @@ public class AuditCalendar extends PicsActionSupport {
 		}
 
 		return SUCCESS;
-	}
-
-	public JSONObject getJson() {
-		return json;
-	}
-
-	public void setJson(JSONObject json) {
-		this.json = json;
 	}
 
 	public void setStart(String start) {

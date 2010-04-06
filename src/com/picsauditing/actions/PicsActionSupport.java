@@ -12,6 +12,7 @@ import java.util.TreeSet;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
+import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -43,6 +44,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	// single string to the page
 	protected String output = null;
 	protected String button = null;
+	protected JSONObject json = null;
 
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
@@ -260,6 +262,14 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 			return "";
 		}
 		return output;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
 	}
 
 	protected int getParameter(String name) {

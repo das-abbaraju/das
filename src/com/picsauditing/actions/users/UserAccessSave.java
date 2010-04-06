@@ -4,27 +4,26 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 
 @SuppressWarnings("serial")
 public class UserAccessSave extends UsersManage {
 	protected OpPerms opPerm;
 	protected int accessId;
-	protected JSONObject json = new JSONObject();
 
-	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO, UserAccessDAO userAccessDAO) {
+	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
+			UserAccessDAO userAccessDAO) {
 		super(accountDao, operatorDao, userDAO, userAccessDAO);
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin()) {
 			addActionError("Timeout: you need to login again");
@@ -46,7 +45,7 @@ public class UserAccessSave extends UsersManage {
 					return SUCCESS;
 				}
 			}
-			
+
 			if (opPerm == null) {
 				addActionError("permission is not selected");
 				return SUCCESS;
@@ -81,7 +80,8 @@ public class UserAccessSave extends UsersManage {
 				user.getOwnedPermissions().clear();
 				user.getOwnedPermissions().addAll(temp);
 				json.put("title", "Added New Permission");
-				json.put("msg", "Successfully added the " + opPerm.getDescription() + " permission to " + user.getName());
+				json.put("msg", "Successfully added the " + opPerm.getDescription() + " permission to "
+						+ user.getName());
 			}
 		}
 
@@ -90,25 +90,27 @@ public class UserAccessSave extends UsersManage {
 				if (((ContractorAccount) account).getUsersByRole(opPerm).size() <= 1) {
 					json.put("title", "Cannot Remove Permission");
 					json.put("reset", true);
-					json.put("msg", "You must have at least one user with the " + opPerm.getDescription() + " permission");
+					json.put("msg", "You must have at least one user with the " + opPerm.getDescription()
+							+ " permission");
 					return SUCCESS;
 				}
-				
+
 				for (UserAccess userAccess : userAccessDAO.findByUser(user.getId())) {
 					if (userAccess.getOpPerm().equals(opPerm)) {
 						user.getOwnedPermissions().remove(userAccess);
 						userAccessDAO.remove(userAccess.getId());
 						json.put("title", "Removed Permission");
-						json.put("msg", "Successfully removed the " + opPerm.getDescription() + " permission from " + user.getName());
-					}	
+						json.put("msg", "Successfully removed the " + opPerm.getDescription() + " permission from "
+								+ user.getName());
+					}
 				}
 			}
-			
+
 			if (accessId > 0) {
 				UserAccess usAccess = userAccessDAO.find(accessId);
 				user.getOwnedPermissions().remove(usAccess);
 				userAccessDAO.remove(accessId);
-			}	
+			}
 		}
 		return SUCCESS;
 	}
@@ -129,11 +131,4 @@ public class UserAccessSave extends UsersManage {
 		this.accessId = accessId;
 	}
 
-	public JSONObject getJson() {
-		return json;
-	}
-
-	public void setJson(JSONObject json) {
-		this.json = json;
-	}
 }

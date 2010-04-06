@@ -151,7 +151,7 @@ function loadPreview() {
 					return;
 				if (!hasHoliday && getType(calEvent) == 'Holiday')
 					return;
-				var allDayCB = $dialog.find('#all-day:unchecked');
+				var allDayCB = $dialog.find('#all-day');
 				if (calEvent.allDay && !allDayCB.is(':checked')) 
 					allDayCB.click();
 				else if (!calEvent.allDay && allDayCB.is(':checked'))
