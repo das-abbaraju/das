@@ -10,7 +10,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 
 import com.picsauditing.PICS.DBBean;
-import com.picsauditing.jpa.entities.User;
 
 public class Database {
 

@@ -33,7 +33,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
@@ -49,7 +48,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected EmailAttachmentDAO emailAttachmentDAO;
 	protected EmailTemplateDAO emailTemplateDAO;
-	
+
 	private int requestID;
 	protected Country country;
 	protected State state;
@@ -62,43 +61,16 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String[] filenames = null;
 	protected String emailSubject;
 	protected String emailBody;
-	
-	
-	private String[] names = new String[] {
-		"ContractorName",
-		"ContractorPhone",
-		"ContractorEmail",
-		"RequestedBy",
-		"RequestedByUser",
-		"ContractorContactName",
-		"ContractorTaxID",
-		"ContractorAddress",
-		"ContractorCity",
-		"ContractorState",
-		"ContractorZip",
-		"ContractorCountry",
-		"Deadline",
-		"RegistrationLink",
-		"PICSSignature"
-	};
-		
-	private String[] velocityCodes = new String[] {
-		"${newContractor.name}",
-		"${newContractor.phone}",
-		"${newContractor.email}",
-		"${newContractor.requestedBy.name}",
-		"${requestedBy}",
-		"${newContractor.contact}",
-		"${newContractor.taxID}",
-		"${newContractor.address}",
-		"${newContractor.city}",
-		"${newContractor.state.english}",
-		"${newContractor.zip}",
-		"${newContractor.country.english}",
-		"${newContractor.deadline}",
-		"${requestLink}",
-		"<PICSSignature>"
-	};
+
+	private String[] names = new String[] { "ContractorName", "ContractorPhone", "ContractorEmail", "RequestedBy",
+			"RequestedByUser", "ContractorContactName", "ContractorTaxID", "ContractorAddress", "ContractorCity",
+			"ContractorState", "ContractorZip", "ContractorCountry", "Deadline", "RegistrationLink", "PICSSignature" };
+
+	private String[] velocityCodes = new String[] { "${newContractor.name}", "${newContractor.phone}",
+			"${newContractor.email}", "${newContractor.requestedBy.name}", "${requestedBy}",
+			"${newContractor.contact}", "${newContractor.taxID}", "${newContractor.address}", "${newContractor.city}",
+			"${newContractor.state.english}", "${newContractor.zip}", "${newContractor.country.english}",
+			"${newContractor.deadline}", "${requestLink}", "<PICSSignature>" };
 
 	public RequestNewContractor(ContractorRegistrationRequestDAO contractorRegistrationRequestDAO,
 			OperatorAccountDAO operatorAccountDAO, UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO,
@@ -185,13 +157,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					newContractor.setState(state);
 				}
 				if (requestedOperator > 0
-						&& (newContractor.getRequestedBy() == null
-								|| requestedOperator != newContractor.getRequestedBy().getId())) {
+						&& (newContractor.getRequestedBy() == null || requestedOperator != newContractor
+								.getRequestedBy().getId())) {
 					newContractor.setRequestedBy(operatorAccountDAO.find(requestedOperator));
 				}
 				if (requestedUser > 0
-						&& (newContractor.getRequestedByUser() == null
-								|| requestedUser != newContractor.getRequestedByUser().getId())) {
+						&& (newContractor.getRequestedByUser() == null || requestedUser != newContractor
+								.getRequestedByUser().getId())) {
 					newContractor.setRequestedByUser(userDAO.find(requestedUser));
 					newContractor.setRequestedByUserOther(null);
 				} else if (requestedOther != null) {
@@ -206,36 +178,41 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (button.equals("Close Request")) {
 				newContractor.setOpen(false);
 			}
-			
+
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
 					EmailBuilder emailBuilder = new EmailBuilder();
-					EmailTemplate emailTemplate = emailTemplateDAO.find(83); // Operator Request for Registration
-					// If the operator edited any part of the template, set it here.
+					EmailTemplate emailTemplate = emailTemplateDAO.find(83); // Operator
+					// Request
+					// for
+					// Registration
+					// If the operator edited any part of the template, set it
+					// here.
 					if (!Strings.isEmpty(emailBody))
 						emailTemplate.setBody(emailBody);
 					if (!Strings.isEmpty(emailSubject))
 						emailTemplate.setSubject(emailSubject);
-					
+
 					// Replace custom tokens
 					emailBody = emailTemplate.getBody();
 					emailSubject = emailTemplate.getSubject();
-					
+
 					for (int i = 0; i < names.length; i++) {
 						emailBody = emailBody.replace("<" + names[i] + ">", velocityCodes[i]);
 						emailSubject = emailSubject.replace("<" + names[i] + ">", velocityCodes[i]);
 					}
 					emailTemplate.setBody(emailBody);
 					emailTemplate.setSubject(emailSubject);
-					
+
 					// Set the template
 					emailBuilder.setTemplate(emailTemplate);
 					emailBuilder.addToken("newContractor", newContractor);
 					emailBuilder.addToken("csr", getAssignedCSR());
-					
-					// Point to the contractor registration page with some information pre-filled
+
+					// Point to the contractor registration page with some
+					// information pre-filled
 					String requestLink = "http://www.picsauditing.com/app/ContractorRegistration.action?button=request&rID="
-						+ newContractor.getId();
+							+ newContractor.getId();
 					emailBuilder.addToken("requestLink", requestLink);
 
 					// Get who requested this account be created
@@ -251,7 +228,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					emailQueue.setPriority(80);
 					emailQueue.setFromAddress(getAssignedCSR().getEmail());
 					EmailSender.send(emailQueue);
-					
+
 					if (filenames != null) {
 						for (String filename : filenames) {
 							try {
@@ -350,11 +327,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setRequestedUser(int requestedUser) {
 		this.requestedUser = requestedUser;
 	}
-	
+
 	public String getRequestedOther() {
 		return requestedOther;
 	}
-	
+
 	public void setRequestedOther(String requestedOther) {
 		this.requestedOther = requestedOther;
 	}
@@ -378,15 +355,15 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public ContractorAccount getConAccount() {
 		return conAccount;
 	}
-	
+
 	public String[] getFilenames() {
 		return filenames;
 	}
-	
+
 	public void setFilenames(String[] filenames) {
 		this.filenames = filenames;
 	}
-	
+
 	public String getEmailSubject() {
 		if (emailSubject == null) {
 			EmailTemplate template = emailTemplateDAO.find(83);
@@ -395,35 +372,35 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			else
 				emailSubject = "";
 		}
-		
+
 		for (int i = 0; i < velocityCodes.length; i++) {
 			emailSubject = emailSubject.replace(velocityCodes[i], "<" + names[i] + ">");
 		}
-		
+
 		return emailSubject;
 	}
-	
+
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
 	}
-	
+
 	public String getEmailBody() {
 		if (emailBody == null) {
 			EmailTemplate template = emailTemplateDAO.find(83);
 			emailBody = template.getBody();
 		}
-		
+
 		for (int i = 0; i < velocityCodes.length; i++) {
 			emailBody = emailBody.replace(velocityCodes[i], "<" + names[i] + ">");
 		}
 
 		return emailBody;
 	}
-	
+
 	public void setEmailBody(String emailBody) {
 		this.emailBody = emailBody;
 	}
-	
+
 	public User getAssignedCSR() {
 		if (newContractor.getId() > 0) {
 			if (newContractor.getCountry().getCsr() != null)
@@ -433,40 +410,40 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 		return null;
 	}
-	
+
 	public boolean isFormsViewable() {
 		return permissions.hasPermission(OpPerms.FormsAndDocs);
 	}
-	
+
 	public List<OperatorForm> getForms() {
 		List<OperatorForm> forms = null;
-		
+
 		if (permissions.isOperatorCorporate() || permissions.isAdmin()) {
 			OperatorAccount operator = newContractor.getRequestedBy();
 			Set<OperatorForm> inheritedFrom = new HashSet<OperatorForm>();
-			
+
 			inheritedFrom.addAll(operator.getInheritAuditCategories().getOperatorForms());
 			inheritedFrom.addAll(operator.getInheritAudits().getOperatorForms());
 			inheritedFrom.addAll(operator.getInheritFlagCriteria().getOperatorForms());
 			inheritedFrom.addAll(operator.getInheritInsurance().getOperatorForms());
 			inheritedFrom.addAll(operator.getInheritInsuranceCriteria().getOperatorForms());
-			
+
 			forms = new ArrayList<OperatorForm>(inheritedFrom);
 		}
-		
+
 		Collections.sort(forms, new ByFacilityName());
 		return forms;
 	}
-	
+
 	public String[] getTokens() {
 		return names;
 	}
-	
+
 	private class ByFacilityName implements Comparator<OperatorForm> {
 		public int compare(OperatorForm o1, OperatorForm o2) {
 			if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)
 				return (o1.getFormName().compareTo(o2.getFormName()));
-			
+
 			return o1.getAccount().getName().compareTo(o2.getAccount().getName());
 		}
 	}

@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class QBWebConnectorSvcSkeleton {
@@ -34,7 +33,7 @@ public class QBWebConnectorSvcSkeleton {
 		response.setAuthenticateResult(new ArrayOfString());
 
 		PicsLogger.start("QBWebConnector");
-		
+
 		PicsLogger.log("Authenticating user: " + authenticate.getStrUserName());
 
 		String sessionId = null;
@@ -71,14 +70,14 @@ public class QBWebConnectorSvcSkeleton {
 					}
 				}
 			}
-			
-			if("PICSQBLOADER".equals(authenticate.getStrUserName()) 
+
+			if ("PICSQBLOADER".equals(authenticate.getStrUserName())
 					&& authenticate.getStrPassword().equals(qbPassword)) {
-				
+
 				QBSession session = new QBSession();
 				session.setSessionId(GUID.asString());
 				session.setLastRequest(new Date());
-				
+
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();
 				PicsLogger.log("login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId);
@@ -211,7 +210,8 @@ public class QBWebConnectorSvcSkeleton {
 			PicsLogger.log(connectionError.getTicket() + "\tHresult: " + connectionError.getHresult());
 			PicsLogger.log(connectionError.getTicket() + "\tHresult: " + connectionError.getHresult());
 
-			// we probably want to send an email. this means that QBWC was not able
+			// we probably want to send an email. this means that QBWC was not
+			// able
 			// to connect to the quickbooks installation
 
 			if (true) {
@@ -316,7 +316,8 @@ public class QBWebConnectorSvcSkeleton {
 
 			response.setReceiveResponseXMLResult(percentDone);
 
-			// PicsLogger.log( receiveResponseXML.getTicket() + ": telling client there was an error" );
+			// PicsLogger.log( receiveResponseXML.getTicket() +
+			// ": telling client there was an error" );
 			// response.setReceiveResponseXMLResult(-1);
 		}
 		stop();

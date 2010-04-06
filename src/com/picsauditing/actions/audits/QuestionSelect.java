@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCatOperatorDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -15,7 +14,6 @@ import com.picsauditing.jpa.entities.AuditCatOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class QuestionSelect extends PicsActionSupport {

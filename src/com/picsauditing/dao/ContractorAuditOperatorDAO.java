@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Note;
@@ -118,7 +117,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				emailBuilder.setTemplate(33); // Insurance Approval Status
 				// Change
 				emailBuilder.setPermissions(permissions);
-				emailBuilder.setFromAddress("\""+permissions.getName() + "\"<" + permissions.getEmail() + ">");
+				emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorSafety);
 				emailBuilder.addToken("cao", cao);
 				EmailSender.send(emailBuilder.build());

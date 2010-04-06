@@ -8,7 +8,6 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.util.Strings;
 
@@ -69,8 +68,9 @@ public class ContractorOperatorDAO extends PicsDAO {
 				return null;
 			where = " AND operatorAccount.id IN (" + ids + ")";
 		}
-		Query query = em.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? AND operatorAccount.type IN ('Operator')" + where
-				+ " ORDER BY operatorAccount.name");
+		Query query = em
+				.createQuery("FROM ContractorOperator WHERE contractorAccount.id = ? AND operatorAccount.type IN ('Operator')"
+						+ where + " ORDER BY operatorAccount.name");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
