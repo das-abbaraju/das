@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @SuppressWarnings("serial")
 @Entity
@@ -39,6 +41,8 @@ public class Employee extends BaseTable {
 		this.lastName = lastName;
 	}
 
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "accountID", nullable = false)
 	public Account getAccount() {
 		return account;
 	}

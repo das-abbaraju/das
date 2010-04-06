@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -119,7 +118,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					// Set the other one that isn't set
 					catDataID = catData.getId();
 					catID = catData.getCategory().getId();
-					
+
 					List<Integer> questionIDs = new ArrayList<Integer>();
 					for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 						for (AuditQuestion question : subCategory.getQuestions()) {
@@ -132,7 +131,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 					}
 					// Get a map of all answers in this audit
 					answerMap = auditDataDao.findAnswers(catData.getAudit().getId(), questionIDs);
-					
+
 					currentCategory = catData;
 
 					if (mode == null && catData.getRequiredCompleted() < catData.getNumRequired()) {
@@ -229,7 +228,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 			} else {
 				auditPercentCalculator.updatePercentageCompleted(currentCategory);
 			}
-			if(permissions.isPicsEmployee())
+			if (permissions.isPicsEmployee())
 				currentCategory.getCategory().setCountries(contractor.getCountries());
 			else
 				currentCategory.getCategory().setCountries(permissions.getAccountCountries());

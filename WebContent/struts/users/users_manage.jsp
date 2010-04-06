@@ -131,7 +131,7 @@ div.autocomplete ul li {
 	</thead>
 	<s:iterator value="userList" status="stat">
 		<tr>
-			<td class="right"><s:property value="#stat.index + 1" />.</td>
+			<td class="right"><s:property value="#stat.count" />.</td>
 			<s:if test="group">
 				<td>G</td>
 				<td style="font-weight: bold"><a

@@ -74,26 +74,25 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			if (contractor.getRiskLevel() == null) {
 				boolean requiredQuestions = false;
 				boolean performServices = false;
-				if(answerMap != null) {
-					for(AuditQuestion aq : infoQuestions) {
-						if(answerMap.get(aq.getId()) == null) {
+				if (answerMap != null) {
+					for (AuditQuestion aq : infoQuestions) {
+						if (answerMap.get(aq.getId()) == null) {
 							requiredQuestions = false;
 							break;
-						}
-						else 
+						} else
 							requiredQuestions = true;
 					}
-					for(AuditQuestion aq : serviceQuestions) {
-						if(answerMap.get(aq.getId()) != null 
-								&& !Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) { 
-							performServices = true; 
+					for (AuditQuestion aq : serviceQuestions) {
+						if (answerMap.get(aq.getId()) != null
+								&& !Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) {
+							performServices = true;
 							break;
-						}	
+						}
 					}
 				}
-				if(!requiredQuestions)
+				if (!requiredQuestions)
 					addActionError("Please answer all the questions on the General Info section");
-				if(!performServices)
+				if (!performServices)
 					addActionError("Please select the services you perform below");
 				if (requiredQuestions && performServices) {
 					Collection<AuditData> auditList = answerMap.values();
@@ -105,7 +104,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 							AuditData aData = answerMap.get(q.getId());
 							riskLevel = getRiskLevel(aData, riskLevel);
 						} else if (auditData.getAnswer().startsWith("C")) {
-							//Self Performed Services
+							// Self Performed Services
 							riskLevel = getMaxRiskLevel(riskLevel, q.getRiskLevel());
 						}
 						if (riskLevel.equals(LowMedHigh.High))
@@ -150,20 +149,21 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
 		if (auditData != null && !auditData.getAnswer().equals(riskLevel)) {
-			if (auditData.getQuestion().getId() == 2442 
-					|| auditData.getQuestion().getId() == 2445) {
-				//Question : Does your company perform mechanical services
+			if (auditData.getQuestion().getId() == 2442 || auditData.getQuestion().getId() == 2445) {
+				// Question : Does your company perform mechanical services
 				// OR Services conducted at heights greater than six feet?
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
 			}
 			if (auditData.getQuestion().getId() == 2443) {
-				// Question : Does your company perform all services from only an office?
+				// Question : Does your company perform all services from only
+				// an office?
 				if (auditData.getAnswer().equals("No"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 			}
 			if (auditData.getQuestion().getId() == 2444) {
-				// Question : What risk level do you believe your company should be rated? 
+				// Question : What risk level do you believe your company should
+				// be rated?
 				if (auditData.getAnswer().equals("Med"))
 					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
 				if (auditData.getAnswer().equals("High"))
