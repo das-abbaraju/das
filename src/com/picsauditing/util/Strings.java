@@ -419,6 +419,8 @@ public class Strings {
 	}
 
 	public static String maskSSN(String ssn) {
+		if (Strings.isEmpty(ssn))
+			return null;
 		ssn.replaceFirst("^(\\d{3})(\\d{2})(\\d{4})$", "XXX-XX-$3");
 		return "XXX-XX-" + ssn.substring(ssn.length() - 4);
 	}

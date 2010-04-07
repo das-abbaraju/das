@@ -567,7 +567,7 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 		obj.put("phone", phone);
 
 		if (full) {
-			obj.put("creationDate", creationDate);
+			obj.put("creationDate", creationDate == null ? null : creationDate.getTime());
 			obj.put("lastLogin", lastLogin);
 			obj.put("username", username);
 

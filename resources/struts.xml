@@ -1514,6 +1514,11 @@
 			class="com.picsauditing.actions.users.ManageEmployees">
 			<result>struts/users/manage_employees.jsp</result>
 		</action>
+
+		<action name="ManageEmployeesAjax"
+			class="com.picsauditing.actions.users.ManageEmployees">
+			<result>struts/users/manage_employees.jsp</result>
+		</action>
 				
 		<action name="ManageJobSites"
 			class="com.picsauditing.actions.operators.ManageJobSites">

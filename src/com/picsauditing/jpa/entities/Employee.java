@@ -5,6 +5,12 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.json.simple.JSONObject;
+
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -67,6 +73,7 @@ public class Employee extends BaseTable {
 		this.status = status;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Date getHireDate() {
 		return hireDate;
 	}
@@ -75,6 +82,7 @@ public class Employee extends BaseTable {
 		this.hireDate = hireDate;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Date getFireDate() {
 		return fireDate;
 	}
@@ -123,6 +131,7 @@ public class Employee extends BaseTable {
 		this.ssn = ssn;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Date getBirthDate() {
 		return birthDate;
 	}
@@ -139,4 +148,26 @@ public class Employee extends BaseTable {
 		this.photo = photo;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = super.toJSON(full);
+
+		json.put("firstName", firstName);
+		json.put("lastName", lastName);
+		json.put("account", account.toJSON());
+		json.put("classification", classification == null ? null : classification.toString());
+		json.put("status", status == null ? null : status.toString());
+		json.put("hireDate", hireDate == null ? null : hireDate.getTime());
+		json.put("fireDate", fireDate == null ? null : fireDate.getTime());
+		json.put("title", title);
+		json.put("location", location);
+		json.put("email", email);
+		json.put("phone", phone);
+		json.put("ssn", Strings.maskSSN(ssn));
+		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
+		json.put("photo", photo);
+
+		return json;
+	}
 }
