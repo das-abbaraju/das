@@ -2,58 +2,17 @@ package com.picsauditing.actions;
 
 import java.io.File;
 
-import com.picsauditing.util.Strings;
+import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
 public class Trevor extends PicsActionSupport {
 
-	private String fileFrom;
-	private String fileTo;
-
 	@Override
-	public String execute() {
+	public String execute() throws Exception {
 
-		if (button != null) {
-			if (Strings.isEmpty(fileFrom)) {
-				addActionError("You must specify a source file");
-				return SUCCESS;
-			}
-			if (Strings.isEmpty(fileTo)) {
-				addActionError("You must specify a destination file");
-				return SUCCESS;
-			}
-
-			File sourceFile = new File(fileFrom);
-			if (!sourceFile.exists()) {
-				addActionError(fileFrom + " does not exist");
-				return SUCCESS;
-			}
-
-			File destinationFile = new File(fileTo);
-			try {
-				sourceFile.renameTo(destinationFile);
-			} catch (Exception e) {
-				addActionError("Failed to copy file: " + e.getMessage());
-				output = e.getStackTrace().toString();
-			}
-		}
+		File sourceFile = new File("/var/pics/test");
+		FileUtils.moveFile(sourceFile, "/var/pics/www_files/");
 		return SUCCESS;
-	}
-
-	public String getFileFrom() {
-		return fileFrom;
-	}
-
-	public void setFileFrom(String fileFrom) {
-		this.fileFrom = fileFrom;
-	}
-
-	public String getFileTo() {
-		return fileTo;
-	}
-
-	public void setFileTo(String fileTo) {
-		this.fileTo = fileTo;
 	}
 
 }
