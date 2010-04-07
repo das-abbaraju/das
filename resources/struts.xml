@@ -833,6 +833,17 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="QuestionAnswerSearchByAudit"
+			class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
+			<result>struts/reports/auditanswersearch.jsp</result>
+		</action>
+		
+		<action name="QuestionAnswerSearchByAuditCSV"
+			class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="AuditDataUpdates"
 			class="com.picsauditing.actions.report.ReportAuditDataUpdate">
 			<result>struts/reports/audit_update.jsp</result>

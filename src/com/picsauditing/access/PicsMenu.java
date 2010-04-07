@@ -78,6 +78,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
 
+		if (permissions.getAccountName().startsWith("Tesoro"))
+			subMenu.addChild("Search Answers By Audit", "QuestionAnswerSearchByAudit.action");
+
 		if (permissions.isPicsEmployee()) // || permissions.isOperatorCorporate()
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 
