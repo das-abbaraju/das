@@ -1,57 +1,59 @@
 package com.picsauditing.actions;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
 
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class Trevor extends PicsActionSupport {
 
-	static private Set<Trevor> manager = new HashSet<Trevor>();
-	private String hash;
-	private int id;
+	private String fileFrom;
+	private String fileTo;
 
 	@Override
-	public String execute() throws Exception {
-		try {
-			manager.add(this);
-			process();
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			manager.remove(this);
-		}
+	public String execute() {
 
+		if (button != null) {
+			if (Strings.isEmpty(fileFrom)) {
+				addActionError("You must specify a source file");
+				return SUCCESS;
+			}
+			if (Strings.isEmpty(fileTo)) {
+				addActionError("You must specify a destination file");
+				return SUCCESS;
+			}
+
+			File sourceFile = new File(fileFrom);
+			if (!sourceFile.exists()) {
+				addActionError(fileFrom + " does not exist");
+				return SUCCESS;
+			}
+
+			File destinationFile = new File(fileTo);
+			try {
+				sourceFile.renameTo(destinationFile);
+			} catch (Exception e) {
+				addActionError("Failed to copy file: " + e.getMessage());
+				output = e.getStackTrace().toString();
+			}
+		}
 		return SUCCESS;
 	}
 
-	private void process() {
-		System.out.println("managers running now = " + manager.size());
-		hash = Strings.hash(manager.size() + "hi" + new Date().toString());
-		for (Trevor trevor : manager) {
-			System.out.println(" - " + id + ": " + trevor.getHash() + (this.equals(trevor) ? " self" : ""));
-		}
-		output = "hello world";
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String getFileFrom() {
+		return fileFrom;
 	}
 
-	public String getHash() {
-		return hash;
+	public void setFileFrom(String fileFrom) {
+		this.fileFrom = fileFrom;
 	}
 
-	public int getId() {
-		return id;
+	public String getFileTo() {
+		return fileTo;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setFileTo(String fileTo) {
+		this.fileTo = fileTo;
 	}
 
 }
