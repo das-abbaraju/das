@@ -26,12 +26,13 @@
 <body>
 	<h1>Manage Employees<span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
 	
+	<s:include value="../actionMessages.jsp"/>
 	<pics:permission perm="AllOperators">
 		<div id="search">
 			<s:form id="filterOperator">
 				<div class="filterOption">
 					<h4>Account:</h4>
-					<s:select name="accountID" headerKey="1100"
+					<s:select name="account.id" headerKey="1100"
 						headerValue="PICS Employees" list="operators" listKey="id"
 						listValue="name" onchange="$('form#filterOperator').submit();"/>
 				</div>
@@ -51,7 +52,7 @@
 					</thead>
 					<s:iterator value="employees">
 						<tr>
-							<td><a href="?employeeID=<s:property value="id"/>"><s:property value="firstName"/> <s:property value="lastName"/></a></td>
+							<td><a href="?employee.id=<s:property value="id"/>"><s:property value="displayName"/></a></td>
 						</tr>
 					</s:iterator>
 				</table>
@@ -61,7 +62,7 @@
 			
 			<td style="vertical-align:top;">
 				<s:if test="employee != null">
-					<form>
+					<s:form>
 						<s:hidden name="employee.id"/>
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
@@ -108,10 +109,10 @@
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">
-							<input type="submit" value="Save" class="picsbutton positive"/>
-							<input type="submit" value="Delete" class="picsbutton negative"/>
+							<input type="submit" value="Save" name="button" class="picsbutton positive"/>
+							<input type="submit" value="Delete" name="button" class="picsbutton negative"/>
 						</fieldset>
-					</form>
+					</s:form>
 				</s:if>
 			</td>
 		</tr>

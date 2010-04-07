@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
@@ -45,6 +46,11 @@ public class Employee extends BaseTable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	@Transient
+	public String getDisplayName() {
+		return firstName + " " + lastName;
 	}
 
 	@ManyToOne(optional = false)
