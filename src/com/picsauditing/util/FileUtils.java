@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class FileUtils {
 
 	/**
-	 * Save an existing File object to the file system at a particular location
+	 * Move an existing File object to another location. This is NFS safe because it actually copies the new file over and deletes the old one.
 	 * 
 	 * @param f
 	 *            file handle for the file we want to copy
@@ -33,8 +33,8 @@ public class FileUtils {
 		File theNewFile = picsUploadLogic(ftpDir, partialPath, fileName, extension, deleteDuplicates);
 
 		// finally, do the copy
-		if (!f.renameTo(theNewFile))
-			throw new Exception("Could not move file to " + theNewFile.getAbsolutePath());
+		copyFile(f, theNewFile);
+		deleteFile(f);
 	}
 
 	static public void moveFile(File f, String path) throws Exception {
@@ -51,6 +51,17 @@ public class FileUtils {
 		copyFile(f, theNewFile);
 	}
 
+	/**
+	 * Prepare the file system to receive a new pics file. Add folder hierarchy, delete existing file(s), and return a file handle
+	 * @param ftpDir
+	 * @param partialPath
+	 * @param fileName
+	 * @param extension
+	 * @param deleteDuplicates
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 */
 	protected static File picsUploadLogic(String ftpDir, String partialPath, String fileName, String extension,
 			boolean deleteDuplicates) throws FileNotFoundException, Exception {
 		File rootFile = new File(ftpDir);
