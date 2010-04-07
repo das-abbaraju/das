@@ -325,7 +325,8 @@ public class AuditDataSave extends AuditActionSupport {
 			databaseCopy = auditData;
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 
-		if ("Money".equals(questionType) || "Decimal Number".equals(questionType)) {
+		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) 
+				|| "Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
 			// We add them back in later
 			answer = answer.replace(",", "");
@@ -341,7 +342,12 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError("The answer must be a number.");
 				return false;
 			}
-
+			
+			if("Number".equals(questionType)) {
+				auditData.setAnswer(answer);
+				return true;
+			}
+			
 			NumberFormat format = new DecimalFormat("#,##0");
 			if ("Decimal Number".equals(questionType))
 				format = new DecimalFormat("#,##0.000");

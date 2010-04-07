@@ -105,7 +105,7 @@
 			headerKey="" headerValue="- Country -"
 			onchange="saveAnswer('%{#q.id}', this);"></s:select>
 	</s:if>
-	<s:if test="#q.questionType == 'Money'">
+	<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number'">
 		<s:textfield name="answer%{#q.id}" value="%{#a.answer}" size="19" 
 			onchange="saveAnswer('%{#q.id}', this);" cssClass="number" />
 	</s:if>
