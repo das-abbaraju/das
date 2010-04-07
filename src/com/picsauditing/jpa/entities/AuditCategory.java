@@ -25,6 +25,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "pqfcategories")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditCategory extends BaseTable implements java.io.Serializable, Comparable<AuditCategory> {
+
 	public static final int WORK_HISTORY = 6;
 	public static final int OSHA_AUDIT = 151;
 	public static final int GENERAL_INFORMATION = 155;
@@ -42,6 +43,8 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	private int number;
 	private int numRequired;
 	private int numQuestions;
+	private AuditQuestion applyOnQuestion = null;
+	private String applyOnAnswer;
 
 	List<AuditSubCategory> subCategories;
 
@@ -96,6 +99,22 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 
 	public void setNumQuestions(int numQuestions) {
 		this.numQuestions = numQuestions;
+	}
+
+	public AuditQuestion getApplyOnQuestion() {
+		return applyOnQuestion;
+	}
+
+	public void setApplyOnQuestion(AuditQuestion applyOnQuestion) {
+		this.applyOnQuestion = applyOnQuestion;
+	}
+
+	public String getApplyOnAnswer() {
+		return applyOnAnswer;
+	}
+
+	public void setApplyOnAnswer(String applyOnAnswer) {
+		this.applyOnAnswer = applyOnAnswer;
 	}
 
 	@OneToMany(mappedBy = "category")

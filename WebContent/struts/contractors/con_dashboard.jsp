@@ -352,7 +352,7 @@ ul {
 			</div>
 			<div class="panel_content">
 				<s:if test="showLogo">
-					<img class="contractor_logo" src="Download.action?fileType=logos&id=<s:property value="id"/>"/>
+					<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
 				</s:if>
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/></strong></p>
 				<s:property value="contractor.descriptionHTML" escape="false" />

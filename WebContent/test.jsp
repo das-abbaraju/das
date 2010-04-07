@@ -12,6 +12,12 @@
 <%
 	File sourceFile = new File("/var/pics/test");
 	FileUtils.moveFile(sourceFile, "/var/pics/www_files/");
+	if (!sourceFile.exists()) {
+		%>File does not exist<%
+	} else {
+		File destinationFile = new File("/var/pics/test2");
+		sourceFile.renameTo(destinationFile);
+	}
 %>
 </body>
 </html>
