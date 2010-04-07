@@ -3,20 +3,32 @@ package com.picsauditing.actions.users;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
-public class ManageEmployees extends PicsActionSupport {
+public class ManageEmployees extends AccountActionSupport {
 
+	private AccountDAO accountDAO;
+	private OperatorAccountDAO operatorDAO;
 	private EmployeeDAO employeeDAO;
 
-	private List<Employee> employees;
+	protected int accountID;
+	protected Account account;
 
-	private Employee employee;
-	private int employeeID;
+	protected List<OperatorAccount> operators;
+	protected List<Employee> employees;
 
-	public ManageEmployees(EmployeeDAO employeeDAO) {
+	protected int employeeID;
+	protected Employee employee;
+
+	public ManageEmployees(AccountDAO accountDAO, OperatorAccountDAO operatorDAO, EmployeeDAO employeeDAO) {
+		this.accountDAO = accountDAO;
+		this.operatorDAO = operatorDAO;
 		this.employeeDAO = employeeDAO;
 	}
 
@@ -31,20 +43,59 @@ public class ManageEmployees extends PicsActionSupport {
 			permissions.tryPermission(OpPerms.EditUsers);
 
 		employee = employeeDAO.find(employeeID);
+		if (employee != null)
+			account = employee.getAccount();
+
+		if (account == null && accountID > 0)
+			account = accountDAO.find(accountID);
+		else if (account == null) {
+			account = accountDAO.find(permissions.getAccountId());
+		}
+		accountID = account.getId();
+
+		if (permissions.getAccountId() != accountID)
+			permissions.tryPermission(OpPerms.AllOperators);
+
+		this.subHeading = account.getName();
+
+		if (button != null) {
+
+		}
 
 		return SUCCESS;
 	}
 
+	public List<OperatorAccount> getOperators() {
+		if (operators == null) {
+			operators = operatorDAO.findWhere(true, "");
+		}
+
+		return operators;
+	}
+
 	public List<Employee> getEmployees() {
 		if (employees == null) {
-			employees = employeeDAO.findAll();
+			employees = employeeDAO.findByAccount(account.getId());
 		}
 
 		return employees;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public int getAccountID() {
+		return accountID;
+	}
+
+	public void setAccountID(int accountId) {
+		this.accountID = accountId;
+	}
+
+	@Override
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public int getEmployeeID() {
@@ -54,4 +105,9 @@ public class ManageEmployees extends PicsActionSupport {
 	public void setEmployeeID(int employeeID) {
 		this.employeeID = employeeID;
 	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
 }
