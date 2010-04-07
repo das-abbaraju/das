@@ -29,7 +29,8 @@ public class EmployeeDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.account.name, e.name");
+		Query query = em.createQuery("SELECT e FROM Employee e " + where
+				+ " ORDER BY e.account.name, e.lastName, e.firstName");
 		if (limit > 0)
 			query.setMaxResults(limit);
 		return query.getResultList();
@@ -42,4 +43,9 @@ public class EmployeeDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<Employee> findByAccount(int accountID) {
+		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.account.id = :accountID");
+		query.setParameter("accountID", accountID);
+		return query.getResultList();
+	}
 }

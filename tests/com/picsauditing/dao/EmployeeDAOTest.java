@@ -30,9 +30,9 @@ public class EmployeeDAOTest extends TestCase {
 	}
 
 	@Test
-	public void testFindAll() {
-		List<Employee> employees = employeeDAO.findAll();
+	public void testFindWhere() throws Exception {
+		List<Employee> employees = employeeDAO.findWhere("", 10);
 
-		assertTrue(employees.size() > 0);
+		assertTrue(employees.size() == 10);
 	}
 }
