@@ -4,25 +4,33 @@ import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.dao.EmployeeQualificationDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageJobSites extends OperatorActionSupport {
+	protected EmployeeQualificationDAO qualDAO;
 	protected JobSiteDAO siteDAO;
 	protected JobSiteTaskDAO siteTaskDAO;
 	
 	protected int siteID;
-	protected JobSite newSite = new JobSite();
+	protected int siteTaskID;
 	
-	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO, JobSiteTaskDAO siteTaskDAO) {
+	protected JobSite newSite = new JobSite();
+	protected JobSiteTask siteTask;
+	
+	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO, JobSiteTaskDAO siteTaskDAO,
+			EmployeeQualificationDAO qualDAO) {
 		super(operatorDao);
 		this.siteDAO = siteDAO;
 		this.siteTaskDAO = siteTaskDAO;
+		this.qualDAO = qualDAO;
 		
 		subHeading = "Manage Job Sites";
 	}
@@ -38,6 +46,11 @@ public class ManageJobSites extends OperatorActionSupport {
 			if ("Tasks".equalsIgnoreCase(button)) {
 				newSite = siteDAO.find(siteID);
 				return SUCCESS;
+			}
+			
+			if ("Employees".equalsIgnoreCase(button)) {
+				siteTask = siteTaskDAO.find(siteTaskID);
+				return "employees";
 			}
 			
 			if ("Save".equalsIgnoreCase(button)) {
@@ -76,6 +89,22 @@ public class ManageJobSites extends OperatorActionSupport {
 		return SUCCESS;
 	}
 	
+	public int getSiteID() {
+		return siteID;
+	}
+	
+	public void setSiteID(int siteID) {
+		this.siteID = siteID;
+	}
+	
+	public int getSiteTaskID() {
+		return siteTaskID;
+	}
+	
+	public void setSiteTaskID(int siteTaskID) {
+		this.siteTaskID = siteTaskID;
+	}
+	
 	public JobSite getNewSite() {
 		return newSite;
 	}
@@ -84,12 +113,8 @@ public class ManageJobSites extends OperatorActionSupport {
 		this.newSite = newSite;
 	}
 	
-	public int getSiteID() {
-		return siteID;
-	}
-	
-	public void setSiteID(int siteID) {
-		this.siteID = siteID;
+	public JobSiteTask getSiteTask() {
+		return siteTask;
 	}
 	
 	public boolean isCanEdit() {
@@ -106,5 +131,9 @@ public class ManageJobSites extends OperatorActionSupport {
 	
 	public List<JobSiteTask> getTasks(int job) {
 		return siteTaskDAO.findByJob(job);
+	}
+	
+	public List<EmployeeQualification> getEmployeesByTask(int siteTaskID) {
+		return qualDAO.findByTask(siteTaskID);
 	}
 }

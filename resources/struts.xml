@@ -1523,6 +1523,7 @@
 		<action name="ManageJobSitesAjax"
 			class="com.picsauditing.actions.operators.ManageJobSites">
 			<result>/struts/operators/op_job_sites_tasks.jsp</result>
+			<result name="employees">/struts/operators/op_job_sites_employees.jsp</result>
 		</action>
 		
 		<!--  Development struts mappings -->

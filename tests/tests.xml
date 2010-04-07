@@ -42,6 +42,7 @@
 	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
 	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
 	<bean id="EmployeeDAO" class="com.picsauditing.dao.EmployeeDAO"/>
+	<bean id="EmployeeQualfiicationDAO" class="com.picsauditing.dao.EmployeeQualificationDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
 	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
 	<bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO"/>
@@ -50,6 +51,8 @@
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
 	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
 	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
+	<bean id="JobSiteDAO" class="com.picsauditing.dao.JobSiteDAO"/>
+	<bean id="JobSiteTaskDAO" class="com.picsauditing.dao.JobSiteTaskDAO"/>
 	<bean id="NaicsDAO" class="com.picsauditing.dao.NaicsDAO"/>
 	<bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>

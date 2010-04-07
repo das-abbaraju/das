@@ -1,29 +1,29 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
+<h3><s:property value="newSite.name" /> Tasks</h3>
 <s:if test="getTasks(siteID).size() > 0">
-	<h3><s:property value="newSite.name" /> Tasks</h3>
 	<table class="report">
 		<thead>
 			<tr>
-				<th></th>
 				<th>Label</th>
 				<th>Name</th>
-				<s:if test="canEdit">
-					<th>Remove</th>
-				</s:if>
+				<th># Employees</th>
 			</tr>
 		</thead>
-		<s:iterator value="getTasks(siteID)" id="siteTask" status="stat">
+		<s:iterator value="getTasks(siteID)" id="siteTask">
 			<tbody>
 				<tr>
-					<td><s:property value="#stat.count" /></td>
 					<td><s:property value="#siteTask.task.label" /></td>
-					<td><s:property value="#siteTask.task.name" /></td>
-					<s:if test="canEdit">
-						<td class="center"><a href="#" onclick="return false;" class="remove"></a></td>
-					</s:if>
+					<td>
+						<a onclick="getEmployees(<s:property value="#siteTask.id" />); return false;"
+							href="#"><s:property value="#siteTask.task.name" /></a>
+					</td>
+					<td class="right"><s:property value="getEmployeesByTask(#siteTask.id).size()" /></td>
 				</tr>
 			</tbody>
 		</s:iterator>
 	</table>
 </s:if>
+<s:else>
+	No tasks available for this site.
+</s:else>
