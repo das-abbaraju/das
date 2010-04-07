@@ -102,7 +102,7 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "applyOnQuestionID")
+	@JoinColumn(name = "applyOnQID")
 	public AuditQuestion getApplyOnQuestion() {
 		return applyOnQuestion;
 	}
