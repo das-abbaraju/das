@@ -79,7 +79,11 @@ public class JobTask extends BaseTable {
 	}
 
 	@OneToMany(mappedBy = "task", cascade = { CascadeType.ALL })
-	public List<JobTaskCriteria> getCriteria() {
+	public List<JobTaskCriteria> getJobTaskCriteria() {
 		return jobTaskCriteria;
+	}
+
+	public void setJobTaskCriteria(List<JobTaskCriteria> jobTaskCriteria) {
+		this.jobTaskCriteria = jobTaskCriteria;
 	}
 }
