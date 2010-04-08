@@ -15,7 +15,7 @@ public class AssessmentTest extends BaseTable {
 	private Account assessmentCenter;
 	private String qualificationType;
 	private String qualificationMethod;
-	private String taskType;
+	private String description;
 	private Date effectiveDate;
 	private Date expirationDate;
 	private boolean verifiable = true;
@@ -47,12 +47,12 @@ public class AssessmentTest extends BaseTable {
 		this.qualificationMethod = qualificationMethod;
 	}
 
-	public String getTaskType() {
-		return taskType;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setTaskType(String taskType) {
-		this.taskType = taskType;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Date getEffectiveDate() {
