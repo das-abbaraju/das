@@ -83,6 +83,8 @@
 		<s:sort comparator="dataComparator" source="conAudit.data">
 	 <s:iterator>
 		<s:if test="question.id != 2447 && question.id != 2448">
+			<s:set name="categoryID" value="question.subCategory.category.id"/>
+			<s:if test="#categoryID != 278 || (#categoryID == 278 && question.isRequired == 'Yes')">
 			<s:div id="qid_%{question.id}">
 			<ol>
 				<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
@@ -140,6 +142,7 @@
 				</li>
 			</ol>
 			</s:div>
+			</s:if>
 		</s:if>
 	</s:iterator>
 	</s:sort>
