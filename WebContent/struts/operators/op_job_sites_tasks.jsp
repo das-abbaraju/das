@@ -8,6 +8,9 @@
 				<th>Label</th>
 				<th>Name</th>
 				<th># Employees</th>
+				<s:if test="canEdit">
+					<th>Remove</th>
+				</s:if>
 			</tr>
 		</thead>
 		<s:iterator value="getTasks(siteID)" id="siteTask">
@@ -19,11 +22,18 @@
 							href="#"><s:property value="#siteTask.task.name" /></a>
 					</td>
 					<td class="right"><s:property value="getEmployeesByTask(#siteTask.id).size()" /></td>
+					<s:if test="canEdit">
+						<td class="center"><a href="#" onclick="removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />); return false;" class="remove"></a></td>
+					</s:if>
 				</tr>
 			</tbody>
 		</s:iterator>
 	</table>
 </s:if>
 <s:else>
-	No tasks available for this site.
+	No tasks associated with this site.
 </s:else>
+
+<s:if test="getAddableTasks().size() > 0">
+	<a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); return false;" class="add">Add New Task</a>
+</s:if>

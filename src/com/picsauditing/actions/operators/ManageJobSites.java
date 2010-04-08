@@ -1,5 +1,8 @@
 package com.picsauditing.actions.operators;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
@@ -7,10 +10,15 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.dao.EmployeeQualificationDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
+import com.picsauditing.dao.JobTaskDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
+import com.picsauditing.jpa.entities.JobTask;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -18,21 +26,29 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected EmployeeQualificationDAO qualDAO;
 	protected JobSiteDAO siteDAO;
 	protected JobSiteTaskDAO siteTaskDAO;
+	protected JobTaskDAO taskDAO;
+	protected NoteDAO noteDAO;
 	
 	protected int siteID;
 	protected int siteTaskID;
+	protected int taskID;
 	
 	protected JobSite newSite = new JobSite();
-	protected JobSiteTask siteTask;
+	protected JobSiteTask siteTask = new JobSiteTask();
+	protected JobTask newTask = new JobTask();
 	
-	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO, JobSiteTaskDAO siteTaskDAO,
-			EmployeeQualificationDAO qualDAO) {
+	public ManageJobSites(OperatorAccountDAO operatorDao, EmployeeQualificationDAO qualDAO, JobSiteDAO siteDAO,
+			JobSiteTaskDAO siteTaskDAO, JobTaskDAO taskDAO, NoteDAO noteDAO) {
 		super(operatorDao);
+		this.qualDAO = qualDAO;
 		this.siteDAO = siteDAO;
 		this.siteTaskDAO = siteTaskDAO;
-		this.qualDAO = qualDAO;
+		this.taskDAO = taskDAO;
+		this.noteDAO = noteDAO;
 		
 		subHeading = "Manage Job Sites";
+		// When we need more detailed notes about OQ
+		// noteCategory = NoteCategory.OperatorQualification;
 	}
 	
 	public String execute() throws Exception {
@@ -40,6 +56,7 @@ public class ManageJobSites extends OperatorActionSupport {
 			return LOGIN;
 				
 		findOperator();
+		// Check for basic view capabilities
 		tryPermissions(OpPerms.ManageJobSites);
 		
 		if (button != null) {
@@ -51,6 +68,49 @@ public class ManageJobSites extends OperatorActionSupport {
 			if ("Employees".equalsIgnoreCase(button)) {
 				siteTask = siteTaskDAO.find(siteTaskID);
 				return "employees";
+			}
+			
+			if ("NewTasks".equalsIgnoreCase(button)) {
+				newSite = siteDAO.find(siteID);
+				return "newTasks";
+			}
+			
+			// Check if they have the edit permission here
+			tryPermissions(OpPerms.ManageJobSites, OpType.Edit);
+			// Add a note for every action?
+			Note note = new Note();
+			
+			// Job Site Tasks
+			if ("AddTask".equalsIgnoreCase(button) || "RemoveTask".equalsIgnoreCase(button)) {
+				if ("AddTask".equalsIgnoreCase(button)) {
+					newTask = taskDAO.find(taskID);
+					newSite = siteDAO.find(siteID);
+					siteTask.setTask(newTask);
+					siteTask.setJob(newSite);
+					siteTask.setAuditColumns(permissions);
+					
+					note.setSummary("Added new task: " + siteTask.getTask().getLabel() + " to job site: "
+							+ newSite.getLabel());
+				}
+				
+				if ("RemoveTask".equalsIgnoreCase(button)) {
+					newSite = siteDAO.find(siteID);
+					siteTask = siteTaskDAO.find(siteTaskID);
+					
+					note.setSummary("Removed task: " + siteTask.getTask().getLabel() + " from job site: "
+							+ newSite.getLabel());
+				}
+				
+				note.setAuditColumns(permissions);
+				note.setAccount(operator);
+				note.setNoteCategory(noteCategory);
+				note.setPriority(LowMedHigh.Med);
+				note.setViewableBy(operator);
+				note.setCanContractorView(true);
+				noteDAO.save(note);
+				
+				siteTaskDAO.remove(siteTask);
+				return SUCCESS;
 			}
 			
 			if ("Save".equalsIgnoreCase(button)) {
@@ -66,19 +126,34 @@ public class ManageJobSites extends OperatorActionSupport {
 					return SUCCESS;
 				
 				newSite.setActive(true);
+				note.setSummary("Added new job site with label: " + newSite.getLabel()
+						+ " and site name: " + newSite.getName());
 			}
 			
 			if ("Remove".equalsIgnoreCase(button)) {
 				newSite = siteDAO.find(siteID);
 				newSite.setActive(false);
+				note.setSummary("Deactivated job site with label: " + newSite.getLabel()
+						+ " and site name: " + newSite.getName());
 			}
 			
 			if ("Reactivate".equalsIgnoreCase(button)) {
 				newSite = siteDAO.find(siteID);
 				newSite.setActive(true);
+				note.setSummary("Reactivated job site with label: " + newSite.getLabel()
+						+ " and site name: " + newSite.getName());
 			}
 			
+			newSite.setAuditColumns(permissions);
 			siteDAO.save(newSite);
+			// Save the note
+			note.setAuditColumns(permissions);
+			note.setAccount(operator);
+			note.setNoteCategory(noteCategory);
+			note.setPriority(LowMedHigh.Med);
+			note.setViewableBy(operator);
+			note.setCanContractorView(true);
+			noteDAO.save(note);
 			
 			if (permissions.isOperator())
 				return redirect("ManageJobSites.action");
@@ -103,6 +178,14 @@ public class ManageJobSites extends OperatorActionSupport {
 	
 	public void setSiteTaskID(int siteTaskID) {
 		this.siteTaskID = siteTaskID;
+	}
+	
+	public int getTaskID() {
+		return taskID;
+	}
+	
+	public void setTaskID(int taskID) {
+		this.taskID = taskID;
 	}
 	
 	public JobSite getNewSite() {
@@ -133,7 +216,38 @@ public class ManageJobSites extends OperatorActionSupport {
 		return siteTaskDAO.findByJob(job);
 	}
 	
+	public List<JobTask> getAddableTasks() {
+		List<JobSiteTask> siteTasks = getTasks(siteID);
+		// Skip tasks that have all ready been associated with this site
+		List<Integer> skip = new ArrayList<Integer>();
+		
+		for (JobSiteTask jst : siteTasks) {
+			skip.add(jst.getTask().getId());
+		}
+		
+		String ids = "";
+		if (skip.size() > 0)
+			ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",") + ")";
+		
+		return taskDAO.findWhere("opID = " + operator.getId() + ids);
+	}
+	
 	public List<EmployeeQualification> getEmployeesByTask(int siteTaskID) {
-		return qualDAO.findByTask(siteTaskID);
+		// Sort list by employer name?
+		List<EmployeeQualification> employees = qualDAO.findByTask(siteTaskID);
+		
+		if (employees.size() > 1)
+			Collections.sort(employees, new ByEmployerName());
+		
+		return employees;
+	}
+	
+	private class ByEmployerName implements Comparator<EmployeeQualification> {
+		public int compare(EmployeeQualification o1, EmployeeQualification o2) {
+			String a1 = o1.getEmployee().getAccount().getName();
+			String a2 = o2.getEmployee().getAccount().getName();
+			
+			return a1.compareTo(a2);
+		}
 	}
 }

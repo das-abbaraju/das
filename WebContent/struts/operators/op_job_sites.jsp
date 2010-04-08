@@ -20,7 +20,7 @@
 
 fieldset.form label {
 	width: 5em;
-	margin-right: 0px;
+	margin-right: 5px;
 }
 </style>
 <s:include value="../jquery.jsp"/>
@@ -35,6 +35,7 @@ function getTasks(siteID) {
 	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
 		function() {
 			$('#taskEmployees').empty();
+			$('#addSiteTasks').empty();
 		}
 	);
 }
@@ -48,10 +49,57 @@ function getEmployees(siteTaskID) {
 
 	$('#taskEmployees').load('ManageJobSitesAjax.action', data);
 }
+
+function getNewSiteTasks(siteID) {
+	var data = {
+		button: 'NewTasks',
+		siteID: siteID,
+		id: <s:property value="operator.id" />
+	};
+
+	$('#addSiteTasks').load('ManageJobSitesAjax.action', data, 
+		function() {
+			$('#addTaskLink').hide();
+		}
+	);
+}
+
+function addTask(siteID, taskID) {
+	var data = {
+		button: 'AddTask',
+		siteID: siteID,
+		taskID: taskID,
+		id: <s:property value="operator.id" />
+	};
+
+	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
+		function() {
+			$('#taskEmployees').empty();
+			$('#addSiteTasks').empty();
+		}
+	);
+}
+
+function removeTask(siteID, siteTaskID) {
+	var data = {
+		button: 'RemoveTask',
+		siteID: siteID,
+		siteTaskID: siteTaskID,
+		id: <s:property value="operator.id" />
+	};
+
+	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
+		function() {
+			$('#taskEmployees').empty();
+			$('#addSiteTasks').empty();
+		}
+	);
+}
 </script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
+<div id="clear" style="width: 100%"></div>
 <table id="sitesTable">
 	<tr>
 		<td style="width: 300px;">
@@ -90,7 +138,7 @@ function getEmployees(siteTaskID) {
 				<a onclick="$('#addJobSite').show(); $('#addLink').hide(); return false;"
 					href="#" id="addLink" class="add">Add New Job Site</a>
 				<div id="addJobSite" style="display: none; clear: both;">
-					<s:form id="newJobSite" method="POST" enctype="multipart/form-data">
+					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 						<s:hidden name="id" />
 						<fieldset class="form bottom">
 							<legend><span>Add New Job Site</span></legend>
@@ -114,42 +162,47 @@ function getEmployees(siteTaskID) {
 		</td>
 		<td rowspan="2">
 			<div id="jobSiteTasks"></div>
+			<s:if test="canEdit">
+				<div id="addSiteTasks"></div>
+			</s:if>
 		</td>
 		<td rowspan="2" style="width: 325px;">
 			<div id="taskEmployees"></div>
 		</td>
 	</tr>
 </table>
-<s:if test="inactiveSites.size() > 0">
-	<h3>Past Sites</h3>
-	<table class="report">
-		<thead>
-			<tr><th></th>
-				<th>Label</th>
-				<th>Site Name</th>
-				<s:if test="canEdit">
-					<th>Reactivate</th>
-				</s:if>
-			</tr>
-		</thead>
-		<tbody>
-			<s:iterator value="inactiveSites" status="stat" id="site">
-				<tr>
-					<td><s:property value="#stat.count" /></td>
-					<td><s:property value="#site.label" /></td>
-					<td><s:property value="#site.name" /></td>
+<a href="#" onclick="$('#notes').show(); $(this).hide(); return false;">Show Details</a>
+<div id="notes" style="display: none;">
+	<s:if test="inactiveSites.size() > 0">
+		<h3>Past Sites</h3>
+		<table class="report">
+			<thead>
+				<tr><th></th>
+					<th>Label</th>
+					<th>Site Name</th>
 					<s:if test="canEdit">
-						<td class="center">
-							<a href="ManageJobSites.action?id=<s:property value="operator.id" />&button=Reactivate&siteID=<s:property value="#site.id" />"
-								class="add"></a>
-						</td>
+						<th>Reactivate</th>
 					</s:if>
 				</tr>
-			</s:iterator>
-		</tbody>
-	</table>
-</s:if>
-<a href="#" onclick="$('#notes').show(); $(this).hide(); return false;" class="add">Show Notes</a>
-<div id="notes" style="display: none;"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
+			</thead>
+			<tbody>
+				<s:iterator value="inactiveSites" status="stat" id="site">
+					<tr>
+						<td><s:property value="#stat.count" /></td>
+						<td><s:property value="#site.label" /></td>
+						<td><s:property value="#site.name" /></td>
+						<s:if test="canEdit">
+							<td class="center">
+								<a href="ManageJobSites.action?id=<s:property value="operator.id" />&button=Reactivate&siteID=<s:property value="#site.id" />"
+									class="add"></a>
+							</td>
+						</s:if>
+					</tr>
+				</s:iterator>
+			</tbody>
+		</table>
+	</s:if>
+	<s:include value="../notes/account_notes_embed.jsp"></s:include>
+</div>
 </body>
 </html>
