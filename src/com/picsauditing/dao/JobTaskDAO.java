@@ -25,8 +25,9 @@ public class JobTaskDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<JobTask> findDistinctTasks(int id) {
-		Query query = em.createQuery("From JobTask jt ORDER BY jt.label, jt.name WHERE jt.id = " + id);
+	public List<JobTask> findOperatorTasks(int id) {
+		Query query = em.createQuery("From JobTask WHERE opID = :opid ORDER BY label, name");
+		query.setParameter("opid", id);
 		return query.getResultList();
 	}
 }

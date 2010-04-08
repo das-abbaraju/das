@@ -7,7 +7,7 @@
 
 		<class>com.picsauditing.jpa.entities.Account</class>
 		<class>com.picsauditing.jpa.entities.AppProperty</class>
-		<class>com.picsauditing.jpa.entities.AuditCatData</class>
+		<class>com.picsauditing.jpa.entities.AssessmentTest</class>
 		<class>com.picsauditing.jpa.entities.AuditCategory</class>
 		<class>com.picsauditing.jpa.entities.AuditCatOperator</class>
 		<class>com.picsauditing.jpa.entities.AuditData</class>

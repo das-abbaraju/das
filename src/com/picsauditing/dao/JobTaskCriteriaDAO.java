@@ -24,4 +24,10 @@ public class JobTaskCriteriaDAO extends PicsDAO {
 		Query query = em.createQuery("From JobTaskCriteria WHERE " + where);
 		return query.getResultList();
 	}
+
+	public List<JobTaskCriteria> findByTask(int taskID) {
+		Query query = em.createQuery("From JobTaskCriteria WHERE taskID = :taskID ORDER BY id, groupNumber");
+		query.setParameter("taskID", taskID);
+		return query.getResultList();
+	}
 }

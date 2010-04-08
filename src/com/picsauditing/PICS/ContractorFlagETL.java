@@ -2,12 +2,14 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
@@ -24,14 +26,18 @@ import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
 	private AuditDataDAO auditDataDao;
+	private FlagCriteriaDAO flagCriteriaDao;
+	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 
 	private Set<FlagCriteria> distinctFlagCriteria = null;
 	private Set<Integer> criteriaQuestionSet = new HashSet<Integer>();
 	protected boolean hasOqEmployees = false;
 	protected boolean hasCOR = false;
 
-	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao) {
+	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao, FlagCriteriaContractorDAO flagCriteriaContractorDao) {
 		this.auditDataDao = auditDataDao;
+		this.flagCriteriaDao = flagCriteriaDao;
+		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
 
 		distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 
@@ -90,7 +96,8 @@ public class ContractorFlagETL {
 								hasProperStatus = true;
 							else if (!flagCriteria.isValidationRequired() && ca.getAuditStatus().isSubmitted())
 								hasProperStatus = true;
-							else if (ca.getAuditType().getClassType().isPqf() && ca.getAuditStatus().isSubmitted() && ca.getContractorAccount().isAcceptsBids())
+							else if (ca.getAuditType().getClassType().isPqf() && ca.getAuditStatus().isSubmitted()
+									&& ca.getContractorAccount().isAcceptsBids())
 								hasProperStatus = true;
 						}
 					}
@@ -255,7 +262,13 @@ public class ContractorFlagETL {
 
 		}
 
-		BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes);
+		Iterator<FlagCriteriaContractor> flagCriteriaList = BaseTable.insertUpdateDeleteManaged(
+				contractor.getFlagCriteria(), changes).iterator();
+		while (flagCriteriaList.hasNext()) {
+			FlagCriteriaContractor criteriaData = flagCriteriaList.next();
+			contractor.getFlagCriteria().remove(criteriaData);
+			flagCriteriaContractorDao.remove(criteriaData);
+		}
 
 	}
 
