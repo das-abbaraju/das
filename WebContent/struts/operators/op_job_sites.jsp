@@ -166,7 +166,7 @@ function removeTask(siteID, siteTaskID) {
 				<div id="addSiteTasks"></div>
 			</s:if>
 		</td>
-		<td rowspan="2" style="width: 325px;">
+		<td rowspan="2" style="width: 300px;">
 			<div id="taskEmployees"></div>
 		</td>
 	</tr>

@@ -367,7 +367,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	public boolean isAdmin() {
 		return id == PicsID;
 	}
-
+	
 	@Transient
 	public boolean isContractor() {
 		return "Contractor".equals(type);
@@ -397,6 +397,12 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	@Transient
 	public boolean isDemo() {
 		return status.equals(AccountStatus.Demo);
+	}
+	
+	// Operator Qualification Assessment Center
+	@Transient
+	public boolean isAssessment() {
+		return "Assessment".equals(type);
 	}
 
 	@Override

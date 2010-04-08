@@ -34,6 +34,13 @@ public class EmployeeDAO extends PicsDAO {
 			query.setMaxResults(limit);
 		return query.getResultList();
 	}
+	
+	public List<Employee> findRandom(int limit) {
+		Query query = em.createQuery("SELECT e FROM Employee e ORDER BY RAND()");
+		if (limit > 0)
+			query.setMaxResults(limit);
+		return query.getResultList();
+	}
 
 	public List<Employee> findByEmail(String email) {
 		Query query = em.createQuery("SELECT e FROM Employee e WHERE email = ?");

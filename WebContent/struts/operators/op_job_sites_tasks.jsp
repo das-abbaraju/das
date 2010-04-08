@@ -7,7 +7,9 @@
 			<tr>
 				<th>Label</th>
 				<th>Name</th>
-				<th># Employees</th>
+				<th><span title="Click on the number to get the list of employees associated with this task."
+					style="padding-right: 17px; margin-left: 2px; background: url('images/help.gif') no-repeat right center;"># Employees</span>
+				</th>
 				<s:if test="canEdit">
 					<th>Remove</th>
 				</s:if>
@@ -17,11 +19,12 @@
 			<tbody>
 				<tr>
 					<td><s:property value="#siteTask.task.label" /></td>
-					<td>
-						<a onclick="getEmployees(<s:property value="#siteTask.id" />); return false;"
-							href="#"><s:property value="#siteTask.task.name" /></a>
+					<td><s:property value="#siteTask.task.name" /></td>
+					<td class="center">
+						<a onclick="getEmployees(<s:property value="#siteTask.id" />); return false;" href="#">
+							<s:property value="getEmployeesByTask(#siteTask.id).size()" />
+						</a>
 					</td>
-					<td class="right"><s:property value="getEmployeesByTask(#siteTask.id).size()" /></td>
 					<s:if test="canEdit">
 						<td class="center"><a href="#" onclick="removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />); return false;" class="remove"></a></td>
 					</s:if>
@@ -31,7 +34,7 @@
 	</table>
 </s:if>
 <s:else>
-	No tasks associated with this site.
+	No tasks associated with this site.<br />
 </s:else>
 
 <s:if test="getAddableTasks().size() > 0">

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class AssessmentResult extends BaseTable {
 
 	private Employee employee;
-	private Account assessmentCenter;
+	private AssessmentTest assessmentTest;
 	private Date effectiveDate;
 	private Date expirationDate;
 
@@ -28,13 +28,13 @@ public class AssessmentResult extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "assessmentCenterID", nullable = false, updatable = false)
-	public Account getAssessmentCenter() {
-		return assessmentCenter;
+	@JoinColumn(name = "assessmentTestID", nullable = false, updatable = false)
+	public AssessmentTest getAssessmentTest() {
+		return assessmentTest;
 	}
 
-	public void setAssessmentCenter(Account assessmentCenter) {
-		this.assessmentCenter = assessmentCenter;
+	public void setAssessmentTest(AssessmentTest assessmentTest) {
+		this.assessmentTest = assessmentTest;
 	}
 
 	public Date getEffectiveDate() {
@@ -52,5 +52,4 @@ public class AssessmentResult extends BaseTable {
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-
 }
