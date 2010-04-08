@@ -54,6 +54,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (!forceLogin())
 			return LOGIN;
 
+		permissions.tryPermission(OpPerms.DevelopmentEnvironment);
+
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else
