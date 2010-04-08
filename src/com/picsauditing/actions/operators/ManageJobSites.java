@@ -88,6 +88,7 @@ public class ManageJobSites extends OperatorActionSupport {
 					siteTask.setTask(newTask);
 					siteTask.setJob(newSite);
 					siteTask.setAuditColumns(permissions);
+					siteTaskDAO.save(siteTask);
 					
 					note.setSummary("Added new task: " + siteTask.getTask().getLabel() + " to job site: "
 							+ newSite.getLabel());
@@ -96,6 +97,7 @@ public class ManageJobSites extends OperatorActionSupport {
 				if ("RemoveTask".equalsIgnoreCase(button)) {
 					newSite = siteDAO.find(siteID);
 					siteTask = siteTaskDAO.find(siteTaskID);
+					siteTaskDAO.remove(siteTask);
 					
 					note.setSummary("Removed task: " + siteTask.getTask().getLabel() + " from job site: "
 							+ newSite.getLabel());
@@ -109,7 +111,6 @@ public class ManageJobSites extends OperatorActionSupport {
 				note.setCanContractorView(true);
 				noteDAO.save(note);
 				
-				siteTaskDAO.remove(siteTask);
 				return SUCCESS;
 			}
 			
