@@ -27,6 +27,7 @@ public class JobTask extends BaseTable {
 	private String label;
 	private String name;
 	private boolean active;
+	private String taskType;
 	
 	private List<JobTaskCriteria> jobTaskCriteria = new ArrayList<JobTaskCriteria>();
 
@@ -65,6 +66,14 @@ public class JobTask extends BaseTable {
 		this.active = active;
 	}
 	
+	public String getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
