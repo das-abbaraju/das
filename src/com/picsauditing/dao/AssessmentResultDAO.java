@@ -44,4 +44,25 @@ public class AssessmentResultDAO extends PicsDAO {
 		
 		return query.getResultList();
 	}
+	
+	public List<AssessmentResult> findExpired(String where) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = " AND " + where;
+		
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate <= NOW()" + where);
+		return query.getResultList();
+	}
+	
+	public List<AssessmentResult> findInEffect(String where) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = " AND " + where;
+		
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate > NOW()" +
+				" AND effectiveDate <= NOW()" + where);
+		return query.getResultList();
+	}
 }

@@ -61,19 +61,31 @@ public class ManageJobSites extends OperatorActionSupport {
 		
 		if (button != null) {
 			if ("Tasks".equalsIgnoreCase(button)) {
-				newSite = siteDAO.find(siteID);
-				return SUCCESS;
+				if (siteID > 0) {
+					newSite = siteDAO.find(siteID);
+					return SUCCESS;
+				} else
+					addActionError("Missing job site");
 			}
 			
 			if ("Employees".equalsIgnoreCase(button)) {
-				siteTask = siteTaskDAO.find(siteTaskID);
-				return "employees";
+				if (siteTaskID > 0) {
+					siteTask = siteTaskDAO.find(siteTaskID);
+					return "employees";
+				} else
+					addActionError("Missing job site task");
 			}
 			
 			if ("NewTasks".equalsIgnoreCase(button)) {
-				newSite = siteDAO.find(siteID);
-				return "newTasks";
+				if (siteID > 0) {
+					newSite = siteDAO.find(siteID);
+					return "newTasks";
+				} else
+					addActionError("Missing job site");
 			}
+			
+			if (getActionErrors().size() > 0)
+				return SUCCESS;
 			
 			// Check if they have the edit permission here
 			tryPermissions(OpPerms.ManageJobSites, OpType.Edit);
@@ -83,25 +95,34 @@ public class ManageJobSites extends OperatorActionSupport {
 			// Job Site Tasks
 			if ("AddTask".equalsIgnoreCase(button) || "RemoveTask".equalsIgnoreCase(button)) {
 				if ("AddTask".equalsIgnoreCase(button)) {
-					newTask = taskDAO.find(taskID);
-					newSite = siteDAO.find(siteID);
-					siteTask.setTask(newTask);
-					siteTask.setJob(newSite);
-					siteTask.setAuditColumns(permissions);
-					siteTaskDAO.save(siteTask);
-					
-					note.setSummary("Added new task: " + siteTask.getTask().getLabel() + " to job site: "
-							+ newSite.getLabel());
+					if (siteID > 0 && taskID > 0) {
+						newTask = taskDAO.find(taskID);
+						newSite = siteDAO.find(siteID);
+						siteTask.setTask(newTask);
+						siteTask.setJob(newSite);
+						siteTask.setAuditColumns(permissions);
+						siteTaskDAO.save(siteTask);
+						
+						note.setSummary("Added new task: " + siteTask.getTask().getLabel() + " to job site: "
+								+ newSite.getLabel());
+					} else
+						addActionError("Missing either job site or new task");
 				}
 				
 				if ("RemoveTask".equalsIgnoreCase(button)) {
-					newSite = siteDAO.find(siteID);
-					siteTask = siteTaskDAO.find(siteTaskID);
-					siteTaskDAO.remove(siteTask);
-					
-					note.setSummary("Removed task: " + siteTask.getTask().getLabel() + " from job site: "
-							+ newSite.getLabel());
+					if (siteID > 0 && siteTaskID > 0) {
+						newSite = siteDAO.find(siteID);
+						siteTask = siteTaskDAO.find(siteTaskID);
+						siteTaskDAO.remove(siteTask);
+						
+						note.setSummary("Removed task: " + siteTask.getTask().getLabel() + " from job site: "
+								+ newSite.getLabel());
+					} else
+						addActionError("Missing either job site or job site task");
 				}
+				
+				if (getActionErrors().size() > 0)
+					return SUCCESS;
 				
 				note.setAuditColumns(permissions);
 				note.setAccount(operator);
@@ -116,34 +137,41 @@ public class ManageJobSites extends OperatorActionSupport {
 			
 			if ("Save".equalsIgnoreCase(button)) {
 				// Labels are required
-				if (Strings.isEmpty(newSite.getLabel()))
+				if (!Strings.isEmpty(newSite.getLabel())) {
+					// Operators are required, but if one isn't set,
+					// this operator should be added by default
+					if (newSite.getOperator() == null && operator != null)
+						newSite.setOperator(operator);
+					
+					newSite.setActive(true);
+					note.setSummary("Added new job site with label: " + newSite.getLabel()
+							+ " and site name: " + newSite.getName());
+				} else
 					addActionError("Please add a label to this job site.");
-				// Operators are required, but if one isn't set,
-				// this operator should be added by default
-				if (newSite.getOperator() == null && operator != null)
-					newSite.setOperator(operator);
-				
-				if (getActionErrors().size() > 0)
-					return SUCCESS;
-				
-				newSite.setActive(true);
-				note.setSummary("Added new job site with label: " + newSite.getLabel()
-						+ " and site name: " + newSite.getName());
 			}
 			
 			if ("Remove".equalsIgnoreCase(button)) {
-				newSite = siteDAO.find(siteID);
-				newSite.setActive(false);
-				note.setSummary("Deactivated job site with label: " + newSite.getLabel()
-						+ " and site name: " + newSite.getName());
+				if (siteID > 0) {
+					newSite = siteDAO.find(siteID);
+					newSite.setActive(false);
+					note.setSummary("Deactivated job site with label: " + newSite.getLabel()
+							+ " and site name: " + newSite.getName());
+				} else
+					addActionError("Missing job site");
 			}
 			
 			if ("Reactivate".equalsIgnoreCase(button)) {
-				newSite = siteDAO.find(siteID);
-				newSite.setActive(true);
-				note.setSummary("Reactivated job site with label: " + newSite.getLabel()
-						+ " and site name: " + newSite.getName());
+				if (siteID > 0) {
+					newSite = siteDAO.find(siteID);
+					newSite.setActive(true);
+					note.setSummary("Reactivated job site with label: " + newSite.getLabel()
+							+ " and site name: " + newSite.getName());
+				} else
+					addActionError("Missing job site");
 			}
+			
+			if (getActionErrors().size() > 0)
+				return SUCCESS;
 			
 			newSite.setAuditColumns(permissions);
 			siteDAO.save(newSite);
