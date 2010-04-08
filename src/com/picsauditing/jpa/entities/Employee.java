@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -63,6 +65,7 @@ public class Employee extends BaseTable {
 		this.account = account;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public EmployeeClassification getClassification() {
 		return classification;
 	}
@@ -71,6 +74,7 @@ public class Employee extends BaseTable {
 		this.classification = classification;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public EmployeeStatus getStatus() {
 		return status;
 	}
