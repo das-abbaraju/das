@@ -39,9 +39,8 @@ public class AssessmentResultDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	public List<AssessmentResult> findByAssessmentCenter(int centerID) {
-		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE assessmentCenterID = ?");
-		query.setParameter(1, centerID);
+	public List<AssessmentResult> findAll() {
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a");
 		
 		return query.getResultList();
 	}

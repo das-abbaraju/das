@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -25,5 +27,12 @@ public class AssessmentResultDAOTest extends TestCase {
 		AssessmentResult result = resultDAO.find(1);
 
 		assertNotNull(result);
+	}
+	
+	@Test
+	public void testFindAll() {
+		List<AssessmentResult> all = resultDAO.findAll();
+		
+		assertTrue(all.size() > 0);
 	}
 }
