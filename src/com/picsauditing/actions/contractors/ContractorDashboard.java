@@ -339,8 +339,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		public OshaDisplay(OshaOrganizer organizer, List<ContractorOperator> contractorOperators) {
 
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
-					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage,
-					MultiYearScope.ThreeYearWeightedAverage }) {
+					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage }) {
 				OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
 				String auditFor = findAuditFor(organizer, scope);
 				if (auditFor != null) {
