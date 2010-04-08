@@ -18,9 +18,8 @@ and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
 
-/** Update the requiresOQ for all contractors **/
-update accounts set requiresOQ = 1
-where id in (select distinct conid from contractor_audit ca
-join pqfdata pd on ca.id = pd.auditid
-where pd.questionid = 894
-and pd.answer = 'Yes');
+/** Had to temporarily move the Citations Category to PQF. So we want to remove the category from all the PQFs **/
+delete from pqfcatdata where catID = 278;
+
+update pqfcategories set auditTypeid=11
+where id =  278;
