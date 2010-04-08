@@ -496,6 +496,7 @@ public class AuditBuilder {
 			dependencies.put(AuditCategory.EMR, 2033);
 			dependencies.put(AuditCategory.LOSS_RUN, 2033);
 			dependencies.put(AuditCategory.WCB, 2967);
+			dependencies.put(AuditCategory.CITATIONS, 3546);
 			int auditID = conAudit.getId();
 
 			AnswerMap answers = null;
@@ -548,7 +549,8 @@ public class AuditBuilder {
 						|| removeCategory("No", answers.get(2066), auditCatData, AuditCategory.CANADIAN_STATISTICS)
 						|| removeCategory("No", answers.get(2033), auditCatData, AuditCategory.EMR)
 						|| removeCategory("Yes", answers.get(2033), auditCatData, AuditCategory.LOSS_RUN)
-						|| removeCategory("No", answers.get(2967), auditCatData, AuditCategory.WCB)) {
+						|| removeCategory("No", answers.get(2967), auditCatData, AuditCategory.WCB)
+						|| removeCategory("No", answers.get(3546), auditCatData, AuditCategory.CITATIONS)) {
 					iterator.remove();
 					auditCategoryDataDAO.remove(auditCatData.getId());
 				}

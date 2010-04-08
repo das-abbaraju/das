@@ -115,6 +115,9 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			if (!catIds.contains(AuditCategory.WCB)) {
 				removeData(AuditCategory.WCB, conAudit.getId());
 			}
+			if (!catIds.contains(AuditCategory.CITATIONS)) {
+				removeData(AuditCategory.CITATIONS, conAudit.getId());
+			}
 		}
 
 		super.execute();
