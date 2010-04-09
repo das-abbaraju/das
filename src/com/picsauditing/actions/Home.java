@@ -41,8 +41,13 @@ public class Home extends ContractorActionSupport {
 				addActionError("Your account is inactive. You can't access this page");
 				return BLANK;
 			}
-		} else
+		} else if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.Dashboard)) {
+			// Redirect operators/corporate accounts without the dashboard permission
+			// to the contractor list
+			return redirect("ContractorList.action?filter.performedBy=Self%20Performed");
+		} else {
 			permissions.tryPermission(OpPerms.Dashboard);
+		}
 
 		List<WidgetUser> widgetsToShowForUser = dao.findByUser(permissions);
 
