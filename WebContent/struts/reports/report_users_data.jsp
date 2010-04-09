@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="report.allRows == 0">
 	<div class="alert">No rows found matching the given criteria. Please try again.</div>
@@ -24,26 +25,27 @@
 		<td>Email</td>
 		<td>Created</td>
 		<td>Last Login</td>
+		<pics:permission perm="SwitchUser">
+			<td></td>
+		</pics:permission>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>">
-					<s:property value="get('companyName')" /></a>	
+			<td><a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>" class="account<s:property value="get('companyStatus')" />">
+					<s:property value="get('companyName')" /></a>
 			</td>
-			<td><s:if test="get('tableType') == 'Acct' || get('AcctType') == 'Contractor'">
-				<s:property value="get('name')" />
-				</s:if>
-				<s:else>
-					<a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>">
+			<td><a href="UsersManage.action?accountId=<s:property value="get('accountID')"/>&user.id=<s:property value="get('id')"/>">
 					<s:property value="get('name')" /></a>
-				</s:else>
 			</td>
 			<td><s:property value="get('phone')" /></td>
 			<td><s:property value="get('email')" /></td>
 			<td><s:date name="get('creationDate')" format="MM/dd/yyyy"/></td>
 			<td><s:date name="get('lastLogin')" format="MM/dd/yyyy hh:mm" /></td>
+			<pics:permission perm="SwitchUser">
+				<td><a href="Login.action?button=login&switchToUser=<s:property value="get('id')"/>">Switch</a></td>
+			</pics:permission>
 		</tr>
 	</s:iterator>
 

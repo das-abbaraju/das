@@ -260,8 +260,8 @@ div.autocomplete ul li {
 					value="Delete"
 					onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
 			</s:if>
-		</pics:permission>			
-			<s:if test="user.id > 0 && !user.group && !user.account.admin">
+		</pics:permission>
+		<s:if test="user.id > 0 && !user.group">
 			<pics:permission perm="SwitchUser">
 				<a class="picsbutton"
 					href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch

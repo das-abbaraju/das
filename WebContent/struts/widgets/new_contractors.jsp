@@ -11,7 +11,8 @@
 	</thead>
 	<s:iterator value="newContractors">
 		<tr>
-			<td><a href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name" /></a></td>
+			<td><a class="account<s:property value="status" />" 
+				href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name" /></a></td>
 			<s:if test="permissions.admin">
 				<td><s:property value="requestedBy.name" /></td>
 			</s:if>

@@ -106,6 +106,15 @@ public class LoginController extends PicsActionSupport {
 				user = getUser();
 			} else {
 				user = userDAO.find(switchToUser);
+				if (user.getAccount().isAdmin() && !user.isGroup()) {
+					// We're trying to login as another PICS user
+					// Double check they also have the Dev permission too
+					if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+						logAttempt();
+						addActionError("You must be a PICS Software Developer to switch to another PICS user.");
+						return SUCCESS;
+					}
+				}
 			}
 
 			if (permissions.hasPermission(OpPerms.SwitchUser)) {

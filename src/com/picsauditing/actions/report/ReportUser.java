@@ -64,10 +64,11 @@ public class ReportUser extends ReportActionSupport {
 		sql.addField("u.id");
 		sql.addField("u.email");
 		sql.addField("u.phone");
+		sql.addField("u.isActive");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addField("a.name AS companyName");
 		sql.addField("a.type AS AcctType");
-		// sql.addWhere("u.isActive = 'Yes'");
+		sql.addField("a.status AS companyStatus");
 		sql.addOrderBy("u.name");
 
 		if (isFiltered())
