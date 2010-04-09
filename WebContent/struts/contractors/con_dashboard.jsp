@@ -61,6 +61,13 @@ ul {
 #conoperator_tags {
 	padding: 10px;
 }
+tr.hurdle {
+	background-color:Cornsilk;
+	display: none;
+}
+table.report tr.hurdle td {
+	font-size: 11px;
+}
 </style>
 
 </head>
@@ -212,6 +219,10 @@ ul {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
+				<span style="float: right;">
+					<a href="#" id="hurdleLinkShow" onclick="$('tr.hurdle').show(); $('#hurdleLinkShow').hide(); $('#hurdleLinkHide').show(); return false;">Show Hurdle Rates</a>
+					<a href="#" id="hurdleLinkHide" onclick="$('tr.hurdle').hide(); $('#hurdleLinkHide').hide(); $('#hurdleLinkShow').show(); return false;" style="display: none">Hide Hurdle Rates</a>
+				</span>
 				Statistics
 			</div>
 			<div class="panel_content">
@@ -225,9 +236,10 @@ ul {
 						</tr>
 					</thead>
 					<s:iterator value="oshaDisplay.rateTypeSet" id="rateType">
-						<tr>
+							
+						<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if>>
 							<s:if test="#rateType.startsWith('P:')">
-								<td style="padding-left: 10px"><s:property value="#rateType.substring(2)" escape="false"/></td>
+								<td style="padding-left: 10px;"><s:property value="#rateType.substring(2)" escape="false"/></td>
 							</s:if>
 							<s:else>
 								<td><s:property value="#rateType" escape="false"/></td>

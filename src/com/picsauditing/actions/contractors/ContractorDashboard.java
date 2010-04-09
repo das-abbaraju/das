@@ -368,8 +368,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (OperatorAccount o : inheritedOperators) {
 				for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 					if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
-							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())
-							|| OshaRateType.Fatalities.equals(fco.getCriteria().getOshaRateType())) {
+							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
 						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 						String auditFor = findAuditFor(organizer, scope);
 						if (auditFor != null) {
