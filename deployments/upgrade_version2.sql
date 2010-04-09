@@ -17,9 +17,3 @@ where os.applicable = 0
 and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
-
-/** Had to temporarily move the Citations Category to PQF. So we want to remove the category from all the PQFs **/
-delete from pqfcatdata where catID = 278;
-
-update pqfcategories set auditTypeid=11
-where id =  278;
