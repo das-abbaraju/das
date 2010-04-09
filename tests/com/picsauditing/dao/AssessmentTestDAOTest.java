@@ -28,10 +28,39 @@ public class AssessmentTestDAOTest extends TestCase {
 
 		assertNotNull(test);
 	}
-
+	
 	@Test
-	public void testFindByCenter() {
-		List<AssessmentTest> tests = testDAO.findByAssessmentCenter(11069);
+	public void testFindAll() {
+		List<AssessmentTest> tests = testDAO.findAll();
+		
+		assertTrue(tests.size() > 0);
+	}
+	
+	@Test
+	public void testFindRandom() {
+		AssessmentTest test = testDAO.findRandom();
+		
+		assertNotNull(test);
+	}
+	
+	// Uncomment when there is actual data
+//	@Test
+//	public void testFindExpired() {
+//		List<AssessmentTest> tests = testDAO.findExpired(null);
+//		
+//		assertTrue(tests.size() > 0);
+//	}
+//	
+//	@Test
+//	public void testFindInEffect() {
+//		List<AssessmentTest> tests = testDAO.findInEffect(null);
+//		
+//		assertTrue(tests.size() > 0);
+//	}
+	
+	@Test
+	public void testFindWhere() {
+		List<AssessmentTest> tests = testDAO.findWhere("id > 0");
 		
 		assertTrue(tests.size() > 0);
 	}

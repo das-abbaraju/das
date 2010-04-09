@@ -25,6 +25,13 @@ public class AssessmentTestDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<AssessmentTest> findByAssessmentCenter(int centerID) {
+	 	Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE assessmentCenterID = ?");
+	 	query.setParameter(1, centerID);
+	 	
+	 	return query.getResultList();
+	}
+	
 	public AssessmentTest findRandom() {
 		Query query = em.createQuery("SELECT a FROM AssessmentTest a ORDER BY RAND()");
 		query.setMaxResults(1);
@@ -51,9 +58,5 @@ public class AssessmentTestDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE expirationDate > NOW()"
 				+ " AND effectiveDate <= NOW()" + where);
 		return query.getResultList();
-	}
-
-	public List<AssessmentTest> findByAssessmentCenter(int i) {
-		return null;
 	}
 }
