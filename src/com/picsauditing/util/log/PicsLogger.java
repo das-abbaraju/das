@@ -9,7 +9,7 @@ public class PicsLogger {
 
 	protected static ThreadLocal<MyLogger> myLogger = new ThreadLocal<MyLogger>();
 	protected static SortedSet<LoggingRule> rules = new TreeSet<LoggingRule>();
-	protected static String dateFormat = "MMMdd HH:mm:ss.S";
+	protected static String dateFormat = "MMMdd HH:mm:ss.SSS";
 	protected static boolean outputOn = false;
 	protected static StringBuilder output = new StringBuilder();
 
@@ -25,10 +25,10 @@ public class PicsLogger {
 			fqn = watch.getFqn();
 		}
 
-		if( fqn.length() != 1 ) {
-			fqn = fqn + "|"; 
+		if (fqn.length() != 1) {
+			fqn = fqn + "|";
 		}
-		
+
 		boolean shouldLog = false;
 
 		for (LoggingRule rule : rules) {
@@ -60,7 +60,7 @@ public class PicsLogger {
 	static public void start(String stopWatchName, boolean autostart) {
 		if (autostart)
 			addRuntimeRule(stopWatchName);
-		
+
 		start(stopWatchName, "");
 	}
 
@@ -89,7 +89,7 @@ public class PicsLogger {
 		watch = logger.top();
 
 		if (watch != null) {
-			
+
 			Date now = new Date();
 
 			long millis = now.getTime() - watch.getDate().getTime();
@@ -121,12 +121,14 @@ public class PicsLogger {
 	public static SortedSet<LoggingRule> getRules() {
 		return rules;
 	}
+
 	public static void setRules(SortedSet<LoggingRule> rules) {
 		PicsLogger.rules = rules;
 	}
-	
+
 	/**
 	 * Get the current output (if any) and clear it for the next time
+	 * 
 	 * @return
 	 */
 	public static String getOutput() {
@@ -136,15 +138,15 @@ public class PicsLogger {
 		output = new StringBuilder();
 		return outputString;
 	}
-	
+
 	public static void setOutputOn(boolean outputOn) {
 		PicsLogger.outputOn = outputOn;
 		getOutput(); // Clear the log
 	}
-	
+
 	public static void addRuntimeRule(String rule) {
 		LoggingRule ruleObject = new LoggingRule(rule, true);
-		PicsLogger.getRules().add(ruleObject );
+		PicsLogger.getRules().add(ruleObject);
 	}
 
 }
