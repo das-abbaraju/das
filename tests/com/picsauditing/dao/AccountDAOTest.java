@@ -30,4 +30,11 @@ public class AccountDAOTest extends TestCase {
 		List<Account> account = accountdao.findWhere("type LIKE 'Corporate'");
 		assertTrue(account.size() > 9);
 	}
+
+	@Test
+	public void testAccountEmployees() throws Exception {
+		Account account = accountdao.find(1100);
+
+		assertTrue(account.getEmployees().size() > 0);
+	}
 }

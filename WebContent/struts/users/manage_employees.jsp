@@ -41,6 +41,8 @@
 		</div>
 	</pics:permission>
 
+	<a href="?button=Add" class="picsbutton">Add New Employee</a>
+
 	<table>
 		<tr>
 			<td style="vertical-align:top; width: 10%">

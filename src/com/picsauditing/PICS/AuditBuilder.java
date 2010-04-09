@@ -78,7 +78,6 @@ public class AuditBuilder {
 			return;
 		}
 		
-		
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
 		okStatuses.add(AuditStatus.Active);
 		okStatuses.add(AuditStatus.Pending);

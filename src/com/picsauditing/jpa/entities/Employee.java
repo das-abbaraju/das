@@ -1,16 +1,17 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.util.Strings;
@@ -21,9 +22,6 @@ public class Employee extends BaseTable {
 
 	private String firstName;
 	private String lastName;
-	private Account account;
-	private EmployeeClassification classification = EmployeeClassification.FullTime;
-	private EmployeeStatus status = EmployeeStatus.Active;
 	private Date hireDate;
 	private Date fireDate;
 	private String title;
@@ -33,6 +31,8 @@ public class Employee extends BaseTable {
 	private String ssn;
 	private Date birthDate;
 	private String photo;
+
+	private List<AccountEmployee> accounts = new ArrayList<AccountEmployee>();
 
 	public String getFirstName() {
 		return firstName;
@@ -53,34 +53,6 @@ public class Employee extends BaseTable {
 	@Transient
 	public String getDisplayName() {
 		return firstName + " " + lastName;
-	}
-
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "accountID", nullable = false)
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public EmployeeClassification getClassification() {
-		return classification;
-	}
-
-	public void setClassification(EmployeeClassification classification) {
-		this.classification = classification;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public EmployeeStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(EmployeeStatus status) {
-		this.status = status;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -158,6 +130,15 @@ public class Employee extends BaseTable {
 		this.photo = photo;
 	}
 
+	@OneToMany(mappedBy = "employee", cascade = { CascadeType.ALL })
+	public List<AccountEmployee> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(List<AccountEmployee> accounts) {
+		this.accounts = accounts;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -165,9 +146,6 @@ public class Employee extends BaseTable {
 
 		json.put("firstName", firstName);
 		json.put("lastName", lastName);
-		json.put("account", account.toJSON());
-		json.put("classification", classification == null ? null : classification.toString());
-		json.put("status", status == null ? null : status.toString());
 		json.put("hireDate", hireDate == null ? null : hireDate.getTime());
 		json.put("fireDate", fireDate == null ? null : fireDate.getTime());
 		json.put("title", title);
@@ -177,6 +155,15 @@ public class Employee extends BaseTable {
 		json.put("ssn", Strings.maskSSN(ssn));
 		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
 		json.put("photo", photo);
+
+		if (full) {
+			JSONArray array = new JSONArray();
+			for (AccountEmployee accountEmployee : accounts) {
+				array.add(accountEmployee.toJSON());
+			}
+
+			json.put("accounts", array);
+		}
 
 		return json;
 	}

@@ -40,7 +40,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if (employee != null) {
-			account = employee.getAccount();
+			// account = employee.getAccount();
 		} else {
 			int accountID = getParameter("account.id");
 			if (accountID > 0)
@@ -63,13 +63,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		if (employee == null && account == null) {
 			account = accountDAO.find(permissions.getAccountId());
-			return SUCCESS;
 		}
 
 		if (permissions.getAccountId() != account.getId())
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		this.subHeading = account.getName();
+
+		if ("Add".equals(button)) {
+			employee = new Employee();
+
+			return SUCCESS;
+		}
 
 		if ("Save".equals(button)) {
 			// if (employee.getAccount() == null) {
