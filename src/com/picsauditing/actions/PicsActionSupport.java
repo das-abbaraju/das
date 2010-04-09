@@ -44,7 +44,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	// single string to the page
 	protected String output = null;
 	protected String button = null;
-	protected JSONObject json = null;
+	protected JSONObject json = new JSONObject();
 
 	private User user; // Current logged in user
 	private Account account; // Current logged in user's account
