@@ -155,13 +155,7 @@ public class MassMailer extends PicsActionSupport {
 					EmailQueue email = emailBuilder.build();
 					email.setEmailTemplate(null);
 					
-					if (Strings.isEmpty(email.getToAddresses())) {
-						UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
-						addActionError("Could not send email to: " + userDAO.find(id).getName() 
-							+ ", email address missing.");
-					}
-					else
-						emailQueueDAO.save(email);
+					emailQueueDAO.save(email);
 				}
 				wizardSession.clear();
 				
