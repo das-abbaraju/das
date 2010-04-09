@@ -43,7 +43,7 @@ public class FlagColorSubscription extends SubscriptionBuilder {
 			List<ContractorOperator> flags = contractorOperatorDAO
 					.findWhere("contractorAccount.status = 'Active' AND operatorAccount.id = " + a.getId()
 							+ " AND contractorAccount.id IN (" + Strings.implode(conIds, ",") + ") AND flagColor = '"
-							+ flagColor + "'");
+							+ flagColor + "' AND workStatus = 'Y' AND flagLastUpdated IS NOT NULL");
 			if (flags.size() > 0) {
 				tokens.put("flags", flags);
 				tokens.put("flagColor", flagColor);
