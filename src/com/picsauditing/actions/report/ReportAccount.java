@@ -354,12 +354,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			if (getFilter().getMinorityQuestion() != 3) {
 				sql.addJoin("JOIN pqfdata pdsd on casd.id = pdsd.auditID AND pdsd.questionID = "
 						+ getFilter().getMinorityQuestion());
-				sql.addWhere("pdsd.answer = 'Yes'");
+				if(getFilter().getMinorityQuestion() == 3543)
+					sql.addWhere("pdsd.answer = 'X'");
+				else
+					sql.addWhere("pdsd.answer = 'Yes'");
 			} else {
 				sql.addJoin("JOIN pqfdata pd2340 on casd.id = pd2340.auditID AND pd2340.questionID = 2340");
 				sql.addJoin("JOIN pqfdata pd2354 on casd.id = pd2354.auditID AND pd2354.questionID = 2354");
 				sql.addJoin("JOIN pqfdata pd2373 on casd.id = pd2373.auditID AND pd2373.questionID = 2373");
-				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes'");
+				sql.addJoin("LEFT JOIN pqfdata pd3543 on casd.id = pd3543.auditID AND pd3543.questionID = 3543");
+				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X'");
 			}
 		}
 
