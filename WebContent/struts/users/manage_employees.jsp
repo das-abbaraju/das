@@ -50,11 +50,17 @@
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>title</th>
+							<th>Status</th>
+							<th>Classification</th>
 						</tr>
 					</thead>
-					<s:iterator value="employees">
+					<s:iterator value="account.employees">
 						<tr>
-							<td><a href="?employee.id=<s:property value="id"/>"><s:property value="displayName"/></a></td>
+							<td><a href="?employee.id=<s:property value="id"/>"><s:property value="employee.lastName"/>, <s:property value="employee.firstName"/></a></td>
+							<th><s:property value="employee.title"/></th>
+							<th><s:property value="status"/></th>
+							<th><s:property value="classification"/></th>
 						</tr>
 					</s:iterator>
 				</table>
