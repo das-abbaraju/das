@@ -1534,6 +1534,11 @@
 			<result>struts/users/manage_employees.jsp</result>
 		</action>
 				
+		<action name="EmployeeDetail"
+			class="com.picsauditing.actions.users.EmployeeDetail">
+			<result>struts/users/employee_detail.jsp</result>
+		</action>
+
 		<action name="ManageJobSites"
 			class="com.picsauditing.actions.operators.ManageJobSites">
 			<result>/struts/operators/op_job_sites.jsp</result>

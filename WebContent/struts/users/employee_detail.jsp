@@ -2,72 +2,19 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-	<title>Manage Employees</title>
+	<title>Employee Details</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 	
 	<s:include value="../jquery.jsp"/>
-	
-	<script type="text/javascript">
-		function show(id) {
-			$.getJSON('ManageEmployeesAjax.action',
-					{employeeID: id, button: 'load'},
-					function (json, result) {
-						alert(json);
-					}
-				);
-		}
-
-		$(function() {
-			$('input.datepicker').datepicker();
-		});
-	</script>
 </head>
 <body>
-	<h1>Manage Employees<span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
+	<h1>Employee Details <span class="sub"> <s:property value="employee.lastName"/> <s:property value="employee.firstName"/></span></h1>
 	
 	<s:include value="../actionMessages.jsp"/>
-	<pics:permission perm="AllOperators">
-		<div id="search">
-			<s:form id="filterOperator">
-				<div class="filterOption">
-					<h4>Account:</h4>
-					<s:select name="account.id" headerKey="1100"
-						headerValue="PICS Employees" list="operators" listKey="id"
-						listValue="name" onchange="$('form#filterOperator').submit();"/>
-				</div>
-			<div class="clear"></div>
-			</s:form>
-		</div>
-	</pics:permission>
-
-	<a href="?button=Add" class="picsbutton">Add New Employee</a>
 
 	<table>
 		<tr>
-			<td style="vertical-align:top; width: 10%">
-				<table class="report">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>title</th>
-							<th>Status</th>
-							<th>Classification</th>
-						</tr>
-					</thead>
-					<s:iterator value="account.employees">
-						<tr>
-							<td><nobr><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id"/>&account.id=<s:property value="account.id"/>"><s:property value="employee.lastName"/> <s:property value="employee.firstName"/></a></nobr></td>
-							<th><s:property value="employee.title"/></th>
-							<th><s:property value="status"/></th>
-							<th><s:property value="classification"/></th>
-						</tr>
-					</s:iterator>
-				</table>
-			</td>
-			
-			<td style="width: 20px;"></td>
-			
 			<td style="vertical-align:top;">
 				<s:if test="employee != null">
 					<s:form>
