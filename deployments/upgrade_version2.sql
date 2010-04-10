@@ -24,3 +24,7 @@ where id in (select distinct conid from contractor_audit ca
 join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
+
+/** Added new Operator Basic User permission to view the Operator Flag Matrix report **/
+insert into `useraccess`(`accessID`,`userID`,`accessType`,`viewFlag`,`editFlag`,`deleteFlag`,`grantFlag`,`lastUpdate`,`grantedByID`)
+values ( NULL,'1554','OperatorFlagMatrix','1',NULL,NULL,'0',CURRENT_TIMESTAMP,NULL);

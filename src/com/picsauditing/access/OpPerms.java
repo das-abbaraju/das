@@ -94,7 +94,10 @@ public enum OpPerms {
 	ContractorInsurance("Insurance", "Insurance Certificates", false, false, false, true, false),
 	
 	// Operator Qualification
-	ManageJobSites("Manage Job Sites", "Allows operators to view or edit their job sites.", true, true, false, false, true);
+	ManageJobSites("Manage Job Sites", "Allows operators to view or edit their job sites.", true, true, false, false, true),
+	
+	// View the Operator Flag Matrix report
+	OperatorFlagMatrix("Operator Flag Matrix", "Allows operators to view the Operator Flag Matrix report.", false, false, false, false, true);
 
 	private String description;
 	private String helpText;

@@ -23,6 +23,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.DoubleMap;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -40,6 +41,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 	@Override
 	protected void checkPermissions() throws Exception {
 		super.checkPermissions();
+		
+		tryPermissions(OpPerms.OperatorFlagMatrix);
 
 		if (!permissions.isOperatorCorporate())
 			throw new NoRightsException("You must be an operator to view this page");
