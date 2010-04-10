@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.json.simple.JSONObject;
+
 @Entity
 @Table(name = "account_employee")
 public class AccountEmployee extends BaseTable {
@@ -51,6 +53,33 @@ public class AccountEmployee extends BaseTable {
 
 	public void setClassification(EmployeeClassification classification) {
 		this.classification = classification;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = super.toJSON(full);
+
+		json.put("account", account.toJSON(full));
+		json.put("employee", employee.toJSON(full));
+		json.put("status", status == null ? null : status.toString());
+		json.put("classification", classification == null ? null : classification.toString());
+
+		return json;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof AccountEmployee))
+			return false;
+
+		AccountEmployee accountEmployee = (AccountEmployee) obj;
+
+		return accountEmployee.getAccount().equals(account) && accountEmployee.getEmployee().equals(employee);
 	}
 
 }

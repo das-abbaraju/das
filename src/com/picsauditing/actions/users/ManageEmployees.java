@@ -9,8 +9,10 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountEmployee;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.Strings;
 
 public class ManageEmployees extends AccountActionSupport implements Preparable {
 
@@ -24,6 +26,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected List<Employee> employees;
 
 	protected Employee employee;
+	protected AccountEmployee accountEmployee;
+
+	private String ssn;
 
 	public ManageEmployees(AccountDAO accountDAO, OperatorAccountDAO operatorDAO, EmployeeDAO employeeDAO) {
 		this.accountDAO = accountDAO;
@@ -39,12 +44,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			employee = employeeDAO.find(employeeID);
 		}
 
+		int accountID = getParameter("account.id");
+		if (accountID > 0)
+			account = accountDAO.find(accountID);
+
 		if (employee != null) {
-			// account = employee.getAccount();
-		} else {
-			int accountID = getParameter("account.id");
-			if (accountID > 0)
-				account = accountDAO.find(accountID);
+			for (AccountEmployee accountEmployee : employee.getAccounts()) {
+				if (accountEmployee.getAccount().equals(account))
+					this.accountEmployee = accountEmployee;
+			}
 		}
 
 	}
@@ -61,7 +69,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		else
 			permissions.tryPermission(OpPerms.EditUsers);
 
-		if (employee == null && account == null) {
+		if (account == null) {
 			account = accountDAO.find(permissions.getAccountId());
 		}
 
@@ -77,9 +85,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("Save".equals(button)) {
-			// if (employee.getAccount() == null) {
-			// employee.setAccount(account);
-			// }
+			if (accountEmployee != null && !employee.getAccounts().contains(accountEmployee)) {
+				accountEmployee.setEmployee(employee);
+				accountEmployee.setAccount(account);
+				employee.getAccounts().add(accountEmployee);
+			}
+
+			if (ssn != null)
+				employee.setSsn(ssn);
 
 			employeeDAO.save(employee);
 		}
@@ -103,7 +116,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public List<Employee> getEmployees() {
 		if (employees == null) {
-			employees = employeeDAO.findByAccount(account.getId());
+			employees = employeeDAO.findByAccount(account);
 		}
 
 		return employees;
@@ -124,5 +137,25 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	public AccountEmployee getAccountEmployee() {
+		return accountEmployee;
+	}
+
+	public void setAccountEmployee(AccountEmployee accountEmployee) {
+		this.accountEmployee = accountEmployee;
+	}
+
+	public String getSsn() {
+		if (ssn == null)
+			ssn = Strings.maskSSN(employee.getSsn());
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		ssn = ssn.replaceAll("[^0-9]", "");
+		if (ssn.length() == 9)
+			this.ssn = ssn;
 	}
 }

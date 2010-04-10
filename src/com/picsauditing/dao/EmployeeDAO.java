@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 
 @Transactional
@@ -34,7 +35,7 @@ public class EmployeeDAO extends PicsDAO {
 			query.setMaxResults(limit);
 		return query.getResultList();
 	}
-	
+
 	public List<Employee> findRandom(int limit) {
 		Query query = em.createQuery("SELECT e FROM Employee e ORDER BY RAND()");
 		if (limit > 0)
@@ -49,9 +50,9 @@ public class EmployeeDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<Employee> findByAccount(int accountID) {
-		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.account.id = :accountID");
-		query.setParameter("accountID", accountID);
+	public List<Employee> findByAccount(Account account) {
+		Query query = em.createQuery("SELECT e.employee FROM AccountEmployee e WHERE e.account = :account");
+		query.setParameter("account", account);
 		return query.getResultList();
 	}
 }

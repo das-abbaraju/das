@@ -45,6 +45,7 @@
 
 	<table>
 		<tr>
+		<s:if test="employees.size() > 0">
 			<td style="vertical-align:top; width: 10%">
 				<table class="report">
 					<thead>
@@ -67,7 +68,7 @@
 			</td>
 			
 			<td style="width: 20px;"></td>
-			
+		</s:if>
 			<td style="vertical-align:top;">
 				<s:if test="employee != null">
 					<s:form>
@@ -82,19 +83,19 @@
 									<s:textfield name="employee.lastName"/>
 								</li>
 								<li><label>SSN:</label>
-									<s:textfield name="employee.ssn"/>
+									<s:textfield name="ssn"/>
 								</li>
 								<li><label>Birth Date:</label>
 									<s:textfield name="employee.birthDate" cssClass="datepicker"/>
 								</li>
 								<li><label>Classification:</label>
-									<s:select name="employee.classification" 
+									<s:select name="accountEmployee.classification" 
 										list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
 										listValue="description"
 										headerKey="" headerValue="- Classification -"/>
 								</li>
 								<li><label>Status</label>
-									<s:select name="employee.status" 
+									<s:select name="accountEmployee.status" 
 										list="@com.picsauditing.jpa.entities.EmployeeStatus@values()"
 										headerKey="" headerValue="- Status -"/>
 								</li>
