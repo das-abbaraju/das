@@ -9,12 +9,12 @@
 	<s:include value="../jquery.jsp"/>
 </head>
 <body>
-	<h1>Employee Details <span class="sub"> <s:property value="employee.lastName"/> <s:property value="employee.firstName"/></span></h1>
+	<h1>Employee Details <span class="sub"><s:property value="employee.firstName"/> <s:property value="employee.lastName"/></span></h1>
 
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="#">Edit</a></li>
-	<li><a href="#">Assessments</a></li>
+	<li><a href="AssessmentResults.action?employee.id=<s:property value="employee.id" />">Assessments</a></li>
 	<li><a href="#">Data Partner IDs</a></li>
 </ul>
 </div>

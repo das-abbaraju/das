@@ -1,10 +1,11 @@
-package com.picsauditing.actions.operators;
+package com.picsauditing.actions.users;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
@@ -14,22 +15,25 @@ import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.Employee;
 
 @SuppressWarnings("serial")
-public class ManageAssessmentResults extends AccountActionSupport {
+public class AssessmentResults extends AccountActionSupport {
 	protected AssessmentResultDAO resultDAO;
 	protected AssessmentTestDAO testDAO;
 	protected EmployeeDAO employeeDAO;
 	
+	protected Employee employee = null;
+	
+	protected int employeeID;
 	protected int resultID;
 	
-	public ManageAssessmentResults(AssessmentResultDAO resultDAO, AssessmentTestDAO testDAO, 
+	public AssessmentResults(AssessmentResultDAO resultDAO, AssessmentTestDAO testDAO, 
 			EmployeeDAO employeeDAO) {
 		this.resultDAO = resultDAO;
 		this.testDAO = testDAO;
 		this.employeeDAO = employeeDAO;
 		
-		subHeading = "Manage Assessment Results";
 		// When we need more detailed notes about OQ
 		// noteCategory = NoteCategory.OperatorQualification;
+		// subHeading = "Assessments";
 	}
 	
 	public String execute() throws Exception {
@@ -38,6 +42,10 @@ public class ManageAssessmentResults extends AccountActionSupport {
 				
 		// Check for basic view capabilities
 		tryPermissions(OpPerms.ManageJobSites);
+		
+		// Load all of the employee information
+		if (employee != null)
+			employee = employeeDAO.find(employee.getId());
 		
 		if (button != null) {
 			if (button.startsWith("Generate")) {
@@ -53,11 +61,30 @@ public class ManageAssessmentResults extends AccountActionSupport {
 					resultDAO.save(result);
 				}
 				
-				return redirect("ManageAssessmentResults.action");
+				return redirect("AssessmentResults.action");
 			}
 		}
 		
 		return SUCCESS;
+	}
+	
+	public Employee getEmployee() {
+		return employee;
+	}
+	
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+	
+	public int getEmployeeID() {
+		if (employee != null)
+			return employee.getId();
+		
+		return employeeID;
+	}
+	
+	public void setEmployeeID(int employeeID) {
+		this.employeeID = employeeID;
 	}
 	
 	public int getResultID() {
@@ -72,10 +99,13 @@ public class ManageAssessmentResults extends AccountActionSupport {
 		List<Employee> employees = employeeDAO.findRandom(10);
 		
 		for (Employee employee : employees) {
-			if (resultDAO.findByEmployee(employee.getId()).size() > 0)
-				continue;
-			
 			AssessmentTest test = testDAO.findRandom();
+			
+			List<AssessmentResult> results = resultDAO.findByEmployee(employee.getId());
+			while (results.size() > 0) {
+				employee = employeeDAO.findRandom(1).get(0);
+				results = resultDAO.findByEmployee(employee.getId());
+			}
 			
 			Calendar cal = Calendar.getInstance();
 			AssessmentResult result = new AssessmentResult();
@@ -98,10 +128,20 @@ public class ManageAssessmentResults extends AccountActionSupport {
 	}
 	
 	public List<AssessmentResult> getEffective() {
+		if (employee != null)
+			return resultDAO.findInEffect("employeeID = " + employee.getId());
+		
 		return resultDAO.findInEffect(null);
 	}
 	
 	public List<AssessmentResult> getExpired() {
+		if (employee != null)
+			return resultDAO.findExpired("employeeID = " + employee.getId());
+		
 		return resultDAO.findExpired(null);
+	}
+	
+	public boolean isCanEdit() {
+		return permissions.hasPermission(OpPerms.ManageJobSites, OpType.Edit);
 	}
 }

@@ -1519,9 +1519,9 @@
 		</action>
 		
 		<!-- Operator Qualifications -->
-		<action name="ManageAssessmentResults"
-			class="com.picsauditing.actions.operators.ManageAssessmentResults">
-			<result>/struts/operators/op_assessments.jsp</result>
+		<action name="AssessmentResults"
+			class="com.picsauditing.actions.users.AssessmentResults">
+			<result>/struts/users/assessment_results.jsp</result>
 		</action>
 		
 		<action name="ManageEmployees"
