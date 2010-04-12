@@ -27,10 +27,9 @@
 	<s:form method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 		<input type="submit" value="Generate Assessment Results" name="button" class="picsbutton positive" />
 	</s:form>
+	<br />
 </s:if>
-<br />
 <s:if test="effective.size() > 0">
-	<h3>Still In Effect</h3>
 	<table class="report"><thead>
 		<tr>
 			<th>Assessment Center</th>
@@ -68,6 +67,10 @@
 	</tbody></table>
 	<br />
 </s:if>
+<s:else>
+	<div class="info">This employee has no assessments associated or in effect.</div>
+</s:else>
+
 <s:if test="expired.size() > 0">
 	<h3>Expired/Removed</h3>
 	<table class="report"><thead>
