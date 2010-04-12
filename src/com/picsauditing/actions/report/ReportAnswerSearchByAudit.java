@@ -61,7 +61,6 @@ public class ReportAnswerSearchByAudit extends ReportContractorAudits {
 		getFilter().setShowTaxID(false);
 		getFilter().setShowIndustry(false);
 		getFilter().setShowTrade(false);
-		getFilter().setShowConAuditor(false);
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowWorksIn(false);
 		getFilter().setShowOfficeIn(false);
@@ -73,7 +72,7 @@ public class ReportAnswerSearchByAudit extends ReportContractorAudits {
 		getFilter().setShowClosedDate(false);
 		getFilter().setShowCompletedDate(false);
 		getFilter().setShowCreatedDate(false);
-		getFilter().setShowClosingAuditor(false); 
+		getFilter().setShowAuditor(false); 
 		getFilter().setShowQuestionAnswer(true);
 	}
 
