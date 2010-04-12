@@ -691,7 +691,23 @@
 			</table>
 		</div>	
 	</s:if>
-
+	
+	<br clear="all">
+	<s:if test="filter.showQuestionAnswer">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_questionId'); return false;">Questions</a> =
+		<span id="form1_questionId_query">ALL</span><br />
+		<span id="form1_questionId_select" style="display: none"
+			class="clearLink"> <s:select name="filter.questionIds"
+			cssClass="forms" list="filter.questionsByAuditList" listKey="id" listValue="questionTexts.get(0).question"
+			multiple="true" size="23" id="form1_questionId" /> <script
+			type="text/javascript">updateQuery('form1_questionId');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_questionId'); return false;">Clear</a></span>
+		</div><br clear="all">
+		<div class="filterOption">Answer: <s:textfield name="filter.answer"/></div>		
+	</s:if>	
+	
 	<s:if test="filter.showConWithPendingAudits">
 		<br clear="all" />
 		<div class="filterOption"><label><s:checkbox

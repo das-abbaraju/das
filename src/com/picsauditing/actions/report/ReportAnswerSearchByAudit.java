@@ -13,15 +13,14 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
-public class ReportAnswerSearchByAudit extends ReportAccount {
-	protected List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
-	protected AuditQuestionDAO auditQuestionDAO;
-	protected String removeQuestionId;
-
+public class ReportAnswerSearchByAudit extends ReportContractorAudits {
+	public List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>();
+	public AuditQuestionDAO auditQuestionDAO;
+	
 	public ReportAnswerSearchByAudit(AuditQuestionDAO auditQuestionDAO) {
 		this.auditQuestionDAO = auditQuestionDAO;
 	}
-
+	
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ContractorDetails);
@@ -30,88 +29,70 @@ public class ReportAnswerSearchByAudit extends ReportAccount {
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addWhere("ca.auditTypeID = 81");
-		sql.addField("ca.auditStatus");
-		sql.addField("ca.completedDate");
-		List<AuditQuestion> newQuestions = new ArrayList<AuditQuestion>();
-		int removeQuestion = -1;
-		try {
-			if (!Strings.isEmpty(removeQuestionId))
-				removeQuestion = Integer.parseInt(removeQuestionId);
-		} catch (Exception e) {
-		}
-
-		for (AuditQuestion question : questions) {
-			if (question != null && removeQuestion != question.getId()) {
-				AuditQuestion tempQuestion = auditQuestionDAO.find(question
-						.getId());
-				tempQuestion.setCriteriaAnswer(question.getCriteriaAnswer());
-				if (newQuestions.contains(tempQuestion))
-					newQuestions.remove(tempQuestion); // remove the old first
-				newQuestions.add(tempQuestion);
+		
+		if(getFilter().getQuestionIds() == null) {
+			for(AuditQuestion auditQuestion : getFilter().getQuestionsByAuditList()) {
+				auditQuestions.add(auditQuestion);
 			}
 		}
-
-		questions = new ArrayList<AuditQuestion>();
-		questions.addAll(newQuestions);
-
-		if (questions.size() == 0) {
-			for (AuditQuestion auditQuestion : getQuestionsByAudit()) {
-				if (auditQuestion.getQuestionType().contains("Yes/No")) 
-					auditQuestion.setCriteriaAnswer("No");
-				else
-					auditQuestion.setCriteriaAnswer("");
-				questions.add(auditQuestion);
-			}
+		else {
+			for(int questionId : getFilter().getQuestionIds()) {
+				AuditQuestion question = auditQuestionDAO.find(questionId);
+				auditQuestions.add(question);
+			}	
 		}
-
-		for (AuditQuestion question : questions) {
-			int questionID = question.getId();
-			String join = "LEFT JOIN pqfdata q" + questionID + " on q"
-					+ questionID + ".auditID = ca.id AND q" + questionID
-					+ ".questionID = " + questionID + " AND q" + questionID
-					+ ".answer LIKE '%" + question.getCriteriaAnswer() + "%'";
+		
+		
+		for(AuditQuestion auditQuestion : auditQuestions) {
+			int questionId = auditQuestion.getId();
+			String join = "LEFT JOIN pqfdata q" + questionId + " on q"
+			+ questionId + ".auditID = ca.id AND q" + questionId
+			+ ".questionID = " + questionId;
+			if(!Strings.isEmpty(getFilter().getAnswer())) {
+				join += " AND q" + questionId
+				+ ".answer LIKE '%" + getFilter().getAnswer() + "%'";
+			}
 			sql.addJoin(join);
-			sql.addField("q" + questionID + ".answer AS answer" + questionID);
+			sql.addField("q" + questionId + ".answer AS answer" + questionId);
 		}
-	}
 
-	@Override
-	public void run(SelectSQL sql) throws SQLException, IOException {
-		if (questions.size() > 0)
-			super.run(sql);
+		getFilter().setShowAddress(false);
+		getFilter().setShowTaxID(false);
+		getFilter().setShowIndustry(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowConAuditor(false);
+		getFilter().setShowLicensedIn(false);
+		getFilter().setShowWorksIn(false);
+		getFilter().setShowOfficeIn(false);
+		getFilter().setShowAuditFor(false);
+		getFilter().setShowRegistrationDate(false);
+		getFilter().setShowAuditType(false);
+		getFilter().setShowPercentComplete(false);
+		getFilter().setShowExpiredDate(false);
+		getFilter().setShowClosedDate(false);
+		getFilter().setShowCompletedDate(false);
+		getFilter().setShowCreatedDate(false);
+		getFilter().setShowClosingAuditor(false); 
+		getFilter().setShowQuestionAnswer(true);
 	}
 
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		int i = 30;
-		for (AuditQuestion auditQuestion : questions) {
+		for (AuditQuestion auditQuestion : auditQuestions) {
 			excelSheet.addColumn(new ExcelColumn("answer"
-					+ auditQuestion.getId(), auditQuestion.getQuestion()), i);
+					+ auditQuestion.getId(), auditQuestion.getColumnHeaderOrQuestion()), i);
 			i++;
 		}
 	}
 
-	public List<AuditQuestion> getQuestions() {
-		return questions;
+	public List<AuditQuestion> getAuditQuestions() {
+		return auditQuestions;
 	}
 
-	public void setQuestions(List<AuditQuestion> questions) {
-		this.questions = questions;
-	}
-
-	public String getRemoveQuestionId() {
-		return removeQuestionId;
-	}
-
-	public void setRemoveQuestionId(String removeQuestionId) {
-		this.removeQuestionId = removeQuestionId;
-	}
-
-	public List<AuditQuestion> getQuestionsByAudit() {
-		return auditQuestionDAO
-				.findWhere("t.subCategory.category.auditType.id = 81 AND t.isVisible = 'Yes'");
+	public void setAuditQuestions(List<AuditQuestion> auditQuestions) {
+		this.auditQuestions = auditQuestions;
 	}
 }

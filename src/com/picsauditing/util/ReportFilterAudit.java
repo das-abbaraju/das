@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.CaoStatus;
@@ -39,6 +41,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showShaType = false;
 	protected boolean showShaLocation = false;
 	protected boolean showCohsStats = false;
+	protected boolean showQuestionAnswer = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -74,6 +77,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String shaLocation;
 	protected float cad7 = 0;
 	protected float neer = 0;
+	protected int[] questionIds;
+	protected String answer = "No";
 	
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -243,6 +248,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.showCohsStats = showCohsStats;
 	}
 
+	public boolean isShowQuestionAnswer() {
+		return showQuestionAnswer;
+	}
+
+	public void setShowQuestionAnswer(boolean showQuestionAnswer) {
+		this.showQuestionAnswer = showQuestionAnswer;
+	}
+
 	public int[] getAuditID() {
 		return auditID;
 	}
@@ -403,6 +416,22 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		this.recommendedFlag = recommendedFlag;
 	}
 
+	public int[] getQuestionIds() {
+		return questionIds;
+	}
+
+	public void setQuestionIds(int[] questionIds) {
+		this.questionIds = questionIds;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
 	// Getting all the Lists
 	public List<AuditType> getAuditTypeList() {
 		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
@@ -437,6 +466,11 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public OshaType[] getOshaTypesList() {
 		return OshaType.values();
+	}
+	
+	public List<AuditQuestion> getQuestionsByAuditList() {
+		AuditQuestionDAO auditQuestionDAO = (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
+		return auditQuestionDAO.findWhere("t.subCategory.category.auditType.id = 81 AND t.isVisible = 'Yes'");
 	}
 	
 	public boolean isShowAuditFor() {

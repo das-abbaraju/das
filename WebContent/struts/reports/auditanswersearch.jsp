@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Tesoro Security Specific Audit Answers</title>
+<title>Background Security Check</title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
@@ -15,49 +15,9 @@ function setId(Id) {
 </script>
 </head>
 <body>
-<h1>Tesoro Security Specific Audit Answers</h1>
+<h1>Background Security Check</h1>
+<s:include value="filters.jsp" />
 
-<div id="search">
-<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;" onsubmit="runSearch($('#form1'))">
-	<s:hidden name="filter.ajax" />
-	<s:hidden name="filter.destinationAction" />
-	<s:hidden name="filter.allowMailMerge" />
-	<s:hidden name="showPage" value="1" />
-	<s:hidden name="filter.startsWith" />
-	<s:hidden name="orderBy" />
-	<input type="hidden" value="" id="removeQuestionId" name="removeQuestionId">
-
-	<s:iterator value="questions" status="stat">
-		<div class="filterOption">
-			<div>
-				<s:hidden name="questions[%{#stat.index}].id" value="%{id}"></s:hidden>
-				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
-				<s:property value="shortQuestion"/>: <s:property value="criteriaAnswer"/>
-				<button type="submit" class="picsbutton negative" name="button" value="Remove" onclick="javascript : return setId(<s:property value="id"/>);">Remove</button>
-			</div>
-		</div><br clear="all"/>
-	</s:iterator>
-	<br clear="all"/>
-	<div class="filterOption">Name: <s:textfield name="filter.accountName"
-			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
-	<div class="filterOption">
-		Select a Question: 
-		<s:select cssClass="forms" name="questions[99].id" list="questionsByAudit" listKey="id" listValue="shortQuestion" value="">
-		</s:select>
-		<br/>
-		Answer: 
-		<s:textfield cssClass="forms" id="answer" name="questions[99].criteriaAnswer" size="25" value=""  />
-		<div>
-			<button class="picsbutton positive" type="submit" name="button" value="Search">Search</button>
-		</div>
-	</div>
-
-	<br clear="all" />
-	<div class="alphapaging"><s:property
-		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
-</s:form>
-</div>
-<div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
 
 <s:if test="data.size > 0">
 	<pics:permission perm="ContractorDetails">
@@ -79,7 +39,7 @@ function setId(Id) {
 		<td colspan="2"><a href="javascript: changeOrderBy('form1','a.nameIndex DESC');" >Contractor Name</a></td>
 		<td><a href="javascript: changeOrderBy('form1','ca.auditStatus DESC');" >Audit Status</a></td>
 		<td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');" >Submitted</a></td>
-		<s:iterator value="questions">
+		<s:iterator value="auditQuestions">
 			<td><s:property value="columnHeaderOrQuestion"/></td>
 		</s:iterator>
 	</tr>
@@ -91,7 +51,7 @@ function setId(Id) {
 				><s:property value="get('name')" /></a></td>
 			<td><s:property value="get('auditStatus')"/></td>
 			<td><s:date name="get('completedDate')" format="M/d/yy"/></td>
-			<s:iterator value="questions">
+			<s:iterator value="auditQuestions">
 				<td><s:property value="%{get('answer' + id)}"/></td>
 			</s:iterator>
 		</tr>

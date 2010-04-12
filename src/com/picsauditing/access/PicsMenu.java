@@ -78,9 +78,6 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
 
-		if (permissions.getAccountName().startsWith("Tesoro"))
-			subMenu.addChild("Search Answers By Audit", "QuestionAnswerSearchByAudit.action");
-
 		if (permissions.isPicsEmployee()) // || permissions.isOperatorCorporate()
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 
@@ -244,6 +241,10 @@ public class PicsMenu {
 			final String url = "ReportIncidenceRate.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Incidence Rates", url);
 		}
+		
+		if (permissions.getAccountName().startsWith("Tesoro"))
+			subMenu.addChild("Background Check", "QuestionAnswerSearchByAudit.action");
+
 		if (permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
