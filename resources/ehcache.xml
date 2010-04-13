@@ -3,18 +3,18 @@
 	xsi:noNamespaceSchemaLocation="ehcache.xsd">
 	<diskStore path="java.io.tmpdir" />
 
-	<!-- For changeable application objects, wait a day -->
+	<!-- For changeable application objects, wait 4 hours -->
 	<cache name="daily" maxElementsInMemory="500" eternal="false"
-		timeToLiveSeconds="3600" overflowToDisk="false">
+		timeToLiveSeconds="14400" overflowToDisk="false">
 		<cacheEventListenerFactory
 			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
 		<bootstrapCacheLoaderFactory
 			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
 	</cache>
 
-	<!-- For most session elements, wait 30 minutes -->
+	<!-- For most session elements, wait 15 minutes -->
 	<cache name="temp" maxElementsInMemory="500" eternal="false"
-		timeToLiveSeconds="1800" overflowToDisk="false">
+		timeToLiveSeconds="900" overflowToDisk="false">
 		<cacheEventListenerFactory
 			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
 		<bootstrapCacheLoaderFactory
@@ -22,7 +22,7 @@
 	</cache>
 
 	<!-- For most page elements, wait 2 minutes -->
-	<defaultCache maxElementsInMemory="10000" eternal="false"
+	<defaultCache maxElementsInMemory="1000" eternal="false"
 		timeToLiveSeconds="120" overflowToDisk="false"
 		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU">
 		<cacheEventListenerFactory

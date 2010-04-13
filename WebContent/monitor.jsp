@@ -18,7 +18,7 @@
 <br/><br/>
 <h2>Cache Statistics</h2>
 
-<table>
+<table class="report">
 	<tr>
 		<td><strong>Cache Name</strong></td>
 		<td><strong>Size</strong></td>
@@ -41,9 +41,16 @@ String[] cacheNames = CacheManager.getInstance().getCacheNames();
 		%>
 		<tr>
 			<td><%= cn %></td>
-			<td><%= stats.getObjectCount() %></td>
-			<td><%= stats.getCacheHits() %></td>
+			<td><%= stats.getObjectCount() %>
+			<br />M:<%= stats.getMemoryStoreObjectCount() %>
+			<br />D:<%= stats.getDiskStoreObjectCount() %></td>
+			<td><%= stats.getCacheHits() %>
+			<br />M:<%= stats.getInMemoryHits() %>
+			<br />D:<%= stats.getOnDiskHits() %>
+			</td>
 			<td><%= stats.getCacheMisses() %></td>
+			<td><%= stats.getAverageGetTime() %></td>
+			<td><%= stats.getEvictionCount() %></td>
 		</tr>
 	<% 	} %>
 </table>
