@@ -13,7 +13,7 @@ import com.picsauditing.jpa.entities.WaitingOn;
 @SuppressWarnings("serial")
 public class ReportFilterNewContractor extends ReportFilterContractor {
 	// If we need to add any specialized filters?
-	protected boolean showOpen = false;
+	protected boolean showOpen = true;
 	protected boolean showState = false;
 	protected boolean showCountry = false;
 	protected boolean showHandledBy = false;
@@ -27,7 +27,6 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.permissions = permissions;
 		
 		if (permissions.isOperatorCorporate()) {
-			this.setShowOpen(true);
 			this.setShowHandledBy(true);
 			this.setShowConAuditor(true);
 		} else if (permissions.hasGroup(981)) {

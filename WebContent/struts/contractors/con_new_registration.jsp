@@ -25,8 +25,6 @@
 
 #email_preview {
 	display: none;
-	margin-left: 11em;
-	cellspacing: 5px;
 }
 
 #email_preview td {
@@ -90,12 +88,20 @@ function addToken(token) {
 	$('#email_body').val($('#email_body').val() + "<" + token + ">");
 	$('#email_body').focus();
 }
+
+function getMatches(requestID) {
+	var data = {
+		button: 'MatchingList',
+		requestID: requestID
+	};
+
+	$('#potentialMatches').append('<img src="images/ajax_process.gif" style="border: none;" />');
+	$('#potentialMatches').load('RequestNewContractorAjax.action', data);
+}
 </script>
 </head>
 <body>
 <h1>Request New Contractor</h1>
-<span class="redMain">* - Indicates required information</span>
-
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="conAccount != null && conAccount.status.active">
@@ -103,6 +109,14 @@ function addToken(token) {
 		Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>.</div>
 </s:if>
 
+<s:if test="newContractor.matchCount > 0 && conAccount == null">
+	<div id="potentialMatches" class="info">
+		This contractor has potential matching accounts in PICS.
+		<a href="#" onclick="getMatches(<s:property value="requestID" />); return false;">Click here to view a list of matching accounts.</a>
+	</div>
+</s:if>
+
+<span class="redMain">* - Indicates required information</span>
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
 	<fieldset class="form"><legend><span>Details</span></legend>
@@ -118,24 +132,32 @@ function addToken(token) {
 			</s:if>
 		</li>
 		<li><label for="email">Email:</label>
-			<s:textfield name="newContractor.email" size="30" id="email" />
-			<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
-				<button onclick="$('#email_preview').toggle(); return false;" class="picsbutton">Edit Email</button>
-				<input type="submit" value="Send Email" name="button" class="picsbutton" />
-				<s:if test="formsViewable && attachment == null && forms.size() > 0">
-					<a href="#operatorForms" class="picsbutton fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
-					<div id="attachment" style="float: right; clear: right;"></div>
-				</s:if>
-				<table id="email_preview">
-					<tr>
-						<td>Subject: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
-						<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
-					</tr>
-					<tr><td colspan="2">
-						<s:textarea cols="75" rows="10" name="emailBody" id="email_body"></s:textarea>
-					</td></tr>
-				</table>
-			</s:if>
+			<table>
+				<tr>
+					<td><nobr>
+						<s:textfield name="newContractor.email" size="30" id="email" />
+						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
+							<button onclick="$('#email_preview').toggle(); return false;" class="picsbutton">Edit Email</button>
+							<button type="submit" name="button" class="picsbutton" value="Send Email">Send Email</button>
+							<s:if test="formsViewable && attachment == null && forms.size() > 0">
+								<a href="#operatorForms" class="picsbutton fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
+							</s:if>
+							<table id="email_preview">
+								<tr>
+									<td>Subject: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
+									<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
+								</tr>
+								<tr><td colspan="2">
+									<s:textarea cols="75" rows="10" name="emailBody" id="email_body"></s:textarea>
+								</td></tr>
+							</table>
+						</s:if>
+					</nobr></td>
+					<s:if test="formsViewable && attachment == null && forms.size() > 0">
+						<td><div id="attachment"></div></td>
+					</s:if>
+				</tr>
+			</table>
 		</li>
 		<li><label for="taxID">Tax ID:</label>
 			<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" /></li>

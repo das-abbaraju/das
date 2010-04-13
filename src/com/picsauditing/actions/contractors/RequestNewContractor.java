@@ -15,6 +15,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -23,7 +24,9 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailAttachment;
@@ -40,7 +43,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class RequestNewContractor extends PicsActionSupport implements Preparable {
 	private ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
-	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+	protected ContractorRegistrationRequestDAO crrDAO;
 	protected OperatorAccountDAO operatorAccountDAO;
 	protected UserDAO userDAO;
 	protected CountryDAO countryDAO;
@@ -48,8 +51,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected EmailAttachmentDAO emailAttachmentDAO;
 	protected EmailTemplateDAO emailTemplateDAO;
+	protected AccountDAO accountDAO;
 
-	private int requestID;
+	protected int requestID;
 	protected Country country;
 	protected State state;
 	protected int requestedOperator;
@@ -61,22 +65,29 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String[] filenames = null;
 	protected String emailSubject;
 	protected String emailBody;
+	protected List<Account> potentialMatches;
 
-	private String[] names = new String[] { "ContractorName", "ContractorPhone", "ContractorEmail", "RequestedBy",
-			"RequestedByUser", "ContractorContactName", "ContractorTaxID", "ContractorAddress", "ContractorCity",
-			"ContractorState", "ContractorZip", "ContractorCountry", "Deadline", "RegistrationLink", "PICSSignature" };
+	private String[] names = new String[] { "ContractorName",
+			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
+			"RequestedByUser", "ContractorContactName", "ContractorTaxID",
+			"ContractorAddress", "ContractorCity", "ContractorState",
+			"ContractorZip", "ContractorCountry", "Deadline",
+			"RegistrationLink", "PICSSignature" };
 
-	private String[] velocityCodes = new String[] { "${newContractor.name}", "${newContractor.phone}",
-			"${newContractor.email}", "${newContractor.requestedBy.name}", "${requestedBy}",
-			"${newContractor.contact}", "${newContractor.taxID}", "${newContractor.address}", "${newContractor.city}",
-			"${newContractor.state.english}", "${newContractor.zip}", "${newContractor.country.english}",
-			"${newContractor.deadline}", "${requestLink}", "<PICSSignature>" };
+	private String[] velocityCodes = new String[] { "${newContractor.name}",
+			"${newContractor.phone}", "${newContractor.email}",
+			"${newContractor.requestedBy.name}", "${requestedBy}",
+			"${newContractor.contact}", "${newContractor.taxID}",
+			"${newContractor.address}", "${newContractor.city}",
+			"${newContractor.state.english}", "${newContractor.zip}",
+			"${newContractor.country.english}", "${newContractor.deadline}",
+			"${requestLink}", "<PICSSignature>" };
 
-	public RequestNewContractor(ContractorRegistrationRequestDAO contractorRegistrationRequestDAO,
+	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO,
 			OperatorAccountDAO operatorAccountDAO, UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO,
 			ContractorAccountDAO contractorAccountDAO, EmailAttachmentDAO emailAttachmentDAO,
-			EmailTemplateDAO emailTemplateDAO) {
-		this.contractorRegistrationRequestDAO = contractorRegistrationRequestDAO;
+			EmailTemplateDAO emailTemplateDAO, AccountDAO accountDAO) {
+		this.crrDAO = crrDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.userDAO = userDAO;
 		this.countryDAO = countryDAO;
@@ -84,6 +95,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.emailAttachmentDAO = emailAttachmentDAO;
 		this.emailTemplateDAO = emailTemplateDAO;
+		this.accountDAO = accountDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -91,7 +103,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		requestID = getParameter("requestID");
 		if (requestID > 0) {
-			newContractor = contractorRegistrationRequestDAO.find(requestID);
+			newContractor = crrDAO.find(requestID);
 		} else {
 			newContractor.setCountry(new Country(permissions.getCountry()));
 			if (permissions.isOperatorCorporate()) {
@@ -131,50 +143,65 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				if (country == null)
 					addActionError("Please select a Country");
 				else if (country.getIsoCode().equals("US") || country.getIsoCode().equals("CA")) {
-					if (state == null || Strings.isEmpty(state.getIsoCode())) {
+					if (state == null || Strings.isEmpty(state.getIsoCode()))
 						addActionError("Please select a State");
-					}
 				}
-				if (Strings.isEmpty(newContractor.getPhone())) {
+				if (Strings.isEmpty(newContractor.getPhone()))
 					addActionError("Please fill a Phone Number");
-				}
-				if (!Strings.isEmpty(newContractor.getEmail()) && !Strings.isValidEmail(newContractor.getEmail())) {
+				if (!Strings.isEmpty(newContractor.getEmail()) && !Strings.isValidEmail(newContractor.getEmail()))
 					addActionError("Please fill in a Valid Email Address");
-				}
-
-				if (getActionErrors().size() > 0) {
+				if (getActionErrors().size() > 0)
 					return SUCCESS;
-				}
 
-				if (newContractor.getDeadline() == null) {
+				if (newContractor.getDeadline() == null)
 					newContractor.setDeadline(DateBean.addMonths(new Date(), 3));
-				}
-
-				if (country != null && !country.equals(newContractor.getCountry())) {
+				if (country != null && !country.equals(newContractor.getCountry()))
 					newContractor.setCountry(country);
-				}
-				if (state != null && !state.equals(newContractor.getState())) {
+				if (state != null && !state.equals(newContractor.getState()))
 					newContractor.setState(state);
-				}
-				if (requestedOperator > 0
-						&& (newContractor.getRequestedBy() == null || requestedOperator != newContractor
-								.getRequestedBy().getId())) {
+				if (requestedOperator > 0 
+						&& (newContractor.getRequestedBy() == null
+								|| requestedOperator != newContractor.getRequestedBy().getId())) {
 					newContractor.setRequestedBy(operatorAccountDAO.find(requestedOperator));
 				}
 				if (requestedUser > 0
-						&& (newContractor.getRequestedByUser() == null || requestedUser != newContractor
-								.getRequestedByUser().getId())) {
+						&& (newContractor.getRequestedByUser() == null
+								|| requestedUser != newContractor.getRequestedByUser().getId())) {
 					newContractor.setRequestedByUser(userDAO.find(requestedUser));
 					newContractor.setRequestedByUserOther(null);
-				} else if (requestedOther != null) {
-					newContractor.setRequestedByUserOther(requestedOther);
-					newContractor.setRequestedByUser(null);
+				} else if (requestedUser == 0) {
+					if (!Strings.isEmpty(requestedOther)) {
+						newContractor.setRequestedByUser(null);
+						newContractor.setRequestedByUserOther(requestedOther);
+					}
 				}
 				if (conID > 0
 						&& (newContractor.getContractor() == null || conID != newContractor.getContractor().getId())) {
 					newContractor.setContractor(new ContractorAccount(conID));
 				}
+				
+				potentialMatches = runGapAnalysis();
+				if (potentialMatches.size() > 0)
+					newContractor.setMatchCount(potentialMatches.size());
 			}
+			
+			if (button.equals("MatchingList")) {
+				if (requestID > 0) {
+					newContractor = crrDAO.find(requestID);
+					potentialMatches = runGapAnalysis();
+					
+					if (potentialMatches.size() != newContractor.getMatchCount()) {
+						newContractor.setMatchCount(potentialMatches.size());
+						crrDAO.save(newContractor);
+					}
+					
+					return "matches";
+				} else {
+					addActionError("Requested contractor not found.");
+					return BLANK;
+				}
+			}
+			
 			if (button.equals("Close Request")) {
 				newContractor.setOpen(false);
 			}
@@ -182,12 +209,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
 					EmailBuilder emailBuilder = new EmailBuilder();
-					EmailTemplate emailTemplate = emailTemplateDAO.find(83); // Operator
-					// Request
-					// for
-					// Registration
-					// If the operator edited any part of the template, set it
-					// here.
+					// Operator Request for Registration
+					EmailTemplate emailTemplate = emailTemplateDAO.find(83);
+					// If the operator edited any part of the template, set it here.
 					if (!Strings.isEmpty(emailBody))
 						emailTemplate.setBody(emailBody);
 					if (!Strings.isEmpty(emailSubject))
@@ -209,8 +233,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					emailBuilder.addToken("newContractor", newContractor);
 					emailBuilder.addToken("csr", getAssignedCSR());
 
-					// Point to the contractor registration page with some
-					// information pre-filled
+					// Point to the contractor registration page with some information pre-filled
 					String requestLink = "http://www.picsauditing.com/app/ContractorRegistration.action?button=request&rID="
 							+ newContractor.getId();
 					emailBuilder.addToken("requestLink", requestLink);
@@ -255,7 +278,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				newContractor.setLastContactDate(new Date());
 			}
 			newContractor.setAuditColumns(permissions);
-			contractorRegistrationRequestDAO.save(newContractor);
+			crrDAO.save(newContractor);
 			requestID = newContractor.getId();
 			addActionMessage("Successfully saved the Contractor");
 		}
@@ -400,6 +423,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setEmailBody(String emailBody) {
 		this.emailBody = emailBody;
 	}
+	
+	public List<Account> getPotentialMatches() {
+		return potentialMatches;
+	}
 
 	public User getAssignedCSR() {
 		if (newContractor.getId() > 0) {
@@ -438,7 +465,50 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String[] getTokens() {
 		return names;
 	}
-
+	
+	public List<Account> runGapAnalysis() {
+		List<String> whereClauses = new ArrayList<String>();
+		
+		if (!Strings.isEmpty(newContractor.getName()))
+			whereClauses.add("a.name LIKE '%" + newContractor.getName() + "%'");
+		if (!Strings.isEmpty(newContractor.getTaxID()))
+			whereClauses.add("a.taxID = " + newContractor.getTaxID());
+		if (!Strings.isEmpty(newContractor.getAddress()))
+			whereClauses.add("a.address LIKE '%" + newContractor.getAddress() + "%'");
+		if (!Strings.isEmpty(newContractor.getPhone()))
+			whereClauses.add("a.phone LIKE '%" + newContractor.getPhone() + "%'");
+		if (!Strings.isEmpty(newContractor.getEmail()))
+			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.email LIKE '%" + newContractor.getEmail() + "%')");
+		if (!Strings.isEmpty(newContractor.getContact())) {
+			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.name LIKE '%" + newContractor.getContact() + "%')");
+		}
+		
+		if (whereClauses.size() > 0) {
+			String where = Strings.implode(whereClauses, " OR ");
+			return accountDAO.findWhere(where);
+		}
+		
+		return null;
+	}
+	
+	public boolean worksForOperator(int conID) {
+		if (permissions.isOperatorCorporate()) {
+			OperatorAccount operator = operatorAccountDAO.find(permissions.getAccountId());
+			List<ContractorOperator> cos = operator.getContractorOperators();
+			
+			for (ContractorOperator co : cos) {
+				if (co.getContractorAccount().getId() == conID)
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isSearchForNew() {
+		return permissions.hasPermission(OpPerms.SearchContractors);
+	}
+	
 	private class ByFacilityName implements Comparator<OperatorForm> {
 		public int compare(OperatorForm o1, OperatorForm o2) {
 			if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)

@@ -218,8 +218,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	public void calculateOverallFlags() {
-		byConID = new HashMap<Integer, FlagColor>();
-		byFlagColor = new HashMap<FlagColor, List<Integer>>();
 		List<Integer> conIDs = new ArrayList<Integer>();
 		List<Integer> red = new ArrayList<Integer>();
 		List<Integer> amber = new ArrayList<Integer>();
@@ -237,17 +235,26 @@ public class ReportNewContractorSearch extends ReportAccount {
 					calculator = new FlagDataCalculator(contractor.getFlagCriteria());
 					calculator.setOperatorCriteria(opCriteria);
 					List<FlagData> conData = calculator.calculate();
-					Collections.sort(conData, new ByFlagColor());
 					
-					if (conData.get(0).getFlag().equals(FlagColor.Red))
-						red.add(contractor.getId());
-					else if (conData.get(0).getFlag().equals(FlagColor.Amber))
-						amber.add(contractor.getId());
-					else
-						green.add(contractor.getId());
-				} else
-					green.add(contractor.getId());
+					if (conData.size() > 0) {
+						Collections.sort(conData, new ByFlagColor());
+					
+						if (conData.get(0).getFlag().equals(FlagColor.Red)) {
+							red.add(contractor.getId());
+							continue;
+						}
+						else if (conData.get(0).getFlag().equals(FlagColor.Amber)) {
+							amber.add(contractor.getId());
+							continue;
+						}
+					}
+				}
+				
+				green.add(contractor.getId());
 			}
+			
+			byConID = new HashMap<Integer, FlagColor>();
+			byFlagColor = new HashMap<FlagColor, List<Integer>>();
 			
 			byFlagColor.put(FlagColor.Red, red);
 			byFlagColor.put(FlagColor.Amber, amber);
@@ -266,7 +273,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	public FlagColor getOverallFlag(int contractorID) {
-		if (byConID == null)
+		if (byConID == null || byConID.size() == 0)
 			calculateOverallFlags();
 		
 		return byConID.get(contractorID);
