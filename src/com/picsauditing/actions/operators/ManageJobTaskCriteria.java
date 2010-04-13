@@ -1,8 +1,11 @@
 package com.picsauditing.actions.operators;
 
 //import com.picsauditing.access.OpPerms;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AssessmentTestDAO;
@@ -14,19 +17,26 @@ import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.JobTaskCriteria;
 
 @SuppressWarnings("serial")
-public class ManageJobTaskCriteria extends OperatorActionSupport {
+public class ManageJobTaskCriteria extends OperatorActionSupport implements Preparable {
 	protected JobTaskDAO jobTaskDAO;
 	protected JobTaskCriteriaDAO jobTaskCriteriaDAO;
 	protected AssessmentTestDAO assessmentTestDAO;
-
+	
 	protected int jobTaskID;
 	protected int jobTaskCriteriaID;
 	protected int assessmentTestID;
+	protected int groupNumber;
 
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
-	protected JobTask jobTask = new JobTask();
-	protected AssessmentTest assessmentTest = new AssessmentTest();
+	protected JobTask jobTask;
+	protected AssessmentTest assessmentTest;
 
+	@Override
+	public void prepare() throws Exception {
+		if (jobTask == null)
+			jobTask = jobTaskDAO.find(jobTaskID);
+	}
+	
 	public ManageJobTaskCriteria(OperatorAccountDAO operatorDao, JobTaskCriteriaDAO jobTaskCriteriaDAO,
 			AssessmentTestDAO assessmentTestDAO, JobTaskDAO jobTaskDAO) {
 		super(operatorDao);
@@ -46,29 +56,54 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 
 		if (button != null) {
 			if ("Save".equalsIgnoreCase(button)) {
-				// Labels are required
-				if (newJobTaskCriteria.getAssessmentTest() == null)
-					addActionError("Please add an Assessment for this Criteria.");
-				// Operators are required, but if one isn't set,
-				// this operator should be added by default
+				if (assessmentTest == null)
+					assessmentTest = assessmentTestDAO.find(assessmentTestID);
+				
+				if (jobTask == null)
+					jobTask = jobTaskDAO.find(jobTaskID);
+				
+				newJobTaskCriteria.setAssessmentTest(assessmentTest);
+				newJobTaskCriteria.setTask(jobTask);
+				newJobTaskCriteria.setGroupNumber(groupNumber);
 
-				assessmentTest = assessmentTestDAO.find(assessmentTestID);
-				if (assessmentTest != null)
-					newJobTaskCriteria.setAssessmentTest(assessmentTest);
+				jobTaskCriteriaDAO.save(newJobTaskCriteria);
+				
+				addActionMessage("Successfully added "+assessmentTest.getName()+" to group "+groupNumber);
+				
+				return SUCCESS;
+			}
+			
+			if ("Create".equalsIgnoreCase(button)) {
+				if (assessmentTest == null)
+					assessmentTest = assessmentTestDAO.find(assessmentTestID);
+				
+				if (jobTask == null)
+					jobTask = jobTaskDAO.find(jobTaskID);
+				
+				newJobTaskCriteria.setAssessmentTest(assessmentTest);
+				newJobTaskCriteria.setTask(jobTask);
+				int highestGroupNumber = Integer.MIN_VALUE;
+				for(int group : jobTask.getJobTaskCriteriaMap().keySet())
+					if(group > highestGroupNumber)
+						highestGroupNumber = group;
+				newJobTaskCriteria.setGroupNumber(highestGroupNumber+1);
 
-				jobTask = jobTaskDAO.find(jobTaskID);
-				if (jobTask != null)
-					newJobTaskCriteria.setTask(jobTask);
-
-				if (getActionErrors().size() > 0)
-					return SUCCESS;
+				jobTaskCriteriaDAO.save(newJobTaskCriteria);
+				jobTask.getJobTaskCriteria().add(newJobTaskCriteria);
+				
+				addActionMessage("Successfully added "+assessmentTest.getName()+" to New Group");
+				
+				return SUCCESS;
 			}
 
 			if ("Remove".equalsIgnoreCase(button)) {
 				newJobTaskCriteria = jobTaskCriteriaDAO.find(jobTaskCriteriaID);
+				assessmentTest = newJobTaskCriteria.getAssessmentTest();
 				jobTaskCriteriaDAO.remove(newJobTaskCriteria);
-			} else {
-				jobTaskCriteriaDAO.save(newJobTaskCriteria);
+				
+				addActionMessage("Successfully removed "+assessmentTest.getName()+" from group "+groupNumber);
+				
+				return SUCCESS;
 			}
 
 			if (permissions.isOperator())
@@ -78,6 +113,14 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	public int getGroupNumber() {
+		return groupNumber;
+	}
+
+	public void setGroupNumber(int groupNumber) {
+		this.groupNumber = groupNumber;
 	}
 
 	public int getJobTaskID() {
@@ -133,10 +176,28 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	}
 
 	public List<JobTaskCriteria> getCriterias() {
-		return jobTaskCriteriaDAO.findByTask(jobTaskID);
+		if (jobTask == null)
+			jobTask = jobTaskDAO.find(jobTaskID);
+		
+		return jobTask.getJobTaskCriteria();
 	}
 
-	public List<AssessmentTest> getAllAssessments() {
-		return assessmentTestDAO.findAll();
+	public Set<AssessmentTest> getAllAssessments() {
+		if (jobTask == null)
+			jobTask = jobTaskDAO.find(jobTaskID);
+		
+		return new HashSet<AssessmentTest>(assessmentTestDAO.findAll());
+	}
+	
+	public Set<AssessmentTest> getUsedAssessmentsByGroup(int groupNumber) {
+		if (jobTask == null)
+			jobTask = jobTaskDAO.find(jobTaskID);
+		
+		List<AssessmentTest> remainingAssessments = assessmentTestDAO.findAll();
+		for(JobTaskCriteria criteria : jobTask.getJobTaskCriteriaMap().get(groupNumber))
+			if(remainingAssessments.contains(criteria.getAssessmentTest()))
+				remainingAssessments.remove(criteria.getAssessmentTest());
+		
+		return new HashSet<AssessmentTest>(remainingAssessments);
 	}
 }

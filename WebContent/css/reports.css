@@ -233,3 +233,74 @@ a.clearLink {
 	padding: 0px;
 	margin: 0px;
 }
+
+/******************** Primary Table class="jobReport"  ************************/
+table.jobReport {
+	border-collapse: collapse;
+	color: #4C4D4D;
+	background: #FFF;
+	clear: both;
+	margin-bottom: 10px;
+	position: relative;
+	z-index: 10;
+}
+
+table.jobReport td,table.jobReport th {
+	vertical-align: middle;
+	padding: 4px;
+	font-size: 13px;
+	line-height: 15px;
+}
+
+table.jobReport td.icon {
+	padding-top: 2px;
+	padding-bottom: 0px;
+}
+
+table.jobReport thead th,table.jobReport thead td {
+	text-align: center;
+	font-weight: bold;
+	background: #003768;
+	color: #FFF;
+}
+
+table.jobReport thead a {
+	color: #FFF;
+	text-decoration: none;
+	background: url('../images/arrow.gif') no-repeat right center;
+	padding-left: 0;
+	padding-right: 12px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+table.jobReport thead a:hover {
+	text-decoration: underline;
+}
+
+table.jobReport td a {
+	text-decoration: none;
+}
+
+table.jobReport td.center,table.jobReport th.center {
+	text-align: center;
+	float: none;
+}
+
+table.jobReport td.right,table.jobReport th.right {
+	text-align: right;
+	float: none;
+}
+
+td.and, tr.and {
+	color:#330099;
+	font-family:monospace;
+	font-weight:bold;
+}
+
+td.or, tr.or {
+	background:lightgrey;
+	color:#FF0000;
+	font-family:monospace;
+	font-weight:bold;
+}

@@ -1,7 +1,11 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -94,5 +99,20 @@ public class JobTask extends BaseTable {
 
 	public void setJobTaskCriteria(List<JobTaskCriteria> jobTaskCriteria) {
 		this.jobTaskCriteria = jobTaskCriteria;
+	}
+	
+	@Transient
+	public Map<Integer, Set<JobTaskCriteria>> getJobTaskCriteriaMap() {
+		Map<Integer, Set<JobTaskCriteria>> criteriaGroup = new HashMap<Integer, Set<JobTaskCriteria>>();
+		for(JobTaskCriteria criteria : getJobTaskCriteria()){
+			if(criteriaGroup.containsKey(criteria.getGroupNumber()))
+				criteriaGroup.get(criteria.getGroupNumber()).add(criteria);
+			else {
+				Set<JobTaskCriteria> set = new HashSet<JobTaskCriteria>();
+				set.add(criteria);
+				criteriaGroup.put(criteria.getGroupNumber(), set);
+			}
+		}
+		return criteriaGroup;
 	}
 }
