@@ -373,6 +373,7 @@
 		<action name="RequestNewContractorAjax"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/blank.jsp</result>
+			<result name="matches">/struts/contractors/con_new_registration_matches.jsp</result>
 		</action>
 		
 		<action name="OperatorUserListAjax"
