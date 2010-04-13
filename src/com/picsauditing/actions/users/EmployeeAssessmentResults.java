@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.Employee;
 
 @SuppressWarnings("serial")
-public class AssessmentResults extends AccountActionSupport {
+public class EmployeeAssessmentResults extends AccountActionSupport {
 	protected AssessmentResultDAO resultDAO;
 	protected AssessmentTestDAO testDAO;
 	protected EmployeeDAO employeeDAO;
@@ -25,7 +25,7 @@ public class AssessmentResults extends AccountActionSupport {
 	protected int employeeID;
 	protected int resultID;
 	
-	public AssessmentResults(AssessmentResultDAO resultDAO, AssessmentTestDAO testDAO, 
+	public EmployeeAssessmentResults(AssessmentResultDAO resultDAO, AssessmentTestDAO testDAO, 
 			EmployeeDAO employeeDAO) {
 		this.resultDAO = resultDAO;
 		this.testDAO = testDAO;
@@ -48,6 +48,8 @@ public class AssessmentResults extends AccountActionSupport {
 			employee = employeeDAO.find(employee.getId());
 		
 		if (button != null) {
+			tryPermissions(OpPerms.ManageJobSites, OpType.Edit);
+			
 			if (button.startsWith("Generate")) {
 				// Get a random bunch of employees
 				// Get all tests for assessment center id 11069
@@ -60,6 +62,9 @@ public class AssessmentResults extends AccountActionSupport {
 					result.setExpirationDate(new Date());
 					resultDAO.save(result);
 				}
+				
+				if (getEmployeeID() > 0)
+					return redirect("AssessmentResults.action?employee.id=" + getEmployeeID());
 				
 				return redirect("AssessmentResults.action");
 			}
@@ -128,15 +133,15 @@ public class AssessmentResults extends AccountActionSupport {
 	}
 	
 	public List<AssessmentResult> getEffective() {
-		if (employee != null)
-			return resultDAO.findInEffect("employeeID = " + employee.getId());
+		if (getEmployeeID() > 0)
+			return resultDAO.findInEffect("employeeID = " + getEmployeeID());
 		
 		return resultDAO.findInEffect(null);
 	}
 	
 	public List<AssessmentResult> getExpired() {
-		if (employee != null)
-			return resultDAO.findExpired("employeeID = " + employee.getId());
+		if (getEmployeeID() > 0)
+			return resultDAO.findExpired("employeeID = " + getEmployeeID());
 		
 		return resultDAO.findExpired(null);
 	}

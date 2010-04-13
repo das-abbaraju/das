@@ -13,9 +13,9 @@
 
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<li><a href="#">Edit</a></li>
-	<li><a href="AssessmentResults.action?employee.id=<s:property value="employee.id" />">Assessments</a></li>
-	<li><a href="#">Data Partner IDs</a></li>
+	<li><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">Edit</a></li>
+	<li><a href="EmployeeAssessmentResults.action?employee.id=<s:property value="employee.id" />">Assessments</a></li>
+	<li><a href="EmployeeDataPartnerIDs.action?employee.id=<s:property value="employee.id" />">Data Partner IDs</a></li>
 </ul>
 </div>
 	

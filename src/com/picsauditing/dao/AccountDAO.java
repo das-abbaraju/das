@@ -55,6 +55,13 @@ public class AccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
+	public Account findRandomAssessmentCenter() {
+		Query query = em.createQuery("SELECT a FROM Account a WHERE type = 'Assessment' ORDER BY RAND()");
+		query.setMaxResults(1);
+		
+		return (Account) query.getSingleResult();
+	}
+	
 	public List<Account> findViewableOperators(Permissions permissions) {
 		String where = "AND a.status IN ('Active'";
 		

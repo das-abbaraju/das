@@ -1519,11 +1519,6 @@
 		</action>
 		
 		<!-- Operator Qualifications -->
-		<action name="AssessmentResults"
-			class="com.picsauditing.actions.users.AssessmentResults">
-			<result>/struts/users/assessment_results.jsp</result>
-		</action>
-		
 		<action name="ManageEmployees"
 			class="com.picsauditing.actions.users.ManageEmployees">
 			<result>struts/users/manage_employees.jsp</result>
@@ -1537,6 +1532,16 @@
 		<action name="EmployeeDetail"
 			class="com.picsauditing.actions.users.EmployeeDetail">
 			<result>struts/users/employee_detail.jsp</result>
+		</action>
+		
+		<action name="EmployeeAssessmentResults"
+			class="com.picsauditing.actions.users.EmployeeAssessmentResults">
+			<result>/struts/users/employee_assessment_results.jsp</result>
+		</action>
+		
+		<action name="EmployeeDataPartnerIDs"
+			class="com.picsauditing.actions.users.EmployeeDataPartnerIDs">
+			<result>/struts/users/employee_data_partner_ids.jsp</result>
 		</action>
 
 		<action name="ManageJobSites"
