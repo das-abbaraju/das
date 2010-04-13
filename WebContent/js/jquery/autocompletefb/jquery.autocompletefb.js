@@ -77,6 +77,6 @@ jQuery.fn.autoCompletefb = function(options)
 		acfb.addFind(d);
 		$(settings.inputClass,tmp).val('').focus();
 	});
-	$(settings.inputClass,tmp).focus();
+
 	return acfb;
 }
