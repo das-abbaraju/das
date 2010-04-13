@@ -1532,7 +1532,7 @@
 				
 		<action name="EmployeeDetail"
 			class="com.picsauditing.actions.users.EmployeeDetail">
-			<result>struts/users/employee_detail.jsp</result>
+			<result>struts/employees/employee_detail.jsp</result>
 		</action>
 		
 		<action name="EmployeeAssessmentResults"
