@@ -55,11 +55,6 @@ form {
 }*/
 .p {cursor: pointer;}
 .acfb-input{
-	border:medium none;
-	margin:0pt;
-	outline-color:-moz-use-text-color;
-	outline-style:none;
-	outline-width:0pt;
 	padding:3px 0pt 2px;
 	width:150px;
 }
