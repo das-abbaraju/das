@@ -51,14 +51,14 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>title</th>
+							<th>Title</th>
 							<th>Status</th>
 							<th>Classification</th>
 						</tr>
 					</thead>
 					<s:iterator value="account.employees">
 						<tr>
-							<td><nobr><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id"/>&account.id=<s:property value="account.id"/>"><s:property value="employee.lastName"/> <s:property value="employee.firstName"/></a></nobr></td>
+							<td><nobr><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id"/>&account.id=<s:property value="account.id"/>"><s:property value="employee.lastName"/>, <s:property value="employee.firstName"/></a></nobr></td>
 							<th><s:property value="employee.title"/></th>
 							<th><s:property value="status"/></th>
 							<th><s:property value="classification"/></th>
@@ -89,15 +89,13 @@
 									<s:textfield name="employee.birthDate" cssClass="datepicker"/>
 								</li>
 								<li><label>Classification:</label>
-									<s:select name="accountEmployee.classification" 
+									<s:select name="employee.classification" 
 										list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
 										listValue="description"
 										headerKey="" headerValue="- Classification -"/>
 								</li>
-								<li><label>Status</label>
-									<s:select name="accountEmployee.status" 
-										list="@com.picsauditing.jpa.entities.EmployeeStatus@values()"
-										headerKey="" headerValue="- Status -"/>
+								<li><label>Active</label>
+									<s:checkbox name="employee.active"/>
 								</li>
 								<li><label>Hire Date:</label>
 									<s:textfield name="employee.hireDate" cssClass="datepicker"/>

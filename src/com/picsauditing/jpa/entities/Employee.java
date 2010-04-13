@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -23,7 +24,7 @@ public class Employee extends BaseTable {
 	private String lastName;
 	private Account account;
 	private EmployeeClassification classification = EmployeeClassification.FullTime;
-	private EmployeeStatus status = EmployeeStatus.Active;
+	private boolean active = true;
 	private Date hireDate;
 	private Date fireDate;
 	private String title;
@@ -74,13 +75,12 @@ public class Employee extends BaseTable {
 		this.classification = classification;
 	}
 
-	@Enumerated(EnumType.STRING)
-	public EmployeeStatus getStatus() {
-		return status;
+	public boolean isActive() {
+		return active;
 	}
 
-	public void setStatus(EmployeeStatus status) {
-		this.status = status;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -133,6 +133,7 @@ public class Employee extends BaseTable {
 		this.phone = phone;
 	}
 
+	@Column(length = 9)
 	public String getSsn() {
 		return ssn;
 	}
@@ -167,7 +168,7 @@ public class Employee extends BaseTable {
 		json.put("lastName", lastName);
 		json.put("account", account.toJSON());
 		json.put("classification", classification == null ? null : classification.toString());
-		json.put("status", status == null ? null : status.toString());
+		json.put("status", active);
 		json.put("hireDate", hireDate == null ? null : hireDate.getTime());
 		json.put("fireDate", fireDate == null ? null : fireDate.getTime());
 		json.put("title", title);

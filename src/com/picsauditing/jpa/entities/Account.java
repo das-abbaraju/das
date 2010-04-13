@@ -65,7 +65,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	// protected List<ContractorOperator> contractors;
 	protected List<User> users = new ArrayList<User>();
 	protected List<AccountUser> accountUsers = new ArrayList<AccountUser>();
-	protected List<AccountEmployee> employees = new ArrayList<AccountEmployee>();
+	protected List<Employee> employees = new ArrayList<Employee>();
 
 	@Transient
 	public String getIdString() {
@@ -365,12 +365,12 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 		this.accountUsers = accountUsers;
 	}
 
-	@OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
-	public List<AccountEmployee> getEmployees() {
+	@OneToMany(mappedBy = "account")
+	public List<Employee> getEmployees() {
 		return employees;
 	}
 
-	public void setEmployees(List<AccountEmployee> employees) {
+	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
 	}
 

@@ -15,10 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountEmployee;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeClassification;
-import com.picsauditing.jpa.entities.EmployeeStatus;
 import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,7 +29,7 @@ public class EmployeeDAOTest extends TestCase {
 
 	@Test
 	public void testFind() throws Exception {
-		Employee employee = employeeDAO.find(1);
+		Employee employee = employeeDAO.find(8);
 
 		assertNotNull(employee);
 	}
@@ -52,36 +50,17 @@ public class EmployeeDAOTest extends TestCase {
 		e.setBirthDate(DateBean.parseDate("2010-03-10"));
 		e.setSsn("999999999");
 		e.setAuditColumns(new User(2357));
-
-		employeeDAO.save(e);
-
-		AccountEmployee ae = new AccountEmployee();
-		ae.setEmployee(e);
-		ae.setAccount(new Account());
-		ae.getAccount().setId(1100);
-		ae.setClassification(EmployeeClassification.FullTime);
-		ae.setStatus(EmployeeStatus.Active);
-
-		e.getAccounts().add(ae);
+		e.setAccount(new Account());
+		e.getAccount().setId(1100);
+		e.setClassification(EmployeeClassification.FullTime);
 
 		employeeDAO.save(e);
 
 		List<Employee> employees = employeeDAO.findWhere("firstName = 'Kyle' and birthDate = '2010-03-10'");
 
 		for (Employee employee : employees) {
-			boolean has1100 = false;
-			for (AccountEmployee account : employee.getAccounts()) {
-				if (account.getAccount().getId() == 1100)
-					has1100 = true;
-			}
-			assertTrue(has1100);
+			assertTrue(employee.getAccount().getId() == 1100);
+			assertTrue(employee.isActive());
 		}
-	}
-
-	@Test
-	public void testAccountEmployees() throws Exception {
-		Employee employee = employeeDAO.find(1);
-
-		assertTrue(employee.getAccounts().size() > 0);
 	}
 }

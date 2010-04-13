@@ -9,11 +9,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Account;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/tests.xml")
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
 public class AccountDAOTest extends TestCase {
 
 	@Autowired
@@ -33,7 +37,7 @@ public class AccountDAOTest extends TestCase {
 
 	@Test
 	public void testAccountEmployees() throws Exception {
-		Account account = accountdao.find(1100);
+		Account account = accountdao.find(1450);
 
 		assertTrue(account.getEmployees().size() > 0);
 	}
