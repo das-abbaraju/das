@@ -1,20 +1,43 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "pqfdata")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+@Table(name = "job_role")
 public class JobRole extends BaseTable {
 
-	private String comment;
-	private Date dateVerified;
+	private Account account;
+	private String name;
+	private boolean active;
+
+	@ManyToOne
+	@JoinColumn(name = "accountID", nullable = false, updatable = false)
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 }
