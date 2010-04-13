@@ -1521,13 +1521,13 @@
 		
 		<!-- Operator Qualifications -->
 		<action name="ManageEmployees"
-			class="com.picsauditing.actions.users.ManageEmployees">
-			<result>struts/users/manage_employees.jsp</result>
+			class="com.picsauditing.actions.employees.ManageEmployees">
+			<result>struts/employees/manage_employees.jsp</result>
 		</action>
 
 		<action name="ManageEmployeesAjax"
-			class="com.picsauditing.actions.users.ManageEmployees">
-			<result>struts/users/manage_employees.jsp</result>
+			class="com.picsauditing.actions.employees.ManageEmployees">
+			<result>struts/employees/manage_employees.jsp</result>
 		</action>
 				
 		<action name="EmployeeDetail"
