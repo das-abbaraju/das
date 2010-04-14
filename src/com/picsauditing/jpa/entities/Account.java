@@ -66,6 +66,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	protected List<User> users = new ArrayList<User>();
 	protected List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 	protected List<Employee> employees = new ArrayList<Employee>();
+	protected List<JobRole> jobRoles = new ArrayList<JobRole>();
 
 	@Transient
 	public String getIdString() {
@@ -374,11 +375,20 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 		this.employees = employees;
 	}
 
+	@OneToMany(mappedBy = "account")
+	public List<JobRole> getJobRoles() {
+		return jobRoles;
+	}
+
+	public void setJobRoles(List<JobRole> jobRoles) {
+		this.jobRoles = jobRoles;
+	}
+
 	@Transient
 	public boolean isAdmin() {
 		return id == PicsID;
 	}
-	
+
 	@Transient
 	public boolean isContractor() {
 		return "Contractor".equals(type);
@@ -409,7 +419,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	public boolean isDemo() {
 		return status.equals(AccountStatus.Demo);
 	}
-	
+
 	// Operator Qualification Assessment Center
 	@Transient
 	public boolean isAssessment() {

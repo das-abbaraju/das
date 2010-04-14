@@ -41,4 +41,11 @@ public class AccountDAOTest extends TestCase {
 
 		assertTrue(account.getEmployees().size() > 0);
 	}
+
+	@Test
+	public void testJobRoles() throws Exception {
+		Account con = accountdao.find(1450);
+
+		assertTrue(con.getJobRoles().size() > 0);
+	}
 }
