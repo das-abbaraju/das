@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.util;
 
 import java.util.HashMap;
 import java.util.Map;

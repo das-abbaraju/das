@@ -1,4 +1,5 @@
-package com.picsauditing.PICS;
+package com.picsauditing.util;
+
 
 public class DoubleMap<K1, K2, V> {
 	protected SuperMap<V> data = new SuperMap<V>();

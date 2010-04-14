@@ -21,7 +21,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.DoubleMap;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -29,6 +28,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.search.SelectAccount;
+import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @SuppressWarnings("serial")
