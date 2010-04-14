@@ -148,10 +148,15 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperator())
 			subMenu.addChild("Contractor Tags", "OperatorTags.action");
 
+		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
+			subMenu.addChild("Users", "UsersManage.action");
+		}
+		
 		if (permissions.hasPermission(OpPerms.EditUsers)) {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
+		
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
@@ -179,6 +184,9 @@ public class PicsMenu {
 				subMenu.addChild("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
 		}
 
+		if (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorSafety))
+			subMenu.addChild("Job Competency Matrix", "JobCompetencyMatrix.action");
+		
 		if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
 			subMenu.addChild("Sales Report", "ReportSalesReps.action");
 		}

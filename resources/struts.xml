@@ -1557,6 +1557,12 @@
 			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
 		</action>
 		
+		<action name="JobCompetencyMatrix"
+			class="com.picsauditing.actions.employees.JobCompetencyMatrix">
+			<result>/struts/employees/job_competency_matrix.jsp</result>
+		</action>
+		
+		
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"
 			class="com.picsauditing.actions.contractors.CertCleanUp">
