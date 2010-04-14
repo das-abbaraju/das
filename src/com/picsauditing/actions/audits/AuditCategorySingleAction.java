@@ -144,7 +144,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setTemplate(13); // Audits Thank You
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+				emailBuilder.setFromAddress("\"PICS Info\"<info@picsauditing.com>");
 				EmailSender.send(emailBuilder.build());
 
 				notes = " Submitted " + conAudit.getAuditType().getAuditName();
@@ -160,6 +160,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				else
 					emailBuilder.setTemplate(8); // D&A Submission
 
+				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				EmailSender.send(emailBuilder.build());
@@ -177,6 +178,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		if (auditStatus.equals(AuditStatus.Active)) {
 			if (conAudit.getAuditType().isHasRequirements()) {
 				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				emailBuilder.setTemplate(81); // Audit Completed
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
