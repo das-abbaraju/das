@@ -365,11 +365,6 @@
 			</result>
 		</action>
 		
-		<action name="DefineRoles"
-			class="com.picsauditing.actions.employees.DefineRoles">
-			<result>struts/employees/con_define_roles.jsp</result>
-		</action>
-		
 		<action name="DefineCompetencies"
 			class="com.picsauditing.actions.employees.DefineCompetencies">
 			<result>struts/employees/op_define_competencies.jsp</result>
