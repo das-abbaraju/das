@@ -8,7 +8,6 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -18,8 +17,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private AccountDAO accountDAO;
 	private OperatorAccountDAO operatorDAO;
 	private EmployeeDAO employeeDAO;
-
-	protected Account account;
 
 	protected List<OperatorAccount> operators;
 	protected List<Employee> employees;
@@ -44,7 +41,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (employee != null) {
 			account = employee.getAccount();
 		} else {
-			int accountID = getParameter("account.id");
+			int accountID = getParameter("id");
 			if (accountID > 0)
 				account = accountDAO.find(accountID);
 		}
@@ -103,15 +100,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		return operators;
-	}
-
-	@Override
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
 	}
 
 	public Employee getEmployee() {

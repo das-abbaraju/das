@@ -226,7 +226,7 @@
 			<li><a id="conEditLink" href="VerifyView.action?id=<s:property value="id" />"><span>PQF Verification</span></a></li>
 		</pics:permission>
 		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
-		<li><a href="ManageEmployees.action">Manage Employees</a></li>
+		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Manage Employees</a></li>
 		<s:if test="!contractor.status.demo">
 			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
