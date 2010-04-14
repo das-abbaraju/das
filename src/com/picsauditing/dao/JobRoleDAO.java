@@ -25,9 +25,15 @@ public class JobRoleDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	public List<JobRole> findContractorJobRoles(int conid) {
-		Query query = em.createQuery("From JobRole WHERE conID = :conid ORDER BY name");
-		query.setParameter("conid", conid);
+	public List<JobRole> findContractorJobRoles(int accountID) {
+		Query query = em.createQuery("From JobRole WHERE accountID = :accountID ORDER BY name");
+		query.setParameter("accountID", accountID);
 		return query.getResultList();
+	}
+	
+	public int getUsedCount(String name) {
+		Query query = em.createQuery("From JobRole WHERE name LIKE :name");
+		query.setParameter("name", name);
+		return query.getResultList().size();
 	}
 }
