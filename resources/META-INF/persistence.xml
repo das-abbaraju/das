@@ -47,6 +47,7 @@
 		<class>com.picsauditing.jpa.entities.Notes</class>
 		<class>com.picsauditing.jpa.entities.NoteStatus</class>
 		<class>com.picsauditing.jpa.entities.OperatorAccount</class>
+		<class>com.picsauditing.jpa.entities.OperatorCompetency</class>
 		<class>com.picsauditing.jpa.entities.OperatorForm</class>
 		<class>com.picsauditing.jpa.entities.OshaAudit</class>
 		<class>com.picsauditing.jpa.entities.OshaType</class>
