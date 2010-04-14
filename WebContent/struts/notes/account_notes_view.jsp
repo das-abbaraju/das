@@ -63,7 +63,7 @@ div.auditHeader fieldset {
 <div><s:property value="note.bodyHtml" escape="false"/></div>
 
 <s:if test="note.attachment != null">
-	<div><a href="NoteEditor.action?note.id=<s:property value="note.id"/>&button=attachment" target="_BLANK">Click here to view attachment.</a></div>
+	<div><a href="NoteEditor.action?button=attachment&note.id=<s:property value="note.id"/>" target="_BLANK">Click here to view attachment.</a></div>
 </s:if>
 
 <div><button name="button" class="picsbutton" type="button" value="cancel" onclick="window.close();">Close</button></div>

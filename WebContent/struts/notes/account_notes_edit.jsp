@@ -62,7 +62,7 @@ function closePage() {
 	<li><label>File Attachment:</label>
 		<s:file name="file"></s:file>
 		<s:if test="note.attachment != null">
-			<a href="NoteEditor.action?note.id=<s:property value="note.id"/>&button=attachment" target="_BLANK">Click here to view attachment.</a>
+			<a href="NoteEditor.action?button=attachment&note.id=<s:property value="note.id"/>" target="_BLANK">Click here to view attachment.</a>
 			<a href="NoteEditor.action?id=<s:property value="id"/>&note.id=<s:property value="note.id"/>&button=remove&embedded=<s:property value="embedded"/>" class="remove">Remove</a>
 		</s:if>
 	</li>
