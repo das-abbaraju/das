@@ -32,7 +32,7 @@
 	
 	<s:include value="../actionMessages.jsp"/>
 
-	<a href="?button=Add" class="picsbutton">Add New Employee</a>
+	<a href="?id=<s:property value="id"/>&button=Add" class="picsbutton">Add New Employee</a>
 
 	<table>
 		<tr>
