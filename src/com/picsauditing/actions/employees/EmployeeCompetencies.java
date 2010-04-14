@@ -5,6 +5,7 @@ import java.util.List;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
+import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
@@ -14,19 +15,26 @@ import com.picsauditing.util.DoubleMap;
 @SuppressWarnings("serial")
 public class EmployeeCompetencies extends AccountActionSupport {
 	protected ContractorAccountDAO conDAO;
+	protected EmployeeDAO employeeDAO;
 	protected EmployeeCompetencyDAO ecDAO;
 	protected OperatorCompetencyDAO opCompDAO;
 
 	protected int conID;
+	protected int competencyID;
+	protected int employeeID;
 	protected int employeeCompetencyID;
 	protected boolean canEdit = false;
 	protected boolean checked;
+	
+	protected Employee employee = null;
+	protected OperatorCompetency competency = null;
 
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
-	public EmployeeCompetencies(ContractorAccountDAO conDAO, EmployeeCompetencyDAO ecDAO,
-			OperatorCompetencyDAO opCompDAO) {
+	public EmployeeCompetencies(ContractorAccountDAO conDAO, EmployeeDAO employeeDAO,
+			EmployeeCompetencyDAO ecDAO, OperatorCompetencyDAO opCompDAO) {
 		this.conDAO = conDAO;
+		this.employeeDAO = employeeDAO;
 		this.ecDAO = ecDAO;
 		this.opCompDAO = opCompDAO;
 	}
@@ -45,6 +53,11 @@ public class EmployeeCompetencies extends AccountActionSupport {
 			canEdit = true;
 			conID = permissions.getAccountId();
 		}
+		
+		if (competencyID > 0 && employeeID == 0)
+			competency = opCompDAO.find(competencyID);
+		else if (employeeID > 0 && competencyID == 0)
+			employee = employeeDAO.find(employeeID);
 		
 		if (button != null) {
 			if (button.equalsIgnoreCase("Save")) {
@@ -69,6 +82,22 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.conID = conID;
 	}
 	
+	public int getCompetencyID() {
+		return competencyID;
+	}
+	
+	public void setCompetencyID(int competencyID) {
+		this.competencyID = competencyID;
+	}
+	
+	public int getEmployeeID() {
+		return employeeID;
+	}
+	
+	public void setEmployeeID(int employeeID) {
+		this.employeeID = employeeID;
+	}
+	
 	public int getEmployeeCompetencyID() {
 		return employeeCompetencyID;
 	}
@@ -91,6 +120,14 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	
 	public void setChecked(boolean checked) {
 		this.checked = checked;
+	}
+	
+	public Employee getEmployee() {
+		return employee;
+	}
+	
+	public OperatorCompetency getCompetency() {
+		return competency;
 	}
 	
 	public List<Employee> getEmployees() {

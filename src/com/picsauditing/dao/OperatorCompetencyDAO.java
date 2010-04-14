@@ -17,6 +17,11 @@ import com.picsauditing.util.Strings;
 @Transactional
 @SuppressWarnings("unchecked")
 public class OperatorCompetencyDAO extends PicsDAO {
+	
+	public OperatorCompetency find(int id) {
+		OperatorCompetency o = em.find(OperatorCompetency.class, id);
+		return o;
+	}
 
 	public List<OperatorCompetency> findAll() {
 		Query q = em.createQuery("FROM OperatorCompetency o ORDER BY o.category, o.label");

@@ -365,11 +365,6 @@
 			</result>
 		</action>
 		
-		<action name="DefineCompetencies"
-			class="com.picsauditing.actions.employees.DefineCompetencies">
-			<result>struts/employees/op_define_competencies.jsp</result>
-		</action>
-		
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
@@ -1562,7 +1557,7 @@
 			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
 		</action>
 		
-		<!-- Employee Competency -->
+		<!-- Competencies -->
 		<action name="JobCompetencyMatrix"
 			class="com.picsauditing.actions.employees.JobCompetencyMatrix">
 			<result>/struts/employees/job_competency_matrix.jsp</result>
@@ -1571,6 +1566,11 @@
 		<action name="EmployeeCompetencies"
 			class="com.picsauditing.actions.employees.EmployeeCompetencies">
 			<result>/struts/employees/employee_competencies.jsp</result>
+		</action>
+		
+		<action name="DefineCompetencies"
+			class="com.picsauditing.actions.employees.DefineCompetencies">
+			<result>struts/employees/op_define_competencies.jsp</result>
 		</action>
 		
 		
