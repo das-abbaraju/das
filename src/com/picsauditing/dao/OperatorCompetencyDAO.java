@@ -1,13 +1,13 @@
 package com.picsauditing.dao;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -33,12 +33,23 @@ public class OperatorCompetencyDAO extends PicsDAO {
 	}
 	
 	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> findEmployeeCompetencies(Collection<Employee> employees, Collection<OperatorCompetency> opCompetencies) {
+		int[] eIDs = new int[employees.size()];
+		int[] oIDs = new int[opCompetencies.size()];
+		
+		Iterator<Employee> ei = employees.iterator();
+		Iterator<OperatorCompetency> oi = opCompetencies.iterator();
+		
+		for (int i = 0; i < eIDs.length; i++) {
+			eIDs[i] = ei.next().getId();
+		}
+		
+		for (int i = 0; i < oIDs.length; i++) {
+			oIDs[i] = oi.next().getId();
+		}
+		
 		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e " +
-				"WHERE e.employee.id IN (?) " +
-				"AND e.competency.id IN (?)");
-
-		query.setParameter(1, Strings.implodeForDB(employees, ","));
-		query.setParameter(2, Strings.implodeForDB(opCompetencies, ","));
+				"WHERE e.employee.id IN (" + Strings.implode(eIDs) + ") " +
+				"AND e.competency.id IN (" + Strings.implode(oIDs) + ")");
 		
 		List<EmployeeCompetency> results = query.getResultList();
 		

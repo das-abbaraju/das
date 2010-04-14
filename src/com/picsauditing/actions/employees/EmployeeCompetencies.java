@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
@@ -13,15 +14,20 @@ import com.picsauditing.util.DoubleMap;
 @SuppressWarnings("serial")
 public class EmployeeCompetencies extends AccountActionSupport {
 	protected ContractorAccountDAO conDAO;
+	protected EmployeeCompetencyDAO ecDAO;
 	protected OperatorCompetencyDAO opCompDAO;
 
 	protected int conID;
+	protected int employeeCompetencyID;
 	protected boolean canEdit = false;
+	protected boolean checked;
 
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
-	public EmployeeCompetencies(ContractorAccountDAO conDAO, OperatorCompetencyDAO opCompDAO) {
+	public EmployeeCompetencies(ContractorAccountDAO conDAO, EmployeeCompetencyDAO ecDAO,
+			OperatorCompetencyDAO opCompDAO) {
 		this.conDAO = conDAO;
+		this.ecDAO = ecDAO;
 		this.opCompDAO = opCompDAO;
 	}
 
@@ -32,10 +38,24 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			// Operators or Corporates should only view this page
 			// for the contractors that they're over
+			if (conID == 0)
+				addActionError("Please select a contractor to view this page");
 		} else if (permissions.isContractor()) {
 			// Contractors should view and edit the competencies
 			canEdit = true;
 			conID = permissions.getAccountId();
+		}
+		
+		if (button != null) {
+			if (button.equalsIgnoreCase("Save")) {
+				// A checkbox has been checked or unchecked.
+				if (employeeCompetencyID > 0) {
+					EmployeeCompetency ec = ecDAO.find(employeeCompetencyID);
+					ec.setSkilled(checked);
+					ecDAO.save(ec);
+				} else
+					addActionError("Missing employee competency ID");
+			}
 		}
 		
 		return SUCCESS;
@@ -49,6 +69,14 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.conID = conID;
 	}
 	
+	public int getEmployeeCompetencyID() {
+		return employeeCompetencyID;
+	}
+	
+	public void setEmployeeCompetencyID(int employeeCompetencyID) {
+		this.employeeCompetencyID = employeeCompetencyID;
+	}
+	
 	public boolean isCanEdit() {
 		return canEdit;
 	}
@@ -57,14 +85,25 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.canEdit = canEdit;
 	}
 	
+	public boolean isChecked() {
+		return checked;
+	}
+	
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+	
+	public List<Employee> getEmployees() {
+		return conDAO.find(conID).getEmployees();
+	}
+	
 	public List<OperatorCompetency> getCompetencies() {
 		return opCompDAO.findByContractor(conID);
 	}
 	
-	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getEmployeeCompetencies() {
+	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {
 		if (map == null && conID > 0) {
-			List<Employee> employees = conDAO.find(conID).getEmployees();
-			map = opCompDAO.findEmployeeCompetencies(employees, getCompetencies());
+			map = opCompDAO.findEmployeeCompetencies(getEmployees(), getCompetencies());
 		}
 		
 		return map;
