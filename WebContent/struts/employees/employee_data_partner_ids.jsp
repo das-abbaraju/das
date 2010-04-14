@@ -67,6 +67,7 @@ function sortTable(sortBy) {
 				</th></s:if>
 				<th><a href="#" onclick="sortTable('membership'); return false;">Membership ID</a></th>
 				<th><a href="#" onclick="sortTable('authorization'); return false;">Authorization Key</a></th>
+				<s:if test="canEdit"><th>Remove</th></s:if>
 			</tr>
 		</thead>
 		<tbody>
@@ -83,6 +84,7 @@ function sortTable(sortBy) {
 					</s:if>
 					<td class="membership"><s:property value="#eaa.membershipID" /></td>
 					<td class="authorization"><s:property value="#eaa.authorizationKey" /></td>
+					<td class="center"><a href="EmployeeDataPartnerIDs.action?button='Remove'&eaaID=<s:property value="#eaa.id" />" class="remove"></a></td>
 				</tr>
 			</s:iterator>
 		</tbody>
@@ -93,6 +95,41 @@ function sortTable(sortBy) {
 		<div class="info">This employee has no data partner IDs associated.</div>
 	</s:if>
 </s:else>
+
+<s:if test="canEdit">
+	<a href="#" onclick="$('#newAuthDiv').show(); $('#newAuthLink').hide(); return false;" class="add" id="newAuthLink">Add New Data Partner ID</a>
+	<div id="newAuthDiv" style="display: none;">
+		<s:form id="newAuthForm" method="POST" enctype="multipart/form-data">
+			<s:hidden name="employee.id" />
+			<fieldset class="form bottom" >
+				<legend><span>Add New Data Partner ID</span></legend>
+				<ol>
+					<li><label>Assessment Center:</label>
+						<s:select list="assessmentCenters" headerValue="- Assessment Center -" headerKey="0"
+							listValue="name" listKey="id" name="centerID" ></s:select>
+					</li>
+					<s:if test="employeeID == 0">
+						<li><label>Employee:</label>
+							<s:select list="employees" headerValue="- Employees -" headerKey="0"
+								listKey="id" listValue="displayName" name="employeeID" ></s:select>
+						</li>
+					</s:if>
+					<li><label>Membership ID:</label>
+						<s:textfield name="membershipID" size="20" />
+					</li>
+					<li><label>Authorization Key:</label>
+						<s:textfield name="authorizationKey" size="20" />
+					</li>
+				</ol>
+				<div style="margin-left: 5em;">
+					<input type="submit" value="Save" class="picsbutton positive" name="button" />
+					<button onclick="$('#newAuthLink').show(); $('#newAuthDiv').hide(); return false;"
+						class="picsbutton negative">Cancel</button>
+				</div>
+			</fieldset>
+		</s:form>
+	</div>
+</s:if>
 
 </body>
 </html>

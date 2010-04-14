@@ -63,6 +63,7 @@
 	<bean id="NaicsDAO" class="com.picsauditing.dao.NaicsDAO"/>
 	<bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
 	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>
+	<bean id="OperatorCompetencyDAO" class="com.picsauditing.dao.OperatorCompetencyDAO"/>
 	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO"/>
 	<bean id="OperatorTagDAO" class="com.picsauditing.dao.OperatorTagDAO"/>
 	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO"/>

@@ -1531,18 +1531,18 @@
 		</action>
 				
 		<action name="EmployeeDetail"
-			class="com.picsauditing.actions.users.EmployeeDetail">
+			class="com.picsauditing.actions.employees.EmployeeDetail">
 			<result>struts/employees/employee_detail.jsp</result>
 		</action>
 		
 		<action name="EmployeeAssessmentResults"
-			class="com.picsauditing.actions.users.EmployeeAssessmentResults">
-			<result>/struts/users/employee_assessment_results.jsp</result>
+			class="com.picsauditing.actions.employees.EmployeeAssessmentResults">
+			<result>struts/employees/employee_assessment_results.jsp</result>
 		</action>
 		
 		<action name="EmployeeDataPartnerIDs"
-			class="com.picsauditing.actions.users.EmployeeDataPartnerIDs">
-			<result>/struts/users/employee_data_partner_ids.jsp</result>
+			class="com.picsauditing.actions.employees.EmployeeDataPartnerIDs">
+			<result>struts/employees/employee_data_partner_ids.jsp</result>
 		</action>
 
 		<action name="ManageJobSites"

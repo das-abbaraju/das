@@ -1,4 +1,4 @@
-package com.picsauditing.actions.users;
+package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,11 @@ public class EmployeeDataPartnerIDs extends AccountActionSupport {
 	
 	protected Employee employee = null;
 	
+	protected int centerID;
 	protected int employeeID;
+	protected int eaaID;
+	protected String membershipID;
+	protected String authorizationKey;
 	
 	public EmployeeDataPartnerIDs(AccountDAO accountDAO, AssessmentResultDAO resultDAO,
 			EmployeeAssessmentAuthorizationDAO eaaDAO, EmployeeDAO employeeDAO) {
@@ -51,6 +55,42 @@ public class EmployeeDataPartnerIDs extends AccountActionSupport {
 		if (button != null) {
 			if (button.startsWith("Generate"))
 				generateData();
+			
+			if (button.equalsIgnoreCase("Remove")) {
+				if (eaaID > 0) {
+					EmployeeAssessmentAuthorization eaa = eaaDAO.find(eaaID);
+					eaaDAO.remove(eaa);
+				}
+			}
+			
+			if (button.equalsIgnoreCase("Save")) {
+				if (employeeID == 0 && employee == null)
+					addActionError("Please select employee");
+				if (centerID == 0)
+					addActionError("Please select assessment center");
+				if (getActionErrors().size() > 0)
+					return SUCCESS;
+				
+				EmployeeAssessmentAuthorization eaa = new EmployeeAssessmentAuthorization();
+				
+				if (employee != null)
+					eaa.setEmployee(employeeDAO.find(getEmployeeID()));
+				else
+					eaa.setEmployee(employeeDAO.find(employeeID));
+				
+				eaa.setAssessmentCenter(accountDAO.find(centerID));
+				
+				if (!Strings.isEmpty(membershipID))
+					eaa.setMembershipID(membershipID);
+				if (!Strings.isEmpty(authorizationKey))
+					eaa.setAuthorizationKey(authorizationKey);
+				
+				eaa.setAuditColumns(permissions);
+				eaaDAO.save(eaa);
+				
+				if (employee != null)
+					return redirect("EmployeeDataPartnerIDs.action?employee.id=" + getEmployeeID());
+			}
 		}
 		
 		return SUCCESS;
@@ -68,6 +108,14 @@ public class EmployeeDataPartnerIDs extends AccountActionSupport {
 		this.employee = employee;
 	}
 	
+	public int getCenterID() {
+		return centerID;
+	}
+	
+	public void setCenterID(int centerID) {
+		this.centerID = centerID;
+	}
+	
 	public int getEmployeeID() {
 		if (employee != null)
 			return employee.getId();
@@ -75,11 +123,43 @@ public class EmployeeDataPartnerIDs extends AccountActionSupport {
 		return employeeID;
 	}
 	
+	public int getEaaID() {
+		return eaaID;
+	}
+	
+	public void setEaaID(int eaaID) {
+		this.eaaID = eaaID;
+	}
+	
+	public String getMembershipID() {
+		return membershipID;
+	}
+	
+	public void setMembershipID(String membershipID) {
+		this.membershipID = membershipID;
+	}
+	
+	public String getAuthorizationKey() {
+		return authorizationKey;
+	}
+	
+	public void setAuthorizationKey(String authorizationKey) {
+		this.authorizationKey = authorizationKey;
+	}
+	
 	public List<EmployeeAssessmentAuthorization> getDataPartnerIDs() {
 		if (getEmployeeID() > 0)
 			return eaaDAO.findByEmployee(getEmployeeID());
 		
 		return eaaDAO.findAll();
+	}
+	
+	public List<Account> getAssessmentCenters() {
+		return accountDAO.findWhere("type = 'Assessment'");
+	}
+	
+	public List<Employee> getEmployees() {
+		return employeeDAO.findAll();
 	}
 	
 	private void generateData() {
