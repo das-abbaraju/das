@@ -298,7 +298,9 @@ public class BillingCalculatorSingle {
 	static public boolean hasReducedActivation(ContractorAccount contractor) {
 		final Date now = new Date();
 		final OperatorAccount requestedBy = contractor.getRequestedBy();
-
+		
+		if(requestedBy == null)
+			return false;
 		if (CONTRACT_RENEWAL_NEWBELGIUM.after(now) && requestedBy.getId() == 5147)
 			return true;
 		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
