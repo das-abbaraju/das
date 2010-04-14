@@ -8,6 +8,8 @@
 	
 	<s:include value="../jquery.jsp"/>
 	
+	<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min"></script>
+	
 	<script type="text/javascript">
 		function show(id) {
 			$.getJSON('ManageEmployeesAjax.action',
@@ -19,7 +21,9 @@
 		}
 
 		$(function() {
-			$('input.datepicker').datepicker();
+			$.mask.definitions['S']='[X0-9]';
+			$('input.ssn').mask('SSS-SS-SSSS');
+			$('input.date').mask('99/99/9999');
 		});
 	</script>
 </head>
@@ -39,15 +43,13 @@
 						<tr>
 							<th>Name</th>
 							<th>Title</th>
-							<th>Status</th>
 							<th>Classification</th>
 						</tr>
 					</thead>
 					<s:iterator value="account.employees">
 						<tr>
-							<td><nobr><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id"/>&account.id=<s:property value="account.id"/>"><s:property value="employee.lastName"/>, <s:property value="employee.firstName"/></a></nobr></td>
+							<td><nobr><a href="ManageEmployees.action?employee.id=<s:property value="id"/>"><s:property value="lastName"/>, <s:property value="firstName"/></a></nobr></td>
 							<th><s:property value="title"/></th>
-							<th><s:property value="status"/></th>
 							<th><s:property value="classification"/></th>
 						</tr>
 					</s:iterator>
@@ -70,10 +72,13 @@
 									<s:textfield name="employee.lastName"/>
 								</li>
 								<li><label>SSN:</label>
-									<s:textfield name="ssn"/>
+									<s:textfield name="ssn" cssClass="ssn"/>
+								</li>
+								<li><label>Title:</label>
+									<s:textfield name="employee.title"/>
 								</li>
 								<li><label>Birth Date:</label>
-									<s:textfield name="employee.birthDate" cssClass="datepicker"/>
+									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="date"/>
 								</li>
 								<li><label>Classification:</label>
 									<s:select name="employee.classification" 
@@ -85,13 +90,10 @@
 									<s:checkbox name="employee.active"/>
 								</li>
 								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" cssClass="datepicker"/>
+									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="date"/>
 								</li>
 								<li><label>Fire Date:</label>
-									<s:textfield name="employee.fireDate" cssClass="datepicker"/>
-								</li>
-								<li><label>Title:</label>
-									<s:textfield name="employee.title"/>
+									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="date"/>
 								</li>
 								<li><label>Location:</label>
 									<s:textfield name="employee.location"/>
@@ -101,9 +103,6 @@
 								</li>
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>
-								</li>
-								<li><label>Photo:</label>
-									<s:textfield name="employee.photo"/>
 								</li>
 							</ol>
 						</fieldset>

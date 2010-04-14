@@ -199,6 +199,15 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		return dateFormat.format(serverDate);
 	}
 
+	public String maskDateFormat(Date date) {
+		try {
+			DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			return dateFormat.format(date);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public String getFuzzyDate(Date d) {
 		return DateBean.getFuzzyDate(d);
 	}

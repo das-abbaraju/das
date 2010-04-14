@@ -7,7 +7,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -15,7 +14,6 @@ import com.picsauditing.util.Strings;
 public class ManageEmployees extends AccountActionSupport implements Preparable {
 
 	private AccountDAO accountDAO;
-	private OperatorAccountDAO operatorDAO;
 	private EmployeeDAO employeeDAO;
 
 	protected List<OperatorAccount> operators;
@@ -24,9 +22,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected Employee employee;
 	protected String ssn;
 
-	public ManageEmployees(AccountDAO accountDAO, OperatorAccountDAO operatorDAO, EmployeeDAO employeeDAO) {
+	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO) {
 		this.accountDAO = accountDAO;
-		this.operatorDAO = operatorDAO;
 		this.employeeDAO = employeeDAO;
 	}
 
@@ -79,8 +76,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				employee.setAccount(account);
 			}
 
-			if (ssn != null)
-				employee.setSsn(ssn);
+			if (ssn != null) {
+				if (ssn.length() == 9)
+					employee.setSsn(ssn);
+				else
+					addActionError("Invalid social security number entered.");
+			}
 
 			employeeDAO.save(employee);
 		}
@@ -94,14 +95,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return SUCCESS;
 	}
 
-	public List<OperatorAccount> getOperators() {
-		if (operators == null) {
-			operators = operatorDAO.findWhere(true, "");
-		}
-
-		return operators;
-	}
-
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -111,16 +104,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String getSsn() {
-		if (ssn == null)
-			ssn = Strings.maskSSN(employee.getSsn());
-		return ssn;
+		return Strings.maskSSN(employee.getSsn());
 	}
 
 	public void setSsn(String ssn) {
-		ssn = ssn.replaceAll("[^0-9]", "");
-		if (ssn.length() == 9)
-			this.ssn = ssn;
-		else if (ssn.length() == 0)
-			this.ssn = null;
+		ssn = ssn.replaceAll("[^xX0-9]", "");
+		if (ssn.length() > 9)
+			return;
+
+		this.ssn = ssn.replaceAll("[^0-9]", "");
+	}
+
+	public void getJobRoles() {
+
 	}
 }
