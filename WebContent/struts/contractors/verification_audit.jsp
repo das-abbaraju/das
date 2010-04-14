@@ -89,7 +89,10 @@
 			<ol>
 				<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
 					<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
-					<s:property value="question.question"/></li>
+					<s:property value="question.question"/>
+					<br/>
+					<s:if test="question.id == 3563"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
+				</li>
 	
 				<s:if test="question.questionType != 'File'">
 					<li><label>Answer:</label>			
