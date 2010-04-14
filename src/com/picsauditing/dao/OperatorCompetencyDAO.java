@@ -23,6 +23,15 @@ public class OperatorCompetencyDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+	public List<OperatorCompetency> findByOperator(int opID) {
+		Query query = em.createQuery("SELECT o FROM OperatorCompetency o " +
+				"WHERE opID = :opID " +
+				"ORDER BY o.category, o.label");
+
+		query.setParameter("opID", opID);
+		return query.getResultList();
+	}
+	
 	public List<OperatorCompetency> findByContractor(int conID) {
 		Query query = em.createQuery("SELECT o FROM OperatorCompetency o " +
 				"WHERE o IN (SELECT j.competency FROM JobCompetency j WHERE j.jobRole.account.id = ?) " +
