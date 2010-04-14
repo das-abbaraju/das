@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -16,6 +17,11 @@ import com.picsauditing.util.Strings;
 @Transactional
 @SuppressWarnings("unchecked")
 public class OperatorCompetencyDAO extends PicsDAO {
+
+	public List<OperatorCompetency> findAll() {
+		Query q = em.createQuery("FROM OperatorCompetency o ORDER BY o.category, o.label");
+		return q.getResultList();
+	}
 
 	public List<OperatorCompetency> findByContractor(int conID) {
 		Query query = em.createQuery("SELECT o FROM OperatorCompetency o " +
