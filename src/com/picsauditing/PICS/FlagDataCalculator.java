@@ -219,7 +219,10 @@ public class FlagDataCalculator {
 
 		ContractorAccount contractor = co.getContractorAccount();
 		OperatorAccount operator = co.getOperatorAccount();
-
+		
+		if(contractor.getRiskLevel() == null) 
+			return WaitingOn.Contractor;
+		
 		if (!contractor.getStatus().isActiveDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
