@@ -7,6 +7,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -20,14 +21,14 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	protected OperatorCompetencyDAO opCompDAO;
 
 	protected int conID;
-	protected int competencyID;
 	protected int employeeID;
-	protected int employeeCompetencyID;
+	protected int competencyID;
+	protected int ecID;
 	protected boolean canEdit = false;
 	protected boolean checked;
 	
+	protected ContractorAccount contractor;
 	protected Employee employee = null;
-	protected OperatorCompetency competency = null;
 
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
@@ -39,33 +40,77 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.opCompDAO = opCompDAO;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-
-		if (permissions.isOperatorCorporate()) {
-			// Operators or Corporates should only view this page
-			// for the contractors that they're over
-			if (conID == 0)
-				addActionError("Please select a contractor to view this page");
-		} else if (permissions.isContractor()) {
+		
+		if (permissions.isContractor()) {
 			// Contractors should view and edit the competencies
 			canEdit = true;
 			conID = permissions.getAccountId();
 		}
 		
-		if (competencyID > 0 && employeeID == 0)
-			competency = opCompDAO.find(competencyID);
-		else if (employeeID > 0 && competencyID == 0)
+		if (permissions.isAdmin())
+			canEdit = true;
+		
+		if (conID == 0)
+			throw new Exception("Missing conID");
+		
+		contractor = conDAO.find(conID);
+		
+		if (employeeID > 0)
 			employee = employeeDAO.find(employeeID);
 		
 		if (button != null) {
-			if (button.equalsIgnoreCase("Save")) {
-				// A checkbox has been checked or unchecked.
-				if (employeeCompetencyID > 0) {
-					EmployeeCompetency ec = ecDAO.find(employeeCompetencyID);
-					ec.setSkilled(checked);
+			if (button.equalsIgnoreCase("AddSkill")) {
+				// A checkbox has been checked
+				if (ecID > 0) {
+					EmployeeCompetency ec = ecDAO.find(ecID);
+					ec.setSkilled(true);
+					ec.setAuditColumns(permissions);
 					ecDAO.save(ec);
+					json.put("title", "Added Skill");
+					json.put("msg", "Successfully added " + ec.getCompetency().getLabel() + " skill to "
+						+ ec.getEmployee().getDisplayName());
+				} else
+					addActionError("Missing employee competency ID");
+			}
+			
+			if (button.equalsIgnoreCase("RemoveSkill")) {
+				// A checkbox has been unchecked
+				if (ecID > 0) {
+					EmployeeCompetency ec = ecDAO.find(ecID);
+					ec.setSkilled(false);
+					ec.setAuditColumns(permissions);
+					ecDAO.save(ec);
+					json.put("title", "Removed Skill");
+					json.put("msg", "Successfully removed " + ec.getCompetency().getLabel() + " skill from "
+						+ ec.getEmployee().getDisplayName());
+				} else
+					addActionError("Missing employee competency ID");
+			}
+			
+			if (button.equalsIgnoreCase("AddCompetency")) {
+				if (competencyID > 0 && employeeID > 0) {
+					OperatorCompetency competency = opCompDAO.find(competencyID);
+					EmployeeCompetency ec = new EmployeeCompetency();
+					ec.setCompetency(competency);
+					ec.setEmployee(employee);
+					ec.setSkilled(true);
+					ec.setAuditColumns(permissions);
+					ecDAO.save(ec);
+					
+					return redirect("EmployeeCompetencies.action?conID=" + conID + "&employeeID=" + employeeID);
+				} else
+					addActionError("Missing employee or competency ID");
+			}
+			
+			if (button.equalsIgnoreCase("RemoveCompetency")) {
+				if (ecID > 0) {
+					EmployeeCompetency ec = ecDAO.find(ecID);
+					ecDAO.remove(ec);
+					return redirect("EmployeeCompetencies.action?conID=" + conID + "&employeeID=" + employeeID);
 				} else
 					addActionError("Missing employee competency ID");
 			}
@@ -82,14 +127,6 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.conID = conID;
 	}
 	
-	public int getCompetencyID() {
-		return competencyID;
-	}
-	
-	public void setCompetencyID(int competencyID) {
-		this.competencyID = competencyID;
-	}
-	
 	public int getEmployeeID() {
 		return employeeID;
 	}
@@ -98,12 +135,20 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.employeeID = employeeID;
 	}
 	
-	public int getEmployeeCompetencyID() {
-		return employeeCompetencyID;
+	public int getCompetencyID() {
+		return competencyID;
 	}
 	
-	public void setEmployeeCompetencyID(int employeeCompetencyID) {
-		this.employeeCompetencyID = employeeCompetencyID;
+	public void setCompetencyID(int competencyID) {
+		this.competencyID = competencyID;
+	}
+	
+	public int getEcID() {
+		return ecID;
+	}
+	
+	public void setEcID(int ecID) {
+		this.ecID = ecID;
 	}
 	
 	public boolean isCanEdit() {
@@ -122,12 +167,12 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.checked = checked;
 	}
 	
-	public Employee getEmployee() {
-		return employee;
+	public ContractorAccount getContractor() {
+		return contractor;
 	}
 	
-	public OperatorCompetency getCompetency() {
-		return competency;
+	public Employee getEmployee() {
+		return employee;
 	}
 	
 	public List<Employee> getEmployees() {

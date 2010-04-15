@@ -1568,6 +1568,11 @@
 			<result>/struts/employees/employee_competencies.jsp</result>
 		</action>
 		
+		<action name="EmployeeCompetenciesJson"
+			class="com.picsauditing.actions.employees.EmployeeCompetencies">
+			<result>/struts/json.jsp</result>
+		</action>
+		
 		<action name="DefineCompetencies"
 			class="com.picsauditing.actions.employees.DefineCompetencies">
 			<result>struts/employees/op_define_competencies.jsp</result>

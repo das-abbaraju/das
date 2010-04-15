@@ -13,24 +13,54 @@ function sortTable(sortBy) {
 	var rows = $(tbody).children();
 	$(tbody).empty();
 
+	var sortBys = sortBy.split(',');
 	rows.sort(function(a, b) {
-		var a1 = $(a).find('.' + sortBy).text().toUpperCase();
-		var b1 = $(b).find('.' + sortBy).text().toUpperCase();
+		var a1 = $(a).find('.' + sortBys[0]).text().toUpperCase();
+		var b1 = $(b).find('.' + sortBys[0]).text().toUpperCase();
+
+		if (sortBys.length > 1) {
+			var a2 = $(a).find('.' + sortBys[1]).text().toUpperCase();
+			var b2 = $(b).find('.' + sortBys[1]).text().toUpperCase();
+
+			return (a1 < b1) ? -1 : (a1 > b1) ? 1 : (a2 < b2) ? -1 : (a2 > b2) ? 1 : 0;
+		}
 		
 		return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
 	});
 
 	$.each(rows, function (index, row) { $(row).find('.id').text(index + 1); $(tbody).append(row); });
 }
+
+function saveChange(ecID, checkbox) {
+	var data = {
+		button: checkbox.checked ? 'AddSkill' : 'RemoveSkill',
+		ecID: ecID,
+		conID: <s:property value="conID" />
+	};
+
+	$.getJSON('EmployeeCompetenciesJson.action', data,
+		function(json) {
+			checkbox.checked = !checkbox.checked;
+		
+			$.gritter.add({
+				title: json.title,
+				text: json.msg
+			});
+			
+			$(checkbox.parentNode).css('background-color', checkbox.checked ? '#AFA' : '#FAA');
+		}
+	);
+}
 </script>
 </head>
 <body>
 
-<h1>Employee Competencies<span class="sub">
-	<s:if test="employeeID > 0"><s:property value="employee.displayName" /></s:if>
-	<s:if test="competencyID > 0"><s:property value="competency.label" /></s:if>
-</span></h1>
+<h1>Employee Competencies<span class="sub"><s:property value="contractor.name" /></span></h1>
 <s:include value="../actionMessages.jsp"/>
+
+<s:if test="employeeID > 0">
+	<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />" class="add">View all employees for <s:property value="contractor.name" /></a>
+</s:if>
 
 <s:if test="conID > 0 && employees.size() > 0 && employeeID == 0">
 	<s:form method="POST">
@@ -39,14 +69,9 @@ function sortTable(sortBy) {
 				<tr>
 					<th></th>
 					<th><a href="#" onclick="sortTable('employee'); return false;">Employee Name</a></th>
-					<s:if test="competencyID == 0">
-						<s:iterator value="competencies" id="competency">
-							<th><a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&competencyID=<s:property value="#competency.id" />"><s:property value="label" /></a></th>
-						</s:iterator>
-					</s:if>
-					<s:else>
-						<th></th>
-					</s:else>
+					<s:iterator value="competencies">
+						<th><s:property value="label" /></th>
+					</s:iterator>
 				</tr>
 			</thead>
 			<tbody>
@@ -54,26 +79,16 @@ function sortTable(sortBy) {
 					<tr>
 						<td class="id"><s:property value="#stat.count" /></td>
 						<td class="employee"><a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.displayName" /></a></td>
-						<s:if test="competencyID == 0">
-							<s:iterator value="competencies" id="competency">
-								<td class="center"
-										<s:if test="!map.get(#employee, #competency).skilled"> style="background-color: red"</s:if>
-										<s:if test="map.get(#employee, #competency).skilled"> style="background-color: green"</s:if>>
-									<s:if test="map.get(#employee, #competency) != null">
-										<s:checkbox name="map.get(#employee, #competency).skilled" ></s:checkbox>
-									</s:if>
-								</td>
-							</s:iterator>
-						</s:if>
-						<s:else>
+						<s:iterator value="competencies" id="competency">
+							<s:set name="ec" id="ec" value="map.get(#employee, #competency)" />
 							<td class="center"
-									<s:if test="!map.get(#employee, competency).skilled"> style="background-color: red"</s:if>
-									<s:elseif test="map.get(#employee, competency).skilled"> style="background-color: green"</s:elseif>>
-								<s:if test="map.get(#employee, competency) != null">
-									<s:checkbox name="map.get(#employee, competency).skilled" ></s:checkbox>
+									<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
+									<s:if test="#ec.skilled"> style="background-color: #AFA"</s:if>>
+								<s:if test="#ec != null">
+									<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
 								</s:if>
 							</td>
-						</s:else>
+						</s:iterator>
 					</tr>
 				</s:iterator>
 			</tbody>
@@ -89,32 +104,43 @@ function sortTable(sortBy) {
 			<thead>
 				<tr>
 					<th></th>
-					<th><a href="#" onclick="sortTable('competency'); return false;">Job Competencies</a></th>
-					<th></th>
+					<th><a href="#" onclick="sortTable('category,label'); return false;">Job Competency Description</a></th>
+					<th><a href="#" onclick="sortTable('label,category'); return false;">Label</a></th>
+					<th><s:property value="employee.displayName" /></th>
+					<s:if test="canEdit"><th></th></s:if>
 				</tr>
 			</thead>
 			<tbody>
 				<s:iterator value="competencies" id="competency" status="stat">
+					<s:set name="ec" id="ec" value="map.get(employee, #competency)" />
 					<tr>
 						<td class="id"><s:property value="#stat.count" /></td>
-						<td class="competency"><a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&competencyID=<s:property value="#competency.id" />"><s:property value="label" /></a></td>
+						<td class="category"><s:property value="category" /></td>
+						<td class="label"><s:property value="label" /></td>
 						<td class="center"
-								<s:if test="!map.get(employee, #competency).skilled"> style="background-color: red"</s:if>
-								<s:elseif test="map.get(employee, #competency).skilled"> style="background-color: green"</s:elseif>>
-							<s:if test="map.get(employee, #competency) != null">
-								<s:checkbox name="map.get(employee, #competency).skilled" ></s:checkbox>
+								<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
+								<s:elseif test="#ec.skilled"> style="background-color: #AFA"</s:elseif>>
+							<s:if test="#ec != null">
+								<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
 							</s:if>
 						</td>
+						<s:if test="canEdit">
+							<td class="center">
+								<s:if test="#ec != null">
+									<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&button=RemoveCompetency&employeeID=<s:property value="employeeID" />&ecID=<s:property value="#ec.id" />" class="remove"></a>
+								</s:if>
+								<s:else>
+									<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&button=AddCompetency&employeeID=<s:property value="employeeID" />&competencyID=<s:property value="#competency.id" />" class="add"></a>
+								</s:else>
+							</td>
+						</s:if>
 					</tr>
 				</s:iterator>
 			</tbody>
 		</table>
 	</s:form>
+	<script type="text/javascript">sortTable('category,label');</script>
 </s:elseif>
-
-<s:if test="employeeID > 0 || competencyID > 0">
-<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />" class="add">View all employees and job competencies.</a>
-</s:if>
 
 </body>
 </html>
