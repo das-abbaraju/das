@@ -1,42 +1,49 @@
 package com.picsauditing.actions.employees;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
+import com.picsauditing.jpa.entities.EmployeeRole;
+import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class EmployeeCompetencies extends AccountActionSupport {
 	protected ContractorAccountDAO conDAO;
 	protected EmployeeDAO employeeDAO;
 	protected EmployeeCompetencyDAO ecDAO;
+	protected EmployeeRoleDAO erDAO;
 	protected OperatorCompetencyDAO opCompDAO;
 
 	protected int conID;
 	protected int employeeID;
-	protected int competencyID;
 	protected int ecID;
 	protected boolean canEdit = false;
 	protected boolean checked;
 	
 	protected ContractorAccount contractor;
 	protected Employee employee = null;
+	protected int[] selectedCompetencies;
 
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public EmployeeCompetencies(ContractorAccountDAO conDAO, EmployeeDAO employeeDAO,
-			EmployeeCompetencyDAO ecDAO, OperatorCompetencyDAO opCompDAO) {
+			EmployeeCompetencyDAO ecDAO, EmployeeRoleDAO erDAO, OperatorCompetencyDAO opCompDAO) {
 		this.conDAO = conDAO;
 		this.employeeDAO = employeeDAO;
 		this.ecDAO = ecDAO;
+		this.erDAO = erDAO;
 		this.opCompDAO = opCompDAO;
 	}
 
@@ -73,6 +80,7 @@ public class EmployeeCompetencies extends AccountActionSupport {
 					json.put("title", "Added Skill");
 					json.put("msg", "Successfully added " + ec.getCompetency().getLabel() + " skill to "
 						+ ec.getEmployee().getDisplayName());
+					return JSON;
 				} else
 					addActionError("Missing employee competency ID");
 			}
@@ -87,32 +95,14 @@ public class EmployeeCompetencies extends AccountActionSupport {
 					json.put("title", "Removed Skill");
 					json.put("msg", "Successfully removed " + ec.getCompetency().getLabel() + " skill from "
 						+ ec.getEmployee().getDisplayName());
+					return JSON;
 				} else
 					addActionError("Missing employee competency ID");
 			}
 			
-			if (button.equalsIgnoreCase("AddCompetency")) {
-				if (competencyID > 0 && employeeID > 0) {
-					OperatorCompetency competency = opCompDAO.find(competencyID);
-					EmployeeCompetency ec = new EmployeeCompetency();
-					ec.setCompetency(competency);
-					ec.setEmployee(employee);
-					ec.setSkilled(true);
-					ec.setAuditColumns(permissions);
-					ecDAO.save(ec);
-					
-					return redirect("EmployeeCompetencies.action?conID=" + conID + "&employeeID=" + employeeID);
-				} else
-					addActionError("Missing employee or competency ID");
-			}
-			
-			if (button.equalsIgnoreCase("RemoveCompetency")) {
-				if (ecID > 0) {
-					EmployeeCompetency ec = ecDAO.find(ecID);
-					ecDAO.remove(ec);
-					return redirect("EmployeeCompetencies.action?conID=" + conID + "&employeeID=" + employeeID);
-				} else
-					addActionError("Missing employee competency ID");
+			if (button.equalsIgnoreCase("Update List")) {
+				if (selectedCompetencies == null || selectedCompetencies.length == 0)
+					addActionError("Please select competencies");
 			}
 		}
 		
@@ -133,14 +123,6 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	
 	public void setEmployeeID(int employeeID) {
 		this.employeeID = employeeID;
-	}
-	
-	public int getCompetencyID() {
-		return competencyID;
-	}
-	
-	public void setCompetencyID(int competencyID) {
-		this.competencyID = competencyID;
 	}
 	
 	public int getEcID() {
@@ -175,12 +157,53 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		return employee;
 	}
 	
+	public int[] getSelectedCompetencies() {
+		return selectedCompetencies;
+	}
+
+	public void setSelectedCompetencies(int[] selectedCompetencies) {
+		this.selectedCompetencies = selectedCompetencies;
+	}
+	
+	public List<OperatorCompetency> getSelectedOC() {
+		if (selectedCompetencies != null)
+			return opCompDAO.findWhere("id IN (0," + Strings.implode(selectedCompetencies) + ")");
+		
+		return null;
+	}
+	
 	public List<Employee> getEmployees() {
-		return conDAO.find(conID).getEmployees();
+		// Find ALL employees or just the ones with roles?
+		//return conDAO.find(conID).getEmployees();
+		List<EmployeeRole> roles = erDAO.findByContractor(conID);
+		List<Employee> employees = new ArrayList<Employee>();
+		
+		for (EmployeeRole role : roles) {
+			employees.add(role.getEmployee());
+		}
+		
+		return employees;
 	}
 	
 	public List<OperatorCompetency> getCompetencies() {
 		return opCompDAO.findByContractor(conID);
+	}
+	
+	public List<OperatorCompetency> getCompetencies(Employee employee) {
+		List<EmployeeRole> roles = getEmployeeRoles(employee.getId());
+		List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
+		
+		for (EmployeeRole role : roles) {
+			for (JobCompetency jc : role.getJobRole().getCompetencies()) {
+				competencies.add(jc.getCompetency());
+			}
+		}
+		
+		return competencies;
+	}
+	
+	public List<EmployeeRole> getEmployeeRoles(int employeeID) {
+		return erDAO.findByEmployee(employeeID);
 	}
 	
 	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {

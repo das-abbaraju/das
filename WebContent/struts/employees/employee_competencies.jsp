@@ -24,7 +24,7 @@ function sortTable(sortBy) {
 
 			return (a1 < b1) ? -1 : (a1 > b1) ? 1 : (a2 < b2) ? -1 : (a2 > b2) ? 1 : 0;
 		}
-		
+
 		return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
 	});
 
@@ -38,7 +38,7 @@ function saveChange(ecID, checkbox) {
 		conID: <s:property value="conID" />
 	};
 
-	$.getJSON('EmployeeCompetenciesJson.action', data,
+	$.getJSON('EmployeeCompetenciesAjax.action', data,
 		function(json) {
 			checkbox.checked = !checkbox.checked;
 		
@@ -51,67 +51,50 @@ function saveChange(ecID, checkbox) {
 		}
 	);
 }
+
+function getData() {
+	$('#competencyTable').html('<img src="images/ajax_process2.gif" /> finding results');
+	$('#competencyTable').load('EmployeeCompetenciesAjax.action', $('#form1').serialize());
+}
 </script>
 </head>
 <body>
 
 <h1>Employee Competencies<span class="sub"><s:property value="contractor.name" /></span></h1>
-<s:include value="../actionMessages.jsp"/>
-
-<s:if test="employeeID > 0">
-	<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />" class="add">View all employees for <s:property value="contractor.name" /></a>
-</s:if>
 
 <s:if test="conID > 0 && employees.size() > 0 && employeeID == 0">
-	<s:form method="POST">
-		<table class="report" id="competenceMatrix">
-			<thead>
-				<tr>
-					<th></th>
-					<th><a href="#" onclick="sortTable('employee'); return false;">Employee Name</a></th>
-					<s:iterator value="competencies">
-						<th><s:property value="label" /></th>
-					</s:iterator>
-				</tr>
-			</thead>
-			<tbody>
-				<s:iterator value="employees" id="employee" status="stat">
-					<tr>
-						<td class="id"><s:property value="#stat.count" /></td>
-						<td class="employee"><a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.displayName" /></a></td>
-						<s:iterator value="competencies" id="competency">
-							<s:set name="ec" id="ec" value="map.get(#employee, #competency)" />
-							<td class="center"
-									<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
-									<s:if test="#ec.skilled"> style="background-color: #AFA"</s:if>>
-								<s:if test="#ec != null">
-									<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
-								</s:if>
-							</td>
-						</s:iterator>
-					</tr>
-				</s:iterator>
-			</tbody>
-		</table>
+	<s:form id="form1">
+		<s:hidden name="conID" />
+		<s:hidden name="button" value="Update List" />
+		<fieldset class="form bottom">
+			<ol>
+				<li><label style="width: auto;">Competencies:</label>
+					<s:select id="competencyList" list="competencies" listKey="id" listValue="label" 
+						multiple="true" name="selectedCompetencies" size="10" />
+				</li>
+			</ol>
+			<button onclick="getData(); return false;" class="picsbutton positive submit">View</button>
+		</fieldset>
 	</s:form>
+	<div id="competencyTable"></div>
 </s:if>
 <s:elseif test="employees.size() == 0">
 	<div class="info">This contractor has no employees.</div>
 </s:elseif>
 <s:elseif test="employeeID > 0">
+	<h3>Job Competency for <s:property value="employee.displayName" /></h3>
 	<s:form method="POST">
 		<table class="report" id="competenceMatrix">
 			<thead>
 				<tr>
 					<th></th>
-					<th><a href="#" onclick="sortTable('category,label'); return false;">Job Competency Description</a></th>
+					<th><a href="#" onclick="sortTable('category,label'); return false;">Category</a></th>
 					<th><a href="#" onclick="sortTable('label,category'); return false;">Label</a></th>
-					<th><s:property value="employee.displayName" /></th>
-					<s:if test="canEdit"><th></th></s:if>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<s:iterator value="competencies" id="competency" status="stat">
+				<s:iterator value="getCompetencies(employee)" id="competency" status="stat">
 					<s:set name="ec" id="ec" value="map.get(employee, #competency)" />
 					<tr>
 						<td class="id"><s:property value="#stat.count" /></td>
@@ -124,16 +107,6 @@ function saveChange(ecID, checkbox) {
 								<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
 							</s:if>
 						</td>
-						<s:if test="canEdit">
-							<td class="center">
-								<s:if test="#ec != null">
-									<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&button=RemoveCompetency&employeeID=<s:property value="employeeID" />&ecID=<s:property value="#ec.id" />" class="remove"></a>
-								</s:if>
-								<s:else>
-									<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&button=AddCompetency&employeeID=<s:property value="employeeID" />&competencyID=<s:property value="#competency.id" />" class="add"></a>
-								</s:else>
-							</td>
-						</s:if>
 					</tr>
 				</s:iterator>
 			</tbody>
@@ -141,6 +114,10 @@ function saveChange(ecID, checkbox) {
 	</s:form>
 	<script type="text/javascript">sortTable('category,label');</script>
 </s:elseif>
+
+<s:if test="employeeID > 0">
+	<a href="EmployeeCompetencies.action?conID=<s:property value="conID" />">View all employees for <s:property value="contractor.name" /></a>
+</s:if>
 
 </body>
 </html>

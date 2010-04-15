@@ -27,6 +27,16 @@ public class OperatorCompetencyDAO extends PicsDAO {
 		Query q = em.createQuery("FROM OperatorCompetency o ORDER BY o.category, o.label");
 		return q.getResultList();
 	}
+	
+	public List<OperatorCompetency> findWhere(String where) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = " WHERE " + where;
+		
+		Query q = em.createQuery("FROM OperatorCompetency o" + where + " ORDER BY o.category, o.label");
+		return q.getResultList();
+	}
 
 	public List<OperatorCompetency> findByOperator(int opID) {
 		Query query = em.createQuery("SELECT o FROM OperatorCompetency o " +

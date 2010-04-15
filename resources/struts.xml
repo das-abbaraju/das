@@ -1568,9 +1568,9 @@
 			<result>/struts/employees/employee_competencies.jsp</result>
 		</action>
 		
-		<action name="EmployeeCompetenciesJson"
+		<action name="EmployeeCompetenciesAjax"
 			class="com.picsauditing.actions.employees.EmployeeCompetencies">
-			<result>/struts/json.jsp</result>
+			<result>/struts/employees/employee_competencies_data.jsp</result>
 		</action>
 		
 		<action name="DefineCompetencies"
