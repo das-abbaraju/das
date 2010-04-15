@@ -18,6 +18,25 @@ and pcd.applies = 'Yes'
 and pcd.catID = 151;
 **/
 
+-- ADD TO HOURLY SCRIPT
+truncate table job_competency_stats;
+
+insert into job_competency_stats (jobRole, totalCount, competencyID)
+select jr.name, count(DISTINCT jr.accountID), oc.id from job_role jr, operator_competency oc
+where jr.id in (SELECT jobRoleID FROM job_competency)
+group by jr.name, oc.id;
+
+UPDATE job_competency_stats s, (
+select jr.name, jc.competencyID, count(*) usedCount from job_role jr
+join job_competency jc on jr.id = jc.jobRoleID
+group by jr.name, jc.competencyID) t
+set s.usedCount = t.usedCount
+where t.name = s.jobRole and s.competencyID = t.competencyID;
+
+select jobRole, oc.label, round(100*usedCount/totalCount) percentUsed from job_competency_stats s
+join operator_competency oc on s.competencyID = oc.id
+order by usedCount/totalCount desc, totalCount desc, jobRole;
+
 /** Update the requiresOQ for all contractors **/
 update accounts set requiresOQ = 1
 where id in (select distinct conid from contractor_audit ca

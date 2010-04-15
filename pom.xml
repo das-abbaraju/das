@@ -107,12 +107,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
 			<version>3.2.5.ga</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>ehcache</artifactId>
-					<groupId>net.sf.ehcache</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
