@@ -132,34 +132,42 @@ public class ContractorFlagETL {
 								answer = (average != null) ? Float.valueOf(Strings.formatNumber(average.getAnswer()))
 										: null;
 								for (AuditData year : years) {
-									answer2 += (answer2.isEmpty()) ? "Years: " + year.getAudit().getAuditFor() : ", "
-											+ year.getAudit().getAuditFor();
-									if (average == null || !average.isVerified())
-										verified = false;
+									if(year != null) {
+										answer2 += (answer2.isEmpty()) ? "Years: " + year.getAudit().getAuditFor() : ", "
+												+ year.getAudit().getAuditFor();
+									}
 								}
+								if (average == null || !average.isVerified())
+									verified = false;
 								break;
 							case ThreeYearsAgo:
 								if (years.size() >= 3) {
-									answer = Float.valueOf(Strings
-											.formatNumber(years.get(years.size() - 3).getAnswer()));
-									verified = years.get(years.size() - 3).isVerified();
-									answer2 = "Year: " + years.get(years.size() - 3).getAudit().getAuditFor();
+									if(years.get(years.size() - 3) != null) {
+										answer = Float.valueOf(Strings
+												.formatNumber(years.get(years.size() - 3).getAnswer()));
+										verified = years.get(years.size() - 3).isVerified();
+										answer2 = "Year: " + years.get(years.size() - 3).getAudit().getAuditFor();
+									}
 								}
 								break;
 							case TwoYearsAgo:
 								if (years.size() >= 2) {
-									answer = Float.valueOf(Strings
-											.formatNumber(years.get(years.size() - 2).getAnswer()));
-									verified = years.get(years.size() - 2).isVerified();
-									answer2 = "Year: " + years.get(years.size() - 2).getAudit().getAuditFor();
+									if(years.get(years.size() - 2) != null) {
+										answer = Float.valueOf(Strings
+												.formatNumber(years.get(years.size() - 2).getAnswer()));
+										verified = years.get(years.size() - 2).isVerified();
+										answer2 = "Year: " + years.get(years.size() - 2).getAudit().getAuditFor();
+									}
 								}
 								break;
 							case LastYearOnly:
 								if (years.size() >= 1) {
-									answer = Float.valueOf(Strings
-											.formatNumber(years.get(years.size() - 1).getAnswer()));
-									verified = years.get(years.size() - 1).isVerified();
-									answer2 = "Year: " + years.get(years.size() - 1).getAudit().getAuditFor();
+									if(years.get(years.size() - 1) != null) {
+										answer = Float.valueOf(Strings
+												.formatNumber(years.get(years.size() - 1).getAnswer()));
+										verified = years.get(years.size() - 1).isVerified();
+										answer2 = "Year: " + years.get(years.size() - 1).getAudit().getAuditFor();
+									}
 								}
 								break;
 							default:

@@ -237,20 +237,22 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		float rateTotal = 0;
 		int count = 0;
 		for (AuditData data : dataList) {
-			avg.setQuestion(data.getQuestion());
-			avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
-			avg.getAudit().setAuditType(data.getAudit().getAuditType());
-
-			if (data.isUnverified())
-				avg.setVerified(false);
-
-			try {
-				float rate = Float.parseFloat(data.getAnswer());
-				rateTotal += rate;
-				count++;
-			} catch (Exception e) {
-//				String error = "Failed to parse rate:" + data.getAnswer() + " for audit " + data.getAudit().getId();
-//				System.out.println(error);
+			if(data != null) {
+				avg.setQuestion(data.getQuestion());
+				avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
+				avg.getAudit().setAuditType(data.getAudit().getAuditType());
+	
+				if (data.isUnverified())
+					avg.setVerified(false);
+	
+				try {
+					float rate = Float.parseFloat(data.getAnswer());
+					rateTotal += rate;
+					count++;
+				} catch (Exception e) {
+	//				String error = "Failed to parse rate:" + data.getAnswer() + " for audit " + data.getAudit().getId();
+	//				System.out.println(error);
+				}
 			}
 		}
 		if (count > 0) {

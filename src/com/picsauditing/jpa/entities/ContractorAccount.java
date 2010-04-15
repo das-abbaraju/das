@@ -537,16 +537,19 @@ public class ContractorAccount extends Account implements JSONable {
 		int number = 0;
 		for (ContractorAudit audit : getSortedAudits()) {
 			if (number < 4) {
-
 				// Store the EMR rates into a map for later use
-				for (AuditData answer : audit.getData())
-					if (answer.getQuestion().getId() == AuditQuestion.EMR) {
-						if (answer != null && !Strings.isEmpty(answer.getAnswer())) {
+				for (AuditData answer : audit.getData()) {
+					if (answer.getQuestion().getId() == AuditQuestion.EMR 
+							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
+						if (!Strings.isEmpty(answer.getAnswer())) {
 							number++;
-							emrs.put(audit.getAuditFor(), answer);
+							if(answer.getQuestion().getId() == 2033)
+								emrs.put(audit.getAuditFor(), null);
+							else	
+								emrs.put(audit.getAuditFor(), answer);
 						}
 					}
-
+				}	
 			}
 		}
 
