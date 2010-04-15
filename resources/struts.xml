@@ -1577,6 +1577,10 @@
 			class="com.picsauditing.actions.employees.DefineCompetencies">
 			<result>struts/employees/op_define_competencies.jsp</result>
 		</action>
+		<action name="DefineCompetenciesAjax"
+			class="com.picsauditing.actions.employees.DefineCompetencies">
+			<result>struts/employees/op_define_competencies.jsp</result>
+		</action>
 		
 		<action name="CategorySuggestAjax"
 			class="com.picsauditing.actions.employees.CategorySuggest">
