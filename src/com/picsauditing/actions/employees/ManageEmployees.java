@@ -1,6 +1,8 @@
 package com.picsauditing.actions.employees;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
@@ -8,6 +10,8 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.EmployeeRole;
+import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
@@ -79,7 +83,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (ssn != null) {
 				if (ssn.length() == 9)
 					employee.setSsn(ssn);
-				else
+				else if (!ssn.matches("X{5}\\d{4}"))
 					addActionError("Invalid social security number entered.");
 			}
 
@@ -108,14 +112,19 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public void setSsn(String ssn) {
-		ssn = ssn.replaceAll("[^xX0-9]", "");
-		if (ssn.length() > 9)
-			return;
-
-		this.ssn = ssn.replaceAll("[^0-9]", "");
+		ssn = ssn.replaceAll("[^X0-9]", "");
+		if (ssn.length() <= 9)
+			this.ssn = ssn;
 	}
 
-	public void getJobRoles() {
+	public Set<JobRole> getUnusedJobRoles() {
+		Set<JobRole> jobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
 
+		for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
+			if (jobRoles.contains(employeeRole.getJobRole()))
+				jobRoles.remove(employeeRole.getJobRole());
+		}
+
+		return jobRoles;
 	}
 }

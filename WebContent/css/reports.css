@@ -73,6 +73,10 @@ table.noshade tr:hover {
 	background: #f9f9f9;
 }
 
+table.report tr.highlight {
+	background: #BBB;
+}
+
 /******************** Primary Table class="tablestyle"  ************************/
 table.tablestyle {
 	border-collapse: collapse;

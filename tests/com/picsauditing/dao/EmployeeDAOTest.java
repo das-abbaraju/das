@@ -63,4 +63,11 @@ public class EmployeeDAOTest extends TestCase {
 			assertTrue(employee.isActive());
 		}
 	}
+
+	@Test
+	public void testEmployeeRoles() throws Exception {
+		Employee employee = employeeDAO.find(8);
+
+		assertTrue(employee.getEmployeeRoles().size() > 0);
+	}
 }
