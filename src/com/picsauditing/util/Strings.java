@@ -481,9 +481,13 @@ public class Strings {
 		return test;
 	}
 
-	// For computing the number of character differences between two strings
-	// Levenshtein Distance
-	// If needed, can be optimized
+	/**
+	 * For computing the number of character differences between two strings Levenshtein Distance
+	 * If needed, can be optimized
+	 * @param m
+	 * @param n
+	 * @return
+	 */
 	public static int editDistance(String m, String n) {
 		// d is a table with m+1 rows and n+1 columns
 		int[][] d = new int[m.length() + 1][n.length() + 1];
@@ -507,5 +511,9 @@ public class Strings {
 
 	public static boolean isSimilarTo(String m, String n, int characterDifferenceThreshold) {
 		return (editDistance(m, n) <= characterDifferenceThreshold) ? true : false;
+	}
+	
+	public static boolean isSimilarTo(String m, String n) {
+		return (editDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(), n.length()))-.25) ? true : false;
 	}
 }
