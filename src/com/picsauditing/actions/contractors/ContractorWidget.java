@@ -129,11 +129,10 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 
 			for (ContractorAudit conAudit : getActiveAudits()) {
-				// TODO get the Tasks to show up right for OSHA/EMR
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
-
-					if (conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded()
-							|| auditTypeList.contains(conAudit.getAuditType())) {
+				if (conAudit.getAuditType().isCanContractorView() && 
+						(conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded()
+						|| auditTypeList.contains(conAudit.getAuditType()))) {
+					if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 						if (conAudit.getAuditType().getClassType().isPqf()) {
 							if (conAudit.getAuditType().isPqf())
 								auditName = "Pre-Qualification Form";
@@ -194,39 +193,39 @@ public class ContractorWidget extends ContractorActionSupport {
 							openTasks.add(text);
 						}
 					}
-				}
 
-				if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
-					if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
-						Set<String> pendingOperators = new TreeSet<String>();
-						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
-							if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
-								AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
-										cAuditOperator.getAudit().getAuditType().getId());
-								if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
-									pendingOperators.add(cAuditOperator.getOperator().getName());
+					if (permissions.hasPermission(OpPerms.ContractorInsurance) || permissions.isAdmin()) {
+						if (conAudit.getAuditType().getClassType() == AuditTypeClass.Policy) {
+							Set<String> pendingOperators = new TreeSet<String>();
+							for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
+								if (CaoStatus.Pending.equals(cAuditOperator.getStatus())) {
+									AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
+											cAuditOperator.getAudit().getAuditType().getId());
+									if (ao.isCanSee() && ao.getMinRiskLevel() > 0) {
+										pendingOperators.add(cAuditOperator.getOperator().getName());
+									}
 								}
 							}
-						}
-
-						if (pendingOperators.size() > 0) {
-							openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-									+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
-									+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
-						}
-
-						for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
-							if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
-								AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
-										cAuditOperator.getAudit().getAuditType().getId());
-								if (ao.isCanSee() && ao.getMinRiskLevel() > 0
-										&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
-									String Text = "<a href=\"Audit.action?auditID=" + conAudit.getId()
-											+ "\">Update your " + conAudit.getAuditType().getAuditName()
-											+ " Policy rejected by </a> " + cAuditOperator.getOperator().getName();
-									if (!Strings.isEmpty(cAuditOperator.getNotes()))
-										Text += " for reason " + cAuditOperator.getNotes();
-									openTasks.add(Text);
+	
+							if (pendingOperators.size() > 0) {
+								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
+										+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
+										+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
+							}
+	
+							for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
+								if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
+									AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(
+											cAuditOperator.getAudit().getAuditType().getId());
+									if (ao.isCanSee() && ao.getMinRiskLevel() > 0
+											&& ao.getMinRiskLevel() <= contractor.getRiskLevel().ordinal()) {
+										String Text = "<a href=\"Audit.action?auditID=" + conAudit.getId()
+												+ "\">Update your " + conAudit.getAuditType().getAuditName()
+												+ " Policy rejected by </a> " + cAuditOperator.getOperator().getName();
+										if (!Strings.isEmpty(cAuditOperator.getNotes()))
+											Text += " for reason " + cAuditOperator.getNotes();
+										openTasks.add(Text);
+									}
 								}
 							}
 						}
