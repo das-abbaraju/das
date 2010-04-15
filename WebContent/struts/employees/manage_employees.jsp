@@ -2,64 +2,64 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-	<title>Manage Employees</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-	
-	<s:include value="../jquery.jsp"/>
-	
-	<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min"></script>
-	
-	<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
-	<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
-	
-	<script type="text/javascript">
-		var employeeID = 0;
-		<s:if test="employee != null">
-		employeeID = <s:property value="employee.id"/>
-		</s:if>
-	
-		function show(id) {
-			$.getJSON('ManageEmployeesAjax.action',
-					{employeeID: id, button: 'load'},
-					function (json, result) {
-						alert(json);
-					}
-				);
-		}
+<title>Manage Employees</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
-		$(function() {
-			$.mask.definitions['S']='[X0-9]';
-			$('input.ssn').mask('SSS-SS-SSSS');
-			$('input.date').mask('99/99/9999');
+<s:include value="../jquery.jsp"/>
 
-			$('#employees').dataTable({
-					aoColumns: [
-				            {bVisible: false},
-				            null,
-				            null,
-				            null,
-				            null
-						],
-					bJQueryUI: true,
-					bStateSave: true,
-					bInfo: false,
-					oLanguage: { sLengthMenu: 'Show _MENU_' },
-					iDisplayLength: 25,
-					sPaginationType: "full_numbers",
-					fnRowCallback: function( nRow, aData, iDisplayIndex ) {
-						if (aData[0] == employeeID)
-							$(nRow).not('.highlight').addClass('highlight');
-						return nRow;
-					}
-				});
+<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min"></script>
+
+<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
+
+<script type="text/javascript">
+var employeeID = 0;
+<s:if test="employee != null">
+employeeID = <s:property value="employee.id"/>
+</s:if>
+
+function show(id) {
+	$.getJSON('ManageEmployeesAjax.action',
+			{employeeID: id, button: 'load'},
+			function (json, result) {
+				alert(json);
+			}
+		);
+}
+
+$(function() {
+	$.mask.definitions['S']='[X0-9]';
+	$('input.ssn').mask('SSS-SS-SSSS');
+	$('input.date').mask('99/99/9999');
+
+	$('#employees').dataTable({
+			aoColumns: [
+		            {bVisible: false},
+		            null,
+		            null,
+		            null,
+		            null
+				],
+			bJQueryUI: true,
+			bStateSave: true,
+			bInfo: false,
+			oLanguage: { sLengthMenu: 'Show _MENU_' },
+			iDisplayLength: 25,
+			sPaginationType: "full_numbers",
+			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
+				if (aData[0] == employeeID)
+					$(nRow).not('.highlight').addClass('highlight');
+				return nRow;
+			}
 		});
-	</script>
-	
-	<style>
-	div.dataTables_filter { width: 65%; }
-	div.dataTables_length { width: 35%; }
-	</style>
+});
+</script>
+
+<style>
+div.dataTables_filter { width: 65%; }
+div.dataTables_length { width: 35%; }
+</style>
 </head>
 <body>
 	<h1>Manage Employees<span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
