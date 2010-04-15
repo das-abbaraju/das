@@ -1578,6 +1578,10 @@
 			<result>struts/employees/op_define_competencies.jsp</result>
 		</action>
 		
+		<action name="CategorySuggestAjax"
+			class="com.picsauditing.actions.employees.CategorySuggest">
+			<result>struts/employees/category_suggest.jsp</result>
+		</action>
 		
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"

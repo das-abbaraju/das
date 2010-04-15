@@ -46,6 +46,12 @@ public class OperatorCompetencyDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
+	public List<String> findDistinctCategories(){
+		Query query = em.createQuery("SELECT DISTINCT o.category FROM OperatorCompetency o " +
+				"ORDER BY o.category");
+		return query.getResultList();
+	}
+	
 	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> findEmployeeCompetencies(Collection<Employee> employees, Collection<OperatorCompetency> opCompetencies) {
 		int[] eIDs = new int[employees.size()];
 		int[] oIDs = new int[opCompetencies.size()];
