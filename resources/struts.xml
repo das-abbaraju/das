@@ -1527,7 +1527,7 @@
 
 		<action name="ManageEmployeesAjax"
 			class="com.picsauditing.actions.employees.ManageEmployees">
-			<result>struts/employees/manage_employees.jsp</result>
+			<result>struts/employees/manage_employee_roles.jsp</result>
 		</action>
 				
 		<action name="EmployeeDetail"

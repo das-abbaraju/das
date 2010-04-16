@@ -33,4 +33,13 @@ public class EmployeeRole extends BaseTable {
 		this.jobRole = jobRole;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EmployeeRole))
+			return false;
+
+		EmployeeRole e = (EmployeeRole) obj;
+		return employee.equals(e.employee) && jobRole.equals(e.jobRole);
+	}
+
 }

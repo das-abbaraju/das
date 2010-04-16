@@ -28,20 +28,20 @@ function show(id) {
 		);
 }
 
+function addJobRole(employeeID, roleID) {
+	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, roleID: roleID});
+}
+
+function removeJobRole(employeeID, roleID) {
+	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, roleID: roleID});
+}
+
 $(function() {
 	$.mask.definitions['S']='[X0-9]';
 	$('input.ssn').mask('SSS-SS-SSSS');
 	$('input.date').mask('99/99/9999');
 
 	$('#employees').dataTable({
-			aoColumns: [
-		            {bVisible: false},
-		            null,
-		            null,
-		            null,
-		            null
-				],
-			bJQueryUI: true,
 			bStateSave: true,
 			bInfo: false,
 			oLanguage: { sLengthMenu: 'Show _MENU_' },
@@ -75,7 +75,6 @@ div.dataTables_length { width: 35%; }
 					<table class="report" id="employees">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>Title</th>
@@ -84,7 +83,6 @@ div.dataTables_length { width: 35%; }
 						</thead>
 						<s:iterator value="account.employees">
 							<tr class="clickable" onclick="javascript:window.location.href='?employee.id=<s:property value="id"/>'">
-								<td><s:property value="id"/></td>
 								<td><s:property value="firstName"/></td>
 								<td><s:property value="lastName"/></td>
 								<td><s:property value="title"/></td>
@@ -151,26 +149,11 @@ div.dataTables_length { width: 35%; }
 						</fieldset>
 					</s:form>
 					
-					<h3>Job Roles</h3>
-					<table class="report">
-						<thead>
-							<tr>
-								<th colspan="2">Role</th>
-							</tr>
-						</thead>
-						<s:iterator value="employee.employeeRoles">
-							<tr>
-								<td><s:property value="jobRole.name"/></td>
-								<td><a href="#" class="remove">Remove</a></td>
-							</tr>
-						</s:iterator>
-						<s:iterator value="unusedJobRoles">
-							<tr>
-								<td><s:property value="name"/></td>
-								<td><a href="#" class="add">Add</a></td>
-							</tr>
-						</s:iterator>					
-					</table>
+					<s:if test="employee.id > 0">
+						<div id="employee_role">
+							<s:include value="manage_employee_roles.jsp"/>
+						</div>
+					</s:if>
 				</td>
 			</s:if>
 		</tr>

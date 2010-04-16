@@ -9,6 +9,8 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.dao.EmployeeRoleDAO;
+import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobRole;
@@ -19,6 +21,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	private AccountDAO accountDAO;
 	private EmployeeDAO employeeDAO;
+	private JobRoleDAO roleDAO;
+	private EmployeeRoleDAO employeeRoleDAO;
 
 	protected List<OperatorAccount> operators;
 	protected List<Employee> employees;
@@ -26,14 +30,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected Employee employee;
 	protected String ssn;
 
-	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO) {
+	protected int roleID;
+
+	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
+			EmployeeRoleDAO employeeRoleDAO) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
+		this.roleDAO = roleDAO;
+		this.employeeRoleDAO = employeeRoleDAO;
 	}
 
 	@Override
 	public void prepare() throws Exception {
-
 		int employeeID = getParameter("employee.id");
 		if (employeeID > 0) {
 			employee = employeeDAO.find(employeeID);
@@ -87,6 +95,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					addActionError("Invalid social security number entered.");
 			}
 
+			employee.setAuditColumns(permissions);
+
 			employeeDAO.save(employee);
 		}
 
@@ -94,6 +104,41 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			employeeDAO.remove(employee);
 			addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
 			employee = null;
+		}
+
+		if ("addRole".equals(button)) {
+			JobRole jobRole = roleDAO.find(roleID);
+
+			if (employee != null && jobRole != null) {
+				EmployeeRole e = new EmployeeRole();
+				e.setEmployee(employee);
+				e.setJobRole(jobRole);
+				e.setAuditColumns(permissions);
+
+				if (!employee.getEmployeeRoles().contains(e)) {
+					employee.getEmployeeRoles().add(e);
+					employeeRoleDAO.save(e);
+				} else
+					addActionError("Employee already has " + jobRole.getName() + " as a Job Role");
+			}
+
+			return SUCCESS;
+		}
+
+		if ("removeRole".equals(button)) {
+			if (employee != null && roleID > 0) {
+				EmployeeRole e = employeeRoleDAO.findByEmployeeAndJobRole(employee.getId(), roleID);
+
+				if (e != null) {
+					employee.getEmployeeRoles().remove(e);
+					employeeRoleDAO.remove(e);
+				} else {
+					JobRole jobRole = roleDAO.find(roleID);
+					addActionError("Employee does not have " + jobRole.getName() + " as a Job Role");
+				}
+			}
+
+			return SUCCESS;
 		}
 
 		return SUCCESS;
@@ -115,6 +160,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		ssn = ssn.replaceAll("[^X0-9]", "");
 		if (ssn.length() <= 9)
 			this.ssn = ssn;
+	}
+
+	public int getRoleID() {
+		return roleID;
+	}
+
+	public void setRoleID(int roleID) {
+		this.roleID = roleID;
 	}
 
 	public Set<JobRole> getUnusedJobRoles() {
