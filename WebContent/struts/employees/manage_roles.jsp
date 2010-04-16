@@ -29,12 +29,12 @@ fieldset.form label {
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
-function removeCompetency(id) {
-	
+function removeCompetency(competencyID) {
+	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'removeCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
 }
 
-function addCompetency(id) {
-	
+function addCompetency(competencyID) {
+	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
 }
 </script>
 </head>

@@ -1,5 +1,6 @@
 package com.picsauditing.actions.employees;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
@@ -8,7 +9,6 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
@@ -18,7 +18,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	protected JobRole role;
 	protected List<JobRole> jobRoles;
-	protected List<OperatorCompetency> otherCompetencies;
+	protected List<OperatorCompetency> otherCompetencies = new ArrayList<OperatorCompetency>();
 
 	protected JobRoleDAO jobRoleDAO;
 	protected AccountDAO accountDAO;
