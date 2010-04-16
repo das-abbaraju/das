@@ -8,14 +8,17 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
+import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageJobRoles extends AccountActionSupport implements Preparable {
-	
+
 	protected JobRole role;
 	protected List<JobRole> jobRoles;
+	protected List<OperatorCompetency> otherCompetencies;
 
 	protected JobRoleDAO jobRoleDAO;
 	protected AccountDAO accountDAO;
@@ -42,7 +45,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 				account = accountDAO.find(accountID);
 		}
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -52,14 +55,14 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else
 			permissions.tryPermission(OpPerms.DefineRoles);
-		
+
 		if (role == null && account == null) {
 			account = accountDAO.find(permissions.getAccountId());
 		}
-		
+
 		if (permissions.getAccountId() != account.getId())
 			permissions.tryPermission(OpPerms.AllOperators);
-		
+
 		this.subHeading = account.getName();
 
 		if ("Add".equals(button)) {
@@ -86,15 +89,24 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			jobRoleDAO.remove(role);
 			role = null;
 		}
+		
+		if (role != null) {
+			otherCompetencies.clear();
+			List<OperatorCompetency> list = competencyDAO.findAll();
+			for (OperatorCompetency operatorCompetency : list) {
+				if (!role.getCompetencies().contains(operatorCompetency)) {
+					otherCompetencies.add(operatorCompetency);
+				}
+			}
+		}
 
 		return SUCCESS;
 	}
-	
+
 	public JobRole getRole() {
 		return role;
 	}
 
-	
 	public void setRole(JobRole role) {
 		this.role = role;
 	}
@@ -111,5 +123,9 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public int getUsedCount(JobRole jobRole) {
 		return jobRoleDAO.getUsedCount(jobRole.getName());
+	}
+
+	public List<OperatorCompetency> getOtherCompetencies() {
+		return otherCompetencies;
 	}
 }

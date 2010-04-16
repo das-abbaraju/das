@@ -28,11 +28,21 @@ fieldset.form label {
 }
 </style>
 <s:include value="../jquery.jsp" />
+<script type="text/javascript">
+function removeCompetency(id) {
+	
+}
+
+function addCompetency(id) {
+	
+}
+</script>
 </head>
 <body>
 <h1>Manage Job Roles <span class="sub"> <s:property
 	value="subHeading" escape="false" /> </span></h1>
 
+<a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">Job Competency Matrix</a>
 <table>
 	<tr>
 		<td style="vertical-align: top">
