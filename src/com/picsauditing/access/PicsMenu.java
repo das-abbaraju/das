@@ -147,7 +147,6 @@ public class PicsMenu {
 			subMenu.addChild("Approve Contractors", "ContractorApproval.action?filter.workStatus=P");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperator())
 			subMenu.addChild("Contractor Tags", "OperatorTags.action");
-
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
 			subMenu.addChild("Users", "UsersManage.action");
 		}
@@ -156,6 +155,8 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
+		if (permissions.hasPermission(OpPerms.DefineCompetencies))
+			subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 		
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
