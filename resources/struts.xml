@@ -1587,6 +1587,11 @@
 			<result>struts/employees/category_suggest.jsp</result>
 		</action>
 		
+		<action name="DefineRoles"
+			class="com.picsauditing.actions.employees.DefineRoles">
+			<result>struts/employees/con_define_roles.jsp</result>
+		</action>
+		
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"
 			class="com.picsauditing.actions.contractors.CertCleanUp">
