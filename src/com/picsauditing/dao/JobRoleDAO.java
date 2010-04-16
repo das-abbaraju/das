@@ -51,4 +51,10 @@ public class JobRoleDAO extends PicsDAO {
 		query.setParameter("name", name);
 		return query.getResultList().size();
 	}
+	
+	public List<JobCompetency> getCompetenciesByRole(JobRole jobRole) {
+		Query query = em.createQuery("From JobCompetency WHERE jobRole.id = :jobRole ORDER BY competency.category, competency.label");
+		query.setParameter("jobRole", jobRole.getId());
+		return query.getResultList();
+	}
 }

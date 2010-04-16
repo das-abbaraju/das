@@ -1,6 +1,7 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.opensymphony.xwork2.Preparable;
@@ -9,6 +10,7 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
@@ -18,7 +20,9 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	protected JobRole role;
 	protected List<JobRole> jobRoles;
+	protected List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
 	protected List<OperatorCompetency> otherCompetencies = new ArrayList<OperatorCompetency>();
+	private int competencyID = 0;
 
 	protected JobRoleDAO jobRoleDAO;
 	protected AccountDAO accountDAO;
@@ -89,18 +93,56 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			jobRoleDAO.remove(role);
 			role = null;
 		}
-		
+
 		if (role != null) {
-			otherCompetencies.clear();
+			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
 			List<OperatorCompetency> list = competencyDAO.findAll();
+			if (competencyID > 0) {
+				if ("removeCompetency".equals(button)) {
+					jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
+					Iterator<JobCompetency> iterator = jobCompetencies.iterator();
+					while (iterator.hasNext()) {
+						JobCompetency jobCompetency = (JobCompetency) iterator.next();
+						if (jobCompetency.getCompetency().getId() == competencyID) {
+							jobRoleDAO.remove(jobCompetency);
+							iterator.remove();
+						}
+					}
+				}
+				if ("addCompetency".equals(button)) {
+					for (OperatorCompetency operatorCompetency : list) {
+						if (operatorCompetency.getId() == competencyID) {
+							if (!roleContainsCompetency(operatorCompetency)) {
+								JobCompetency jc = new JobCompetency();
+								jc.setJobRole(role);
+								jc.setCompetency(operatorCompetency);
+								jc.setAuditColumns(permissions);
+								jobRoleDAO.save(jc);
+							}
+						}
+					}
+				}
+				jobRoleDAO.save(role);
+			}
+			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
+
+			otherCompetencies.clear();
 			for (OperatorCompetency operatorCompetency : list) {
-				if (!role.getCompetencies().contains(operatorCompetency)) {
+				if (!roleContainsCompetency(operatorCompetency)) {
 					otherCompetencies.add(operatorCompetency);
 				}
 			}
 		}
 
 		return SUCCESS;
+	}
+
+	private boolean roleContainsCompetency(OperatorCompetency operatorCompetency) {
+		for (JobCompetency jc : jobCompetencies) {
+			if (jc.getCompetency().equals(operatorCompetency))
+				return true;
+		}
+		return false;
 	}
 
 	public JobRole getRole() {
@@ -127,5 +169,9 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public List<OperatorCompetency> getOtherCompetencies() {
 		return otherCompetencies;
+	}
+
+	public void setCompetencyID(int competencyID) {
+		this.competencyID = competencyID;
 	}
 }

@@ -118,4 +118,10 @@ public class OperatorCompetency extends BaseTable {
 			}
 		};
 	}
+
+	@Override
+	public String toString() {
+		return category + ": " + label + " (" + id + ")";
+	}
+
 }

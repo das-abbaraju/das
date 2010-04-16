@@ -30,10 +30,12 @@ fieldset.form label {
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
 function removeCompetency(competencyID) {
+	$("a.compEditor").hide();
 	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'removeCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
 }
 
 function addCompetency(competencyID) {
+	$("a.compEditor").hide();
 	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
 }
 </script>
