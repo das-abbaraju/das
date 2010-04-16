@@ -52,28 +52,6 @@ public class DefineCompetencies extends OperatorActionSupport implements Prepara
 		findOperator();
 		tryPermissions(OpPerms.DefineCompetencies);
 
-		if ("Save".equals(button)) {
-			if (Strings.isEmpty(category) || Strings.isEmpty(label)) {
-				addActionError("Please enter a category and label to Save");
-				return SUCCESS;
-			}
-
-			OperatorCompetency operatorCompetency = new OperatorCompetency();
-			operatorCompetency.setAuditColumns(permissions);
-			operatorCompetency.setOperator(operator);
-			operatorCompetency.setCategory(category);
-			operatorCompetency.setLabel(label);
-			operatorCompetency.setDescription(description);
-			operatorCompetency.setHelpPage(helpPage);
-
-			operatorCompetencyDAO.save(operatorCompetency);
-
-			addActionMessage("Successfully added " + operatorCompetency.getLabel() + " to competencies.");
-			category = label = description = helpPage = "";
-
-			return SUCCESS;
-		}
-
 		if ("Remove".equals(button)) {
 			OperatorCompetency removed = operatorCompetencyDAO.find(competencyID);
 			operatorCompetencyDAO.remove(removed);
@@ -111,6 +89,8 @@ public class DefineCompetencies extends OperatorActionSupport implements Prepara
 		if ("save".equals(button)) {
 			if (competency != null) {
 				try {
+					if(competency.getOperator() == null)
+						competency.setOperator(operator);
 					operatorCompetencyDAO.save(competency);
 
 					json = new JSONObject() {

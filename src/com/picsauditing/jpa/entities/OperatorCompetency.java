@@ -84,8 +84,7 @@ public class OperatorCompetency extends BaseTable {
 
 	@Transient
 	public String getDeleteLink() {
-		return "<a href=\"DefineCompetencies.action?id=" + operator.getId() + "\"&competencyID=" + id
-				+ "\"&button=Remove\" class=\"remove\"></a>";
+		return "<a href=\"#\" onclick=\"remove(" + id + "); return false;\" class=\"remove\"></a>";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -113,7 +112,6 @@ public class OperatorCompetency extends BaseTable {
 				add(category);
 				add(label);
 				add(description);
-				add("0%");
 				add(getHelpPageLink());
 				add(getEditLink());
 				add(getDeleteLink());
