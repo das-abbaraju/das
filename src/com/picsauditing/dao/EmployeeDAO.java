@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -30,7 +31,7 @@ public class EmployeeDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.lastName, e.firstName");
+		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.firstName");
 		if (limit > 0)
 			query.setMaxResults(limit);
 		return query.getResultList();
@@ -51,8 +52,15 @@ public class EmployeeDAO extends PicsDAO {
 	}
 
 	public List<Employee> findByAccount(Account account) {
-		Query query = em.createQuery("SELECT e.employee FROM AccountEmployee e WHERE e.account = :account");
+		Query query = em.createQuery("SELECT e.employee FROM Employee e WHERE e.account = :account");
 		query.setParameter("account", account);
+		return query.getResultList();
+	}
+	
+	public List<Employee> findByCompetencies(int[] competencyIDs) {
+		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.id IN "
+				+ "(SELECT ec.employee.id FROM EmployeeCompetency ec WHERE ec.competency.id IN ("
+				+ Strings.implode(competencyIDs) + ")) ORDER BY e.firstName");
 		return query.getResultList();
 	}
 }

@@ -34,6 +34,7 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	
 	protected ContractorAccount contractor;
 	protected Employee employee = null;
+	protected List<Employee> employees;
 	protected int[] selectedCompetencies;
 
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
@@ -175,11 +176,17 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	public List<Employee> getEmployees() {
 		// Find ALL employees or just the ones with roles?
 		//return conDAO.find(conID).getEmployees();
-		List<EmployeeRole> roles = erDAO.findByContractor(conID);
-		List<Employee> employees = new ArrayList<Employee>();
-		
-		for (EmployeeRole role : roles) {
-			employees.add(role.getEmployee());
+		if (employees == null) {
+			employees = new ArrayList<Employee>();
+			
+			if (selectedCompetencies == null || selectedCompetencies.length == 0) {
+				List<EmployeeRole> roles = erDAO.findByContractor(conID);
+				for (EmployeeRole role : roles) {
+					employees.add(role.getEmployee());
+				}
+			} else {
+				employees = employeeDAO.findByCompetencies(selectedCompetencies);
+			}
 		}
 		
 		return employees;

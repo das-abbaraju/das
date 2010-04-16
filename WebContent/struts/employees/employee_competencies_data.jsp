@@ -8,7 +8,7 @@
 		<tr>
 			<th></th>
 			<th><a href="#" onclick="sortTable('employee'); return false;">Employee Name</a></th>
-			<th><a href="#" onclick="sortTable('jobRole'); return false;">Job Roles</a></th>
+			<th><a href="#" onclick="sortTable('jobRole,employee'); return false;">Job Roles</a></th>
 			<s:if test="selectedOC != null && selectedOC.size() > 0">
 				<s:iterator value="selectedOC">
 					<th><s:property value="label" /></th>
