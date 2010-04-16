@@ -7,7 +7,7 @@
 	<thead>
 		<tr>
 			<th></th>
-			<th><a href="#" onclick="sortTable('employee'); return false;">Employee Name</a></th>
+			<th><a href="#" onclick="sortTable('employee'); return false;">Employee</a></th>
 			<th><a href="#" onclick="sortTable('jobRole,employee'); return false;">Job Roles</a></th>
 			<s:if test="selectedOC != null && selectedOC.size() > 0">
 				<s:iterator value="selectedOC">
@@ -20,10 +20,10 @@
 		<s:iterator value="employees" id="employee" status="stat">
 			<tr>
 				<td class="id"><s:property value="#stat.count" /></td>
-				<td class="employee"><a href="EmployeeCompetencies.action?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.displayName" /></a></td>
+				<td class="employee"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.displayName" /></a></td>
 				<td class="jobRole">
-					<s:iterator value="getEmployeeRoles(#employee.id)" id="role">
-						<s:property value="#role.jobRole.name" /><br />
+					<s:iterator value="getEmployeeRoles(#employee.id)" id="role" status="stat">
+						<a href="?conID=<s:property value="conID" />&jobRoleID=<s:property value="#role.jobRole.id" />"><s:property value="#role.jobRole.name" /></a><s:if test="#stat.count < getEmployeeRoles(#employee.id).size()">, </s:if>
 					</s:iterator>
 				</td>
 				<s:if test="selectedOC != null && selectedOC.size() > 0">

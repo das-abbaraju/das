@@ -13,7 +13,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
@@ -29,12 +28,14 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	protected int conID;
 	protected int employeeID;
 	protected int ecID;
+	protected int jobRoleID;
 	protected boolean canEdit = false;
 	protected boolean checked;
 	
 	protected ContractorAccount contractor;
 	protected Employee employee = null;
 	protected List<Employee> employees;
+	protected List<EmployeeRole> roles = null;
 	protected int[] selectedCompetencies;
 
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
@@ -69,6 +70,9 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		
 		if (employeeID > 0)
 			employee = employeeDAO.find(employeeID);
+		
+		if (jobRoleID > 0)
+			roles = erDAO.findByJobRole(jobRoleID);
 		
 		if (button != null) {
 			if (button.equalsIgnoreCase("AddSkill")) {
@@ -134,6 +138,14 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		this.ecID = ecID;
 	}
 	
+	public int getJobRoleID() {
+		return jobRoleID;
+	}
+	
+	public void setJobRoleID(int jobRoleID) {
+		this.jobRoleID = jobRoleID;
+	}
+	
 	public boolean isCanEdit() {
 		return canEdit;
 	}
@@ -156,6 +168,10 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	
 	public Employee getEmployee() {
 		return employee;
+	}
+	
+	public List<EmployeeRole> getRoles() {
+		return roles;
 	}
 	
 	public int[] getSelectedCompetencies() {
@@ -196,17 +212,8 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		return opCompDAO.findByContractor(conID);
 	}
 	
-	public List<OperatorCompetency> getCompetencies(Employee employee) {
-		List<EmployeeRole> roles = getEmployeeRoles(employee.getId());
-		List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
-		
-		for (EmployeeRole role : roles) {
-			for (JobCompetency jc : role.getJobRole().getCompetencies()) {
-				competencies.add(jc.getCompetency());
-			}
-		}
-		
-		return competencies;
+	public List<EmployeeCompetency> getCompetencies(Employee employee) {
+		return ecDAO.findByEmployee(employee.getId());
 	}
 	
 	public List<EmployeeRole> getEmployeeRoles(int employeeID) {
