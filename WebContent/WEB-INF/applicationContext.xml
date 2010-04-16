@@ -48,6 +48,7 @@
 	<bean id="EmployeeCompetencyDAO" class="com.picsauditing.dao.EmployeeCompetencyDAO"/>
 	<bean id="EmployeeQualificationDAO" class="com.picsauditing.dao.EmployeeQualificationDAO"/>
 	<bean id="EmployeeRoleDAO" class="com.picsauditing.dao.EmployeeRoleDAO"/>
+	<bean id="EmployeeSiteDAO" class="com.picsauditing.dao.EmployeeSiteDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
 	<bean id="FileDAO" class="com.picsauditing.dao.FileDAO"/>
 	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
