@@ -48,11 +48,6 @@
 										listValue="description"
 										headerKey="" headerValue="- Classification -"/>
 								</li>
-								<li><label>Status</label>
-									<s:select name="employee.status" 
-										list="@com.picsauditing.jpa.entities.EmployeeStatus@values()"
-										headerKey="" headerValue="- Status -"/>
-								</li>
 								<li><label>Hire Date:</label>
 									<s:textfield name="employee.hireDate" cssClass="datepicker"/>
 								</li>
