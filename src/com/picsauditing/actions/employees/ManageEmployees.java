@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
@@ -31,6 +32,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected String ssn;
 
 	protected int roleID;
+	Set<JobRole> unusedJobRoles;
 
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
 			EmployeeRoleDAO employeeRoleDAO) {
@@ -69,6 +71,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (employee == null && account == null) {
 			account = accountDAO.find(permissions.getAccountId());
 		}
+
+		if (account == null)
+			throw new RecordNotFoundException("Account " + id + " not found");
 
 		if (permissions.getAccountId() != account.getId())
 			permissions.tryPermission(OpPerms.AllOperators);
@@ -169,13 +174,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public Set<JobRole> getUnusedJobRoles() {
-		Set<JobRole> jobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
+		if (unusedJobRoles == null) {
+			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
 
-		for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
-			if (jobRoles.contains(employeeRole.getJobRole()))
-				jobRoles.remove(employeeRole.getJobRole());
+			for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
+				if (unusedJobRoles.contains(employeeRole.getJobRole()))
+					unusedJobRoles.remove(employeeRole.getJobRole());
+			}
 		}
 
-		return jobRoles;
+		return unusedJobRoles;
 	}
 }

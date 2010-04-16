@@ -16,7 +16,7 @@
 <script type="text/javascript">
 var employeeID = 0;
 <s:if test="employee != null">
-employeeID = <s:property value="employee.id"/>
+employeeID = <s:property value="employee.id"/>;
 </s:if>
 
 function show(id) {
@@ -28,12 +28,9 @@ function show(id) {
 		);
 }
 
-function addJobRole(employeeID, roleID) {
-	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, roleID: roleID});
-}
-
-function removeJobRole(employeeID, roleID) {
-	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, roleID: roleID});
+function modJobRole(act, employeeID, roleID) {
+	startThinking({div: 'thinking_roles', message:act == 'addRole' ? 'Adding Job Role...' : 'Removing Job Role'})
+	$('#employee_role').load('ManageEmployeesAjax.action', {button: act, 'employee.id': employeeID, roleID: roleID});
 }
 
 $(function() {
@@ -42,11 +39,21 @@ $(function() {
 	$('input.date').mask('99/99/9999');
 
 	$('#employees').dataTable({
+			aoColumns: [
+		            {bVisible: false},
+		            null,
+		            null,
+		            null,
+		            null
+				],
 			bStateSave: true,
-			bInfo: false,
-			oLanguage: { sLengthMenu: 'Show _MENU_' },
+			oLanguage: {
+				sSearch:"",
+				sLengthMenu: '_MENU_', 
+				sInfo:"_START_ to _END_ of _TOTAL_",
+				sInfoEmpty:"",
+				sInfoFiltered:"(filtered from _MAX_)" },
 			iDisplayLength: 25,
-			sPaginationType: "full_numbers",
 			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
 				if (aData[0] == employeeID)
 					$(nRow).not('.highlight').addClass('highlight');
@@ -75,6 +82,7 @@ div.dataTables_length { width: 35%; }
 					<table class="report" id="employees">
 						<thead>
 							<tr>
+								<th>id</th>
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>Title</th>
@@ -83,6 +91,7 @@ div.dataTables_length { width: 35%; }
 						</thead>
 						<s:iterator value="account.employees">
 							<tr class="clickable" onclick="javascript:window.location.href='?employee.id=<s:property value="id"/>'">
+								<td><s:property value="id"/></td>
 								<td><s:property value="firstName"/></td>
 								<td><s:property value="lastName"/></td>
 								<td><s:property value="title"/></td>
@@ -149,7 +158,7 @@ div.dataTables_length { width: 35%; }
 						</fieldset>
 					</s:form>
 					
-					<s:if test="employee.id > 0">
+					<s:if test="employee.id > 0 && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
 						<div id="employee_role">
 							<s:include value="manage_employee_roles.jsp"/>
 						</div>
