@@ -20,7 +20,7 @@ public class JobRole extends BaseTable {
 
 	private Account account;
 	private String name;
-	private boolean active;
+	private boolean active = true;
 	private List<JobCompetency> competencies = new ArrayList<JobCompetency>();
 	private List<OperatorCompetency> otherCompetencies = new ArrayList<OperatorCompetency>();
 

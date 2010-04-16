@@ -227,6 +227,7 @@
 		</pics:permission>
 		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Employees</a></li>
+		<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>
 		<s:if test="!contractor.status.demo">
 			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
@@ -245,7 +246,9 @@
 			<li><a id="profileEditLink" href="ProfileEdit.action"
 		<s:if test="requestURI.contains('profile')">class="current"</s:if>><span>Edit My Profile</span></a></li>
 		<pics:permission perm="ContractorAdmin">
-			<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
+			<li><a href="UsersManage.action">Users</a></li>
+			<li><a href="ManageEmployees.action">Employees</a></li>
+			<li><a href="ManageJobRoles.action">Job Roles</a></li>
 		</pics:permission>
 		<pics:permission perm="ContractorBilling">
 			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
