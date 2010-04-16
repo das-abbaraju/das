@@ -73,6 +73,12 @@ div.dataTables_length { width: 35%; }
 	
 	<s:include value="../actionMessages.jsp"/>
 
+	<s:if test="account.employees.size() == 0 && employee == null">
+		<div class="info">
+			There are no employees on this account. Click the "Add New Employee" button to add a new employee.
+		</div>
+	</s:if>
+
 	<a href="?id=<s:property value="account.id"/>&button=Add" class="picsbutton">Add New Employee</a>
 
 	<table style="margin-top: 20px;">
