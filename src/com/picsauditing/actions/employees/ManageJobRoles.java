@@ -92,6 +92,8 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			addActionMessage("Role " + role.getName() + " Successfully Deleted.");
 			jobRoleDAO.remove(role);
 			role = null;
+			
+			return redirect("ManageJobRoles.action?id=" + account.getId());
 		}
 
 		if (role != null) {

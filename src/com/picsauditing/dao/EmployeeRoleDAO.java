@@ -19,6 +19,14 @@ public class EmployeeRoleDAO extends PicsDAO {
 		return (List<EmployeeRole>) super.findAll(EmployeeRole.class);
 	}
 
+	public List<EmployeeRole> findByJobRole(int jobRoleID) {
+		Query query = em.createQuery("SELECT e FROM EmployeeRole e " +
+				"WHERE e.jobRole.id = ? ORDER BY e.employee.firstName");
+
+		query.setParameter(1, jobRoleID);
+		return query.getResultList();
+	}
+	
 	public List<EmployeeRole> findByEmployee(int employeeID) {
 		Query query = em.createQuery("SELECT e FROM EmployeeRole e "
 				+ "WHERE e.employee.id = ? ORDER BY e.employee.firstName");

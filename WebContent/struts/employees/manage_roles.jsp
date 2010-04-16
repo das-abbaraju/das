@@ -64,26 +64,30 @@ function addCompetency(competencyID) {
 				</s:if>
 			</tbody>
 		</table>
+		<a href="?id=<s:property value="account.id" />&button=Add" class="add">Add New Job Role</a>
 		</td>
 		<s:if test="role != null">
 			<td style="vertical-align: top"><s:form>
 				<s:hidden name="id" />
 				<s:hidden name="role.id" />
-				<fieldset class="form bottom"><legend><span>Define
-				Role</span></legend>
+				<fieldset class="form bottom"><legend><span>Define Role</span></legend>
 				<ol>
-					<li><label>Role:</label> <s:textfield id="roleInputBox"
-						name="role" /></li>
+					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" /></li>
 				</ol>
-				<div style="text-align: center; margin: 0px auto;"><input
-					type="submit" value="Add" class="picsbutton positive" name="button" />
-				<button onclick="$('#roleInputBox').val(''); return false;"
-					class="picsbutton negative">Cancel</button>
+				<div style="text-align: center; margin: 0px auto;">
+					<input type="submit" value="Save" class="picsbutton positive" name="button" />
+					<button onclick="$('#roleInputBox').val(''); return false;"
+						class="picsbutton">Cancel</button>
+					<s:if test="role.id != 0"><a href="?id=<s:property value="account.id" />&role.id=<s:property value="role.id" />&button=Delete"
+						class="picsbutton negative" onclick="return confirm('Please confirm removing this job role.');">Remove</a>
+					</s:if>
 				</div>
 				</fieldset>
 			</s:form>
 			<div id="jobCompetencyList">
-				<s:include value="manage_roles_competencies.jsp"></s:include>
+				<s:if test="role.id != 0">
+					<s:include value="manage_roles_competencies.jsp"></s:include>
+				</s:if>
 			</div>
 			</td>
 		</s:if>
