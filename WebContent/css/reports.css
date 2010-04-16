@@ -74,7 +74,8 @@ table.noshade tr:hover {
 }
 
 table.report tr.highlight {
-	background: #BBB;
+	background: #FFC;
+	color: #000;
 }
 
 /******************** Primary Table class="tablestyle"  ************************/
