@@ -32,6 +32,7 @@
 		<class>com.picsauditing.jpa.entities.EmailTemplate</class>
 		<class>com.picsauditing.jpa.entities.Employee</class>
 		<class>com.picsauditing.jpa.entities.EmployeeRole</class>
+		<class>com.picsauditing.jpa.entities.EmployeeSite</class>
 		<class>com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings</class>
 		<class>com.picsauditing.jpa.entities.Facility</class>
 		<class>com.picsauditing.jpa.entities.FlagColor</class>
