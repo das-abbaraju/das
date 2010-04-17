@@ -6,7 +6,9 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -14,6 +16,18 @@ public class EmployeeSiteDAO extends PicsDAO {
 
 	public EmployeeSite find(int id) {
 		return em.find(EmployeeSite.class, id);
+	}
+
+	public List<EmployeeSite> findSitesByEmployee(Employee e) {
+		Query query = em.createQuery("SELECT e FROM EmployeeSite e WHERE e.employee = ?");
+		query.setParameter(1, e);
+		return query.getResultList();
+	}
+
+	public List<EmployeeSite> findSitesByOperator(OperatorAccount o) {
+		Query query = em.createQuery("SELECT e FROM EmployeeSite e WHERE e.operator = ?");
+		query.setParameter(1, o);
+		return query.getResultList();
 	}
 
 	public List<EmployeeSite> findAll() {

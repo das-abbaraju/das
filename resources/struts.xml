@@ -1529,6 +1529,11 @@
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employee_roles.jsp</result>
 		</action>
+		
+		<action name="ManageEmployeeSites"
+			class="com.picsauditing.actions.employees.ManageEmployeeSites">
+			<result>struts/employees/manage_employee_sites.jsp</result>
+		</action>
 				
 		<action name="EmployeeDetail"
 			class="com.picsauditing.actions.employees.EmployeeDetail">

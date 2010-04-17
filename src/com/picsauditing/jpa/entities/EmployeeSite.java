@@ -3,11 +3,15 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
+@Table(name = "employee_site")
+@PrimaryKeyJoinColumn(name = "id")
 public class EmployeeSite extends BaseTable implements JSONable {
 
 	private OperatorAccount operator;
