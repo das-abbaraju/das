@@ -17,16 +17,21 @@
 			<td><a href="#" onclick="modJobSite('removeSite','<s:property value="employee.id"/>','','<s:property value="#site.operator.id"/>'); return false;" class="remove">Remove</a></td>
 		</tr>
 	</s:iterator>
-	<tr>
-		<td>
-			<s:select onchange=""
-				list="operators"
-				name="operator.id"
-				listKey="id"
-				listValue="name"
-				id="operator"
-			/>
-		</td>
-		<td><a href="#" onclick="modJobSite('addSite','<s:property value="employee.id"/>','',$('#operator').val()); return false;" class="add">Add</a></td>
+	<s:if test="operators.size > 0">
+		<tr>
+			<td>
+				<s:select onchange=""
+					list="operators"
+					name="operator.id"
+					listKey="id"
+					listValue="name"
+					id="operator"
+				/>
+			</td>
+			<td><a href="#" onclick="modJobSite('addSite','<s:property value="employee.id"/>','',$('#operator').val()); return false;" class="add">Add</a></td>
 		</tr>
+	</s:if>
 </table>
+<s:if test="operators.size == 0">
+	<h5>This employee as been assigned to all available sites.</h5>
+</s:if>

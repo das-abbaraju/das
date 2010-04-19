@@ -173,7 +173,7 @@ public class Employee extends BaseTable {
 	public void setEmployeeRoles(List<EmployeeRole> jobRoles) {
 		this.employeeRoles = jobRoles;
 	}
-	
+
 	@OneToMany(mappedBy = "employee")
 	public List<EmployeeSite> getEmployeeSites() {
 		return employeeSites;

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -261,6 +262,13 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
 			for (ContractorOperator co : contractor.getNonCorporateOperators())
 				returnList.add(co.getOperatorAccount());
+			
+			// trimming return list by used entries
+			for(EmployeeSite used : employee.getEmployeeSites())
+				if(returnList.contains(used.getOperator()))
+					returnList.remove(used.getOperator());
+			
+			Collections.sort(returnList);
 			return returnList;
 			// if operator employee return list of self, and if corporate, child
 			// facilities
@@ -276,6 +284,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				// just add self
 				returnList.add(operator);
 			}
+			
+			Collections.sort(returnList);
 			return returnList;
 		} else {
 			return null;
