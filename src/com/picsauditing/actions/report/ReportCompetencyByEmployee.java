@@ -5,11 +5,11 @@ import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
-public class ReportComplianceByEmployee extends ReportActionSupport {
+public class ReportCompetencyByEmployee extends ReportActionSupport {
 
 	protected SelectSQL sql = new SelectSQL();
 
-	public ReportComplianceByEmployee() {
+	public ReportCompetencyByEmployee() {
 		orderByDefault = "a.name, e.lastName, e.firstName";
 	}
 

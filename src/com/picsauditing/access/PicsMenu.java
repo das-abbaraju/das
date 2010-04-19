@@ -259,6 +259,12 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search", "UserList.action");
 
+		if (permissions.hasPermission(OpPerms.DefineCompetencies)) {
+			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
+			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
+			subMenu.addChild("Competency Detail", "ReportCompetencyDetail.action");
+		}
+
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu, subMenu);
 		}

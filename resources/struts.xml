@@ -1562,14 +1562,19 @@
 			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
 		</action>
 		
-		<action name="ReportComplianceByEmployee"
-			class="com.picsauditing.actions.report.ReportComplianceByEmployee">
-			<result>/struts/reports/report_compliance_employee.jsp</result>
+		<action name="ReportCompetencyByEmployee"
+			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
+			<result>/struts/reports/report_competency_employee.jsp</result>
 		</action>
 
-		<action name="ReportComplianceByAccount"
-			class="com.picsauditing.actions.report.ReportComplianceByAccount">
-			<result>/struts/reports/report_compliance_account.jsp</result>
+		<action name="ReportCompetencyByAccount"
+			class="com.picsauditing.actions.report.ReportCompetencyByAccount">
+			<result>/struts/reports/report_competency_account.jsp</result>
+		</action>
+		
+		<action name="ReportCompetencyDetail"
+			class="com.picsauditing.actions.report.ReportCompetencyDetail">
+			<result>/struts/reports/report_competency_detail.jsp</result>
 		</action>
 		
 		<!-- Competencies -->

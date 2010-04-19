@@ -3,9 +3,9 @@ package com.picsauditing.actions.report;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
-public class ReportComplianceByAccount extends ReportComplianceByEmployee {
+public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 
-	public ReportComplianceByAccount() {
+	public ReportCompetencyByAccount() {
 		orderByDefault = "name";
 	}
 

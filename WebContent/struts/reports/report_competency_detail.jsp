@@ -1,11 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Compliance By Account Report</title>
+<title>Competency By Account Report</title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Compliance By Account Report</h1>
+<h1>Competency By Account Report</h1>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
@@ -14,15 +14,21 @@
 <table class="report" id="matrix">
 	<thead>
 		<tr>
+			<th>First Name</th>
+			<th>Last Name</th>
 			<th>Account</th>
-			<th>Compliance</th>
+			<th>Label</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
+				<td><s:property value="#data.get('firstName')" /></td>
+				<td><s:property value="#data.get('lastName')" /></td>
 				<td><s:property value="#data.get('name')" /></td>
-				<td><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
+				<td><s:property value="#data.get('label')" /></td>
+				<td><s:if test="#data.get('skilledValue') == 1">Skilled</s:if></td>
 			</tr>
 		</s:iterator>
 	</tbody>
