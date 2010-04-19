@@ -90,9 +90,14 @@ public class VerifyView extends ContractorActionSupport {
 					int categoryID = auditData.getQuestion().getSubCategory()
 							.getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
-							|| (categoryID == AuditCategory.CITATIONS && auditData
+							|| (categoryID == AuditCategory.CITATIONS && (auditData
 									.getQuestion().getIsRequired()
-									.equals("Yes"))) {
+									.equals("Yes")) 
+									|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
+									|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
+									|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered())
+									|| (auditData.getQuestion().getId() == 3568 && auditData.isAnswered())
+							)) {
 						Map<String, AuditData> inner = emrs.get(auditData
 								.getQuestion());
 

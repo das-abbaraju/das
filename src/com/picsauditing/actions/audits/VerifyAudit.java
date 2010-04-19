@@ -8,7 +8,9 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 
@@ -114,5 +116,26 @@ public class VerifyAudit extends AuditActionSupport {
 			}
 		}		
 		return null;
+	}
+	
+	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {
+		int questionid = auditQuestion.getId();
+		if(questionid == 2447 || questionid == 2448)
+			return false;
+		if (auditQuestion.getSubCategory().getCategory().getId() != AuditCategory.CITATIONS)
+			return true;
+		if(auditQuestion.getSubCategory().getCategory().getId() == AuditCategory.CITATIONS) {
+			if(auditQuestion.getIsRequired().equals("Yes"))
+				return true;
+			if(questionid == 3565 && isAnswered)
+				return true;
+			if(questionid == 3566 && isAnswered)
+				return true;
+			if(questionid == 3567 && isAnswered)
+				return true;
+			if(questionid == 3568 && isAnswered)
+				return true;
+		}
+		return false;
 	}
 }

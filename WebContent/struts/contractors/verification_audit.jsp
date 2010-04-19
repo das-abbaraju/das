@@ -82,16 +82,14 @@
 	Questions</span></legend>
 		<s:sort comparator="dataComparator" source="conAudit.data">
 	 <s:iterator>
-		<s:if test="question.id != 2447 && question.id != 2448">
-			<s:set name="categoryID" value="question.subCategory.category.id"/>
-			<s:if test="#categoryID != 278 || (#categoryID == 278 && question.isRequired == 'Yes')">
+		<s:if test="isShowQuestionToVerify(question, answered)">
 			<s:div id="qid_%{question.id}">
 			<ol>
 				<li><strong><s:property value="question.subCategory.subCategory"/></strong><br />
 					<s:property value="question.subCategory.category.number"/>.<s:property value="question.subCategory.number"/>.<s:property value="question.number"/>
 					<s:property value="question.question"/>
 					<br/>
-					<s:if test="question.id == 3563"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
+					<s:if test="question.id == 3563 || question.id == 3565 || question.id == 3566"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 				</li>
 	
 				<s:if test="question.questionType != 'File'">
@@ -146,7 +144,6 @@
 			</ol>
 			</s:div>
 			</s:if>
-		</s:if>
 	</s:iterator>
 	</s:sort>
 	</fieldset>
