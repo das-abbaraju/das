@@ -6,17 +6,17 @@ import com.picsauditing.access.Permissions;
 public class PermissionQueryBuilder {
 	static final public int SQL = 1;
 	static final public int HQL = 2;
-	private int queryLanguage = SQL;
-	private String accountAlias = "a"; // or contractorAccount
+	protected int queryLanguage = SQL;
+	protected String accountAlias = "a"; // or contractorAccount
 	private boolean showPendingDeactivated = false;
 	private boolean onlyPendingAudits = true; // if auditor, then only show
 												// the pending or submitted
 												// audits
-	private Permissions permissions;
+	protected Permissions permissions;
 	private boolean workingFacilities = true;
 
 	public PermissionQueryBuilder(Permissions permissions) {
-		this.permissions = permissions;
+		this(permissions, SQL);
 	}
 
 	public PermissionQueryBuilder(Permissions permissions, int queryLanguage) {
