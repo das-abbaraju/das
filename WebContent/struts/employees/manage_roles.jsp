@@ -51,7 +51,7 @@ function addCompetency(competencyID) {
 		<table class="report">
 			<thead>
 				<tr>
-					<th>Name</th>
+					<th>Job Role</th>
 					<th>Active</th>
 				</tr>
 			</thead>
@@ -68,8 +68,9 @@ function addCompetency(competencyID) {
 		</table>
 		<a href="?id=<s:property value="account.id" />&button=Add" class="add">Add New Job Role</a>
 		</td>
+		<td>&nbsp;</td>
 		<s:if test="role != null">
-			<td style="vertical-align: top"><s:form>
+			<td style="vertical-align: top" id="roleCell"><s:form>
 				<s:hidden name="id" />
 				<s:hidden name="role.id" />
 				<fieldset class="form bottom"><legend><span>Define Role</span></legend>
@@ -79,8 +80,7 @@ function addCompetency(competencyID) {
 				</ol>
 				<div style="text-align: center; margin: 0px auto;">
 					<input type="submit" value="Save" class="picsbutton positive" name="button" />
-					<button onclick="$('#roleInputBox').val(''); return false;"
-						class="picsbutton">Cancel</button>
+					<button onclick="$('#roleCell').empty(); return false;" class="picsbutton">Cancel</button>
 					<s:if test="role.id != 0"><a href="?id=<s:property value="account.id" />&role.id=<s:property value="role.id" />&button=Delete"
 						class="picsbutton negative" onclick="return confirm('Please confirm removing this job role.');">Remove</a>
 					</s:if>

@@ -18,6 +18,7 @@
 			</tbody>
 		</table>
 		</td>
+		<td>&nbsp;</td>
 		<td>
 		<table class="report">
 			<thead>
