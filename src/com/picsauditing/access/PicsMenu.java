@@ -47,11 +47,37 @@ public class PicsMenu {
 		if (permissions.isContractor()) {
 			// Don't show a menu for Contractors, they will use their sub menu
 			// for now
-			if (permissions.getAccountStatus().isActiveDemo())
+			if (permissions.getAccountStatus().isActiveDemo()) {
 				subMenu = menu.addChild("Home", "Home.action");
-			else
+
+				subMenu = menu.addChild("Company");
+				subMenu.addChild("Our Profile", "ContractorView.action");
+				subMenu.addChild("Where We Work", "ContractorFacilities.action");
+				subMenu.addChild("Activity Log", "ContractorNotes.action");
+
+				if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
+					subMenu = menu.addChild("Edit");
+					subMenu.addChild("Company Account", "ContractorEdit.action");
+					subMenu.addChild("Users", "UsersManage.action");
+					subMenu.addChild("Employees", "ManageEmployees.action");
+					subMenu.addChild("Job Roles", "ManageJobRoles.action");
+				}
+
+				if (permissions.hasPermission(OpPerms.ContractorBilling)) {
+					subMenu = menu.addChild("Billing");
+					subMenu.addChild("Billing Details", "BillingDetail.action");
+					subMenu.addChild("Payment Options", "ContractorPaymentOptions.action");
+				}
+
+				menu.addChild("Forms &amp; Docs", "ContractorForms.action");
+				
+				subMenu = addSupportLink(menu);
+				subMenu.addChild("Edit Profile", "ProfileEdit.action");
+
+			} else {
 				subMenu = menu.addChild("Edit Account", "ContractorEdit.action");
-			addSupportLink(menu, subMenu);
+				addSupportLink(menu);
+			}
 			return menu;
 		}
 
@@ -78,7 +104,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorDetails))
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
 
-		if (permissions.isPicsEmployee()) // || permissions.isOperatorCorporate()
+		if (permissions.isPicsEmployee()) // ||
+											// permissions.isOperatorCorporate()
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 
 		subMenu = menu.addChild("Auditing");
@@ -150,14 +177,14 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
 			subMenu.addChild("Users", "UsersManage.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.EditUsers)) {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.DefineCompetencies))
 			subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
-		
+
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
@@ -187,7 +214,7 @@ public class PicsMenu {
 
 		if (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorSafety))
 			subMenu.addChild("Job Competency Matrix", "JobCompetencyMatrix.action");
-		
+
 		if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
 			subMenu.addChild("Sales Report", "ReportSalesReps.action");
 		}
@@ -250,7 +277,7 @@ public class PicsMenu {
 			final String url = "ReportIncidenceRate.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild("Incidence Rates", url);
 		}
-		
+
 		if (permissions.getAccountName().startsWith("Tesoro"))
 			subMenu.addChild("Background Check", "QuestionAnswerSearchByAudit.action");
 
@@ -266,7 +293,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.isOperatorCorporate()) {
-			addSupportLink(menu, subMenu);
+			addSupportLink(menu);
 		}
 		// Convert the first submenu into a menu if only one exists
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
@@ -282,9 +309,9 @@ public class PicsMenu {
 		return menu;
 	}
 
-	static public MenuComponent addSupportLink(MenuComponent menu, MenuComponent subMenu) {
-		subMenu = menu.addChild("Support");
+	static public MenuComponent addSupportLink(MenuComponent menu) {
+		MenuComponent subMenu = menu.addChild("Support");
 		subMenu.addChild("Contact Us", "Contact.action");
-		return menu;
+		return subMenu;
 	}
 }
