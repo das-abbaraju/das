@@ -1562,6 +1562,11 @@
 			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
 		</action>
 		
+		<action name="ReportComplianceByEmployee"
+			class="com.picsauditing.actions.report.ReportComplianceByEmployee">
+			<result>/struts/reports/report_compliance_employee.jsp</result>
+		</action>
+		
 		<!-- Competencies -->
 		<action name="JobCompetencyMatrix"
 			class="com.picsauditing.actions.employees.JobCompetencyMatrix">

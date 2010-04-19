@@ -1,47 +1,29 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.mail.WizardSession;
-import com.picsauditing.search.SelectSQL;
-
 @SuppressWarnings("serial")
-public class ReportComplianceByEmployee extends ReportActionSupport {
-	protected SelectSQL sql = new SelectSQL();
-	
+public class ReportComplianceByEmployee extends ReportAccount {
 	public ReportComplianceByEmployee() {
-		orderByDefault = "a.name, e.lastName";
-	}
-	
-	protected boolean runReport() {
-		return true;
+		orderByDefault = "a.name, e.lastName, e.firstName";
 	}
 	
 	protected void buildQuery() {
-		sql = new SelectSQL();
-		sql.setFromTable("employee_competency ec");
-		sql.setSQL_CALC_FOUND_ROWS(true);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		if (runReport()) {
-			buildQuery();
-			run(sql);
-
-			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
-			wizardSession.clear();
-
-			return returnResult();
-		}
-		return SUCCESS;
-	}
-	
-	protected String returnResult() throws IOException {
-		return SUCCESS;
+		super.buildQuery();
+		
+		//sql.addField("e.id");
+		sql.addField("e.firstName");
+		sql.addField("e.lastName");
+		sql.addField("a.id AS accountID");
+		sql.addField("COUNT(jc.competencyID) AS required");
+		sql.addField("SUM(IFNULL(ec.skilled,0)) AS skilled");
+		sql.addJoin("JOIN employee e on e.accountID = a.id");
+		sql.addJoin("JOIN (SELECT DISTINCT er.employeeID, jc.competencyID FROM employee_role er"
+				+ " JOIN job_competency jc ON jc.jobRoleID = er.jobRoleID) jc ON jc.employeeID = e.id");
+		sql.addJoin("LEFT JOIN employee_competency ec ON ec.competencyID = jc.competencyID AND e.id = ec.employeeID");
+		sql.addGroupBy("e.id");
+		
+		if (permissions.isContractor())
+			sql.addWhere("a.id = " + permissions.getAccountId());
+		if (permissions.isOperatorCorporate())
+			sql.addField("a.name");
 	}
 }
