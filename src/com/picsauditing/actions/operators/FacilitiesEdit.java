@@ -283,7 +283,7 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	}
 
 	public List<User> getUserList() throws Exception {
-		return userDAO.findWhere("isActive='Yes' AND isGroup = 'No' AND account.id = 1100");
+		return userDAO.findByGroup(10801); // only showing users from marketing group
 	}
 
 	public int[] getFacilities() {
