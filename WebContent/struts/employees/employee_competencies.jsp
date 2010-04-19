@@ -62,7 +62,7 @@ function getData() {
 
 <h1>Employee Competencies<span class="sub"><s:property value="contractor.name" /></span></h1>
 
-<s:if test="conID > 0 && employees.size() > 0 && employeeID == 0 && jobRoleID == 0">
+<s:if test="conID > 0 && employees.size() > 0 && employeeID == 0">
 	<s:form id="form1">
 		<s:hidden name="conID" />
 		<s:hidden name="button" value="Update List" />
@@ -93,12 +93,12 @@ function getData() {
 			</tr>
 		</thead>
 		<tbody>
-			<s:iterator value="getCompetencies(employee)" id="employeeCompetency" status="stat">
-				<s:set name="ec" id="ec" value="map.get(employee, #employeeCompetency.competency)" />
+			<s:iterator value="getCompetencies(employee)" id="competency" status="stat">
+				<s:set name="ec" id="ec" value="map.get(employee, #competency.competency)" />
 				<tr>
 					<td class="id"><s:property value="#stat.count" /></td>
-					<td class="category"><s:property value="competency.category" /></td>
-					<td class="label"><s:property value="competency.label" /></td>
+					<td class="category"><s:property value="#ec.competency.category" /></td>
+					<td class="label"><s:property value="#ec.competency.label" /></td>
 					<td class="center"
 							<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
 							<s:elseif test="#ec.skilled"> style="background-color: #AFA"</s:elseif>>
@@ -112,41 +112,8 @@ function getData() {
 	</table>
 	<script type="text/javascript">sortTable('category,label');</script>
 </s:elseif>
-<s:elseif test="jobRoleID > 0">
-	<h3><s:property value="roles.get(0).jobRole.name" />s</h3>
-	<table class="report" id="competenceMatrix">
-		<thead>
-			<tr>
-				<th></th>
-				<th><a href="#" onclick="sortTable('employee'); return false;">Employee</a></th>
-				<s:iterator value="getCompetencies(roles.get(0).employee)" id="employeeCompetency">
-					<th><s:property value="#employeeCompetency.competency.label" /></th>
-				</s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-			<s:iterator value="roles" id="role" status="stat">
-				<tr>
-					<td class="id"><s:property value="#stat.count" /></td>
-					<td class="employee"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#role.employee.id" />"><s:property value="#role.employee.displayName" /></a></td>
-					<s:iterator value="getCompetencies(#role.employee)" id="employeeCompetency">
-						<s:set name="ec" id="ec" value="map.get(#role.employee, #employeeCompetency.competency)" />
-						<td class="center"
-								<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
-								<s:if test="#ec.skilled"> style="background-color: #AFA"</s:if>>
-							<s:if test="#ec != null">
-								<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
-							</s:if>
-						</td>
-					</s:iterator>
-				</tr>
-			</s:iterator>
-		</tbody>
-	</table>
-	<script type="text/javascript">sortTable('category,label');</script>
-</s:elseif>
 
-<s:if test="employeeID > 0 || jobRoleID > 0">
+<s:if test="employeeID > 0">
 	<a href="?conID=<s:property value="conID" />">View all employees for <s:property value="contractor.name" /></a>
 </s:if>
 
