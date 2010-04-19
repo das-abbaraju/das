@@ -33,6 +33,11 @@ function modJobRole(act, employeeID, roleID) {
 	$('#employee_role').load('ManageEmployeesAjax.action', {button: act, 'employee.id': employeeID, roleID: roleID});
 }
 
+function modJobSite(act, employeeID, siteID, operatorID) {
+	startThinking({div: 'thinking_sites', message:act == 'addSite' ? 'Assigning Employee to Job Site...' : 'Removing Employee from Job Site'})
+	$('#employee_site').load('ManageEmployeesAjax.action', {button: act, 'employee.id': employeeID, siteID: siteID, operatorID: operatorID});
+}
+
 $(function() {
 	$.mask.definitions['S']='[X0-9]';
 	$('input.ssn').mask('SSS-SS-SSSS');
@@ -163,10 +168,16 @@ div.dataTables_length { width: 35%; }
 							<input type="submit" value="Delete" name="button" class="picsbutton negative"/>
 						</fieldset>
 					</s:form>
-					
-					<s:if test="employee.id > 0 && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
-						<div id="employee_role">
-							<s:include value="manage_employee_roles.jsp"/>
+							
+					<s:if test="employee.id > 0">
+						<s:if test="(unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
+							<div id="employee_role" style="float:left;padding-right:20px;">
+								<s:include value="manage_employee_roles.jsp"/>
+							</div>
+						</s:if>
+			
+						<div id="employee_site" style="float:left;">
+							<s:include value="manage_employee_sites.jsp"/>
 						</div>
 					</s:if>
 				</td>

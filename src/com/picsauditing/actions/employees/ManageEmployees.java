@@ -1,5 +1,6 @@
 package com.picsauditing.actions.employees;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,19 +12,31 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
+import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobRoleDAO;
+import com.picsauditing.dao.JobSiteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeRole;
+import com.picsauditing.jpa.entities.EmployeeSite;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.JobRole;
+import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ManageEmployees extends AccountActionSupport implements Preparable {
 
 	private AccountDAO accountDAO;
 	private EmployeeDAO employeeDAO;
 	private JobRoleDAO roleDAO;
 	private EmployeeRoleDAO employeeRoleDAO;
+	private JobSiteDAO jobSiteDAO;
+	private EmployeeSiteDAO employeeSiteDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 
 	protected List<OperatorAccount> operators;
 	protected List<Employee> employees;
@@ -32,14 +45,20 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected String ssn;
 
 	protected int roleID;
+	protected int siteID;
+	protected int operatorID;
 	Set<JobRole> unusedJobRoles;
 
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
-			EmployeeRoleDAO employeeRoleDAO) {
+			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, OperatorAccountDAO operatorAccountDAO,
+			JobSiteDAO jobSiteDAO) {
 		this.accountDAO = accountDAO;
 		this.employeeDAO = employeeDAO;
 		this.roleDAO = roleDAO;
 		this.employeeRoleDAO = employeeRoleDAO;
+		this.jobSiteDAO = jobSiteDAO;
+		this.employeeSiteDAO = employeeSiteDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -144,6 +163,38 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			return SUCCESS;
 		}
 
+		if ("addSite".equals(button)) {
+			JobSite jobSite = jobSiteDAO.find(siteID);
+			OperatorAccount operator = operatorAccountDAO.find(operatorID);
+
+			if (employee != null && operator != null) {
+				EmployeeSite es = new EmployeeSite();
+				es.setEmployee(employee);
+				es.setOperator(operator);
+				es.setAuditColumns(permissions);
+
+				if (jobSite != null)
+					es.setJobSite(jobSite);
+
+				employeeSiteDAO.save(es);
+			}
+
+			return "sites";
+		}
+
+		if ("removeSite".equals(button)) {
+			if (employee != null && operatorID > 0) {
+				EmployeeSite es = employeeSiteDAO.findByEmployeeAndOperator(employee.getId(), operatorID);
+
+				if (es != null) {
+					employee.getEmployeeSites().remove(es);
+					employeeSiteDAO.remove(es);
+				}
+			}
+
+			return "sites";
+		}
+
 		return SUCCESS;
 	}
 
@@ -173,6 +224,22 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.roleID = roleID;
 	}
 
+	public int getSiteID() {
+		return siteID;
+	}
+
+	public void setSiteID(int siteID) {
+		this.siteID = siteID;
+	}
+
+	public int getOperatorID() {
+		return operatorID;
+	}
+
+	public void setOperatorID(int operatorID) {
+		this.operatorID = operatorID;
+	}
+
 	public Set<JobRole> getUnusedJobRoles() {
 		if (unusedJobRoles == null) {
 			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
@@ -184,5 +251,34 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		return unusedJobRoles;
+	}
+
+	public List<OperatorAccount> getOperators() {
+		// if contractor employee, return site list of non-corporate sites
+		if (employee.getAccount() instanceof ContractorAccount) {
+			ContractorAccount contractor = (ContractorAccount) employee.getAccount();
+
+			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
+			for (ContractorOperator co : contractor.getNonCorporateOperators())
+				returnList.add(co.getOperatorAccount());
+			return returnList;
+			// if operator employee return list of self, and if corporate, child
+			// facilities
+		} else if (employee.getAccount() instanceof OperatorAccount) {
+			OperatorAccount operator = (OperatorAccount) employee.getAccount();
+			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
+
+			if (operator.isCorporate()) {
+				returnList.add(operator); // adding self
+				for (Facility facility : operator.getCorporateFacilities())
+					returnList.add(facility.getOperator());
+			} else {
+				// just add self
+				returnList.add(operator);
+			}
+			return returnList;
+		} else {
+			return null;
+		}
 	}
 }

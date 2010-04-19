@@ -39,6 +39,7 @@ public class Employee extends BaseTable {
 	private String photo;
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
+	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
 
 	public String getFirstName() {
 		return firstName;
@@ -171,6 +172,15 @@ public class Employee extends BaseTable {
 
 	public void setEmployeeRoles(List<EmployeeRole> jobRoles) {
 		this.employeeRoles = jobRoles;
+	}
+	
+	@OneToMany(mappedBy = "employee")
+	public List<EmployeeSite> getEmployeeSites() {
+		return employeeSites;
+	}
+
+	public void setEmployeeSites(List<EmployeeSite> employeeSites) {
+		this.employeeSites = employeeSites;
 	}
 
 	@SuppressWarnings("unchecked")

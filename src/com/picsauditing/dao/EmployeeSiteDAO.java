@@ -48,4 +48,12 @@ public class EmployeeSiteDAO extends PicsDAO {
 			query.setMaxResults(limit);
 		return query.getResultList();
 	}
+
+	public EmployeeSite findByEmployeeAndOperator(int employeeID, int operatorID) {
+		Query q = em.createQuery("FROM EmployeeSite WHERE employee.id = :employeeID AND operator.id = :operatorID");
+		q.setParameter("employeeID", employeeID);
+		q.setParameter("operatorID", operatorID);
+
+		return (EmployeeSite) q.getSingleResult();
+	}
 }
