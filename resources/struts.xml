@@ -1572,15 +1572,30 @@
 			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
 			<result>/struts/reports/report_competency_employee.jsp</result>
 		</action>
+		<action name="ReportCompetencyByEmployeeCSV"
+			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<action name="ReportCompetencyByAccount"
 			class="com.picsauditing.actions.report.ReportCompetencyByAccount">
 			<result>/struts/reports/report_competency_account.jsp</result>
 		</action>
+		<action name="ReportCompetencyByAccountCSV"
+			class="com.picsauditing.actions.report.ReportCompetencyByAccount">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 		
 		<action name="ReportCompetencyDetail"
 			class="com.picsauditing.actions.report.ReportCompetencyDetail">
 			<result>/struts/reports/report_competency_detail.jsp</result>
+		</action>
+		<action name="ReportCompetencyDetailCSV"
+			class="com.picsauditing.actions.report.ReportCompetencyDetail">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
 		</action>
 		
 		<!-- Competencies -->

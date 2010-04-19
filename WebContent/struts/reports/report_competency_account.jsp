@@ -15,7 +15,7 @@
 	<thead>
 		<tr>
 			<th>Account</th>
-			<th>Compliance</th>
+			<th>Competency</th>
 		</tr>
 	</thead>
 	<tbody>

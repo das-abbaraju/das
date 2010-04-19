@@ -18,7 +18,7 @@
 			<th>Last Name</th>
 			<th>Account</th>
 			<th>Label</th>
-			<th></th>
+			<th>Competency</th>
 		</tr>
 	</thead>
 	<tbody>

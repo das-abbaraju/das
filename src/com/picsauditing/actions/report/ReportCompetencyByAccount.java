@@ -9,6 +9,7 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 		orderByDefault = "name";
 	}
 
+	@Override
 	protected void buildQuery() {
 		super.buildQuery();
 		sql = new SelectSQL("(" + sql.toString() + ") t");
@@ -18,4 +19,5 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 		sql.addField("sum(skilled) skilled");
 		sql.addField("sum(required) required");
 	}
+
 }
