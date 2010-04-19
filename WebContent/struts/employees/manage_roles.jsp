@@ -52,6 +52,7 @@ function addCompetency(competencyID) {
 			<thead>
 				<tr>
 					<th>Name</th>
+					<th>Active</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -59,6 +60,7 @@ function addCompetency(competencyID) {
 					<s:iterator value="jobRoles">
 						<tr>
 							<td><a href="?id=<s:property value="account.id" />&role.id=<s:property value="id" />"><s:property value="name" /></a></td>
+							<td class="center"><s:if test="active">Y</s:if><s:else>N</s:else></td>
 						</tr>
 					</s:iterator>
 				</s:if>
@@ -73,6 +75,7 @@ function addCompetency(competencyID) {
 				<fieldset class="form bottom"><legend><span>Define Role</span></legend>
 				<ol>
 					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" /></li>
+					<li><label>Active:</label> <s:checkbox name="role.active" value="role.active" /> </li>
 				</ol>
 				<div style="text-align: center; margin: 0px auto;">
 					<input type="submit" value="Save" class="picsbutton positive" name="button" />

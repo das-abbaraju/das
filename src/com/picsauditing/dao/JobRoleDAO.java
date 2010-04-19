@@ -28,14 +28,26 @@ public class JobRoleDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	public List<JobRole> findJobRolesByAccount(int accountID) {
-		Query query = em.createQuery("From JobRole WHERE account.id = :accountID AND active = 1 ORDER BY name");
+	public List<JobRole> findJobRolesByAccount(int accountID, boolean onlyActive) {
+		String queryString = "FROM JobRole WHERE account.id = :accountID";
+		
+		if (onlyActive)
+			queryString += " AND active = 1";
+		
+		queryString += " ORDER BY active DESC, name";
+		
+		Query query = em.createQuery(queryString);
 		query.setParameter("accountID", accountID);
 		return query.getResultList();
 	}
 	
-	public DoubleMap<JobRole, OperatorCompetency, JobCompetency> findJobCompetencies(int accountID) {
-		Query query = em.createQuery("From JobCompetency WHERE jobRole.account.id = :accountID AND active = 1");
+	public DoubleMap<JobRole, OperatorCompetency, JobCompetency> findJobCompetencies(int accountID, boolean onlyActive) {
+		String queryString = "FROM JobCompetency WHERE jobRole.account.id = :accountID";
+		
+		if (onlyActive)
+			queryString += " AND jobRole.active = 1";
+		
+		Query query = em.createQuery(queryString);
 		query.setParameter("accountID", accountID);
 		List<JobCompetency> resultList = query.getResultList();
 		

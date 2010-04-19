@@ -101,13 +101,12 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			List<OperatorCompetency> list = competencyDAO.findAll();
 			if (competencyID > 0) {
 				if ("removeCompetency".equals(button)) {
-					jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
 					Iterator<JobCompetency> iterator = jobCompetencies.iterator();
 					while (iterator.hasNext()) {
-						JobCompetency jobCompetency = (JobCompetency) iterator.next();
-						if (jobCompetency.getCompetency().getId() == competencyID) {
-							jobRoleDAO.remove(jobCompetency);
+						JobCompetency current = iterator.next();
+						if (current.getCompetency().getId() == competencyID) {
 							iterator.remove();
+							competencyDAO.remove(current);
 						}
 					}
 				}
@@ -119,15 +118,15 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 								jc.setJobRole(role);
 								jc.setCompetency(operatorCompetency);
 								jc.setAuditColumns(permissions);
-								jobRoleDAO.save(jc);
+								competencyDAO.save(jc);
+								jobCompetencies.add(jc);
 							}
 						}
 					}
 				}
 				jobRoleDAO.save(role);
 			}
-			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
-
+			
 			otherCompetencies.clear();
 			for (OperatorCompetency operatorCompetency : list) {
 				if (!roleContainsCompetency(operatorCompetency)) {
@@ -157,7 +156,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public List<JobRole> getJobRoles() {
 		if (jobRoles == null)
-			jobRoles = jobRoleDAO.findJobRolesByAccount(account.getId());
+			jobRoles = jobRoleDAO.findJobRolesByAccount(account.getId(), false);
 		return jobRoles;
 	}
 
@@ -167,6 +166,10 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public int getUsedCount(JobRole jobRole) {
 		return jobRoleDAO.getUsedCount(jobRole.getName());
+	}
+	
+	public List<JobCompetency> getJobCompetencies() {
+		return jobCompetencies;
 	}
 
 	public List<OperatorCompetency> getOtherCompetencies() {

@@ -9,7 +9,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<s:iterator value="role.competencies">
+				<s:iterator value="jobCompetencies">
 				<tr>
 					<td><s:property value="competency.category"/>: <s:property value="competency.label"/></td>
 					<td><a href="#" class="compEditor" onclick="removeCompetency(<s:property value="competency.id"/>); return false;"><img alt="Delete" src="images/icon-16-remove.png" border="0"></a></td>

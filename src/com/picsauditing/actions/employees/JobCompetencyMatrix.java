@@ -38,9 +38,9 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 			throw new Exception("Missing id");
 
 		account = accountDAO.find(id);
-		roles = jobRoleDAO.findJobRolesByAccount(id);
+		roles = jobRoleDAO.findJobRolesByAccount(id, true);
 		competencies = competencyDAO.findAll();
-		map = jobRoleDAO.findJobCompetencies(id);
+		map = jobRoleDAO.findJobCompetencies(id, true);
 
 		this.subHeading = account.getName();
 
