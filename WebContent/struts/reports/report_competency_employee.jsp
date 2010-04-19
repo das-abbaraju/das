@@ -23,8 +23,8 @@
 	<tbody>
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
-				<td><s:property value="#data.get('lastName')" /></td>
-				<td><s:property value="#data.get('firstName')" /></td>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('lastName')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('firstName')" /></a></td>
 				<td><s:property value="#data.get('name')" /></td>
 				<td><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
 			</tr>

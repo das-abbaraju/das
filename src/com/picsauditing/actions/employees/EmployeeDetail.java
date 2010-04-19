@@ -6,6 +6,7 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.util.Strings;
 
 public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
@@ -26,9 +27,9 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		if (employeeID > 0) {
 			employee = employeeDAO.find(employeeID);
 		}
-	
+
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -45,5 +46,12 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	public String getSsn() {
+		if (employee != null)
+			return Strings.maskSSN(employee.getSsn());
+
+		return null;
 	}
 }

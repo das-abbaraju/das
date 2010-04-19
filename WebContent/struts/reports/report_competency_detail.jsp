@@ -24,8 +24,8 @@
 	<tbody>
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
-				<td><s:property value="#data.get('firstName')" /></td>
-				<td><s:property value="#data.get('lastName')" /></td>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('firstName')" /></a></td>
+				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('lastName')" /></a></td>
 				<td><s:property value="#data.get('name')" /></td>
 				<td><s:property value="#data.get('label')" /></td>
 				<td><s:if test="#data.get('skilledValue') == 1">Skilled</s:if></td>

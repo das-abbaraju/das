@@ -20,65 +20,64 @@
 </div>
 	
 	<s:include value="../actionMessages.jsp"/>
-
-	<table>
-		<tr>
-			<td style="vertical-align:top;">
-				<s:if test="employee != null">
-					<s:form>
-						<s:hidden name="employee.id"/>
-						<fieldset class="form">
-							<legend><span>Employee Details</span></legend>
-							<ol>
-								<li><label>First Name:</label>
-									<s:textfield name="employee.firstName"/>
-								</li>
-								<li><label>Last Name:</label>
-									<s:textfield name="employee.lastName"/>
-								</li>
-								<li><label>SSN:</label>
-									<s:textfield name="employee.ssn"/>
-								</li>
-								<li><label>Birth Date:</label>
-									<s:textfield name="employee.birthDate" cssClass="datepicker"/>
-								</li>
-								<li><label>Classification:</label>
-									<s:select name="employee.classification" 
-										list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
-										listValue="description"
-										headerKey="" headerValue="- Classification -"/>
-								</li>
-								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" cssClass="datepicker"/>
-								</li>
-								<li><label>Fire Date:</label>
-									<s:textfield name="employee.fireDate" cssClass="datepicker"/>
-								</li>
-								<li><label>Title:</label>
-									<s:textfield name="employee.title"/>
-								</li>
-								<li><label>Location:</label>
-									<s:textfield name="employee.location"/>
-								</li>
-								<li><label>Email:</label>
-									<s:textfield name="employee.email"/>
-								</li>
-								<li><label>Phone #:</label>
-									<s:textfield name="employee.phone"/>
-								</li>
-								<li><label>Photo:</label>
-									<s:textfield name="employee.photo"/>
-								</li>
-							</ol>
-						</fieldset>
-						<fieldset class="form submit">
-							<input type="submit" value="Save" name="button" class="picsbutton positive"/>
-							<input type="submit" value="Delete" name="button" class="picsbutton negative"/>
-						</fieldset>
-					</s:form>
-				</s:if>
-			</td>
-		</tr>
-	</table>
+	<div>
+		<s:if test="employee != null">
+			<s:form>
+				<fieldset class="form">
+					<legend><span>Employee Details</span></legend>
+					<ol>
+						<li><label>First Name:</label>
+							<s:property value="employee.firstName"/>
+							<br/>
+						</li>
+						<li><label>Last Name:</label>
+							<s:property value="employee.lastName"/>
+							<br/>
+						</li>
+						<li><label>SSN:</label>
+							<s:property value="ssn"/>
+							<br/>
+						</li>
+						<li><label>Birth Date:</label>
+							<s:property value="employee.birthDate"/>
+							<br/>
+						</li>
+						<li><label>Classification:</label>
+							<s:property value="employee.classification"/>
+							<br/>
+						</li>
+						<li><label>Hire Date:</label>
+							<s:property value="employee.hireDate"/>
+							<br/>
+						</li>
+						<li><label>Fire Date:</label>
+							<s:property value="employee.fireDate"/>
+							<br/>
+						</li>
+						<li><label>Title:</label>
+							<s:property value="employee.title"/>
+							<br/>
+						</li>
+						<li><label>Location:</label>
+							<s:property value="employee.location"/>
+							<br/>
+						</li>
+						<li><label>Email:</label>
+							<s:property value="employee.email"/>
+							<br/>
+						</li>
+						<li><label>Phone #:</label>
+							<s:property value="employee.phone"/>
+							<br/>
+						</li>
+						<li><label>Photo:</label>
+							<s:property value="employee.photo"/>
+							<br/>
+						</li>
+					</ol>
+				</fieldset>
+			</s:form>
+		</s:if>
+	</div>
 </body>
 </html>

@@ -42,7 +42,7 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 
 		sql.addWhere("1 " + builder.toString());
 
-		// sql.addField("e.id");
+		sql.addField("e.id");
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
 		sql.addField("a.id AS accountID");
