@@ -80,7 +80,7 @@ function addCompetency(competencyID) {
 				</ol>
 				<div style="text-align: center; margin: 0px auto;">
 					<input type="submit" value="Save" class="picsbutton positive" name="button" />
-					<button onclick="$('#roleCell').empty(); return false;" class="picsbutton">Cancel</button>
+					<input type="button" onclick="$('#roleCell').empty(); return false;" class="picsbutton" value="Cancel"/>
 					<s:if test="role.id != 0"><a href="?id=<s:property value="account.id" />&role.id=<s:property value="role.id" />&button=Delete"
 						class="picsbutton negative" onclick="return confirm('Please confirm removing this job role.');">Remove</a>
 					</s:if>
