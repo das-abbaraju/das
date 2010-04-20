@@ -23,8 +23,9 @@ public class EmployeeCompetencyDAO extends PicsDAO {
 	}
 
 	public List<EmployeeCompetency> findByEmployee(int employeeID) {
-		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e "
-				+ "WHERE e.employee.id = ? ORDER BY e.employee.firstName");
+		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e"
+				+ " WHERE e.employee.id = ? GROUP BY e.competency.id"
+				+ " ORDER BY e.employee.firstName");
 
 		query.setParameter(1, employeeID);
 		return query.getResultList();

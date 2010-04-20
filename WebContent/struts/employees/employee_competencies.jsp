@@ -41,12 +41,6 @@ function saveChange(ecID, checkbox) {
 	$.getJSON('EmployeeCompetenciesAjax.action', data,
 		function(json) {
 			checkbox.checked = !checkbox.checked;
-		
-			$.gritter.add({
-				title: json.title,
-				text: json.msg
-			});
-			
 			$(checkbox.parentNode).css('background-color', checkbox.checked ? '#AFA' : '#FAA');
 		}
 	);
@@ -56,6 +50,15 @@ function getData() {
 	$('#competencyTable').html('<img src="images/ajax_process2.gif" /> finding results');
 	$('#competencyTable').load('EmployeeCompetenciesAjax.action', $('#form1').serialize());
 }
+
+$.ajaxSetup({
+	error : function(XMLHttpRequest, textStatus, errorThrown) {
+		$.gritter.add({
+			title:'Unexpected Error Occurred',
+			text: 'Connection with PICS failed. If this continues, try refreshing or logging out.'
+		});
+	}
+});
 </script>
 </head>
 <body>
