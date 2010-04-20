@@ -6,7 +6,6 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -28,59 +27,56 @@ public class JobRoleDAO extends PicsDAO {
 		Query query = em.createQuery("From JobRole WHERE " + where);
 		return query.getResultList();
 	}
-	
+
 	public List<JobRole> findJobRolesByAccount(int accountID, boolean onlyActive) {
 		String queryString = "FROM JobRole WHERE account.id = :accountID";
-		
+
 		if (onlyActive)
 			queryString += " AND active = 1";
-		
+
 		queryString += " ORDER BY active DESC, name";
-		
+
 		Query query = em.createQuery(queryString);
 		query.setParameter("accountID", accountID);
 		return query.getResultList();
 	}
-	
+
 	public DoubleMap<JobRole, OperatorCompetency, JobCompetency> findJobCompetencies(int accountID, boolean onlyActive) {
 		String queryString = "FROM JobCompetency WHERE jobRole.account.id = :accountID";
-		
+
 		if (onlyActive)
 			queryString += " AND jobRole.active = 1";
-		
+
 		Query query = em.createQuery(queryString);
 		query.setParameter("accountID", accountID);
 		List<JobCompetency> resultList = query.getResultList();
-		
+
 		DoubleMap<JobRole, OperatorCompetency, JobCompetency> map = new DoubleMap<JobRole, OperatorCompetency, JobCompetency>();
 		for (JobCompetency jc : resultList) {
 			map.put(jc.getJobRole(), jc.getCompetency(), jc);
 		}
 		return map;
 	}
-	
+
 	public int getUsedCount(String name) {
 		Query query = em.createQuery("From JobRole WHERE name = :name");
 		query.setParameter("name", name);
 		return query.getResultList().size();
 	}
-	
+
 	public List<JobCompetency> getCompetenciesByRole(JobRole jobRole) {
-		Query query = em.createQuery("From JobCompetency WHERE jobRole.id = :jobRole ORDER BY competency.category, competency.label");
+		Query query = em
+				.createQuery("From JobCompetency WHERE jobRole.id = :jobRole ORDER BY competency.category, competency.label");
 		query.setParameter("jobRole", jobRole.getId());
 		return query.getResultList();
 	}
-	
-	//	select distinct r.name from job_role r
-	//	join job_competency_stats js on r.name = js.jobRole
-	//	group by r.name order by sum(js.usedCount)/sum(totalCount) desc;
-	public List<String> findDistinctRolesOrderByPercent(){
-		Query query = em.createQuery(
-				"SELECT DISTINCT r.name FROM JobRole r " +
-				"JOIN JobCompetencyStats js ON r.name = js.jobRole " +
-				"GROUP BY r.name " +
-				"ORDER BY SUM(js.usedCount)/SUM(totalCount) DESC"
-				);
+
+	// select distinct r.name from job_role r
+	// join job_competency_stats js on r.name = js.jobRole
+	// group by r.name order by sum(js.usedCount)/sum(totalCount) desc;
+	public List<String> findDistinctRolesOrderByPercent() {
+		Query query = em.createQuery("SELECT DISTINCT js.jobRole FROM JobCompetencyStats js"
+				+ " GROUP BY js.jobRole ORDER BY SUM(js.usedCount)/SUM(js.totalCount) DESC");
 		return query.getResultList();
 	}
 }
