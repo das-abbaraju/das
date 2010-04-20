@@ -39,8 +39,9 @@ public class OperatorTagDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<OperatorTag> findByOperator(int opID, boolean active) {
-		String hql = "SELECT t FROM OperatorTag t WHERE (" +
+		String hql = "SELECT t FROM OperatorTag t WHERE " +
 				"t.operator.id = :opID OR " +
+				"(t.inheritable = 1 AND " +
 				"t.operator IN (SELECT corporate FROM Facility WHERE operator.id = :opID)" +
 				")";
 		if (active)

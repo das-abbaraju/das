@@ -314,13 +314,15 @@ table.report tr.hurdle td {
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<p>Risk Level: <strong><s:property value="contractor.riskLevel"/></strong></p>
-				<s:if test= "permissions.operator && (contractor.operatorTags.size() > 0 || operatorTags.size() > 0)">
-					<div><span>Operator Tag Names: </span>
-						<div id="conoperator_tags">
-						<s:include value="contractorOperator_tags.jsp" />
+				<pics:permission perm="ContractorTags">
+					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
+						<div><span>Operator Tag Names: </span>
+							<div id="conoperator_tags">
+							<s:include value="contractorOperator_tags.jsp" />
+							</div>
 						</div>
-					</div>
-				</s:if>	
+					</s:if>
+				</pics:permission>	
 				<div class="clear"></div>
 			</div>
 		</div>

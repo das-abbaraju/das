@@ -1,3 +1,4 @@
+
 package com.picsauditing.util;
 
 import java.util.Date;
@@ -367,7 +368,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowOperator(false);
 			setShowFlagStatus(true);
 			setShowWaitingOn(true);
-			setShowOpertorTagName(true);
 			if (permissions.hasPermission(OpPerms.ViewUnApproved)) {
 				setShowWorkStatus(true);
 			}
@@ -376,6 +376,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowPrimaryInformation(true);
 			setShowTradeInformation(true);
 		}
+		if(permissions.hasPermission(OpPerms.ContractorTags))
+			setShowOpertorTagName(true);
+		
 		if (permissions.isCorporate()) {
 		}
 		if (permissions.isPicsEmployee()) {

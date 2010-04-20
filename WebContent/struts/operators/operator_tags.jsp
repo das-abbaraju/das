@@ -30,13 +30,20 @@
 		</thead>
 		<s:iterator value="tags" status="rowstatus">
 			<tr>
-				<td><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" /> <s:textfield
-					name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
-				<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
-				<td><s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" /></td>
-				<s:if test="operator.corporate">
-					<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
+				<s:if test="operator.id == permissions.accountId">
+					<td><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" /> <s:textfield
+						name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
+					<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
+					<td><s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" /></td>
+					<s:if test="operator.corporate">
+						<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
+					</s:if>
 				</s:if>
+				<s:else>
+					<td><s:property value="tag"/></td>
+					<td><s:property value="active"/></td>
+					<td><s:property value="visibleToContractor" /></td>
+				</s:else>
 			</tr>
 		</s:iterator>
 		<tr>
