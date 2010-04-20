@@ -22,6 +22,7 @@ public class AuditOperator extends BaseTable {
 	protected boolean canEdit;
 	protected int minRiskLevel = 0;
 	protected String help;
+	protected OperatorTag operatorTag;
 
 	private int htmlID = 0;
 
@@ -83,6 +84,16 @@ public class AuditOperator extends BaseTable {
 		this.help = help;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "tagID", nullable = true)
+	public OperatorTag getOperatorTag() {
+		return operatorTag;
+	}
+
+	public void setOperatorTag(OperatorTag operatorTag) {
+		this.operatorTag = operatorTag;
+	}
+
 	/**
 	 * Unique ID used in HTML. We can't use the auditOperatorID because that may
 	 * be blank for new records
@@ -112,9 +123,23 @@ public class AuditOperator extends BaseTable {
 	 */
 	@Transient
 	public boolean isRequiredFor(ContractorAccount contractor) {
-		if(contractor.getRiskLevel() == null)
+		if (contractor.getRiskLevel() == null)
 			return false;
-		
-		return (canSee && minRiskLevel > 0 && minRiskLevel <= contractor.getRiskLevel().ordinal());
+
+		boolean requiresAudit = canSee && minRiskLevel > 0
+				&& minRiskLevel <= contractor.getRiskLevel().ordinal();
+
+		// checking to see if this audit is tagged for this contractor
+		if (requiresAudit && operatorTag != null && operatorTag.isActive()) {
+			boolean isTagged = false;
+			for (ContractorTag contractorTag : contractor.getOperatorTags()) {
+				if (contractorTag.getTag().equals(operatorTag)) {
+					return true;
+				}
+			}
+			return isTagged;
+		}
+
+		return requiresAudit;
 	}
 }
