@@ -219,6 +219,9 @@
 	</s:if>
 	<li><a href="ContractorNotes.action?id=<s:property value="id" />"
 		<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
+	<pics:permission perm="DefineCompetencies">
+		<li><a href="JobCompetencyMatrix.action?id=<s:property value="id" />"><span>Job Competency Matrix</span></a></li>
+	</pics:permission>
 	<s:if test="permissions.admin">
 		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
@@ -259,7 +262,6 @@
 				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 		</pics:permission>
 	</s:elseif>
-	
 </ul>
 </div>
 

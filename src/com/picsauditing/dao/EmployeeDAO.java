@@ -31,7 +31,7 @@ public class EmployeeDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.firstName");
+		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.lastName");
 		if (limit > 0)
 			query.setMaxResults(limit);
 		return query.getResultList();
@@ -52,15 +52,24 @@ public class EmployeeDAO extends PicsDAO {
 	}
 
 	public List<Employee> findByAccount(Account account) {
-		Query query = em.createQuery("SELECT e.employee FROM Employee e WHERE e.account = :account");
+		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.account = :account");
 		query.setParameter("account", account);
+		return query.getResultList();
+	}
+	
+	public List<Employee> findByJobRole(int jobRoleID, int accountID) {
+		Query query = em.createQuery("SELECT e FROM Employee e"
+				+ " WHERE e.id IN (SELECT er.employee.id FROM EmployeeRole er WHERE er.jobRole.id = ?)"
+				+ " AND e.account.id = ? ORDER BY e.lastName");
+		query.setParameter(1, jobRoleID);
+		query.setParameter(2, accountID);
 		return query.getResultList();
 	}
 	
 	public List<Employee> findByCompetencies(int[] competencyIDs, int accountID) {
 		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.id IN "
 				+ "(SELECT ec.employee.id FROM EmployeeCompetency ec WHERE ec.competency.id IN ("
-				+ Strings.implode(competencyIDs) + ")) AND e.account.id = ? ORDER BY e.firstName");
+				+ Strings.implode(competencyIDs) + ")) AND e.account.id = ? ORDER BY e.lastName");
 		
 		query.setParameter(1, accountID);
 		

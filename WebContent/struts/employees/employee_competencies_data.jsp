@@ -7,7 +7,8 @@
 	<thead>
 		<tr>
 			<th></th>
-			<th><a href="#" onclick="sortTable('employee'); return false;">Employee</a></th>
+			<th><a href="#" onclick="sortTable('lastName,firstName'); return false;">Last Name</a></th>
+			<th><a href="#" onclick="sortTable('firstName,lastName'); return false;">First Name</a></th>
 			<th><a href="#" onclick="sortTable('jobRole,employee'); return false;">Job Roles</a></th>
 			<s:if test="selectedOC != null && selectedOC.size() > 0">
 				<s:iterator value="selectedOC">
@@ -20,10 +21,11 @@
 		<s:iterator value="employees" id="employee" status="stat">
 			<tr>
 				<td class="id"><s:property value="#stat.count" /></td>
-				<td class="employee"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.displayName" /></a></td>
+				<td class="lastName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.lastName" /></a></td>
+				<td class="firstName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.firstName" /></a></td>
 				<td class="jobRole">
 					<s:iterator value="employeeRolesByContractor.get(#employee.id)" id="role" status="stat">
-						<s:property value="#role.jobRole.name" /><s:if test="#stat.count < employeeRolesByContractor.get(#employee.id).size()">, </s:if>
+						<a href="?conID=<s:property value="conID" />&jobRoleID=<s:property value="#role.jobRole.id" />"><s:property value="#role.jobRole.name" /></a><s:if test="#stat.count < employeeRolesByContractor.get(#employee.id).size()">, </s:if>
 					</s:iterator>
 				</td>
 				<s:if test="selectedOC != null && selectedOC.size() > 0">
