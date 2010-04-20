@@ -6,6 +6,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
@@ -39,16 +41,13 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private EmployeeSiteDAO employeeSiteDAO;
 	private OperatorAccountDAO operatorAccountDAO;
 
-	protected List<OperatorAccount> operators;
-	protected List<Employee> employees;
-
 	protected Employee employee;
 	protected String ssn;
 
 	protected int roleID;
 	protected int siteID;
 	protected int operatorID;
-	Set<JobRole> unusedJobRoles;
+	protected Set<JobRole> unusedJobRoles;
 
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
 			EmployeeRoleDAO employeeRoleDAO, EmployeeSiteDAO employeeSiteDAO, OperatorAccountDAO operatorAccountDAO,
@@ -241,6 +240,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.operatorID = operatorID;
 	}
 
+	@SuppressWarnings("unchecked")
+	public JSONArray getEmployeeData() {
+		return new JSONArray() {
+			{
+				for (Employee e : account.getEmployees()) {
+					add(e.toTableJSON());
+				}
+			}
+		};
+	}
+
 	public Set<JobRole> getUnusedJobRoles() {
 		if (unusedJobRoles == null) {
 			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
@@ -262,12 +272,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
 			for (ContractorOperator co : contractor.getNonCorporateOperators())
 				returnList.add(co.getOperatorAccount());
-			
+
 			// trimming return list by used entries
-			for(EmployeeSite used : employee.getEmployeeSites())
-				if(returnList.contains(used.getOperator()))
+			for (EmployeeSite used : employee.getEmployeeSites())
+				if (returnList.contains(used.getOperator()))
 					returnList.remove(used.getOperator());
-			
+
 			Collections.sort(returnList);
 			return returnList;
 			// if operator employee return list of self, and if corporate, child
@@ -284,7 +294,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				// just add self
 				returnList.add(operator);
 			}
-			
+
 			Collections.sort(returnList);
 			return returnList;
 		} else {

@@ -19,16 +19,17 @@
 	</s:iterator>
 	<s:if test="operators.size > 0">
 		<tr>
-			<td>
-				<s:select onchange=""
+			<td colspan="2">
+				<s:select onchange="modJobSite('addSite','%{employee.id}','',this.value);"
 					list="operators"
 					name="operator.id"
 					listKey="id"
 					listValue="name"
+					headerKey=""
+					headerValue=" - Add Job Site - "
 					id="operator"
 				/>
 			</td>
-			<td><a href="#" onclick="modJobSite('addSite','<s:property value="employee.id"/>','',$('#operator').val()); return false;" class="add">Add</a></td>
 		</tr>
 	</s:if>
 </table>

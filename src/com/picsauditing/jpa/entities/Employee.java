@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.util.Strings;
@@ -204,5 +205,19 @@ public class Employee extends BaseTable {
 		json.put("photo", photo);
 
 		return json;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transient
+	public JSONArray toTableJSON() {
+		return new JSONArray() {
+			{
+				add(id);
+				add(lastName);
+				add(firstName);
+				add(title == null ? "" : title);
+				add(classification == null ? null : classification.toString());
+			}
+		};
 	}
 }

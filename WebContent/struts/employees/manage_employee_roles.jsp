@@ -17,10 +17,9 @@
 			<td><a href="#" onclick="modJobRole('removeRole','<s:property value="employee.id"/>','<s:property value="jobRole.id"/>'); return false;" class="remove">Remove</a></td>
 		</tr>
 	</s:iterator>
-	<s:iterator value="unusedJobRoles">
-		<tr>
-			<td><s:property value="name"/></td>
-			<td><a href="#" onclick="modJobRole('addRole','<s:property value="employee.id"/>','<s:property value="id"/>'); return false;" class="add">Add</a></td>
-		</tr>
-	</s:iterator>					
+	<tr>
+		<td colspan="2">
+			<s:select list="unusedJobRoles" onchange="modJobRole('addRole','%{employee.id}',this.value)" headerKey="" headerValue=" - Add New Role - " listKey="id" listValue="name"/>
+		</td>
+	</tr>
 </table>

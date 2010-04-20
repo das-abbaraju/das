@@ -51,6 +51,7 @@ $(function() {
 		            null,
 		            null
 				],
+			aaData: <s:property value="employeeData" escape="false"/>,
 			bStateSave: true,
 			oLanguage: {
 				sSearch:"",
@@ -62,6 +63,10 @@ $(function() {
 			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
 				if (aData[0] == employeeID)
 					$(nRow).not('.highlight').addClass('highlight');
+
+				$(nRow).not('.clickable').addClass('clickable').click(function() {
+						location.href='?employee.id='+aData[0];
+					});
 				return nRow;
 			}
 		});
@@ -94,21 +99,12 @@ div.dataTables_length { width: 35%; }
 						<thead>
 							<tr>
 								<th>id</th>
-								<th>First Name</th>
 								<th>Last Name</th>
+								<th>First Name</th>
 								<th>Title</th>
 								<th>Classification</th>
 							</tr>
 						</thead>
-						<s:iterator value="account.employees">
-							<tr class="clickable" onclick="javascript:window.location.href='?employee.id=<s:property value="id"/>'">
-								<td><s:property value="id"/></td>
-								<td><s:property value="firstName"/></td>
-								<td><s:property value="lastName"/></td>
-								<td><s:property value="title"/></td>
-								<td><s:property value="classification.description"/></td>
-							</tr>
-						</s:iterator>
 					</table>
 				</td>
 				
