@@ -109,7 +109,7 @@ function showText(qID, textid) {
 		</li>
 		<li><label>Text:</label>
 			<s:if test="question.id > 0">
-				<table class="report">
+				<table class="report" style="clear: none">
 				<thead>
 					<tr>
 						<th>Locale</th>
@@ -137,12 +137,14 @@ function showText(qID, textid) {
 		<li><label>Expiration Date:</label>
 			<s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/>
 		</li>
-		<li><label>Added:</label>
-			<s:date name="question.creationDate" />
-		</li>
-		<li><label>Updated:</label>
-			<s:date name="question.updateDate" />
-		</li>
+		<s:if test="question.id > 0">
+			<li><label>Added:</label>
+				<s:date name="question.creationDate" />
+			</li>
+			<li><label>Updated:</label>
+				<s:date name="question.updateDate" />
+			</li>
+		</s:if>
 		<li><label>Column Header:</label>
 			<s:textfield name="question.columnHeader" size="20" maxlength="30"/>
 		</li>	
@@ -157,7 +159,7 @@ function showText(qID, textid) {
 		</li>
 		<li><label>Requirement:</label>
 			<s:if test="question.id > 0">
-				<table class="report">
+				<table class="report" style="clear: none">
 				<thead>
 					<tr>
 						<th>Locale</th>
