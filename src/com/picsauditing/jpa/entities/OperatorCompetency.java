@@ -2,14 +2,10 @@ package com.picsauditing.jpa.entities;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -30,8 +26,6 @@ public class OperatorCompetency extends BaseTable {
 	private OperatorAccount operator;
 	private String helpPage;
 	private JobCompetencyStats jobCompentencyStats;
-
-	private static List<String> allCategories = new ArrayList<String>();
 
 	public String getCategory() {
 		return category;
@@ -101,15 +95,6 @@ public class OperatorCompetency extends BaseTable {
 	@Transient
 	public String getDeleteLink() {
 		return "<a href=\"#\" onclick=\"remove(" + id + "); return false;\" class=\"remove\"></a>";
-	}
-
-	public static void setAllCategories(List<String> allCategories) {
-		OperatorCompetency.allCategories = allCategories;
-	}
-
-	@OneToMany(mappedBy = "category", cascade = { CascadeType.ALL })
-	public static List<String> getAllCategories() {
-		return allCategories;
 	}
 
 	@SuppressWarnings("unchecked")
