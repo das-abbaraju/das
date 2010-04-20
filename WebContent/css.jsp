@@ -36,9 +36,9 @@
 </div>
 <h3>Mixed</h3>
 <div>
-		<input type="button" class="picsbutton positive" value="input" />
-		<a href="#" class="picsbutton positive">Link</a>
-		<button class="picsbutton positive">Button</button>
+	<input type="button" class="picsbutton positive" value="input" />
+	<a href="#" class="picsbutton positive">Link</a>
+	<button class="picsbutton positive">Button</button>
 </div>
 
 <h1>Links</h1>
