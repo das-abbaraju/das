@@ -1,40 +1,28 @@
 package com.picsauditing.actions.employees;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.JobRoleDAO;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RoleSuggest extends PicsActionSupport {
 	private String q;
-	private List<String> roles;
-	private Set<String> results;
+	private List<String> results;
 	private JobRoleDAO jobRoleDAO;
 
 	public RoleSuggest(JobRoleDAO jobRoleDAO) {
 		this.jobRoleDAO = jobRoleDAO;
-
-		roles = jobRoleDAO.findDistinctRolesOrderByPercent();
 	}
 
 	public String execute() throws Exception {
-		results = new HashSet<String>();
+		results = new ArrayList<String>();
 
 		if (q == null || q.length() < 2)
 			return SUCCESS;
 
-		if (roles == null)
-			roles = jobRoleDAO.findDistinctRolesOrderByPercent();
-
-		for (String role : roles)
-			for (String word : role.split(" "))
-				if (word.toLowerCase().startsWith(q.toLowerCase())
-						|| Strings.isSimilarTo(q, (word.length() >= q.length()) ? word.substring(0, q.length()) : ""))
-					results.add(role);
+		results = jobRoleDAO.findDistinctRolesOrderByCount(q);
 
 		return SUCCESS;
 	}
@@ -47,11 +35,11 @@ public class RoleSuggest extends PicsActionSupport {
 		this.q = search;
 	}
 
-	public Set<String> getResults() {
+	public List<String> getResults() {
 		return results;
 	}
 
-	public void setResults(Set<String> results) {
+	public void setResults(List<String> results) {
 		this.results = results;
 	}
 }

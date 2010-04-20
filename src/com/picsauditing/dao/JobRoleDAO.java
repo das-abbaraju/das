@@ -71,12 +71,19 @@ public class JobRoleDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	// select distinct r.name from job_role r
-	// join job_competency_stats js on r.name = js.jobRole
-	// group by r.name order by sum(js.usedCount)/sum(totalCount) desc;
-	public List<String> findDistinctRolesOrderByPercent() {
-		Query query = em.createQuery("SELECT DISTINCT js.jobRole FROM JobCompetencyStats js"
-				+ " GROUP BY js.jobRole ORDER BY SUM(js.usedCount)/SUM(js.totalCount) DESC");
+	// select r.name from job_role r
+	// where name like '%wl%'
+	// group by r.name 
+	// order by count(distinct name) desc, name
+	// limit 10;
+	public List<String> findDistinctRolesOrderByCount(String q) {
+		Query query = em.createQuery(
+				"SELECT name FROM JobRole " +
+				"WHERE name LIKE :q " +
+				"GROUP BY name " +
+				"ORDER BY COUNT(*) DESC, name"
+				);
+		query.setParameter("q", "%"+q+"%");
 		return query.getResultList();
 	}
 }
