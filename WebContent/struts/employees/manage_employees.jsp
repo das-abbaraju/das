@@ -140,8 +140,7 @@ div.dataTables_length { width: 35%; }
 								<li><label>Classification:</label>
 									<s:select name="employee.classification" 
 										list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
-										listValue="description"
-										headerKey="" headerValue="- Classification -"/>
+										listValue="description" />
 								</li>
 								<li><label>Active</label>
 									<s:checkbox name="employee.active"/>
