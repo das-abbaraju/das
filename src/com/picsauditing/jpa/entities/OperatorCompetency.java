@@ -25,7 +25,8 @@ public class OperatorCompetency extends BaseTable {
 	private String description;
 	private OperatorAccount operator;
 	private String helpPage;
-
+	private JobCompetencyStats jobCompentencyStats;
+	
 	public String getCategory() {
 		return category;
 	}
@@ -75,6 +76,15 @@ public class OperatorCompetency extends BaseTable {
 		} catch (UnsupportedEncodingException e) {
 			return helpPage; // just giving back the unlinked text
 		}
+	}
+
+	@Transient
+	public JobCompetencyStats getJobCompentencyStats() {
+		return jobCompentencyStats;
+	}
+
+	public void setJobCompentencyStats(JobCompetencyStats jobCompentencyStats) {
+		this.jobCompentencyStats = jobCompentencyStats;
 	}
 
 	@Transient

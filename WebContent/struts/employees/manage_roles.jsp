@@ -28,6 +28,10 @@ fieldset.form label {
 }
 </style>
 <s:include value="../jquery.jsp" />
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+
+<script type="text/javscript" src="js/jquery/jquery.bgiframe.min.js"></script>
 <script type="text/javascript">
 function removeCompetency(competencyID) {
 	$("a.compEditor").hide();
@@ -38,6 +42,10 @@ function addCompetency(competencyID) {
 	$("a.compEditor").hide();
 	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
 }
+
+$(function() {
+	$('#roleInputBox').autocomplete('RoleSuggestAjax.action', {minChars: 1});
+});
 </script>
 </head>
 <body>

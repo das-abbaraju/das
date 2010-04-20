@@ -3,6 +3,7 @@ package com.picsauditing.actions.employees;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
@@ -11,6 +12,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.JobCompetency;
+import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
@@ -98,7 +100,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 		if (role != null) {
 			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
-			List<OperatorCompetency> list = competencyDAO.findAll();
+			List<OperatorCompetency> competencies = competencyDAO.findAll();
 			if (competencyID > 0) {
 				if ("removeCompetency".equals(button)) {
 					Iterator<JobCompetency> iterator = jobCompetencies.iterator();
@@ -111,7 +113,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 					}
 				}
 				if ("addCompetency".equals(button)) {
-					for (OperatorCompetency operatorCompetency : list) {
+					for (OperatorCompetency operatorCompetency : competencies) {
 						if (operatorCompetency.getId() == competencyID) {
 							if (!roleContainsCompetency(operatorCompetency)) {
 								JobCompetency jc = new JobCompetency();
@@ -128,8 +130,12 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			}
 			
 			otherCompetencies.clear();
-			for (OperatorCompetency operatorCompetency : list) {
+			
+			Map<OperatorCompetency, JobCompetencyStats> jobCompetencyStats = competencyDAO.getJobCompetencyStats(role.getName());
+			
+			for (OperatorCompetency operatorCompetency : competencies) {
 				if (!roleContainsCompetency(operatorCompetency)) {
+					operatorCompetency.setJobCompentencyStats(jobCompetencyStats.get(operatorCompetency));
 					otherCompetencies.add(operatorCompetency);
 				}
 			}

@@ -1633,6 +1633,11 @@
 			<result>struts/employees/manage_roles_competencies.jsp</result>
 			<result name="suggest">struts/employees/role_suggest.jsp</result>
 		</action>
+		
+		<action name="RoleSuggestAjax"
+			class="com.picsauditing.actions.employees.RoleSuggest">
+			<result>struts/employees/role_suggest.jsp</result>
+		</action>
 
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"

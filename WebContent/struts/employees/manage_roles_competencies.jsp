@@ -31,13 +31,14 @@
 		<table class="report">
 			<thead>
 				<tr>
-					<td colspan="2">Not Required</td>
+					<td colspan="3">Not Required</td>
 				</tr>
 			</thead>
 			<tbody>
-				<s:iterator value="otherCompetencies">
+				<s:iterator value="otherCompetencies" >
 				<tr>
 					<td><span title="<s:property value="description"/>"><s:property value="category"/>: <s:property value="label"/></span></td>
+					<td class="right"><s:property value="jobCompentencyStats.percent"/>%</td>
 					<td><a href="#" class="compEditor" onclick="addCompetency(<s:property value="id"/>); return false;"><img alt="Add" src="images/plus.png" border="0"></a></td>
 				</tr>
 				</s:iterator>

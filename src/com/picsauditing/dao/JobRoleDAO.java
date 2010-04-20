@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -67,6 +68,19 @@ public class JobRoleDAO extends PicsDAO {
 	public List<JobCompetency> getCompetenciesByRole(JobRole jobRole) {
 		Query query = em.createQuery("From JobCompetency WHERE jobRole.id = :jobRole ORDER BY competency.category, competency.label");
 		query.setParameter("jobRole", jobRole.getId());
+		return query.getResultList();
+	}
+	
+	//	select distinct r.name from job_role r
+	//	join job_competency_stats js on r.name = js.jobRole
+	//	group by r.name order by sum(js.usedCount)/sum(totalCount) desc;
+	public List<String> findDistinctRolesOrderByPercent(){
+		Query query = em.createQuery(
+				"SELECT DISTINCT r.name FROM JobRole r " +
+				"JOIN JobCompetencyStats js ON r.name = js.jobRole " +
+				"GROUP BY r.name " +
+				"ORDER BY SUM(js.usedCount)/SUM(totalCount) DESC"
+				);
 		return query.getResultList();
 	}
 }
