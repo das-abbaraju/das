@@ -90,7 +90,7 @@ $(function() {
 					<input type="button" onclick="$('#roleCell').empty(); return false;" class="picsbutton" value="Cancel"/>
 					<s:if test="role.id != 0">
 						<input type="submit" name="button" value="Delete" class="picsbutton negative"
-							onclick="return confirm('Please confirm removing this job role.');" />
+							onclick="return confirm('Press ok to remove this job role. This action cannot be undone.');" />
 					</s:if>
 				</div>
 				</fieldset>
