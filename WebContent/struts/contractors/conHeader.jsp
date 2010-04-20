@@ -211,7 +211,7 @@
 <div id="contractorSubMenu" class="auditSubMenu">
 <ul>
 	<li><a href="ContractorView.action?id=<s:property value="id" />"
-		<s:if test="requestURI.contains('con_view')">class="current"</s:if>><span>Account Summary</span></a></li>
+		<s:if test="requestURI.contains('con_dashboard')">class="current"</s:if>><span>Account Summary</span></a></li>
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag

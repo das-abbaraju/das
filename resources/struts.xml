@@ -188,11 +188,6 @@
 			<result>struts/contractors/registrationHeader.jsp</result>
 		</action>
 
-		<action name="ContractorViewOld"
-			class="com.picsauditing.actions.contractors.ContractorView">
-			<result>struts/contractors/con_view.jsp</result>
-		</action>
-
 		<action name="ContractorView"
 			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/con_dashboard.jsp</result>

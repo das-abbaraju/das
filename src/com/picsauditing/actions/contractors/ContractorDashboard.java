@@ -169,7 +169,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			operatorTags = getOperatorTagNamesList();
 
 			for (ContractorTag contractorTag : contractor.getOperatorTags()) {

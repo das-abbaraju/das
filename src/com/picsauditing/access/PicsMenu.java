@@ -172,7 +172,7 @@ public class PicsMenu {
 		subMenu = menu.addChild("Management");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild("Approve Contractors", "ContractorApproval.action?filter.workStatus=P");
-		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperator())
+		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			subMenu.addChild("Contractor Tags", "OperatorTags.action");
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
 			subMenu.addChild("Users", "UsersManage.action");

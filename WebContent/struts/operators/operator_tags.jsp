@@ -10,15 +10,22 @@
 <s:if test="permissions.admin">
 	<s:include value="opHeader.jsp"></s:include>
 </s:if>
-<a href="OperatorTags.action?id=<s:property value="id" />">Refresh</a>
+<s:else>
+	<h1>Define Contractor Tags</h1>
+</s:else>
 
+<a href="OperatorTags.action?id=<s:property value="id" />">Refresh</a>
 <s:form>
 	<s:hidden name="id" />
 	<table class="report">
 		<thead>
 			<tr>
 				<th>Tag Name</th>
-				<th>Visible</th>
+				<th>Visible to <br /><s:property value="operator.name" /></th>
+				<th>Visible to <br />Contractors</th>
+				<s:if test="operator.corporate">
+					<th>Usable by<br />Sites</th>
+				</s:if>
 			</tr>
 		</thead>
 		<s:iterator value="tags" status="rowstatus">
@@ -26,11 +33,20 @@
 				<td><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" /> <s:textfield
 					name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
 				<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
+				<td><s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" /></td>
+				<s:if test="operator.corporate">
+					<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
+				</s:if>
 			</tr>
 		</s:iterator>
 		<tr>
 			<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
-			<td>new</td>
+			<s:if test="operator.corporate">
+				<td colspan="3">Add New Tag</td>
+			</s:if>
+			<s:else>
+				<td colspan="2">Add New Tag</td>
+			</s:else>
 		</tr>
 	</table>
 

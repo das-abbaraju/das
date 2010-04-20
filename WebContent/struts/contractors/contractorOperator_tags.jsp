@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="report" style="position: static">
 	<s:iterator value="contractor.operatorTags">
-		<s:if test="tag.operator.id == permissions.accountId">
+		<s:if test="tag.operator.id == permissions.accountId || permissions.corporateParent.contains(tag.operator.id)">
 			<tr>
 				<td><s:property value="tag.tag" /></td>
 				<td><img src="images/cross.png" width="18" height="18" /><a

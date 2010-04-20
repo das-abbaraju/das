@@ -9,10 +9,12 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operator_tag")
-public class OperatorTag extends BaseTable implements java.io.Serializable {
-	String tag;
-	boolean active = true;
-	OperatorAccount operator;
+public class OperatorTag extends BaseTable {
+	private OperatorAccount operator;
+	private String tag;
+	private boolean active = true;
+	private boolean visibleToContractor = false;
+	private boolean inheritable = true;
 
 	@Column(nullable = false, length = 25)
 	public String getTag() {
@@ -40,6 +42,26 @@ public class OperatorTag extends BaseTable implements java.io.Serializable {
 
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
+	}
+
+	
+	public boolean isVisibleToContractor() {
+		return visibleToContractor;
+	}
+
+	
+	public void setVisibleToContractor(boolean visibleToContractor) {
+		this.visibleToContractor = visibleToContractor;
+	}
+
+	
+	public boolean isInheritable() {
+		return inheritable;
+	}
+
+	
+	public void setInheritable(boolean inheritable) {
+		this.inheritable = inheritable;
 	}
 
 }
