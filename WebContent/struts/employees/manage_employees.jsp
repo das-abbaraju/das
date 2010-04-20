@@ -51,6 +51,7 @@ $(function() {
 		            null,
 		            null
 				],
+			aaSorting: [[1, 'asc']],
 			aaData: <s:property value="employeeData" escape="false"/>,
 			bStateSave: true,
 			oLanguage: {
