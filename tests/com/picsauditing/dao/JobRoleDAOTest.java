@@ -20,14 +20,14 @@ public class JobRoleDAOTest extends TestCase {
 	@Autowired
 	private JobRoleDAO jobRoleDAO;
 
-	@Test
-	public void testFindDistinctRolesOrderByPercent() throws Exception {
-		List<String> roleOrder = jobRoleDAO.findDistinctRolesOrderByPercent();
-
-		for (String r : roleOrder) {
-			System.out.println(r);
-		}
-
-		assertTrue(roleOrder.size() > 0);
-	}
+//	@Test
+//	public void testFindDistinctRolesOrderByPercent() throws Exception {
+//		List<String> roleOrder = jobRoleDAO.findDistinctRolesOrderByPercent();
+//
+//		for (String r : roleOrder) {
+//			System.out.println(r);
+//		}
+//
+//		assertTrue(roleOrder.size() > 0);
+//	}
 }
