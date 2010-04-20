@@ -31,13 +31,13 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	protected OperatorCompetencyDAO opCompDAO;
 
 	protected int conID;
-	protected int employeeID;
+	protected int employeeID = 0;
 	protected int ecID;
-	protected int jobRoleID;
+	protected int jobRoleID = 0;
 	protected boolean canEdit = false;
 	protected boolean checked;
 
-	protected int[] selectedCompetencies;
+	protected int[] selectedCompetencies = null;
 	protected ContractorAccount contractor;
 	protected Employee employee = null;
 	protected JobRole jobRole;
@@ -73,7 +73,7 @@ public class EmployeeCompetencies extends AccountActionSupport {
 			throw new RecordNotFoundException("Missing conID");
 
 		contractor = conDAO.find(conID);
-
+		
 		if (employeeID > 0)
 			employee = employeeDAO.find(employeeID);
 		
@@ -218,14 +218,15 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	}
 
 	public List<OperatorCompetency> getCompetencies() {
-		if (jobRoleID > 0)
-			return opCompDAO.findByJobRole(jobRoleID);
-		
 		return opCompDAO.findByContractor(conID);
 	}
 
 	public List<EmployeeCompetency> getCompetencies(Employee employee) {
 		return ecDAO.findByEmployee(employee.getId());
+	}
+	
+	public List<OperatorCompetency> getCompetenciesByJobRole() {
+		return opCompDAO.findByJobRole(jobRoleID);
 	}
 	
 	public List<JobRole> getJobRoles() {

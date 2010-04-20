@@ -30,6 +30,9 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
 		getPermissions();
 		if (permissions.isContractor())
 			id = permissions.getAccountId();
