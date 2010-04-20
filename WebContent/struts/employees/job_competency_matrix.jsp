@@ -54,6 +54,9 @@ table.report td.notselected {
 		</s:iterator>
 	</tbody>
 </table>
-
+<div class="right">
+	<a class="excel" onclick="confirm('Are you sure you want to download all <s:property value="competencies.size()"/> rows? This may take a while.'); return false;" 
+		href="#" title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
+</div>
 </body>
 </html>

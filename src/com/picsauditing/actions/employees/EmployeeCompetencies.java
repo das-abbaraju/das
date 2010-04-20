@@ -2,6 +2,7 @@ package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
@@ -32,11 +33,11 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	protected boolean canEdit = false;
 	protected boolean checked;
 
+	protected int[] selectedCompetencies;
 	protected ContractorAccount contractor;
 	protected Employee employee = null;
 	protected List<Employee> employees;
-	protected int[] selectedCompetencies;
-
+	protected Map<Integer, List<EmployeeRole>> employeeRoles;
 	protected DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public EmployeeCompetencies(ContractorAccountDAO conDAO, EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO,
@@ -182,10 +183,11 @@ public class EmployeeCompetencies extends AccountActionSupport {
 			if (selectedCompetencies == null || selectedCompetencies.length == 0) {
 				List<EmployeeRole> roles = erDAO.findByContractor(conID);
 				for (EmployeeRole role : roles) {
-					employees.add(role.getEmployee());
+					if (!employees.contains(role.getEmployee()))
+						employees.add(role.getEmployee());
 				}
 			} else {
-				employees = employeeDAO.findByCompetencies(selectedCompetencies);
+				employees = employeeDAO.findByCompetencies(selectedCompetencies, conID);
 			}
 		}
 
@@ -199,9 +201,12 @@ public class EmployeeCompetencies extends AccountActionSupport {
 	public List<EmployeeCompetency> getCompetencies(Employee employee) {
 		return ecDAO.findByEmployee(employee.getId());
 	}
-
-	public List<EmployeeRole> getEmployeeRoles(int employeeID) {
-		return erDAO.findByEmployee(employeeID);
+	
+	public Map<Integer, List<EmployeeRole>> getEmployeeRolesByContractor() {
+		if (employeeRoles == null)
+			employeeRoles = erDAO.findEmployeeRolesByContractor(conID);
+		
+		return employeeRoles;
 	}
 
 	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {

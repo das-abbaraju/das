@@ -13,8 +13,8 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/audit.css?v=<s:property value="version"/>" />
 <style type="text/css">
-#rolesTable {
-	width: 100%;
+#rolesTable td {
+	vertical-align: top;
 }
 
 #rolesTable table.report {
@@ -45,7 +45,7 @@ function addCompetency(competencyID) {
 	value="subHeading" escape="false" /> </span></h1>
 
 <a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">Job Competency Matrix</a>
-<table>
+<table id="rolesTable">
 	<tr>
 		<td style="vertical-align: top">
 		<table class="report">
@@ -59,7 +59,7 @@ function addCompetency(competencyID) {
 				<s:if test="jobRoles.size > 0">
 					<s:iterator value="jobRoles">
 						<tr>
-							<td><a href="?id=<s:property value="account.id" />&role.id=<s:property value="id" />"><s:property value="name" /></a></td>
+							<td><a href="?id=<s:property value="account.id" />&role.id=<s:property value="id" />" <s:if test="!active">class="inactive"</s:if>><s:property value="name" /></a></td>
 							<td class="center"><s:if test="active">Y</s:if><s:else>N</s:else></td>
 						</tr>
 					</s:iterator>
@@ -68,7 +68,6 @@ function addCompetency(competencyID) {
 		</table>
 		<a href="?id=<s:property value="account.id" />&button=Add" class="add">Add New Job Role</a>
 		</td>
-		<td>&nbsp;</td>
 		<s:if test="role != null">
 			<td style="vertical-align: top" id="roleCell"><s:form>
 				<s:hidden name="id" />
@@ -81,8 +80,9 @@ function addCompetency(competencyID) {
 				<div style="text-align: center; margin: 0px auto;">
 					<input type="submit" value="Save" class="picsbutton positive" name="button" />
 					<input type="button" onclick="$('#roleCell').empty(); return false;" class="picsbutton" value="Cancel"/>
-					<s:if test="role.id != 0"><a href="?id=<s:property value="account.id" />&role.id=<s:property value="role.id" />&button=Delete"
-						class="picsbutton negative" onclick="return confirm('Please confirm removing this job role.');">Remove</a>
+					<s:if test="role.id != 0">
+						<input type="submit" name="button" value="Delete" class="picsbutton negative"
+							onclick="return confirm('Please confirm removing this job role.');" />
 					</s:if>
 				</div>
 				</fieldset>

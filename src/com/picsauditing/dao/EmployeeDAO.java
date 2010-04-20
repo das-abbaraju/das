@@ -57,10 +57,13 @@ public class EmployeeDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	public List<Employee> findByCompetencies(int[] competencyIDs) {
+	public List<Employee> findByCompetencies(int[] competencyIDs, int accountID) {
 		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.id IN "
 				+ "(SELECT ec.employee.id FROM EmployeeCompetency ec WHERE ec.competency.id IN ("
-				+ Strings.implode(competencyIDs) + ")) ORDER BY e.firstName");
+				+ Strings.implode(competencyIDs) + ")) AND e.account.id = ? ORDER BY e.firstName");
+		
+		query.setParameter(1, accountID);
+		
 		return query.getResultList();
 	}
 }
