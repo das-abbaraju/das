@@ -278,6 +278,13 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				if (returnList.contains(used.getOperator()))
 					returnList.remove(used.getOperator());
 
+			// TODO: FOR DEMO ONLY. Trimming all non-shell/motiva entries
+			List<OperatorAccount> removeList = new ArrayList<OperatorAccount>();
+			for(OperatorAccount operator : returnList)
+				if(!operator.getName().toLowerCase().contains("shell") && !operator.getName().toLowerCase().contains("motiva"))
+					removeList.add(operator);
+			
+			returnList.removeAll(removeList);
 			Collections.sort(returnList);
 			return returnList;
 			// if operator employee return list of self, and if corporate, child
