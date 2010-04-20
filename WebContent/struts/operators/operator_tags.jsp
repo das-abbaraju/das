@@ -29,9 +29,9 @@
 			</tr>
 		</thead>
 		<s:iterator value="tags" status="rowstatus">
-			<tr>
+			<tr><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" />
 				<s:if test="operator.id == permissions.accountId">
-					<td><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" /> <s:textfield
+					<td><s:textfield
 						name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
 					<td><s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" /></td>
 					<td><s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" /></td>
