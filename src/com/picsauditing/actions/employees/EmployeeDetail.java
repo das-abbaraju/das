@@ -1,7 +1,6 @@
 package com.picsauditing.actions.employees;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Account;
