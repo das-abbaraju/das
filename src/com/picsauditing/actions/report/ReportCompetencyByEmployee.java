@@ -34,6 +34,8 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 		sql.addJoin("JOIN (SELECT DISTINCT er.employeeID, jc.competencyID FROM employee_role er"
 				+ " JOIN job_competency jc ON jc.jobRoleID = er.jobRoleID) jc ON jc.employeeID = e.id");
 		sql.addJoin("LEFT JOIN employee_competency ec ON ec.competencyID = jc.competencyID AND e.id = ec.employeeID");
+		sql.addJoin("JOIN contractor_tag ct ON a.id = ct.conID");
+		sql.addWhere("ct.tagID = 93");
 
 		sql.addGroupBy("e.id");
 
