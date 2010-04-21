@@ -5,79 +5,161 @@
 	<title>Employee Details</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-	
+	<style type="text/css">
+		table tr td {
+			vertical-align: top;
+		}
+		
+		.skilled {
+			background-color: #AFA;
+			text-align: center;
+		}
+		
+		.unskilled {
+			background-color: #FAA;
+			text-align: center;
+		}
+		
+		.cell, .report {
+			padding: 10px;
+			margin: 10px;
+			border: 1px solid black;
+		}
+		
+		.cell td {
+			padding: 0px 5px;
+		}
+		
+		.cell th {
+			padding: 0px 5px;
+			text-align: right;
+			font-weight: bold;
+		}
+	</style>
 	<s:include value="../jquery.jsp"/>
 </head>
 <body>
-	<h1>Employee Details <span class="sub"><s:property value="employee.firstName"/> <s:property value="employee.lastName"/></span></h1>
-
-<div id="internalnavcontainer">
-<ul id="navlist">
-	<li><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">Edit</a></li>
-	<li><a href="EmployeeAssessmentResults.action?employee.id=<s:property value="employee.id" />">Assessments</a></li>
-	<li><a href="EmployeeDataPartnerIDs.action?employee.id=<s:property value="employee.id" />">Data Partner IDs</a></li>
-</ul>
-</div>
-	
 	<s:include value="../actionMessages.jsp"/>
-	<div>
-		<s:if test="employee != null">
-			<s:form>
-				<fieldset class="form">
-					<legend><span>Employee Details</span></legend>
-					<ol>
-						<li><label>First Name:</label>
-							<s:property value="employee.firstName"/>
-							<br/>
-						</li>
-						<li><label>Last Name:</label>
-							<s:property value="employee.lastName"/>
-							<br/>
-						</li>
-						<li><label>SSN:</label>
-							<s:property value="ssn"/>
-							<br/>
-						</li>
-						<li><label>Birth Date:</label>
-							<s:property value="employee.birthDate"/>
-							<br/>
-						</li>
-						<li><label>Classification:</label>
-							<s:property value="employee.classification"/>
-							<br/>
-						</li>
-						<li><label>Hire Date:</label>
-							<s:property value="employee.hireDate"/>
-							<br/>
-						</li>
-						<li><label>Fire Date:</label>
-							<s:property value="employee.fireDate"/>
-							<br/>
-						</li>
-						<li><label>Title:</label>
-							<s:property value="employee.title"/>
-							<br/>
-						</li>
-						<li><label>Location:</label>
-							<s:property value="employee.location"/>
-							<br/>
-						</li>
-						<li><label>Email:</label>
-							<s:property value="employee.email"/>
-							<br/>
-						</li>
-						<li><label>Phone #:</label>
-							<s:property value="employee.phone"/>
-							<br/>
-						</li>
-						<li><label>Photo:</label>
-							<s:property value="employee.photo"/>
-							<br/>
-						</li>
-					</ol>
-				</fieldset>
-			</s:form>
-		</s:if>
+	<div id="profile">
+		<table>
+			<tr>
+				<td colspan="2">
+					<table style="margin: 0px auto;">
+						<tr>
+							<td style="vertical-align: middle; padding: 0px 5px;">
+								<img src="images/employee/<s:property value="employee.id % 5" />.jpg"
+									alt="Picture of <s:property value="employee.displayName" />" style="height: 150px;" />
+							</td>
+							<td style="vertical-align: middle; padding: 0px 5px;">
+								<h2><s:property value="employee.displayName" /></h2>
+								<s:property value="employee.title" /><br />
+								<s:property value="employee.account.name" /><br />
+							</td>
+							<td style="vertical-align: middle; padding: 0px 5px;">
+								<img src="ContractorLogo.action?id=<s:property value="employee.account.id"/>"
+									style="height: 150px" alt="Logo" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="cell">
+						<table>
+							<tr>
+								<th>Age:</th>
+								<td><s:property value="age" /> years old</td>
+							</tr>
+							<tr>
+								<th>Works at:</th>
+								<td>
+									<s:iterator value="employee.employeeSites" id="sites" status="stat">
+										<s:property value="#sites.operator.name" /><br />
+									</s:iterator>
+								</td>
+							</tr>
+							<tr>
+								<th>Job Role<s:if test="roles.size() > 0">s</s:if>:</th>
+								<td>
+									<s:iterator value="employee.employeeRoles" id="role" status="stat">
+										<s:property value="jobRole.name" /><s:if test="#stat.count < roles.size()">, </s:if>
+									</s:iterator>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<s:if test="employee.employeeRoles.size() > 0">
+						<table class="report">
+							<thead>
+								<tr>
+									<th>HSE Competency</th>
+									<s:iterator value="employee.employeeRoles" id="role" status="stat">
+										<th><s:property value="#role.jobRole.name" /></th>
+									</s:iterator>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="opComps" id="opComp" status="stat">
+									<tr>
+										<td><s:property value="#opComp.label" /></td>
+										<s:iterator value="employee.employeeRoles" id="role" status="stat">
+											<td class="center">
+												<s:iterator value="getCompetenciesByRole(#role.jobRole.id)" id="ec">
+													<s:if test="#ec.competency == #opComp">
+														<s:if test="#ec.skilled">
+															<img src="images/okCheck.gif" alt="Skilled" />
+														</s:if>
+														<s:else>
+															<img src="images/notOkCheck.gif" alt="Unskilled" />
+														</s:else>
+													</s:if>
+												</s:iterator>
+											</td>
+										</s:iterator>
+									</tr>
+								</s:iterator>
+							</tbody>
+						</table>
+					</s:if>
+					<s:else>
+						<s:property value="employee.displayName" /> has no job roles.
+					</s:else>
+				</td>
+				<td>
+					<div class="cell">
+						<table>
+							<tr>
+								<th>Phone:</th>
+								<td><s:property value="employee.phone" /></td>
+							</tr>
+							<tr>
+								<th>Email:</th>
+								<td><s:property value="employee.email" /></td>
+							</tr>
+							<tr>
+								<th>Location:</th>
+								<td><s:property value="employee.location" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="cell">
+						<table>
+							<tr>
+								<td colspan="2"><h3><s:property value="employee.account.name" /></h3></td>
+							</tr>
+							<tr>
+								<th>Address:</th>
+								<td>
+									<s:property value="employee.account.address" /><br />
+									<s:property value="employee.account.city" />, <s:property value="employee.account.state.isoCode" /> <s:property value="employee.account.zip" /> 
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
 	</div>
 </body>
 </html>

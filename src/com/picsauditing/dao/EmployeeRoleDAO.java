@@ -30,14 +30,6 @@ public class EmployeeRoleDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	public List<EmployeeRole> findByEmployee(int employeeID) {
-		Query query = em.createQuery("SELECT e FROM EmployeeRole e "
-				+ "WHERE e.employee.id = ? ORDER BY e.employee.lastName");
-
-		query.setParameter(1, employeeID);
-		return query.getResultList();
-	}
-	
 	public Map<Integer, List<EmployeeRole>> findEmployeeRolesByContractor(int contractorID) {
 		Query query = em.createQuery("SELECT e FROM EmployeeRole e"
 				+ " WHERE e.employee.account.id = ? ORDER BY e.employee.id, e.jobRole.name");

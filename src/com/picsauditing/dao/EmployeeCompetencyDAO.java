@@ -48,4 +48,14 @@ public class EmployeeCompetencyDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
+	
+	public List<EmployeeCompetency> findByJobRole(int jobRoleID, int employeeID) {
+		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e"
+				+ " WHERE e.competency IN (SELECT jc.competency FROM JobCompetency jc WHERE jc.jobRole.id = ?)"
+				+ " AND e.employee.id = ? GROUP BY e.competency.id");
+
+		query.setParameter(1, jobRoleID);
+		query.setParameter(2, employeeID);
+		return query.getResultList();
+	}
 }
