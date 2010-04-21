@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Job Competency Matrix</title>
+<title>HSE Competency Matrix</title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
@@ -26,12 +26,13 @@ table.report td.notselected {
 <s:include value="../jquery.jsp" />
 </head>
 <body>
-<h1>Job Competency Matrix <span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
-
+<h1>HSE Competency Matrix <span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
+<a class="excel" onclick="alert('Functionality not available'); return false;" 
+	href="#" title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
 <table class="report">
 	<thead>
 		<tr>
-			<th colspan="2">Competency</th>
+			<th colspan="2">HSE Competency</th>
 			<s:iterator value="roles">
 				<th><s:property value="name" /></th>
 			</s:iterator>
@@ -54,9 +55,5 @@ table.report td.notselected {
 		</s:iterator>
 	</tbody>
 </table>
-<div class="right">
-	<a class="excel" onclick="confirm('Are you sure you want to download all <s:property value="competencies.size()"/> rows? This may take a while.'); return false;" 
-		href="#" title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
-</div>
 </body>
 </html>

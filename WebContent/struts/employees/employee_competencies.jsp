@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Employee Competencies</title>
+<title>Employee HSE Competencies</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <style type="text/css">
@@ -81,7 +81,7 @@ function go(type, id) {
 </head>
 <body>
 
-<h1>Employee Competencies<span class="sub"><s:property value="contractor.name" /></span></h1>
+<h1>Employee HSE Competencies<span class="sub"><s:property value="contractor.name" /></span></h1>
 
 <s:form id="form1">
 	<s:hidden name="conID" />
@@ -91,7 +91,7 @@ function go(type, id) {
 			<tr>
 				<td>
 					<ol>
-						<li><label>Competencies:</label>
+						<li><label>HSE Competencies:</label>
 							<s:select id="competencyList" list="competencies" listKey="id" listValue="label" 
 								multiple="true" name="selectedCompetencies" size="10" />
 						</li>
