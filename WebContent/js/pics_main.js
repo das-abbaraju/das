@@ -34,14 +34,7 @@ function openWindow(url, wndName)
 
 function clearText(thefield)
 {
-	thefield.defaultValue=thefield.value;
 	thefield.value = "";
-}
-
-function unclearText(thefield)
-{
-	if (thefield.value == "")
-		thefield.value = thefield.defaultValue;
 }
 
 function startThinking( args ) {

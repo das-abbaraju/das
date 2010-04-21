@@ -72,7 +72,7 @@
 
 <div id="headersearch">
 <form action="ContractorSearch.action" method="get">
-<input name="filter.accountName" type="text" class="blueMain" size="20" onfocus="clearText(this)" onblur="unclearText(this)"/>
+<input name="filter.accountName" type="text" class="blueMain" size="20" onfocus="clearText(this)""/>
 <input type="submit" value="Search" class="blueMain" />
 </form>
 </div>
