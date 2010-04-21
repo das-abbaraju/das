@@ -31,14 +31,16 @@
 		<table class="report">
 			<thead>
 				<tr>
-					<td colspan="3">Not Required</td>
+					<td>Not Required</td>
+					<td><span title="Number of times this Competency is used for <s:property value="role.name"/>">% Used</span></td>
+					<td></td>
 				</tr>
 			</thead>
 			<tbody>
 				<s:iterator value="otherCompetencies" >
 				<tr>
 					<td><span title="<s:property value="description"/>"><s:property value="category"/>: <s:property value="label"/></span></td>
-					<td class="right"><s:property value="jobCompentencyStats.percent"/>%</td>
+					<td class="right"><s:if test="jobCompentencyStats.percent != null"><s:property value="jobCompentencyStats.percent"/>%</s:if></td>
 					<td><a href="#" class="compEditor" onclick="addCompetency(<s:property value="id"/>); return false;"><img alt="Add" src="images/plus.png" border="0"></a></td>
 				</tr>
 				</s:iterator>
