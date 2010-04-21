@@ -24,7 +24,8 @@ $('input.ssn').mask('SSS-SS-SSSS');
 <table class="report" id="matrix">
 	<thead>
 		<tr>
-			<th>Account</th>
+			<th>Company</th>
+			<th># of Employees</th>
 			<th>Competency</th>
 			<th>Competency %</th>
 		</tr>
@@ -32,7 +33,8 @@ $('input.ssn').mask('SSS-SS-SSSS');
 	<tbody>
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
-				<td><s:property value="#data.get('name')" /></td>
+				<td><a href="ContractorView.action?id=<s:property value="#data.get('accountID')"/>"><s:property value="#data.get('name')" /></a></td>
+				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="#data.get('name')"/>"><s:property value="#data.get('employeeCount')"/></a></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
 				<td class="right"><s:property value="getRatio(#data.get('skilled'),#data.get('required'))" />%</td>
 			</tr>

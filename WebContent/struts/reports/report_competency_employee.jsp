@@ -42,7 +42,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 			<tr>
 				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('lastName')" /></a></td>
 				<td><a href="EmployeeDetail.action?employee.id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('firstName')" /></a></td>
-				<td><a href="ReportCompetencyByAccount.action?filter.accountName=<s:property value="#data.get('name')"/>"><s:property value="#data.get('name')" /></a></td>
+				<td><a href="ContractorView.action?id=<s:property value="#data.get('accountID')"/>"><s:property value="#data.get('name')" /></a></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
 				<td class="right"><s:property value="getRatio(#data.get('skilled'), #data.get('required'))" />%</td>
 			</tr>

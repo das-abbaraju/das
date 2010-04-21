@@ -16,6 +16,8 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 		sql.addGroupBy("accountID");
 
 		sql.addField("name");
+		sql.addField("accountID");
+		sql.addField("count(*) employeeCount");
 		sql.addField("sum(skilled) skilled");
 		sql.addField("sum(required) required");
 
