@@ -28,6 +28,8 @@ $('input.ssn').mask('SSS-SS-SSSS');
 			<th># of Employees</th>
 			<th>Competency</th>
 			<th>Competency %</th>
+			<th>HSE Competencies by Job Role</th>
+			<th>Shell HSE Competency Review</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,6 +39,36 @@ $('input.ssn').mask('SSS-SS-SSSS');
 				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="#data.get('name')"/>"><s:property value="#data.get('employeeCount')"/></a></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
 				<td class="right"><s:property value="getRatio(#data.get('skilled'),#data.get('required'))" />%</td>
+				<td>
+					<s:if test="#data.get('ca99ID') != null">
+						<a href="Audit.action?auditID=<s:property value="#data.get('ca99ID')"/>">
+							<s:if test="#data.get('ca99status') == 'Active'">
+								Expires on <s:date name="#data.get('ca99expiresDate')" format="M/d/yyyy"/>
+							</s:if>
+							<s:elseif test="#data.get('ca99status') == 'Submitted'">
+								Completed on <s:date name="#data.get('ca99completedDate')" format="M/d/yyyy"/>
+							</s:elseif>
+							<s:else>
+								Created on <s:date name="#data.get('ca99creationDate')" format="M/d/yyyy"/>
+							</s:else>
+						</a>
+					</s:if>
+				</td>
+				<td>
+					<s:if test="#data.get('ca100ID') != null">
+						<a href="Audit.action?auditID=<s:property value="#data.get('ca100ID')"/>">
+							<s:if test="#data.get('ca100status') == 'Active'">
+								Expires on <s:date name="#data.get('ca100expiresDate')" format="M/d/yyyy"/>
+							</s:if>
+							<s:elseif test="#data.get('ca100status') == 'Submitted'">
+								Completed on <s:date name="#data.get('ca100completedDate')" format="M/d/yyyy"/>
+							</s:elseif>
+							<s:else>
+								Created on <s:date name="#data.get('ca100creationDate')" format="M/d/yyyy"/>
+							</s:else>
+						</a>
+					</s:if>
+				</td>
 			</tr>
 		</s:iterator>
 	</tbody>
