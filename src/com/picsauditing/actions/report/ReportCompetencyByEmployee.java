@@ -38,7 +38,6 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 		sql.addWhere("ct.tagID = 93");
 
 		sql.addGroupBy("e.id");
-
 		if (permissions.isContractor())
 			sql.addWhere("a.id = " + permissions.getAccountId());
 
@@ -51,6 +50,7 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
 		sql.addField("a.id AS accountID");
+		sql.addField("e.title");
 		sql.addField("a.name");
 		sql.addField("COUNT(jc.competencyID) AS required");
 		sql.addField("SUM(IFNULL(ec.skilled,0)) AS skilled");
