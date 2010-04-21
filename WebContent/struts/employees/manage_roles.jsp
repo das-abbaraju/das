@@ -44,7 +44,12 @@ function addCompetency(competencyID) {
 }
 
 $(function() {
-	$('#roleInputBox').autocomplete('RoleSuggestAjax.action', {minChars: 1});
+	$('#roleInputBox').autocomplete('RoleSuggestAjax.action',{
+			minChars: 1,
+			formatResult: function(data,count) {
+				return data[0];
+			}
+		});
 });
 </script>
 </head>

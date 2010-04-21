@@ -181,21 +181,24 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	}
 
 	public List<OperatorCompetency> getOtherCompetencies() {
-		Collections.sort(otherCompetencies, new Comparator<OperatorCompetency>() {
-			@Override
-			public int compare(OperatorCompetency o1, OperatorCompetency o2) {
-				if (o1.getJobCompentencyStats().getPercent() < o2.getJobCompentencyStats().getPercent())
-					return 1;
-				else if (o1.getJobCompentencyStats().getPercent() == o2.getJobCompentencyStats().getPercent())
-					return 0;
-				else
-					return -1;
-			}
-		});
+		Collections.sort(otherCompetencies, new ByPercent());
 		return otherCompetencies;
 	}
 
 	public void setCompetencyID(int competencyID) {
 		this.competencyID = competencyID;
+	}
+	
+	private class ByPercent implements Comparator<OperatorCompetency> {
+			@Override
+			public int compare(OperatorCompetency o1, OperatorCompetency o2) {
+				if(o1.getJobCompentencyStats() == null && o2.getJobCompentencyStats() == null)
+					return 0;
+				if(o1.getJobCompentencyStats() == null)
+					return 1;
+				if(o2.getJobCompentencyStats() == null)
+					return -1;
+				return -o1.getJobCompentencyStats().getPercent().compareTo(o2.getJobCompentencyStats().getPercent());
+			}
 	}
 }

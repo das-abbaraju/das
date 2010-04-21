@@ -22,6 +22,7 @@ public class JobCompetencyStats implements Serializable {
 	private String jobRole;
 	private int usedCount;
 	private int totalCount;
+	private Integer percent;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -33,7 +34,7 @@ public class JobCompetencyStats implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "competencyID", nullable = false, updatable = false)
 	public OperatorCompetency getCompetency() {
@@ -69,10 +70,14 @@ public class JobCompetencyStats implements Serializable {
 	}
 
 	@Transient
-	public int getPercent() {
-		if (totalCount == 0)
-			return 0;
+	public Integer getPercent() {
+		if (percent == null) {
 
-		return Math.round(100 * usedCount / (float) totalCount);
+			if (totalCount == 0)
+				percent = 0;
+
+			percent = Math.round(100 * usedCount / (float) totalCount);
+		}
+		return percent;
 	}
 }
