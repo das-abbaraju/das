@@ -38,7 +38,7 @@
 				<s:iterator value="otherCompetencies" >
 				<tr>
 					<td><span title="<s:property value="description"/>"><s:property value="category"/>: <s:property value="label"/></span></td>
-					<td class="right"><s:property value="jobCompentencyStats.percent"/>%</td>
+					<td class="right"><s:if test="jobCompentencyStats.percent != null"><s:property value="jobCompentencyStats.percent"/>%</s:if><s:else>&nbsp;</s:else></td>
 					<td><a href="#" class="compEditor" onclick="addCompetency(<s:property value="id"/>); return false;"><img alt="Add" src="images/plus.png" border="0"></a></td>
 				</tr>
 				</s:iterator>

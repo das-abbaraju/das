@@ -1,6 +1,8 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +96,7 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			addActionMessage("Role " + role.getName() + " Successfully Deleted.");
 			jobRoleDAO.remove(role);
 			role = null;
-			
+
 			return redirect("ManageJobRoles.action?id=" + account.getId());
 		}
 
@@ -128,11 +130,12 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 				}
 				jobRoleDAO.save(role);
 			}
-			
+
 			otherCompetencies.clear();
-			
-			Map<OperatorCompetency, JobCompetencyStats> jobCompetencyStats = competencyDAO.getJobCompetencyStats(role.getName());
-			
+
+			Map<OperatorCompetency, JobCompetencyStats> jobCompetencyStats = competencyDAO.getJobCompetencyStats(role
+					.getName());
+
 			for (OperatorCompetency operatorCompetency : competencies) {
 				if (!roleContainsCompetency(operatorCompetency)) {
 					operatorCompetency.setJobCompentencyStats(jobCompetencyStats.get(operatorCompetency));
@@ -140,7 +143,6 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 				}
 			}
 		}
-
 		return SUCCESS;
 	}
 
@@ -173,12 +175,23 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 	public int getUsedCount(JobRole jobRole) {
 		return jobRoleDAO.getUsedCount(jobRole.getName());
 	}
-	
+
 	public List<JobCompetency> getJobCompetencies() {
 		return jobCompetencies;
 	}
 
 	public List<OperatorCompetency> getOtherCompetencies() {
+		Collections.sort(otherCompetencies, new Comparator<OperatorCompetency>() {
+			@Override
+			public int compare(OperatorCompetency o1, OperatorCompetency o2) {
+				if (o1.getJobCompentencyStats().getPercent() < o2.getJobCompentencyStats().getPercent())
+					return 1;
+				else if (o1.getJobCompentencyStats().getPercent() == o2.getJobCompentencyStats().getPercent())
+					return 0;
+				else
+					return -1;
+			}
+		});
 		return otherCompetencies;
 	}
 
