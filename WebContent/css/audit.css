@@ -169,6 +169,8 @@ div.auditHeaderNav ul li {
 
 div.auditHeaderNav a:hover, div.auditHeaderNav a.current {
 	background-color: #A84D10;
+	color: white;
+	text-decoration: none;
 }
 
 div.auditHeaderNav a {
