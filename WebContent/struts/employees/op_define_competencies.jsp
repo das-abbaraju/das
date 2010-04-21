@@ -103,7 +103,6 @@ fieldset.bottom {
 								if (data.gritter)
 									$.gritter.add(data.gritter);
 								if (data.result == 'success') {
-									console.log(data);
 									if (newItem) {
 										dtable.fnAddData([data.competency.id, data.competency.category, data.competency.label, data.competency.description, data.competency.helpPageLink, data.competency.editLink, data.competency.deleteLink]);
 									} else {
