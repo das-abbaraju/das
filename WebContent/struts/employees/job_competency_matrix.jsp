@@ -27,6 +27,9 @@ table.report td.notselected {
 </head>
 <body>
 <h1>HSE Competency Matrix <span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
+<s:if test="permissions.contractor">
+	<a href="ManageJobRoles.action?id=<s:property value="id" />">Manage Job Roles</a><br />
+</s:if>
 <a class="excel" onclick="alert('Functionality not available'); return false;" 
 	href="#" title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
 <table class="report">

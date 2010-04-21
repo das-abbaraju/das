@@ -123,7 +123,7 @@
 						</table>
 					</s:if>
 					<s:else>
-						<s:property value="employee.displayName" /> has no job roles.
+						<div class="cell"><s:property value="employee.displayName" /> has no job roles.</div>
 					</s:else>
 				</td>
 				<td>
