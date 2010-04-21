@@ -288,9 +288,8 @@ public class PicsMenu {
 			subMenu.addChild("User Search", "UserList.action");
 
 		if (permissions.hasPermission(OpPerms.DefineCompetencies)) {
-			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
-			subMenu.addChild("Competency Detail", "ReportCompetencyDetail.action");
+			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
 		}
 
 		if (permissions.isOperatorCorporate()) {
