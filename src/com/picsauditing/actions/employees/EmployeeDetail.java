@@ -35,8 +35,6 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		if (!forceLogin())
 			return LOGIN;
 
-		permissions.tryPermission(OpPerms.DevelopmentEnvironment);
-
 		return SUCCESS;
 	}
 
