@@ -161,7 +161,8 @@ div.dataTables_length { width: 35%; }
 						</fieldset>
 						<fieldset class="form submit">
 							<input type="submit" value="Save" name="button" class="picsbutton positive"/>
-							<input type="submit" value="Delete" name="button" class="picsbutton negative"/>
+							<input type="submit" value="Delete" name="button" class="picsbutton negative" 
+								onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
 						</fieldset>
 					</s:form>
 							
