@@ -18,6 +18,11 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 		sql.addField("name");
 		sql.addField("sum(skilled) skilled");
 		sql.addField("sum(required) required");
+
+		filter.setShowFirstName(false);
+		filter.setShowLastName(false);
+		filter.setShowEmail(false);
+		filter.setShowSsn(false);
 	}
 
 }
