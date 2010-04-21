@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.JobRoleDAO;
+import com.picsauditing.jpa.entities.JobRole;
 
 @SuppressWarnings("serial")
 public class RoleSuggest extends PicsActionSupport {
@@ -22,7 +23,9 @@ public class RoleSuggest extends PicsActionSupport {
 		if (q == null || q.length() < 2)
 			return SUCCESS;
 
-		results = jobRoleDAO.findDistinctRolesOrderByCount(q);
+		List<JobRole> roleResults = jobRoleDAO.findDistinctRolesOrderByCount(q);
+		for(JobRole role : roleResults)
+			results.add(role.getName()+"|"+role.getName()+" (times used:"+jobRoleDAO.getUsedCount(role.getName())+")");
 
 		return SUCCESS;
 	}

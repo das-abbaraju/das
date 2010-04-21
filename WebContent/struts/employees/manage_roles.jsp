@@ -46,8 +46,8 @@ function addCompetency(competencyID) {
 $(function() {
 	$('#roleInputBox').autocomplete('RoleSuggestAjax.action',{
 			minChars: 1,
-			formatResult: function(data,count) {
-				return data[0];
+			formatItem: function(data,i,count) {
+				return data[1];
 			}
 		});
 });
@@ -87,7 +87,7 @@ $(function() {
 				<s:hidden name="role.id" />
 				<fieldset class="form bottom"><legend><span>Define Role</span></legend>
 				<ol>
-					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" /></li>
+					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
 					<li><label>Active:</label> <s:checkbox name="role.active" value="role.active" /> </li>
 				</ol>
 				<div style="text-align: center; margin: 0px auto;">

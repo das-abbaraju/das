@@ -76,9 +76,9 @@ public class JobRoleDAO extends PicsDAO {
 	// group by r.name 
 	// order by count(distinct name) desc, name
 	// limit 10;
-	public List<String> findDistinctRolesOrderByCount(String q) {
+	public List<JobRole> findDistinctRolesOrderByCount(String q) {
 		Query query = em.createQuery(
-				"SELECT name FROM JobRole " +
+				"FROM JobRole " +
 				"WHERE name LIKE :q " +
 				"GROUP BY name " +
 				"ORDER BY COUNT(*) DESC, name"
