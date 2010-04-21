@@ -53,6 +53,16 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	public List<JobRole> getRoles() {
 		return roles;
 	}
+	
+	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
+		// need to check if forward entries are all null to not include in list
+		boolean usedRole = false;
+		for(JobRole role : roles)
+			if(map.get(role, operatorCompetency) != null)
+				usedRole = true;
+
+		return (usedRole)?roles:null;
+	}
 
 	public List<OperatorCompetency> getCompetencies() {
 		return competencies;

@@ -40,18 +40,20 @@ table.report td.notselected {
 	</thead>
 	<tbody>
 		<s:iterator value="competencies" id="competency">
-			<tr>
-				<td><s:property value="#competency.category" /></td>
-				<td><s:property value="#competency.label" /></td>
-				<s:iterator value="roles" id="role">
-					<s:if test="getJobCompetency(#role, #competency).id > 0">
-						<td class="selected"><img alt="X" src="images/checkBoxTrue.gif"></td>
-					</s:if>
-					<s:else>
-						<td class="notselected"></td>
-					</s:else>
-				</s:iterator>
-			</tr>
+			<s:if test="getRoles(#competency) != null">
+				<tr>
+					<td><s:property value="#competency.category" /></td>
+					<td><s:property value="#competency.label" /></td>
+					<s:iterator value="getRoles(#competency)" id="role">
+						<s:if test="getJobCompetency(#role, #competency).id > 0">
+							<td class="selected"><img alt="X" src="images/checkBoxTrue.gif"></td>
+						</s:if>
+						<s:else>
+							<td class="notselected"></td>
+						</s:else>
+					</s:iterator>
+				</tr>
+			</s:if>
 		</s:iterator>
 	</tbody>
 </table>
