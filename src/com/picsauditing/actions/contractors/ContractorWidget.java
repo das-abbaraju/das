@@ -182,9 +182,10 @@ public class ContractorWidget extends ContractorActionSupport {
 							} else {
 								text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
 										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + "</a>";
-								try {
-									text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
-								} catch (Exception e) {
+								if(conAudit.getScheduledDate() != null) {
+									try {
+										text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
+									} catch (Exception e) {}
 								}
 								if (conAudit.getAuditor() != null)
 									text += " with " + conAudit.getAuditor().getName();
