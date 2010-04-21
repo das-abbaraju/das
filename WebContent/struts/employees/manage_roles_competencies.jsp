@@ -12,7 +12,7 @@
 				<tbody>
 					<s:iterator value="jobCompetencies">
 						<tr>
-							<td><span title="<s:property value="competency.description"/>"><s:property value="competency.category"/>: <s:property value="competency.label"/></span></td>
+							<td><span><s:property value="competency.category"/>: <s:property value="competency.label"/></span></td>
 							<td><a href="#" class="compEditor" onclick="removeCompetency(<s:property value="competency.id"/>); return false;"><img alt="Delete" src="images/icon-16-remove.png" border="0"></a></td>
 						</tr>
 					</s:iterator>
