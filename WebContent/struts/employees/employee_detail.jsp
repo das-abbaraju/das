@@ -53,7 +53,7 @@
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
 								<s:property value="employee.title" /><br />
-								<s:property value="employee.account.name" /><br />
+								<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 							</td>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<img src="ContractorLogo.action?id=<s:property value="employee.account.id"/>"
@@ -67,10 +67,6 @@
 				<td>
 					<div class="cell">
 						<table>
-							<tr>
-								<th>Age:</th>
-								<td><s:property value="age" /> years old</td>
-							</tr>
 							<tr>
 								<th>Works at:</th>
 								<td>
