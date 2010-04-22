@@ -45,7 +45,7 @@ table.report thead a:hover {
 	text-decoration: underline;
 }
 
-table.report td a {
+table.report td a, table.report td a:visited {
 	text-decoration: none;
 }
 
