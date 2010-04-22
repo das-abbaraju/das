@@ -31,7 +31,7 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 		sql = new SelectSQL("employee e");
 
 		sql.addJoin("JOIN accounts a on a.id = e.accountID");
-		sql.addJoin("JOIN (SELECT DISTINCT er.employeeID, jc.competencyID FROM employee_role er"
+		sql.addJoin("LEFT JOIN (SELECT DISTINCT er.employeeID, jc.competencyID FROM employee_role er"
 				+ " JOIN job_competency jc ON jc.jobRoleID = er.jobRoleID) jc ON jc.employeeID = e.id");
 		sql.addJoin("LEFT JOIN employee_competency ec ON ec.competencyID = jc.competencyID AND e.id = ec.employeeID");
 		sql.addJoin("JOIN contractor_tag ct ON a.id = ct.conID");
