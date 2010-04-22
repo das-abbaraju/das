@@ -14,12 +14,6 @@ $('input.ssn').mask('SSS-SS-SSSS');
 <body>
 <h1>Competency By Account Report</h1>
 
-<s:include value="filters_employee.jsp"/>
-
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
-
 <s:if test="data.size() > 0">
 <table class="report" id="matrix">
 	<thead>
@@ -76,11 +70,11 @@ $('input.ssn').mask('SSS-SS-SSSS');
 	</tbody>
 </table>
 
-<div>
-<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-</div>
-
 </s:if>
-
+<s:else>
+	<div class="info">
+		No Records Found.
+	</div>
+</s:else>
 </body>
 </html>
