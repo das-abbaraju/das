@@ -224,6 +224,13 @@ label.policy {
 			</div>
 		</s:if>
 	</s:else>
+	<s:if test="canClose">
+                <div class="alert" class="buttons" style="">
+                        <s:hidden name="auditStatus" value="Active" />
+                        <s:submit value="%{'Close '.concat(conAudit.auditType.auditName)}"/>
+                </div>
+        </s:if>
+
 </s:if>
 </body>
 </html>
