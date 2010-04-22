@@ -28,6 +28,8 @@
 				});
 		return false;
 	}
+
+	
 </script>
 <style>
 img.contractor_logo {
@@ -69,7 +71,6 @@ table.report tr.hurdle td {
 	font-size: 11px;
 }
 </style>
-
 </head>
 <body>
 
@@ -375,6 +376,13 @@ table.report tr.hurdle td {
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
 					</strong></p>
 				</s:if>
+				<p id="services">
+					Self Performed Services: 
+					<strong><s:property value="contractor.tradesSelf"/></strong>
+				</p>
+				<p id="services">
+					Sub Contracted Services: <strong><s:property value="contractor.tradesSub"/></strong>
+				</p>
 				<p id="services">Services Performed: 
 					<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count <= 5"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
 					<s:if test="servicesPerformed.size() > 5">
