@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.EmployeeRole;
+import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
@@ -204,14 +205,21 @@ public class EmployeeCompetencies extends AccountActionSupport {
 			if (jobRoleID > 0) {
 				employees = employeeDAO.findByJobRole(jobRoleID, conID);
 			} else if (selectedCompetencies == null || selectedCompetencies.length == 0) {
-				List<EmployeeRole> roles = erDAO.findByContractor(conID);
-				for (EmployeeRole role : roles) {
-					if (!employees.contains(role.getEmployee()))
-						employees.add(role.getEmployee());
-				}
+				employees = getAllEmployees();
 			} else {
 				employees = employeeDAO.findByCompetencies(selectedCompetencies, conID);
 			}
+		}
+
+		return employees;
+	}
+	
+	public List<Employee> getAllEmployees() {
+		List<Employee> employees = new ArrayList<Employee>();
+		List<EmployeeRole> roles = erDAO.findByContractor(conID);
+		for (EmployeeRole role : roles) {
+			if (!employees.contains(role.getEmployee()))
+				employees.add(role.getEmployee());
 		}
 
 		return employees;
@@ -221,8 +229,21 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		return opCompDAO.findByContractor(conID);
 	}
 
-	public List<EmployeeCompetency> getCompetencies(Employee employee) {
-		return ecDAO.findByEmployee(employee.getId());
+	public List<OperatorCompetency> getCompetencies(Employee employee) {
+		List<Integer> jobRoleIDs = new ArrayList<Integer>();
+		
+		for (EmployeeRole er : employee.getEmployeeRoles()) {
+			jobRoleIDs.add(er.getJobRole().getId());
+		}
+		List<JobCompetency> jobCompetencies = opCompDAO.findByJobRoles(jobRoleIDs);
+		
+		List<OperatorCompetency> list = new ArrayList<OperatorCompetency>();
+		for (JobCompetency jc : jobCompetencies) {
+			if (!list.contains(jc.getCompetency()))
+				list.add(jc.getCompetency());
+		}
+		
+		return list;
 	}
 	
 	public List<OperatorCompetency> getCompetenciesByJobRole() {

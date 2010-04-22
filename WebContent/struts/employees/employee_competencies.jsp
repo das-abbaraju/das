@@ -102,7 +102,7 @@ function go(type, id) {
 				<td>
 					<ol>
 						<li><label>Employees:</label>
-							<s:select list="employees" listKey="id" listValue="displayName" headerKey="0"
+							<s:select list="allEmployees" listKey="id" listValue="displayName" headerKey="0"
 								headerValue="- Employee -" onchange="go('employeeID', this.value);" />
 						</li>
 					</ol>
@@ -120,7 +120,7 @@ function go(type, id) {
 	</fieldset>
 </s:form>
 <div id="competencyTable"></div>
-<s:if test="employees.size() == 0">
+<s:if test="getEmployees.size() == 0">
 	<div class="info">This contractor has no employees.</div>
 </s:if>
 <s:if test="employeeID > 0">
@@ -138,11 +138,11 @@ function go(type, id) {
 			</thead>
 			<tbody>
 				<s:iterator value="getCompetencies(employee)" id="competency" status="stat">
-					<s:set name="ec" id="ec" value="map.get(employee, #competency.competency)" />
+					<s:set name="ec" id="ec" value="map.get(employee, #competency)" />
 					<tr>
 						<td class="id"><s:property value="#stat.count" /></td>
-						<td class="category"><s:property value="#ec.competency.category" /></td>
-						<td class="label"><s:property value="#ec.competency.label" /></td>
+						<td class="category"><s:property value="#competency.category" /></td>
+						<td class="label"><s:property value="#competency.label" /></td>
 						<td class="center"
 								<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
 								<s:elseif test="#ec.skilled"> style="background-color: #AFA"</s:elseif>>
