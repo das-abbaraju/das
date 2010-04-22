@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
+import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
@@ -64,6 +65,13 @@ public class OperatorCompetencyDAO extends PicsDAO {
 				+ " AND j.jobRole.active = 1) ORDER BY o.category, o.label");
 
 		query.setParameter(1, jobRoleID);
+		return query.getResultList();
+	}
+	
+	public List<JobCompetency> findByJobRoles(List<Integer> jobRoleIDs) {
+		Query query = em.createQuery("SELECT j FROM JobCompetency j WHERE j.jobRole.id IN ("
+				+ Strings.implode(jobRoleIDs) + ") AND j.jobRole.active = 1");
+		
 		return query.getResultList();
 	}
 	

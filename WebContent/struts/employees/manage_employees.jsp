@@ -113,6 +113,7 @@ div.dataTables_length { width: 35%; }
 			</s:if>
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
+				<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">Profile Page</a>
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
@@ -157,6 +158,7 @@ div.dataTables_length { width: 35%; }
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>
 								</li>
+						
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">

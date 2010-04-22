@@ -35,12 +35,12 @@ fieldset.form label {
 <script type="text/javascript">
 function removeCompetency(competencyID) {
 	$("a.compEditor").hide();
-	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'removeCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
+	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'removeCompetency', 'role.id': <s:if test="role == null">0</s:if><s:else><s:property value="role.id" /></s:else>, competencyID: competencyID});
 }
 
 function addCompetency(competencyID) {
 	$("a.compEditor").hide();
-	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:property value="role.id" />, competencyID: competencyID});
+	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:if test="role == null">0</s:if><s:else><s:property value="role.id" /></s:else>, competencyID: competencyID});
 }
 
 $(function() {

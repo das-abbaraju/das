@@ -3,6 +3,7 @@ package com.picsauditing.actions.employees;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TreeSet;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.RecordNotFoundException;
@@ -14,7 +15,11 @@ import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
+import com.picsauditing.jpa.entities.EmployeeRole;
+import com.picsauditing.jpa.entities.JobCompetency;
+import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
 public class EmployeeDetail extends AccountActionSupport implements Preparable {
@@ -25,8 +30,9 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	protected OperatorCompetencyDAO competencyDAO;
 	
 	protected Employee employee;
-	protected List<OperatorCompetency> opComps;
+	protected TreeSet<OperatorCompetency> opComps;
 	protected List<EmployeeCompetency> competencies;
+	protected DoubleMap<OperatorCompetency, JobRole, Boolean> map = new DoubleMap<OperatorCompetency, JobRole, Boolean>();
 
 	public EmployeeDetail(EmployeeDAO employeeDAO, EmployeeCompetencyDAO ecDAO, EmployeeRoleDAO erDAO,
 			JobCompetencyDAO jcDAO, OperatorCompetencyDAO competencyDAO) {
@@ -78,14 +84,26 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		return age;
 	}
 	
-	public List<OperatorCompetency> getOpComps() {
+	public TreeSet<OperatorCompetency> getOpComps() {
 		if (opComps == null) {
-			opComps = new ArrayList<OperatorCompetency>();
-			List<EmployeeCompetency> allEC = ecDAO.findByEmployee(employee.getId());
+			List<Integer> jobRoleIDs = new ArrayList<Integer>();
+			opComps = new TreeSet<OperatorCompetency>();
 			
-			for (EmployeeCompetency ec : allEC) {
-				if (!opComps.contains(ec.getCompetency()))
-					opComps.add(ec.getCompetency());
+			for (EmployeeRole er : employee.getEmployeeRoles()) {
+				jobRoleIDs.add(er.getJobRole().getId());
+			}
+			
+			List<JobCompetency> jcs = competencyDAO.findByJobRoles(jobRoleIDs);
+			
+			for (JobCompetency jc : jcs) {
+				opComps.add(jc.getCompetency());
+				map.put(jc.getCompetency(), jc.getJobRole(), false);
+			}
+			
+			for (EmployeeCompetency ec : getCompetencies()) {
+				for (EmployeeRole er : employee.getEmployeeRoles()) {
+					map.put(ec.getCompetency(), er.getJobRole(), true);
+				}
 			}
 		}
 		
@@ -99,7 +117,7 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		return competencies;
 	}
 	
-	public List<EmployeeCompetency> getCompetenciesByRole(int jobRoleID) {
-		return ecDAO.findByJobRole(jobRoleID, employee.getId());
+	public Boolean getCompetenciesByRole(OperatorCompetency opComp, JobRole jobRole) {
+		return map.get(opComp, jobRole);
 	}
 }

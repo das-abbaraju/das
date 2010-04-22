@@ -83,7 +83,7 @@
 								<th>Job Role<s:if test="roles.size() > 0">s</s:if>:</th>
 								<td>
 									<s:iterator value="employee.employeeRoles" id="role" status="stat">
-										<s:property value="jobRole.name" /><s:if test="#stat.count < roles.size()">, </s:if>
+										<s:property value="jobRole.name" /><s:if test="#stat.count < employee.employeeRoles.size()">, </s:if>
 									</s:iterator>
 								</td>
 							</tr>
@@ -105,15 +105,13 @@
 										<td><s:property value="#opComp.label" /></td>
 										<s:iterator value="employee.employeeRoles" id="role" status="stat">
 											<td class="center">
-												<s:iterator value="getCompetenciesByRole(#role.jobRole.id)" id="ec">
-													<s:if test="#ec.competency == #opComp">
-														<s:if test="#ec.skilled">
-															<img src="images/okCheck.gif" alt="Skilled" />
-														</s:if>
-														<s:else>
-															<img src="images/notOkCheck.gif" alt="Unskilled" />
-														</s:else>
+												<s:iterator value="getCompetenciesByRole(#opComp, #role.jobRole)" id="ec">
+													<s:if test="#ec">
+														<img src="images/okCheck.gif" alt="Skilled" />
 													</s:if>
+													<s:elseif test="!#ec">
+														<img src="images/notOkCheck.gif" alt="Unskilled" />
+													</s:elseif>
 												</s:iterator>
 											</td>
 										</s:iterator>

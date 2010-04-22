@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 @Entity
 @Table(name = "operator_competency")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class OperatorCompetency extends BaseTable {
+public class OperatorCompetency extends BaseTable implements Comparable<OperatorCompetency> {
 
 	private String category;
 	private String label;
@@ -133,5 +133,12 @@ public class OperatorCompetency extends BaseTable {
 	public String toString() {
 		return category + ": " + label + " (" + id + ")";
 	}
-
+	
+	@Override
+	public int compareTo(OperatorCompetency o) {
+		if (this.category.equals(o.getCategory()))
+			return this.label.compareTo(o.getLabel());
+		
+		return this.category.compareTo(o.getCategory());
+	}
 }
