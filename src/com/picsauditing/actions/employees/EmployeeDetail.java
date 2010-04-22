@@ -101,8 +101,10 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 			}
 			
 			for (EmployeeCompetency ec : getCompetencies()) {
-				for (EmployeeRole er : employee.getEmployeeRoles()) {
-					map.put(ec.getCompetency(), er.getJobRole(), ec.isSkilled());
+				for (JobCompetency jc : jcs) {
+					if (jc.getCompetency().equals(ec.getCompetency())) {
+						map.put(jc.getCompetency(), jc.getJobRole(), ec.isSkilled());
+					}
 				}
 			}
 		}

@@ -161,37 +161,42 @@ function go(type, id) {
 	<div id="singleView">
 		<h3><s:property value="jobRole.name" />s</h3>
 		<a href="ManageJobRoles.action?id=<s:property value="conID" />&role.id=<s:property value="jobRole.id" />">View/Edit Role</a>
-		<table class="report" id="competenceMatrix">
-			<thead>
-				<tr>
-					<th></th>
-					<th><a href="#" onclick="sortTable('lastName,firstName'); return false;">Last Name</a></th>
-					<th><a href="#" onclick="sortTable('firstName,lastName'); return false;">First Name</a></th>
-					<s:iterator value="competenciesByJobRole">
-						<th><s:property value="label" /></th>
-					</s:iterator>
-				</tr>
-			</thead>
-			<tbody>
-				<s:iterator value="employees" id="employee" status="stat">
+		<s:if test="employees.size() > 0">
+			<table class="report" id="competenceMatrix">
+				<thead>
 					<tr>
-						<td class="id"><s:property value="#stat.count" /></td>
-						<td class="lastName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.lastName" /></a></td>
-						<td class="firstName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.firstName" /></a></td>
-						<s:iterator value="competenciesByJobRole" id="competency">
-							<s:set name="ec" id="ec" value="map.get(#employee, #competency)" />
-							<td class="center"
-									<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
-									<s:if test="#ec.skilled"> style="background-color: #AFA"</s:if>>
-								<s:if test="#ec != null">
-									<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
-								</s:if>
-							</td>
+						<th></th>
+						<th><a href="#" onclick="sortTable('lastName,firstName'); return false;">Last Name</a></th>
+						<th><a href="#" onclick="sortTable('firstName,lastName'); return false;">First Name</a></th>
+						<s:iterator value="competenciesByJobRole">
+							<th><s:property value="label" /></th>
 						</s:iterator>
 					</tr>
-				</s:iterator>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<s:iterator value="employees" id="employee" status="stat">
+						<tr>
+							<td class="id"><s:property value="#stat.count" /></td>
+							<td class="lastName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.lastName" /></a></td>
+							<td class="firstName"><a href="?conID=<s:property value="conID" />&employeeID=<s:property value="#employee.id" />"><s:property value="#employee.firstName" /></a></td>
+							<s:iterator value="competenciesByJobRole" id="competency">
+								<s:set name="ec" id="ec" value="map.get(#employee, #competency)" />
+								<td class="center"
+										<s:if test="!#ec.skilled"> style="background-color: #FAA"</s:if>
+										<s:if test="#ec.skilled"> style="background-color: #AFA"</s:if>>
+									<s:if test="#ec != null">
+										<input type="checkbox" <s:if test="#ec.skilled">checked="checked"</s:if> <s:if test="canEdit">onclick="saveChange(<s:property value="#ec.id" />, this); return false;"</s:if><s:else>disabled="disabled"</s:else> />
+									</s:if>
+								</td>
+							</s:iterator>
+						</tr>
+					</s:iterator>
+				</tbody>
+			</table>
+		</s:if>
+		<s:else>
+			<div class="alert">There are no employees for this job role.</div>
+		</s:else>
 	</div>
 </s:elseif>
 

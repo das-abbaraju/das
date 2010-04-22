@@ -76,7 +76,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th>Job Role<s:if test="roles.size() > 0">s</s:if>:</th>
+								<th>Job Role<s:if test="employee.employeeRoles.size() > 0">s</s:if>:</th>
 								<td>
 									<s:iterator value="employee.employeeRoles" id="role" status="stat">
 										<s:property value="jobRole.name" /><s:if test="#stat.count < employee.employeeRoles.size()">, </s:if>
