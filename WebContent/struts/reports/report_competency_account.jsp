@@ -26,6 +26,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 		<tr>
 			<th>Company</th>
 			<th># of Employees</th>
+			<th># of Job Roles</th>
 			<th>Competency</th>
 			<th>Competency %</th>
 			<th>HSE Competencies by Job Role</th>
@@ -37,6 +38,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="#data.get('accountID')"/>"><s:property value="#data.get('name')" /></a></td>
 				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="#data.get('name')"/>"><s:property value="#data.get('employeeCount')"/></a></td>
+				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('jobRoleCount')"/></a></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
 				<td class="right"><s:property value="getRatio(#data.get('skilled'),#data.get('required'))" />%</td>
 				<td>
