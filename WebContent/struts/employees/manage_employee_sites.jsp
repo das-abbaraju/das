@@ -4,7 +4,6 @@
 
 <div id="thinking_sites" class="right"></div>
 
-<h3>Assigned Sites</h3>
 <table class="report"">
 	<thead>
 		<tr>

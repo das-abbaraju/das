@@ -4,7 +4,6 @@
 
 <div id="thinking_roles" class="right"></div>
 
-<h3>Job Roles</h3>
 <table class="report">
 	<thead>
 		<tr>

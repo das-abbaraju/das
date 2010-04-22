@@ -168,13 +168,19 @@ div.dataTables_length { width: 35%; }
 							
 					<s:if test="employee.id > 0">
 						<s:if test="(unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
-							<div id="employee_role" style="float:left;padding-right:20px;">
-								<s:include value="manage_employee_roles.jsp"/>
+							<div style="float:left;padding-right:20px;">
+								<h3>Job Roles</h3>
+								<div id="employee_role">
+									<s:include value="manage_employee_roles.jsp"/>
+								</div>
 							</div>
 						</s:if>
 			
-						<div id="employee_site" style="float:left;">
-							<s:include value="manage_employee_sites.jsp"/>
+						<div style="float:left;">
+							<h3>Assigned Sites</h3>
+							<div id="employee_site">
+								<s:include value="manage_employee_sites.jsp"/>
+							</div>
 						</div>
 					</s:if>
 				</td>
