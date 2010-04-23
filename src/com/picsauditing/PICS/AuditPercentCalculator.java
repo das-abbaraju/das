@@ -78,7 +78,9 @@ public class AuditPercentCalculator {
 			Date validDate = catData.getAudit().getValidDate();
 			for (AuditSubCategory subCategory : catData.getCategory().getValidSubCategories()) {
 				for (AuditQuestion question : subCategory.getQuestions()) {
-					if (validDate.after(question.getEffectiveDate()) && validDate.before(question.getExpirationDate())
+					if (question.isVisible() 
+							&& validDate.after(question.getEffectiveDate()) 
+							&& validDate.before(question.getExpirationDate())
 							&& Strings.isInCountries(question.getCountries(), countries)) {
 
 						boolean isRequired = false;
