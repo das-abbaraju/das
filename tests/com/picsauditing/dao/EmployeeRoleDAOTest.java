@@ -28,18 +28,11 @@ public class EmployeeRoleDAOTest extends TestCase {
 
 		assertNotNull(result);
 	}
-	
-	@Test
-	public void testFindByEmployee() {
-		List<EmployeeRole> all = erDAO.findByEmployee(8);
-		
-		assertTrue(all.size() > 0);
-	}
-	
+
 	@Test
 	public void testFindAll() {
 		List<EmployeeRole> all = erDAO.findAll();
-		
+
 		assertTrue(all.size() > 0);
 	}
 }
