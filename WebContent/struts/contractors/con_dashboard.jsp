@@ -29,7 +29,21 @@
 		return false;
 	}
 
+	function truncate(id) {
+		var data = $('#' + id).text();
+		var data1 = data.substring(0,100) + '<span id="' + id + '_ext">... <a href="#" onclick="$(\'#'
+			+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
+			+ '>Show more</a></span>';
+		var data2 = '<span id="' + id + '_more" style="display: none;">' + data.substring(100, data.length)
+			+ ' <a href="#" onclick="$(\'#' + id + '_ext\').show(); $(\'#' + id
+			+ '_more\').hide(); return false;" style="font-weight: normal;">Hide</a></span>';
+		$('#'+ id).html(data1 + data2);
+	}
 	
+	$(document).ready(function() {
+		truncate('selfperformed');
+		truncate('subcontracted');
+	});
 </script>
 <style>
 img.contractor_logo {
@@ -378,37 +392,11 @@ table.report tr.hurdle td {
 				</s:if>
 				<p id="services">
 					Self Performed Services: 
-					<strong><s:property value="contractor.tradesSelf"/></strong>
+					<strong><span id="selfperformed"><s:property value="contractor.tradesSelf"/></span></strong>
 				</p>
 				<p id="services">
-					Sub Contracted Services: <strong><s:property value="contractor.tradesSub"/></strong>
-				</p>
-				<p id="services">Services Performed: 
-					<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count <= 5"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
-					<s:if test="servicesPerformed.size() > 5">
-						<span class="hide_services">
-							<s:iterator value="servicesPerformed" status="stat"><s:if test="#stat.count > 5"><strong><s:property value="question.question"/></strong><s:if test="!#stat.last">, </s:if></s:if></s:iterator>
-						</span>
-						<a href="#" id="more_services">Show more...</a>
-						<script type="text/javascript">
-							$(function() {
-									$('a#more_services').click(function(e) {
-											if ($(this).text() == 'Show more...') {
-												$('.hide_services').show();
-												$(this).text('Hide');
-											}
-											else {
-												$('.hide_services').hide();
-												$(this).text('Show more...');
-											}
-
-											e.preventDefault();
-										}
-									);
-								}
-							);
-						</script>
-					</s:if>
+					Sub Contracted Services:
+					<strong><span id="subcontracted"><s:property value="contractor.tradesSub"/></span></strong>
 				</p>
 				<div class="clear"></div>
 			</div>
