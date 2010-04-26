@@ -2,6 +2,7 @@ package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -259,6 +260,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				if (unusedJobRoles.contains(employeeRole.getJobRole()))
 					unusedJobRoles.remove(employeeRole.getJobRole());
 			}
+			
+			Iterator<JobRole> roleIter = unusedJobRoles.iterator();
+			while(roleIter.hasNext())
+				if(!roleIter.next().isActive())
+					roleIter.remove();
 		}
 
 		return unusedJobRoles;
