@@ -1458,6 +1458,11 @@
 			<result>struts/trevor.jsp</result>
 		</action>
 
+		<action name="TestDrools"
+			class="com.picsauditing.actions.TestDrools">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="ServerInfo"
 			class="com.picsauditing.actions.ServerInfo">
 			<result>struts/server_info.jsp</result>
