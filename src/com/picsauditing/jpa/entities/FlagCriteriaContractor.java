@@ -99,9 +99,11 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 	public void update(BaseTable change) {
 		FlagCriteriaContractor fcc = (FlagCriteriaContractor) change;
 
-		if (!Strings.isEmpty(fcc.getAnswer()) && !answer.equals(fcc.getAnswer())) {
-			answer = fcc.getAnswer();
-			setAuditColumns(new User(User.SYSTEM));
+		if (!Strings.isEmpty(fcc.getAnswer()) || !Strings.isEmpty(answer)) {
+			if(!answer.equals(fcc.getAnswer())) {
+				answer = fcc.getAnswer();
+				setAuditColumns(new User(User.SYSTEM));
+			}
 		}
 		if (!Strings.isEmpty(fcc.getAnswer2()) && !answer2.equals(fcc.getAnswer2())) {
 			answer2 = fcc.getAnswer2();
