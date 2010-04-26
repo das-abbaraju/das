@@ -127,10 +127,7 @@
 	<bean id="BillingDroolsSessionFactory" class="com.picsauditing.PICS.DroolsSessionFactory">
 		<property name="drlResources">
 			<list>
-				<!--  
-					<value>/home/jshelley/dev/workspaces/drools]/firstRules/conf/second.drl</value>
-				-->
-				<value>rules/second.drl</value>
+				<value>rules/changeset.xml</value>
 			</list>		
 		</property>
 	</bean>

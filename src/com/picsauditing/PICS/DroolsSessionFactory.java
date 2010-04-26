@@ -4,34 +4,30 @@ import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 
-import com.picsauditing.util.FileUtils;
-
 public class DroolsSessionFactory {
 
-	protected KnowledgeBase kbase = null;
-	protected KnowledgeBuilder kbuilder = null;
-
+	public DroolsSessionFactory() {
+		//just once
+		ResourceFactory.getResourceChangeNotifierService().start();
+		ResourceFactory.getResourceChangeScannerService().start();
+		System.out.println("Constructing Drools Session Factory...");
+	}
+	
+	protected KnowledgeAgent kagent = null;
 	protected List<String> drlResources = new Vector<String>();
 
 	public StatelessKnowledgeSession getStatelessSession() {
-		if (kbase == null)
+		if(kagent == null)
 			setup();
-
-		StatelessKnowledgeSession ksession = kbase
-				.newStatelessKnowledgeSession();
-		return ksession;
+		
+		return kagent.newStatelessKnowledgeSession();
 	}
-
-	// stateful stssion stuff here
 
 	public List<String> getDrlResources() {
 		return drlResources;
@@ -42,16 +38,14 @@ public class DroolsSessionFactory {
 	}
 
 	public void reset() {
-		kbase = null;
+		kagent = null;
 	}
 	
 	protected void setup() {
 
 		try {
-
-			kbase = KnowledgeBaseFactory.newKnowledgeBase();
-			kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
+			kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent");
+			
 			for (String resourceToLoad : drlResources) {
 				Resource resource = null;
 
@@ -73,27 +67,12 @@ public class DroolsSessionFactory {
 					}
 				}
 
-				ResourceType rt = null;
-
-				try {
-					rt = ResourceType.getResourceType(FileUtils.getExtension(
-							resourceToLoad).toUpperCase());
-				} catch (Exception problemFiguringOutType) {
-					rt = ResourceType.DRL;
-				}
-
-				kbuilder.add(resource, rt);
-
-				if (kbuilder.hasErrors()) {
-					throw new RuntimeException(kbuilder.getErrors().toString());
-				}
-				kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+				kagent.applyChangeSet(resource);
 			}
 		} catch (Exception e) {
-			kbase = null;
+			kagent = null;
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
-
 }

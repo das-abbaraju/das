@@ -8,11 +8,12 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 
-@SuppressWarnings("serial")
 public class TestDrools extends PicsActionSupport {
 
 	protected DroolsSessionFactory droolsSessionFactory = null;
 	protected ContractorAccountDAO conDao = null;
+	
+	protected boolean reset = false;
 	
 	
 	public TestDrools( ContractorAccountDAO conDao, DroolsSessionFactory droolsSessionFactory ) {
@@ -31,11 +32,19 @@ public class TestDrools extends PicsActionSupport {
 		
 		statelessSession.execute( Arrays.asList(new Object[]{ con, con2 } ) );
 
-		//never do this.  this is just in place to auto reload the rules each request 
-		//until we make the sessionfactory support hot swapping.  FOR TESTING ONLY.
-		droolsSessionFactory.reset();
+		if( isReset() )
+			droolsSessionFactory.reset();
 		
 		return SUCCESS;
 	}
 
+
+	public boolean isReset() {
+		return reset;
+	}
+
+	public void setReset(boolean reset) {
+		this.reset = reset;
+	}
+	
 }
