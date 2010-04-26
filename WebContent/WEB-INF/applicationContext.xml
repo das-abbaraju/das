@@ -123,4 +123,18 @@
 
     <tx:annotation-driven transaction-manager="transactionManager" />
 
+
+	<bean id="BillingDroolsSessionFactory" class="com.picsauditing.PICS.DroolsSessionFactory">
+		<property name="drlResources">
+			<list>
+				<!--  
+					<value>/home/jshelley/dev/workspaces/drools]/firstRules/conf/second.drl</value>
+				-->
+				<value>rules/second.drl</value>
+			</list>		
+		</property>
+	</bean>
+
+
+
 </beans>
