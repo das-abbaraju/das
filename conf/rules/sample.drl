@@ -1,0 +1,16 @@
+package com.picsauditing.jpa.entities
+
+rule "Id is 3"
+when
+    $con : ContractorAccount( id == 3 )
+then
+    System.out.println( $con.getName() + " has an id of 3" );
+end
+
+
+rule "ID is not 3"
+when
+        $con : ContractorAccount( id != 3 )
+then
+        System.out.println( $con.getName() + " does not have an id of 3" );
+end
