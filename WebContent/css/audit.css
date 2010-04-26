@@ -51,6 +51,10 @@ span.printrequired {
 	display: none;
 }
 
+span.printchecked {
+	display: none;
+}
+
 div.thinking {
 	float: right;
 }

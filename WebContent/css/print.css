@@ -115,6 +115,10 @@ span.answer {
 	font-weight: bold;
 }
 
+span.checked {
+	display: inline;
+}
+
 input.hidden {
 	display: none;
 }

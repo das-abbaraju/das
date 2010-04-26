@@ -51,6 +51,7 @@
 	<s:elseif test="#q.questionType == 'Check Box'">
 		<s:if test='#a.answer.equals("X")'>
 			<span class="checked"></span>
+			<span class="printchecked"><img src="images/checkBoxTrue.gif"></span>
 		</s:if>
 	</s:elseif>
 	<s:elseif test="#q.questionType == 'Country'">
