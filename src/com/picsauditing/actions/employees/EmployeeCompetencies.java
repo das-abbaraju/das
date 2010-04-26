@@ -157,10 +157,6 @@ public class EmployeeCompetencies extends AccountActionSupport {
 		return canEdit;
 	}
 
-	public void setCanEdit(boolean canEdit) {
-		this.canEdit = canEdit;
-	}
-
 	public boolean isChecked() {
 		return checked;
 	}

@@ -96,10 +96,6 @@ public class EmployeeDataPartnerIDs extends AccountActionSupport {
 		return SUCCESS;
 	}
 	
-	public boolean isCanEdit() {
-		return permissions.hasPermission(OpPerms.ManageJobSites, OpType.Edit);
-	}
-	
 	public Employee getEmployee() {
 		return employee;
 	}

@@ -5,21 +5,23 @@
 	<table class="report">
 		<thead>
 			<tr>
+				<th></th>
 				<th>Label</th>
 				<th>Name</th>
-				<s:if test="canEdit">
+				<pics:permission perm="ManageJobSites" type="Edit">
 					<th>Add</th>
-				</s:if>
+				</pics:permission>
 			</tr>
 		</thead>
-		<s:iterator value="getAddableTasks()" id="newTask">
+		<s:iterator value="getAddableTasks()" id="newTask" status="stat">
 			<tbody>
 				<tr>
+					<td><s:property value="#stat.count" /></td>
 					<td><s:property value="#newTask.label" /></td>
 					<td><s:property value="#newTask.name" /></td>
-					<s:if test="canEdit">
+					<pics:permission perm="ManageJobSites" type="Edit">
 						<td class="center"><a href="#" onclick="addTask(<s:property value="siteID" />, <s:property value="#newTask.id" />); return false;" class="add"></a></td>
-					</s:if>
+					</pics:permission>
 				</tr>
 			</tbody>
 		</s:iterator>

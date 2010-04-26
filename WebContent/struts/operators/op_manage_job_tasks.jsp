@@ -22,8 +22,41 @@ fieldset.form label {
 	width: 5em;
 	margin-right: 0px;
 }
+
+.newValue {
+	display: none;
+}
 </style>
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+function editTask(jobTaskID) {
+	$('.oldValue').show();
+	$('.newValue').hide();
+	$('tr#'+jobTaskID+' .oldValue').hide();
+	$('tr#'+jobTaskID+' .newValue').show();
+}
+
+function saveEdit(jobTaskID) {
+	var url = 'ManageJobTasksOperator.action?id=' + <s:property value="operator.id" /> + '&button=Edit&jobTaskID='
+		+ jobTaskID + '&' + $('tr#'+jobTaskID+' .newValue input').serialize();
+	self.location = url;
+}
+
+function sortTable(sortBy) {
+	var tbody = $('#tasksTable .report').find('tbody');
+	var rows = $(tbody).children();
+	$(tbody).empty();
+
+	rows.sort(function(a, b) {
+		var a1 = $(a).find('.' + sortBy).text().toUpperCase();
+		var b1 = $(b).find('.' + sortBy).text().toUpperCase();
+
+		return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
+	});
+
+	$.each(rows, function (index, row) { $(row).find('.index').text(index + 1); $(tbody).append(row); });
+}
+</script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
@@ -31,42 +64,49 @@ fieldset.form label {
 	<tr>
 		<td>
 			<s:if test="tasks.size() > 0">
-				<h3>Job Tasks</h3>
 				<table class="report">
 					<thead>
-						<tr><th></th>
-							<th>Label</th>
-							<th>Task Name</th>
-							<s:if test="canEdit">
-								<th>Manage Task Criteria</th>
-								<th>Remove</th>
-							</s:if>
+						<tr>
+							<th></th>
+							<th><a href="#" onclick="sortTable('label'); return false;">Label</a></th>
+							<th><a href="#" onclick="sortTable('name'); return false;">Task Name</a></th>
+							<th>Task Criteria</th>
+							<pics:permission perm="ManageJobTasks" type="Edit">
+								<th>Edit</th>
+							</pics:permission>
 						</tr>
 					</thead>
 					<tbody>
 						<s:iterator value="tasks" status="stat" id="task">
-							<tr>
-								<td><s:property value="#stat.count" /></td>
-								<td><s:property value="#task.label" /></td>
-								<td><a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="#task.id" />"
-											name="Manage Task Criteria"><s:property value="#task.name" /></a>
+							<tr id="<s:property value="#task.id" />">
+								<td class="index"><s:property value="#stat.count" /></td>
+								<td class="label">
+									<span class="oldValue"><s:property value="#task.label" /></span>
+									<span class="newValue"><input type="text" value="<s:property value="#task.label" />" name="jobTaskLabel" size="10" /></span>
 								</td>
-								<s:if test="canEdit">
+								<td class="name">
+									<span class="oldValue"><s:property value="#task.name" /></span>
+									<span class="newValue"><input type="text" value="<s:property value="#task.name" />" name="jobTaskName" size="40" /></span>
+								</td>
+								<td class="center"><a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="#task.id" />"
+										name="Manage Task Criteria">Manage</a></td>
+								<pics:permission perm="ManageJobTasks" type="Edit">
 									<td class="center">
-										<a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="#task.id" />"
-											class="picsbutton positive" name="Manage Task Criteria">Manage Task Criteria</a>
+										<span class="oldValue"><a href="#" onclick="editTask(<s:property value="#task.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /></a></span>
+										<span class="newValue"><nobr>
+											<a href="#" onclick="saveEdit(<s:property value="#task.id" />); return false;" class="save"></a>
+											<a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="#task.id" />&button=Remove" 
+												onclick="return confirm('Are you sure you want to remove this task?');" class="remove"></a>
+											<input type="button" name="button" value="Cancel" class="picsbutton" onclick="$('.oldValue').show(); $('.newValue').hide();" />
+										</nobr></span>
 									</td>
-									<td class="center">
-										<a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />&button=Remove&jobTaskID=<s:property value="#task.id" />"
-											class="remove"></a>
-									</td>
-								</s:if>
+								</pics:permission>
 							</tr>
 						</s:iterator>
 					</tbody>
 				</table>
 			</s:if>
-			<s:if test="canEdit">
+			<pics:permission perm="ManageJobTasks" type="Edit">
 				<a onclick="$('#addJobTask').show(); $('#addLink').hide(); return false;"
 					href="#" id="addLink" class="add">Add New Job Task</a>
 				<div id="addJobTask" style="display: none; clear: both;">
@@ -90,7 +130,7 @@ fieldset.form label {
 						</fieldset>
 					</s:form>
 				</div>
-			</s:if>
+			</pics:permission>
 		</td>
 	</tr>
 </table>

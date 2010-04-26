@@ -67,9 +67,9 @@ function sortTable(tableName, sortBy) {
 			<s:if test="employee == null">
 				<th><a href="#" onclick="sortTable('effective', 'employee'); return false;">Employee</a></th>
 			</s:if>
-			<s:if test="canEdit">
+			<pics:permission perm="ManageJobSites" type="Edit">
 				<th>Remove</th>
-			</s:if>
+			</pics:permission>
 		</tr>
 	</thead><tbody>
 		<s:iterator value="effective" id="result" status="stat">
@@ -86,11 +86,11 @@ function sortTable(tableName, sortBy) {
 						</a>
 					</td>
 				</s:if>
-				<s:if test="canEdit">
+				<pics:permission perm="ManageJobSites" type="Edit">
 					<td class="center">
 						<a href="ManageAssessmentResults.action?button=Remove&resultID=<s:property value="#result.id" />" class="remove"></a>
 					</td>
-				</s:if>
+				</pics:permission>
 			</tr>
 		</s:iterator>
 	</tbody></table>

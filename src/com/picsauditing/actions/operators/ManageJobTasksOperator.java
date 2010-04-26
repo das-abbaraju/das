@@ -14,6 +14,8 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	protected JobTaskDAO jobTaskDAO;
 
 	protected int jobTaskID;
+	protected String jobTaskLabel;
+	protected String jobTaskName;
 
 	protected JobTask newTask = new JobTask();
 
@@ -29,13 +31,16 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 			return LOGIN;
 
 		findOperator();
-		tryPermissions(OpPerms.ManageJobSites);
+		tryPermissions(OpPerms.ManageJobTasks);
 
 		if (button != null) {
 			if ("Tasks".equalsIgnoreCase(button)) {
 				newTask = jobTaskDAO.find(jobTaskID);
 				return SUCCESS;
 			}
+			
+			// Check if they can edit here
+			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);
 
 			if ("Save".equalsIgnoreCase(button)) {
 				// Labels are required
@@ -45,17 +50,28 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 				// this operator should be added by default
 				if (newTask.getOperator() == null && operator != null)
 					newTask.setOperator(operator);
-
-				if (getActionErrors().size() > 0)
-					return SUCCESS;
+			}
+			
+			if ("Edit".equalsIgnoreCase(button)) {
+				if (jobTaskID > 0 && !Strings.isEmpty(jobTaskLabel)) {
+					newTask = jobTaskDAO.find(jobTaskID);
+					newTask.setLabel(jobTaskLabel);
+					
+					if (!Strings.isEmpty(jobTaskName))
+						newTask.setName(jobTaskName);
+				} else
+					addActionError("Missing job task ID or label");
 			}
 
 			if ("Remove".equalsIgnoreCase(button)) {
 				newTask = jobTaskDAO.find(jobTaskID);
 				jobTaskDAO.remove(newTask);
-			} else {
-				jobTaskDAO.save(newTask);
 			}
+			
+			if (getActionErrors().size() > 0)
+				return SUCCESS;
+			
+			jobTaskDAO.save(newTask);
 
 			if (permissions.isOperator())
 				return redirect("ManageJobTasksOperator.action");
@@ -73,6 +89,22 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	public void setJobTaskID(int jobTaskID) {
 		this.jobTaskID = jobTaskID;
 	}
+	
+	public String getJobTaskLabel() {
+		return jobTaskLabel;
+	}
+	
+	public void setJobTaskLabel(String jobTaskLabel) {
+		this.jobTaskLabel = jobTaskLabel;
+	}
+	
+	public String getJobTaskName() {
+		return jobTaskName;
+	}
+	
+	public void setJobTaskName(String jobTaskName) {
+		this.jobTaskName = jobTaskName;
+	}
 
 	public JobTask getNewTask() {
 		return newTask;
@@ -80,10 +112,6 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 
 	public void setNewTask(JobTask newTask) {
 		this.newTask = newTask;
-	}
-
-	public boolean isCanEdit() {
-		return permissions.hasPermission(OpPerms.ManageJobSites, OpType.Edit);
 	}
 
 	public List<JobTask> getTasks() {

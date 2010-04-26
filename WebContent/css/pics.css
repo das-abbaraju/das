@@ -376,6 +376,13 @@ a.edit {
 	zoom: 1;
 }
 
+a.save {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/save.gif') no-repeat left center;
+	zoom: 1;
+}
+
 a.verify {
 	padding-left: 17px;
 	margin-left: 2px;

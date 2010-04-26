@@ -10,9 +10,9 @@
 				<th><span title="Click on the number to get the list of employees associated with this task."
 					style="padding-right: 17px; margin-left: 2px; background: url('images/help.gif') no-repeat right center;"># Employees</span>
 				</th>
-				<s:if test="canEdit">
+				<pics:permission perm="ManageJobSites" type="Edit">
 					<th>Remove</th>
-				</s:if>
+				</pics:permission>
 			</tr>
 		</thead>
 		<s:iterator value="getTasks(siteID)" id="siteTask">
@@ -25,9 +25,9 @@
 							<s:property value="getEmployeesByTask(#siteTask.id).size()" />
 						</a>
 					</td>
-					<s:if test="canEdit">
-						<td class="center"><a href="#" onclick="removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />); return false;" class="remove"></a></td>
-					</s:if>
+					<pics:permission perm="ManageJobSites" type="Edit">
+						<td class="center"><a href="#" onclick="return removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />);" class="remove"></a></td>
+					</pics:permission>
 				</tr>
 			</tbody>
 		</s:iterator>
@@ -37,6 +37,4 @@
 	No tasks associated with this site.<br />
 </s:else>
 
-<s:if test="getAddableTasks().size() > 0">
-	<a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); return false;" class="add">Add New Task</a>
-</s:if>
+<a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); return false;" class="add">Add New Task</a>

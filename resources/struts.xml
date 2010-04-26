@@ -1399,16 +1399,6 @@
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
 		</action>
 		
-		<action name="ManageJobTasksOperator"
-			class="com.picsauditing.actions.operators.ManageJobTasksOperator">
-			<result>struts/operators/op_manage_job_tasks.jsp</result>
-		</action>
-		
-		<action name="ManageJobTaskCriteria"
-			class="com.picsauditing.actions.operators.ManageJobTaskCriteria">
-			<result>struts/operators/op_manage_job_task_criteria.jsp</result>
-		</action>
-		
 		<action name="ManageInsuranceCriteriaOperator"
 			class="com.picsauditing.actions.operators.ManageFlagCriteriaOperator">
 			<param name="insurance">true</param>
@@ -1566,6 +1556,16 @@
 			<result>/struts/operators/op_job_sites_tasks.jsp</result>
 			<result name="employees">/struts/operators/op_job_sites_employees.jsp</result>
 			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
+		</action>
+		
+		<action name="ManageJobTasksOperator"
+			class="com.picsauditing.actions.operators.ManageJobTasksOperator">
+			<result>struts/operators/op_manage_job_tasks.jsp</result>
+		</action>
+		
+		<action name="ManageJobTaskCriteria"
+			class="com.picsauditing.actions.operators.ManageJobTaskCriteria">
+			<result>struts/operators/op_manage_job_task_criteria.jsp</result>
 		</action>
 		
 		<action name="ReportCompetencyByEmployee"

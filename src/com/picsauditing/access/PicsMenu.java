@@ -185,6 +185,11 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.DefineCompetencies))
 			subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
+		
+		if (permissions.hasPermission(OpPerms.ManageJobSites))
+			subMenu.addChild("Manage Job Sites", "ManageJobSites.action?id=" + permissions.getAccountId());
+		if (permissions.hasPermission(OpPerms.ManageJobTasks))
+			subMenu.addChild("Manage Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
 
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");

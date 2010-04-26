@@ -145,8 +145,4 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 		
 		return resultDAO.findExpired(null);
 	}
-	
-	public boolean isCanEdit() {
-		return permissions.hasPermission(OpPerms.ManageJobSites, OpType.Edit);
-	}
 }

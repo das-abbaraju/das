@@ -32,10 +32,17 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected int siteID;
 	protected int siteTaskID;
 	protected int taskID;
+	protected String siteName;
+	protected String siteLabel;
 
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
 	protected JobTask newTask = new JobTask();
+	protected List<EmployeeQualification> employeesByTask;
+	protected List<JobTask> addable = new ArrayList<JobTask>();
+	protected List<JobSite> activeSites;
+	protected List<JobSite> inactiveSites;
+	protected List<JobSiteTask> tasks;
 
 	public ManageJobSites(OperatorAccountDAO operatorDao, EmployeeQualificationDAO qualDAO, JobSiteDAO siteDAO,
 			JobSiteTaskDAO siteTaskDAO, JobTaskDAO taskDAO, NoteDAO noteDAO) {
@@ -130,7 +137,8 @@ public class ManageJobSites extends OperatorActionSupport {
 				note.setPriority(LowMedHigh.Med);
 				note.setViewableBy(operator);
 				note.setCanContractorView(true);
-				noteDAO.save(note);
+				// Until we're ready for notes
+				//noteDAO.save(note);
 
 				return SUCCESS;
 			}
@@ -148,6 +156,26 @@ public class ManageJobSites extends OperatorActionSupport {
 							+ newSite.getName());
 				} else
 					addActionError("Please add a label to this job site.");
+			}
+			
+			if ("Update".equalsIgnoreCase(button)) {
+				if (siteID > 0) {
+					newSite = siteDAO.find(siteID);
+					
+					note.setSummary("Renamed job site with label: " + newSite.getLabel() + " and site name: "
+							+ newSite.getName());
+					
+					if (!Strings.isEmpty(siteLabel)) {
+						newSite.setLabel(siteLabel);
+						
+						if (!Strings.isEmpty(siteName))
+							newSite.setName(siteName);
+						
+						note.setSummary(note.getSummary() + " to label: " + newSite.getLabel() + " and site name: "
+								+ newSite.getName());
+					} else
+						addActionError("Please add a label to this job site.");
+				}
 			}
 
 			if ("Remove".equalsIgnoreCase(button)) {
@@ -216,6 +244,22 @@ public class ManageJobSites extends OperatorActionSupport {
 	public void setTaskID(int taskID) {
 		this.taskID = taskID;
 	}
+	
+	public String getSiteLabel() {
+		return siteLabel;
+	}
+	
+	public void setSiteLabel(String siteLabel) {
+		this.siteLabel = siteLabel;
+	}
+	
+	public String getSiteName() {
+		return siteName;
+	}
+	
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
 
 	public JobSite getNewSite() {
 		return newSite;
@@ -229,46 +273,57 @@ public class ManageJobSites extends OperatorActionSupport {
 		return siteTask;
 	}
 
-	public boolean isCanEdit() {
-		return permissions.hasPermission(OpPerms.ManageJobSites, OpType.Edit);
-	}
-
 	public List<JobSite> getActiveSites() {
-		return siteDAO.findByOperatorWhere(operator.getId(), "active = 1");
+		if (activeSites == null)
+			activeSites = siteDAO.findByOperatorWhere(operator.getId(), "active = 1");
+		
+		return activeSites;
 	}
 
 	public List<JobSite> getInactiveSites() {
-		return siteDAO.findByOperatorWhere(operator.getId(), "active = 0");
+		if (inactiveSites == null)
+			inactiveSites = siteDAO.findByOperatorWhere(operator.getId(), "active = 0");
+		
+		return inactiveSites;
 	}
 
 	public List<JobSiteTask> getTasks(int job) {
-		return siteTaskDAO.findByJob(job);
+		if (tasks == null)
+			tasks = siteTaskDAO.findByJob(job);
+		
+		return tasks;
 	}
 
 	public List<JobTask> getAddableTasks() {
-		List<JobSiteTask> siteTasks = getTasks(siteID);
-		// Skip tasks that have all ready been associated with this site
-		List<Integer> skip = new ArrayList<Integer>();
-
-		for (JobSiteTask jst : siteTasks) {
-			skip.add(jst.getTask().getId());
+		if (addable.size() == 0) {
+			List<JobSiteTask> siteTasks = getTasks(siteID);
+			// Skip tasks that have all ready been associated with this site
+			List<Integer> skip = new ArrayList<Integer>();
+	
+			for (JobSiteTask jst : siteTasks) {
+				skip.add(jst.getTask().getId());
+			}
+	
+			String ids = "";
+			if (skip.size() > 0)
+				ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",") + ")";
+			
+			addable = taskDAO.findWhere("opID = " + operator.getId() + ids);
 		}
-
-		String ids = "";
-		if (skip.size() > 0)
-			ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",") + ")";
-
-		return taskDAO.findWhere("opID = " + operator.getId() + ids);
+		
+		return addable;
 	}
 
 	public List<EmployeeQualification> getEmployeesByTask(int siteTaskID) {
 		// Sort list by employer name?
-		List<EmployeeQualification> employees = qualDAO.findByTask(siteTaskID);
+		if (employeesByTask == null) {
+			employeesByTask = qualDAO.findByTask(siteTaskID);
+	
+			if (employeesByTask.size() > 1)
+				Collections.sort(employeesByTask, new ByEmployerName());
+		}
 
-		if (employees.size() > 1)
-			Collections.sort(employees, new ByEmployerName());
-
-		return employees;
+		return employeesByTask;
 	}
 
 	private class ByEmployerName implements Comparator<EmployeeQualification> {

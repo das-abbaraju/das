@@ -22,6 +22,10 @@ fieldset.form label {
 	width: 5em;
 	margin-right: 5px;
 }
+
+.newValue {
+	display: none;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
@@ -57,11 +61,8 @@ function getNewSiteTasks(siteID) {
 		id: <s:property value="operator.id" />
 	};
 
-	$('#addSiteTasks').load('ManageJobSitesAjax.action', data, 
-		function() {
-			$('#addTaskLink').hide();
-		}
-	);
+	$('#addTaskLink').hide();
+	$('#addSiteTasks').load('ManageJobSitesAjax.action', data);
 }
 
 function addTask(siteID, taskID) {
@@ -74,26 +75,44 @@ function addTask(siteID, taskID) {
 
 	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
 		function() {
-			$('#taskEmployees').empty();
-			$('#addSiteTasks').empty();
+			getNewSiteTasks(siteID);
 		}
 	);
 }
 
 function removeTask(siteID, siteTaskID) {
-	var data = {
-		button: 'RemoveTask',
-		siteID: siteID,
-		siteTaskID: siteTaskID,
-		id: <s:property value="operator.id" />
-	};
+	var remove = confirm('Are you sure you want to remove this task?');
 
-	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
-		function() {
-			$('#taskEmployees').empty();
-			$('#addSiteTasks').empty();
-		}
-	);
+	if (remove) {
+		var data = {
+			button: 'RemoveTask',
+			siteID: siteID,
+			siteTaskID: siteTaskID,
+			id: <s:property value="operator.id" />
+		};
+	
+		$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
+			function() {
+				$('#taskEmployees').empty();
+				$('#addSiteTasks').empty();
+			}
+		);
+	}
+
+	return remove;
+}
+
+function editSite(siteID) {
+	$('.oldValue').show();
+	$('.newValue').hide();
+	$('tr#'+siteID+' .oldValue').hide();
+	$('tr#'+siteID+' .newValue').show();
+}
+
+function saveEdit(siteID) {
+	var url = $('tr#'+siteID+' .newValue input').serialize();
+	self.location='ManageJobSites.action?id=' + <s:property value="operator.id" /> + '&siteID=' + siteID
+			+ '&button=Update&' + url;
 }
 </script>
 </head>
@@ -110,31 +129,48 @@ function removeTask(siteID, siteTaskID) {
 						<tr><th></th>
 							<th>Label</th>
 							<th>Site Name</th>
-							<s:if test="canEdit">
+							<th>Tasks</th>
+							<pics:permission perm="ManageJobSites" type="Edit">
+								<th>Edit</th>
 								<th>Remove</th>
-							</s:if>
+							</pics:permission>
 						</tr>
 					</thead>
 					<tbody>
 						<s:iterator value="activeSites" status="stat" id="site">
-							<tr>
+							<tr id="<s:property value="#site.id" />">
 								<td><s:property value="#stat.count" /></td>
-								<td><s:property value="#site.label" /></td>
-								<td><a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">
-									<s:property value="#site.name" /></a>
+								<td>
+									<span class="oldValue"><s:property value="#site.label" /></span>
+									<span class="newValue"><input type="text" value="<s:property value="#site.label" />"
+										name="siteLabel" size="10" /></span>
 								</td>
-								<s:if test="canEdit">
+								<td>
+									<span class="oldValue"><s:property value="#site.name" /></span>
+									<span class="newValue"><input type="text" value="<s:property value="#site.name" />"
+										name="siteName" /></span>
+								</td>
+								<td class="center">
+									<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+								</td>
+								<pics:permission perm="ManageJobSites" type="Edit">
+									<td class="center">
+										<span class="oldValue"><a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit site" /></a></span>
+										<span class="newValue"><nobr>
+											<a href="#" onclick="saveEdit(<s:property value="#site.id" />); return false;" class="save"></a>
+										</nobr></span>
+									</td>
 									<td class="center">
 										<a href="ManageJobSites.action?id=<s:property value="operator.id" />&button=Remove&siteID=<s:property value="#site.id" />"
-											class="remove"></a>
+											onclick="return confirm('Are you sure you want to remove this job site?');" class="remove"></a>
 									</td>
-								</s:if>
+								</pics:permission>
 							</tr>
 						</s:iterator>
 					</tbody>
 				</table>
 			</s:if>
-			<s:if test="canEdit">
+			<pics:permission perm="ManageJobSites" type="Edit">
 				<a onclick="$('#addJobSite').show(); $('#addLink').hide(); return false;"
 					href="#" id="addLink" class="add">Add New Job Site</a>
 				<div id="addJobSite" style="display: none; clear: both;">
@@ -158,31 +194,31 @@ function removeTask(siteID, siteTaskID) {
 						</fieldset>
 					</s:form>
 				</div>
-			</s:if>
+			</pics:permission>
 		</td>
 		<td rowspan="2">
 			<div id="jobSiteTasks"></div>
-			<s:if test="canEdit">
+			<pics:permission perm="ManageJobSites" type="Edit">
 				<div id="addSiteTasks"></div>
-			</s:if>
+			</pics:permission>
 		</td>
 		<td rowspan="2" style="width: 300px;">
 			<div id="taskEmployees"></div>
 		</td>
 	</tr>
 </table>
-<a href="#" onclick="$('#notes').show(); $(this).hide(); return false;">Show Details</a>
-<div id="notes" style="display: none;">
-	<s:if test="inactiveSites.size() > 0">
+<s:if test="inactiveSites.size() > 0">
+	<a href="#" onclick="$('#pastSites').show(); $(this).hide(); return false;">Show Details</a>
+	<div id="pastSites" style="display: none;">
 		<h3>Past Sites</h3>
 		<table class="report">
 			<thead>
 				<tr><th></th>
 					<th>Label</th>
 					<th>Site Name</th>
-					<s:if test="canEdit">
+					<pics:permission perm="ManageJobSites" type="Edit">
 						<th>Reactivate</th>
-					</s:if>
+					</pics:permission>
 				</tr>
 			</thead>
 			<tbody>
@@ -191,18 +227,17 @@ function removeTask(siteID, siteTaskID) {
 						<td><s:property value="#stat.count" /></td>
 						<td><s:property value="#site.label" /></td>
 						<td><s:property value="#site.name" /></td>
-						<s:if test="canEdit">
+						<pics:permission perm="ManageJobSites" type="Edit">
 							<td class="center">
 								<a href="ManageJobSites.action?id=<s:property value="operator.id" />&button=Reactivate&siteID=<s:property value="#site.id" />"
 									class="add"></a>
 							</td>
-						</s:if>
+						</pics:permission>
 					</tr>
 				</s:iterator>
 			</tbody>
 		</table>
-	</s:if>
-	<s:include value="../notes/account_notes_embed.jsp"></s:include>
-</div>
+	</div>
+</s:if>
 </body>
 </html>

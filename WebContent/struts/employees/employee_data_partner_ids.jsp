@@ -67,7 +67,9 @@ function sortTable(sortBy) {
 				</th></s:if>
 				<th><a href="#" onclick="sortTable('membership'); return false;">Membership ID</a></th>
 				<th><a href="#" onclick="sortTable('authorization'); return false;">Authorization Key</a></th>
-				<s:if test="canEdit"><th>Remove</th></s:if>
+				<pics:permission perm="ManageJobSites" type="Edit">
+					<th>Remove</th>
+				</pics:permission>
 			</tr>
 		</thead>
 		<tbody>
@@ -96,7 +98,7 @@ function sortTable(sortBy) {
 	</s:if>
 </s:else>
 
-<s:if test="canEdit">
+<pics:permission perm="ManageJobSites" type="Edit">
 	<a href="#" onclick="$('#newAuthDiv').show(); $('#newAuthLink').hide(); return false;" class="add" id="newAuthLink">Add New Data Partner ID</a>
 	<div id="newAuthDiv" style="display: none;">
 		<s:form id="newAuthForm" method="POST" enctype="multipart/form-data">
@@ -129,7 +131,7 @@ function sortTable(sortBy) {
 			</fieldset>
 		</s:form>
 	</div>
-</s:if>
+</pics:permission>
 
 </body>
 </html>

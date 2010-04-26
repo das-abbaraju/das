@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.dao.JobTaskCriteriaDAO;
 import com.picsauditing.dao.JobTaskDAO;
@@ -26,6 +25,10 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	protected int jobTaskCriteriaID;
 	protected int assessmentTestID;
 	protected int groupNumber;
+	protected String taskType;
+	protected int monthsToExpire;
+	protected boolean picsVerifiable;
+	protected boolean active;
 
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
 	protected JobTask jobTask;
@@ -154,6 +157,38 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	public void setAssessmentTestID(int assessmentTestID) {
 		this.assessmentTestID = assessmentTestID;
 	}
+	
+	public String getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
+	}
+
+	public int getMonthsToExpire() {
+		return monthsToExpire;
+	}
+
+	public void setMonthsToExpire(int monthsToExpire) {
+		this.monthsToExpire = monthsToExpire;
+	}
+
+	public boolean isPicsVerifiable() {
+		return picsVerifiable;
+	}
+
+	public void setPicsVerifiable(boolean picsVerifiable) {
+		this.picsVerifiable = picsVerifiable;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public JobTask getJobTask() {
 		return jobTask;
@@ -169,10 +204,6 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 
 	public void setAssessmentTest(AssessmentTest assessmentTest) {
 		this.assessmentTest = assessmentTest;
-	}
-
-	public boolean isCanEdit() {
-		return permissions.hasPermission(OpPerms.ManageJobSites, OpType.Edit);
 	}
 
 	public List<JobTaskCriteria> getCriterias() {
