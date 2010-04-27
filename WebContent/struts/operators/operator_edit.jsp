@@ -172,6 +172,8 @@ $(function() {
 						name="operator.doContractorsPay" theme="pics" /></li>
 					<li><label>Requires OQ:</label> <s:checkbox
 						name="operator.requiresOQ" /></li>
+					<li><label>Requires Competency Review:</label> <s:checkbox
+						name="operator.requiresCompetencyReview" /></li>
 				</ol>
 				</fieldset>
 				<fieldset class="form"><legend><span>Linked

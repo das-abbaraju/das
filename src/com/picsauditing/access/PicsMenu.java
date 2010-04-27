@@ -59,9 +59,12 @@ public class PicsMenu {
 					subMenu = menu.addChild("Edit");
 					subMenu.addChild("Company Account", "ContractorEdit.action");
 					subMenu.addChild("Users", "UsersManage.action");
-					subMenu.addChild("Employees", "ManageEmployees.action");
-					subMenu.addChild("Job Roles", "ManageJobRoles.action");
-					subMenu.addChild("Employee Competencies", "EmployeeCompetencies.action");
+					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
+						subMenu.addChild("Employees", "ManageEmployees.action");
+					if (permissions.isRequiresCompetencyReview()) {
+						subMenu.addChild("Job Roles", "ManageJobRoles.action");
+						subMenu.addChild("Employee Competencies", "EmployeeCompetencies.action");
+					}
 				}
 
 				if (permissions.hasPermission(OpPerms.ContractorBilling)) {
@@ -71,7 +74,7 @@ public class PicsMenu {
 				}
 
 				menu.addChild("Forms &amp; Docs", "ContractorForms.action");
-				
+
 				subMenu = addSupportLink(menu);
 				subMenu.addChild("Edit Profile", "ProfileEdit.action");
 
@@ -106,7 +109,7 @@ public class PicsMenu {
 			subMenu.addChild("Search By Question", "QuestionAnswerSearch.action");
 
 		if (permissions.isPicsEmployee()) // ||
-											// permissions.isOperatorCorporate()
+			// permissions.isOperatorCorporate()
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 
 		subMenu = menu.addChild("Auditing");
@@ -183,13 +186,16 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
-		if (permissions.hasPermission(OpPerms.DefineCompetencies))
-			subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 		
-		if (permissions.hasPermission(OpPerms.ManageJobSites))
-			subMenu.addChild("Manage Job Sites", "ManageJobSites.action?id=" + permissions.getAccountId());
-		if (permissions.hasPermission(OpPerms.ManageJobTasks))
-			subMenu.addChild("Manage Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+		if (permissions.isOperator()) {
+			if (permissions.hasPermission(OpPerms.DefineCompetencies))
+				subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
+
+			if (permissions.hasPermission(OpPerms.ManageJobSites))
+				subMenu.addChild("Manage Job Sites", "ManageJobSites.action?id=" + permissions.getAccountId());
+			if (permissions.hasPermission(OpPerms.ManageJobTasks))
+				subMenu.addChild("Manage Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+		}
 
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
 			subMenu.addChild("Forms &amp; Docs", "manage_forms.jsp");
