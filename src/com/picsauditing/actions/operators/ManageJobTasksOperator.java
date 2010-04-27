@@ -14,7 +14,7 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	protected JobTaskDAO jobTaskDAO;
 
 	protected int jobTaskID;
-	protected boolean active;
+	protected boolean taskActive;
 	protected String jobTaskLabel;
 	protected String jobTaskName;
 	protected String taskType;
@@ -62,7 +62,7 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 					if (!Strings.isEmpty(jobTaskName))
 						newTask.setName(jobTaskName);
 					
-					newTask.setActive(active);
+					newTask.setActive(taskActive);
 					newTask.setTaskType(taskType);
 				} else
 					addActionError("Missing job task ID or label");
@@ -96,12 +96,12 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 		this.jobTaskID = jobTaskID;
 	}
 	
-	public boolean isActive() {
-		return active;
+	public boolean isTaskActive() {
+		return taskActive;
 	}
 	
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setTaskActive(boolean taskActive) {
+		this.taskActive = taskActive;
 	}
 	
 	public String getJobTaskLabel() {

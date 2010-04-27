@@ -32,12 +32,9 @@ function editTask(jobTaskID) {
 }
 
 function saveEdit(jobTaskID) {
-	var active = $('tr#'+jobTaskID+' .newValue input[type=checkbox]').val();
 	var url = 'ManageJobTasksOperator.action?id=' + <s:property value="operator.id" /> + '&button=Edit&jobTaskID='
-		+ jobTaskID + '&' + $('tr#'+jobTaskID+' .newValue input[type!=checkbox], tr#'+jobTaskID+' .newValue select').serialize();
-
-	if (active)
-		url += '&active=true';
+		+ jobTaskID + '&' + $('tr#'+jobTaskID+' .newValue input, tr#'+jobTaskID+' .newValue select').serialize();
+	
 	self.location = url;
 }
 
@@ -103,7 +100,7 @@ function sortTable(sortBy) {
 										<s:else><span style="color: #930">Inactive</span></s:else>
 									</span>
 									<span class="newValue">
-										<input type="checkbox" name="active" <s:if test="#task.active">checked="checked"</s:if> />
+										<s:checkbox name="taskActive" value="#task.active"></s:checkbox>
 									</span>
 								</td>
 								<td class="center type">

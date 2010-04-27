@@ -18,6 +18,12 @@ table.report tbody td {
 }
 </style>
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+function getHistory(date) {
+	self.location = 'ManageJobTaskCriteria.action?id=' + <s:property value="operator.id" />
+		+ '&jobTaskID=' + <s:property value="jobTaskID" /> + '&date=' + date;
+}
+</script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
@@ -26,12 +32,14 @@ table.report tbody td {
 	<tr>
 		<td>
 			<s:if test="criterias.size() > 0">
-				<h3 style="padding-bottom:10px;"><s:property value="jobTask.label"/>&nbsp;<s:property value="jobTask.name"/></h3>
+				<h3 style="padding-bottom:10px;">
+					<s:property value="jobTask.label"/>&nbsp;<s:property value="jobTask.name"/>
+					<s:if test="history != null"><s:select list="history" name="effectiveDate" value="effectiveDate" onchange="getHistory(this.value);"></s:select></s:if>
+				</h3>
 				<div>
 					<table class="report jobReport">
 						<thead>
 							<tr>
-								<th>Task Type</th>
 								<th>Qualification Type: Method</th>
 								<th>Months To Expire</th>
 								<th>PICS Verifiable</th>
@@ -46,11 +54,10 @@ table.report tbody td {
 								<s:iterator value="jobTask.jobTaskCriteriaMap.get(#groupNumber)" status="criteria">
 									<s:if test="!#criteria.first">
 										<tr>
-											<td class="and center"<pics:permission perm="ManageJobTasks" type="Edit"> colspan="6"</pics:permission><pics:permission perm="ManageJobTasks" negativeCheck="true"> colspan="5"</pics:permission>>- AND -</td>
+											<td class="and center"<pics:permission perm="ManageJobTasks" type="Edit"> colspan="5"</pics:permission><pics:permission perm="ManageJobTasks" negativeCheck="true"> colspan="4"</pics:permission>>- AND -</td>
 										</tr>
 									</s:if>
 									<tr id="<s:property value="#groupNumber" />_<s:property value="id" />">
-										<td class="center"><s:property value="jobTask.taskType" /></td>
 										<td style="padding:0 20px 0 10px;"><s:property value="assessmentTest.assessmentCenter.name" />&nbsp;<s:property value="assessmentTest.qualificationType" />:&nbsp;<s:property value="assessmentTest.qualificationMethod" /></td>
 										<td class="center"><s:property value="assessmentTest.monthsToExpire" /></td>
 										<td class="center"><s:if test="assessmentTest.verifiable">Y</s:if><s:else>N</s:else></td>
@@ -64,10 +71,10 @@ table.report tbody td {
 													class="remove" onclick="return confirm('Are you sure you want to remove this task criteria?');"></a>
 											</td>
 										</pics:permission>
-									</tr>									
+									</tr>
 								</s:iterator>
 								<pics:permission perm="ManageJobTasks" type="Edit">
-									<td colspan="6" class="center">
+									<td colspan="5" class="center">
 										<s:if test="getUsedAssessmentsByGroup(#groupNumber).size > 0">
 											<a onclick="$('#addJobTaskCriteria_<s:property value="#groupNumber"/>').show(); $('#addLink_<s:property value="#groupNumber"/>').hide(); return false;"
 												href="#" id="addLink_<s:property value="#groupNumber"/>" class="add">Add New Assessment</a>
@@ -104,7 +111,7 @@ table.report tbody td {
 								</pics:permission>
 								<s:if test="!#group.last">
 									<tr class="or">
-										<td class="center"<pics:permission perm="ManageJobTasks" type="Edit"> colspan="6"</pics:permission><pics:permission perm="ManageJobTasks" negativeCheck="true"> colspan="5"</pics:permission>>- OR -</td>
+										<td class="center"<pics:permission perm="ManageJobTasks" type="Edit"> colspan="5"</pics:permission><pics:permission perm="ManageJobTasks" negativeCheck="true"> colspan="4"</pics:permission>>- OR -</td>
 									</tr>
 								</s:if>
 							</s:iterator>

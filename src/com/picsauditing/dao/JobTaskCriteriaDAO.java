@@ -33,7 +33,7 @@ public class JobTaskCriteriaDAO extends PicsDAO {
 	}
 
 	public List<Date> findHistoryByTask(int taskID) {
-		Query query = em.createQuery("SELECT DISTINCT effectiveDate FROM JobTaskCriteria WHERE task.id = :taskID ORDER BY effectiveDate");
+		Query query = em.createQuery("SELECT DISTINCT effectiveDate FROM JobTaskCriteria WHERE task.id = :taskID ORDER BY effectiveDate DESC");
 		query.setParameter("taskID", taskID);
 		return query.getResultList();
 	}

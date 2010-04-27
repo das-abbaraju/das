@@ -1,8 +1,11 @@
 package com.picsauditing.actions.operators;
 
 //import com.picsauditing.access.OpPerms;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +29,9 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	protected int jobTaskCriteriaID;
 	protected int assessmentTestID;
 	protected int groupNumber;
+	protected String date;
 
+	protected Date effectiveDate = new Date(); // Set to today
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
 	protected JobTask jobTask;
 	protected AssessmentTest assessmentTest;
@@ -140,7 +145,29 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	public void setJobTaskCriteriaID(int jobTaskCriteriaID) {
 		this.jobTaskCriteriaID = jobTaskCriteriaID;
 	}
-
+	
+	public String getDate() {
+		return date;
+	}
+	
+	public void setDate(String date) {
+		this.date = date;
+	}
+	
+	public Date getEffectiveDate() {
+		if (date != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
+			try {
+				effectiveDate = sdf.parse(date);
+			} catch (ParseException e) {
+				effectiveDate = new Date();
+			}
+		}
+		
+		return effectiveDate;
+	}
+	
 	public JobTaskCriteria getNewJobTaskCriteria() {
 		return newJobTaskCriteria;
 	}
@@ -177,7 +204,15 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 		if (jobTask == null)
 			jobTask = jobTaskDAO.find(jobTaskID);
 		
-		return jobTask.getJobTaskCriteria();
+		List<JobTaskCriteria> inEffect = jobTask.getJobTaskCriteria();
+		Iterator<JobTaskCriteria> iterator = inEffect.iterator();
+		
+		while(iterator.hasNext()) {
+			if (iterator.next().getEffectiveDate().after(getEffectiveDate()))
+				iterator.remove();
+		}
+		
+		return inEffect;
 	}
 
 	public Set<AssessmentTest> getAllAssessments() {
@@ -185,6 +220,16 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 			jobTask = jobTaskDAO.find(jobTaskID);
 		
 		return new HashSet<AssessmentTest>(assessmentTestDAO.findAll());
+	}
+	
+	public List<Date> getHistory() {
+		if (history == null)
+			history = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
+		
+		if (history.size() > 1)
+			return history;
+		
+		return null;
 	}
 	
 	public Set<AssessmentTest> getUsedAssessmentsByGroup(int groupNumber) {
