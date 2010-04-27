@@ -2,8 +2,11 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -41,6 +44,8 @@ public class Employee extends BaseTable {
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
 	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
+	Set<EmployeeQualification> employeeQualifications = new HashSet<EmployeeQualification>();
+	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
 
 	public String getFirstName() {
 		return firstName;
@@ -184,6 +189,24 @@ public class Employee extends BaseTable {
 		this.employeeSites = employeeSites;
 	}
 
+	@OneToMany(mappedBy = "employee", cascade = { CascadeType.ALL })
+	public Set<EmployeeQualification> getEmployeeQualifications() {
+		return employeeQualifications;
+	}
+
+	public void setEmployeeQualifications(Set<EmployeeQualification> employeeQualifications) {
+		this.employeeQualifications = employeeQualifications;
+	}
+
+	@OneToMany(mappedBy = "employee", cascade = { CascadeType.REMOVE })
+	public List<AssessmentResult> getAssessmentResults() {
+		return assessmentResults;
+	}
+
+	public void setAssessmentResults(List<AssessmentResult> assessmentResults) {
+		this.assessmentResults = assessmentResults;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -211,6 +234,7 @@ public class Employee extends BaseTable {
 	@Transient
 	public JSONArray toTableJSON() {
 		return new JSONArray() {
+
 			{
 				add(id);
 				add(lastName);
@@ -219,5 +243,10 @@ public class Employee extends BaseTable {
 				add(classification == null ? null : classification.toString());
 			}
 		};
+	}
+	
+	@Override
+	public String toString() {
+		return (firstName + " " + lastName).trim() + " (" + id + ")";
 	}
 }

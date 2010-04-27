@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 @Entity
 @Table(name = "employee_site")
 @PrimaryKeyJoinColumn(name = "id")
-public class EmployeeSite extends BaseTable implements JSONable {
+public class EmployeeSite extends BaseHistory implements JSONable {
 
 	private OperatorAccount operator;
 	private JobSite jobSite;

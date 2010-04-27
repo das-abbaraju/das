@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "employee_qualification")
-public class EmployeeQualification extends BaseTable {
+public class EmployeeQualification extends BaseHistory {
 
 	private Employee employee;
 	private JobTask task;
@@ -42,4 +42,8 @@ public class EmployeeQualification extends BaseTable {
 		this.qualified = qualified;
 	}
 
+	@Override
+	public String toString() {
+		return effectiveDate + "|" + employee + "|" + task;
+	}
 }

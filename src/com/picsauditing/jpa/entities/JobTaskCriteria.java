@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "job_task_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class JobTaskCriteria extends BaseTable {
+public class JobTaskCriteria extends BaseHistory {
 
 	private JobTask task;
 	private AssessmentTest assessmentTest;

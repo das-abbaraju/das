@@ -21,13 +21,19 @@ public class JobTaskDAO extends PicsDAO {
 	}
 
 	public List<JobTask> findWhere(String where) {
-		Query query = em.createQuery("From JobTask WHERE " + where);
+		Query query = em.createQuery("FROM JobTask WHERE " + where);
 		return query.getResultList();
 	}
 
 	public List<JobTask> findOperatorTasks(int id) {
-		Query query = em.createQuery("From JobTask WHERE opID = :opid ORDER BY label, name");
+		Query query = em.createQuery("FROM JobTask WHERE opID = :opid ORDER BY label, name");
 		query.setParameter("opid", id);
+		return query.getResultList();
+	}
+
+	public List<JobTask> findByEmployee(int employeeID) {
+		Query query = em.createQuery("SELECT DISTINCT jst.task FROM JobSiteTask jst WHERE jst.job IN (SELECT jobSite FROM EmployeeSite WHERE employee.id = :employeeID)");
+		query.setParameter("employeeID", employeeID);
 		return query.getResultList();
 	}
 }

@@ -1349,6 +1349,10 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
+		<action name="EmployeeQualificationCron" class="com.picsauditing.actions.employees.EmployeeQualificationCron">
+			<result>/struts/employees/employee_qual_cron.jsp</result>
+		</action>
+		
 		<action name="SubscriptionCron" class="com.picsauditing.actions.SubscriptionCron">
 			<result>/struts/blank.jsp</result>
 		</action>
