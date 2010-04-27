@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -377,18 +376,6 @@ public class OshaOrganizer {
 	
 	public String getAnswer2(OshaType type, MultiYearScope year, OshaRateType rateType){
 		String auditFor = getAuditFor(type,year);
-		
-		// decorate
-		// Appending absolute answer for answer2 for Naics OSHAs
-		if (rateType.equals(OshaRateType.LwcrNaics)) {
-			auditFor += "<br/>Contractor Answer: "
-					+ PicsActionSupport.format(getRate(type, year,
-							OshaRateType.LwcrAbsolute));
-		} else if (rateType.equals(OshaRateType.TrirNaics)) {
-			auditFor += "<br/>Contractor Answer: "
-					+ PicsActionSupport.format(getRate(type, year,
-							OshaRateType.TrirAbsolute));
-		}
 		
 		// conditionally add verified tag
 		if(isVerified(type, year)){

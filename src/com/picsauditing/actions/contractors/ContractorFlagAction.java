@@ -21,11 +21,13 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -327,17 +329,30 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return null;
 	}
 	
-	public String getContractorAnswer(FlagCriteriaContractor fcc, boolean addLabel) {
-		FlagCriteria fc = fcc.getCriteria();
+	public String getContractorAnswer(FlagCriteriaContractor fcc, FlagData f, boolean addLabel) {
+		FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();
 		
 		if (fc.getDescription().contains("AMB Class"))
 			answer = getAmBestClass(answer);
 		else if (fc.getDescription().contains("AMB Rating")) 
 			answer = getAmBestRating(answer);
+		else if (fc.getOshaRateType() != null 
+				&& (fc.getOshaRateType().equals(OshaRateType.LwcrNaics) 
+						|| fc.getOshaRateType().equals(OshaRateType.TrirNaics))) {
+			answer = "Contractor answer " + Strings.formatDecimalComma(answer) + " must be less than ";
+			for(FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
+				if(fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
+					if(fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
+						answer += (f.getContractor().getNaics().getLwcr() * Float.parseFloat(fco.criteriaValue())) / 100; 
+					if(fc.getOshaRateType().equals(OshaRateType.TrirNaics))
+						answer += (f.getContractor().getNaics().getTrir() * Float.parseFloat(fco.criteriaValue())) / 100; 
+				}
+			}
+			answer += " for industry code " + f.getContractor().getNaics().getCode();
+		}
 		else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);
-		
 		if (addLabel)
 			answer = fc.getLabel() + " - " + answer;
 		

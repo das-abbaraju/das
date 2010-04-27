@@ -454,11 +454,11 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 		case LwcrAbsolute:
 			return getLostWorkCasesRate();
 		case LwcrNaics:
-			return (getLostWorkCasesRate() / conAudit.getContractorAccount().getNaics().getLwcr()) * 100;
+			return getLostWorkCasesRate();
 		case TrirAbsolute:
 			return getRecordableTotalRate();
 		case TrirNaics:
-			return (getRecordableTotalRate() / conAudit.getContractorAccount().getNaics().getTrir()) * 100;
+			return getRecordableTotalRate();
 		case Fatalities:
 			return (float)getFatalities();
 		case Cad7:
@@ -483,11 +483,11 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 		case LwcrAbsolute:
 			return (float)getLostWorkCases();
 		case LwcrNaics:
-			return (getLostWorkCases()*100)/conAudit.getContractorAccount().getNaics().getLwcr();
+			return (float)getLostWorkCases();
 		case TrirAbsolute:
 			return (float)getRecordableTotal();
 		case TrirNaics:
-			return (getRecordableTotal()*100)/conAudit.getContractorAccount().getNaics().getTrir();
+			return (float)getRecordableTotal();
 		case Fatalities:
 			return (float)getFatalities();
 		case Cad7:

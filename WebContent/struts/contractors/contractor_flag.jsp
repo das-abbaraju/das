@@ -233,7 +233,7 @@ function checkReason(id) {
 						<s:else>
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-									<s:property value="getContractorAnswer(#conCriteria, false)" escape="false" />
+									<s:property value="getContractorAnswer(#conCriteria, #data, false)" escape="false" />
 								</s:if>
 							</s:iterator>
 						</s:else>
@@ -296,7 +296,7 @@ function checkReason(id) {
 						<s:else>
 							<s:iterator id="conCriteria" value="contractor.flagCriteria">					
 								<s:if test="#data.criteria.id == #conCriteria.criteria.id">
-									<s:property value="getContractorAnswer(#conCriteria, true)" escape="false" />
+									<s:property value="getContractorAnswer(#conCriteria, #data, true)" escape="false" />
 								</s:if>	
 							</s:iterator>
 						</s:else>

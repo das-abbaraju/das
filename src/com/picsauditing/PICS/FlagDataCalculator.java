@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
@@ -168,6 +169,14 @@ public class FlagDataCalculator {
 				if (dataType.equals("number")) {
 					float answer2 = Float.parseFloat(answer.replace(",", ""));
 					float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
+					if(criteria.getOshaRateType() != null && 
+							criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+						return answer2 > (conCriteria.getContractor().getNaics().getLwcr()* hurdle2)/100;
+					}
+					if(criteria.getOshaRateType() != null && 
+							criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+						return answer2 > (conCriteria.getContractor().getNaics().getTrir()* hurdle2)/100;
+					}
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
 					if (comparison.equals(">"))
