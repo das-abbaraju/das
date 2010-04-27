@@ -143,12 +143,12 @@ function saveEdit(siteID) {
 								<td>
 									<span class="oldValue"><s:property value="#site.label" /></span>
 									<span class="newValue"><input type="text" value="<s:property value="#site.label" />"
-										name="siteLabel" size="10" /></span>
+										name="siteLabel" size="5" /></span>
 								</td>
 								<td>
 									<span class="oldValue"><s:property value="#site.name" /></span>
 									<span class="newValue"><input type="text" value="<s:property value="#site.name" />"
-										name="siteName" /></span>
+										name="siteName" size="10" /></span>
 								</td>
 								<td class="center">
 									<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>

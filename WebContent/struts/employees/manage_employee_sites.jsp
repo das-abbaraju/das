@@ -20,14 +20,8 @@
 		<tr>
 			<td colspan="2">
 				<s:select onchange="modJobSite('addSite','%{employee.id}','',this.value);"
-					list="operators"
-					name="operator.id"
-					listKey="id"
-					listValue="name"
-					headerKey=""
-					headerValue=" - Add Job Site - "
-					id="operator"
-				/>
+					list="operators" name="operator.id" listKey="id" listValue="name" headerKey=""
+					headerValue=" - Add Job Site - " id="operator" />
 			</td>
 		</tr>
 	</s:if>

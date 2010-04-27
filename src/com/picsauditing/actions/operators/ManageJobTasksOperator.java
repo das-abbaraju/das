@@ -14,8 +14,10 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	protected JobTaskDAO jobTaskDAO;
 
 	protected int jobTaskID;
+	protected boolean active;
 	protected String jobTaskLabel;
 	protected String jobTaskName;
+	protected String taskType;
 
 	protected JobTask newTask = new JobTask();
 
@@ -59,6 +61,9 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 					
 					if (!Strings.isEmpty(jobTaskName))
 						newTask.setName(jobTaskName);
+					
+					newTask.setActive(active);
+					newTask.setTaskType(taskType);
 				} else
 					addActionError("Missing job task ID or label");
 			}
@@ -71,6 +76,7 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 			if (getActionErrors().size() > 0)
 				return SUCCESS;
 			
+			newTask.setAuditColumns(permissions);
 			jobTaskDAO.save(newTask);
 
 			if (permissions.isOperator())
@@ -90,6 +96,14 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 		this.jobTaskID = jobTaskID;
 	}
 	
+	public boolean isActive() {
+		return active;
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 	public String getJobTaskLabel() {
 		return jobTaskLabel;
 	}
@@ -104,6 +118,14 @@ public class ManageJobTasksOperator extends OperatorActionSupport {
 	
 	public void setJobTaskName(String jobTaskName) {
 		this.jobTaskName = jobTaskName;
+	}
+	
+	public String getTaskType() {
+		return taskType;
+	}
+	
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
 	}
 
 	public JobTask getNewTask() {

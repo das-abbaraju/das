@@ -90,7 +90,7 @@ div.dataTables_length { width: 35%; }
 		</div>
 	</s:if>
 
-	<a href="?id=<s:property value="account.id"/>&button=Add" class="picsbutton">Add New Employee</a>
+	<a href="?id=<s:property value="account.id"/>&button=Add" class="add">Add New Employee</a>
 
 	<table style="margin-top: 20px;">
 		<tr>
@@ -113,7 +113,7 @@ div.dataTables_length { width: 35%; }
 			</s:if>
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
-				<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">Profile Page</a>
+				<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile Page</a>
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
