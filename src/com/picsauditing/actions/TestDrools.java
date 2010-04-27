@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 import com.picsauditing.PICS.DroolsSessionFactory;
@@ -13,6 +14,7 @@ public class TestDrools extends PicsActionSupport {
 	protected DroolsSessionFactory droolsSessionFactory = null;
 	protected ContractorAccountDAO conDao = null;
 	
+	protected boolean stateless = true;
 	protected boolean reset = false;
 	
 	
@@ -25,12 +27,23 @@ public class TestDrools extends PicsActionSupport {
 	@Override
 	public String execute() {
 
-		StatelessKnowledgeSession statelessSession = droolsSessionFactory.getStatelessSession();
-		
 		ContractorAccount con = conDao.find(3);
 		ContractorAccount con2 = conDao.find(14);
+
 		
-		statelessSession.execute( Arrays.asList(new Object[]{ con, con2 } ) );
+		if( isStateless() ) {
+		
+			StatelessKnowledgeSession statelessSession = droolsSessionFactory.getStatelessSession();
+			statelessSession.execute( Arrays.asList(new Object[]{ con, con2 } ) );
+		} else {
+			StatefulKnowledgeSession statefulSession = droolsSessionFactory.getStatefulSession();
+
+			statefulSession.insert(con);
+			statefulSession.insert(con2);
+			
+			System.out.println(statefulSession.fireAllRules());
+			statefulSession.dispose();
+		}
 
 		if( isReset() )
 			droolsSessionFactory.reset();
@@ -45,6 +58,14 @@ public class TestDrools extends PicsActionSupport {
 
 	public void setReset(boolean reset) {
 		this.reset = reset;
+	}
+
+
+	public boolean isStateless() {
+		return stateless;
+	}
+	public void setStateless(boolean stateless) {
+		this.stateless = stateless;
 	}
 	
 }

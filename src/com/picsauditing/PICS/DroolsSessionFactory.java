@@ -8,6 +8,7 @@ import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 public class DroolsSessionFactory {
@@ -27,6 +28,13 @@ public class DroolsSessionFactory {
 			setup();
 		
 		return kagent.newStatelessKnowledgeSession();
+	}
+	
+	
+	public StatefulKnowledgeSession getStatefulSession() {
+		if( kagent == null )
+			setup();
+		return kagent.getKnowledgeBase().newStatefulKnowledgeSession();
 	}
 
 	public List<String> getDrlResources() {
