@@ -14,3 +14,21 @@ when
 then
         System.out.println( $con.getName() + " does not have an id of 3" );
 end
+
+
+rule "Set Paying Facilities"
+when
+	$con : ContractorAccount( )
+	$cos : List( size > 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true, operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
+then
+	System.out.println("Set Paying Facilities: "+$con.getName() + " has " + $cos.size() + " paying Facilities");
+end
+
+
+rule "Operator Pays"
+when
+	$con : ContractorAccount( )
+	$cos : List( size == 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true, operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators )
+then
+	System.out.println("Operator Pays: "+$con.getName() + " has " + $cos.size() + " paying Facilities");
+end
