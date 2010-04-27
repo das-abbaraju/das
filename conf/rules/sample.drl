@@ -4,7 +4,7 @@ import java.util.List;
 rule "InvoiceFee.FREE"
 when
 	$con : ContractorAccount()
-	$cos : List( size == 0 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
+	$cos : List( eval(size == 0) ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
 then
 	InvoiceFee inv = new InvoiceFee();
 	inv.setId(InvoiceFee.FREE);
@@ -16,22 +16,23 @@ end
 rule "InvoiceFee.FREE: Operator Pays"
 when
 	$con : ContractorAccount()
-	$cos : List( size == 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators )
+	$cos : List( eval(size == 1) ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators )
 then
 	InvoiceFee inv = new InvoiceFee();
 	inv.setId(InvoiceFee.FREE);
 	$con.setNewMembershipLevel(inv);
-	System.out.println("InvoiceFee.FREE: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
+	System.out.println("InvoiceFee.FREE: Operator Pays: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
 end
 
 
-rule "InvoiceFee.PQFONLY"
-when
-	$con : ContractorAccount()
-	$cos : List( size == 0 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
-then
-	InvoiceFee inv = new InvoiceFee();
-	inv.setId(InvoiceFee.FREE);
-	$con.setNewMembershipLevel(inv);
-	System.out.println("InvoiceFee.PQFONLY: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
-end
+#rule "InvoiceFee.PQFONLY"
+#when
+#	$con : ContractorAccount()
+#	forall( $co : ContractorOperator( contractorAccount == $con, operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators 
+#		AuditOperator( operatorAccount == $co.operatorAccount, requiredFor($con), auditType.Id == AuditType.DESKTOP || auditType.Id == AuditType.OFFICE || auditType.classType == AuditTypeClass.IM ) from  )
+#then
+#	InvoiceFee inv = new InvoiceFee();
+#	inv.setId(InvoiceFee.PQFONLY);
+#	$con.setNewMembershipLevel(inv);
+#	System.out.println("InvoiceFee.PQFONLY: "+$con.getName() + " ran successfully");
+#end
