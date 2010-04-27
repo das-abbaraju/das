@@ -1,0 +1,18 @@
+package com.picsauditing.jpa.entities
+
+import java.util.List;
+import java.math.BigDecimal;
+
+rule "Paid"
+when
+	$tr : Transaction( status != TransactionStatus.Void && totalAmount != 0 && balance == 0 )
+then
+	modify ($tr) { setStatus(TransactionStatus.Paid) }
+end
+
+rule "UnPaid"
+when
+	$tr : Transaction( status != TransactionStatus.Void && (totalAmount == 0 || balance != 0) )
+then
+	modify ($tr) { setStatus(TransactionStatus.Unpaid) }
+end
