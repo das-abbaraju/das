@@ -1,6 +1,7 @@
 package com.picsauditing.actions.operators;
 
 //import com.picsauditing.access.OpPerms;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	protected JobTaskDAO jobTaskDAO;
 	protected JobTaskCriteriaDAO jobTaskCriteriaDAO;
 	protected AssessmentTestDAO assessmentTestDAO;
-	
+	protected List<Date> history;
 	protected int jobTaskID;
 	protected int jobTaskCriteriaID;
 	protected int assessmentTestID;
@@ -50,8 +51,8 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 		if (!forceLogin())
 			return LOGIN;
 
-		findOperator();
 		tryPermissions(OpPerms.ManageJobSites);
+		findOperator();
 
 		if (button != null) {
 			if ("Save".equalsIgnoreCase(button)) {
@@ -110,7 +111,9 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 			else
 				return redirect("ManageJobTaskCriteria.action?id=" + operator.getId());
 		}
-
+		
+		history = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
+		
 		return SUCCESS;
 	}
 
