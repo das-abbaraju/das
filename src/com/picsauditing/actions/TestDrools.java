@@ -28,7 +28,7 @@ public class TestDrools extends PicsActionSupport {
 	public String execute() {
 
 		ContractorAccount con = conDao.find(3);
-		ContractorAccount con2 = conDao.find(14);
+		ContractorAccount con2 = conDao.find(11111);
 
 		
 		if( isStateless() ) {

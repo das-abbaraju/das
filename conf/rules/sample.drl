@@ -1,34 +1,26 @@
 package com.picsauditing.jpa.entities
+import java.util.List;
 
-rule "Id is 3"
+rule "InvoiceFee.FREE"
 when
-    $con : ContractorAccount( id == 3 )
+	$con : ContractorAccount()
+	$cos : List( size == 0 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
 then
-    System.out.println( $con.getName() + " has an id of 3" );
+	InvoiceFee inv = new InvoiceFee();
+	inv.setId(InvoiceFee.FREE);
+	$con.setNewMembershipLevel(inv);
+	System.out.println("InvoiceFee.FREE: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
 end
 
 
-rule "ID is not 3"
+rule "InvoiceFee.FREE: Operator Pays"
+salience 10
 when
-        $con : ContractorAccount( id != 3 )
+	$con : ContractorAccount()
+	$cos : List( size == 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators )
 then
-        System.out.println( $con.getName() + " does not have an id of 3" );
-end
-
-
-rule "Set Paying Facilities"
-when
-	$con : ContractorAccount( )
-	$cos : List( size > 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true, operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
-then
-	System.out.println("Set Paying Facilities: "+$con.getName() + " has " + $cos.size() + " paying Facilities");
-end
-
-
-rule "Operator Pays"
-when
-	$con : ContractorAccount( )
-	$cos : List( size == 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true, operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators )
-then
-	System.out.println("Operator Pays: "+$con.getName() + " has " + $cos.size() + " paying Facilities");
+	InvoiceFee inv = new InvoiceFee();
+	inv.setId(InvoiceFee.FREE);
+	$con.setNewMembershipLevel(inv);
+	System.out.println("InvoiceFee.FREE: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
 end
