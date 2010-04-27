@@ -1,0 +1,11 @@
+package com.picsauditing.jpa.entities
+
+import java.util.List;
+
+rule "1"
+when
+	$con : ContractorAccount( id == 3)
+	$inv : List() Invoice() from $con.invoices
+then
+	System.out.println($con.getName() + " has " + $inv.size() + " legitimate invoices");
+end
