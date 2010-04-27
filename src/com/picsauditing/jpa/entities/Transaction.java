@@ -112,7 +112,9 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	public void updateAmountApplied() {
-		if (status.equals(TransactionStatus.Void))
+		if (status.isVoid())
+			return;
+		if (status.isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
 			return;
 		if (totalAmount.compareTo(BigDecimal.ZERO) != 0 && getBalance().compareTo(BigDecimal.ZERO) == 0)
 			status = TransactionStatus.Paid;
