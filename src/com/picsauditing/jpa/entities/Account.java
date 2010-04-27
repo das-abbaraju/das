@@ -60,6 +60,7 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	private String description;
 	protected User primaryContact;
 	protected boolean requiresOQ = false;
+	protected boolean requiresCompetencyReview = false;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -321,7 +322,8 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 	}
 
 	/**
-	 * Are they subject to Operator Qualification regulation?
+	 * Are they subject to Operator Qualification regulation, and 
+	 * if Contractor, do they work for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -331,6 +333,21 @@ public class Account extends BaseTable implements Comparable<Account>, JSONable 
 
 	public void setRequiresOQ(boolean requiresOQ) {
 		this.requiresOQ = requiresOQ;
+	}
+	
+	/**
+	 * Are they subject to Competency Reviews, and 
+	 * if Contractor, do they work for an operator who does too?
+	 * 
+	 * @return
+	 */
+	public boolean isRequiresCompetencyReview() {
+		return requiresCompetencyReview;
+	}
+
+	
+	public void setRequiresCompetencyReview(boolean requiresCompetencyReview) {
+		this.requiresCompetencyReview = requiresCompetencyReview;
 	}
 
 	@Column(name = "description", length = 65535)

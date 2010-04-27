@@ -10,6 +10,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "operator_tag")
 public class OperatorTag extends BaseTable {
+	public static final int SHELL_COMPETENCY_REVIEW = 93;
+	
 	private OperatorAccount operator;
 	private String tag;
 	private boolean active = true;

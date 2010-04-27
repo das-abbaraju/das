@@ -35,6 +35,7 @@ import com.picsauditing.jpa.entities.YesNo;
  * very small
  */
 public class Permissions implements Serializable {
+
 	private static final long serialVersionUID = -3120292424348289561L;
 
 	private int userID;
@@ -63,6 +64,8 @@ public class Permissions implements Serializable {
 
 	private int adminID;
 	private boolean approvesRelationships = false;
+	private boolean requiresOQ = false;
+	private boolean requiresCompetencyReview = false;
 	private boolean active = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
 
@@ -84,6 +87,8 @@ public class Permissions implements Serializable {
 		accountStatus = AccountStatus.Pending;
 		accountCountries.clear();
 		approvesRelationships = false;
+		requiresOQ = false;
+		requiresCompetencyReview = false;
 
 		adminID = 0;
 		topAccountID = 0;
@@ -140,6 +145,8 @@ public class Permissions implements Serializable {
 			accountType = user.getAccount().getType();
 			accountName = user.getAccount().getName();
 			accountStatus = user.getAccount().getStatus();
+			requiresOQ = user.getAccount().isRequiresOQ();
+			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 
 			if (isContractor()) {
 				ContractorAccount contractor = (ContractorAccount) user.getAccount();
@@ -542,5 +549,13 @@ public class Permissions implements Serializable {
 
 	public String getCountry() {
 		return country;
+	}
+
+	public boolean isRequiresCompetencyReview() {
+		return requiresCompetencyReview;
+	}
+
+	public boolean isRequiresOQ() {
+		return requiresOQ;
 	}
 }
