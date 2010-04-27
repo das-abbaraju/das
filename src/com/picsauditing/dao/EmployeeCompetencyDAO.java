@@ -17,26 +17,36 @@ public class EmployeeCompetencyDAO extends PicsDAO {
 		return ec;
 	}
 
+	public EmployeeCompetency find(int employeeID, int competencyID) {
+		Query query = em.createQuery("FROM EmployeeCompetency e WHERE e.employee.id = ? AND e.competency.id = ?");
+		query.setParameter(1, employeeID);
+		query.setParameter(2, competencyID);
+		try {
+			return (EmployeeCompetency) query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public List<EmployeeCompetency> findAll() {
 		Query q = em.createQuery("FROM EmployeeCompetency e");
 		return q.getResultList();
 	}
 
 	public List<EmployeeCompetency> findByEmployee(int employeeID) {
-		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e"
-				+ " WHERE e.employee.id = ?");
+		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e" + " WHERE e.employee.id = ?");
 
 		query.setParameter(1, employeeID);
 		return query.getResultList();
 	}
-	
+
 	public EmployeeCompetency findByEmployeeOperatorCompetency(int employeeID, int operatorCompetencyID) {
 		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e "
 				+ "WHERE e.employee.id = ? AND e.competency.id = ? ORDER BY e.employee.firstName");
 
 		query.setParameter(1, employeeID);
 		query.setParameter(2, operatorCompetencyID);
-		
+
 		return (EmployeeCompetency) query.getSingleResult();
 	}
 
@@ -47,7 +57,7 @@ public class EmployeeCompetencyDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
-	
+
 	public List<EmployeeCompetency> findByJobRole(int jobRoleID, int employeeID) {
 		Query query = em.createQuery("SELECT e FROM EmployeeCompetency e"
 				+ " WHERE e.competency IN (SELECT jc.competency FROM JobCompetency jc WHERE jc.jobRole.id = ?)"

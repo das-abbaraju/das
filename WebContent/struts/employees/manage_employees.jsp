@@ -167,18 +167,20 @@ div.dataTables_length { width: 35%; }
 								onclick="return confirm('Are you sure you want to delete this employee? This action cannot be undone.');"/>
 						</fieldset>
 					</s:form>
-							
+				
 					<s:if test="employee.id > 0">
-						<s:if test="(unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
-							<div style="float:left;padding-right:20px;">
-								<h3>Job Roles</h3>
-								<div id="employee_role">
-									<s:include value="manage_employee_roles.jsp"/>
+						<s:if test="permissions.requiresCompetencyReview">
+							<s:if test="(unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
+								<div style="float:left; padding-right:20px;">
+									<h3>Job Roles</h3>
+									<div id="employee_role">
+										<s:include value="manage_employee_roles.jsp"/>
+									</div>
 								</div>
-							</div>
+							</s:if>
 						</s:if>
-			
-						<div style="float:left;">
+						
+						<div style="float:left">
 							<h3>Assigned Sites</h3>
 							<div id="employee_site">
 								<s:include value="manage_employee_sites.jsp"/>

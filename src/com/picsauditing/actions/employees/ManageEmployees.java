@@ -244,6 +244,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	@SuppressWarnings("unchecked")
 	public JSONArray getEmployeeData() {
 		return new JSONArray() {
+
 			{
 				for (Employee e : account.getEmployees()) {
 					add(e.toTableJSON());
@@ -260,10 +261,10 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				if (unusedJobRoles.contains(employeeRole.getJobRole()))
 					unusedJobRoles.remove(employeeRole.getJobRole());
 			}
-			
+
 			Iterator<JobRole> roleIter = unusedJobRoles.iterator();
-			while(roleIter.hasNext())
-				if(!roleIter.next().isActive())
+			while (roleIter.hasNext())
+				if (!roleIter.next().isActive())
 					roleIter.remove();
 		}
 
@@ -271,31 +272,28 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public List<OperatorAccount> getOperators() {
-		// if contractor employee, return site list of non-corporate sites
 		if (employee.getAccount() instanceof ContractorAccount) {
+			// if contractor employee, return site list of non-corporate sites
 			ContractorAccount contractor = (ContractorAccount) employee.getAccount();
 
 			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
-			for (ContractorOperator co : contractor.getNonCorporateOperators())
-				returnList.add(co.getOperatorAccount());
+			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+				if ((employee.getAccount().isRequiresOQ() && co.getOperatorAccount().isRequiresOQ())
+						|| (employee.getAccount().isRequiresCompetencyReview() && co.getOperatorAccount()
+								.isRequiresCompetencyReview()))
+					returnList.add(co.getOperatorAccount());
+			}
 
 			// trimming return list by used entries
 			for (EmployeeSite used : employee.getEmployeeSites())
 				if (returnList.contains(used.getOperator()))
 					returnList.remove(used.getOperator());
 
-			// TODO: FOR DEMO ONLY. Trimming all non-shell/motiva entries
-//			List<OperatorAccount> removeList = new ArrayList<OperatorAccount>();
-//			for(OperatorAccount operator : returnList)
-//				if(!operator.getName().toLowerCase().contains("shell") && !operator.getName().toLowerCase().contains("motiva"))
-//					removeList.add(operator);
-//			
-//			returnList.removeAll(removeList);
 			Collections.sort(returnList);
 			return returnList;
+		} else if (employee.getAccount() instanceof OperatorAccount) {
 			// if operator employee return list of self, and if corporate, child
 			// facilities
-		} else if (employee.getAccount() instanceof OperatorAccount) {
 			OperatorAccount operator = (OperatorAccount) employee.getAccount();
 			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
 

@@ -1525,16 +1525,6 @@
 			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
 		</action>
 		
-		<action name="ManageEmployeeSites"
-			class="com.picsauditing.actions.employees.ManageEmployeeSites">
-			<result>struts/employees/manage_employee_sites.jsp</result>
-		</action>
-		
-		<action name="ManageEmployeeSitesAjax"
-			class="com.picsauditing.actions.employees.ManageEmployeeSites">
-			<result>struts/employees/manage_employee_sites.jsp</result>
-		</action>
-				
 		<action name="EmployeeDetail"
 			class="com.picsauditing.actions.employees.EmployeeDetail">
 			<result>struts/employees/employee_detail.jsp</result>
