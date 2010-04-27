@@ -68,6 +68,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
+	private List<AuditData> servicesPerformed = null;
 
 	private ContractorFlagCriteriaList problems;
 
@@ -232,7 +233,19 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	public List<AuditData> getServicesPerformed() {
-		return dataDAO.findServicesPerformed(id);
+		if (servicesPerformed == null) {
+			servicesPerformed = new ArrayList<AuditData>();
+			for (AuditData auditData : dataDAO.findServicesPerformed(id)) {
+				if (auditData.getAnswer().startsWith("C"))
+					servicesPerformed.add(auditData);
+			}
+
+			for (AuditData auditData : dataDAO.findServicesPerformed(id)) {
+				if (!auditData.getAnswer().startsWith("C") && auditData.getAnswer().endsWith("S"))
+					servicesPerformed.add(auditData);
+			}
+		}
+		return servicesPerformed;
 	}
 
 	public Map<Integer, List<ContractorOperator>> getActiveOperatorsMap() {
@@ -262,7 +275,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
 		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;
-		
+
 		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
 
