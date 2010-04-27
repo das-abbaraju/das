@@ -28,14 +28,24 @@ function show(id) {
 		);
 }
 
-function modJobRole(act, employeeID, roleID) {
-	startThinking({div: 'thinking_roles', message:act == 'addRole' ? 'Adding Job Role...' : 'Removing Job Role'})
-	$('#employee_role').load('ManageEmployeesAjax.action', {button: act, 'employee.id': employeeID, roleID: roleID});
+function addJobRole(id) {
+	startThinking({div: 'thinking_roles', message: 'Adding Job Role'})
+	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'addRole', 'employee.id': employeeID, childID: id});
 }
 
-function modJobSite(act, employeeID, siteID, operatorID) {
-	startThinking({div: 'thinking_sites', message:act == 'addSite' ? 'Assigning Employee to Job Site...' : 'Removing Employee from Job Site'})
-	$('#employee_site').load('ManageEmployeesAjax.action', {button: act, 'employee.id': employeeID, siteID: siteID, operatorID: operatorID});
+function addJobSite(id) {
+	startThinking({div: 'thinking_sites', message: 'Assigning Employee to Job Site'})
+	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'addSite', 'employee.id': employeeID, childID: id});
+}
+
+function removeJobRole(id) {
+	startThinking({div: 'thinking_roles', message: 'Removing Job Role'})
+	$('#employee_role').load('ManageEmployeesAjax.action', {button: 'removeRole', 'employee.id': employeeID, childID: id});
+}
+
+function removeJobSite(id) {
+	startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'})
+	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
 }
 
 $(function() {

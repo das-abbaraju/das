@@ -62,6 +62,7 @@ public class OperatorAccount extends Account {
 	private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
 	private Map<Integer, AuditOperator> auditMap = null;
 	private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
+	private List<JobSite> jobSites = new ArrayList<JobSite>();
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -432,6 +433,15 @@ public class OperatorAccount extends Account {
 
 	public void setFlagCriteria(List<FlagCriteriaOperator> flagCriteria) {
 		this.flagCriteria = flagCriteria;
+	}
+
+	@OneToMany(mappedBy = "operator", cascade = { CascadeType.REMOVE })
+	public List<JobSite> getJobSites() {
+		return jobSites;
+	}
+
+	public void setJobSites(List<JobSite> jobSites) {
+		this.jobSites = jobSites;
 	}
 
 }

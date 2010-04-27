@@ -1,7 +1,10 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -45,9 +48,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected Employee employee;
 	protected String ssn;
 
-	protected int roleID;
-	protected int siteID;
-	protected int operatorID;
+	protected int childID;
 	protected Set<JobRole> unusedJobRoles;
 
 	public ManageEmployees(AccountDAO accountDAO, EmployeeDAO employeeDAO, JobRoleDAO roleDAO,
@@ -130,7 +131,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("addRole".equals(button)) {
-			JobRole jobRole = roleDAO.find(roleID);
+			JobRole jobRole = roleDAO.find(childID);
 
 			if (employee != null && jobRole != null) {
 				EmployeeRole e = new EmployeeRole();
@@ -149,15 +150,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("removeRole".equals(button)) {
-			if (employee != null && roleID > 0) {
-				EmployeeRole e = employeeRoleDAO.findByEmployeeAndJobRole(employee.getId(), roleID);
+			if (employee != null && childID > 0) {
+				EmployeeRole e = employeeRoleDAO.find(childID);
 
 				if (e != null) {
 					employee.getEmployeeRoles().remove(e);
 					employeeRoleDAO.remove(e);
-				} else {
-					JobRole jobRole = roleDAO.find(roleID);
-					addActionError("Employee does not have " + jobRole.getName() + " as a Job Role");
 				}
 			}
 
@@ -165,18 +163,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("addSite".equals(button)) {
-			JobSite jobSite = jobSiteDAO.find(siteID);
-			OperatorAccount operator = operatorAccountDAO.find(operatorID);
-
-			if (employee != null && operator != null) {
+			if (employee != null && childID != 0) {
 				EmployeeSite es = new EmployeeSite();
 				es.setEmployee(employee);
-				es.setOperator(operator);
+
+				if (childID > 0) {
+					es.setOperator(operatorAccountDAO.find(childID));
+				} else {
+					es.setJobSite(jobSiteDAO.find(-1 * childID));
+					es.setOperator(es.getJobSite().getOperator());
+				}
 				es.setAuditColumns(permissions);
-
-				if (jobSite != null)
-					es.setJobSite(jobSite);
-
+				es.defaultDates();
 				employeeSiteDAO.save(es);
 			}
 
@@ -184,12 +182,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		if ("removeSite".equals(button)) {
-			if (employee != null && operatorID > 0) {
-				EmployeeSite es = employeeSiteDAO.findByEmployeeAndOperator(employee.getId(), operatorID);
+			if (employee != null && childID > 0) {
+				EmployeeSite es = employeeSiteDAO.find(childID);
 
 				if (es != null) {
-					employee.getEmployeeSites().remove(es);
-					employeeSiteDAO.remove(es);
+					if (es.getEffectiveDate().before(EmployeeSite.getMidnightToday())) {
+						es.expire();
+						employeeSiteDAO.save(es);
+					} else {
+						employee.getEmployeeSites().remove(es);
+						employeeSiteDAO.remove(es);
+					}
 				}
 			}
 
@@ -217,28 +220,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			this.ssn = ssn;
 	}
 
-	public int getRoleID() {
-		return roleID;
+	public int getChildID() {
+		return childID;
 	}
 
-	public void setRoleID(int roleID) {
-		this.roleID = roleID;
-	}
-
-	public int getSiteID() {
-		return siteID;
-	}
-
-	public void setSiteID(int siteID) {
-		this.siteID = siteID;
-	}
-
-	public int getOperatorID() {
-		return operatorID;
-	}
-
-	public void setOperatorID(int operatorID) {
-		this.operatorID = operatorID;
+	public void setChildID(int childID) {
+		this.childID = childID;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -271,45 +258,123 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return unusedJobRoles;
 	}
 
-	public List<OperatorAccount> getOperators() {
+	public List<OperatorSite> getOperators() {
+		List<OperatorSite> returnList = new ArrayList<OperatorSite>();
+
 		if (employee.getAccount() instanceof ContractorAccount) {
 			// if contractor employee, return site list of non-corporate sites
 			ContractorAccount contractor = (ContractorAccount) employee.getAccount();
 
-			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
 			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 				if ((employee.getAccount().isRequiresOQ() && co.getOperatorAccount().isRequiresOQ())
 						|| (employee.getAccount().isRequiresCompetencyReview() && co.getOperatorAccount()
-								.isRequiresCompetencyReview()))
-					returnList.add(co.getOperatorAccount());
+								.isRequiresCompetencyReview())) {
+					fillSites(returnList, co.getOperatorAccount());
+				}
 			}
 
-			// trimming return list by used entries
-			for (EmployeeSite used : employee.getEmployeeSites())
-				if (returnList.contains(used.getOperator()))
-					returnList.remove(used.getOperator());
-
-			Collections.sort(returnList);
-			return returnList;
 		} else if (employee.getAccount() instanceof OperatorAccount) {
 			// if operator employee return list of self, and if corporate, child
 			// facilities
 			OperatorAccount operator = (OperatorAccount) employee.getAccount();
-			List<OperatorAccount> returnList = new ArrayList<OperatorAccount>();
 
 			if (operator.isCorporate()) {
-				returnList.add(operator); // adding self
+				fillSites(returnList, operator);
 				for (Facility facility : operator.getCorporateFacilities())
-					returnList.add(facility.getOperator());
+					fillSites(returnList, facility.getOperator());
 			} else {
 				// just add self
-				returnList.add(operator);
+				fillSites(returnList, operator);
 			}
-
-			Collections.sort(returnList);
-			return returnList;
-		} else {
-			return null;
 		}
+
+		// trimming return list by used entries
+		for (EmployeeSite used : employee.getEmployeeSites()) {
+			if (used.isCurrent()) {
+				returnList.remove(new OperatorSite(used));
+			}
+		}
+
+		Collections.sort(returnList);
+		return returnList;
+	}
+
+	private void fillSites(List<OperatorSite> returnList, OperatorAccount operator) {
+		if (operator.getJobSites().size() == 0)
+			returnList.add(new OperatorSite(operator));
+		else {
+			for (JobSite site : operator.getJobSites()) {
+				returnList.add(new OperatorSite(site));
+			}
+		}
+	}
+
+	public class OperatorSite implements Comparable<OperatorSite> {
+
+		private OperatorAccount operator;
+		private JobSite site;
+
+		public OperatorSite(OperatorAccount operator) {
+			this.operator = operator;
+		}
+
+		public OperatorSite(JobSite site) {
+			this.operator = site.getOperator();
+			this.site = site;
+		}
+
+		public OperatorSite(EmployeeSite used) {
+			this.operator = used.getOperator();
+			if (used.getJobSite() != null)
+				this.site = used.getJobSite();
+		}
+
+		public int getId() {
+			if (site == null)
+				return operator.getId();
+			else
+				return -1 * site.getId();
+		}
+
+		public String getName() {
+			if (site == null)
+				return operator.getName();
+			else
+				return operator.getName() + ": " + site.getLabel();
+		}
+
+		public OperatorAccount getOperator() {
+			return operator;
+		}
+
+		public JobSite getSite() {
+			return site;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null)
+				return false;
+			OperatorSite o = (OperatorSite) obj;
+			if (!operator.equals(o.getOperator()))
+				return false;
+			if (site == null && o.getSite() == null)
+				return true;
+			if (site == null)
+				return false;
+			return site.equals(o.getSite());
+		}
+
+		@Override
+		public int compareTo(OperatorSite o) {
+			int opCompare = operator.compareTo(o.getOperator());
+			if (opCompare != 0)
+				return opCompare;
+			if (site == null)
+				return -1;
+
+			return site.getName().compareTo(o.getSite().getName());
+		}
+
 	}
 }

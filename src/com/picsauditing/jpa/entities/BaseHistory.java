@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -38,7 +39,28 @@ public abstract class BaseHistory extends BaseTable {
 	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-
+	
+	public void defaultDates() {
+		effectiveDate = new Date();
+		expirationDate = (Date)END_OF_TIME.clone();
+	}
+	
+	/**
+	 * Expire this record to the start of today (midnight)
+	 */
+	public void expire() {
+		expirationDate = getMidnightToday();
+	}
+	
+	static public Date getMidnightToday() {
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
+	}
+	
 	@Transient
 	public boolean isCurrent() {
 		Date now = new Date();
