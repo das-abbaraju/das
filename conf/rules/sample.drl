@@ -14,7 +14,6 @@ end
 
 
 rule "InvoiceFee.FREE: Operator Pays"
-salience 10
 when
 	$con : ContractorAccount()
 	$cos : List( size == 1 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators )
@@ -23,4 +22,16 @@ then
 	inv.setId(InvoiceFee.FREE);
 	$con.setNewMembershipLevel(inv);
 	System.out.println("InvoiceFee.FREE: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
+end
+
+
+rule "InvoiceFee.PQFONLY"
+when
+	$con : ContractorAccount()
+	$cos : List( size == 0 ) from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators )
+then
+	InvoiceFee inv = new InvoiceFee();
+	inv.setId(InvoiceFee.FREE);
+	$con.setNewMembershipLevel(inv);
+	System.out.println("InvoiceFee.PQFONLY: "+$con.getName() + " has "+$cos.size()+" paying Facilities");
 end
