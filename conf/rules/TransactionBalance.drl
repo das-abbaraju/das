@@ -27,7 +27,6 @@ when
 									result( total ) )
 	Invoice( id == $inv.id, $inv.amountApplied != $amount )
 then
-System.out.println($amount);
 	modify ($inv) { setAmountApplied($amount) }
 end
 
