@@ -520,7 +520,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public OshaOrganizer getOshaOrganizer() {
 		if (oshaOrganizer == null) {
-			oshaOrganizer = new OshaOrganizer(getAudits());
+			oshaOrganizer = new OshaOrganizer(getSortedAudits());
 		}
 		return oshaOrganizer;
 	}

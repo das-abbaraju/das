@@ -16,6 +16,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -337,19 +338,27 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			answer = getAmBestClass(answer);
 		else if (fc.getDescription().contains("AMB Rating")) 
 			answer = getAmBestRating(answer);
-		else if (fc.getOshaRateType() != null 
-				&& (fc.getOshaRateType().equals(OshaRateType.LwcrNaics) 
-						|| fc.getOshaRateType().equals(OshaRateType.TrirNaics))) {
-			answer = "Contractor answer " + Strings.formatDecimalComma(answer) + " must be less than ";
-			for(FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
-				if(fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
-					if(fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
-						answer += (f.getContractor().getNaics().getLwcr() * Float.parseFloat(fco.criteriaValue())) / 100; 
-					if(fc.getOshaRateType().equals(OshaRateType.TrirNaics))
-						answer += (f.getContractor().getNaics().getTrir() * Float.parseFloat(fco.criteriaValue())) / 100; 
+		else if(fc.getQuestion() != null && fc.getQuestion().getId() == AuditQuestion.EMR) {
+			addLabel = false;
+			answer = "EMR for "+fcc.getAnswer2().split("<br/>")[0] +" is "+ format(Float.parseFloat(answer),"#,##0.000");
+		}
+		else if (fc.getOshaRateType() != null) {
+			addLabel = false;
+			answer = fc.getOshaRateType().getDescription() + " for "+fcc.getAnswer2().split("<br/>")[0] +" is "+ Strings.formatDecimalComma(answer);
+			
+			if(fc.getOshaRateType().equals(OshaRateType.LwcrNaics) 
+							|| fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+				for(FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
+					if(fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
+						answer += " and must be less than ";
+						if(fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
+							answer += (f.getContractor().getNaics().getLwcr() * Float.parseFloat(fco.criteriaValue())) / 100; 
+						if(fc.getOshaRateType().equals(OshaRateType.TrirNaics))
+							answer += (f.getContractor().getNaics().getTrir() * Float.parseFloat(fco.criteriaValue())) / 100; 
+					}
 				}
+				answer += " for industry code " + f.getContractor().getNaics().getCode();
 			}
-			answer += " for industry code " + f.getContractor().getNaics().getCode();
 		}
 		else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);

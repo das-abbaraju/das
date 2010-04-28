@@ -201,7 +201,14 @@ function checkReason(id) {
 					<td>
 						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
 							<s:if test="#opCriteria.criteria.id == #data.criteria.id && (#flagoverride == null && #opCriteria.flag == #data.flag)">
-								<s:property value="#opCriteria.replaceHurdle" />
+								<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
+									<span title="The statistics provided must have a status other than pending to be calculated.">
+										<s:property value="#opCriteria.replaceHurdle" />
+									</span>
+								</s:if>
+								<s:else>
+									<s:property value="#opCriteria.replaceHurdle" />
+								</s:else>
 							</s:if>
 						</s:iterator>
 					</td>
