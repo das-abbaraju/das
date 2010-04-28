@@ -67,8 +67,7 @@
 			</thead>
 			<s:iterator value="activeOperators">
 			<tr>
-				<td><s:property value="flagColor.smallIcon" escape="false" />
-					<s:else><img src="images/icon_Flag.gif" width="10" height="12" border="0" title="Blank"/></s:else></td>
+				<td><s:property value="flagColor.smallIcon" escape="false" /></td>
 				<td><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a></td>
 				<td><s:property value="waitingOn"/></td>
 				<pics:permission perm="ContractorApproval">
