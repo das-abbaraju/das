@@ -28,11 +28,10 @@ end
 #rule "InvoiceFee.PQFONLY"
 #when
 #	$con : ContractorAccount()
-#	forall( $co : ContractorOperator( contractorAccount == $con, operatorAccount.doContractorsPay != "No" ) from $con.nonCorporateOperators 
-#		AuditOperator( operatorAccount == $co.operatorAccount, requiredFor($con), auditType.Id == AuditType.DESKTOP || auditType.Id == AuditType.OFFICE || auditType.classType == AuditTypeClass.IM ) from  )
+#	$cos : OperatorAccount() from ( List() from collect( ContractorOperator( contractorAccount == $con, operatorAccount.status.active == true && operatorAccount.doContractorsPay == "Multiple" ) from $con.nonCorporateOperators ) )
 #then
 #	InvoiceFee inv = new InvoiceFee();
 #	inv.setId(InvoiceFee.PQFONLY);
 #	$con.setNewMembershipLevel(inv);
-#	System.out.println("InvoiceFee.PQFONLY: "+$con.getName() + " ran successfully");
+#	System.out.println("InvoiceFee.PQFONLY: "+$con.getName() + " ran successfully for "+$cos.size());
 #end
