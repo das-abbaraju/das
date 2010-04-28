@@ -11,43 +11,38 @@ when
 									action( total = total.add($value); ),
 									reverse( total = total.subtract($value); ),
 									result( total ) )
+	Invoice( id == $inv.id, $inv.totalAmount != $amount)
 then
-	$inv.setTotalAmount($amount);
+	modify ($inv) { setTotalAmount($amount) }
 end
 
 rule "Update Amount Applied"
 when
-	$inv : Invoice(  )
+	$inv : Invoice( )
 	$amount: BigDecimal(  )
 				from accumulate ( PaymentAppliedToInvoice ( invoice == $inv, $value: amount ) from $inv.payments,
 									init( BigDecimal total = BigDecimal.ZERO; ),
 									action( total = total.add($value); ),
 									reverse( total = total.subtract($value); ),
 									result( total ) )
+	Invoice( id == $inv.id, $inv.amountApplied != $amount )
 then
 System.out.println($amount);
-	$inv.setAmountApplied($amount);
+	modify ($inv) { setAmountApplied($amount) }
 end
 
 rule "Paid"
 salience -10
 when
-	$tr : Transaction( status != TransactionStatus.Void, totalAmount.doubleValue != 0, balance.doubleValue == 0 )
-then/*
-System.out.println("paid");
-System.out.println($tr.getTotalAmount());
-System.out.println($tr.getBalance());*/
+	$tr : Invoice( status != TransactionStatus.Void, totalAmount.doubleValue != 0, balance.doubleValue == 0 )
+then
 	$tr.setStatus(TransactionStatus.Paid);
 end
 
 rule "UnPaid"
 salience -10
 when
-	$tr :Transaction( status != TransactionStatus.Void &&  (totalAmount.doubleValue == 0 || balance.doubleValue != 0) )
+	$tr :Invoice( (status != TransactionStatus.Void) &&  (totalAmount.doubleValue == 0 || balance.doubleValue != 0) )
 then
-System.out.println("unpaid");
-System.out.println($tr.getStatus() != TransactionStatus.Void);
-System.out.println($tr.getTotalAmount().doubleValue() == 0);
-System.out.println($tr.getBalance().doubleValue() != 0);
 	$tr.setStatus(TransactionStatus.Unpaid);
 end
