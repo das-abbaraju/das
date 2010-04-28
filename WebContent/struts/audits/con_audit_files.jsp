@@ -42,7 +42,7 @@ function showAuditUpload(auditID, fileID, desc, question) {
 	<s:else><s:property value="conAudit.auditor.phone"/></s:else>
 </li>
 <li style="list-style-type: none;"><b>Email: </b> 
-	<s:if test="conAudit.closingAuditor != null"><a href="mailto:<s:property value="conAudit.closingAuditor.email"/></a>"><s:property value="conAudit.closingAuditor.email"/></a></s:if>
+	<s:if test="conAudit.closingAuditor != null"><a href="mailto:<s:property value="conAudit.closingAuditor.email"/>"><s:property value="conAudit.closingAuditor.email"/></a></s:if>
 	<s:else><a href="mailto:<s:property value="conAudit.auditor.email"/>"><s:property value="conAudit.auditor.email"/></a></s:else>
 </li>
 </ul>
