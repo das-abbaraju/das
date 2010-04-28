@@ -192,9 +192,9 @@ public class PicsMenu {
 				subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 
 			if (permissions.hasPermission(OpPerms.ManageJobSites))
-				subMenu.addChild("Manage Job Sites", "ManageJobSites.action?id=" + permissions.getAccountId());
+				subMenu.addChild("Job Sites", "ManageJobSites.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
-				subMenu.addChild("Manage Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
 		}
 
 		if (permissions.hasPermission(OpPerms.FormsAndDocs))
@@ -203,7 +203,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit Definitions", "ManageAuditType.action");
 			subMenu.addChild("Manual Audit Matrix", "ManageDesktopMatrix.action");
 			subMenu.addChild("PQF Matrix", "ManagePQFMatrix.action");
-			subMenu.addChild("Manage Flag Criteria", "ManageFlagCriteria.action");
+			subMenu.addChild("Flag Criteria", "ManageFlagCriteria.action");
 		}
 
 		if (permissions.seesAllContractors()) {
@@ -298,9 +298,14 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search", "UserList.action");
 
-		if (permissions.hasPermission(OpPerms.DefineCompetencies)) {
+		if (permissions.isRequiresCompetencyReview()) {
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
+		}
+
+		if (permissions.isRequiresOQ()) {
+			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
+			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
 		}
 
 		if (permissions.isOperatorCorporate()) {

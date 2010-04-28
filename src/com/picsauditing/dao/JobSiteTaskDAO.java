@@ -32,9 +32,9 @@ public class JobSiteTaskDAO extends PicsDAO {
 		return a;
 	}
 
-	public List<JobSiteTask> findByJob(int job) {
-		Query query = em.createQuery("SELECT j FROM JobSiteTask j WHERE jobID = ? ORDER BY taskID");
-		query.setParameter(1, job);
+	public List<JobSiteTask> findByJob(int jobID) {
+		Query query = em.createQuery("SELECT j FROM JobSiteTask j WHERE j.job.id = ? ORDER BY j.task.label");
+		query.setParameter(1, jobID);
 		
 		return query.getResultList();
 	}

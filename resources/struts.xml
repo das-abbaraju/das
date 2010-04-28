@@ -1548,7 +1548,6 @@
 		<action name="ManageJobSitesAjax"
 			class="com.picsauditing.actions.operators.ManageJobSites">
 			<result>/struts/operators/op_job_sites_tasks.jsp</result>
-			<result name="employees">/struts/operators/op_job_sites_employees.jsp</result>
 			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
 		</action>
 		
@@ -1562,6 +1561,16 @@
 			<result>struts/operators/op_manage_job_task_criteria.jsp</result>
 		</action>
 		
+		<action name="ReportOQ"
+			class="com.picsauditing.actions.report.oq.ReportOQ">
+			<result>/struts/reports/report_oq.jsp</result>
+		</action>
+
+		<action name="ReportOQEmployees"
+			class="com.picsauditing.actions.report.oq.ReportOQEmployees">
+			<result>/struts/employees/employee_qualification_report.jsp</result>
+		</action>
+
 		<action name="ReportCompetencyByEmployee"
 			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
 			<result>/struts/reports/report_competency_employee.jsp</result>

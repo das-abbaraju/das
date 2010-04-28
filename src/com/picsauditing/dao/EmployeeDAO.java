@@ -31,7 +31,7 @@ public class EmployeeDAO extends PicsDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.lastName");
+		Query query = em.createQuery("SELECT e FROM Employee e " + where + " ORDER BY e.lastName, e.firstName");
 		if (limit > 0)
 			query.setMaxResults(limit);
 		return query.getResultList();
