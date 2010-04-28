@@ -36,6 +36,7 @@ function getTasks(siteID) {
 		id: <s:property value="operator.id" />
 	};
 
+	$('#jobSiteTasks').html('<img src="images/ajax_process.gif" alt="Loading tasks" /> Loading tasks...');
 	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
 		function() {
 			$('#taskEmployees').empty();
@@ -51,6 +52,7 @@ function getEmployees(siteTaskID) {
 		id: <s:property value="operator.id" />
 	};
 
+	$('#taskEmployees').html('<img src="images/ajax_process.gif" alt="Loading employees" /> Loading employees...');
 	$('#taskEmployees').load('ManageJobSitesAjax.action', data);
 }
 

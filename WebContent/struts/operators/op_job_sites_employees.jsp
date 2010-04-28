@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <h3>Task <s:property value="siteTask.task.label" /> Employees</h3>
-<s:if test="getEmployeesByTask(siteTaskID).size() > 0">
+<s:if test="employeeMap.get(siteTask.task.id).size() > 0">
 	<table class="report">
 		<thead>
 			<tr>
@@ -11,7 +11,7 @@
 				<th>Qualified</th>
 			</tr>
 		</thead>
-		<s:iterator value="getEmployeesByTask(siteTaskID)" id="qualification" status="stat">
+		<s:iterator value="employeeMap.get(siteTask.task.id)" id="qualification" status="stat">
 			<tbody>
 				<tr>
 					<td><s:property value="#stat.count" /></td>

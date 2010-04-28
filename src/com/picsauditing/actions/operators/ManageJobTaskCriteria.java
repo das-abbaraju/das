@@ -67,44 +67,21 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);
 			
 			if ("Save".equalsIgnoreCase(button)) {
-				if (assessmentTest == null)
-					assessmentTest = assessmentTestDAO.find(assessmentTestID);
-				
-				if (jobTask == null)
-					jobTask = jobTaskDAO.find(jobTaskID);
-				
-				newJobTaskCriteria.setAssessmentTest(assessmentTest);
-				newJobTaskCriteria.setTask(jobTask);
+				setupNewJobTaskCriteria();
 				newJobTaskCriteria.setGroupNumber(groupNumber);
-				newJobTaskCriteria.setAuditColumns(permissions);
-				newJobTaskCriteria.defaultDates();
 				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				
 				addActionMessage("Successfully added "+assessmentTest.getName()+" to group "+groupNumber);
 			}
 			
 			if ("Create".equalsIgnoreCase(button)) {
-				if (assessmentTest == null)
-					assessmentTest = assessmentTestDAO.find(assessmentTestID);
-				
-				if (jobTask == null)
-					jobTask = jobTaskDAO.find(jobTaskID);
-				
+				setupNewJobTaskCriteria();
 				int highestGroupNumber = 0;
 				for(int group : jobTask.getJobTaskCriteriaMap().keySet())
 					if(group > highestGroupNumber)
 						highestGroupNumber = group;
 				
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(new Date());
-				
-				newJobTaskCriteria.setAssessmentTest(assessmentTest);
-				newJobTaskCriteria.setTask(jobTask);
-				newJobTaskCriteria.setAuditColumns(permissions);
-				newJobTaskCriteria.defaultDates();
-				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				newJobTaskCriteria.setGroupNumber(highestGroupNumber+1);
-
 				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				jobTask.getJobTaskCriteria().add(newJobTaskCriteria);
 				
@@ -120,10 +97,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 				addActionMessage("Successfully removed "+assessmentTest.getName()+" from group "+groupNumber);
 			}
 
-			if (permissions.isOperator())
-				return redirect("ManageJobTaskCriteria.action");
-			else
-				return redirect("ManageJobTaskCriteria.action?id=" + operator.getId() + "&jobTaskID=" + jobTaskID);
+			return redirect("ManageJobTaskCriteria.action?id=" + operator.getId() + "&jobTaskID=" + jobTaskID);
 		}
 		
 		history = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
@@ -259,5 +233,24 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 			return jobTask.getJobTaskCriteriaMap();
 		else
 			return jobTask.getJobTaskCriteriaMap(getEffectiveDate());
+	}
+	
+	private void setupNewJobTaskCriteria() {
+		if (assessmentTest == null)
+			assessmentTest = assessmentTestDAO.find(assessmentTestID);
+		
+		if (jobTask == null)
+			jobTask = jobTaskDAO.find(jobTaskID);
+		
+		newJobTaskCriteria.setAssessmentTest(assessmentTest);
+		newJobTaskCriteria.setTask(jobTask);
+		newJobTaskCriteria.setAuditColumns(permissions);
+		newJobTaskCriteria.defaultDates();
+		
+		Calendar exp = Calendar.getInstance();
+		exp.setTime(newJobTaskCriteria.getEffectiveDate());
+		exp.add(Calendar.MONTH, assessmentTest.getMonthsToExpire());
+		
+		newJobTaskCriteria.setExpirationDate(exp.getTime());
 	}
 }

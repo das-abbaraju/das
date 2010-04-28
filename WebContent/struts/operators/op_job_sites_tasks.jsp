@@ -22,7 +22,8 @@
 					<td><s:property value="#siteTask.task.name" /></td>
 					<td class="center">
 						<a onclick="getEmployees(<s:property value="#siteTask.id" />); return false;" href="#">
-							<s:property value="getEmployeesByTask(#siteTask.id).size()" />
+							<s:property value="employeeMap.get(#siteTask.task.id).size()" />
+							<s:if test="employeeMap.get(#siteTask.task.id) == null">0</s:if>
 						</a>
 					</td>
 					<pics:permission perm="ManageJobSites" type="Edit">

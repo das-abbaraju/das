@@ -31,7 +31,7 @@ function getHistory(date) {
 <table id="criteriaTable">
 	<tr>
 		<td>
-			<s:if test="criterias.size() > 0">
+			<s:if test="criterias.size() > 0 && criteriaMap.size() > 0">
 				<h3 style="padding-bottom:10px;">
 					<s:property value="jobTask.label"/>&nbsp;<s:property value="jobTask.name"/>
 				</h3>

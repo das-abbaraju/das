@@ -1,9 +1,8 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -38,7 +37,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
 	protected JobTask newTask = new JobTask();
-	protected List<EmployeeQualification> employeesByTask;
+	protected Map<Integer, List<EmployeeQualification>> employeeMap; // job task ID
 	protected List<JobTask> addable = new ArrayList<JobTask>();
 	protected List<JobSite> activeSites;
 	protected List<JobSite> inactiveSites;
@@ -313,25 +312,13 @@ public class ManageJobSites extends OperatorActionSupport {
 		
 		return addable;
 	}
-
-	public List<EmployeeQualification> getEmployeesByTask(int siteTaskID) {
-		// Sort list by employer name?
-		if (employeesByTask == null) {
-			employeesByTask = qualDAO.findByTask(siteTaskID);
 	
-			if (employeesByTask.size() > 1)
-				Collections.sort(employeesByTask, new ByEmployerName());
-		}
-
-		return employeesByTask;
-	}
-
-	private class ByEmployerName implements Comparator<EmployeeQualification> {
-		public int compare(EmployeeQualification o1, EmployeeQualification o2) {
-			String a1 = o1.getEmployee().getAccount().getName();
-			String a2 = o2.getEmployee().getAccount().getName();
-
-			return a1.compareTo(a2);
-		}
+	public Map<Integer, List<EmployeeQualification>> getEmployeeMap() {
+		if (employeeMap == null && siteID > 0)
+			employeeMap = qualDAO.findBySite(siteID);
+		else if (employeeMap == null && siteTaskID > 0)
+			employeeMap = qualDAO.findBySite(siteTask.getJob().getId());
+		
+		return employeeMap;
 	}
 }

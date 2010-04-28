@@ -390,14 +390,14 @@ table.report tr.hurdle td {
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
 					</strong></p>
 				</s:if>
-				<p id="services">
+				<s:if test="contractor.tradesSelf.length() > 0"><p id="services">
 					Self Performed Services: 
 					<strong><span id="selfperformed"><s:property value="contractor.tradesSelf"/></span></strong>
-				</p>
-				<p id="services">
+				</p></s:if>
+				<s:if test="contractor.tradesSub.length() > 0"><p id="services">
 					Sub Contracted Services:
 					<strong><span id="subcontracted"><s:property value="contractor.tradesSub"/></span></strong>
-				</p>
+				</p></s:if>
 				<div class="clear"></div>
 			</div>
 		</div>
