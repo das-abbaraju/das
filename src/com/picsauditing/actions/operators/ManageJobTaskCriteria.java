@@ -3,14 +3,16 @@ package com.picsauditing.actions.operators;
 //import com.picsauditing.access.OpPerms;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.dao.JobTaskCriteriaDAO;
 import com.picsauditing.dao.JobTaskDAO;
@@ -24,17 +26,20 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	protected JobTaskDAO jobTaskDAO;
 	protected JobTaskCriteriaDAO jobTaskCriteriaDAO;
 	protected AssessmentTestDAO assessmentTestDAO;
-	protected List<Date> history;
+
 	protected int jobTaskID;
 	protected int jobTaskCriteriaID;
 	protected int assessmentTestID;
 	protected int groupNumber;
-	protected String date;
+	protected boolean canEdit = false;
 
+	protected List<Date> history;
+	protected String date;
 	protected Date effectiveDate = new Date(); // Set to today
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
 	protected JobTask jobTask;
 	protected AssessmentTest assessmentTest;
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
 	public void prepare() throws Exception {
@@ -56,10 +61,11 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 		if (!forceLogin())
 			return LOGIN;
 
-		tryPermissions(OpPerms.ManageJobSites);
 		findOperator();
 
 		if (button != null) {
+			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);
+			
 			if ("Save".equalsIgnoreCase(button)) {
 				if (assessmentTest == null)
 					assessmentTest = assessmentTestDAO.find(assessmentTestID);
@@ -70,12 +76,11 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 				newJobTaskCriteria.setAssessmentTest(assessmentTest);
 				newJobTaskCriteria.setTask(jobTask);
 				newJobTaskCriteria.setGroupNumber(groupNumber);
-
+				newJobTaskCriteria.setAuditColumns(permissions);
+				newJobTaskCriteria.defaultDates();
 				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				
 				addActionMessage("Successfully added "+assessmentTest.getName()+" to group "+groupNumber);
-				
-				return SUCCESS;
 			}
 			
 			if ("Create".equalsIgnoreCase(button)) {
@@ -85,36 +90,40 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 				if (jobTask == null)
 					jobTask = jobTaskDAO.find(jobTaskID);
 				
-				newJobTaskCriteria.setAssessmentTest(assessmentTest);
-				newJobTaskCriteria.setTask(jobTask);
 				int highestGroupNumber = 0;
 				for(int group : jobTask.getJobTaskCriteriaMap().keySet())
 					if(group > highestGroupNumber)
 						highestGroupNumber = group;
+				
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				
+				newJobTaskCriteria.setAssessmentTest(assessmentTest);
+				newJobTaskCriteria.setTask(jobTask);
+				newJobTaskCriteria.setAuditColumns(permissions);
+				newJobTaskCriteria.defaultDates();
+				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				newJobTaskCriteria.setGroupNumber(highestGroupNumber+1);
 
 				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				jobTask.getJobTaskCriteria().add(newJobTaskCriteria);
 				
 				addActionMessage("Successfully added "+assessmentTest.getName()+" to New Group");
-				
-				return SUCCESS;
 			}
 
 			if ("Remove".equalsIgnoreCase(button)) {
 				newJobTaskCriteria = jobTaskCriteriaDAO.find(jobTaskCriteriaID);
 				assessmentTest = newJobTaskCriteria.getAssessmentTest();
-				jobTaskCriteriaDAO.remove(newJobTaskCriteria);
+				newJobTaskCriteria.expire();
+				jobTaskCriteriaDAO.save(newJobTaskCriteria);
 				
 				addActionMessage("Successfully removed "+assessmentTest.getName()+" from group "+groupNumber);
-				
-				return SUCCESS;
 			}
 
 			if (permissions.isOperator())
 				return redirect("ManageJobTaskCriteria.action");
 			else
-				return redirect("ManageJobTaskCriteria.action?id=" + operator.getId());
+				return redirect("ManageJobTaskCriteria.action?id=" + operator.getId() + "&jobTaskID=" + jobTaskID);
 		}
 		
 		history = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
@@ -156,8 +165,6 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	
 	public Date getEffectiveDate() {
 		if (date != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			
 			try {
 				effectiveDate = sdf.parse(date);
 			} catch (ParseException e) {
@@ -199,20 +206,20 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	public void setAssessmentTest(AssessmentTest assessmentTest) {
 		this.assessmentTest = assessmentTest;
 	}
+	
+	public boolean isCanEdit() {
+		if (permissions.hasPermission(OpPerms.ManageJobTasks, OpType.Edit) 
+				&& (date == null || date.equals(sdf.format(new Date()))))
+			canEdit = true;
+		
+		return canEdit;
+	}
 
 	public List<JobTaskCriteria> getCriterias() {
 		if (jobTask == null)
 			jobTask = jobTaskDAO.find(jobTaskID);
 		
-		List<JobTaskCriteria> inEffect = jobTask.getJobTaskCriteria();
-		Iterator<JobTaskCriteria> iterator = inEffect.iterator();
-		
-		while(iterator.hasNext()) {
-			if (iterator.next().getEffectiveDate().after(getEffectiveDate()))
-				iterator.remove();
-		}
-		
-		return inEffect;
+		return jobTask.getJobTaskCriteria();
 	}
 
 	public Set<AssessmentTest> getAllAssessments() {
@@ -242,5 +249,15 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 				remainingAssessments.remove(criteria.getAssessmentTest());
 		
 		return new HashSet<AssessmentTest>(remainingAssessments);
+	}
+	
+	public Map<Integer, Set<JobTaskCriteria>> getCriteriaMap() {
+		if (jobTask == null)
+			jobTask = jobTaskDAO.find(jobTaskID);
+		
+		if (date == null || date.equals(sdf.format(new Date())))
+			return jobTask.getJobTaskCriteriaMap();
+		else
+			return jobTask.getJobTaskCriteriaMap(getEffectiveDate());
 	}
 }

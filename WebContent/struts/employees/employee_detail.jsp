@@ -71,7 +71,7 @@
 								<th>Works at:</th>
 								<td>
 									<s:iterator value="employee.employeeSites" id="sites" status="stat">
-										<s:property value="#sites.operator.name" /><br />
+										<s:property value="#sites.jobSite.name" /> (<s:property value="#sites.operator.name" />)<br />
 									</s:iterator>
 								</td>
 							</tr>
@@ -89,7 +89,7 @@
 						<table class="report">
 							<thead>
 								<tr>
-									<th>HSE Competency</th>
+									<th>HSE Competencies</th>
 									<s:iterator value="employee.employeeRoles" id="role" status="stat">
 										<th><s:property value="#role.jobRole.name" /></th>
 									</s:iterator>
@@ -151,6 +151,47 @@
 							</tr>
 						</table>
 					</div>
+					<s:if test="employee.employeeQualifications.size() > 0">
+						<table class="report">
+							<thead>
+								<tr>
+									<th>Job Tasks</th>
+									<th>Qualified</th>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="employee.employeeQualifications" id="quals">
+									<tr>
+										<td><s:property value="#quals.task.label" />: <s:property value="#quals.task.name" /></td>
+										<td class="center">
+											<s:if test="#quals.qualified"><img src="images/okCheck.gif" alt="Qualified" /></s:if>
+											<s:else><img src="images/notOkCheck.gif" alt="Not Qualified" /></s:else>
+										</td>
+									</tr>
+								</s:iterator>
+							</tbody>
+						</table>
+					</s:if>
+					<s:if test="employee.assessmentResults.size() > 0">
+						<table class="report">
+							<thead>
+								<tr>
+									<th>Assessment Results</th>
+									<th>Effective</th>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="employee.assessmentResults" id="results">
+									<s:if test="#results.current">
+										<tr>
+											<td><s:property value="#results.assessmentTest.assessmentCenter.name" />: <s:property value="#results.assessmentTest.qualificationType" /> - <s:property value="#results.assessmentTest.qualificationMethod" /></td>
+											<td><s:date name="#results.effectiveDate" format="MM/dd/yyyy" /></td>
+										</tr>
+									</s:if>
+								</s:iterator>
+							</tbody>
+						</table>
+					</s:if>
 				</td>
 			</tr>
 		</table>
