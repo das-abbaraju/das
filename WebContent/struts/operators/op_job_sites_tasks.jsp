@@ -7,9 +7,6 @@
 			<tr>
 				<th>Label</th>
 				<th>Name</th>
-				<th><span title="Click on the number to get the list of employees associated with this task."
-					style="padding-right: 17px; margin-left: 2px; background: url('images/help.gif') no-repeat right center;"># Employees</span>
-				</th>
 				<pics:permission perm="ManageJobSites" type="Edit">
 					<th>Remove</th>
 				</pics:permission>
@@ -20,12 +17,6 @@
 				<tr>
 					<td><s:property value="#siteTask.task.label" /></td>
 					<td><s:property value="#siteTask.task.name" /></td>
-					<td class="center">
-						<a onclick="getEmployees(<s:property value="#siteTask.id" />); return false;" href="#">
-							<s:property value="employeeMap.get(#siteTask.task.id).size()" />
-							<s:if test="employeeMap.get(#siteTask.task.id) == null">0</s:if>
-						</a>
-					</td>
 					<pics:permission perm="ManageJobSites" type="Edit">
 						<td class="center"><a href="#" onclick="return removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />);" class="remove"></a></td>
 					</pics:permission>

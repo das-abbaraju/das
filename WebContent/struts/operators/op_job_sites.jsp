@@ -39,21 +39,9 @@ function getTasks(siteID) {
 	$('#jobSiteTasks').html('<img src="images/ajax_process.gif" alt="Loading tasks" /> Loading tasks...');
 	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
 		function() {
-			$('#taskEmployees').empty();
 			$('#addSiteTasks').empty();
 		}
 	);
-}
-
-function getEmployees(siteTaskID) {
-	var data = {
-		button: 'Employees',
-		siteTaskID: siteTaskID,
-		id: <s:property value="operator.id" />
-	};
-
-	$('#taskEmployees').html('<img src="images/ajax_process.gif" alt="Loading employees" /> Loading employees...');
-	$('#taskEmployees').load('ManageJobSitesAjax.action', data);
 }
 
 function getNewSiteTasks(siteID) {
@@ -95,7 +83,6 @@ function removeTask(siteID, siteTaskID) {
 	
 		$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
 			function() {
-				$('#taskEmployees').empty();
 				$('#addSiteTasks').empty();
 			}
 		);
@@ -203,9 +190,6 @@ function saveEdit(siteID) {
 			<pics:permission perm="ManageJobSites" type="Edit">
 				<div id="addSiteTasks"></div>
 			</pics:permission>
-		</td>
-		<td rowspan="2" style="width: 300px;">
-			<div id="taskEmployees"></div>
 		</td>
 	</tr>
 </table>

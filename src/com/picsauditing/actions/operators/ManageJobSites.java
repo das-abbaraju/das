@@ -2,27 +2,24 @@ package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.dao.EmployeeQualificationDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.JobTaskDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageJobSites extends OperatorActionSupport {
-	protected EmployeeQualificationDAO qualDAO;
 	protected JobSiteDAO siteDAO;
 	protected JobSiteTaskDAO siteTaskDAO;
 	protected JobTaskDAO taskDAO;
@@ -37,24 +34,21 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
 	protected JobTask newTask = new JobTask();
-	protected Map<Integer, List<EmployeeQualification>> employeeMap; // job task ID
 	protected List<JobTask> addable = new ArrayList<JobTask>();
 	protected List<JobSite> activeSites;
 	protected List<JobSite> inactiveSites;
 	protected List<JobSiteTask> tasks;
 
-	public ManageJobSites(OperatorAccountDAO operatorDao, EmployeeQualificationDAO qualDAO, JobSiteDAO siteDAO,
+	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO,
 			JobSiteTaskDAO siteTaskDAO, JobTaskDAO taskDAO, NoteDAO noteDAO) {
 		super(operatorDao);
-		this.qualDAO = qualDAO;
 		this.siteDAO = siteDAO;
 		this.siteTaskDAO = siteTaskDAO;
 		this.taskDAO = taskDAO;
 		this.noteDAO = noteDAO;
 
 		subHeading = "Manage Job Sites";
-		// When we need more detailed notes about OQ
-		// noteCategory = NoteCategory.OperatorQualification;
+		noteCategory = NoteCategory.OperatorQualification;
 	}
 
 	public String execute() throws Exception {
@@ -72,14 +66,6 @@ public class ManageJobSites extends OperatorActionSupport {
 					return SUCCESS;
 				} else
 					addActionError("Missing job site");
-			}
-
-			if ("Employees".equalsIgnoreCase(button)) {
-				if (siteTaskID > 0) {
-					siteTask = siteTaskDAO.find(siteTaskID);
-					return "employees";
-				} else
-					addActionError("Missing job site task");
 			}
 
 			if ("NewTasks".equalsIgnoreCase(button)) {
@@ -311,14 +297,5 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 		
 		return addable;
-	}
-	
-	public Map<Integer, List<EmployeeQualification>> getEmployeeMap() {
-		if (employeeMap == null && siteID > 0)
-			employeeMap = qualDAO.findBySite(siteID);
-		else if (employeeMap == null && siteTaskID > 0)
-			employeeMap = qualDAO.findBySite(siteTask.getJob().getId());
-		
-		return employeeMap;
 	}
 }
