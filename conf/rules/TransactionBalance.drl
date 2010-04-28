@@ -33,7 +33,7 @@ end
 rule "Paid"
 salience -10
 when
-	$tr : Invoice( status != TransactionStatus.Void, totalAmount.doubleValue != 0, balance.doubleValue == 0 )
+	$tr : Transaction( status != TransactionStatus.Void, totalAmount.doubleValue != 0, balance.doubleValue == 0 )
 then
 	$tr.setStatus(TransactionStatus.Paid);
 end
@@ -41,7 +41,7 @@ end
 rule "UnPaid"
 salience -10
 when
-	$tr :Invoice( (status != TransactionStatus.Void) &&  (totalAmount.doubleValue == 0 || balance.doubleValue != 0) )
+	$tr : Transaction( (status != TransactionStatus.Void) &&  (totalAmount.doubleValue == 0 || balance.doubleValue != 0) )
 then
 	$tr.setStatus(TransactionStatus.Unpaid);
 end
