@@ -769,7 +769,6 @@ span.block:hover .hoverhelp {
 #helpbox {
 	position: absolute;
 	background-color: #ECECEC;
-	top: 132px;
 	right: 21px;
 	font-size: 12px;
 	padding: 5px;
