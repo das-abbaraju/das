@@ -15,11 +15,13 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.Strings;
 
@@ -181,8 +183,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 				if (button.equals("add")) {
 					permissions.tryPermission(OpPerms.AddContractors);
 					facilityChanger.add();
-					addActionMessage("Successfully added <a href='ContractorView.action?id=" + id + "'>"
-							+ contractor.getName() + "</a>");
+					if(contractor.getStatus().equals(AccountStatus.Deactivated)) {
+						User u = contractor.getPrimaryContact(); 
+						addActionMessage("At contractor's request this account has been deactivated. " +
+								"In order to view this contractor's criteria to work, please contact "+ 
+								u.getName() + " at " + u.getPhone() + " or " + u.getEmail() +
+								" and have them call PICS at 1-800-506-PICS and reactivate their account.");
+					}
+					else {
+						addActionMessage("Successfully added <a href='ContractorView.action?id=" + id + "'>"
+								+ contractor.getName() + "</a>");
+					}
 				}
 			} catch (Exception e) {
 				addActionError(e.getMessage());
