@@ -160,7 +160,7 @@ div#info {
 #if($invoice.status.unpaid && ${contractor.ccExpired})
     <div id="alert">The Credit Card on file has Expired. Please login to your account and add a valid payment method.</div>	
 #elseif($invoice.status.unpaid && !${contractor.ccExpired})
-    <div id="alert">We currently have a ${contractor.creditCard.type} ending in ${contractor.creditCard.number} on file and it will be automaticly charged on $!{pics_dateTool.format("MMM d, yyyy", $invoice.creationDate)}</div>
+    <div id="alert">We currently have a ${contractor.creditCard.type} ending in ${contractor.creditCard.number} on file and it will be automatically charged on $!{pics_dateTool.format("MMM d, yyyy", $invoice.creationDate)}</div>
 #end
       <table width="100%" height="100%">
         <tbody>
