@@ -1,5 +1,9 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AppProperty;
@@ -22,6 +26,12 @@ public class AppPropertyDAO extends PicsDAO {
 	public AppProperty find(String property) {
 		AppProperty a = em.find(AppProperty.class, property);
 		return a;
+	}
+	
+	public List<AppProperty> findAll() {
+		Query query = em.createQuery("FROM AppProperty");
+		
+		return query.getResultList();
 	}
 
 }

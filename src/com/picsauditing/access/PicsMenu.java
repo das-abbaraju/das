@@ -254,6 +254,7 @@ public class PicsMenu {
 			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilderCron.action");
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action");
 			subMenu.addChild("CSS Style Guide", "css.jsp");
+			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
 		}
 
 		subMenu = menu.addChild("Operators");
