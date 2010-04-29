@@ -32,10 +32,14 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
+import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.util.log.PicsLogger;
@@ -875,5 +879,35 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 		return users;
+	}
+	
+	@Transient
+	public CreditCard getCreditCard() {
+		CreditCard cc = null;
+		BrainTreeService ccService = new BrainTreeService();
+		AppPropertyDAO appPropDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+
+		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
+		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
+
+		// Accounting for transmission errors which result in
+		// exceptions being thrown.
+		boolean transmissionError = true;
+		int retries = 0, quit = 5;
+		while (transmissionError && retries < quit) {
+			try {
+				cc = ccService.getCreditCard(getId());
+				transmissionError = false;
+			} catch (Exception communicationProblem) {
+				// a message or packet could have been dropped in transmission
+				// wait and resume retrying
+				retries++;
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {}
+			}
+		}
+
+		return cc;
 	}
 }
