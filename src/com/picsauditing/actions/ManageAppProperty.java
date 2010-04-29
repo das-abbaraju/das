@@ -28,25 +28,22 @@ public class ManageAppProperty extends PicsActionSupport {
 		
 		if (button != null) {
 			if (Strings.isEmpty(newProperty))
-				addActionError("Missing/empty property field");
-			if (Strings.isEmpty(newValue))
-				addActionError("Missing/empty value field");
+				addActionError("Missing property field");
+			if (newValue == null)
+				addActionError("Missing value field");
 			
 			if (getActionErrors().size() > 0)
 				return SUCCESS;
 			
 			if ("Save".equalsIgnoreCase(button)) {
 				AppProperty appProp = appPropertyDAO.find(newProperty);
-				if (appProp == null)
+				if (appProp == null) {
 					appProp = new AppProperty();
+					appProp.setProperty(newProperty);
+				}
 				
-				appProp.setProperty(newProperty);
 				appProp.setValue(newValue);
 				appPropertyDAO.save(appProp);
-			}
-			
-			if ("Remove".equalsIgnoreCase(button)) {
-				appPropertyDAO.remove(newProperty);
 			}
 			
 			return redirect("ManageAppProperty.action");

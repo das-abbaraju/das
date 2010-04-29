@@ -19,11 +19,7 @@ function edit(prop) {
 }
 
 function save(prop) {
-	self.location = 'ManageAppProperty.action?button=Save&' + $('#'+prop+' input').serialize();
-}
-
-function remove(prop) {
-	self.location = 'ManageAppProperty.action?button=Remove&' + $('#'+prop+' input').serialize();
+	self.location = 'ManageAppProperty.action?button=Save&' + $('#'+prop+' .input').serialize();
 }
 </script>
 </head>
@@ -38,25 +34,22 @@ function remove(prop) {
 			<th>Property</th>
 			<th>Value</th>
 			<th></th>
-			<th></th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="all">
 			<tr id="<s:property value="property" />">
 				<td>
-					<span class="old"><s:property value="property" /></span>
-					<span class="new"><input type="text" id="newProperty" name="newProperty" value="<s:property value="property" />" /></span>
+					<s:property value="property" /><input type="hidden" value="<s:property value="property" />" name="newProperty" class="input" />
 				</td>
 				<td>
 					<span class="old"><s:property value="value" /></span>
-					<span class="new"><input type="text" id="newValue" name="newValue" value="<s:property value="value" />" /></span>
+					<span class="new"><textarea name="newValue" cols="30" class="input"><s:property value="value" /></textarea></span>
 				</td>
 				<td>
 					<span class="old"><a href="#" onclick="edit('<s:property value="getSafe(property)" />'); return false;" class="edit">&nbsp;</a></span>
 					<span class="new"><a href="#" onclick="save('<s:property value="getSafe(property)" />'); return false;" class="save">&nbsp;</a></span>
 				</td>
-				<td><a href="#" onclick="remove('<s:property value="getSafe(property)" />'); return false;" class="remove">&nbsp;</a></td>
 			</tr>
 		</s:iterator>
 	</tbody>
