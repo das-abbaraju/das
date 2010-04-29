@@ -35,7 +35,12 @@ function sortTable(tableName, sortBy) {
 
 function getHistory(date) {
 	self.location = "EmployeeAssessmentResults.action?id=" + <s:property value="contractor.id" /> + "&employeeID="
-		+ <s:property value="employeeID" /> + "&date=" + date;
+		+ <s:property value="employeeID" /> + "&centerID=" + <s:property value="centerID" /> + "&date=" + date;
+}
+
+function getCenter(id) {
+	self.location = "EmployeeAssessmentResults.action?id=" + <s:property value="contractor.id" /> + "&employeeID="
+		+ <s:property value="employeeID" /> + "&centerID=" + id;
 }
 </script>
 </head>
@@ -50,12 +55,16 @@ function getHistory(date) {
 </s:if>
 
 <s:if test="history.size() > 1">
-	Effective on: <s:select list="history" name="date" onchange="getHistory(this.value);"></s:select><br />
-	<a href="EmployeeAssessmentResults.action?id=<s:property value="contractor.id" />&employeeID=<s:property value="employeeID" />">View Today</a>
+	Effective on: <s:select list="history" name="date" onchange="getHistory(this.value);"></s:select>
+	<a href="?id=<s:property value="contractor.id" />&employeeID=<s:property value="employeeID" />&centerID=<s:property value="centerID" />">View Today</a><br />
 </s:if>
 
-<s:if test="employeeID > 0">
-	<a href="EmployeeAssessmentResults.action?id=<s:property value="contractor.id" />">View All Employees</a>
+Assessment Center:
+<s:select list="allAssessmentCenters" name="centerID" listKey="id" listValue="name" value="centerID" 
+	headerKey="0" headerValue="- Assessment Center -" onchange="getCenter(this.value);"></s:select><br />
+
+<s:if test="employeeID > 0 || centerID > 0">
+	<a href="?id=<s:property value="contractor.id" />">View All Employees and Centers</a>
 </s:if>
 
 <s:if test="effective.size() > 0">
@@ -83,7 +92,7 @@ function getHistory(date) {
 				<td class="description"><s:property value="#result.assessmentTest.description" /></td>
 				<s:if test="employeeID == 0">
 					<td class="employee">
-						<a href="EmployeeAssessmentResults.action?id=<s:property value="contractor.id" />&employee.id=<s:property value="#result.employee.id" />">
+						<a href="?id=<s:property value="contractor.id" />&employeeID=<s:property value="#result.employee.id" />&centerID=<s:property value="centerID" />">
 							<s:property value="#result.employee.displayName" />
 						</a>
 					</td>
@@ -100,7 +109,7 @@ function getHistory(date) {
 </s:if>
 <s:else>
 	<s:if test="employeeID > 0">
-		<div class="info">This employee has no assessments associated or in effect.</div>
+		<div class="info">This employee has no assessments associated or in effect<s:if test="centerID > 0"> with <s:property value="assessmentCenter.name" /></s:if>.</div>
 	</s:if>
 </s:else>
 
@@ -126,7 +135,7 @@ function getHistory(date) {
 				<td><s:property value="#result.assessmentTest.description" /></td>
 				<s:if test="employeeID == 0">
 					<td>
-						<a href="ManageEmployees.action?employee.id=<s:property value="#result.employee.id" />">
+						<a href="ManageEmployees.action?employeeID=<s:property value="#result.employee.id" />">
 							<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
 						</a>
 					</td>

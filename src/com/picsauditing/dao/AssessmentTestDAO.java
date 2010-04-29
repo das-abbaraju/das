@@ -32,11 +32,11 @@ public class AssessmentTestDAO extends PicsDAO {
 	 	return query.getResultList();
 	}
 	
-	public AssessmentTest findRandom() {
+	public List<AssessmentTest> findRandom(int limit) {
 		Query query = em.createQuery("SELECT a FROM AssessmentTest a ORDER BY RAND()");
-		query.setMaxResults(1);
+		query.setMaxResults(limit);
 
-		return (AssessmentTest) query.getSingleResult();
+		return query.getResultList();
 	}
 
 	public List<AssessmentTest> findExpired(String where) {

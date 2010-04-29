@@ -1,13 +1,18 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.Strings;
 
 @Transactional
@@ -39,6 +44,22 @@ public class AssessmentResultDAO extends PicsDAO {
 		query.setParameter(1, employeeID);
 
 		return query.getResultList();
+	}
+	
+	public Map<Employee, List<AssessmentResult>> findByAccount(Account account) {
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE a.employee.account = :account");
+		query.setParameter("account", account);
+		
+		Map<Employee, List<AssessmentResult>> map = new HashMap<Employee, List<AssessmentResult>>();
+		List<AssessmentResult> list = query.getResultList();
+		for (AssessmentResult item : list) {
+			if (!map.containsKey(item.getEmployee()))
+				map.put(item.getEmployee(), new ArrayList<AssessmentResult>());
+			
+			map.get(item.getEmployee()).add(item);
+		}
+		
+		return map;
 	}
 
 	public List<AssessmentResult> findAll() {

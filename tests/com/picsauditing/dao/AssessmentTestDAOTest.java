@@ -38,9 +38,9 @@ public class AssessmentTestDAOTest extends TestCase {
 	
 	@Test
 	public void testFindRandom() {
-		AssessmentTest test = testDAO.findRandom();
+		List<AssessmentTest> tests = testDAO.findRandom(10);
 		
-		assertNotNull(test);
+		assertTrue(tests.size() > 0);
 	}
 	
 	// Uncomment when there is actual data
@@ -50,13 +50,13 @@ public class AssessmentTestDAOTest extends TestCase {
 //		
 //		assertTrue(tests.size() > 0);
 //	}
-//	
-//	@Test
-//	public void testFindInEffect() {
-//		List<AssessmentTest> tests = testDAO.findInEffect(null);
-//		
-//		assertTrue(tests.size() > 0);
-//	}
+
+	@Test
+	public void testFindInEffect() {
+		List<AssessmentTest> tests = testDAO.findInEffect(null);
+		
+		assertTrue(tests.size() > 0);
+	}
 	
 	@Test
 	public void testFindWhere() {
