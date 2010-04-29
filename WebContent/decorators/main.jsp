@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
+
+<%@page import="java.net.InetAddress"%><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" >
 <%@page import="com.picsauditing.dao.AppPropertyDAO"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="com.picsauditing.jpa.entities.AppProperty"%>
@@ -132,6 +133,7 @@
 <div id="chatIcon" style="display: none;"><img src='<%=chatIcon%>'/></div>
 <% } %>
 <!-- !begin content -->
+
 <decorator:body />
 <div><br clear="both"></br></div>
 <!-- !end content -->
@@ -216,7 +218,7 @@ try {
 	Date startDate = (Date) request.getAttribute("pics_request_start_time"); 
 	if( startDate != null ) {
 		long totalTime = System.currentTimeMillis() - startDate.getTime();
-		%><div class="pageStats">
+		%><div class="pageStats" title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>">
 			App Version: <%=version%><br />
 			Process Time: <%= Math.round(totalTime/10)/100f%>s
 		</div><%
