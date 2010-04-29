@@ -21,6 +21,7 @@
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
+	boolean showMessage = !Strings.isEmpty(appProperty.getValue());
 %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
 <head>
@@ -51,6 +52,12 @@
 
 </head>
 <body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />">
+<% if (showMessage) { %>
+	<div id="systemMessage">
+		<%= appProperty.getValue()%>
+	</div>
+<% } %>
+<div id="bodywrap">
 <div id="header">
 <div id="headermain">
 
@@ -76,11 +83,6 @@
 <input type="submit" value="Search" class="blueMain" />
 </form>
 </div>
-<% } %>
-<% if (!Strings.isEmpty(appProperty.getValue())) { %>
-	<div id="systemMessage">
-		<%= appProperty.getValue()%>
-	</div>
 <% } %>
 <div id="logo"><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a></div>
 </div></div></div>
@@ -226,6 +228,7 @@ Copyright &copy; 2009
 <a href="Contact.action" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
 	title="Opens in new window" class="footer">Privacy Policy</a>
+</div>
 </div>
 </div>
 </div>

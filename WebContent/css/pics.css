@@ -24,6 +24,25 @@ p {
 	padding: 0px;
 }
 
+#bodywrap {
+	position: relative;
+}
+
+#systemMessage {
+	background-color: #FFF6CC;
+	border-bottom: 2px solid #A74D0F;
+	color: #A74D0F;
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	height: 21px;
+	padding-top: 5px;
+	text-align: center;
+	top: 0;
+	width: 100%;
+	z-index: 1000;
+}
+
 /********************  Header Styles  ************************/
 #header {
 	width: 100%;
@@ -54,7 +73,7 @@ p {
 	margin-right: 5px;
 	font-size: 12px;
 	color: #464646;
-	font-weight:bold;
+	font-weight: bold;
 }
 
 #headersearch {
@@ -67,14 +86,6 @@ p {
 	vertical-align: middle;
 	line-height: 12px;
 	font-size: 12px;
-}
-
-#systemMessage {
-	color: #FFFFFF;
-	font-size: 14px;
-	margin-top: 14px;
-	padding-right: 40px;
-	float: right;
 }
 
 /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
@@ -100,8 +111,8 @@ p {
 	font-size: 12px;
 	color: #343434;
 	padding: 5px;
-	background-color:none;
-	text-decoration:underline;
+	background-color: none;
+	text-decoration: underline;
 }
 
 #sidebox a:hover,#sidebox a:active {
@@ -109,7 +120,7 @@ p {
 	font-size: 12px;
 	color: #343434;
 	padding: 5px;
-	background-color:#fff;
+	background-color: #fff;
 	text-decoration: none;
 }
 
@@ -138,7 +149,6 @@ p {
 }
 
 #content {
-	position: static;
 	margin: 0;
 	padding: 45px;
 	height: 100%;
@@ -425,7 +435,8 @@ label.tooltipped {
   margin-bottom: -5px;
 } */
 p.email a {
-	background: url('../images/icon_link_email.png') no-repeat right center;;
+	background: url('../images/icon_link_email.png') no-repeat right center;
+	;
 	padding-left: 0;
 	padding-right: 15px;
 	padding-top: 0;
@@ -503,7 +514,8 @@ ul#navlist {
 	text-decoration: none;
 }
 
-#navlist a.dropdown,#navlist a.dropdown:active,#navlist a.dropdown:visited,#navlist a.dropdown:hover {
+#navlist a.dropdown,#navlist a.dropdown:active,#navlist a.dropdown:visited,#navlist a.dropdown:hover
+	{
 	background-image: url('../images/down.gif');
 	background-position: right;
 	background-repeat: no-repeat;
@@ -523,22 +535,19 @@ ul#navlist {
 	font-weight: bold;
 }
 
-.accountDemo, table.report td a.accountDemo {
+.accountDemo,table.report td a.accountDemo {
 	font-style: italic;
 }
 
-.accountPending, table.report td a.accountPending {
+.accountPending,table.report td a.accountPending {
 	background-color: #FFA;
 }
 
-table.report td a.inactive,
-table.report td a.accountDeactivated, 
-table.report td a.accountDeleted, 
-table.report td a.userActiveNo {
+table.report td a.inactive,table.report td a.accountDeactivated,table.report td a.accountDeleted,table.report td a.userActiveNo
+	{
 	color: #4C4D4D;
 	text-decoration: line-through;
 }
-
 
 /************* Search *************/
 #search {
@@ -586,7 +595,8 @@ div#info,div.info {
 div#alert,div.alert {
 	border-top: 2px solid #D0AE10;
 	border-bottom: 2px solid #D0AE10;
-	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px 10px;
+	background: #FBF2C9 url('../images/icon-warning.gif') no-repeat 10px
+		10px;
 	zoom: 1;
 }
 
@@ -648,7 +658,8 @@ a.picsbutton {
 }
 
 /* UTILITIES */
-.picsbutton:hover,.picsbutton:active,a.picsbutton:hover,a.picsbutton:active {
+.picsbutton:hover,.picsbutton:active,a.picsbutton:hover,a.picsbutton:active
+	{
 	background-color: #dff4ff;
 	border-left: 2px;
 	border-right: 1px;
@@ -762,9 +773,9 @@ span.block:hover .hoverhelp {
 /********************** LIVE HELP BOX ******************************/
 #helpbox {
 	position: absolute;
-	background-color: #ECECEC;
-	//top: 124px;
-	top:104px;
+	background-color: #ECECEC; //
+	top: 124px;
+	top: 104px;
 	right: 21px;
 	font-size: 12px;
 	padding: 5px;

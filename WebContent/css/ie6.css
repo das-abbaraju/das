@@ -1,17 +1,11 @@
-
-
 /********************  SIDEBOX STYLES - ie6 fixes  ************************/
-
-
 #helpbox {
-        right: 20px;
+	right: 20px;
 }
 
-
-
 /******* Dashboard Panels ********/
-
 #content div.panel_footer {
+	
 }
 
 div.caoGroup {
