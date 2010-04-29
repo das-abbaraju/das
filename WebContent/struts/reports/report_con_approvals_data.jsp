@@ -41,15 +41,21 @@
 			<td class="center">
 				<center><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/><br/>Select<br/>All</center>
 			</td>
-			<td>Notes: <s:textarea name="operatorNotes" cols="20" rows="4"/></td>
-			<td colspan="2">
+			<td>
 				<div style="height:28px;">
 					<s:radio cssClass="workStatus" list="#{'Y':'Yes','N':'No','P':'Pending'}" name="workStatus"/>
 				</div>
+				Notes: <s:textarea name="operatorNotes" cols="20" rows="4"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;<br clear="all"/><br/>
 				<div class="buttons">
 					<a class="picsbutton positive" href="#" onclick="return saveRows();">Save Changes</a>
 				</div>
+				<br/>
 			</td>
+			<s:if test="permissions.operator">
+				<td></td>
+				<td></td>
+			</s:if>			
 		</tr>
 	</tbody>
 </table>

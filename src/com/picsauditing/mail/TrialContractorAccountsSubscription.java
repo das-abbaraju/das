@@ -23,7 +23,7 @@ public class TrialContractorAccountsSubscription extends SubscriptionBuilder {
 	protected void setup(Account a) {
 		OperatorAccount o = (OperatorAccount) a;
 
-		List<ContractorOperator> trialAccounts = contractorOperatorDAO.findPendingApprovalContractors(o.getId(), true); 
+		List<ContractorOperator> trialAccounts = contractorOperatorDAO.findPendingApprovalContractors(o.getId(), true, false); 
 		if (trialAccounts.size() > 0) {
 			tokens.put("trialContractors", trialAccounts);
 		}

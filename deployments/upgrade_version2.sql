@@ -3,19 +3,6 @@ update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set isGroupedWithPrevious = CASE isGroupedWithPrevious WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set isRedFlagQuestion = CASE isRedFlagQuestion WHEN 2 THEN 1 ELSE 0 END;
-
-select os.applicable, os.auditid, pcd.applies from osha_audit os 
-join pqfcatdata pcd on pcd.auditid = os.auditid
-where os.applicable = 1
-and pcd.applies = 'No'
-and pcd.catID = 151; 
-
-select os.applicable, os.auditid, pcd.applies from osha_audit os 
-join pqfcatdata pcd on pcd.auditid = os.auditid
-join contractor_audit ca on ca.id = os.auditid 
-where os.applicable = 0
-and pcd.applies = 'Yes'
-and pcd.catID = 151;
 **/
 
 -- ADD TO HOURLY SCRIPT
@@ -37,12 +24,14 @@ select jobRole, oc.label, round(100*usedCount/totalCount) percentUsed from job_c
 join operator_competency oc on s.competencyID = oc.id
 order by usedCount/totalCount desc, totalCount desc, jobRole;
 
-/** Update the requiresOQ for all contractors **/
+/** Update the requiresOQ for all contractors
+ * we don't want to run this yet 
 update accounts set requiresOQ = 1
 where id in (select distinct conid from contractor_audit ca
 join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
+**/
 
 /** Added new Operator Basic User permission to view the Operator Flag Matrix report **/
 insert into `useraccess`(`accessID`,`userID`,`accessType`,`viewFlag`,`editFlag`,`deleteFlag`,`grantFlag`,`lastUpdate`,`grantedByID`)
@@ -294,3 +283,7 @@ div#info {
 
 -- PICS-436: http://dev.picsauditing.com/jira/browse/PICS-436
 update email_template set subject = 'PICS Open Invoice#if($invoice.status.unpaid && !${contractor.ccExpired}) - THE CREDIT CARD ON FILE WILL BE CHARGED ON THE DUE DATE#end' where id = 45;
+
+-- Turn on the "Contractors Pending Approvals" widget for corporate users
+insert into widget_user values
+(null,19,646,1,2,10,null);

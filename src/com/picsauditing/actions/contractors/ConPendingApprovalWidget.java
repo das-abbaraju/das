@@ -23,6 +23,6 @@ public class ConPendingApprovalWidget extends PicsActionSupport {
 	}
 
 	public List<ContractorOperator> getPendingApprovalContractors() {
-		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), false);
+		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), false, permissions.isCorporate());
 	}
 }

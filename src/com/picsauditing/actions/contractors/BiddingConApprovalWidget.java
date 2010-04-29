@@ -23,6 +23,6 @@ public class BiddingConApprovalWidget extends PicsActionSupport {
 	}
 
 	public List<ContractorOperator> getPendingApprovalBiddingContractors() {
-		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), true);
+		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), true, permissions.isCorporate());
 	}
 }
