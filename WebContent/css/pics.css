@@ -24,10 +24,6 @@ p {
 	padding: 0px;
 }
 
-#bodywrap {
-	position: relative;
-}
-
 #systemMessage {
 	background-color: #FFF6CC;
 	border-bottom: 2px solid #A74D0F;
