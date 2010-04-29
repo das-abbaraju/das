@@ -34,12 +34,12 @@ function sortTable(tableName, sortBy) {
 }
 
 function getHistory(date) {
-	self.location = "EmployeeAssessmentResults.action?id=" + <s:property value="contractor.id" /> + "&employeeID="
+	self.location = "?id=" + <s:property value="contractor.id" /> + "&employeeID="
 		+ <s:property value="employeeID" /> + "&centerID=" + <s:property value="centerID" /> + "&date=" + date;
 }
 
 function getCenter(id) {
-	self.location = "EmployeeAssessmentResults.action?id=" + <s:property value="contractor.id" /> + "&employeeID="
+	self.location = "?id=" + <s:property value="contractor.id" /> + "&employeeID="
 		+ <s:property value="employeeID" /> + "&centerID=" + id;
 }
 </script>
@@ -47,25 +47,21 @@ function getCenter(id) {
 <body>
 <s:include value="../contractors/conHeader.jsp"/>
 
-<s:if test="permissions.admin">
-	<s:form method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
-		<input type="submit" value="Generate Assessment Results" name="button" class="picsbutton positive" />
-	</s:form>
-	<br />
-</s:if>
-
-<s:if test="history.size() > 1">
-	Effective on: <s:select list="history" name="date" onchange="getHistory(this.value);"></s:select>
-	<a href="?id=<s:property value="contractor.id" />&employeeID=<s:property value="employeeID" />&centerID=<s:property value="centerID" />">View Today</a><br />
-</s:if>
-
-Assessment Center:
-<s:select list="allAssessmentCenters" name="centerID" listKey="id" listValue="name" value="centerID" 
-	headerKey="0" headerValue="- Assessment Center -" onchange="getCenter(this.value);"></s:select><br />
-
-<s:if test="employeeID > 0 || centerID > 0">
-	<a href="?id=<s:property value="contractor.id" />">View All Employees and Centers</a>
-</s:if>
+<div style="margin: 10px 0px;">
+	<s:if test="permissions.admin">
+		<s:form method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
+			<input type="submit" value="Generate Assessment Results" name="button" class="picsbutton positive" />
+		</s:form>
+		<br />
+	</s:if>
+	<s:if test="history.size() > 1">
+		Effective on: <s:select list="history" name="date" onchange="getHistory(this.value);"></s:select>
+		<a href="?id=<s:property value="contractor.id" />&employeeID=<s:property value="employeeID" />&centerID=<s:property value="centerID" />">View Today</a><br />
+	</s:if>
+	Assessment Center:
+	<s:select list="allAssessmentCenters" name="centerID" listKey="id" listValue="name" value="centerID" 
+		headerKey="0" headerValue="- Assessment Center -" onchange="getCenter(this.value);"></s:select>
+</div>
 
 <s:if test="effective.size() > 0">
 	<table class="report" id="effective"><thead>
@@ -99,7 +95,7 @@ Assessment Center:
 				</s:if>
 				<s:if test="canEdit">
 					<td class="center">
-						<a href="EmployeeAssessmentResults.action?id=<s:property value="id" />&button=Remove&resultID=<s:property value="#result.id" />" class="remove"></a>
+						<a href="?id=<s:property value="id" />&button=Remove&resultID=<s:property value="#result.id" />" class="remove"></a>
 					</td>
 				</s:if>
 			</tr>
@@ -111,39 +107,47 @@ Assessment Center:
 	<s:if test="employeeID > 0">
 		<div class="info">This employee has no assessments associated or in effect<s:if test="centerID > 0"> with <s:property value="assessmentCenter.name" /></s:if>.</div>
 	</s:if>
+	<s:elseif test="centerID > 0">
+		<div class="info">There are no employees with assessment results from <s:property value="assessmentCenter.name" />.</div>
+	</s:elseif>
 </s:else>
 
 <s:if test="expired.size() > 0">
 	<h3>Expired</h3>
-	<table class="report"><thead>
+	<table class="report" id="expired"><thead>
 		<tr>
-			<th>Assessment Results</th>
-			<th>Test Description</th>
+			<th><a href="#" onclick="sortTable('expired', 'results'); return false;">Assessment Results</a></th>
+			<th><a href="#" onclick="sortTable('expired', 'description'); return false;">Test Description</a></th>
 			<s:if test="employeeID == 0">
-				<th>Employee</th>
+				<th><a href="#" onclick="sortTable('expired', 'employee'); return false;">Employee</a></th>
 			</s:if>
-			<th>Expiration Date</th>
+			<th><a href="#" onclick="sortTable('expired', 'date'); return false;">Expiration Date</a></th>
 		</tr>
 	</thead><tbody>
 		<s:iterator value="expired" id="result" status="stat">
 			<tr>
-				<td>
+				<td class="results">
 					<s:property value="#result.assessmentTest.assessmentCenter.name" />:
 					<s:property value="#result.assessmentTest.qualificationType" /> -
 					<s:property value="#result.assessmentTest.qualificationMethod" />
 				</td>
-				<td><s:property value="#result.assessmentTest.description" /></td>
+				<td class="description"><s:property value="#result.assessmentTest.description" /></td>
 				<s:if test="employeeID == 0">
-					<td>
-						<a href="ManageEmployees.action?employeeID=<s:property value="#result.employee.id" />">
+					<td class="employee">
+						<a href="?id=<s:property value="contractor.id" />&employeeID=<s:property value="#result.employee.id" />&centerID=<s:property value="centerID" />">
 							<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
 						</a>
 					</td>
 				</s:if>
-				<td class="center"><s:date name="#result.expirationDate" format="MM/dd/yyyy" /></td>
+				<td class="center date"><s:date name="#result.expirationDate" format="MM/dd/yyyy" /></td>
 			</tr>
 		</s:iterator>
 	</tbody></table>
 </s:if>
+
+<s:if test="employeeID > 0 || centerID > 0">
+	<a href="?id=<s:property value="contractor.id" />">View All Employees and Centers</a>
+</s:if>
+
 </body>
 </html>

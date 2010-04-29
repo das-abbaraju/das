@@ -20,10 +20,13 @@
 			text-align: center;
 		}
 		
+		.cell {
+			border: 1px solid black;
+		}
+		
 		.cell, .report {
 			padding: 10px;
 			margin: 10px;
-			border: 1px solid black;
 		}
 		
 		.cell td {
@@ -196,6 +199,8 @@
 								</s:iterator>
 							</tbody>
 						</table>
+						<a href="EmployeeAssessmentResults.action?id=<s:property value="employee.account.id" />&employeeID=<s:property value="employee.id" />"
+							style="margin-left: 10px;">View All Assessment Results</a>
 					</s:if>
 				</td>
 			</tr>
