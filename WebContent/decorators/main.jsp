@@ -52,12 +52,13 @@
 
 </head>
 <body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />">
+<div id="bodywrap">
 <% if (showMessage) { %>
 	<div id="systemMessage">
 		<%= appProperty.getValue()%>
+		<div class="clear"></div>
 	</div>
 <% } %>
-<div id="bodywrap">
 <div id="header">
 <div id="headermain">
 

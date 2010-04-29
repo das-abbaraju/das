@@ -63,10 +63,9 @@ p {
 #logo {
 	border: 0px;
 	height: 31px;
-	top: 10px;
 	margin: 0;
 	z-index: 5000;
-	position: absolute;
+	padding-top: 10px;
 }
 
 #name {
@@ -773,9 +772,8 @@ span.block:hover .hoverhelp {
 /********************** LIVE HELP BOX ******************************/
 #helpbox {
 	position: absolute;
-	background-color: #ECECEC; //
-	top: 124px;
-	top: 104px;
+	background-color: #ECECEC;
+	top: 132px;
 	right: 21px;
 	font-size: 12px;
 	padding: 5px;
