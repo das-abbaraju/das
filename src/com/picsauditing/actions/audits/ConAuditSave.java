@@ -102,7 +102,7 @@ public class ConAuditSave extends AuditActionSupport {
 		if(!Strings.isEmpty(note)) {
 			if(!Strings.isEmpty(conAudit.getAuditFor())) 
 				note += " " + conAudit.getAuditFor();
-			addNote(contractor, note, NoteCategory.Audits, LowMedHigh.Low, true, Account.PicsID, getUser());
+			addNote(contractor, note, NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 		}
 
 		conAudit = auditDao.save(conAudit);
