@@ -1,18 +1,20 @@
 package com.picsauditing.actions.employees;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class EmployeeAssessmentResults extends AccountActionSupport {
@@ -21,15 +23,24 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	protected EmployeeDAO employeeDAO;
 	
 	protected Employee employee = null;
+	protected ContractorAccount contractor = null;
+	protected List<Date> history;
+	protected Date effectiveDate;
+	protected String date;
+	protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	protected List<AssessmentResult> effective;
+	protected List<AssessmentResult> expired;
 	
 	protected int employeeID;
 	protected int resultID;
+	protected boolean showHeader = false;
 	
 	public EmployeeAssessmentResults(AssessmentResultDAO resultDAO, AssessmentTestDAO testDAO, 
 			EmployeeDAO employeeDAO) {
 		this.resultDAO = resultDAO;
 		this.testDAO = testDAO;
 		this.employeeDAO = employeeDAO;
+		subHeading = "Assessment Results";
 		
 		// When we need more detailed notes about OQ
 		// noteCategory = NoteCategory.OperatorQualification;
@@ -39,17 +50,27 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
-				
-		// Check for basic view capabilities
-		tryPermissions(OpPerms.ManageJobSites);
+		
+		if (id == 0)
+			throw new Exception("Missing contractor id");
 		
 		// Load all of the employee information
 		if (employee != null)
 			employee = employeeDAO.find(employee.getId());
+		else if (employeeID > 0)
+			employee = employeeDAO.find(employeeID);
 		
-		if (button != null) {
-			tryPermissions(OpPerms.ManageJobSites, OpType.Edit);
-			
+		if (employee != null) {
+			contractor = (ContractorAccount) employee.getAccount();
+			subHeading += " for " + employee.getDisplayName();
+		}
+		else {
+			ContractorAccountDAO conDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+			int conID = getId() > 0 ? getId() : permissions.getAccountId();
+			contractor = conDAO.find(conID);
+		}
+		
+		if (button != null && isCanEdit()) {
 			if (button.startsWith("Generate")) {
 				// Get a random bunch of employees
 				// Get all tests for assessment center id 11069
@@ -59,18 +80,26 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 			if ("Remove".equalsIgnoreCase(button)) {
 				if (resultID > 0) {
 					AssessmentResult result = resultDAO.find(resultID);
-					result.setExpirationDate(new Date());
+					result.expire();
 					resultDAO.save(result);
 				}
-				
-				if (getEmployeeID() > 0)
-					return redirect("AssessmentResults.action?employee.id=" + getEmployeeID());
-				
-				return redirect("AssessmentResults.action");
 			}
+			
+			if (getEmployeeID() > 0)
+				return redirect("EmployeeAssessmentResults.action?id=" + getId() + "&employee.id=" + getEmployeeID());
+			
+			return redirect("EmployeeAssessmentResults.action?id=" + getId());
 		}
 		
 		return SUCCESS;
+	}
+	
+	public boolean isCanEdit() {
+		if ((permissions.isContractor() || permissions.isAdmin()) 
+				&& (date == null || date.equals(sdf.format(new Date()))))
+			return true;
+
+		return false;
 	}
 	
 	public Employee getEmployee() {
@@ -81,9 +110,52 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 		this.employee = employee;
 	}
 	
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+	
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+	
+	public List<Date> getHistory() {
+		if (history == null) {
+			if (employeeID > 0)
+				history = resultDAO.findHistory("a.employee.id = " + employeeID);
+			else if (permissions.isAdmin())
+				history = resultDAO.findHistory(null);
+			else
+				history = resultDAO.findHistory("a.employee.account.id = " + contractor.getId());
+		}
+			
+		return history;
+	}
+	
+	public String getDate() {
+		return date;
+	}
+	
+	public void setDate(String date) {
+		this.date = date;
+	}
+	
+	public Date getEffectiveDate() {
+		if (date != null) {
+			try {
+				effectiveDate = sdf.parse(date);
+			} catch (Exception e) {
+			}
+		}
+		
+		if (effectiveDate == null)
+			effectiveDate = new Date();
+		
+		return effectiveDate;
+	}
+	
 	public int getEmployeeID() {
 		if (employee != null)
-			return employee.getId();
+			employeeID = employee.getId();
 		
 		return employeeID;
 	}
@@ -98,6 +170,13 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	
 	public void setResultID(int resultID) {
 		this.resultID = resultID;
+	}
+	
+	public boolean isShowHeader() {
+		if (permissions.isContractor())
+			showHeader = true;
+		
+		return showHeader;
 	}
 	
 	private void generateRandomResults() {
@@ -125,24 +204,29 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 		}
 	}
 	
-	public List<AssessmentResult> getAllResults() {
-		// Order employees by employer name, last name
-		List<AssessmentResult> allResults = resultDAO.findAll();
-		
-		return allResults;
-	}
-	
 	public List<AssessmentResult> getEffective() {
-		if (getEmployeeID() > 0)
-			return resultDAO.findInEffect("employeeID = " + getEmployeeID());
+		if (effective == null) {
+			Date date = getEffectiveDate();
+			
+			if (getEmployeeID() > 0)
+				effective = resultDAO.findInEffect("a.employee.id = " + getEmployeeID(), date);
+			else
+				effective = resultDAO.findInEffect("a.employee.account.id = " + contractor.getId(), date);
+		}
 		
-		return resultDAO.findInEffect(null);
+		return effective;
 	}
 	
 	public List<AssessmentResult> getExpired() {
-		if (getEmployeeID() > 0)
-			return resultDAO.findExpired("employeeID = " + getEmployeeID());
+		if (expired == null) {
+			Date date = getEffectiveDate();
+			
+			if (getEmployeeID() > 0)
+				expired = resultDAO.findExpired("a.employee.id = " + getEmployeeID(), date);
+			else
+				expired = resultDAO.findExpired("a.employee.account.id = " + contractor.getId(), date);
+		}
 		
-		return resultDAO.findExpired(null);
+		return expired;
 	}
 }

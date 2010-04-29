@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="../exception_handler.jsp"%>
 <html>
 <head>
 <title>Assessments</title>
@@ -32,65 +32,67 @@ function sortTable(tableName, sortBy) {
 
 	$.each(rows, function (index, row) { $(row).find('.id').text(index + 1); $(tbody).append(row); });
 }
+
+function getHistory(date) {
+	self.location = "EmployeeAssessmentResults.action?id=" + <s:property value="contractor.id" /> + "&employeeID="
+		+ <s:property value="employeeID" /> + "&date=" + date;
+}
 </script>
 </head>
 <body>
-<h1>Assessment Results <s:if test="employeeID > 0"><span class="sub"><s:property value="employee.displayName"/></span></s:if></h1>
+<s:include value="../contractors/conHeader.jsp"/>
 
-<s:if test="employeeID > 0">
-	<div id="internalnavcontainer">
-		<ul id="navlist">
-			<li><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">Edit</a></li>
-			<li><a href="EmployeeAssessmentResults.action?employee.id=<s:property value="employee.id" />">Assessments</a></li>
-			<li><a href="EmployeeDataPartnerIDs.action?employee.id=<s:property value="employee.id" />">Data Partner IDs</a></li>
-		</ul>
-	</div>
-</s:if>
-	
-<s:include value="../actionMessages.jsp"/>
-
-<s:if test="employeeID == 0">
+<s:if test="permissions.admin">
 	<s:form method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 		<input type="submit" value="Generate Assessment Results" name="button" class="picsbutton positive" />
 	</s:form>
 	<br />
 </s:if>
 
+<s:if test="history.size() > 1">
+	Effective on: <s:select list="history" name="date" onchange="getHistory(this.value);"></s:select><br />
+	<a href="EmployeeAssessmentResults.action?id=<s:property value="contractor.id" />&employeeID=<s:property value="employeeID" />">View Today</a>
+</s:if>
+
+<s:if test="employeeID > 0">
+	<a href="EmployeeAssessmentResults.action?id=<s:property value="contractor.id" />">View All Employees</a>
+</s:if>
+
 <s:if test="effective.size() > 0">
 	<table class="report" id="effective"><thead>
 		<tr>
 			<th></th>
-			<th><a href="#" onclick="sortTable('effective', 'center'); return false;">Assessment Center</a></th>
-			<th><a href="#" onclick="sortTable('effective', 'type'); return false;">Qualification Type</a></th>
-			<th><a href="#" onclick="sortTable('effective', 'method'); return false;">Qualification Method</a></th>
+			<th><a href="#" onclick="sortTable('effective', 'results'); return false;">Assessment Results</a></th>
 			<th><a href="#" onclick="sortTable('effective', 'description'); return false;">Test Description</a></th>
 			<s:if test="employee == null">
 				<th><a href="#" onclick="sortTable('effective', 'employee'); return false;">Employee</a></th>
 			</s:if>
-			<pics:permission perm="ManageJobSites" type="Edit">
+			<s:if test="canEdit">
 				<th>Remove</th>
-			</pics:permission>
+			</s:if>
 		</tr>
 	</thead><tbody>
 		<s:iterator value="effective" id="result" status="stat">
 			<tr>
 				<td class="id"><s:property value="#stat.count" /></td>
-				<td class="assessmentCenter"><s:property value="#result.assessmentTest.assessmentCenter.name" /></td>
-				<td class="type"><s:property value="#result.assessmentTest.qualificationType" /></td>
-				<td class="method"><s:property value="#result.assessmentTest.qualificationMethod" /></td>
+				<td class="results">
+					<s:property value="#result.assessmentTest.assessmentCenter.name" />:
+					<s:property value="#result.assessmentTest.qualificationType" /> -
+					<s:property value="#result.assessmentTest.qualificationMethod" />
+				</td>
 				<td class="description"><s:property value="#result.assessmentTest.description" /></td>
 				<s:if test="employeeID == 0">
 					<td class="employee">
-						<a href="EmployeeDetail.action?employee.id=<s:property value="#result.employee.id" />">
+						<a href="EmployeeAssessmentResults.action?id=<s:property value="contractor.id" />&employee.id=<s:property value="#result.employee.id" />">
 							<s:property value="#result.employee.displayName" />
 						</a>
 					</td>
 				</s:if>
-				<pics:permission perm="ManageJobSites" type="Edit">
+				<s:if test="canEdit">
 					<td class="center">
-						<a href="ManageAssessmentResults.action?button=Remove&resultID=<s:property value="#result.id" />" class="remove"></a>
+						<a href="EmployeeAssessmentResults.action?id=<s:property value="id" />&button=Remove&resultID=<s:property value="#result.id" />" class="remove"></a>
 					</td>
-				</pics:permission>
+				</s:if>
 			</tr>
 		</s:iterator>
 	</tbody></table>
@@ -106,11 +108,9 @@ function sortTable(tableName, sortBy) {
 	<h3>Expired</h3>
 	<table class="report"><thead>
 		<tr>
-			<th>Assessment Center</th>
-			<th>Qualification Type</th>
-			<th>Qualification Method</th>
+			<th>Assessment Results</th>
 			<th>Test Description</th>
-			<s:if test="employee == null">
+			<s:if test="employeeID == 0">
 				<th>Employee</th>
 			</s:if>
 			<th>Expiration Date</th>
@@ -118,16 +118,20 @@ function sortTable(tableName, sortBy) {
 	</thead><tbody>
 		<s:iterator value="expired" id="result" status="stat">
 			<tr>
-				<td><s:property value="#result.assessmentTest.assessmentCenter.name" /></td>
-				<td><s:property value="#result.assessmentTest.qualificationType" /></td>
-				<td><s:property value="#result.assessmentTest.qualificationMethod" /></td>
-				<td><s:property value="#result.assessmentTest.description" /></td>
 				<td>
-					<a href="ManageEmployees.action?employee.id=<s:property value="#result.employee.id" />">
-						<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
-					</a>
+					<s:property value="#result.assessmentTest.assessmentCenter.name" />:
+					<s:property value="#result.assessmentTest.qualificationType" /> -
+					<s:property value="#result.assessmentTest.qualificationMethod" />
 				</td>
-				<td><s:date name="#result.expirationDate" format="MM/dd/yyyy" /></td>
+				<td><s:property value="#result.assessmentTest.description" /></td>
+				<s:if test="employeeID == 0">
+					<td>
+						<a href="ManageEmployees.action?employee.id=<s:property value="#result.employee.id" />">
+							<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
+						</a>
+					</td>
+				</s:if>
+				<td class="center"><s:date name="#result.expirationDate" format="MM/dd/yyyy" /></td>
 			</tr>
 		</s:iterator>
 	</tbody></table>

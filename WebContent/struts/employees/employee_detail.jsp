@@ -35,6 +35,11 @@
 			text-align: right;
 			font-weight: bold;
 		}
+		
+		#profile img {
+			max-height: 150px;
+			height: expression(this.height > 150 ? 150 : true);
+		}
 	</style>
 	<s:include value="../jquery.jsp"/>
 </head>
@@ -48,7 +53,7 @@
 						<tr>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<img src="images/employee/<s:property value="employee.id % 5" />.jpg"
-									alt="Picture of <s:property value="employee.displayName" />" style="height: 150px;" />
+									alt="Picture of <s:property value="employee.displayName" />" />
 							</td>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
@@ -57,7 +62,7 @@
 							</td>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<img src="ContractorLogo.action?id=<s:property value="employee.account.id"/>"
-									style="height: 150px" alt="Logo" />
+									alt="Logo" />
 							</td>
 						</tr>
 					</table>

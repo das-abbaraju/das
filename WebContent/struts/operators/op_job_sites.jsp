@@ -36,7 +36,7 @@ function getTasks(siteID) {
 		id: <s:property value="operator.id" />
 	};
 
-	$('#jobSiteTasks').html('<img src="images/ajax_process.gif" alt="Loading tasks" /> Loading tasks...');
+	startThinking({div: 'jobSiteTasks', message: 'Loading tasks'});
 	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
 		function() {
 			$('#addSiteTasks').empty();

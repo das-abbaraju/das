@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -7,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AssessmentResult;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -35,35 +37,49 @@ public class AssessmentResultDAO extends PicsDAO {
 	public List<AssessmentResult> findByEmployee(int employeeID) {
 		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE employeeID = ?");
 		query.setParameter(1, employeeID);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public List<AssessmentResult> findAll() {
 		Query query = em.createQuery("SELECT a FROM AssessmentResult a");
+
+		return query.getResultList();
+	}
+
+	public List<AssessmentResult> findExpired(String where, Date date) {
+		if (Strings.isEmpty(where))
+			where = "";
+		else
+			where = " AND " + where;
+
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate <= ?"
+				+ where + " ORDER BY expirationDate DESC");
+		query.setParameter(1, date);
 		
 		return query.getResultList();
 	}
-	
-	public List<AssessmentResult> findExpired(String where) {
-		if (where == null)
+
+	public List<AssessmentResult> findInEffect(String where, Date date) {
+		if (Strings.isEmpty(where))
 			where = "";
-		if (where.length() > 0)
+		else
 			where = " AND " + where;
-		
-		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate <= NOW()" + where
-				+ " ORDER BY expirationDate DESC");
+
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate > :date"
+				+ " AND effectiveDate <= :date" + where + " ORDER BY effectiveDate DESC");
+		query.setParameter("date", date);
 		return query.getResultList();
 	}
-	
-	public List<AssessmentResult> findInEffect(String where) {
-		if (where == null)
+
+	public List<Date> findHistory(String where) {
+		if (Strings.isEmpty(where))
 			where = "";
-		if (where.length() > 0)
-			where = " AND " + where;
-		
-		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate > NOW()" +
-				" AND effectiveDate <= NOW()" + where + " ORDER BY effectiveDate DESC");
+		else
+			where = " WHERE " + where;
+
+		Query query = em.createQuery("SELECT DISTINCT a.effectiveDate FROM AssessmentResult a"
+				+ where + " ORDER BY effectiveDate DESC");
 		return query.getResultList();
 	}
 }

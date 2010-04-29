@@ -212,6 +212,7 @@
 <ul>
 	<li><a href="ContractorView.action?id=<s:property value="id" />"
 		<s:if test="requestURI.contains('con_dashboard')">class="current"</s:if>><span>Account Summary</span></a></li>
+	
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
@@ -260,6 +261,7 @@
 				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 		</pics:permission>
 	</s:elseif>
+	<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>">Assessment Results</a></li>
 </ul>
 </div>
 
