@@ -16,8 +16,8 @@ $(document).ready(function() {
 			</s:if>
 			<th>Description</th>
 			<th>Flag</th>
+			<th><nobr># Affected</nobr></th>
 			<s:if test="canEdit">
-				<th><nobr># Affected</nobr></th>
 				<th>Edit</th>
 				<th>Remove</th>
 			</s:if>
@@ -74,15 +74,15 @@ $(document).ready(function() {
 					</s:if>
 				</td>
 				<td class="center"><span class="hideOld"><s:property value="flag.smallIcon" escape="false" /></span></td>
+				<td class="center">
+					<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click to see a list of contractors impacted."
+						class="hideOld oldImpact"><s:property value="affected" /></a>
+					<span class="newImpact"></span>
+					<s:if test="needsRecalc">
+						<script type="text/javascript">updateAffected('<s:property value="id" />');</script>
+					</s:if>
+				</td>
 				<s:if test="canEdit">
-					<td class="center">
-						<a href="#" onclick="getImpact(<s:property value="id" />); return false;" title="Click to see a list of contractors impacted."
-							class="hideOld oldImpact"><s:property value="affected" /></a>
-						<span class="newImpact"></span>
-						<s:if test="needsRecalc">
-							<script type="text/javascript">updateAffected('<s:property value="id" />');</script>
-						</s:if>
-					</td>
 					<td class="center">
 						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;" class="edit"></a>
 					</td>

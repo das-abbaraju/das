@@ -70,7 +70,10 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
 		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + flagCriteriaOperator.getOperator().getId());
 		sql.addWhere("fcc.criteriaID = " + flagCriteriaOperator.getCriteria().getId());
-		sql.addWhere("a.status IN ('Active','Demo')");
+		if(flagCriteriaOperator.getOperator().getStatus().isDemo())
+			sql.addWhere("a.status IN ('Active','Demo')");
+		else
+			sql.addWhere("a.status = 'Active'");
 		sql.addField("fcc.conID");
 		sql.addField("a.name contractor_name");
 		sql.addField("a.acceptsBids");
