@@ -124,13 +124,5 @@
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager" />
-    
-    <bean id="BillingDroolsSessionFactory" class="com.picsauditing.PICS.DroolsSessionFactory">
-		<property name="drlResources">
-			<list>
-				<value>rules/changeset.xml</value>
-			</list>		
-		</property>
-	</bean>
 
 </beans>
