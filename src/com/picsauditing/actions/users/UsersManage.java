@@ -151,6 +151,16 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			addActionMessage(AccountRecovery.sendRecoveryEmail(user));
 		}
 
+		if ("Unlock this Account".equalsIgnoreCase(button)) {
+			if (!isOK()) {
+				userDAO.clear();
+				return SUCCESS;
+			}
+			
+			user.setLockUntil(null);
+			userDAO.save(user);
+		}
+		
 		if ("Save".equalsIgnoreCase(button)) {
 			if (!isOK()) {
 				userDAO.clear();

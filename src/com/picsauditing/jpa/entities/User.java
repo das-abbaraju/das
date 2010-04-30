@@ -275,6 +275,11 @@ public class User extends BaseTable implements java.io.Serializable, Comparable<
 	public void setLockUntil(Date lockUntil) {
 		this.lockUntil = lockUntil;
 	}
+	
+	@Transient
+	public boolean isLocked(){
+		return (getLockUntil() != null) ? new Date().before(getLockUntil()) : false;
+	}
 
 	@Column(length = 50)
 	public String getPhone() {

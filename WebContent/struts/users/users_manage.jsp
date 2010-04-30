@@ -121,40 +121,62 @@ div.autocomplete ul li {
 			</s:if>
 </div>
 
-<table class="report">
-	<thead>
-		<tr>
-			<td>&nbsp;</td>
-			<td colspan="2">User/Group</td>
-			<td>Last Login</td>
-		</tr>
-	</thead>
-	<s:iterator value="userList" status="stat">
-		<tr>
-			<td class="right"><s:property value="#stat.count" />.</td>
-			<s:if test="group">
-				<td>G</td>
-				<td style="font-weight: bold"><a
-					href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-					value="name" /></a></td>
-				<td>N/A</td>
-			</s:if>
-			<s:else>
-				<td>U</td>
-				<td><a
-					href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
-					class="userActive<s:property value="isActive" />"><s:property value="name" /></a></td>
-				<td>
-					<s:if test="lastLogin != null">
-						<s:date name="lastLogin" format="MM/dd/yy" />
-					</s:if>
-					<s:else>never</s:else>
-				</td>
-			</s:else>
-		</tr>
-	</s:iterator>
+<table>
+	<tr>
+		<td>
+			<table class="report">
+				<thead>
+					<tr>
+						<td>&nbsp;</td>
+						<td colspan="2">User/Group</td>
+						<td>Last Login</td>
+					</tr>
+				</thead>
+				<s:iterator value="userList" status="stat">
+					<tr>
+						<td class="right"><s:property value="#stat.count" />.</td>
+						<s:if test="group">
+							<td>G</td>
+							<td style="font-weight: bold"><a
+								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
+								value="name" /></a></td>
+							<td>N/A</td>
+						</s:if>
+						<s:else>
+							<td>U</td>
+							<td><a
+								href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+								class="userActive<s:property value="isActive" />"><s:property value="name" /></a></td>
+							<td>
+								<s:if test="lastLogin != null">
+									<s:date name="lastLogin" format="MM/dd/yy" />
+								</s:if>
+								<s:else>never</s:else>
+							</td>
+						</s:else>
+					</tr>
+				</s:iterator>
+			</table>
+		</td>
+		<td>
+			<table>
+				<tr><td>&nbsp;</td></tr>
+				<s:iterator value="userList" status="stat">
+					<tr>
+						<td>
+							<s:if test="locked">
+								<a href="?accountId=<s:property value="accountId"/>&user.id=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><span title="This user account is locked.<pics:permission perm="EditAccountDetails"> Click this icon to Manage this user's details.</pics:permission>"><img src="images/lock.gif" style="padding-left:5px;" width="15" height="15" alt="This user account is locked" /></span></a>
+							</s:if>
+							<s:else>
+								&nbsp;
+							</s:else>
+						</td>
+					</tr>
+				</s:iterator>
+			</table>
+		</td>
+	</tr>
 </table>
-
 </div>
 
 
@@ -165,6 +187,9 @@ div.autocomplete ul li {
 		<button class="picsbutton" onclick="showUserList();">&lt;&lt; Back to User List</button>
 	</div>
 	<s:form id="UserSave">
+		<s:if test="user.locked">
+			<div class="alert">This user account is locked.<pics:permission perm="EditAccountDetails"> <span title="Press this button to unlock this user's account"><input class="picsbutton negative" type="submit" name="button" value="Unlock this Account"/></span></pics:permission></div>
+		</s:if>
 		<s:hidden name="user.id" />
 		<s:hidden name="accountId" />
 		<s:hidden name="isGroup" />
