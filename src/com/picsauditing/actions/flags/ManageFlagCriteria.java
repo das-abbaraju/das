@@ -108,9 +108,11 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 				}
 
 				// set the auditType or the question based on the incoming value
-				if (criteria.getAuditType() == null || !criteria.getAuditType().equals(auditType)) {
+				if (auditType != null && 
+						(criteria.getAuditType() == null || !criteria.getAuditType().equals(auditType))) {
 					criteria.setAuditType(auditType);
-				} else if (criteria.getQuestion() == null || !criteria.getQuestion().equals(question)) {
+				} else if (question != null && 
+						(criteria.getQuestion() == null || !criteria.getQuestion().equals(question))) {
 					criteria.setQuestion(question);
 				}
 
