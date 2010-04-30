@@ -187,7 +187,7 @@ public class PicsMenu {
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
 		
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
 				subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 
