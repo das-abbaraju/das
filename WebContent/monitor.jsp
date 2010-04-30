@@ -20,8 +20,6 @@
 		<td><strong>Size</strong></td>
 		<td><strong>Hits</strong></td>
 		<td><strong>Misses</strong></td>
-		<td><strong>Avg Get Time</strong></td>
-		<td><strong>Eviction Count</strong></td>
 	</tr>
 
 <%
@@ -36,16 +34,12 @@ for( String cn : cacheNames )
 	%>
 	<tr>
 		<td><%= cn %></td>
-		<td><%= stats.getObjectCount() %>
-		<br />M:<%= stats.getMemoryStoreObjectCount() %>
-		<br />D:<%= stats.getDiskStoreObjectCount() %></td>
+		<td><%= stats.getObjectCount() %></td>
 		<td><%= stats.getCacheHits() %>
 		<br />M:<%= stats.getInMemoryHits() %>
 		<br />D:<%= stats.getOnDiskHits() %>
 		</td>
 		<td><%= stats.getCacheMisses() %></td>
-		<td><%= stats.getAverageGetTime() %></td>
-		<td><%= stats.getEvictionCount() %></td>
 	</tr>
 <% 	} %>
 </table>
