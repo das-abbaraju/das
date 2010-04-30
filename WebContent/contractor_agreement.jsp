@@ -45,7 +45,7 @@ violation of this user agreement will result in your account being either tempor
 
 <b><u>PRIVACY POLICY</u></b>
 <p>PICS' privacy policy can be accessed here as well as from the payment option page
-<a href="https://www.picsorganizer.com/app/privacy_policy.jsp">(https://www.picsorganizer.com/privacy_policy.jsp)</a>.</p><br/>
+<a href="https://new.picsorganizer.com/app/privacy_policy.jsp">(https://new.picsorganizer.com/privacy_policy.jsp)</a>.</p><br/>
 
 <b><u>CONFIDENTIALITY</u></b>
 <p>In addition to the linked privacy policy, PICS recognizes the expected confidentiality and sensitivity of the data that is
@@ -74,7 +74,7 @@ contractor list.</p><br/>
 
 <b><u>REFUND POLICY</u></b>
 <p>PICS refund policy can be accessed here as well from as the payment options page
-<a href="https://www.picsorganizer.com/refund_policy.jsp">(https://www.picsorganizer.com/refund_policy.jsp)</a></p>
+<a href="https://new.picsorganizer.com/refund_policy.jsp">(https://new.picsorganizer.com/refund_policy.jsp)</a></p>
 <p>Our annual pricing can be seen on the facilities page, which you will be able to review before completing registration.</p>
 </div>
 </body>
