@@ -55,7 +55,13 @@
 			name="filter.emailAddress" cssClass="forms" size="15"
 			onfocus="clearText(this)" /></div>
 	</s:if>
-
+	
+	<s:if test="filter.showActive">
+		<div class="filterOption">Active: 
+			<s:select cssClass="forms" list="#{'Yes':'Yes','No':'No','':'ALL'}" name="filter.active" />
+		</div>
+	</s:if>
+	
 	<br clear="all" />
 	<div class="alphapaging"><s:property
 		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>

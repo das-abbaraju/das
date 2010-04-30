@@ -10,7 +10,8 @@ public class ReportFilterUser extends ReportFilter {
 	protected boolean showEmail = true;
 	protected boolean showUser = true;
 	protected boolean showCompanyName = true;
-	
+	protected boolean showActive = true;
+
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
 	protected String contactName;
@@ -19,7 +20,8 @@ public class ReportFilterUser extends ReportFilter {
 	protected String userName;
 	protected String companyName;
 	protected String search;
-	
+	protected String active;
+
 	// Email Builder
 	protected boolean showEmailTemplate = false;
 	protected ListType emailListType;
@@ -135,4 +137,21 @@ public class ReportFilterUser extends ReportFilter {
 	public void setEmailListType(ListType emailListType) {
 		this.emailListType = emailListType;
 	}
+
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
+	public boolean isShowActive() {
+		return showActive;
+	}
+
+	public void setShowActive(boolean showActive) {
+		this.showActive = showActive;
+	}
+
 }

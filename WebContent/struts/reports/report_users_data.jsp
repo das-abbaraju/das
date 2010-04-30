@@ -25,6 +25,7 @@
 		<td>Email</td>
 		<td>Created</td>
 		<td>Last Login</td>
+		<td>Active</td>
 		<pics:permission perm="SwitchUser">
 			<td></td>
 		</pics:permission>
@@ -43,6 +44,7 @@
 			<td><s:property value="get('email')" /></td>
 			<td><s:date name="get('creationDate')" format="MM/dd/yyyy"/></td>
 			<td><s:date name="get('lastLogin')" format="MM/dd/yyyy hh:mm" /></td>
+			<td><s:property value="get('isActive')" /></td>
 			<pics:permission perm="SwitchUser">
 				<td><a href="Login.action?button=login&switchToUser=<s:property value="get('id')"/>">Switch</a></td>
 			</pics:permission>

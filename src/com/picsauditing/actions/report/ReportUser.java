@@ -48,6 +48,7 @@ public class ReportUser extends ReportActionSupport {
 		getFilter().setShowEmail(true);
 		getFilter().setShowPhone(true);
 		getFilter().setShowUser(true);
+		getFilter().setShowActive(true);
 		addFilterToSQL();
 
 		if (button != null && button.contains("Write Email")) {
@@ -133,6 +134,10 @@ public class ReportUser extends ReportActionSupport {
 
 		if (filterOn(f.getUserName())) {
 			report.addFilter(new SelectFilter("UserName", "u.username LIKE '%?%'", f.getUserName()));
+		}
+		
+		if (filterOn(f.getActive())) {
+			report.addFilter(new SelectFilter("Active", "u.isActive LIKE '%?%'", f.getActive()));
 		}
 
 		// If we're searching by nameIndexes, we should use the nameIndex format
