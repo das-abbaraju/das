@@ -45,7 +45,7 @@ violation of this user agreement will result in your account being either tempor
 
 <b><u>PRIVACY POLICY</u></b>
 <p>PICS' privacy policy can be accessed here as well as from the payment option page
-<a href="https://new.picsorganizer.com/app/privacy_policy.jsp">(https://new.picsorganizer.com/privacy_policy.jsp)</a>.</p><br/>
+<a href="https://new.picsorganizer.com/privacy_policy.jsp">(https://new.picsorganizer.com/privacy_policy.jsp)</a>.</p><br/>
 
 <b><u>CONFIDENTIALITY</u></b>
 <p>In addition to the linked privacy policy, PICS recognizes the expected confidentiality and sensitivity of the data that is
