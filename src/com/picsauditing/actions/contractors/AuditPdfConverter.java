@@ -249,7 +249,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 						} else {
 							Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
 									Font.UNDERLINE, new Color(0, 0, 255)));
-							anchor.setReference("http://www.picsauditing.com/DownloadOsha.action?id="
+							anchor.setReference("http://new.picsorganizer.com/DownloadOsha.action?id="
 									+ oshaAudit.getId());
 							anchor.setName("View File");
 							Phrase phrase = new Phrase();
@@ -305,7 +305,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 								if (auditData.getAnswer().length() > 0) {
 									Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER,
 											10, Font.UNDERLINE, new Color(0, 0, 255)));
-									anchor.setReference("http://www.picsauditing.com/DownloadAuditData.action?auditID="
+									anchor.setReference("http://new.picsorganizer.com/DownloadAuditData.action?auditID="
 											+ auditData.getAudit().getId() + "&answer.id=" + auditData.getId());
 									anchor.setName("View File");
 									questionAnswer.add(anchor);

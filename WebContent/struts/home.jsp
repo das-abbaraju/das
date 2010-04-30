@@ -38,7 +38,7 @@ $(function() {
 
 <s:if test="showRebranding">
 <div class="info" id="rebranding" style="display:none">
-	<a href="http://www.picsauditing.com/about/2010-rebranding/" target="_BLANK">PICS has new Branding and Service Names</a>
+	<a href="http://new.picsorganizer.com/about/2010-rebranding/" target="_BLANK">PICS has new Branding and Service Names</a>
 </div>
 </s:if>
 

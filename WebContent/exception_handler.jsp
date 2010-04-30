@@ -39,7 +39,7 @@
 	// if the session hasn't been alive for a second, then redirect to the home page
 	// when encountering an exception, otherwise write an email out
 	if ((currentTime.getTime() - session.getCreationTime()) < 1000) {
-		String redirectURL = "http://www.picsauditing.com/";
+		String redirectURL = "http://new.picsorganizer.com/";
 		response.sendRedirect(redirectURL);
 	} else {
 		if (exception != null) {

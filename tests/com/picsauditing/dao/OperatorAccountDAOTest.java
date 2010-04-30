@@ -47,7 +47,7 @@ public class OperatorAccountDAOTest {
 		operatoraccount.setZip("92345");
 		operatoraccount.setPhone("999-999-9999");
 		operatoraccount.setFax("999-999-9999");
-		operatoraccount.setWebUrl("www.picsauditing.com");
+		operatoraccount.setWebUrl("new.picsorganizer.com");
 		operatoraccount.setIndustry(Industry.Petrochemical);
 		// operatoraccount.setActive('y');
 		operatoraccount.setStatus(AccountStatus.Active);
