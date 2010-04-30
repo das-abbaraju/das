@@ -41,8 +41,11 @@
 	}
 	
 	$(document).ready(function() {
-		truncate('selfperformed');
-		truncate('subcontracted');
+		if ($('#selfperformed').text().length > 100)
+			truncate('selfperformed');
+
+		if ($('#subcontracted').text().length > 100)
+			truncate('subcontracted');
 	});
 </script>
 <style>
