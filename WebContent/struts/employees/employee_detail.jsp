@@ -199,8 +199,10 @@
 								</s:iterator>
 							</tbody>
 						</table>
-						<a href="EmployeeAssessmentResults.action?id=<s:property value="employee.account.id" />&employeeID=<s:property value="employee.id" />"
-							style="margin-left: 10px;">View All Assessment Results</a>
+						<pics:permission perm="DevelopmentEnvironment">
+							<a href="EmployeeAssessmentResults.action?id=<s:property value="employee.account.id" />&employeeID=<s:property value="employee.id" />"
+								style="margin-left: 10px;">View All Assessment Results</a>
+						</pics:permission>
 					</s:if>
 				</td>
 			</tr>
