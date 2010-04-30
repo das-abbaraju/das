@@ -161,6 +161,12 @@ $(function(){
 							<s:password name="confirmPassword"/>
 						</li>
 						<li>You'll have the opportunity to create more users later.</li>
+						<li><b>
+							By clicking the "Create Account" button below, I certify that I agree to the 
+							terms and conditions of the  
+							<a href="#" onClick="window.open('contractor_agreement.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=700,height=700'); return false;">
+							PICS Contractor Agreement</a>.</b>
+						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form submit">
