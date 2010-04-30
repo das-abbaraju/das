@@ -231,7 +231,9 @@
 		</pics:permission>
 		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Employees</a></li>
-		<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>
+		<pics:permission perm="DevelopmentEnvironment">
+			<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>
+		</pics:permission>
 		<s:if test="!contractor.status.demo">
 			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
@@ -252,7 +254,9 @@
 		<pics:permission perm="ContractorAdmin">
 			<li><a href="UsersManage.action">Users</a></li>
 			<li><a href="ManageEmployees.action">Employees</a></li>
-			<li><a href="ManageJobRoles.action">Job Roles</a></li>
+			<pics:permission perm="DevelopmentEnvironment">
+				<li><a href="ManageJobRoles.action">Job Roles</a></li>
+			</pics:permission>
 		</pics:permission>
 		<pics:permission perm="ContractorBilling">
 			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
@@ -261,7 +265,9 @@
 				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 		</pics:permission>
 	</s:elseif>
-	<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>">Assessment Results</a></li>
+	<pics:permission perm="DevelopmentEnvironment">
+		<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>">Assessment Results</a></li>
+	</pics:permission>
 </ul>
 </div>
 
