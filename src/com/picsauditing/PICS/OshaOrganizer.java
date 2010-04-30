@@ -120,10 +120,10 @@ public class OshaOrganizer {
 			return (yearIndex.get(0) != null) ? yearIndex.get(0).getRate(
 					rateType) : null;
 		case TwoYearsAgo:
-			return (yearIndex.get(yearIndex.size() - 2) != null) ? yearIndex
+			return (yearIndex.size() > 1 && yearIndex.get(yearIndex.size() - 2) != null) ? yearIndex
 					.get(yearIndex.size() - 2).getRate(rateType) : null;
 		case ThreeYearsAgo:
-			return (yearIndex.get(yearIndex.size() - 1) != null) ? yearIndex
+			return (yearIndex.size() > 2 && yearIndex.get(yearIndex.size() - 1) != null) ? yearIndex
 					.get(yearIndex.size() - 1).getRate(rateType) : null;
 		case ThreeYearWeightedAverage:
 			Float manHours = 0f,
