@@ -37,7 +37,7 @@ record retention. Unless specifically requested in writing to have your document
 dispose of the records.</p><br/>
 
 <b><u>USER AGREEMENT</u></b>
-<p>You will be issued a username and password to access your company's inputted data. It is your responsibility to keep
+<p>You will be issued a username and password to access your company's inputed data. It is your responsibility to keep
 this username and password confidential and private. PICS will not share your username and password data with any
 third party, and regardless of circumstances you cannot share your username and/or password with a third party with
 the sole exception that the third party is contractually acting as your agent to assist you through the PICS process. Any
@@ -58,7 +58,7 @@ contact, your company's logo.</p>
 <p>PICS is a password-protected website. Your company's Sensitive and Non-sensitive data will be held behind this
 password protection.</p>
 <p>Sensitive Data will be shared only with authorized users from operators appearing on your "facility list" which are linked
-to your account. You control which operators are linked to your account and can review anytime by logging in to your
+to your account. You control which operators are linked to your account and can review any time by logging in to your
 account. At any time you can add or remove any operator from the facility list by either calling in to Customer Service
 (800-506-7427) or controlling it using the web interface. Any user from an operator not listed on your facility can not
 access your Sensitive Data. Other Contractors do not have access to your Sensitive Data.</p>
