@@ -364,4 +364,12 @@ public class StringsTest extends TestCase {
 
 		assertEquals("XXX-XX-9999", ssnMask);
 	}
+	
+	public void testEqualNullSafe() {
+		assertTrue(Strings.isEqualNullSafe(null, null));
+		assertFalse(Strings.isEqualNullSafe(null, "foobar"));
+		assertFalse(Strings.isEqualNullSafe("foobar", null));
+		assertFalse(Strings.isEqualNullSafe("foo", "bar"));
+		assertTrue(Strings.isEqualNullSafe("foobar", "foobar"));
+	}
 }

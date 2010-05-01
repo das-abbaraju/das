@@ -24,7 +24,23 @@ public class Strings {
 		value = value.trim();
 		return value.length() == 0;
 	}
-
+	
+	/**
+	 * Are two strings equal to each other. One or both can be null. If both are null, then return true.
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
+	public static boolean isEqualNullSafe(String value1, String value2) {
+		if (value1 != null)
+			return value1.equals(value2);
+		
+		if (value2 != null)
+			return value2.equals(value1);
+		return true;
+		
+	}
+	
 	public static String[] convertListToArray(List<String> list) {
 		String[] array = new String[list.size()];
 		int i = 0;
