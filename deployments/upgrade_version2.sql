@@ -14,4 +14,16 @@ where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
 
-insert  into `email_template`(`id`,`accountID`,`templateName`,`subject`,`body`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,`listType`,`allowsVelocity`,`html`,`recipient`) values (106,1100,'Credit Card Transaction Failure','Credit Card Transaction Failed','Due to a connection malfunction between our payment gateway and PICS, the payment information has been lost for ${permissions.name} (${permissions.userid}) on ${contractor.name} (contractor.id) for invoice:\r\nhttp://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}\r\n\r\nWe cannot determine whether payment was processed successfully. Please check BrainTree to determine whether payment was processed successfully and notify ${permissions.name} at ${permissions.email} or ${permissions.phone}, or one of the following billing contact(s):\r\n#foreach( $user in $billingusers )\r\n${user.getUsername()}: ${user.email} or ${user.phone}\r\n#end\r\n\r\n-PICS IT',941,'2010-03-29 09:55:46',941,'2010-03-29 09:55:46','Contractor',1,0,NULL);
+--insert  into `email_template`(`id`,`accountID`,`templateName`,`subject`,`body`,`createdBy`,`creationDate`,`updatedBy`,`updateDate`,`listType`,`allowsVelocity`,`html`,`recipient`) values (106,1100,'Credit Card Transaction Failure','Credit Card Transaction Failed','Due to a connection malfunction between our payment gateway and PICS, the payment information has been lost for ${permissions.name} (${permissions.userid}) on ${contractor.name} (contractor.id) for invoice:\r\nhttp://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}\r\n\r\nWe cannot determine whether payment was processed successfully. Please check BrainTree to determine whether payment was processed successfully and notify ${permissions.name} at ${permissions.email} or ${permissions.phone}, or one of the following billing contact(s):\r\n#foreach( $user in $billingusers )\r\n${user.getUsername()}: ${user.email} or ${user.phone}\r\n#end\r\n\r\n-PICS IT',941,'2010-03-29 09:55:46',941,'2010-03-29 09:55:46','Contractor',1,0,NULL);
+
+-- updating credit card no response error message
+update email_template et set et.body = 'There has been a connection malfunction between our payment gateway and PICS during payment by ${permissions.name} (${permissions.userId}) on ${contractor.name} (${contractor.id}) for invoice:
+http://www.picsorganizer.com/BillingDetail.action?id=${contractor.id}
+
+We cannot determine whether payment was processed successfully. Please check BrainTree to determine whether payment was processed successfully and notify one of the following billing contact(s):
+#foreach( $user in $billingusers )
+${user.getUsername()}: ${user.email} or phone #: ${user.phone}
+#end
+
+-PICS IT'
+where et.id = 106;

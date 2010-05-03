@@ -127,12 +127,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							EmailBuilder emailBuilder = new EmailBuilder();
 							emailBuilder.setTemplate(106);
 							emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-							emailBuilder.setToAddresses("aharker@picsauditing.com");
-							emailBuilder.setBccAddresses("tbaker@picsauditing.com");
+							emailBuilder.setToAddresses("billing@picsauditing.com");
 							emailBuilder.setPermissions(permissions);
 							emailBuilder.addToken("permissions", permissions);
 							emailBuilder.addToken("contractor", contractor);
 							emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
+							emailBuilder.addToken("invoice", invoice);
 
 							EmailQueue emailQueue;
 							try {
@@ -149,7 +149,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 												+ invoice.getId());
 							}
 
-							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at 1-(800)506-PICS x708 for more info.");
+							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at 1-(800)506-PICS x708.");
 
 							// Assuming paid status per Aaron so that he can
 							// refund or void manually.
