@@ -83,7 +83,7 @@ public class ReportOQ extends PicsActionSupport {
 		}
 
 		public Base contractor = new Base();
-		public Base jobSite;
+		public Base jobSite = new Base();
 		public List<JobTaskSite> jobTasks = new ArrayList<JobTaskSite>();
 		public List<Employee> employees = new ArrayList<Employee>();
 		public Employee total;

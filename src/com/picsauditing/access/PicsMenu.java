@@ -65,6 +65,9 @@ public class PicsMenu {
 						subMenu.addChild("Job Roles", "ManageJobRoles.action");
 						subMenu.addChild("Employee Competencies", "EmployeeCompetencies.action");
 					}
+					if (permissions.isRequiresOQ()) {
+						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
+					}
 				}
 
 				if (permissions.hasPermission(OpPerms.ContractorBilling)) {
