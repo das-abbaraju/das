@@ -7,6 +7,7 @@
 			<tr>
 				<th>Label</th>
 				<th>Name</th>
+				<th>Span of Control</th>
 				<pics:permission perm="ManageJobSites" type="Edit">
 					<th>Add</th>
 				</pics:permission>
@@ -17,6 +18,7 @@
 				<tr>
 					<td><s:property value="#newTask.label" /></td>
 					<td><s:property value="#newTask.name" /></td>
+					<td>1 of 1</td>
 					<pics:permission perm="ManageJobSites" type="Edit">
 						<td class="center"><a href="#"
 							onclick="addTask(<s:property value="siteID" />, <s:property value="#newTask.id" />); return false;"

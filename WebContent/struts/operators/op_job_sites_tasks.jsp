@@ -7,6 +7,7 @@
 			<tr>
 				<th>Label</th>
 				<th>Name</th>
+				<th>Span of Control</th>
 				<pics:permission perm="ManageJobSites" type="Edit">
 					<th>Remove</th>
 				</pics:permission>
@@ -17,6 +18,7 @@
 				<tr>
 					<td><s:property value="#siteTask.task.label" /></td>
 					<td><s:property value="#siteTask.task.name" /></td>
+					<td class="center">1 of <s:property value="#siteTask.controlSpan" /></td>
 					<pics:permission perm="ManageJobSites" type="Edit">
 						<td class="center"><a href="#" onclick="return removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />);" class="remove"></a></td>
 					</pics:permission>

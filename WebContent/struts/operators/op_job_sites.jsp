@@ -52,6 +52,7 @@ function getNewSiteTasks(siteID) {
 	};
 
 	$('#addTaskLink').hide();
+	startThinking({div: 'addSiteTasks', message: 'Loading new tasks'});
 	$('#addSiteTasks').load('ManageJobSitesAjax.action', data);
 }
 
