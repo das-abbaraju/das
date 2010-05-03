@@ -130,7 +130,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				contractor.setAudits(auditMap.get(contractor.getId()));
 
 				FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteriaOperator.getCriteria(), row
-						.get("answer").toString());
+						.get("answer") == null ? null : row.get("answer").toString());
 				fcc.setVerified(Database.toBoolean(row, "verified"));
 
 				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
