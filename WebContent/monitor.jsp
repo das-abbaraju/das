@@ -11,38 +11,27 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Cache Info</title>
 <link rel="stylesheet" href="css/reports.css"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('#web1').load('http://web1.picsorganizer.com/monitorAjax.jsp');
+	$('#web2').load('http://web2.picsorganizer.com/monitorAjax.jsp');
+});
+</script>
 </head>
 <body>
 <h2>EhCache Statistics</h2>
 
-<table class="report">
+<table>
 	<tr>
-		<td><strong>Cache Name</strong></td>
-		<td><strong>Size</strong></td>
-		<td><strong>Hits</strong></td>
-		<td><strong>Misses</strong></td>
-	</tr>
-
-<%
-CacheManager.create();
-String[] cacheNames = CacheManager.getInstance().getCacheNames();
-
-for( String cn : cacheNames )
-{
-	Cache cache = CacheManager.getInstance().getCache(cn);
-
-	Statistics stats = cache.getStatistics();
-	%>
-	<tr>
-		<td><%= cn %></td>
-		<td><%= stats.getObjectCount() %></td>
-		<td><%= stats.getCacheHits() %>
-		<br />M:<%= stats.getInMemoryHits() %>
-		<br />D:<%= stats.getOnDiskHits() %>
+		<td id="web1">
+			
 		</td>
-		<td><%= stats.getCacheMisses() %></td>
+		<td style="width: 20px;"></td>
+		<td id="web2">
+		
+		</td>
 	</tr>
-<% 	} %>
 </table>
 
 </body>
