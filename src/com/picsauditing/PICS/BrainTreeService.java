@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.util.Strings;
 
@@ -64,20 +65,35 @@ public class BrainTreeService {
 		return getValueFromDocument(document, "condition");
 	}
 
-	public boolean processPayment(Payment payment) throws Exception {
+	public boolean processPayment(Payment payment, Invoice invoice) throws IOException,
+			BrainTreeServiceErrorResponseException, NoBrainTreeServiceResponseException, BrainTreeLoginException {
 		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=sale");
 		appendUsernamePassword(request);
 		request.append("&customer_vault_id=").append(payment.getAccount().getId());
 		request.append("&amount=").append(payment.getTotalAmount());
+		if (invoice != null)
+			request.append("&order_id=").append(invoice.getId());
 
 		Map<String, String> map = getUrl(request.toString());
+
+		// No way to automatically validate a transaction if no response
+		// Amount not query-able via API
+		// Admin will handle manually
+
+		if (map == null || map.isEmpty())
+			throw new NoBrainTreeServiceResponseException((map == null) ? " Response is null " : " No response ");
 		String response = map.get("response");
 		if (response.equals("1")) {
 			payment.setTransactionID(map.get("transactionid"));
 			return true;
+		} else if (response.equals("2")) {
+			String responseCode = map.get("response_code");
+			throw new BrainTreeCardDeclinedException(map.get("responsetext") + " "
+					+ BrainTreeCodes.getTransactionResponse(responseCode));
 		} else {
 			String responseCode = map.get("response_code");
-			throw new Exception(map.get("responsetext") + " " + BrainTreeCodes.getTransactionResponse(responseCode));
+			throw new BrainTreeServiceErrorResponseException(map.get("responsetext") + " "
+					+ BrainTreeCodes.getTransactionResponse(responseCode));
 		}
 	}
 
@@ -225,9 +241,9 @@ public class BrainTreeService {
 		this.password = password;
 	}
 
-	private void appendUsernamePassword(StringBuilder request) throws Exception {
+	private void appendUsernamePassword(StringBuilder request) throws BrainTreeLoginException {
 		if (userName == null || password == null)
-			throw new Exception("Missing BrainTree username and password");
+			throw new BrainTreeLoginException("Missing BrainTree username and password");
 
 		request.append("&username=").append(userName);
 		request.append("&password=").append(password);

@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 
 public class BrainTreeTest extends TestCase {
@@ -23,7 +24,7 @@ public class BrainTreeTest extends TestCase {
 		payment.setId(123);
 		payment.setTotalAmount(new BigDecimal(99));
 		try {
-			service.processPayment(payment);
+			service.processPayment(payment, new Invoice());
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

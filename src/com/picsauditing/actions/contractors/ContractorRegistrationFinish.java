@@ -10,8 +10,11 @@ import java.util.Set;
 import com.picsauditing.PICS.AuditBuilder;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
+import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -25,6 +28,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -35,7 +39,10 @@ import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorRegistrationFinish extends ContractorActionSupport {
@@ -90,11 +97,11 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
 
+						Payment payment = null;
 						try {
-							Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(),
-									PaymentMethod.CreditCard);
+							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 
-							paymentService.processPayment(payment);
+							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
 							payment.setCcNumber(creditCard.getCardNumber());
@@ -114,7 +121,43 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
 									+ invoice.getTotalAmount());
-						} catch (Exception e) {
+						} catch (NoBrainTreeServiceResponseException re) {
+							addNote("Credit Card service connection error: " + re.getMessage());
+
+							EmailBuilder emailBuilder = new EmailBuilder();
+							emailBuilder.setTemplate(106);
+							emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+							emailBuilder.setToAddresses("aharker@picsauditing.com");
+							emailBuilder.setBccAddresses("tbaker@picsauditing.com");
+							emailBuilder.setPermissions(permissions);
+							emailBuilder.addToken("permissions", permissions);
+							emailBuilder.addToken("contractor", contractor);
+							emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
+
+							EmailQueue emailQueue;
+							try {
+								emailQueue = emailBuilder.build();
+								emailQueue.setPriority(90);
+								EmailSender.send(emailQueue);
+							} catch (Exception e) {
+								PicsLogger
+										.log("Cannot send email error message or determine credit processing status for contractor "
+												+ contractor.getName()
+												+ " ("
+												+ contractor.getId()
+												+ ") for invoice "
+												+ invoice.getId());
+							}
+
+							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at 1-(800)506-PICS x708 for more info.");
+
+							// Assuming paid status per Aaron so that he can
+							// refund or void manually.
+							payment.setStatus(TransactionStatus.Unpaid);
+							paymentDAO.save(payment);
+
+							return SUCCESS;
+						} catch (BrainTreeServiceErrorResponseException e) {
 							addNote("Credit Card transaction failed: " + e.getMessage());
 							this.addActionError("Failed to charge credit card. " + e.getMessage());
 							return SUCCESS;
@@ -259,13 +302,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	public boolean isComplete() {
 		return complete;
 	}
-	
+
 	public Set<String> getRequiredAudits() {
 		Set<String> auditTypeList = new HashSet<String>();
-		for(ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
-			for(AuditOperator aOperator : cOperator.getOperatorAccount().getVisibleAudits()) {
-				if(aOperator.isRequiredFor(contractor) 
-						&& !aOperator.getAuditType().isAnnualAddendum()) {
+		for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
+			for (AuditOperator aOperator : cOperator.getOperatorAccount().getVisibleAudits()) {
+				if (aOperator.isRequiredFor(contractor) && !aOperator.getAuditType().isAnnualAddendum()) {
 					auditTypeList.add(aOperator.getAuditType().getAuditName());
 				}
 			}

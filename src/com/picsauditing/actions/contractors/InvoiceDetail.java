@@ -9,6 +9,7 @@ import java.util.List;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
@@ -35,8 +36,11 @@ import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
@@ -171,11 +175,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 
+						Payment payment = null;
 						try {
-							Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(),
-									PaymentMethod.CreditCard);
+							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 
-							paymentService.processPayment(payment);
+							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
 							payment.setCcNumber(creditCard.getCardNumber());
@@ -195,6 +199,42 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
 									+ invoice.getTotalAmount());
+						} catch (NoBrainTreeServiceResponseException re) {
+							addNote("Credit Card service connection error: " + re.getMessage());
+
+							EmailBuilder emailBuilder = new EmailBuilder();
+							emailBuilder.setTemplate(106);
+							emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+							emailBuilder.setToAddresses("aharker@picsauditing.com");
+							emailBuilder.setBccAddresses("tbaker@picsauditing.com");
+							emailBuilder.setPermissions(permissions);
+							emailBuilder.addToken("permissions", permissions);
+							emailBuilder.addToken("contractor", contractor);
+							emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
+
+							EmailQueue emailQueue;
+							try {
+								emailQueue = emailBuilder.build();
+								emailQueue.setPriority(90);
+								EmailSender.send(emailQueue);
+							} catch (Exception e) {
+								PicsLogger
+										.log("Cannot send email error message or determine credit processing status for contractor "
+												+ contractor.getName()
+												+ " ("
+												+ contractor.getId()
+												+ ") for invoice "
+												+ invoice.getId());
+							}
+
+							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at 1-(800)506-PICS x708 for more info.");
+
+							// Assuming paid status per Aaron so that he can
+							// refund or void manually.
+							payment.setStatus(TransactionStatus.Unpaid);
+							paymentDAO.save(payment);
+
+							return SUCCESS;
 						} catch (Exception e) {
 							addNote("Credit Card transaction failed: " + e.getMessage());
 							this.addActionError("Failed to charge credit card. " + e.getMessage());

@@ -503,6 +503,12 @@ public class DateBean {
 		return sdf.format(d);
 	}
 
+	public static String getBrainTreeDate(Date d) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return sdf.format(d);
+	}
+
 	public static void main(String[] args) {
 		System.out.println(parseDateTime("3/10/08 6:56 AM PDT"));
 	}
