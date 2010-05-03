@@ -657,6 +657,22 @@
 			onclick="clearTextField('form1_invoiceDueDate'); return false;">Clear</a></span>
 		</div>
 	</s:if>
+	
+	<s:if test="filter.showCaoStatusChangedDate">
+		<br clear="all">
+		<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_statusChangedDate'); return false;">Status Changed Date
+			</a> <span id="form1_statusChangedDate_query">= ALL</span><br />
+		<span id="form1_statusChangedDate" style="display: none"
+			class="clearLink"><s:textfield cssClass="forms datepicker"
+			size="10" id="form1_statusChangedDate1" name="filter.statusChangedDate1" />
+		To:<s:textfield cssClass="forms datepicker" size="10"
+			id="form1_statusChangedDate2" name="filter.statusChangedDate2" /> <script
+			type="text/javascript">textQuery('form1_statusChangedDate');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_statusChangedDate'); return false;">Clear</a></span>
+		</div>
+	</s:if>
 
 	<s:if test="filter.showDeactivationReason">
 		<div class="filterOption"><s:select

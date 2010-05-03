@@ -244,6 +244,16 @@ public class ReportContractorAudits extends ReportAccount {
 		if (filterOn(f.getPercentComplete2())) {
 			report.addFilter(new SelectFilter("percentComplete2", "ca.percentComplete < '?'", f.getPercentComplete2()));
 		}
+		
+		if (filterOn(f.getStatusChangedDate1())) {
+			report.addFilter(new SelectFilterDate("statusChangedDate1", "cao.statusChangedDate >= '?'", DateBean.format(f
+					.getStatusChangedDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getStatusChangedDate2())) {
+			report.addFilter(new SelectFilterDate("statusChangedDate2", "cao.statusChangedDate < '?'", DateBean.format(f
+					.getStatusChangedDate2(), "M/d/yy")));
+		}
 	}
 
 	public String getBetterDate(String value, String format) {

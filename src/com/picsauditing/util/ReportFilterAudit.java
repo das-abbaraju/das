@@ -42,6 +42,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showShaLocation = false;
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
+	protected boolean showCaoStatusChangedDate = false;
 
 	// Filter values
 	protected int[] auditID;
@@ -79,6 +80,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected float neer = 0;
 	protected int[] questionIds;
 	protected String answer = "No";
+	protected Date statusChangedDate1;
+	protected Date statusChangedDate2;
 	
 	public boolean isShowAuditType() {
 		return showAuditType;
@@ -254,6 +257,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowQuestionAnswer(boolean showQuestionAnswer) {
 		this.showQuestionAnswer = showQuestionAnswer;
+	}
+
+	public boolean isShowCaoStatusChangedDate() {
+		return showCaoStatusChangedDate;
+	}
+
+	public void setShowCaoStatusChangedDate(boolean showCaoStatusChangedDate) {
+		this.showCaoStatusChangedDate = showCaoStatusChangedDate;
 	}
 
 	public int[] getAuditID() {
@@ -599,5 +610,21 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setNeer(float neer) {
 		this.neer = neer;
+	}
+
+	public Date getStatusChangedDate1() {
+		return statusChangedDate1;
+	}
+
+	public void setStatusChangedDate1(Date statusChangedDate1) {
+		this.statusChangedDate1 = statusChangedDate1;
+	}
+
+	public Date getStatusChangedDate2() {
+		return statusChangedDate2;
+	}
+
+	public void setStatusChangedDate2(Date statusChangedDate2) {
+		this.statusChangedDate2 = statusChangedDate2;
 	}
 }
