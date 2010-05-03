@@ -18,7 +18,7 @@ function doSimpleGet() {
 			$('#test').append('complete: status=' + textStatus + '<hr/>');
 		},
 		error: function(xhr, textStatus, errorThrown) {
-			$('#test').append('error: status=' + textStatus + "\n\n" + errorThrown + '<br/>');
+			$('#test').append('error: status=' + textStatus + '<br/>' + errorThrown + '<br/>');
 		},
 		success: function(data, textStatus, xhr) {
 			$('#test').append(data + '<br/><br/>');
@@ -38,7 +38,7 @@ function doGet() {
 			$('#test').append('complete: status=' + textStatus + '<hr/>');
 		},
 		error: function(xhr, textStatus, errorThrown) {
-			$('#test').append('error: status=' + textStatus + "\n\n" + errorThrown + '<br/>');
+			$('#test').append('error: status=' + textStatus + '<br/>' + errorThrown + '<br/>');
 		},
 		success: function(data, textStatus, xhr) {
 			$('#test').append(data + '<br/><br/>');
@@ -59,7 +59,7 @@ function doPost() {
 			$('#test').append('complete: status=' + textStatus + '<hr/>');
 		},
 		error: function(xhr, textStatus, errorThrown) {
-			$('#test').append('error: status=' + textStatus + "\n\n" + errorThrown + '<br/>');
+			$('#test').append('error: status=' + textStatus + '<br/>' + errorThrown + '<br/>');
 		},
 		success: function(data, textStatus, xhr) {
 			$('#test').append(data + '<br/><br/>');
@@ -80,7 +80,7 @@ function doPermissions() {
 			$('#test').append('complete: status=' + textStatus + '<hr/>');
 		},
 		error: function(xhr, textStatus, errorThrown) {
-			$('#test').append('error: status=' + textStatus + "\n\n" + errorThrown + '<br/>');
+			$('#test').append('error: status=' + textStatus + '<br/>' + errorThrown + '<br/>');
 		},
 		success: function(data, textStatus, xhr) {
 			$('#test').append(data + '<br/><br/>');
