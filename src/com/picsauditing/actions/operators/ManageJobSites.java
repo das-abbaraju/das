@@ -28,6 +28,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected int siteID;
 	protected int siteTaskID;
 	protected int taskID;
+	protected int controlSpan;
 	protected String siteName;
 	protected String siteLabel;
 
@@ -92,6 +93,7 @@ public class ManageJobSites extends OperatorActionSupport {
 						newSite = siteDAO.find(siteID);
 						siteTask.setTask(newTask);
 						siteTask.setJob(newSite);
+						siteTask.setControlSpan(controlSpan);
 						siteTask.setAuditColumns(permissions);
 						siteTaskDAO.save(siteTask);
 
@@ -228,6 +230,14 @@ public class ManageJobSites extends OperatorActionSupport {
 
 	public void setTaskID(int taskID) {
 		this.taskID = taskID;
+	}
+	
+	public int getControlSpan() {
+		return controlSpan;
+	}
+	
+	public void setControlSpan(int controlSpan) {
+		this.controlSpan = controlSpan;
 	}
 	
 	public String getSiteLabel() {

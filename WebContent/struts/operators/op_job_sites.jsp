@@ -57,10 +57,12 @@ function getNewSiteTasks(siteID) {
 }
 
 function addTask(siteID, taskID) {
+	var controlSpan = $('tr#' + taskID).find('input[name=controlSpan]').val();
 	var data = {
 		button: 'AddTask',
 		siteID: siteID,
 		taskID: taskID,
+		controlSpan: controlSpan,
 		id: <s:property value="operator.id" />
 	};
 
@@ -111,7 +113,7 @@ function saveEdit(siteID) {
 <div id="clear" style="width: 100%"></div>
 <table id="sitesTable">
 	<tr>
-		<td style="width: 300px;">
+		<td style="width: 350px;">
 			<s:if test="activeSites.size() > 0">
 				<h3>Active Sites</h3>
 				<table class="report">

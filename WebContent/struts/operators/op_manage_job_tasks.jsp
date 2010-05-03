@@ -71,7 +71,6 @@ function sortTable(sortBy) {
 				<table class="report">
 					<thead>
 						<tr>
-							<th></th>
 							<th><a href="#" onclick="sortTable('label'); return false;">Label</a></th>
 							<th><a href="#" onclick="sortTable('name'); return false;">Task Name</a></th>
 							<th><a href="#" onclick="sortTable('active,label'); return false;">Active</a></th>
@@ -85,7 +84,6 @@ function sortTable(sortBy) {
 					<tbody>
 						<s:iterator value="tasks" status="stat" id="task">
 							<tr id="<s:property value="#task.id" />">
-								<td class="index"><s:property value="#stat.count" /></td>
 								<td class="label">
 									<span class="oldValue"><s:property value="#task.label" /></span>
 									<span class="newValue"><input type="text" value="<s:property value="#task.label" />" name="jobTaskLabel" size="10" /></span>

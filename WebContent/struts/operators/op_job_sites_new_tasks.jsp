@@ -15,10 +15,10 @@
 		</thead>
 		<s:iterator value="getAddableTasks()" id="newTask">
 			<tbody>
-				<tr>
+				<tr id="<s:property value="#newTask.id" />">
 					<td><s:property value="#newTask.label" /></td>
 					<td><s:property value="#newTask.name" /></td>
-					<td class="center">1 of 1</td>
+					<td class="center">1 of <input type="text" name="controlSpan" value="1" size="1" /></td>
 					<pics:permission perm="ManageJobSites" type="Edit">
 						<td class="center"><a href="#"
 							onclick="addTask(<s:property value="siteID" />, <s:property value="#newTask.id" />); return false;"
