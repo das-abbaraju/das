@@ -1535,11 +1535,6 @@
 			<result>struts/employees/employee_assessment_results.jsp</result>
 		</action>
 		
-		<action name="EmployeeDataPartnerIDs"
-			class="com.picsauditing.actions.employees.EmployeeDataPartnerIDs">
-			<result>struts/employees/employee_data_partner_ids.jsp</result>
-		</action>
-
 		<action name="ManageJobSites"
 			class="com.picsauditing.actions.operators.ManageJobSites">
 			<result>/struts/operators/op_job_sites.jsp</result>

@@ -43,7 +43,6 @@
 	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
 	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
 	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
-	<bean id="EmployeeAssessmentAuthorizationDAO" class="com.picsauditing.dao.EmployeeAssessmentAuthorizationDAO"/>
 	<bean id="EmployeeDAO" class="com.picsauditing.dao.EmployeeDAO"/>
 	<bean id="EmployeeCompetencyDAO" class="com.picsauditing.dao.EmployeeCompetencyDAO"/>
 	<bean id="EmployeeQualificationDAO" class="com.picsauditing.dao.EmployeeQualificationDAO"/>
