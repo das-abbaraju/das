@@ -269,7 +269,7 @@
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<param name="auditClass">Audit</param>
 			<result>struts/contractors/contractor_audits.jsp</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${id}</param>
 			</result>
@@ -279,7 +279,7 @@
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<param name="auditClass">Audit</param>
 			<result>struts/contractors/contractor_audits.jsp</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${id}</param>
 			</result>
@@ -290,7 +290,7 @@
 			<param name="auditClass">Policy</param>
 			<param name="noteCategory">Insurance</param>
 			<result>struts/contractors/contractor_insureguard.jsp</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ConInsureGUARD</param>
 				<param name="id">${id}</param>
 			</result>
@@ -299,7 +299,7 @@
 		<action name="ConCorAuditList"
 			class="com.picsauditing.actions.contractors.ConCorAuditList">
 			<result>struts/contractors/contractor_cor_audits.jsp</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ConCorAuditList</param>
 				<param name="id">${id}</param>
 			</result>
@@ -309,7 +309,7 @@
 			class="com.picsauditing.actions.contractors.ConAuditList">
 			<param name="auditClass">IM</param>
 			<result>struts/contractors/contractor_integritymanagement.jsp</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ConIntegrityManagement</param>
 				<param name="id">${id}</param>
 			</result>
@@ -323,7 +323,7 @@
 		<action name="ContractorEdit"
 			class="com.picsauditing.actions.contractors.ContractorEdit">
 			<result>struts/contractors/con_edit.jsp</result>
-			<result name="ConList" type="redirect-action">
+			<result name="ConList" type="redirectAction">
 				<param name="actionName">ContractorList</param>
 			</result>
 			<result name="input">/struts/blank.jsp</result>
@@ -354,7 +354,7 @@
 		<action name="ContractorPaymentOptions"
 			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
 			<result>struts/contractors/con_payment_options.jsp</result>
-			<result name="requested" type="redirect-action">
+			<result name="requested" type="redirectAction">
 				<param name="actionName">ContractorFacilities</param>
 				<param name="id">${contractor.id}</param>			
 			</result>
@@ -507,7 +507,7 @@
 			<result>struts/contractors/invoice_maintain.jsp</result>
 			<exception-mapping exception="java.util.InputMismatchException"
 				result="success" />
-			<result name="BillingDetail" type="redirect-action">
+			<result name="BillingDetail" type="redirectAction">
 				<param name="actionName">BillingDetail</param>
 				<param name="id">${contractor.id}</param>
 			</result>
@@ -911,7 +911,7 @@
 
 		<action name="OshaSave"
 			class="com.picsauditing.actions.audits.OshaSave">
-			<result type="redirect-action">
+			<result type="redirectAction">
 				<param name="actionName">AuditCat</param>
 				<param name="auditID">${auditID}</param>
 				<param name="catDataID">${catDataID}</param>
@@ -928,11 +928,11 @@
 		<action name="ConAuditMaintain"
 			class="com.picsauditing.actions.audits.ConAuditMaintain">
 			<result>struts/audits/audit_maintain.jsp</result>
-			<result name="AuditList" type="redirect-action">
+			<result name="AuditList" type="redirectAction">
 				<param name="actionName">ConAuditList</param>
 				<param name="id">${contractor.id}</param>
 			</result>
-			<result name="PolicyList" type="redirect-action">
+			<result name="PolicyList" type="redirectAction">
 				<param name="actionName">ConInsureGUARD</param>
 				<param name="id">${contractor.id}</param>
 			</result>
@@ -941,7 +941,7 @@
 		<action name="ConAuditCopy"
 			class="com.picsauditing.actions.audits.ContractorAuditCopy">
 			<result>/struts/audits/audit_copy.jsp</result>
-			<result name="Audit" type="redirect-action">
+			<result name="Audit" type="redirectAction">
 				<param name="actionName">Audit</param>
 				<param name="auditID">${conAudit.id}</param>
 			</result>
@@ -1018,11 +1018,11 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
 			</result>
-			<result name="deleted" type="redirect-action">
+			<result name="deleted" type="redirectAction">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
 			</result>
@@ -1034,11 +1034,11 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
 			</result>
-			<result name="deleted" type="redirect-action">
+			<result name="deleted" type="redirectAction">
 				<param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
 			</result>
@@ -1050,11 +1050,11 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ManageCategory</param>
 				<param name="id">${id}</param>
 			</result>
-			<result name="deleted" type="redirect-action">
+			<result name="deleted" type="redirectAction">
 				<param name="actionName">ManageCategory</param>
 				<param name="id">${id}</param>
 			</result>
@@ -1066,11 +1066,11 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
-			<result name="saved" type="redirect-action">
+			<result name="saved" type="redirectAction">
 				<param name="actionName">ManageSubCategory</param>
 				<param name="id">${id}</param>
 			</result>
-			<result name="deleted" type="redirect-action">
+			<result name="deleted" type="redirectAction">
 				<param name="actionName">ManageSubCategory</param>
 				<param name="id">${id}</param>
 			</result>
