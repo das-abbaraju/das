@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.users.UserAccountRole;
@@ -94,7 +95,10 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 			return LOGIN;
 		if (permissions.isAdmin())
 			tryPermissions(OpPerms.ManageOperators);
-
+		else if (permissions.isContractor()) {
+			throw new NoRightsException("Operator");
+		}
+		
 		if (button != null) {
 			if (button.equalsIgnoreCase("Remove")) {
 				if (accountUserId > 0) {

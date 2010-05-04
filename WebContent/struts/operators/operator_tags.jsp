@@ -20,6 +20,7 @@
 	<table class="report">
 		<thead>
 			<tr>
+				<th>Tag ID</th>
 				<th>Tag Name</th>
 				<th>Visible to <br /><s:property value="operator.name" /></th>
 				<th>Visible to <br />Contractors</th>
@@ -30,6 +31,7 @@
 		</thead>
 		<s:iterator value="tags" status="rowstatus">
 			<tr><s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" />
+				<td class="right"><s:property value="id" /></td>
 				<s:if test="operator.id == permissions.accountId">
 					<td><s:textfield
 						name="tags[%{#rowstatus.index}].tag" value="%{tag}" /></td>
@@ -41,19 +43,15 @@
 				</s:if>
 				<s:else>
 					<td><s:property value="tag"/></td>
-					<td><s:property value="active"/></td>
-					<td><s:property value="visibleToContractor" /></td>
+					<td class="center"><s:if test="active">Yes</s:if><s:else>No</s:else></td>
+					<td class="center"><s:if test="visibleToContractor">Yes</s:if><s:else>No</s:else></td>
 				</s:else>
 			</tr>
 		</s:iterator>
 		<tr>
+			<td>NEW</td>
 			<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
-			<s:if test="operator.corporate">
-				<td colspan="3">Add New Tag</td>
-			</s:if>
-			<s:else>
-				<td colspan="2">Add New Tag</td>
-			</s:else>
+				<td colspan="<s:property value="operator.corporate ? 3 : 2"/>">Add New Tag</td>
 		</tr>
 	</table>
 

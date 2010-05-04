@@ -52,6 +52,7 @@ public class OperatorAccount extends Account {
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
 	private int activationFee = 199;
+	private String requiredTags;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
@@ -167,6 +168,14 @@ public class OperatorAccount extends Account {
 
 	public void setActivationFee(int activationFee) {
 		this.activationFee = activationFee;
+	}
+
+	public String getRequiredTags() {
+		return requiredTags;
+	}
+
+	public void setRequiredTags(String requiredTags) {
+		this.requiredTags = requiredTags;
 	}
 
 	@ManyToOne

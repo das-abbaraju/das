@@ -146,6 +146,10 @@ $(function() {
 						<s:select list="statusList" name="operator.status" /></li>
 					<li><label>Reason:</label> <s:textarea name="operator.reason"
 						rows="3" cols="25" /></li>
+					<li><label>Required Tags:</label> <s:textfield
+						name="operator.requiredTags" />
+						Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a>
+					</li>
 					<s:if test="operator.corporate">
 						<li><label>Primary Corporate:</label> <s:checkbox
 							name="operator.primaryCorporate"></s:checkbox></li>
