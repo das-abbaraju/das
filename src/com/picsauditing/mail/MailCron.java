@@ -7,31 +7,33 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 
 /**
- * Run the email task every minute
- * Send 5 emails at a time
- * This translates into 300/hour or 7200/day
- * If this seems slow, it is because of strict limits by gmail
+ * Run the email task every minute Send 5 emails at a time This translates into
+ * 300/hour or 7200/day If this seems slow, it is because of strict limits by
+ * gmail
+ * 
  * @author Trevor
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class MailCron extends PicsActionSupport {
 
-	EmailQueueDAO emailQueueDAO;
-	
+	private int limit = 5;
+
+	private EmailQueueDAO emailQueueDAO;
+
 	public MailCron(EmailQueueDAO emailQueueDAO) {
 		this.emailQueueDAO = emailQueueDAO;
 	}
-	
+
 	public String execute() {
 		// No authentication required since this runs as a cron job
-		
-		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(5);
+
+		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
 		if (emails.size() == 0) {
 			addActionMessage("The email queue is empty");
 			return SUCCESS;
 		}
-		
+
 		// Get the default sender (info@pics)
 		EmailSender sender = new EmailSender();
 		for (EmailQueue email : emails) {
@@ -46,4 +48,13 @@ public class MailCron extends PicsActionSupport {
 			this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
 		return SUCCESS;
 	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
 }
