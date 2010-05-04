@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -33,6 +34,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private FlagColor forceFlag;
 	private Date flagLastUpdated;
 	private Date forceEnd;
+	private Date forceBegin;
+	private User forcedBy;
 	private WaitingOn waitingOn = WaitingOn.None;
 	private Date processCompletion;
 	private String relationshipType;
@@ -104,6 +107,24 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setForceEnd(Date forceEnd) {
 		this.forceEnd = forceEnd;
+	}
+
+	public Date getForceBegin() {
+		return forceBegin;
+	}
+
+	public void setForceBegin(Date forceBegin) {
+		this.forceBegin = forceBegin;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "forcedBy")
+	public User getForcedBy() {
+		return forcedBy;
+	}
+
+	public void setForcedBy(User forcedBy) {
+		this.forcedBy = forcedBy;
 	}
 
 	@Temporal(TemporalType.DATE)
