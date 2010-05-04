@@ -1,14 +1,11 @@
 package com.picsauditing.actions.contractors;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 
 @SuppressWarnings("serial")
-public class ContractorCronStatistics extends PicsActionSupport implements Preparable {
-	private ContractorAccountDAO contractorAccountDAO;
-	private EmailQueueDAO emailQueueDAO;
+public class ContractorCronStatistics extends PicsActionSupport {
 
 	private long contractorsProcessed;
 	private long contractorsWaiting;
@@ -23,22 +20,23 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 	private boolean emailCronError = false;
 	private boolean emailCronWarning = false;
 
+	private ContractorAccountDAO contractorAccountDAO;
+	private EmailQueueDAO emailQueueDAO;
+
 	public ContractorCronStatistics(ContractorAccountDAO contractorAccountDAO, EmailQueueDAO emailQueueDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.emailQueueDAO = emailQueueDAO;
 	}
 
-	@Override
-	public void prepare() throws Exception {
-		// Wanting to initialize in prepare so database isn't re-queried as
-		// often
-		contractorsProcessed = getNumberOfContractorsProcessed(60);
-		contractorsWaiting = getNumberOfContractorsWaiting();
-		emailsSentInHour = getNumberOfEmailsSent(60);
-		emailsPending = getNumberOfEmailsPending();
-		emailsSentInLastFiveMinutes = getNumberOfEmailsSent(5);
-		emailsPendingAndCreatedMoreThanFiveMinutesAgo = getNumberOfEmailsPendingBeforeTime(5);
-		emailsWithErrorsInLastWeek = getNumberOfEmailsWithErrorsInTimePeriod(60 * 24 * 7);
+	public String execute() throws Exception {
+		contractorsProcessed = contractorAccountDAO.findNumberOfContractorsProcessed(60);
+		contractorsWaiting = contractorAccountDAO.findNumberOfContractorsNeedingRecalculation();
+		emailsSentInHour = emailQueueDAO.findNumberOfEmailsSent(60);
+		emailsPending = emailQueueDAO.findNumberOfEmailsWithStatus("Pending");
+		emailsSentInLastFiveMinutes = emailQueueDAO.findNumberOfEmailsSent(5);
+		emailsPendingAndCreatedMoreThanFiveMinutesAgo = emailQueueDAO.findNumberOfEmailsWithStatusBeforeTime("Pending",
+				5);
+		emailsWithErrorsInLastWeek = emailQueueDAO.findNumberOfEmailsWithStatusInTime("Error", 60 * 24 * 7);
 
 		if (contractorsWaiting == 0) {
 			// leave default values
@@ -57,38 +55,8 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 		} else {
 			emailCronWarning = true;
 		}
-	}
-
-	public String execute() throws Exception {
-		loadPermissions();
-		if (!permissions.isLoggedIn())
-			return LOGIN_AJAX;
 
 		return SUCCESS;
-	}
-
-	public long getNumberOfContractorsProcessed(int timePeriodInMinutes) {
-		return contractorAccountDAO.findNumberOfContractorsProcessed(timePeriodInMinutes);
-	}
-
-	public long getNumberOfContractorsWaiting() {
-		return contractorAccountDAO.findNumberOfContractorsNeedingRecalculation();
-	}
-
-	public long getNumberOfEmailsSent(int timePeriodInMinutes) {
-		return emailQueueDAO.findNumberOfEmailsSent(timePeriodInMinutes);
-	}
-
-	public long getNumberOfEmailsPending() {
-		return emailQueueDAO.findNumberOfEmailsWithStatus("Pending");
-	}
-
-	public long getNumberOfEmailsPendingBeforeTime(int creationTimeInMinutes) {
-		return emailQueueDAO.findNumberOfEmailsWithStatusBeforeTime("Pending", creationTimeInMinutes);
-	}
-
-	public long getNumberOfEmailsWithErrorsInTimePeriod(int creationTimeInMinutes) {
-		return emailQueueDAO.findNumberOfEmailsWithStatusInTime("Error", creationTimeInMinutes);
 	}
 
 	public long getContractorsProcessed() {
