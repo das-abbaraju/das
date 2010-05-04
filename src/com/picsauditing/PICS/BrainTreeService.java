@@ -125,6 +125,36 @@ public class BrainTreeService {
 		}
 	}
 
+	/**
+	 * Voiding a transaction will cancel an existing sale or captured
+	 * authorization from actually charging the card. In addition, non-captured
+	 * authorizations can be voided to prevent any future capture. Note however,
+	 * that the amount is still reserved on the card and will take a few days to
+	 * expire. You will have to call the issuing bank to request that the
+	 * authorization be removed if the customer does not want to wait for it to
+	 * expire on its own. Voids can only occur if the transaction has not been
+	 * settled; settled transactions should be refunded.
+	 * 
+	 * @param transactionid
+	 * @throws BrainTreeLoginException
+	 *             , BrainTreeServiceErrorResponseException, IOException
+	 */
+
+	public boolean voidTransaction(String transactionID) throws BrainTreeServiceErrorResponseException, IOException,
+			BrainTreeLoginException {
+		StringBuilder request = new StringBuilder(urlBase).append("transact.php?type=void");
+		appendUsernamePassword(request);
+		request.append("&transactionid=").append(transactionID);
+
+		Map<String, String> map = getUrl(request.toString());
+		String response = map.get("response");
+		if (response.equals("1")) {
+			return true;
+		} else {
+			throw new BrainTreeServiceErrorResponseException(map.get("responsetext"));
+		}
+	}
+
 	private Document getDocument(String address) throws SAXException, IOException, ParserConfigurationException {
 		URL url = new URL(address);
 		InputStream inputStream = url.openStream();

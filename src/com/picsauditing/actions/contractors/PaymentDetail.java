@@ -191,11 +191,20 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
 					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 
-					paymentService.processCancellation(payment.getTransactionID());
+					paymentService.voidTransaction(payment.getTransactionID());
 					message = "Successfully canceled credit card transaction";
 					payment.setStatus(TransactionStatus.Void);
+					transactionCondition = null;
 
 					unapplyAll();
+
+					paymentDAO.remove(payment); // per Aaron's request
+
+					String url = "BillingDetail.action?id=" + contractor.getId();
+					if (message != null)
+						url += "&msg=" + message;
+					redirect(url);
+					return BLANK;
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
@@ -225,7 +234,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							message = "Successfully refunded credit card on BrainTree";
 							refund.setCcNumber(payment.getCcNumber());
 							refund.setTransactionID(payment.getTransactionID());
-							transactionCondition = null;
 						}
 					}
 					refund.setQbSync(true);
