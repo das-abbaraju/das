@@ -87,6 +87,11 @@
 			class="com.picsauditing.actions.PageLogger">
 			<result>struts/misc/page_logger.jsp</result>
 		</action>
+		
+		<action name="ExpirationDateSynchronizer"
+			class="com.picsauditing.util.ExpirationDateSynchronizer">
+			<result>struts/misc/expiration_date_synchronizer.jsp</result>
+		</action>
 
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">

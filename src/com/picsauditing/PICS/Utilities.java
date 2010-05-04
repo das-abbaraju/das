@@ -1,5 +1,8 @@
 package com.picsauditing.PICS;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * A set of generic Utilities. We should consider moving this into the Strings
  * class
@@ -99,6 +102,11 @@ public class Utilities {
 		if (year1 == null)
 			return 0.0f;
 		return Float.valueOf(year1).floatValue();
+	}
 
+	public static Date getYesterday() {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, -1);
+		return c.getTime();
 	}
 }
