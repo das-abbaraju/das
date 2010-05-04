@@ -1,5 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@page import="com.picsauditing.PICS.DateBean"%>
+<%@ page import="com.picsauditing.PICS.DateBean"%>
 <html>
 <head>
 <title>Schedule &amp; Assign Audits</title>
