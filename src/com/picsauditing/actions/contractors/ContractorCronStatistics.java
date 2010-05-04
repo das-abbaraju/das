@@ -50,10 +50,12 @@ public class ContractorCronStatistics extends PicsActionSupport implements Prepa
 
 		if (emailsPendingAndCreatedMoreThanFiveMinutesAgo == 0) {
 			// leave default values
-		} else if (emailsSentInLastFiveMinutes > 20 || emailsWithErrorsInLastWeek > 10) {
-			emailCronWarning = true;
-		} else {
+		} else if (emailsSentInLastFiveMinutes < 20) {
 			emailCronError = true;
+		} else if (emailsWithErrorsInLastWeek > 10) {
+			emailCronError = true;
+		} else {
+			emailCronWarning = true;
 		}
 	}
 
