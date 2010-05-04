@@ -206,8 +206,8 @@ fieldset.form ol {
 		<li><label>Amount:</label> <s:textfield name="refundAmount" value="%{payment.balance}" /></li>
 	</ol>
 	<div>
-		<input type="submit" class="picsbutton" value="Refund" name="button" />
-		<input type="submit" class="picsbutton" value="Refund Without Charge" name="button" />
+		<input type="submit" class="picsbutton" value="Refund PICS Only" name="button" />
+		<input type="submit" class="picsbutton" value="Refund on BrainTree/PICS" name="button" />
 	</div>
 	</fieldset>
 	</s:form>

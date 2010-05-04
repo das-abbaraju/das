@@ -217,12 +217,15 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setAccount(contractor);
 					refund.setAuditColumns(permissions);
 					refund.setStatus(TransactionStatus.Paid);
-					if (!button.equals("Refund Without Charge")) {
+					if (button.equals("Refund on BrainTree/PICS")) {
 						if (payment.getPaymentMethod().isCreditCard()) {
+							paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
+							paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 							paymentService.processRefund(payment.getTransactionID(), refundAmount);
-							message = "Successfully refunded credit card";
+							message = "Successfully refunded credit card on BrainTree";
 							refund.setCcNumber(payment.getCcNumber());
 							refund.setTransactionID(payment.getTransactionID());
+							transactionCondition = null;
 						}
 					}
 					refund.setQbSync(true);
