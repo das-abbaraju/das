@@ -28,11 +28,13 @@ import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
@@ -46,6 +48,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -59,12 +62,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private OperatorTagDAO operatorTagDAO;
 	private ContractorTagDAO contractorTagDAO;
 	private InvoiceItemDAO invoiceItemDAO;
+	private UserDAO userDAO;
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 
 	private ContractorOperator co;
 	private int opID;
-
+	
+	private ContractorWatch watch;
+	
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
@@ -80,7 +86,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public ContractorDashboard(AuditBuilder auditBuilder, ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDAO, AuditDataDAO dataDAO, FlagDataDAO flagDataDAO,
-			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO) {
+			OperatorTagDAO operatorTagDAO, ContractorTagDAO contractorTagDAO, InvoiceItemDAO invoiceItemDAO,
+			UserDAO userDAO) {
 		super(accountDao, auditDao);
 		this.auditBuilder = auditBuilder;
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -89,6 +96,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		this.operatorTagDAO = operatorTagDAO;
 		this.contractorTagDAO = contractorTagDAO;
 		this.invoiceItemDAO = invoiceItemDAO;
+		this.userDAO = userDAO;
 		this.subHeading = "Account Summary";
 	}
 
@@ -98,7 +106,25 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return LOGIN_AJAX;
 
 		findContractor();
-
+		
+		if (button != null && button.contains("Watch")) {
+			tryPermissions(OpPerms.ContractorWatch, OpType.Edit);
+			getWatch();
+			
+			if ("Start Watch".equals(button) && watch == null) {
+				User user = userDAO.find(permissions.getUserId());
+				watch = new ContractorWatch();
+				watch.setContractor(contractor);
+				watch.setUser(user);
+				watch.setAuditColumns(permissions);
+				
+				userDAO.save(watch);
+			}
+			
+			if ("Stop Watch".equals(button) && watch != null)
+				userDAO.remove(watch);
+		}
+		
 		if ("AddTag".equals(button)) {
 			if (tagId > 0) {
 				ContractorTag cTag = new ContractorTag();
@@ -169,7 +195,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-
+		
 		if (permissions.isOperatorCorporate()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -340,6 +366,24 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		return oshaDisplay;
+	}
+	
+	private ContractorWatch getWatch() {
+		if (watch == null) {
+			List<ContractorWatch> watched = userDAO.findContractorWatch(permissions.getUserId());
+			for (ContractorWatch w : watched) {
+				if (w.getContractor().equals(contractor)) {
+					watch = w;
+					break;
+				}
+			}
+		}
+		
+		return watch;
+	}
+	
+	public boolean isWatched() {
+		return getWatch() != null;
 	}
 
 	public class OshaDisplay {

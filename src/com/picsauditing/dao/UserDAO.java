@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
 
 @Transactional
@@ -173,4 +174,10 @@ public class UserDAO extends PicsDAO {
 		return false;
 	}
 
+	public List<ContractorWatch> findContractorWatch(int userID) {
+		Query query = em.createQuery("SELECT c FROM ContractorWatch c WHERE c.user.id = ? ORDER BY c.contractor.name");
+		query.setParameter(1, userID);
+		
+		return query.getResultList();
+	}
 }

@@ -102,7 +102,10 @@ public enum OpPerms {
 
 	// Employee Management
 	DefineRoles("Define Roles", "Allows contractors to create job roles to assign to their employees.", true, true, true, true, false),
-	DefineCompetencies("Define Competencies", "Allows operators to create compentency requirements for satisfying job roles.", true, true, true, false, true);
+	DefineCompetencies("Define Competencies", "Allows operators to create compentency requirements for satisfying job roles.", true, true, true, false, true),
+	
+	// Contractor watch
+	ContractorWatch("Contractor Watch", "Allows operators to view the activity of watched contractors.", true, true, false, false, true);
 	
 	private String description;
 	private String helpText;

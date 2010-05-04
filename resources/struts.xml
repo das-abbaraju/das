@@ -198,6 +198,11 @@
 			<result>/struts/contractors/con_dashboard.jsp</result>
 		</action>
 		
+		<action name="ContractorViewAjax"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
+			<result>/struts/blank.jsp</result>
+		</action>
+		
 		<action name="AuditPdfConverter"
 			class="com.picsauditing.actions.contractors.AuditPdfConverter">
 			<result>struts/blank.jsp</result>
@@ -452,16 +457,23 @@
 			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
 			<result>struts/reports/report_con_new_registration.jsp</result>
 		</action>
+		
 		<action name="ReportNewRequestedContractorCSV"
 			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
 			<param name="download">true</param>
 			<result>struts/blank.jsp</result>
 		</action>
+		
 		<action name="ReportNewReqConImport"
 			class="com.picsauditing.actions.report.ReportNewReqConImport">
 			<result>struts/reports/report_con_new_reg_upload.jsp</result>
 			<result name="success">struts/reports/report_con_new_reg_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
+		</action>
+		
+		<action name="ReportActivityWatch"
+			class="com.picsauditing.actions.report.ReportActivityWatch">
+			<result>struts/reports/report_activity_watch.jsp</result>
 		</action>
 
 		<!-- Billing -->

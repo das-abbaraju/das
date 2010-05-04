@@ -47,6 +47,22 @@
 		if ($('#subcontracted').text().length > 100)
 			truncate('subcontracted');
 	});
+
+	function startWatch() {
+		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Adding Contractor watch...');
+		$.get('ContractorViewAjax.action', {button: 'Start Watch', id: <s:property value="contractor.id" />}, function (output) {
+			$('#contractorWatch').html('You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>')
+				.effect('highlight', {color: '#FFFF11'}, 1000);
+		});
+	}
+	
+	function stopWatch() {
+		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Removing Contractor Watch...');
+		$.get('ContractorViewAjax.action', {button: 'Stop Watch', id: <s:property value="contractor.id" />}, function (output) {
+			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;">Watch This Contractor</a>')
+				.effect('highlight', {color: '#FFFF11'}, 1000);
+		});
+	}
 </script>
 <style>
 img.contractor_logo {
@@ -187,6 +203,16 @@ table.report tr.hurdle td {
 							</s:if>
 						</p>
 					</s:if>
+					<pics:permission perm="ContractorWatch" type="Edit">
+						<p id="contractorWatch">
+							<s:if test="watched">
+								You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>
+							</s:if>
+							<s:else>
+								<a href="#" onclick="startWatch(); return false;">Watch This Contractor</a>
+							</s:else>
+						</p>
+					</pics:permission>
 				</div>
 				<s:if test="activeOperators.size() > 1">
 				<div class="co_select nobr">

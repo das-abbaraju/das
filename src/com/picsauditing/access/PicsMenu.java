@@ -114,6 +114,8 @@ public class PicsMenu {
 		if (permissions.isPicsEmployee()) // ||
 			// permissions.isOperatorCorporate()
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
+		if (permissions.hasPermission(OpPerms.ContractorWatch))
+			subMenu.addChild("Activity Watch", "ReportActivityWatch.action");
 
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {

@@ -87,7 +87,7 @@
 								<th>Job Role<s:if test="employee.employeeRoles.size() > 0">s</s:if>:</th>
 								<td>
 									<s:iterator value="employee.employeeRoles" id="role" status="stat">
-										<s:property value="jobRole.name" /><s:if test="#stat.count < employee.employeeRoles.size()">, </s:if>
+										<s:property value="jobRole.name" /><s:if test="!#stat.last">, </s:if>
 									</s:iterator>
 								</td>
 							</tr>
@@ -124,9 +124,9 @@
 							</tbody>
 						</table>
 					</s:if>
-					<s:else>
+					<s:elseif test="permissions.requiresCompetencyReview">
 						<div class="cell"><s:property value="employee.displayName" /> has no job roles.</div>
-					</s:else>
+					</s:elseif>
 				</td>
 				<td>
 					<div class="cell">
