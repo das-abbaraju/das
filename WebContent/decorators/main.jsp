@@ -133,7 +133,9 @@
 <div id="chatIcon" style="display: none;"><img src='<%=chatIcon%>'/></div>
 <% } %>
 <!-- !begin content -->
-
+<noscript>
+	<div class="error">You must enable JavaScript to use the PICS Organizer. Contact your IT Department if you don't know how.</div>
+</noscript>
 <decorator:body />
 <div><br clear="both"></br></div>
 <!-- !end content -->

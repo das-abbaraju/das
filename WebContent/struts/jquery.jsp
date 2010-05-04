@@ -21,5 +21,13 @@
 	$(document).ready(function() {
 	    if($.browser.mozilla) 
 	         $("form").attr("autocomplete", "off");
+
+        if($.browser.msie && $.browser.version == '6.0'){
+            try {
+	        	var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            } catch(e) {
+				$('#content').prepend($('<div/>').addClass('error').text('ActiveX is required for PICS to function properly in your browser. Please Contact your IT Department.'));
+            }
+        }
 	});
 </script>
