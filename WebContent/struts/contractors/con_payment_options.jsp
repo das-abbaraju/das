@@ -165,7 +165,7 @@ function updateExpDate() {
 		<legend><span>Existing Card</span></legend>
 		<ol>
 			<li><label>Type:</label>
-				<s:property value="cc.cardType"/>
+				<s:property value="cc.cardType"/><s:if test="!contractor.ccOnFile && contractor.ccExpiration != null"><span style="color:red;" >&nbsp;&nbsp;( Invalid )</span></s:if>
 			</li>
 			<li><label>Number:</label>
 				<s:property value="cc.cardNumber"/>

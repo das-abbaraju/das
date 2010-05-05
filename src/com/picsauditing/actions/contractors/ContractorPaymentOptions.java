@@ -193,11 +193,16 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (cc == null || cc.getCardNumber() == null) {
 			contractor.setCcOnFile(false);
 			contractor.setCcExpiration(null);
-		} else {
+		} else if ((!contractor.isCcOnFile() && contractor.getCcExpiration() == null)
+				|| (response_code != null && (Strings.isEmpty(responsetext) || response.equals("1")))) {
 			contractor.setCcExpiration(cc.getExpirationDate2());
 			contractor.setCcOnFile(true);
-			// Need to set CcOnFile to true in case an insert was performed
+			// Need to set CcOnFile to true only in no-credit card case
+			// (ccOnFile == False && expDate == null)
+			// in case an insert was performed
 			// properly, but PICS never received the response message.
+			// Note: should not insert credit card info in invalid cc case:
+			// (ccOnFile == False && expDate != null)
 		}
 
 		time = DateBean.getBrainTreeDate();

@@ -206,11 +206,8 @@ fieldset.form ol {
 		<li><label>Amount:</label> <s:textfield name="refundAmount" value="%{payment.balance}" /></li>
 	</ol>
 	<div>
-		<input type="submit" class="picsbutton" value="Refund PICS Only" name="button" />
 		<input type="submit" class="picsbutton" value="Refund on BrainTree/PICS" name="button" />
-		<s:if test="transactionCondition == 'pendingsettlement'">
-			<a class="picsbutton" href="PaymentDetail.action?payment.id=<s:property value="payment.id" />&button=voidcc">Void on BrainTree/PICS</a>
-		</s:if>
+		<input type="submit" class="picsbutton" value="Refund PICS Only" name="button" />
 	</div>
 	</fieldset>
 	</s:form>
