@@ -300,6 +300,9 @@ public class PicsMenu {
 		if (permissions.getAccountName().startsWith("Tesoro"))
 			subMenu.addChild("Background Check", "QuestionAnswerSearchByAudit.action");
 
+		if (permissions.hasPermission(OpPerms.ContractorTags))
+			subMenu.addChild("Untagged Contractors", "ReportUntaggedContractors.action");
+
 		if (permissions.seesAllContractors())
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))

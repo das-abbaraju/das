@@ -605,6 +605,10 @@
 			class="com.picsauditing.actions.operators.OperatorTags">
 			<result>struts/operators/operator_tags.jsp</result>
 		</action>
+		<action name="ReportUntaggedContractors"
+			class="com.picsauditing.actions.operators.ReportUntaggedContractors">
+			<result>struts/operators/report_untaggedcontractors.jsp</result>
+		</action>
 		
 		<action name="AccountNameEditAjax"
 			class="com.picsauditing.actions.operators.FacilitiesEdit">

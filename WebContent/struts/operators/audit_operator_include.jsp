@@ -12,6 +12,9 @@
 		<s:checkbox name="ao.canEdit" value="canEdit" title="Edit" onclick="$('#button%{htmlID}').show()" /> | 
 		<s:radio id="aorisk%{htmlID}" name="ao.minRiskLevel" list="riskLevelList"
 			value="minRiskLevel" onclick="$('#button%{htmlID}').show()" />
+		<s:if test="operatorTag != null">
+			<br />Restricted to: <s:property value="operatorTag.tag"/>
+		</s:if>
 		<s:if test="auditType.classType.policy"><br />
 			<s:textarea name="ao.help" value="%{help}" rows="3" cols="70" 
 				onkeyup="$('#button%{htmlID}').show()"></s:textarea>
