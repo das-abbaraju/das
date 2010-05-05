@@ -28,6 +28,7 @@ public class ReportActivityWatch extends ReportAccount {
 	private boolean flagColorChange = true;
 	private boolean login = true;
 	private boolean note = true;
+	private boolean email = true;
 	
 	private String conName;
 	private List<ContractorWatch> watched;
@@ -44,15 +45,21 @@ public class ReportActivityWatch extends ReportAccount {
 			
 			List<ContractorWatch> watched = userDAO.findContractorWatch(permissions.getUserId());
 			if ("Remove".equals(button)) {
+				int redirect = 0;
 				if (watchID > 0) {
 					for (ContractorWatch watch : watched) {
 						if (watch.getId() == watchID) {
 							userDAO.remove(watch);
+							redirect = watch.getContractor().getId();
 							break;
 						}
 					}
-				} else
+				} else {
 					addActionError("Please select a contractor to stop watching.");
+					return SUCCESS;
+				}
+				
+				return redirect("ReportActivityWatch.action" + (conID > 0 && conID != redirect ? "?conID=" + conID : ""));
 			}
 			
 			if ("Add".equals(button)) {
@@ -93,8 +100,8 @@ public class ReportActivityWatch extends ReportAccount {
 		String activity = "JOIN (";
 		List<String> watchOptions = new ArrayList<String>();
 		
-		if (!auditExpiration && !auditSubmitted && !auditActivated && !flagColorChange && !login && !note)
-			auditExpiration = auditSubmitted = auditActivated = flagColorChange = login = note = true;
+		if (!auditExpiration && !auditSubmitted && !auditActivated && !flagColorChange && !login && !note && !email)
+			auditExpiration = auditSubmitted = auditActivated = flagColorChange = login = note = email = true;
 		
 		if (auditExpiration) {
 			SelectSQL sql2 = buildWatch("AuditExpiration", "contractor_audit ca", "ca.conID", "ca.expiresDate", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Expired')", "CONCAT('Audit.action?auditID=', ca.id)");
@@ -127,6 +134,12 @@ public class ReportActivityWatch extends ReportAccount {
 		if (note) {
 			SelectSQL sql2 = buildWatch("Note", "note n USE INDEX(creationDate)", "n.accountID", "n.creationDate", "CONCAT(u.name, ' posted a Note')", "CONCAT('ContractorNotes.action?id=', n.accountID)");
 			sql2.addJoin("JOIN users u ON n.createdBy = u.id AND u.id > " + User.SYSTEM);
+			watchOptions.add("(" + sql2.toString() + ")");
+		}
+		if (email) {
+			SelectSQL sql2 = buildWatch("Email", "email_queue eq", "eq.conID", "eq.sentDate", "CONCAT(et.templateName, ' Email Sent')", "''");
+			sql2.addJoin("JOIN email_template et on et.id = eq.templateID");
+			sql2.addWhere("eq.status = 'Sent'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		
@@ -212,6 +225,14 @@ public class ReportActivityWatch extends ReportAccount {
 
 	public void setNote(boolean note) {
 		this.note = note;
+	}
+	
+	public boolean isEmail() {
+		return email;
+	}
+	
+	public void setEmail(boolean email) {
+		this.email = email;
 	}
 	
 	public int getWatchID() {

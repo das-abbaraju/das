@@ -39,12 +39,14 @@ $(function() {
 <h1>Contractor Activity Watch</h1>
 <s:include value="../actionMessages.jsp"></s:include>
 <div id="search"><s:form>
+	<s:hidden name="conID" />
 	<div>
 		<button id="searchfilter" type="submit" name="button" value="Search" class="picsbutton positive">Search</button>
 	</div>
 	<div class="filterOption">
 		<s:textfield name="filter.accountName" cssClass="forms" size="10" onfocus="clearText(this)" />
 	</div>
+	<br clear="all" />
 	<div class="filterOption">
 		<s:checkbox value="auditExpiration" name="auditExpiration" id="auditExpiration"></s:checkbox>
 		<label for="auditExpiration">Expired Audits</label>
@@ -69,6 +71,10 @@ $(function() {
 		<s:checkbox value="note" name="note" id="note"></s:checkbox>
 		<label for="note">Notes Posted</label>
 	</div>
+	<div class="filterOption">
+		<s:checkbox value="email" name="email" id="email"></s:checkbox>
+		<label for="email">Emails Sent</label>
+	</div>
 	<br clear="all" />
 </s:form></div>
 
@@ -87,7 +93,7 @@ $(function() {
 						<s:iterator value="watched" id="watch">
 							<tr>
 								<td><a href="?conID=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
-								<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from this watch list?');" class="remove"></a></td>
+								<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from the watch list?');" class="remove"></a></td>
 							</tr>
 						</s:iterator>
 					</tbody>
