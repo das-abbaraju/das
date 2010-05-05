@@ -1,6 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
 <title>Manage Flag Criteria</title>
@@ -18,26 +18,23 @@
 
 <script type="text/javascript">
 	var dtable;
-	var ddaudit;
-	var ddquestion;
 	var dialog;
-	var selectedaudit;
-	var selectedquestion;
 	var newItem = false;
 
 	function loadDialog(criteria) {
 		$.each(criteria, function (i,v) {
 			if (v == null)
 				v = "";
-			if (v === true)
+
+			if ((i == 'auditType' || i == 'question') && v != null) 
+				$('form#itemform [name='+i+'.id]').val(v.id);
+			else if (v === true)
 				$('form#itemform [name=criteria.'+i+']').attr('checked', 'checked');
 			else if (v === false)
 				$('form#itemform [name=criteria.'+i+']').removeAttr('checked');
 			else
 				$('form#itemform [name=criteria.'+i+']').val(v);
 		});
-		selectedaudit = criteria.auditType ? criteria.auditType.id : '';
-		selectedquestion = criteria.question ? criteria.question.id : '';
 	}
 
 	function show(id) {
@@ -59,8 +56,6 @@
 		} else {
 			$('form#itemform :input, form#itemform input[name=criteria.id]').val('');
 			$('form#itemform :checked').removeAttr('checked');
-			selectedaudit = '';
-			selectedquestion = '';
 			newItem = true;
 			dialog.dialog('open');
 		}
@@ -94,22 +89,6 @@
 			width: '50%',
 			modal: true,
 			autoOpen: false,
-			open: function() {
-				if(ddaudit == null) {
-					$('#audittype').mcDropdown('#audittypemenu');
-					ddaudit = $('#audittype').mcDropdown();
-				}
-				if(ddquestion == null) {
-					$('#question').mcDropdown('#questionmenu');
-					ddquestion = $('#question').mcDropdown();
-				}
-				ddaudit.setValue(selectedaudit);
-				ddquestion.setValue(selectedquestion);
-			},
-			close: function() {
-				ddaudit.closeMenu();
-				ddquestion.closeMenu();
-			},
 			buttons: {
 				'Save': function() {
 					var pars = $('form#itemform :input[name][value]').serialize();
@@ -129,8 +108,6 @@
 									criteria_dialog.dialog('close');
 								} else {
 									loadDialog(data.criteria);
-									ddaudit.setValue(selectedaudit);
-									ddquestion.setValue(selectedquestion);
 								}
 							}
 					);
@@ -242,64 +219,19 @@
 				
 				<li>
 					<label>Audit Type:</label>
-					<div class="mcdropdown_wrapper">
-						<s:textfield id="audittype" name="auditType.id"/>
-						<ul id="audittypemenu" class="mcdropdown_menu">
-						<s:iterator value="auditTypeMap">
-							<li>
-								<s:property value="key"/>
-								<ul>
-									<s:iterator value="value">
-										<li rel="<s:property value="id"/>"><s:property value="auditName"/></li>
-									</s:iterator>
-								</ul>
-							</li>
+					<s:select name="auditType.id" list="{}" headerKey="" headerValue=" - Audit Type - " >
+						<s:iterator value="auditTypeMap" var="aType">
+							<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 						</s:iterator>
-						</ul>
-					</div>
-					<a class="remove" href="#" onclick="ddaudit.setValue('');return false">Clear</a>
+					</s:select>
 				</li>
 				<li>
 					<label>Question:</label>
-					<div class="mcdropdown_wrapper">
-						<s:textfield id="question" name="question.id"/>
-						<ul id="questionmenu" class="mcdropdown_menu">
-						<s:iterator value="flagQuestionMap" id="atypeclass">
-							<li>
-								<s:property value="#atypeclass.key"/>
-								<ul>
-									<s:iterator value="#atypeclass.value" id="atype">
-										<li>
-											<s:property value="#atype.key.auditName"/>
-											<ul>
-												<s:iterator value="#atype.value" id="auditcategory">
-													<li>
-														<s:property value="#auditcategory.key.number"/>. <s:property value="#auditcategory.key.category"/>
-														<ul>
-															<s:iterator value="#auditcategory.value">
-																<li>
-																	<s:property value="key.number"/>. <s:property value="key.subCategory"/>
-																	<ul>
-																		<s:iterator value="value">
-																			<li rel="<s:property value="id"/>">
-																				<s:property value="number"/>. <s:property value="question"/>
-																			</li>
-																		</s:iterator>
-																	</ul>
-																</li>
-															</s:iterator>
-														</ul>
-													</li>
-												</s:iterator>
-											</ul>
-										</li>
-									</s:iterator>
-								</ul>
-							</li>
+					<s:select name="question.id" list="{}" headerKey="" headerValue=" - Question - ">
+						<s:iterator value="questionMap" var="flagQuestion">
+							<s:optgroup label="%{#flagQuestion.key.auditName}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
 						</s:iterator>
-						</ul>
-					</div>
-					<a class="remove" href="#" onclick="ddquestion.setValue('');return false">Clear</a>
+					</s:select>
 				</li>
 				
 				<li>

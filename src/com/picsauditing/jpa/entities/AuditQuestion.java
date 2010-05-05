@@ -518,15 +518,14 @@ public class AuditQuestion extends BaseTable implements Comparable<AuditQuestion
 
 	@Transient
 	public String getShortQuestion() {
-		String columnText = getColumnHeaderOrQuestion();
+		String columnText = getQuestion();
 
-		if (columnText.length() > 100)
-			columnText = columnText.substring(0, 100);
-		columnText = getSubCategory().getCategory().getNumber() + "." + getSubCategory().getNumber() + "."
-				+ getNumber() + " " + columnText;
-		columnText = getSubCategory().getCategory().getAuditType().getAuditName() + ": " + columnText;
+		if (columnText.length() > 45) {
+			columnText = columnText.substring(0, 45);
+			columnText += " [...]";
+		}
 
-		return columnText;
+		return getExpandedNumber() + ": " + columnText;
 	}
 
 	@Transient

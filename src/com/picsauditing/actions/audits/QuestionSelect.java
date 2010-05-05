@@ -3,7 +3,9 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -12,6 +14,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditCatOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -84,5 +87,17 @@ public class QuestionSelect extends PicsActionSupport {
 
 	public Set<AuditQuestion> getQuestions() {
 		return questions;
+	}
+
+	public Map<AuditType, List<AuditQuestion>> getQuestionMap() {
+		Map<AuditType, List<AuditQuestion>> questionMap = new TreeMap<AuditType, List<AuditQuestion>>();
+		for (AuditQuestion q : questions) {
+			if (questionMap.get(q.getAuditType()) == null)
+				questionMap.put(q.getAuditType(), new ArrayList<AuditQuestion>());
+
+			questionMap.get(q.getAuditType()).add(q);
+		}
+
+		return questionMap;
 	}
 }

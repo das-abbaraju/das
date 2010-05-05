@@ -12,9 +12,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -108,11 +106,11 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 				}
 
 				// set the auditType or the question based on the incoming value
-				if (auditType != null && 
-						(criteria.getAuditType() == null || !criteria.getAuditType().equals(auditType))) {
+				if (auditType != null
+						&& (criteria.getAuditType() == null || !criteria.getAuditType().equals(auditType))) {
 					criteria.setAuditType(auditType);
-				} else if (question != null && 
-						(criteria.getQuestion() == null || !criteria.getQuestion().equals(question))) {
+				} else if (question != null
+						&& (criteria.getQuestion() == null || !criteria.getQuestion().equals(question))) {
 					criteria.setQuestion(question);
 				}
 
@@ -257,43 +255,17 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return auditTypeMap;
 	}
 
-	public List<AuditQuestion> getFlagQuestionList() {
-		return questionDAO.findFlaggableQuestions();
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map getFlagQuestionMap() {
-		Map<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>> flagQuestionMap = new TreeMap<AuditTypeClass, Map<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>>();
+	public Map<AuditType, List<AuditQuestion>> getQuestionMap() {
+		Map<AuditType, List<AuditQuestion>> questionMap = new TreeMap<AuditType, List<AuditQuestion>>();
 
 		for (AuditQuestion question : questionDAO.findFlaggableQuestions()) {
-			if (flagQuestionMap.get(question.getAuditType().getClassType()) == null) {
-				flagQuestionMap.put(question.getAuditType().getClassType(),
-						new TreeMap<AuditType, Map<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>>());
-			}
+			if (questionMap.get(question.getAuditType()) == null)
+				questionMap.put(question.getAuditType(), new ArrayList<AuditQuestion>());
 
-			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()) == null) {
-				flagQuestionMap.get(question.getAuditType().getClassType()).put(question.getAuditType(),
-						new TreeMap<AuditCategory, Map<AuditSubCategory, List<AuditQuestion>>>());
-			}
-
-			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
-					question.getSubCategory().getCategory()) == null) {
-				flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).put(
-						question.getSubCategory().getCategory(), new TreeMap<AuditSubCategory, List<AuditQuestion>>());
-			}
-
-			if (flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
-					question.getSubCategory().getCategory()).get(question.getSubCategory()) == null) {
-				flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
-						question.getSubCategory().getCategory()).put(question.getSubCategory(),
-						new ArrayList<AuditQuestion>());
-			}
-
-			flagQuestionMap.get(question.getAuditType().getClassType()).get(question.getAuditType()).get(
-					question.getSubCategory().getCategory()).get(question.getSubCategory()).add(question);
+			questionMap.get(question.getAuditType()).add(question);
 		}
 
-		return flagQuestionMap;
+		return questionMap;
 	}
 
 	public String[] getComparisonList() {

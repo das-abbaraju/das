@@ -53,7 +53,7 @@ function setId(Id) {
 				<s:hidden name="questions[%{#stat.index}].id" value="%{id}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
-				<s:property value="shortQuestion"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
+				<s:if test="columnHeader != null && columnHeader.size() > 0"><s:property value="columnHeader"/>: </s:if><s:property value="expandedNumber"/>: <s:property value="question"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
 				<button type="submit" class="picsbutton negative" name="button" value="Remove" onclick="javascript : return setId(<s:property value="id"/>);">Remove</button>
 			</div>
 		</div>

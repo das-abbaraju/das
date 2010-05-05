@@ -1,6 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:if test="questions.size > 0">
-	<s:select cssClass="forms" name="questions[99].id" list="questions" listKey="id" listValue="shortQuestion" value="">
+	<s:select name="questions[99].id" list="{}" cssClass="forms">
+		<s:iterator value="questionMap" var="q">
+			<s:optgroup label="%{#q.key.auditName}" list="#q.value" listKey="id" listValue="shortQuestion" />
+		</s:iterator>
 	</s:select>
 	<br clear="all" />
 	Criteria
