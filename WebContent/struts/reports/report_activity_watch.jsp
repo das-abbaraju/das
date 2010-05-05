@@ -85,13 +85,13 @@ $(function() {
 				<tbody>
 					<s:iterator value="watched" id="watch">
 						<tr>
-							<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
+							<td><a href="?conID=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
 							<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from this watch list?');" class="remove"></a></td>
 						</tr>
 					</s:iterator>
 				</tbody>
 			</table>
-			<a href="#" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
+			<a href="#" id="addLink" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
 			<s:form id="addWatch">
 				<fieldset class="form">
 					<ol>
@@ -100,9 +100,13 @@ $(function() {
 							<s:textfield name="conName" id="newContractor" />
 						</li>
 					</ol>
-					<div><input type="submit" value="Add" name="button" class="picsbutton positive" style="margin: 0px auto;" /></div>
+					<div style="text-align: center;">
+						<input type="submit" value="Add" name="button" class="picsbutton positive" />
+						<input type="button" onclick="$('#addWatch').hide(); $('#addLink').show(); return false;" value="Cancel" class="picsbutton negative" />
+					</div>
 				</fieldset>
 			</s:form>
+			<s:if test="conID > 0"><br /><a href="ReportActivityWatch.action">View All Contractors</a></s:if>
 		</td><td>
 			<table class="report">
 				<thead>
