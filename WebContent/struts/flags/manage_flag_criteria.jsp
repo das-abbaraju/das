@@ -11,9 +11,6 @@
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
-<script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
-<link rel="stylesheet" href="js/jquery/mcdropdown/css/jquery.mcdropdown.css"/>
-
 <script type="text/javscript" src="js/jquery/jquery.bgiframe.min.js"></script>
 
 <script type="text/javascript">
