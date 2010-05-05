@@ -75,22 +75,27 @@ $(function() {
 <table>
 	<tr>
 		<td>
-			<table class="report">
-				<thead>
-					<tr>
-						<th>Contractor</th>
-						<th>Remove</th>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="watched" id="watch">
+			<s:if test="watched.size() > 0">
+				<table class="report">
+					<thead>
 						<tr>
-							<td><a href="?conID=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
-							<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from this watch list?');" class="remove"></a></td>
+							<th>Contractor</th>
+							<th>Remove</th>
 						</tr>
-					</s:iterator>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<s:iterator value="watched" id="watch">
+							<tr>
+								<td><a href="?conID=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
+								<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from this watch list?');" class="remove"></a></td>
+							</tr>
+						</s:iterator>
+					</tbody>
+				</table>
+			</s:if>
+			<s:else>
+				<div class="info">This report will show a list of contractor activity for the contractors you have selected to watch. To add a contractor activity watch, click on Add New Contractor below and type in the name of a contractor.</div>
+			</s:else>
 			<a href="#" id="addLink" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
 			<s:form id="addWatch">
 				<fieldset class="form">
@@ -108,27 +113,29 @@ $(function() {
 			</s:form>
 			<s:if test="conID > 0"><br /><a href="ReportActivityWatch.action">View All Contractors</a></s:if>
 		</td><td>
-			<table class="report">
-				<thead>
-					<tr>
-						<th>Contractor</th>
-						<th>Activity Details</th>
-						<th>Activity Date</th>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="data" status="stat">
-					<tr>
-						<td><s:property value="get('name')" /></td>
-						<td>
-							<s:if test="get('url').length() > 0"><a href="<s:property value="get('url')" />"><s:property value="get('body')" /></a></s:if>
-							<s:else><s:property value="get('body')" /></s:else>
-						</td>
-						<td><span title="<s:date name="get('activityDate')" nice="true" />"><s:date name="get('activityDate')" format="MM/dd/yyyy HH:mm:ss" /></span></td>
-					</tr>
-				</s:iterator>
-				</tbody>
-			</table>
+			<s:if test="data.size() > 0">
+				<table class="report">
+					<thead>
+						<tr>
+							<th>Contractor</th>
+							<th>Activity Details</th>
+							<th>Activity Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<s:iterator value="data" status="stat">
+						<tr>
+							<td><s:property value="get('name')" /></td>
+							<td>
+								<s:if test="get('url').length() > 0"><a href="<s:property value="get('url')" />"><s:property value="get('body')" /></a></s:if>
+								<s:else><s:property value="get('body')" /></s:else>
+							</td>
+							<td><span title="<s:date name="get('activityDate')" nice="true" />"><s:date name="get('activityDate')" format="MM/dd/yyyy HH:mm:ss" /></span></td>
+						</tr>
+					</s:iterator>
+					</tbody>
+				</table>
+			</s:if>
 		</td>
 	</tr>
 </table>

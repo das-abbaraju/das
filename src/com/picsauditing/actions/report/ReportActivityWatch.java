@@ -59,7 +59,7 @@ public class ReportActivityWatch extends ReportAccount {
 				if (!Strings.isEmpty(conName)) {
 					boolean exists = false;
 					// Match partially filled in name
-					List<ContractorAccount> cons = conDAO.findWhere("a.name = '%" + conName + "%'");
+					List<ContractorAccount> cons = conDAO.findWhere("a.name LIKE '%" + conName + "%'");
 					
 					for (ContractorWatch watch : watched) {
 						if (watch.getContractor().equals(cons.get(0))) {
