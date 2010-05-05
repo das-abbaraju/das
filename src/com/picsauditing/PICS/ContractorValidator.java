@@ -64,8 +64,8 @@ public class ContractorValidator {
 		Vector<String> errorMessages = new Vector<String>();
 
 		// Username
-		if (Strings.isEmpty(user.getUsername()))
-			errorMessages.addElement("Please fill in the Username field.");
+		if (!Strings.validUserName(user.getUsername()).equals("valid"))
+			errorMessages.addElement(Strings.validUserName(user.getUsername()));
 		else if (!verifyUsername(user))
 			errorMessages.addElement("Username already exists. Please type another.");
 
