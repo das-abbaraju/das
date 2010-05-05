@@ -3,6 +3,8 @@
 <head>
 <title>Contractor Activity Watch</title>
 <s:include value="reportHeader.jsp" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <style type="text/css">
 table.report {
 	margin-right: 10px;
@@ -11,30 +13,62 @@ table.report {
 #search {
 	margin-bottom: 10px;
 }
+
+#addWatch {
+	display: none;
+	width: 350px;
+}
+
+fieldset.form ol li label {
+	width: auto;
+}
 </style>
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('#newContractor').autocomplete('ContractorSelectAjax.action', 
+		{
+			minChars: 3,
+			extraParams: {'filter.accountName': function() {return $('#newContractor').val();} }
+		}
+	);
+});
+</script>
 </head>
 <body>
 <h1>Contractor Activity Watch</h1>
-
+<s:include value="../actionMessages.jsp"></s:include>
 <div id="search"><s:form>
 	<div>
 		<button id="searchfilter" type="submit" name="button" value="Search" class="picsbutton positive">Search</button>
 	</div>
-	
 	<div class="filterOption">
-		<s:select list="watched" listKey="contractor.id" listValue="contractor.name" name="conID" headerKey="0" headerValue="- Contractor -"></s:select>
+		<s:textfield name="filter.accountName" cssClass="forms" size="10" onfocus="clearText(this)" />
 	</div>
-	
 	<div class="filterOption">
-		<a href="#" onclick="toggleBox('form1_activity'); return false;">Activity Type</a> =
-		<span id="form1_activity_query">ALL</span><br />
-		<span id="form1_activity_select" style="display: none" class="clearLink">
-			<s:select list="activityTypes" multiple="true" cssClass="forms" name="atype" id="form1_activity" /><br />
-			<script type="text/javascript">updateQuery('form1_activity');</script>
-			<a class="clearLink" href="#" onclick="clearSelected('form1_activity'); return false;">Clear</a>
-		</span>
+		<s:checkbox value="auditExpiration" name="auditExpiration" id="auditExpiration"></s:checkbox>
+		<label for="auditExpiration">Expired Audits</label>
 	</div>
-	
+	<div class="filterOption">
+		<s:checkbox value="auditSubmitted" name="auditSubmitted" id="auditSubmitted"></s:checkbox>
+		<label for="auditSubmitted">Submitted Audits</label>
+	</div>
+	<div class="filterOption">
+		<s:checkbox value="auditActivated" name="auditActivated" id="auditActivated"></s:checkbox>
+		<label for="auditActivated">Activated Audits</label>
+	</div>
+	<div class="filterOption">
+		<s:checkbox value="flagColorChange" name="flagColorChange" id="flagColorChange"></s:checkbox>
+		<label for="flagColorChange">Flag Color Changed</label>
+	</div>
+	<div class="filterOption">
+		<s:checkbox value="login" name="login" id="login"></s:checkbox>
+		<label for="login">Last Logged In</label>
+	</div>
+	<div class="filterOption">
+		<s:checkbox value="note" name="note" id="note"></s:checkbox>
+		<label for="note">Notes Posted</label>
+	</div>
 	<br clear="all" />
 </s:form></div>
 
@@ -49,14 +83,26 @@ table.report {
 					</tr>
 				</thead>
 				<tbody>
-					<s:iterator value="watched">
+					<s:iterator value="watched" id="watch">
 						<tr>
 							<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
-							<td class="center"><a href="#" onclick="return false;" class="remove"></a></td>
+							<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from this watch list?');" class="remove"></a></td>
 						</tr>
 					</s:iterator>
 				</tbody>
 			</table>
+			<a href="#" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
+			<s:form id="addWatch">
+				<fieldset class="form">
+					<ol>
+						<li>
+							<label>Contractor Name:</label>
+							<s:textfield name="conName" id="newContractor" />
+						</li>
+					</ol>
+					<div><input type="submit" value="Add" name="button" class="picsbutton positive" style="margin: 0px auto;" /></div>
+				</fieldset>
+			</s:form>
 		</td><td>
 			<table class="report">
 				<thead>
@@ -70,7 +116,10 @@ table.report {
 					<s:iterator value="data" status="stat">
 					<tr>
 						<td><s:property value="get('name')" /></td>
-						<td><a href="<s:property value="get('url')" />"><s:property value="get('body')" /></a></td>
+						<td>
+							<s:if test="get('url').length() > 0"><a href="<s:property value="get('url')" />"><s:property value="get('body')" /></a></s:if>
+							<s:else><s:property value="get('body')" /></s:else>
+						</td>
 						<td><span title="<s:date name="get('activityDate')" nice="true" />"><s:date name="get('activityDate')" format="MM/dd/yyyy HH:mm:ss" /></span></td>
 					</tr>
 				</s:iterator>
