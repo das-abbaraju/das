@@ -116,7 +116,7 @@
 		<div class="error"><s:property value="msg"/></div>
 	</s:if>
 	<div id="next_button" class="buttons" style="float: left;">
-		<a href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="picsbutton positive">Next &gt;&gt;</a>
+		<a id="next_link" href="ContractorPaymentOptions.action?id=<s:property value="id" />" class="picsbutton positive">Next &gt;&gt;</a>
 		<div class="clear"></div>
 	</div>
 </s:if>

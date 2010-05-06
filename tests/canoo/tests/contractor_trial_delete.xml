@@ -32,8 +32,8 @@
 								<clickButton label="Delete"/>	
 					</group>	
 					<group description="Delete Contractor">
-						<clickLink description="Click link: Edit Account" htmlId="conEditLink"/>
-						<clickElement htmlId="conEditLink"/>
+						<clickLink description="Click link: Edit Account" htmlId="edit_contractor"/>
+						<clickElement htmlId="edit_contractor"/>
 							<clickButton label="Delete"/>
 					</group>
 				</group>

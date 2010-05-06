@@ -20,7 +20,7 @@
 						<verifyText text="No results found"/>
 					</condition>
 						<then>
-							<clickLink label="Logout"/>
+							<clickLink href="Login.action?button=logout"/>
 						</then>
 						<else>
 							&delete_bidcontractor;
@@ -71,28 +71,30 @@
 										<setInputField name="user.phone" value="1800506PICS"/>
 										<setInputField name="user.fax" value="18005061111"/>
 										<setInputField name="user.username" value="canoo_bidaccount"/>
-										<setInputField description="@Irvine1" name="password" value="@Irvine1"/>
-										<setInputField description="@Irvine1" name="confirmPassword" value="@Irvine1"/>
+										<setInputField description="${login.password}" name="password" value="${login.password}"/>
+										<setInputField description="${login.password}" name="confirmPassword" value="${login.password}"/>
 									</group>
 									
 									<clickButton label="Create Account"/>
-									
+									<not>
+										<verifyText description="search for already exists" text="(?i:already exists)" regex="true" />
+									</not>
 									&body_verify;
 								</group>
 				<group description="Services Performed">
-					<setRadioButton description="Works with heavy machinery" htmlId="answerq2442Yes"/>
+					<setRadioButton description="Works with heavy machinery" htmlId="answer2442Yes"/>
 					<sleep seconds="2"/>
-					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
+					<setRadioButton description="Office Setting" htmlId="answer2443Yes"/>
 					<sleep seconds="2"/>
-					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
+					<setRadioButton description="Heights greater than 6ft" htmlId="answer2445Yes"/>
 					<sleep seconds="2"/>
-					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
+					<setRadioButton description="Suggested Risk" htmlId="answer2444Low"/>
 					<sleep seconds="2"/>
-					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
+					<setCheckbox description="Boiler Code" htmlId="answer465_C"/>
 					<sleep seconds="2"/>
-					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
+					<setCheckbox description="Cleaning (Janitorial)" htmlId="answer478_C"/>
 					<sleep seconds="2"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Facilities">
 					<sleep seconds="5"/>
@@ -100,15 +102,15 @@
 					<sleep seconds="5"/>
 					<clickLink description="Switch To Bid Only Account" htmlId="bidonly"/>
 					<sleep seconds="3"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Verify that text is contained in the page" text="$25.00"/>
 				</group>
 				<group description="Set payment to check, switch back">
-					<clickLink label="Logout"/>
+					<clickLink href="Login.action?button=logout"/>
 					<setInputField name="username" value="opman"/>
-					<setInputField name="password" value="@Irvine1"/>
+					<setInputField name="password" value="${login.password}"/>
 					<clickButton label="Login"/>
 					<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
 					<clickButton label="Search"/>
@@ -122,11 +124,10 @@
 				</group>
 				<group description="Complete Registration">
 					<clickLink description="Click link: 5) Confirm" htmlId="conConfirmLink"/>
-					<clickLink label="5) Confirm"/>
 					<verifyText description="Verify that text is contained in the page" text="$25.00 USD"/>
 					<clickButton label="Complete My Registration" name="button"/>
 					<verifyText description="Verify that text is contained in the page" text="Your account has been registered successfully."/>
-					<clickLink label="Logout"/>
+					<clickLink href="Login.action?button=logout"/>
 				</group>
 			</steps>
 			</webtest>
@@ -136,8 +137,8 @@
 			<steps>
 				<invoke url="Login.action" />
 				<group description="Login as Admin, process check">
-					<setInputField name="username" value="jsmith"/>
-					<setInputField name="password" value="@Irvine1"/>
+					<setInputField name="username" value="jfazeli"/>
+					<setInputField name="password" value="${login.password}"/>
 					<clickButton label="Login"/>
 					<ifStep>
 						<condition>
@@ -147,69 +148,69 @@
 						</condition>
 						<then></then>
 						<else>	
-											<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
-											<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
-											<clickLink href="InvoiceDetail.action"/>
-											<verifyText description="Verify that text is contained in the page" text="Bid Only Account Fee"/>
-											<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
-											<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
-											<clickLink label="Make a Payment"/>
-											<clickButton label="Apply All"/>
-											<clickButton label="Collect Payment"/>
-										</else>	
-									</ifStep>		
-								</group>
-								<group description="System Edit">
-									<ifStep>
-										<condition>
-											<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
-											<clickButton label="Search"/>
-											<verifyText text="No results found"/>
-										</condition>
-										<then></then>
-										<else>	
-											<clickLink label="Pre-Qualification"/>
-											<clickLink label="System Edit"/>
-											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-											<clickButton label="Save" name="button"/>
-											<clickLink label="2007 Update"/>
-											<clickLink label="System Edit"/>
-											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-											<clickButton label="Save"/>
-											<clickLink label="2008 Update"/>
-											<clickLink label="System Edit"/>
-											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-											<clickButton label="Save" name="button"/>
-											<clickLink label="2009 Update"/>
-											<clickLink label="System Edit"/>
-											<setSelectField name="conAudit.auditStatus" text="Submitted"/>
-											<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
-											<clickButton label="Save"/>
-										</else>
-									</ifStep>		
-								</group>
-								<group description="Switch to Contractor">
-									<clickLink href="UsersManage.action"/>
-									<clickLink label="John Doe"/>
-									<clickLink label="Switch to this User"/>	
-								</group>
-								<group description="Verify Tasks, PQF Categories">
-									<sleep seconds="3"/>
-									<clickLink label="Pre-Qualification"/>
-									<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
-									<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
-									<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
-								</group>
-								<group description="Verify Flag Page">
-									<clickLink label="Facilities"/>
-									<clickLink label="AES Alamitos"/>
-									<verifyText description="Verify that text is contained in the page" text="Flag color has been now updated from Red to Green"/>
-								</group>	
-							</steps>
-						</webtest>
-					</target>
-				</project>
+							<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+							<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
+							<clickLink href="InvoiceDetail.action"/>
+							<verifyText description="Verify that text is contained in the page" text="Bid Only Account Fee"/>
+							<verifyText description="Verify that text is contained in the page" text="25.00 USD"/>
+							<clickLink description="Click link: Billing Page" href="BillingDetail.action"/>
+							<clickLink label="Make a Payment"/>
+							<clickButton label="Apply All"/>
+							<clickButton label="Collect Payment"/>
+						</else>	
+					</ifStep>		
+				</group>
+				<group description="System Edit">
+					<ifStep>
+						<condition>
+							<setInputField name="filter.accountName" value="Canoo's Test - Bid Only Account"/>
+							<clickButton label="Search"/>
+							<verifyText text="No results found"/>
+						</condition>
+						<then></then>
+						<else>	
+							<clickLink label="Pre-Qualification"/>
+							<clickLink href="ConAuditMaintain.action"/>
+							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+							<clickButton label="Save" name="button"/>
+							<clickLink label="2007 Update"/>
+							<clickLink label="System Edit"/>
+							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+							<clickButton label="Save"/>
+							<clickLink label="2008 Update"/>
+							<clickLink label="System Edit"/>
+							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+							<clickButton label="Save" name="button"/>
+							<clickLink label="2009 Update"/>
+							<clickLink label="System Edit"/>
+							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
+							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
+							<clickButton label="Save"/>
+						</else>
+					</ifStep>		
+				</group>
+				<group description="Switch to Contractor">
+					<clickLink href="UsersManage.action"/>
+					<clickLink label="John Doe"/>
+					<clickLink label="Switch to this User"/>	
+				</group>
+				<group description="Verify Tasks, PQF Categories">
+					<sleep seconds="3"/>
+					<clickLink label="Pre-Qualification"/>
+					<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
+					<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
+					<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
+				</group>
+				<group description="Verify Flag Page">
+					<clickLink label="Facilities"/>
+					<clickLink label="AES Alamitos"/>
+					<verifyText description="Verify that text is contained in the page" text="Flag color has been now updated from Red to Green"/>
+				</group>	
+			</steps>
+		</webtest>
+	</target>
+</project>
 
