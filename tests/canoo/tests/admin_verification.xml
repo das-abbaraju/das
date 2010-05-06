@@ -14,7 +14,7 @@
 				
 	<group description="PQF Verification">
 		<group description="Find contractor">
-			<clickLink label="PQF Verification"/>
+			<clickLink href="PqfVerification.action?filter.status=Active"/>
 			<clickLink href="VerifyView.action"/>
 		</group>	
 		

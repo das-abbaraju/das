@@ -61,8 +61,8 @@
 			            name="operators" value="16" multiselect="true" />
 					<setSelectField description="Choose BP Cherry Point"
 			            name="operators" value="1813" multiselect="true" />
-					<clickButton description="Search" label="Search"/>
-					<clickLink description="Show Criteria" label="Change Columns"/>
+					<clickButton description="Search" htmlId="filter_search" />
+					<clickLink description="Show Criteria" htmlId="changecolumnslink"/>
 					<verifySelectField description="check BP Carson"
 			            name="operators" value="16" />
 					<verifySelectField description="check BP Cherry Point"

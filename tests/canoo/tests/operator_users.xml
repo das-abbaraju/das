@@ -11,12 +11,12 @@
 			<steps>
 				&login;
 				<clickLink description="Edit User Accounts"
-					label="Users" />
+					href="UsersManage.action" />
 				<ifStep description="Pre Clean-up: If Canoo Exists, delete">
 					<condition>
 						<verifyText text="Canoo Test User (Operator)"/>
 					</condition>
-						<clickLink label="Canoo Test User (Operator)*"/>
+						<clickLink label="Canoo Test User (Operator)"/>
 						<clickButton label="Delete"/>
 				</ifStep>	
 				
@@ -29,19 +29,20 @@
 					<verifyText description="Verify that text is contained in the page" text="User saved successfully"/>
 					
 					<group description="Add Permissions">
-						<clickLink label="add"/>
+						<setSelectField htmlId="newPermissionSelect" text="Remove Contractors"/>
+						<clickButton htmlId="permButton"/>
 					</group>
 				</group>
 				
 				<group description="Verify Activation Email">
-					<clickLink label="Email Queue"/>
+					<clickLink href="EmailQueueList.action"/>
 					<verifyText description="Verify that text is contained in the page" text="New PICS User Account"/>
 					<verifyText description="Verify that text is contained in the page" text="tester@picsauditing.com"/>
 				</group>
 				
 				<group description="Delete user">
-					<clickLink label="Users"/>
-					<clickLink label="Canoo Test User (Operator)*"/>
+					<clickLink href="UsersManage.action"/>
+					<clickLink label="Canoo Test User (Operator)"/>
 					<clickButton label="Delete"/>
 				</group>
 				

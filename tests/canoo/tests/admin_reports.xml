@@ -10,24 +10,24 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="EMR Rates (Graph)" />
-					&click_report;
-				<storeProperty name="report_link" value="Forced Flags" />
-					&click_report;
-				<storeProperty name="report_link" value="User Multi-Login" />
-					&click_report;
-				<storeProperty name="report_link" value="User Search" />
-					&click_report;
-				<storeProperty name="report_link" value="EMR Rates" />
-					&click_report;
-				<storeProperty name="report_link" value="Fatalities" />
-					&click_report;
-				<storeProperty name="report_link" value="Incidence Rates" />
-					&click_report;
-				<storeProperty name="report_link" value="Operator Flag Criteria" />
-					&click_report;
-				<storeProperty name="report_link" value="Contractor Licenses" />
-					&click_report;
+				<clickLink description="EMR Rates (Graph)" href="GraphEmrRates.action?years=2009" />
+					&body_verify;
+				<clickLink description="Forced Flags"  href="ReportContractorsWithForcedFlags.action" />
+					&body_verify;
+				<clickLink description="User Multi-Login" href="MultiLoginUser.action" />
+					&body_verify;
+				<clickLink description="User Search" href="UserList.action" />
+					&body_verify;
+				<clickLink description="EMR Rates" href="ReportEmrRates.action?filter.auditFor=2009" />
+					&body_verify;
+				<clickLink description="Fatalities" href="ReportFatalities.action?filter.auditFor=2009&amp;filter.shaType=OSHA&amp;filter.shaLocation=Corporate" />
+					&body_verify;
+				<clickLink description="Incidence Rates" href="ReportIncidenceRate.action?filter.auditFor=2009&amp;filter.shaType=OSHA&amp;filter.shaLocation=Corporate" />
+					&body_verify;
+				<clickLink description="Flag Criteria" href="ManageFlagCriteria.action" />
+					&body_verify;
+				<clickLink description="Contractor Licenses" href="ReportContractorLicenses.action" />
+					&body_verify;
 			</steps>
 		</webtest>
 	</target>

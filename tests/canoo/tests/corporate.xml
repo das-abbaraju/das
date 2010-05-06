@@ -14,7 +14,7 @@
 				&body_verify;
 				<!--   CONTRACTOR LIST -->
 				<clickLink description="Contractor List"
-					label="Contractor List" />
+					href="ContractorList.action" />
 				<verifyText description="You have ### contractors in your database"
 					regex="true" text="You have \x3Cstrong[\x3C\x3E][1-9][0-9][0-9]\x3C/strong[\x3C\x3E] contractors in your database" />
 				
@@ -32,20 +32,20 @@
 					text="FlagBig.gif" />
 				
 				<clickLink description="View PQF"
-					label="PQF" />
+					href="ConPqfList.action" />
 				<sleep seconds="2"/>
 				&body_verify;
 
 				<clickLink description="Audits"
-					label="Audits" />
-				<clickLink description="View Desktop Audit"
-					label="Desktop Audit" />
+					href="ConAuditList.action" />
+				<clickLink description="Manual Audit"
+					label="Manual Audit" />
 				<sleep seconds="2"/>
 				&body_verify;
 
 				<!--   Forms & Docs -->
 				<clickLink description="Forms &amp; Docs"
-					label="Forms &amp; Docs" />
+					href="manage_forms.jsp" />
 				<sleep seconds="2"/>
 				&body_verify;
 				<verifyText description="Edit an Existing Form"
@@ -53,7 +53,7 @@
 				
 				<!--   New Contractor Search -->
 				<clickLink description="List all Contractors"
-					label="Contractor List" />
+					href="ContractorList.action" />
 
 				&body_verify;
 				<verifyText description="Show more than 100 green crane operators"

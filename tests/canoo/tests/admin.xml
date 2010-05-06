@@ -10,17 +10,17 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="Edit Corporate" />
-				&click_report;
+				<clickLink description="Edit Corporate" href="ReportAccountList.action?accountType=Corporate" />
+				&body_verify;
 				
-				<storeProperty name="report_link" value="Edit Operators" />
-				&click_report;
+				<clickLink description="Edit Operators" href="ReportAccountList.action?accountType=Operator" />
+				&body_verify;
 				
-				<storeProperty name="report_link" value="Assign Audit/Operator" />
-				&click_report;
+				<clickLink description="Assign Audit/Operator" href="AuditOperator.action" />
+				&body_verify;
 				
-				<storeProperty name="report_link" value="Users" />
-				&click_report;
+				<clickLink description="Users" href="UsersManage.action" />
+				&body_verify;
 
 
 			</steps>

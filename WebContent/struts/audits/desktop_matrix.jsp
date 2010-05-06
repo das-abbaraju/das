@@ -31,7 +31,7 @@ function clearSelected(name) {
 <s:form id="form1" method="post">
 <div id="search">
 <s:if test="questions.size() > 0">
-	<div id="changecolumns"><a href="#" onclick="$('#filters').show(); $('#changecolumns').hide(); return false;">Change Columns</a></div>
+	<div id="changecolumns"><a id="changecolumnslink" href="#" onclick="$('#filters').show(); $('#changecolumns').hide(); return false;">Change Columns</a></div>
 </s:if>
 <div id="filters" <s:if test="questions.size() > 0">style="display: none;"</s:if>>
 	<div>
