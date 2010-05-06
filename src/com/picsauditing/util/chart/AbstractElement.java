@@ -9,8 +9,10 @@ abstract public class AbstractElement {
 	 * @param value
 	 */
 	protected static void append(StringBuilder xml, String name, String value) {
+		// Escaping the single quote doesn't work when it's wrapped by single quotes.
 		if (value != null)
-			xml.append(" ").append(name).append("='").append(value).append("'");
+			//xml.append(" ").append(name).append("='").append(value.replaceAll("'", "\\'")).append("'");
+			xml.append(" ").append(name).append("=\"").append(value).append("\"");
 	}
 
 	/**
