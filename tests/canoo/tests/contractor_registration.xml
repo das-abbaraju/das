@@ -113,7 +113,7 @@
 					<verifyText description="Verify that text is contained in the page" text="$199.00 USD"/>
 					<verifyText description="Verify that text is contained in the page" text="$1098.00 USD"/>
 					<clickButton label="Change Payment Method to Check" name="button"/>
-					<clickLink htmlId="next_link"/>
+					<clickLink htmlId="conConfirmLink"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Verify that text is contained in the page" text="$1098.00 USD"/>
