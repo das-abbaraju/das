@@ -11,8 +11,8 @@
 				&login;
 				&body_verify;
 				
-				<storeProperty name="report_link" value="Audit Definitions" />
-				&click_report;
+				<clickLink description="Audit Definitions" href="ManageAuditType.action" />
+				&body_verify;
 				
 				<invoke url="ManageAuditType.action?id=1"/>
 				
@@ -25,7 +25,7 @@
 					<clickButton label="UpdateAllAudits"/>	
 				</group>
 				<group description="Add new AuditType">
-					<clickLink label="Audit Definitions"/>
+					<clickLink href="ManageAuditType.action"/>
 					<clickLink description="Click Add New link" label="Add New" />
 					<setInputField name="auditType.auditName" value="Canoo Audit" />
 					<setInputField name="auditType.description" value="Canoo audit type description" />
@@ -55,9 +55,8 @@
 				</group>
 				
 				<group description="PQF Matrix">
-					<storeProperty name="report_link" value="PQF Matrix" />
-					&click_report;
-					
+					<clickLink description="PQF Matrix" href="ManagePQFMatrix.action" />
+					&body_verify;
 					<setSelectField description="Choose BP Carson"
 			            name="operators" value="16" multiselect="true" />
 					<setSelectField description="Choose BP Cherry Point"
@@ -84,8 +83,8 @@
 					<verifyText description="Verify that text is contained in the page" text="Removed UPLOAD FILES for BP Carson Refinery - Low"/>
 				</group>
 
-				<storeProperty name="report_link" value="Desktop Matrix" />
-				&click_report;
+				<clickLink description="Desktop Matrix" href="ManageDesktopMatrix.action" />
+				&body_verify;
 				
 				
 			</steps>

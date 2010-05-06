@@ -10,20 +10,20 @@
 				&login;
 				&body_verify;
 				
-				<clickLink description="My Audits" label="My Audits" />
+				<clickLink description="My Audits" href="AuditListAuditor.action" />
 				&body_verify;
 				<verifyText description="Make sure there are multiple contractors found"
 					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />	
 
-				<clickLink description="My Audit History" label="My Audit History" />
+				<clickLink description="My Audit History" href="MyAuditHistory.action" />
 				&body_verify;
 				<verifyText description="Make sure there are audits found"
 					text="Showing 1-[0-9]* of .strong.[1-9][0-9]*..strong. results" regex="true" />
 				
-				<clickLink description="Audit List" label="Audit List" />
+				<clickLink description="Audit List" href="ReportAuditList.action" />
 				&body_verify;								
 
-				<clickLink description="Open Calendar" label="Audit Calendar"/>
+				<clickLink description="Open Calendar" href="AuditCalendar.action"/>
 				&body_verify;
 			</steps>
 		</webtest>
