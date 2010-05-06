@@ -83,17 +83,17 @@
 					&body_verify;
 				</group>
 				<group description="Services Performed">
-					<setRadioButton description="Works with heavy machinery" htmlId="answerq2442Yes"/>
+					<setRadioButton description="Works with heavy machinery" htmlId="answer2442Yes"/>
 					<sleep seconds="2"/>
-					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
+					<setRadioButton description="Office Setting" htmlId="answer2443Yes"/>
 					<sleep seconds="2"/>
-					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
+					<setRadioButton description="Heights greater than 6ft" htmlId="answer2445Yes"/>
 					<sleep seconds="2"/>
-					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
+					<setRadioButton description="Suggested Risk" htmlId="answer2444Low"/>
 					<sleep seconds="2"/>
-					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
+					<setCheckbox description="Boiler Code" htmlId="answer465_C"/>
 					<sleep seconds="2"/>
-					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
+					<setCheckbox description="Cleaning (Janitorial)" htmlId="answer478_C"/>
 					<sleep seconds="2"/>
 					<clickLink label="Next >>"/>
 				</group>
