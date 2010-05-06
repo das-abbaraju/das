@@ -27,7 +27,7 @@
 						&body_verify;
 					
 						<group description="Go to report, pull up contractor">
-							<clickLink label="Sched. &amp; Assign"/>
+							<clickLink href="AuditAssignments.action?filter.status=Active"/>
 							<clickLink label="Audit Type"/>
 							<setSelectField name="filter.auditTypeID" text="Office Audit"/>
 							<clickButton label="Search"/>

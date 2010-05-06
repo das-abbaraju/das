@@ -40,8 +40,8 @@
 
 				
 				<group description="Add Permissions">
-					<clickLink label="Users"/>
-					<clickLink label="Sandy Synstelien*"/>	
+					<clickLink href="UsersManage.action"/>
+					<clickLink label="Sandy Synstelien"/>	
 							
 					<group description="Add View Bid Only Account Contractors">
 
@@ -88,11 +88,11 @@
 				<group description="Verify Reports">	
 					<clickLink label="Switch to this User"/>
 					
-					<storeProperty name="report_link" value="Bid Only Account" />
-					&click_report;
+					<clickLink description="Bid Only Account" href="BiddingContractorSearch.action" />
+					&body_verify;
 
-					<storeProperty name="report_link" value="Contractor Policies" />
-					&click_report;
+					<clickLink description="Contractor Policies" href="ReportPolicyList.action?filter.caoStatus=Approved&amp;filter.caoStatus=Rejected&amp;filter.caoStatus=Verified&amp;filter.caoStatus=Submitted" />
+					&body_verify;
 
 				</group>			
 		    </steps>

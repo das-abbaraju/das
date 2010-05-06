@@ -15,12 +15,12 @@
 				</group>
 					
 				<group description="Check Billing Reports">
-				<storeProperty name="report_link" value="Unpaid Invoices Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Lifetime Members Report" />
-				&click_report;
-				<storeProperty name="report_link" value="Billing Report" />
-				&click_report;
+				<clickLink description="Unpaid Invoices Report" href="ReportUnpaidInvoices.action" />
+				&body_verify;
+				<clickLink description="Lifetime Members Report" href="ReportLifetimeMembership.action" />
+				&body_verify;
+				<clickLink description="Billing Report" href="ReportBilling.action" />
+				&body_verify;
 				</group>
 				
 				<group description="Activations">
@@ -31,7 +31,7 @@
 						<condition>
 							<verifyTitle text="PICS - Canoo's Test Contractor"/>
 						</condition>	
-						<verifyText description="Verify that text is contained in the page" text="This contractor is not active."/>
+						<verifyText description="Verify that text is contained in the page" text="This contractor has not activated their account."/>
 							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 							<clickLink href="InvoiceDetail.action"/>
 								<verifyText description="Verify that text is contained in the page" text="Activation"/>
@@ -48,7 +48,7 @@
 							<clickLink description="Click link: Billing Details" href="BillingDetail.action"/>
 								<verifyText description="Active:Yes" text="Yes"/>
 								<clickLink description="Click link: Edit Account" href="ContractorEdit.action"/>
-								<clickLink label="Edit Account"/>
+								<clickLink href="ContractorEdit.action"/>
 								<clickButton label="Delete"/>
 						</ifStep>
 					</group>
