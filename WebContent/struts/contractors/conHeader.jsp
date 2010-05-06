@@ -246,7 +246,7 @@
 	</s:if>
 	<s:elseif test="permissions.contractor">
 		<pics:permission perm="ContractorAdmin">
-			<li><a href="ContractorEdit.action?id=<s:property value="id" />"
+			<li><a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
 		</pics:permission>
 			<li><a id="profileEditLink" href="ProfileEdit.action"

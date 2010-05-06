@@ -12,16 +12,16 @@
 				&body_verify;
 								
 				<clickLink description="Edit Account Info"
-					label="Edit Account" />
+					htmlId="edit_contractor" />
 					<sleep seconds="2"/>
 					&body_verify;
 				
 				<clickLink description="Edit Profile"
-					label="Edit My Profile" />
+					href="ProfileEdit.action" />
 					<sleep seconds="2"/>
 					&body_verify;
 				
-				<clickLink label="Home"/>
+				<clickLink href="Home.action"/>
 				
 				<clickLink description="Facilities"
 					label="Facilities" />
