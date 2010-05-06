@@ -10,8 +10,6 @@
 				&login;
 				&body_verify;
 				
-				<clickLink description="EMR Rates (Graph)" href="GraphEmrRates.action?years=2009" />
-					&body_verify;
 				<clickLink description="Forced Flags"  href="ReportContractorsWithForcedFlags.action" />
 					&body_verify;
 				<clickLink description="User Multi-Login" href="MultiLoginUser.action" />
@@ -23,8 +21,6 @@
 				<clickLink description="Fatalities" href="ReportFatalities.action?filter.auditFor=2009&amp;filter.shaType=OSHA&amp;filter.shaLocation=Corporate" />
 					&body_verify;
 				<clickLink description="Incidence Rates" href="ReportIncidenceRate.action?filter.auditFor=2009&amp;filter.shaType=OSHA&amp;filter.shaLocation=Corporate" />
-					&body_verify;
-				<clickLink description="Flag Criteria" href="ManageFlagCriteria.action" />
 					&body_verify;
 				<clickLink description="Contractor Licenses" href="ReportContractorLicenses.action" />
 					&body_verify;
