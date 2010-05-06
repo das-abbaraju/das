@@ -25,7 +25,7 @@ fieldset.form input.login {
 		<li><label style="margin-top: 7px;">Password:</label> <s:password name="password" cssClass="login" /></li>
 		<li>
 		<div class="buttons" style="padding-left: 200px; padding-bottom: 50px;">
-		<button class="picsbutton positive" value="login" name="button" type="submit">Login</button>
+		<input type="submit" class="picsbutton positive" name="button" value="Login" />
 		</div>
 		</li>
 		<li>Forget your login information? <a href="AccountRecovery.action">Click here to recover it</a></li>

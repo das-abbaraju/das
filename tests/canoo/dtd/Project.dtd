@@ -7,10 +7,12 @@ Do not edit it else you risk to lose your changes.
 
 <!ENTITY body_verify SYSTEM "../includes/body_verify.xml">
 <!ENTITY click_report SYSTEM "../includes/click_report.xml">
+<!ENTITY con_search SYSTEM "../includes/con_search.xml">
 <!ENTITY config SYSTEM "../includes/config.xml">
 <!ENTITY config_marketing SYSTEM "../includes/config_marketing.xml">
-<!ENTITY contractor_delete SYSTEM "../includes/contractor_delete.xml">
+<!ENTITY delete_bidcontractor SYSTEM "../includes/delete_bidcontractor.xml">
 <!ENTITY delete_contractor SYSTEM "../includes/delete_contractor.xml">
+<!ENTITY delete_contractor_BASF SYSTEM "../includes/delete_contractor_BASF.xml">
 <!ENTITY doOfficeAudit SYSTEM "../includes/doOfficeAudit.xml">
 <!ENTITY login SYSTEM "../includes/login.xml">
 

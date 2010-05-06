@@ -14,13 +14,13 @@
 					label="Login"/>		
 				<verifyText 
 					description="Attempt login without a username" 
-					text="Enter a valid username" />			
+					text="Your username cannot be empty" />			
 			</steps>
 		</webtest>
 		<webtest name="Login: good username; good password">
 		&config;
 			<steps>
-				<invoke
+				<invoke 
 					description="Get Contractors Page for Login"
 					url="Login.action" />				
 				<setInputField 

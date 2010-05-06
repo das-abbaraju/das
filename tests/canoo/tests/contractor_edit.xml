@@ -14,7 +14,7 @@
 				<group description="Edit Information">
 				<setInputField name="filter.accountName" value="5217"/>
 				<clickButton label="Search"/>
-				<clickLink label="Edit Account"/>
+				<clickLink htmlId="conEditAccount"/>
 				<setInputField name="contractor.dbaName" value="2-Way DBA"/>
 				<setSelectField name="country.isoCode" text="United States"/>
 				<sleep seconds="2"/>
