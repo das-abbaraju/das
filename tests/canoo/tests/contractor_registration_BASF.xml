@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+\<?xml version="1.0"?>
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
@@ -110,7 +110,7 @@
 					<verifyText description="Checking that Activation fee is $99" text="$99.00 USD"/>
 					<verifyText description="Checking for Correct Total" text="$998.00 USD"/>
 					<clickButton label="Change Payment Method to Check" name="button"/>
-					<clickLink htmlId="next_link"/>
+					<clickLink htmlId="conConfirmLink"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Verify that text is contained in the page" text="$998.00 USD"/>
