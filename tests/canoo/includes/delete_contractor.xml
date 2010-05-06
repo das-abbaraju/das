@@ -44,7 +44,6 @@
 	</ifStep>
 
 <clickLink description="Click link: Edit Account" htmlId="edit_contractor"/>
-<clickLink label="Edit Account"/>
 <clickButton label="Delete" name="button"/>
 </ifStep>
 
