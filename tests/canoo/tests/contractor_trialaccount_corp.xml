@@ -135,12 +135,12 @@
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 					<clickButton label="Save"/>
-					<clickLink label="2007 Update"/>
+					<clickLink htmlId="2007_update"/>
 					<clickLink href="ConAuditMaintain.action"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 					<clickButton label="Save"/>
-					<clickLink label="2008 Update"/>
+					<clickLink htmlId="2008_update"/>
 					<clickLink href="ConAuditMaintain.action"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>

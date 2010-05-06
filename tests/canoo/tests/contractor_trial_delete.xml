@@ -24,10 +24,10 @@
 						<clickLink label="2006 Update"/>
 							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>
-						<clickLink label="2007 Update"/>
+						<clickLink htmlId="2007_update"/>
 							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>
-						<clickLink label="2008 Update"/>
+						<clickLink htmlId="2008_update"/>
 							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>	
 					</group>	

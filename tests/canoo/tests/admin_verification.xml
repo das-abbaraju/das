@@ -237,7 +237,7 @@
 										<then>
 											<clickButton htmlId="approveButton1"/>
 											<sleep seconds="4"/>
-											<clickLink label="2007 Update"/>
+											<clickLink htmlId="2007_update"/>
 											<verifyText description="Verify Active Status" text="Active"/>
 										</then>
 										<else>
@@ -245,7 +245,7 @@
 											<sleep seconds="4"/>
 											<clickButton htmlId="approveButton1"/>
 											<sleep seconds="4"/>
-											<clickLink label="2007 Update"/>
+											<clickLink htmlId="2007_update"/>
 											<verifyText description="Verify Active Status" text="Active"/>
 										</else>
 									</ifStep>
@@ -262,7 +262,7 @@
 											<then>
 												<clickButton htmlId="approveButton1"/>
 												<sleep seconds="4"/>
-												<clickLink label="2008 Update"/>
+												<clickLink htmlId="2008_update"/>
 												<verifyText description="Verify Active Status" text="Active "/>
 											</then>
 											<else>
@@ -270,7 +270,7 @@
 												<sleep seconds="4"/>
 												<clickButton htmlId="approveButton1"/>
 												<sleep seconds="4"/>
-												<clickLink label="2008 Update"/>
+												<clickLink htmlId="2008_update"/>
 												<verifyText description="Verify Active Status" text="Active"/>
 											</else>
 										</ifStep>

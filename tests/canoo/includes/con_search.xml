@@ -26,7 +26,7 @@
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 08" label="2008 Update" />
+			<clickLink description="Goto Annual Update 08" htmlId="2008_update" />
 		</condition>
 		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
@@ -34,7 +34,7 @@
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 07" label="2007 Update" />
+			<clickLink description="Goto Annual Update 07" htmlId="2007_update" />
 		</condition>
 		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
