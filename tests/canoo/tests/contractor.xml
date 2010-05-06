@@ -24,17 +24,17 @@
 				<clickLink href="Home.action"/>
 				
 				<clickLink description="Facilities"
-					label="Facilities" />
+					href="ContractorFacilities.action?id=3" />
 					<sleep seconds="2"/>
 					&body_verify;
 
 				<clickLink description="Forms and Docs"
-					label="Forms &amp; Docs" />
+					href="ContractorForms.action?id=3" />
 					<sleep seconds="2"/>
 					&body_verify;
 
 				<clickLink description="Audits"
-					label="Audits" />
+					href="ConAuditList.action?id=3" />
 					&body_verify;
 
 				<clickLink description="View PQF"
