@@ -446,11 +446,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setRiskLevel(LowMedHigh riskLevel) {
 		String userName = userDAO.find(permissions.getUserId()).getName();
 		String newRiskLevel = riskLevel.toString();
-		String oldRiskLevel = contractor.getRiskLevel().toString();
-		if (oldRiskLevel.equals("Med"))
-			oldRiskLevel = "Medium";
-		if (newRiskLevel.equals("Med"))
-			newRiskLevel = "Medium";
+		String oldRiskLevel = "null";
+		if (contractor.getRiskLevel() != null) {
+			oldRiskLevel = contractor.getRiskLevel().toString();
+			if (oldRiskLevel.equals("Med"))
+				oldRiskLevel = "Medium";
+			if (newRiskLevel.equals("Med"))
+				newRiskLevel = "Medium";
+		}
 
 		Note note = new Note();
 		note.setAccount(contractor);
