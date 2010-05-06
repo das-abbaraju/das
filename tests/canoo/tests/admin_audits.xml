@@ -28,8 +28,10 @@
 					
 						<group description="Go to report, pull up contractor">
 							<clickLink href="AuditAssignments.action?filter.status=Active"/>
-							<clickLink label="Audit Type"/>
-							<setSelectField name="filter.auditTypeID" text="Office Audit"/>
+							<clickLink description="Click link: Audit Type" htmlId="audittypefilter"/>
+
+							<setSelectField name="filter.auditTypeID" text="Implementation Audit"/>
+
 							<clickButton label="Search"/>
 							<clickLink label="Scheduled"/>
 							<clickLink href="ScheduleAudit.action"/>

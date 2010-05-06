@@ -6,16 +6,16 @@
 	<ifStep description="Delete PQF">
 		<condition>
 			<clickLink description="Goto PQF" label="Pre-Qualification" href="Audit.action" />
-			<clickLink description="Open System Edit" label="System Edit" />
+			<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		</condition>
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 	
 	<ifStep description="Delete Welcome Call">
 		<condition>
-			<clickLink description="Goto Welcome Call" label="Welcome Call '09" />
+			<clickLink description="Goto Welcome Call" label="Welcome Call" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
@@ -23,7 +23,7 @@
 		<condition>
 			<clickLink description="Goto Annual Update 09" label="2009 Update" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 	
@@ -31,7 +31,7 @@
 		<condition>
 			<clickLink description="Goto Annual Update 08" label="2008 Update" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
@@ -39,12 +39,12 @@
 		<condition>
 			<clickLink description="Goto Annual Update 07" label="2007 Update" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
 <clickLink description="Click link: Edit Account" htmlId="edit_contractor"/>
-<clickLink label="Edit Account"/>
+<clickLink href="ContractorEdit.action"/>
 <clickButton label="Delete" name="button"/>
 </ifStep>
 

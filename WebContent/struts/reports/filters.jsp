@@ -218,7 +218,7 @@
 	</s:if>
 
 	<s:if test="filter.showAuditType">
-		<div class="filterOption"><a href="#"
+		<div class="filterOption"><a id="audittypefilter" href="#"
 			onclick="toggleBox('form1_auditTypeID'); return false;">Audit
 		Type</a> = <span id="form1_auditTypeID_query">ALL</span><br />
 		<span id="form1_auditTypeID_select" style="display: none"
