@@ -11,3 +11,7 @@
 div.caoGroup {
 	position: static;
 }
+
+#search_box, #search_button {
+	line-height: 18px !important;
+}

@@ -67,11 +67,12 @@
 <!-- !begin header -->
 
 <div id="sidebox">
-	<p><% if (permissions.isLoggedIn()) { %>
+	<p><b style="color: #80b3da">1-800-506-PICS (7427)</b>&emsp;&emsp;
+	<% if (permissions.isLoggedIn()) { %>
 		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
 			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
 			: permissions.getName() %></span>
-| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">Home</a>| <a href="Login.action?button=logout">Logout</a>
+| <a href="http://www.picsauditing.com">PICS Home</a> | <a href="Login.action?button=logout">Logout</a>
 <% } else { %>
 <span id="name">Welcome</span> | <a href="Login.action">Login</a>
 <% } %>
@@ -81,8 +82,8 @@
 
 <div id="headersearch">
 <form action="ContractorSearch.action" method="get">
-<input name="filter.accountName" type="text" class="blueMain" size="20" onfocus="clearText(this)""/>
-<input type="submit" value="Search" class="blueMain" />
+<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)""/>
+<input type="submit" value="Search" id="search_button" />
 </form>
 </div>
 <% } %>

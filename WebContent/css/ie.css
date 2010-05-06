@@ -21,3 +21,9 @@ div#maincontainer p{
 input {
 	color: #003768;
 }
+
+#search_box, #search_button {
+	line-height: 20px !important;
+	/* IE 7 hack */
+	*line-height: 18px !important;
+}

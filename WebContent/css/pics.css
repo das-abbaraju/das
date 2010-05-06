@@ -83,6 +83,45 @@ p {
 	font-size: 12px;
 }
 
+/********************  NEW Header Search Styles  ************************/
+
+#search_box {
+	background: #fff;
+	border: 1px solid #B8B8B8;
+	width: 155px;
+	height:18px;
+	background-image: url(../images/searchimg.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-position-x: 3px;
+	color: #333;
+	font-family: Helvetica, Arial, sans-serif;
+	padding-left: 22px;
+}
+ 
+#search_button {
+	font-size: 10px;
+	font-style: normal;
+	color: #868686;
+	background: url('../images/search_gradient.gif') repeat-x;
+	border: 1px solid #BCBCBC;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	width: 60px;
+	height: 22px;
+	position: relative;
+	cursor: pointer;
+	cursor: hand;
+	text-shadow: 1px 0px 0 #fff;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+/* Hack for Mozilla! */
+@-moz-document url-prefix()
+{
+	#search_button { padding-bottom: 1px; }
+}
+
 /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 #sidebox {
 	float: right;
