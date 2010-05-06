@@ -82,5 +82,10 @@ abstract public class PicsDAO {
 			em.remove(row);
 		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public int deleteData(Class<? extends BaseTable> clazz, String where) {
+		Query query = em.createQuery("DELETE " + clazz.getName() + " t WHERE " + where);
+		return query.executeUpdate();
+	}
 }

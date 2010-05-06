@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -221,6 +222,15 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
+		
+		try {
+			startTask("\nDeleting Expired Individual Data Overrides...");
+			int count = contractorAuditDAO.deleteData(FlagDataOverride.class, "forceEnd < NOW()");
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
 
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
