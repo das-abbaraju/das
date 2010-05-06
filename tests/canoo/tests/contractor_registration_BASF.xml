@@ -92,7 +92,7 @@
 					<sleep seconds="2"/>
 					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
 					<sleep seconds="2"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Facilities">
 					<sleep seconds="5"/>
@@ -103,14 +103,14 @@
 					<sleep seconds="5"/>
 					<setSelectField htmlId="requestedBySelector" text="BASF Brighton Colorado"/>
 					<sleep seconds="3"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Checking if the Membership level is correct" text="$899.00 USD"/>
 					<verifyText description="Checking that Activation fee is $99" text="$99.00 USD"/>
 					<verifyText description="Checking for Correct Total" text="$998.00 USD"/>
 					<clickButton label="Change Payment Method to Check" name="button"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Verify that text is contained in the page" text="$998.00 USD"/>

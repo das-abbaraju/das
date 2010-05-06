@@ -95,7 +95,7 @@
 					<sleep seconds="2"/>
 					<setCheckbox description="Cleaning (Janitorial)" htmlId="answer478_C"/>
 					<sleep seconds="2"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Facilities">
 					<sleep seconds="5"/>
@@ -106,14 +106,14 @@
 					<sleep seconds="5"/>
 					<setSelectField htmlId="requestedBySelector" text="Shell Chemical Mobile"/>
 					<sleep seconds="3"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Verify that text is contained in the page" text="$899.00 USD"/>
 					<verifyText description="Verify that text is contained in the page" text="$199.00 USD"/>
 					<verifyText description="Verify that text is contained in the page" text="$1098.00 USD"/>
 					<clickButton label="Change Payment Method to Check" name="button"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Payment Options">
 					<verifyText description="Verify that text is contained in the page" text="$1098.00 USD"/>

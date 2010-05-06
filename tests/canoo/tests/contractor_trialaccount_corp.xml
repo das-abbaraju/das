@@ -67,14 +67,14 @@
 					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
 					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
 					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Facilities">
 						<clickLink description="Click link: Add" htmlId="facility_5960"/>
 					<sleep seconds="5"/>
 						<clickLink label="Switch To Trial Account"/>
 						<sleep seconds="3"/>
-					<clickLink label="Next >>"/>
+					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Payment Options">
 						<verifyText description="Verify that text is contained in the page" text="$25.00"/>
