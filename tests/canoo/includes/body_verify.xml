@@ -1,6 +1,3 @@
-<verifyText description="search for the word error"
-	text="(?i:error)"
-	regex="true" />
 <verifyText description="Checks for the copyright in the footer"
 	text="Copyright &copy;" />
 <verifyText description="Checks for the existence of HTML body tags"
