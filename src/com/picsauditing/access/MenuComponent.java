@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	private static final long serialVersionUID = 923449569385839331L;
 
@@ -43,6 +42,10 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getNameIdSafe() {
+		return name.toLowerCase().replaceAll(" ", "_");
 	}
 
 	public boolean hasUrl() {

@@ -126,22 +126,22 @@
 				</group>
 				<group description="System Edit">
 					<clickLink label="PQF"/>
-					<clickLink label="System Edit"/>
+					<clickLink href="ConAuditMaintain.action"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 					<clickButton label="Save" name="button"/>
 					<clickLink label="2006 Update"/>
-					<clickLink label="System Edit"/>
+					<clickLink href="ConAuditMaintain.action"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 					<clickButton label="Save"/>
 					<clickLink label="2007 Update"/>
-					<clickLink label="System Edit"/>
+					<clickLink href="ConAuditMaintain.action"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 					<clickButton label="Save"/>
 					<clickLink label="2008 Update"/>
-					<clickLink label="System Edit"/>
+					<clickLink href="ConAuditMaintain.action"/>
 					<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 					<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 					<clickButton label="Save" name="button"/>

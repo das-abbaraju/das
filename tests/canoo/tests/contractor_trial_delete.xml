@@ -18,17 +18,17 @@
 					<clickButton label="Search"/>
 					
 					<group description="Delete Audits">
-						<clickLink label="Pre-Qualification"/>
-							<clickLink label="System Edit"/>
+						<clickLink htmlId="pre-qualification"/>
+							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>
 						<clickLink label="2006 Update"/>
-							<clickLink label="System Edit"/>
+							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>
 						<clickLink label="2007 Update"/>
-							<clickLink label="System Edit"/>
+							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>
 						<clickLink label="2008 Update"/>
-							<clickLink label="System Edit"/>
+							<clickLink href="ConAuditMaintain.action"/>
 								<clickButton label="Delete"/>	
 					</group>	
 					<group description="Delete Contractor">

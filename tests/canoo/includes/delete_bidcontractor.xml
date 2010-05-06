@@ -5,9 +5,9 @@
 	
 	<ifStep description="Delete PQF">
 		<condition>
-			<clickLink description="Goto PQF" label="Pre-Qualification" href="Audit.action" />
+			<clickLink description="Goto PQF" htmlId="pre-qualification" />
 		</condition>
-		<clickLink description="Open System Edit" href="ConAuditMaintain.action?" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 	
@@ -15,31 +15,31 @@
 		<condition>
 			<clickLink description="Goto Welcome Call" label="Welcome Call '09" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 09" label="2009 Update" />
+			<clickLink description="Goto Annual Update 09" htmlId="2009_update" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 	
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 08" label="2008 Update" />
+			<clickLink description="Goto Annual Update 08" htmlId="2008_update" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 
 	<ifStep description="Delete Annual Updates">
 		<condition>
-			<clickLink description="Goto Annual Update 07" label="2007 Update" />
+			<clickLink description="Goto Annual Update 07" htmlId="2007_update" />
 		</condition>
-		<clickLink description="Open System Edit" label="System Edit" />
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 

@@ -5,9 +5,9 @@
 	
 	<ifStep description="Delete PQF">
 		<condition>
-			<clickLink description="Goto PQF" label="Pre-Qualification" href="Audit.action" />
-			<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
+			<clickLink description="Goto PQF" htmlId="pre-qualification" href="Audit.action" />
 		</condition>
+		<clickLink description="Open System Edit" href="ConAuditMaintain.action" />
 		<clickButton description="Click Delete" label="Delete" />
 	</ifStep>
 	
@@ -44,7 +44,7 @@
 	</ifStep>
 
 <clickLink description="Click link: Edit Account" htmlId="edit_contractor"/>
-<clickLink href="ContractorEdit.action"/>
+<clickLink label="Edit Account"/>
 <clickButton label="Delete" name="button"/>
 </ifStep>
 

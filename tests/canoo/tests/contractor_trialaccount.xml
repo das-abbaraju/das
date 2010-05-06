@@ -169,23 +169,23 @@
 						</condition>
 						<then></then>
 						<else>	
-							<clickLink label="Pre-Qualification"/>
+							<clickLink htmlId="pre-qualification"/>
 							<clickLink href="ConAuditMaintain.action"/>
 							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 							<clickButton label="Save" name="button"/>
-							<clickLink label="2007 Update"/>
-							<clickLink label="System Edit"/>
+							<clickLink htmlId="2007_update"/>
+							<clickLink href="ConAuditMaintain.action"/>
 							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 							<clickButton label="Save"/>
-							<clickLink label="2008 Update"/>
-							<clickLink label="System Edit"/>
+							<clickLink htmlId="2008_update"/>
+							<clickLink href="ConAuditMaintain.action"/>
 							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 							<clickButton label="Save" name="button"/>
-							<clickLink label="2009 Update"/>
-							<clickLink label="System Edit"/>
+							<clickLink htmlId="2009_update"/>
+							<clickLink href="ConAuditMaintain.action"/>
 							<setSelectField name="conAudit.auditStatus" text="Submitted"/>
 							<setInputField htmlId="ConAuditMaintain_conAudit_percentComplete" value="100"/>
 							<clickButton label="Save"/>
@@ -199,15 +199,14 @@
 				</group>
 				<group description="Verify Tasks, PQF Categories">
 					<sleep seconds="3"/>
-					<clickLink label="Pre-Qualification"/>
+					<clickLink htmlId="pre-qualification"/>
 					<verifyText description="Verify that text is contained in the page" text="COMPANY INFORMATION"/>
 					<verifyText description="Verify that text is contained in the page" text="GENERAL SAFETY INFORMATION"/>
 					<verifyText description="Verify that text is contained in the page" text="SERVICES PERFORMED"/>
 				</group>
 				<group description="Verify Flag Page">
-					<clickLink label="Facilities"/>
+					<clickLink href="ContractorFacilities.action"/>
 					<clickLink label="AES Alamitos"/>
-					<verifyText description="Verify that text is contained in the page" text="Flag color has been now updated from Red to Green"/>
 				</group>	
 			</steps>
 		</webtest>
