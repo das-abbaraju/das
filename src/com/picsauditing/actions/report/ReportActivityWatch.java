@@ -64,25 +64,30 @@ public class ReportActivityWatch extends ReportAccount {
 			
 			if ("Add".equals(button)) {
 				if (!Strings.isEmpty(conName)) {
-					boolean exists = false;
-					// Match partially filled in name
+					// Match potentially partially filled in name
 					List<ContractorAccount> cons = conDAO.findWhere("a.name LIKE '%" + conName + "%'");
 					
-					for (ContractorWatch watch : watched) {
-						if (watch.getContractor().equals(cons.get(0))) {
-							exists = true;
+					if (cons.size() == 1) {
+						boolean exists = false;
+						for (ContractorWatch watch : watched) {
+							if (watch.getContractor().equals(cons.get(0))) {
+								exists = true;
+							}
 						}
-					}
+						if (!exists) {
+							ContractorWatch watch = new ContractorWatch();
+							watch.setAuditColumns(permissions);
+							watch.setUser(getUser());
+							watch.setContractor(cons.get(0));
+							
+							userDAO.save(watch);
+						} else
+							addActionError("Contractor is already on watch list.");
+					} else if (cons.size() > 1)
+						addActionError("Please type in the full name of the contractor to add to watch list.");
+					else
+						addActionError("Contractor not found.");
 					
-					if (!exists) {
-						ContractorWatch watch = new ContractorWatch();
-						watch.setAuditColumns(permissions);
-						watch.setUser(getUser());
-						watch.setContractor(cons.get(0));
-						
-						userDAO.save(watch);
-					} else
-						addActionError("Contractor is already on watch list.");
 				} else
 					addActionError("Please select a contractor to start watching.");
 			}

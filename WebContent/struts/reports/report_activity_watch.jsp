@@ -92,7 +92,7 @@ $(function() {
 					<tbody>
 						<s:iterator value="watched" id="watch">
 							<tr>
-								<td><a href="?conID=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
+								<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
 								<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" onclick="return confirm('Are you sure you want to remove this contractor from the watch list?');" class="remove"></a></td>
 							</tr>
 						</s:iterator>
