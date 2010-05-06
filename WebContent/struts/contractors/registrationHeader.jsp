@@ -6,7 +6,7 @@
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<s:if test="permissions.loggedIn">
-		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
+		<li><a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('edit')">class="current"</s:if>>1) Edit Details</a>
 		</li>
 		<li><a id="conServicesLink" href="ContractorRegistrationServices.action?id=<s:property value="id" />"

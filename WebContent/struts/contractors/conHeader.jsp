@@ -224,10 +224,10 @@
 		<li><a href="JobCompetencyMatrix.action?id=<s:property value="id" />"><span>HSE Competency Matrix</span></a></li>
 	</pics:permission>
 	<s:if test="permissions.admin">
-		<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
+		<li><a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
 		<pics:permission perm="AuditVerification">
-			<li><a id="conEditLink" href="VerifyView.action?id=<s:property value="id" />"><span>PQF Verification</span></a></li>
+			<li><a href="VerifyView.action?id=<s:property value="id" />"><span>PQF Verification</span></a></li>
 		</pics:permission>
 		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Employees</a></li>
@@ -235,9 +235,9 @@
 			<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>
 		</pics:permission>
 		<s:if test="!contractor.status.demo">
-			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
+			<li><a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
-			<li><a id="conEditLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
+			<li><a href="ContractorPaymentOptions.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 		</s:if>
 		<pics:permission perm="DevelopmentEnvironment">
@@ -246,7 +246,7 @@
 	</s:if>
 	<s:elseif test="permissions.contractor">
 		<pics:permission perm="ContractorAdmin">
-			<li><a id="conEditLink" href="ContractorEdit.action?id=<s:property value="id" />"
+			<li><a href="ContractorEdit.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
 		</pics:permission>
 			<li><a id="profileEditLink" href="ProfileEdit.action"
@@ -259,9 +259,9 @@
 			</pics:permission>
 		</pics:permission>
 		<pics:permission perm="ContractorBilling">
-			<li><a id="conEditLink" href="BillingDetail.action?id=<s:property value="id" />"
+			<li><a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
-			<li><a id="conEditLink" href="ContractorPaymentOptions.action?id=<s:property value="id" />"
+			<li><a href="ContractorPaymentOptions.action?id=<s:property value="id" />"
 				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
 		</pics:permission>
 	</s:elseif>

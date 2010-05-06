@@ -14,7 +14,7 @@
 				<group description="Edit Information">
 				<setInputField name="filter.accountName" value="5217"/>
 				<clickButton label="Search"/>
-				<clickLink htmlId="conEditAccount"/>
+				<clickLink htmlId="edit_contractor"/>
 				<setInputField name="contractor.dbaName" value="2-Way DBA"/>
 				<setSelectField name="country.isoCode" text="United States"/>
 				<sleep seconds="2"/>
@@ -36,19 +36,19 @@
 				<group description="Edit Information">
 					<setInputField name="filter.accountName" value="5217"/>
 					<clickButton label="Search"/>
-					<clickLink label="Edit Account"/>
+					<clickLink htmlId="edit_contractor"/>
 					<setSelectField name="country.isoCode" text="Canada"/>
 					<sleep seconds="2"/>
 					<setSelectField name="state.isoCode" text="Alberta"/>
 					<clickButton label="Save"/>
 				</group>
 				<group description="Canadian Currency">
-					<clickLink label="Billing Details"/>
+					<clickLink htmlId="billing_detail"/>
 					<clickButton label="Create"/>
-					<verifyText description="Verify that Currency is CAN" text="CAN"/>
+					<verifyText description="Verify that Currency is CAD" text="CAD"/>
 				</group>
 				<group description="Edit Information">
-					<clickLink label="Edit Account"/>
+					<clickLink htmlId="edit_contractor"/>
 					<setSelectField name="country.isoCode" text="United States"/>
 					<sleep seconds="2"/>
 					<setSelectField name="state.isoCode" text="Illinois"/>
