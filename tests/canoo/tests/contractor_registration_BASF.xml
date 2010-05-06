@@ -1,4 +1,4 @@
-\<?xml version="1.0"?>
+<?xml version="1.0"?>
 <!DOCTYPE project SYSTEM "../dtd/Project.dtd">
 
 <project name="PICS" default="test">
