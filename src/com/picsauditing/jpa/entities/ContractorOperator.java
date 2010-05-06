@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -140,18 +139,24 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public boolean isForcedFlag() {
 		if (forceFlag == null || forceEnd == null) {
 			// Just double check they are both set back to null
-			forceFlag = null;
-			forceEnd = null;
+			removeForceFlag();
 			return false;
 		}
 
 		// We have a forced flag, but make sure it's still in effect
 		if (forceEnd.before(new Date())) {
-			forceFlag = null;
-			forceEnd = null;
+			removeForceFlag();
 			return false;
 		}
 		return true;
+	}
+	
+	@Transient
+	public void removeForceFlag() {
+		forceEnd = null;
+		forceFlag = null;
+		forceBegin = null;
+		forcedBy = null;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -210,5 +215,20 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setOverrides(Set<FlagDataOverride> overrides) {
 		this.overrides = overrides;
+	}
+	
+	@Transient
+	public ContractorOperator getForceOverallFlag() {
+		if(isForcedFlag())
+			return this;
+		if(getOperatorAccount().getCorporateFacilities().size() > 0) {
+			for(Facility facility : getOperatorAccount().getCorporateFacilities()) {
+				for(ContractorOperator conOper : contractorAccount.getOperators()) {
+					if(facility.getCorporate().equals(conOper.getOperatorAccount()) && conOper.isForcedFlag())
+						return conOper;
+				}
+			}
+		}
+		return null;
 	}
 }

@@ -98,62 +98,58 @@ function checkReason(id) {
 	<tr><td>Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
 	<tr>
 		<td colspan="3">
-		<s:if test="opID == permissions.getAccountId() || permissions.corporate">
-			<s:if test="co.forcedFlag">
+		<s:if test="co.forceOverallFlag != null">
+			<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
+				Manual Force Flag <s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceOverallFlag.forceEnd" format="MMM d, yyyy" /> 
+				by <s:property value="co.forceOverallFlag.forcedBy.name" /> from <s:property value="co.forceOverallFlag.forcedBy.account.name"/> 
+				<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'"> for all the sites</s:if>.
+			</s:form>
+		</s:if>
+		<br/>
+		<pics:permission perm="EditForcedFlags">
+			<s:if test="canForceOverallFlag(co.forceOverallFlag)">
 				<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
-					Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
 					<br/>
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
-					<pics:permission perm="EditForcedFlags">
-						<s:if test="permissions.corporate">
-							<s:checkbox name="overrideAll"/><label>Check to Cancel the Force the Flag Color at all your Facilities in your database</label><br/>
-						</s:if>
-						Reason:<br><s:textarea name="forceNote" value="" rows="3" cols="15"></s:textarea>
-						<div>
-							<button class="picsbutton positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
-						</div>
-						<br />
-					</pics:permission>
+					<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'">
+						<s:hidden name="overrideAll" value="true"/>
+						<label>By Clicking on the Cancel Override the force flags at all your facilities will be removed.</label><br/>
+					</s:if>
+					Reason:<br><s:textarea name="forceNote" value="" rows="3" cols="15"></s:textarea>
+					<div>
+						<button class="picsbutton positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
+					</div>
 				</s:form>
 			</s:if>
 			<s:else>
-				<pics:permission perm="EditForcedFlags">
-					<div id="override" style="display: none">
-					<s:form id="form_override">
-						<s:hidden name="id" />
-						<s:hidden name="opID" />
-						<s:select list="flagList" name="forceFlag" />
-						until 
-						<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker"/>
-						<br/>
-						<s:if test="permissions.corporate">
-							<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
-						</s:if>
-						Reason: <s:textarea name="forceNote" value="" rows="4" cols="15"></s:textarea><br />
-						<span class="redMain">* All Fields are required</span>
-						
-						<div>
-							<button class="picsbutton positive" type="submit" name="button" value="Force Flag">Force Flag</button>
-						</div>
-					</s:form>
-					<a href="#" onclick="$('#override_link').show(); $('#override').hide(); return false;">Nevermind</a>
+				<div id="override" style="display: none">
+				<s:form id="form_override">
+					<s:hidden name="id" />
+					<s:hidden name="opID" />
+					<s:select list="flagList" name="forceFlag" />
+					until 
+					<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker"/>
+					<br/>
+					<s:if test="permissions.corporate">
+						<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
+					</s:if>
+					Reason: <s:textarea name="forceNote" value="" rows="4" cols="15"></s:textarea><br />
+					<span class="redMain">* All Fields are required</span>
+					
+					<div>
+						<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
 					</div>
-					<a id="override_link" href="#" onclick="$('#override').show(); $('#override_link').hide(); return false;">Manually Force Flag Color</a>
-				</pics:permission>
+				</s:form>
+				<a href="#" onclick="$('#override_link').show(); $('#override').hide(); return false;">Nevermind</a>
+				</div>
+				<a id="override_link" href="#" onclick="$('#override').show(); $('#override_link').hide(); return false;">Manually Force Flag Color</a>
 			</s:else>
-		</s:if>
-		<s:else>
-			<s:if test="co.forcedFlag">
-			<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
-				Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
-			</s:form>
-			</s:if>
-		</s:else>
+		</pics:permission>
 		</td>
 	</tr>
 </table>
-<s:if test="co.flagColor.toString() == 'Green' && co.forceFlag == null && flagDataOverrides.keySet().size() == 0">
+<s:if test="co.flagColor.toString() == 'Green' && co.forceOverallFlag == null && flagDataOverrides.keySet().size() == 0">
 	<div class="info" style="width: 50%; text-align: left">
 		Congratulations, you've completed all the requirements for <s:property value="co.operatorAccount.name" />.<br />We will email you if there are any changes.
 	</div>
@@ -172,35 +168,34 @@ function checkReason(id) {
 		</tr>
 	</thead>
 	<tbody>
-	<s:iterator id="key" value="flagDataMap.keySet()">
-		<s:iterator id="data" value="flagDataMap.get(#key)">
+	<s:iterator id="key" value="getflagDataMap().keySet()">
+		<s:iterator id="data" value="getflagDataMap().get(#key)">
 			<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
 			<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
 				<tr class="<s:property value="#data.flag" />">
 					<td>
 						<s:property value="#data.flag.smallIcon" escape="false" />
-						<s:if test="opID == permissions.getAccountId() || permissions.corporate">	
-							<pics:permission perm="EditForcedFlags">
-								<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
-									onclick="$('#'+<s:property value="%{#data.id}" />+'_override').toggle(); return false;">
-									<s:if test="#flagoverride != null">
-										Flag has been forced
-									</s:if>
-									<s:else>
-										Override
-									</s:else>
-								</a>
-							</pics:permission>
-						</s:if>
-						<s:else>
-							<s:if test="#flagoverride != null">
+						<s:if test="#flagoverride != null">
+							<span title="By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>">
 								Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
-							</s:if>
-						</s:else>
+							</span>
+						</s:if>
+						<pics:permission perm="EditForcedFlags">
+							<br/>
+							<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
+								onclick="$('#'+<s:property value="%{#data.id}" />+'_override').toggle(); return false;">
+								<s:if test="canForceDataFlag(#flagoverride)">
+									Override
+								</s:if>
+								<s:else>
+									Flag has been forced
+								</s:else>
+							</a>
+						</pics:permission>
 					</td>
 					<td>
 						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
-							<s:if test="#opCriteria.criteria.id == #data.criteria.id && (#flagoverride == null && #opCriteria.flag == #data.flag)">
+							<s:if test="#opCriteria.criteria.id == #data.criteria.id && (#opCriteria.flag == #data.flag || (#flagoverride != null && #opCriteria.flag.toString() == 'Red'))">
 								<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
 									<span title="The statistics provided must have a status other than pending to be calculated.">
 										<s:property value="#opCriteria.replaceHurdle" />
@@ -250,23 +245,25 @@ function checkReason(id) {
 					<tr id="<s:property value="%{#data.id}" />_override" style="display: none">
 						<td colspan="3"><form method="post">
 							<s:hidden value="%{#data.id}" name="dataID" />
-							<s:if test="#flagoverride != null">
-								Manual Force Flag <s:property value="#flagoverride.forceflag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />.
-								<pics:permission perm="EditForcedFlags">
-									<s:if test="permissions.corporate">
-										<s:checkbox name="overrideAll"/><label>Check to Cancel the Force Flag Color at all your Facilities in your database</label>
-									</s:if>
-									&nbsp;Reason for Cancelling: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
-									<input type="submit" value="Cancel Data Override" class="picsbutton positive" name="button" 
-										onclick="return checkReason(<s:property value="%{#data.id}" />);" />
-								</pics:permission>
-							</s:if>
-							<s:else>
+							<s:if test="canForceDataFlag(#flagoverride)">
 								<s:select list="flagList" name="forceFlag" /> until 
 								<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
 								Reason for Forcing: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
-								<button class="picsbutton positive" type="submit" name="button" value="Force Data Override"
-									onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Data Override</button>
+								<br/>
+								<s:if test="permissions.corporate">
+									<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label><br/>
+								</s:if>
+								<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
+									onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
+							</s:if>
+							<s:else>
+								<s:if test="#flagoverride.operator.type == 'Corporate'">
+									<s:hidden name="overrideAll" value="true"/>
+									<label>By Clicking on the Cancel Override the force flags at all your facilities will be removed.</label><br/>
+								</s:if>
+								&nbsp;Reason for Cancelling: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
+								<input type="submit" value="Cancel Data Override" class="picsbutton positive" name="button" 
+									onclick="return checkReason(<s:property value="%{#data.id}" />);" />
 							</s:else>
 						</form></td>
 					</tr>
@@ -283,7 +280,7 @@ function checkReason(id) {
 <!-- ALL FLAGS -->
 <table class="flagCategories details">
 	<tr>
-	<s:iterator id="key" value="flagDataMap.keySet()">
+	<s:iterator id="key" value="getflagDataMap().keySet()">
 		<td><table class="report">
 			<thead>
 				<tr>
@@ -291,7 +288,7 @@ function checkReason(id) {
 					<td><s:property value="#key"/></td>
 				</tr>
 			</thead>
-			<s:iterator id="data" value="flagDataMap.get(#key)">
+			<s:iterator id="data" value="getflagDataMap().get(#key)">
 				<tr>
 					<td class="center">
 						<s:property value="flag.smallIcon" escape="false"/>

@@ -26,6 +26,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -65,6 +66,7 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO auditDataDAO;
 	private EmailSubscriptionDAO subscriptionDAO;
+	private FlagDataOverrideDAO flagDataOverrideDAO;
 
 	private AuditPercentCalculator auditPercentCalculator;
 	private AuditBuilder auditBuilder;
@@ -82,7 +84,7 @@ public class ContractorCron extends PicsActionSupport {
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
 			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, ContractorOperatorDAO contractorOperatorDAO,
-			AppPropertyDAO appPropertyDAO) {
+			AppPropertyDAO appPropertyDAO, FlagDataOverrideDAO flagDataOverrideDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -92,6 +94,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.contractorFlagETL = contractorFlagETL;
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.appPropertyDAO = appPropertyDAO;
+		this.flagDataOverrideDAO = flagDataOverrideDAO;
 	}
 
 	public String execute() throws Exception {
@@ -199,8 +202,8 @@ public class ContractorCron extends PicsActionSupport {
 				if (opID == 0 && steps[0] == ContractorCronStep.All) {
 					contractor.setNeedsRecalculation(0);
 					contractor.setLastRecalculation(new Date());
-					dao.save(contractor);
 				}
+				dao.save(contractor);
 				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
 						+ " successfully");
 			}
@@ -333,7 +336,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		flagDataCalculator.setOperator(co.getOperatorAccount());
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
-		flagDataCalculator.setOverrides(co.getOverrides());
+		flagDataCalculator.setOverrides(flagDataOverrideDAO.findByContractorAndOperator(co.getContractorAccount(), co.getOperatorAccount()));
 		List<FlagData> changes = flagDataCalculator.calculate();
 
 		// Find overall flag color for this operator
@@ -342,11 +345,13 @@ public class ContractorCron extends PicsActionSupport {
 			if (!change.getCriteria().isInsurance())
 				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
-
-		if (co.isForcedFlag()) { // operator has a forced flag
-			co.setFlagColor(co.getForceFlag());
+		
+		ContractorOperator conOperator = co.getForceOverallFlag();
+		if (conOperator != null) { // operator has a forced flag
+			co.setFlagColor(conOperator.getForceFlag());
 			co.setFlagLastUpdated(new Date());
-		} else if (!overallColor.equals(co.getFlagColor())) {
+		}	
+		else if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);

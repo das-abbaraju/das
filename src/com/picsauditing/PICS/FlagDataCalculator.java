@@ -33,7 +33,7 @@ import com.picsauditing.util.log.PicsLogger;
 public class FlagDataCalculator {
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
-	private Map<FlagCriteria, FlagDataOverride> overrides = null;
+	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
 	private OperatorAccount operator = null;
 
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
@@ -63,8 +63,8 @@ public class FlagDataCalculator {
 					Boolean flagged = isFlagged(fco, contractorCriteria.get(key));
 					if (flagged != null) {
 						if (overrides != null && overrides.containsKey(key)) {
-							final FlagDataOverride override = overrides.get(key);
-							if (override.isInForce())
+							FlagDataOverride override = hasForceDataFlag(overrides.get(key), operator);
+							if (override != null)
 								flag = override.getForceflag();
 						} else if (flagged)
 							flag = fco.getFlag();
@@ -361,10 +361,7 @@ public class FlagDataCalculator {
 		}
 	}
 
-	public void setOverrides(Set<FlagDataOverride> overridesSet) {
-		Map<FlagCriteria, FlagDataOverride> overridesMap = new HashMap<FlagCriteria, FlagDataOverride>();
-		for (FlagDataOverride override : overridesSet)
-			overridesMap.put(override.getCriteria(), override);
+	public void setOverrides(Map<FlagCriteria, List<FlagDataOverride>> overridesMap) {
 		this.overrides = overridesMap;
 	}
 
@@ -382,5 +379,17 @@ public class FlagDataCalculator {
 
 	public OperatorAccount getOperator() {
 		return operator;
+	}
+	
+	private FlagDataOverride hasForceDataFlag(List<FlagDataOverride> flList, OperatorAccount operator) {
+		if(flList.size() > 0) {
+			for(FlagDataOverride flagDataOverride : flList) {
+				if(flagDataOverride.getOperator().equals(operator) && flagDataOverride.isInForce())
+					return flagDataOverride;
+			}
+			if(flList.get(0).isInForce())
+				return flList.get(0);
+		}
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,30 +23,21 @@ public class FlagDataOverrideDAO extends PicsDAO {
 		return em.find(FlagDataOverride.class, id);
 	}
 
-	public Map<FlagCriteria, FlagDataOverride> findByContractorAndOperator(ContractorAccount contractor,
+	public Map<FlagCriteria, List<FlagDataOverride>> findByContractorAndOperator(ContractorAccount contractor,
 			OperatorAccount operator) {
 		String where = operator.getIdString();
 		for (Facility facility : operator.getCorporateFacilities()) {
-			where += "," + facility.getOperator().getId();
+			where += "," + facility.getCorporate().getId();
 		}
 		Query query = em.createQuery("FROM FlagDataOverride d WHERE contractor.id = ? AND operator.id IN (" + where
 				+ ")");
 		query.setParameter(1, contractor.getId());
-		Map<FlagCriteria, FlagDataOverride> map = new HashMap<FlagCriteria, FlagDataOverride>();
+		Map<FlagCriteria, List<FlagDataOverride>> map = new HashMap<FlagCriteria, List<FlagDataOverride>>();
 		List<FlagDataOverride> results = query.getResultList();
-		if (operator.getCorporateFacilities().size() > 0) {
-			// Put all the corporate overrides in
-			for (FlagDataOverride override : results) {
-				if (!override.getOperator().equals(operator)) {
-					map.put(override.getCriteria(), override);
-				}
-			}
-		}
-		// Put all the operator overrides in
 		for (FlagDataOverride override : results) {
-			if (override.getOperator().equals(operator)) {
-				map.put(override.getCriteria(), override);
-			}
+			if(map.get(override.getCriteria()) == null)
+				map.put(override.getCriteria(), new ArrayList<FlagDataOverride>());
+			map.get(override.getCriteria()).add(override);
 		}
 
 		return map;
