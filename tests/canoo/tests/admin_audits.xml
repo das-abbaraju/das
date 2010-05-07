@@ -20,20 +20,17 @@
 				<storeProperty name="report_link" value="Sched. &amp; Assign" />
 				&click_report;
 				<storeProperty name="report_link" value="PQF Verification" />
-				&click_report;-->
-
-
-						&login;
-						&body_verify;
-					
+				&click_report;-->					
 						<group description="Go to report, pull up contractor">
 							<clickLink href="AuditAssignments.action?filter.status=Active"/>
-							<clickLink description="Click link: Audit Type" htmlId="audittypefilter"/>
-
-							<setSelectField name="filter.auditTypeID" text="Implementation Audit"/>
-
-							<clickButton label="Search"/>
+							<setSelectField 
+								description="Select Implementation Audit"
+								name="filter.auditTypeID"
+								value="3" />
+							<clickButton 
+								htmlId="searchfilter"/>
 							<clickLink label="Scheduled"/>
+							<enableJavaScript enable="true"/>
 							<clickLink href="ScheduleAudit.action"/>
 						</group>
 						<group description="Add Address Information">
@@ -43,34 +40,24 @@
 						<setInputField name="conAudit.phone" value="949-387-1940"/>
 						<setInputField name="conAudit.address" value="555 Main St"/>
 						<setInputField name="conAudit.zip" value="46112"/>
-						<enableJavaScript enable="true"/>
-						<clickButton label="Verify Address"/>
+						<clickButton htmlId="verifyButton"/>
 						<sleep seconds="5"/>
-						<clickButton label="Next >>"/>
-						<sleep seconds="3"/>
 						</group>
 						<group description="Select Date and Time">
-							<ifStep>
+							<!--ifStep>
 								<condition>
 									<clickLink label="AM to"/>
 								</condition>
 								<else>
 									<clickLink label="PM to"/>
 								</else>
-							</ifStep>
+							</ifStep-->
 						</group>
 						<group description="Confirm Audit">
-							<ifStep>
-								<condition>
-									<verifyText text="Video Camera"/>
-								</condition>	
-								<setRadioButton description="Check radio button conAudit.needsCamera: true" name="conAudit.needsCamera" value="true"/>
-							</ifStep>
-							
-							<setCheckbox name="confirmed"/>
-							<setCheckbox htmlId="ScheduleAudit_confirmed"/>
-							<clickButton label="Confirm Audit"/>
-							<verifyText description="Verify that text is contained in the page" text="Congratulations"/>
+							<setRadioButton description="Check radio button conAudit.conductedOnsite: false" name="conAudit.conductedOnsite" value="false"/>
+							<setCheckbox name="conAudit.needsCamera"/>
+							<clickButton htmlId="submitButton"/>
+							<verifyText description="Verify that text is contained in the page" text="Audit Saved Successfully"/>
 						</group>
 					</steps>
 				</webtest>
