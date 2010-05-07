@@ -20,7 +20,7 @@ import com.picsauditing.util.Strings;
 public class ReportContractorApproval extends ReportAccount {
 	protected List<Integer> conids = null;
 	protected String operatorNotes = "";
-	protected String workStatus = "";
+	protected String workStatus = "P";
 
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected NoteDAO noteDAO;
