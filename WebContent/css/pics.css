@@ -88,7 +88,7 @@ p {
 #search_box {
 	background: #fff;
 	border: 1px solid #AAA;
-	width: 155px;
+	width: 130px;
 	height:18px;
 	background-image: url(../images/searchimg.gif);
 	background-repeat: no-repeat;
@@ -102,7 +102,7 @@ p {
 #search_button {
 	font-size: 10px;
 	font-style: normal;
-	color: #333;
+	color: #555;
 	background: url('../images/search_gradient.gif') repeat-x;
 	border: 1px solid #999;
 	-moz-border-radius: 3px;
