@@ -65,26 +65,27 @@
 
 <div id="masthead">
 <!-- !begin header -->
-
-<div id="sidebox">
-	<p><b style="color: #80b3da">1-800-506-PICS (7427)</b>&emsp;&emsp;
-	<% if (permissions.isLoggedIn()) { %>
-		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
-			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
-			: permissions.getName() %></span>
-| <a href="http://www.picsauditing.com">PICS Home</a> | <a href="Login.action?button=logout">Logout</a>
-<% } else { %>
-<span id="name">Welcome</span> | <a href="Login.action">Login</a>
-<% } %>
-	</p>
-</div>
-<% if (permissions.isActive() && !permissions.isContractor()) { %>
-
-<div id="headersearch">
-<form action="ContractorSearch.action" method="get">
-<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)""/>
-<input type="submit" value="Search" id="search_button" />
-</form>
+<div style="padding-left: 120px">
+	<div id="sidebox">
+		<p><b style="color: #80b3da">1-800-506-PICS (7427)</b>&emsp;&emsp;
+		<% if (permissions.isLoggedIn()) { %>
+			<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
+				"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
+				: permissions.getName() %></span>
+	| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">PICS Organizer</a> | <a href="http://www.picsauditing.com">PICS Home</a> | <a href="Login.action?button=logout">Logout</a>
+	<% } else { %>
+	<span id="name">Welcome</span> | <a href="Login.action">Login</a>
+	<% } %>
+		</p>
+	</div>
+	<% if (permissions.isActive() && !permissions.isContractor()) { %>
+	
+	<div id="headersearch">
+	<form action="ContractorSearch.action" method="get">
+	<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)""/>
+	<input type="submit" value="Search" id="search_button" />
+	</form>
+	</div>
 </div>
 <% } %>
 <div id="logo"><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a></div>

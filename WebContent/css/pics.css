@@ -87,7 +87,7 @@ p {
 
 #search_box {
 	background: #fff;
-	border: 1px solid #B8B8B8;
+	border: 1px solid #AAA;
 	width: 155px;
 	height:18px;
 	background-image: url(../images/searchimg.gif);
@@ -102,9 +102,9 @@ p {
 #search_button {
 	font-size: 10px;
 	font-style: normal;
-	color: #868686;
+	color: #333;
 	background: url('../images/search_gradient.gif') repeat-x;
-	border: 1px solid #BCBCBC;
+	border: 1px solid #999;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	width: 60px;
@@ -112,7 +112,7 @@ p {
 	position: relative;
 	cursor: pointer;
 	cursor: hand;
-	text-shadow: 1px 0px 0 #fff;
+	text-shadow: 1px 0px 0 #DDD;
 	font-family: Helvetica, Arial, sans-serif;
 }
 
