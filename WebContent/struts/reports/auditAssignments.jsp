@@ -39,7 +39,7 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','current_expiresDate DESC');">Expires</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC,name');">Safety Professional</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
-				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate,a.name');">Scheduled</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate DESC,a.name');">Scheduled</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
 				<td>Safety Manual</td>
 				<td></td>
