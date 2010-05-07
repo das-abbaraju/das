@@ -17,13 +17,13 @@
 					value="${admin.username}"/>
 				&login;
 				<setInputField name="filter.accountName" value="Canoo's Test Contractor"/>
-				<clickButton label="Search"/>
+				<clickButton htmlId="search_button"/>
 				<ifStep description="If canoo present, delete acct">
 					<condition>
 						<verifyText text="No results found"/>
 					</condition>
 						<then>
-							<clickLink label="Logout"/>
+							<clickLink href="Login.action?button=logout" />
 						</then>
 						<else>
 							&delete_contractor;
