@@ -102,6 +102,10 @@ public class ReportActivityWatch extends ReportAccount {
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
+		
+		if (permissions.hasGroup(959))
+			limit = 10;
+		
 		String activity = "JOIN (";
 		List<String> watchOptions = new ArrayList<String>();
 		
@@ -167,11 +171,19 @@ public class ReportActivityWatch extends ReportAccount {
 		sql.addField(url + " url");
 		sql.addOrderBy("activityDate DESC");
 		sql.setLimit(limit);
-		if (conID > 0)
-			sql.addWhere(accountID + " = " + conID);
-		else
-			sql.addJoin("JOIN contractor_watch w ON " + accountID +
-					" = w.conID AND w.userID = " + permissions.getUserId());
+		
+		if (permissions.hasGroup(959)) {
+			// CSRs
+			sql.addJoin("JOIN accounts a1 ON a1.id = " + accountID);
+			sql.addJoin("JOIN ref_state rs ON rs.isoCode = a1.state");
+			sql.addWhere("rs.csrID = " + permissions.getUserId());
+		} else {
+			if (conID > 0)
+				sql.addWhere(accountID + " = " + conID);
+			else
+				sql.addJoin("JOIN contractor_watch w ON " + accountID +
+						" = w.conID AND w.userID = " + permissions.getUserId());
+		}
 		
 		return sql;
 	}

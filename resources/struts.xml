@@ -181,6 +181,16 @@
 			class="com.picsauditing.actions.operators.OperatorPicsContactsWidget">
 			<result>struts/widgets/op_pics_contacts.jsp</result>
 		</action>
+		
+		<action name="RequestedContractorsAjax"
+			class="com.picsauditing.actions.contractors.RequestedConWidget">
+			<result>struts/widgets/requested_contractors.jsp</result>
+		</action>
+		
+		<action name="ContractorWatchAjax"
+			class="com.picsauditing.actions.report.ReportActivityWatch">
+			<result>struts/widgets/contractor_watch.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"
