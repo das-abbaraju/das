@@ -524,6 +524,13 @@
 			cssClass="forms" name="filter.shaType" headerKey=""
 			headerValue="- Osha Type -" /></div>
 	</s:if>
+	
+	<s:if test="filter.showShaTypeFlagCriteria">
+		<br clear="all" />
+		<div class="filterOption"><s:select list="filter.oshaTypesList"
+			cssClass="forms" name="filter.shaTypeFlagCriteria" headerKey=""
+			headerValue="- Osha Type -" /></div>
+	</s:if>
 
 	<s:if test="filter.showShaLocation">
 		<div class="filterOption"><s:select
@@ -551,6 +558,20 @@
 		<script type="text/javascript">textQuery('form1_emr'); </script> <br />
 		<a class="clearLink" href="#"
 			onclick="clearTextField('form1_emr'); return false;">Clear</a></span></div>
+	</s:if>
+	
+	<s:if test="filter.showTrirRange">
+		<br clear="all" />
+		<div class="filterOption"><a href="#"
+			onclick="showTextBox('form1_trir'); return false;">TRIR</a> <span
+			id="form1_trir_query">= ALL</span><br />
+		<span id="form1_trir" style="display: none" class="clearLink"><s:textfield
+			name="filter.minTRIR" id="form1_trir1" cssClass="forms" size="12"
+			onfocus="clearText(this)" /> To: <s:textfield name="filter.maxTRIR"
+			id="form1_trir2" cssClass="forms" size="12" onfocus="clearText(this)" />
+		<script type="text/javascript">textQuery('form1_trir'); </script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearTextField('form1_trir'); return false;">Clear</a></span></div>
 	</s:if>
 
 	<s:if test="filter.showIncidenceRate">

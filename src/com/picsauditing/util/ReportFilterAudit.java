@@ -35,10 +35,12 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showExpiredLicense = false;
 	protected boolean showAuditFor = false;
 	protected boolean showEmrRange = false;
+	protected boolean showTrirRange = false;
 	protected boolean showIncidenceRate = false;
 	protected boolean showAMBest = false;
 	protected boolean showVerifiedAnnualUpdates = false;
 	protected boolean showShaType = false;
+	protected boolean showShaTypeFlagCriteria = false;
 	protected boolean showShaLocation = false;
 	protected boolean showCohsStats = false;
 	protected boolean showQuestionAnswer = false;
@@ -70,11 +72,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
+	protected float minTRIR = 0;
+	protected float maxTRIR = 100;
 	protected double incidenceRate = -1;
 	protected int amBestRating;
 	protected int amBestClass;
 	protected int verifiedAnnualUpdate = 1;
 	protected OshaType shaType;
+	protected OshaType shaTypeFlagCriteria;
 	protected String shaLocation;
 	protected float cad7 = 0;
 	protected float neer = 0;
@@ -233,6 +238,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowShaType(boolean showShaType) {
 		this.showShaType = showShaType;
+	}
+	
+	public boolean isShowShaTypeFlagCriteria() {
+		return showShaTypeFlagCriteria;
+	}
+	
+	public void setShowShaTypeFlagCriteria(boolean showShaTypeFlagCriteria) {
+		this.showShaTypeFlagCriteria = showShaTypeFlagCriteria;
 	}
 
 	public boolean isShowShaLocation() {
@@ -515,13 +528,37 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	public void setMaxEMR(float maxEMR) {
 		this.maxEMR = maxEMR;
 	}
-
+	
 	public boolean isShowEmrRange() {
 		return showEmrRange;
 	}
-
+	
 	public void setShowEmrRange(boolean showEmrRange) {
 		this.showEmrRange = showEmrRange;
+	}
+	
+	public float getMinTRIR() {
+		return minTRIR;
+	}
+
+	public void setMinTRIR(float minTRIR) {
+		this.minTRIR = minTRIR;
+	}
+
+	public float getMaxTRIR() {
+		return maxTRIR;
+	}
+
+	public void setMaxTRIR(float maxTRIR) {
+		this.maxTRIR = maxTRIR;
+	}
+	
+	public boolean isShowTrirRange() {
+		return showTrirRange;
+	}
+	
+	public void setShowTrirRange(boolean showTrirRange) {
+		this.showTrirRange = showTrirRange;
 	}
 
 	public boolean isShowIncidenceRate() {
@@ -586,6 +623,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShaType(OshaType shaType) {
 		this.shaType = shaType;
+	}
+	
+	public OshaType getShaTypeFlagCriteria() {
+		return shaTypeFlagCriteria;
+	}
+	
+	public void setShaTypeFlagCriteria(OshaType shaTypeFlagCriteria) {
+		this.shaTypeFlagCriteria = shaTypeFlagCriteria;
 	}
 
 	public String getShaLocation() {
