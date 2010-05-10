@@ -13,3 +13,10 @@ join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
+
+/** Adding existing widgets to CSR users**/
+insert into widget_user 
+select null,widgetID,959,expanded, 
+wu.column,sortOrder,customConfig from widget_user wu 
+where userid = 941 
+and widgetid not in (21,15,12,14);

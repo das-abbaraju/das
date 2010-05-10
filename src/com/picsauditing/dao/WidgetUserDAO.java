@@ -34,6 +34,7 @@ public class WidgetUserDAO extends PicsDAO {
 	}
 
 	public List<WidgetUser> findByUser(Permissions permissions) {
+
 		Query query = em.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? ORDER BY wu.sortOrder");
 		query.setParameter(1, permissions.getUserId());
 
@@ -41,6 +42,8 @@ public class WidgetUserDAO extends PicsDAO {
 		// This will go away when we support per user configuration of dashboard
 		if (permissions.isPicsEmployee())
 			query.setParameter(1, 941); // tallred
+		if(permissions.hasGroup(959)) 
+			query.setParameter(1, 959); // For CSRs 
 		if (permissions.isOnlyAuditor())
 			query.setParameter(1, 910); // ddooly
 		if (permissions.isOperator())
