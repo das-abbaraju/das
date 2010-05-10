@@ -41,11 +41,11 @@ public class ReportBilling extends ReportAccount {
 		if (billingState.equals("All") || billingState.equals("Activations")) {
 			where += "(a.status IN ('Pending','Deactivated') AND (c.renew = 1 OR (c.renew = 0 AND a.acceptsBids = 1)) AND (c.membershipLevelID IS NULL OR c.membershipLevelID = " + InvoiceFee.FREE + "))";
 		}
-		// Show renewals
+		// Show renewals (only on non-bid-only accounts)
 		if (billingState.equals("All") || billingState.equals("Renewals")) {
 			sql.addWhere("");
 			if (where.length() > 0) where += " OR ";
-			where += "(a.status = 'Active' AND c.renew = 1 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
+			where += "(a.status = 'Active' AND c.renew = 1 AND a.acceptsBids = 0 AND f2.defaultAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
 		}
 		// Show upgrades
 		if (billingState.equals("All") || billingState.equals("Upgrades")) {
