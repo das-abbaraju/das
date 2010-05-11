@@ -19,18 +19,10 @@ insert into widget_user
 select null,widgetID,959,expanded, 
 wu.column,sortOrder,customConfig from widget_user wu 
 where userid = 941 
-and widgetid not in (21,15,12,14);
-
-insert into widget
-(widgetID, caption, widgetType, url)
-values
-(null, 'Request For New Contractors', 'Html', 'RequestedContractorsAjax.action'), 
-(null, 'Contractor Activity Watch', 'Html', 'ContractorWatchAjax.action'),
-(null, 'PQF Verification', 'Html', 'PQFVerificationWidgetAjax.action');
+and widgetid not in (10,9,13,21,15,12,14);
 
 insert into widget_user
 (id, widgetID, userID, column, sortOrder)
 values
 (null, 26, 959, 2, 30),
-(null, 27, 959, 2, 35),
 (null, 28, 959, 1, 30);

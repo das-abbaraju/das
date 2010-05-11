@@ -33,9 +33,9 @@ $(function() {
 <s:if test="permissions.contractor">
 	<s:include value="contractors/conHeader.jsp" />
 </s:if>
-<s:else>
+<s:elseif test="!permissions.admin">
 	<h1>Welcome to PICS Online <span class="sub"><s:property value="account.name" /></span></h1>
-</s:else>
+</s:elseif>
 
 <s:if test="showRebranding">
 <div class="info" id="rebranding" style="display:none">

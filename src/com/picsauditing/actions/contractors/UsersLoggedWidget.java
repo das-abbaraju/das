@@ -23,7 +23,7 @@ public class UsersLoggedWidget extends PicsActionSupport {
 	}
 
 	public List<User> getLoggedContractors() {
-		return userDAO.findRecentLoggedContractors(permissions);
+		return userDAO.findRecentLoggedContractors();
 	}
 
 	public List<User> getLoggedOperators() {
