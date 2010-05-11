@@ -3,7 +3,9 @@ package com.picsauditing.mail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -52,6 +54,16 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice,
 			Permissions permissions) throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
+		// creating list of recipients
+		Set<String> billingUserEmails = new HashSet<String>();
+		for(User u : contractor.getUsersByRole(OpPerms.ContractorBilling))
+			billingUserEmails.add(u.getEmail());
+		// removing main recipient
+		billingUserEmails.remove(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
+		String emails = Strings.implode(billingUserEmails, ", ");
+		if(!Strings.isEmpty(emails))
+			emailBuilder.setCcAddresses(emails);
+		// finishing rest of email
 		emailBuilder.setTemplate(45);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorBilling);
 		emailBuilder.addToken("invoice", invoice);
