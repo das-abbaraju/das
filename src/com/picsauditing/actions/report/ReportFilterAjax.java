@@ -38,6 +38,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 				filter.setEmailListType(ListType.Contractor);
 				filter.setShowInvoiceDueDate(true);
 				filter.setShowConWithPendingAudits(true);
+				filter.setShowInsuranceLimits(true);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.Audit)) {
