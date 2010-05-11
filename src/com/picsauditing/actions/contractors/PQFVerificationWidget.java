@@ -12,6 +12,14 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class PQFVerificationWidget extends PicsActionSupport {
+	@Override
+	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
+		
+		return SUCCESS;
+	}
+	
 	public List<BasicDynaBean> getPqfVerifications() {
 		SelectAccount sql = new SelectAccount();
 
@@ -37,11 +45,12 @@ public class PQFVerificationWidget extends PicsActionSupport {
 		sql.addJoin("LEFT JOIN users csr ON csr.id = c.welcomeAuditor_id");
 		sql.addField("csr.name csr_name");
 		sql.addJoin("JOIN contractor_audit ca1 on ca1.conID = a.id");
-		sql.addWhere("ca1.auditTypeID = 1");
 		sql.addField("ca1.completedDate");
+		sql.addWhere("csr.id = " + permissions.getUserId());
+		sql.addWhere("ca1.auditTypeID = 1");
 		sql.addWhere("a.acceptsBids = 0");
 		sql.addWhere("a.status = 'Active'");
-		sql.addOrderBy("completedDate");
+		sql.addOrderBy("completedDate DESC");
 		sql.setLimit(10);
 
 		try {
