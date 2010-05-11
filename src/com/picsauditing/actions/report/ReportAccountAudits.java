@@ -10,6 +10,13 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportAccountAudits extends ReportAccount {
 
 	@Override
+	public void prepare() throws Exception {
+		super.prepare();
+
+		getFilter().setShowInsuranceLimits(true);
+	}
+
+	@Override
 	protected void buildQuery() {
 		super.buildQuery();
 

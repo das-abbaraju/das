@@ -701,32 +701,92 @@
 			list="filter.deactivationReasons" name="contractor.reason"
 			headerKey=" " headerValue="- Deactivation Reason -" cssClass="forms"
 			name="filter.deactivationReason" /></div>
-	</s:if>
+	</s:if>	
 	
 	<s:if test="filter.showInsuranceLimits">
 		<div class="filterOption">
+			<a href="#"	onclick="showInsuranceTextBoxes('form1_insuranceLimits'); return false;">Insurance Limits</a>
+			<span id="form1_insuranceLimits_query">= ALL</span><br />
+			<div
+				id="form1_insuranceLimits"
+				style="display: none"
+				class="clearLink">
 			<table>
 				<tr>
-					<td>GL Each Occurrence:</td>
-					<td><s:textfield name="filter.glEachOccurrence"/></td>
+					<td class="clearLink" title="General Liability - Each Occurence">GL Each Occurrence:</td>
+					<td>$<s:textfield 
+							id="form1_insuranceLimits1"
+							cssClass="forms"
+							title="Please enter a Number such as 5,000,000" 
+							name="filter.glEachOccurrence" 
+							onfocus="clearInsuranceText(this);"
+							onblur="resetEmptyField(this);"
+							onkeyup="isNumber(this,1);"
+							size="15" />
+						<span id="error1" class="redMain"></span>
+					</td>
 				</tr>
 				<tr>
-					<td>GL General Aggregate:</td>
-					<td><s:textfield name="filter.glGeneralAggregate"/></td>
+					<td class="clearLink" title="General Liability - General Aggregate">GL General Aggregate:</td>
+					<td>$<s:textfield
+							id="form1_insuranceLimits2"
+							cssClass="forms"
+							title="Please enter a Number such as 5,000,000" 
+							name="filter.glGeneralAggregate" 
+							onfocus="clearInsuranceText(this);" 
+							onblur="resetEmptyField(this);"
+							onkeyup="isNumber(this,2);"
+							size="15" />
+						<span id="error2" class="redMain"></span>
+					</td>
 				</tr>
 				<tr>
-					<td>AL Combined Single:</td>
-					<td><s:textfield name="filter.alCombinedSingle"/></td>
+					<td class="clearLink" title="Automobile Liability - Combined Single">AL Combined Single:</td>
+					<td>$<s:textfield
+							id="form1_insuranceLimits3"
+							cssClass="forms"
+							title="Please enter a Number such as 5,000,000" 
+							name="filter.alCombinedSingle" 
+							onfocus="clearInsuranceText(this);" 
+							onblur="resetEmptyField(this);"
+							onkeyup="isNumber(this,3);"
+							size="15" />
+						<span id="error3" class="redMain"></span>
+					</td>
 				</tr>
 				<tr>
-					<td>WC Each Accident:</td>
-					<td><s:textfield name="filter.wcEachAccident"/></td>
+					<td class="clearLink" title="Workers Compensation - Each Accident">WC Each Accident:</td>
+					<td>$<s:textfield
+							id="form1_insuranceLimits4"
+							cssClass="forms"
+							title="Please enter a Number such as 5,000,000" 
+							name="filter.wcEachAccident" 
+							onfocus="clearInsuranceText(this);" 
+							onblur="resetEmptyField(this);"
+							onkeyup="isNumber(this,4);"
+							size="15" />
+						<span id="error4" class="redMain"></span>
+					</td>	
 				</tr>
 				<tr>
-					<td>EX Each Occurrence:</td>
-					<td><s:textfield name="filter.exEachOccurrence"/></td>
+					<td class="clearLink" title="Excess Liability - Each Occurence">EX Each Occurrence:</td>
+					<td>$<s:textfield 
+							id="form1_insuranceLimits5"
+							cssClass="forms"
+							title="Please enter a Number such as 5,000,000" 
+							name="filter.exEachOccurrence" 
+							onfocus="clearInsuranceText(this);" 
+							onblur="resetEmptyField(this);"
+							onkeyup="isNumber(this,5);"
+							size="15" />
+						<span id="error5" class="redMain"></span>
+					</td>
 				</tr>
 			</table>
+			<script type="text/javascript">insuranceLimitsTextQuery('form1_insuranceLimits');</script>
+			<a class="clearLink" href="#"
+				onclick="clearInsuranceTextFields('form1_insuranceLimits'); return false;">Clear</a>
+			</div>
 		</div>	
 	</s:if>
 	

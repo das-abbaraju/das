@@ -354,7 +354,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			if (getFilter().getMinorityQuestion() != 3) {
 				sql.addJoin("JOIN pqfdata pdsd on casd.id = pdsd.auditID AND pdsd.questionID = "
 						+ getFilter().getMinorityQuestion());
-				if(getFilter().getMinorityQuestion() == 3543)
+				if (getFilter().getMinorityQuestion() == 3543)
 					sql.addWhere("pdsd.answer = 'X'");
 				else
 					sql.addWhere("pdsd.answer = 'Yes'");
@@ -363,7 +363,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				sql.addJoin("JOIN pqfdata pd2354 on casd.id = pd2354.auditID AND pd2354.questionID = 2354");
 				sql.addJoin("JOIN pqfdata pd2373 on casd.id = pd2373.auditID AND pd2373.questionID = 2373");
 				sql.addJoin("LEFT JOIN pqfdata pd3543 on casd.id = pd3543.auditID AND pd3543.questionID = 3543");
-				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X'");
+				sql
+						.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X'");
 			}
 		}
 
@@ -372,27 +373,27 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (getFilter().isShowInsuranceLimits()) {
-			if (filterOn(getFilter().getGlEachOccurrence())) {
+			if (filterOn(getFilter().getGlEachOccurrence(), ReportFilterContractor.DEFAULT_AMOUNT)) {
 				sql.addAuditQuestion(2074, 13, true);
-				sql.addWhere("REPLACE(q2074.answer,',','') > " + getFilter().getGlEachOccurrence());
+				sql.addWhere("REPLACE(q2074.answer,',','') >= " + getFilter().getGlEachOccurrence());
 			}
-			if (filterOn(getFilter().getGlGeneralAggregate())) {
+			if (filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.DEFAULT_AMOUNT)) {
 				sql.addAuditQuestion(2079, 13, true);
-				sql.addWhere("REPLACE(q2079.answer,',','') > " + getFilter().getGlGeneralAggregate());
+				sql.addWhere("REPLACE(q2079.answer,',','') >= " + getFilter().getGlGeneralAggregate());
 			}
-			if (filterOn(getFilter().getAlCombinedSingle())) {
+			if (filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.DEFAULT_AMOUNT)) {
 				sql.addAuditQuestion(2155, 15, true);
-				sql.addWhere("REPLACE(q2155.answer,',','') > " + getFilter().getAlCombinedSingle());
+				sql.addWhere("REPLACE(q2155.answer,',','') >= " + getFilter().getAlCombinedSingle());
 			}
-			if (filterOn(getFilter().getWcEachAccident())) {
+			if (filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.DEFAULT_AMOUNT)) {
 				sql.addAuditQuestion(2149, 14, true);
-				sql.addWhere("REPLACE(q2149.answer,',','') > " + getFilter().getWcEachAccident());
+				sql.addWhere("REPLACE(q2149.answer,',','') >= " + getFilter().getWcEachAccident());
 			}
-			if (filterOn(getFilter().getExEachOccurrence())) {
+			if (filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.DEFAULT_AMOUNT)) {
 				sql.addAuditQuestion(2161, 16, true);
-				sql.addWhere("REPLACE(q2161.answer,',','') > " + getFilter().getExEachOccurrence());
+				sql.addWhere("REPLACE(q2161.answer,',','') >= " + getFilter().getExEachOccurrence());
 			}
-			
+
 			sql.addGroupBy("a.id");
 		}
 	}

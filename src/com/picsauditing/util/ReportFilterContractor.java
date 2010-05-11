@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class ReportFilterContractor extends ReportFilterAccount {
+	public static final String DEFAULT_AMOUNT = "- Enter Amount -";
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_PERFORMED_BY = "- No Preference -";
@@ -87,11 +88,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String deactivationReason;
 	protected int minorityQuestion = 0;
 	protected String workStatus;
-	protected String glEachOccurrence;
-	protected String glGeneralAggregate;
-	protected String alCombinedSingle;
-	protected String wcEachAccident;
-	protected String exEachOccurrence;
+	protected String glEachOccurrence = DEFAULT_AMOUNT;
+	protected String glGeneralAggregate = DEFAULT_AMOUNT;
+	protected String alCombinedSingle = DEFAULT_AMOUNT;
+	protected String wcEachAccident = DEFAULT_AMOUNT;
+	protected String exEachOccurrence = DEFAULT_AMOUNT;
 
 	// private AuditQuestionDAO aQuestionDAO = (AuditQuestionDAO)
 	// SpringUtils.getBean("AuditQuestionDAO");
