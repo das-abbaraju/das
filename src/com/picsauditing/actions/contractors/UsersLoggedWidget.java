@@ -8,8 +8,6 @@ import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class UsersLoggedWidget extends PicsActionSupport {
-	private List<User> loggedCon;
-	private List<User> loggedOp;
 	UserDAO userDAO;
 
 	public UsersLoggedWidget(UserDAO userDAO) {
@@ -25,7 +23,7 @@ public class UsersLoggedWidget extends PicsActionSupport {
 	}
 
 	public List<User> getLoggedContractors() {
-		return userDAO.findRecentLoggedContractors();
+		return userDAO.findRecentLoggedContractors(permissions);
 	}
 
 	public List<User> getLoggedOperators() {

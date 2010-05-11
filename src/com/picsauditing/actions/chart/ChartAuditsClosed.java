@@ -1,7 +1,9 @@
 package com.picsauditing.actions.chart;
 
+import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.chart.ChartMultiSeries;
 import com.picsauditing.util.chart.DataRow;
@@ -17,7 +19,7 @@ public class ChartAuditsClosed extends ChartMSAction {
 
 	@Override
 	public ChartMultiSeries buildChart() throws Exception {
-		String threeMonthsAgo = "2008-03-01";
+		String threeMonthsAgo = DateBean.toDBFormat(DateBean.addMonths(new Date(), -3));
 		String sqlString;
 		SelectSQL sql;
 		sql = new SelectSQL("contractor_audit ca");
@@ -51,11 +53,11 @@ public class ChartAuditsClosed extends ChartMSAction {
 		sql.addJoin("JOIN audit_type t on t.id = ca.auditTypeID");
 
 		sql.addField("'New' as series");
-		sql.addField("date_format(creationDate, '%Y%m') as sortBy");
-		sql.addField("date_format(creationDate, '%b %Y') as label");
+		sql.addField("date_format(ca.creationDate, '%Y%m') as sortBy");
+		sql.addField("date_format(ca.creationDate, '%b %Y') as label");
 		sql.addField("count(*) as value");
 		sql.addWhere("ca.auditorID = " + permissions.getUserId());
-		sql.addWhere("creationDate >= '" + threeMonthsAgo + "'");
+		sql.addWhere("ca.creationDate >= '" + threeMonthsAgo + "'");
 		sql.addGroupBy("label");
 		sql.addOrderBy("series, sortBy");
 		sqlString += " UNION ";

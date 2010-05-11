@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
 
@@ -122,9 +123,12 @@ public class UserDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
-	public List<User> findRecentLoggedContractors() {
-		String sql = "SELECT u FROM User u WHERE u.account.type = 'Contractor' "
-			+ "ORDER BY u.lastLogin DESC";
+	public List<User> findRecentLoggedContractors(Permissions permissions) {
+		String sql = "SELECT u FROM User u WHERE u.account.type = 'Contractor' ";
+		if(permissions.hasGroup(User.GROUP_CSR)) {
+			sql += " AND u.account.id IN (SELECT id FROM ContractorAccount WHERE auditor.id = " + permissions.getUserId() +")";
+		}
+		sql +=	" ORDER BY u.lastLogin DESC";
 		Query query = em.createQuery(sql);
 		query.setMaxResults(10);
 		return query.getResultList();
