@@ -6,6 +6,13 @@ import com.picsauditing.access.OpPerms;
 public class ReportContractorsWithForcedFlags extends ReportAccount {
 	
 	@Override
+	public void prepare() throws Exception {
+		super.prepare();
+
+		getFilter().setShowInsuranceLimits(true);
+	}
+	
+	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ForcedFlagsReport);
 	}

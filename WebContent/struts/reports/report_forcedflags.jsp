@@ -7,6 +7,9 @@
 </head>
 <body>
 <h1>Forced Flags</h1>
+
+<s:include value="filters.jsp" />
+
 <s:form id="form1"> 
 	<s:hidden name="filter.ajax" value="false" />
 	<s:hidden name="showPage" value="1" />
