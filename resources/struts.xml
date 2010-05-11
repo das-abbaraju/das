@@ -196,6 +196,11 @@
 			class="com.picsauditing.actions.contractors.PQFVerificationWidget">
 			<result>struts/widgets/pqf_verification_widget.jsp</result>
 		</action>
+		
+		<action name="SubmittedAuditsAjax"
+			class="com.picsauditing.actions.audits.SubmittedAuditsWidget">
+			<result>struts/widgets/outstanding_submitted_audits.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"

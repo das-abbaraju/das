@@ -25,4 +25,9 @@ insert into widget_user
 (id, widgetID, userID, column, sortOrder)
 values
 (null, 26, 959, 2, 30),
-(null, 28, 959, 1, 30);
+(null, 28, 959, 1, 30),
+()null, 29, 959, 2, 50);
+
+insert into widget
+(widgetID, caption, widgetType, url)
+values (null, 'Outstanding Submitted Audits', 'Html', 'SubmittedAuditsAjax.action');
