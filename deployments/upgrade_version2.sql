@@ -25,10 +25,12 @@ insert into widget
 (widgetID, caption, widgetType, url)
 values
 (null, 'Request For New Contractors', 'Html', 'RequestedContractorsAjax.action'), 
-(null, 'Contractor Activity Watch', 'Html', 'ContractorWatchAjax.action');
+(null, 'Contractor Activity Watch', 'Html', 'ContractorWatchAjax.action'),
+(null, 'PQF Verification', 'Html', 'PQFVerificationWidgetAjax.action');
 
 insert into widget_user
 (id, widgetID, userID, column, sortOrder)
 values
 (null, 26, 959, 2, 30),
-(null, 27, 959, 2, 35);
+(null, 27, 959, 2, 35),
+(null, 28, 959, 1, 30);
