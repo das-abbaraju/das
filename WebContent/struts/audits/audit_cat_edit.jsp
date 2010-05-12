@@ -54,7 +54,7 @@
 		<s:property value="%{#a.answer}"/>
 	</s:if>
 	<s:if test="#q.questionType == 'Text Area'">
-		<s:textarea cols="70" rows="4" name="answer%{#q.id}" value="%{#a.answer}" cssStyle="margin-left: 80px; width: 100%;"
+		<s:textarea cols="70" rows="4" name="answer%{#q.id}" value="%{#a.answer}" cssStyle="margin-left: 80px;"
 			onchange="saveAnswer('%{#q.id}', this);">
 		</s:textarea>
 	</s:if>
@@ -232,5 +232,4 @@
 </s:if>
 <div class="dependentQuestions hide" ><s:iterator value="#q.dependentQuestions"><s:if test="#q.subCategory.category == subCategory.category">,<s:property value="id"/></s:if></s:iterator></div>
 
-<br clear="all">
 <div class="clear"></div>
