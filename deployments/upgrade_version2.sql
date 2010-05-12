@@ -21,13 +21,15 @@ wu.column,sortOrder,customConfig from widget_user wu
 where userid = 941 
 and widgetid not in (10,9,13,21,15,12,14);
 
+insert into widget
+(widgetID, caption, widgetType, url)
+values
+(null, 'Outstanding Submitted Audits', 'Html', 'SubmittedAuditsAjax.action'),
+(null, 'Outstanding Rejected Policies', 'Html', 'RejectedPoliciesAjax.action');
+
+/** Make sure that the widgetIDs are correct! **/
 insert into widget_user
 (id, widgetID, userID, column, sortOrder)
 values
-(null, 26, 959, 2, 30),
-(null, 28, 959, 1, 30),
-()null, 29, 959, 2, 50);
-
-insert into widget
-(widgetID, caption, widgetType, url)
-values (null, 'Outstanding Submitted Audits', 'Html', 'SubmittedAuditsAjax.action');
+(null, 26, 959, 2, 35);
+(null, 27, 959, 2, 37);

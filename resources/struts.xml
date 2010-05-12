@@ -201,6 +201,11 @@
 			class="com.picsauditing.actions.audits.SubmittedAuditsWidget">
 			<result>struts/widgets/outstanding_submitted_audits.jsp</result>
 		</action>
+		
+		<action name="RejectedPoliciesAjax"
+			class="com.picsauditing.actions.audits.RejectedPoliciesWidget">
+			<result>struts/widgets/outstanding_rejected_policies.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"
