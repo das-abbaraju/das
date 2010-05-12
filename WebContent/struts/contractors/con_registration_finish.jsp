@@ -18,14 +18,14 @@
 	<div class="error">You haven't selected any facilities! We cannot process your account until do. <a
 		href="ContractorFacilities.action">Click to Add Facilities</a></div>
 </s:if>
-<s:elseif test="!contractor.paymentMethodStatusValid">
+<s:elseif test="!contractor.paymentMethodStatusValid && contractor.mustPayB">
 	<div class="error">You didn't add a credit card to your account. You must enter a valid payment method before we can
 	process your account. <a href="ContractorPaymentOptions.action">Click to Add a Credit Card</a></div>
 </s:elseif>
 <s:else>
 	<s:if test="complete">
 		<div class="info">
-			Your account has been registered successfully. A copy of the invoice has been emailed to you.
+			Your account has been registered successfully.<s:if test="contractor.mustPayB"> A copy of the invoice has been emailed to you.</s:if>
 			<s:if test="contractor.status.active">
 				<div class="buttons">
 					<a href="Home.action" class="picsbutton positive">Click Here to go to your Home Page</a>
@@ -100,13 +100,34 @@
 						<s:if test="!contractor.newMembershipLevel.free">
 							<h3>Invoice Summary</h3>
 							<br clear="all"/>
-							<s:set name="i" value="invoice"/>
-							<s:include value="con_invoice_embed.jsp"/>
+							<s:if test="contractor.mustPayB">
+								<s:set name="i" value="invoice"/>
+								<s:include value="con_invoice_embed.jsp"/>
+							</s:if>
+							<s:else>
+								<table class="allborder">
+									<tr>
+										<th>Item &amp; Description</th>
+										<th width="100px">Fee Amount</th>
+									</tr>
+									<tr>
+										<th class="big right">Invoice Total</th>
+										<td class="big right">FREE</td>
+									</tr>
+								</table>
+							</s:else>
 							<br clear="all"/>
 							<s:if test="contractor.paymentMethod.creditCard">
-								<div class="info">
-									Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be mailed to you.
-								</div>
+								<s:if test="contractor.mustPayB">
+									<div class="info">
+										Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be mailed to you.
+									</div>
+								</s:if>
+								<s:else>
+									<div class="info">
+										Please click the following button to activate your account.
+									</div>
+								</s:else>
 							</s:if>
 						</s:if>
 						

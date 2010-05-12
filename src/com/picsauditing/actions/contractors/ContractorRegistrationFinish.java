@@ -87,10 +87,14 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 		if ("Complete My Registration".equals(button)) {
 
-			if (contractor.getNewMembershipLevel().isFree()) {
+			if (contractor.getNewMembershipLevel().isFree() || !contractor.isMustPayB()) {
 				// Free accounts should just be activated
 				contractor.setStatus(AccountStatus.Active);
 				contractor.setAuditColumns(permissions);
+				contractor.setMembershipDate(new Date());
+				if (contractor.getBalance() == null)
+					contractor.setBalance(BigDecimal.ZERO);
+				accountDao.save(contractor);
 			} else {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {

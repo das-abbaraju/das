@@ -110,7 +110,7 @@ public class ContractorWidget extends ContractorActionSupport {
 					}
 				}
 
-				if (!contractor.isPaymentMethodStatusValid()) {
+				if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
 					openTasks.add("Please <a href=\"ContractorPaymentOptions.action?id=" + contractor.getId()
 							+ "\">update your payment method</a>");
 				}
@@ -129,9 +129,9 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 
 			for (ContractorAudit conAudit : getActiveAudits()) {
-				if (conAudit.getAuditType().isCanContractorView() && 
-						(conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded()
-						|| auditTypeList.contains(conAudit.getAuditType()))) {
+				if (conAudit.getAuditType().isCanContractorView()
+						&& (conAudit.getAuditType().isPqf() || conAudit.isManuallyAdded() || auditTypeList
+								.contains(conAudit.getAuditType()))) {
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || permissions.isAdmin()) {
 						if (conAudit.getAuditType().getClassType().isPqf()) {
 							if (conAudit.getAuditType().isPqf())
@@ -182,10 +182,11 @@ public class ContractorWidget extends ContractorActionSupport {
 							} else {
 								text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
 										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + "</a>";
-								if(conAudit.getScheduledDate() != null) {
+								if (conAudit.getScheduledDate() != null) {
 									try {
 										text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
-									} catch (Exception e) {}
+									} catch (Exception e) {
+									}
 								}
 								if (conAudit.getAuditor() != null)
 									text += " with " + conAudit.getAuditor().getName();
@@ -207,13 +208,13 @@ public class ContractorWidget extends ContractorActionSupport {
 									}
 								}
 							}
-	
+
 							if (pendingOperators.size() > 0) {
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 										+ "\">upload and submit your " + conAudit.getAuditType().getAuditName()
 										+ " Policy for </a>" + Strings.implode(pendingOperators, ","));
 							}
-	
+
 							for (ContractorAuditOperator cAuditOperator : conAudit.getCurrentOperators()) {
 								if (CaoStatus.Rejected.equals(cAuditOperator.getStatus())) {
 									AuditOperator ao = cAuditOperator.getOperator().getAuditMap().get(

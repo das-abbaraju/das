@@ -27,9 +27,11 @@
 	$<s:property value="contractor.membershipLevel.amount" /> USD <br />
 	<s:property value="contractor.membershipLevel.fee" />
 </p>
-<pics:permission perm="ContractorBilling">
-	<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right">Edit Credit Card Info</a>
-</pics:permission>
+<s:if test="contractor.mustPayB">
+	<pics:permission perm="ContractorBilling">
+		<a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id" />" class="edit right">Edit Credit Card Info</a>
+	</pics:permission>
+</s:if>
 <p>
 	<label>Credit Card:</label>
 	<s:if test="contractor.ccOnFile && creditCard != null">

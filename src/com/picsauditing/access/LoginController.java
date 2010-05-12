@@ -228,8 +228,8 @@ public class LoginController extends PicsActionSupport {
 				}
 				return "The password is not correct. You have " + (8 - user.getFailedAttempts())
 						+ " attempts remaining before your account will be locked for one hour. "
-						+ "<a href=\"http://new.picsorganizer.com/AccountRecovery.action?username=" + user.getUsername()
-						+ "\">Click here to reset your password</a>";
+						+ "<a href=\"http://new.picsorganizer.com/AccountRecovery.action?username="
+						+ user.getUsername() + "\">Click here to reset your password</a>";
 			}
 		} else {
 			if (user.getResetHash() == null) {
@@ -290,7 +290,7 @@ public class LoginController extends PicsActionSupport {
 				url = "ContractorRegistrationServices.action?id=" + cAccount.getId();
 			else if (cAccount.getNonCorporateOperators().size() == 0)
 				url = "ContractorFacilities.action?id=" + cAccount.getId();
-			else if (!cAccount.isPaymentMethodStatusValid())
+			else if (!cAccount.isPaymentMethodStatusValid() && cAccount.isMustPayB())
 				url = "ContractorPaymentOptions.action?id=" + cAccount.getId();
 			else
 				url = "ContractorEdit.action?id=" + cAccount.getId();

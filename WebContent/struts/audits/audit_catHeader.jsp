@@ -55,7 +55,7 @@
 			that need your attention.
 		</div>
 	</s:if>
-	<s:if test="conAudit.auditStatus.name() == 'Pending' && !conAudit.contractorAccount.paymentMethodStatusValid">
+	<s:if test="conAudit.auditStatus.name() == 'Pending' && !conAudit.contractorAccount.paymentMethodStatusValid && conAudit.contractorAccount.mustPayB">
 		<div class="info">Before you will be able to submit your information for review, you must <a href="ContractorPaymentOptions.action?id=<s:property value="conAudit.contractorAccount.id"/>"> update your payment method</a>.</div>		
 	</s:if>
 </s:if>

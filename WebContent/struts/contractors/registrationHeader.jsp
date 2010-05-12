@@ -21,7 +21,7 @@
 			<s:else>
 				<li><a class="inactive">4) Add Payment Options</a></li>
 			</s:else>
-			<s:if test="contractor.paymentMethodStatusValid && contractor.operators.size > 0">
+			<s:if test="(contractor.paymentMethodStatusValid || !contractor.mustPayB) && contractor.operators.size > 0">
 				<li><a id="conConfirmLink" href="ContractorRegistrationFinish.action"
 					<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Confirm</a></li>
 			</s:if>

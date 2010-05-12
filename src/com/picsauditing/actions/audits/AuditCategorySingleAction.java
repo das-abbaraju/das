@@ -208,7 +208,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		if (conAudit.getPercentComplete() < 100)
 			return false;
 		if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
-			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()) {
+			if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()
+					&& conAudit.getContractorAccount().isMustPayB()) {
 				return false;
 			}
 			return true;
@@ -276,7 +277,8 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		if (!isCanEdit())
 			return false;
 
-		if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid())
+		if (permissions.isContractor() && !conAudit.getContractorAccount().isPaymentMethodStatusValid()
+				&& conAudit.getContractorAccount().isMustPayB())
 			return false;
 		return true;
 
