@@ -18,18 +18,20 @@ and pd.answer = 'Yes');
 insert into widget_user 
 select null,widgetID,959,expanded, 
 wu.column,sortOrder,customConfig from widget_user wu 
-where userid = 941 
-and widgetid not in (10,9,13,21,15,12,14);
+where 
+(userid = 941 and widgetid in (2,16,18))
+or (userid = 616 and widgetid = 1);
 
 insert into widget
-(widgetID, caption, widgetType, url)
+(widgetID, caption, widgetType, url, chartType)
 values
-(null, 'Outstanding Submitted Audits', 'Html', 'SubmittedAuditsAjax.action'),
-(null, 'Outstanding Rejected Policies', 'Html', 'RejectedPoliciesAjax.action');
+(null, 'Outstanding Submitted Audits', 'Html', 'SubmittedAuditsAjax.action',null),
+(null, 'Outstanding Rejected Policies', 'Html', 'RejectedPoliciesAjax.action',null),
+(null, 'Flag Color Count by Category', 'Chart', 'ChartXMLFlagCategoryCount.action','ScrollStackedColumn2D');
 
 /** Make sure that the widgetIDs are correct! **/
 insert into widget_user
 (id, widgetID, userID, column, sortOrder)
 values
-(null, 26, 959, 2, 35);
-(null, 27, 959, 2, 37);
+(null, 26, 959, 2, 30),
+(null, 28, 959, 1, 30);

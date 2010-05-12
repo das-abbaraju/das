@@ -1302,6 +1302,9 @@
 			class="com.picsauditing.actions.chart.OperatorFlagHistory">
 		</action>
 		
+		<action name="ChartXMLFlagCategoryCount"
+			class="com.picsauditing.actions.chart.ChartFlagCategoryCount">
+		</action>
 		<!-- Office Audit Scheduling -->
 
 		<action name="AuditScheduleBuilderCron"
