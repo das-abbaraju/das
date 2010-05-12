@@ -3,7 +3,7 @@
 	<thead>
 	<tr>
 		<td>Contractor</td>
-		<td>PQF Completed Date</td>
+		<td>Completed</td>
 	</tr>
 	</thead>
 	<s:if test="pqfVerifications.size() > 0">

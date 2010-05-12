@@ -25,32 +25,28 @@ public class PQFVerificationWidget extends PicsActionSupport {
 
 		sql.setType(SelectAccount.Type.Contractor);
 		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
-		sql.addField("a.phone");
-		sql.addField("a.fax");
-		sql.addField("a.creationDate");
-		sql.addField("c.riskLevel");
 		sql.setType(SelectAccount.Type.Contractor);
 		
-		SelectSQL subSelect = new SelectSQL("contractor_audit ca");
-		subSelect.addField("ca.conID");
-		subSelect.addJoin("JOIN generalcontractors gc ON gc.subid = ca.conid");
+		SelectSQL subSelect = new SelectSQL("generalcontractors gc");
+		subSelect.addField("gc.subid");
 		subSelect.addJoin("JOIN operators o ON o.id = gc.genid");
-		subSelect.addJoin("JOIN audit_operator ao ON ao.opid = o.inheritAudits ");
+		subSelect.addJoin("JOIN audit_operator ao ON ao.opid = o.inheritAudits");
 		subSelect.addWhere("ao.auditTypeID in (1,11)");
 		subSelect.addWhere("ao.canSee = 1");
-		subSelect.addWhere("ca.auditTypeID = ao.auditTypeID");
-		subSelect.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
 		
 		sql.addWhere("a.id IN (" + subSelect.toString() + ")");
-		sql.addJoin("LEFT JOIN users csr ON csr.id = c.welcomeAuditor_id");
+		sql.addJoin("JOIN users csr ON csr.id = c.welcomeAuditor_id");
 		sql.addField("csr.name csr_name");
-		sql.addJoin("JOIN contractor_audit ca1 on ca1.conID = a.id");
-		sql.addField("ca1.completedDate");
 		sql.addWhere("csr.id = " + permissions.getUserId());
-		sql.addWhere("ca1.auditTypeID = 1");
+		
+		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id");
+		sql.addWhere("ca.auditStatus IN ('Submitted','Resubmitted')");
+		sql.addWhere("ca.auditTypeID IN (1,11)");
+		sql.addField("MIN(ca.completedDate) as completedDate");
 		sql.addWhere("a.acceptsBids = 0");
 		sql.addWhere("a.status = 'Active'");
-		sql.addOrderBy("completedDate DESC");
+		sql.addGroupBy("ca.conid");
+		sql.addOrderBy("completedDate");
 		sql.setLimit(10);
 
 		try {
