@@ -60,8 +60,7 @@ function checkReason(id) {
 <s:include value="conHeader.jsp" />
 
 <!-- OVERALL FLAG -->
-<s:if test="!co.forcedFlag">
-	<div class="info" style="float: right; clear: right; width: 25%;">
+<div class="info" style="float: right; clear: right; width: 25%;">
 	<s:form>
 		<s:hidden name="id" />
 		<s:hidden name="opID" />
@@ -69,8 +68,7 @@ function checkReason(id) {
 		<s:else>Contractor's flag has not been calculated.<br /></s:else>
 		<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
 	</s:form>
-	</div>
-</s:if>
+</div>
 
 <s:if test="permissions.contractor">
 <div class="helpOnRight" style="clear: right;">
