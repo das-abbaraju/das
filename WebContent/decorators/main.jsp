@@ -81,7 +81,7 @@
 
 <div id="headersearch"<% if (permissions.isLoggedIn()) { %> style="padding-left: 120px;"<% } %>>
 <form action="ContractorSearch.action" method="get">
-<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)""/>
+<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
 <input type="submit" value="Search" id="search_button" />
 </form>
 </div>
