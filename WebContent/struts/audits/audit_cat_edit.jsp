@@ -231,5 +231,3 @@
 	format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" /></span>
 </s:if>
 <div class="dependentQuestions hide" ><s:iterator value="#q.dependentQuestions"><s:if test="#q.subCategory.category == subCategory.category">,<s:property value="id"/></s:if></s:iterator></div>
-
-<div class="clear"></div>

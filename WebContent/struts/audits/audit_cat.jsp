@@ -129,7 +129,7 @@ label.policy {
 									<s:if test="#q.isGroupedWithPrevious.toString() == 'No'">
 										<s:set name="shaded" value="!#shaded" scope="action"/>
 									</s:if>
-									<div id="node_<s:property value="#q.id"/>" class="question <s:if test="#shaded">shaded</s:if>">
+									<div id="node_<s:property value="#q.id"/>" class="clearfix question <s:if test="#shaded">shaded</s:if>">
 										<s:include value="audit_cat_question.jsp"></s:include>
 									</div>
 								</s:if>
