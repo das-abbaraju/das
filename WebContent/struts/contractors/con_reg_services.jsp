@@ -49,7 +49,7 @@ Please select the services your company performs<br>
 		<s:set name="a" value="answerMap.get(#q.id)" />
 		<s:set name="shaded" value="!#shaded" scope="action" />
 		<div id="node_<s:property value="#q.id"/>"
-			class="clearfix question <s:if test="#shaded">shaded</s:if>"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
+			class="clearfix question <s:if test="#shaded">shaded</s:if>" style="padding-bottom:0px;"><s:include value="../audits/audit_cat_edit.jsp"></s:include></div>
 	</s:if>
 </s:iterator>
 
