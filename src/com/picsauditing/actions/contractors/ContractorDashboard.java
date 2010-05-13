@@ -30,6 +30,7 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -68,9 +69,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private ContractorOperator co;
 	private int opID;
-	
+
 	private ContractorWatch watch;
-	
+
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
@@ -106,25 +107,25 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return LOGIN_AJAX;
 
 		findContractor();
-		
+
 		if (button != null && button.contains("Watch")) {
 			tryPermissions(OpPerms.ContractorWatch, OpType.Edit);
 			getWatch();
-			
+
 			if ("Start Watch".equals(button) && watch == null) {
 				User user = userDAO.find(permissions.getUserId());
 				watch = new ContractorWatch();
 				watch.setContractor(contractor);
 				watch.setUser(user);
 				watch.setAuditColumns(permissions);
-				
+
 				userDAO.save(watch);
 			}
-			
+
 			if ("Stop Watch".equals(button) && watch != null)
 				userDAO.remove(watch);
 		}
-		
+
 		if ("AddTag".equals(button)) {
 			if (tagId > 0) {
 				ContractorTag cTag = new ContractorTag();
@@ -195,7 +196,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-		
+
 		if (permissions.isOperatorCorporate()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -362,12 +363,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public OshaDisplay getOshaDisplay() {
 		if (oshaDisplay == null) {
-			oshaDisplay = new OshaDisplay(contractor.getOshaOrganizer(), getActiveOperators());
+			oshaDisplay = new OshaDisplay(getActiveOperators());
 		}
 
 		return oshaDisplay;
 	}
-	
+
 	private ContractorWatch getWatch() {
 		if (watch == null) {
 			List<ContractorWatch> watched = userDAO.findContractorWatch(permissions.getUserId());
@@ -378,10 +379,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		return watch;
 	}
-	
+
 	public boolean isWatched() {
 		return getWatch() != null;
 	}
@@ -393,7 +394,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		private Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 
-		public OshaDisplay(OshaOrganizer organizer, List<ContractorOperator> contractorOperators) {
+		public OshaDisplay(List<ContractorOperator> contractorOperators) {
+
+			OshaOrganizer organizer = contractor.getOshaOrganizer();
 
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage }) {
@@ -442,6 +445,26 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 
+			for (Map.Entry<String, AuditData> entry : contractor.getEmrs().entrySet()) {
+				put("EMR", entry.getKey(), entry.getValue().getAnswer());
+			}
+
+			for (OperatorAccount o : inheritedOperators) {
+				for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
+					if (fco.getCriteria().getQuestion() != null
+							&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
+						String operatorDisplay = getOperatorDisplay(o, " EMR");
+						String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
+
+						if (getData(operatorDisplay, auditFor) != null)
+							put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
+									+ getFlagDescription(fco));
+						else
+							put(operatorDisplay, auditFor, getFlagDescription(fco));
+					}
+				}
+			}
+
 			buildRateTypeSet(inheritedOperators);
 		}
 
@@ -480,6 +503,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
 			for (OperatorAccount operatorAccount : operators) {
 				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.Fatalities));
+				if (data.get(disp) != null)
+					rateTypeSet.add(disp);
+			}
+			rateTypeSet.add("EMR");
+			for (OperatorAccount operatorAccount : operators) {
+				String disp = getOperatorDisplay(operatorAccount, " EMR");
 				if (data.get(disp) != null)
 					rateTypeSet.add(disp);
 			}
