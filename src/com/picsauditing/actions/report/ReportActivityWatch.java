@@ -112,24 +112,37 @@ public class ReportActivityWatch extends ReportAccount {
 		if (auditExpiration) {
 			SelectSQL sql2 = buildWatch("AuditExpiration", "contractor_audit ca", "ca.conID", "ca.expiresDate", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Expired')", "CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id");
+			if(permissions.isOperatorCorporate()) {
+				sql2.addWhere("aType.id IN ("+ Strings.implode(permissions.getCanSeeAudits(), ",") +")");
+			}
 			sql2.addWhere("expiresDate IS NOT NULL AND ca.auditStatus = 'Expired'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (auditSubmitted) {
 			SelectSQL sql2 = buildWatch("AuditSubmitted", "contractor_audit ca", "ca.conID", "ca.completedDate", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Submitted')", "CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.hasRequirements = 1");
+			if(permissions.isOperatorCorporate()) {
+				sql2.addWhere("aType.id IN ("+ Strings.implode(permissions.getCanSeeAudits(), ",") +")");
+			}
 			sql2.addWhere("completedDate IS NOT NULL AND ca.auditStatus = 'Submitted'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (auditActivated) {
 			SelectSQL sql2 = buildWatch("AuditActivated", "contractor_audit ca", "ca.conID", "ca.closedDate", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Activated')", "CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id");
+			if(permissions.isOperatorCorporate()) {
+				sql2.addWhere("aType.id IN ("+ Strings.implode(permissions.getCanSeeAudits(), ",") +")");
+			}
 			sql2.addWhere("closedDate IS NOT NULL AND ca.auditStatus = 'Active'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (flagColorChange) {
-			SelectSQL sql2 = buildWatch("FlagColorChange", "generalcontractors gc", "gc.subID", "gc.flagLastUpdated", "CONCAT('Flag Color changed to ', flag)", "CONCAT('ConFlag.action?auditID=', gc.subID)");
-			sql2.addWhere("gc.genID = " + permissions.getAccountId());
+			SelectSQL sql2 = buildWatch("FlagColorChange", "generalcontractors gc", "gc.subID", "gc.flagLastUpdated", "CONCAT('Flag Color changed to ', flag,' for ', oper.name)", "CONCAT('ContractorFlag.action?id=', gc.subID,'&opID=',gc.genID)");
+			sql2.addJoin("JOIN accounts oper ON oper.id = gc.genID");
+			sql2.addWhere("oper.type = 'Operator'");
+			if(permissions.isOperatorCorporate()) {
+				sql2.addWhere("gc.genID IN ("+ Strings.implode(permissions.getVisibleAccounts(), ",")+")");
+			}
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (login) {
@@ -139,7 +152,7 @@ public class ReportActivityWatch extends ReportAccount {
 		}
 		if (note) {
 			SelectSQL sql2 = buildWatch("Note", "note n USE INDEX(creationDate)", "n.accountID", "n.creationDate", "CONCAT(u.name, ' posted a Note')", "CONCAT('ContractorNotes.action?id=', n.accountID)");
-			sql2.addJoin("JOIN users u ON n.createdBy = u.id AND u.id > " + User.SYSTEM);
+			sql2.addJoin("JOIN users u ON n.createdBy = u.id");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (email) {
