@@ -18,7 +18,6 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.FlagDataCalculator;
@@ -195,9 +194,6 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	}
 	
 	private HSSFWorkbook createWorkbook() {
-		int columns = flagCriteriaOperator.getCriteria().isAllowCustomValue() ? 2 : 1;
-		int rows = 1;
-		
 		// Create spreadsheet here
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("Affected Contractors");
@@ -221,10 +217,17 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		numberStyle.setFont(normalFont);
 		numberStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
 		
+		HSSFCell cell = sheet.createRow(0).createCell(1);
+		cell.setCellValue(new HSSFRichTextString(flagCriteriaOperator.getReplaceHurdle()));
+		cell.setCellStyle(headerStyle);
+		
+		int columns = flagCriteriaOperator.getCriteria().isAllowCustomValue() ? 2 : 1;
+		int rows = 1;
+		
 		// Print out the data
 		for (FlagData data : affected) {
 			HSSFRow row = sheet.createRow(rows);
-			HSSFCell cell = row.createCell(0);
+			cell = row.createCell(0);
 			cell.setCellValue(rows);
 			cell.setCellStyle(numberStyle);
 			
@@ -236,7 +239,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			// If this is a number datatype, print out the number
 			if (columns > 1) {
 				cell = row.createCell(2);
-				cell.setCellValue(Double.parseDouble(Strings.formatDecimalComma(data.getCriteriaContractor().getAnswer())));
+				// Double has a hard time parsing commas. Just remove them all.
+				cell.setCellValue(Double.parseDouble(data.getCriteriaContractor().getAnswer().replace(",", "")));
 				cell.setCellStyle(numberStyle);
 			}
 			
@@ -244,21 +248,12 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		}
 		
 		// Space out properly
-		HSSFCell cell = sheet.createRow(0).createCell(1);
-		cell.setCellValue(new HSSFRichTextString(flagCriteriaOperator.getReplaceHurdle()));
-		cell.setCellStyle(headerStyle);
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);
 
 		if (columns > 1)
 			sheet.autoSizeColumn((short) 2);
-		
-		// Merge writes over the middle cell
-		cell = sheet.createRow(0).createCell(0);
-		cell.setCellValue(new HSSFRichTextString(flagCriteriaOperator.getReplaceHurdle()));
-		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, columns));
-		cell.setCellStyle(headerStyle);
-		
+
 		return wb;
 	}
 }
