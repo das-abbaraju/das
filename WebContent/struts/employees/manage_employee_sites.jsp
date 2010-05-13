@@ -33,7 +33,7 @@
 				list="operators" name="operator.id" listKey="id" listValue="name"
 				headerKey="" headerValue=" - Add Job Site - " id="operator" />
 		</s:if><s:else>
-			<h5>This employee as been assigned to all available sites.</h5>
+			<h5>This employee has been assigned to all available sites.</h5>
 		</s:else></td>
 	</tr>
 </table>
