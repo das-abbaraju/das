@@ -24,8 +24,6 @@ public class SubmittedAuditsWidget extends PicsActionSupport {
 		sql.setType(SelectAccount.Type.Contractor);
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
-		sql.addJoin("JOIN ref_country rc on rc.isoCode = a.country");
-		sql.addJoin("JOIN ref_state rs on rs.isoCode = a.state");
 		sql.addField("atype.auditName");
 		sql.addField("ca.id AS auditID");
 		sql.addField("ca.completedDate");
@@ -33,8 +31,7 @@ public class SubmittedAuditsWidget extends PicsActionSupport {
 		sql.addWhere("ca.auditTypeID IN (2,3)"); // Manual and Implementation Audits
 		sql.addWhere("ca.auditStatus IN ('Submitted')");
 		sql.addWhere("ca.completedDate < DATE_SUB(NOW(), INTERVAL 45 DAY)"); // 45 days after
-		sql.addWhere("CASE WHEN a.country IN ('CA', 'US') THEN rs.csrID = " + permissions.getUserId()
-				+ " ELSE rc.csrID = " + permissions.getUserId() + " END");
+		sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
 		sql.addOrderBy("ca.completedDate DESC");
 		sql.setLimit(10);
 
