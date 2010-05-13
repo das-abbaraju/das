@@ -22,16 +22,12 @@ where
 (userid = 941 and widgetid in (2,16,18))
 or (userid = 616 and widgetid = 1);
 
-insert into widget
-(widgetID, caption, widgetType, url, chartType)
-values
-(null, 'Outstanding Submitted Audits', 'Html', 'SubmittedAuditsAjax.action',null),
-(null, 'Outstanding Rejected Policies', 'Html', 'RejectedPoliciesAjax.action',null),
-(null, 'Flag Color Count by Category', 'Chart', 'ChartXMLFlagCategoryCount.action','ScrollStackedColumn2D');
-
 /** Make sure that the widgetIDs are correct! **/
 insert into widget_user
 (id, widgetID, userID, column, sortOrder)
 values
 (null, 26, 959, 2, 30),
-(null, 28, 959, 1, 30);
+(null, 28, 959, 1, 30),
+(null, 29, 959, 2, 15),
+(null, 30, 959, 2, 35),
+(null, 31, 959, 1, 15);

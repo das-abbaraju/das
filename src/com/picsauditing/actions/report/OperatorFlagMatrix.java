@@ -21,19 +21,20 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 @SuppressWarnings("serial")
 public class OperatorFlagMatrix extends ReportAccount {
-
+	protected String flagColor;
+	protected String category;
 	private Set<FlagCriteria> flagCriteria = new TreeSet<FlagCriteria>();
 
 	private TableDisplay tableDisplay;
@@ -41,11 +42,9 @@ public class OperatorFlagMatrix extends ReportAccount {
 	@Override
 	protected void checkPermissions() throws Exception {
 		super.checkPermissions();
-		
-		tryPermissions(OpPerms.OperatorFlagMatrix);
 
-		if (!permissions.isOperatorCorporate())
-			throw new NoRightsException("You must be an operator to view this page");
+		if(permissions.isOperatorCorporate())
+			tryPermissions(OpPerms.OperatorFlagMatrix);
 	}
 
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
@@ -66,7 +65,13 @@ public class OperatorFlagMatrix extends ReportAccount {
 			sql.addJoin("JOIN facilities f on fd.opID = f.opID AND f.corporateID = " + permissions.getAccountId());
 		else if (permissions.isOperator())
 			sql.addWhere("fd.opID = " + permissions.getAccountId());
-
+		else if(permissions.hasGroup(User.GROUP_CSR)) {
+			sql.addWhere("a.status = 'Active'");
+			sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
+			sql.addWhere("fd.flag = '"+ flagColor + "'");
+			sql.addWhere("fc.category = '" + category + "'");
+		}
+		
 		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id "
 				+ "AND gc.genID = fd.opID AND gc.flag IN ('Red', 'Amber')");
 
@@ -218,5 +223,21 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 			return wb;
 		}
+	}
+	
+	public String getFlagColor() {
+		return flagColor;
+	}
+
+	public void setFlagColor(String flagColor) {
+		this.flagColor = flagColor;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }

@@ -17,25 +17,27 @@ import com.picsauditing.util.chart.Set;
  */
 @SuppressWarnings("serial")
 public class ChartFlagCategoryCount extends ChartMSAction {
-
+	
 	@Override
 	public ChartMultiSeries buildChart() throws Exception {
 		chart.setShowLegend(false);
 		chart.setShowValues(false);
 		chart.setAnimation(false);
 
-		SelectSQL sql = new SelectSQL("accounts a");
+		SelectSQL sql = new SelectSQL("flag_data fd");
 		sql.addField("fd.flag as series");
 		sql.addField("fc.category as label");
 		sql.addField("count(*) as value");
-		sql.addGroupBy("label,series");
-		sql.addOrderBy("label,series");
+		sql.addField("CONCAT('OperatorFlagMatrix.action?flagColor=',fd.flag,'&category=',fc.category) as link");
+		sql.addGroupBy("fd.flag,fc.category");
+		sql.addOrderBy("fd.flag,fc.category");
 
+		sql.addJoin("JOIN flag_criteria fc ON fc.id = fd.criteriaid AND fc.insurance = 0");
+		sql.addJoin("JOIN accounts a ON a.id = fd.conid");
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-		sql.addWhere("a.status IN ('Active','Demo')");
+
+		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
-		sql.addJoin("JOIN flag_data fd ON fd.conid = a.id");
-		sql.addJoin("JOIN flag_criteria fc ON fc.id = fd.criteriaid");
 		sql.addWhere("fd.flag IN ('Red','Amber')");
 		
 		ChartDAO db = new ChartDAO();
