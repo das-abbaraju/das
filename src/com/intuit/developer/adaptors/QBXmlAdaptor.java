@@ -6,6 +6,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -118,10 +120,10 @@ public class QBXmlAdaptor {
 			return "";
 
 		if (in.length() < start + end) {
-			return in.substring(start);
+			return StringEscapeUtils.escapeXml(in.substring(start));
 		}
 
-		return in.substring(start, end);
+		return StringEscapeUtils.escapeXml(in.substring(start, end));
 	}
 
 	static public String nullSafePhoneFormat(String in) {
