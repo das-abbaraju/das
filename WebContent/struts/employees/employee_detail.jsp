@@ -73,26 +73,32 @@
 			</tr>
 			<tr>
 				<td>
-					<div class="cell">
-						<table>
-							<tr>
-								<th>Works at:</th>
-								<td>
-									<s:iterator value="employee.employeeSites" id="sites" status="stat">
-										<s:property value="#sites.jobSite.name" /> (<s:property value="#sites.operator.name" />)<br />
-									</s:iterator>
-								</td>
-							</tr>
-							<tr>
-								<th>Job Role<s:if test="employee.employeeRoles.size() > 0">s</s:if>:</th>
-								<td>
-									<s:iterator value="employee.employeeRoles" id="role" status="stat">
-										<s:property value="jobRole.name" /><s:if test="!#stat.last">, </s:if>
-									</s:iterator>
-								</td>
-							</tr>
-						</table>
-					</div>
+					<s:if test="employee.employeeSites.size() > 0 || employee.employeeRoles.size() > 0">
+						<div class="cell">
+							<table>
+								<s:if test="employee.employeeSites.size() > 0">
+									<tr>
+										<th>Works at:</th>
+										<td>
+											<s:iterator value="employee.employeeSites" id="sites" status="stat">
+												<s:property value="#sites.jobSite.name" /> (<s:property value="#sites.operator.name" />)<br />
+											</s:iterator>
+										</td>
+									</tr>
+								</s:if>
+								<s:if test="employee.employeeRoles.size() > 0">
+									<tr>
+										<th>Job Role<s:if test="employee.employeeRoles.size() > 0">s</s:if>:</th>
+										<td>
+											<s:iterator value="employee.employeeRoles" id="role" status="stat">
+												<s:property value="jobRole.name" /><s:if test="!#stat.last">, </s:if>
+											</s:iterator>
+										</td>
+									</tr>
+								</s:if>
+							</table>
+						</div>
+					</s:if>
 					<s:if test="employee.employeeRoles.size() > 0">
 						<table class="report">
 							<thead>
@@ -145,6 +151,7 @@
 							</tr>
 						</table>
 					</div>
+					<!-- Maybe something we don't need
 					<div class="cell">
 						<table>
 							<tr>
@@ -159,6 +166,7 @@
 							</tr>
 						</table>
 					</div>
+					-->
 					<s:if test="employee.employeeQualifications.size() > 0">
 						<table class="report">
 							<thead>

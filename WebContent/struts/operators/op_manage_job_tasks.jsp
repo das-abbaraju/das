@@ -45,20 +45,37 @@ function sortTable(sortBy) {
 
 	var sortBys = sortBy.split(',');
 	rows.sort(function(a, b) {
-		var a1 = $(a).find('.' + sortBys[0]).text().toUpperCase();
-		var b1 = $(b).find('.' + sortBys[0]).text().toUpperCase();
+		var sort1 = sort(a, b, sortBys[0]);
 
-		if (sortBys.length > 1) {
-			var a2 = $(a).find('.' + sortBys[1]).text().toUpperCase();
-			var b2 = $(b).find('.' + sortBys[1]).text().toUpperCase();
+		if (sort1 == 0 && sortBys.length > 1) {
+			var sort2 = 0;
+			var count = 1;
 
-			return (a1 < b1) ? -1 : (a1 > b1) ? 1 : (a2 < b2) ? -1 : (a2 > b2) ? 1 : 0;
+			while (sort2 == 0) {
+				sort2 = sort(a, b, sortBys[count]);
+				count++;
+				sort1 = sort2;
+			}
 		}
 
-		return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
+		return sort1;
 	});
 
-	$.each(rows, function (index, row) { $(row).find('.id').text(index + 1); $(tbody).append(row); });
+	$.each(rows, function (index, row) { $(tbody).append(row); });
+}
+
+function sort(a, b, sortBy) {
+	if (sortBy == 'label') {
+		var a1 = Number($(a).find('.' + sortBy).text());
+		var b1 = Number($(b).find('.' + sortBy).text());
+
+		if (a1 != 'NaN' && b1 != 'NaN')
+			return a1 - b1;
+	}
+
+	var a1 = $(a).find('.' + sortBy).text().toUpperCase();
+	var b1 = $(b).find('.' + sortBy).text().toUpperCase();
+	return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
 }
 </script>
 </head>
@@ -158,5 +175,6 @@ function sortTable(sortBy) {
 		</td>
 	</tr>
 </table>
+<script type="text/javascript">sortTable('label');</script>
 </body>
 </html>

@@ -123,7 +123,7 @@ div.dataTables_length { width: 35%; }
 			</s:if>
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
-				<a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile Page</a>
+				<s:if test="employee.id > 0"><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile Page</a></s:if>
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
@@ -168,7 +168,11 @@ div.dataTables_length { width: 35%; }
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>
 								</li>
-						
+								<!-- Put something here when it exists?
+								<li><label>TWIC #:</label>
+									<s:textfield name="employee.twic"/>
+								</li>
+								-->
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">

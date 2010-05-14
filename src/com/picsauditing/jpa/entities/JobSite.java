@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,6 +17,11 @@ public class JobSite extends BaseTable {
 	private String label;
 	private String name;
 	private boolean active;
+	private String city;
+	private State state;
+	private Country country;
+	private Date projectStart;
+	private Date projectStop;
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -51,4 +58,47 @@ public class JobSite extends BaseTable {
 		this.active = active;
 	}
 
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "state")
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "country")
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public Date getProjectStart() {
+		return projectStart;
+	}
+
+	public void setProjectStart(Date projectStart) {
+		this.projectStart = projectStart;
+	}
+
+	public Date getProjectStop() {
+		return projectStop;
+	}
+
+	public void setProjectStop(Date projectStop) {
+		this.projectStop = projectStop;
+	}
 }

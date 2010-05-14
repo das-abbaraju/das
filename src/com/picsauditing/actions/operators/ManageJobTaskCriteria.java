@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AssessmentTestDAO;
@@ -22,7 +21,7 @@ import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.JobTaskCriteria;
 
 @SuppressWarnings("serial")
-public class ManageJobTaskCriteria extends OperatorActionSupport implements Preparable {
+public class ManageJobTaskCriteria extends OperatorActionSupport {
 	protected JobTaskDAO jobTaskDAO;
 	protected JobTaskCriteriaDAO jobTaskCriteriaDAO;
 	protected AssessmentTestDAO assessmentTestDAO;
@@ -41,20 +40,12 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 	protected AssessmentTest assessmentTest;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	@Override
-	public void prepare() throws Exception {
-		if (jobTask == null)
-			jobTask = jobTaskDAO.find(jobTaskID);
-	}
-	
 	public ManageJobTaskCriteria(OperatorAccountDAO operatorDao, JobTaskCriteriaDAO jobTaskCriteriaDAO,
 			AssessmentTestDAO assessmentTestDAO, JobTaskDAO jobTaskDAO) {
 		super(operatorDao);
 		this.jobTaskCriteriaDAO = jobTaskCriteriaDAO;
 		this.assessmentTestDAO = assessmentTestDAO;
 		this.jobTaskDAO = jobTaskDAO;
-
-		subHeading = "Manage Job Task Criteria";
 	}
 
 	public String execute() throws Exception {
@@ -62,6 +53,11 @@ public class ManageJobTaskCriteria extends OperatorActionSupport implements Prep
 			return LOGIN;
 
 		findOperator();
+		
+		if (jobTask == null && jobTaskID > 0) {
+			jobTask = jobTaskDAO.find(jobTaskID);
+			subHeading = jobTask.getLabel() + " " + jobTask.getName();
+		}
 
 		if (button != null) {
 			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);

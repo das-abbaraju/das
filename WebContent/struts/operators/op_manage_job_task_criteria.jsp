@@ -32,9 +32,6 @@ function getHistory(date) {
 	<tr>
 		<td>
 			<s:if test="criterias.size() > 0 && criteriaMap.size() > 0">
-				<h3 style="padding-bottom:10px;">
-					<s:property value="jobTask.label"/>&nbsp;<s:property value="jobTask.name"/>
-				</h3>
 				<s:if test="history != null">
 					Effective On: <s:select list="history" name="effectiveDate" value="effectiveDate" onchange="getHistory(this.value);"></s:select><br />
 					<a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="jobTaskID" />">View Today</a>

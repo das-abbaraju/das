@@ -95,7 +95,7 @@ public enum OpPerms {
 	ContractorInsurance("Insurance", "Insurance Certificates", false, false, false, true, false),
 	
 	// Operator Qualification
-	ManageJobSites("Manage Job Sites", "Allows operators to view or edit their job sites.", true, true, false, false, true),
+	ManageProjects("Manage Projects", "Allows operators to view or edit their project sites.", true, true, false, false, true),
 	ManageJobTasks("Manage Job Tasks", "Allows operators to view or edit their job tasks.", true, true, false, false, true),
 	
 	// View the Operator Flag Matrix report

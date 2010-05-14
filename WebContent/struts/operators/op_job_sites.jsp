@@ -26,6 +26,10 @@ fieldset.form label {
 .newValue {
 	display: none;
 }
+
+fieldset.form {
+	width: auto;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
@@ -37,7 +41,7 @@ function getTasks(siteID) {
 	};
 
 	startThinking({div: 'jobSiteTasks', message: 'Loading tasks'});
-	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
+	$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
 		function() {
 			$('#addSiteTasks').empty();
 		}
@@ -53,7 +57,7 @@ function getNewSiteTasks(siteID) {
 
 	$('#addTaskLink').hide();
 	startThinking({div: 'addSiteTasks', message: 'Loading new tasks'});
-	$('#addSiteTasks').load('ManageJobSitesAjax.action', data);
+	$('#addSiteTasks').load('ManageProjectsAjax.action', data);
 }
 
 function addTask(siteID, taskID) {
@@ -66,7 +70,7 @@ function addTask(siteID, taskID) {
 		id: <s:property value="operator.id" />
 	};
 
-	$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
+	$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
 		function() {
 			getNewSiteTasks(siteID);
 		}
@@ -84,7 +88,7 @@ function removeTask(siteID, siteTaskID) {
 			id: <s:property value="operator.id" />
 		};
 	
-		$('#jobSiteTasks').load('ManageJobSitesAjax.action', data,
+		$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
 			function() {
 				$('#addSiteTasks').empty();
 			}
@@ -95,17 +99,17 @@ function removeTask(siteID, siteTaskID) {
 }
 
 function editSite(siteID) {
-	$('.oldValue').show();
-	$('.newValue').hide();
-	$('tr#'+siteID+' .oldValue').hide();
-	$('tr#'+siteID+' .newValue').show();
+	startThinking({div: 'editProject', message: 'Loading project'});
+	$('#editProject').load('ManageProjectsAjax.action', { button: 'EditSite', siteID: siteID });
 }
 
-function saveEdit(siteID) {
-	var url = $('tr#'+siteID+' .newValue input').serialize();
-	self.location='ManageJobSites.action?id=' + <s:property value="operator.id" /> + '&siteID=' + siteID
-			+ '&button=Update&' + url;
+function getStates(country) {
+	$('#loadStates').load('StateListAjax.action',{countryString: country, stateString: '<s:property value="newSite.state.english"/>'});
 }
+
+$(function() {
+	$('.datepicker').datepicker();
+});
 </script>
 </head>
 <body>
@@ -113,7 +117,7 @@ function saveEdit(siteID) {
 <div id="clear" style="width: 100%"></div>
 <table id="sitesTable">
 	<tr>
-		<td style="width: 350px;">
+		<td>
 			<s:if test="activeSites.size() > 0">
 				<h3>Active Sites</h3>
 				<table class="report">
@@ -122,7 +126,7 @@ function saveEdit(siteID) {
 							<th>Label</th>
 							<th>Site Name</th>
 							<th>Tasks</th>
-							<pics:permission perm="ManageJobSites" type="Edit">
+							<pics:permission perm="ManageProjects" type="Edit">
 								<th>Edit</th>
 								<th>Remove</th>
 							</pics:permission>
@@ -133,27 +137,20 @@ function saveEdit(siteID) {
 							<tr id="<s:property value="#site.id" />">
 								<td><s:property value="#stat.count" /></td>
 								<td>
-									<span class="oldValue"><s:property value="#site.label" /></span>
-									<span class="newValue"><input type="text" value="<s:property value="#site.label" />"
-										name="siteLabel" size="5" /></span>
+									<s:property value="#site.label" />
 								</td>
 								<td>
-									<span class="oldValue"><s:property value="#site.name" /></span>
-									<span class="newValue"><input type="text" value="<s:property value="#site.name" />"
-										name="siteName" size="10" /></span>
+									<s:property value="#site.name" />
 								</td>
 								<td class="center">
 									<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
 								</td>
-								<pics:permission perm="ManageJobSites" type="Edit">
+								<pics:permission perm="ManageProjects" type="Edit">
 									<td class="center">
-										<span class="oldValue"><a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit site" /></a></span>
-										<span class="newValue"><nobr>
-											<a href="#" onclick="saveEdit(<s:property value="#site.id" />); return false;" class="save"></a>
-										</nobr></span>
+										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit site" /></a>
 									</td>
 									<td class="center">
-										<a href="ManageJobSites.action?id=<s:property value="operator.id" />&button=Remove&siteID=<s:property value="#site.id" />"
+										<a href="ManageProjects.action?id=<s:property value="operator.id" />&button=Remove&siteID=<s:property value="#site.id" />"
 											onclick="return confirm('Are you sure you want to remove this job site?');" class="remove"></a>
 									</td>
 								</pics:permission>
@@ -162,20 +159,35 @@ function saveEdit(siteID) {
 					</tbody>
 				</table>
 			</s:if>
-			<pics:permission perm="ManageJobSites" type="Edit">
+			<pics:permission perm="ManageProjects" type="Edit">
+				<div id="editProject"></div>
 				<a onclick="$('#addJobSite').show(); $('#addLink').hide(); return false;"
 					href="#" id="addLink" class="add">Add New Job Site</a>
 				<div id="addJobSite" style="display: none; clear: both;">
 					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 						<s:hidden name="id" />
 						<fieldset class="form bottom">
-							<legend><span>Add New Job Site</span></legend>
+							<legend><span>Add New Project</span></legend>
 							<ol>
 								<li><label>Label:</label>
-									<s:textfield name="newSite.label" size="20" />
+									<s:textfield name="siteLabel" size="20" />
 								</li>
 								<li><label>Name:</label>
-									<s:textfield name="newSite.name" size="20" />
+									<s:textfield name="siteName" size="20" />
+								</li>
+								<li><label>City:</label>
+									<s:textfield name="siteCity" size="20" />
+								</li>
+								<li><label>Country:</label>
+									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
+										listValue="name" onchange="getStates(this.value);"></s:select>
+								</li>
+								<li id="loadStates"></li>
+								<li><label>Start Date:</label>
+									<s:textfield name="siteStart" size="20" cssClass="datepicker" />
+								</li>
+								<li><label>End Date:</label>
+									<s:textfield name="siteEnd" size="20" cssClass="datepicker" />
 								</li>
 							</ol>
 							<div style="text-align: center; margin: 0px auto;">
@@ -190,7 +202,7 @@ function saveEdit(siteID) {
 		</td>
 		<td rowspan="2">
 			<div id="jobSiteTasks"></div>
-			<pics:permission perm="ManageJobSites" type="Edit">
+			<pics:permission perm="ManageProjects" type="Edit">
 				<div id="addSiteTasks"></div>
 			</pics:permission>
 		</td>
@@ -205,7 +217,7 @@ function saveEdit(siteID) {
 				<tr><th></th>
 					<th>Label</th>
 					<th>Site Name</th>
-					<pics:permission perm="ManageJobSites" type="Edit">
+					<pics:permission perm="ManageProjects" type="Edit">
 						<th>Reactivate</th>
 					</pics:permission>
 				</tr>
@@ -216,9 +228,9 @@ function saveEdit(siteID) {
 						<td><s:property value="#stat.count" /></td>
 						<td><s:property value="#site.label" /></td>
 						<td><s:property value="#site.name" /></td>
-						<pics:permission perm="ManageJobSites" type="Edit">
+						<pics:permission perm="ManageProjects" type="Edit">
 							<td class="center">
-								<a href="ManageJobSites.action?id=<s:property value="operator.id" />&button=Reactivate&siteID=<s:property value="#site.id" />"
+								<a href="ManageProjects.action?id=<s:property value="operator.id" />&button=Reactivate&siteID=<s:property value="#site.id" />"
 									class="add"></a>
 							</td>
 						</pics:permission>

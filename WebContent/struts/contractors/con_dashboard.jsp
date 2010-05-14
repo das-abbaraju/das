@@ -31,21 +31,24 @@
 
 	function truncate(id) {
 		var data = $('#' + id).text();
-		var data1 = data.substring(0,100) + '<span id="' + id + '_ext">... <a href="#" onclick="$(\'#'
-			+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
-			+ '>Show more</a></span>';
-		var data2 = '<span id="' + id + '_more" style="display: none;">' + data.substring(100, data.length)
-			+ ' <a href="#" onclick="$(\'#' + id + '_ext\').show(); $(\'#' + id
-			+ '_more\').hide(); return false;" style="font-weight: normal;">Hide</a></span>';
-		$('#'+ id).html(data1 + data2);
+		data = data.replace(/;/g,", ");
+		
+		if ($('#selfperformed').text().length > 100) {
+			var data1 = data.substring(0,100).replace(/^\s*/, "").replace(/\s*$/, "") + '<span id="' + id + '_ext">... <a href="#" onclick="$(\'#'
+				+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
+				+ '>Show more</a></span>';
+			var data2 = '<span id="' + id + '_more" style="display: none;">' + data.substring(100, data.length)
+				+ ' <a href="#" onclick="$(\'#' + id + '_ext\').show(); $(\'#' + id
+				+ '_more\').hide(); return false;" style="font-weight: normal;">Hide</a></span>';
+			data = data1 + data2;
+		};
+		
+		$('#'+ id).html(data);
 	}
 	
 	$(document).ready(function() {
-		if ($('#selfperformed').text().length > 100)
-			truncate('selfperformed');
-
-		if ($('#subcontracted').text().length > 100)
-			truncate('subcontracted');
+		truncate('selfperformed');
+		truncate('subcontracted');
 	});
 
 	function startWatch() {
