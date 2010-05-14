@@ -66,7 +66,7 @@
 						title="<s:property value="get('flag')"/> - Click to view details"><img 
 						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
 				</td>
-				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/></a></td>
+				<td><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ><s:property value="@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn'))"/></a></td>
 			</s:if>
 			<pics:permission perm="ViewTrialAccounts" type="Edit">
 				<s:form action="BiddingContractorSearch" method="POST">

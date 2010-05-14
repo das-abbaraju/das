@@ -90,7 +90,7 @@
 						title="<s:property value="get('flag')"/> - Click to view details"></pics:permission><img 
 						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"><pics:permission perm="ContractorDetails"></a></pics:permission>
 				</td>
-				<td><pics:permission perm="ContractorDetails"><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ></pics:permission><s:property value="@com.picsauditing.jpa.entities.WaitingOn@valueOf(get('waitingOn'))"/><pics:permission perm="ContractorDetails"></a></pics:permission></td>
+				<td><pics:permission perm="ContractorDetails"><a href="ContractorFlag.action?id=<s:property value="get('id')"/>" ></pics:permission><s:property value="@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn'))"/><pics:permission perm="ContractorDetails"></a></pics:permission></td>
 				<s:if test="operatorAccount.approvesRelationships">
 					<pics:permission perm="ViewUnApproved">
 						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property

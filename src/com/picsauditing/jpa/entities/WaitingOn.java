@@ -7,7 +7,10 @@ import java.util.Map;
  * Contractor Waiting On 
  */
 public enum WaitingOn {
-	None, Contractor, PICS, Operator;
+	None,
+	Contractor,
+	PICS,
+	Operator;
 
 	static public Map<Integer, WaitingOn> getMap() {
 		Map<Integer, WaitingOn> map = new HashMap<Integer, WaitingOn>();
@@ -25,10 +28,15 @@ public enum WaitingOn {
 		return null;
 	}
 
+	static public WaitingOn fromOrdinal(String s) {
+		int ordinal = Integer.parseInt(s);
+		return valueOf(ordinal);
+	}
+
 	public boolean isNone() {
 		return this.equals(None);
 	}
-	
+
 	@Override
 	public String toString() {
 		if (this.equals(WaitingOn.None))
