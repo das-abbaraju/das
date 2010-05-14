@@ -434,6 +434,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 	
 	public boolean canForceOverallFlag(ContractorOperator conOperator) {
+		// if they can override the flag we return true  
 		if(conOperator == null) {
 			if(permissions.getAccountId() == opID || permissions.isCorporate())
 				return false;
