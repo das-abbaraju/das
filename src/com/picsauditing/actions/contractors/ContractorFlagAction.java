@@ -314,7 +314,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public FlagDataOverride isFlagDataOverride(FlagData flagData) {
-		if (getFlagDataOverrides() != null) {
+		if (getFlagDataOverrides() != null && getFlagDataOverrides().size() > 0) {
 			List<FlagDataOverride> flOverride = getFlagDataOverrides().get(flagData.getCriteria());
 			if(flOverride.size() > 0) {
 				for(FlagDataOverride flagDataOverride : flOverride) {
@@ -436,7 +436,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public boolean canForceOverallFlag(ContractorOperator conOperator) {
 		if(conOperator == null) {
 			if(permissions.getAccountId() == opID || permissions.isCorporate())
-				return true;
+				return false;
 		}
 		if (conOperator.getForceOverallFlag().getOperatorAccount().getId() == permissions.getAccountId())
 			return true;
