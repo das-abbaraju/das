@@ -28,9 +28,8 @@ public enum WaitingOn {
 		return null;
 	}
 
-	static public WaitingOn fromOrdinal(String s) {
-		int ordinal = Integer.parseInt(s);
-		return valueOf(ordinal);
+	static public WaitingOn fromOrdinal(int waitingOn) {
+		return valueOf(waitingOn);
 	}
 
 	public boolean isNone() {
