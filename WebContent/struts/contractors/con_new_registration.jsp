@@ -41,10 +41,10 @@ $(document).ready(function() {
 $(function() {
 	changeState($("#newContractorCountry").val());
 	$('.datepicker').datepicker();
-	$('#newContractorName').autocomplete('ContractorSelectAjax.action', 
+	$('#matchedContractor').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,
-			extraParams: {'filter.accountName': function() {return $('#newContractorName').val();} }
+			extraParams: {'filter.accountName': function() {return $('#matchedContractor').val();} }
 		}
 	);
 });
@@ -122,7 +122,7 @@ function getMatches(requestID) {
 	<fieldset class="form"><legend><span>Details</span></legend>
 	<ol>
 		<li><label>Company Name:</label>
-			<s:textfield name="newContractor.name" size="35" id="newContractorName" /><span class="redMain">*</span></li>
+			<s:textfield name="newContractor.name" size="35" /><span class="redMain">*</span></li>
 		<li><label>Contact
 			Name:</label> <s:textfield name="newContractor.contact" /><span class="redMain">*</span></li>
 		<li><label>Phone:</label>
@@ -218,7 +218,7 @@ function getMatches(requestID) {
 		</s:if>
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
-				cols="20" rows="3" /></li>
+				cols="40" rows="7" /></li>
 		<li><label>Who should follow up?:</label>
 			<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
 		</li>
@@ -227,9 +227,9 @@ function getMatches(requestID) {
 				<s:property value="newContractor.contactCount"/></li>
 			<li><label>Matches Found in PICS:</label>
 				<s:property value="newContractor.matchCount"/></li>
-			<li><label>PICS Contractor ID:</label>
+			<li><label>PICS Contractor:</label>
 				<s:if test="permissions.admin">
-					<s:textfield name="conID" value="%{newContractor.contractor.id}" size="7" />
+					<s:textfield name="conName" value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
 				</s:if>
 				<s:if test="conAccount != null">
 					<a href="ContractorView.action?id=<s:property value="conAccount.id"/>">

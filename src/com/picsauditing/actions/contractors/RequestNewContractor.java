@@ -66,6 +66,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String emailSubject;
 	protected String emailBody;
 	protected List<Account> potentialMatches;
+	protected String conName;
 
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
@@ -175,9 +176,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						newContractor.setRequestedByUserOther(requestedOther);
 					}
 				}
-				if (conID > 0
-						&& (newContractor.getContractor() == null || conID != newContractor.getContractor().getId())) {
-					newContractor.setContractor(new ContractorAccount(conID));
+				if (!Strings.isEmpty(conName) && 
+						(newContractor.getContractor() == null || conName != newContractor.getContractor().getName())) {
+					ContractorAccount con = contractorAccountDAO.findConID(conName);
+					newContractor.setContractor(con);
 				}
 				
 				potentialMatches = runGapAnalysis();
@@ -365,6 +367,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setConID(int conID) {
 		this.conID = conID;
+	}
+	
+	public String getConName() {
+		return conName;
+	}
+	
+	public void setConName(String conName) {
+		this.conName = conName;
 	}
 
 	public int getOpID() {
