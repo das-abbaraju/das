@@ -7,6 +7,10 @@ public enum Subscription {
 			"Contractor Registration",
 			"This email includes a list of contractors who have recently registered at PICS with your account. You can choose to receive this daily, weekly or monthly. If no contractor registers, then you will not receive an email.",
 			true, false), 
+	ContractorAdded(
+			"Contractor Added to Facility",
+			"This email includes a list of contractors who have recently been added to your Facility. You can choose to receive this daily, weekly or monthly. If no contractors are added to your facility, then you will not receive an email.",
+			true, false), 
 	ContractorFinished(
 			"Contractors Completes the PICS Process",
 			"This email notifies users when a contractor completes PICS process for their account.",

@@ -248,6 +248,18 @@ public class ContractorAccountDAO extends PicsDAO {
 
 		return q.getResultList();
 	}
+	
+	public List<ContractorAccount> findRecentlyAddedContractorsByOperator(int opID, Date start, Date end) {
+		String query = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount.id = "
+				+ ":opID AND co.creationDate BETWEEN :start and :end AND co.contractorAccount.status IN ('Active')";
+
+		Query q = em.createQuery(query);
+		q.setParameter("opID", opID);
+		q.setParameter("start", start, TemporalType.TIMESTAMP);
+		q.setParameter("end", end, TemporalType.TIMESTAMP);
+
+		return q.getResultList();
+	}
 
 	public List<Invoice> findDelinquentContractors() {
 		List<String> dates = new ArrayList<String>();

@@ -21,6 +21,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.ContractorAddedSubscription;
 import com.picsauditing.mail.ContractorRegistrationSubscription;
 import com.picsauditing.mail.FlagChangesSubscription;
 import com.picsauditing.mail.FlagColorSubscription;
@@ -140,6 +141,10 @@ public class SubscriptionCron extends PicsActionSupport implements ServletReques
 
 			if (subscription.equals(Subscription.ContractorRegistration)) {
 				builder = new ContractorRegistrationSubscription(timePeriod, subscriptionDAO, conDAO);
+			}
+			
+			if (subscription.equals(Subscription.ContractorAdded)) {
+				builder = new ContractorAddedSubscription(timePeriod, subscriptionDAO, conDAO);
 			}
 
 			if (subscription.equals(Subscription.RedFlags)) {

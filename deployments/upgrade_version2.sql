@@ -13,3 +13,6 @@ join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
+
+update email_template set allowsVelocity = 1, html = 1, recipient = 'Admin' where id = 107;
+insert into `app_properties` (`property`, `value`) values('subscription.ContractorAdded','1');
