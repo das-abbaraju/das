@@ -8,29 +8,29 @@ $('.datepicker').datepicker();
 	<fieldset class="form bottom">
 		<legend><span>Edit Project</span></legend>
 		<ol>
-			<li><label>Label:</label>
+			<li><label>Label<span class="redMain">*</span>:</label>
 				<input type="text" name="siteLabel" value="<s:property value="newSite.label" />" size="20" />
 			</li>
-			<li><label>Name:</label>
+			<li><label>Name<span class="redMain">*</span>:</label>
 				<input type="text" name="siteName" value="<s:property value="newSite.name" />" size="20" />
 			</li>
 			<li><label>City:</label>
 				<input type="text" name="siteCity" value="<s:property value="newSite.city" />" size="20" />
 			</li>
 			<li><label>Country:</label>
-				<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
-					listValue="name" value="newSite.country.isoCode"></s:select>
+				<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode" headerKey=""
+					headerValue="- Country -" listValue="name" value="newSite.country.isoCode"></s:select>
 			</li>
 			<li><label>State:</label>
 				<s:select list="getStateList(newSite.country.isoCode)" name="state.isoCode" listKey="isoCode"
 					listValue="name" value="newSite.state.isoCode"></s:select>
 			</li>
-			<li><label>Start Date:</label>
-				<input type="text" name="siteStart" value="<s:property value="newSite.projectStart" />" size="10"
-					class="datepicker" />
+			<li class="loadStates"><label>Start Date:</label>
+				<input type="text" name="siteStart" value="<s:property value="maskDateFormat(newSite.projectStart)" />"
+					size="10" class="datepicker" />
 			</li>
 			<li><label>End Date:</label>
-				<input type="text" name="siteEnd" value="<s:property value="newSite.projectStop" />" size="10"
+				<input type="text" name="siteEnd" value="<s:property value="maskDateFormat(newSite.projectStop)" />" size="10"
 				class="datepicker" />
 			</li>
 		</ol>

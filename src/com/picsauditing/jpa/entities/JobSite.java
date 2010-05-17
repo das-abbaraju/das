@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -7,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -16,7 +18,6 @@ public class JobSite extends BaseTable {
 	private OperatorAccount operator;
 	private String label;
 	private String name;
-	private boolean active;
 	private String city;
 	private State state;
 	private Country country;
@@ -48,14 +49,6 @@ public class JobSite extends BaseTable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
 	}
 
 	public String getCity() {
@@ -100,5 +93,25 @@ public class JobSite extends BaseTable {
 
 	public void setProjectStop(Date projectStop) {
 		this.projectStop = projectStop;
+	}
+	
+	@Transient
+	public boolean isActive(Date date) {
+		// Different locales make the same basic date fail the Date.equals method
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		if (date == null)
+			date = new Date();
+		
+		if (projectStart != null && projectStop != null)
+			return (sdf.format(projectStart).equals(sdf.format(date)) || projectStart.before(date))
+				&& projectStop.after(date);
+		if (projectStart != null)
+			return projectStart.before(date) || sdf.format(projectStart).equals(sdf.format(date));
+		if (projectStop != null)
+			return projectStop.after(date);
+		
+		// Neither are filled in so assume the project is active?
+		return true;
 	}
 }

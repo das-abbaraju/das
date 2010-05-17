@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -7,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.JobSite;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -43,6 +45,17 @@ public class JobSiteDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT j FROM JobSite j WHERE opID = ? AND " + where + " ORDER BY name");
 		query.setParameter(1, opID);
 		
+		return query.getResultList();
+	}
+	
+	public List<Date> findHistory(String where) {
+		if (!Strings.isEmpty(where))
+			where = " WHERE " + where;
+		else
+			where = "";
+	
+		Query query = em.createQuery("SELECT DISTINCT j.projectStart FROM JobSite j" + where 
+				+ " ORDER BY j.projectStart DESC");
 		return query.getResultList();
 	}
 }

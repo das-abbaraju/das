@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,14 +39,17 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected String siteLabel;
 	protected String siteCity;
 	protected State state = new State();
-	protected Country siteCountry = new Country();
+	protected Country siteCountry = new Country("US", "United States");
 	protected Date siteStart;
 	protected Date siteEnd;
-
+	protected String date = maskDateFormat(new Date());
+	
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
 	protected JobTask newTask = new JobTask();
+	protected List<String> history;
 	protected List<JobTask> addable = new ArrayList<JobTask>();
+	private List<JobSite> allSites;
 	protected List<JobSite> activeSites;
 	protected List<JobSite> inactiveSites;
 	protected List<JobSiteTask> tasks;
@@ -69,6 +73,8 @@ public class ManageJobSites extends OperatorActionSupport {
 		findOperator();
 		// Check for basic view capabilities
 		tryPermissions(OpPerms.ManageProjects);
+		
+		allSites = siteDAO.findByOperator(operator.getId());
 		
 		if (siteID > 0)
 			newSite = siteDAO.find(siteID);
@@ -158,13 +164,17 @@ public class ManageJobSites extends OperatorActionSupport {
 
 					newSite.setLabel(siteLabel);
 					newSite.setName(siteName);
-					newSite.setCity(siteCity);
 					newSite.setProjectStart(siteStart);
 					newSite.setProjectStop(siteEnd);
-					newSite.setCountry(siteCountry);
-					newSite.setState(state);
 					
-					newSite.setActive(true);
+					if (!Strings.isEmpty(siteCity))
+						newSite.setCity(siteCity);
+					if (!siteCountry.getIsoCode().equals("")) {
+						newSite.setCountry(siteCountry);
+						
+						if (siteCountry.getIsoCode().equals("US") || siteCountry.getIsoCode().equals("CA"))
+							newSite.setState(state);
+					}
 					
 					summary = "Added new" + summary;
 				} else
@@ -175,11 +185,17 @@ public class ManageJobSites extends OperatorActionSupport {
 				if (siteID > 0 && !Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName)) {
 					newSite.setLabel(siteLabel);
 					newSite.setName(siteName);
-					newSite.setCity(siteCity);
 					newSite.setProjectStart(siteStart);
 					newSite.setProjectStop(siteEnd);
-					newSite.setCountry(siteCountry);
-					newSite.setState(state);
+					
+					if (!Strings.isEmpty(siteCity))
+						newSite.setCity(siteCity);					
+					if (!siteCountry.getIsoCode().equals("")) {
+						newSite.setCountry(siteCountry);
+						
+						if (siteCountry.getIsoCode().equals("US") || siteCountry.getIsoCode().equals("CA"))
+							newSite.setState(state);
+					}
 					
 					summary = "Renamed" + summary + " to label: " + newSite.getLabel() + " and project name: "
 							+ newSite.getName();
@@ -189,7 +205,6 @@ public class ManageJobSites extends OperatorActionSupport {
 
 			if ("Remove".equalsIgnoreCase(button)) {
 				if (siteID > 0) {
-					newSite.setActive(false);
 					newSite.setProjectStop(new Date());
 					summary = "Deactivated" + summary;
 				} else
@@ -198,7 +213,6 @@ public class ManageJobSites extends OperatorActionSupport {
 
 			if ("Reactivate".equalsIgnoreCase(button)) {
 				if (siteID > 0) {
-					newSite.setActive(true);
 					newSite.setProjectStart(new Date());
 					
 					Calendar cal = Calendar.getInstance();
@@ -236,6 +250,14 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 
 		return SUCCESS;
+	}
+	
+	public boolean isCanEdit() {
+		if ((date == null || date.equals(maskDateFormat(new Date())))
+				&& permissions.hasPermission(OpPerms.ManageProjects, OpType.Edit))
+			return true;
+		
+		return false;
 	}
 
 	public int getSiteID() {
@@ -282,6 +304,10 @@ public class ManageJobSites extends OperatorActionSupport {
 		return siteName;
 	}
 	
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
+	
 	public String getSiteCity() {
 		return siteCity;
 	}
@@ -321,9 +347,13 @@ public class ManageJobSites extends OperatorActionSupport {
 	public void setSiteEnd(Date siteEnd) {
 		this.siteEnd = siteEnd;
 	}
-
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
+	
+	public String getDate() {
+		return date;
+	}
+	
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public JobSite getNewSite() {
@@ -339,15 +369,27 @@ public class ManageJobSites extends OperatorActionSupport {
 	}
 
 	public List<JobSite> getActiveSites() {
-		if (activeSites == null)
-			activeSites = siteDAO.findByOperatorWhere(operator.getId(), "active = 1");
+		if (activeSites == null) {
+			activeSites = new ArrayList<JobSite>();
+			for (JobSite site : allSites) {
+				if (site.isActive(parseDate()))
+					activeSites.add(site);
+			}
+		}
 		
 		return activeSites;
 	}
 
 	public List<JobSite> getInactiveSites() {
-		if (inactiveSites == null)
-			inactiveSites = siteDAO.findByOperatorWhere(operator.getId(), "active = 0");
+		if (inactiveSites == null) {
+			inactiveSites = new ArrayList<JobSite>();
+			for (JobSite site : allSites) {
+				if (!site.isActive(parseDate())) {
+					if (site.getProjectStart() != null && site.getProjectStart().before(parseDate()))
+						inactiveSites.add(site);
+				}
+			}
+		}
 		
 		return inactiveSites;
 	}
@@ -373,9 +415,35 @@ public class ManageJobSites extends OperatorActionSupport {
 			if (skip.size() > 0)
 				ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",") + ")";
 			
-			addable = taskDAO.findWhere("opID = " + operator.getId() + ids);
+			addable = taskDAO.findWhere("opID = " + operator.getId() + ids + " ORDER BY label");
 		}
 		
 		return addable;
+	}
+	
+	public List<String> getHistory() {
+		if (history == null) {
+			history = new ArrayList<String>();
+			List<Date> dates = siteDAO.findHistory("opID = " + operator.getId() + " AND projectStart IS NOT NULL");
+			
+			for (Date date : dates) {
+				history.add(maskDateFormat(date));
+			}
+		}
+		
+		return history;
+	}
+	
+	private Date parseDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date view;
+		
+		try {
+			view = sdf.parse(date);
+		} catch (Exception e) {
+			view = new Date();
+		}
+		
+		return view;
 	}
 }

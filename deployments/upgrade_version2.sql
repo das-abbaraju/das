@@ -251,3 +251,5 @@ where id = 45;
 
 update email_template set allowsVelocity = 1, html = 1, recipient = 'Admin' where id = 107;
 insert into `app_properties` (`property`, `value`) values('subscription.ContractorAdded','1');
+
+update widget_user set sortOrder = 10 where userID = 959 and widgetID = 26;
