@@ -119,10 +119,11 @@ public class Invoice extends Transaction {
 	}
 
 	@Transient
-	public boolean isRebill() {
-		if (getAccount() instanceof ContractorAccount)
-			return !getStatus().isPaid() && ((ContractorAccount) getAccount()).isCcExpired();
-		else
+	public boolean isCcRebill() {
+		if (getAccount() instanceof ContractorAccount) {
+			ContractorAccount contractor = (ContractorAccount) getAccount();
+			return !getStatus().isPaid() && contractor.getPaymentMethod().isCreditCard() && contractor.isCcValid();
+		} else
 			return false;
 	}
 

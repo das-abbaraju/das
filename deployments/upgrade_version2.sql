@@ -15,7 +15,7 @@ and pd.answer = 'Yes');
 **/
 
 update email_template 
-set subject = 'PICS Invoice ${invoice.id}.#if(${invoice.rebill}) Your credit card ending in ${contractor.ccNumber} will be charged on ${invoice.dueDateF}#end'
+set subject = 'PICS Invoice ${invoice.id}.#if(${invoice.ccRebill}) Your credit card ending in ${contractor.ccNumber} will be charged on ${invoice.dueDateF}#end'
 where id = 45;
 
 update email_template
@@ -111,10 +111,12 @@ div#info {
 #elseif($invoice.overdue && ${contractor.activeB})
     <div id="alert">This invoice is currently OVERDUE!</div>	
 #end
-#if($invoice.status.unpaid && !${contractor.ccExpired})
-    <div id="alert">The Credit Card on file has Expired. Please login to your account and add a valid payment method.</div>	
-#elseif($invoice.status.unpaid && ${contractor.ccExpired})
-    <div id="alert">We currently have a ${contractor.creditCard.cardType} ending in ${contractor.creditCard.lastFour} on file and it will be automatically charged on $!{pics_dateTool.format("MMM d, yyyy", $invoice.dueDate)}</div>
+#if($invoice.status.unpaid && ${contractor.paymentMethod.creditCard})
+    #if(!${contractor.ccValid})
+        <div id="alert">The Credit Card on file has Expired. Please login to your account and add a valid payment method.</div>	
+    #else
+        <div id="alert">We currently have a ${contractor.creditCard.cardType} ending in ${contractor.creditCard.lastFour} on file and it will be automatically charged on $!{pics_dateTool.format("MMM d, yyyy", $invoice.dueDate)}</div>
+    #end
 #end
       <table width="100%" height="100%">
         <tbody>
