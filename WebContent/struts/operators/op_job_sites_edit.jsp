@@ -21,11 +21,14 @@ $('.datepicker').datepicker();
 				<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode" headerKey=""
 					headerValue="- Country -" listValue="name" value="newSite.country.isoCode"></s:select>
 			</li>
-			<li><label>State:</label>
-				<s:select list="getStateList(newSite.country.isoCode)" name="state.isoCode" listKey="isoCode"
-					listValue="name" value="newSite.state.isoCode"></s:select>
+			<li class="loadStates">
+				<s:if test="newSite.country.isoCode != ''">
+					<label>State:</label>
+					<s:select list="getStateList(newSite.country.isoCode)" name="state.isoCode" listKey="isoCode"
+						listValue="name" value="newSite.state.isoCode"></s:select>
+				</s:if>
 			</li>
-			<li class="loadStates"><label>Start Date:</label>
+			<li><label>Start Date:</label>
 				<input type="text" name="siteStart" value="<s:property value="maskDateFormat(newSite.projectStart)" />"
 					size="10" class="datepicker" />
 			</li>
