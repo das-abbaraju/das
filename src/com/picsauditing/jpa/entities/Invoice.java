@@ -13,6 +13,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.Strings;
+
+@SuppressWarnings("serial")
 @Entity
 @DiscriminatorValue("I")
 public class Invoice extends Transaction {
@@ -22,7 +25,7 @@ public class Invoice extends Transaction {
 	private String poNumber;
 	private String notes;
 	private Date paidDate; // MAX(Payment.creationDate)
-	
+
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
 
@@ -113,5 +116,18 @@ public class Invoice extends Transaction {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
 		super.updateAmountApplied();
+	}
+
+	@Transient
+	public boolean isRebill() {
+		if (getAccount() instanceof ContractorAccount)
+			return !getStatus().isPaid() && ((ContractorAccount) getAccount()).isCcExpired();
+		else
+			return false;
+	}
+
+	@Transient
+	public String getDueDateF() {
+		return Strings.formatDateShort(getDueDate());
 	}
 }

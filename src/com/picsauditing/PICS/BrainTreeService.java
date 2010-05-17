@@ -235,6 +235,10 @@ public class BrainTreeService {
 			this.cardNumber = cardNumber;
 		}
 
+		public String getLastFour() {
+			return cardNumber.substring(cardNumber.length() - 4, cardNumber.length());
+		}
+
 		public String getExpirationDate() {
 			return expirationDate;
 		}

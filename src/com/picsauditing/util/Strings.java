@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.velocity.tools.generic.DateTool;
 
 import com.picsauditing.PICS.Utilities;
 
@@ -532,4 +535,13 @@ public class Strings {
 	public static boolean isSimilarTo(String m, String n) {
 		return (editDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(), n.length()))-.25) ? true : false;
 	}
+	
+	public static String formatDateLong(Date d){
+		return new DateTool().format("MMM d, yyyy", d);
+	}
+
+	public static String formatDateShort(Date d){
+		return new DateTool().format("MM/dd/yy", d);
+	}
+
 }

@@ -910,4 +910,10 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return cc;
 	}
+	
+	@Transient
+	public String getCcNumber() {
+		String cardNumber = getCreditCard().getCardNumber();
+		return cardNumber.substring(cardNumber.length()-4, cardNumber.length());
+	}
 }
