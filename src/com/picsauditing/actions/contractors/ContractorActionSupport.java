@@ -257,6 +257,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			PicsLogger.log("Found [" + subMenu.getChildren() + "] Other Audits");
 		}
 		PicsLogger.stop();
+		resetActiveAudits();
 		return menu;
 	}
 
