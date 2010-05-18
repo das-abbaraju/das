@@ -46,7 +46,7 @@ c.welcomeAuditor_id
 where ca.conid = c.id
 and auditTypeid in 
 (select id from audit_type where (classtype in ('PQF') or id
-in (9,11)))
+in (9,11,96)))
 and auditStatus in ('Pending','Submitted','Incomplete');
 
 -- update auditor with CSR for these contractors for Policies
