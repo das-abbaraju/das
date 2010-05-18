@@ -20,7 +20,8 @@
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2">Contractor Name</td>
+		<td colspan="2"><a
+				href="?orderBy=name ASC">Contractor Name</a></td>
 		<pics:permission perm="AllContractors">
 			<td></td>
 		</pics:permission>

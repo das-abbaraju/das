@@ -49,7 +49,7 @@ public class ReportActionSupport extends PicsActionSupport {
 		
 		if (orderBy == null && orderByDefault != null)
 			orderBy = orderByDefault;
-		report.setOrderBy(this.orderBy, null);
+		report.setOrderBy(this.orderBy, orderByDefault);
 		report.setSql(sql);
 
 		if (showPage > 0)
