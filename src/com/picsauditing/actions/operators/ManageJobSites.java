@@ -385,7 +385,12 @@ public class ManageJobSites extends OperatorActionSupport {
 			inactiveSites = new ArrayList<JobSite>();
 			for (JobSite site : allSites) {
 				if (!site.isActive(parseDate())) {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					
 					if (site.getProjectStart() != null && site.getProjectStart().before(parseDate()))
+						inactiveSites.add(site);
+					else if (site.getProjectStart() == null 
+							&& sdf.format(site.getProjectStop()).equals(sdf.format(parseDate())))
 						inactiveSites.add(site);
 				}
 			}
