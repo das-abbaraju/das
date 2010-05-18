@@ -1,8 +1,8 @@
 package com.picsauditing.actions.operators;
 
 //import com.picsauditing.access.OpPerms;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,9 +32,8 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	protected int groupNumber;
 	protected boolean canEdit = false;
 
-	protected List<Date> history;
+	protected List<String> history;
 	protected String date;
-	protected Date effectiveDate = new Date(); // Set to today
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
 	protected JobTask jobTask;
 	protected AssessmentTest assessmentTest;
@@ -96,7 +95,11 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 			return redirect("ManageJobTaskCriteria.action?id=" + operator.getId() + "&jobTaskID=" + jobTaskID);
 		}
 		
-		history = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
+		List<Date> dates = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
+		history = new ArrayList<String>();
+		for (Date date : dates) {
+			history.add(maskDateFormat(date));
+		}
 		
 		return SUCCESS;
 	}
@@ -131,18 +134,6 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	
 	public void setDate(String date) {
 		this.date = date;
-	}
-	
-	public Date getEffectiveDate() {
-		if (date != null) {
-			try {
-				effectiveDate = sdf.parse(date);
-			} catch (ParseException e) {
-				effectiveDate = new Date();
-			}
-		}
-		
-		return effectiveDate;
 	}
 	
 	public JobTaskCriteria getNewJobTaskCriteria() {
@@ -199,9 +190,14 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		return new HashSet<AssessmentTest>(assessmentTestDAO.findAll());
 	}
 	
-	public List<Date> getHistory() {
-		if (history == null)
-			history = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
+	public List<String> getHistory() {
+		if (history == null) {
+			List<Date> dates = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
+			history = new ArrayList<String>();
+			for (Date date : dates) {
+				history.add(maskDateFormat(date));
+			}
+		}
 		
 		if (history.size() > 1)
 			return history;
@@ -228,7 +224,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		if (date == null || date.equals(sdf.format(new Date())))
 			return jobTask.getJobTaskCriteriaMap();
 		else
-			return jobTask.getJobTaskCriteriaMap(getEffectiveDate());
+			return jobTask.getJobTaskCriteriaMap(parseDate(date));
 	}
 	
 	private void setupNewJobTaskCriteria() {
@@ -248,5 +244,15 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		exp.add(Calendar.MONTH, assessmentTest.getMonthsToExpire());
 		
 		newJobTaskCriteria.setExpirationDate(exp.getTime());
+	}
+	
+	private Date parseDate(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		
+		try {
+			return sdf.parse(date);
+		} catch (Exception e) {
+			return new Date();
+		}
 	}
 }
