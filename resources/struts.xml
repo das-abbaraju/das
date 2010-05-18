@@ -202,6 +202,11 @@
 			<result>struts/widgets/outstanding_submitted_audits.jsp</result>
 		</action>
 		
+		<action name="WelcomeCallAjax"
+			class="com.picsauditing.actions.audits.WelcomeCallWidget">
+			<result>struts/widgets/welcome_call_pending.jsp</result>
+		</action>
+		
 		<action name="RejectedPoliciesAjax"
 			class="com.picsauditing.actions.audits.RejectedPoliciesWidget">
 			<result>struts/widgets/outstanding_rejected_policies.jsp</result>
