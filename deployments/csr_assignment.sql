@@ -21,7 +21,8 @@ and a.state in ('AR','CO','IA','KS','LA','MO','ND','NE','OK','SD','WI')
 AND a.country = 'US';
 
 -- Neal Chawla
-update contractor_info c, accounts a set welcomeAuditor_id = 23550
+-- For now I am switching all the contractors assigned to Neal(23550) to Kaitlyn(11067) as per jake
+update contractor_info c, accounts a set welcomeAuditor_id =  11067
 where c.id = a.id
 and a.state in ('AL','FL','GA','KY','OH','TN')
 AND a.country = 'US';
