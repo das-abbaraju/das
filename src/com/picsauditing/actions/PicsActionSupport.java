@@ -58,7 +58,6 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 		loadPermissions(true);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void loadPermissions(boolean autoLogin) {
 		if (permissions != null)
 			// Already set

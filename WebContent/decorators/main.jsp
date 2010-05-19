@@ -137,7 +137,7 @@
 	<div class="error">You must enable JavaScript to use the PICS Organizer. Contact your IT Department if you don't know how.</div>
 </noscript>
 <decorator:body />
-<div><br clear="both"></br></div>
+<div><br clear="both"/><div>
 <!-- !end content -->
 </div>
 </div>
