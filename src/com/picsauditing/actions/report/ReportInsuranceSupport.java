@@ -79,7 +79,7 @@ public class ReportInsuranceSupport extends ReportContractorAudits {
 				sql.addWhere("ambest.financialCode =" + getFilter().getAmBestClass());
 		}
 		
-		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowPrimaryInformation(true);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowCompletedDate(false);

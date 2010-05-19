@@ -9,11 +9,14 @@
 <table class="report">
 <thead>
 	<tr>
-		<td></td>
+		<td><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/></td>
 		<td title="PICS Recommendation" style="cursor: help;"></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 		<td><a href="javascript: changeOrderBy('form1','atype.auditName');">Policy</a></td>
 		<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
+		<s:if test="filter.primaryInformation">
+			<td>Contact</td>
+		</s:if>
 		<td>Limits</td>
 		<td>AMBest</td>
 		<td title="Additional Requirements">Add'l</td>
@@ -49,6 +52,13 @@
 			</s:if>
 			<s:date name="get('expiresDate')" format="M/d/yy" />
 		</td>
+		<s:if test="filter.primaryInformation">
+			<td>
+				<s:property value="get('contactname')"/> <br />
+				<s:property value="get('contactphone')"/> <br />
+				<a href="mailto:<s:property value="get('contactemail')"/>"><s:property value="get('contactemail')"/></a> <br />
+			</td>
+		</s:if>
 		<td>
 			<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
 				<nobr><s:property value="getFormattedDollarAmount(answer)"/> = <span style="font-size: 9px;"><s:property value="question.columnHeader"/></span></nobr>
@@ -90,17 +100,14 @@
 	</tr>
 </s:iterator>
 	<tr>
-		<td class="center" colspan="2">
-			<center><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/><br/>Select<br/>All</center>
-		</td>
-		<td colspan="7">
+		<td <s:if test="filter.primaryInformation">colspan="11"</s:if><s:else>colspan="10"</s:else>>
 			<div style="height:28px;">
 			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Rejected':'Reject Selected','NotApplicable':'Mark as N/A'}"/>
 			</div>
 			<div class="buttons">
 				<a class="picsbutton positive" href="#" onclick="return saveRows();">Save Changes</a>
 			</div>
-			</td>
+		</td>
 	</tr>
 </table>
 

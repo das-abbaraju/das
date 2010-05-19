@@ -26,6 +26,9 @@
 	<tr>
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
+   		<s:if test="filter.primaryInformation">
+			<td>Contact</td>
+		</s:if>
 	    <td><a href="javascript: changeOrderBy('form1','atype.auditName');" >Policy Type</a></td>
 		<s:if test="permissions.operator || permissions.corporate">
 			<td>Status</td>
@@ -42,6 +45,13 @@
 	<tr>
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
+		<s:if test="filter.primaryInformation">
+			<td>
+				<s:property value="get('contactname')"/> <br />
+				<s:property value="get('contactphone')"/> <br />
+				<a href="mailto:<s:property value="get('contactemail')"/>"><s:property value="get('contactemail')"/></a> <br />
+			</td>
+		</s:if>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('auditName')"/> <s:property value="get('auditFor')"/></a></td>
 	    <s:if test="permissions.operator || permissions.corporate">
 		    <td><s:property value="get('caoStatus')"/></td>

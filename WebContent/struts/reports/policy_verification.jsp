@@ -17,6 +17,9 @@
 	<tr>
 		<td></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
+		<s:if test="filter.primaryInformation">
+			<td>Contact</td>
+		</s:if>
 		<td>Policy</td>
 		<td>Submitted</td>
 		<td>Operators</td>
@@ -27,6 +30,13 @@
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><s:property value="get('name')"/></td>
+			<s:if test="filter.primaryInformation">
+				<td>
+					<s:property value="get('contactname')"/> <br />
+					<s:property value="get('contactphone')"/> <br />
+					<a href="mailto:<s:property value="get('contactemail')"/>"><s:property value="get('contactemail')"/></a> <br />
+				</td>
+			</s:if>
 			<td><a href="AuditCat.action?auditID=<s:property value="get('auditID')"/>&catDataID=<s:property value="get('catdataID')" />"><s:property value="get('auditName')"/></a></td>
 			<td><s:date name="get('caoUpdateDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
