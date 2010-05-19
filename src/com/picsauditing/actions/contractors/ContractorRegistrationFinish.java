@@ -245,7 +245,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			contractor.setRenew(true);
 			accountDao.save(contractor);
 		}
-
+		
+		// Reload permissions for this user so they view just their country 
+		// specific questions.
+		if(complete) {
+			permissions.setAccountPerms(getUser());
+		}
 		return SUCCESS;
 	}
 
