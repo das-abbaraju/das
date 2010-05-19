@@ -9,7 +9,8 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 	public void prepare() throws Exception {
 		super.prepare();
 
-		getFilter().setShowInsuranceLimits(true);
+		getFilter().setShowInsuranceLimits(false);
+		getFilter().setShowOpertorTagName(false);
 	}
 	
 	@Override
@@ -52,6 +53,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("lower(ff.forceFlag) AS lflag");
 		sql.addField("ff.forceend");
 		sql.addField("ff.forceBegin");
+		sql.addField("u.id as forcedById"); 
 		sql.addField("u.name AS forcedBy");
 		sql.addField("fa.name AS forcedByAccount");
 		orderByDefault = "o.name, a.name";

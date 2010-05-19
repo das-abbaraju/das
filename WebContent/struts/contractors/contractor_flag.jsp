@@ -101,6 +101,10 @@ function checkReason(id) {
 				Manual Force Flag <s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceOverallFlag.forceEnd" format="MMM d, yyyy" /> 
 				by <s:property value="co.forceOverallFlag.forcedBy.name" /> from <s:property value="co.forceOverallFlag.forcedBy.account.name"/> 
 				<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'"> for all the sites</s:if>.
+				<s:if test="co.forceOverallFlag.forcedBy != null">
+					<br/>
+					<a href="ContractorNotes.action?id=<s:property value="contractor.id"/>&filter.userID=<s:property value="co.forceOverallFlag.forcedBy.id"/>&filter.category=Flags&filter.keyword=Forced">View Notes</a>
+				</s:if>
 			</s:form>
 		</s:if>
 		<br/>
@@ -176,6 +180,7 @@ function checkReason(id) {
 						<s:if test="#flagoverride != null">
 							<span title="By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>">
 								Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+								<a href="ContractorNotes.action?id=<s:property value="contractor.id"/>&filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&filter.category=Flags&filter.keyword=Forced">View Notes</a>
 							</span>
 						</s:if>
 						<pics:permission perm="EditForcedFlags">

@@ -22,19 +22,27 @@
 <table class="report">
 	<thead>
 		<tr>
-			<td colspan="2">Operator Name</td>
+			<td colspan="2">Contractor Name</td>
+			<s:if test="!permissions.operator">
+				<td>Operator Name</td>
+			</s:if>
 			<td>Flag</td>
 			<td>ForcedBy</td>
 			<td>Start Date</td>
 			<td>End Date</td>
-			<td>Contractor Name</td>
+			<td>Notes</td>
 		</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td class="right"><s:property
 				value="#stat.index + report.firstRowNumber" /></td>
-			<td><a><s:property value="get('opName')" /></a></td>
+			<td><a
+				href="ContractorView.action?id=<s:property value="get('id')"/>">
+			<s:property value="get('name')" /></a></td>
+			<s:if test="!permissions.operator">
+				<td><a><s:property value="get('opName')" /></a></td>
+			</s:if>
 			<td class="center">
 				<s:if test="get('opType').toString() == 'Operator'">
 				<a
@@ -51,9 +59,11 @@
 			<td title="<s:property value="get('forcedByAccount')"/>"><s:property value="get('forcedBy')"/></td>
 			<td><s:date name="get('forceBegin')" format="MMM d, yyyy" /></td>
 			<td><s:date name="get('forceend')" format="MMM d, yyyy" /></td>
-			<td><a
-				href="ContractorView.action?id=<s:property value="get('id')"/>">
-			<s:property value="get('name')" /></a></td>
+			<td>
+				<s:if test="get('forcedById') != null">
+					<a href="ContractorNotes.action?id=<s:property value="get('id')"/>&filter.userID=<s:property value="get('forcedById')"/>&filter.category=Flags&filter.keyword=Forced">Notes</a>
+				</s:if>
+			</td>
 		</tr>
 	</s:iterator>
 </table>
