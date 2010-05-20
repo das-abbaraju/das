@@ -73,9 +73,11 @@ which case the Operator will be notified that your company requested to be remov
 contractor list.</p><br/>
 
 <b><u>REFUND POLICY</u></b>
-<p>PICS refund policy can be accessed here as well from as the payment options page
-<a href="http://www.picsorganizer.com/refund_policy.jsp">(http://www.picsorganizer.com/refund_policy.jsp)</a></p>
-<p>Our annual pricing can be seen on the facilities page, which you will be able to review before completing registration.</p>
+<p>Your account will be automatically renewed each 12 months unless you call to cancel your account.  In the event of an operator-requested upgrade, your primary user will be notified via email immediately.  The invoice will be created three days after the upgrade event and the upgrade charge will occur 7 days later. PICS refund policy can be accessed here as well from as the payment options page <a href="http://www.picsorganizer.com/refund_policy.jsp">(http://www.picsorganizer.com/refund_policy.jsp)</a></p>
+<p>Our annual pricing can be seen on the facilities page, which you will be able to review before completing registration.</p><br/>
+
+<b><u>AGREEMENTS OUTSIDE OF THIS DOCUMENT</u></b>
+<p>You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.</p>
 </div>
 </body>
 </html>
