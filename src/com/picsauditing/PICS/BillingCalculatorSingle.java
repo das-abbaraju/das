@@ -23,8 +23,6 @@ import com.picsauditing.jpa.entities.User;
 public class BillingCalculatorSingle {
 	public static final Date CONTRACT_RENEWAL_TIMKEN = DateBean.parseDate("2010-09-01");
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
-	public static final Date CONTRACT_RENEWAL_NEWBELGIUM = DateBean.parseDate("2010-04-01");
-	public static final Date CONTRACT_RENEWAL_BP_LUBRICANTS = DateBean.parseDate("2010-05-01");
 	public static final Date CONTRACT_RENEWAL_LOREAL = DateBean.parseDate("2010-07-01");
 
 	static public void setPayingFacilities(ContractorAccount contractor) {
@@ -79,13 +77,6 @@ public class BillingCalculatorSingle {
 					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
 							feeID = 105;
-						}
-					}
-				}
-				if (CONTRACT_RENEWAL_BP_LUBRICANTS.after(now)) {
-					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-						if (contractorOperator.getOperatorAccount().getName().startsWith("BP Lubricants")) {
-							feeID = 105;	
 						}
 					}
 				}
@@ -300,13 +291,9 @@ public class BillingCalculatorSingle {
 		
 		if(requestedBy == null)
 			return false;
-		if (CONTRACT_RENEWAL_NEWBELGIUM.after(now) && requestedBy.getId() == 5147)
-			return true;
 		if (CONTRACT_RENEWAL_TIMKEN.after(now) && requestedBy.getName().startsWith("Timken"))
 			return true;
 		if (CONTRACT_RENEWAL_BASF.after(now) && requestedBy.getName().startsWith("BASF"))
-			return true;
-		if (CONTRACT_RENEWAL_BP_LUBRICANTS.after(now) && requestedBy.getName().startsWith("BP Lubricants"))
 			return true;
 		if (CONTRACT_RENEWAL_LOREAL.after(now) 
 				&& (requestedBy.getId() == 10970 || requestedBy.getId() == 10969 
