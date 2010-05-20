@@ -144,9 +144,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public Map<Integer, AuditData> getDataForSafetyManual() {
+		int questionID = AuditQuestion.MANUAL_PQF;
+		if(conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
+			questionID = 3477; 
+		}
 		Map<Integer, AuditData> answers = auditDataDao
 				.findAnswersForSafetyManual(conAudit.getContractorAccount()
-						.getId(), AuditQuestion.MANUAL_PQF);
+						.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;

@@ -153,20 +153,21 @@ public class AuditBuilder {
 			}
 		}
 		
-		// Checking to see if the supplement COR should be required for this contractor 
+		// Checking to see if the supplement COR or BPIISNCaseMgmt should be required for this contractor 
 		ContractorAudit corAudit = null;
-		if(hasCOR != null && "Yes".equals(hasCOR.getAnswer())) {
-			for(ContractorAudit audit : currentAudits) {
+		ContractorAudit BpIisnSpecific = null;
+		for(ContractorAudit audit : currentAudits) {
+			if((audit.getAuditType().getId() == AuditType.COR 
+					|| audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
+					&& auditTypeList.contains(audit.getAuditType())) {
 				if(audit.getAuditType().getId() == AuditType.COR 
-						&& auditTypeList.contains(audit.getAuditType())) {
-					{
-						corAudit = audit;
-						break;
-					}
-				}
-			}	
-		}
-		
+						&& hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
+					corAudit = audit;
+				if(audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
+					BpIisnSpecific = audit;
+			}		
+		}	
+					 
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
 			if (auditType.getId() == AuditType.ANNUALADDENDUM) {
@@ -232,6 +233,10 @@ public class AuditBuilder {
 						if(corAudit == null)
 							insertNow = false;
 						else if(!corAudit.getAuditStatus().isActive())
+							insertNow = false;
+						break;
+					case AuditType.BPIISNCASEMGMT:
+						if (!BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
 							insertNow = false;
 						break;
 					default:
