@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.TransactionStatus;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.log.PicsLogger;
@@ -331,7 +332,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void addNote(String subject) {
-		Note note = new Note(payment.getAccount(), getUser(), subject);
+		Note note = new Note(payment.getAccount(), getUser(User.SYSTEM), subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
