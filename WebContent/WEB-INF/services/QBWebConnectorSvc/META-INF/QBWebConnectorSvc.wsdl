@@ -249,7 +249,7 @@
   </wsdl:binding>
   <wsdl:service name="QBWebConnectorSvc">
     <wsdl:port name="QBWebConnectorSvcSoap" binding="tns:QBWebConnectorSvcSoap">
-      <soap:address location="http://localhost:8080/picsWeb2/QBWebConnectorSvc?wsdl"/>
+      <soap:address location="http://localhost:8080/services/QBWebConnectorSvc?wsdl"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
