@@ -110,7 +110,7 @@
 	</s:if>
 	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
 		<br/>
-		<label>Comment:</label> <s:property value="#a.comment" escape="false"/>
+		<label>Comment:</label> <s:property value="#a.commentDisplay" escape="false"/>
 	</s:if>
 </div>
 

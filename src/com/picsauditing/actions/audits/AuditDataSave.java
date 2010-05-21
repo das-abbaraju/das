@@ -69,7 +69,7 @@ public class AuditDataSave extends AuditActionSupport {
 				return LOGIN;
 
 			getUser();
-			
+
 			AuditData newCopy = null;
 			if (auditData.getId() > 0) {
 				newCopy = auditDataDao.find(auditData.getId());
@@ -78,9 +78,10 @@ public class AuditDataSave extends AuditActionSupport {
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion().getId());
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+						.getId());
 			}
-			
+
 			if (newCopy == null) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
@@ -136,7 +137,7 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 				}
 
-				if (!Strings.isEmpty(auditData.getComment())) {
+				if (auditData.getComment() != null) {
 					newCopy.setComment(auditData.getComment());
 				}
 
@@ -325,8 +326,7 @@ public class AuditDataSave extends AuditActionSupport {
 			databaseCopy = auditData;
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 
-		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) 
-				|| "Number".equals(questionType)) {
+		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
 			// Strip the commas, just in case they are in the wrong place
 			// We add them back in later
 			answer = answer.replace(",", "");
@@ -342,12 +342,12 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError("The answer must be a number.");
 				return false;
 			}
-			
-			if("Number".equals(questionType)) {
+
+			if ("Number".equals(questionType)) {
 				auditData.setAnswer(answer);
 				return true;
 			}
-			
+
 			NumberFormat format = new DecimalFormat("#,##0");
 			if ("Decimal Number".equals(questionType))
 				format = new DecimalFormat("#,##0.000");

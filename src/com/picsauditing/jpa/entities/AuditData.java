@@ -84,6 +84,14 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.comment = comment;
 	}
 
+	@Transient
+	public String getCommentDisplay() {
+		if (comment != null)
+			return comment.replaceAll("\\n", "<br />").replaceAll("  ", "&nbsp;&nbsp;");
+		else
+			return null;
+	}
+
 	@Temporal(TemporalType.DATE)
 	public Date getDateVerified() {
 		return dateVerified;
@@ -97,7 +105,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public boolean isUnverified() {
 		return getDateVerified() == null;
 	}
-	
+
 	@Transient
 	public boolean isVerified() {
 		return getDateVerified() != null;
@@ -112,34 +120,31 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	 * Is the answer filled in with data or not?
 	 */
 	public boolean isAnswered() {
-		if (answer != null
-				&& answer.length() > 0
-				&& !answer.equals(DateBean.NULL_DATE_DB)) {
+		if (answer != null && answer.length() > 0 && !answer.equals(DateBean.NULL_DATE_DB)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isOK() {
 		if (!question.isHasRequirementB())
 			return true;
-		
+
 		if (answer == null || question.getOkAnswer() == null)
 			return false;
-		
+
 		if (question.getOkAnswer().contains(answer))
 			return true;
-		
+
 		return false;
 	}
-
 
 	@Enumerated(EnumType.STRING)
 	public YesNo getWasChanged() {
 		return wasChanged;
 	}
-	
+
 	@Transient
 	public boolean isWasChangedB() {
 		return YesNo.Yes.equals(wasChanged);
@@ -160,7 +165,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	@Transient
 	public boolean isRequirementOpen() {
-		if(Strings.isEmpty(question.getOkAnswer()))
+		if (Strings.isEmpty(question.getOkAnswer()))
 			return false;
 		return (question.getOkAnswer().indexOf(answer) == -1);
 	}
@@ -185,7 +190,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			if (dependsOnAnswer == null)
 				return false;
 
-			// TODO BEFORE RELEASE! figure out some way to get the answer of a dependent question 
+			// TODO BEFORE RELEASE! figure out some way to get the answer of a
+			// dependent question
 			// dependsOnQuestion.getAnswer();
 			AuditData contractorAnswer = null;
 
@@ -201,9 +207,10 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get a unique ID for this answer regardless if it has been saved or not
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -218,7 +225,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		result = PRIME * result + id;
 		return result;
 	}
-	
+
 	/**
 	 * Take a map of numerical AuditData answers and add an additional AuditData
 	 * containing an average. The new average will be verified only if all the
@@ -237,21 +244,22 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		float rateTotal = 0;
 		int count = 0;
 		for (AuditData data : dataList) {
-			if(data != null) {
+			if (data != null) {
 				avg.setQuestion(data.getQuestion());
 				avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
 				avg.getAudit().setAuditType(data.getAudit().getAuditType());
-	
+
 				if (data.isUnverified())
 					avg.setVerified(false);
-	
+
 				try {
 					float rate = Float.parseFloat(data.getAnswer());
 					rateTotal += rate;
 					count++;
 				} catch (Exception e) {
-	//				String error = "Failed to parse rate:" + data.getAnswer() + " for audit " + data.getAudit().getId();
-	//				System.out.println(error);
+					// String error = "Failed to parse rate:" + data.getAnswer()
+					// + " for audit " + data.getAudit().getId();
+					// System.out.println(error);
 				}
 			}
 		}

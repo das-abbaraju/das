@@ -15,9 +15,6 @@
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 
-<script type="text/javascript" src="js/jquery/jwysiwyg/jquery.wysiwyg.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/jwysiwyg/jquery.wysiwyg.css"/>
-
 <script type="text/javascript" src="js/validateForms.js"></script>
 <script type="text/javascript" src="js/audit_cat_edit.js?v=<s:property value="version"/>"></script>
 
