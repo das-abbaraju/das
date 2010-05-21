@@ -137,7 +137,7 @@
 	<div class="error">You must enable JavaScript to use the PICS Organizer. Contact your IT Department if you don't know how.</div>
 </noscript>
 <decorator:body />
-<div><br clear="both"/><div>
+<div><br clear="both"></br></div>
 <!-- !end content -->
 </div>
 </div>
@@ -233,6 +233,7 @@ Copyright &copy; 2009
 <a href="Contact.action" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
 	title="Opens in new window" class="footer">Privacy Policy</a>
+</div>
 </div>
 </div>
 </div>
