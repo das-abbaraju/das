@@ -116,6 +116,8 @@ public class PicsMenu {
 			subMenu.addChild("Request For New", "ReportNewRequestedContractor.action");
 		if (permissions.hasPermission(OpPerms.ContractorWatch))
 			subMenu.addChild("Activity Watch", "ReportActivityWatch.action");
+		if (permissions.hasPermission(OpPerms.WatchListManager))
+			subMenu.addChild("Watch List Manager", "WatchListManager.action");
 
 		subMenu = menu.addChild("Auditing");
 		if (permissions.isAuditor()) {

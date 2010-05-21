@@ -106,7 +106,8 @@ public enum OpPerms {
 	DefineCompetencies("Define Competencies", "Allows operators to create compentency requirements for satisfying job roles.", true, true, true, false, true),
 	
 	// Contractor watch
-	ContractorWatch("Contractor Watch", "Allows operators to view the activity of watched contractors.", true, true, false, false, true);
+	ContractorWatch("Contractor Watch", "Allows operators to view the activity of watched contractors.", true, true, true, false, true),
+	WatchListManager("Watch List Manager", "Allows managers to add and remove users from watch lists.", true, true, true, false, true);
 	
 	private String description;
 	private String helpText;

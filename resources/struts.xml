@@ -416,6 +416,16 @@
 			<result>/struts/users/operator_users.jsp</result>
 		</action>
 		
+		<action name="WatchListManager"
+			class="com.picsauditing.actions.users.WatchListManager">
+			<result>/struts/users/watch_list_manager.jsp</result>
+		</action>
+		
+		<action name="UserSelectAjax"
+			class="com.picsauditing.actions.users.WatchListManager">
+			<result>/struts/users/user_select.jsp</result>
+		</action>
+		
 		<!--  NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes"
 			class="com.picsauditing.actions.notes.OperatorNotes">
@@ -505,7 +515,7 @@
 			class="com.picsauditing.actions.report.ReportActivityWatch">
 			<result>struts/reports/report_activity_watch.jsp</result>
 		</action>
-
+		
 		<!-- Billing -->
 		<action name="ReportBilling"
 			class="com.picsauditing.actions.report.ReportBilling">
@@ -1077,8 +1087,7 @@
 			class="com.picsauditing.actions.audits.ConAuditSave">
 			<result>struts/blank.jsp</result>
 		</action>
-
-
+		
 		<!-- Audits Manage -->
 		<action name="ManageAuditType"
 			class="com.picsauditing.actions.auditType.ManageAuditType">
