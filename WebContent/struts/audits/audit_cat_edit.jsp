@@ -195,7 +195,7 @@
 	<s:if test="#q.showComment || mode == 'Verify'">
 		<br/>
 		<label>Comments:</label>
-		<s:textarea name="comment%{#q.id}" id="comment%{#q.id}" value="%{#a.comment}" rows="6" cols="80" onchange="saveAnswerComment('%{#q.id}', null, $(this));"/>
+		<s:textarea name="comment%{#q.id}" id="comment%{#q.id}" value="%{#a.comment}" rows="6" cols="60" onchange="saveAnswerComment('%{#q.id}', null, $(this));"/>
 	</s:if>
 </div>
 
