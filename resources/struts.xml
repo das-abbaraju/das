@@ -71,7 +71,7 @@
 		</action>
 
 		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
-			<result>struts/blank.jsp</result>
+			<result>struts/login_json.jsp</result>
 		</action>
 		
 		<action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
