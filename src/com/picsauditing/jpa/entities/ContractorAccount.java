@@ -81,6 +81,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private BigDecimal balance;
 	private InvoiceFee membershipLevel;
 	private InvoiceFee newMembershipLevel;
+	private Date agreementDate;
+	private User agreedBy;
 	private List<Invoice> invoices = new ArrayList<Invoice>();
 	private List<Payment> payments = new ArrayList<Payment>();
 	private List<Refund> refunds = new ArrayList<Refund>();
@@ -99,6 +101,8 @@ public class ContractorAccount extends Account implements JSONable {
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
 	protected Map<String, AuditData> emrs = null;
+
+	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("05/20/2010");
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -543,17 +547,17 @@ public class ContractorAccount extends Account implements JSONable {
 			if (number < 4) {
 				// Store the EMR rates into a map for later use
 				for (AuditData answer : audit.getData()) {
-					if (answer.getQuestion().getId() == AuditQuestion.EMR 
+					if (answer.getQuestion().getId() == AuditQuestion.EMR
 							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
 						if (!Strings.isEmpty(answer.getAnswer())) {
 							number++;
-							if(answer.getQuestion().getId() == 2033)
+							if (answer.getQuestion().getId() == 2033)
 								emrs.put(audit.getAuditFor(), null);
-							else	
+							else
 								emrs.put(audit.getAuditFor(), answer);
 						}
 					}
-				}	
+				}
 			}
 		}
 
@@ -631,6 +635,26 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "agreementDate")
+	public Date getAgreementDate() {
+		return agreementDate;
+	}
+
+	public void setAgreementDate(Date agreementDate) {
+		this.agreementDate = agreementDate;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name = "agreedBy")
+	public User getAgreedBy() {
+		return agreedBy;
+	}
+
+	public void setAgreedBy(User agreedBy) {
+		this.agreedBy = agreedBy;
 	}
 
 	/**
@@ -880,7 +904,7 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return users;
 	}
-	
+
 	@Transient
 	public CreditCard getCreditCard() {
 		CreditCard cc = null;
@@ -904,16 +928,25 @@ public class ContractorAccount extends Account implements JSONable {
 				retries++;
 				try {
 					Thread.sleep(150);
-				} catch (InterruptedException e) {}
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 
 		return cc;
 	}
-	
+
 	@Transient
 	public String getCcNumber() {
 		String cardNumber = getCreditCard().getCardNumber();
-		return cardNumber.substring(cardNumber.length()-4, cardNumber.length());
+		return cardNumber.substring(cardNumber.length() - 4, cardNumber.length());
+	}
+
+	@Transient
+	public boolean isAgreementInEffect() {
+		if (agreementDate == null)
+			return false;
+
+		return agreementDate.after(USER_AGREEMENT_CHANGED);
 	}
 }
