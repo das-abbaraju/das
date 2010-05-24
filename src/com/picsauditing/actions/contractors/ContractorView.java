@@ -65,11 +65,26 @@ public class ContractorView extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				accountDao.save(contractor);
 			}
-
 		}
 
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
+		}
+		
+		if(tagId > 0) {
+			boolean requiresCompetency = false;
+			for(ContractorTag conTag : contractor.getOperatorTags()) {
+				if(conTag.getTag().getId() == 142) {
+					for(ContractorOperator contractorOperator : contractor.getOperators()) {
+						if(contractorOperator.getOperatorAccount().isRequiresCompetencyReview()) {
+							requiresCompetency = true;
+							break;
+						}
+					}
+				}
+			}
+			contractor.setRequiresCompetencyReview(requiresCompetency);
+			accountDao.save(contractor);
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
