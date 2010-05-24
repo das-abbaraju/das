@@ -13,7 +13,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.NcmsCategory;
 import com.picsauditing.jpa.entities.YesNo;
@@ -77,12 +76,8 @@ public class AuditCategoryDataDAO extends PicsDAO {
 
 		// There is a strange bug when
 		// If this is an operator or corporate, we already
-		if (!where.contains(":auditType")) {
-			where += "AND d.category.auditType.id IN (" + contractorAudit.getAuditType().getId() ;
-			if(contractorAudit.getAuditType().getId() == AuditType.SHELLCOMPETENCY)
-				where += ",2";
-			where += ")";
-		}	
+		if (!where.contains(":auditType"))
+			where += "AND d.category.auditType.id = :auditType ";
 		// inner join fetch d.category
 		try {
 			String queryString = "SELECT d FROM AuditCatData d " + "WHERE d.audit.id = :conAudit " + where
@@ -90,6 +85,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 			Query query = em.createQuery(queryString);
 
 			query.setParameter("conAudit", contractorAudit.getId());
+			setOptionalParameter(query, "auditType", contractorAudit.getAuditType().getId());
 			setOptionalParameter(query, "risk", contractorAudit.getContractorAccount().getRiskLevel());
 
 			return query.getResultList();

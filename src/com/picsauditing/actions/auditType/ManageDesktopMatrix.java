@@ -56,10 +56,7 @@ public class ManageDesktopMatrix extends PicsActionSupport {
 			questions.add(question);
 		}
 		
-		List<AuditType> auditTypes = auditDAO.findWhere("t.id IN (2,100)");
-		for(AuditType auditType : auditTypes) {
-			categories.addAll(auditType.getCategories());
-		}
+		categories = auditDAO.find(AuditType.DESKTOP).getCategories();
 		
 		// Build the data now
 		data = new HashMap<Integer, Map<Integer, Boolean>>();

@@ -561,8 +561,7 @@ public class AuditBuilder {
 			}
 		}
 
-		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP 
-				|| conAudit.getAuditType().getId() == AuditType.SHELLCOMPETENCY) {
+		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
 			int pqfAuditID = 0;
 			for (ContractorAudit audits : conAudit.getContractorAccount().getAudits()) {
 				if (audits.getAuditType().isPqf()
@@ -575,13 +574,8 @@ public class AuditBuilder {
 				List<AuditCategory> desktopCategories = auditCategoryDAO.findDesktopCategories(pqfAuditID);
 				categories.addAll(desktopCategories);
 			}
-			
-			String where = "t.auditType.id IN (" + conAudit.getAuditType().getId() ;
-			if(conAudit.getAuditType().getId() == AuditType.SHELLCOMPETENCY)
-				where += ",2";
-			where += ")";
-			List<AuditCategory> allCategories = (List<AuditCategory>) auditCategoryDAO.findWhere(AuditCategory.class, where, 200);
 
+			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
 			PicsLogger.log("Categories to be included:");
 			for (AuditCategory category : categories)
 				PicsLogger.log("  " + category.getId() + " " + category.getCategory());

@@ -63,8 +63,7 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public boolean isAppliesB() {
-		if (audit.getAuditType().getId() > 2 && 
-				audit.getAuditType().getId() != AuditType.SHELLCOMPETENCY)
+		if (audit.getAuditType().getId() > 2)
 			return true;
 		return applies.equals(YesNo.Yes);
 	}

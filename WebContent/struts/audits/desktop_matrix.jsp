@@ -60,8 +60,7 @@ function clearSelected(name) {
 	<table class="report">
 	<thead>
 	<tr>
-		<th>Audit Category</th>
-		<th>Audit</th>
+		<th>Manual Audit Category</th>
 	<s:iterator value="questions">
 		<th><s:property value="question" /></th>
 	</s:iterator>
@@ -71,7 +70,6 @@ function clearSelected(name) {
 	<s:iterator value="categories">
 		<tr>
 			<th><s:property value="number" />. <s:property value="category" /></th>
-			<th><s:property value="auditType.auditName"/></th> 
 			<s:iterator value="questions">
 				<td title="<s:property value="question"/>" class="center<s:if test="data.get([1].id).get(id)"> selected</s:if>">
 					<s:checkbox name="incoming['%{[1].id}_%{id}']" value="data.get([1].id).get(id)"></s:checkbox>
@@ -82,8 +80,7 @@ function clearSelected(name) {
 	</tbody>
 	<thead>
 	<tr>
-		<th>Audit Category</th>
-		<th>Audit</th>
+		<th>Manual Audit Category</th>
 	<s:iterator value="questions">
 		<th><s:property value="question" /></th>
 	</s:iterator>
