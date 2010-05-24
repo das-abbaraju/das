@@ -41,6 +41,8 @@ public class Employee extends BaseTable {
 	private String ssn;
 	private Date birthDate;
 	private String photo;
+	private Date twicExpiration;
+	private Date shellTraining;
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
 	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
@@ -205,6 +207,23 @@ public class Employee extends BaseTable {
 
 	public void setAssessmentResults(List<AssessmentResult> assessmentResults) {
 		this.assessmentResults = assessmentResults;
+	}
+	@Temporal(TemporalType.DATE)
+	public Date getTwicExpiration() {
+		return twicExpiration;
+	}
+	
+	public void setTwicExpiration(Date twicExpiration) {
+		this.twicExpiration = twicExpiration;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	public Date getShellTraining() {
+		return shellTraining;
+	}
+	
+	public void setShellTraining(Date shellTraining) {
+		this.shellTraining = shellTraining;
 	}
 
 	@SuppressWarnings("unchecked")

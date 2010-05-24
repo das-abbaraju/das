@@ -168,11 +168,12 @@ div.dataTables_length { width: 35%; }
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>
 								</li>
-								<!-- Put something here when it exists?
-								<li><label>TWIC #:</label>
-									<s:textfield name="employee.twic"/>
+								<li><label>TWIC Expiration:</label>
+									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="date"/>
 								</li>
-								-->
+								<li><label>Shell Training:</label>
+									<s:textfield name="employee.shellTraining" value="%{maskDateFormat(employee.shellTraining)}" cssClass="date"/>
+								</li>
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">
