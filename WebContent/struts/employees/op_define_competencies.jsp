@@ -71,18 +71,22 @@ fieldset.bottom {
 	}
 
 	function remove(id) {
-		$.post('DefineCompetenciesAjax.action',
+		var del = confirm('Are you sure you want to remove this HSE Competency?');
+
+		if (del) {
+			$.post('DefineCompetenciesAjax.action',
 				{'competency.id': id, 'id': '<s:property value="operator.id"/>', button: 'delete'}, 
 				function(data, result) {
 					if (data.gritter)
 						$.gritter.add(data.gritter);
-
+	
 					if (data.result == 'success') {
 						dtable.fnDeleteRow($('#competency_'+id)[0]);
 					}
 				},
 				'json'
 			);
+		}
 	}
 	
 

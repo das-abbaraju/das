@@ -35,7 +35,7 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 				+ " JOIN job_competency jc ON jc.jobRoleID = er.jobRoleID) jc ON jc.employeeID = e.id");
 		sql.addJoin("LEFT JOIN employee_competency ec ON ec.competencyID = jc.competencyID AND e.id = ec.employeeID");
 		sql.addJoin("JOIN contractor_tag ct ON a.id = ct.conID");
-		sql.addWhere("ct.tagID = 93");
+		sql.addWhere("ct.tagID = 142");
 
 		sql.addGroupBy("e.id");
 		if (permissions.isContractor())
@@ -58,7 +58,6 @@ public class ReportCompetencyByEmployee extends ReportActionSupport {
 		addFilterToSQL();
 	}
 
-	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;

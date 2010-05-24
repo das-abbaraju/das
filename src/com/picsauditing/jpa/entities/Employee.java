@@ -245,6 +245,8 @@ public class Employee extends BaseTable {
 		json.put("ssn", Strings.maskSSN(ssn));
 		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
 		json.put("photo", photo);
+		json.put("twicExpiration", twicExpiration);
+		json.put("shellTraining", shellTraining);
 
 		return json;
 	}

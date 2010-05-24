@@ -46,7 +46,7 @@ public class ReportCompetencyByAccount extends ReportCompetencyByEmployee {
 
 		String sqlString = "select a.id, a.name, IFNULL(jr.total,0) jobRoleCount, IFNULL(e.total,0) employeeCount, IFNULL(totalComp.competencyTotal,0) required, IFNULL(totalComp.skilledTotal,0) skilled,  ca99.id ca99ID, ca99.auditStatus ca99status, ca99.creationDate ca99creationDate, ca99.completedDate ca99completedDate, ca99.expiresDate ca99expiresDate, ca100.id ca100ID, ca100.auditStatus ca100status, ca100.creationDate ca100creationDate, ca100.completedDate ca100completedDate, ca100.expiresDate ca100expiresDate "
 				+ "from accounts a "
-				+ "JOIN contractor_tag ct ON a.id = ct.conID and ct.tagID = 93 "
+				+ "JOIN contractor_tag ct ON a.id = ct.conID and ct.tagID = 142 "
 				+ "left join (select accountID, count(*) total FROM job_role group by accountID) jr on jr.accountID = a.id "
 				+ "left join (select accountID, count(*) total FROM employee group by accountID) e on e.accountID = a.id "
 				+ "left join ( "

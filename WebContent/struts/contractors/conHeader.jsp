@@ -232,7 +232,7 @@
 		</pics:permission>
 		<li><a href="UsersManage.action?accountId=<s:property value="id"/>">Users</a></li>
 		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Employees</a></li>
-		<pics:permission perm="DevelopmentEnvironment">
+		<pics:permission perm="DefineRoles">
 			<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>
 		</pics:permission>
 		<s:if test="!contractor.status.demo">
@@ -255,7 +255,7 @@
 		<pics:permission perm="ContractorAdmin">
 			<li><a href="UsersManage.action">Users</a></li>
 			<li><a href="ManageEmployees.action">Employees</a></li>
-			<pics:permission perm="DevelopmentEnvironment">
+			<pics:permission perm="DefineRoles">
 				<li><a href="ManageJobRoles.action">Job Roles</a></li>
 			</pics:permission>
 		</pics:permission>
