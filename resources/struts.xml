@@ -1089,6 +1089,16 @@
 			<result>struts/blank.jsp</result>
 		</action>
 		
+		<action name="ChartEmrTrirAjax"
+			class="com.picsauditing.actions.chart.ChartEmrTrir">
+			<result>struts/chart_xml.jsp</result>
+		</action>
+		
+		<action name="ChartManHoursAjax"
+			class="com.picsauditing.actions.chart.ChartManHours">
+			<result>struts/chart_xml.jsp</result>
+		</action>
+		
 		<!-- Audits Manage -->
 		<action name="ManageAuditType"
 			class="com.picsauditing.actions.auditType.ManageAuditType">

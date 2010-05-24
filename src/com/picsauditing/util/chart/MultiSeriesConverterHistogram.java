@@ -8,6 +8,7 @@ public class MultiSeriesConverterHistogram extends MultiSeriesConverter {
 	protected float maxCategory = 100;
 	protected float categoryDifference = 10;
 	private DecimalFormat df = new DecimalFormat("#0.0");
+	private boolean useDecimal = true;
 
 	@Override
 	public void addData(List<DataRow> data) {
@@ -16,7 +17,12 @@ public class MultiSeriesConverterHistogram extends MultiSeriesConverter {
 			float categoryValue = minCategory;
 			while (categoryValue <= maxCategory) {
 				Category category = new Category();
-				category.setLabel(df.format(categoryValue));
+				
+				if (useDecimal)
+					category.setLabel(df.format(categoryValue));
+				else
+					category.setLabel(categoryValue + "");
+				
 				chart.addCategory(category);
 				categoryValue += categoryDifference;
 			}
@@ -70,4 +76,11 @@ public class MultiSeriesConverterHistogram extends MultiSeriesConverter {
 		this.categoryDifference = categoryDifference;
 	}
 
+	public boolean isUseDecimal() {
+		return useDecimal;
+	}
+	
+	public void setUseDecimal(boolean useDecimal) {
+		this.useDecimal = useDecimal;
+	}
 }

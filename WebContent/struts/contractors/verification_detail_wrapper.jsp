@@ -5,6 +5,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
+<script src="js/FusionCharts.js" type="text/javascript"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" /> 
@@ -169,7 +170,10 @@
 	function copyComment(divId, commentID) {
 		$('#'+commentID).val($('#'+divId).val()).focus().blur();
 	}	
-	 
+	$(function() {
+		$('#chartEmrTrir').load('ChartEmrTrirAjax.action', {conID: <s:property value="contractor.id" />});
+		$('#chartManHours').load('ChartManHoursAjax.action', {conID: <s:property value="contractor.id" />});
+	});
 </script>
 
 </head>
@@ -228,6 +232,11 @@
 <div id="verification_detail" style="line-height: 15px;">
 <s:include value="verification_detail.jsp" />
 </div>
+
+<table style="width: 100%;"><tbody><tr>
+<td><div id="chartEmrTrir" align="center"></div></td>
+<td><div id="chartManHours" align="center"></div></td>
+</tr></tbody></table>
 
 <div id="verification_audit"></div>
 <br clear="all"/>

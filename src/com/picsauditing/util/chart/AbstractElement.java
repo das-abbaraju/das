@@ -9,8 +9,12 @@ abstract public class AbstractElement {
 	 * @param value
 	 */
 	protected static void append(StringBuilder xml, String name, String value) {
-		if (value != null)
-			xml.append(" ").append(name).append("='").append(value.replaceAll("'", "&apos;")).append("'");
+		if (value != null) {
+			value = value.replaceAll("&", "and");
+			value = value.replaceAll("'", "&apos;");
+			
+			xml.append(" ").append(name).append("='").append(value).append("'");
+		}
 	}
 
 	/**

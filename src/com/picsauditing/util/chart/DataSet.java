@@ -8,6 +8,8 @@ public class DataSet extends AbstractElement {
 	protected String color;
 	protected String alpha;
 	protected String ratio;
+	protected String parentYAxis;
+	protected String renderAs;
 	protected Boolean showValues = true;
 	protected Boolean dashed;
 	protected Boolean includeInLegend = true;
@@ -23,6 +25,8 @@ public class DataSet extends AbstractElement {
 		append(xml, "color", color);
 		append(xml, "alpha", alpha);
 		append(xml, "ratio", ratio);
+		append(xml, "parentYAxis", parentYAxis);
+		append(xml, "renderAs", renderAs);
 		append(xml, "showValues", showValues);
 		append(xml, "dashed", dashed);
 		append(xml, "includeInLegend", includeInLegend);
@@ -37,6 +41,10 @@ public class DataSet extends AbstractElement {
 		xml.append("</dataset>");
 
 		return xml.toString();
+	}
+	
+	public Map<String, Category> getCategories() {
+		return categories;
 	}
 
 	public void setCategories(Map<String, Category> categories) {
@@ -89,6 +97,22 @@ public class DataSet extends AbstractElement {
 
 	public void setRatio(String ratio) {
 		this.ratio = ratio;
+	}
+	
+	public String getParentYAxis() {
+		return parentYAxis;
+	}
+	
+	public void setParentYAxis(String parentYAxis) {
+		this.parentYAxis = parentYAxis;
+	}
+	
+	public String getRenderAs() {
+		return renderAs;
+	}
+	
+	public void setRenderAs(String renderAs) {
+		this.renderAs = renderAs;
 	}
 
 	public Boolean isShowValues() {

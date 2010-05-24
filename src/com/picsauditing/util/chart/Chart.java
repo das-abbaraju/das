@@ -8,6 +8,8 @@ abstract public class Chart extends AbstractElement {
 	protected String subCaption;
 	protected String xAxisName;
 	protected String yAxisName;
+	protected String pYAxisName;
+	protected String sYAxisName;
 
 	// Functional Attributes
 	protected Boolean showValues = false;
@@ -38,6 +40,8 @@ abstract public class Chart extends AbstractElement {
 		append(xml, "subCaption", subCaption);
 		append(xml, "xAxisName", xAxisName);
 		append(xml, "yAxisName", yAxisName);
+		append(xml, "PYAxisName", pYAxisName);
+		append(xml, "SYAxisName", sYAxisName);
 		append(xml, "rotateLabels", rotateLabels);
 		append(xml, "showLabels", showLabels);
 
@@ -104,6 +108,22 @@ abstract public class Chart extends AbstractElement {
 
 	public void setYAxisName(String axisName) {
 		yAxisName = axisName;
+	}
+	
+	public String getPYAxisName() {
+		return pYAxisName;
+	}
+	
+	public void setPYAxisName(String pYAxisName) {
+		this.pYAxisName = pYAxisName;
+	}
+	
+	public String getSYAxisName() {
+		return sYAxisName;
+	}
+	
+	public void setSYAxisName(String sYAxisName) {
+		this.sYAxisName = sYAxisName;
 	}
 
 	public Boolean isAnimation() {

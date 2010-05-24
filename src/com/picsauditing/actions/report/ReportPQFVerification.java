@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 
-@SuppressWarnings("serial")
 public class ReportPQFVerification extends ReportAccount {
 	private static final long serialVersionUID = 6697393552632136569L;
 	
