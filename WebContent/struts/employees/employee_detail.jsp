@@ -149,6 +149,10 @@
 								<th>Location:</th>
 								<td><s:property value="employee.location" /></td>
 							</tr>
+							<tr>
+								<th>TWIC Card Expiration:</th>
+								<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
+							</tr>
 						</table>
 					</div>
 					<!-- Maybe something we don't need
