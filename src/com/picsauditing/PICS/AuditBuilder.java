@@ -561,29 +561,27 @@ public class AuditBuilder {
 			}
 		}
 
-		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-			Date currentAuditDate = null;
+		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP 
+				|| conAudit.getAuditType().getId() == AuditType.SHELLCOMPETENCY) {
 			int pqfAuditID = 0;
 			for (ContractorAudit audits : conAudit.getContractorAccount().getAudits()) {
 				if (audits.getAuditType().isPqf()
-						&& (audits.getAuditStatus().equals(AuditStatus.Active) || audits.getAuditStatus().equals(
-								AuditStatus.Submitted))) {
-					// Found a Submitted/Active PQF
-					if (currentAuditDate == null || audits.getCompletedDate().after(currentAuditDate)) {
-						// TODO we can only have 1 pqf anway so remove this
-						// logic
-						// Found the most recent one
-						currentAuditDate = audits.getCompletedDate();
+						&& audits.getAuditStatus().isActiveSubmitted()) {
 						pqfAuditID = audits.getId();
-					}
 				}
 			}
+			
 			if (pqfAuditID > 0) {
 				List<AuditCategory> desktopCategories = auditCategoryDAO.findDesktopCategories(pqfAuditID);
 				categories.addAll(desktopCategories);
 			}
+			
+			String where = "t.auditType.id IN (" + conAudit.getAuditType().getId() ;
+			if(conAudit.getAuditType().getId() == AuditType.SHELLCOMPETENCY)
+				where += ",2";
+			where += ")";
+			List<AuditCategory> allCategories = (List<AuditCategory>) auditCategoryDAO.findWhere(AuditCategory.class, where, 200);
 
-			List<AuditCategory> allCategories = auditCategoryDAO.findByAuditTypeID(conAudit.getAuditType().getId());
 			PicsLogger.log("Categories to be included:");
 			for (AuditCategory category : categories)
 				PicsLogger.log("  " + category.getId() + " " + category.getCategory());

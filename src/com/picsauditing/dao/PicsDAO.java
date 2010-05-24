@@ -76,7 +76,14 @@ abstract public class PicsDAO {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 		return q.getResultList();
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit) {
+		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY t.id");
+		q.setMaxResults(limit);
+		return q.getResultList();
+	}
+	
 	public void remove(BaseTable row) {
 		if (row != null) {
 			em.remove(row);

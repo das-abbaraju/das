@@ -32,6 +32,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int SUPPLEMENTCOR = 84;
 	public static final int BPIISNSPECIFIC = 87;
 	public static final int BPIISNCASEMGMT = 96;
+	public static final int SHELLCOMPETENCY = 100;
 	
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
@@ -238,6 +239,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		if (isPqf())
 			return true;
 		if (id == DESKTOP)
+			return true;
+		if(id == SHELLCOMPETENCY)
 			return true;
 		return false;
 	}
