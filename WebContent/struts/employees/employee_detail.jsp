@@ -137,22 +137,36 @@
 				<td>
 					<div class="cell">
 						<table>
-							<tr>
-								<th>Phone:</th>
-								<td><s:property value="employee.phone" /></td>
-							</tr>
-							<tr>
-								<th>Email:</th>
-								<td><s:property value="employee.email" /></td>
-							</tr>
-							<tr>
-								<th>Location:</th>
-								<td><s:property value="employee.location" /></td>
-							</tr>
-							<tr>
-								<th>TWIC Card Expiration:</th>
-								<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
-							</tr>
+							<s:if test="isNotEmpty(employee.phone)">
+								<tr>
+									<th>Phone:</th>
+									<td><s:property value="employee.phone" /></td>
+								</tr>
+							</s:if>
+							<s:if test="isNotEmpty(employee.email)">
+								<tr>
+									<th>Email:</th>
+									<td><s:property value="employee.email" /></td>
+								</tr>
+							</s:if>
+							<s:if test="isNotEmpty(employee.location)">
+								<tr>
+									<th>Location:</th>
+									<td><s:property value="employee.location" /></td>
+								</tr>
+							</s:if>
+							<s:if test="employee.twicExpiration != null">
+								<tr>
+									<th>TWIC Card Expiration:</th>
+									<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
+								</tr>
+							</s:if>
+							<s:if test="employee.shellTraining != null">
+								<tr>
+									<th>Shell Contractor Orientation Training:</th>
+									<td><s:date name="employee.shellTraining" format="MM/dd/yyyy" /></td>
+								</tr>
+							</s:if>
 						</table>
 					</div>
 					<!-- Maybe something we don't need

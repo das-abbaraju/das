@@ -51,6 +51,7 @@ public class DefineCompetencies extends OperatorActionSupport implements Prepara
 		findOperator();
 		tryPermissions(OpPerms.DefineCompetencies);
 
+		/* TODO: Removing competencies orphans data
 		if ("Remove".equals(button)) {
 			OperatorCompetency removed = operatorCompetencyDAO.find(competencyID);
 			operatorCompetencyDAO.remove(removed);
@@ -59,6 +60,7 @@ public class DefineCompetencies extends OperatorActionSupport implements Prepara
 
 			return SUCCESS;
 		}
+		 */
 
 		if ("load".equals(button)) {
 			if (competency != null) {

@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class EmployeeDetail extends AccountActionSupport implements Preparable {
@@ -121,5 +122,9 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	
 	public Boolean getCompetenciesByRole(OperatorCompetency opComp, JobRole jobRole) {
 		return map.get(opComp, jobRole);
+	}
+	
+	public boolean isNotEmpty(String value) {
+		return !Strings.isEmpty(value);
 	}
 }

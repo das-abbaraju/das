@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Define HSE Competencies</title>
+<title>HSE Competencies</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -70,24 +70,24 @@ fieldset.bottom {
 		}
 	}
 
-	function remove(id) {
-		var del = confirm('Are you sure you want to remove this HSE Competency?');
-
-		if (del) {
-			$.post('DefineCompetenciesAjax.action',
-				{'competency.id': id, 'id': '<s:property value="operator.id"/>', button: 'delete'}, 
-				function(data, result) {
-					if (data.gritter)
-						$.gritter.add(data.gritter);
+	// function remove(id) {
+		// var del = confirm('Are you sure you want to remove this HSE Competency?');
 	
-					if (data.result == 'success') {
-						dtable.fnDeleteRow($('#competency_'+id)[0]);
-					}
-				},
-				'json'
-			);
-		}
-	}
+		// if (del) {
+			// $.post('DefineCompetenciesAjax.action',
+				// {'competency.id': id, 'id': '<s:property value="operator.id"/>', button: 'delete'}, 
+				// function(data, result) {
+					// if (data.gritter)
+						// $.gritter.add(data.gritter);
+	
+					// if (data.result == 'success') {
+						// dtable.fnDeleteRow($('#competency_'+id)[0]);
+					// }
+				// },
+				// 'json'
+			// );
+		// }
+	// }
 	
 
 	$(function() {
@@ -108,9 +108,9 @@ fieldset.bottom {
 									$.gritter.add(data.gritter);
 								if (data.result == 'success') {
 									if (newItem) {
-										dtable.fnAddData([data.competency.id, data.competency.category, data.competency.label, data.competency.description, data.competency.helpPageLink, data.competency.editLink, data.competency.deleteLink]);
+										dtable.fnAddData([data.competency.id, data.competency.category, data.competency.label, data.competency.description, data.competency.editLink]);
 									} else {
-										dtable.fnUpdate([data.competency.id, data.competency.category, data.competency.label, data.competency.description, data.competency.helpPageLink, data.competency.editLink, data.competency.deleteLink], $('#competency_'+data.competency.id)[0]);
+										dtable.fnUpdate([data.competency.id, data.competency.category, data.competency.label, data.competency.description, data.competency.editLink], $('#competency_'+data.competency.id)[0]);
 									}
 									competency_dialog.dialog('close');
 								} else {
@@ -136,8 +136,6 @@ fieldset.bottom {
 			            null,
 			            null,
 			            null,
-			            null,
-			            null,
 			            null
 						],
 				bSearch: false,
@@ -156,48 +154,47 @@ fieldset.bottom {
 </script>
 </head>
 <body>
-<s:include value="../operators/opHeader.jsp"/>
-		<a onclick="show()"
-			href="#" id="addCompetencyLink" class="picsbutton positive">Add HSE Competency</a>
-			<table class="report" id="comptable">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Category</th>
-					<th>Label</th>
-					<th>Description</th>
-					<th>Help Page</th>
-					<th>Edit</th>
-					<th>Delete</th>
-				</tr>
-			</thead>
-		</table>
-		
-		<div id="item" style="display:none;">
-			<form id="itemform">
-				<fieldset class="form" style="border: none">
-			<s:hidden name="id"/>
-				<s:hidden name="competency.id"/>
-					<ol>
-						<li>
-							<label>Category:</label>
-							<s:textfield maxlength="50" id="category_autocomplete" name="competency.category" />
-						</li>
-						<li>
-							<label>Label:</label>
-							<s:textfield name="competency.label" maxlength="15" size="15"/>
-						</li>
-						<li>
-							<label>Help Page:</label>
-							<s:textfield maxlength="100" size="50" name="competency.helpPage" />
-						</li>
-						<li>
-							<label>Description:</label>
-							<s:textarea name="competency.description" cols="40" rows="5" />
-						</li>
-					</ol>
-				</fieldset>
-			</form>
-		</div>
+	<h1>Define HSE Competencies</h1>
+	<a onclick="show()" href="#" id="addCompetencyLink" class="add">Add HSE Competency</a>
+		<table class="report" id="comptable">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Category</th>
+				<th>Label</th>
+				<th>Description</th>
+				<th>Edit</th>
+			</tr>
+		</thead>
+	</table>
+	
+	<div id="item" style="display:none;">
+		<form id="itemform">
+			<fieldset class="form" style="border: none">
+		<s:hidden name="id"/>
+			<s:hidden name="competency.id"/>
+				<ol>
+					<li>
+						<label>Category:</label>
+						<s:textfield maxlength="50" id="category_autocomplete" name="competency.category" />
+					</li>
+					<li>
+						<label>Label:</label>
+						<s:textfield name="competency.label" maxlength="15" size="15"/>
+					</li>
+					<!-- 
+					<li>
+						<label>Help Page:</label>
+						<s:textfield maxlength="100" size="50" name="competency.helpPage" />
+					</li>
+					 -->
+					<li>
+						<label>Description:</label>
+						<s:textarea name="competency.description" cols="40" rows="5" />
+					</li>
+				</ol>
+			</fieldset>
+		</form>
+	</div>
 </body>
 </html>

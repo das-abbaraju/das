@@ -168,7 +168,7 @@ div.dataTables_length { width: 35%; }
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>
 								</li>
-								<li><label>TWIC Expiration:</label>
+								<li><label>TWIC Card Expiration:</label>
 									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="date"/>
 								</li>
 								<li><label>Shell Contractor Orientation Training:</label>

@@ -196,7 +196,7 @@ public class PicsMenu {
 		
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
-				subMenu.addChild("Define Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
+				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 
 			if (permissions.hasPermission(OpPerms.ManageProjects))
 				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());

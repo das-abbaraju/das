@@ -1,8 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +21,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 	private String label;
 	private String description;
 	private OperatorAccount operator;
-	private String helpPage;
+	//private String helpPage;
 	private JobCompetencyStats jobCompentencyStats;
 
 	public String getCategory() {
@@ -61,6 +58,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.operator = operator;
 	}
 
+	/*
 	public String getHelpPage() {
 		return helpPage;
 	}
@@ -77,6 +75,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 			return helpPage; // just giving back the unlinked text
 		}
 	}
+	 */
 
 	@Transient
 	public JobCompetencyStats getJobCompentencyStats() {
@@ -92,10 +91,12 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		return "<a href=\"#\" onclick=\"show(" + id + "); return false;\" class=\"edit\"></a>";
 	}
 
+	/*
 	@Transient
 	public String getDeleteLink() {
 		return "<a href=\"#\" onclick=\"remove(" + id + "); return false;\" class=\"remove\"></a>";
 	}
+	 */
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -105,10 +106,10 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		json.put("category", category);
 		json.put("label", label);
 		json.put("description", description);
-		json.put("helpPage", helpPage);
-		json.put("helpPageLink", getHelpPageLink());
+		//json.put("helpPage", helpPage);
+		//json.put("helpPageLink", getHelpPageLink());
 		json.put("editLink", getEditLink());
-		json.put("deleteLink", getDeleteLink());
+		//json.put("deleteLink", getDeleteLink());
 
 		return json;
 	}
@@ -122,9 +123,9 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 				add(category);
 				add(label);
 				add(description);
-				add(getHelpPageLink());
+				//add(getHelpPageLink());
 				add(getEditLink());
-				add(getDeleteLink());
+				//add(getDeleteLink());
 			}
 		};
 	}
