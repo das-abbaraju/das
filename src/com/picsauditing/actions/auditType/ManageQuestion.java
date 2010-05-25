@@ -159,6 +159,8 @@ public class ManageQuestion extends ManageSubCategory {
 				question.getDependsOnQuestion().setId(dependsOnQuestionID);
 			}
 			subCategory.getQuestions().add(question);
+			if (question.getSubCategory() == null)
+				question.setSubCategory(subCategory);
 			if (!Strings.isEmpty(countries))
 				question.setCountriesArray(countries.split("\\|"), exclude);
 			question = auditQuestionDao.save(question);
