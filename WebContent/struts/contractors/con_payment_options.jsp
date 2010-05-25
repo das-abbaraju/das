@@ -120,27 +120,29 @@ function updateExpDate() {
 <li><label>Payment Method:</label>
 	<s:property value="contractor.paymentMethod.description"/><br/>
 </li>
-<li><label>
-		<a title="Click here to view the PICS Contractor Agreement" style="text-decoration:none;" href="#" onClick="window.open('contractor_agreement.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">Contractor Agreement:</a>
-	</label><s:checkbox name="contractor.agreementInEffect" disabled="true" />
-<s:if test="contractor.agreementInEffect">
-		On <s:date name="contractor.agreementDate" format="MM/dd/yy" />, <s:property value="contractor.agreedBy.name" /> agreed to the terms of the PICS Contractor Agreement.
-	</s:if>
-	<s:else>
-		<span <s:if test="contractor.agreementDate != null">title="Please click the Contractor Agreement link to review and accept the terms of the updated Contractor Agreement."</s:if> style="color:RED;">This contractor has <strong>NOT</strong> agreed to the terms of the <s:if test="contractor.agreementDate != null"><strong>updated </strong></s:if>Contractor Agreement</span>
-	</s:else>
-</li>
-<s:if test="contractor.agreementDate != null && !contractor.agreementInEffect">
-	<li><label>Previous Agreement:</label>
-		<span style="color:grey;">By <s:property value="contractor.agreedBy.name" /> on <s:date name="contractor.agreementDate" format="MM/dd/yy" /></span>
+<s:if test="contractor.status.active || permissions.admin">
+	<li><label>
+			<a title="Click here to view the PICS Contractor Agreement" style="text-decoration:none;" href="#" onClick="window.open('ContractorAgreement.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">Contractor Agreement:</a>
+		</label><s:checkbox name="contractor.agreementInEffect" disabled="true" />
+		<s:if test="contractor.agreementInEffect">
+			On <s:date name="contractor.agreementDate" format="MM/dd/yy" />, <s:property value="contractor.agreedBy.name" /> agreed to the terms of the PICS Contractor Agreement.
+		</s:if>
+		<s:else>
+			<span <s:if test="contractor.agreementDate != null">title="Please click the Contractor Agreement link to review and accept the terms of the updated Contractor Agreement."</s:if> style="color:RED;">This contractor has <strong>NOT</strong> agreed to the terms of the <s:if test="contractor.agreementDate != null"><strong>updated </strong></s:if>Contractor Agreement</span>
+		</s:else>
 	</li>
+	<s:if test="contractor.agreementDate != null && !contractor.agreementInEffect">
+		<li><label>Previous Agreement:</label>
+			<span style="color:grey;">By <s:property value="contractor.agreedBy.name" /> on <s:date name="contractor.agreementDate" format="MM/dd/yy" /></span>
+		</li>
+	</s:if>
 </s:if>
 <li><label>&nbsp;</label>
 	<a href="#" onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Privacy Policy </a> |
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 	|
-	<a title="Click here to view the PICS Contractor Agreement" href="#" onClick="window.open('contractor_agreement.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
+	<a title="Click here to view the PICS Contractor Agreement" href="#" onClick="window.open('ContractorAgreement.action?id=<s:property value="contractor.id"/>','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Contractor Agreement </a>
 </li>
 <s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">

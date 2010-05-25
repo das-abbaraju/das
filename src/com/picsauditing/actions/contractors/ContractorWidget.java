@@ -65,6 +65,16 @@ public class ContractorWidget extends ContractorActionSupport {
 		if (openTasks == null) {
 			openTasks = new ArrayList<String>();
 
+			// Adding a note to agree to terms of updated Contractor Agreement
+			if (contractor != null
+					&& !contractor.isAgreementInEffect()
+					&& (permissions.hasPermission(OpPerms.ContractorBilling)
+							|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
+							.hasPermission(OpPerms.ContractorSafety)))
+				openTasks
+						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"#\" onClick=\"window.open('ContractorAgreement.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;\">"
+								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> if you accept the terms of the Agreement.");
+
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
 				if (contractor.getUsers().size() == 1
 						&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {

@@ -7,7 +7,7 @@
 		<pattern>/NoteEditor.action</pattern>
 		<pattern>/privacy_policy.jsp</pattern>
 		<pattern>/refund_policy.jsp</pattern>
-		<pattern>/contractor_agreement.jsp</pattern>
+		<pattern>/ContractorAgreement.action</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>

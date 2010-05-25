@@ -56,8 +56,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected Country country;
 
 	public ContractorRegistration(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO, UserDAO userDAO,
-			ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger) {
+			AuditQuestionDAO auditQuestionDAO, ContractorValidator contractorValidator, NoteDAO noteDAO,
+			UserDAO userDAO, ContractorRegistrationRequestDAO requestDAO, FacilityChanger facilityChanger) {
 		super(accountDao, auditDao);
 		this.auditQuestionDAO = auditQuestionDAO;
 		this.contractorValidator = contractorValidator;
@@ -68,18 +68,17 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.facilityChanger = facilityChanger;
 	}
 
-	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		loadPermissions(false);
 		if (permissions.isLoggedIn()) {
 			addActionError("You must logout before trying to register a new contractor account");
 			return BLANK;
 		}
-		
+
 		if ("request".equalsIgnoreCase(button)) {
 			if (rID > 0) {
 				ContractorRegistrationRequest crr = requestDAO.find(rID);
-				
+
 				if (crr.getContractor() == null) {
 					contractor = new ContractorAccount();
 					contractor.setName(crr.getName());
@@ -92,7 +91,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 					contractor.setState(crr.getState());
 					contractor.setRequestedBy(crr.getRequestedBy());
 					contractor.setTaxId(crr.getTaxID());
-					
+
 					user = new User();
 					user.setName(crr.getContact());
 					user.setEmail(crr.getEmail());
@@ -133,7 +132,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 				contractor.setStatus(AccountStatus.Demo);
 				contractor.setName(contractor.getName().replaceAll("^", "").trim());
 			}
-			
+
 			// Default their current membership to 0
 			contractor.setMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 			contractor.setPaymentExpires(new Date());
@@ -144,7 +143,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			contractor.getNaics().setCode("0");
 			contractor.setNaicsValid(false);
 			accountDao.save(contractor);
-			
+
 			user.setPhone(contractor.getPhone());
 			user.setActive(true);
 			user.setAccount(contractor);
@@ -152,17 +151,21 @@ public class ContractorRegistration extends ContractorActionSupport {
 			user.setIsGroup(YesNo.No);
 			userDAO.save(user);
 			// Initial password is stored unencrypted.
-			// Need to perform a save to create a user id for 
+			// Need to perform a save to create a user id for
 			// seeding the password.
 			user.setEncryptedPassword(user.getPassword());
 			userDAO.save(user);
-			
+
 			user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
 			user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 			userDAO.save(user);
-			
+
+			// agreeing to contractor agreement terms as stated at the end of
+			// con_registration.jsp
+			contractor.setAgreedBy(user);
+			contractor.setAgreementDate(contractor.getCreationDate());
 			contractor.setPrimaryContact(user);
 			accountDao.save(contractor);
 
@@ -196,7 +199,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			Permissions permissions = new Permissions();
 			permissions.login(user);
 			ActionContext.getContext().getSession().put("permissions", permissions);
-			
+
 			// Update the Registration Request
 			if (rID > 0) {
 				ContractorRegistrationRequest crr = requestDAO.find(rID);
@@ -206,7 +209,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 				crr.setAuditColumns();
 				crr.setHandledBy(WaitingOn.Operator);
 				requestDAO.save(crr);
-				
+
 				OperatorAccount operator = crr.getRequestedBy();
 				// Check to see if operator is just an operator,
 				// don't add contractors to corporate accounts
@@ -215,22 +218,22 @@ public class ContractorRegistration extends ContractorActionSupport {
 					facilityChanger.setContractor(contractor);
 					facilityChanger.setOperator(operator);
 					facilityChanger.setPermissions(permissions);
-					
+
 					facilityChanger.add();
 					contractor.setNewMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
 				}
-				
+
 				note = new Note();
 				note.setAccount(contractor);
 				note.setAuditColumns(new User(User.SYSTEM));
 				note.setSummary("Requested Contractor Registered");
-				note.setBody("Contractor '" + crr.getName() + "' requested by "
-						+ crr.getRequestedBy().getName() + " has registered.");
+				note.setBody("Contractor '" + crr.getName() + "' requested by " + crr.getRequestedBy().getName()
+						+ " has registered.");
 				note.setPriority(LowMedHigh.Low);
 				note.setViewableById(Account.EVERYONE);
 				noteDAO.save(note);
 			}
-			
+
 			redirect("ContractorRegistrationServices.action?id=" + contractor.getId());
 			return BLANK;
 		}
@@ -285,11 +288,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
-	
+
 	public int getrID() {
 		return rID;
 	}
-	
+
 	public void setrID(int rID) {
 		this.rID = rID;
 	}

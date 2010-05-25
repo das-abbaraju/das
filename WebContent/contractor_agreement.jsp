@@ -1,10 +1,25 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/invoice.css?v=<s:property value="version"/>" />
 <title>Contractor Agreement Statement</title>
 </head>
 <body>
 <h1 align="center">Contractor Agreement Statement</h1>
-<p style="text-align: center; width: "><input type="button" value="Close" onclick="window.close();" /></p>
+
+<div align="center">
+	<form>
+		<s:if test="!permissions.admin &&
+						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+			<input type="submit" name="button" class="picsbutton" value="I Agree" onclick="window.opener.location.reload(true); window.close();" />
+		</s:if>
+			<input type="button" class="picsbutton" value="Close" onclick="window.close();" />
+	</form>
+</div>
 
 <div>
 This is the web site of <b>PICS</b>.<br>
@@ -78,7 +93,20 @@ contractor list.</p><br/>
 
 <b><u>AGREEMENTS OUTSIDE OF THIS DOCUMENT</u></b>
 <p>You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.</p>
+
+<div align="center" style="text-align:bottom;">
+	<form>
+		<s:if test="!permissions.admin &&
+						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+			<input type="submit" name="button" class="picsbutton" value="I Agree" onclick="window.close();" />
+		</s:if>
+			<input type="button" class="picsbutton" value="Close" onclick="window.close();" />
+	</form>
 </div>
+</div>
+
 </body>
 </html>
 
