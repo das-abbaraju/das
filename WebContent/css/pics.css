@@ -989,7 +989,7 @@ div.autocomplete ul li {
 	white-space: normal;
 }
 
-table.report tr.clickable:hover,table.notes tr.clickable:hover {
+table.report tr.clickable:hover,table.notes tr.clickable:hover, .tr-hover-clickable {
 	background-color: #ffff99;
 	color: black;
 	cursor: pointer;

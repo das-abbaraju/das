@@ -29,5 +29,14 @@
 				$('#content').prepend($('<div/>').addClass('error').text('ActiveX is required for PICS to function properly in your browser. Please Contact your IT Department.'));
             }
         }
+
+        if ($.browser.msie && $.browser.version == '6.0') {
+			$('table.report tr').not('.clickable').live('mouseover mouseout', function(event) {
+				$(this).toggleClass('tr-hover');
+			});
+			$('.clickable').live('mouseover mouseout', function(event) {
+				$(this).toggleClass('tr-hover-clickable');
+			});
+        }
 	});
 </script>

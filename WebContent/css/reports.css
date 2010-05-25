@@ -53,7 +53,7 @@ table.report td a:hover {
 	text-decoration: underline;
 }
 
-table.report tr:hover {
+table.report tr:hover, .tr-hover {
 	background: #EEE;
 	color: #A84D10;
 }
