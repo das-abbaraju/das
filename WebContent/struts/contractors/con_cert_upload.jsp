@@ -16,48 +16,26 @@ var certID = '<s:property value="certID"/>';
 var message = 'You have NOT SAVED your file.\nPlease click CANCEL to STAY on This Page and then click SAVE to save your file.';
 var buttonClick = false;
 
+<s:if test="changed">
 window.onbeforeunload = function (event) {
-	var fileBox = document.getElementById("fileTextbox");
-
-	if(!buttonClick && fileBox != null && fileBox.value != null && fileBox.value != "") {
-		if (typeof event == 'undefined') {
-			event = window.event;
-		}
-		if (event) {
-			event.returnValue = message;
-		}
-		return message;
-	}
-}
-
-function closePage() {
-	<s:if test="changed">
 		try {
 			if (caoID > 0 && certID > 0)
 				window.opener.saveCert(certID, caoID);
 			else
 				window.opener.location.reload(true);
 		} catch(err) {}
-	</s:if>
-
-	var fileBox = document.getElementById("fileTextbox");
-
-	buttonClick = false;
-	
-	if(fileBox != null && fileBox.value != null && fileBox.value != "") {
-		var confirmed = confirm(message);
-		if(confirmed){
-			buttonClick = true;
-			self.close();
-		}			
-	} else {
-		buttonClick = true;
-		self.close();
-	}
-
-	
 }
+</s:if>
 
+<s:if test="button.startsWith('Delete') && changed">
+window.onload = function(event) {
+	closePage();
+}
+</s:if>
+
+function closePage() {
+	self.close();
+}
 </script>
 </head>
 <body>
