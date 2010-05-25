@@ -229,7 +229,8 @@ public class ContractorAuditDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsNeedingRecalculation() {
 		String hql = "SELECT ca FROM ContractorAudit ca "
-				+ "WHERE (ca.lastRecalculation IS NULL OR ca.lastRecalculation < :threeMonthsAgo)";
+				+ "WHERE (ca.lastRecalculation IS NULL OR ca.lastRecalculation < :threeMonthsAgo) "
+				+ " AND ca.auditStatus != 'Expired'";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(100);
 
