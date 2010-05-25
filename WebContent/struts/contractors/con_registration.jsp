@@ -103,7 +103,7 @@ $(function(){
 						<li><label>City:</label> 
 							<s:textfield name="contractor.city" size="35" /><span class="redMain">*</span></li>
 						<li><label>Country:</label> <input type="text" disabled="disabled" id="country_display"/></li>
-						<s:if test="contractor.state == null"><li id="state_li"></li></s:if>
+						<s:if test="contractor == null || contractor.state == null"><li id="state_li"></li></s:if>
 						<s:else>
 							<li><label>State:</label>
 								<s:select list="stateList" id="state_sel"
