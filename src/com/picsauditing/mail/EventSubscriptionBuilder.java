@@ -65,6 +65,7 @@ public class EventSubscriptionBuilder {
 			emailBuilder.setCcAddresses(emails);
 		// finishing rest of email
 		emailBuilder.setTemplate(45);
+		emailBuilder.setBccAddresses("billing@picsauditing.com, aharker@picsauditing.com");
 		emailBuilder.setContractor(contractor, OpPerms.ContractorBilling);
 		emailBuilder.addToken("invoice", invoice);
 		emailBuilder.addToken("billingUser", contractor.getUsersByRole(OpPerms.ContractorBilling).get(0));
