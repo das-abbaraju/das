@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -446,21 +447,25 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			for (Map.Entry<String, AuditData> entry : contractor.getEmrs().entrySet()) {
-				put("EMR", entry.getKey(), entry.getValue().getAnswer());
+				if (entry.getValue() != null) {
+					put("EMR", entry.getKey(), entry.getValue().getAnswer());
+				}
 			}
 
-			for (OperatorAccount o : inheritedOperators) {
-				for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
-					if (fco.getCriteria().getQuestion() != null
-							&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
-						String operatorDisplay = getOperatorDisplay(o, " EMR");
-						String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
+			if (data.get("EMR") != null) {
+				for (OperatorAccount o : inheritedOperators) {
+					for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
+						if (fco.getCriteria().getQuestion() != null
+								&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
+							String operatorDisplay = getOperatorDisplay(o, " EMR");
+							String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
 
-						if (getData(operatorDisplay, auditFor) != null)
-							put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
-									+ getFlagDescription(fco));
-						else
-							put(operatorDisplay, auditFor, getFlagDescription(fco));
+							if (getData(operatorDisplay, auditFor) != null)
+								put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
+										+ getFlagDescription(fco));
+							else
+								put(operatorDisplay, auditFor, getFlagDescription(fco));
+						}
 					}
 				}
 			}
@@ -488,29 +493,24 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		private void buildRateTypeSet(Collection<OperatorAccount> operators) {
-			rateTypeSet.add(OshaRateType.TrirAbsolute.getDescription());
-			for (OperatorAccount operatorAccount : operators) {
-				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.TrirAbsolute));
-				if (data.get(disp) != null)
-					rateTypeSet.add(disp);
+			for (OshaRateType ort : Arrays.asList(OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
+					OshaRateType.Fatalities)) {
+				if (data.get(ort.getDescription()) != null) {
+					rateTypeSet.add(ort.getDescription());
+					for (OperatorAccount operatorAccount : operators) {
+						String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(ort));
+						if (data.get(disp) != null)
+							rateTypeSet.add(disp);
+					}
+				}
 			}
-			rateTypeSet.add(OshaRateType.LwcrAbsolute.getDescription());
-			for (OperatorAccount operatorAccount : operators) {
-				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.LwcrAbsolute));
-				if (data.get(disp) != null)
-					rateTypeSet.add(disp);
-			}
-			rateTypeSet.add(OshaRateType.Fatalities.getDescription());
-			for (OperatorAccount operatorAccount : operators) {
-				String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(OshaRateType.Fatalities));
-				if (data.get(disp) != null)
-					rateTypeSet.add(disp);
-			}
-			rateTypeSet.add("EMR");
-			for (OperatorAccount operatorAccount : operators) {
-				String disp = getOperatorDisplay(operatorAccount, " EMR");
-				if (data.get(disp) != null)
-					rateTypeSet.add(disp);
+			if (data.get("EMR") != null) {
+				rateTypeSet.add("EMR");
+				for (OperatorAccount operatorAccount : operators) {
+					String disp = getOperatorDisplay(operatorAccount, " EMR");
+					if (data.get(disp) != null)
+						rateTypeSet.add(disp);
+				}
 			}
 			rateTypeSet.add("Hours Worked");
 		}
