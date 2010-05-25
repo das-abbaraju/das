@@ -89,8 +89,8 @@ function showText(qID, textid) {
 
 <s:form id="save">
 	<s:hidden name="id" />
-	<s:hidden name="parentID" value="%{question.subCategory.id}" />
-	<s:hidden name="question.subCategory.id" />
+	<s:hidden name="parentID" value="%{subCategory.id}" />
+	<s:hidden name="question.subCategory.id" value="%{subCategory.id}" />
 	<fieldset class="form submit">
 		<div>
 			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
