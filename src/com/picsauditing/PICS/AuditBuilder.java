@@ -156,15 +156,16 @@ public class AuditBuilder {
 		// Checking to see if the supplement COR or BPIISNCaseMgmt should be required for this contractor 
 		ContractorAudit corAudit = null;
 		ContractorAudit BpIisnSpecific = null;
+		ContractorAudit HSECompetency = null;
 		for(ContractorAudit audit : currentAudits) {
-			if((audit.getAuditType().getId() == AuditType.COR 
-					|| audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
-					&& auditTypeList.contains(audit.getAuditType())) {
-				if(audit.getAuditType().getId() == AuditType.COR 
-						&& hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
-					corAudit = audit;
+			if(auditTypeList.contains(audit.getAuditType())) {
 				if(audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
 					BpIisnSpecific = audit;
+				else if(audit.getAuditType().getId() == 99)
+					HSECompetency = audit;
+				else if(audit.getAuditType().getId() == AuditType.COR 
+						&& hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
+					corAudit = audit;
 			}		
 		}	
 					 
@@ -237,6 +238,10 @@ public class AuditBuilder {
 						break;
 					case AuditType.BPIISNCASEMGMT:
 						if (!BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
+							insertNow = false;
+						break;
+					case 100:
+						if (!HSECompetency.getAuditStatus().isActiveResubmittedExempt())
 							insertNow = false;
 						break;
 					default:
