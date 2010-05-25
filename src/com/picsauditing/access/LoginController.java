@@ -45,7 +45,6 @@ public class LoginController extends PicsActionSupport {
 		this.loginLogDAO = loginLogDAO;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		loadPermissions(false);
