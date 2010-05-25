@@ -54,7 +54,7 @@
 				<tr>
 					<td>Upload New Files</td>
 					<s:iterator value="oshas">
-						<td class="center"><s:if test="file && file.name().equals('Yes')">
+						<td class="center"><s:if test="fileUploaded">
 							<a href="#" onClick="openOsha(<s:property value="id"/>)">Show
 							File</a>
 						</s:if> <s:else>No File</s:else></td>
