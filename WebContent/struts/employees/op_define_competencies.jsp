@@ -150,12 +150,14 @@ fieldset.bottom {
 			});
 
 		$('delay').show("fast");
+
+		$('#comptable_filter').css({'float':'none', 'clear':'both', 'width':'auto'});
+		$('#comptable_filter').after('<a onclick="show()" href="#" id="addCompetencyLink" class="add">Add HSE Competency</a>');
 	});
 </script>
 </head>
 <body>
 	<h1>Define HSE Competencies</h1>
-	<a onclick="show()" href="#" id="addCompetencyLink" class="add">Add HSE Competency</a>
 		<table class="report" id="comptable">
 		<thead>
 			<tr>
