@@ -155,6 +155,12 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
 			}
+			if (auditData.getQuestion().getId() == 3793) {
+				// Question : Does your company perform mechanical services
+				// that require the use of hand/power tools?
+				if (auditData.getAnswer().equals("Yes"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+			}
 			if (auditData.getQuestion().getId() == 2443) {
 				// Question : Does your company perform all services from only
 				// an office?
