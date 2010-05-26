@@ -72,6 +72,16 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		this.subHeading = account.getName();
+		
+		if ("Description".equals(button)) {
+			if (competencyID > 0) {
+				OperatorCompetency comp = competencyDAO.find(competencyID);
+				output = comp.getDescription();
+			} else
+				output = "Missing competency";
+
+			return "description";
+		}
 
 		if ("Add".equals(button)) {
 			role = new JobRole();

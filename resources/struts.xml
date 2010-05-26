@@ -1731,6 +1731,7 @@
 			class="com.picsauditing.actions.employees.ManageJobRoles">
 			<result>struts/employees/manage_roles_competencies.jsp</result>
 			<result name="suggest">struts/employees/role_suggest.jsp</result>
+			<result name="description">struts/employees/manage_roles_description.jsp</result>
 		</action>
 		
 		<action name="RoleSuggestAjax"

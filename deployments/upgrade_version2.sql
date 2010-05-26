@@ -36,3 +36,11 @@ update email_template set allowsVelocity = 1, html = 1, recipient = 'Admin' wher
 insert into `app_properties` (`property`, `value`) values('subscription.ContractorAdded','1');
 
 update widget_user set sortOrder = 10 where userID = 959 and widgetID = 26;
+
+update widget_user set sortOrder = 30 where widgetID = 29 and userID = 959;
+
+insert into widget (widgetID, caption, widgetType, url)
+values (null, 'Pending Welcome Calls', 'Html', 'WelcomeCallAjax.action');
+
+insert into widget_user (id, widgetID, userID, widget_user.column, sortOrder)
+values (null, 32, 959, 2, 20);

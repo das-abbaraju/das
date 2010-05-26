@@ -130,6 +130,12 @@ public class ReportActionSupport extends PicsActionSupport {
 			return false;
 		return value.toString().trim().length() > 0;
 	}
+	
+	public boolean filterOn(Object[] value) {
+		if (value == null)
+			return false;
+		return value.length > 0;
+	}
 
 	public boolean filterOn(int[] value) {
 		if (value == null)

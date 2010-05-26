@@ -4,14 +4,10 @@
 <html>
 <head>
 <title>Define Job Roles</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/notes.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/cluetip/jquery.cluetip.css"/>
 <style type="text/css">
 #rolesTable td {
 	vertical-align: top;
@@ -26,12 +22,15 @@ fieldset.form label {
 	width: 5em;
 	margin-right: 0px;
 }
+
+a.description {
+	cursor: help;
+}
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-
-<script type="text/javscript" src="js/jquery/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.hoverIntent.js"></script>
+<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js"></script>
 <script type="text/javascript">
 function removeCompetency(competencyID) {
 	$("a.compEditor").hide();
@@ -43,13 +42,32 @@ function addCompetency(competencyID) {
 	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:if test="role == null">0</s:if><s:else><s:property value="role.id" /></s:else>, competencyID: competencyID});
 }
 
+function wireClueTips() {
+	$('a.description').cluetip( {
+		hoverClass : 'cluetip',
+		mouseOutClose : true,
+		clickThrough : true,
+		ajaxCache : true,
+		hoverIntent : {
+			interval : 300
+		},
+		arrows : true,
+		dropShadow : false,
+		width : 400,
+		cluetipClass : 'jtip',
+		showTitle: false
+	});
+}
+
 $(function() {
 	$('#roleInputBox').autocomplete('RoleSuggestAjax.action',{
-			minChars: 1,
-			formatItem: function(data,i,count) {
-				return data[1];
-			}
-		});
+		minChars: 1,
+		formatItem: function(data,i,count) {
+			return data[1];
+		}
+	});
+
+	wireClueTips();
 });
 </script>
 </head>
