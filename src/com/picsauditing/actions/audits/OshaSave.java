@@ -16,9 +16,12 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Downloader;
@@ -84,6 +87,9 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 			}
 			osha.getConAudit().setLastRecalculation(null);
 			auditDao.save(osha.getConAudit());
+			String note = "Deleted "+ osha.getLocation() +" " + osha.getType() + " log for " + osha.getConAudit().getAuditType().getAuditName() + " " + osha.getConAudit().getAuditFor();
+				addNote(osha.getConAudit().getContractorAccount(), note, 
+					NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, getUser());
 			oshaDAO.remove(id);
 			return SUCCESS;
 		}
