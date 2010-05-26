@@ -31,8 +31,12 @@
         }
 
         if ($.browser.msie && $.browser.version == '6.0') {
-			$('table.report tr').not('.clickable').live('mouseover mouseout', function(event) {
-				$(this).toggleClass('tr-hover');
+			$('table.report tr').live('mouseover mouseout', function(event) {
+				if (event.type == 'mouseover') {
+					$(this).addClass('tr-hover');
+				} else {
+					$(this).removeClass('tr-hover');
+				}
 			});
 			$('.clickable').live('mouseover mouseout', function(event) {
 				$(this).toggleClass('tr-hover-clickable');
