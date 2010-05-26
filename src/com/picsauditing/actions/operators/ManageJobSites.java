@@ -1,6 +1,5 @@
 package com.picsauditing.actions.operators;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +41,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected Country siteCountry = new Country("US", "United States");
 	protected Date siteStart;
 	protected Date siteEnd;
-	protected String date = maskDateFormat(new Date());
+	protected String date = "today";
 	
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
@@ -253,7 +252,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	}
 	
 	public boolean isCanEdit() {
-		if ((date == null || date.equals(maskDateFormat(new Date())))
+		if ((date == null || date.equalsIgnoreCase("today") || date.equals(maskDateFormat(new Date())))
 				&& permissions.hasPermission(OpPerms.ManageProjects, OpType.Edit))
 			return true;
 		
@@ -372,7 +371,7 @@ public class ManageJobSites extends OperatorActionSupport {
 		if (activeSites == null) {
 			activeSites = new ArrayList<JobSite>();
 			for (JobSite site : allSites) {
-				if (site.isActive(parseDate()))
+				if (site.isActive(parseDate(date)))
 					activeSites.add(site);
 			}
 		}
@@ -384,13 +383,14 @@ public class ManageJobSites extends OperatorActionSupport {
 		if (inactiveSites == null) {
 			inactiveSites = new ArrayList<JobSite>();
 			for (JobSite site : allSites) {
-				if (!site.isActive(parseDate())) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				if (!site.isActive(parseDate(date))) {
+					if (date.equalsIgnoreCase("today"))
+						date = maskDateFormat(new Date());
 					
-					if (site.getProjectStart() != null && site.getProjectStart().before(parseDate()))
+					if (site.getProjectStart() != null && site.getProjectStart().before(parseDate(date)))
 						inactiveSites.add(site);
 					else if (site.getProjectStart() == null 
-							&& sdf.format(site.getProjectStop()).equals(sdf.format(parseDate())))
+							&& maskDateFormat(site.getProjectStop()).equals(date));
 						inactiveSites.add(site);
 				}
 			}
@@ -437,18 +437,5 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 		
 		return history;
-	}
-	
-	private Date parseDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		Date view;
-		
-		try {
-			view = sdf.parse(date);
-		} catch (Exception e) {
-			view = new Date();
-		}
-		
-		return view;
 	}
 }

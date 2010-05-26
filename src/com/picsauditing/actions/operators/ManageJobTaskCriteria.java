@@ -1,7 +1,5 @@
 package com.picsauditing.actions.operators;
 
-//import com.picsauditing.access.OpPerms;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,11 +31,10 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	protected boolean canEdit = false;
 
 	protected List<String> history;
-	protected String date;
+	protected String date = "today";
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
 	protected JobTask jobTask;
 	protected AssessmentTest assessmentTest;
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	public ManageJobTaskCriteria(OperatorAccountDAO operatorDao, JobTaskCriteriaDAO jobTaskCriteriaDAO,
 			AssessmentTestDAO assessmentTestDAO, JobTaskDAO jobTaskDAO) {
@@ -170,7 +167,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	
 	public boolean isCanEdit() {
 		if (permissions.hasPermission(OpPerms.ManageJobTasks, OpType.Edit) 
-				&& (date == null || date.equals(sdf.format(new Date()))))
+				&& (date == null || date.equalsIgnoreCase("today") || date.equals(maskDateFormat(new Date()))))
 			canEdit = true;
 		
 		return canEdit;
@@ -221,7 +218,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		if (jobTask == null)
 			jobTask = jobTaskDAO.find(jobTaskID);
 		
-		if (date == null || date.equals(sdf.format(new Date())))
+		if (date == null || date.equalsIgnoreCase("today") || date.equals(maskDateFormat(new Date())))
 			return jobTask.getJobTaskCriteriaMap();
 		else
 			return jobTask.getJobTaskCriteriaMap(parseDate(date));
@@ -244,15 +241,5 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		exp.add(Calendar.MONTH, assessmentTest.getMonthsToExpire());
 		
 		newJobTaskCriteria.setExpirationDate(exp.getTime());
-	}
-	
-	private Date parseDate(String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		
-		try {
-			return sdf.parse(date);
-		} catch (Exception e) {
-			return new Date();
-		}
 	}
 }

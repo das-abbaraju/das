@@ -2,7 +2,6 @@ package com.picsauditing.actions.chart;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.search.SelectSQL;
@@ -60,7 +59,6 @@ public class ChartManHours extends ChartSSAction {
 		sql.addWhere("pqf2.questionID = 2448");
 		
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
 		cal.add(Calendar.YEAR, -7);
 		
 		sql.addWhere("ca.auditFor > " + cal.get(Calendar.YEAR));

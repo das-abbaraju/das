@@ -120,8 +120,7 @@ function getHistory(date) {
 <s:include value="opHeader.jsp"></s:include>
 <div id="clear" style="width: 100%"></div>
 <s:form>
-	View history: <s:select list="history" name="date" onchange="getHistory(this.value);"></s:select><br />
-	<a href="?id=<s:property value="operator.id" />">Today</a>
+	View history: <s:select list="history" name="date" onchange="getHistory(this.value);" headerKey="today" headerValue="Today"></s:select><br />
 </s:form>
 <div id="clear" style="width: 100%"></div>
 <table id="sitesTable">

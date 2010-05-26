@@ -2,7 +2,6 @@ package com.picsauditing.actions.chart;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +39,6 @@ public class ChartEmrTrir extends ChartMSAction {
 		chart.setSYAxisName("EMR");
 		
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
 		cal.add(Calendar.YEAR, -7);
 		
 		SelectSQL sql = new SelectSQL();

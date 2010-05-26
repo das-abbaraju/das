@@ -210,6 +210,16 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	public String getFuzzyDate(Date d) {
 		return DateBean.getFuzzyDate(d);
 	}
+	
+	public Date parseDate(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		
+		try {
+			return sdf.parse(date);
+		} catch (Exception e) {
+			return new Date();
+		}
+	}
 
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
