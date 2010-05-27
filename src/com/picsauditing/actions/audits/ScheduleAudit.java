@@ -238,7 +238,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			String shortScheduleDate = DateBean.format(conAudit.getScheduledDate(), "MMMM d");
 			addNote(contractor, conAudit.getAuditType().getAuditName() + " Scheduled for " + shortScheduleDate,
-					NoteCategory.Audits);
+					NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 			addActionMessage("Congratulations, your audit is now scheduled. You should receive a confirmation email for your records.");
 			return "summary";

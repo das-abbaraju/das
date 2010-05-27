@@ -7,6 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -59,6 +62,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected Integer monthsToExpire;
 	protected boolean mustVerify;
 	protected boolean renewable = true;
+	protected Account account;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -176,6 +180,16 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setRenewable(boolean renewable) {
 		this.renewable = renewable;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "opID", nullable = true)
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	@OneToMany(mappedBy = "auditType")

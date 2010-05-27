@@ -113,6 +113,10 @@ public class AccountActionSupport extends PicsActionSupport {
 		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null);
 	}
 
+	protected void addNote(Account account, String newNote, NoteCategory noteCategory, int viewableBy) throws Exception {
+		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null);
+	}
+	
 	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
 			boolean canContractorView, int viewableBy, User user) throws Exception {
 		Note note = new Note();
@@ -125,6 +129,12 @@ public class AccountActionSupport extends PicsActionSupport {
 		note.setCanContractorView(canContractorView);
 		note.setStatus(NoteStatus.Closed);
 		getNoteDao().save(note);
+	}
+	
+	public int getViewableByAccount(Account account) {
+		if(account != null)
+			return account.getId();
+		return Account.EVERYONE;	
 	}
 
 	/***** END of NOTES *****/

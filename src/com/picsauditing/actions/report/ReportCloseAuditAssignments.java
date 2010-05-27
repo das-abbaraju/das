@@ -67,7 +67,10 @@ public class ReportCloseAuditAssignments extends ReportContractorAudits {
 			note.setSummary("Assigned "+ user.getName() +" as Closing Auditor for " + cAudit.getAuditType().getAuditName());
 			note.setBody(notes);
 			note.setNoteCategory(NoteCategory.Audits);
-			note.setViewableById(Account.EVERYONE);
+			if(cAudit.getAuditType().getAccount() != null)
+				note.setViewableBy(cAudit.getAuditType().getAccount());
+			else	
+				note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
 		}
 

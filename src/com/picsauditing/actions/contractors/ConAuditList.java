@@ -148,7 +148,7 @@ public class ConAuditList extends ContractorActionSupport {
 					conAudit = auditDao.save(conAudit);
 
 					addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
-							NoteCategory.Audits);
+							NoteCategory.Audits,getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 					return "saved";
 				}

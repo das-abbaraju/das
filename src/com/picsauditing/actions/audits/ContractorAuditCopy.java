@@ -16,12 +16,10 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.OshaAuditDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.FileUtils;
 
@@ -107,7 +105,7 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			}
 
 			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, LowMedHigh.Low, true, Account.EVERYONE, this.getUser());
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 			return "Audit";
 		}
 

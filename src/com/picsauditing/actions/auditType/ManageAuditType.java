@@ -8,12 +8,14 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.AuditTypeCache;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageAuditType extends PicsActionSupport implements Preparable {
@@ -23,6 +25,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected AuditCategory category = null;
 	protected AuditSubCategory subCategory = null;
 	protected AuditQuestion question = null;
+	protected String operatorID;
 
 	private List<AuditType> auditTypes = null;
 
@@ -119,6 +122,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				addActionError("Audit name is required");
 				return false;
 			}
+			if(!Strings.isEmpty(operatorID)) {
+				auditType.setAccount(new Account());
+				auditType.getAccount().setId(Integer.parseInt(operatorID));
+			}
+			else
+				auditType.setAccount(null);
+			
 			auditType.setAuditColumns(permissions);
 			auditType = auditTypeDao.save(auditType);
 			id = auditType.getId();
@@ -204,5 +214,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setParentID(int parentID) {
 		// Do nothing here...we use this in the prepare statement
+	}
+
+	public String getOperatorID() {
+		return operatorID;
+	}
+
+	public void setOperatorID(String operatorID) {
+		this.operatorID = operatorID;
 	}
 }

@@ -121,7 +121,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 					conAudit = auditDao.save(conAudit);
 
 					addNote(conAudit.getContractorAccount(), "Added " + auditType.getAuditName() + " manually",
-							NoteCategory.Insurance);
+							NoteCategory.Insurance, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 					contractor.getAudits().add(conAudit);
 					auditBuilder.setUser(getUser());

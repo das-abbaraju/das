@@ -11,6 +11,7 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -19,6 +20,7 @@ import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -171,7 +173,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 
 			if (!Strings.isEmpty(conAudit.getAuditFor()))
 				notes += " for " + conAudit.getAuditFor();
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits);
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 		}
 
 		if (auditStatus.equals(AuditStatus.Active)) {
@@ -184,7 +186,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				EmailSender.send(emailBuilder.build());
 			}
 			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the "
-					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits);
+					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 		}
 
 		conAudit.changeStatus(auditStatus, getUser());

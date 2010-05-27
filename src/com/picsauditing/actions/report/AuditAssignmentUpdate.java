@@ -154,7 +154,10 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 			note.setAuditColumns(permissions);
 			note.setSummary("Audit Schedule updated");
 			note.setNoteCategory(NoteCategory.Audits);
-			note.setViewableById(Account.EVERYONE);
+			if(contractorAudit.getAuditType().getAccount() != null)
+				note.setViewableBy(contractorAudit.getAuditType().getAccount());
+			else	
+				note.setViewableById(Account.EVERYONE);
 			noteDAO.save(note);
 		}
 		return SUCCESS;

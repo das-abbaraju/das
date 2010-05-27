@@ -72,6 +72,10 @@ $(function(){
 						<li><label>Contractor Can Edit:</label>
 							<s:checkbox name="auditType.canContractorEdit" />
 						</li>
+						<li><label title="Add the operator or corporateID only if requested by 1 account.">
+							Required By Operator:</label>
+							<s:textfield name="operatorID" value="%{auditType.operator.id}" /> 
+						</li>
 						<li><label>Months to Expire:</label>
 							<s:textfield name="auditType.monthsToExpire" /> 
 						</li>
