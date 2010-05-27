@@ -123,9 +123,9 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 				+ " UNION " + sqlRegistrationsLastMonth
 				+ " UNION " + sqlRegistrationsToDate
 				+ " ) t "
-				+ " LEFT JOIN (SELECT distinct opID, 1 audited FROM audit_operator "
-				+ " JOIN audit_type at on at.id = audittypeid "
-				+ " WHERE (auditTypeID IN (2,3,6) OR at.classType = 'IM') AND minRiskLevel > 0 AND canSee = 1) audited "
+				+ " LEFT JOIN (SELECT distinct ao.opID, 1 audited FROM audit_operator ao"
+				+ " JOIN audit_type at on at.id = ao.audittypeid "
+				+ " WHERE (ao.auditTypeID IN (2,3,6) OR at.classType = 'IM') AND ao.minRiskLevel > 0 AND ao.canSee = 1) audited "
 				+ " ON audited.opID = accountID "
 				+ " JOIN operators o on o.id = accountID "
 				+ " LEFT JOIN (SELECT f.opID, c.id FROM facilities f JOIN operators c ON f.corporateID = c.id AND c.primaryCorporate = 1) corp ON o.id = corp.opID "
