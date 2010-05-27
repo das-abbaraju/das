@@ -418,8 +418,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			String ind = "Industry";
 			auditForSet.add(ind);
-			put(OshaRateType.TrirAbsolute.getDescription(), ind, format(contractor.getNaics().getTrir()));
-			put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(contractor.getNaics().getLwcr()));
+			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
+				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(contractor.getNaics().getTrir()));
+			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
+				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(contractor.getNaics().getLwcr()));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
@@ -512,7 +514,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 						rateTypeSet.add(disp);
 				}
 			}
-			rateTypeSet.add("Hours Worked");
+			if (data.get("Hours Worked") != null)
+				rateTypeSet.add("Hours Worked");
 		}
 
 		private String getOshaSuffix(OshaRateType rateType) {
