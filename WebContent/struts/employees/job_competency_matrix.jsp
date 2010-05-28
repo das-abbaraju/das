@@ -30,8 +30,8 @@ table.report td.notselected {
 <s:if test="permissions.contractor">
 	<a href="ManageJobRoles.action?id=<s:property value="id" />">Manage Job Roles</a><br />
 </s:if>
-<a class="excel" onclick="alert('Functionality not available'); return false;" 
-	href="#" title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
+<a class="excel" href="JobCompetencyMatrix.action?button=Download&id=<s:property value="id" />" target="_BLANK" 
+	title="Download all <s:property value="competencies.size()"/> results to a CSV file">Download</a>
 <table class="report">
 	<thead>
 		<tr>

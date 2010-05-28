@@ -121,4 +121,17 @@ public class OperatorCompetencyDAO extends PicsDAO {
 		}
 		return map;
 	}
+	
+	public List<OperatorCompetency> findMostUsed(int accountID, boolean active) {
+		String queryString = "SELECT jc.competency FROM JobCompetency jc WHERE jc.jobRole.account.id = ?";
+		
+		if (active)
+			queryString += " AND jc.jobRole.active = 1";
+		
+		queryString += " GROUP BY jc.competency ORDER BY COUNT(*) DESC, jc.competency.category, jc.competency.label";
+		Query query = em.createQuery(queryString);
+		query.setParameter(1, accountID);
+		
+		return query.getResultList();
+	}
 }
