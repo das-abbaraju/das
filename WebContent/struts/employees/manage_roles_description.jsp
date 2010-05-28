@@ -2,9 +2,9 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>HSE Competency Description</title>
+<title><s:property value="competency.category" />: <s:property value="competency.label" /></title>
 </head>
 <body>
-<s:property value="output" escape="false" />
+<s:property value="competency.description" escape="false" />
 </body>
 </html>

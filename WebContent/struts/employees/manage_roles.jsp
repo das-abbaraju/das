@@ -22,10 +22,6 @@ fieldset.form label {
 	width: 5em;
 	margin-right: 0px;
 }
-
-a.description {
-	cursor: help;
-}
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
@@ -44,9 +40,10 @@ function addCompetency(competencyID) {
 
 function wireClueTips() {
 	$('a.description').cluetip( {
+		activation: 'click',
+		sticky: true,
+		closeText : "<img src='images/cross.png' width='16' height='16'>",
 		hoverClass : 'cluetip',
-		mouseOutClose : true,
-		clickThrough : true,
 		ajaxCache : true,
 		hoverIntent : {
 			interval : 300
@@ -54,8 +51,7 @@ function wireClueTips() {
 		arrows : true,
 		dropShadow : false,
 		width : 400,
-		cluetipClass : 'jtip',
-		showTitle: false
+		cluetipClass : 'jtip'
 	});
 }
 

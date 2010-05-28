@@ -23,6 +23,7 @@ import com.picsauditing.util.Strings;
 public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	protected JobRole role;
+	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
 	protected List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
 	protected List<OperatorCompetency> otherCompetencies = new ArrayList<OperatorCompetency>();
@@ -74,12 +75,9 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		this.subHeading = account.getName();
 		
 		if ("Description".equals(button)) {
-			if (competencyID > 0) {
-				OperatorCompetency comp = competencyDAO.find(competencyID);
-				output = comp.getDescription();
-			} else
-				output = "Missing competency";
-
+			if (competencyID > 0)
+				competency = competencyDAO.find(competencyID);
+			
 			return "description";
 		}
 
@@ -170,6 +168,14 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 	public void setRole(JobRole role) {
 		this.role = role;
+	}
+	
+	public OperatorCompetency getCompetency() {
+		return competency;
+	}
+	
+	public void setCompetency(OperatorCompetency competency) {
+		this.competency = competency;
 	}
 
 	public List<JobRole> getJobRoles() {
