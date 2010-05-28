@@ -187,6 +187,9 @@
 			<s:if test="permissions.admin">
 				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
 			</s:if>
+			<s:elseif test="permissions.onlyAuditor">
+				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Upload Requirements</a></li>
+			</s:elseif>
 			<s:if test="permissions.operatorCorporate">
 				<li><a href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">Review Requirements</a></li>
 			</s:if>
