@@ -42,26 +42,24 @@ p {
 /********************  Header Styles  ************************/
 #header {
 	width: 100%;
-	height: 50px;
+	height: 52px;
 	background-color: #fff;
 	background-image: none;
 	border-bottom: 2px solid #9e9fa3;
+	padding: 0 20px;
 }
 
-#headermain {
-	margin: 0 20px;
-}
-
-#masthead {
-	margin: 0 auto;
+#header td {
+	vertical-align: middle;
+	white-space: nowrap;
 }
 
 #logo {
 	border: 0px;
-	height: 31px;
 	margin: 0;
 	z-index: 5000;
-	padding-top: 10px;
+	width: 120px;
+	padding-top: 1px;
 }
 
 #name {
@@ -72,15 +70,9 @@ p {
 }
 
 #headersearch {
-	margin-top: 14px;
-	padding-right: 30px;
-	float: right;
-}
-
-#headersearch input {
-	vertical-align: middle;
-	line-height: 12px;
-	font-size: 12px;
+	text-align: right;
+	width: 100%;
+	padding-right: 25px;
 }
 
 /********************  NEW Header Search Styles  ************************/
@@ -88,7 +80,7 @@ p {
 #search_box {
 	background: #fff;
 	border: 1px solid #AAA;
-	width: 130px;
+	width: auto;
 	height:18px;
 	background-image: url(../images/searchimg.gif);
 	background-repeat: no-repeat;
@@ -100,7 +92,7 @@ p {
 }
  
 #search_button {
-	font-size: 10px;
+	font-size: 12px;
 	font-style: normal;
 	color: #555;
 	background: url('../images/search_gradient.gif') repeat-x;
@@ -114,17 +106,18 @@ p {
 	cursor: hand;
 	text-shadow: 1px 0px 0 #DDD;
 	font-family: Helvetica, Arial, sans-serif;
+	padding-top: 2px;
 }
 
 /* Hack for Mozilla! */
 @-moz-document url-prefix()
 {
-	#search_button { padding-bottom: 1px; }
+	#search_button { padding-bottom: 2px; }
 }
 
 /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 #sidebox {
-	float: right;
+	text-align: right;
 	margin: 11px auto 0 auto;
 	height: 30px;
 	background: none;

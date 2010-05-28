@@ -60,34 +60,35 @@
 		<div class="clear"></div>
 	</div>
 <% } %>
-<div id="header">
-<div id="headermain">
-
-<div id="masthead">
+<table id="header">
 <!-- !begin header -->
-<div id="sidebox">
+<tr>
+<td id="logo">
+	<a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
+</td>
+<% if (permissions.isActive() && !permissions.isContractor()) { %>
+	<td id="headersearch">
+		<form action="ContractorSearch.action" method="get">
+			<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
+			<input type="submit" value="Search" id="search_button" />
+		</form>
+	</td>
+<% } %>
+<td id="sidebox">
 	<p><b style="color: #80b3da">1-800-506-PICS (7427)</b>&emsp;&emsp;
 	<% if (permissions.isLoggedIn()) { %>
 		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
 			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
 			: permissions.getName() %></span>
-| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">PICS Organizer</a> | <a href="http://www.picsauditing.com">PICS Home</a> | <a href="Login.action?button=logout">Logout</a>
-<% } else { %>
-<span id="name">Welcome</span> | <a href="Login.action">Login</a>
-<% } %>
+	| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">PICS Home</a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout">Logout</a>
+	<% } else { %>
+	<span id="name">Welcome</span> | <a href="Login.action">Login</a>
+	<% } %>
 	</p>
+</td>
+</tr>
+</table>
 </div>
-<% if (permissions.isActive() && !permissions.isContractor()) { %>
-
-<div id="headersearch"<% if (permissions.isLoggedIn()) { %> style="padding-left: 120px;"<% } %>>
-<form action="ContractorSearch.action" method="get">
-<input name="filter.accountName" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
-<input type="submit" value="Search" id="search_button" />
-</form>
-</div>
-<% } %>
-<div id="logo"<% if (permissions.isLoggedIn()) { %> style="position: absolute;"<% } %>><a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a></div>
-</div></div></div>
 
 <!-- !begin navigation -->
 <div id="nav">		

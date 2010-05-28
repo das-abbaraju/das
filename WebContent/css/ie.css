@@ -23,7 +23,19 @@ input {
 }
 
 #search_box, #search_button {
-	line-height: 20px !important;
+	line-height: 18px !important;
 	/* IE 7 hack */
-	*line-height: 18px !important;
+	*line-height: 15px !important;
+}
+
+#search_button {
+	padding-bottom: 1px !important;
+}
+
+#sidebox {
+	*padding-right: 20px;
+}
+
+#logo {
+	*padding-left: 20px;
 }
