@@ -22,6 +22,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -47,11 +48,14 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	private List<FlagData> affected = new ArrayList<FlagData>();
 
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
+	private ContractorAccountDAO contractorAccountDAO;
+	
 
 	private FlagCriteriaOperator flagCriteriaOperator;
 
-	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO) {
+	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO, ContractorAccountDAO contractorAccountDAO) {
 		this.flagCriteriaOperatorDAO = flagCriteriaOperatorDAO;
+		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
 	@Override
@@ -132,6 +136,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 						.get("answer") == null ? null : row.get("answer").toString());
 				fcc.setVerified(Database.toBoolean(row, "verified"));
 
+				if(!contractorAccountDAO.isContained(fcc.getContractor())) {
+					fcc.setContractor(contractorAccountDAO.find(fcc.getContractor().getId()));
+				}
 				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
 				List<FlagData> conResults = calculator.calculate();
 				for (FlagData flagData : conResults) {
