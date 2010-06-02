@@ -341,6 +341,13 @@ public class ContractorCron extends PicsActionSupport {
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
+		if(co.getContractorAccount().isAcceptsBids()){
+			overallColor = FlagColor.Clear;
+		}else if(co.getContractorAccount().getStatus().isPending()){
+			overallColor = FlagColor.Clear;			
+		}else if(co.getContractorAccount().getStatus().isDeleted()){
+			overallColor = FlagColor.Clear;			
+		}
 		for (FlagData change : changes) {
 			if (!change.getCriteria().isInsurance())
 				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());

@@ -42,7 +42,6 @@ public class Employee extends BaseTable {
 	private Date birthDate;
 	private String photo;
 	private Date twicExpiration;
-	private Date shellTraining;
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
 	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
@@ -177,6 +176,14 @@ public class Employee extends BaseTable {
 	public List<EmployeeRole> getEmployeeRoles() {
 		return employeeRoles;
 	}
+	@Transient
+	public boolean isPrevAssigned(){
+		for(EmployeeSite site : employeeSites){
+			if(!site.isCurrent())
+				return true;				
+		}
+		return false;
+	}
 
 	public void setEmployeeRoles(List<EmployeeRole> jobRoles) {
 		this.employeeRoles = jobRoles;
@@ -216,15 +223,6 @@ public class Employee extends BaseTable {
 	public void setTwicExpiration(Date twicExpiration) {
 		this.twicExpiration = twicExpiration;
 	}
-	
-	@Temporal(TemporalType.DATE)
-	public Date getShellTraining() {
-		return shellTraining;
-	}
-	
-	public void setShellTraining(Date shellTraining) {
-		this.shellTraining = shellTraining;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -246,7 +244,6 @@ public class Employee extends BaseTable {
 		json.put("birthDate", birthDate == null ? null : birthDate.getTime());
 		json.put("photo", photo);
 		json.put("twicExpiration", twicExpiration == null ? null : twicExpiration.getTime());
-		json.put("shellTraining", shellTraining == null ? null : shellTraining.getTime());
 
 		return json;
 	}

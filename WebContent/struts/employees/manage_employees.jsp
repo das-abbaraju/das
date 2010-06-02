@@ -47,6 +47,13 @@ function removeJobSite(id) {
 	startThinking({div: 'thinking_sites', message: 'Removing Employee from Job Site'})
 	$('#employee_site').load('ManageEmployeesAjax.action', {button: 'removeSite', 'employee.id': employeeID, childID: id});
 }
+function editAssignedSites(id) {
+	startThinking({div: 'thinking_sites', message: 'Editing Assigned Sites for Employee'})
+	$('#employee_site').load('ManageEmployeesAjax.action', 
+			{button: 'editSite', effective: $('#sDate_'+id).val(), expiration: $('#eDate_'+id).val(),
+			 orientation: $('#oDate_'+id).val(), monthsToExp: $('#expires_'+id).val(),
+			 'employee.id': employeeID, childID: id});
+}
 
 $(function() {
 	$.mask.definitions['S']='[X0-9]';
@@ -156,7 +163,7 @@ div.dataTables_length { width: 35%; }
 								<li><label>Hire Date:</label>
 									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="date"/>
 								</li>
-								<li><label>Fire Date:</label>
+								<li><label>Termination Date:</label>
 									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="date"/>
 								</li>
 								<li><label>Location:</label>
@@ -170,9 +177,6 @@ div.dataTables_length { width: 35%; }
 								</li>
 								<li><label>TWIC Card Expiration:</label>
 									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="date"/>
-								</li>
-								<li><label>Shell Contractor Orientation Training:</label>
-									<s:textfield name="employee.shellTraining" value="%{maskDateFormat(employee.shellTraining)}" cssClass="date"/>
 								</li>
 							</ol>
 						</fieldset>

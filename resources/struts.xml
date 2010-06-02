@@ -764,6 +764,11 @@
 			<param name="filter.destinationAction">ReportFatalities</param>
 			<result>/struts/reports/report_fatalities.jsp</result>
 		</action>
+		
+		<action name="ReportTWIC"
+			class="com.picsauditing.actions.report.ReportTWIC">
+			<result>/struts/reports/report_twicexp.jsp</result>	
+		</action>
 
 		<action name="ReportFatalitiesAjax"
 			class="com.picsauditing.actions.report.ReportFatalities">
@@ -1550,6 +1555,11 @@
 		<action name="Trevor"
 			class="com.picsauditing.actions.Trevor">
 			<result>struts/trevor.jsp</result>
+		</action>
+		
+		<action name="David"
+			class="com.picsauditing.actions.DavidTest">
+			<result>struts/davidtest.jsp</result>
 		</action>
 
 		<action name="ServerInfo"

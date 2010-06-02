@@ -1,15 +1,22 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.json.simple.JSONArray;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
@@ -44,6 +51,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected Employee employee;
 	protected String ssn;
+	
+	private String effective;
+	private String expiration;
+	private String orientation;
+	private int monthsToExp;
 
 	protected int childID;
 	protected Set<JobRole> unusedJobRoles;
@@ -108,6 +120,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (employee.getAccount() == null) {
 				employee.setAccount(account);
 			}
+			
+			System.out.println("test date: "+employee.getBirthDate());
 
 			if (ssn != null) {
 				if (ssn.length() == 9)
@@ -195,8 +209,62 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			return "sites";
 		}
+		if ("editSite".equals(button)) {
+			if (employee != null && childID != 0) {
+				EmployeeSite es = employeeSiteDAO.find(childID);
+				Date effDate = DateBean.parseDate(effective);
+				if(effDate == null){
+					addActionMessage(effective + " is not a valid start date. Use the format 'MM/DD/YYYY'");
+					return "sites";
+				}	
+				Date expDate = DateBean.parseDate(expiration);
+				if(expDate == null){
+					addActionError(expiration + " is not a valid end date. Use the format 'MM/DD/YYYY'");
+					return "sites";
+				}	
+				Date orDate = DateBean.parseDate(orientation);
+				// if field is blank, there is no orientation date to update
+				if(!orientation.equals("") && orDate == null){
+					addActionError(orientation + " is not a valid orientation date. Use the format 'MM/DD/YYYY'");
+					return "sites";
+				}
+				es.setEffectiveDate(effDate);
+				es.setExpirationDate(expDate);
+				es.setOrientationDate(orDate);
+				if(orDate!=null){
+					es.setMonthsToExp(monthsToExp);
+					es.setOrientationExpiration();
+				} else{
+					es.setOrientationDate(null);
+					es.setOrientationExpiration(null);
+				}
+				employeeSiteDAO.save(es);
+			}
+			
+			return "sites";
+		}
 
 		return SUCCESS;
+	}
+	
+	public void setMonthsToExp(int monthsToExp) {
+		this.monthsToExp = monthsToExp;
+	}
+	
+	public void setOrientation(String orientation) {
+		this.orientation = orientation;
+	}
+	
+	public String getOrientation() {
+		return orientation;
+	}
+	
+	public void setEffective(String effective){
+		this.effective = effective;
+		
+	}
+	public void setExpiration(String expiration) {
+		this.expiration = expiration;
 	}
 
 	public Employee getEmployee() {
@@ -216,7 +284,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (ssn.length() <= 9)
 			this.ssn = ssn;
 	}
-
+	
 	public int getChildID() {
 		return childID;
 	}

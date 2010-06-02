@@ -94,6 +94,11 @@ function checkReason(id) {
 		</td>
 	</tr>
 	<tr><td>Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
+	<tr><td>
+		<s:if test="" >
+			
+		</s:if>
+	</td></tr>
 	<tr>
 		<td colspan="3">
 		<s:if test="co.forceOverallFlag != null">

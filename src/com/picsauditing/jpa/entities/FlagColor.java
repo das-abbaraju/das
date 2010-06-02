@@ -6,7 +6,8 @@ public enum FlagColor {
 
 	Green("#339900", "Approve"),
 	Amber("#FFCC33", "Review"),
-	Red("#CC0000", "Reject");
+	Red("#CC0000", "Reject"),
+	Clear("#FFFFFF", " ");
 
 	private String hex;
 	private String insuranceStatus;
@@ -32,13 +33,19 @@ public enum FlagColor {
 	}
 
 	public String getBigIcon() {
+		String title = this.toString();
+		if(this == FlagColor.Clear)
+			title = "Not Applicable";
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
-				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + this.toString() + "\" />";
+				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + title + "\" />";
 	}
 
 	public String getSmallIcon() {
+		String title = this.toString();
+		if(this == FlagColor.Clear)
+			title = "N/A";
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
-				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + this.toString() + "\" />";
+				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
 	}
 
 	static public String getSmallIcon(String flagColor) {
