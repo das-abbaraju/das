@@ -77,6 +77,9 @@ public enum FlagColor {
 	public boolean isGreen() {
 		return this.equals(Green);
 	}
+	public boolean isClear(){
+		return this.equals(Clear);
+	}
 	
 	public boolean isWorseThan(FlagColor flagColor2) {
 		if (flagColor2 == null)

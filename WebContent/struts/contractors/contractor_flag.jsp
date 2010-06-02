@@ -93,10 +93,13 @@ function checkReason(id) {
 			</b>
 		</td>
 	</tr>
-	<tr><td>Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
-	<tr><td>
-		<s:if test="" >
-			
+	<tr><td colspan="3">Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
+	<tr><td colspan="3">
+		<s:if test="co.flagColor.clear" >
+			This contractor does not have an overall flag color because they are a
+			<s:if test="co.contractorAccount.status.pending"> pending</s:if>
+			<s:if test="co.contractorAccount.status.deleted"> deleted</s:if>
+			<s:if test="co.contractorAccount.acceptsBids"> bid-only contractor</s:if>.
 		</s:if>
 	</td></tr>
 	<tr>
