@@ -222,22 +222,22 @@ public class LoginController extends PicsActionSupport {
 					calendar.add(Calendar.HOUR, 1);
 					user.setFailedAttempts(0);
 					user.setLockUntil(calendar.getTime());
-					return "The password is not correct and the account has now been locked. <a href=\"http://new.picsorganizer.com/AccountRecovery.action?username="
+					return "The password is not correct and the account has now been locked. <a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
 							+ user.getUsername() + "\">Click here to reset your password</a>";
 				}
 				return "The password is not correct. You have " + (8 - user.getFailedAttempts())
 						+ " attempts remaining before your account will be locked for one hour. "
-						+ "<a href=\"http://new.picsorganizer.com/AccountRecovery.action?username="
+						+ "<a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
 						+ user.getUsername() + "\">Click here to reset your password</a>";
 			}
 		} else {
 			if (user.getResetHash() == null) {
-				return "Expired reset code. Try logging in below or <a href=\"http://new.picsorganizer.com/AccountRecovery.action?username="
+				return "Expired reset code. Try logging in below or <a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
 						+ user.getUsername() + "\">Click here to send a new email</a>";
 			}
 
 			if (!user.getResetHash().equals(key)) {
-				return "Expired reset code. Try logging in below or <a href=\"http://new.picsorganizer.com/AccountRecovery.action?username="
+				return "Expired reset code. Try logging in below or <a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
 						+ user.getUsername() + "\">Click here to send a new email</a>";
 			}
 		}
