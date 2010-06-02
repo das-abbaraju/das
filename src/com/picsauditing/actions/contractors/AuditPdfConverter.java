@@ -307,7 +307,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 											Font.UNDERLINE,
 											new Color(0, 0, 255)));
 							anchor
-									.setReference("http://new.picsorganizer.com/DownloadOsha.action?id="
+									.setReference("http://www.picsorganizer.com/DownloadOsha.action?id="
 											+ oshaAudit.getId());
 							anchor.setName("View File");
 							Phrase phrase = new Phrase();
@@ -372,7 +372,7 @@ public class AuditPdfConverter extends ContractorActionSupport {
 													Font.UNDERLINE, new Color(
 															0, 0, 255)));
 									anchor
-											.setReference("http://new.picsorganizer.com/DownloadAuditData.action?auditID="
+											.setReference("http://www.picsorganizer.com/DownloadAuditData.action?auditID="
 													+ auditData.getAudit()
 															.getId()
 													+ "&answer.id="
