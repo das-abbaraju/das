@@ -107,11 +107,11 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.state");
 		sql.addField("a.phone");
 		
-		if (operator != null && operator.isDemo())
-			sql.addWhere("a.status = 'Demo'");
+		if (permissions.getAccountStatus().isDemo())
+			sql.addWhere("a.status IN ('Active','Demo')");
 		else
 			sql.addWhere("a.status = 'Active'");
-		
+
 		if (!Strings.isEmpty(getOrderBy()))
 			sql.addOrderBy(getOrderBy());
 		else
