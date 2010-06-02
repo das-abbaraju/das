@@ -32,7 +32,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 		<s:iterator value="data" status="stat" id="data">
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('name')" /></a></td>
-				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="#data.get('name')"/>"><s:property value="#data.get('employeeCount')"/></a></td>
+				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#data.get('name'))" />"><s:property value="#data.get('employeeCount')" /></a></td>
 				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#data.get('id')"/>"><s:property value="#data.get('jobRoleCount')"/></a></td>
 				<td class="right"><s:property value="#data.get('skilled')" /> / <s:property value="#data.get('required')" /></td>
 				<td class="right"><s:property value="getRatio(#data.get('skilled'),#data.get('required'))" />%</td>
