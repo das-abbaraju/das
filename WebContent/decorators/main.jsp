@@ -230,7 +230,7 @@ try {
 <div id="footermain">
 <div id="footercontent">
 Copyright &copy; 2009
-<a href="<%= URLUtils.getProtocol( request ) %>://new.picsorganizer.com/" class="footer">PICS</a> |
+<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
 <a href="Contact.action" class="footer">Contact Us</a> |
 <a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
 	title="Opens in new window" class="footer">Privacy Policy</a>

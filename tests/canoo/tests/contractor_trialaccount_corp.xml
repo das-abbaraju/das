@@ -34,7 +34,7 @@
 					<setInputField name="contractor.name" value="Bid / Inheritance Test"/>
 					<setInputField name="contractor.dbaName" value="Inheritance's DBA"/>
 					<setInputField name="contractor.contact" value="John Doe"/>
-					<setInputField name="contractor.webUrl" value="new.picsorganizer.com/canoo"/>
+					<setInputField name="contractor.webUrl" value="www.picsorganizer.com/canoo"/>
 					<setInputField name="contractor.taxId" value="982236544"/>
 					<setInputField name="contractor.address" value="123 Main Street"/>
 					<setInputField name="contractor.city" value="Tester"/>

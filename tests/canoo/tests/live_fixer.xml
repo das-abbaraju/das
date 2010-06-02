@@ -6,7 +6,7 @@
 	<target name="test">
 		<webtest name="Fix Data" description="Fix Data on the Live Site">
 			<config 
-				host="new.picsorganizer.com"
+				host="www.picsorganizer.com"
 				port="80"
 				protocol="http"
 				basepath="" />

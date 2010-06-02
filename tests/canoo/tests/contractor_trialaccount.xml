@@ -45,7 +45,7 @@
 										<setInputField name="contractor.dbaName" value="Canoo's DBA"/>
 										<setSelectField name="contractor.country.isoCode" text="United States"/>
 										<setInputField name="contractor.taxId" value="789446179"/>
-										<setInputField name="contractor.webUrl" value="new.picsorganizer.com/canoo"/>
+										<setInputField name="contractor.webUrl" value="www.picsorganizer.com/canoo"/>
 										<setInputField name="contractor.phone" value="949-123-4567"/>
 										<setInputField name="contractor.fax" value="949-123-4568"/>
 										<sleep seconds="2"/>

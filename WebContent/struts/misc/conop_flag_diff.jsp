@@ -42,7 +42,7 @@ function isOk(conid,opid, flag) {
 					<s:property value="get('newColor')" /></a>
 			</td>
 			<td <s:if test="get('oldColor') != get('newColor')"> style="background-color: YELLOW" </s:if>>
-				<a href="http://new.picsorganizer.com/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="live">
+				<a href="http://www.picsorganizer.com/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="live">
 					<s:property value="get('oldColor')" /></a>
 			</td>
 			<td <s:if test="get('oldwaitingOn') != get('newwaitingon')"> style="background-color: YELLOW" </s:if>>
@@ -50,7 +50,7 @@ function isOk(conid,opid, flag) {
 					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('newwaitingon'))" /></a>
 			</td>
 			<td <s:if test="get('oldwaitingOn') != get('newwaitingon')"> style="background-color: YELLOW" </s:if>>
-				<a href="http://new.picsorganizer.com/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="alpha">
+				<a href="http://www.picsorganizer.com/ContractorFlag.action?id=<s:property value="get('conID')" />&opID=<s:property value="get('opID')" />" target="alpha">
 					<s:property value="@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('oldwaitingOn'))" /></a>
 			</td>
 			<td><a href="#" onclick="isOk(<s:property value="get('conID')" />,<s:property value="get('opID')" />, '<s:property value="get('newColor')" />'); return false;" target="live"><img src="images/cross.png" /></a></td>
