@@ -27,7 +27,6 @@ table.report td.notselected {
 </head>
 <body>
 <h1>HSE Competency Matrix <span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
-<div class="beta"></div>
 <s:if test="permissions.contractor || permissions.admin">
 	<a href="ManageJobRoles.action?id=<s:property value="id" />">Manage Job Roles</a><br />
 </s:if>

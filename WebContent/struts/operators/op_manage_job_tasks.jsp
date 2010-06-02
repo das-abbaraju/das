@@ -82,7 +82,6 @@ function sort(a, b, sortBy) {
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<div class="beta"></div>
 <table id="tasksTable" >
 	<tr>
 		<td>

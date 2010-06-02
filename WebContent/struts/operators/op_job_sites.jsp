@@ -110,7 +110,6 @@ $(function() {
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<div class="beta"></div>
 <s:if test="history != null">
 	<s:form id="historyForm">
 		<s:hidden name="id"></s:hidden>

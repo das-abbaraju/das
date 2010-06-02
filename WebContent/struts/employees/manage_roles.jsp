@@ -70,7 +70,6 @@ $(function() {
 <body>
 <h1>Manage Job Roles <span class="sub"> <s:property
 	value="subHeading" escape="false" /> </span></h1>
-<div class="beta"></div>
 <a href="JobCompetencyMatrix.action?id=<s:property value="account.id" />">HSE Competency Matrix</a>
 <table id="rolesTable">
 	<tr>

@@ -21,7 +21,6 @@ table.report tbody td {
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<div class="beta"></div>
 <a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />">Return to Job Tasks List</a>
 <table id="criteriaTable">
 	<tr>

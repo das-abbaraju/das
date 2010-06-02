@@ -42,9 +42,5 @@
 				$(this).toggleClass('tr-hover-clickable');
 			});
         }
-
-        // We can remove this when we're out of beta?
-        if ($('div.beta') != null && $('table.report') != null)
-            $('table.report').css('clear', 'left');
 	});
 </script>

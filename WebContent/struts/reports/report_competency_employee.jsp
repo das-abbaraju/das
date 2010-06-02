@@ -21,7 +21,6 @@ $('input.ssn').mask('SSS-SS-SSSS');
 		href="javascript: download('ReportCompetencyByEmployee');"
 		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
 </div>
-<div class="beta"></div>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />

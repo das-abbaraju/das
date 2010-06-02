@@ -48,7 +48,6 @@
 </head>
 <body>
 	<s:include value="../actionMessages.jsp"/>
-	<div class="beta"></div>
 	<div id="profile">
 		<table>
 			<tr>

@@ -123,7 +123,6 @@ function go(type, id) {
 		</table>
 	</fieldset>
 </s:form>
-<div class="beta"></div>
 <div id="competencyTable"></div>
 <s:if test="getEmployees.size() == 0">
 	<div class="info">This contractor has no employees.</div>

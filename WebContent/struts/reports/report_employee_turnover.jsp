@@ -9,8 +9,6 @@
 <body>
 <h1>Employee Turnover</h1>
 
-<div class="beta"></div>
-
 <s:form id="form1">
 	<s:hidden name="filter.ajax" value="false"/>
 	<s:hidden name="filter.destinationAction" />
