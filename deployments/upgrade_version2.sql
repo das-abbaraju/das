@@ -14,22 +14,6 @@ where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
 
--- PICS-617  *** Begin ***
-create TEMPORARY table temp_contractor_info
-select c.id, min(u.id) as userid from users u
-join contractor_info c on c.id = u.accountid
-group by c.id;
-
-update contractor_info c, temp_contractor_info t
-set c.agreedBy = t.userid
-where c.id = t.id;
-
-update contractor_info c
-join accounts a on c.id = a.id
-set c.agreementDate = a.creationDate;
--- PICS-617  *** End ***
-
-
 update email_template set allowsVelocity = 1, html = 1, recipient = 'Admin' where id = 107;
 insert into `app_properties` (`property`, `value`) values('subscription.ContractorAdded','1');
 
@@ -44,7 +28,7 @@ insert into widget_user (id, widgetID, userID, widget_user.column, sortOrder)
 values (null, 32, 959, 2, 20);
 
 -- database diff
-Trevor: ALTER TABLE `audit_type`
+ALTER TABLE `audit_type`
 ADD COLUMN `opID` mediumint(9) NULL after `renewable`, COMMENT='';
 
 ALTER TABLE `contractor_info`
@@ -65,3 +49,19 @@ ALTER TABLE `generalcontractors`
 CHANGE `flag` `flag` enum('Red','Amber','Green','Clear') COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Red';
 
 alter table flag_criteria_operator drop column `percentAffected`;
+
+
+-- PICS-617  *** Begin ***
+create TEMPORARY table temp_contractor_info
+select c.id, min(u.id) as userid from users u
+join contractor_info c on c.id = u.accountid
+group by c.id;
+
+update contractor_info c, temp_contractor_info t
+set c.agreedBy = t.userid
+where c.id = t.id;
+
+update contractor_info c
+join accounts a on c.id = a.id
+set c.agreementDate = a.creationDate;
+-- PICS-617  *** End ***
