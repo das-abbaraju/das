@@ -185,7 +185,9 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		if (history == null) {
 			List<Date> dates = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
 			history = new ArrayList<String>();
-			history.add(maskDateFormat(new Date()));
+
+			if (!maskDateFormat(dates.get(0)).equals(maskDateFormat(new Date())))
+				history.add(maskDateFormat(new Date()));
 			
 			for (Date date : dates) {
 				history.add(maskDateFormat(date));

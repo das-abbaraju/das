@@ -14,6 +14,10 @@
 #formTable tr td label {
 	width: auto;
 }
+
+table.report {
+	clear: left;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
@@ -119,6 +123,7 @@ function go(type, id) {
 		</table>
 	</fieldset>
 </s:form>
+<div class="beta"></div>
 <div id="competencyTable"></div>
 <s:if test="getEmployees.size() == 0">
 	<div class="info">This contractor has no employees.</div>

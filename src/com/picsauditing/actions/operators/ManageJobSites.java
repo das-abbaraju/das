@@ -431,7 +431,9 @@ public class ManageJobSites extends OperatorActionSupport {
 		if (history == null) {
 			List<Date> dates = siteDAO.findHistory("opID = " + operator.getId() + " AND projectStart IS NOT NULL");
 			history = new ArrayList<String>();
-			history.add(maskDateFormat(new Date()));
+			
+			if (!maskDateFormat(dates.get(0)).equals(maskDateFormat(new Date())))
+				history.add(maskDateFormat(new Date()));
 			
 			for (Date d : dates)
 				history.add(maskDateFormat(d));
