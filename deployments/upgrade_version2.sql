@@ -63,3 +63,5 @@ ADD COLUMN `orientationExpiration` date NULL after `orientationDate`;
 
 ALTER TABLE `generalcontractors`
 CHANGE `flag` `flag` enum('Red','Amber','Green','Clear') COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Red';
+
+alter table flag_criteria_operator drop column `percentAffected`;
