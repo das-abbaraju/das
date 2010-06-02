@@ -17,15 +17,16 @@ public class ReportOQ extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		int accountID = 2691;
+		if (!forceLogin())
+			return LOGIN;
+
 		String contractorSQL = "SELECT a.id, a.name, js.id jobSiteID, js.label jobSite, count(*) totalEmployees FROM accounts a "
 				+ " JOIN generalcontractors gc ON a.id = gc.subID AND gc.genID = "
-				+ accountID
+				+ permissions.getAccountId()
 				+ " JOIN employee e ON a.id = e.accountID"
 				+ " JOIN employee_site es ON e.id = es.employeeID"
 				+ " JOIN job_site js ON js.id = es.jobSiteID AND js.opID = gc.genID"
-				+ " WHERE a.status = 'Active'"
-				+ " GROUP BY a.id, js.id" + " ORDER BY a.name, js.name";
+				+ " WHERE a.status IN ('Active','Demo')" + " GROUP BY a.id, js.id" + " ORDER BY a.name, js.name";
 		List<BasicDynaBean> contractorData = db.select(contractorSQL, false);
 		String conList = "0";
 		for (BasicDynaBean row : contractorData) {
@@ -34,7 +35,7 @@ public class ReportOQ extends PicsActionSupport {
 		}
 
 		String taskSQL = "SELECT jt.id, jt.label, jt.name, jst.controlSpan, jst.jobID FROM job_task jt"
-				+ " JOIN job_site_task jst ON jst.taskID = jt.id" + " WHERE jt.opID = " + accountID;
+				+ " JOIN job_site_task jst ON jst.taskID = jt.id" + " WHERE jt.opID = " + permissions.getAccountId();
 		List<BasicDynaBean> taskData = db.select(taskSQL, false);
 		String taskList = "0";
 		for (BasicDynaBean row : taskData) {

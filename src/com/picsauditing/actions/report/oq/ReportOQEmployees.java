@@ -15,8 +15,8 @@ import com.picsauditing.util.DoubleMap;
 @SuppressWarnings("serial")
 public class ReportOQEmployees extends PicsActionSupport {
 
-	private int conID;
-	private int jobSiteID;
+	private int conID = 0;
+	private int jobSiteID = 0;
 	private List<Employee> employees;
 	private List<JobSiteTask> jobSiteTasks;
 	private DoubleMap<Employee, JobTask, EmployeeQualification> qualifications;
@@ -34,9 +34,20 @@ public class ReportOQEmployees extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		if (!forceLogin())
+			return LOGIN;
 
-		employees = employeeDAO.findWhere("e.active = 1 AND e.account.id = " + conID
-				+ " AND e IN (SELECT employee FROM EmployeeSite WHERE jobSite.id = " + jobSiteID + ")");
+		String where = "e.active = 1 ";
+		if (conID > 0)
+			where += " AND e.account.id = " + conID;
+		if (jobSiteID > 0)
+			where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = " + permissions.getAccountId()
+					+ " AND jobSite.id = " + jobSiteID + ")";
+		else
+			where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = " + permissions.getAccountId()
+					+ ")";
+
+		employees = employeeDAO.findWhere(where);
 		jobSiteTasks = siteTaskDAO.findByJob(jobSiteID);
 
 		qualifications = qualificationDAO.find(employees, jobSiteTasks);
