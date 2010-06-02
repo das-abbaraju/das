@@ -102,7 +102,8 @@ public class ContractorAccount extends Account implements JSONable {
 	protected OshaOrganizer oshaOrganizer = null;
 	protected Map<String, AuditData> emrs = null;
 
-	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("05/20/2010");
+	// Agreement Changed on Release date 6/3/2010
+	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 
 	public ContractorAccount() {
 		this.type = "Contractor";
