@@ -30,12 +30,9 @@
 &nbsp;&nbsp;&nbsp;
 <br />
 <s:textarea name="templateBody" rows="20" onkeyup="dirtyOn();" />
-<s:if test="permissions.email.endsWith('picsauditing.com')">
 	<br />
-	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="true" ></s:radio><br />
-	<label>Password for <s:property value="permissions.email" />:</label> <s:password name="password" value="" />
-</s:if>
-
+	Reply to:
+	<s:radio name="fromMyAddress" list="#{'false':'info@picsauditing.com','true':permissions.email}" value="%{fromMyAddress}" ></s:radio><br />
 <s:if test="templateAllowsVelocity">
 	<div class="info">This template allows velocity tags</div>
 </s:if>

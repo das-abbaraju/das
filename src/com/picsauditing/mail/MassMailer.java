@@ -54,7 +54,6 @@ public class MassMailer extends PicsActionSupport {
 	private List<Token> picsTags = null;
 	private int previewID = 0;
 	private boolean fromMyAddress = true;
-	private String password = null;
 
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
@@ -146,7 +145,10 @@ public class MassMailer extends PicsActionSupport {
 				EmailTemplate template = buildEmailTemplate();
 				// TODO we may want to offer sending from another email
 				// other than their own
-				emailBuilder.setFromAddress("\""+permissions.getName()+"\"<"+permissions.getEmail()+">");
+				if(fromMyAddress)
+					emailBuilder.setFromAddress("\""+permissions.getName()+"\"<"+permissions.getEmail()+">");
+				else
+					emailBuilder.setFromAddress(null);
 				emailBuilder.setTemplate(template);
 
 				for (Integer id : ids) {
@@ -154,7 +156,7 @@ public class MassMailer extends PicsActionSupport {
 					addTokens(id);
 					EmailQueue email = emailBuilder.build();
 					email.setEmailTemplate(null);
-					
+					email.setViewableById(permissions.getTopAccountID());
 					emailQueueDAO.save(email);
 				}
 				wizardSession.clear();
@@ -364,14 +366,6 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setFromMyAddress(boolean fromMyAddress) {
 		this.fromMyAddress = fromMyAddress;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public EmailQueue getEmailPreview() {
