@@ -15,9 +15,7 @@ and pd.answer = 'Yes');
 **/
 
 -- PICS-617  *** Begin ***
-create TEMPORARY table temp_contractor_info;
-
-insert into temp_contractor_info
+create TEMPORARY table temp_contractor_info
 select c.id, min(u.id) as userid from users u
 join contractor_info c on c.id = u.accountid
 group by c.id;
