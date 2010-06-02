@@ -89,38 +89,4 @@ public class Home extends ContractorActionSupport {
 	public int getColumnWidth() {
 		return Math.round(90 / columns.size());
 	}
-
-	public boolean isShowRebranding() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.MONTH, Calendar.MARCH);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.YEAR, 2010);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-
-		User u = getUser();
-
-		if (u.getCreationDate() == null || u.getCreationDate().before(cal.getTime())) {
-
-			Cookie[] cookies = ServletActionContext.getRequest().getCookies();
-
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if ("PICS_NEW".equals(cookie.getName())) {
-						if ("1".equals(cookie.getValue()))
-							return false;
-					}
-				}
-			}
-
-			// The account has not seen the notice
-			Cookie PICS_NEW = new Cookie("PICS_NEW", "1");
-			PICS_NEW.setMaxAge(3600 * 24 * 30);
-			ServletActionContext.getResponse().addCookie(PICS_NEW);
-			return true;
-		}
-
-		return false;
-	}
 }

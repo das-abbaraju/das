@@ -37,12 +37,6 @@ $(function() {
 	<h1>Welcome to PICS Online <span class="sub"><s:property value="account.name" /></span></h1>
 </s:elseif>
 
-<s:if test="showRebranding">
-<div class="info" id="rebranding" style="display:none">
-	<a href="http://new.picsorganizer.com/about/2010-rebranding/" target="_BLANK">PICS has new Branding and Service Names</a>
-</div>
-</s:if>
-
 <s:iterator value="columns">
 	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 		<s:iterator value="value">
