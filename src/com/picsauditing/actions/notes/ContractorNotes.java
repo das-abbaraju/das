@@ -58,7 +58,7 @@ public class ContractorNotes extends ContractorActionSupport {
 
 	public List<EmailQueue> getEmailList() {
 		if (emailList == null)
-			emailList = emailDAO.findByContractorId(account.getId());
+			emailList = emailDAO.findByContractorId(account.getId(), permissions);
 
 		return emailList;
 	}

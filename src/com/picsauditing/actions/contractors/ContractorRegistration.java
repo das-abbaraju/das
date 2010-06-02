@@ -186,6 +186,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(90);
 			emailQueue.setFromAddress("PICS Mailer <info@picsauditing.com>");
+			emailQueue.setViewableById(Account.EVERYONE);
 			EmailSender.send(emailQueue);
 
 			Note note = new Note();

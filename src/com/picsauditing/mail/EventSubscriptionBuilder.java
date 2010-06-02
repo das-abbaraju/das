@@ -10,6 +10,7 @@ import java.util.Set;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -40,9 +41,9 @@ public class EventSubscriptionBuilder {
 					+ "&sub=" + subscription + "&key=" + Strings.hashUrlSafe(seed);
 			builder.addToken("confirmLink", confirmLink);
 			builder.setUser(subscription.getUser());
-
 			EmailQueue q = builder.build();
 			q.setHtml(true);
+			q.setViewableBy(co.getOperatorAccount().getTopAccount());
 
 			EmailSender.send(q);
 
@@ -104,12 +105,13 @@ public class EventSubscriptionBuilder {
 
 		if (emailAddresses.size() > 1)
 			emailBuilder.setCcAddresses(emailAddresses.get(1));
-
+		
 		EmailQueue email = emailBuilder.build();
 		if (invoice.getStatus().isPaid())
 			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
 		email.setPriority(60);
 		email.setHtml(true);
+		email.setViewableById(Account.PicsID);
 		EmailSender.send(email);
 
 		return email;

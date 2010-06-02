@@ -30,6 +30,7 @@ import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -189,6 +190,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
+			if(permissions.isOperator())
+				emailQueue.setViewableById(permissions.getTopAccountID());
+			else
+				emailQueue.setViewableById(Account.EVERYONE);
 			EmailSender.send(emailQueue);
 
 			if (permissions.isContractor()) {

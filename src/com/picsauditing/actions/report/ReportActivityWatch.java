@@ -7,6 +7,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.search.SelectSQL;
@@ -118,21 +119,35 @@ public class ReportActivityWatch extends ReportAccount {
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (auditSubmitted) {
-			SelectSQL sql2 = buildWatch("AuditSubmitted", "contractor_audit ca", "ca.conID", "ca.completedDate", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Submitted')", "CONCAT('Audit.action?auditID=', ca.id)");
-			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id AND aType.hasRequirements = 1");
+			SelectSQL sql2 = buildWatch("AuditSubmitted", "contractor_audit ca", "ca.conID", 
+					"(CASE WHEN cao.id IS NULL THEN ca.completedDate ELSE cao.statusChangedDate END)", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END)," +
+					"(CASE WHEN cao.id IS NULL THEN '' ELSE CONCAT(' for ', oper.name) END), ' Submitted')", "CONCAT('Audit.action?auditID=', ca.id)");
+			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id");
+			String caos = "LEFT JOIN contractor_audit_operator cao ON cao.auditID = ca.id";
 			if(permissions.isOperatorCorporate()) {
 				sql2.addWhere("aType.id IN ("+ Strings.implode(permissions.getCanSeeAudits(), ",") +")");
+				caos += " AND cao.opID IN ("+ Strings.implode(permissions.getVisibleCAOs(), ",") +")";
 			}
-			sql2.addWhere("completedDate IS NOT NULL AND ca.auditStatus = 'Submitted'");
+			sql2.addJoin(caos);
+			sql2.addJoin("LEFT JOIN accounts oper on oper.id = cao.opID");
+			sql2.addWhere("(completedDate IS NOT NULL AND ca.auditStatus = 'Submitted') OR (cao.status = 'Submitted' AND cao.visible = 1)");
+			sql2.addWhere("ca.auditStatus != 'Expired'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (auditActivated) {
-			SelectSQL sql2 = buildWatch("AuditActivated", "contractor_audit ca", "ca.conID", "ca.closedDate", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), ' Activated')", "CONCAT('Audit.action?auditID=', ca.id)");
+			SelectSQL sql2 = buildWatch("AuditActivated", "contractor_audit ca", "ca.conID", 
+					"(CASE WHEN cao.id IS NULL THEN ca.closedDate ELSE cao.statusChangedDate END)", "CONCAT(aType.auditName, (CASE WHEN ca.auditFor IS NULL THEN '' ELSE CONCAT(' for ', ca.auditFor) END), " +
+					"(CASE WHEN cao.id IS NULL THEN '' ELSE CONCAT(' for ', oper.name) END),' Activated')", "CONCAT('Audit.action?auditID=', ca.id)");
 			sql2.addJoin("JOIN audit_type aType ON ca.auditTypeID = aType.id");
+			String caos = "LEFT JOIN contractor_audit_operator cao ON cao.auditID = ca.id";
 			if(permissions.isOperatorCorporate()) {
 				sql2.addWhere("aType.id IN ("+ Strings.implode(permissions.getCanSeeAudits(), ",") +")");
+				caos += " AND cao.opID IN ("+ Strings.implode(permissions.getVisibleCAOs(), ",") +")";
 			}
-			sql2.addWhere("closedDate IS NOT NULL AND ca.auditStatus = 'Active'");
+			sql2.addJoin(caos);
+			sql2.addJoin("LEFT JOIN accounts oper on oper.id = cao.opID");
+			sql2.addWhere("(closedDate IS NOT NULL AND ca.auditStatus = 'Active') OR (cao.status = 'Approved' AND cao.visible = 1)");
+			sql2.addWhere("ca.auditStatus != 'Expired'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (flagColorChange) {
@@ -150,13 +165,30 @@ public class ReportActivityWatch extends ReportAccount {
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (note) {
-			SelectSQL sql2 = buildWatch("Note", "note n USE INDEX(creationDate)", "n.accountID", "n.creationDate", "CONCAT(u.name, ' posted a Note')", "CONCAT('ContractorNotes.action?id=', n.accountID)");
+			SelectSQL sql2 = buildWatch("Note", "note n USE INDEX(creationDate)", "n.accountID", "n.creationDate", "CONCAT(u.name, ' posted - ', n.summary)", "CONCAT('ContractorNotes.action?id=', n.accountID)");
 			sql2.addJoin("JOIN users u ON n.createdBy = u.id");
+			String viewableBy = " (n.createdBy = "+ permissions.getUserId() +" AND n.viewableBy = " + Account.PRIVATE + ")";
+			viewableBy += " OR (n.viewableBy = " + Account.EVERYONE + ")";
+			if (permissions.hasPermission(OpPerms.AllOperators))
+				viewableBy += " OR (n.viewableBy > 2)";
+			
+			if (permissions.isOperatorCorporate())
+				viewableBy += " OR (n.viewableBy IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
+			sql2.addWhere(viewableBy);
+			sql2.addWhere("n.status != 0");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
 		if (email) {
-			SelectSQL sql2 = buildWatch("Email", "email_queue eq", "eq.conID", "eq.sentDate", "CONCAT(et.templateName, ' Email Sent')", "''");
-			sql2.addJoin("JOIN email_template et on et.id = eq.templateID");
+			SelectSQL sql2 = buildWatch("Email", "email_queue eq", "eq.conID", "eq.sentDate", "CONCAT(eq.subject, ' Email Sent')", "''");
+			String viewableBy = " (eq.createdBy = "+ permissions.getUserId() +" AND eq.viewableBy = " + Account.PRIVATE + ")";
+			viewableBy += " OR (eq.viewableBy = " + Account.EVERYONE + ")";
+			
+			if (permissions.isOperatorCorporate())
+				viewableBy += " OR (eq.viewableBy IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
+			else 
+				viewableBy += " OR (eq.viewableBy > 2) OR (eq.viewableBy IS NULL)";
+				
+			sql2.addWhere(viewableBy);
 			sql2.addWhere("eq.status = 'Sent'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}

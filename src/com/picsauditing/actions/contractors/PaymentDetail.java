@@ -152,6 +152,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						try {
 							emailQueue = emailBuilder.build();
 							emailQueue.setPriority(90);
+							emailQueue.setViewableById(Account.PicsID);
 							EmailSender.send(emailQueue);
 						} catch (Exception e) {
 							PicsLogger

@@ -452,5 +452,19 @@ public class OperatorAccount extends Account {
 	public void setJobSites(List<JobSite> jobSites) {
 		this.jobSites = jobSites;
 	}
-
+	
+	@Transient
+	public Account getTopAccount() {
+		Account topAccount = this;
+		if(this.getParent() != null)
+			topAccount = this.getParent();
+		
+		for (Facility facility : getCorporateFacilities()) {
+			if (facility.getCorporate().isPrimaryCorporate()) {
+				topAccount = facility.getCorporate();
+				break;
+			}
+		}
+		return topAccount;
+	}
 }

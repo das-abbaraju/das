@@ -105,6 +105,8 @@ public abstract class SubscriptionBuilder {
 			emailBuilder.setToAddresses(user.getEmail());
 
 			email = emailBuilder.build();
+			email.setViewableById(Account.PRIVATE);
+			email.setCreatedBy(user);
 		}
 
 		return email;

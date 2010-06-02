@@ -148,6 +148,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					emailQueue.setPriority(100);
 					emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
 							: "PICS Info <info@picsauditing.com>");
+					emailQueue.setViewableById(permissions.getTopAccountID());
 					EmailSender.send(emailQueue);
 					addActionMessage(summary);
 				} catch (Exception e) {

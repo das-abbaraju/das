@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;

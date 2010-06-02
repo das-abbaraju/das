@@ -13,6 +13,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
@@ -120,7 +121,9 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
 				emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorSafety);
 				emailBuilder.addToken("cao", cao);
-				EmailSender.send(emailBuilder.build());
+				EmailQueue email = emailBuilder.build();
+				email.setViewableBy(cao.getOperator().getTopAccount());
+				EmailSender.send(email);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

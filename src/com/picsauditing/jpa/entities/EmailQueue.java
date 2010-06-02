@@ -43,6 +43,7 @@ public class EmailQueue implements java.io.Serializable {
 	private EmailTemplate emailTemplate;
 	private ContractorAccount contractorAccount;
 	private boolean html = false;
+	private Account viewableBy;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -215,6 +216,23 @@ public class EmailQueue implements java.io.Serializable {
 
 	public void setContractorAccount(ContractorAccount contractorAccount) {
 		this.contractorAccount = contractorAccount;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "viewableBy")
+	public Account getViewableBy() {
+		return viewableBy;
+	}
+
+	public void setViewableBy(Account viewableBy) {
+		this.viewableBy = viewableBy;
+	}
+
+	public void setViewableById(int viewableBy) {
+		if (viewableBy == 0)
+			this.viewableBy = null;
+		this.viewableBy = new Account();
+		this.viewableBy.setId(viewableBy);
 	}
 
 	@Override

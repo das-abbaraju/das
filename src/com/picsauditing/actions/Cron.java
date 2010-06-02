@@ -312,6 +312,7 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.addToken("policies", policy);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
+			email.setViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
 
 			stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
@@ -489,6 +490,7 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setCcAddresses(emailAddress);
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
+			email.setViewableById(Account.PicsID);
 			emailQueueDAO.save(email);
 
 			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
@@ -508,6 +510,7 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
 			email.setPriority(30);
+			email.setViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
 			
 			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),

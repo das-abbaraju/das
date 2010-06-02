@@ -18,6 +18,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -217,6 +218,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
+				email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
 				EmailSender.send(email);
 			}
 			if (conAudit.getAuditorConfirm() == null) {
@@ -233,6 +235,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
+				email.setViewableById(Account.PicsID);
 				EmailSender.send(email);
 			}
 

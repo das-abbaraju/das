@@ -90,6 +90,7 @@ public class FacilityChanger {
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
+			emailQueue.setViewableBy(operator.getTopAccount());
 			EmailSender.send(emailQueue);
 		}
 

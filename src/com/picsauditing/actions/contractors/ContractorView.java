@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -133,6 +134,10 @@ public class ContractorView extends ContractorActionSupport {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
+			if(permissions.isOperator())
+				emailQueue.setViewableById(permissions.getTopAccountID());
+			else
+				emailQueue.setViewableById(Account.EVERYONE);
 			EmailSender.send(emailQueue);
 
 			if (permissions.isContractor()) {

@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
@@ -147,7 +148,6 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				EmailSender.send(emailBuilder.build());
-
 				notes = " Submitted " + conAudit.getAuditType().getAuditName();
 				notes += " and email sent to " + emailBuilder.getSentTo();
 			}
@@ -183,7 +183,9 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-				EmailSender.send(emailBuilder.build());
+				EmailQueue email = emailBuilder.build();
+				email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
+				EmailSender.send(email);
 			}
 			addNote(conAudit.getContractorAccount(), "Closed the requirements and Activated the "
 					+ conAudit.getAuditType().getAuditName(), NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));

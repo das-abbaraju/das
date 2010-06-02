@@ -142,6 +142,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							try {
 								emailQueue = emailBuilder.build();
 								emailQueue.setPriority(90);
+								emailQueue.setViewableById(Account.PicsID);
+
 								EmailSender.send(emailQueue);
 							} catch (Exception e) {
 								PicsLogger

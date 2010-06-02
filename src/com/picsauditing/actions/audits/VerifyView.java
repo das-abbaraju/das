@@ -18,6 +18,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -216,7 +217,9 @@ public class VerifyView extends ContractorActionSupport {
 					+ contractor.getAuditor().getEmail() + ">");
 			emailBuilder.setTemplate(emailTemplate);
 		}
-		EmailSender.send(emailBuilder.build());
+		EmailQueue email = emailBuilder.build();
+		email.setViewableById(Account.EVERYONE);
+		EmailSender.send(email);
 		String note = "PQF Verification email sent to "
 				+ emailBuilder.getSentTo();
 		addNote(contractor, note, NoteCategory.Audits);

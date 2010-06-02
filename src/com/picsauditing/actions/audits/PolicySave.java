@@ -11,9 +11,11 @@ import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CaoStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -120,7 +122,9 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 						emailBuilder.setFromAddress("\""+permissions.getName() + "\"<" + permissions.getEmail() + ">");
 						emailBuilder.setContractor(cao.getAudit().getContractorAccount(), OpPerms.ContractorInsurance);
 						emailBuilder.addToken("cao", cao);
-						EmailSender.send(emailBuilder.build());
+						EmailQueue email = emailBuilder.build();
+						email.setViewableBy(cao.getOperator());
+						EmailSender.send(email);
 
 						addActionMessage("The <strong>" + cao.getAudit().getAuditType().getAuditName()
 								+ "</strong> Policy has been rejected for <strong>" + cao.getOperator().getName()

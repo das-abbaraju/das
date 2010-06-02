@@ -129,6 +129,10 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
+				if(contractorAudit.getAuditType().getAccount() != null)
+					email.setViewableBy(contractorAudit.getAuditType().getAccount());
+				else
+					email.setViewableById(Account.EVERYONE);
 				EmailSender.send(email);
 			}
 			if (contractorAudit.getAuditorConfirm() == null) {
@@ -145,6 +149,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
+				email.setViewableById(Account.PicsID);
 				EmailSender.send(email);
 			}
 		

@@ -85,6 +85,7 @@ public class ReportCompletePQF extends ReportContractorAudits {
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.setConAudit(conAudit);
 						EmailQueue email = emailBuilder.build();
+						email.setViewableById(Account.EVERYONE);
 						EmailSender.send(email);
 						
 						Note note = new Note();
