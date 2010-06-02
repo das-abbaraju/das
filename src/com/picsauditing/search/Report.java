@@ -191,9 +191,9 @@ public class Report {
 
 	public String getPageLinksWithDynamicForm() {
 		return LinkBuilder.getPageNOfXLinks(this.allRows, this.limit,
-				this.limit * (this.currentPage - 1) + 1, (this.limit + 1)
-						* (this.currentPage) - 1 > this.allRows ? this.allRows
-						: (this.limit + 1) * (this.currentPage) - 1,
+				this.limit * (this.currentPage - 1) + 1, (this.limit)
+						* (this.currentPage) > this.allRows ? this.allRows
+						: (this.limit) * (this.currentPage),
 				this.currentPage);
 	}
 
