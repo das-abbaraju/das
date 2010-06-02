@@ -44,3 +44,24 @@ values (null, 'Pending Welcome Calls', 'Html', 'WelcomeCallAjax.action');
 
 insert into widget_user (id, widgetID, userID, widget_user.column, sortOrder)
 values (null, 32, 959, 2, 20);
+
+-- database diff
+Trevor: ALTER TABLE `audit_type`
+ADD COLUMN `opID` mediumint(9) NULL after `renewable`, COMMENT='';
+
+ALTER TABLE `contractor_info`
+ADD COLUMN `agreementDate` datetime NULL after `tradesSub`,
+ADD COLUMN `agreedBy` int(11) NULL after `agreementDate`, COMMENT='';
+
+ALTER TABLE `email_queue`
+ADD COLUMN `viewableBy` int(10) NULL after `html`, COMMENT='';
+
+ALTER TABLE `employee`
+ADD COLUMN `twicExpiration` date NULL after `phone`;
+
+ALTER TABLE `employee_site`
+ADD COLUMN `orientationDate` date NULL after `expirationDate`,
+ADD COLUMN `orientationExpiration` date NULL after `orientationDate`;
+
+ALTER TABLE `generalcontractors`
+CHANGE `flag` `flag` enum('Red','Amber','Green','Clear') COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Red';
