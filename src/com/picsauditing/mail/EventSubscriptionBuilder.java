@@ -25,7 +25,7 @@ public class EventSubscriptionBuilder {
 			throws Exception {
 		Date now = new Date();
 		final int templateID = 63;
-		final String serverName = "http://www.picsaduiting.com/app/";
+		final String serverName = "http://www.picsorganizer.com/";
 
 		List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorFinished,
 				SubscriptionTimePeriod.Event, co.getOperatorAccount().getId());
