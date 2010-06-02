@@ -14,7 +14,6 @@ $('input.ssn').mask('SSS-SS-SSSS');
 </head>
 <body>
 <h1>Competency By Employee Report</h1>
-
 <s:include value="filters_employee.jsp"/>
 <div class="right">
 	<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
@@ -22,6 +21,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 		href="javascript: download('ReportCompetencyByEmployee');"
 		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
 </div>
+<div class="beta"></div>
 
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />

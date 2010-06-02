@@ -18,22 +18,21 @@ table.report tbody td {
 }
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript">
-function getHistory(date) {
-	self.location = 'ManageJobTaskCriteria.action?id=' + <s:property value="operator.id" />
-		+ '&jobTaskID=' + <s:property value="jobTaskID" /> + '&date=' + date;
-}
-</script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
+<div class="beta"></div>
 <a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />">Return to Job Tasks List</a>
 <table id="criteriaTable">
 	<tr>
 		<td>
 			<s:if test="criterias.size() > 0 && criteriaMap.size() > 0">
 				<s:if test="history != null">
-					Effective: <s:select list="history" name="date" onchange="getHistory(this.value);" headerKey="today" headerValue="Today"></s:select><br />
+					<s:form id="historyForm">
+						<s:hidden name="id" />
+						<s:hidden name="jobTaskID" />
+						Effective: <s:select list="history" name="date" value="%{maskDateFormat(date)}" onchange="$('#historyForm').submit();"></s:select>
+					</s:form>
 				</s:if>
 				<div>
 					<table class="report jobReport">

@@ -1738,6 +1738,11 @@
 			class="com.picsauditing.actions.employees.RoleSuggest">
 			<result>struts/employees/role_suggest.jsp</result>
 		</action>
+		
+		<action name="ReportEmployeeTurnover"
+			class="com.picsauditing.actions.report.ReportEmployeeTurnover">
+			<result>struts/reports/report_employee_turnover.jsp</result>
+		</action>
 
 		<!--  Development struts mappings -->
 		<action name="CertCleanUp"

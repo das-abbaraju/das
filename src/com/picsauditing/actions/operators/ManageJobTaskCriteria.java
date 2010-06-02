@@ -31,7 +31,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	protected boolean canEdit = false;
 
 	protected List<String> history;
-	protected String date = "today";
+	protected Date date = new Date();
 	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
 	protected JobTask jobTask;
 	protected AssessmentTest assessmentTest;
@@ -92,12 +92,6 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 			return redirect("ManageJobTaskCriteria.action?id=" + operator.getId() + "&jobTaskID=" + jobTaskID);
 		}
 		
-		List<Date> dates = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
-		history = new ArrayList<String>();
-		for (Date date : dates) {
-			history.add(maskDateFormat(date));
-		}
-		
 		return SUCCESS;
 	}
 
@@ -125,11 +119,11 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		this.jobTaskCriteriaID = jobTaskCriteriaID;
 	}
 	
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 	
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	
@@ -167,7 +161,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	
 	public boolean isCanEdit() {
 		if (permissions.hasPermission(OpPerms.ManageJobTasks, OpType.Edit) 
-				&& (date == null || date.equalsIgnoreCase("today") || date.equals(maskDateFormat(new Date()))))
+				&& (date == null || maskDateFormat(date).equals(maskDateFormat(new Date()))))
 			canEdit = true;
 		
 		return canEdit;
@@ -191,6 +185,8 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		if (history == null) {
 			List<Date> dates = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
 			history = new ArrayList<String>();
+			history.add(maskDateFormat(new Date()));
+			
 			for (Date date : dates) {
 				history.add(maskDateFormat(date));
 			}
@@ -218,10 +214,10 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		if (jobTask == null)
 			jobTask = jobTaskDAO.find(jobTaskID);
 		
-		if (date == null || date.equalsIgnoreCase("today") || date.equals(maskDateFormat(new Date())))
+		if (date == null || date.equals(maskDateFormat(new Date())))
 			return jobTask.getJobTaskCriteriaMap();
 		else
-			return jobTask.getJobTaskCriteriaMap(parseDate(date));
+			return jobTask.getJobTaskCriteriaMap(date);
 	}
 	
 	private void setupNewJobTaskCriteria() {

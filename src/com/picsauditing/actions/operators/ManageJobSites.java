@@ -41,7 +41,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected Country siteCountry = new Country("US", "United States");
 	protected Date siteStart;
 	protected Date siteEnd;
-	protected String date = "today";
+	protected Date date = new Date();
 	
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
@@ -252,7 +252,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	}
 	
 	public boolean isCanEdit() {
-		if ((date == null || date.equalsIgnoreCase("today") || date.equals(maskDateFormat(new Date())))
+		if ((date == null ||  maskDateFormat(date).equals(maskDateFormat(new Date())))
 				&& permissions.hasPermission(OpPerms.ManageProjects, OpType.Edit))
 			return true;
 		
@@ -347,12 +347,16 @@ public class ManageJobSites extends OperatorActionSupport {
 		this.siteEnd = siteEnd;
 	}
 	
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 	
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	public void setDate(String date) {
+		this.date = parseDate(date);
 	}
 
 	public JobSite getNewSite() {
@@ -371,7 +375,7 @@ public class ManageJobSites extends OperatorActionSupport {
 		if (activeSites == null) {
 			activeSites = new ArrayList<JobSite>();
 			for (JobSite site : allSites) {
-				if (site.isActive(parseDate(date)))
+				if (site.isActive(date))
 					activeSites.add(site);
 			}
 		}
@@ -383,14 +387,11 @@ public class ManageJobSites extends OperatorActionSupport {
 		if (inactiveSites == null) {
 			inactiveSites = new ArrayList<JobSite>();
 			for (JobSite site : allSites) {
-				if (!site.isActive(parseDate(date))) {
-					if (date.equalsIgnoreCase("today"))
-						date = maskDateFormat(new Date());
-					
-					if (site.getProjectStart() != null && site.getProjectStart().before(parseDate(date)))
+				if (!site.isActive(date)) {
+					if (site.getProjectStart() != null && site.getProjectStart().before(date))
 						inactiveSites.add(site);
 					else if (site.getProjectStart() == null 
-							&& maskDateFormat(site.getProjectStop()).equals(date));
+							&& site.getProjectStop().equals(date))
 						inactiveSites.add(site);
 				}
 			}
@@ -428,14 +429,17 @@ public class ManageJobSites extends OperatorActionSupport {
 	
 	public List<String> getHistory() {
 		if (history == null) {
-			history = new ArrayList<String>();
 			List<Date> dates = siteDAO.findHistory("opID = " + operator.getId() + " AND projectStart IS NOT NULL");
+			history = new ArrayList<String>();
+			history.add(maskDateFormat(new Date()));
 			
-			for (Date date : dates) {
-				history.add(maskDateFormat(date));
-			}
+			for (Date d : dates)
+				history.add(maskDateFormat(d));
 		}
 		
-		return history;
+		if (history.size() > 1)
+			return history;
+		
+		return null;
 	}
 }

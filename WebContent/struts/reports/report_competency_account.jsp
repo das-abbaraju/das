@@ -14,7 +14,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 </head>
 <body>
 <h1>Competency By Account Report</h1>
-
+<div class="beta"></div>
 <s:if test="data.size() > 0">
 <table class="report" id="matrix">
 	<thead>

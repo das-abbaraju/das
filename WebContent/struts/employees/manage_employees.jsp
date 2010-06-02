@@ -91,7 +91,7 @@ div.dataTables_length { width: 35%; }
 </head>
 <body>
 	<h1>Manage Employees<span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
-	
+	<div class="beta"></div>
 	<s:include value="../actionMessages.jsp"/>
 
 	<s:if test="account.employees.size() == 0 && employee == null">

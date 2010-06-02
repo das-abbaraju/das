@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>OQ by Contractor/Site</h1>
-
+<div class="beta"></div>
 <table class="report">
 	<thead>
 		<tr>

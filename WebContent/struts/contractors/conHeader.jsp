@@ -258,7 +258,7 @@
 		<pics:permission perm="ContractorAdmin">
 			<li><a href="UsersManage.action">Users</a></li>
 			<li><a href="ManageEmployees.action">Employees</a></li>
-			<pics:permission perm="DefineRoles">
+			<pics:permission perm="ContractorAdmin">
 				<li><a href="ManageJobRoles.action">Job Roles</a></li>
 			</pics:permission>
 		</pics:permission>

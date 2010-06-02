@@ -216,6 +216,7 @@ div#maincontainer {
 
 .right {
 	float: right;
+	clear: right;
 }
 
 /******************** Footer Styles  ************************/
@@ -1023,4 +1024,15 @@ button .ui-icon {
   height: 0;
   visibility: hidden;
   font-size: 0;
+}
+
+/************** Beta logo ******************/
+div.beta {
+	float: right;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	height: 100px;
+	width: 98px;
+	background-image: url(../images/beta.jpg);
+	clear: right;
 }

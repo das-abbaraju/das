@@ -9,10 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <style type="text/css">
-#tasksTable {
-	width: 100%;
-}
-
 #tasksTable table.report {
 	margin-right: 10px;
 	margin-bottom: 10px;
@@ -25,10 +21,15 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function editTask(jobTaskID) {
-	$('.oldValue').show();
-	$('.newValue').hide();
-	$('tr#'+jobTaskID+' .oldValue').hide();
-	$('tr#'+jobTaskID+' .newValue').show();
+	if ($('tr#'+jobTaskID+' .newValue').is(':visible')) {
+		$('tr#'+jobTaskID+' .oldValue').show();
+		$('tr#'+jobTaskID+' .newValue').hide();
+	} else {
+		$('.oldValue').show();
+		$('.newValue').hide();
+		$('tr#'+jobTaskID+' .oldValue').hide();
+		$('tr#'+jobTaskID+' .newValue').show();
+	}
 }
 
 function saveEdit(jobTaskID) {
@@ -81,6 +82,7 @@ function sort(a, b, sortBy) {
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
+<div class="beta"></div>
 <table id="tasksTable" >
 	<tr>
 		<td>
@@ -128,12 +130,12 @@ function sort(a, b, sortBy) {
 										name="Manage Task Criteria">Manage</a></td>
 								<pics:permission perm="ManageJobTasks" type="Edit">
 									<td class="center">
-										<span class="oldValue"><a href="#" onclick="editTask(<s:property value="#task.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /></a></span>
-										<span class="newValue"><nobr>
+										<nobr><a href="#" onclick="editTask(<s:property value="#task.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /></a>
+										<span class="newValue">
 											<a href="#" onclick="saveEdit(<s:property value="#task.id" />); return false;" title="Save Edit" class="save"></a>
 											<a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="#task.id" />&button=Remove" 
 												onclick="return confirm('Are you sure you want to remove this task?');" title="Remove Task" class="remove"></a>
-										</nobr></span>
+										</span></nobr>
 									</td>
 								</pics:permission>
 							</tr>

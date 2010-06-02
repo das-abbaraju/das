@@ -9,10 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <style type="text/css">
-#sitesTable {
-	width: 100%;
-}
-
 #sitesTable table.report {
 	margin-right: 10px;
 	margin-bottom: 10px;
@@ -110,19 +106,17 @@ function getStates(country) {
 $(function() {
 	$('.datepicker').datepicker();
 });
-
-function getHistory(date) {
-	document.location.href="ManageProjects.action?id=" + <s:property value="id" /> + "&date=" + date;
-}
 </script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<div id="clear" style="width: 100%"></div>
-<s:form>
-	View history: <s:select list="history" name="date" onchange="getHistory(this.value);" headerKey="today" headerValue="Today"></s:select><br />
-</s:form>
-<div id="clear" style="width: 100%"></div>
+<div class="beta"></div>
+<s:if test="history != null">
+	<s:form id="historyForm">
+		<s:hidden name="id"></s:hidden>
+		View history: <s:select list="history" name="date" value="%{maskDateFormat(date)}" onchange="$('#historyForm').submit();"></s:select><br />
+	</s:form>
+</s:if>
 <table id="sitesTable">
 	<tr>
 		<td>

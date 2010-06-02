@@ -169,6 +169,7 @@ fieldset.bottom {
 			</tr>
 		</thead>
 	</table>
+	<div class="beta"></div>
 	
 	<div id="item" style="display:none;">
 		<form id="itemform">

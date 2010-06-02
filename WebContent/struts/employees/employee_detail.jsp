@@ -48,6 +48,7 @@
 </head>
 <body>
 	<s:include value="../actionMessages.jsp"/>
+	<div class="beta"></div>
 	<div id="profile">
 		<table>
 			<tr>
@@ -81,7 +82,10 @@
 										<th>Works at:</th>
 										<td>
 											<s:iterator value="employee.employeeSites" id="sites" status="stat">
-												<s:property value="#sites.jobSite.name" /> (<s:property value="#sites.operator.name" />)<br />
+												<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name.length() > 0">: 
+													<s:property value="#sites.jobSite.name" />
+												</s:if>
+												<br />
 											</s:iterator>
 										</td>
 									</tr>
