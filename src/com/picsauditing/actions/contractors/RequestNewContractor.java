@@ -236,7 +236,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					emailBuilder.addToken("csr", getAssignedCSR());
 
 					// Point to the contractor registration page with some information pre-filled
-					String requestLink = "http://new.picsorganizer.com/ContractorRegistration.action?button=request&rID="
+					String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button=request&rID="
 							+ newContractor.getId();
 					emailBuilder.addToken("requestLink", requestLink);
 
