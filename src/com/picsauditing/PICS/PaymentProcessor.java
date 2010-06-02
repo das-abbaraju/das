@@ -22,6 +22,8 @@ public class PaymentProcessor {
 		payment.getApplied().add(pa);
 
 		payment.updateAmountApplied();
+		invoice.getPayments().add(pa);
+		invoice.updateAmountApplied();
 	}
 
 	public static void ApplyPaymentToRefund(Payment payment, Refund refund, User user, BigDecimal amount) {

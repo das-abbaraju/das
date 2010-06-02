@@ -191,10 +191,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							paymentDAO.save(payment);
 							invoice.updateAmountApplied();
-
+							contractor.syncBalance();
+							
 							// Activate the contractor
 							BillingCalculatorSingle.activateContractor(contractor, invoice);
-							contractor.syncBalance();
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
