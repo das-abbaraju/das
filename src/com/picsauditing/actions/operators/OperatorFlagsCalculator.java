@@ -44,8 +44,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	private Database db = new Database();
 	private int fcoID;
 	private String newHurdle;
+	private boolean override = false;
 
-	private List<FlagData> affected = new ArrayList<FlagData>();
+	private List<FlagAndOverride> affected = new ArrayList<FlagAndOverride>();
 
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	private ContractorAccountDAO contractorAccountDAO;
@@ -72,6 +73,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addJoin("JOIN accounts a ON a.id = fcc.conID");
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
 		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + flagCriteriaOperator.getOperator().getId());
+		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = fcc.conID AND fdo.opID = gc.genID AND fdo.criteriaID = fcc.criteriaID");
 		sql.addWhere("fcc.criteriaID = " + flagCriteriaOperator.getCriteria().getId());
 		if(flagCriteriaOperator.getOperator().getStatus().isDemo())
 			sql.addWhere("a.status IN ('Active','Demo')");
@@ -83,6 +85,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addField("c.riskLevel");
 		sql.addField("fcc.answer");
 		sql.addField("fcc.verified");
+		sql.addField("fdo.forceFlag");
 		sql.addOrderBy("a.name");
 
 		List<BasicDynaBean> results = db.select(sql.toString(), false);
@@ -143,7 +146,14 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				List<FlagData> conResults = calculator.calculate();
 				for (FlagData flagData : conResults) {
 					if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {
-						affected.add(flagData);
+						FlagAndOverride flagAndOverride = new FlagAndOverride(flagData);
+						
+						if (row.get("forceFlag") != null) {
+							flagAndOverride.setForcedFlag(row.get("forceFlag").toString());
+							override = true;
+						}
+						
+						affected.add(flagAndOverride);
 					}
 				}
 			}
@@ -196,7 +206,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		return flagCriteriaOperator;
 	}
 
-	public List<FlagData> getAffected() {
+	public List<FlagAndOverride> getAffected() {
 		return affected;
 	}
 	
@@ -224,15 +234,23 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		numberStyle.setFont(normalFont);
 		numberStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
 		
+		// Title
 		HSSFCell cell = sheet.createRow(0).createCell(1);
 		cell.setCellValue(new HSSFRichTextString(flagCriteriaOperator.getReplaceHurdle()));
 		cell.setCellStyle(headerStyle);
+		
+		if (override) {
+			// Forced column
+			cell = sheet.getRow(0).createCell(flagCriteriaOperator.getCriteria().isAllowCustomValue() ? 3 : 2);
+			cell.setCellValue(new HSSFRichTextString("Forced"));
+			cell.setCellStyle(headerStyle);
+		}
 		
 		int columns = flagCriteriaOperator.getCriteria().isAllowCustomValue() ? 2 : 1;
 		int rows = 1;
 		
 		// Print out the data
-		for (FlagData data : affected) {
+		for (FlagAndOverride data : affected) {
 			HSSFRow row = sheet.createRow(rows);
 			cell = row.createCell(0);
 			cell.setCellValue(rows);
@@ -240,15 +258,22 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			
 			// Contractor name
 			cell = row.createCell(1);
-			cell.setCellValue(new HSSFRichTextString(data.getContractor().getName()));
+			cell.setCellValue(new HSSFRichTextString(data.getFlagData().getContractor().getName()));
 			cell.setCellStyle(normalStyle);
 			
 			// If this is a number datatype, print out the number
 			if (columns > 1) {
 				cell = row.createCell(2);
 				// Double has a hard time parsing commas. Just remove them all.
-				cell.setCellValue(Double.parseDouble(data.getCriteriaContractor().getAnswer().replace(",", "")));
+				cell.setCellValue(Double.parseDouble(data.getFlagData().getCriteriaContractor().getAnswer().replace(",", "")));
 				cell.setCellStyle(numberStyle);
+			}
+			
+			if (override) {
+				// Forced Flag?
+				cell = row.createCell(columns > 1 ? 3 : 2);
+				cell.setCellValue(new HSSFRichTextString(data.getForcedFlag()));
+				cell.setCellStyle(normalStyle);
 			}
 			
 			rows++;
@@ -260,7 +285,36 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 		if (columns > 1)
 			sheet.autoSizeColumn((short) 2);
+		
+		if (override) {
+			sheet.autoSizeColumn((short) 3);
+		}
 
 		return wb;
+	}
+	
+	public boolean isOverride() {
+		return override;
+	}
+	
+	private class FlagAndOverride {
+		private FlagData flagData;
+		private String forcedFlag;
+		
+		public FlagAndOverride(FlagData flagData) {
+			this.flagData = flagData;
+		}
+		
+		public FlagData getFlagData() {
+			return flagData;
+		}
+		
+		public String getForcedFlag() {
+			return forcedFlag;
+		}
+		
+		public void setForcedFlag(String forcedFlag) {
+			this.forcedFlag = forcedFlag;
+		}
 	}
 }
