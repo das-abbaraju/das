@@ -96,10 +96,11 @@ function checkReason(id) {
 	<tr><td colspan="3">Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
 	<tr><td colspan="3">
 		<s:if test="co.flagColor.clear" >
-			This contractor does not have an overall flag color because they are a
-			<s:if test="co.contractorAccount.status.pending"> pending</s:if>
-			<s:if test="co.contractorAccount.status.deleted"> deleted</s:if>
-			<s:if test="co.contractorAccount.acceptsBids"> bid-only contractor</s:if>.
+			This <s:property value="co.contractorAccount.status"/> 
+			<s:if test="co.contractorAccount.acceptsBids"> bid-only </s:if>
+			contractor has a "Not Applicable" flag color.
+			The old way of representing with Green/Red flag color was 
+			misleading as the contractor has not yet completed all the operator requirements.
 		</s:if>
 	</td></tr>
 	<tr>
