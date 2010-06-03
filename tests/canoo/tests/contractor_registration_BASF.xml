@@ -81,17 +81,13 @@
 								</group>
 				<group description="Services Performed">
 					<setRadioButton description="Works with heavy machinery" htmlId="answer2442Yes"/>
-					<sleep seconds="2"/>
 					<setRadioButton description="Office Setting" htmlId="answer2443Yes"/>
-					<sleep seconds="2"/>
 					<setRadioButton description="Heights greater than 6ft" htmlId="answer2445Yes"/>
-					<sleep seconds="2"/>
 					<setRadioButton description="Suggested Risk" htmlId="answer2444Low"/>
-					<sleep seconds="2"/>
+					<setRadioButton description="Mechanical Services" htmlId="answer3689Yes"/>
 					<setCheckbox description="Boiler Code" htmlId="answer465_C"/>
-					<sleep seconds="2"/>
 					<setCheckbox description="Cleaning (Janitorial)" htmlId="answer478_C"/>
-					<sleep seconds="2"/>
+					<sleep seconds="5"/>
 					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Facilities">

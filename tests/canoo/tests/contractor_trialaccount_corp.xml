@@ -65,8 +65,10 @@
 					<setRadioButton description="Office Setting" htmlId="answerq2443Yes"/>
 					<setRadioButton description="Heights greater than 6ft" htmlId="answerq2445Yes"/>
 					<setRadioButton description="Suggested Risk" htmlId="answerq2444Low"/>
+					<setRadioButton description="Mechanical Services" htmlId="answer3689Yes"/>
 					<setCheckbox description="Boiler Code" htmlId="answerq465_C"/>
 					<setCheckbox description="Cleaning (Janitorial)" htmlId="answerq478_C"/>
+					<sleep seconds="5"/>
 					<clickLink htmlId="next_link"/>
 				</group>
 				<group description="Add Facilities">
