@@ -138,7 +138,7 @@ public class Cron extends PicsActionSupport {
 				String where = "expiresDate < NOW() AND auditStatus != 'Expired'";
 				List<ContractorAudit> conList = contractorAuditDAO.findWhere(250, where, "expiresDate");
 				for (ContractorAudit cAudit : conList) {
-					if (cAudit.getAuditType().getClassType().isPqf())
+					if (cAudit.getAuditType().isRenewable())
 						cAudit.changeStatus(AuditStatus.Pending, system);
 					else
 						cAudit.setAuditStatus(AuditStatus.Expired);

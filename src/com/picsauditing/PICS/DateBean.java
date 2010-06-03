@@ -495,6 +495,22 @@ public class DateBean {
 
 		return cal.getTime();
 	}
+	
+	public static Date getMarchOfThatYear(Date startDate) {
+		if (startDate == null)
+			return null;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		return cal.getTime();
+	}
 
 	public static String getBrainTreeDate() {
 		Date d = new Date();

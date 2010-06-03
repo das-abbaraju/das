@@ -181,7 +181,11 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 			return;
 		Integer months = getAuditType().getMonthsToExpire();
 		if (months != null && months > 0) {
-			expiresDate = DateBean.addMonths(getCompletedDate(), months);
+			if(getAuditType().getClassType().isPqf()) {
+				 expiresDate = DateBean.getMarchOfThatYear(DateBean.addMonths(getCompletedDate(), months));
+			}
+			else
+			 expiresDate = DateBean.addMonths(getCompletedDate(), months);
 		} else {
 			// check months first, then do date if empty
 			expiresDate = DateBean.getMarchOfNextYear(new Date());
