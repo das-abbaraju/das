@@ -18,7 +18,7 @@ public class OperatorTag extends BaseTable {
 	private boolean visibleToContractor = false;
 	private boolean inheritable = true;
 
-	@Column(nullable = false, length = 25)
+	@Column(nullable = false, length = 50)
 	public String getTag() {
 		return tag;
 	}
