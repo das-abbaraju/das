@@ -82,14 +82,29 @@
 										<td>
 											<s:iterator value="employee.employeeSites" id="sites" status="stat">
 												<s:if test="#sites.current">
-													<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >: <s:property value="#sites.jobSite.name" /></s:if><br />
-													<span style="font-size: 12px; padding-left: 5px;" >
-														Since: <s:property value="#sites.effectiveDate" />
-														<s:if test="#sites.orientationDate!=null" >
-															<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span>
+													<s:if test="permissions.operatorCorporate">
+														<s:if test="canOperatorViewSite(permissions.accountId)">
+															<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >: <s:property value="#sites.jobSite.name" /></s:if><br />
+															<span style="font-size: 12px; padding-left: 5px;" >
+																Since: <s:property value="#sites.effectiveDate" />
+																<s:if test="#sites.orientationDate!=null" >
+																	<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span>
+																</s:if>
+																<br />
+															</span>
 														</s:if>
-														<br />
-													</span>
+													</s:if>
+													<s:else>
+														<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >: <s:property value="#sites.jobSite.name" /></s:if><br />
+														<span style="font-size: 12px; padding-left: 5px;" >
+															Since: <s:property value="#sites.effectiveDate" />
+															<s:if test="#sites.orientationDate!=null" >
+																<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span>
+															</s:if>
+															<br />
+														</span>
+													
+													</s:else>													
 												</s:if>
 											</s:iterator>
 										</td>

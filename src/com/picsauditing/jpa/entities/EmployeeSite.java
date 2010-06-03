@@ -25,45 +25,47 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	private OperatorAccount operator;
 	private JobSite jobSite;
 	private Employee employee;
-	
+
 	private Date orientationDate;
 	private Date orientationExpiration;
-	
+
 	private Date effectiveDate;
 	private Date expirationDate;
-	
+
 	private Map<Integer, Integer> monthsToExp;
 	private int months;
-	
-	public EmployeeSite(){
+
+	public EmployeeSite() {
 		monthsToExp = new HashMap<Integer, Integer>();
 		monthsToExp.put(1, 36);
 		monthsToExp.put(2, 24);
 		monthsToExp.put(3, 12);
 		monthsToExp.put(4, 6);
 	}
+
 	@SuppressWarnings("null")
 	@Transient
-	public int getMonthsToExp(){
-		if(orientationDate == null || orientationExpiration == null){
+	public int getMonthsToExp() {
+		if (orientationDate == null || orientationExpiration == null) {
 			return 1;
-		}
-		else{
+		} else {
 			Calendar c = Calendar.getInstance(), c1 = Calendar.getInstance();
 			c.setTime(orientationDate);
 			c1.setTime(orientationExpiration);
-			int result = (c1.get(Calendar.YEAR) - c.get(Calendar.YEAR))*12;
-			if(result<=6)
+			int result = (c1.get(Calendar.YEAR) - c.get(Calendar.YEAR)) * 12;
+			if (result <= 6)
 				return 4;
-			else if(result<=12)
+			else if (result <= 12)
 				return 3;
-			else if(result<=24)
+			else if (result <= 24)
 				return 2;
-			else return 1;		
+			else
+				return 1;
 		}
 	}
+
 	@Transient
-	public void setMonthsToExp(int months){
+	public void setMonthsToExp(int months) {
 		this.months = months;
 	}
 
@@ -76,25 +78,29 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
-	public void setOrientationExpiration(Date orientationExpiration){
-		this.orientationExpiration = orientationExpiration;		
+
+	public void setOrientationExpiration(Date orientationExpiration) {
+		this.orientationExpiration = orientationExpiration;
 	}
-	public void setOrientationExpiration(){
+
+	public void setOrientationExpiration() {
 		Calendar c = Calendar.getInstance();
 		c.setTime(orientationDate);
 		c.add(Calendar.MONTH, monthsToExp.get(months));
 		this.orientationExpiration = c.getTime();
 	}
+
 	@Temporal(TemporalType.DATE)
-	public Date getOrientationExpiration(){
+	public Date getOrientationExpiration() {
 		return orientationExpiration;
 	}
-	
-	public void setOrientationDate(Date orientationDate){
+
+	public void setOrientationDate(Date orientationDate) {
 		this.orientationDate = orientationDate;
 	}
+
 	@Temporal(TemporalType.DATE)
-	public Date getOrientationDate(){
+	public Date getOrientationDate() {
 		return orientationDate;
 	}
 
@@ -116,6 +122,19 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 
 	public void setJobSite(JobSite jobSite) {
 		this.jobSite = jobSite;
+	}
+
+	@Transient
+	public boolean canOperatorViewSite(int id) {
+		if (id == operator.getId()) {
+			return true;
+		} 
+		else if (operator.getParent() != null) {
+			if (id == operator.getParent().getId()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
