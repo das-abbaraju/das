@@ -67,7 +67,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		else
 			opCriteria = new ArrayList<FlagCriteriaOperator>();
 	}
-
+	
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.SearchContractors);
@@ -161,7 +161,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		} else
 			sortByFlags = false;
 	}
-
+	
 	@Override
 	public String execute() throws Exception {
 		if (!permissions.isOperatorCorporate())
@@ -203,6 +203,21 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 
 		return super.execute();
+	}
+	
+	@Override
+	protected void addExcelColumns() {
+		if (permissions.isOperator()) {
+			if (byConID == null || byConID.size() == 0)
+				calculateOverallFlags();
+			
+			for (BasicDynaBean d : data) {
+				Integer conID = Integer.parseInt(d.get("id").toString());
+				d.set("flag", byConID.get(conID).toString());
+			}
+		}
+		
+		super.addExcelColumns();
 	}
 
 	public int getId() {
