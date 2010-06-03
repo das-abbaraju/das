@@ -10,21 +10,20 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.ReportFilterEmployee;
 
-public class ReportTWIC extends ReportActionSupport {
+public class ReportTWIC extends ReportAccount {
 
 	// protected EmployeeDAO employeeDAO;
 	// protected AccountDAO accountDAO;
 	private ReportFilterEmployee filter;
 	protected SelectSQL sql = new SelectSQL();
 
-	private String test;
-
 	// private Account account;
 	// private List<Employee> employeeList = null;
 
-	public ReportTWIC() {
-		orderByDefault = "e.lastName, e.firstName, a.name";
-		filter = new ReportFilterEmployee();
+	public void prepare() throws Exception {
+		super.prepare();
+		
+		getFilter().setShowAccountName(true);
 	}
 
 	protected void buildQuery() {
@@ -39,31 +38,9 @@ public class ReportTWIC extends ReportActionSupport {
 		System.out.println(sql.toString());
 	}
 
-	public void prepare() {
-		loadPermissions();
-	}
-
-	public String execute() throws Exception {
-		// if (!forceLogin())
-		// return LOGIN;
-		test = "Test String";
-		// account = accountDAO.find(3);
-		buildQuery();
-		run(sql);
-		return SUCCESS;
-	}
-
 	/*
 	 * public List<Employee> getEmployeeList() { if (employeeList == null)
 	 * employeeList = employeeDAO.findByAccount(account); return employeeList; }
 	 */
-
-	public String getTest() {
-		return test;
-	}
-
-	public ReportFilterEmployee getFilter() {
-		return filter;
-	}
 
 }

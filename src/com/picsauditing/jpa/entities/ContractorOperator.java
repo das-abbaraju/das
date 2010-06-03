@@ -195,7 +195,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.relationshipType = relationshipType;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
@@ -206,7 +206,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {

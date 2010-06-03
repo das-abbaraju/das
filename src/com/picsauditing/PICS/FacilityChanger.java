@@ -2,19 +2,23 @@ package com.picsauditing.PICS;
 
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -34,6 +38,7 @@ public class FacilityChanger {
 	private OperatorAccountDAO operatorAccountDAO;
 	private NoteDAO noteDAO;
 	private AuditBuilder auditBuilder;
+	private FlagDataDAO flagDataDAO;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -41,12 +46,13 @@ public class FacilityChanger {
 	private User user;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder) {
+			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder, FlagDataDAO flagDataDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.auditBuilder = auditBuilder;
+		this.flagDataDAO = flagDataDAO;
 	}
 
 	public void add() throws Exception {
@@ -131,6 +137,16 @@ public class FacilityChanger {
 			ContractorOperator co = iterator.next();
 			if (!co.getOperatorAccount().isCorporate()) {
 				if (co.getOperatorAccount().equals(operator)) {
+					// As of now, will manually delete all flags from ContractorOperator
+					// and then delete the row from the gc table
+					Set<FlagData> fd = co.getFlagDatas();
+					Iterator<FlagData> flagIterator = fd.iterator();
+					while(flagIterator.hasNext()){
+						FlagData flag = flagIterator.next();
+						//delete flag
+						fd.remove(flag);
+						flagDataDAO.remove(flag);
+					}
 					contractorOperatorDAO.remove(co);
 					contractor.getOperators().remove(co);
 
