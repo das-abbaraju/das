@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.converters.MultiYearScopeConverter;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -16,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -274,5 +276,10 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 	public String[] getDatatypeList() {
 		return new String[] { FlagCriteria.BOOLEAN, FlagCriteria.DATE, FlagCriteria.NUMBER, FlagCriteria.STRING };
+	}
+
+	public MultiYearScope[] getScopeList() {
+		return new MultiYearScope[] { MultiYearScope.LastYearOnly, MultiYearScope.TwoYearsAgo,
+				MultiYearScope.ThreeYearsAgo, MultiYearScope.ThreeYearAverage };
 	}
 }

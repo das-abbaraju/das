@@ -241,7 +241,7 @@
 				</li>
 				<li>
 					<label>Multi Year Scope:</label>
-					<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
+					<s:select name="criteria.multiYearScope" list="scopeList" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
 				</li>
 				
 				<li>
