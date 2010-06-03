@@ -149,11 +149,19 @@ public class ContractorWidget extends ContractorActionSupport {
 							else
 								auditName = conAudit.getAuditType().getAuditName();
 							if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
+								String auditFor = "";
+								if(conAudit.getAuditFor()!=null){
+									auditFor = " for "+ conAudit.getAuditFor();
+								}
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">complete and submit your " + auditName + "</a>");
+										+ "\">complete and submit your " + auditName + auditFor + "</a>");
 							} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
+								String auditFor = "";
+								if(conAudit.getAuditFor()!=null){
+									auditFor = " for "+ conAudit.getAuditFor();
+								}
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">review and re-submit your " + auditName + "</a>");
+										+ "\">review and re-submit your " + auditName + auditFor  + "</a>");
 							}
 						}
 						if (conAudit.getAuditType().isAnnualAddendum()
@@ -170,9 +178,13 @@ public class ContractorWidget extends ContractorActionSupport {
 
 						if (conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted()
 								&& conAudit.getPercentVerified() < 100) {
+							String auditFor = "";
+							if(conAudit.getAuditFor()!=null){
+								auditFor = " for "+ conAudit.getAuditFor();
+							}
 							String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
 									+ conAudit.getId() + "\">open requirements from your recent "
-									+ conAudit.getAuditType().getAuditName() + "</a>";
+									+ conAudit.getAuditType().getAuditName() + auditFor + "</a>";
 							if (!openReq) {
 								text += "<br/>NOTE: Open requirements can be uploaded online.";
 								openReq = true;
@@ -184,14 +196,18 @@ public class ContractorWidget extends ContractorActionSupport {
 								&& conAudit.getAuditType().isCanContractorView()
 								&& !conAudit.getAuditType().isCanContractorEdit()
 								&& conAudit.getAuditType().isHasAuditor()) {
+							String auditFor = "";
+							if(conAudit.getAuditFor()!=null){
+								auditFor = " for "+ conAudit.getAuditFor();
+							}
 							String text;
 							if (conAudit.getAuditType().getId() == AuditType.OFFICE
 									&& conAudit.getScheduledDate() == null) {
 								text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-										+ "'>click here to schedule your Implementation Audit</a>";
+										+ "'>click here to schedule your Implementation Audit"+ auditFor +"</a>";
 							} else {
 								text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + "</a>";
+										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + auditFor +"</a>";
 								if (conAudit.getScheduledDate() != null) {
 									try {
 										text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
