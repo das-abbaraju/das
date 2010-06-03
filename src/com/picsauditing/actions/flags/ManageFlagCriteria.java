@@ -9,7 +9,6 @@ import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.converters.MultiYearScopeConverter;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
