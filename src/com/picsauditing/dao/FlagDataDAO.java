@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagData;
 
 @Transactional
@@ -44,6 +45,12 @@ public class FlagDataDAO extends PicsDAO {
 		if (opID > 0)
 			query.setParameter(2, opID);
 		return query.getResultList();
+	}
+
+	@Override
+	public void remove(BaseTable row) {
+		if(row!=null)
+			em.remove(row);
 	}
 
 }

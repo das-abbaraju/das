@@ -137,16 +137,6 @@ public class FacilityChanger {
 			ContractorOperator co = iterator.next();
 			if (!co.getOperatorAccount().isCorporate()) {
 				if (co.getOperatorAccount().equals(operator)) {
-					// As of now, will manually delete all flags from ContractorOperator
-					// and then delete the row from the gc table
-					Set<FlagData> fd = co.getFlagDatas();
-					Iterator<FlagData> flagIterator = fd.iterator();
-					while(flagIterator.hasNext()){
-						FlagData flag = flagIterator.next();
-						//delete flag
-						fd.remove(flag);
-						flagDataDAO.remove(flag);
-					}
 					contractorOperatorDAO.remove(co);
 					contractor.getOperators().remove(co);
 

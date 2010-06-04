@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -20,6 +21,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.PICS.FacilityChanger;
 
 @SuppressWarnings("serial")
 @Entity
@@ -194,8 +197,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setRelationshipType(String relationshipType) {
 		this.relationshipType = relationshipType;
 	}
-
-	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+	// added mappedBy="flag" to show which side is the owning side in the relationship
+	@OneToMany(cascade = { CascadeType.ALL}, mappedBy="flag" )
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
