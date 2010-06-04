@@ -48,7 +48,7 @@ public class WatchListManager extends PicsActionSupport {
 			
 			if ("Save".equals(button)) {
 				if (!Strings.isEmpty(userName) && !Strings.isEmpty(contractorName)) {
-					if (permissions.isAdmin() || permissions.isCorporate() && userName.contains("("))
+					if ((permissions.isAdmin() || permissions.isCorporate()) && userName.contains("("))
 						userName = userName.substring(0, userName.indexOf("(")).trim();
 					
 					String restriction = "";
@@ -59,15 +59,22 @@ public class WatchListManager extends PicsActionSupport {
 					if (permissions.isOperator())
 						restriction = " AND u.account.id = " + permissions.getAccountId();
 					
-					List<User> users = userDAO.findWhere("u.name LIKE '%" + userName + "%'" + restriction);
+					List<User> users = userDAO.findWhere("(u.name LIKE '%" + userName + 
+							"%' OR u.username LIKE '%" + userName + "%' OR u.email LIKE '%" + userName + 
+							"%') AND u.isGroup = 'No' " + restriction);
 					ContractorAccount contractor = conDAO.findConID(contractorName);
 					ContractorWatch watch = new ContractorWatch();
-					watch.setContractor(contractor);
-					watch.setAuditColumns(permissions);
+					
+					if (contractor != null) {
+						watch.setContractor(contractor);
+						watch.setAuditColumns(permissions);
+					}
 					
 					if (users.size() == 1) {
 						watch.setUser(users.get(0));
 						userDAO.save(watch);
+					} else if (users.size() == 0) {
+						addActionError("No user with that name, email or username exists.");
 					} else
 						addActionError("Please select a specific user.");
 				} else
@@ -140,8 +147,8 @@ public class WatchListManager extends PicsActionSupport {
 		if (permissions.isOperator())
 			where = "u.account.id = " + permissions.getAccountId();
 
-		where += " AND (u.name LIKE '%" + userInfo + "%' OR u.email LIKE '%" + userInfo + "%')" +
-				" AND u.isGroup = 'No'";
+		where += " AND (u.name LIKE '%" + userInfo + "%' OR u.email LIKE '%" + userInfo + 
+				"%' OR u.username LIKE '%" + userInfo + "%') AND u.isGroup = 'No'";
 		
 		return userDAO.findWhere(where);
 	}

@@ -184,7 +184,7 @@ public class UserDAO extends PicsDAO {
 			where = " WHERE " + where;
 		
 		Query query = em.createQuery("SELECT c FROM ContractorWatch c" + where 
-				+ " ORDER BY c.contractor.name, c.user.name");
+				+ " ORDER BY c.user.name, c.contractor.name");
 		
 		return query.getResultList();
 	}

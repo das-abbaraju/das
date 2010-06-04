@@ -17,6 +17,33 @@ fieldset.form {
 <s:include value="../jquery.jsp" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
+function sortTable(sortBy) {
+	var tbody = $('table.report').find('tbody');
+	var rows = $(tbody).children();
+	$(tbody).empty();
+
+	var sortBys = sortBy.split(',');
+	rows.sort(function(a, b) {
+		var sort1 = 0;
+		var index = 0;
+
+		while (sort1 == 0 && index < sortBys.length) {
+			sort1 = sort(a, b, sortBys[index]);
+			index++;
+		}
+
+		return sort1;
+	});
+
+	$.each(rows, function (index, row) { $(tbody).append(row); });
+}
+
+function sort(a, b, sortBy) {
+	var a1 = $(a).find('.' + sortBy).text().toUpperCase();
+	var b1 = $(b).find('.' + sortBy).text().toUpperCase();
+	return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
+}
+
 $(function() {
 	$('#addUser').autocomplete('UserSelectAjax.action', 
 		{
@@ -43,8 +70,8 @@ $(function() {
 	<thead>
 		<tr>
 			<th></th>
-			<th>User</th>
-			<th>Contractor</th>
+			<th><a href="#" onclick="sortTable('user,contractor'); return false;">User</a></th>
+			<th><a href="#" onclick="sortTable('contractor,user'); return false;">Contractor</a></th>
 			<pics:permission perm="WatchListManager" type="Delete">
 				<th>Remove</th>
 			</pics:permission>
@@ -54,9 +81,9 @@ $(function() {
 		<s:if test="watchLists.size() > 0">
 			<s:iterator value="watchLists" status="stat">
 				<tr>
-					<td><s:property value="#stat.count" /></td>
-					<td><a href="UsersManage.action?accountId=<s:property value="user.account.id" />&user.id=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
-					<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
+					<td class="id"><s:property value="#stat.count" /></td>
+					<td class="user"><a href="UsersManage.action?accountId=<s:property value="user.account.id" />&user.id=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
+					<td class="contractor"><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
 					<pics:permission perm="WatchListManager" type="Delete">
 						<td class="center"><a href="#" onclick="confirm('Are you sure you want to remove this contractor watch for this user?'); return false;" class="remove"></a></td>
 					</pics:permission>
