@@ -17,7 +17,7 @@ public class ReportPolicyVerification extends ReportInsuranceSupport {
 	public ReportPolicyVerification(AuditDataDAO auditDataDao, AuditQuestionDAO auditQuestionDao,
 			OperatorAccountDAO operatorAccountDAO, AmBestDAO amBestDAO) {
 		super(auditDataDao, auditQuestionDao, operatorAccountDAO, amBestDAO);
-		orderByDefault = "MIN(cao.updateDate), a.name";
+		orderByDefault = "MIN(cao.statusChangedDate) ASC, a.name";
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ReportPolicyVerification extends ReportInsuranceSupport {
 
 		sql.addJoin("JOIN pqfcatdata pcd ON ca.id = pcd.auditID");
 		sql.addField("pcd.id catdataID");
-		sql.addField("MIN(cao.updateDate) caoUpdateDate");
+		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 
 		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addGroupBy("ca.id");
