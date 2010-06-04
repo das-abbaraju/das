@@ -950,4 +950,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return agreementDate.after(USER_AGREEMENT_CHANGED);
 	}
+	
+	@Transient
+	public boolean isAgreed() {
+		return (agreementDate != null);
+	}
 }
