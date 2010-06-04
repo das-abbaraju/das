@@ -29,6 +29,7 @@ import com.picsauditing.PICS.FacilityChanger;
 @Table(name = "generalcontractors")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
+
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private String workStatus = "P";
@@ -118,7 +119,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setForceBegin(Date forceBegin) {
 		this.forceBegin = forceBegin;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "forcedBy")
 	public User getForcedBy() {
@@ -153,7 +154,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		}
 		return true;
 	}
-	
+
 	@Transient
 	public void removeForceFlag() {
 		forceEnd = null;
@@ -197,8 +198,10 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setRelationshipType(String relationshipType) {
 		this.relationshipType = relationshipType;
 	}
-	// added mappedBy="flag" to show which side is the owning side in the relationship
-	@OneToMany(cascade = { CascadeType.ALL}, mappedBy="flag" )
+
+	// added mappedBy="flag" to show which side is the owning side in the
+	// relationship
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "flag")
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
@@ -209,7 +212,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
 	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {
@@ -219,15 +222,15 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setOverrides(Set<FlagDataOverride> overrides) {
 		this.overrides = overrides;
 	}
-	
+
 	@Transient
 	public ContractorOperator getForceOverallFlag() {
-		if(isForcedFlag())
+		if (isForcedFlag())
 			return this;
-		if(getOperatorAccount().getCorporateFacilities().size() > 0) {
-			for(Facility facility : getOperatorAccount().getCorporateFacilities()) {
-				for(ContractorOperator conOper : contractorAccount.getOperators()) {
-					if(facility.getCorporate().equals(conOper.getOperatorAccount()) && conOper.isForcedFlag())
+		if (getOperatorAccount().getCorporateFacilities().size() > 0) {
+			for (Facility facility : getOperatorAccount().getCorporateFacilities()) {
+				for (ContractorOperator conOper : contractorAccount.getOperators()) {
+					if (facility.getCorporate().equals(conOper.getOperatorAccount()) && conOper.isForcedFlag())
 						return conOper;
 				}
 			}
