@@ -1,59 +1,49 @@
 package com.picsauditing.actions;
 
-import java.io.File;
+import java.util.Iterator;
 
-import com.picsauditing.util.Strings;
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FlagData;
 
 @SuppressWarnings("serial")
 public class Trevor extends PicsActionSupport {
 
-	private String fileFrom;
-	private String fileTo;
+	private int id = 0;
+	private ContractorOperatorDAO contractorOperatorDAO;
+	private ContractorOperator co;
+
+	public Trevor(ContractorOperatorDAO contractorOperatorDAO) {
+		this.contractorOperatorDAO = contractorOperatorDAO;
+	}
 
 	@Override
 	public String execute() {
+		co = contractorOperatorDAO.find(id);
 
 		if (button != null) {
-			if (Strings.isEmpty(fileFrom)) {
-				addActionError("You must specify a source file");
-				return SUCCESS;
-			}
-			if (Strings.isEmpty(fileTo)) {
-				addActionError("You must specify a destination file");
-				return SUCCESS;
-			}
-
-			File sourceFile = new File(fileFrom);
-			if (!sourceFile.exists()) {
-				addActionError(fileFrom + " does not exist");
-				return SUCCESS;
-			}
-
-			File destinationFile = new File(fileTo);
-			try {
-				sourceFile.renameTo(destinationFile);
-			} catch (Exception e) {
-				addActionError("Failed to copy file: " + e.getMessage());
-				output = e.getStackTrace().toString();
-			}
+//			Iterator<FlagData> iterator = co.getFlagDatas().iterator();
+//			while(iterator.hasNext()) {
+//				FlagData next = iterator.next();
+//				co.getFlagDatas().remove(next);
+//				contractorOperatorDAO.remove(next);
+//				iterator.remove();
+//			}
+			contractorOperatorDAO.remove(co);
 		}
 		return SUCCESS;
 	}
 
-	public String getFileFrom() {
-		return fileFrom;
+	public ContractorOperator getCo() {
+		return co;
 	}
 
-	public void setFileFrom(String fileFrom) {
-		this.fileFrom = fileFrom;
+	public int getId() {
+		return id;
 	}
 
-	public String getFileTo() {
-		return fileTo;
-	}
-
-	public void setFileTo(String fileTo) {
-		this.fileTo = fileTo;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }
