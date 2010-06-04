@@ -85,13 +85,13 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Transient
-	public String getCommentDisplay() {
-		if (comment != null)
-			return comment.replaceAll("\\n", "<br />").replaceAll("  ", "&nbsp;&nbsp;");
+	public String getHtmlDisplay(String value) {
+		if (!Strings.isEmpty(value))
+			return value.replaceAll("\\n", "<br />").replaceAll("  ", "&nbsp;&nbsp;");
 		else
 			return null;
 	}
-
+	
 	@Temporal(TemporalType.DATE)
 	public Date getDateVerified() {
 		return dateVerified;

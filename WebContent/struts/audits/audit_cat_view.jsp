@@ -81,6 +81,9 @@
 			<br>
 		</s:if>
 	</s:elseif>
+	<s:elseif test="#q.questionType == 'Text Area'">
+		<s:property value="#a.getHtmlDisplay(#a.answer)" escape="false"/>
+	</s:elseif>	
 	<s:else>
 		<s:property value="#a.answer" />
 		<s:if test="#q.questionType == 'License'">
@@ -110,7 +113,7 @@
 	</s:if>
 	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
 		<br/>
-		<label>Comment:</label> <s:property value="#a.commentDisplay" escape="false"/>
+		<label>Comment:</label> <s:property value="#a.getHtmlDisplay(#a.comment)" escape="false"/>
 	</s:if>
 </div>
 
