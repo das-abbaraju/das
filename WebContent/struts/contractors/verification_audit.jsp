@@ -170,6 +170,7 @@
 						format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/></s:div></li>
 				<li><label>Comment:</label> <s:select onchange="return setOSHAComment(%{osha.id});" id="comment_%{osha.id}" list="oshaProblems"
 					name="osha.comment" /></li>
+				<li><label>Links:</label><a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a></li>	
 				<li>
 				<hr>
 				</li>
