@@ -425,11 +425,5 @@
 			<version>0.0.7</version>
 		</dependency>
 
-		<dependency>
-			<!-- Google Guava Libraries -->
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>r04</version>
-		</dependency>
 	</dependencies>
 </project>

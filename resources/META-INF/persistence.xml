@@ -72,7 +72,7 @@
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="" />
 			<property name="hibernate.max_fetch_depth" value="1" />
-			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.show_sql" value="true" />
 
 			<property name="hibernate.cache.provider_class"
 				value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />

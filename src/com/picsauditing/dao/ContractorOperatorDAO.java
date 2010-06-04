@@ -28,12 +28,6 @@ public class ContractorOperatorDAO extends PicsDAO {
 		remove(row);
 	}
 
-	public void remove(ContractorOperator row) {
-		if (row != null) {
-			em.remove(row);
-		}
-	}
-
 	public ContractorOperator find(int id) {
 		return em.find(ContractorOperator.class, id);
 	}
