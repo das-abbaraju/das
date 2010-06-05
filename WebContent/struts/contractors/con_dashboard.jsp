@@ -161,11 +161,14 @@ table.report tr.hurdle td {
 					<div class="co_flag">
 						<s:if test="permissions.corporate && opID == permissions.accountId">
 							<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
-							<p><s:property value="co.flagColor"/></p>
+							<p><s:if test="co.flagColor.clear">Not Applicable</s:if>
+								<s:else><s:property value="co.flagColor"/></s:else></p>
 						</s:if>
 						<s:else>
 							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
-							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor"/></a></p>
+							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">
+							<s:if test="co.flagColor.clear">Not Applicable</s:if>
+								<s:else><s:property value="co.flagColor"/></s:else></a></p>
 						</s:else>
 					<s:if test="co.forcedFlag">
 						<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
