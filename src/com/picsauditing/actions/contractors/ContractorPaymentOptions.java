@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -88,6 +89,19 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcOnFile(false);
 		}
 
+		if ("I Agree".equals(button)) {
+			if (!permissions.isAdmin()
+					&& (permissions.hasPermission(OpPerms.ContractorAdmin)
+							|| permissions.hasPermission(OpPerms.ContractorBilling) || permissions
+							.hasPermission(OpPerms.ContractorSafety))) {
+				contractor.setAgreementDate(new Date());
+				contractor.setAgreedBy(getUser());
+				accountDao.save(contractor);
+			} else {
+				addActionError("Only account Administrators, Billing, and Safety can accept this Contractor Agreement");
+			}
+		}
+		
 		accountDao.save(contractor);
 		activationFee = null;
 		if (contractor.getStatus().isPendingDeactivated()) {
