@@ -11,6 +11,7 @@ import com.picsauditing.search.SelectAccount;
 
 @SuppressWarnings("serial")
 public class WelcomeCallWidget extends PicsActionSupport {
+	private int csrID;
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -29,6 +30,7 @@ public class WelcomeCallWidget extends PicsActionSupport {
 		sql.addField("ca.creationDate createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("atype.auditName");
+		sql.addField("c.welcomeAuditor_id AS csrID");
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 		sql.addWhere("ca.auditTypeID = 9");
@@ -38,10 +40,18 @@ public class WelcomeCallWidget extends PicsActionSupport {
 		try {
 			Database db = new Database();
 			List<BasicDynaBean> pageData = db.select(sql.toString(), false);
+			
+			if (pageData.size() > 0)
+				csrID = Integer.parseInt(pageData.get(0).get("csrID").toString());
+			
 			return pageData;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public int getCsrID() {
+		return csrID;
 	}
 }
