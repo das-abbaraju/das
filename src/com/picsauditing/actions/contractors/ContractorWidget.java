@@ -73,7 +73,7 @@ public class ContractorWidget extends ContractorActionSupport {
 							.hasPermission(OpPerms.ContractorSafety)))
 				openTasks
 						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"#\" onClick=\"window.open('ContractorAgreement.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;\">"
-								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> if you accept the terms of the Agreement.");
+								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> to accept the terms of the Agreement.");
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
 				if (contractor.getUsers().size() == 1
