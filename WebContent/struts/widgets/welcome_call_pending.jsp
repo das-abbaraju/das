@@ -17,10 +17,8 @@
 	<s:if test="pendingWelcomeCalls.size() > 10">
 		<tr>
 			<td colspan="3" class="right">
-				<a href="ReportAuditList.action?filter.auditStatus=Pending&filter.auditTypeID=9&filter.auditorId=<s:property value="csrID" />">
-					Total number of welcome calls:
-					<b><s:property value="pendingWelcomeCalls.size()" /></b>
-				</a>
+				Total number of welcome calls:
+				<b><s:property value="pendingWelcomeCalls.size()" /></b>
 			</td>
 		</tr>
 	</s:if>
