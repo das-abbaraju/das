@@ -53,7 +53,7 @@ function closePage() {
 		<s:checkbox name="note.canContractorView"></s:checkbox>
 	</li>
 	<li><label>Viewable By:</label>
-		<s:radio theme="pics" list="viewableByList" name="viewableBy" value="@com.picsauditing.jpa.entities.Account@EVERYONE"></s:radio>
+		<s:radio theme="pics" list="viewableByList" name="viewableBy"></s:radio>
 		<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"></s:select>			
 	</li>
 	<li id="liAdditionalText"><label>Additional Text (optional):</label>
