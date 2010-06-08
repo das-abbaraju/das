@@ -1,9 +1,8 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<jsp:useBean id="permissions"
+	class="com.picsauditing.access.Permissions" scope="session" />
+<%@page import="com.picsauditing.access.OpPerms"%>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/invoice.css?v=<s:property value="version"/>" />
 <title>Contractor Agreement Statement</title>
 </head>
 <body>
@@ -11,12 +10,14 @@
 
 <div align="center">
 	<form>
-		<s:if test="!permissions.admin &&
-						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+		<% 
+			if(permissions != null && !permissions.isAdmin() &&
+						(permissions.hasPermission(OpPerms.ContractorBilling) 
+							|| permissions.hasPermission(OpPerms.ContractorAdmin)
+							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
+		%>
 			<input type="submit" name="button" class="picsbutton" value="I Agree" onclick="window.opener.location.reload(true); window.close();" />
-		</s:if>
+		<% } %>
 			<input type="button" class="picsbutton" value="Close" onclick="window.close();" />
 	</form>
 </div>
@@ -96,12 +97,14 @@ contractor list.</p><br/>
 
 <div align="center" style="text-align:bottom;">
 	<form>
-		<s:if test="!permissions.admin &&
-						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+		<% 
+			if(permissions != null && !permissions.isAdmin() &&
+						(permissions.hasPermission(OpPerms.ContractorBilling) 
+							|| permissions.hasPermission(OpPerms.ContractorAdmin)
+							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
+		%>
 			<input type="submit" name="button" class="picsbutton" value="I Agree" onclick="window.close();" />
-		</s:if>
+		<% } %>
 			<input type="button" class="picsbutton" value="Close" onclick="window.close();" />
 	</form>
 </div>
