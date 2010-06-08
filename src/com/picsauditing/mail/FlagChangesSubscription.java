@@ -41,7 +41,7 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 
 			sql.addWhere("f2.creationDate = '" + df.format(timePeriod.getComparisonDate()) + "'");
 			sql.addWhere("(gc.workStatus = 'Y' OR o.approvesRelationships = 'No')");
-
+			sql.addWhere("a.status = 'Active'");
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
 			sql.addField("f2.flag AS oldFlag");
