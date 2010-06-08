@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -74,6 +75,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
 		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + flagCriteriaOperator.getOperator().getId());
 		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = fcc.conID AND fdo.opID = gc.genID AND fdo.criteriaID = fcc.criteriaID");
+		sql.addJoin("LEFT JOIN naics n on n.code = a.naics");
+		sql.addField("n.lwcr");
+		sql.addField("n.trir");
 		sql.addWhere("fcc.criteriaID = " + flagCriteriaOperator.getCriteria().getId());
 		if(flagCriteriaOperator.getOperator().getStatus().isDemo())
 			sql.addWhere("a.status IN ('Active','Demo')");
@@ -134,14 +138,13 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				contractor.setAcceptsBids(Database.toBoolean(row, "acceptsBids"));
 				contractor.setRiskLevel(LowMedHigh.valueOf(LowMedHigh.getName(Database.toInt(row, "riskLevel"))));
 				contractor.setAudits(auditMap.get(contractor.getId()));
-
+				contractor.setNaics(new Naics());
+				contractor.getNaics().setLwcr(Database.toFloat(row, "lwcr"));
+				contractor.getNaics().setTrir(Database.toFloat(row, "trir"));
 				FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteriaOperator.getCriteria(), row
 						.get("answer") == null ? null : row.get("answer").toString());
 				fcc.setVerified(Database.toBoolean(row, "verified"));
 
-				if(!contractorAccountDAO.isContained(fcc.getContractor())) {
-					fcc.setContractor(contractorAccountDAO.find(fcc.getContractor().getId()));
-				}
 				FlagDataCalculator calculator = new FlagDataCalculator(fcc, flagCriteriaOperator);
 				List<FlagData> conResults = calculator.calculate();
 				for (FlagData flagData : conResults) {

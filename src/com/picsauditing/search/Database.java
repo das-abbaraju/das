@@ -80,4 +80,10 @@ public class Database {
 		Object value = row.get(columnName);
 		return Boolean.parseBoolean(value.toString());
 	}
+
+	public static float toFloat(BasicDynaBean row, String columnName) {
+		Object value = row.get(columnName);
+		return Float.parseFloat(value.toString());
+	}
+
 }
