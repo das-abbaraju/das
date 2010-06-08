@@ -20,7 +20,7 @@ int count = 0;
 for(AuditData auditData : auditDatas) {
 	File dir = new File(path + "/files/" + FileUtils.thousandize(auditData.getId()));
 	File[] files = FileUtils.getSimilarFiles(dir, PICSFileType.data+ "_" + auditData.getId());
-	if(files != null) {
+	if(files.length > 0) {
 		String extension = FileUtils.getExtension(files[0].getName());
 		auditData.setAnswer(extension);
 		dao.save(auditData);
