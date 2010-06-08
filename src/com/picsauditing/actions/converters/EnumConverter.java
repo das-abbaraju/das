@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("unchecked")
 abstract public class EnumConverter extends StrutsTypeConverter {
 	protected Class enumClass;
@@ -14,7 +16,7 @@ abstract public class EnumConverter extends StrutsTypeConverter {
 		Object response = null;
 
 		if (arg2.equals(enumClass)) {
-			if (arg1.length > 0) {
+			if (arg1.length > 0 && !Strings.isEmpty(arg1[0])) {
 				response = Enum.valueOf(enumClass, arg1[0]);
 			} else {
 				response = null;
