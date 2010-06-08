@@ -230,6 +230,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				}
 				es.setEffectiveDate(effDate);
 				es.setExpirationDate(expDate);
+				if(es.getOrientationDate()==null)
+					monthsToExp = 0;
 				es.setOrientationDate(orDate);
 				if(orDate!=null){
 					es.setMonthsToExp(monthsToExp);

@@ -46,7 +46,7 @@ public class FlagDataDAO extends PicsDAO {
 			query.setParameter(2, opID);
 		return query.getResultList();
 	}
-
+	
 	@Override
 	public void remove(BaseTable row) {
 		if(row!=null)

@@ -32,35 +32,35 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	private Date effectiveDate;
 	private Date expirationDate;
 
-	private Map<Integer, Integer> monthsToExp;
+	private int[] monthsToExp = {36, 24, 12, 6, 0};
 	private int months;
 
 	public EmployeeSite() {
-		monthsToExp = new HashMap<Integer, Integer>();
-		monthsToExp.put(1, 36);
-		monthsToExp.put(2, 24);
-		monthsToExp.put(3, 12);
-		monthsToExp.put(4, 6);
+//		monthsToExp = new HashMap<Integer, Integer>();
+//		monthsToExp.put(1, 36);
+//		monthsToExp.put(2, 24);
+//		monthsToExp.put(3, 12);
+//		monthsToExp.put(4, 6);
 	}
 
 	@SuppressWarnings("null")
 	@Transient
 	public int getMonthsToExp() {
 		if (orientationDate == null || orientationExpiration == null) {
-			return 1;
+			return 4;
 		} else {
 			Calendar c = Calendar.getInstance(), c1 = Calendar.getInstance();
 			c.setTime(orientationDate);
 			c1.setTime(orientationExpiration);
-			int result = (c1.get(Calendar.YEAR) - c.get(Calendar.YEAR)) * 12;
+			int result = ((c1.get(Calendar.YEAR) - c.get(Calendar.YEAR)) * 12)+(c1.get(Calendar.MONTH)-c.get(Calendar.MONTH));
 			if (result <= 6)
-				return 4;
-			else if (result <= 12)
 				return 3;
-			else if (result <= 24)
+			else if (result <= 12)
 				return 2;
-			else
+			else if (result <= 24)
 				return 1;
+			else
+				return 0;
 		}
 	}
 
@@ -86,7 +86,7 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	public void setOrientationExpiration() {
 		Calendar c = Calendar.getInstance();
 		c.setTime(orientationDate);
-		c.add(Calendar.MONTH, monthsToExp.get(months));
+		c.add(Calendar.MONTH, monthsToExp[months]);
 		this.orientationExpiration = c.getTime();
 	}
 
@@ -95,7 +95,7 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 		return orientationExpiration;
 	}
 
-	public void setOrientationDate(Date orientationDate) {
+	public void setOrientationDate(Date orientationDate) {	
 		this.orientationDate = orientationDate;
 	}
 

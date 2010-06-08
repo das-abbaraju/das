@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
@@ -44,7 +45,7 @@
 						<div style="float:right; width: 50%;">
 							Site Orientation: <s:textfield id="oDate_%{#site.id}" name="orientationDate" value="%{maskDateFormat(orientationDate)}" size="10" /><br />
 							Expires in: <s:select label="Expires" id="expires_%{#site.id}"
-											list="#{1:36, 2:24, 3:12, 4:6}"
+											list="#{0:36, 1:24, 2:12, 3:6, 4:' '}"
 											value="monthsToExp" /> months<br />
 							<input type="submit" value="Remove" onclick="removeJobSite(<s:property value="#site.id" />); return false;" class="picsbutton negative" />
 						</div>
