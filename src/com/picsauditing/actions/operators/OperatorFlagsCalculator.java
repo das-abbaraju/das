@@ -50,14 +50,11 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	private List<FlagAndOverride> affected = new ArrayList<FlagAndOverride>();
 
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
-	private ContractorAccountDAO contractorAccountDAO;
-	
 
 	private FlagCriteriaOperator flagCriteriaOperator;
 
-	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO, ContractorAccountDAO contractorAccountDAO) {
+	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO) {
 		this.flagCriteriaOperatorDAO = flagCriteriaOperatorDAO;
-		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
 	@Override
