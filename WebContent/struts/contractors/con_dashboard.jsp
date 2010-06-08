@@ -33,7 +33,7 @@
 		var data = $('#' + id).text();
 		data = data.replace(/;/g,", ");
 		
-		if ($('#selfperformed').text().length > 100) {
+		if ($('#' + id).text().length > 100) {
 			var data1 = data.substring(0,100).replace(/^\s*/, "").replace(/\s*$/, "") + '<span id="' + id + '_ext">... <a href="#" onclick="$(\'#'
 				+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
 				+ '>Show more</a></span>';
@@ -45,10 +45,40 @@
 		
 		$('#'+ id).html(data);
 	}
+
+	function limit(id, pat) {
+		var data = $('#' + id).text();
+		var size = 500;
+		var count = index = prev = 0;
+		while(count < 15){			
+			prev = index;
+			index = data.indexOf(pat, prev+pat.length);
+			if(index!=-1)
+				count++;
+			else break;
+		}
+		if(count>=15){
+			if(prev<size)
+				size = prev;
+		}
+		
+		if (data.length > size) {
+			var data1 = data.substring(0,size).replace(/\n/gi, "<br>") + '<span id="' + id + '_ext">...<br> <a href="#" onclick="$(\'#'
+				+ id + '_more\').show(); $(\'#' + id + '_ext\').hide(); return false;" style="font-weight: normal;"'
+				+ '>Show more</a><br><br></span>';
+			var data2 = '<span id="' + id + '_more" style="display: none;">' + data.substring(size, data.length).replace(/\n/gi, "<br>")
+				+ ' <a href="#" onclick="$(\'#' + id + '_ext\').show(); $(\'#' + id
+				+ '_more\').hide(); return false;" style="font-weight: normal;">Hide</a><br><br></span>';
+			data = data1 + data2;
+		};
+		
+		$('#' + id).html(data);
+	}
 	
 	$(document).ready(function() {
 		truncate('selfperformed');
 		truncate('subcontracted');
+		limit('description', '\n');
 	});
 
 	function startWatch() {
@@ -419,7 +449,7 @@ table.report tr.hurdle td {
 					<img class="contractor_logo" src="ContractorLogo.action?id=<s:property value="id"/>"/>
 				</s:if>
 				<p>Primary Industry: <strong><s:property value="contractor.industry"/></strong></p>
-				<s:property value="contractor.descriptionHTML" escape="false" />
+				<span id="description"><s:property value="contractor.descriptionHTML" escape="false" /></span>
 				<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false">
 					<p class="web"><strong>
 						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
