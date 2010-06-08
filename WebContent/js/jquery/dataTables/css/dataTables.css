@@ -188,15 +188,18 @@ td.details {
 }
 
 .paging_full_numbers span.paginate_button {
-	background-color: #ddd;
+	background-color: #033665;
+	color: #fff;
 }
 
 .paging_full_numbers span.paginate_button:hover {
-	background-color: #ccc;
+	background-color: #fff;
+	color: #a74d01;
 }
 
 .paging_full_numbers span.paginate_active {
-	background-color: #99B3FF;
+	background-color: #a74d01;
+	color: #fff;
 }
 
 .css_right {
@@ -209,4 +212,9 @@ td.details {
 
 .dataTables_wrapper table {
 	margin-bottom: 0px;
+}
+
+.dataTables_length, .dataTables_filter, .dataTables_info, .paging_full_numbers {
+	padding: 5px 0;
+	font-weight: bold;
 }
