@@ -52,7 +52,7 @@ public class OperatorFlagHistory extends ChartMSAction {
 	private String getOperatorFlagHistorySQL(Date date, String label, int operatorID) throws Exception {
 		String dbDate = DateBean.toDBFormat(date);
 		//String creationDate = DateBean.prettyDate(date);
-		String sql = "SELECT '"+ label +"' AS label, flag AS series, count(*) AS value, creationDate FROM flag_archive WHERE opID = "+ operatorID + " AND creationDate = '" + dbDate +"' GROUP BY flag";	
+		String sql = "SELECT '"+ label +"' AS label, flag AS series, count(*) AS value, creationDate FROM flag_archive WHERE flag in ('Red','Amber','Green') AND opID = "+ operatorID + " AND creationDate = '" + dbDate +"' GROUP BY flag";	
 		return sql;
 	}
 }
