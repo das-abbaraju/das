@@ -116,6 +116,7 @@
 				<label>Insurance Criteria:</label>
 				<s:checkbox name="criteria.insurance"/>
 			</li>
+			<li>
 				<label>Flaggable When Missing:</label>
 				<s:checkbox name="criteria.flaggableWhenMissing"/>
 			</li>
