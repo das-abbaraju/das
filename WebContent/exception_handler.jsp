@@ -115,6 +115,7 @@
 
 <head>
 <jsp:include page="struts/jquery.jsp"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
     $(document).ready(function() { 
         $('#response_form').submit(function() {
@@ -123,7 +124,7 @@
         	var to_address = "errors@picsauditing.com";
         	var from_address = $("#from_address").val();
         	var user_name = $("#user_name").val();
-        	var dataString = 'priority='+ priority + '&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;  
+        	var dataString = 'priority='+ priority + '&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exception_message=' + <%= stacktrace %> + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name + '&category=' + <%= exception.getClass().getSimpleName() %>;  
         	$.ajax({  
         		type: "POST",  
         		url: "send_exception_email.jsp",  
@@ -143,38 +144,31 @@
 <title>PICS Error</title>
 </head>
 <body>
-<h1>An unexpected error occurred</h1>
+<div class="error">
+	Oops!! An unexpected error just occurred.<br>
+</div>
 <% if (debugging) { %>
 	<p><%=stacktrace %></p>
 <% } else { %>
-	<div class="alert">
-		We apologize for this inconvenience and have notified our engineers of your problem. <br>
-	</div>
-	<input class="picsbutton" type="button" value="Return to the previous page" onclick="window.history.back().back()" />
 	<div id="user_message"">
-		<p><br />
+		<form id="response_form" method="post" action="" style="width:450px;">
+			<fieldset class="form" >
+				<legend><span>Please help us by reporting this error</span></legend>
+				<s:hidden name="priority" value="5" />
+				<s:if test="!permissions.loggedIn">
+					<div style="padding-top:40px;">
+						<label style="width:5em;"><span>Name:</span></label>
+						<input type="text" id="user_name" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
+						<br/>
+						<label style="width:5em;"><span>Email:</span></label>
+						<input type="text" id="from_address" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
+						<br/>
+					</div>
+				</s:if>
 	
-	If you continue to receive this error, please report it to us using the form below or call Customer Service at 949.387.1940 extension 1</p>
-
-		<form id="response_form" method="post" action="" >
-			<fieldset class="form">
-				<span>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="user_name" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
-					<br/>
-					Email:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="from_address" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
-					<br/>
-					Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					Low&nbsp;&nbsp;&nbsp;
-					<input type="radio" name="priority" value="1" checked />1
-					<input type="radio" name="priority" value="2" />2
-					<input type="radio" name="priority" value="3" />3
-					<input type="radio" name="priority" value="4" />4
-					<input type="radio" name="priority" value="5" />5
-					&nbsp;&nbsp;&nbsp;High<br/>
-				</span>
-
-				<div style="padding-top:10px;">Please describe the problem:
+				<div <s:if test="permissions.loggedIn">style="padding-top:35px;"</s:if>><label style="width:5em;">Optional:</label>Please tell us what you were trying to do:<br/>
+					<label style="width:5em;">&nbsp;</label>
+					<div>
 					<table>
 						<tr>
 							<td>
@@ -183,11 +177,14 @@
 						</tr>
 						<tr>
 							<td>
-								<input class="picsbutton" style="float:right;" type="submit" value="Submit" />
-								<input class="picsbutton" style="float:right;" type="button" value="Back" onclick="window.history.back().back()"/>
+								<span>
+									<input class="picsbutton" style="float:right;" type="submit" value="Report to PICS Engineers" />
+									<input class="picsbutton" style="float:right;" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
+								</span>
 							</td>
 						</tr>		
 					</table>
+					</div>
 				</div>
 			</fieldset>
 		</form>

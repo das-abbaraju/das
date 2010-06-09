@@ -6,11 +6,7 @@
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <%@page import="com.picsauditing.mail.EmailSender"%>
 <%@page import="com.picsauditing.mail.SendMail"%>
-<%@page import="com.picsauditing.search.Database"%>
 <%@page import="java.sql.SQLException"%>
-<%@page import="java.sql.Timestamp"%>
-<%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
-<%@page import="com.picsauditing.search.SelectSQL"%>
 <%
 	// Parameters
 	int priority = Integer.parseInt(request.getParameter("priority"));
@@ -19,22 +15,8 @@
 	String from_address = request.getParameter("from_address");
 	String user_name = request.getParameter("user_name");
 	int exceptionID = Integer.parseInt(request.getParameter("exceptionID"));
-
-	Database db = new Database();
-	
-	SelectSQL sql = new SelectSQL();
-	sql.setFromTable("app_error_log el");
-	sql.addField("el.category");
-	sql.addField("el.message");
-	
-	List<BasicDynaBean> data = db.select(sql.toString(), true);
-	
-	String category = "null";
-	String error_message = "";
-	for (BasicDynaBean row : data) {
-		category = row.get("category").toString();
-		error_message = (row.get("message") == null) ? "" : row.get("message").toString();
-	}
+	String exception_message = request.getParameter("exception_message");
+	String category = request.getParameter("category");
 	
 	StringBuilder email = new StringBuilder();
 	email.append("A user has reported an error on PICS\n");
@@ -54,15 +36,15 @@
 	email.append("\n\nError Type: ");
 	email.append(category);
 	
-	if(message != null && !message.equals("")){
+	if(message != null && (!message.equals("") || !message.equals("undefined"))){
 		email.append("\n\nUser Message (Priority "+priority+"): \n");
 		email.append(message);
 		email.append("\n");
 	}
 
-	if(!error_message.equals("")){
+	if(exception_message != null && (!exception_message.equals("") || exception_message.equals("undefined"))){
 		email.append("\nError Message:\n");
-		email.append(error_message);
+		email.append(exception_message);
 		email.append("\n");
 	}
 	email.append("\nHeaders:");
