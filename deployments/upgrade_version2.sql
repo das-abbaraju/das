@@ -13,3 +13,8 @@ join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
+
+/* remove the question with id 0*/
+delete from pqfquestions where id = 0;
+
+update flag_criteria set questionid = null where questionid = 0;
