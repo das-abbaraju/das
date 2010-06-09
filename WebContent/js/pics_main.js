@@ -48,10 +48,10 @@ function startThinking( args ) {
 	var targetDiv = getElement(oOptions.div);
 	var innerSrc;
 	if( oOptions.type == 'small' ) {
-		innerSrc="<img src='images/ajax_process.gif' />";
+		innerSrc="<img src='images/ajax_process.gif' /> ";
 	}
 	if( oOptions.type == 'large' ) {
-		innerSrc="<img src='images/ajax_process2.gif' />";
+		innerSrc="<img src='images/ajax_process2.gif' /> ";
 	}
 	
 	innerSrc=innerSrc+oOptions.message;

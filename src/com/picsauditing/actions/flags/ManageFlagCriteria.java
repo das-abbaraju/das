@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.json.simple.JSONObject;
-
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -26,10 +24,11 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 	private AuditQuestionDAO questionDAO;
 	private FlagCriteriaDAO criteriaDAO;
 
+	private int id;
 	private FlagCriteria criteria;
 
-	private AuditType auditType;
-	private AuditQuestion question;
+	private int auditTypeID;
+	private int questionID;
 
 	public ManageFlagCriteria(AuditTypeDAO auditTypeDAO, AuditQuestionDAO questionDAO, FlagCriteriaDAO criteriaDAO) {
 		this.auditTypeDAO = auditTypeDAO;
@@ -37,181 +36,72 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		this.criteriaDAO = criteriaDAO;
 	}
 
-	@Override
 	public void prepare() throws Exception {
-		int criteriaID = getParameter("criteria.id");
+		int criteriaID = getParameter("id");
 		if (criteriaID > 0)
 			criteria = criteriaDAO.find(criteriaID);
 
-		int auditTypeID = getParameter("auditType.id");
-		if (auditTypeID > 0) {
-			auditType = auditTypeDAO.find(auditTypeID);
-		}
-
-		int questionID = getParameter("question.id");
-		if (questionID > 0) {
-			question = questionDAO.find(questionID);
-		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN_AJAX;
 
-		if ("load".equals(button)) {
-			if (criteria != null) {
-				json = new JSONObject() {
-					{
-						put("result", "success");
-						put("criteria", criteria.toJSON());
-					}
-				};
-			} else {
-				json = new JSONObject() {
-					{
-						put("result", "failure");
-						put("gritter", new JSONObject() {
-							{
-								put("title", "Criteria Not Loaded!");
-								put("text", "There was no criteria to load.");
-							}
-						});
-					}
-				};
-			}
-
-			return JSON;
+		if (criteria == null) {
+			criteria = new FlagCriteria();
 		}
 
-		if ("save".equals(button)) {
-			if (criteria != null) {
-				if (auditType != null && question != null) {
-					// clear anything that was put in here
-					criteriaDAO.refresh(criteria);
-					json = new JSONObject() {
-						{
-							put("result", "failure");
-							put("gritter", new JSONObject() {
-								{
-									put("title", "Criteria Not Saved!");
-									put("text", "Cannot save a flag criteria with both Audit and Question selected.");
-								}
-							});
-							put("criteria", criteria.toJSON());
-						}
-					};
-
-					return JSON;
-				}
-
-				// set the auditType or the question based on the incoming value
-				if (auditType != null
-						&& (criteria.getAuditType() == null || !criteria.getAuditType().equals(auditType))) {
-					criteria.setAuditType(auditType);
-				} else if (question != null
-						&& (criteria.getQuestion() == null || !criteria.getQuestion().equals(question))) {
-					criteria.setQuestion(question);
-				}
-
-				if (Strings.isEmpty(criteria.getDataType())) {
-					json = new JSONObject() {
-						{
-							put("result", "failure");
-							put("gritter", new JSONObject() {
-								{
-									put("title", "Criteria Not Saved!");
-									put("text", "Data Type is a required field.");
-								}
-							});
-						}
-					};
-					criteriaDAO.refresh(criteria);
-					return JSON;
-				}
-
-				try {
-					criteriaDAO.save(criteria);
-
-					json = new JSONObject() {
-						{
-							put("result", "success");
-							put("gritter", new JSONObject() {
-								{
-									put("title", "Criteria Saved");
-									put("text", "Flag Criteria " + criteria.getLabel() + " saved successfully.");
-								}
-							});
-							put("criteria", criteria.toJSON());
-						}
-					};
-				} catch (final Exception e) {
-					json = new JSONObject() {
-						{
-							put("result", "failure");
-							put("gritter", new JSONObject() {
-								{
-									put("title", "Criteria Not Saved!");
-									put("text", "Flag Criteria " + criteria.getLabel() + " not saved. "
-											+ e.getMessage());
-								}
-							});
-							put("criteria", criteria.toJSON());
-						}
-					};
-
-					return JSON;
-				}
-			} else {
-				json = new JSONObject() {
-					{
-						put("result", "failure");
-						put("gritter", new JSONObject() {
-							{
-								put("title", "Criteria Not Saved!");
-								put("text", "There was no criteria to save.");
-							}
-						});
+		if (button != null) {
+			if ("Save".equals(button)) {
+				if (criteria != null) {
+					List<String> errors = new ArrayList<String>();
+					if (auditTypeID == 0 && questionID == 0) {
+						// clear anything that was put in here
+						criteriaDAO.refresh(criteria);
+						errors.add("Either a question or an audit type is required.");
 					}
-				};
+
+					if (Strings.isEmpty(criteria.getDataType())) {
+						criteriaDAO.refresh(criteria);
+						errors.add("DataType is a required field.");
+					}
+
+					if (errors.size() > 0) {
+						for (String e : errors) {
+							addActionError(e);
+						}
+						return SUCCESS;
+					}
+
+					// set the auditType or the question based on the incoming
+					// value
+					if (criteria.getAuditType() == null || criteria.getAuditType().getId() != auditTypeID)
+						criteria.setAuditType(auditTypeDAO.find(auditTypeID));
+
+					if (criteria.getQuestion() == null || criteria.getQuestion().getId() != questionID)
+						criteria.setQuestion(questionDAO.find(questionID));
+
+					criteria.setAuditColumns(permissions);
+
+					try {
+						criteriaDAO.save(criteria);
+						addActionMessage("Criteria saved successfully.");
+					} catch (final Exception e) {
+						addActionError("Something happened during save:<br/>" + e.getMessage());
+						return SUCCESS;
+					}
+				}
+
 			}
 
-			return JSON;
-		}
-
-		if ("delete".equals(button)) {
-			if (criteria != null) {
-				final int criteriaID = criteria.getId();
-
-				criteriaDAO.remove(criteria);
-				json = new JSONObject() {
-					{
-						put("result", "success");
-						put("gritter", new JSONObject() {
-							{
-								put("title", "Criteria Deleted");
-								put("text", "Flag Criteria " + criteria.getLabel() + " removed successfully.");
-							}
-						});
-						put("id", criteriaID);
-					}
-				};
-			} else {
-				json = new JSONObject() {
-					{
-						put("result", "failure");
-						put("gritter", new JSONObject() {
-							{
-								put("title", "Criteria Not Deleted!");
-								put("text", "Flag criteria does not exist");
-							}
-						});
-					}
-				};
+			if ("Delete".equals(button)) {
+				if (criteria != null) {
+					criteriaDAO.remove(criteria);
+					criteria = null;
+					addActionMessage("Criteria successfully deleted.");
+				}
 			}
-
-			return JSON;
 		}
 
 		return SUCCESS;
@@ -225,24 +115,32 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return criteria;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setCriteria(FlagCriteria criteria) {
 		this.criteria = criteria;
 	}
 
-	public AuditType getAuditType() {
-		return auditType;
+	public int getAuditTypeID() {
+		return auditTypeID;
 	}
 
-	public void setAuditType(AuditType auditType) {
-		this.auditType = auditType;
+	public void setAuditTypeID(int auditTypeID) {
+		this.auditTypeID = auditTypeID;
 	}
 
-	public AuditQuestion getQuestion() {
-		return question;
+	public int getQuestionID() {
+		return questionID;
 	}
 
-	public void setQuestion(AuditQuestion question) {
-		this.question = question;
+	public void setQuestionID(int questionID) {
+		this.questionID = questionID;
 	}
 
 	public Map<AuditTypeClass, List<AuditType>> getAuditTypeMap() {

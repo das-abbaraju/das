@@ -95,15 +95,8 @@ fieldset.form label.input {
 }
 
 fieldset.form input[type=text], fieldset.form input[type=password], fieldset.form select {
-	color: #404245;
 	font-size: 14px;
 	padding: 2px;
-	border-style: inset;
-}
-
-fieldset.form input[type=text]:FOCUS, fieldset.form input[type=password]:FOCUS, fieldset.form select:FOCUS {
-	color: #003768;
-	background-color: #FFE;
 }
 
 /** Sortable list items **/

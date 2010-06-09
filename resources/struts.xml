@@ -1532,7 +1532,7 @@
 		</action>
 		<action name="ManageFlagCriteriaAjax"
 			class="com.picsauditing.actions.flags.ManageFlagCriteria">
-			<result>struts/flags/manage_flag_criteria.jsp</result>	
+			<result>struts/flags/manage_flag_criteria_ajax.jsp</result>	
 		</action>
 
 		<!-- Customer Service -->
