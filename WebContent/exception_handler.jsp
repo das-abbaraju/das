@@ -119,19 +119,18 @@
 <script type="text/javascript">
     $(document).ready(function() { 
         $('#response_form').submit(function() {
-        	var priority = $('input[name=priority]:checked').val();
         	var user_message = $("textarea#user_message").val();
         	var to_address = "errors@picsauditing.com";
         	var from_address = $("#from_address").val();
         	var user_name = $("#user_name").val();
-        	var dataString = 'priority='+ priority + '&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exception_message=' + <%= stacktrace %> + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name + '&category=' + <%= exception.getClass().getSimpleName() %>;  
+        	var dataString = 'priority=5&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;  
         	$.ajax({  
         		type: "POST",  
         		url: "send_exception_email.jsp",  
         		data: dataString,  
         			success: function() {  
-        				$('#response_form').html("<div id='message'></div>");
-        				$('#message').html("<h3>Response Submitted!</h3>")
+        				$('#response_form').html("<div id='message1'></div>");
+        				$('#message1').html("<h3>Response Submitted!</h3>")
         				.append("<h5>Thank you for your assistance.</h5>")
         				.hide()  
         				.fadeIn(1500);  
@@ -147,14 +146,13 @@
 <div class="error">
 	Oops!! An unexpected error just occurred.<br>
 </div>
-<% if (debugging) { %>
+<% if (!debugging) { %>
 	<p><%=stacktrace %></p>
 <% } else { %>
-	<div id="user_message"">
-		<form id="response_form" method="post" action="" style="width:450px;">
-			<fieldset class="form" >
-				<legend><span>Please help us by reporting this error</span></legend>
-				<s:hidden name="priority" value="5" />
+	<form id="response_form" method="post" action="" style="width:450px;">
+		<fieldset class="form" >
+			<legend><span>Please help us by reporting this error</span></legend>
+			<div>
 				<s:if test="!permissions.loggedIn">
 					<div style="padding-top:40px;">
 						<label style="width:5em;"><span>Name:</span></label>
@@ -178,7 +176,7 @@
 						<tr>
 							<td>
 								<span>
-									<input class="picsbutton" style="float:right;" type="submit" value="Report to PICS Engineers" />
+									<input class="picsbutton" style="float:right;" type="submit" value="Report to PICS Engineers" onclick="$('#backButton').fadeIn(1500)"/>
 									<input class="picsbutton" style="float:right;" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
 								</span>
 							</td>
@@ -186,9 +184,10 @@
 					</table>
 					</div>
 				</div>
-			</fieldset>
-		</form>
-	</div>
+			</div>
+		</fieldset>
+	</form>
+	<input id="backButton" class="picsbutton" style="float:left; display:none;" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
 <% } %>
 </body>
 </html>
