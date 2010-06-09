@@ -80,6 +80,7 @@ public class ContractorCron extends PicsActionSupport {
 	private int limit = 10;
 	final private Date startTime = new Date();
 	private List<Integer> queue;
+	private String redirectUrl;
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
@@ -148,9 +149,9 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		PicsLogger.stop();
-
-		if (button != null && button.equals("ConFlag")) {
-			return redirect("ContractorFlag.action?id=" + conID + "&opID=" + opID);
+		
+		if(!Strings.isEmpty(redirectUrl)) {
+			return redirect(redirectUrl);
 		}
 
 		return SUCCESS;
@@ -613,5 +614,13 @@ public class ContractorCron extends PicsActionSupport {
 	
 	public void setRequestID(String requestID) {
 		// We aren't actually using this. This solves a weird bug with duplicate requests not being processed in parallel
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
 	}
 }

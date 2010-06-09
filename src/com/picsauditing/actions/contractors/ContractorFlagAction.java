@@ -82,8 +82,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (button != null) {
 			if (button.equalsIgnoreCase("Recalculate Now")) {
 				contractorOperatorDao.save(co);
+				String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
 				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID
-					+ "&button=ConFlag&steps=All");
+					+ "&steps=All&redirectUrl="+redirectUrl);
 			}
 			
 			permissions.tryPermission(OpPerms.EditForcedFlags);
