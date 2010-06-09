@@ -6,17 +6,23 @@
 			<s:if test="permissions.admin">
 				<th>Requested By</th>
 			</s:if>
-			<th>Date</th>
+			<th>Date <s:if test="permissions.admin">Registered</s:if><s:else>Added</s:else></th>
 		</tr>
 	</thead>
 	<s:iterator value="newContractors">
 		<tr>
-			<td><a class="account<s:property value="status" />" 
+			<s:if test="permissions.admin">
+				<td><a class="account<s:property value="status" />" 
 				href="ContractorView.action?id=<s:property value="id"/>"><s:property value="name" /></a></td>
+			</s:if>
+			<s:elseif test="permissions.operatorCorporate">
+				<td><a class="account<s:property value="status" />" 
+					href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name" /></a></td>
+			</s:elseif>
 			<s:if test="permissions.admin">
 				<td><s:property value="requestedBy.name" /></td>
 			</s:if>
-			<td class="center"><s:date name="creationDate" format="MMM d HH:mm" /></td>
+			<td class="center"><s:date name="creationDate" format="MMM dd yyyy" /></td>
 		</tr>
 	</s:iterator>
 </table>

@@ -43,6 +43,14 @@ public class ContractorOperatorDAO extends PicsDAO {
 			return null;
 		}
 	}
+	
+	public List<ContractorOperator> findNewContractorOperators(int opID, int limit){
+		if(limit < 0)
+			limit = 1;
+		Query query = em.createQuery("FROM ContractorOperator WHERE genID = " + opID + " ORDER BY creationDate DESC");
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
 
 	public List<ContractorOperator> findWhere(String where) {
 		if (where == null)
