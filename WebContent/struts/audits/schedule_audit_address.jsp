@@ -60,7 +60,7 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 			name="conAudit.state" size="6" /></li>
 		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
 		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
-			list="countryList" listKey="isoCode" listValue="name"/></li>
+			value="locale.country" list="countryList" listKey="isoCode" listValue="name"/></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
 			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> This address is correct</li>
 	</ol>

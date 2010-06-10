@@ -105,6 +105,9 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 		// checking to see if primary account user is set
 		if (account != null && account.getPrimaryContact() == null)
 			setPrimaryAccount = true;
+		//Default isActive to show all for contractors
+		if(account != null && account.isContractor())
+			isActive = "All";
 	}
 
 	public String execute() throws Exception {

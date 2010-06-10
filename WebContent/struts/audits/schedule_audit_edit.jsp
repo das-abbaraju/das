@@ -114,7 +114,7 @@ $(function(){
 			name="conAudit.state" list="stateList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - State/Province - "/></li>
 		<li><label>Zip or Postal Code:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
 		<li class="calculatedAddress"><label>Country:</label> <s:select id="conAudit_country" name="conAudit.country"
-			list="countryList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - Country - "/></li>
+			list="countryList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - Country - " value="locale.country"/></li>
 		<li class="calculatedAddress"><label>Latitude:</label> <s:textfield id="conAudit_latitude" name="conAudit.latitude" size="10" /></li>
 		<li class="calculatedAddress"><label>Longitude:</label> <s:textfield id="conAudit_longitude" name="conAudit.longitude" size="10" /></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
