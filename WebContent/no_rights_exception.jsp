@@ -1,3 +1,5 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page isErrorPage="true" language="java"
 	import="java.util.*, java.io.*, com.opensymphony.xwork2.ActionContext"%>
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
@@ -58,6 +60,7 @@
 %>
 
 <head>
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <title>PICS Error</title>
 <jsp:include page="struts/jquery.jsp"/>
 <script type="text/javascript">
@@ -90,48 +93,51 @@
 <h1>You do not have permission to access this page.</h1>
 <div class="alert"><%=message%></div>
 
-<% if (debugging) { %>
+<% if (!debugging) { %>
 	<p><%=stacktrace %></p>
 <% } else { %>
-	<input class="picsbutton" type="button" value="Report this to PICS" onclick="$('#user_message').toggle(); return false;" />
-	<input class="picsbutton" type="button" value="Return to the previous page" onclick="window.history.back().back()" />
+	<div style="padding-bottom:15px;" >
+		<input class="picsbutton" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
+		<input class="picsbutton" type="button" value="Report to PICS Engineers" onclick="$('#user_message').toggle(); return false;" />
+	</div>
 	<div id="user_message" style="display:none;">
-		<p><br />
-		We apologize for this inconvenience. <br/>If you continue to receive this message and believe it is an error, please report it to us using the form below or call Customer Service at
-			949.387.1940 extension 1</p>
-			
-		<form id="response_form" method="post" action="" >
+		<form id="response_form" method="post" action="" style="width:650px;">
 			<fieldset class="form">
-				<span>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="user_name" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
-					<br/>
-					Email:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="from_address" size="25" style="color:#464646;font-size:12px;font-weight:bold;"/>
-					<br/>
-					Priority:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					Low&nbsp;&nbsp;&nbsp;
-					<input type="radio" name="priority" value="1" checked />1
-					<input type="radio" name="priority" value="2" />2
-					<input type="radio" name="priority" value="3" />3
-					<input type="radio" name="priority" value="4" />4
-					<input type="radio" name="priority" value="5" />5
-					&nbsp;&nbsp;&nbsp;High<br/>
-				</span>
-
-				<div style="padding-top:10px;">Please describe the problem:
-					<table>
-						<tr>
-							<td>
-								<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input class="picsbutton" style="float:right;" type="submit" value="Submit" />
-								<input class="picsbutton" style="float:right;" type="button" value="Back" onclick="window.history.back().back()"/>
-							</td>
-						</tr>		
-					</table>
+				<label style="width:5em;">&nbsp;</label>
+				<span>We apologize for this inconvenience.<br/></span>
+				<label style="width:5em;">&nbsp;</label>
+				<span>If you continue to receive this message and believe it is an error, please report it to<br/></span>
+				<label style="width:5em;">&nbsp;</label>
+				<span>us using the form below or call Customer Service at 949.387.1940 extension 1<br/></span>
+				<div style="padding:5px 0 5px 0;">
+					<label style="width:5em;"><span>Priority:</span></label>
+					<span>
+						Low&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="priority" value="1" checked />1
+						<input type="radio" name="priority" value="2" />2
+						<input type="radio" name="priority" value="3" />3
+						<input type="radio" name="priority" value="4" />4
+						<input type="radio" name="priority" value="5" />5
+						&nbsp;&nbsp;&nbsp;High<br/>
+					</span>
+				</div>
+				<label style="width:5em;">&nbsp;</label>Please tell us what you were trying to do:<br/>
+				<label style="width:5em;">&nbsp;</label>
+				<div>
+				<table>
+					<tr>
+						<td>
+							<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>
+								<input class="picsbutton" style="float:right;" type="submit" value="Submit" onclick="$('#backButton').fadeIn(1500)"/>
+							</span>
+						</td>
+					</tr>		
+				</table>
 				</div>
 			</fieldset>
 		</form>
