@@ -546,8 +546,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			} else if (audit.getConAudit() == null) {
 				if (scope.equals(MultiYearScope.ThreeYearAverage))
 					auditFor = "Average";
-				else if (scope.equals(MultiYearScope.ThreeYearWeightedAverage))
-					auditFor = "W Average";
 			} else
 				auditFor = audit.getConAudit().getAuditFor();
 			return auditFor;

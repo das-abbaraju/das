@@ -7,8 +7,7 @@ public enum MultiYearScope {
 	LastYearOnly("Last Year Only"),
 	TwoYearsAgo("Two Years Ago"),
 	ThreeYearsAgo("Three Years Ago"),
-	ThreeYearAverage("Three Year Average"),
-	ThreeYearWeightedAverage("Three Year Weighted Average");
+	ThreeYearAverage("Three Year Average");
 
 	private String description;
 
@@ -23,8 +22,6 @@ public enum MultiYearScope {
 	public String getAuditFor() {
 		if (this == ThreeYearAverage)
 			return "Average";
-		if (this == ThreeYearWeightedAverage)
-			return "W Average";
 		if (this == ThreeYearsAgo)
 			return "2007";
 		if (this == TwoYearsAgo)

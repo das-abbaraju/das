@@ -27,7 +27,6 @@ public class OshaOrganizerTest extends TestCase {
 			assertEquals(-1f, organizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearsAgo, OshaRateType.TrirAbsolute));
 			assertEquals(-1f, organizer.getRate(OshaType.COHS, MultiYearScope.LastYearOnly, OshaRateType.TrirAbsolute));
 			assertEquals(1f, organizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearAverage, OshaRateType.TrirAbsolute));
-			assertEquals(1f, organizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearWeightedAverage, OshaRateType.TrirAbsolute));
 		}
 		addOsha(2008, 400000, 1);
 		{
@@ -35,7 +34,6 @@ public class OshaOrganizerTest extends TestCase {
 			assertEquals(1f, organizer.getRate(OshaType.OSHA, MultiYearScope.LastYearOnly, OshaRateType.TrirAbsolute));
 			assertEquals(0.5f, organizer.getRate(OshaType.OSHA, MultiYearScope.TwoYearsAgo, OshaRateType.TrirAbsolute));
 			assertEquals(0.75f, organizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearAverage, OshaRateType.TrirAbsolute));
-			assertEquals(0.6666667f, organizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearWeightedAverage, OshaRateType.TrirAbsolute));
 		}
 	}
 	
