@@ -2,12 +2,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:if test="criteria.id != 0">
+<s:if test="criteria != null">
 <s:include value="../actionMessages.jsp"/>
 </s:if>
 <a href="#" type="button" class="goback"><< Back</a>
 <form id="itemform" method="post">
-	<s:hidden name="id" value="%{criteria.id}"/>
+	<s:hidden name="id"/>
 	<table>
 	<tr>
 	<td style="vertical-align: top">
@@ -18,6 +18,7 @@
 				<label>ID:</label>
 				<s:if test="criteria.id == 0">NEW</s:if>
 				<s:else><s:property value="criteria.id"/></s:else>
+				<s:set name="o" value="#c"/><s:include value="../who.jsp"/>
 			</li>
 			<li>
 				<label>Category:</label>
@@ -73,7 +74,7 @@
 		<ol>
 			<li>
 				<label>Audit Type:</label>
-				<s:select name="auditTypeID" list="{}" headerKey="0" headerValue=" - Audit Type - " value="%{criteria.auditType.id}">
+				<s:select name="auditTypeID" list="{}" headerKey="" headerValue=" - Audit Type - " value="%{criteria.auditType.id}">
 					<s:iterator value="auditTypeMap" var="aType">
 						<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="auditName"/>
 					</s:iterator>
@@ -81,7 +82,7 @@
 			</li>
 			<li>
 				<label>Question:</label>
-				<s:select name="questionID" list="{}" headerKey="0" headerValue=" - Question - " value="%{criteria.question.id}">
+				<s:select name="questionID" list="{}" headerKey="" headerValue=" - Question - " value="%{criteria.question.id}">
 					<s:iterator value="questionMap" var="flagQuestion">
 						<s:optgroup label="%{#flagQuestion.key.auditName}" list="#flagQuestion.value" listKey="id" listValue="shortQuestion" />
 					</s:iterator>
@@ -102,7 +103,7 @@
 			</li>
 			<li>
 				<label>Multi Year Scope:</label>
-				<s:select name="criteria.multiYearScope" list="scopeList" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
+				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" headerKey="" headerValue=" - Multi Year Scope - "/>
 			</li>
 		</ol>
 	</fieldset>

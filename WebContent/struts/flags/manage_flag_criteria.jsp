@@ -27,10 +27,14 @@
 	}
 
 	function show(id) {
-		if (id === undefined) 
+		var data = {};
+		if (id === undefined) {
 			id = 0;
+			data.button = 'new';
+		}
+		data.id = id;
 		startThinking({div: 'thinking', message: 'Loading criteria...'});
-		$('#item').load('ManageFlagCriteriaAjax.action', {id: id}, function() {
+		$('#item').load('ManageFlagCriteriaAjax.action', data, function() {
 				stopThinking({div: 'thinking'}); 
 				showForm();
 			} 
@@ -38,9 +42,7 @@
 	}
 
 	$(function() {
-		console.log($('.goback'));
 		$('.goback').live('click', function (event) {
-			console.log(event);
 			event.preventDefault();
 			showTable();
 		});
@@ -52,13 +54,14 @@
 			            {bVisible: false},
 			            null,
 			            null,
+			            null,
 			            null
 						],
 			iDisplayLength: 25,
 			bStateSave: true,
 			bAutoWidth: false,
 			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
-				$(nRow).not('.clickable').attr('id','criteria_'+aData[0]).addClass('clickable').click(function() {
+				$(nRow).not('.clickable').attr('id','criteria_'+aData[0]).addClass('clickable').find('td').not('.noclick').click(function() {
 						show(aData[0]);
 					});
 				return nRow;
@@ -69,7 +72,7 @@
 	});
 </script>
 
-<s:if test="criteria.id != 0">
+<s:if test="criteria != null">
 <script type="text/javascript">
 $(function() {
 	showForm();
@@ -100,7 +103,7 @@ $(function() {
 <h1>Manage Flag Criteria</h1>
 
 <div id="table">
-<s:if test="criteria.id == 0">
+<s:if test="criteria == null">
 	<s:include value="../actionMessages.jsp"/>
 </s:if>
 	<div>
@@ -116,15 +119,17 @@ $(function() {
 				<th>Category</th>
 				<th>Label</th>
 				<th>Description</th>
+				<th>Who</th>
 			</tr>
 		</thead>
-		<s:iterator value="criteriaList">
+		<s:iterator value="criteriaList" var="c">
 			<tr>
 				<td><s:property value="id"/></td>
 				<td><s:property value="displayOrder"/></td>
 				<td><s:property value="category"/></td>
 				<td><s:property value="label"/></td>
 				<td><s:property value="description"/></td>
+				<td class="noclick"><s:set name="o" value="#c"/><s:include value="../who.jsp"/></td>
 			</tr>
 		</s:iterator>
 	</table>

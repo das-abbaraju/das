@@ -14,7 +14,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,22 +47,19 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		if (!forceLogin())
 			return LOGIN_AJAX;
 
-		if (criteria == null) {
-			criteria = new FlagCriteria();
-		}
-
 		if (button != null) {
+			if ("new".equals(button)) {
+				criteria = new FlagCriteria();
+				return SUCCESS;
+			}
 			if ("Save".equals(button)) {
 				if (criteria != null) {
 					List<String> errors = new ArrayList<String>();
 					if (auditTypeID == 0 && questionID == 0) {
-						// clear anything that was put in here
-						criteriaDAO.refresh(criteria);
 						errors.add("Either a question or an audit type is required.");
 					}
 
 					if (Strings.isEmpty(criteria.getDataType())) {
-						criteriaDAO.refresh(criteria);
 						errors.add("DataType is a required field.");
 					}
 
@@ -71,6 +67,8 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 						for (String e : errors) {
 							addActionError(e);
 						}
+						if (criteriaDAO.isContained(criteria))
+							criteriaDAO.refresh(criteria);
 						return SUCCESS;
 					}
 
@@ -84,13 +82,10 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 					criteria.setAuditColumns(permissions);
 
-					try {
-						criteriaDAO.save(criteria);
-						addActionMessage("Criteria saved successfully.");
-					} catch (final Exception e) {
-						addActionError("Something happened during save:<br/>" + e.getMessage());
-						return SUCCESS;
-					}
+					criteriaDAO.save(criteria);
+					addActionMessage("Criteria saved successfully.");
+
+					this.redirect("ManageFlagCriteria.action?id=" + criteria.getId());
 				}
 
 			}
@@ -100,19 +95,13 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 					criteriaDAO.remove(criteria);
 					criteria = null;
 					addActionMessage("Criteria successfully deleted.");
+
+					this.redirect("ManageFlagCriteria.action");
 				}
 			}
 		}
 
 		return SUCCESS;
-	}
-
-	public List<FlagCriteria> getCriteriaList() {
-		return criteriaDAO.findAll();
-	}
-
-	public FlagCriteria getCriteria() {
-		return criteria;
 	}
 
 	public int getId() {
@@ -121,6 +110,14 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public List<FlagCriteria> getCriteriaList() {
+		return criteriaDAO.findAll();
+	}
+
+	public FlagCriteria getCriteria() {
+		return criteria;
 	}
 
 	public void setCriteria(FlagCriteria criteria) {
@@ -175,8 +172,4 @@ public class ManageFlagCriteria extends PicsActionSupport implements Preparable 
 		return new String[] { FlagCriteria.BOOLEAN, FlagCriteria.DATE, FlagCriteria.NUMBER, FlagCriteria.STRING };
 	}
 
-	public MultiYearScope[] getScopeList() {
-		return new MultiYearScope[] { MultiYearScope.LastYearOnly, MultiYearScope.TwoYearsAgo,
-				MultiYearScope.ThreeYearsAgo, MultiYearScope.ThreeYearAverage };
-	}
 }
