@@ -23,6 +23,7 @@ import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
@@ -33,6 +34,7 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
@@ -52,6 +54,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected EmailAttachmentDAO emailAttachmentDAO;
 	protected EmailTemplateDAO emailTemplateDAO;
 	protected AccountDAO accountDAO;
+	protected FacilitiesDAO facilitiesDAO;
 
 	protected int requestID;
 	protected Country country;
@@ -87,7 +90,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO,
 			OperatorAccountDAO operatorAccountDAO, UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO,
 			ContractorAccountDAO contractorAccountDAO, EmailAttachmentDAO emailAttachmentDAO,
-			EmailTemplateDAO emailTemplateDAO, AccountDAO accountDAO) {
+			EmailTemplateDAO emailTemplateDAO, AccountDAO accountDAO, FacilitiesDAO facilitiesDAO) {
 		this.crrDAO = crrDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.userDAO = userDAO;
@@ -97,6 +100,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.emailAttachmentDAO = emailAttachmentDAO;
 		this.emailTemplateDAO = emailTemplateDAO;
 		this.accountDAO = accountDAO;
+		this.facilitiesDAO = facilitiesDAO;
 	}
 
 	public void prepare() throws Exception {
@@ -462,20 +466,18 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public List<OperatorForm> getForms() {
 		List<OperatorForm> forms = null;
-
-		if (permissions.isOperatorCorporate() || permissions.isAdmin()) {
-			OperatorAccount operator = newContractor.getRequestedBy();
-			Set<OperatorForm> inheritedFrom = new HashSet<OperatorForm>();
-
-			inheritedFrom.addAll(operator.getInheritAuditCategories().getOperatorForms());
-			inheritedFrom.addAll(operator.getInheritAudits().getOperatorForms());
-			inheritedFrom.addAll(operator.getInheritFlagCriteria().getOperatorForms());
-			inheritedFrom.addAll(operator.getInheritInsurance().getOperatorForms());
-			inheritedFrom.addAll(operator.getInheritInsuranceCriteria().getOperatorForms());
-
-			forms = new ArrayList<OperatorForm>(inheritedFrom);
+		Set<OperatorForm> allForms = new HashSet<OperatorForm>();
+		OperatorAccount operator = newContractor.getRequestedBy();
+		
+		List<Facility> facilities = facilitiesDAO.findSiblings(operator.getId());
+		
+		for (Facility facility : facilities) {
+			allForms.addAll(facility.getOperator().getOperatorForms());
 		}
-
+		
+		allForms.addAll(operator.getOperatorForms());
+		forms = new ArrayList<OperatorForm>(allForms);
+		
 		Collections.sort(forms, new ByFacilityName());
 		return forms;
 	}
@@ -506,7 +508,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 		
 		if (whereClauses.size() > 0) {
-			String where = Strings.implode(whereClauses, " OR ");
+			String where = Strings.implode(whereClauses, ") OR (");
+			where = "(" + where + ")";
 			return contractorAccountDAO.findWhere(where);
 		}
 		

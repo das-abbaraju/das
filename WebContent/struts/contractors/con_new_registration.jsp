@@ -140,7 +140,7 @@ function getMatches(requestID) {
 			Name:</label> <s:textfield name="newContractor.contact" /><span class="redMain">*</span></li>
 		<li><label>Phone:</label>
 			<s:textfield name="newContractor.phone" size="20" /><span class="redMain">*<s:if test="newContractor.phone == null && newContractor.email == null"> (Phone <i>or</i> Email must be filled out)</s:if></span>
-			<s:if test="newContractor.id > 0 && newContractor.phone != null">
+			<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0">
 				<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
 			</s:if>
 		</li>

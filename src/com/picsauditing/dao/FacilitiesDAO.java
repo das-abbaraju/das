@@ -1,5 +1,9 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Facility;
@@ -29,5 +33,13 @@ public class FacilitiesDAO extends PicsDAO {
 
 	public Facility find(int id) {
 		return em.find(Facility.class, id);
+	}
+	
+	public List<Facility> findSiblings(int opID) {
+		Query query = em.createQuery("FROM Facility WHERE corporate.id IN (SELECT corporate.id FROM Facility " +
+				"WHERE operator.id = ?)");
+		query.setParameter(1, opID);
+		
+		return query.getResultList();
 	}
 }
