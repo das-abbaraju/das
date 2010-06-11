@@ -1,6 +1,5 @@
-<jsp:useBean id="permissions"
-	class="com.picsauditing.access.Permissions" scope="session" />
-<%@page import="com.picsauditing.access.OpPerms"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Contractor Agreement Statement</title>
@@ -9,20 +8,17 @@
 <h1 align="center">Contractor Agreement Statement</h1>
 
 <div align="center">
-	<form>
-		<% 
-			if(permissions != null && !permissions.isAdmin() &&
-						(permissions.hasPermission(OpPerms.ContractorBilling) 
-							|| permissions.hasPermission(OpPerms.ContractorAdmin)
-							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
-		%>
-			<input type="submit" name="button" class="picsbutton" value="I Agree" onclick="window.opener.location.reload(true); window.close();" />
-		<% } %>
-			<input type="button" class="picsbutton" value="Close" onclick="window.close();" />
-	</form>
+	<s:if test="!permissions.admin &&
+						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+		<form method="post">
+			<input type="submit" name="button" class="picsbutton" value="I Agree" />
+		</form>
+	</s:if>
 </div>
 
-<div>
+<div style="width: 740px;">
 This is the web site of <b>PICS</b>.<br>
 <p>Our postal address is <br>
 <b>P.O. Box 51387<br>
@@ -96,17 +92,14 @@ contractor list.</p><br/>
 <p>You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.</p>
 
 <div align="center" style="text-align:bottom;">
-	<form>
-		<% 
-			if(permissions != null && !permissions.isAdmin() &&
-						(permissions.hasPermission(OpPerms.ContractorBilling) 
-							|| permissions.hasPermission(OpPerms.ContractorAdmin)
-							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
-		%>
-			<input type="submit" name="button" class="picsbutton" value="I Agree" onclick="window.close();" />
-		<% } %>
-			<input type="button" class="picsbutton" value="Close" onclick="window.close();" />
-	</form>
+	<s:if test="!permissions.admin &&
+						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
+							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+		<form method="POST">
+			<input type="submit" name="button" class="picsbutton" value="I Agree" />
+		</form>
+	</s:if>
 </div>
 </div>
 

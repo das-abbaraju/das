@@ -8,6 +8,12 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/invoice.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
+$(function() {
+	$('a[rel*=facebox]').facebox({
+ 		loading_image : 'loading.gif',
+ 		close_image : 'closelabel.gif'
+ 	});
+ });
 function validate() {
 	return updateExpDate();
 }
@@ -68,6 +74,7 @@ function updateExpDate() {
 		</s:iterator>
 	</div>
 </s:if>
+<div id="testinfo" style="display:none;"></div>
 <s:form id="save" method="POST">
 	<s:hidden name="id" />
 <fieldset class="form">
@@ -130,7 +137,7 @@ function updateExpDate() {
 	</li>
 	<s:if test="contractor.agreementDate != null && !contractor.agreementInEffect">
 		<li><label>&nbsp;</label>
-			<span style="color:grey;">We periodically update our Contractor User Agreement. Please review the <a title="Click here to view the latest PICS Contractor Agreement" href="#" onClick="window.open('ContractorAgreement.action?id=<s:property value="contractor.id"/>','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">latest terms</a> 
+			<span style="color:grey;">We periodically update our Contractor User Agreement. Please review the <a title="Click here to view the latest PICS Contractor Agreement" href="ContractorAgreement.action?id=<s:property value="contractor.id"/>" rel="facebox">latest terms</a> 
 			and 
 			<s:if test="!permissions.admin &&
 						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
@@ -152,7 +159,7 @@ function updateExpDate() {
 	Privacy Policy </a> |
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 	|
-	<a title="Click here to view the PICS Contractor Agreement" href="#" onClick="window.open('ContractorAgreement.action?id=<s:property value="contractor.id"/>','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
+	<a title="Click here to view the PICS Contractor Agreement" href="ContractorAgreement.action?id=<s:property value="contractor.id"/>" rel="facebox">
 	Contractor Agreement </a>
 </li>
 <s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">
@@ -165,7 +172,9 @@ function updateExpDate() {
 				<input type="submit" class="picsbutton" name="button" value="Change Payment Method to Credit Card"/>
 			</s:else>
 		</div>
+		
 	</li>
+	
 </s:if>
 <pics:permission perm="Billing">
 <s:if test="contractor.ccOnFile">	
@@ -240,7 +249,6 @@ function updateExpDate() {
 		</fieldset>
 	</form>
 </s:if>
-
 <br clear="all" /><br/><br/>
 <s:if test="permissions.contractor && contractor.status.pendingDeactivated && (contractor.paymentMethodStatusValid || !contractor.mustPayB)">
 	<div class="buttons" style="float: right;">

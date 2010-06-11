@@ -26,6 +26,7 @@ public class ContractorAgreement extends ContractorActionSupport {
 				contractor.setAgreementDate(new Date());
 				contractor.setAgreedBy(getUser());
 				accountDao.save(contractor);
+				this.redirect("ContractorAgreement.action");
 			} else {
 				addActionError("Only account Administrators, Billing, and Safety can accept this Contractor Agreement");
 			}
