@@ -51,6 +51,10 @@ $.ajaxSetup(
 	border-color: #00f;
 	background-color: #00f;
 }
+.cal-onsite, .cal-onsite a, .cal-onsite .fc-event-time {
+	background-color: #A74D0F;
+	border-color: #A74D0F;
+}
 span.fc-event-time {
 	display: block;
 }
@@ -91,16 +95,17 @@ ul {
 </ul>
 
 <div id="preview" class="ui-tabs-hide">
+<table>
+	<tr>
+	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Onsite':'cal-onsite', 'Availability':'cal-availability'}">
+		<td class="<s:property value="value"/>" style="color:white;padding:2px;"><s:property value="key"/></td>
+	</s:iterator>
+	</tr>
+</table>
 <div id="calendar_wrapper">
 <div id="cal_vacat"></div>
 </div>
-<table>
-	<s:iterator value="#{'Vacation':'cal-vacation', 'Holiday':'cal-holiday', 'Schedule':'cal-schedule', 'Availability':'cal-availability'}">
-	<tr>
-		<td class="<s:property value="value"/>" style="color:white;padding:2px;"><s:property value="key"/></td>
-	</tr>
-	</s:iterator>
-</table>
+
 </div>
 <div id="aschedule" class="ui-tabs-hide">
 <div id="calendar_wrapper">

@@ -87,6 +87,10 @@ span.fc-event-time {
 	background-repeat: no-repeat;
 	text-indent: 24px;
 }
+.cal-onsite, .cal-onsite a, .cal-onsite .fc-event-time {
+	background-color: #A74D0F;
+	border-color: #A74D0F;
+}
 ul {
 	list-style: none;
 }
