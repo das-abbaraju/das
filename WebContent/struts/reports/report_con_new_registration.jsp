@@ -12,7 +12,7 @@ function download() {
 function showExcelUpload() {
 	url = 'ReportNewReqConImport.action';
 	title = 'Upload';
-	pars = 'scrollbars=yes,resizable=yes,width=650,height=300,toolbar=0,directories=0,menubar=0';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
@@ -24,9 +24,9 @@ function showExcelUpload() {
 <form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 	<div style="padding: 5px;">
 	<a href="RequestNewContractor.action" class="picsbutton">Request New Contractor</a>
-	<s:if test="accountUsers.size() > 0">
-		<button class="picsbutton" onclick="showExcelUpload(); return false;" 
-			title="Opens in new window (please disable your popup blocker)">Import Excel File</button>
+	<s:if test="accountManager">
+		<a class="picsbutton" onclick="showExcelUpload(); return false;" href="#"
+			title="Opens in new window (please disable your popup blocker)">Import Excel File</a>
 	</s:if>
 	</div>
 </form>

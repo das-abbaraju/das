@@ -107,7 +107,10 @@ public enum OpPerms {
 	
 	// Contractor watch
 	ContractorWatch("Contractor Watch", "Allows operators to view the activity of watched contractors.", true, true, true, false, true),
-	WatchListManager("Watch List Manager", "Allows managers to add and remove users from watch lists.", true, true, true, false, true);
+	WatchListManager("Watch List Manager", "Allows managers to add and remove users from watch lists.", true, true, true, false, true),
+	
+	// Request New Contractor
+	RequestNewContractor("Request New Contractor", "Allows an operator to request a new contractor.", true, false, true, false, true);
 	
 	private String description;
 	private String helpText;

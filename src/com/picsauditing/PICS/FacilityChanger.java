@@ -2,7 +2,6 @@ package com.picsauditing.PICS;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -17,7 +16,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -37,7 +35,6 @@ public class FacilityChanger {
 	private OperatorAccountDAO operatorAccountDAO;
 	private NoteDAO noteDAO;
 	private AuditBuilder auditBuilder;
-	private FlagDataDAO flagDataDAO;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -51,7 +48,6 @@ public class FacilityChanger {
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.auditBuilder = auditBuilder;
-		this.flagDataDAO = flagDataDAO;
 	}
 
 	public void add() throws Exception {

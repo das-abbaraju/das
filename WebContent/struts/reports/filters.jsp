@@ -51,9 +51,8 @@
 	</s:if>
 	
 	<s:if test="filter.showOpen">
-		<div class="filterOption">
-			<s:select cssClass="forms" list="#{2:'Open',1:'Closed'}" name="filter.open"
-			headerValue="- Request Status -" headerKey="0" />
+		<div class="filterOption"><span>Status =</span>
+			<s:select cssClass="forms" list="#{1:'Open',0:'Closed'}" name="filter.open" />
 		</div>
 	</s:if>
 

@@ -401,7 +401,21 @@
 			<!-- Excel Creator -->
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.2-FINAL</version>
+			<version>3.6</version>
+		</dependency>
+		
+		<dependency>
+			<!-- XSLX Creator -->
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.6</version>
+		</dependency>
+		
+		<dependency>
+			<!-- XLSX Creator -->
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.6</version>
 		</dependency>
 
 		<dependency>

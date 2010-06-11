@@ -13,7 +13,9 @@ import java.util.Set;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -24,7 +26,6 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -36,7 +37,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
@@ -65,7 +65,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String[] filenames = null;
 	protected String emailSubject;
 	protected String emailBody;
-	protected List<Account> potentialMatches;
+	protected List<ContractorAccount> potentialMatches;
 	protected String conName;
 
 	private String[] names = new String[] { "ContractorName",
@@ -130,6 +130,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
+		
+		tryPermissions(OpPerms.RequestNewContractor, OpType.Edit);
 
 		if (button != null) {
 			if (button.equals("Save")) {
@@ -210,50 +212,50 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
 				if (button.equals("Send Email")) {
-					EmailBuilder emailBuilder = new EmailBuilder();
-					// Operator Request for Registration
-					EmailTemplate emailTemplate = emailTemplateDAO.find(83);
-					// If the operator edited any part of the template, set it here.
-					if (!Strings.isEmpty(emailBody))
-						emailTemplate.setBody(emailBody);
-					if (!Strings.isEmpty(emailSubject))
-						emailTemplate.setSubject(emailSubject);
-
-					// Replace custom tokens
-					emailBody = emailTemplate.getBody();
-					emailSubject = emailTemplate.getSubject();
-
-					for (int i = 0; i < names.length; i++) {
-						emailBody = emailBody.replace("<" + names[i] + ">", velocityCodes[i]);
-						emailSubject = emailSubject.replace("<" + names[i] + ">", velocityCodes[i]);
-					}
-					emailTemplate.setBody(emailBody);
-					emailTemplate.setSubject(emailSubject);
-
-					// Set the template
-					emailBuilder.setTemplate(emailTemplate);
-					emailBuilder.addToken("newContractor", newContractor);
-					emailBuilder.addToken("csr", getAssignedCSR());
-
 					// Point to the contractor registration page with some information pre-filled
-					String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button=request&rID="
-							+ newContractor.getId();
-					emailBuilder.addToken("requestLink", requestLink);
+					String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button=" +
+							"request&requestID=" + newContractor.getId();
+					
+					String picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: (949)387-1940\n"
+						+ "Fax: (949)269-9153\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
+						+ "(Please add this email address to your address book to prevent it from being labeled "
+						+ "as spam)";
+					
+					String[] fields = new String[] { newContractor.getName(), newContractor.getPhone(), 
+							newContractor.getEmail(), newContractor.getRequestedBy().getName(), 
+							newContractor.getRequestedByUser() != null ? 
+								newContractor.getRequestedByUser().getName() : 
+									newContractor.getRequestedByUserOther(), newContractor.getContact(),
+							newContractor.getTaxID(), newContractor.getAddress(), newContractor.getCity(),
+							newContractor.getState().getEnglish(), newContractor.getZip(),
+							newContractor.getCountry().getEnglish(), maskDateFormat(newContractor.getDeadline()),
+							requestLink, picsSignature };
+					
+					if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
+						// Operator Request for Registration
+						EmailTemplate emailTemplate = emailTemplateDAO.find(83);
+						
+						if (Strings.isEmpty(emailBody))
+							emailBody = emailTemplate.getBody();
+						if (Strings.isEmpty(emailSubject))
+							emailSubject = emailTemplate.getSubject();
+					}
+					
+					for (int i = 0; i < names.length; i++) {
+						emailBody = emailBody.replace("<" + names[i] + ">", fields[i] != null ? fields[i] : "");
+						emailSubject = emailSubject.replace("<" + names[i] + ">", 
+								fields[i] != null ? fields[i] : "");
+					}
 
-					// Get who requested this account be created
-					String requestedBy;
-					if (newContractor.getRequestedByUser() != null)
-						requestedBy = newContractor.getRequestedByUser().getName();
-					else
-						requestedBy = newContractor.getRequestedByUserOther();
-					emailBuilder.addToken("requestedBy", requestedBy);
-
-					emailBuilder.setToAddresses(newContractor.getEmail());
-					EmailQueue emailQueue = emailBuilder.build();
+					EmailQueue emailQueue = new EmailQueue();
 					emailQueue.setPriority(80);
 					emailQueue.setFromAddress(getAssignedCSR().getEmail());
+					emailQueue.setToAddresses(newContractor.getEmail());
+					emailQueue.setBody(emailBody);
+					emailQueue.setSubject(emailSubject);
 					EmailSender.send(emailQueue);
 
+					// Need to do an update to where these files are stored.
 					if (filenames != null) {
 						for (String filename : filenames) {
 							try {
@@ -275,14 +277,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						}
 					}
 				}
+				
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
 				newContractor.setLastContactDate(new Date());
 			}
 			newContractor.setAuditColumns(permissions);
 			crrDAO.save(newContractor);
-			requestID = newContractor.getId();
-			addActionMessage("Successfully saved the Contractor");
 		}
 		return SUCCESS;
 	}
@@ -434,7 +435,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.emailBody = emailBody;
 	}
 	
-	public List<Account> getPotentialMatches() {
+	public List<ContractorAccount> getPotentialMatches() {
 		return potentialMatches;
 	}
 
@@ -476,26 +477,30 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return names;
 	}
 	
-	public List<Account> runGapAnalysis() {
+	public List<ContractorAccount> runGapAnalysis() {
 		List<String> whereClauses = new ArrayList<String>();
 		
 		if (!Strings.isEmpty(newContractor.getName()))
-			whereClauses.add("a.name LIKE '%" + newContractor.getName() + "%'");
+			whereClauses.add("a.name LIKE '%" + Utilities.escapeQuotes(newContractor.getName()) 
+					+ "%' OR a.nameIndex LIKE '%" + Strings.indexName(newContractor.getName()) 
+					+ "%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(newContractor.getName()) + "%'");
 		if (!Strings.isEmpty(newContractor.getTaxID()))
-			whereClauses.add("a.taxID = " + newContractor.getTaxID());
+			whereClauses.add("a.taxID = " + Utilities.escapeQuotes(newContractor.getTaxID()));
 		if (!Strings.isEmpty(newContractor.getAddress()))
-			whereClauses.add("a.address LIKE '%" + newContractor.getAddress() + "%'");
+			whereClauses.add("a.address LIKE '%" + Utilities.escapeQuotes(newContractor.getAddress()) + "%'");
 		if (!Strings.isEmpty(newContractor.getPhone()))
-			whereClauses.add("a.phone LIKE '%" + newContractor.getPhone() + "%'");
+			whereClauses.add("a.phone LIKE '%" + Utilities.escapeQuotes(newContractor.getPhone()) + "%'");
 		if (!Strings.isEmpty(newContractor.getEmail()))
-			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.email LIKE '%" + newContractor.getEmail() + "%')");
+			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.email LIKE '%" + 
+					Utilities.escapeQuotes(newContractor.getEmail()) + "%')");
 		if (!Strings.isEmpty(newContractor.getContact())) {
-			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.name LIKE '%" + newContractor.getContact() + "%')");
+			whereClauses.add("a.id IN (SELECT u.account.id from User u WHERE u.name LIKE '%" + 
+					Utilities.escapeQuotes(newContractor.getContact()) + "%')");
 		}
 		
 		if (whereClauses.size() > 0) {
 			String where = Strings.implode(whereClauses, " OR ");
-			return accountDAO.findWhere(where);
+			return contractorAccountDAO.findWhere(where);
 		}
 		
 		return null;

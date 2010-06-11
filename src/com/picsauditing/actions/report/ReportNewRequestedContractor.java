@@ -9,19 +9,18 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterNewContractor;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -31,13 +30,11 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
 	protected StateDAO stateDAO;
 	protected CountryDAO countryDAO;
-	protected AccountUserDAO accountUserDAO;
 	protected UserDAO userDAO;
 
-	public ReportNewRequestedContractor(StateDAO stateDAO, CountryDAO countryDAO, AccountUserDAO accountUserDAO, UserDAO userDAO) {
+	public ReportNewRequestedContractor(StateDAO stateDAO, CountryDAO countryDAO, UserDAO userDAO) {
 		this.stateDAO = stateDAO;
 		this.countryDAO = countryDAO;
-		this.accountUserDAO = accountUserDAO;
 		this.userDAO = userDAO;
 	}
 
@@ -55,8 +52,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 
-		if (permissions.isContractor())
-			throw new NoRightsException("PICS or Operator");
+		tryPermissions(OpPerms.RequestNewContractor);
 		
 		filter.setShowOperator(false);
 		filter.setShowTrade(false);
@@ -100,17 +96,13 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				filter.setShowConAuditor(true);
 				filter.setShowState(true);
 				filter.setShowCountry(true);
-				List<AccountUser> accountUsers = getAccountUsers();
-				if(accountUsers.size() > 0) {
-					List<Integer> accUsers = new ArrayList<Integer>();
-					for(AccountUser accountUser : accountUsers) {
-						accUsers.add(accountUser.getAccount().getId());
-					}
-					sql.addWhere("op.id IN (" + Strings.implode(accUsers, ",")+")");
-				}	
+				
+				if (isAccountManager()) {
+					sql.addJoin("LEFT JOIN account_user au ON au.userID = " + permissions.getUserId() 
+							+ " AND au.accountID = cr.requestedByID");
+					sql.addWhere("au.role = 'PICSAccountRep'");
+				}
 			}
-			//sql.addWhere("cr.handledBy = 'PICS'");
-			//sql.addWhere("cr.open = 1");
 		}
 
 		sql.setFromTable("contractor_registration_request cr");
@@ -200,10 +192,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			setFiltered(true);
 		}
 		
-		// Since the default value is 0, we're going to give the open and closed statuses
-		// the values 1 and 2 until I figure out a way to make this better
-		if (filterOn(f.getOpen(), 0)) {
-			sql.addWhere("cr.open = " + (f.getOpen() - 1));
+		if (filterOn(f.getOpen())) {
+			sql.addWhere("cr.open = " + f.getOpen());
 			setFiltered(true);
 		}
 
@@ -271,7 +261,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
 	}
 	
-	public List<AccountUser> getAccountUsers() {
-		return accountUserDAO.findByUser(permissions.getUserId());
+	public boolean isAccountManager() {
+		AccountUserDAO auDAO = (AccountUserDAO) SpringUtils.getBean("AccountUserDAO");
+		return auDAO.findByUser(permissions.getUserId()).size() > 0;
 	}
 }

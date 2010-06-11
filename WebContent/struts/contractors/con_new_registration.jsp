@@ -131,14 +131,15 @@ function getMatches(requestID) {
 				<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
 			</s:if>
 		</li>
-		<li><label for="email">Email:</label>
-			<table>
+		<li>
+			<table style="display: inline;">
 				<tr>
+					<td><label for="email">Email:</label></td>
 					<td><nobr>
 						<s:textfield name="newContractor.email" size="30" id="email" />
 						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
-							<button onclick="$('#email_preview').toggle(); return false;" class="picsbutton">Edit Email</button>
-							<button type="submit" name="button" class="picsbutton" value="Send Email">Send Email</button>
+							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="Edit Email" />
+							<input type="submit" name="button" class="picsbutton" value="Send Email" />
 							<s:if test="formsViewable && attachment == null && forms.size() > 0">
 								<a href="#operatorForms" class="picsbutton fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
 							</s:if>

@@ -2,15 +2,15 @@ package com.picsauditing.actions.report;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
@@ -19,9 +19,14 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
 public class ReportNewReqConImport extends PicsActionSupport {
 	private File file;
 	protected String fileContentType = null;
@@ -43,20 +48,17 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (button != null) {
 			if (button.startsWith("Save")) {
 				String extension = null;
 				if (file != null && file.length() > 0) {
 					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-					if (!extension.equals("xls")) {
+					if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
 						file = null;
-						addActionError("Bad File Extension");
+						addActionError("Must be an Excel file");
 						return SUCCESS;
 					}
-
+					
 					importData(file);
 				}
 			}
@@ -101,137 +103,99 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		this.fileName = fileName;
 	}
 
-	private void importData(File file) throws ParseException {
-		// Example from
-		// http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/usermodel/examples/HSSFReadWrite.java
-		HSSFWorkbook wb = null;
-
+	private void importData(File file) {
+		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
+		Workbook wb = null;
+		
 		try {
-			wb = new HSSFWorkbook(new FileInputStream(file));
-			// cell.toString on date fields returns something like 01-Jan-2010
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-
-			for (int k = 0; k < wb.getNumberOfSheets(); k++) {
-				HSSFSheet sheet = wb.getSheetAt(k);
-				int rows = sheet.getPhysicalNumberOfRows();
-
-				for (int r = 0; r < rows; r++) {
-					HSSFRow row = sheet.getRow(r);
-					// If the row is blank or the header
-					if (row == null || (row.getCell(0) != null && row.getCell(0).getStringCellValue().equals("Account Name")))
-						continue;
-
-					ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
-					for (int c = 0; c < 15; c++) {
-						HSSFCell cell = row.getCell(c);
-
-						if (cell == null)
-							continue;
-
-						String value = null;
-
-						// Date fields that would otherwise be mistaken for math
-						if (c == 2 || c == 13)
-							value = cell.toString();
-						else {
-							switch (cell.getCellType()) {
-							case HSSFCell.CELL_TYPE_NUMERIC:
-								value = "" + (int) cell.getNumericCellValue();
-								break;
-							default:
-								value = cell.getStringCellValue();
-							}
-						}
-
-						if (value.equals(""))
-							continue;
-						// Debugging
-						System.out.println("[" + c + "]: " + value);
-						
-						// Update the relevant field?
-						switch (c) {
-						case 0:
-							crr.setName(value);
-							break;
-						case 1:
-							crr.setContact(value);
-							break;
-						case 2:
-							crr.setPhone(value);
-							break;
-						case 3:
-							crr.setEmail(value);
-							break;
-						case 4:
-							crr.setTaxID(value);
-							break;
-						case 5:
-							crr.setAddress(value);
-							break;
-						case 6:
-							crr.setCity(value);
-							break;
-						case 7:
-							crr.setState(stateDAO.find(value));
-							break;
-						case 8:
-							crr.setZip(value);
-							break;
-						case 9:
-							crr.setCountry(countryDAO.find(value));
-							break;
-						case 10:
-							crr.setRequestedBy((OperatorAccount) accountDAO.find(Integer.parseInt(value)));
-							break;
-						case 11:
-							crr.setRequestedByUser(userDAO.find(Integer.parseInt(value)));
-							break;
-						case 12:
-							crr.setRequestedByUserOther(value);
-							break;
-						case 13:
-							crr.setDeadline((Date) sdf.parse(value));
-							break;
-						case 14:
-							crr.setNotes(value);
-						}
-					}
-
-					Date now = new Date();
-					crr.setCreatedBy(getUser());
-					crr.setUpdatedBy(getUser());
-					crr.setCreationDate(now);
-					crr.setUpdateDate(now);
-
-					if (crr.getRequestedBy() == null) {
-						crr = null;
-						addActionError("No Requested by Operator entered in row " + (r + 1));
-						return;
-					}
+			wb = WorkbookFactory.create(new FileInputStream(file));
+			
+			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+				Sheet sheet = wb.getSheetAt(i);
+				
+				for (int j = 0; j < sheet.getLastRowNum(); j++) {
+					Row row = sheet.getRow(j);
 					
-					if (crr.getRequestedByUser() == null && crr.getRequestedByUserOther() == null) {
-						crr = null;
-						addActionError("No Requested by User entered in row " + (r + 1));
-						return;
-					}
-					// Remove the typed in user name if a user in PICS is selected
-					else if (crr.getRequestedByUser() != null && crr.getRequestedByUserOther() != null)
+					if (row.getCell(0).getRichStringCellValue().getString().contains("Account"))
+						continue;
+					
+					ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
+					crr.setName(isEmpty(row, 0) == true ? null : getValue(row, 0).toString());
+					crr.setContact(isEmpty(row, 1) == true ? null : getValue(row, 1).toString());
+					crr.setPhone(isEmpty(row, 2) == true ? null : getValue(row, 2).toString());
+					crr.setEmail(isEmpty(row, 3) == true ? null : getValue(row, 3).toString());
+					crr.setTaxID(isEmpty(row, 4) == true ? null : getValue(row, 4).toString());
+					crr.setAddress(isEmpty(row, 5) == true ? null : getValue(row, 5).toString());
+					crr.setCity(isEmpty(row, 6) == true ? null : getValue(row, 6).toString());
+					crr.setState(isEmpty(row, 7) == true ? null : (State) getValue(row, 7));
+					crr.setZip(isEmpty(row, 8) == true ? null : getValue(row, 8).toString());
+					crr.setCountry(isEmpty(row, 9) == true ? null : (Country) getValue(row, 9));
+					crr.setRequestedBy(isEmpty(row, 10) == true ? null : (OperatorAccount) getValue(row, 10));
+					crr.setRequestedByUser(isEmpty(row, 11) == true ? null : (User) getValue(row, 11));
+					crr.setRequestedByUserOther(isEmpty(row, 12) == true ? null : getValue(row, 12).toString());
+					crr.setDeadline(isEmpty(row, 13) == true ? null : (Date) getValue(row, 13));
+					crr.setNotes(isEmpty(row, 14) == true ? null : getValue(row, 14).toString());
+					
+					if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
 						crr.setRequestedByUserOther(null);
 					
-					// check other required fields
-					if (crr.getName() == null || crr.getContact() == null || crr.getPhone() == null
-							|| crr.getState() == null || crr.getCountry() == null || crr.getDeadline() == null) {
-						crr = null;
-						addActionError("Please enter required information in row " + (r + 1));
-						return;
-					}
-
-					crrDAO.save(crr);
-					crrDAO.clear();
+					if (Strings.isEmpty(crr.getName()) || Strings.isEmpty(crr.getContact()) 
+							|| crr.getState() == null || crr.getCountry() == null || crr.getRequestedBy() == null)
+						addActionError("Missing required fields in row " + j);
+					
+					if (Strings.isEmpty(crr.getPhone()) && Strings.isEmpty(crr.getEmail()))
+						addActionError("Contact information is required. Missing phone and/or email in row " + j);
+					
+					if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
+						addActionError("Missing requested by user field in row " + j);
+					
+					requests.add(crr);
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			addActionError("Error reading in excel file, please check the format");
 		}
+		
+		if (getActionErrors().size() == 0) {
+			addActionMessage("File successfully imported");
+			
+			for (ContractorRegistrationRequest crr : requests) {
+				crrDAO.save(crr);
+			}
+		}
+	}
+	
+	private boolean isEmpty(Row row, int cell) {
+		if (row.getCell(cell) != null) {
+			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_STRING)
+				return Strings.isEmpty(row.getCell(cell).getRichStringCellValue().getString());
+			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
+				return row.getCell(cell).getNumericCellValue() == 0;
+		}
+		
+		return true;
+	}
+	
+	private Object getValue(Row row, int cell) {
+		Object value = null;
+		if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_STRING)
+			value = row.getCell(cell).getRichStringCellValue().getString();
+		if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
+			value = row.getCell(cell).getNumericCellValue();
+		
+		if (cell == 7)
+			value = stateDAO.find(value.toString());
+		if (cell == 9)
+			value = countryDAO.find(value.toString());
+		if (cell == 10)
+			value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
+		if (cell == 11)
+			value = userDAO.find((int) Double.parseDouble(value.toString()));
+		if (cell == 13)
+			value = row.getCell(cell).getDateCellValue();
+		
+		System.out.println(cell + ": " + value.toString());
+		
+		return value;
 	}
 }

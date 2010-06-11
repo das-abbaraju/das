@@ -44,7 +44,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 	protected User user;
 	protected String password;
 	protected String confirmPassword;
-	protected int rID;
+	protected int requestID;
 
 	protected UserDAO userDAO;
 	protected AuditQuestionDAO auditQuestionDAO;
@@ -74,10 +74,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 			addActionError("You must logout before trying to register a new contractor account");
 			return BLANK;
 		}
-
+		
 		if ("request".equalsIgnoreCase(button)) {
-			if (rID > 0) {
-				ContractorRegistrationRequest crr = requestDAO.find(rID);
+			if (requestID == 0)
+				requestID = getParameter("requestID");
+			
+			if (requestID > 0) {
+				ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
 				if (crr.getContractor() == null) {
 					contractor = new ContractorAccount();
@@ -202,8 +205,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 			ActionContext.getContext().getSession().put("permissions", permissions);
 
 			// Update the Registration Request
-			if (rID > 0) {
-				ContractorRegistrationRequest crr = requestDAO.find(rID);
+			if (requestID > 0) {
+				ContractorRegistrationRequest crr = requestDAO.find(requestID);
 				crr.setContractor(contractor);
 				crr.setMatchCount(1);
 				crr.setOpen(false);
@@ -289,13 +292,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
-
-	public int getrID() {
-		return rID;
+	
+	public int getRequestID() {
+		return requestID;
 	}
-
-	public void setrID(int rID) {
-		this.rID = rID;
+	
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
 	}
 
 	public void addAuditCategories(ContractorAudit audit, int CategoryID) {

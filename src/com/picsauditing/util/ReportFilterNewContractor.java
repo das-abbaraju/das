@@ -19,7 +19,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showHandledBy = false;
 	protected boolean showFollowUpDate = true;
 	
-	protected int open;
+	protected int open = 1;
 	protected String handledBy;
 	protected Date followUpDate;
 	

@@ -25,9 +25,9 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 		return a;
 	}
 	
-	public List<ContractorRegistrationRequest> findByCSR(int csrID) {
+	public List<ContractorRegistrationRequest> findByCSR(int csrID, boolean open) {
 		Query query = em.createQuery("FROM ContractorRegistrationRequest c WHERE c.state IN " +
-				"(SELECT s from State s where s.csr.id = ?) ORDER BY c.deadline");
+				"(SELECT s from State s where s.csr.id = ?) AND c.open = 1 ORDER BY c.deadline");
 		query.setParameter(1, csrID);
 		
 		return query.getResultList();

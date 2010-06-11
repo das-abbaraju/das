@@ -60,7 +60,7 @@ $(function(){
 <s:include value="registrationHeader.jsp"></s:include>
 <span class="redMain">* - Indicates required information</span>
 <s:form method="POST">
-<s:hidden name="rID" />
+<s:hidden name="requestID" />
 	<br clear="all" />
 	<table>
 		<tr>
