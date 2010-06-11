@@ -284,6 +284,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 			newContractor.setAuditColumns(permissions);
 			crrDAO.save(newContractor);
+			return "backToReport";
 		}
 		return SUCCESS;
 	}
@@ -304,10 +305,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.requestID = requestID;
 	}
 
-	public List<OperatorAccount> getOperatorsWithCorporate() {
+	public List<OperatorAccount> getOperatorsList() {
 		if (permissions == null)
 			return null;
-		return operatorAccountDAO.findWhere(true, "", permissions);
+		return operatorAccountDAO.findWhere(false, "", permissions);
 	}
 
 	public List<User> getUsersList(int accountID) {
@@ -332,6 +333,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public State getState() {
 		return state;
+	}
+	
+	public int getMoo(int x){
+		return x + 1;
 	}
 
 	public void setState(State state) {

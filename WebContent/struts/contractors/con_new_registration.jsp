@@ -40,7 +40,7 @@ $(document).ready(function() {
 
 $(function() {
 	changeState($("#newContractorCountry").val());
-	$('.datepicker').datepicker();
+	$('.datepicker').datepicker({ minDate: new Date() });
 	$('#matchedContractor').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,
@@ -66,6 +66,19 @@ function checkUserOther() {
 		$("#requestedOther").show();
 	else
 		$("#requestedOther").hide();
+}
+
+function checkDate(){
+	var date = $('.datepicker').val();
+	date = new Date(date);
+	if(date==null){
+		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
+		$('.datepicker').val(newDate);
+	}
+	if(date < new Date()){
+		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
+		$('.datepicker').val(newDate);
+	}
 }
 
 function addAttachment(formName, filename) {
@@ -171,23 +184,23 @@ function getMatches(requestID) {
 	</fieldset>
 	<fieldset class="form"><legend><span>Primary Address</span></legend>
 	<ol>
-		<li><label for="address">Address:</label>
-			<s:textfield name="newContractor.address" size="35" id="address" /></li>
-		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" /></li>
-		<li><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /></li>
-		<li><label for="newContractorCountry">Country:</label>
+		 <li><label for="newContractorCountry">Country:</label>
 			<s:select
 				list="countryList" name="country.isoCode" id="newContractorCountry"
 				listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
 				onchange="countryChanged(this.value)" />
 			<span class="redMain">*</span></li>
 		<li id="state_li"></li>
+		<li><label for="address">Address:</label>
+			<s:textfield name="newContractor.address" size="35" id="address" /></li>
+		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" /></li>
+		<li><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /></li>		
 	</ol>
 	</fieldset>
 	<fieldset class="form"><legend><span>User Information</span></legend>
 	<ol>
 		<li><label>Requested By Account:</label>
-			<s:select list="operatorsWithCorporate" headerKey="0" headerValue="- Select a Operator -"
+			<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
 				name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
 				value="%{newContractor.requestedBy.id}" />
 			<span class="redMain">*</span>
@@ -207,9 +220,9 @@ function getMatches(requestID) {
 		<s:else>
 			<li id="loadUsersList"></li>
 		</s:else>
-		<li><label>Registration Deadline:</label> <input name="newContractor.deadline" type="text"
+		<li><label>Registration Deadline:</label> <input id="regDate" name="newContractor.deadline" type="text"
 			class="forms datepicker" size="10"
-			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" />
+			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
 		</li>
 		<s:if test="newContractor.id > 0">
 			<li><label>Last Contacted By:</label>
@@ -220,9 +233,11 @@ function getMatches(requestID) {
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
 				cols="40" rows="7" /></li>
+		<s:if test="permissions.admin">
 		<li><label>Who should follow up?:</label>
 			<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
 		</li>
+		</s:if>
 		<s:if test="newContractor.id > 0">
 			<li><label># of Times Contacted:</label>
 				<s:property value="newContractor.contactCount"/></li>

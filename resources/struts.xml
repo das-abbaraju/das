@@ -408,6 +408,9 @@
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
+			<result name="backToReport" type="redirectAction">
+				<param name="actionName">ReportNewRequestedContractor</param>
+			</result>
 		</action>
 		
 		<action name="RequestNewContractorAjax"
