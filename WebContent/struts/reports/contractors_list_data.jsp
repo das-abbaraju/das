@@ -65,8 +65,8 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><pics:permission perm="ContractorDetails"><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
 					rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
-					class="contractorQuick account<s:property value="get('status')" />" title="<s:property value="get('name')" />"
-					></pics:permission><s:property value="get('name')" /><pics:permission perm="ContractorDetails"></a></pics:permission></td>
+					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>">
+					</pics:permission><s:property value="get('name')"/><pics:permission perm="ContractorDetails"></a></pics:permission></td>
 			<pics:permission perm="AllContractors">
 				<td><a
 					href="ContractorEdit.action?id=<s:property value="get('id')"/>"

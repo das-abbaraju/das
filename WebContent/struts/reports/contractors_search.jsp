@@ -45,6 +45,7 @@
 			<td>
 				<s:if test="%{get('type').equals('Contractor')}">
 					<a href="ContractorView.action?id=<s:property value="get('id')"/>"
+					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 					><s:property value="get('name')" /></a>
 					<s:if test="get('dbaName').length() > 0"><br />DBA: <s:property value="get('dbaName')"/></s:if>
 				</s:if>
