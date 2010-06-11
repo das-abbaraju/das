@@ -1,32 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<script type="text/javascript">
-function sortTable(sortBy) {
-	var tbody = $('#requestedContractor table.report').find('tbody');
-	var rows = $(tbody).children();
-	$(tbody).empty();
-
-	rows.sort(function(a, b) {
-		if (sortBy == 'call') {
-			var a1 = new Date($(a).find('.' + sortBy).text());
-			var b1 = new Date($(b).find('.' + sortBy).text());
-		} else {
-			var a1 = $(a).find('.' + sortBy).text().toUpperCase();
-			var b1 = $(b).find('.' + sortBy).text().toUpperCase();
-		}
-		
-		return (a1 < b1) ? -1 : (a1 > b1) ? 1 : 0;
-	});
-
-	$.each(rows, function (index, row) { $(tbody).append(row); });
-}
-</script>
 <table class="report" id="requestedContractor">
 	<thead>
 		<tr>
 			<td>Requested Contractor</td>
 			<td>Requested By</td>
 			<td>Deadline</td>
-			<td><a href="#" onclick="sortTable('call'); return false;">Last Call Date</a></td>
+			<td>Last Call Date</td>
 		</tr>
 	</thead>
 	<s:iterator value="requestedContractors">

@@ -139,8 +139,8 @@ function getMatches(requestID) {
 		<li><label>Contact
 			Name:</label> <s:textfield name="newContractor.contact" /><span class="redMain">*</span></li>
 		<li><label>Phone:</label>
-			<s:textfield name="newContractor.phone" size="20" /><span class="redMain">*</span>
-			<s:if test="newContractor.id > 0">
+			<s:textfield name="newContractor.phone" size="20" /><span class="redMain">*<s:if test="newContractor.phone == null && newContractor.email == null"> (Phone <i>or</i> Email must be filled out)</s:if></span>
+			<s:if test="newContractor.id > 0 && newContractor.phone != null">
 				<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
 			</s:if>
 		</li>
@@ -149,7 +149,7 @@ function getMatches(requestID) {
 				<tr>
 					<td><label for="email">Email:</label></td>
 					<td><nobr>
-						<s:textfield name="newContractor.email" size="30" id="email" />
+						<s:textfield name="newContractor.email" size="30" id="email" /><span class="redMain">*</span>
 						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0">
 							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="Edit Email" />
 							<input type="submit" name="button" class="picsbutton" value="Send Email" />

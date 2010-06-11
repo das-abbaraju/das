@@ -149,10 +149,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					if (state == null || Strings.isEmpty(state.getIsoCode()))
 						addActionError("Please select a State");
 				}
-				if (Strings.isEmpty(newContractor.getPhone()))
-					addActionError("Please fill a Phone Number");
+				// One of phone OR email is required.
+				if (Strings.isEmpty(newContractor.getPhone()) && Strings.isEmpty(newContractor.getEmail()))
+					addActionError("Contact information is required. Please enter in a phone number and/or email address.");
 				if (!Strings.isEmpty(newContractor.getEmail()) && !Strings.isValidEmail(newContractor.getEmail()))
 					addActionError("Please fill in a Valid Email Address");
+				// There are errors, just exit out
 				if (getActionErrors().size() > 0)
 					return SUCCESS;
 
