@@ -146,7 +146,7 @@
 <div class="error">
 	Oops!! An unexpected error just occurred.<br>
 </div>
-<% if (!debugging) { %>
+<% if (debugging) { %>
 	<p><%=stacktrace %></p>
 <% } else { %>
 	<form id="response_form" method="post" action="" style="width:450px;">

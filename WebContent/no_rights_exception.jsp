@@ -93,7 +93,7 @@
 <h1>You do not have permission to access this page.</h1>
 <div class="alert"><%=message%></div>
 
-<% if (!debugging) { %>
+<% if (debugging) { %>
 	<p><%=stacktrace %></p>
 <% } else { %>
 	<div style="padding-bottom:15px;" >
