@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -30,6 +31,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -70,6 +72,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String emailBody;
 	protected List<ContractorAccount> potentialMatches;
 	protected String conName;
+	protected boolean watched = true;
 
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
@@ -105,6 +108,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void prepare() throws Exception {
 		getPermissions();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, 2);
+		newContractor.setDeadline(cal.getTime());
 
 		requestID = getParameter("requestID");
 		if (requestID > 0) {
@@ -188,6 +195,16 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						(newContractor.getContractor() == null || conName != newContractor.getContractor().getName())) {
 					ContractorAccount con = contractorAccountDAO.findConID(conName);
 					newContractor.setContractor(con);
+					
+					if (watched && newContractor.getRequestedByUser() != null) {
+						ContractorWatch watch = new ContractorWatch();
+						watch.setAuditColumns(permissions);
+						watch.setContractor(con);
+						watch.setUser(newContractor.getRequestedByUser());
+						crrDAO.save(watch);
+					}
+				} else if (Strings.isEmpty(conName)) {
+					newContractor.setContractor(null);
 				}
 				
 				potentialMatches = runGapAnalysis();
@@ -203,6 +220,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					if (potentialMatches.size() != newContractor.getMatchCount()) {
 						newContractor.setMatchCount(potentialMatches.size());
 						crrDAO.save(newContractor);
+						crrDAO.clear();
 					}
 					
 					return "matches";
@@ -217,6 +235,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
+				String contacted = maskDateFormat(new Date()) + " - " + permissions.getName() + " - ";
+				
 				if (button.equals("Send Email")) {
 					// Point to the contractor registration page with some information pre-filled
 					String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button=" +
@@ -282,12 +302,18 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 							}
 						}
 					}
+					
+					contacted += "Contacted by email.";
+				} else {
+					contacted += "Contacted by phone.";
 				}
 				
+				newContractor.setNotes(contacted + "\n\n" + newContractor.getNotes());
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
 				newContractor.setLastContactDate(new Date());
 			}
+			
 			newContractor.setAuditColumns(permissions);
 			crrDAO.save(newContractor);
 			return "backToReport";
@@ -388,7 +414,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setConName(String conName) {
 		this.conName = conName;
 	}
-
+	
 	public int getOpID() {
 		return opID;
 	}
@@ -407,6 +433,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setFilenames(String[] filenames) {
 		this.filenames = filenames;
+	}
+	
+	public boolean isWatched() {
+		return watched;
+	}
+	
+	public void setWatched(boolean watched) {
+		this.watched = watched;
 	}
 
 	public String getEmailSubject() {
@@ -494,7 +528,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					+ "%' OR a.nameIndex LIKE '%" + Strings.indexName(newContractor.getName()) 
 					+ "%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(newContractor.getName()) + "%'");
 		if (!Strings.isEmpty(newContractor.getTaxID()))
-			whereClauses.add("a.taxID = " + Utilities.escapeQuotes(newContractor.getTaxID()));
+			whereClauses.add("a.taxId LIKE '%" + Utilities.escapeQuotes(newContractor.getTaxID()) + "%'");
 		if (!Strings.isEmpty(newContractor.getAddress()))
 			whereClauses.add("a.address LIKE '%" + Utilities.escapeQuotes(newContractor.getAddress()) + "%'");
 		if (!Strings.isEmpty(newContractor.getPhone()))

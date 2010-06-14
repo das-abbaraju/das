@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +61,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 					}
 					
 					importData(file);
+				} else if (file == null || file.length() == 0) {
+					addActionError("No file was selected");
 				}
 			}
 		}
@@ -120,27 +123,30 @@ public class ReportNewReqConImport extends PicsActionSupport {
 						continue;
 					
 					ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
-					crr.setName(isEmpty(row, 0) == true ? null : getValue(row, 0).toString());
-					crr.setContact(isEmpty(row, 1) == true ? null : getValue(row, 1).toString());
-					crr.setPhone(isEmpty(row, 2) == true ? null : getValue(row, 2).toString());
-					crr.setEmail(isEmpty(row, 3) == true ? null : getValue(row, 3).toString());
-					crr.setTaxID(isEmpty(row, 4) == true ? null : getValue(row, 4).toString());
-					crr.setAddress(isEmpty(row, 5) == true ? null : getValue(row, 5).toString());
-					crr.setCity(isEmpty(row, 6) == true ? null : getValue(row, 6).toString());
-					crr.setState(isEmpty(row, 7) == true ? null : (State) getValue(row, 7));
-					crr.setZip(isEmpty(row, 8) == true ? null : getValue(row, 8).toString());
-					crr.setCountry(isEmpty(row, 9) == true ? null : (Country) getValue(row, 9));
-					crr.setRequestedBy(isEmpty(row, 10) == true ? null : (OperatorAccount) getValue(row, 10));
-					crr.setRequestedByUser(isEmpty(row, 11) == true ? null : (User) getValue(row, 11));
-					crr.setRequestedByUserOther(isEmpty(row, 12) == true ? null : getValue(row, 12).toString());
-					crr.setDeadline(isEmpty(row, 13) == true ? null : (Date) getValue(row, 13));
-					crr.setNotes(isEmpty(row, 14) == true ? null : getValue(row, 14).toString());
+					crr.setName((String) getValue(row, 0));
+					crr.setContact((String) getValue(row, 1));
+					crr.setPhone((String) getValue(row, 2));
+					crr.setEmail((String) getValue(row, 3));
+					crr.setTaxID((String) getValue(row, 4));
+					crr.setAddress((String) getValue(row, 5));
+					crr.setCity((String) getValue(row, 6));
+					crr.setState((State) getValue(row, 7));
+					crr.setZip((String) getValue(row, 8));
+					crr.setCountry((Country) getValue(row, 9));
+					crr.setRequestedBy((OperatorAccount) getValue(row, 10));
+					crr.setRequestedByUser((User) getValue(row, 11));
+					crr.setRequestedByUserOther((String) getValue(row, 12));
+					crr.setDeadline((Date) getValue(row, 13));
+					crr.setNotes((String) getValue(row, 14));
+					
+					if (crr.getName() == null) // Assuming that no company name = empty row
+						continue;
 					
 					if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
 						crr.setRequestedByUserOther(null);
 					
-					if (Strings.isEmpty(crr.getName()) || Strings.isEmpty(crr.getContact()) 
-							|| crr.getState() == null || crr.getCountry() == null || crr.getRequestedBy() == null)
+					if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
+							|| crr.getRequestedBy() == null)
 						addActionError("Missing required fields in row " + j);
 					
 					if (Strings.isEmpty(crr.getPhone()) && Strings.isEmpty(crr.getEmail()))
@@ -148,6 +154,12 @@ public class ReportNewReqConImport extends PicsActionSupport {
 					
 					if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
 						addActionError("Missing requested by user field in row " + j);
+					
+					if (crr.getDeadline() == null) {
+						Calendar cal = Calendar.getInstance();
+						cal.add(Calendar.MONTH, 2);
+						crr.setDeadline(cal.getTime());
+					}
 					
 					requests.add(crr);
 				}
@@ -157,44 +169,41 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		}
 		
 		if (getActionErrors().size() == 0) {
-			addActionMessage("File successfully imported");
-			
 			for (ContractorRegistrationRequest crr : requests) {
 				crrDAO.save(crr);
 			}
+			
+			addActionMessage("Successfully imported <b>" + requests.size() + "</b> registration request" + 
+					(requests.size() == 1 ? "" : "s"));
 		}
-	}
-	
-	private boolean isEmpty(Row row, int cell) {
-		if (row.getCell(cell) != null) {
-			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_STRING)
-				return Strings.isEmpty(row.getCell(cell).getRichStringCellValue().getString());
-			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
-				return row.getCell(cell).getNumericCellValue() == 0;
-		}
-		
-		return true;
 	}
 	
 	private Object getValue(Row row, int cell) {
 		Object value = null;
-		if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_STRING)
-			value = row.getCell(cell).getRichStringCellValue().getString();
-		if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
-			value = row.getCell(cell).getNumericCellValue();
 		
-		if (cell == 7)
-			value = stateDAO.find(value.toString());
-		if (cell == 9)
-			value = countryDAO.find(value.toString());
-		if (cell == 10)
-			value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
-		if (cell == 11)
-			value = userDAO.find((int) Double.parseDouble(value.toString()));
-		if (cell == 13)
-			value = row.getCell(cell).getDateCellValue();
-		
-		System.out.println(cell + ": " + value.toString());
+		if (row.getCell(cell) != null) {
+			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
+				value = row.getCell(cell).getNumericCellValue();
+			else
+				value = row.getCell(cell).getRichStringCellValue().getString();
+			
+			if (cell == 7 && !Strings.isEmpty(value.toString()))
+				value = stateDAO.find(value.toString());
+			if (cell == 9 && !Strings.isEmpty(value.toString()))
+				value = countryDAO.find(value.toString());
+			if (cell == 10 && !Strings.isEmpty(value.toString()))
+				value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
+			if (cell == 11 && !Strings.isEmpty(value.toString()))
+				value = userDAO.find((int) Double.parseDouble(value.toString()));
+			if (cell == 13 && !Strings.isEmpty(value.toString()))
+				value = row.getCell(cell).getDateCellValue();
+			
+			if (isDebugging() && value != null && !value.toString().equals(""))
+				System.out.println(cell + ": " + value.toString());
+			
+			if (value != null && value.toString() == "")
+				value = null;
+		}
 		
 		return value;
 	}

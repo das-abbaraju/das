@@ -19,7 +19,7 @@ function showExcelUpload() {
 </script>
 </head>
 <body>
-<h1>Contractor Registration Request</h1>
+<h1>Contractor Registration Requests</h1>
 
 <form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 	<div style="padding: 5px;">

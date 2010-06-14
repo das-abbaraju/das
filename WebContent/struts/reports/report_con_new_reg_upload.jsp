@@ -22,6 +22,7 @@ function closePage() {
 		<div id="content">
 			<h1>Upload Excel File</h1>
 			<s:include value="../actionMessages.jsp" />
+			<a href="images/RequestNewContractors.xls">Template Excel file</a>
 			<div>
 			<s:form enctype="multipart/form-data" method="POST">
 				<div style="background-color: #F9F9F9;">
