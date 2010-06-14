@@ -128,7 +128,7 @@ function updateExpDate() {
 </li>
 <s:if test="contractor.status.active || permissions.admin">
 	<li><label>
-			<a title="Click here to view the PICS Contractor Agreement" style="text-decoration:none;" href="#" onClick="window.open('ContractorAgreement.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">Contractor Agreement:</a>
+			<a title="Click here to view the PICS Contractor Agreement" style="text-decoration:none;" href="#" onClick="window.open('ContractorAgreementAjax.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">Contractor Agreement:</a>
 		</label><s:checkbox name="contractor.agreed" disabled="true" />
 			<s:if test="contractor.agreementDate != null">
 			On <s:date name="contractor.agreementDate" format="MM/dd/yy" />, <s:property value="contractor.agreedBy.name" /> agreed to the terms of the PICS Contractor Agreement.
@@ -136,7 +136,7 @@ function updateExpDate() {
 	</li>
 	<s:if test="contractor.agreementDate != null && !contractor.agreementInEffect">
 		<li><label>&nbsp;</label>
-			<span style="color:grey;">We periodically update our Contractor User Agreement. Please review the <a title="Click here to view the latest PICS Contractor Agreement" href="ContractorAgreement.action?id=<s:property value="contractor.id"/>" rel="facebox">latest terms</a> 
+			<span style="color:grey;">We periodically update our Contractor User Agreement. Please review the <a title="Click here to view the latest PICS Contractor Agreement" href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">latest terms</a> 
 			and 
 			<s:if test="!permissions.admin &&
 						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
@@ -158,7 +158,7 @@ function updateExpDate() {
 	Privacy Policy </a> |
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
 	Refund Policy </a> 	|
-	<a title="Click here to view the PICS Contractor Agreement" href="ContractorAgreement.action?id=<s:property value="contractor.id"/>" rel="facebox">
+	<a title="Click here to view the PICS Contractor Agreement" href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">
 	Contractor Agreement </a>
 </li>
 <s:if test="contractor.newMembershipLevel.amount > 500 || permissions.admin">
