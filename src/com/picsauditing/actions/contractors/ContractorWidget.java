@@ -41,6 +41,8 @@ public class ContractorWidget extends ContractorActionSupport {
 	private AppPropertyDAO appPropDAO;
 
 	protected boolean reminderTask = false;
+	
+	protected boolean showAgreement = false;
 
 	protected boolean openReq = false;
 
@@ -56,6 +58,14 @@ public class ContractorWidget extends ContractorActionSupport {
 		findContractor();
 		return SUCCESS;
 	}
+	
+	public void setShowAgreement(boolean showAgreement) {
+		this.showAgreement = showAgreement;
+	}
+	
+	public boolean getShowAgreement(){
+		return showAgreement;
+	}
 
 	private List<String> openTasks = null;
 
@@ -70,10 +80,12 @@ public class ContractorWidget extends ContractorActionSupport {
 					&& !contractor.isAgreementInEffect()
 					&& (permissions.hasPermission(OpPerms.ContractorBilling)
 							|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
-							.hasPermission(OpPerms.ContractorSafety)))
+							.hasPermission(OpPerms.ContractorSafety))){
+				showAgreement = true;
 				openTasks
-						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"#\" onClick=\"window.open('ContractorAgreement.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;\">"
+						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"ContractorAgreement.action?id="+contractor.getId()+"\" rel=\"facebox\" >"
 								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> to accept the terms of the Agreement.");
+			}
 
 			if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.isAdmin()) {
 				if (contractor.getUsers().size() == 1

@@ -74,7 +74,6 @@ function updateExpDate() {
 		</s:iterator>
 	</div>
 </s:if>
-<div id="testinfo" style="display:none;"></div>
 <s:form id="save" method="POST">
 	<s:hidden name="id" />
 <fieldset class="form">

@@ -101,9 +101,9 @@
 			onchange="saveAnswer('%{#q.id}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Country'">
-		<s:select list="countryList" value="locale.country" name="answer%{#q.id}" 
+		<s:select list="countryList" value="%{#a.answer}" name="answer%{#q.id}" 
 			listKey="isoCode" listValue="english"
-			headerKey="" headerValue="- Country -"
+			headerKey="US" headerValue="United States"
 			onchange="saveAnswer('%{#q.id}', this);"></s:select>
 	</s:if>
 	<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number'">

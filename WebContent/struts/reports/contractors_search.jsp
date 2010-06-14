@@ -51,6 +51,7 @@
 				</s:if>
 				<s:else>
 					<a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>"
+					class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 					><s:property value="get('name')" /></a>
 				</s:else>
 			</td>

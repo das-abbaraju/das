@@ -18,6 +18,18 @@
   background:url(./br.png);
 }
 
+#facebox #main{
+	margin: 0 0 0 0;
+}
+
+.content #main{
+	margin: 0 0 0 0;
+}
+
+#facebox .b .popup .body .content #main{
+	margin: 0 0 0 0; 	
+}
+
 #facebox {
   position: absolute;
   top: 0;

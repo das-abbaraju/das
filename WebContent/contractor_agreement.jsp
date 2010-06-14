@@ -1,10 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<html>
-<head>
-<title>Contractor Agreement Statement</title>
-</head>
-<body>
 <h1 align="center">Contractor Agreement Statement</h1>
 
 <div align="center">
@@ -102,8 +97,5 @@ contractor list.</p><br/>
 	</s:if>
 </div>
 </div>
-
-</body>
-</html>
 
 

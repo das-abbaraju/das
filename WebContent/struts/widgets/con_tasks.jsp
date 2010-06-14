@@ -13,7 +13,6 @@
 		You have <s:property value="openTasks.size" /> more outstanding tasks.
 	</s:if>
 </label>
-
 <ol>
 <s:iterator value="openTasks">
 	<li><s:property escape="false"/></li>
@@ -21,6 +20,16 @@
 </ol>
 <s:if test="reminderTask">
 	<label>Reminder : </label>Please <a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">update your facility list</a>
+</s:if>
+<s:if test="showAgreement">
+<script type="text/javascript">
+$(function() {
+	$('a[rel*=facebox]').facebox({
+ 		loading_image : 'loading.gif',
+ 		close_image : 'closelabel.gif'
+ 	});
+ });
+</script>
 </s:if>
 </body>
 </html>

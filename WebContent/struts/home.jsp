@@ -15,7 +15,6 @@ function hidePanel(panel) {
 	
 	$('#'+panel+"_content").hide();
 }
-
 function showPanel(panel) {
 	$('#'+panel+"_hide").show();
 	$('#'+panel+"_show").hide();
