@@ -243,7 +243,7 @@ function getMatches(requestID) {
 		<s:else>
 			<li id="loadUsersList"></li>
 		</s:else>
-		<s:if test="newContractor.requestedByUser != null">
+		<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
 			<li><label>Add to Watchlist:</label>
 				<s:checkbox name="newContractor.watch" />
 				<img src="images/help.gif" alt="Help" title="When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist." />
