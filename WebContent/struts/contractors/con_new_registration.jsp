@@ -68,7 +68,7 @@ function changeState(country) {
 
 function updateUsersList() {
 	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val(),
-		requestedUser: <s:property value="newContractor.requestedByUser.id" />});
+		requestedUser: <s:property value="newContractor.requestedByUser == null ? 0 : newContractor.requestedByUser.id" />});
 }
 
 function checkUserOther() {
