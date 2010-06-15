@@ -9,7 +9,7 @@ import com.picsauditing.jpa.entities.Industry;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
-	public static final String DEFAULT_NAME = "- Name - ";
+	public static final String DEFAULT_NAME = "- Company Name - ";
 	public static final String DEFAULT_ZIP = "- Zip -";
 	public static final String DEFAULT_CITY = "- City -";
 

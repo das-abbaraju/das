@@ -35,7 +35,7 @@
 
 	<s:if test="filter.showAccountName">
 		<div class="filterOption"><s:textfield name="filter.accountName"
-			cssClass="forms" size="10" onfocus="clearText(this)" /></div>
+			cssClass="forms" size="18" onfocus="clearText(this)" /></div>
 	</s:if>
 
 	<s:if test="filter.showStatus">
