@@ -34,6 +34,7 @@ import com.picsauditing.util.excel.ExcelColumn;
 @SuppressWarnings("serial")
 public class ReportAccount extends ReportActionSupport implements Preparable {
 
+	protected boolean runReport = true;
 	protected boolean skipPermissions = false;
 	protected Boolean showContactInfo = null;
 	protected Boolean showTradeInfo = null;
@@ -51,15 +52,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	/**
 	 * 
-	 * 
-	 * 
 	 * @throws Exception
 	 */
 	protected void checkPermissions() throws Exception {
-	}
-
-	protected boolean runReport() {
-		return true;
 	}
 
 	protected void buildQuery() {
@@ -118,7 +113,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	// TODO make this method final
-	@SuppressWarnings("unchecked")
+	/**
+	 * Do not override this method!<br><br>
+	 * 
+	 * 1) This method checks the user is logged in and has the appropriate permissions.<br>
+	 * 2) Next it determines if the report should run by default.<br>
+	 * 3) It builds the Query and runs the report<br>
+	 * 4) Finally, it returns the results
+	 * @see checkPermissions()
+	 * @see runReport
+	 * @see buildQuery()
+	 * @see run(SelectAccount sql)
+	 * @see returnResult()
+	 */
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
@@ -134,7 +141,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		checkPermissions();
 
-		if (runReport()) {
+		if (runReport) {
 			buildQuery();
 			run(sql);
 
@@ -147,7 +154,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected String returnResult() throws IOException {
 		if (mailMerge) {
 			Set<Integer> ids = new HashSet<Integer>();

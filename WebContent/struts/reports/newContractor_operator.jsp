@@ -9,14 +9,12 @@
 <body>
 <h1>Search for New Contractors</h1>
 <s:include value="filters.jsp" />
+
 <div id="report_data">
-<s:include value="newContractor_operator_data.jsp" />
-</div>
-<s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@RequestNewContractor, @com.picsauditing.access.OpType@Edit)">
 	<div class="info">
-	If there are no results for the contractor you are searching for, please fill out the 
-	<a href="RequestNewContractor.action">Request New Contractor</a> form to let us help you find the contractor.
+	Search for new companies to add to your database by either company name or trade.
 	</div>
-</s:if>
+</div>
+
 </body>
 </html>
