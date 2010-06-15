@@ -95,7 +95,7 @@ label.policy {
 							</h3>
 						</s:if>
 						<s:if test="helpText != null && helpText.length() > 0">
-							<div class="alert"><s:property value="helpText"/></div>
+							<div class="alert"><s:property value="helpText" escape="false"/></div>
 						</s:if>
 						<s:if test="id == 461"><a href="JobCompetencyMatrix.action?id=<s:property value="contractor.id"/>" target="_BLANK" title="opens in new window">Job Competency Matrix</a></s:if>
 						
