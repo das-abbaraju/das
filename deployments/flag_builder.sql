@@ -1,3 +1,5 @@
+-- This is an experimental script to quickly generate pre-flag colors for contractors used on contractor search
+
 TRUNCATE TABLE flags;
 
 -- 30 seconds without indexes
