@@ -67,7 +67,8 @@ function changeState(country) {
 }
 
 function updateUsersList() {
-	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val()}, checkUserOther);
+	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val(),
+		requestedUser: <s:property value="newContractor.requestedByUser.id" />});
 }
 
 function checkUserOther() {
@@ -228,15 +229,7 @@ function getMatches(requestID) {
 				value="%{newContractor.requestedBy.id}" />
 		</li>
 		<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
-			<li id="loadUsersList">
-				<label>Requested By User:</label>
-				<s:select list="getUsersList(newContractor.requestedBy.id)" listKey="id" listValue="name"
-					id="requestedUser" name="requestedUser" value="%{newContractor.requestedByUser.id}"
-					headerKey="0" headerValue="- Other -" onclick="checkUserOther();" />
-				<input type="text" name="requestedOther" id="requestedOther" size="20"
-					<s:if test="newContractor.requestedByUser != null && newContractor.requestedBy.users != null">style="display:none;"</s:if>
-					value="<s:property value="newContractor.requestedByUserOther" />" />
-			</li>
+			<li id="loadUsersList"><script type="text/javascript">updateUsersList();</script></li>
 		</s:if>
 		<s:else>
 			<li id="loadUsersList"></li>
