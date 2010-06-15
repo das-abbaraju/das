@@ -67,7 +67,7 @@ function changeState(country) {
 }
 
 function updateUsersList() {
-	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val()});
+	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val()}, checkUserOther);
 }
 
 function checkUserOther() {
@@ -246,7 +246,7 @@ function getMatches(requestID) {
 			<img src="images/help.gif" alt="Help" title="When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist." />
 		</li>
 		<li><label>Registration Deadline:</label> <input id="regDate" name="newContractor.deadline" type="text"
-			class="forms datepicker" size="10"
+			class="datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
 		</li>
 		<s:if test="newContractor.id > 0">

@@ -72,6 +72,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String emailBody;
 	protected List<ContractorAccount> potentialMatches;
 	protected String conName;
+	protected boolean redirect = true;
 	protected boolean watched = true;
 
 	private String[] names = new String[] { "ContractorName",
@@ -116,6 +117,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		requestID = getParameter("requestID");
 		if (requestID > 0) {
 			newContractor = crrDAO.find(requestID);
+			redirect = false;
 		} else {
 			newContractor.setCountry(new Country(permissions.getCountry()));
 			if (permissions.isOperatorCorporate()) {
@@ -170,7 +172,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					return SUCCESS;
 
 				if (newContractor.getDeadline() == null)
-					newContractor.setDeadline(DateBean.addMonths(new Date(), 3));
+					newContractor.setDeadline(DateBean.addMonths(new Date(), 2));
 				if (country != null && !country.equals(newContractor.getCountry()))
 					newContractor.setCountry(country);
 				if (state != null && !state.equals(newContractor.getState()))
@@ -232,6 +234,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			
 			if (button.equals("Close Request")) {
 				newContractor.setOpen(false);
+				redirect = true;
 			}
 
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
@@ -316,7 +319,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			
 			newContractor.setAuditColumns(permissions);
 			crrDAO.save(newContractor);
-			return "backToReport";
+			if(redirect)
+				return "backToReport";
+			else return SUCCESS;
 		}
 		return SUCCESS;
 	}
@@ -345,6 +350,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public List<User> getUsersList(int accountID) {
 		return userDAO.findByAccountID(accountID, "Yes", "No");
+	}
+	
+	public User getPrimaryContact(int opID){
+		return operatorAccountDAO.find(opID).getPrimaryContact();
 	}
 
 	public List<Country> getCountryList() {

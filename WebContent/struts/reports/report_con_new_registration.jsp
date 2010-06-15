@@ -20,16 +20,6 @@ function showExcelUpload() {
 </head>
 <body>
 <h1>Contractor Registration Requests</h1>
-
-<form id="test" action="ReportNewRequestedContractorImport.action" method="post">
-	<div style="padding: 5px;">
-	<a href="RequestNewContractor.action" class="picsbutton">Request New Contractor</a>
-	<s:if test="accountManager">
-		<a class="picsbutton" onclick="showExcelUpload(); return false;" href="#"
-			title="Opens in new window (please disable your popup blocker)">Import Excel File</a>
-	</s:if>
-	</div>
-</form>
 <s:include value="filters.jsp" />
 <div class="right"><a class="excel" 
 	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
@@ -37,6 +27,15 @@ function showExcelUpload() {
 		href="javascript: download();"
 		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
 </div>
+<form id="test" action="ReportNewRequestedContractorImport.action" method="post">
+	<div style="padding: 5px;">
+	<a href="RequestNewContractor.action" class="add">Request New Contractor</a>
+	<s:if test="accountManager">
+		<a class="add" onclick="showExcelUpload(); return false;" href="#"
+			title="Opens in new window (please disable your popup blocker)">Import Excel File</a>
+	</s:if>
+	</div>
+</form>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
