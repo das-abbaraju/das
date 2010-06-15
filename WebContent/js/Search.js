@@ -58,10 +58,10 @@ function runSearch(search) {
 		var accountType = "";
 		
 		if ($(search).find('[name=filter.accountType]').val() != null)
-			var accountType = "?accountType="+$(search).find('[name=filter.accountType]').val();
+			var accountType = "&accountType="+$(search).find('[name=filter.accountType]').val();
 		
 		var data = $(search).serialize();
-		$.post(destinationAction+'Ajax.action'+accountType, data, function(text, status) {
+		$.post(destinationAction+'Ajax.action?button=Search'+accountType, data, function(text, status) {
 			$('#report_data').html(text);
 			wireClueTips();
 		});
