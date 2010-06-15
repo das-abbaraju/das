@@ -24,6 +24,11 @@ public class RequestedConWidget extends PicsActionSupport {
 	
 	public List<ContractorRegistrationRequest> getRequestedContractors() {
 		// Assuming that this widget is only shown to CSRs
-		return requestDAO.findByCSR(permissions.getUserId(), true);
+		if(permissions.isOperator())
+			return requestDAO.findByOp(permissions.getAccountId(), true);
+		else if(permissions.isCorporate())
+			return requestDAO.findByCorp(permissions.getAccountId(), true);
+		else 
+			return requestDAO.findByCSR(permissions.getUserId(), true);
 	}
 }

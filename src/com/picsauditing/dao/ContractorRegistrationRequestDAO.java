@@ -33,4 +33,20 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 		
 		return query.getResultList();
 	}
+	
+	public List<ContractorRegistrationRequest> findByOp(int opID, boolean open){
+		Query query = em.createQuery("FROM ContractorRegistrationRequest c WHERE c.requestedBy.id = ? " + 
+				"AND c.open = 1 ORDER BY c.deadline, c.lastContactDate");
+		query.setParameter(1, opID);
+		
+		return query.getResultList();
+	}
+	
+	public List<ContractorRegistrationRequest> findByCorp(int corpID, boolean open){
+		Query query = em.createQuery("FROM ContractorRegistrationRequest c WHERE c.requestedBy.id IN " +
+				"(SELECT f.operator.id FROM Facility f WHERE f.corporate.id = ? ) AND c.open = 1 ORDER BY c.deadline, c.lastContactDate");
+		query.setParameter(1, corpID);
+		
+		return query.getResultList();
+	}
 }
