@@ -352,8 +352,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return userDAO.findByAccountID(accountID, "Yes", "No");
 	}
 	
-	public User getPrimaryContact(int opID){
-		return operatorAccountDAO.find(opID).getPrimaryContact();
+	public int getPrimaryContact(int opID){
+		return operatorAccountDAO.find(opID).getPrimaryContact().getId();
 	}
 
 	public List<Country> getCountryList() {
@@ -393,7 +393,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public int getRequestedUser() {
-		return requestedUser;
+		if(requestedUser==0)
+			return getPrimaryContact(opID);
+		else return requestedUser;
 	}
 
 	public void setRequestedUser(int requestedUser) {
