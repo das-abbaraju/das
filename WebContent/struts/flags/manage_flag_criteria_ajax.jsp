@@ -18,7 +18,9 @@
 				<label>ID:</label>
 				<s:if test="criteria.id == 0">NEW</s:if>
 				<s:else><s:property value="criteria.id"/></s:else>
-				<s:set name="o" value="#c"/><s:include value="../who.jsp"/>
+				<s:if test="criteria.id > 0">
+				<s:set name="o" value="criteria"/><s:include value="../who.jsp"/>
+				</s:if>
 			</li>
 			<li>
 				<label>Category:</label>

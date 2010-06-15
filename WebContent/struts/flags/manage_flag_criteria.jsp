@@ -54,14 +54,13 @@
 			            {bVisible: false},
 			            null,
 			            null,
-			            null,
 			            null
 						],
 			iDisplayLength: 25,
 			bStateSave: true,
 			bAutoWidth: false,
 			fnRowCallback: function( nRow, aData, iDisplayIndex ) {
-				$(nRow).not('.clickable').attr('id','criteria_'+aData[0]).addClass('clickable').find('td').not('.noclick').click(function() {
+				$(nRow).not('.clickable').attr('id','criteria_'+aData[0]).addClass('clickable').click(function() {
 						show(aData[0]);
 					});
 				return nRow;
@@ -119,7 +118,6 @@ $(function() {
 				<th>Category</th>
 				<th>Label</th>
 				<th>Description</th>
-				<th>Who</th>
 			</tr>
 		</thead>
 		<s:iterator value="criteriaList" var="c">
@@ -129,7 +127,6 @@ $(function() {
 				<td><s:property value="category"/></td>
 				<td><s:property value="label"/></td>
 				<td><s:property value="description"/></td>
-				<td class="noclick"><s:set name="o" value="#c"/><s:include value="../who.jsp"/></td>
 			</tr>
 		</s:iterator>
 	</table>
