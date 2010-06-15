@@ -192,8 +192,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = " + accountName,
-					accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = '" + 
+					accountName + "'", accountName));
 			sql.addField("a.dbaName");
 		}
 

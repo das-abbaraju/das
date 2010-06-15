@@ -128,12 +128,21 @@ function getMatches(requestID) {
 <a href="ReportNewRequestedContractor.action">Contractor Registration Requests</a>
 <s:include value="../actionMessages.jsp"></s:include>
 
-<s:if test="conAccount != null && conAccount.status.active">
-	<div class="info">This contractor has registered an account with PICS on <strong><s:date name="conAccount.creationDate" format="M/d/yyyy" /></strong><br/>
-		Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>.</div>
+<s:if test="newContractor.contractor != null || !newContractor.open">
+	<div class="info">
+		<s:if test="newContractor.contractor.status.active">
+			<s:property value="newContractor.contractor.name" /> has registered an account with PICS on <strong><s:date name="newContractor.contractor.creationDate" format="M/d/yyyy" /></strong><br/>
+			<s:if test="newContractor.open">
+				Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>
+			</s:if>
+		</s:if>
+		<s:if test="!newContractor.open">
+			This request is closed.
+		</s:if>
+	</div>
 </s:if>
 
-<s:if test="newContractor.matchCount > 0 && conAccount == null">
+<s:if test="newContractor.matchCount > 0 && newContractor.contractor == null && newContractor.open">
 	<div id="potentialMatches" class="info">
 		This contractor has <a name="potentialMatches" class="normal">potential matching accounts</a> in PICS.
 		<a href="#" onclick="getMatches(<s:property value="requestID" />); return false;">Click here to view a list of matching accounts.</a>
@@ -234,10 +243,15 @@ function getMatches(requestID) {
 		<s:else>
 			<li id="loadUsersList"></li>
 		</s:else>
-		<li><label>Add to Watchlist:</label>
-			<s:checkbox name="watched" />
-			<img src="images/help.gif" alt="Help" title="When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist." />
-		</li>
+		<s:if test="newContractor.requestedByUser != null">
+			<li><label>Add to Watchlist:</label>
+				<s:checkbox name="newContractor.watch" />
+				<img src="images/help.gif" alt="Help" title="When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist." />
+				<s:if test="!contractorWatch && newContractor.watch">
+					<div class="alert">This user does not have the Contractor Watch permission.</div>
+				</s:if>
+			</li>
+		</s:if>
 		<li><label>Registration Deadline:</label> <input id="regDate" name="newContractor.deadline" type="text"
 			class="datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
@@ -258,7 +272,7 @@ function getMatches(requestID) {
 			<li><label># of Times Contacted:</label>
 				<s:property value="newContractor.contactCount"/></li>
 			<li><label>Matches Found in PICS:</label>
-				<s:if test="newContractor.matchCount > 0">
+				<s:if test="newContractor.matchCount > 0 && newContractor.open">
 					<a href="#potentialMatches" onclick="getMatches(<s:property value="newContractor.id" />);"><s:property value="newContractor.matchCount"/></a>
 				</s:if>
 				<s:else>
@@ -269,9 +283,9 @@ function getMatches(requestID) {
 				<s:if test="permissions.admin">
 					<s:textfield name="conName" value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
 				</s:if>
-				<s:if test="conAccount != null">
-					<a href="ContractorView.action?id=<s:property value="conAccount.id"/>">
-					<s:property value="conAccount.name"/></a>
+				<s:if test="newContractor.contractor != null">
+					<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
+					<s:property value="newContractor.contractor.name"/></a>
 				</s:if>
 			</li>
 		</s:if>

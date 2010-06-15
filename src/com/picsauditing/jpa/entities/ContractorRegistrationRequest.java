@@ -40,6 +40,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private int matchCount;
 	private String notes;
 	private ContractorAccount contractor;
+	// Assuming most operators want to watch their contractor after they register
+	private boolean watch = true;
 
 	public String getName() {
 		return name;
@@ -229,5 +231,13 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	public void setContractor(ContractorAccount con) {
 		this.contractor = con;
+	}
+	
+	public boolean isWatch() {
+		return watch;
+	}
+	
+	public void setWatch(boolean watch) {
+		this.watch = watch;
 	}
 }

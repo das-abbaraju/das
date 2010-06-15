@@ -76,6 +76,10 @@ public class ContractorRegistration extends ContractorActionSupport {
 		}
 		
 		if ("request".equalsIgnoreCase(button)) {
+			// check for basic rID...?
+			if (getParameter("rID") > 0)
+				requestID = getParameter("rID");
+			// Check for new requestID
 			if (requestID == 0)
 				requestID = getParameter("requestID");
 			

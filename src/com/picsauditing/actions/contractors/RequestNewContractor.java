@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -17,6 +16,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -42,6 +42,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -53,27 +54,23 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected CountryDAO countryDAO;
 	protected StateDAO stateDAO;
 	protected ContractorAccountDAO contractorAccountDAO;
-	protected EmailAttachmentDAO emailAttachmentDAO;
-	protected EmailTemplateDAO emailTemplateDAO;
 	protected AccountDAO accountDAO;
-	protected FacilitiesDAO facilitiesDAO;
 
 	protected int requestID;
 	protected Country country;
 	protected State state;
 	protected int requestedOperator;
-	protected int requestedUser;
+	protected int requestedUser = 0;
 	protected String requestedOther = null;
 	protected int conID;
 	protected int opID;
-	protected ContractorAccount conAccount = null;
 	protected String[] filenames = null;
 	protected String emailSubject;
 	protected String emailBody;
 	protected List<ContractorAccount> potentialMatches;
 	protected String conName;
 	protected boolean redirect = true;
-	protected boolean watched = true;
+	protected EmailTemplate template;
 
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
@@ -91,28 +88,22 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			"${newContractor.country.english}", "${newContractor.deadline}",
 			"${requestLink}", "<PICSSignature>" };
 
-	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO,
-			OperatorAccountDAO operatorAccountDAO, UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO,
-			ContractorAccountDAO contractorAccountDAO, EmailAttachmentDAO emailAttachmentDAO,
-			EmailTemplateDAO emailTemplateDAO, AccountDAO accountDAO, FacilitiesDAO facilitiesDAO) {
+	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
+			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
+			AccountDAO accountDAO) {
 		this.crrDAO = crrDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.userDAO = userDAO;
 		this.countryDAO = countryDAO;
 		this.stateDAO = stateDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
-		this.emailAttachmentDAO = emailAttachmentDAO;
-		this.emailTemplateDAO = emailTemplateDAO;
 		this.accountDAO = accountDAO;
-		this.facilitiesDAO = facilitiesDAO;
 	}
 
 	public void prepare() throws Exception {
 		getPermissions();
 		
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MONTH, 2);
-		newContractor.setDeadline(cal.getTime());
+		newContractor.setDeadline(DateBean.addMonths(new Date(), 2));
 
 		requestID = getParameter("requestID");
 		if (requestID > 0) {
@@ -134,10 +125,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
 		if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 			state = stateDAO.find(stateIsos[0]);
-
-		if (newContractor.getContractor() != null) {
-			conAccount = contractorAccountDAO.find(newContractor.getContractor().getId());
-		}
 	}
 
 	public String execute() throws Exception {
@@ -145,6 +132,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			return LOGIN;
 		
 		tryPermissions(OpPerms.RequestNewContractor, OpType.Edit);
+		
+		EmailTemplateDAO templateDAO = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
+		template = templateDAO.find(83);
 
 		if (button != null) {
 			if (button.equals("Save")) {
@@ -198,18 +188,30 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					ContractorAccount con = contractorAccountDAO.findConID(conName);
 					newContractor.setContractor(con);
 					
-					if (watched && newContractor.getRequestedByUser() != null) {
-						ContractorWatch watch = new ContractorWatch();
-						watch.setAuditColumns(permissions);
-						watch.setContractor(con);
-						watch.setUser(newContractor.getRequestedByUser());
-						crrDAO.save(watch);
+					if (newContractor.isWatch() && newContractor.getRequestedByUser() != null) {
+						// Need to check if the watch exists all ready?
+						List<ContractorWatch> existing = 
+							userDAO.findContractorWatch(newContractor.getRequestedByUser().getId());
+						boolean exists = false;
+						
+						for (ContractorWatch cw : existing) {
+							if (cw.getContractor().equals(con))
+								exists = true;
+						}
+						
+						if (!exists) {
+							ContractorWatch watch = new ContractorWatch();
+							watch.setAuditColumns(permissions);
+							watch.setContractor(con);
+							watch.setUser(newContractor.getRequestedByUser());
+							crrDAO.save(watch);
+						}
 					}
 				} else if (Strings.isEmpty(conName)) {
 					newContractor.setContractor(null);
 				}
 				
-				potentialMatches = runGapAnalysis();
+				potentialMatches = runGapAnalysis(newContractor);
 				if (potentialMatches.size() > 0)
 					newContractor.setMatchCount(potentialMatches.size());
 			}
@@ -217,7 +219,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (button.equals("MatchingList")) {
 				if (requestID > 0) {
 					newContractor = crrDAO.find(requestID);
-					potentialMatches = runGapAnalysis();
+					potentialMatches = runGapAnalysis(newContractor);
 					
 					if (potentialMatches.size() != newContractor.getMatchCount()) {
 						newContractor.setMatchCount(potentialMatches.size());
@@ -233,6 +235,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 			
 			if (button.equals("Close Request")) {
+				newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + 
+						" - Closed the request.\n\n" + newContractor.getNotes());
+				
 				newContractor.setOpen(false);
 				redirect = true;
 			}
@@ -262,12 +267,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					
 					if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
 						// Operator Request for Registration
-						EmailTemplate emailTemplate = emailTemplateDAO.find(83);
-						
 						if (Strings.isEmpty(emailBody))
-							emailBody = emailTemplate.getBody();
+							emailBody = template.getBody();
 						if (Strings.isEmpty(emailSubject))
-							emailSubject = emailTemplate.getSubject();
+							emailSubject = template.getSubject();
 					}
 					
 					for (int i = 0; i < names.length; i++) {
@@ -299,7 +302,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 								attachment.setContent(bytes);
 								attachment.setFileSize((int) file.length());
 								attachment.setEmailQueue(emailQueue);
-								emailAttachmentDAO.save(attachment);
+								EmailAttachmentDAO attachmentDAO = 
+									(EmailAttachmentDAO) SpringUtils.getBean("EmailAttachmentDAO");
+								attachmentDAO.save(attachment);
 							} catch (Exception e) {
 								System.out.println("Unable to open file: /forms/" + filename);
 							}
@@ -319,9 +324,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			
 			newContractor.setAuditColumns(permissions);
 			crrDAO.save(newContractor);
+
 			if(redirect)
 				return "backToReport";
-			else return SUCCESS;
 		}
 		return SUCCESS;
 	}
@@ -434,10 +439,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		this.opID = opID;
 	}
 
-	public ContractorAccount getConAccount() {
-		return conAccount;
-	}
-
 	public String[] getFilenames() {
 		return filenames;
 	}
@@ -445,18 +446,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void setFilenames(String[] filenames) {
 		this.filenames = filenames;
 	}
-	
-	public boolean isWatched() {
-		return watched;
-	}
-	
-	public void setWatched(boolean watched) {
-		this.watched = watched;
-	}
 
 	public String getEmailSubject() {
 		if (emailSubject == null) {
-			EmailTemplate template = emailTemplateDAO.find(83);
 			if (template.getSubject() != null)
 				emailSubject = template.getSubject();
 			else
@@ -476,7 +468,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public String getEmailBody() {
 		if (emailBody == null) {
-			EmailTemplate template = emailTemplateDAO.find(83);
 			emailBody = template.getBody();
 		}
 
@@ -514,6 +505,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		Set<OperatorForm> allForms = new HashSet<OperatorForm>();
 		OperatorAccount operator = newContractor.getRequestedBy();
 		
+		FacilitiesDAO facilitiesDAO = (FacilitiesDAO) SpringUtils.getBean("FacilitiesDAO");
 		List<Facility> facilities = facilitiesDAO.findSiblings(operator.getId());
 		
 		for (Facility facility : facilities) {
@@ -531,7 +523,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return names;
 	}
 	
-	public List<ContractorAccount> runGapAnalysis() {
+	public static List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
 		List<String> whereClauses = new ArrayList<String>();
 		
 		if (!Strings.isEmpty(newContractor.getName()))
@@ -555,7 +547,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (whereClauses.size() > 0) {
 			String where = Strings.implode(whereClauses, ") OR (");
 			where = "(" + where + ")";
-			return contractorAccountDAO.findWhere(where);
+			
+			ContractorAccountDAO conDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+			return conDAO.findWhere(where);
 		}
 		
 		return null;
@@ -577,6 +571,21 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	
 	public boolean isSearchForNew() {
 		return permissions.hasPermission(OpPerms.SearchContractors);
+	}
+	
+	public boolean isContractorWatch() {
+		if (newContractor.getRequestedByUser() != null) {
+			try {
+				Permissions perm = new Permissions();
+				perm.setAccountPerms(newContractor.getRequestedByUser());
+				
+				return perm.hasPermission(OpPerms.ContractorWatch);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
 	}
 	
 	private class ByFacilityName implements Comparator<OperatorForm> {

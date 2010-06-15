@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.contractors.RequestNewContractor;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -170,6 +171,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		
 		if (getActionErrors().size() == 0) {
 			for (ContractorRegistrationRequest crr : requests) {
+				int matches = RequestNewContractor.runGapAnalysis(crr).size();
+				crr.setMatchCount(matches);
 				crrDAO.save(crr);
 			}
 			
