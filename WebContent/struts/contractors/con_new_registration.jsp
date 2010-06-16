@@ -42,9 +42,19 @@
 
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
+<link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
+
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.fancybox').fancybox();
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
 });
 
 $(function() {
@@ -246,7 +256,10 @@ function getMatches(requestID) {
 		<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
 			<li><label>Add to Watchlist:</label>
 				<s:checkbox name="newContractor.watch" />
-				<img src="images/help.gif" alt="Help" title="When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist." />
+				<a href="#" class="cluetip help" title="Add to Watchlist" rel="#watchtip"></a>
+				<div id="watchtip">
+					When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist.
+				</div>
 				<s:if test="!contractorWatch && newContractor.watch">
 					<div class="alert">This user does not have the Contractor Watch permission.</div>
 				</s:if>

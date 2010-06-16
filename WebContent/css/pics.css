@@ -440,6 +440,7 @@ a.help {
 	margin-left: 2px;
 	background: url('../images/help.gif') no-repeat left center;
 	zoom: 1;
+	cursor: help;
 }
 
 a.insurance span {
