@@ -29,3 +29,11 @@ set `id`='83',`accountID`='1100',`templateName`='Operator Request for Registrati
 insert into `useraccess` 
 (accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
 values (NULL, 959, 'RequestNewContractor', 1, 1, 0, 1, now(), 1);
+
+insert into `widget_user`
+(widgetID, userID, expanded, widget_user.column, sortOrder) 
+values(26, 646, 1, 2, 15);
+
+insert into `widget_user`
+(widgetID, userID, expanded, widget_user.column, sortOrder) 
+values(26, 616, 1, 2, 15);

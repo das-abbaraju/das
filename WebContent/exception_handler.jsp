@@ -177,7 +177,7 @@
 							<td>
 								<span>
 									<input class="picsbutton" style="float:right;" type="submit" value="Report to PICS Engineers" onclick="$('#backButton').fadeIn(1500)"/>
-									<input class="picsbutton" style="float:right;" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
+									<input class="picsbutton" style="float:right;" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
 								</span>
 							</td>
 						</tr>		
@@ -187,7 +187,7 @@
 			</div>
 		</fieldset>
 	</form>
-	<input id="backButton" class="picsbutton" style="float:left; display:none;" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
+	<input id="backButton" class="picsbutton" style="float:left; display:none;" type="button" value="&lt;&lt; Back" onclick="window.history.back().back()" />
 <% } %>
 </body>
 </html>
