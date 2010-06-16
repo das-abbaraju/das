@@ -41,6 +41,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -56,21 +57,21 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected ContractorAccountDAO contractorAccountDAO;
 	protected AccountDAO accountDAO;
 
-	protected int requestID;
-	protected Country country;
-	protected State state;
-	protected int requestedOperator;
-	protected int requestedUser = 0;
-	protected String requestedOther = null;
+	protected boolean redirect = false;
 	protected int conID;
 	protected int opID;
-	protected String[] filenames = null;
+	protected int requestID;
+	protected int requestedOperator;
+	protected int requestedUser = 0;
 	protected String emailSubject;
 	protected String emailBody;
-	protected List<ContractorAccount> potentialMatches;
 	protected String conName;
-	protected boolean redirect = true;
+	protected String addToNotes;
+	protected String[] filenames = null;
+	protected Country country;
+	protected State state;
 	protected EmailTemplate template;
+	protected List<ContractorAccount> potentialMatches;
 
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
@@ -87,7 +88,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			"${newContractor.state.english}", "${newContractor.zip}",
 			"${newContractor.country.english}", "${newContractor.deadline}",
 			"${requestLink}", "<PICSSignature>" };
-
+	
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
 			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
 			AccountDAO accountDAO) {
@@ -106,10 +107,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		newContractor.setDeadline(DateBean.addMonths(new Date(), 2));
 
 		requestID = getParameter("requestID");
-		if (requestID > 0) {
+		if (requestID > 0)
 			newContractor = crrDAO.find(requestID);
-			redirect = false;
-		} else {
+		else {
 			newContractor.setCountry(new Country(permissions.getCountry()));
 			if (permissions.isOperatorCorporate()) {
 				newContractor.setRequestedBy(new OperatorAccount());
@@ -178,15 +178,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					newContractor.setRequestedByUser(userDAO.find(requestedUser));
 					newContractor.setRequestedByUserOther(null);
 				} else if (requestedUser == 0) {
-					if (!Strings.isEmpty(requestedOther)) {
+					if (!Strings.isEmpty(newContractor.getRequestedByUserOther()))
 						newContractor.setRequestedByUser(null);
-						newContractor.setRequestedByUserOther(requestedOther);
-					}
 				}
 				if (!Strings.isEmpty(conName) && 
 						(newContractor.getContractor() == null || conName != newContractor.getContractor().getName())) {
 					ContractorAccount con = contractorAccountDAO.findConID(conName);
 					newContractor.setContractor(con);
+					newContractor.setHandledBy(WaitingOn.Operator);
 					
 					if (newContractor.isWatch() && newContractor.getRequestedByUser() != null) {
 						// Need to check if the watch exists all ready?
@@ -207,13 +206,23 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 							crrDAO.save(watch);
 						}
 					}
-				} else if (Strings.isEmpty(conName)) {
+				} else if (Strings.isEmpty(conName))
 					newContractor.setContractor(null);
+				
+				// Add notes, if it's been filled out
+				if (!Strings.isEmpty(addToNotes)) {
+					addToNotes = addNotePrefix(addToNotes);
+					newContractor.setNotes(addToNotes + 
+						(!Strings.isEmpty(newContractor.getNotes()) ? newContractor.getNotes() : ""));
+					addToNotes = null;
 				}
 				
 				potentialMatches = runGapAnalysis(newContractor);
 				if (potentialMatches.size() > 0)
 					newContractor.setMatchCount(potentialMatches.size());
+				
+				if (newContractor.getId() == 0)
+					redirect = true;
 			}
 			
 			if (button.equals("MatchingList")) {
@@ -234,17 +243,18 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				}
 			}
 			
+			if (button.equals("Return To Operator")) {
+				newContractor.setHandledBy(WaitingOn.Operator);
+				redirect = true;
+			}
+			
 			if (button.equals("Close Request")) {
-				newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + 
-						" - Closed the request.\n\n" + newContractor.getNotes());
-				
+				newContractor.setNotes(addNotePrefix("Closed the request.") + newContractor.getNotes());
 				newContractor.setOpen(false);
 				redirect = true;
 			}
 
 			if (button.equals("Send Email") || button.equals("Contacted By Phone")) {
-				String contacted = maskDateFormat(new Date()) + " - " + permissions.getName() + " - ";
-				
 				if (button.equals("Send Email")) {
 					// Point to the contractor registration page with some information pre-filled
 					String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button=" +
@@ -311,12 +321,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						}
 					}
 					
-					contacted += "Contacted by email.";
-				} else {
-					contacted += "Contacted by phone.";
-				}
+					newContractor.setNotes(addNotePrefix("Contacted by email."));
+				} else
+					newContractor.setNotes(addNotePrefix("Contacted by phone."));
 				
-				newContractor.setNotes(contacted + "\n\n" + newContractor.getNotes());
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
 				newContractor.setLastContactDate(new Date());
@@ -380,10 +388,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public State getState() {
 		return state;
 	}
-	
-	public int getMoo(int x){
-		return x + 1;
-	}
 
 	public void setState(State state) {
 		this.state = state;
@@ -405,14 +409,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setRequestedUser(int requestedUser) {
 		this.requestedUser = requestedUser;
-	}
-
-	public String getRequestedOther() {
-		return requestedOther;
-	}
-
-	public void setRequestedOther(String requestedOther) {
-		this.requestedOther = requestedOther;
 	}
 
 	public int getConID() {
@@ -445,6 +441,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setFilenames(String[] filenames) {
 		this.filenames = filenames;
+	}
+	
+	public String getAddToNotes() {
+		return addToNotes;
+	}
+	
+	public void setAddToNotes(String addToNotes) {
+		this.addToNotes = addToNotes;
 	}
 
 	public String getEmailSubject() {
@@ -586,6 +590,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 		
 		return false;
+	}
+	
+	private String addNotePrefix(String note) {
+		return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n";
 	}
 	
 	private class ByFacilityName implements Comparator<OperatorForm> {

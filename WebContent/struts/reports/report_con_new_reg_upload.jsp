@@ -20,9 +20,9 @@ function closePage() {
 <div id="main">
 	<div id="bodyholder">
 		<div id="content">
-			<h1>Upload Excel File</h1>
+			<h1>Import Registration Requests</h1>
 			<s:include value="../actionMessages.jsp" />
-			<a href="images/RequestNewContractors.xls">Template Excel file</a>
+			<a href="images/RequestNewContractors.xls">Registration Request Template</a>
 			<div>
 			<s:form enctype="multipart/form-data" method="POST">
 				<div style="background-color: #F9F9F9;">

@@ -3,7 +3,6 @@ package com.picsauditing.actions.report;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.RequestNewContractor;
 import com.picsauditing.dao.AccountDAO;
@@ -157,9 +157,12 @@ public class ReportNewReqConImport extends PicsActionSupport {
 						addActionError("Missing requested by user field in row " + j);
 					
 					if (crr.getDeadline() == null) {
-						Calendar cal = Calendar.getInstance();
-						cal.add(Calendar.MONTH, 2);
-						crr.setDeadline(cal.getTime());
+						crr.setDeadline(DateBean.addMonths(new Date(), 2));
+					}
+					
+					if (!Strings.isEmpty(crr.getNotes())) {
+						crr.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + 
+								" - " + crr.getNotes());
 					}
 					
 					requests.add(crr);

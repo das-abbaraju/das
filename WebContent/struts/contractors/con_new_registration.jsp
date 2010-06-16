@@ -40,6 +40,19 @@
 	text-decoration: none;
 }
 
+#notesPreview, #addHere {
+	background-color: transparent;
+	margin-left: 11em;
+}
+
+pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
 <s:if test="newContractor.city == null ||newContractor.city.length == 0">
 .address-zip {
 	display: none;
@@ -79,6 +92,13 @@ $(function() {
 		else
 			$('.address-zip').hide();
 	});
+	$('#addToNotes').keyup(function() {
+		var d = new Date();
+		var dateString = (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1) + "/" +
+				(d.getDate() < 10 ? "0" : "") + (d.getDate()) + "/" + d.getFullYear();
+		$('#addHere').html(dateString + " - <s:property value="permissions.name" /> - " + 
+				$(this).val() + "\n\n");
+	});
 });
 
 function countryChanged(country) {
@@ -91,7 +111,8 @@ function changeState(country) {
 
 function updateUsersList() {
 	$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#saveContractorForm_requestedOperator').val(),
-		requestedUser: <s:property value="newContractor.requestedByUser == null ? 0 : newContractor.requestedByUser.id" />}, checkUserOther);
+		requestedUser: <s:property value="newContractor.requestedByUser == null ? 0 : newContractor.requestedByUser.id" />,
+		requestID: <s:property value="requestID" />}, checkUserOther);
 }
 
 function checkUserOther() {
@@ -148,7 +169,7 @@ function getMatches(requestID) {
 </head>
 <body>
 <h1>Registration Request</h1>
-<a href="ReportNewRequestedContractor.action">&lt;&lt; Back to Registration Request</a>
+<a href="ReportNewRequestedContractor.action">&lt;&lt; Back to Registration Requests</a>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="newContractor.contractor != null || !newContractor.open">
@@ -247,13 +268,13 @@ function getMatches(requestID) {
 				onchange="countryChanged(this.value)" />
 		</li>
 		<li id="state_li"></li>
+		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/> (Optional)</li>
 		<li class="address-zip"><label for="address">Address:</label>
 			<s:textfield name="newContractor.address" size="35" id="address" /> (Optional)</li>
-		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/> (Optional)</li>
 		<li class="address-zip"><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /> (Optional)</li>		
 	</ol>
 	</fieldset>
-	<fieldset class="form"><legend><span>Contact Summary</span></legend>
+	<fieldset class="form"><legend><span>Request Summary</span></legend>
 	<ol>
 		<li><label>Requested By Account:</label>
 			<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
@@ -271,7 +292,7 @@ function getMatches(requestID) {
 				<s:checkbox name="newContractor.watch" />
 				<a href="#" class="cluetip help" title="Add to Watchlist" rel="#watchtip"></a>
 				<div id="watchtip">
-					When a contractor in the PICS database is associated with this request, this user will be able to watch this contractor on their watchlist.
+					When a contractor in the PICS database is associated with this request, <s:property value="newContractor.requestedByUser.name" /> will be able to watch <s:property value="newContractor.name" /> on their watchlist.
 				</div>
 				<s:if test="!contractorWatch && newContractor.watch">
 					<div class="alert">This user does not have the Contractor Watch permission.</div>
@@ -282,15 +303,16 @@ function getMatches(requestID) {
 			class="datepicker" size="10"
 			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
 		</li>
+	</ol>
+	</fieldset>
+	<fieldset class="form"><legend><span>Contact Summary</span></legend>
+	<ol>
 		<s:if test="newContractor.id > 0">
 			<li><label>Last Contacted By:</label>
 				<s:property value="newContractor.lastContactedBy.name" /><br /></li>
 			<li><label>Date	Contacted:</label>
 				<s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" /><br /></li>
 		</s:if>
-		<li><label>Notes:</label>
-			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
-				cols="80" rows="15" /></li>
 		<s:if test="newContractor.id > 0">
 			<s:if test="permissions.admin">
 				<li><label>Who should follow up?:</label>
@@ -310,6 +332,10 @@ function getMatches(requestID) {
 			<li><label>PICS Contractor:</label>
 				<s:if test="permissions.admin">
 					<s:textfield name="conName" value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
+					<a href="#" class="cluetip help" title="Return To Operator" rel="#watchtip2"></a>
+					<div id="watchtip2">
+						After you enter in a contractor and save, this request will be automatically returned to the operator.  
+					</div>
 				</s:if>
 				<s:if test="newContractor.contractor != null">
 					<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
@@ -317,14 +343,24 @@ function getMatches(requestID) {
 				</s:if>
 			</li>
 		</s:if>
+		<li><label>Notes:</label>
+			<s:textarea cssStyle="vertical-align: top; margin-bottom: 10px" name="addToNotes" cols="60" rows="3" id="addToNotes" />
+			<s:if test="newContractor.notes.length() > 0">
+				<pre id="addHere"></pre>
+				<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
+			</s:if>
+		</li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
 	 <div>	
 	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
-	  	<s:if test="newContractor.id > 0">
+	  	<s:if test="newContractor.contractor != null">
 		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
 		</s:if>
+		<s:elseif test="permissions.admin && newContractor.id > 0">
+			<input type="submit" class="picsbutton" name="button" value="Return To Operator" />
+		</s:elseif>
 	</div>	
 	</fieldset>
 </s:form>

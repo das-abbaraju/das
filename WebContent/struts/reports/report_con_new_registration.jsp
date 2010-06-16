@@ -32,7 +32,7 @@ function showExcelUpload() {
 	<a href="RequestNewContractor.action" class="add">Add Registration Request</a>
 	<s:if test="accountManager">
 		<a class="add" onclick="showExcelUpload(); return false;" href="#"
-			title="Opens in new window (please disable your popup blocker)">Import Registration Request</a>
+			title="Opens in new window (please disable your popup blocker)">Import Registration Requests</a>
 	</s:if>
 	</div>
 </form>
