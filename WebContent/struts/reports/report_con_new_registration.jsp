@@ -29,10 +29,10 @@ function showExcelUpload() {
 </div>
 <form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 	<div style="padding: 5px;">
-	<a href="RequestNewContractor.action" class="add">Request New Contractor</a>
+	<a href="RequestNewContractor.action" class="add">Add Registration Request</a>
 	<s:if test="accountManager">
 		<a class="add" onclick="showExcelUpload(); return false;" href="#"
-			title="Opens in new window (please disable your popup blocker)">Import Excel File</a>
+			title="Opens in new window (please disable your popup blocker)">Import Registration Request</a>
 	</s:if>
 	</div>
 </form>
