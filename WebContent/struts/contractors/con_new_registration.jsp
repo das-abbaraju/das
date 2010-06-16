@@ -28,6 +28,7 @@
 	border: 1px solid #C3C3C3;
 	margin-top: 10px;
 	background-color: #FBFBF8;
+	padding: 5px;
 }
 
 #email_preview td {
@@ -38,6 +39,12 @@
 	color: #4C4D4D;
 	text-decoration: none;
 }
+
+<s:if test="newContractor.city == null ||newContractor.city.length == 0">
+.address-zip {
+	display: none;
+}
+</s:if>
 </style>
 
 <s:include value="../jquery.jsp"/>
@@ -66,6 +73,12 @@ $(function() {
 			extraParams: {'filter.accountName': function() {return $('#matchedContractor').val();} }
 		}
 	);
+	$('.show-address').keyup(function() {
+		if (!$(this).blank())
+			$('.address-zip').show();
+		else
+			$('.address-zip').hide();
+	});
 });
 
 function countryChanged(country) {
@@ -234,10 +247,10 @@ function getMatches(requestID) {
 				onchange="countryChanged(this.value)" />
 		</li>
 		<li id="state_li"></li>
-		<li><label for="address">Address:</label>
+		<li class="address-zip"><label for="address">Address:</label>
 			<s:textfield name="newContractor.address" size="35" id="address" /> (Optional)</li>
-		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" /> (Optional)</li>
-		<li><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /> (Optional)</li>		
+		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/> (Optional)</li>
+		<li class="address-zip"><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /> (Optional)</li>		
 	</ol>
 	</fieldset>
 	<fieldset class="form"><legend><span>Contact Summary</span></legend>
@@ -279,9 +292,11 @@ function getMatches(requestID) {
 			<s:textarea cssStyle="vertical-align: top" name="newContractor.notes"
 				cols="80" rows="15" /></li>
 		<s:if test="newContractor.id > 0">
-			<li><label>Who should follow up?:</label>
-				<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
-			</li>
+			<s:if test="permissions.admin">
+				<li><label>Who should follow up?:</label>
+					<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
+				</li>
+			</s:if>
 			<li><label># of Times Contacted:</label>
 				<s:property value="newContractor.contactCount"/></li>
 			<li><label>Matches Found in PICS:</label>
