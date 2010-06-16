@@ -8,6 +8,10 @@
 			<td>Last Call Date</td>
 		</tr>
 	</thead>
+	<s:if test="requestedContractors.size()  == 0">
+		<tr><td colspan="4">You have no open contractor requests</td></tr>
+	</s:if>
+	<s:else>
 	<s:iterator value="requestedContractors">
 		<tr>
 			<td><a href="RequestNewContractor.action?requestID=<s:property value="id"/>"><s:property value="name" /></a></td>
@@ -16,4 +20,5 @@
 			<td class="call"><nobr><s:property value="maskDateFormat(lastContactDate)"/></nobr></td>
 		</tr>
 	</s:iterator>
+	</s:else>
 </table>
