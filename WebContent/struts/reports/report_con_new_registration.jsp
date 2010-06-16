@@ -19,7 +19,7 @@ function showExcelUpload() {
 </script>
 </head>
 <body>
-<h1>Requests</h1>
+<h1>Registration Requests</h1>
 <s:include value="filters.jsp" />
 <div class="right"><a class="excel" 
 	<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all

@@ -134,7 +134,7 @@ function getMatches(requestID) {
 </script>
 </head>
 <body>
-<h1>Request</h1>
+<h1>Registration Request</h1>
 <a href="ReportNewRequestedContractor.action">Request</a>
 <s:include value="../actionMessages.jsp"></s:include>
 
