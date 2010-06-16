@@ -3,7 +3,7 @@
 
 <html>
 <head>
-<title>Request New Contractor</title>
+<title>Registration Request</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
@@ -134,8 +134,8 @@ function getMatches(requestID) {
 </script>
 </head>
 <body>
-<h1>Request New Contractor</h1>
-<a href="ReportNewRequestedContractor.action">Contractor Registration Requests</a>
+<h1>Request</h1>
+<a href="ReportNewRequestedContractor.action">Request</a>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="newContractor.contractor != null || !newContractor.open">
