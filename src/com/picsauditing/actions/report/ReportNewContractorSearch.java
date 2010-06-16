@@ -1,29 +1,56 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.Strings;
 
 /**
  * Used by operators to search for new contractors
+ * 
+ * @author Trevor
+ * 
  */
 @SuppressWarnings("serial")
 public class ReportNewContractorSearch extends ReportAccount {
 
 	protected int id;
+	private ContractorAccountDAO contractorAccountDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 
 	private FacilityChanger facilityChanger;
-	private ContractorAccountDAO contractorAccountDAO;
+	private List<FlagCriteriaOperator> opCriteria;
+	private OperatorAccount operator = null;
+	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
 
-	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger) {
+	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
+			OperatorAccountDAO operatorAccountDAO) {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
 		this.facilityChanger = facilityChanger;
 		this.contractorAccountDAO = contractorAccountDAO;
+		this.operatorAccountDAO = operatorAccountDAO;
 	}
 
 	@Override
@@ -37,15 +64,20 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (permissions.getCorporateParent().size() > 0)
 			getFilter().setShowInParentCorporation(true);
 
-		orderByDefault = "fee.defaultAmount, gc.flag DESC, a.creationDate DESC";
-
 		getFilter().setShowInsuranceLimits(true);
+
+		operator = operatorAccountDAO.find(permissions.getAccountId());
+
+		if (operator != null && operator.getFlagCriteriaInherited() != null)
+			opCriteria = operator.getFlagCriteriaInherited();
+		else
+			opCriteria = new ArrayList<FlagCriteriaOperator>();
 	}
 
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.SearchContractors);
-		
+
 		if (!permissions.isOperatorCorporate())
 			throw new NoRightsException("Operator or Corporate");
 	}
@@ -54,26 +86,16 @@ public class ReportNewContractorSearch extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		// Because the flag filters always filter on gc.flag, I had to rename
-		// the flags table to gc here
-		sql.addJoin("LEFT JOIN flags gc on gc.conID = a.id AND gc.opID = " + permissions.getAccountId());
-		sql.addField("gc.flag");
-		sql.addField("lower(gc.flag) AS lflag");
-
-		sql.addJoin("LEFT JOIN generalcontractors co on co.subID = a.id AND co.genID = " + permissions.getAccountId());
-		sql.addField("co.id coID");
-		sql.addField("co.workStatus");
-
-		sql.addJoin("JOIN invoice_fee fee on fee.id = c.membershipLevelID");
-		sql.addField("a.city");
-		sql.addField("a.state");
-		sql.addField("a.country");
-		sql.addField("a.phone");
-
-		if (permissions.getAccountStatus().isDemo())
-			sql.addWhere("a.status IN ('Active','Demo')");
-		else
-			sql.addWhere("a.status = 'Active'");
+		if (permissions.isOperator()) {
+			// Anytime we query contractor accounts as an operator,
+			// get the flag color/status at the same time
+			sql.addJoin("LEFT JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
+					+ permissions.getAccountId());
+			sql.addField("gc.genID");
+			sql.addField("gc.workStatus");
+			sql.addField("gc.flag");
+			sql.addField("lower(gc.flag) AS lflag");
+		}
 
 		if (getFilter().isInParentCorporation()) {
 			String whereQuery = "";
@@ -89,18 +111,58 @@ public class ReportNewContractorSearch extends ReportAccount {
 			sql.addWhere(whereQuery);
 		}
 
+		sql.addJoin("JOIN invoice_fee fee on fee.id = c.membershipLevelID");
+		sql.addField("a.city");
+		sql.addField("a.state");
+		sql.addField("a.country");
+		sql.addField("a.phone");
+
+		if (permissions.getAccountStatus().isDemo())
+			sql.addWhere("a.status IN ('Active','Demo')");
+		else
+			sql.addWhere("a.status = 'Active'");
+
+		if (!Strings.isEmpty(getOrderBy()))
+			sql.addOrderBy(getOrderBy());
+		else
+			sql.addOrderBy("fee.defaultAmount, a.creationDate DESC");
+
+		if (getFilter().getFlagStatus() != null && getFilter().getFlagStatus().length > 0) {
+			try {
+
+				Set<FlagColor> flagColors = new HashSet<FlagColor>();
+				for (String flagColor : getFilter().getFlagStatus()) {
+					flagColors.add(FlagColor.valueOf(flagColor));
+				}
+
+				getFilter().setFlagStatus(null);
+				// Get the data right now for all contractors
+				buildQuery();
+				// TODO keep getting results until we get a full page's worth
+				// report.setLimit(500);
+				run(sql);
+				calculateOverallFlags();
+				
+				String conIDs = "0";
+				for (Integer conID : byConID.keySet()) {
+					if (flagColors.contains(getOverallFlag(conID)))
+						conIDs += "," + conID;
+				}
+				sql.addWhere("a.id IN (" + conIDs + ")");
+				
+			} catch (Exception e) {
+				System.out.println("Error in SQL");
+			}
+		}
+
 	}
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		checkPermissions();
 
 		if (button == null) {
-			// First time on this page, don't run the report
-			return SUCCESS;
+			runReport = false;
+			return super.execute();
 		}
 
 		if (id > 0) {
@@ -137,6 +199,26 @@ public class ReportNewContractorSearch extends ReportAccount {
 		run(sql);
 		return returnResult();
 	}
+	
+	@Override
+	protected String returnResult() throws IOException {
+		calculateOverallFlags();
+		return super.returnResult();
+	}
+
+	@Override
+	protected void addExcelColumns() {
+		if (permissions.isOperator()) {
+			calculateOverallFlags();
+
+			for (BasicDynaBean d : data) {
+				Integer conID = Integer.parseInt(d.get("id").toString());
+				d.set("flag", byConID.get(conID).toString());
+			}
+		}
+
+		super.addExcelColumns();
+	}
 
 	public int getId() {
 		return id;
@@ -144,6 +226,75 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	private void calculateOverallFlags() {
+		if (byConID.size() > 0)
+			return;
+
+		if (data.size() == 0)
+			return;
+
+		byConID.clear();
+
+		List<Integer> conIDs = new ArrayList<Integer>();
+		for (BasicDynaBean d : data) {
+			conIDs.add(Integer.parseInt(d.get("id").toString()));
+		}
+
+		// TODO Maybe we could query and then trim this result here depending on the flag color filter
+		
+		List<ContractorAccount> contractors = contractorAccountDAO.findByContractorIds(conIDs);
+
+		for (ContractorAccount contractor : contractors) {
+			if (contractor.getFlagCriteria().size() == 0) {
+				byConID.put(contractor.getId(), FlagColor.Clear);
+			} else {
+				FlagDataCalculator calculator = new FlagDataCalculator(contractor.getFlagCriteria());
+				calculator.setOperatorCriteria(opCriteria);
+
+				FlagColor flagColor = getWorstColor(calculator.calculate());
+				byConID.put(contractor.getId(), flagColor);
+			}
+		}
+
+	}
+
+	/**
+	 * We may want to consider moving this into FlagDataCalculator
+	 * 
+	 * @param flagData
+	 * @return
+	 */
+	private FlagColor getWorstColor(List<FlagData> flagData) {
+		if (flagData == null)
+			return null;
+		FlagColor worst = FlagColor.Green;
+		for (FlagData flagDatum : flagData) {
+			if (flagDatum.getFlag().isRed())
+				return flagDatum.getFlag();
+			if (flagDatum.getFlag().isAmber())
+				worst = flagDatum.getFlag();
+		}
+
+		return worst;
+	}
+
+	public FlagColor getOverallFlag(int contractorID) {
+		return byConID.get(contractorID);
+	}
+
+	public boolean worksForOperator(int contractorID) {
+		// Check the query for an existing flag in the database lookup
+		for (BasicDynaBean d : data) {
+			if (d.get("id").equals(contractorID)) {
+				if (d.get("flag") != null)
+					// Since the flag exists, the contractor should be working
+					// for the operator
+					return true;
+			}
+		}
+		return false;
 	}
 
 }

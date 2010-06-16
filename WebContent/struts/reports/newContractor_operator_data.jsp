@@ -37,7 +37,7 @@
 		<s:if test="permissions.operator">
 			<td style="white-space: nowrap">
 				<img src="images/help.gif" title="The PreFlag represents the evaluation using minimum requirements that the Contractor has already completed. Factors such as PQF, safety stats, and insurance limits are included if applicable. Custom criteria such as site-specific audits are not included in the pre-flag calculation.">
-				<a href="javascript: changeOrderBy('form1','gc.flag DESC');">PreFlag</a>
+				PreFlag
 			</td>
 			<td>Status</td>
 		</s:if>
@@ -52,6 +52,7 @@
 		<s:if test="showTrade">
 			<td>Primary Trade</td>
 		</s:if>
+		<td>Insurance</td>
 	</tr>
 	</thead>
 	<tbody>
@@ -63,12 +64,22 @@
 				</td>
 				<s:if test="permissions.operator">
 					<td class="center">
-						<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0" />
+						<s:if test="worksForOperator(get('id'))">
+							<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0" />
+						</s:if>
+						<s:else>
+							<img width="12" height="15" border="0"
+								src="images/icon_<s:property value="getOverallFlag(get('id')).toString().toLowerCase()"/>Flag.gif" />
+						</s:else>
 					</td>
-					<td class="center"><s:property value="get('coStatus')" /></td>
+					<s:if test="operatorAccount.approvesRelationships">
+						<pics:permission perm="ViewUnApproved">
+							<td class="center"><s:property value="get('workStatus')" /></td>
+						</pics:permission>
+					</s:if>
 				</s:if>
 				<td class="center">
-					<s:if test="get('coID') > 0">
+					<s:if test="get('genID') > 0">
 						<a href="ContractorView.action?id=<s:property value="get('id')"/>">View</a>
 						<pics:permission perm="RemoveContractors">
 							<s:if test="permissions.corporate">
@@ -104,6 +115,23 @@
 				<s:if test="showTrade">
 					<td><s:property value="get('main_trade')"/></td>
 				</s:if>
+					<td>
+						<s:if test="get('answer2074') != null">
+							<span style="font-size: 9px;">GL Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2074'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2079') != null">
+							<span style="font-size: 9px;">GL General Aggregate = <s:property value="getFormattedDollarAmount(get('answer2079'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2155') != null">
+							<span style="font-size: 9px;">AL Combined Single = <s:property value="getFormattedDollarAmount(get('answer2155'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2149') != null">
+							<span style="font-size: 9px;">WC Each Accident = <s:property value="getFormattedDollarAmount(get('answer2149'))"/></span> <br/>
+						</s:if>
+						<s:if test="get('answer2161') != null">
+							<span style="font-size: 9px;">EX Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2161'))"/></span>
+						</s:if>
+					</td>
 			</tr>
 		</s:iterator>
 	</tbody>
