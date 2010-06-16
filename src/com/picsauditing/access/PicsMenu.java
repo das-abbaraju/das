@@ -96,7 +96,7 @@ public class PicsMenu {
 			subMenu.addChild("Search For New", url);
 		}
 		if (permissions.hasPermission(OpPerms.RequestNewContractor))
-			subMenu.addChild("Registration Request", "ReportNewRequestedContractor.action");
+			subMenu.addChild("Registration Requests", "ReportNewRequestedContractor.action");
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 			subMenu.addChild("Bid Only Account", "BiddingContractorSearch.action");
 		}

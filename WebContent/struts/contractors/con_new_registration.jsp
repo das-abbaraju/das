@@ -174,15 +174,15 @@ function getMatches(requestID) {
 
 <s:if test="newContractor.contractor != null || !newContractor.open">
 	<div class="info">
-		<s:if test="newContractor.contractor.status.active">
+		<s:if test="newContractor.contractor != null">
 			<s:property value="newContractor.contractor.name" /> has registered an account with PICS on <strong><s:date name="newContractor.contractor.creationDate" format="M/d/yyyy" /></strong><br/>
-			<s:if test="newContractor.open">
-				Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>
-			</s:if>
 		</s:if>
-		<s:if test="!newContractor.open">
+		<s:if test="newContractor.open">
+			Click here to <a href="RequestNewContractor.action?requestID=<s:property value="newContractor.id" />&button=Close Request" class="picsbutton positive">Close the Request</a>
+		</s:if>
+		<s:else>
 			This request is closed.
-		</s:if>
+		</s:else>
 	</div>
 </s:if>
 
@@ -341,12 +341,13 @@ function getMatches(requestID) {
 					<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
 					<s:property value="newContractor.contractor.name"/></a>
 				</s:if>
+				&nbsp;
 			</li>
 		</s:if>
 		<li><label>Notes:</label>
 			<s:textarea cssStyle="vertical-align: top; margin-bottom: 10px" name="addToNotes" cols="60" rows="3" id="addToNotes" />
+			<pre id="addHere"></pre>
 			<s:if test="newContractor.notes.length() > 0">
-				<pre id="addHere"></pre>
 				<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
 			</s:if>
 		</li>
@@ -355,10 +356,10 @@ function getMatches(requestID) {
 	<fieldset class="form submit">
 	 <div>	
 	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
-	  	<s:if test="newContractor.contractor != null">
+	  	<s:if test="newContractor.contractor != null || permissions.operatorCorporate">
 		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
 		</s:if>
-		<s:elseif test="permissions.admin && newContractor.id > 0">
+		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
 			<input type="submit" class="picsbutton" name="button" value="Return To Operator" />
 		</s:elseif>
 	</div>	

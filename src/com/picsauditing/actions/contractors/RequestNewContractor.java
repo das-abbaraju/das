@@ -184,28 +184,32 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				if (!Strings.isEmpty(conName) && 
 						(newContractor.getContractor() == null || conName != newContractor.getContractor().getName())) {
 					ContractorAccount con = contractorAccountDAO.findConID(conName);
-					newContractor.setContractor(con);
-					newContractor.setHandledBy(WaitingOn.Operator);
 					
-					if (newContractor.isWatch() && newContractor.getRequestedByUser() != null) {
-						// Need to check if the watch exists all ready?
-						List<ContractorWatch> existing = 
-							userDAO.findContractorWatch(newContractor.getRequestedByUser().getId());
-						boolean exists = false;
+					if (con != null) {
+						newContractor.setContractor(con);
+						newContractor.setHandledBy(WaitingOn.Operator);
 						
-						for (ContractorWatch cw : existing) {
-							if (cw.getContractor().equals(con))
-								exists = true;
+						if (newContractor.isWatch() && newContractor.getRequestedByUser() != null) {
+							// Need to check if the watch exists all ready?
+							List<ContractorWatch> existing = 
+								userDAO.findContractorWatch(newContractor.getRequestedByUser().getId());
+							boolean exists = false;
+							
+							for (ContractorWatch cw : existing) {
+								if (cw.getContractor().equals(con))
+									exists = true;
+							}
+							
+							if (!exists) {
+								ContractorWatch watch = new ContractorWatch();
+								watch.setAuditColumns(permissions);
+								watch.setContractor(con);
+								watch.setUser(newContractor.getRequestedByUser());
+								crrDAO.save(watch);
+							}
 						}
-						
-						if (!exists) {
-							ContractorWatch watch = new ContractorWatch();
-							watch.setAuditColumns(permissions);
-							watch.setContractor(con);
-							watch.setUser(newContractor.getRequestedByUser());
-							crrDAO.save(watch);
-						}
-					}
+					} else
+						addActionError("PICS Contractor not found");
 				} else if (Strings.isEmpty(conName))
 					newContractor.setContractor(null);
 				
@@ -249,6 +253,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 			
 			if (button.equals("Close Request")) {
+				// Last minute notes?
+				if (!Strings.isEmpty(addToNotes)) {
+					newContractor.setNotes(addNotePrefix(addToNotes));
+					addToNotes = null;
+				}
+				
 				newContractor.setNotes(addNotePrefix("Closed the request.") + newContractor.getNotes());
 				newContractor.setOpen(false);
 				redirect = true;

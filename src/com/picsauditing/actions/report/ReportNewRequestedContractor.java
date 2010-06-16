@@ -95,6 +95,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				}
 				where += ")";
 				sql.addWhere(where);
+				sql.addWhere("cr.handledBy = 'PICS'");
 			} else { // Account Managers
 				filter.setShowConAuditor(true);
 				filter.setShowState(true);

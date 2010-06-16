@@ -37,3 +37,5 @@ values(26, 646, 1, 2, 15);
 insert into `widget_user`
 (widgetID, userID, expanded, widget_user.column, sortOrder) 
 values(26, 616, 1, 2, 15);
+
+update `widget` set `caption`='Registration Requests' where `widgetID`='26';
