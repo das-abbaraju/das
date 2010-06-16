@@ -1,5 +1,6 @@
 package com.picsauditing.util;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
@@ -30,6 +31,9 @@ public class ReportFilterNote extends ReportFilter {
 
 	public void setCategory(NoteCategory[] category) {
 		this.category = category;
+
+		if (Utilities.isEmptyArray(this.category))
+			this.category = null;
 	}
 
 	public LowMedHigh[] getPriority() {
@@ -38,6 +42,9 @@ public class ReportFilterNote extends ReportFilter {
 
 	public void setPriority(LowMedHigh[] priority) {
 		this.priority = priority;
+
+		if (Utilities.isEmptyArray(this.priority))
+			this.priority = null;
 	}
 
 	public int[] getUserID() {
@@ -65,7 +72,7 @@ public class ReportFilterNote extends ReportFilter {
 	}
 
 	public LowMedHigh[] getPriorityList() {
-//		return LowMedHigh.values();
+		// return LowMedHigh.values();
 		return new LowMedHigh[] { LowMedHigh.Low, LowMedHigh.Med, LowMedHigh.High };
 	}
 

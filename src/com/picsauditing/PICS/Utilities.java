@@ -9,6 +9,17 @@ import java.util.Date;
  */
 public class Utilities {
 
+	public static boolean isEmptyArray(Object[] array) {
+		if (array == null || array.length == 0)
+			return true;
+
+		for (Object object : array)
+			if (object == null)
+				return true;
+
+		return false;
+	}
+
 	public static String escapeHTML(String value) {
 		StringBuffer out = new StringBuffer();
 		for (int i = 0; i < value.length(); i++) {
