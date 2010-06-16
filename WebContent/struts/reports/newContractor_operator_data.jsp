@@ -143,7 +143,7 @@
 
 <pics:permission perm="RequestNewContractor" type="Edit">
 	<div class="info">
-	Is the company you need, not listed? Submit a <a href="RequestNewContractor.action">New Contractor Request</a> and PICS will help that company register.
+		Is the company you need not listed? Submit a <a href="RequestNewContractor.action">New Registration Request</a> and PICS will contact that company for you.
 	</div>
 </pics:permission>
 </s:else>
