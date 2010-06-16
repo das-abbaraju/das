@@ -1,5 +1,12 @@
 -- This is an experimental script to quickly generate pre-flag colors for contractors used on contractor search
 
+CREATE TABLE `flags` (
+  `conID` MEDIUMint(8) unsigned NOT NULL,
+  `opID` MEDIUMint(8) unsigned NOT NULL,
+  `flag` enum('Red','Amber','Green','Clear') default 'Green',
+  `status` char(1) default 'Y'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 TRUNCATE TABLE flags;
 
 -- 30 seconds without indexes
