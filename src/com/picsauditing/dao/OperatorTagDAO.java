@@ -51,4 +51,14 @@ public class OperatorTagDAO extends PicsDAO {
 		query.setParameter("opID", opID);
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<OperatorTag> findUnused(int opID){
+		Query query = em.createQuery("FROM OperatorTag o WHERE o.operator.id = ? AND o.operator.id NOT IN "+ 
+				"(SELECT c.tag.id FROM ContractorTag c)");
+		query.setParameter(1, opID);		
+		
+		return query.getResultList();
+	}
+	
 }

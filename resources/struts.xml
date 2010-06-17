@@ -653,6 +653,10 @@
 			class="com.picsauditing.actions.operators.OperatorTags">
 			<result>struts/operators/operator_tags.jsp</result>
 		</action>
+		<action name="ContractorTagsAjax"
+			class="com.picsauditing.actions.operators.OperatorTags">
+			<result>struts/contractors/remove_con_tags.jsp</result>
+		</action>
 		<action name="ReportUntaggedContractors"
 			class="com.picsauditing.actions.operators.ReportUntaggedContractors">
 			<result>struts/operators/report_untaggedcontractors.jsp</result>
