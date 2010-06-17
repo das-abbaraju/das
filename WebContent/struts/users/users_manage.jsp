@@ -65,6 +65,9 @@ div.autocomplete ul li {
 <s:if test="account.operatorCorporate">
 	<a href="FacilitiesEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
+<s:if test="account.assessment">
+	<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+</s:if>
 <s:if test="account.admin">PICS</s:if>
 &gt; <a href="?accountId=<s:property value="account.id"/>">Manage User Accounts</a>
 <s:if test="user.id > 0">&gt; <a href="?user.id=<s:property value="user.id"/>"><s:property value="user.name" /></a>
