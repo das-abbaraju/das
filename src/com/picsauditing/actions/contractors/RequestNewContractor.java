@@ -72,6 +72,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected State state;
 	protected EmailTemplate template;
 	protected List<ContractorAccount> potentialMatches;
+	
+	private List<String> noteReasons;
 
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
@@ -88,6 +90,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			"${newContractor.state.english}", "${newContractor.zip}",
 			"${newContractor.country.english}", "${newContractor.deadline}",
 			"${requestLink}", "<PICSSignature>" };
+	
+	private String[] noteReason = new String[] { "The Contractor doesn't want to register",
+			"The contractor wants to register but keeps delaying", "The company is no longer in business",
+			"We were unable to locate this company" };
 	
 	public RequestNewContractor(ContractorRegistrationRequestDAO crrDAO, OperatorAccountDAO operatorAccountDAO,
 			UserDAO userDAO, CountryDAO countryDAO, StateDAO stateDAO, ContractorAccountDAO contractorAccountDAO,
@@ -613,5 +619,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 			return o1.getAccount().getName().compareTo(o2.getAccount().getName());
 		}
+	}
+
+	public String[] getNoteReason() {
+		return noteReason;
+	}
+	
+	public void setNoteReason(String[] noteReason) {
+		this.noteReason = noteReason;
 	}
 }

@@ -101,6 +101,18 @@ $(function() {
 	});
 });
 
+function fillNotes(){
+	var r = $('#noteReason').val();
+	if(r==0)
+		return;
+	var n = $('#addToNotes').val();
+	if(n.length > 1)
+		r = r +"\n"+ n;
+	$('#addToNotes').val(r);
+	$('#addToNotes').trigger('keyup');
+	
+}
+
 function countryChanged(country) {
 	changeState(country);
 }
@@ -345,7 +357,10 @@ function getMatches(requestID) {
 			</li>
 		</s:if>
 		<li><label>Notes:</label>
-			<s:textarea cssStyle="vertical-align: top; margin-bottom: 10px" name="addToNotes" cols="60" rows="3" id="addToNotes" />
+		<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
+			list="noteReason" id="noteReason" onchange="fillNotes()"/>
+			<s:textarea cssStyle="vertical-align: top; margin-bottom: 10px; margin-left:165px; margin-top:10px;" 
+			name="addToNotes" cols="60" rows="3" id="addToNotes" />
 			<pre id="addHere"></pre>
 			<s:if test="newContractor.notes.length() > 0">
 				<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
