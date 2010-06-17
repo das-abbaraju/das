@@ -412,6 +412,10 @@ public class Permissions implements Serializable {
 	public boolean isOperator() {
 		return "Operator".equals(this.accountType);
 	}
+	
+	public boolean isAssessment() {
+		return "Assessment".equals(this.accountType);
+	}
 
 	/**
 	 * True if operator or corporate

@@ -17,7 +17,7 @@ public class ReportAccountQuick extends ReportAccount {
 		sql.addField("dbaName");
 		sql.addField("city");
 		sql.addField("state");
-		sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor')");
+		sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor', 'Assessment')");
 		sql.setPermissions(permissions);
 		orderByDefault = "a.type, a.name";
 
@@ -41,6 +41,8 @@ public class ReportAccountQuick extends ReportAccount {
 			String id = this.data.get(0).get("id").toString();
 			if (data.get(0).get("type").equals("Contractor"))
 				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + id);
+			else if (data.get(0).get("type").equals("Assessment"))
+				ServletActionContext.getResponse().sendRedirect("AssessmentCenterEdit.action?id=" + id);
 			else
 				ServletActionContext.getResponse().sendRedirect("FacilitiesEdit.action?id=" + id);
 		}

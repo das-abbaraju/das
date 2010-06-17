@@ -49,6 +49,7 @@ public enum OpPerms {
 	ManageOperators("Manage Operator Accounts", "Allows PICS employees to view/edit/delete Operator accounts", true, true, true, false, false),
 	EmailOperators("Send Operator Emails", "Allows PICS employees to send emails to operators accounts", false, false, true, false, false),
 	ManageCorporate("Manage Corporate Accounts", "Allows PICS employees to view/edit/delete Corporate accounts", true, true, true, false, false),
+	ManageAssessment("Manage Assessment Center Accounts", "Allows PICS employees to view/edit/delete Assessment Center accounts", true, true, true, false, false),
 	ContractorAccounts("Administer Contractor Accounts", "Allow PICS employees to create/update/delete contractor accounts", true, true, true, false, false),
 	ContractorActivation("Activate Contractor Accounts", "Allow PICS employees to view/activate/remove contractor accounts during the activation phase", true, true, true, false, false),
 	EditUsers("Manage User Accounts", "Allows administrators to view/add/update/delete users for their account", true, true, true, true, true),

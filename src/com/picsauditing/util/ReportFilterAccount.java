@@ -1,11 +1,16 @@
 package com.picsauditing.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Industry;
+import com.picsauditing.jpa.entities.State;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
@@ -18,6 +23,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showIndustry = true;
 	protected boolean showAddress = true;
 	protected boolean showStatus = false;
+	protected boolean showType = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
 
@@ -29,6 +35,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String[] state;
 	protected String[] country;
 	protected String zip = DEFAULT_ZIP;
+	protected String[] type;
 	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
@@ -46,9 +53,29 @@ public class ReportFilterAccount extends ReportFilter {
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}
+	
+	public String[] getTypeList() {
+		return new String[] { "Assessment", "Corporate", "Operator" };
+	}
 
 	public ArrayList<String> getFlagStatusList() throws Exception {
 		return FlagColor.getValuesWithDefault();
+	}
+	
+	public List<State> getStateList() {
+		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
+		List<State> result;
+		if (permissions.getAccountCountries().size() > 0)
+			result = stateDAO.findByCountries(permissions.getAccountCountries(), false);
+		else
+			result = stateDAO.findAll();
+
+		return result;
+	}
+
+	public List<Country> getCountryList() {
+		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
+		return countryDAO.findAll();
 	}
 
 	public boolean isShowAccountName() {
@@ -81,6 +108,14 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowStatus(boolean showStatus) {
 		this.showStatus = showStatus;
+	}
+	
+	public boolean isShowType() {
+		return showType;
+	}
+	
+	public void setShowType(boolean showType) {
+		this.showType = showType;
 	}
 
 	public boolean isShowPrimaryInformation() {
@@ -153,6 +188,14 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+	
+	public String[] getType() {
+		return type;
+	}
+	
+	public void setType(String[] type) {
+		this.type = type;
 	}
 
 	public AccountStatus[] getStatus() {
