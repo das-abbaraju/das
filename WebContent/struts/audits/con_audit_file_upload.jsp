@@ -24,7 +24,7 @@ function closePage() {
 		<div id="content">
 			<h1>Upload Audit File <span class="sub"><s:property value="contractor.name" /></span></h1>
 			<s:if test="auditQuestion != null">
-				<h4><s:property value="auditQuestion.question"/></h4>
+				<h4><s:property value="auditQuestion.question" escape="false"/></h4>
 			</s:if>
 			<s:include value="../actionMessages.jsp" />
 			<div>
