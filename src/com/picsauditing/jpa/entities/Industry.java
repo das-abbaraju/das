@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 
 public enum Industry {
-	Petrochemical, Mining, Power, General, Construction, Manufacturing, Pharmaceutical, PulpPaper("Pulp and Paper"), Telecommunications;
+	General, Aerospace, Construction, Manufacturing, Mining, Petrochemical, Pharmaceutical, Power, PulpPaper("Pulp and Paper"), Telecommunications;
 
 	private String description;
 	
