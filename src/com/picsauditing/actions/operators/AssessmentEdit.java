@@ -34,7 +34,12 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 	}
 
 	public void prepare() throws Exception {
+		loadPermissions();
+		
 		id = getParameter("id");
+		
+		if (permissions.isAssessment())
+			id = permissions.getAccountId();
 
 		if (id > 0) {
 			center = accountDAO.find(id);
@@ -58,8 +63,8 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 
 		if (permissions.isAdmin())
 			tryPermissions(OpPerms.ManageAssessment);
-		else
-			throw new NoRightsException("Admin");
+		else if (!permissions.isAssessment())
+			throw new NoRightsException("Admin or Assessment Center");
 
 		if (button != null) {
 			if (button.equalsIgnoreCase("Save")) {

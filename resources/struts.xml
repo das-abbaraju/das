@@ -1714,6 +1714,11 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
+		<action name="ManageAssessmentTestResults"
+			class="com.picsauditing.actions.report.oq.ManageAssessmentTestResults">
+			<result>struts/reports/oq/manage_assessment_test_results.jsp</result>
+		</action>
+		
 		<!-- Competencies -->
 		<action name="JobCompetencyMatrix"
 			class="com.picsauditing.actions.employees.JobCompetencyMatrix">

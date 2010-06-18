@@ -89,9 +89,13 @@ public class PicsMenu {
 		}
 		
 		if (permissions.isAssessment()) {
+			subMenu = menu.addChild("Management");
+			subMenu.addChild("Manage Test Results", "ManageAssessmentTestResults.action");
+			
 			subMenu = menu.addChild("Edit");
 			subMenu.addChild("Account", "AssessmentCenterEdit.action");
 			subMenu.addChild("Users", "UsersManage.action");
+			
 			addSupportLink(menu);
 			return menu;
 		}

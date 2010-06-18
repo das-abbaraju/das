@@ -38,8 +38,11 @@ $(function() {
 <div id="internalnavcontainer">
 <ul id="navlist">
 	<li><a href="AssessmentCenterEdit.action?id=<s:property value="center.id"/>"
-		<s:if test="requestURI.contains('operator_edit')">class="current"</s:if>>Edit</a></li>
-	<li><a href="UsersManage.action?accountId=<s:property value="center.id"/>">Users</a></li>
+		<s:if test="requestURI.contains('assessment_edit')">class="current"</s:if>>Edit</a></li>
+	<li><a href="UsersManage.action?accountId=<s:property value="center.id"/>"
+		<s:if test="requestURI.contains('users_manage')">class="current"</s:if>>Users</a></li>
+	<li><a href="ManageAssessmentTestResults.action?id=<s:property value="center.id"/>"
+		<s:if test="requestURI.contains('manage_assessment_test_results')">class="current"</s:if>>Manage Test Results</a></li>
 	<!-- Will we need this?
 	<li><a href="ContractorList.action?filter.status=Active&filter.status=Demo<s:property value="operatorIds"/>">Contractors</a></li>
 	 -->
