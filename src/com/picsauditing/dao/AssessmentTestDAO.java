@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
 
 @Transactional
@@ -57,6 +58,13 @@ public class AssessmentTestDAO extends PicsDAO {
 
 		Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE expirationDate > NOW()"
 				+ " AND effectiveDate <= NOW()" + where);
+		return query.getResultList();
+	}
+	
+	public List<AssessmentResultStage> findStaged(int centerID) {
+		Query query = em.createQuery("SELECT a FROM AssessmentResultStage a WHERE center.id = ?");
+		query.setParameter(1, centerID);
+		
 		return query.getResultList();
 	}
 }
