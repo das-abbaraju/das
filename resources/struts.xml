@@ -1263,6 +1263,10 @@
 			<result>struts/mail/mass_mailer.jsp</result>
 			<result name="emailConfirm">/struts/mail/emailconfirm.jsp</result>
 		</action>
+		<action name="MassMailerAjax"
+			class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mass_con_email_list.jsp</result>
+		</action>
 
 		<action name="MailEditorAjax"
 			class="com.picsauditing.mail.MassMailer">

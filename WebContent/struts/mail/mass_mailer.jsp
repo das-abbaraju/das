@@ -7,12 +7,17 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/mass_mailer.js?v=<s:property value="version"/>"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript">
 type = "<s:property value="type" />";
 <s:if test="templateID != 0">
 $(function(){
 	chooseTemplate(<s:property value="templateID"/>);
+	$('a[rel*=facebox]').facebox({
+ 		loading_image : 'loading.gif',
+ 		close_image : 'closelabel.gif'
+ 	});
 });
 </s:if>
 </script>
@@ -69,34 +74,27 @@ $(function(){
 <div><a href="EmailWizard.action">&lt;&lt; Back to Steps 1-3 of the Email Wizard</a></div>
 <s:include value="../actionMessages.jsp" />
 <div id="messages"></div>
-<s:form
-	id="form1" method="post">
+<s:form	id="form1" method="post">
 	<s:hidden name="type" />
 	<s:hidden name="button" value="send" />
 
 <table style="width: 100%;">
 <tr>
-	<td style="width: 20%">
-		<h3><s:property value="type" /> (<s:property value="list.size()"/> entries)</h3>
-		<s:select id="contractors" cssClass="forms"
-			name="ids" size="%{list.size() < 40 ? list.size() : 40}" multiple="true" list="list" listKey="key"
-			listValue="value" ondblclick="previewEmail();" title="Double click a row to preview email" cssStyle="width: 300px;" />
-			<div>* Double click to preview</div>
-			<div><a href="MassMailer.action" class="refresh">Refresh this Page</a></div>
-			
-			<input type="button" value="Remove Selected" onclick="removeSelected()" />
+	<td style="width: 40%">
+		<div id="con_sel_list">
+			<s:include value="mass_con_email_list.jsp" />
+		</div>
 	</td>
 	<td style="vertical-align: top; padding-left: 20px;">
 		<div id="menu_selector" style="display: none;">
 			<s:if test="emailTemplates.size > 0">
 				<button id="buttonPick" class="picsbutton" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
 			</s:if>
-			<button id="buttonPreview" class="picsbutton" type="button" onclick="previewEmail();" title="Preview the email with the selected contractor">Preview</button>
 			<pics:permission perm="EmailTemplates" type="Edit">
 				<button id="buttonSave" class="picsbutton" type="button" onclick="saveClick();" title="Save this email as a template for future use">Save...</button>
 			</pics:permission>
 			<button id="buttonEdit" class="picsbutton" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
-			<button class="picsbutton positive" type="button" onclick="sendEmails();">Send	Emails</button>
+			<s:if test="list.size() >0"><button class="picsbutton positive" type="button" onclick="sendEmails();">Send	Emails</button></s:if>
 			<br clear="all">
 		</div>
 		<br clear="all" />

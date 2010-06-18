@@ -43,6 +43,7 @@ public class MassMailer extends PicsActionSupport {
 	private ListType type;
 
 	private int templateID = 0; // 0 means no template selected at all
+	private int removeID;
 	final public static int BLANK_EMAIL = -1;
 	private String templateName;
 	private String templateSubject;
@@ -141,6 +142,11 @@ public class MassMailer extends PicsActionSupport {
 		}
 
 		if (button != null) {
+			if(button.equals("removeCon")){
+				if(ids.contains(removeID))
+					ids.remove(removeID);
+			}
+			
 			if (button.equals("send")) {
 				EmailTemplate template = buildEmailTemplate();
 				// TODO we may want to offer sending from another email
@@ -171,6 +177,18 @@ public class MassMailer extends PicsActionSupport {
 			}
 		}
 
+		// At this point if ids is empty then we've removed all possible contractors
+		// So return a message and url and finish
+		if(ids.isEmpty()){
+			String url = "EmailWizard.action";
+			if (type != null)
+				url += "?type=" + type;
+			addActionMessage("You have removed all matches from your list, to start again " +
+					"<a href=\"" + url + "\">Click here</a> " +
+					"to go back to the Email Wizzard");
+			return SUCCESS;
+		}
+		
 		// We aren't previewing, sending, or editing, so just get the list from
 		// the db using the filters
 		String idList = Strings.implode(ids, ",");
@@ -382,5 +400,13 @@ public class MassMailer extends PicsActionSupport {
 
 	public boolean isTemplateAllowsVelocity() {
 		return templateAllowsVelocity;
+	}
+
+	public int getRemoveID() {
+		return removeID;
+	}
+
+	public void setRemoveID(int removeID) {
+		this.removeID = removeID;
 	}
 }

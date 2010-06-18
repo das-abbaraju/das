@@ -15,12 +15,9 @@ function showTemplateList() {
 	$('#chooseEmail').show();
 }
 
-function sendEmails() {
-	// Select all of the contractors left in the box, then submit the form
-	var contractors = $('#contractors option').attr('selected', 'selected');
-	
+function sendEmails() {	
 	// Confirm box for sending out emails
-	var r = confirm("You are sending " + $('#contractors option').length 
+	var r = confirm("You are sending " + $('#sendSize').val() 
 			+ " emails. Please confirm if this is correct.");
 	if(r == false) {
 		return false;
@@ -40,16 +37,17 @@ function editEmail() {
 	$('#draftEdit').show();
 	$('#buttonEdit').hide();
 	$('#buttonSave').show();
-	$('#previewEmail').hide();
+	if ($('#previewEmail').is(':visible'))
+		$('#previewEmail').slideUp(500);
 	$('#draftEmail').fadeIn();
 }
 
-function previewEmail() {
-	if (templateID == 0) {
-		alert("Select an email template to use first");
+function pEmail(id) { 
+	if (templateID == 0) { 
+		alert("Select an email template to use first"); 
 		return;
 	}
-	var id = $('#contractors').val();
+	
 	if (id > 0) {
 		$('#buttonSave').hide();
 		$('#buttonEdit').show();
@@ -60,7 +58,7 @@ function previewEmail() {
 		
 		var data = {
 				button:'MailPreviewAjax',
-				previewID: id[0],
+				previewID: id,
 				type: type,
 				templateSubject: $('#templateSubject').val(),
 				templateBody: $('#templateBody').val(),
@@ -72,6 +70,10 @@ function previewEmail() {
 	} else {
 		alert("You must select record to preview");
 	}
+}
+
+function removeCon(id){
+	$('#con_sel_list').load('MassMailerAjax.action', {removeID: id, button: 'removeCon'});
 }
 
 function chooseTemplate(id) {

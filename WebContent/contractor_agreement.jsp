@@ -1,16 +1,19 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<jsp:useBean id="permissions"
+	class="com.picsauditing.access.Permissions" scope="session" />
+<%@page import="com.picsauditing.access.OpPerms"%>
 <h1 align="center">Contractor Agreement Statement</h1>
 
 <div align="center">
-	<s:if test="!permissions.admin &&
-						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
-		<form method="post">
-			<input type="submit" name="button" class="picsbutton" value="I Agree" />
-		</form>
-	</s:if>
+		<% 
+			if(permissions != null && !permissions.isAdmin() &&
+						(permissions.hasPermission(OpPerms.ContractorBilling) 
+							|| permissions.hasPermission(OpPerms.ContractorAdmin)
+							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
+		%>
+			<form method="post">
+				<input type="submit" name="button" class="picsbutton" value="I Agree" />		
+			</form>
+		<% } %>
 </div>
 
 <div style="width: 740px;">
@@ -87,14 +90,16 @@ contractor list.</p><br/>
 <p>You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.</p>
 
 <div align="center" style="text-align:bottom;">
-	<s:if test="!permissions.admin &&
-						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
-		<form method="POST">
-			<input type="submit" name="button" class="picsbutton" value="I Agree" />
-		</form>
-	</s:if>
+		<% 
+			if(permissions != null && !permissions.isAdmin() &&
+						(permissions.hasPermission(OpPerms.ContractorBilling) 
+							|| permissions.hasPermission(OpPerms.ContractorAdmin)
+							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
+		%>
+			<form method="POST">
+				<input type="submit" name="button" class="picsbutton" value="I Agree" />
+			</form>
+	<% } %>
 </div>
 </div>
 
