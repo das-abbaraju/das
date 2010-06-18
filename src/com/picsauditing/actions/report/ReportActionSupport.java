@@ -2,15 +2,25 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.search.Database;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings("serial")
@@ -32,7 +42,6 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected boolean filteredDefault = false;
 
 	public void run(SelectSQL sql) throws SQLException, IOException {
-		
 		if (download) {
 			this.report.setLimit(100000);
 			showPage = 1;
@@ -46,7 +55,7 @@ public class ReportActionSupport extends PicsActionSupport {
 		isFiltered();
 		if (filtered == null)
 			filtered = filteredDefault;
-		
+
 		if (orderBy == null && orderByDefault != null)
 			orderBy = orderByDefault;
 		report.setOrderBy(this.orderBy, orderByDefault);
@@ -56,6 +65,8 @@ public class ReportActionSupport extends PicsActionSupport {
 			report.setCurrentPage(showPage);
 
 		data = report.getPage();
+
+		logFilter();
 	}
 
 	public int getShowPage() {
@@ -130,7 +141,7 @@ public class ReportActionSupport extends PicsActionSupport {
 			return false;
 		return value.toString().trim().length() > 0;
 	}
-	
+
 	public boolean filterOn(Object[] value) {
 		if (value == null)
 			return false;
@@ -154,5 +165,69 @@ public class ReportActionSupport extends PicsActionSupport {
 	public void setReportName(String reportName) {
 		this.reportName = reportName;
 	}
-	
+
+	private void logFilter() {
+		try {
+			AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+			AppProperty filterlog = appPropertyDAO.find("filterlog.enabled");
+			if (filterlog != null && filterlog.getValue().equals("1")) {
+				Set<String> params = new HashSet<String>();
+				AppProperty ignoreProp = appPropertyDAO.find("filterlog.ignore");
+				AppProperty ignoreValues = appPropertyDAO.find("filterlog.ignorevalues");
+				Map<String, String> ignoreList = new HashMap<String, String>();
+				if (ignoreValues != null && !Strings.isEmpty(ignoreValues.getValue())) {
+					for (String tuple : ignoreValues.getValue().split(",")) {
+						String[] kv = tuple.split(":");
+						ignoreList.put(kv[0], kv[1]);
+					}
+				}
+
+				Map<String, Object> map = ServletActionContext.getContext().getParameters();
+				for (String key : map.keySet()) {
+					if (key.startsWith("filter.")) {
+						String filter = key.replaceAll("^filter.", "");
+
+						// Is this in the blacklist?
+						if (ignoreProp == null || !ignoreProp.getValue().contains(filter)) {
+							Object value = map.get(key);
+							String ignore = ignoreList.get(filter);
+
+							if (value != null) {
+								Object[] val;
+								if (value instanceof Object[]) {
+									val = (Object[]) value;
+								} else {
+									val = new Object[] { value };
+								}
+
+								for (Object o : val) {
+									if (!Strings.isEmpty(o.toString()) && (ignore == null || !ignore.equals(o))
+											&& !((String) o).trim().matches("^-[^-]*-$")) {
+										params.add(filter);
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if (params.size() > 0) {
+					String name = ServletActionContext.getContext().getName();
+					// Update all the used parameters
+					Database db = new Database();
+					int count = db
+							.executeUpdate("UPDATE app_filter_stats SET requestCount = requestCount + 1 WHERE searchPage = '"
+									+ name + "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")");
+
+					if (count < params.size()) {
+						System.out.println("Create rows #" + (params.size() - count));
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
 }
