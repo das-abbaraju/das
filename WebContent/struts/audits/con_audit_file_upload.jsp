@@ -37,7 +37,7 @@ function closePage() {
 				</div>
 				<s:if test="file != null && file.exists()">
 					<div class="question"><a
-						href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>&fileID=<s:property value="fileID"/>&button=download"
+						href="AuditFileUpload.action?auditID=<s:property value="auditID"/>&fileID=<s:property value="fileID"/>&button=download"
 						target="_BLANK">Open Existing <s:property value="fileSize" />
 					File</a></div>
 				</s:if>
