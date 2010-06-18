@@ -53,6 +53,18 @@ pre {
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
+#requestTable tr td {
+	width: 50%;
+	vertical-align: top;
+}
+
+#addToNotes {
+	margin-bottom: 10px;
+	<s:if test="permissions.admin">
+	margin-left: 165px;
+	</s:if>
+}
+
 <s:if test="newContractor.city == null ||newContractor.city.length == 0">
 .address-zip {
 	display: none;
@@ -207,32 +219,32 @@ function getMatches(requestID) {
 
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
-	<fieldset class="form"><legend><span>Company Information</span></legend>
-	<ol>
-		<li><label>Company Name:</label>
-			<s:textfield name="newContractor.name" size="35" /></li>
-		<li><label>Contact
-			Name:</label> <s:textfield name="newContractor.contact" />
-			<br />
-		</li>
-		<s:if test="newContractor.phone == null && newContractor.email == null">
-			<li>
-				<span style="margin-left: 11em; padding-bottom: 0px; clear: right;">
-					(Phone <i>or</i> Email is required)
-				</span>
-			</li>
-		</s:if>
-		<li>
-			<label>Phone:</label>
-			<s:textfield name="newContractor.phone" size="20" />
-			<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-				<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
-			</s:if>
-		</li>
-		<li><label for="email">Email:</label>
-			<table style="display: inline;">
-				<tr>
-					<td><nobr>
+	<table id="requestTable">
+		<tr>
+			<td>
+				<fieldset class="form"><legend><span>Company Information</span></legend>
+				<ol>
+					<li><label>Company Name:</label>
+						<s:textfield name="newContractor.name" size="35" /></li>
+					<li><label>Contact
+						Name:</label> <s:textfield name="newContractor.contact" />
+						<br />
+					</li>
+					<s:if test="newContractor.phone == null && newContractor.email == null">
+						<li>
+							<span style="margin-left: 11em; padding-bottom: 0px; clear: right;">
+								(Phone <i>or</i> Email is required)
+							</span>
+						</li>
+					</s:if>
+					<li>
+						<label>Phone:</label>
+						<s:textfield name="newContractor.phone" size="20" />
+						<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
+							<input type="submit" class="picsbutton" name="button" value="Contacted By Phone" />
+						</s:if>
+					</li>
+					<li><label for="email">Email:</label>
 						<s:textfield name="newContractor.email" size="30" id="email" />
 						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0 && !permissions.operatorCorporate">
 							<input type="button" onclick="$('#email_preview').toggle(); return false;" class="picsbutton" value="Edit Email" />
@@ -243,133 +255,137 @@ function getMatches(requestID) {
 											<a href="#operatorForms" class="add fancybox" title="Add Attachment" onclick="return false;">Add Attachment</a>
 										</s:if>
 									</td>
-									<s:if test="formsViewable && attachment == null && forms.size() > 0">
-										<td><div id="attachment"></div></td>
-									</s:if>
+									<td>
+										<s:if test="formsViewable && attachment == null && forms.size() > 0">
+											<div id="attachment"></div>
+										</s:if>
+									</td>
 								</tr>
 								<tr>
 									<td>Subject: <input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30"/></td>
 									<td>Fields: <s:select list="tokens" onchange="addToken(this.value);"></s:select></td>
 								</tr>
 								<tr><td colspan="2">
-									<s:textarea cols="75" rows="10" name="emailBody" id="email_body"></s:textarea>
+									<s:textarea cols="60" rows="10" name="emailBody" id="email_body"></s:textarea>
 								</td></tr>
 								<tr><td colspan="2"><input type="submit" name="button" class="picsbutton positive" value="Send Email" /></td></tr>
 							</table>
 						</s:if>
-					</nobr></td>
-				</tr>
-			</table>
-		</li>
-		<li><label for="taxID">Tax ID:</label>
-			<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" /> (Optional)
-		</li>
-		<s:if test="assignedCSR != null">
-			<li><label>Assigned PICS CSR:</label>
-				<s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/>
-			</li>
-		</s:if>	
-	</ol>
-	</fieldset>
-	<fieldset class="form"><legend><span>Primary Address</span></legend>
-	<ol>
-		 <li><label for="newContractorCountry">Country:</label>
-			<s:select
-				list="countryList" name="country.isoCode" id="newContractorCountry"
-				listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
-				onchange="countryChanged(this.value)" />
-		</li>
-		<li id="state_li"></li>
-		<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/> (Optional)</li>
-		<li class="address-zip"><label for="address">Address:</label>
-			<s:textfield name="newContractor.address" size="35" id="address" /> (Optional)</li>
-		<li class="address-zip"><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /> (Optional)</li>		
-	</ol>
-	</fieldset>
-	<fieldset class="form"><legend><span>Request Summary</span></legend>
-	<ol>
-		<li><label>Requested By Account:</label>
-			<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
-				name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
-				value="%{newContractor.requestedBy.id}" />
-		</li>
-		<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
-			<li id="loadUsersList"><script type="text/javascript">updateUsersList();</script></li>
-		</s:if>
-		<s:else>
-			<li id="loadUsersList"></li>
-		</s:else>
-		<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
-			<li><label>Add to Watchlist:</label>
-				<s:checkbox name="newContractor.watch" />
-				<a href="#" class="cluetip help" title="Add to Watchlist" rel="#watchtip"></a>
-				<div id="watchtip">
-					When a contractor in the PICS database is associated with this request, <s:property value="newContractor.requestedByUser.name" /> will be able to watch <s:property value="newContractor.name" /> on their watchlist.
-				</div>
-				<s:if test="!contractorWatch && newContractor.watch">
-					<div class="alert">This user does not have the Contractor Watch permission.</div>
-				</s:if>
-			</li>
-		</s:if>
-		<li><label>Registration Deadline:</label> <input id="regDate" name="newContractor.deadline" type="text"
-			class="datepicker" size="10"
-			value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
-		</li>
-	</ol>
-	</fieldset>
-	<fieldset class="form"><legend><span>Contact Summary</span></legend>
-	<ol>
-		<s:if test="newContractor.id > 0">
-			<li><label>Last Contacted By:</label>
-				<s:property value="newContractor.lastContactedBy.name" /><br /></li>
-			<li><label>Date	Contacted:</label>
-				<s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" /><br /></li>
-		</s:if>
-		<s:if test="newContractor.id > 0">
-			<s:if test="permissions.admin">
-				<li><label>Who should follow up?:</label>
-					<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
-				</li>
-			</s:if>
-			<li><label># of Times Contacted:</label>
-				<s:property value="newContractor.contactCount"/></li>
-			<li><label>Matches Found in PICS:</label>
-				<s:if test="newContractor.matchCount > 0 && newContractor.open">
-					<a href="#potentialMatches" onclick="getMatches(<s:property value="newContractor.id" />);"><s:property value="newContractor.matchCount"/></a>
-				</s:if>
-				<s:else>
-					<s:property value="newContractor.matchCount" />
-				</s:else>
-			</li>
-			<li><label>PICS Contractor:</label>
-				<s:if test="permissions.admin">
-					<s:textfield name="conName" value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
-					<a href="#" class="cluetip help" title="Return To Operator" rel="#watchtip2"></a>
-					<div id="watchtip2">
-						After you enter in a contractor and save, this request will be automatically returned to the operator.  
-					</div>
-				</s:if>
-				<s:if test="newContractor.contractor != null">
-					<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
-					<s:property value="newContractor.contractor.name"/></a>
-				</s:if>
-				&nbsp;
-			</li>
-		</s:if>
-		<li><label>Notes:</label>
-		<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
-			list="noteReason" id="noteReason" onchange="fillNotes()"/>
-			<s:textarea cssStyle="vertical-align: top; margin-bottom: 10px; margin-left:165px; margin-top:10px;" 
-			name="addToNotes" cols="60" rows="3" id="addToNotes" />
-			<pre id="addHere"></pre>
-			<s:if test="newContractor.notes.length() > 0">
-				<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
-			</s:if>
-		</li>
-	</ol>
-	</fieldset>
-	<fieldset class="form submit">
-	 <div>	
+					</li>
+					<li><label for="taxID">Tax ID:</label>
+						<s:textfield name="newContractor.taxID" size="9" maxLength="9" id="taxID" /> (Optional)
+					</li>
+					<s:if test="assignedCSR != null">
+						<li><label>Assigned PICS CSR:</label>
+							<s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/>
+						</li>
+					</s:if>	
+				</ol>
+				</fieldset>
+				<fieldset class="form"><legend><span>Primary Address</span></legend>
+				<ol>
+					 <li><label for="newContractorCountry">Country:</label>
+						<s:select
+							list="countryList" name="country.isoCode" id="newContractorCountry"
+							listKey="isoCode" listValue="name" value="%{newContractor.country.isoCode}"
+							onchange="countryChanged(this.value)" />
+					</li>
+					<li id="state_li"></li>
+					<li><label for="city">City:</label><s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address"/> (Optional)</li>
+					<li class="address-zip"><label for="address">Address:</label>
+						<s:textfield name="newContractor.address" size="35" id="address" /> (Optional)</li>
+					<li class="address-zip"><label for="zip">Zip:</label><s:textfield name="newContractor.zip" size="7" id="zip" /> (Optional)</li>		
+				</ol>
+				</fieldset>
+			</td>
+			<td style="padding-left: 10px">
+				<fieldset class="form"><legend><span>Request Summary</span></legend>
+				<ol>
+					<li><label>Requested By Account:</label>
+						<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
+							name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name"
+							value="%{newContractor.requestedBy.id}" />
+					</li>
+					<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
+						<li id="loadUsersList"><script type="text/javascript">updateUsersList();</script></li>
+					</s:if>
+					<s:else>
+						<li id="loadUsersList"></li>
+					</s:else>
+					<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
+						<li><label>Add to Watchlist:</label>
+							<s:checkbox name="newContractor.watch" />
+							<a href="#" class="cluetip help" title="Add to Watchlist" rel="#watchtip"></a>
+							<div id="watchtip">
+								When a contractor in the PICS database is associated with this request, <s:property value="newContractor.requestedByUser.name" /> will be able to watch <s:property value="newContractor.name" /> on their watchlist.
+							</div>
+							<s:if test="!contractorWatch && newContractor.watch">
+								<div class="alert">This user does not have the Contractor Watch permission.</div>
+							</s:if>
+						</li>
+					</s:if>
+					<li><label>Registration Deadline:</label> <input id="regDate" name="newContractor.deadline" type="text"
+						class="datepicker" size="10"
+						value="<s:date name="newContractor.deadline" format="MM/dd/yyyy" />" onchange="checkDate()" />
+					</li>
+				</ol>
+				</fieldset>
+				<fieldset class="form"><legend><span>Contact Summary</span></legend>
+				<ol>
+					<s:if test="newContractor.id > 0">
+						<li><label>Last Contacted By:</label>
+							<s:property value="newContractor.lastContactedBy.name" /><br /></li>
+						<li><label>Date	Contacted:</label>
+							<s:date name="newContractor.lastContactDate" format="MM/dd/yyyy" /><br /></li>
+					</s:if>
+					<s:if test="newContractor.id > 0">
+						<s:if test="permissions.admin">
+							<li><label>Who should follow up?:</label>
+								<s:radio list="#{'PICS':'PICS','Operator':'Operator'}" name="newContractor.handledBy" theme="pics"/>
+							</li>
+						</s:if>
+						<li><label># of Times Contacted:</label>
+							<s:property value="newContractor.contactCount"/></li>
+						<li><label>Matches Found in PICS:</label>
+							<s:if test="newContractor.matchCount > 0 && newContractor.open">
+								<a href="#potentialMatches" onclick="getMatches(<s:property value="newContractor.id" />);"><s:property value="newContractor.matchCount"/></a>
+							</s:if>
+							<s:else>
+								<s:property value="newContractor.matchCount" />
+							</s:else>
+						</li>
+						<li><label>PICS Contractor:</label>
+							<s:if test="permissions.admin">
+								<s:textfield name="conName" value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
+								<a href="#" class="cluetip help" title="Return To Operator" rel="#watchtip2"></a>
+								<div id="watchtip2">
+									After you enter in a contractor and save, this request will be automatically returned to the operator.  
+								</div>
+							</s:if>
+							<s:if test="newContractor.contractor != null">
+								<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
+								<s:property value="newContractor.contractor.name"/></a>
+							</s:if>
+							&nbsp;
+						</li>
+					</s:if>
+					<li><label>Notes:</label>
+						<s:if test="permissions.admin">
+							<s:select headerKey="0" headerValue="Select a preformatted note to add it to the Notes section" 
+								list="noteReason" id="noteReason" onchange="fillNotes()" cssStyle="margin-bottom: 10px;" />
+						</s:if>
+						<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
+						<pre id="addHere"></pre>
+						<s:if test="newContractor.notes.length() > 0">
+							<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
+						</s:if>
+					</li>
+				</ol>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	<div style="padding-top: 10px;">
 	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
 	  	<s:if test="newContractor.contractor != null || permissions.operatorCorporate">
 		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
@@ -378,7 +394,6 @@ function getMatches(requestID) {
 			<input type="submit" class="picsbutton" name="button" value="Return To Operator" />
 		</s:elseif>
 	</div>	
-	</fieldset>
 </s:form>
 
 <div style="display: none" id="load"></div>

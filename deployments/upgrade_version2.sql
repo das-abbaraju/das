@@ -39,3 +39,7 @@ insert into `widget_user`
 values(26, 616, 1, 2, 15);
 
 update `widget` set `caption`='Registration Requests' where `widgetID`='26';
+
+insert into `useraccess`
+(accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
+values (null, 959, 'ManageAssessment', 1, 1, null, null, NOW(), 941);

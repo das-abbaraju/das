@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -73,8 +74,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected EmailTemplate template;
 	protected List<ContractorAccount> potentialMatches;
 	
-	private List<String> noteReasons;
-
 	private String[] names = new String[] { "ContractorName",
 			"ContractorPhone", "ContractorEmail", "RequestedByOperator",
 			"RequestedByUser", "ContractorContactName", "ContractorTaxID",
@@ -534,6 +533,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		
 		allForms.addAll(operator.getOperatorForms());
 		forms = new ArrayList<OperatorForm>(allForms);
+		
+		Iterator<OperatorForm> iterator = forms.iterator();
+		while (iterator.hasNext()) {
+			if (!iterator.next().getFormName().toLowerCase().contains("letter"))
+				iterator.remove();
+		}
 		
 		Collections.sort(forms, new ByFacilityName());
 		return forms;

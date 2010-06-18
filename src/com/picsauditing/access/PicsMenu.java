@@ -87,6 +87,14 @@ public class PicsMenu {
 			}
 			return menu;
 		}
+		
+		if (permissions.isAssessment()) {
+			subMenu = menu.addChild("Edit");
+			subMenu.addChild("Account", "AssessmentCenterEdit.action");
+			subMenu.addChild("Users", "UsersManage.action");
+			addSupportLink(menu);
+			return menu;
+		}
 
 		subMenu = menu.addChild("Contractors");
 		subMenu.addChild("Contractor List", "ContractorList.action?filter.performedBy=Self Performed");
@@ -265,10 +273,10 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("Operators");
-		if (permissions.hasPermission(OpPerms.ManageCorporate))
-			subMenu.addChild("Edit Corporate", "ReportAccountList.action?accountType=Corporate");
-		if (permissions.hasPermission(OpPerms.ManageOperators))
-			subMenu.addChild("Edit Operators", "ReportAccountList.action?accountType=Operator");
+		if (permissions.hasPermission(OpPerms.ManageCorporate) 
+				|| permissions.hasPermission(OpPerms.ManageOperators)
+				|| permissions.hasPermission(OpPerms.ManageAssessment))
+			subMenu.addChild("Manage Accounts", "ReportAccountList.action");
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 
