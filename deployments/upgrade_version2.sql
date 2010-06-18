@@ -40,6 +40,17 @@ values(26, 616, 1, 2, 15);
 
 update `widget` set `caption`='Registration Requests' where `widgetID`='26';
 
+
 insert into `useraccess`
 (accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
 values (null, 959, 'ManageAssessment', 1, 1, null, null, NOW(), 941);
+
+
+/* app properties for filter logging */
+INSERT INTO app_properties VALUES ('filterlog.enabled', '1');
+
+INSERT INTO app_properties VALUES ('filterlog.ignore', 'ajax,destinationAction,allowMailMerge');
+
+INSERT INTO app_properties VALUES ('filterlog.ignorevalues', 'ccOnFile:2,minorityQuestion:0,pendingPqfAnnualUpdate:false,primaryInformation:false,tradeInformation:false');
+update `widget` set `caption`='Registration Requests' where `widgetID`='26';
+
