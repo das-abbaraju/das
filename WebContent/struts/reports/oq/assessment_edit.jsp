@@ -7,8 +7,9 @@
 <title><s:property value="center.name" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
-<s:include value="../jquery.jsp" />
+<s:include value="../../jquery.jsp" />
 <script type="text/javascript">
 function changeState(country) {
 	$('#state_li').load('StateListAjax.action',{countryString: $('#centerCountry').val(), stateString: '<s:property value="center.state.isoCode"/>'});
@@ -27,30 +28,7 @@ $(function() {
 </head>
 <body>
 
-<s:if test="center == null">
-	<h1>Create New Assessment Center</h1>
-</s:if>
-<s:else>
-	<h1><s:property value="center.name" /><span class="sub"><s:property value="subHeading" escape="false"/></span></h1>
-</s:else>
-
-<s:if test="permissions.admin">
-<div id="internalnavcontainer">
-<ul id="navlist">
-	<li><a href="AssessmentCenterEdit.action?id=<s:property value="center.id"/>"
-		<s:if test="requestURI.contains('assessment_edit')">class="current"</s:if>>Edit</a></li>
-	<li><a href="UsersManage.action?accountId=<s:property value="center.id"/>"
-		<s:if test="requestURI.contains('users_manage')">class="current"</s:if>>Users</a></li>
-	<li><a href="ManageAssessmentTestResults.action?id=<s:property value="center.id"/>"
-		<s:if test="requestURI.contains('manage_assessment_test_results')">class="current"</s:if>>Manage Test Results</a></li>
-	<!-- Will we need this?
-	<li><a href="ContractorList.action?filter.status=Active&filter.status=Demo<s:property value="operatorIds"/>">Contractors</a></li>
-	 -->
-</ul>
-</div>
-</s:if>
-
-<s:include value="../actionMessages.jsp" />
+<s:include value="assessmentHeader.jsp" />
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
 	<div><input type="submit" class="picsbutton positive" name="button" value="Save" /></div>

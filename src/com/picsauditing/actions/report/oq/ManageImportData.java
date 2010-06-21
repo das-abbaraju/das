@@ -10,14 +10,16 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 
 @SuppressWarnings("serial")
-public class ManageAssessmentTestResults extends PicsActionSupport {
+public class ManageImportData extends PicsActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentTestDAO testDAO;
 	
 	private int id;
+	private int stageID;
 	private Account center;
+	private String subHeading = "Manage Import Data";
 	
-	public ManageAssessmentTestResults(AccountDAO accountDAO, AssessmentTestDAO testDAO) {
+	public ManageImportData(AccountDAO accountDAO, AssessmentTestDAO testDAO) {
 		this.accountDAO = accountDAO;
 		this.testDAO = testDAO;
 	}
@@ -36,6 +38,24 @@ public class ManageAssessmentTestResults extends PicsActionSupport {
 		if (id > 0)
 			center = accountDAO.find(id);
 		
+		if (button != null) {
+			if ("Remove".equals(button)) {
+				if (stageID > 0) {
+					List<AssessmentResultStage> list = getStaged();
+					for (AssessmentResultStage stage : list) {
+						if (stage.getId() == stageID) {
+							testDAO.remove(stage);
+							break;
+						}
+					}
+					
+					return redirect("ManageImportData.action" + 
+							(permissions.isAssessment() ? "" : "?id=" + id));
+				} else
+					addActionError("Missing test result");
+			}
+		}
+		
 		return SUCCESS;
 	}
 	
@@ -47,8 +67,20 @@ public class ManageAssessmentTestResults extends PicsActionSupport {
 		this.id = id;
 	}
 	
+	public int getStageID() {
+		return stageID;
+	}
+	
+	public void setStageID(int stageID) {
+		this.stageID = stageID;
+	}
+	
 	public Account getCenter() {
 		return center;
+	}
+	
+	public String getSubHeading() {
+		return subHeading;
 	}
 	
 	public List<AssessmentResultStage> getStaged() {

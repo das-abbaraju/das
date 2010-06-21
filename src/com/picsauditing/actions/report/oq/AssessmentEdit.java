@@ -1,4 +1,4 @@
-package com.picsauditing.actions.operators;
+package com.picsauditing.actions.report.oq;
 
 import java.util.ArrayList;
 import java.util.List;

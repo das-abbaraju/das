@@ -27,7 +27,8 @@ public class AssessmentTestDAO extends PicsDAO {
 	}
 
 	public List<AssessmentTest> findByAssessmentCenter(int centerID) {
-	 	Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE assessmentCenterID = ?");
+	 	Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE assessmentCenterID = ? " +
+	 			"ORDER BY qualificationType, qualificationMethod");
 	 	query.setParameter(1, centerID);
 	 	
 	 	return query.getResultList();

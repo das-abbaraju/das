@@ -36,10 +36,19 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		
 		List<String> types = new ArrayList<String>();
 		
-		if (permissions.hasPermission(OpPerms.ManageOperators))
+		if (permissions.hasPermission(OpPerms.ManageOperators)) {
 			types.add("Operator");
-		if (permissions.hasPermission(OpPerms.ManageCorporate))
+			sql.addJoin("LEFT JOIN (SELECT genID, count(*) as opCount FROM generalContractors GROUP BY genID) op ON op.genID = a.id");
+			sql.addField("opCount");
+			// check to see for any requested contractors
+			sql.addJoin("LEFT JOIN (SELECT requestedByID, count(*) as conCount FROM contractor_info GROUP BY requestedByID) requested ON requested.requestedByID = a.id");
+			sql.addField("conCount");
+		}
+		if (permissions.hasPermission(OpPerms.ManageCorporate)) {
 			types.add("Corporate");
+			sql.addJoin("LEFT JOIN (SELECT corporateID, count(*) as corpCount FROM facilities GROUP BY corporateID) corp ON corp.corporateID = a.id");
+			sql.addField("corpCount");
+		}
 		if (permissions.hasPermission(OpPerms.ManageAssessment))
 			types.add("Assessment");
 		
@@ -51,6 +60,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		sql.addField("a.state");
 		sql.addField("a.city");
 		sql.addField("a.type");
+		sql.addField("a.country");
 		sql.addOrderBy("a.name");
 		addFilterToSQL();
 	}
