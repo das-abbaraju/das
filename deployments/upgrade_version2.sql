@@ -52,5 +52,18 @@ INSERT INTO app_properties VALUES ('filterlog.enabled', '1');
 INSERT INTO app_properties VALUES ('filterlog.ignore', 'ajax,destinationAction,allowMailMerge');
 
 INSERT INTO app_properties VALUES ('filterlog.ignorevalues', 'ccOnFile:2,minorityQuestion:0,pendingPqfAnnualUpdate:false,primaryInformation:false,tradeInformation:false');
-update `widget` set `caption`='Registration Requests' where `widgetID`='26';
+UPDATE `widget` SET `caption`='Registration Requests' WHERE `widgetID`='26';
+
+/* Change in deactivation email to include address  */
+INSERT INTO token(tokenName, listType, velocityCode) VALUES('PrimaryAddress', 'Contractor', '${contractor.address}
+${contractor.city}, ${contractor.state}
+${contractor.zip}
+${contractor.country}');
+
+UPDATE email_template SET body = 'As you know PICS endeavors to maintain active accounts for all contractors who work at your facility.\r\n
+This notification is to inform you that <CompanyName> has either not responded to requests to maintain an active status in the PICS database or has requested to have their account closed.  Deactivation of contractor accounts affects your facility\'s ability to view the prequalification information and more importantly the approval status to perform work.\r\n
+If this contractor is working at your facility, please advise PICS on how to proceed.  If you are no longer doing business with them, we can remove them from your active list of contractors.\r\n
+If you wish to make contact with them to discuss the situation, their contact information is as follows:\r\n
+ContactName - <ContactName>\rPhone - <PrimaryPhone>\rEmail - <PrimaryEmail>\rAddress\r<PrimaryAddress>\r\n\nThank you,\rPICS Customer Service\rToll Free 800.506.(PICS)7427\rLocal 949.387.1940\rwww.picsauditing.com\r' 
+WHERE id = 51;
 

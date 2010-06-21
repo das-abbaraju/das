@@ -8,7 +8,7 @@
 <table class="report" style="width: 100%;">
 	<thead>
 		<tr>
-			<th>Contractor</th>
+			<th><s:property value="type" /></th>
 			<th>Preview</th>
 			<th>Remove</th>
 		</tr>
