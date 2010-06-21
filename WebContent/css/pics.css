@@ -400,6 +400,13 @@ a.remove {
 	zoom: 1;
 }
 
+a.preview {
+	padding-left: 17px;
+	margin-left: 2px;
+	background: url('../images/preview.gif') no-repeat left center;
+	zoom: 1;
+}
+
 a.add {
 	padding-left: 18px;
 	margin-left: 2px;

@@ -3,4 +3,4 @@
 <label>Cc:</label> <s:property value="emailPreview.ccAddresses"/> <br />
 <label>Subject:</label> <s:property value="emailPreview.subject"/> <br />
 
-<s:textarea name="emailPreviewBody" value="%{emailPreview.body}" rows="25" cols="80"></s:textarea>
+<s:textarea name="emailPreviewBody" value="%{emailPreview.body}" rows="25" cols="72"></s:textarea>
