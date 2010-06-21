@@ -80,12 +80,12 @@ $(function(){
 
 <table style="width: 100%;">
 <tr>
-	<td style="width: 40%">
+	<td>
 		<div id="con_sel_list">
 			<s:include value="mass_con_email_list.jsp" />
 		</div>
 	</td>
-	<td style="vertical-align: top; padding-left: 20px;">
+	<td style="vertical-align: top; padding-left: 25px; width: 95%;">
 		<div id="menu_selector" style="display: none;">
 			<s:if test="emailTemplates.size > 0">
 				<button id="buttonPick" class="picsbutton" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>

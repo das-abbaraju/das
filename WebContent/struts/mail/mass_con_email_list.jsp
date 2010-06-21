@@ -5,10 +5,10 @@
 
 <h3><s:property value="type" /> (<s:property value="list.size()"/> entries)</h3>
 <s:hidden name="sendSize" value="%{list.size()}" />
-<table class="report" style="width: 95%;">
+<table class="report" style="width: 85%; min-width: 400px;">
 	<thead>
 		<tr>
-			<th style="width: 50%;"><s:property value="type" /></th>
+			<th style="width: 100%;"><s:property value="type" /></th>
 			<th>Preview</th>
 			<th>Remove</th>
 		</tr>
@@ -16,8 +16,8 @@
 	<s:iterator value="list" id="con" status="stat">				
 		<tr>
 			<td><s:property value="#con.value" /></td>
-			<td><a href="#" class="preview" onclick="pEmail(<s:property value="#con.key"/>)"></a></td>
-			<td><a href="#" class="remove" onclick="removeCon(<s:property value="#con.key"/>)"></a></td>
+			<td class="center"><a href="#" class="preview" onclick="pEmail(<s:property value="#con.key"/>)"></a></td>
+			<td class="center"><a href="#" class="remove" onclick="removeCon(<s:property value="#con.key"/>)"></a></td>
 		</tr>			
 	</s:iterator>
 </table>
