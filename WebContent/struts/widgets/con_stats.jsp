@@ -36,7 +36,7 @@
 	<label>Credit Card:</label>
 	<s:if test="contractor.ccOnFile && creditCard != null">
 		<s:property value="creditCard.cardType"/> <s:property value="creditCard.cardNumber.substring(creditCard.cardNumber.length()-4)"/> exp <s:property value="creditCard.expirationDateFormatted"/><br/>
-		<s:if test="contractor.renew && contractor.mustPayB && contractor.paymentMethod.creditCard && contractor.ccValid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Will be charged on <s:date name="contractor.paymentExpires" format="MM/dd/yy" /></s:if>
+		<s:if test="contractor.renew && contractor.mustPayB && contractor.paymentMethod.creditCard && contractor.ccValid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Will be charged on <s:property value="chargedOn" /></s:if>
 	</s:if>
 	<s:else>
 		No Credit Card on File

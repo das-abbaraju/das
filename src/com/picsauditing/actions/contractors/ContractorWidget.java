@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.ibm.icu.text.DateFormat;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -332,6 +334,26 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 		}
 		return null;
+	}
+	
+	// Will return the earliest unpaid invoice with the assumption that 
+	// is the one we want to display on con_stats.jsp
+	public String getChargedOn(){
+		String result = "";
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+			Date d = format.parse("12/31/4000");
+			for (Invoice invoice : contractor.getInvoices()) {
+				if (invoice.getStatus().isUnpaid()) {
+						Date d1 = invoice.getDueDate();
+						if(d1.before(d))
+							d  = d1;
+				}
+			}
+			result = format.format(d);	
+		} catch (Exception ignoreFormattingErrors) {
+		}
+		return result;
 	}
 
 	public BrainTreeService.CreditCard getCreditCard() {
