@@ -343,7 +343,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		else if (fc.getOshaRateType() != null) {
 			addLabel = false;
-			answer = fc.getOshaRateType().getDescription() + " for "+fcc.getAnswer2().split("<br/>")[0] +" is "+ Strings.formatDecimalComma(answer);
+			answer = fc.getOshaType().name() + " " + fc.getOshaRateType().getDescription() + " for "+fcc.getAnswer2().split("<br/>")[0] +" is "+ Strings.formatDecimalComma(answer);
 			
 			if(fc.getOshaRateType().equals(OshaRateType.LwcrNaics) 
 							|| fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
