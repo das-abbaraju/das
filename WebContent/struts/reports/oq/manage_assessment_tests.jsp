@@ -57,13 +57,11 @@ function loadTest(testID) {
 			<th>Effective Date</th>
 			<th>Verifiable</th>
 			<th>Months To Expire</th>
-			<th>Edit</th>
-			<th>Remove</th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="tests" status="stat">
-			<tr>
+			<tr class="clickable" onclick="loadTest(<s:property value="id" />); return false;">
 				<td><s:property value="#stat.count" /></td>
 				<td><s:property value="qualificationType" /></td>
 				<td><s:property value="qualificationMethod" /></td>
@@ -71,9 +69,6 @@ function loadTest(testID) {
 				<td class="center"><s:date name="effectiveDate" format="MM/dd/yyyy" /></td>
 				<td class="center"><s:if test="verifiable"><img src="images/okCheck.gif" alt="Verifiable" /></s:if></td>
 				<td class="right"><s:property value="monthsToExpire" /></td>
-				<td class="center"><a href="#" onclick="loadTest(<s:property value="id" />); return false;" class="edit"></a></td>
-				<td class="center"><a href="ManageAssessmentTests.action?id=<s:property value="center.id" />&button=Remove&testID=<s:property value="id" />"
-					class="remove" onclick="return confirm('Are you sure you want to remove this assessment test?');"></a></td>
 			</tr>
 		</s:iterator>
 	</tbody>

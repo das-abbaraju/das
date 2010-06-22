@@ -46,6 +46,14 @@ function sort(a, b, sortBy) {
 
 	return a1 > b1 ? 1 : a1 < b1 ? -1 : 0;
 }
+
+function showUpload() {
+	url = 'ManageImportDataUploadAjax.action?id=<s:property value="center.id" />';
+	title = 'Upload';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	fileUpload = window.open(url,title,pars);
+	fileUpload.focus();
+}
 </script>
 </head>
 <body>
@@ -95,6 +103,8 @@ function sort(a, b, sortBy) {
 		</s:if>
 	</tbody>
 </table>
+
+<a href="#" onclick="showUpload(); return false;" class="add">Upload Assessment Results</a>
 
 </body>
 </html>

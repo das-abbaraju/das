@@ -1729,6 +1729,11 @@
 			<result>struts/reports/oq/manage_import_data.jsp</result>
 		</action>
 		
+		<action name="ManageImportDataUploadAjax"
+			class="com.picsauditing.actions.report.oq.ManageImportDataUpload">
+			<result>struts/reports/oq/manage_import_data_upload.jsp</result>
+		</action>
+		
 		<action name="ManageAssessmentTests"
 			class="com.picsauditing.actions.report.oq.ManageAssessmentTests">
 			<result>struts/reports/oq/manage_assessment_tests.jsp</result>

@@ -63,7 +63,7 @@ public class AssessmentTestDAO extends PicsDAO {
 	}
 	
 	public List<AssessmentResultStage> findStaged(int centerID) {
-		Query query = em.createQuery("SELECT a FROM AssessmentResultStage a WHERE center.id = ?");
+		Query query = em.createQuery("SELECT a FROM AssessmentResultStage a WHERE a.center.id = ?");
 		query.setParameter(1, centerID);
 		
 		return query.getResultList();

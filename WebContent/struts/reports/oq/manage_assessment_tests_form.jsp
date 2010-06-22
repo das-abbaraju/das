@@ -11,6 +11,7 @@ $().ready(function() {
 	<fieldset class="form">
 		<s:hidden name="id" />
 		<s:hidden name="test.id" />
+		<input type="hidden" name="testID" value="<s:property value="test.id" />" />
 		
 		<s:if test="test.id > 0">
 			<legend><span>Edit Assessment Test</span></legend>
@@ -35,7 +36,9 @@ $().ready(function() {
 		</ol>
 		<div style="margin-left: 20px; margin-bottom: 10px;">
 			<input type="submit" name="button" value="Save" class="picsbutton positive" />
-			<input type="button" value="Cancel" class="picsbutton negative" 
+			<input type="submit" name="button" value="Remove" class="picsbutton negative" 
+				onclick="return confirm('Are you sure you want to remove this assessment test?');" />
+			<input type="button" value="Cancel" class="picsbutton" 
 				onclick="$('#newForm').hide(); $('#addLink').show();" />
 		</div>
 	</fieldset>
