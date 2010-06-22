@@ -18,7 +18,7 @@ $().ready(function() {
 	$('.datepicker').datepicker();
 });
 
-function loadResult(resultID, companyID) {
+function loadResult(resultID, companyID) {	
 	var data = {
 		button: 'Load',
 		id: <s:property value="center.id" />,
@@ -31,10 +31,11 @@ function loadResult(resultID, companyID) {
 	$('#addLink').show();
 }
 
-function getEmployee(companyID) {
+function getEmployee(companyID, resultID) {
 	var data = {
 		button: 'Employee',
 		id: <s:property value="center.id" />,
+		resultID: resultID,
 		companyID: companyID
 	};
 

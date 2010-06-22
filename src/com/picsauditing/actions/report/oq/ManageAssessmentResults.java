@@ -55,8 +55,11 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		
 		if (button != null) {
 			if (button.equals("Employee")) {
-				if (companyID > 0)
+				if (companyID > 0){
+					result = resultDAO.find(resultID);
+					employeeID = result.getEmployee().getId();
 					return "getEmployees";
+				}
 				else
 					addActionError("Missing company ID");
 				
