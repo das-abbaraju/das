@@ -73,9 +73,23 @@ public class ManageAssessmentTests extends PicsActionSupport {
 				if (Strings.isEmpty(test.getQualificationType()))
 					addActionError("Please fill in the qualification type.");
 
-				testDAO.save(test);
-
-				test = new AssessmentTest();
+				if (getActionErrors().size() == 0) {
+					testDAO.save(test);
+					test = new AssessmentTest();
+				}
+			}
+			
+			if (button.equals("Remove")) {
+				if (testID > 0)
+					test = testDAO.find(testID);
+				else
+					addActionError("Missing test ID");
+				
+				if (getActionErrors().size() == 0)
+					testDAO.remove(test);
+				
+				return redirect("ManageAssessmentTests.action" + 
+						(permissions.isAssessment() ? "" : "?id=" + id));
 			}
 		}
 

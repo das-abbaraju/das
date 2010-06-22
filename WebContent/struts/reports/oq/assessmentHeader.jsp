@@ -30,6 +30,8 @@
 		<s:if test="requestURI.contains('manage_import_data')">class="current"</s:if>>Manage Import Data</a></li>
 	<li><a href="ManageAssessmentTests.action?id=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('manage_assessment_tests')">class="current"</s:if>>Manage Assessment Tests</a></li>
+	<li><a href="ManageAssessmentResults.action?id=<s:property value="center.id"/>"
+		<s:if test="requestURI.contains('manage_assessment_results')">class="current"</s:if>>Manage Assessment Results</a></li>
 </ul>
 </div>
 

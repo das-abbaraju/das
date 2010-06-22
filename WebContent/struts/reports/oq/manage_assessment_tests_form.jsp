@@ -7,7 +7,7 @@ $().ready(function() {
 });
 </script>
 
-<s:form id="newForm" action="ManageAssessmentTests.action">
+<form id="newForm" action="ManageAssessmentTests.action" method="POST">
 	<fieldset class="form">
 		<s:hidden name="id" />
 		<s:hidden name="test.id" />
@@ -44,4 +44,4 @@ $().ready(function() {
 				onclick="$('#newForm').hide(); $('#addLink').show();" />
 		</div>
 	</fieldset>
-</s:form>
+</form>

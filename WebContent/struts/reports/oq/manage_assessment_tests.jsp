@@ -20,7 +20,7 @@ $().ready(function() {
 
 function getNew() {
 	var data = {
-		button: 'New',
+		button: 'Load',
 		id: <s:property value="center.id" />,
 		testID: 0
 	};
@@ -72,8 +72,8 @@ function loadTest(testID) {
 				<td class="center"><s:if test="verifiable"><img src="images/okCheck.gif" alt="Verifiable" /></s:if></td>
 				<td class="right"><s:property value="monthsToExpire" /></td>
 				<td class="center"><a href="#" onclick="loadTest(<s:property value="id" />); return false;" class="edit"></a></td>
-				<td class="center"><a href="#" class="remove"
-					onclick="confirm('Are you sure you want to remove this assessment test?'); return false;"></a></td>
+				<td class="center"><a href="ManageAssessmentTests.action?id=<s:property value="center.id" />&button=Remove&testID=<s:property value="id" />"
+					class="remove" onclick="return confirm('Are you sure you want to remove this assessment test?');"></a></td>
 			</tr>
 		</s:iterator>
 	</tbody>

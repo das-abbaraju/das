@@ -103,4 +103,12 @@ public class AssessmentResultDAO extends PicsDAO {
 				+ where + " ORDER BY effectiveDate DESC");
 		return query.getResultList();
 	}
+	
+	public List<AssessmentResult> findByAssessmentCenter(int centerID) {
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a " +
+				"WHERE a.assessmentTest.assessmentCenter.id = ? ORDER BY effectiveDate DESC");
+		query.setParameter(1, centerID);
+		
+		return query.getResultList();
+	}
 }

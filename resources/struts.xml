@@ -1739,6 +1739,16 @@
 			<result>struts/reports/oq/manage_assessment_tests_form.jsp</result>
 		</action>
 		
+		<action name="ManageAssessmentResults"
+			class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
+			<result>struts/reports/oq/manage_assessment_results.jsp</result>
+		</action>
+		
+		<action name="ManageAssessmentResultsAjax"
+			class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
+			<result>struts/reports/oq/manage_assessment_results_form.jsp</result>
+		</action>
+		
 		<!-- Competencies -->
 		<action name="JobCompetencyMatrix"
 			class="com.picsauditing.actions.employees.JobCompetencyMatrix">

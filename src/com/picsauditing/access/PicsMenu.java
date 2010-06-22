@@ -92,6 +92,7 @@ public class PicsMenu {
 			subMenu = menu.addChild("Management");
 			subMenu.addChild("Manage Import Data", "ManageImportData.action");
 			subMenu.addChild("Manage Assessment Tests", "ManageAssessmentTests.action");
+			subMenu.addChild("Manage Assessment Results", "ManageAssessmentResults.action");
 			
 			subMenu = menu.addChild("Edit");
 			subMenu.addChild("Account", "AssessmentCenterEdit.action");
