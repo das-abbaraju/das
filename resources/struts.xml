@@ -1747,6 +1747,7 @@
 		<action name="ManageAssessmentResultsAjax"
 			class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
 			<result>struts/reports/oq/manage_assessment_results_form.jsp</result>
+			<result name="getEmployees">struts/reports/oq/manage_assessment_results_employees.jsp</result>
 		</action>
 		
 		<!-- Competencies -->

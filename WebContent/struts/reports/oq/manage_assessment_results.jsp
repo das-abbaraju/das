@@ -18,16 +18,28 @@ $().ready(function() {
 	$('.datepicker').datepicker();
 });
 
-function loadResult(resultID) {
+function loadResult(resultID, companyID) {
 	var data = {
 		button: 'Load',
 		id: <s:property value="center.id" />,
-		resultID: resultID
+		resultID: resultID,
+		companyID: companyID
 	};
 
 	startThinking({div: 'assessmentResult', message: 'Loading assessment result'});
 	$('#assessmentResult').load('ManageAssessmentResultsAjax.action', data);
 	$('#addLink').show();
+}
+
+function getEmployee(companyID) {
+	var data = {
+		button: 'Employee',
+		id: <s:property value="center.id" />,
+		companyID: companyID
+	};
+
+	startThinking({div: 'employeeList', message: 'Loading employee list'});
+	$('#employeeList').load('ManageAssessmentResultsAjax.action', data);
 }
 </script>
 </head>
@@ -58,7 +70,7 @@ function loadResult(resultID) {
 				<td><s:property value="employee.displayName" /></td>
 				<td class="center"><s:date name="effectiveDate" format="MM/dd/yyyy" /></td>
 				<td class="center"><s:date name="expirationDate" format="MM/dd/yyyy" /></td>
-				<td class="center"><a href="#" onclick="loadResult(<s:property value="id" />); return false;" class="edit"></a></td>
+				<td class="center"><a href="#" onclick="loadResult(<s:property value="id" />, <s:property value="employee.account.id" />); return false;" class="edit"></a></td>
 				<td class="center"><a href="ManageAssessmentResults.action?id=<s:property value="center.id" />&button=Remove&resultID=<s:property value="id" />"
 					class="remove" onclick="return confirm('Are you sure you want to remove this assessment result?');"></a></td>
 			</tr>
@@ -66,7 +78,7 @@ function loadResult(resultID) {
 	</tbody>
 </table>
 </s:if>
-<a href="#" onclick="loadResult(0); $(this).hide(); return false;" id="addLink" 
+<a href="#" onclick="loadResult(0, 0); $(this).hide(); return false;" id="addLink" 
 	class="add">Add New Assessment Result</a>
 <div id="assessmentResult"></div>
 

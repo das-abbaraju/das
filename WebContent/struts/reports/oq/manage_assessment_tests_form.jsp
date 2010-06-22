@@ -11,11 +11,6 @@ $().ready(function() {
 	<fieldset class="form">
 		<s:hidden name="id" />
 		<s:hidden name="test.id" />
-		<s:hidden name="test.createdBy.id" />
-		<s:hidden name="test.creationDate" />
-		<s:hidden name="test.updatedBy.id" />
-		<s:hidden name="test.updateDate" />
-		<s:hidden name="test.expirationDate" />
 		
 		<s:if test="test.id > 0">
 			<legend><span>Edit Assessment Test</span></legend>
@@ -24,18 +19,18 @@ $().ready(function() {
 			<legend><span>Add New Assessment Test</span></legend>
 		</s:else>
 		<ol>
-			<li><label for="qualType">Qualification Type</label>
+			<li><label for="qualType">Qualification Type:</label>
 				<s:textfield name="test.qualificationType" id="qualType" /></li>
-			<li><label for="qualMethod">Qualification Method</label>
+			<li><label for="qualMethod">Qualification Method:</label>
 				<s:textfield name="test.qualificationMethod" id="qualMethod" /></li>
-			<li><label for="description">Description</label>
+			<li><label for="description">Description:</label>
 				<s:textfield name="test.description" id="description" /></li>
-			<li><label for="effective">Effective Date</label>
+			<li><label for="effective">Effective Date:</label>
 				<input type="text" name="test.effectiveDate" id="effective" class="datepicker"
 					value="<s:property value="maskDateFormat(test.effectiveDate)" />" /></li>
-			<li><label for="verifiable">Verifiable</label>
+			<li><label for="verifiable">Verifiable:</label>
 				<s:checkbox name="test.verifiable" id="verifiable" /></li>
-			<li><label for="months">Months To Expire</label>
+			<li><label for="months">Months To Expire:</label>
 				<s:textfield name="test.monthsToExpire" id="months" /></li>
 		</ol>
 		<div style="margin-left: 20px; margin-bottom: 10px;">

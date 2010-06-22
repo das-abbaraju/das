@@ -11,36 +11,29 @@ $().ready(function() {
 	<fieldset class="form">
 		<s:hidden name="id" />
 		<s:hidden name="result.id" />
-		<s:hidden name="result.createdBy.id" />
-		<s:hidden name="result.creationDate" />
-		<s:hidden name="result.updatedBy.id" />
-		<s:hidden name="result.updateDate" />
 		
-		<s:if test="test.id > 0">
+		<s:if test="result.id > 0">
 			<legend><span>Edit Assessment Result</span></legend>
 		</s:if>
 		<s:else>
 			<legend><span>Add New Assessment Result</span></legend>
 		</s:else>
 		<ol>
-			<li><label for="test">Assessment Test</label>
+			<li><label for="test">Assessment Test:</label>
 				<s:select list="tests" listKey="id" listValue="%{qualificationMethod + ' - ' + description}"
-					headerKey="0" headerValue="- Assessment Test -" name="result.assessmentTest" /></li>
-			<li><label for="company">Company</label>
-				<!-- List of companies? -->
-				</li>
-			<li><label for="employee">Employee</label>
-			<!-- Gets all 20k+ employees. Removing for now.
-				<s:select list="employees" listKey="id" listValue="displayName" headerKey="0" 
-					headerValue="- Employees -" name="result.employee" />
-			 -->
-			 </li>
-			<li><label for="effective">Effective Date</label>
+					headerKey="0" headerValue="- Assessment Test -" name="testID" /></li>
+			<li><label for="company">Company:</label><s:select list="companies" listKey="id" 
+				listValue="name" headerKey="0" headerValue="- Company -" onchange="getEmployee(this.value)"></s:select></li>
+			<li id="employeeList"></li>
+			<s:if test="result.id > 0">
+				<script type="text/javascript">getEmployee(<s:property value="companyID" />);</script>
+			</s:if>
+			<li><label for="effective">Effective Date:</label>
 				<input type="text" name="result.effectiveDate" id="effective" class="datepicker"
-					value="<s:property value="maskDateFormat(test.effectiveDate)" />" /></li>
-			<li><label for="expiration">Expiration Date</label>
+					value="<s:property value="maskDateFormat(result.effectiveDate)" />" /></li>
+			<li><label for="expiration">Expiration Date:</label>
 				<input type="text" name="result.expirationDate" id="expiration" class="datepicker"
-					value="<s:property value="maskDateFormat(test.expirationDate)" />" /></li>
+					value="<s:property value="maskDateFormat(result.expirationDate)" />" /></li>
 		</ol>
 		<div style="margin-left: 20px; margin-bottom: 10px;">
 			<input type="submit" name="button" value="Save" class="picsbutton positive" />

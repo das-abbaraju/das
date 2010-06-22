@@ -21,6 +21,7 @@ public class ManageAssessmentResults extends PicsActionSupport {
 	private EmployeeDAO employeeDAO;
 	
 	private int id;
+	private int companyID;
 	private int employeeID;
 	private int resultID;
 	private int testID;
@@ -53,9 +54,22 @@ public class ManageAssessmentResults extends PicsActionSupport {
 			addActionError("Missing Assessment Center ID");
 		
 		if (button != null) {
+			if (button.equals("Employee")) {
+				if (companyID > 0)
+					return "getEmployees";
+				else
+					addActionError("Missing company ID");
+				
+				return SUCCESS;
+			}
+			
 			if (button.equals("Load")) {
-				if (resultID > 0)
+				if (resultID > 0) {
 					result = resultDAO.find(resultID);
+					testID = result.getAssessmentTest().getId();
+					employeeID = result.getEmployee().getId();
+					companyID = result.getEmployee().getAccount().getId();
+				}
 				else
 					result = new AssessmentResult();
 				
@@ -75,9 +89,8 @@ public class ManageAssessmentResults extends PicsActionSupport {
 				else if (result.getEmployee() == null)
 					addActionError("Missing Employee");
 				
-				if (getActionErrors().size() == 0) {
+				if (getActionErrors().size() == 0)
 					resultDAO.save(result);
-				}
 			}
 			
 			if (button.equals("Remove")) {
@@ -109,6 +122,14 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		this.id = id;
 	}
 	
+	public int getCompanyID() {
+		return companyID;
+	}
+	
+	public void setCompanyID(int companyID) {
+		this.companyID = companyID;
+	}
+	
 	public int getEmployeeID() {
 		return employeeID;
 	}
@@ -137,6 +158,14 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		return center;
 	}
 	
+	public AssessmentResult getResult() {
+		return result;
+	}
+	
+	public void setResult(AssessmentResult result) {
+		this.result = result;
+	}
+	
 	public String getSubHeading() {
 		return subHeading;
 	}
@@ -150,8 +179,13 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		return testDAO.findByAssessmentCenter(id);
 	}
 	
+	public List<Account> getCompanies() {
+		// That require OQ
+		return accountDAO.findWhere("a.status IN ('Active','Demo') AND a.requiresOQ = 1 AND a.type = 'Contractor'");
+	}
+	
 	public List<Employee> getEmployees() {
 		// How do we want to do this? By company?
-		return employeeDAO.findWhere(null);
+		return employeeDAO.findByAccount(accountDAO.find(companyID));
 	}
 }
