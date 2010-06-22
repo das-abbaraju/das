@@ -275,7 +275,7 @@ public class PicsMenu {
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action");
 			subMenu.addChild("CSS Style Guide", "css.jsp");
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
-			subMenu.addChild("Sync Expiration Dates", "ExpirationDateSynchronizer.action");
+			subMenu.addChild("Exception Log", "ReportExceptions.action");
 		}
 
 		subMenu = menu.addChild("Operators");

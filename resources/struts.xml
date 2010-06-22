@@ -1820,9 +1820,13 @@
 		<action name="CertHashUtil" class="com.picsauditing.actions.contractors.CertHashUtil">
 			<result>struts/contractors/cert_convert.jsp</result>
 		</action>
-		<!-- 
-
-		-->
+		
+		<!-- Exceptions -->
+		<action name="ReportExceptions"
+			class="com.picsauditing.actions.report.ReportExceptions">
+			<result>struts/reports/report_exceptions.jsp</result>
+		</action>
+		
 		<!-- Remember to Categorize your new Struts pages -->
 		
 		<action name="FileIndexingEngine" class="com.picsauditing.actions.files.FileIndexingEngine">
