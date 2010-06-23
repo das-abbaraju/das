@@ -79,6 +79,8 @@ values(26, 616, 1, 2, 15);
 
 update `widget` set `caption`='Registration Requests' where `widgetID`='26';
 
+/* Updated widget caption */
+update `widget` set `caption`='Recently Added Contractors' where `widgetID`='2';
 
 insert into `useraccess`
 (accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
