@@ -126,7 +126,7 @@ public class VerifyView extends ContractorActionSupport {
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				sb.append("\n\n");
-				sb.append(conAudit.getAuditFor() + " Annual Update");
+				sb.append(conAudit.getAuditFor() + " " + conAudit.getAuditType().getAddendumType() + " Annual Update");
 				sb.append("\n");
 				sb.append("-------------------------------");
 				sb.append("\n");

@@ -30,6 +30,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
 	public static final int ANNUALADDENDUM = 11;
+	public static final int CANANNUALADDENDUM = 18;
 	public static final int HUNTSMAN_EBIX = 31;
 	public static final int COR = 72;
 	public static final int SUPPLEMENTCOR = 84;
@@ -244,7 +245,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	@Transient
 	public boolean isAnnualAddendum() {
-		return (id == ANNUALADDENDUM);
+		return (id == ANNUALADDENDUM || id == CANANNUALADDENDUM);
 	}
 
 	@Transient
@@ -254,6 +255,15 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		if (id == DESKTOP)
 			return true;
 		return false;
+	}
+	
+	@Transient
+	public String getAddendumType(){
+		switch (id) {
+			case ANNUALADDENDUM: return "US";
+			case CANANNUALADDENDUM: return "CAN";
+			default: return "";
+		}
 	}
 
 	@Override

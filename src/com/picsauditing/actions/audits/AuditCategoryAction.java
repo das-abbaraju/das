@@ -234,7 +234,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				currentCategory.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
-		if (conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+		if (conAudit.getAuditType().isAnnualAddendum()) {
 
 			ContractorAudit twoYearsAgo = null;
 			String auditFor = conAudit.getAuditFor();

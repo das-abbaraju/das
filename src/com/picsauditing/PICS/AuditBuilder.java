@@ -75,6 +75,10 @@ public class AuditBuilder {
 			addAnnualAddendum(currentAudits, year-1, auditType);
 			addAnnualAddendum(currentAudits, year-2, auditType);
 			addAnnualAddendum(currentAudits, year-3, auditType);
+			AuditType canAuditType = auditTypeDAO.find(AuditType.CANANNUALADDENDUM);
+			addAnnualAddendum(currentAudits, year-1, canAuditType);
+			addAnnualAddendum(currentAudits, year-2, canAuditType);
+			addAnnualAddendum(currentAudits, year-3, canAuditType);
 			return;
 		}
 		
@@ -171,7 +175,7 @@ public class AuditBuilder {
 					 
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
-			if (auditType.getId() == AuditType.ANNUALADDENDUM) {
+			if (auditType.isAnnualAddendum()) {
 				addAnnualAddendum(currentAudits, year - 1, auditType);
 				addAnnualAddendum(currentAudits, year - 2, auditType);
 				addAnnualAddendum(currentAudits, year - 3, auditType);
@@ -681,8 +685,8 @@ public class AuditBuilder {
 	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year, AuditType auditType) {
 		boolean found = false;
 		for (ContractorAudit cAudit : currentAudits) {
-			if (cAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
-					&& year == Integer.parseInt(cAudit.getAuditFor())) {
+			if (cAudit.getAuditType().isAnnualAddendum()
+					&& year == Integer.parseInt(cAudit.getAuditFor()) && auditType == cAudit.getAuditType()) {
 				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
 					// this should never happen actually...but just incase
 					cAudit.changeStatus(AuditStatus.Pending, user);
