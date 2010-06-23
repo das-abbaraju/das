@@ -14,7 +14,7 @@ public class AssessmentResult extends BaseHistory {
 	private AssessmentTest assessmentTest;
 
 	@ManyToOne
-	@JoinColumn(name = "employeeID", nullable = false, updatable = false)
+	@JoinColumn(name = "employeeID", nullable = false)
 	public Employee getEmployee() {
 		return employee;
 	}
@@ -24,7 +24,7 @@ public class AssessmentResult extends BaseHistory {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "assessmentTestID", nullable = false, updatable = false)
+	@JoinColumn(name = "assessmentTestID", nullable = false)
 	public AssessmentTest getAssessmentTest() {
 		return assessmentTest;
 	}

@@ -53,27 +53,18 @@ function getEmployee(companyID, resultID) {
 	<thead>
 		<tr>
 			<th></th>
-			<th>Qualification Type</th>
-			<th>Qualification Method</th>
+			<th>Qualification Type/Method</th>
 			<th>Employee</th>
-			<th>Effective Date</th>
-			<th>Expiration Date</th>
-			<th>Edit</th>
-			<th>Remove</th>
+			<th>Assessment Date</th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="results" status="stat">
-			<tr>
+			<tr class="clickable" onclick="loadResult(<s:property value="id" />, <s:property value="employee.account.id" />); return false;">
 				<td><s:property value="#stat.count" /></td>
-				<td><s:property value="assessmentTest.qualificationType" /></td>
-				<td><s:property value="assessmentTest.qualificationMethod" /></td>
+				<td><s:property value="assessmentTest.qualificationType" />/<s:property value="assessmentTest.qualificationMethod" /></td>
 				<td><s:property value="employee.displayName" /></td>
 				<td class="center"><s:date name="effectiveDate" format="MM/dd/yyyy" /></td>
-				<td class="center"><s:date name="expirationDate" format="MM/dd/yyyy" /></td>
-				<td class="center"><a href="#" onclick="loadResult(<s:property value="id" />, <s:property value="employee.account.id" />); return false;" class="edit"></a></td>
-				<td class="center"><a href="ManageAssessmentResults.action?id=<s:property value="center.id" />&button=Remove&resultID=<s:property value="id" />"
-					class="remove" onclick="return confirm('Are you sure you want to remove this assessment result?');"></a></td>
 			</tr>
 		</s:iterator>
 	</tbody>
