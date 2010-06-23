@@ -1,3 +1,38 @@
+CREATE TABLE `assessment_result_stage`(
+	`id` int(11) unsigned NOT NULL  auto_increment , 
+	`centerID` int(11) unsigned NOT NULL  , 
+	`resultID` varchar(20) COLLATE latin1_swedish_ci NULL  , 
+	`qualificationType` varchar(50) COLLATE latin1_swedish_ci NULL  , 
+	`qualificationMethod` varchar(50) COLLATE latin1_swedish_ci NULL  , 
+	`description` varchar(255) COLLATE latin1_swedish_ci NULL  , 
+	`testID` int(11) NULL  , 
+	`firstName` varchar(50) COLLATE latin1_swedish_ci NULL  , 
+	`lastName` varchar(50) COLLATE latin1_swedish_ci NULL  , 
+	`employeeID` varchar(50) COLLATE latin1_swedish_ci NULL  , 
+	`companyName` varchar(50) COLLATE latin1_swedish_ci NULL  , 
+	`companyID` int(11) NULL  , 
+	`qualificationDate` date NULL  , 
+	`creationDate` datetime NULL  , 
+	`updateDate` datetime NULL  , 
+	`createdBy` int(11) NULL  , 
+	`updatedBy` int(11) NULL  , 
+	PRIMARY KEY (`id`) , 
+	KEY `centerID`(`centerID`) 
+) ENGINE=InnoDB DEFAULT CHARSET='latin1';
+
+ALTER TABLE `contractor_registration_request` 
+	CHANGE `contactCount` `contactCount` tinyint(4) unsigned   NOT NULL DEFAULT '0' after `lastContactDate`, 
+	CHANGE `matchCount` `matchCount` tinyint(4) unsigned   NOT NULL DEFAULT '0' after `contactCount`, 
+	ADD COLUMN `watch` tinyint(4) unsigned   NOT NULL DEFAULT '0' after `conID`, COMMENT='';
+
+CREATE TABLE `stats_gco_count`(
+	`opID` mediumint(9) NOT NULL  , 
+	`opID2` mediumint(9) NULL  , 
+	`total` int(11) NOT NULL  DEFAULT '0' , 
+	UNIQUE KEY `operators`(`opID`,`opID2`) 
+) ENGINE=MyISAM DEFAULT CHARSET='utf8';
+
+
 /**
 update pqfquestions set isVisible = CASE isVisible WHEN 2 THEN 1 ELSE 0 END;
 update pqfquestions set hasRequirement = CASE hasRequirement WHEN 2 THEN 1 ELSE 0 END;
@@ -21,7 +56,7 @@ update flag_criteria set questionid = null where questionid = 0;
 
 insert into `audit_type` (`id`, `auditName`, `classType`, `mustVerify`, `hasRequirements`, `displayOrder`, `description`, `hasMultiple`, `isScheduled`, `hasAuditor`, `canContractorView`, `canContractorEdit`, `monthsToExpire`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `renewable`) values('18','CAN Annual Update','Audit','1','0','31','annual safety stats and data','1','0','1','1','1','38','20952','20952','2010-06-23 10:47:48','2010-06-23 11:20:32','0');
 insert into `flag_criteria` (`id`, `category`, `questionID`, `auditTypeID`, `oshaType`, `oshaRateType`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `label`, `description`, `comparison`, `dataType`, `defaultValue`, `multiYearScope`, `allowCustomValue`, `validationRequired`, `flaggableWhenMissing`, `insurance`, `displayOrder`) values('132','Paperwork',NULL,'18',NULL,NULL,'20952','20952','2010-06-23 14:43:28','2010-06-23 14:43:28','CAN Annual Update','Three years of verified Canada PQF Annual Updates are required','=','boolean','false',NULL,'0','1','0','0','21');
-update flag_critera fc set fc.label = 'US Annual Update', fc.description = 'Three years of verified US PQF Annual Updates are required' where fc.id = 142;
+update flag_criteria fc set fc.label = 'US Annual Update', fc.description = 'Three years of verified US PQF Annual Updates are required' where fc.id = 142;
 
 update `email_template` 
 set `id`='83',`accountID`='1100',`templateName`='Operator Request for Registration',
@@ -56,7 +91,6 @@ INSERT INTO app_properties VALUES ('filterlog.enabled', '1');
 INSERT INTO app_properties VALUES ('filterlog.ignore', 'ajax,destinationAction,allowMailMerge');
 
 INSERT INTO app_properties VALUES ('filterlog.ignorevalues', 'ccOnFile:2,minorityQuestion:0,pendingPqfAnnualUpdate:false,primaryInformation:false,tradeInformation:false');
-UPDATE `widget` SET `caption`='Registration Requests' WHERE `widgetID`='26';
 
 /* Change in deactivation email to include address  */
 INSERT INTO token(tokenName, listType, velocityCode) VALUES('PrimaryAddress', 'Contractor', '${contractor.address}
@@ -70,4 +104,3 @@ If this contractor is working at your facility, please advise PICS on how to pro
 If you wish to make contact with them to discuss the situation, their contact information is as follows:\r\n
 ContactName - <ContactName>\rPhone - <PrimaryPhone>\rEmail - <PrimaryEmail>\rAddress\r<PrimaryAddress>\r\n\nThank you,\rPICS Customer Service\rToll Free 800.506.(PICS)7427\rLocal 949.387.1940\rwww.picsauditing.com\r' 
 WHERE id = 51;
-
