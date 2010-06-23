@@ -79,7 +79,7 @@ public class ReportContractorApproval extends ReportAccount {
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
-		if (button != null) {
+		if (button != null && !"Search".equals(button)) {
 			if ("Save".equals(button)) {
 				permissions.hasPermission(OpPerms.ContractorApproval,
 						OpType.Edit);
