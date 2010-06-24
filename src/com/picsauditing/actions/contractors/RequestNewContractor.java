@@ -16,7 +16,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
@@ -218,7 +217,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				
 				// Add notes, if it's been filled out
 				if (!Strings.isEmpty(addToNotes)) {
-					addToNotes = addNotePrefix(addToNotes);
+					addToNotes = prepend(addToNotes, newContractor.getNotes());
 					newContractor.setNotes(addToNotes + 
 						(!Strings.isEmpty(newContractor.getNotes()) ? newContractor.getNotes() : ""));
 					addToNotes = null;
@@ -258,11 +257,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (button.equals("Close Request")) {
 				// Last minute notes?
 				if (!Strings.isEmpty(addToNotes)) {
-					newContractor.setNotes(addNotePrefix(addToNotes));
+					newContractor.setNotes(prepend(addToNotes, newContractor.getNotes()));
 					addToNotes = null;
 				}
 				
-				newContractor.setNotes(addNotePrefix("Closed the request.") + newContractor.getNotes());
+				newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
 				newContractor.setOpen(false);
 				redirect = true;
 			}
@@ -334,9 +333,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						}
 					}
 					
-					newContractor.setNotes(addNotePrefix("Contacted by email."));
+					newContractor.setNotes(prepend("Contacted by email.", newContractor.getNotes()));
 				} else
-					newContractor.setNotes(addNotePrefix("Contacted by phone."));
+					newContractor.setNotes(prepend("Contacted by phone.", newContractor.getNotes()));
 				
 				newContractor.setContactCount(newContractor.getContactCount() + 1);
 				newContractor.setLastContactedBy(new User(permissions.getUserId()));
@@ -415,7 +414,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public int getRequestedUser() {
-		if(requestedUser==0)
+		if (requestedUser == 0 && Strings.isEmpty(newContractor.getRequestedByUserOther()))
 			return getPrimaryContact(opID);
 		else return requestedUser;
 	}
@@ -611,8 +610,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return false;
 	}
 	
-	private String addNotePrefix(String note) {
-		return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n";
+	private String prepend(String note, String body) {
+		return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
+				+ body;
 	}
 	
 	private class ByFacilityName implements Comparator<OperatorForm> {
