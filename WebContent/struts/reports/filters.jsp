@@ -68,7 +68,49 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showOfficeIn">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_officeIn'); return false;">State/Provice</a> =
+		<span id="form1_officeIn_query">ALL</span><br />
+		<span id="form1_officeIn_select" style="display: none"
+			class="clearLink"> <s:select id="form1_officeIn"
+			list="filter.officeInList" cssClass="forms" name="filter.officeIn"
+			listKey="id" listValue="question" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>
+	</s:if>
+
+	<s:if test="filter.showWorksIn">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_worksIn'); return false;">Works In</a> = <span
+			id="form1_worksIn_query">ALL</span><br />
+		<span id="form1_worksIn_select" style="display: none"
+			class="clearLink"> <s:select id="form1_worksIn"
+			list="filter.worksInList" cssClass="forms" name="filter.worksIn"
+			listKey="id" listValue="question" multiple="true" size="5" /> <script
+			type="text/javascript">updateQuery('form1_worksIn');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_worksIn'); return false;">Clear</a> </span></div>
+	</s:if>
+
+	<s:if test="filter.showLicensedIn">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
+		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
+		<span id="form1_stateLicensedIn_select" style="display: none"
+			class="clearLink"> <s:select id="form1_stateLicensedIn"
+			list="filter.stateLicensesList" cssClass="forms"
+			name="filter.stateLicensedIn" listKey="id" listValue="question"
+			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
+		<br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_stateLicensedIn'); return false;">Clear</a>
+		</span></div>
+	</s:if>
+
 	<s:if test="filter.showAddress">
+		<br clear="all" />
 		<div class="filterOption">
 		<table>
 			<tr>
@@ -137,6 +179,7 @@
 			cssClass="forms" size="9" onfocus="clearText(this)"
 			title="must be 9 digits" /></div>
 	</s:if>
+	
 	<s:if test="filter.showIndustry">
 		<br clear="all" />
 		<div class="filterOption"><a href="#"
@@ -175,6 +218,7 @@
 	</s:if>
 
 	<s:if test="filter.showFlagStatus">
+		<br clear="all" />
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_flagStatus'); return false;">Flag
 		Status</a> = <span id="form1_flagStatus_query">ALL</span><br />
@@ -201,6 +245,29 @@
 			name="filter.waitingOn" /></div>
 	</s:if>
 	
+	<s:if test="filter.showRiskLevel">
+		<div class="filterOption"><a href="#"
+			onclick="toggleBox('form1_risklevel'); return false;">Risk Level</a>
+		= <span id="form1_risklevel_query">ALL</span><br />
+		<span id="form1_risklevel_select" style="display: none"
+			class="clearLink"> <s:select id="form1_risklevel"
+			list="#{1:'Low', 2:'Med', 3:'High'}" cssClass="forms"
+			name="filter.riskLevel" multiple="true" size="3" /> <script
+			type="text/javascript">updateQuery('form1_risklevel');</script> <br />
+		<a class="clearLink" href="#"
+			onclick="clearSelected('form1_risklevel'); return false;">Clear</a> </span>
+		</div>
+	</s:if>
+
+
+	<s:if
+		test="filter.showOpertorTagName && filter.operatorTagNamesList.size() > 0">
+		<div class="filterOption"><s:select
+			list="filter.operatorTagNamesList" cssClass="forms"
+			name="filter.operatorTagName" listKey="id" listValue="tag"
+			headerKey="0" headerValue="- Operator Tag -" /></div>
+	</s:if>
+
 	<s:if test="filter.showHandledBy">
 		<div class="filterOption"><s:select list="filter.handledByList"
 			headerKey="" headerValue="- Follow Up By -" cssClass="forms"
@@ -214,6 +281,7 @@
 	</s:if>
 
 	<s:if test="filter.showAuditType">
+		<br clear="all" />
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_pqfAuditTypeID'); return false;">PQF
 		Type</a> = <span id="form1_pqfAuditTypeID_query">ALL</span><br />
@@ -331,72 +399,6 @@
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
 		</s:else></div>
-	</s:if>
-
-	<s:if test="filter.showRiskLevel">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_risklevel'); return false;">Risk Level</a>
-		= <span id="form1_risklevel_query">ALL</span><br />
-		<span id="form1_risklevel_select" style="display: none"
-			class="clearLink"> <s:select id="form1_risklevel"
-			list="#{1:'Low', 2:'Med', 3:'High'}" cssClass="forms"
-			name="filter.riskLevel" multiple="true" size="3" /> <script
-			type="text/javascript">updateQuery('form1_risklevel');</script> <br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_risklevel'); return false;">Clear</a> </span>
-		</div>
-	</s:if>
-
-
-	<s:if
-		test="filter.showOpertorTagName && filter.operatorTagNamesList.size() > 0">
-		<br clear="all" />
-		<div class="filterOption"><s:select
-			list="filter.operatorTagNamesList" cssClass="forms"
-			name="filter.operatorTagName" listKey="id" listValue="tag"
-			headerKey="0" headerValue="- Operator Tag -" /></div>
-	</s:if>
-
-	<s:if test="filter.showLicensedIn">
-		<br clear="all" />
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_stateLicensedIn'); return false;">Licensed
-		In</a> = <span id="form1_stateLicensedIn_query">ALL</span><br />
-		<span id="form1_stateLicensedIn_select" style="display: none"
-			class="clearLink"> <s:select id="form1_stateLicensedIn"
-			list="filter.stateLicensesList" cssClass="forms"
-			name="filter.stateLicensedIn" listKey="id" listValue="question"
-			multiple="true" size="5" /> <script type="text/javascript">updateQuery('form1_stateLicensedIn');</script>
-		<br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_stateLicensedIn'); return false;">Clear</a>
-		</span></div>
-	</s:if>
-
-	<s:if test="filter.showWorksIn">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_worksIn'); return false;">Works In</a> = <span
-			id="form1_worksIn_query">ALL</span><br />
-		<span id="form1_worksIn_select" style="display: none"
-			class="clearLink"> <s:select id="form1_worksIn"
-			list="filter.worksInList" cssClass="forms" name="filter.worksIn"
-			listKey="id" listValue="question" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_worksIn');</script> <br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_worksIn'); return false;">Clear</a> </span></div>
-	</s:if>
-
-	<s:if test="filter.showOfficeIn">
-		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_officeIn'); return false;">Office In</a> =
-		<span id="form1_officeIn_query">ALL</span><br />
-		<span id="form1_officeIn_select" style="display: none"
-			class="clearLink"> <s:select id="form1_officeIn"
-			list="filter.officeInList" cssClass="forms" name="filter.officeIn"
-			listKey="id" listValue="question" multiple="true" size="5" /> <script
-			type="text/javascript">updateQuery('form1_officeIn');</script> <br />
-		<a class="clearLink" href="#"
-			onclick="clearSelected('form1_officeIn'); return false;">Clear</a> </span></div>
 	</s:if>
 
 	<s:if test="filter.showConLicense">
@@ -801,8 +803,8 @@
 		</div>	
 	</s:if>
 	
-	<br clear="all">
 	<s:if test="filter.showQuestionAnswer">
+		<br clear="all">
 		<div class="filterOption"><a href="#"
 			onclick="toggleBox('form1_questionId'); return false;">Questions</a> =
 		<span id="form1_questionId_query">ALL</span><br />
