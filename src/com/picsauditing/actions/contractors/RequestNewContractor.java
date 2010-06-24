@@ -217,9 +217,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				
 				// Add notes, if it's been filled out
 				if (!Strings.isEmpty(addToNotes)) {
-					addToNotes = prepend(addToNotes, newContractor.getNotes());
-					newContractor.setNotes(addToNotes + 
-						(!Strings.isEmpty(newContractor.getNotes()) ? newContractor.getNotes() : ""));
+					newContractor.setNotes(prepend(addToNotes, newContractor.getNotes()));
 					addToNotes = null;
 				}
 				
@@ -611,8 +609,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 	
 	private String prepend(String note, String body) {
-		return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
-				+ body;
+		if (note != null)
+			return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
+				+ (body != null ? body : "");
+		
+		return body;
 	}
 	
 	private class ByFacilityName implements Comparator<OperatorForm> {
