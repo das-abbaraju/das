@@ -90,7 +90,7 @@ $(function(){
 			<div>
 				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
 				<s:if test="auditType.id > 0 && auditType.categories.size == 0">
-					<input type="submit" class="picsbutton negative" name="button" value="Delete"/>
+					<input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete"/>
 				</s:if>
 				<input type="submit" class="picsbutton" name="button" value="UpdateAllAudits"/>
 			</div>
