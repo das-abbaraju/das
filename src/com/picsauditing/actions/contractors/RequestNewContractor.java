@@ -136,8 +136,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (!forceLogin())
 			return LOGIN;
 		
-		tryPermissions(OpPerms.RequestNewContractor, OpType.Edit);
-		
 		EmailTemplateDAO templateDAO = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
 		template = templateDAO.find(83);
 

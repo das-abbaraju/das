@@ -1713,12 +1713,7 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<!-- OQ Import / Assessment Center Management -->
-		<action name="OqsgClient"
-			class="com.oqverify.export.ExportServiceClient">
-			<result>struts/reports/oq/test.jsp</result>
-		</action>
-		
+		<!-- Assessment Center/Assessment Management -->
 		<action name="AssessmentCenterEdit"
 			class="com.picsauditing.actions.report.oq.AssessmentEdit">
 			<result>struts/reports/oq/assessment_edit.jsp</result>

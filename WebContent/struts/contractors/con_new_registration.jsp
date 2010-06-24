@@ -193,7 +193,11 @@ function getMatches(requestID) {
 </head>
 <body>
 <h1>Registration Request</h1>
-<a href="ReportNewRequestedContractor.action">&lt;&lt; Back to Registration Requests</a>
+
+<pics:permission perm="RequestNewContractor">
+	<a href="ReportNewRequestedContractor.action">&lt;&lt; Back to Registration Requests</a>
+</pics:permission>
+
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="newContractor.contractor != null || !newContractor.open">
@@ -387,7 +391,7 @@ function getMatches(requestID) {
 	</table>
 	<div style="padding-top: 10px;">
 	  	<input type="submit" class="picsbutton positive" name="button" value="Save" />
-	  	<s:if test="newContractor.contractor != null || permissions.operatorCorporate">
+	  	<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0)">
 		  	<input type="submit" class="picsbutton negative" name="button" value="Close Request" />
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">

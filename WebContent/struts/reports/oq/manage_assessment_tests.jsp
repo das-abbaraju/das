@@ -37,7 +37,9 @@ function loadTest(testID) {
 	};
 
 	startThinking({div: 'assessmentTest', message: 'Loading assessment test'});
-	$('#assessmentTest').load('ManageAssessmentTestsAjax.action', data);
+	$('#assessmentTest').load('ManageAssessmentTestsAjax.action', data, function() {
+		scrollTo(0,999999);
+	});
 	$('#addLink').show();
 }
 </script>
@@ -61,20 +63,21 @@ function loadTest(testID) {
 	</thead>
 	<tbody>
 		<s:iterator value="tests" status="stat">
-			<tr class="clickable" onclick="loadTest(<s:property value="id" />); return false;">
+			<tr class="clickable" onclick="loadTest(<s:property value="id" />);">
 				<td><s:property value="#stat.count" /></td>
 				<td><s:property value="qualificationType" /></td>
 				<td><s:property value="qualificationMethod" /></td>
 				<td><s:property value="description" /></td>
 				<td class="center"><s:date name="effectiveDate" format="MM/dd/yyyy" /></td>
-				<td class="center"><s:if test="verifiable"><img src="images/okCheck.gif" alt="Verifiable" /></s:if></td>
+				<td class="center"><s:if test="verifiable"><img src="images/okCheck.gif" 
+					alt="Verifiable" /></s:if></td>
 				<td class="right"><s:property value="monthsToExpire" /></td>
 			</tr>
 		</s:iterator>
 	</tbody>
 </table>
 </s:if>
-<a href="#" onclick="getNew(); $(this).hide(); return false;" id="addLink" 
+<a href="#" onclick="getNew(); $(this).hide(); return false;" id="addLink"
 	class="add">Add New Assessment Test</a>
 <div id="assessmentTest"></div>
 

@@ -140,9 +140,7 @@
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 
-<pics:permission perm="RequestNewContractor" type="Edit">
-	<div class="info">
-		Is the company you need not listed? Submit a <a href="RequestNewContractor.action">New Registration Request</a> and PICS will contact that company for you.
-	</div>
-</pics:permission>
+<div class="info">
+	Is the company you need not listed? Submit a <a href="RequestNewContractor.action">New Registration Request</a> and PICS will contact that company for you.
+</div>
 </s:else>
