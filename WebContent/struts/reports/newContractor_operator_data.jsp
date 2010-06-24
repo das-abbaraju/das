@@ -6,7 +6,8 @@
 	<s:include value="../actionMessages.jsp" />
 </s:if>
 <s:elseif test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please modify your search filter and try again.</div>
+	<div class="alert">Sorry, no companies found matching your search criteria.
+Try broadening your search criteria or submit a <a href="RequestNewContractor.action">new Registration Request</a> and PICS will contact that company for you.</div>
 	<pics:permission perm="RequestNewContractor" type="Edit">
 		<div class="info">
 			Can't find the company you need? Submit a <a href="RequestNewContractor.action">New Contractor Request</a> and PICS will help that company register.
