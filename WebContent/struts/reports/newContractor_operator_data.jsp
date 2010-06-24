@@ -37,11 +37,10 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
 		<s:if test="permissions.operator">
 			<td style="white-space: nowrap">
-				<a href="#" class="cluetip help" title="Add to Watchlist" rel="#watchtip"></a>
+				<a href="#" class="cluetip help" title="Preflag" rel="#watchtip"></a> PreFlag
 				<div id="watchtip">
 					The PreFlag represents the evaluation using minimum requirements that the Contractor has already completed. Factors such as PQF, safety stats, and insurance limits are included if applicable. Custom criteria such as site-specific audits are not included in the pre-flag calculation.
 				</div>
-				PreFlag
 			</td>
 			<s:if test="operatorAccount.approvesRelationships">
 				<pics:permission perm="ViewUnApproved">

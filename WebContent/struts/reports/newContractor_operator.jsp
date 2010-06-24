@@ -10,8 +10,8 @@ table.report thead a.cluetip {
 	color: #FFF;
 	text-decoration: none;
 	background: url("images/help.gif") no-repeat left center;
-	margin-left: 2px;
-	padding-left: 5px;
+	padding: 0px 0px 0px 12px;
+	margin: 0px;
 }
 </style>
 </head>
