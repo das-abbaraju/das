@@ -1,6 +1,6 @@
 /** function with searching, sorting, and page changing **/
 function download(url) {
-	newurl = url + "CSV.action?" + $('#form1').serialize();
+	newurl = url + "CSV.action?button=download&" + $('#form1').serialize();
 	popupWin = window.open(newurl, url, '');
 }
 
