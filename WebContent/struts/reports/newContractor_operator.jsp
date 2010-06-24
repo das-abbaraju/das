@@ -5,6 +5,15 @@
 <head>
 <title>Search for New Contractors</title>
 <s:include value="reportHeader.jsp" />
+<style type="text/css">
+table.report thead a.cluetip {
+	color: #FFF;
+	text-decoration: none;
+	background: url("images/help.gif") no-repeat left center;
+	margin-left: 2px;
+	padding-left: 5px;
+}
+</style>
 </head>
 <body>
 <h1>Search for New Contractors</h1>

@@ -251,6 +251,14 @@ function wireClueTips() {
 			return data;
 		}
 	});
+	
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
 }
 
 function isNumber(field,position){
