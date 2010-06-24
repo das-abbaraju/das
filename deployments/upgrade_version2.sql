@@ -54,10 +54,6 @@ delete from pqfquestions where id = 0;
 
 update flag_criteria set questionid = null where questionid = 0;
 
-insert into `audit_type` (`id`, `auditName`, `classType`, `mustVerify`, `hasRequirements`, `displayOrder`, `description`, `hasMultiple`, `isScheduled`, `hasAuditor`, `canContractorView`, `canContractorEdit`, `monthsToExpire`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `renewable`) values('18','CAN Annual Update','Audit','1','0','31','annual safety stats and data','1','0','1','1','1','38','20952','20952','2010-06-23 10:47:48','2010-06-23 11:20:32','0');
-insert into `flag_criteria` (`id`, `category`, `questionID`, `auditTypeID`, `oshaType`, `oshaRateType`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `label`, `description`, `comparison`, `dataType`, `defaultValue`, `multiYearScope`, `allowCustomValue`, `validationRequired`, `flaggableWhenMissing`, `insurance`, `displayOrder`) values('132','Paperwork',NULL,'18',NULL,NULL,'20952','20952','2010-06-23 14:43:28','2010-06-23 14:43:28','CAN Annual Update','Three years of verified Canada PQF Annual Updates are required','=','boolean','false',NULL,'0','1','0','0','21');
-update flag_criteria fc set fc.label = 'US Annual Update', fc.description = 'Three years of verified US PQF Annual Updates are required' where fc.id = 142;
-
 update `email_template` 
 set `id`='83',`accountID`='1100',`templateName`='Operator Request for Registration',
 `subject`='${newContractor.requestedBy.name} has requested you join PICS',
