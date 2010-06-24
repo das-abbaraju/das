@@ -35,6 +35,11 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 		this.opDAO = opDAO;
 	}
 
+	public void prepare() throws Exception {
+		int id = this.getParameter("ao.id");
+		ao = dao.find(id);
+	}
+
 	public String execute() {
 		if (!forceLogin())
 			return LOGIN;
@@ -77,11 +82,6 @@ public class AuditOperatorSave extends PicsActionSupport implements Preparable {
 		}
 		
 		return SUCCESS;
-	}
-
-	public void prepare() throws Exception {
-		int id = this.getParameter("ao.id");
-		ao = dao.find(id);
 	}
 
 	public AuditOperator getAo() {
