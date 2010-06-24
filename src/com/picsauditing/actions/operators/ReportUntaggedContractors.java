@@ -34,6 +34,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 			}
 		}
 		sql.addWhere(whereClause);
+		getFilter().setShowOpertorTagName(false);
 	}
 
 	@Override
