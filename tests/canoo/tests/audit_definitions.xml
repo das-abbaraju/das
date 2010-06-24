@@ -38,7 +38,6 @@
 				</group>
 				<group description="Add Category">
 					<clickLink 
-						description="Click link: Add New Category" 
 						htmlId="manage_audit_types_add_new_category"/>
 					<setInputField name="category.category" value="Canoo Category" />
 					<clickButton description="Click Save/Submit" label="Save" name="button" />
