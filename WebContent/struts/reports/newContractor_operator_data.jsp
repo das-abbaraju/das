@@ -39,7 +39,11 @@
 				<img src="images/help.gif" title="The PreFlag represents the evaluation using minimum requirements that the Contractor has already completed. Factors such as PQF, safety stats, and insurance limits are included if applicable. Custom criteria such as site-specific audits are not included in the pre-flag calculation.">
 				PreFlag
 			</td>
-			<td>Status</td>
+			<s:if test="operatorAccount.approvesRelationships">
+				<pics:permission perm="ViewUnApproved">
+					<td>Status</td>
+				</pics:permission>
+			</s:if>
 		</s:if>
 		<td>Action</td>
 		<s:if test="showContact">
@@ -72,11 +76,6 @@
 								src="images/icon_<s:property value="getOverallFlag(get('id')).toString().toLowerCase()"/>Flag.gif" />
 						</s:else>
 					</td>
-					<s:if test="operatorAccount.approvesRelationships">
-						<pics:permission perm="ViewUnApproved">
-							<td class="center"><s:property value="get('workStatus')" /></td>
-						</pics:permission>
-					</s:if>
 				</s:if>
 				<td class="center">
 					<s:if test="get('genID') > 0">

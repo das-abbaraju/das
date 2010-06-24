@@ -17,6 +17,7 @@ function checkRemove(id){
 	jQuery.get('ContractorTagsAjax.action',{tagID: id, button: 'removeNum'}, function(data){
 		jQuery.facebox(data);
 });
+}
 
 </script>
 </head>
