@@ -138,7 +138,7 @@ public class OperatorAccountDAO extends PicsDAO {
 			where += " AND workStatus = 'Y'";
 		}
 
-		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE (c.status = 'Active' OR c.status = 'Demo') "
+		Query query = em.createQuery("SELECT count(c) FROM ContractorAccount c " + "WHERE c.status = 'Active'"
 				+ "AND c IN (SELECT contractorAccount FROM ContractorOperator WHERE " + where + ")");
 		query.setParameter(1, operator);
 		return Integer.parseInt(query.getSingleResult().toString());
