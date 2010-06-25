@@ -100,14 +100,16 @@ $(document).ready(function() {
 				<td><s:property value="get('country')"/></td>
 				<td><s:property value="get('zip')"/></td>
 			</s:if>
-			<td>
-				<s:if test="(canDeleteOp && get('opCount') == null && get('conCount') == null) || (canDeleteCorp && get('corpCount') == null))">
-					<s:form action="ReportAccountList" method="POST">
-						<s:submit value="Remove" name="button" type="picsbutton negative" />
-						<s:hidden value="%{get('id')}" name="accountID"/>
-					</s:form>
-				</s:if>
-			</td>
+			<s:if test="canDeleteOp || canDeleteCorp">
+				<td>
+					<s:if test="(canDeleteOp && get('opCount') == null && get('conCount') == null) || (canDeleteCorp && get('corpCount') == null))">
+						<s:form action="ReportAccountList" method="POST">
+							<s:submit value="Remove" name="button" type="picsbutton negative" />
+							<s:hidden value="%{get('id')}" name="accountID"/>
+						</s:form>
+					</s:if>
+				</td>
+			</s:if>
 		</tr>
 	</s:iterator>
 </table>
