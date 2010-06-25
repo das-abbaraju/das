@@ -336,12 +336,20 @@ public class ContractorWidget extends ContractorActionSupport {
 		return null;
 	}
 	
+	public boolean getHasUnpaidInvoices(){
+		for(Invoice invoice : contractor.getInvoices()){
+			if(invoice.getStatus().isUnpaid())
+				return true;
+		}
+		return false;
+	}
+	
 	// Will return the earliest unpaid invoice with the assumption that 
 	// is the one we want to display on con_stats.jsp
 	public String getChargedOn(){
 		String result = "";
 		try {
-			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 			Date d = format.parse("12/31/4000");
 			for (Invoice invoice : contractor.getInvoices()) {
 				if (invoice.getStatus().isUnpaid()) {
