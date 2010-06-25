@@ -85,7 +85,7 @@ public class ContractorWidget extends ContractorActionSupport {
 							.hasPermission(OpPerms.ContractorSafety))){
 				showAgreement = true;
 				openTasks
-						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"ContractorAgreementAjax.action?id="+contractor.getId()+"\" rel=\"facebox\" >"
+						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"ContractorPaymentOptions.action?id="+contractor.getId()+"\" >"
 								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> to accept the terms of the Agreement.");
 			}
 

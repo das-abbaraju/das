@@ -1,20 +1,4 @@
-<jsp:useBean id="permissions"
-	class="com.picsauditing.access.Permissions" scope="session" />
-<%@page import="com.picsauditing.access.OpPerms"%>
 <h1 align="center">Contractor Agreement Statement</h1>
-
-<div align="center">
-		<% 
-			if(permissions != null && !permissions.isAdmin() &&
-						(permissions.hasPermission(OpPerms.ContractorBilling) 
-							|| permissions.hasPermission(OpPerms.ContractorAdmin)
-							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
-		%>
-			<form method="post">
-				<input type="submit" name="button" class="picsbutton" value="I Agree" />		
-			</form>
-		<% } %>
-</div>
 
 <div style="width: 740px;">
 This is the web site of <b>PICS</b>.<br>
@@ -89,18 +73,6 @@ contractor list.</p><br/>
 <b><u>AGREEMENTS OUTSIDE OF THIS DOCUMENT</u></b>
 <p>You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.</p>
 
-<div align="center" style="text-align:bottom;">
-		<% 
-			if(permissions != null && !permissions.isAdmin() &&
-						(permissions.hasPermission(OpPerms.ContractorBilling) 
-							|| permissions.hasPermission(OpPerms.ContractorAdmin)
-							|| permissions.hasPermission(OpPerms.ContractorSafety))) {
-		%>
-			<form method="POST">
-				<input type="submit" name="button" class="picsbutton" value="I Agree" />
-			</form>
-	<% } %>
-</div>
 </div>
 
 

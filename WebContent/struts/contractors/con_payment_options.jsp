@@ -128,7 +128,7 @@ function updateExpDate() {
 </li>
 <s:if test="contractor.status.active || permissions.admin">
 	<li><label>
-			<a title="Click here to view the PICS Contractor Agreement" style="text-decoration:none;" href="#" onClick="window.open('ContractorAgreementAjax.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">Contractor Agreement:</a>
+			Contractor Agreement:
 		</label><s:checkbox name="contractor.agreed" disabled="true" />
 			<s:if test="contractor.agreementDate != null">
 			On <s:date name="contractor.agreementDate" format="MM/dd/yy" />, <s:property value="contractor.agreedBy.name" /> agreed to the terms of the PICS Contractor Agreement.
@@ -251,7 +251,7 @@ function updateExpDate() {
 <br clear="all" /><br/><br/>
 <s:if test="permissions.contractor && contractor.status.pendingDeactivated && (contractor.paymentMethodStatusValid || !contractor.mustPayB)">
 	<div class="buttons" style="float: right;">
-		<a href="ContractorRegistrationFinish.action" class="picsbutton positive">Next &gt;&gt;</a>
+		<a id="next_link" href="ContractorRegistrationFinish.action" class="picsbutton positive">Next &gt;&gt;</a>
 	</div>
 </s:if>
 </body>
