@@ -22,15 +22,15 @@
 <table class="report">
 	<thead>
 		<tr>
-			<td colspan="2">Contractor Name</td>
+			<td colspan="2"><a href="?orderBy=a.name" >Contractor Name</a></td>
 			<s:if test="!permissions.operator">
-				<td>Operator Name</td>
+				<td><a href="?orderBy=o.name" >Operator Name</a></td>
 			</s:if>
-			<td>Flag</td>
-			<td>ForcedBy</td>
-			<td>Start Date</td>
-			<td>End Date</td>
-			<td>Notes</td>
+			<td><a href="?orderBy=lflag" >Flag</a></td>
+			<td><a href="?orderBy=u.name" >ForcedBy</a></td>
+			<td><a href="?orderBy=ff.forceBegin" >Start Date</a></td>
+			<td><a href="?orderBy=ff.forceend" >End Date</a></td>
+			<td><a href="?orderBy=u.id" >Notes</a></td>
 		</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
