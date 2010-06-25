@@ -39,8 +39,10 @@ public class WatchListManager extends PicsActionSupport {
 				List<ContractorWatch> watches = userDAO.findContractorWatch(userID);
 				
 				for (ContractorWatch watch : watches) {
-					if (watch.getContractor().getId() == conID)
+					if (watch.getContractor().getId() == conID) {
 						userDAO.remove(watch);
+						break;
+					}
 				}
 				
 				return redirect("WatchListManager.action");

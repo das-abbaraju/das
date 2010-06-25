@@ -85,7 +85,7 @@ $(function() {
 					<td class="user"><a href="UsersManage.action?accountId=<s:property value="user.account.id" />&user.id=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
 					<td class="contractor"><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
 					<pics:permission perm="WatchListManager" type="Delete">
-						<td class="center"><a href="#" onclick="confirm('Are you sure you want to remove this contractor watch for this user?'); return false;" class="remove"></a></td>
+						<td class="center"><a href="?button=Remove&userID=<s:property value="user.id" />&conID=<s:property value="contractor.id" />" onclick="return confirm('Are you sure you want to remove this contractor watch for this user?');" class="remove"></a></td>
 					</pics:permission>
 				</tr>
 			</s:iterator>
