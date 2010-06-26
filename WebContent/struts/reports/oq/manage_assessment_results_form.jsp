@@ -11,6 +11,7 @@ $().ready(function() {
 	<fieldset class="form">
 		<s:hidden name="id" />
 		<s:hidden name="result.id" />
+		<input type="hidden" name="resultID" value="<s:property value="result.id" />" />
 		
 		<s:if test="result.id > 0">
 			<legend><span>Edit Assessment Result</span></legend>
@@ -34,8 +35,8 @@ $().ready(function() {
 		</ol>
 		<div style="margin-left: 20px; margin-bottom: 10px;">
 			<input type="submit" name="button" value="Save" class="picsbutton positive" />
-			<s:if test="result.id > 0"><input type="button" value="Remove" class="picsbutton negative" /></s:if>
-			<input type="button" value="Cancel" class="picsbutton negative" 
+			<s:if test="result.id > 0"><input type="submit" name="button" value="Remove" class="picsbutton negative" /></s:if>
+			<input type="button" value="Cancel" class="picsbutton" 
 				onclick="$('#newForm').slideUp(500); $('#addLink').show();" />
 		</div>
 	</fieldset>

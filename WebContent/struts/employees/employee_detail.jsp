@@ -63,10 +63,12 @@
 								<s:property value="employee.title" /><br />
 								<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 							</td>
-							<td style="vertical-align: middle; padding: 0px 5px;">
-								<img src="ContractorLogo.action?id=<s:property value="employee.account.id"/>"
-									alt="Logo" />
-							</td>
+							<s:if test="employee.account.logoFile != 'No'">
+								<td style="vertical-align: middle; padding: 0px 5px;">
+									<img src="ContractorLogo.action?id=<s:property value="employee.account.id"/>"
+										alt="Logo" />
+								</td>
+							</s:if>
 						</tr>
 					</table>
 				</td>
@@ -212,7 +214,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<s:iterator value="employee.employeeQualifications" id="quals">
+								<s:iterator value="jobTasks" id="quals">
 									<tr>
 										<td><s:property value="#quals.task.label" />: <s:property value="#quals.task.name" /></td>
 										<td class="center">

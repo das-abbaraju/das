@@ -87,8 +87,9 @@ public class AssessmentResultDAO extends PicsDAO {
 		else
 			where = " AND " + where;
 
-		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE expirationDate > :date"
-				+ " AND effectiveDate <= :date" + where + " ORDER BY effectiveDate DESC");
+		Query query = em.createQuery("SELECT a FROM AssessmentResult a WHERE (expirationDate > :date"
+				+ " OR expirationDate IS NULL) AND (effectiveDate <= :date" + where + 
+				" OR effectiveDate IS NULL) ORDER BY effectiveDate DESC");
 		query.setParameter("date", date);
 		return query.getResultList();
 	}

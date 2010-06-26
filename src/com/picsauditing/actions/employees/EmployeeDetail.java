@@ -2,6 +2,8 @@ package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -15,6 +17,7 @@ import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
+import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
@@ -126,5 +129,26 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	
 	public boolean isNotEmpty(String value) {
 		return !Strings.isEmpty(value);
+	}
+	
+	public List<EmployeeQualification> getJobTasks() {
+		List<EmployeeQualification> tasks = 
+			new ArrayList<EmployeeQualification>(employee.getEmployeeQualifications());
+		Collections.sort(tasks, new SortTaskByLabel());
+		
+		return tasks;
+	}
+	
+	private class SortTaskByLabel implements Comparator<EmployeeQualification> {
+		public int compare(EmployeeQualification o1, EmployeeQualification o2) {
+			try {
+				Double d1 = Double.parseDouble(o1.getTask().getLabel());
+				Double d2 = Double.parseDouble(o2.getTask().getLabel());
+				
+				return d1.compareTo(d2);
+			} catch (Exception e) {
+				return o1.getTask().getLabel().compareTo(o2.getTask().getLabel());
+			}
+		}
 	}
 }

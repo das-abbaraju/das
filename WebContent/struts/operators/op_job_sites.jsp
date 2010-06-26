@@ -228,8 +228,7 @@ $(function() {
 	</tr>
 </table>
 <s:if test="inactiveSites.size() > 0">
-	<a href="#" onclick="$('#pastSites').show(); $(this).hide(); return false;">Show Details</a>
-	<div id="pastSites" style="display: none;">
+	<div>
 		<h3>Past Projects</h3>
 		<table class="report">
 			<thead>
