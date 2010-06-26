@@ -4,8 +4,8 @@ import com.picsauditing.access.OpPerms;
 
 public enum Subscription {
 	ContractorRegistration(
-			"Contractor Registration",
-			"This email includes a list of contractors who have recently registered at PICS with your account. You can choose to receive this daily, weekly or monthly. If no contractor registers, then you will not receive an email.",
+			"Contractor Registration/Deactivation",
+			"This email includes a list of contractors who have recently been deactivated or who have recently registered for PICS under your account. You can choose to receive this daily, weekly or monthly. If no contractor registers or deactivates, then you will not receive an email.",
 			true, false), 
 	ContractorAdded(
 			"Contractor Added to Facility",
