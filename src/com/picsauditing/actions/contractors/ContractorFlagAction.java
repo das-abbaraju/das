@@ -13,12 +13,16 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
@@ -37,6 +41,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected ContractorOperatorDAO contractorOperatorDao;
 	protected FlagDataDAO flagDataDAO;
 	protected FlagDataOverrideDAO flagDataOverrideDAO;
+	protected OperatorAccountDAO opDAO;
+	protected FacilitiesDAO facDAO;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -52,11 +58,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			ContractorOperatorDAO contractorOperatorDao, FlagDataDAO flagDataDAO,
-			FlagDataOverrideDAO flagDataOverrideDAO) {
+			FlagDataOverrideDAO flagDataOverrideDAO, FacilitiesDAO facDAO) {
 		super(accountDao, auditDao);
 		this.contractorOperatorDao = contractorOperatorDao;
 		this.flagDataDAO = flagDataDAO;
 		this.flagDataOverrideDAO = flagDataOverrideDAO;
+		this.facDAO = facDAO;
 	}
 
 	public String execute() throws Exception {
@@ -77,6 +84,24 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (co == null) {
 			addActionError("This contractor doesn't work at the given site");
 			return BLANK;
+		}
+		
+		if(!permissions.isAdmin()){
+			// cant' view unrelated co links
+			if(permissions.isCorporate()){
+				// check to see if corporate id pulls anything with this op id, if not then give error
+				Facility f = facDAO.findByCorpOp(permissions.getAccountId(), opID);
+				if(f == null){
+					addActionError("You do not have permission to view this Facility");
+					return BLANK;
+				}
+				
+			} else if(opID != permissions.getAccountId()) {
+				// check to see if 	opID and id match
+				addActionError("You do not have permission to view this Facility");
+				return BLANK;
+			}
+			
 		}
 
 		if (button != null) {
