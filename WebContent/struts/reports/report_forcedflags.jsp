@@ -27,6 +27,7 @@
 				<td><a href="?orderBy=o.name" >Operator Name</a></td>
 			</s:if>
 			<td><a href="?orderBy=lflag" >Flag</a></td>
+			<td><a href="?orderBy=fLabel" >Flag Issue</a></td>
 			<td><a href="?orderBy=u.name" >ForcedBy</a></td>
 			<td><a href="?orderBy=ff.forceBegin" >Start Date</a></td>
 			<td><a href="?orderBy=ff.forceend" >End Date</a></td>
@@ -56,6 +57,7 @@
 					width="12" height="15" border="0">
 				</s:else>
 			</td>
+			<td class="center"><s:property value="get('fLabel')" /></td>
 			<td title="<s:property value="get('forcedByAccount')"/>"><s:property value="get('forcedBy')"/></td>
 			<td><s:date name="get('forceBegin')" format="MMM d, yyyy" /></td>
 			<td><s:date name="get('forceend')" format="MMM d, yyyy" /></td>
