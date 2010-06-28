@@ -20,9 +20,9 @@
 				userID = Integer.parseInt(request.getParameter("userID"));
 				UserDAO ud = (UserDAO) SpringUtils.getBean("UserDAO");
 				if (ud.duplicateUsername(username, userID)) {
-					%><%=username%> is NOT available. Please choose a different Username.<%
+					%><img src="images/notOkCheck.gif" title="Username is available" /> <%=username%> is NOT available. Please choose a different Username.<%
 				} else {
-					%><%=username%> is available<%
+					%><img src="images/okCheck.gif" title="Username is available" /> <%=username%> is available<%
 				}
 			} catch (NumberFormatException e) {}
 		}	
