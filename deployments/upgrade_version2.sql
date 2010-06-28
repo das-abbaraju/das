@@ -13,3 +13,9 @@ join pqfdata pd on ca.id = pd.auditid
 where pd.questionid = 894
 and pd.answer = 'Yes');
 **/
+
+
+/* Deactive unused assessment centers except for OQSG, and set NACE and NCCER to pending */
+update accounts set status = 'Deactivated' where type = 'Assessment' and name !='OQSG';
+
+update accounts set status = 'Pending' where id = 11069 or id = 11087;
