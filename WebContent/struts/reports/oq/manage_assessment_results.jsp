@@ -53,18 +53,20 @@ function getEmployee(companyID, resultID) {
 	<thead>
 		<tr>
 			<th></th>
-			<th>Assessment Test</th>
+			<th>Company</th>
 			<th>Employee</th>
 			<th>Assessment Date</th>
+			<th>Assessment Test</th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="results" status="stat">
 			<tr class="clickable" onclick="loadResult(<s:property value="id" />, <s:property value="employee.account.id" />); return false;">
 				<td><s:property value="#stat.count" /></td>
-				<td><s:property value="assessmentTest.qualificationMethod" /> - <s:property value="assessmentTest.qualificationType" /></td>
+				<td><s:property value="employee.account.name" /></td>
 				<td><s:property value="employee.displayName" /></td>
 				<td class="center"><s:date name="effectiveDate" format="MM/dd/yyyy" /></td>
+				<td><s:property value="assessmentTest.qualificationMethod" /> - <s:property value="assessmentTest.qualificationType" /></td>
 			</tr>
 		</s:iterator>
 	</tbody>

@@ -10,7 +10,6 @@ $().ready(function() {
 <form id="newForm" action="ManageAssessmentResults.action" method="POST">
 	<fieldset class="form">
 		<s:hidden name="id" />
-		<s:hidden name="result.id" />
 		<input type="hidden" name="resultID" value="<s:property value="result.id" />" />
 		
 		<s:if test="result.id > 0">
@@ -20,18 +19,16 @@ $().ready(function() {
 			<legend><span>Add New Assessment Result</span></legend>
 		</s:else>
 		<ol>
+			<li><label for="company">Company:</label><s:select list="companies" listKey="id" 
+				listValue="name" headerKey="0" headerValue="- Company -" name="companyID" onchange="getEmployee(this.value, %{resultID})" value="companyID"></s:select></li>
+			<li id="employeeList"><s:if test="result.id > 0"><label for="employee">Employee:</label><s:select list="employees" listKey="id" 
+				listValue="displayName" name="employeeID" value="employeeID" /></s:if></li>
+			<li><label for="effective">Assessment Date:</label>
+				<input type="text" name="result.effectiveDate" id="effective" class="datepicker"
+					value="<s:property value="maskDateFormat(result.effectiveDate)" />" /></li>
 			<li><label for="test">Assessment Test:</label>
 				<s:select list="tests" listKey="id" listValue="%{qualificationMethod + ' - ' + description}"
 					headerKey="0" headerValue="- Assessment Test -" name="testID" /></li>
-			<li><label for="company">Company:</label><s:select list="companies" listKey="id" 
-				listValue="name" headerKey="0" headerValue="- Company -" name="companyID" onchange="getEmployee(this.value, %{resultID})" value="companyID"></s:select></li>
-			<li id="employeeList"></li>
-			<s:if test="result.id > 0">
-				<script type="text/javascript">getEmployee(<s:property value="companyID" />, <s:property value="resultID" />);</script>
-			</s:if>
-			<li><label for="effective">Effective Date:</label>
-				<input type="text" name="result.effectiveDate" id="effective" class="datepicker"
-					value="<s:property value="maskDateFormat(result.effectiveDate)" />" /></li>
 		</ol>
 		<div style="margin-left: 20px; margin-bottom: 10px;">
 			<input type="submit" name="button" value="Save" class="picsbutton positive" />
