@@ -1,7 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,7 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -19,17 +21,19 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "generalcontractors")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
-
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private String workStatus = "P";
@@ -81,17 +85,47 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Transient
 	public boolean isWorkStatusApproved() {
-		return "Y".equals(workStatus);
+		if (!getOperatorAccount().isCorporate())
+			return "Y".equals(workStatus);
+		else
+			return isChildrenWorkStatusEqual("Y");
 	}
 
 	@Transient
 	public boolean isWorkStatusRejected() {
-		return "N".equals(workStatus);
+		if (!getOperatorAccount().isCorporate())
+			return "N".equals(workStatus);
+		else
+			return isChildrenWorkStatusEqual("N");
 	}
 
 	@Transient
 	public boolean isWorkStatusPending() {
-		return "P".equals(workStatus);
+		if (!getOperatorAccount().isCorporate())
+			return "P".equals(workStatus);
+		else
+			return isChildrenWorkStatusEqual("P");
+	}
+
+	private boolean isChildrenWorkStatusEqual(String parentStatus) {
+		String where = "subid = " + getContractorAccount().getId() + " AND workStatus != '" + parentStatus + "'";
+		List<Integer> idList = new ArrayList<Integer>();
+		for (OperatorAccount o : getOperatorAccount().getOperatorChildren())
+			idList.add(o.getId());
+		String ids = Strings.implode(idList, ",");
+		where += " AND genid IN (" + ids + ")";
+
+		SelectSQL sql = new SelectSQL("generalcontractors", where);
+		sql.setLimit(1);
+
+		try {
+			Database db = new Database();
+			List<BasicDynaBean> pageData = db.select(sql.toString(), false);
+			return pageData.size() == 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Enumerated(EnumType.STRING)
