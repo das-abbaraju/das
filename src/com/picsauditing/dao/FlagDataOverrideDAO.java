@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -41,5 +42,20 @@ public class FlagDataOverrideDAO extends PicsDAO {
 		}
 
 		return map;
+	}
+	
+	public FlagDataOverride findByConAndOpAndCrit(int conID, int opID, int cID){
+		try{
+			Query query = em.createQuery("FROM FlagDataOverride fdo WHERE contractor.id = ? AND operator.id = ? AND " +
+			"criteria.id = ?");
+			query.setParameter(1, conID);
+			query.setParameter(2, opID);
+			query.setParameter(3, cID);
+			
+			return (FlagDataOverride) query.getSingleResult();	
+			
+		} catch(NoResultException e){
+			return null;
+		}
 	}
 }
