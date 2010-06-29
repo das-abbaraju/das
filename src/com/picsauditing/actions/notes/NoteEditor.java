@@ -143,7 +143,6 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 			if (permissions.hasGroup(959)) {
 				viewableBy = Account.EVERYONE;
-				viewableByOther = permissions.getAccountId();
 			}
 		}
 
