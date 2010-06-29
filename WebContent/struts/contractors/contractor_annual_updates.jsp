@@ -25,6 +25,9 @@
 		<th>Submitted</th>
 		<th>Closed</th>
 		<th>View</th>
+		<pics:permission perm="AuditCopy">
+			<th>Copy</th>
+		</pics:permission>	
 	</tr>
 	</thead>
 	<s:sort source="annualAddendums" comparator="dateComparator">
@@ -46,6 +49,12 @@
 				<s:date name="closedDate" format="M/d/yy" />
 			</s:else></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
+			<pics:permission perm="AuditCopy">
+				<td><s:if test="auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
+						<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
+					</s:if>					
+				</td>
+			</pics:permission>
 		</tr>
 	</s:iterator>
 	</s:sort>

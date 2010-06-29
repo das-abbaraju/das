@@ -24,8 +24,8 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.FileUtils;
 
 /**
- * Used by Audit.action to show a list of categories for a given audit. Also allows users to change the status of an
- * audit.
+ * Used by Audit.action to show a list of categories for a given audit. Also
+ * allows users to change the status of an audit.
  * 
  * @author Trevor
  * 
@@ -34,11 +34,13 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 	protected String contractorSelect = "";
 	private boolean hasDuplicate = false;
 
-	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, ContractorAuditOperatorDAO caoDAO,
-			AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao, 
-			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder, ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao, OshaAuditDAO oshaAuditDAO) {
-		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator,
-				auditBuilder, contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
+	public ContractorAuditCopy(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
+			ContractorAuditOperatorDAO caoDAO, AuditCategoryDataDAO catDataDao, AuditDataDAO auditDataDao,
+			AuditPercentCalculator auditPercentCalculator, AuditBuilder auditBuilder,
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, CertificateDAO certificateDao,
+			OshaAuditDAO oshaAuditDAO) {
+		super(accountDao, auditDao, caoDAO, catDataDao, auditDataDao, auditPercentCalculator, auditBuilder,
+				contractorAuditOperatorDAO, certificateDao, oshaAuditDAO);
 	}
 
 	public String execute() throws Exception {
@@ -57,7 +59,8 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			auditDao.clear();
 			for (ContractorAudit existingAudit : auditList) {
 				if (existingAudit.getAuditType().equals(conAudit.getAuditType())
-						&& !existingAudit.getAuditStatus().equals(AuditStatus.Expired)) {
+						&& !existingAudit.getAuditStatus().equals(AuditStatus.Expired)
+						&& !existingAudit.getAuditType().isAnnualAddendum()) {
 					// We already have an existing audit that we should delete
 					// first
 					this
@@ -105,7 +108,8 @@ public class ContractorAuditCopy extends ContractorAuditAction {
 			}
 
 			String notes = conAudit.getAuditType().getAuditName() + " Copied from Contractor " + oldconID;
-			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit
+					.getAuditType().getAccount()));
 			return "Audit";
 		}
 
