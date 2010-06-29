@@ -53,7 +53,7 @@ public class ReportFilterAccount extends ReportFilter {
 	public Industry[] getIndustryList() {
 		return Industry.values();
 	}
-	
+
 	public String[] getTypeList() {
 		return new String[] { "Assessment", "Corporate", "Operator" };
 	}
@@ -61,7 +61,7 @@ public class ReportFilterAccount extends ReportFilter {
 	public ArrayList<String> getFlagStatusList() throws Exception {
 		return FlagColor.getValuesWithDefault();
 	}
-	
+
 	public List<State> getStateList() {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		List<State> result;
@@ -109,11 +109,11 @@ public class ReportFilterAccount extends ReportFilter {
 	public void setShowStatus(boolean showStatus) {
 		this.showStatus = showStatus;
 	}
-	
+
 	public boolean isShowType() {
 		return showType;
 	}
-	
+
 	public void setShowType(boolean showType) {
 		this.showType = showType;
 	}
@@ -173,7 +173,7 @@ public class ReportFilterAccount extends ReportFilter {
 	public void setState(String[] state) {
 		this.state = state;
 	}
-	
+
 	public String[] getCountry() {
 		return country;
 	}
@@ -189,11 +189,11 @@ public class ReportFilterAccount extends ReportFilter {
 	public void setZip(String zip) {
 		this.zip = zip;
 	}
-	
+
 	public String[] getType() {
 		return type;
 	}
-	
+
 	public void setType(String[] type) {
 		this.type = type;
 	}
@@ -207,7 +207,8 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public void setStatus(AccountStatus status) {
-		this.status = new AccountStatus[]{status};
+		if (status != null)
+			this.status = new AccountStatus[] { status };
 	}
 
 	public AccountStatus[] getStatusList() {

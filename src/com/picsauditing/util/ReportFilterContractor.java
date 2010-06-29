@@ -1,4 +1,3 @@
-
 package com.picsauditing.util;
 
 import java.util.Date;
@@ -302,6 +301,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.operator = operator;
 	}
 
+	public void setOperator(Integer operator) {
+		if (operator != null && operator > 0)
+			this.operator = new int[] { operator.intValue() };
+	}
+
 	public int[] getStateLicensedIn() {
 		return stateLicensedIn;
 	}
@@ -373,9 +377,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowPrimaryInformation(true);
 			setShowTradeInformation(true);
 		}
-		if(permissions.hasPermission(OpPerms.ContractorTags))
+		if (permissions.hasPermission(OpPerms.ContractorTags))
 			setShowOpertorTagName(true);
-		
+
 		if (permissions.isCorporate()) {
 		}
 		if (permissions.isPicsEmployee()) {
