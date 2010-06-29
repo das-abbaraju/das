@@ -213,6 +213,8 @@ public class ReportActionSupport extends PicsActionSupport {
 				}
 
 				if (params.size() > 0) {
+					params.add("total");
+
 					String name = ServletActionContext.getContext().getName();
 					// Update all the used parameters
 					Database db = new Database();
@@ -221,7 +223,17 @@ public class ReportActionSupport extends PicsActionSupport {
 									+ name + "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")");
 
 					if (count < params.size()) {
-						System.out.println("Create rows #" + (params.size() - count));
+						List<BasicDynaBean> filterNames = db.select(
+								"SELECT filterName FROM app_filter_stats WHERE searchPage = '" + name
+										+ "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")", false);
+
+						for (BasicDynaBean bean : filterNames)
+							params.remove(bean.get("filterName"));
+
+						for (String param : params) {
+							db.executeInsert("INSERT INTO app_filter_stats (searchPage, filterName, requestCount) "
+									+ "VALUES ('" + name + "', '" + param + "', 1)");
+						}
 					}
 				}
 			}
