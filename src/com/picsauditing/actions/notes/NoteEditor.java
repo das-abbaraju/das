@@ -140,8 +140,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 			if(permissions.seesAllContractors()){
 				viewableBy = Account.EVERYONE;
 				viewableByOther = permissions.getAccountId();
-			}
-			if(permissions.hasPermission(OpPerms.Billing) || permissions.isOperatorCorporate()){
+			} else {
 				viewableBy = 3;
 				viewableByOther = permissions.getAccountId();
 			}
