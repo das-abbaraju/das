@@ -141,6 +141,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 			viewableBy = 3;
 			viewableByOther = permissions.getAccountId();
 
+			// If user is a member of the PICS CSR group
 			if (permissions.hasGroup(959)) {
 				viewableBy = Account.EVERYONE;
 			}
