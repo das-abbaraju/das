@@ -45,7 +45,7 @@ c.welcomeAuditor_id
 where ca.conid = c.id
 and auditTypeid in 
 (select id from audit_type where (classtype in ('PQF') or id
-in (9,11,96)))
+in (9,11)))
 and auditStatus in ('Pending','Submitted','Incomplete');
 
 -- update auditor with CSR for these contractors for Policies
@@ -57,3 +57,9 @@ and audittypeid in
 and auditStatus != 'Expired'
 and ca.id = cao.auditid
 and cao.status in ('Pending','Submitted');
+
+-- Assigning Tiffany as BP IISN case management auditor
+update contractor_audit ca set ca.auditorid = 22222, ca.closingAuditorID = 22222
+where auditTypeid in 
+(select id from audit_type where id = 96)
+and auditStatus in ('Pending','Submitted','Incomplete');
