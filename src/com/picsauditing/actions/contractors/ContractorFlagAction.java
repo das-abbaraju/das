@@ -242,8 +242,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				note.setBody(forceNote);
 
 			getNoteDao().save(note);
+			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
 			return redirect("ContractorCronAjax.action?conID=" + id + "&opID="
-					+ opID + "&button=ConFlag&steps=Flag&steps=WaitingOn");
+					+ opID + "&button=ConFlag&steps=Flag&steps=WaitingOn"+"&redirectUrl=" +
+					redirectUrl);
 		}
 
 		PicsLogger.stop();
