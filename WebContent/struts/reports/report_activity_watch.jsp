@@ -29,9 +29,12 @@ $(function() {
 	$('#newContractor').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,
-			extraParams: {'filter.accountName': function() {return $('#newContractor').val();} }
+			extraParams: {'filter.accountName': function() {return $('#newContractor').val();} },
+			formatResult: function(data,i,count) { return data[0]; }
 		}
-	);
+	).result(function(event, data){
+		$('input#findConID').val(data[1]);
+	});
 });
 </script>
 </head>
@@ -104,11 +107,12 @@ $(function() {
 			</s:else>
 			<a href="#" id="addLink" onclick="$(this).hide(); $('#addWatch').show(); return false;" class="add">Add New Contractor</a>
 			<s:form id="addWatch">
+				<input type="hidden" id="findConID" name="conID" value="0" />
 				<fieldset class="form">
 					<ol>
 						<li>
 							<label>Contractor Name:</label>
-							<s:textfield name="conName" id="newContractor" />
+							<s:textfield id="newContractor" />
 						</li>
 					</ol>
 					<div style="text-align: center;">
@@ -117,7 +121,6 @@ $(function() {
 					</div>
 				</fieldset>
 			</s:form>
-			<s:if test="conID > 0"><br /><a href="ReportActivityWatch.action">View All Contractors</a></s:if>
 		</td><td>
 			<s:if test="data.size() > 0">
 				<table class="report">

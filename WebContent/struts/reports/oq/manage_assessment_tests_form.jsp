@@ -13,12 +13,9 @@ $().ready(function() {
 		<s:hidden name="test.id" />
 		<input type="hidden" name="testID" value="<s:property value="test.id" />" />
 		
-		<s:if test="test.id > 0">
-			<legend><span>Edit Assessment Test</span></legend>
-		</s:if>
-		<s:else>
+		<s:if test="test.id == 0">
 			<legend><span>Add New Assessment Test</span></legend>
-		</s:else>
+		</s:if>
 		<ol>
 			<li><label for="qualType">Qualification Type:</label>
 				<s:textfield name="test.qualificationType" id="qualType" /></li>
@@ -38,8 +35,10 @@ $().ready(function() {
 			<input type="submit" name="button" value="Save" class="picsbutton positive" />
 			<input type="submit" name="button" value="Remove" class="picsbutton negative" 
 				onclick="return confirm('Are you sure you want to remove this assessment test?');" />
-			<input type="button" value="Cancel" class="picsbutton" 
-				onclick="$('#newForm').hide(); $('#addLink').show();" />
+			<s:if test="test.id == 0">
+				<input type="button" value="Cancel" class="picsbutton" 
+					onclick="$('#assessmentTest').hide(); $('#newForm').hide(); $('#addLink').show();" />
+			</s:if>
 		</div>
 	</fieldset>
 </form>

@@ -30,7 +30,6 @@ public class ReportActivityWatch extends ReportAccount {
 	private boolean note = true;
 	private boolean email = true;
 	
-	private String conName;
 	private List<ContractorWatch> watched;
 	
 	public ReportActivityWatch(ContractorAccountDAO conDAO, UserDAO userDAO) {
@@ -63,31 +62,27 @@ public class ReportActivityWatch extends ReportAccount {
 			}
 			
 			if ("Add".equals(button)) {
-				if (!Strings.isEmpty(conName)) {
-					// Match potentially partially filled in name
-					List<ContractorAccount> cons = conDAO.findWhere("a.name LIKE '%" + conName + "%'");
+				if (conID > 0) {
+					ContractorAccount con = conDAO.find(conID);
+					boolean exists = false;
 					
-					if (cons.size() == 1) {
-						boolean exists = false;
-						for (ContractorWatch watch : watched) {
-							if (watch.getContractor().equals(cons.get(0))) {
+					if (con != null) {
+						for (ContractorWatch watch : getWatched()) {
+							if (watch.getContractor().getId() == conID)
 								exists = true;
-							}
 						}
+						
 						if (!exists) {
 							ContractorWatch watch = new ContractorWatch();
 							watch.setAuditColumns(permissions);
+							watch.setContractor(con);
 							watch.setUser(getUser());
-							watch.setContractor(cons.get(0));
 							
 							userDAO.save(watch);
 						} else
 							addActionError("Contractor is already on watch list.");
-					} else if (cons.size() > 1)
-						addActionError("Please type in the full name of the contractor to add to watch list.");
-					else
+					} else
 						addActionError("Contractor not found.");
-					
 				} else
 					addActionError("Please select a contractor to start watching.");
 			}
@@ -292,14 +287,6 @@ public class ReportActivityWatch extends ReportAccount {
 	
 	public void setWatchID(int watchID) {
 		this.watchID = watchID;
-	}
-	
-	public String getConName() {
-		return conName;
-	}
-	
-	public void setConName(String conName) {
-		this.conName = conName;
 	}
 
 	public List<ContractorWatch> getWatched() {

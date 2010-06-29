@@ -27,6 +27,7 @@ public class ManageAssessmentResults extends PicsActionSupport {
 	private int testID;
 	private Account center;
 	private AssessmentResult result;
+	private String company;
 	private String subHeading = "Manage Assessment Results";
 	
 	public ManageAssessmentResults(AccountDAO accountDAO, AssessmentResultDAO resultDAO, 
@@ -74,6 +75,7 @@ public class ManageAssessmentResults extends PicsActionSupport {
 					testID = result.getAssessmentTest().getId();
 					employeeID = result.getEmployee().getId();
 					companyID = result.getEmployee().getAccount().getId();
+					company = result.getEmployee().getAccount().getName();
 				}
 				else
 					result = new AssessmentResult();
@@ -94,8 +96,10 @@ public class ManageAssessmentResults extends PicsActionSupport {
 				else if (result.getEmployee() == null)
 					addActionError("Missing Employee");
 				
-				if (getActionErrors().size() == 0)
+				if (getActionErrors().size() == 0) {
 					resultDAO.save(result);
+					result = new AssessmentResult();
+				}
 			}
 			
 			if (button.equals("Remove")) {
@@ -169,6 +173,14 @@ public class ManageAssessmentResults extends PicsActionSupport {
 	
 	public void setResult(AssessmentResult result) {
 		this.result = result;
+	}
+	
+	public String getCompany() {
+		return company;
+	}
+	
+	public void setCompany(String company) {
+		this.company = company;
 	}
 	
 	public String getSubHeading() {
