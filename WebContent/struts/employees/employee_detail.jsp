@@ -236,12 +236,10 @@
 							</thead>
 							<tbody>
 								<s:iterator value="employee.assessmentResults" id="results">
-									<s:if test="#results.current">
-										<tr>
-											<td><s:property value="#results.assessmentTest.assessmentCenter.name" />: <s:property value="#results.assessmentTest.qualificationType" /> - <s:property value="#results.assessmentTest.qualificationMethod" /></td>
-											<td><s:date name="#results.effectiveDate" format="MM/dd/yyyy" /></td>
-										</tr>
-									</s:if>
+									<tr>
+										<td><s:property value="#results.assessmentTest.assessmentCenter.name" />: <s:property value="#results.assessmentTest.qualificationType" /> - <s:property value="#results.assessmentTest.qualificationMethod" /></td>
+										<td><s:date name="#results.effectiveDate" format="MM/dd/yyyy" /></td>
+									</tr>
 								</s:iterator>
 							</tbody>
 						</table>

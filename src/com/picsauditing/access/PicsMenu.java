@@ -90,9 +90,10 @@ public class PicsMenu {
 		
 		if (permissions.isAssessment()) {
 			subMenu = menu.addChild("Management");
-			subMenu.addChild("Import Data", "ManageImportData.action");
+			subMenu.addChild("Imported Data", "ManageImportData.action");
 			subMenu.addChild("Assessment Tests", "ManageAssessmentTests.action");
 			subMenu.addChild("Assessment Results", "ManageAssessmentResults.action");
+			subMenu.addChild("Unmapped Companies", "ManageUnmappedCompanies.action");
 			
 			subMenu = menu.addChild("Edit");
 			subMenu.addChild("Account", "AssessmentCenterEdit.action");

@@ -196,11 +196,6 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		return testDAO.findByAssessmentCenter(id);
 	}
 	
-	public List<Account> getCompanies() {
-		// That require OQ
-		return accountDAO.findWhere("a.status IN ('Active','Demo') AND a.requiresOQ = 1 AND a.type = 'Contractor'");
-	}
-	
 	public List<Employee> getEmployees() {
 		// How do we want to do this? By company?
 		return employeeDAO.findByAccount(accountDAO.find(companyID));

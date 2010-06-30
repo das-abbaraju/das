@@ -27,11 +27,13 @@
 <div id="manageSubMenu" class="auditSubMenu">
 <ul>
 	<li><a href="ManageImportData.action?id=<s:property value="center.id"/>"
-		<s:if test="requestURI.contains('manage_import_data')">class="current"</s:if>>Import Data</a></li>
+		<s:if test="requestURI.contains('manage_import_data')">class="current"</s:if>>Imported Data</a></li>
 	<li><a href="ManageAssessmentTests.action?id=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('manage_assessment_tests')">class="current"</s:if>>Assessment Tests</a></li>
 	<li><a href="ManageAssessmentResults.action?id=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('manage_assessment_results')">class="current"</s:if>>Assessment Results</a></li>
+	<li><a href="ManageUnmappedCompanies.action?id=<s:property value="center.id"/>"
+		<s:if test="requestURI.contains('manage_unmapped_companies')">class="current"</s:if>>Unmapped Companies</a></li>
 </ul>
 </div>
 

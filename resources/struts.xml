@@ -1750,6 +1750,11 @@
 			<result name="getEmployees">struts/reports/oq/manage_assessment_results_employees.jsp</result>
 		</action>
 		
+		<action name="ManageUnmappedCompanies"
+			class="com.picsauditing.actions.report.oq.ManageUnmappedCompanies">
+			<result>struts/reports/oq/manage_unmapped_companies.jsp</result>
+		</action>
+		
 		<!-- Competencies -->
 		<action name="JobCompetencyMatrix"
 			class="com.picsauditing.actions.employees.JobCompetencyMatrix">

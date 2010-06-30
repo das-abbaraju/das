@@ -23,6 +23,8 @@ public class AssessmentResultStage extends BaseTable {
 	private int companyID;
 	private String companyName;
 	private Date qualificationDate;
+	private int picsAccountID;
+	private int picsEmployeeID;
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "centerID", nullable = false)
@@ -119,5 +121,21 @@ public class AssessmentResultStage extends BaseTable {
 	
 	public void setQualificationDate(Date qualificationDate) {
 		this.qualificationDate = qualificationDate;
+	}
+	
+	public int getPicsAccountID() {
+		return picsAccountID;
+	}
+	
+	public void setPicsAccountID(int picsAccountID) {
+		this.picsAccountID = picsAccountID;
+	}
+	
+	public int getPicsEmployeeID() {
+		return picsEmployeeID;
+	}
+	
+	public void setPicsEmployeeID(int picsEmployeeID) {
+		this.picsEmployeeID = picsEmployeeID;
 	}
 }

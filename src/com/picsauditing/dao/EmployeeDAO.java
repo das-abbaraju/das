@@ -52,7 +52,7 @@ public class EmployeeDAO extends PicsDAO {
 	}
 
 	public List<Employee> findByAccount(Account account) {
-		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.account = :account");
+		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.account = :account ORDER BY e.firstName");
 		query.setParameter("account", account);
 		return query.getResultList();
 	}

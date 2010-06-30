@@ -36,6 +36,11 @@ public class PermissionQueryBuilder {
 		if (permissions.isContractor()) {
 			return "AND " + accountAlias + ".id = " + permissions.getAccountId();
 		}
+		
+		// Assessment Centers
+		if (permissions.isAssessment()) {
+			return "AND " + accountAlias + ".status IN ('Active', 'Pending', 'Deactivated')";
+		}
 
 		// For Operators, Corporate, Audits (hard ones)
 		String subquery = ""; // sorry, String was easier to read than a

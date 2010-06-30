@@ -8,6 +8,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.util.Strings;
 
@@ -17,6 +18,7 @@ public class ManageAssessmentTests extends PicsActionSupport {
 	private AssessmentTestDAO testDAO;
 
 	private int id;
+	private int stageID;
 	private int testID;
 	private Account center;
 	private AssessmentTest test;
@@ -61,18 +63,33 @@ public class ManageAssessmentTests extends PicsActionSupport {
 			}
 
 			if (button.equals("Save")) {
-				test.setAssessmentCenter(center);
-				test.setAuditColumns(permissions);
-
-				if (test.getMonthsToExpire() > 0
-						&& test.getExpirationDate() == null
-						&& test.getEffectiveDate() != null)
-					test.setExpirationDate(DateBean.addMonths(test
-							.getEffectiveDate(), test.getMonthsToExpire()));
-
-				if (Strings.isEmpty(test.getQualificationType()))
-					addActionError("Please fill in the qualification type.");
-
+				if (stageID > 0) {
+					// Unmapped test being saved as a new test?
+					List<AssessmentResultStage> staged = testDAO.findStagedWhere(id, "a.id = " + stageID);
+					
+					if (staged.size() == 1) {
+						test = new AssessmentTest();
+						test.setAuditColumns(permissions);
+						test.setAssessmentCenter(center);
+						test.setDescription(staged.get(0).getDescription());
+						test.setQualificationMethod(staged.get(0).getQualificationMethod());
+						test.setQualificationType(staged.get(0).getQualificationType());
+					} else
+						addActionError("Could not create new assessment test from unmapped test.");
+				} else {
+					test.setAssessmentCenter(center);
+					test.setAuditColumns(permissions);
+	
+					if (test.getMonthsToExpire() > 0
+							&& test.getExpirationDate() == null
+							&& test.getEffectiveDate() != null)
+						test.setExpirationDate(DateBean.addMonths(test
+								.getEffectiveDate(), test.getMonthsToExpire()));
+	
+					if (Strings.isEmpty(test.getQualificationType()))
+						addActionError("Please fill in the qualification type.");
+				}
+				
 				if (getActionErrors().size() == 0) {
 					testDAO.save(test);
 					test = new AssessmentTest();
@@ -103,6 +120,14 @@ public class ManageAssessmentTests extends PicsActionSupport {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public int getStageID() {
+		return stageID;
+	}
+	
+	public void setStageID(int stageID) {
+		this.stageID = stageID;
+	}
 
 	public int getTestID() {
 		return testID;
@@ -131,5 +156,9 @@ public class ManageAssessmentTests extends PicsActionSupport {
 	// LISTS
 	public List<AssessmentTest> getTests() {
 		return testDAO.findByAssessmentCenter(id);
+	}
+	
+	public List<AssessmentResultStage> getUnmapped() {
+		return testDAO.findUnmappedTests(id);
 	}
 }
