@@ -63,3 +63,19 @@ update contractor_audit ca set ca.auditorid = 22222, ca.closingAuditorID = 22222
 where auditTypeid in 
 (select id from audit_type where id = 96)
 and auditStatus in ('Pending','Submitted','Incomplete');
+
+-- rebuild the stats for ContractorOperators
+TRUNCATE TABLE stats_gco_count; 
+
+INSERT INTO stats_gco_count 
+SELECT gc.genID opID, null, count(*) total FROM generalcontractors gc 
+JOIN accounts a ON a.id = gc.genID AND a.type = 'Operator' 
+GROUP BY gc.genID; 
+
+INSERT INTO stats_gco_count 
+SELECT g1.genID opID, g2.genID opID2, count(*) total 
+FROM generalcontractors g1 
+JOIN generalcontractors g2 on g1.subID = g2.subID and g1.id != g2.id 
+JOIN accounts a1 ON a1.id = g1.genID AND a1.type = 'Operator' 
+JOIN accounts a2 ON a2.id = g2.genID AND a2.type = 'Operator' 
+GROUP BY g1.genID, g2.genID;
