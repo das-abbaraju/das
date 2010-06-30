@@ -50,10 +50,13 @@ public class PicsMenu {
 			if (permissions.getAccountStatus().isActiveDemo()) {
 				subMenu = menu.addChild("Home", "Home.action");
 
-				subMenu = menu.addChild("Company");
-				subMenu.addChild("Our Profile", "ContractorView.action");
-				subMenu.addChild("Where We Work", "ContractorFacilities.action");
-				subMenu.addChild("Activity Log", "ContractorNotes.action");
+				// Don't show for insurance only users
+				if (!permissions.isInsuranceOnlyContractorUser()) {
+					subMenu = menu.addChild("Company");
+					subMenu.addChild("Our Profile", "ContractorView.action");
+					subMenu.addChild("Where We Work", "ContractorFacilities.action");
+					subMenu.addChild("Activity Log", "ContractorNotes.action");
+				}
 
 				if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
 					subMenu = menu.addChild("Edit");
@@ -87,18 +90,18 @@ public class PicsMenu {
 			}
 			return menu;
 		}
-		
+
 		if (permissions.isAssessment()) {
 			subMenu = menu.addChild("Management");
 			subMenu.addChild("Imported Data", "ManageImportData.action");
 			subMenu.addChild("Assessment Tests", "ManageAssessmentTests.action");
 			subMenu.addChild("Assessment Results", "ManageAssessmentResults.action");
 			subMenu.addChild("Unmapped Companies", "ManageUnmappedCompanies.action");
-			
+
 			subMenu = menu.addChild("Edit");
 			subMenu.addChild("Account", "AssessmentCenterEdit.action");
 			subMenu.addChild("Users", "UsersManage.action");
-			
+
 			addSupportLink(menu);
 			return menu;
 		}
@@ -207,7 +210,7 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
-		
+
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
 				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
@@ -280,10 +283,10 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild("Operators");
-		if (permissions.hasPermission(OpPerms.ManageCorporate) 
-				|| permissions.hasPermission(OpPerms.ManageOperators)
+		if (permissions.hasPermission(OpPerms.ManageCorporate) || permissions.hasPermission(OpPerms.ManageOperators)
 				|| permissions.hasPermission(OpPerms.ManageAssessment))
-			subMenu.addChild("Manage Accounts", "ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
+			subMenu.addChild("Manage Accounts",
+					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit))
 			subMenu.addChild("Assign Audit/Operator", "AuditOperator.action");
 

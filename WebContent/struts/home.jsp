@@ -39,18 +39,20 @@ $(function() {
 <s:iterator value="columns">
 	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
 		<s:iterator value="value">
-			<div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
-			<div class="panel" id="panel<s:property value="widgetID"/>">
-			<div class="panel_header"><s:property value="caption" escape="false" />
-				<pics:permission perm="DevelopmentEnvironment">
-					<a href="<s:property value="url"/>" target="_BLANK">URL</a>
-				</pics:permission>
-			</div>
-			<div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;">
-				<s:property value="content" escape="false" />
-			</div>
-			</div>
-			</div>
+			<s:if test="widgetID != 11 || !permissions.insuranceOnlyContractorUser">
+				<div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
+				<div class="panel" id="panel<s:property value="widgetID"/>">
+				<div class="panel_header"><s:property value="caption" escape="false" />
+					<pics:permission perm="DevelopmentEnvironment">
+						<a href="<s:property value="url"/>" target="_BLANK">URL</a>
+					</pics:permission>
+				</div>
+				<div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;">
+					<s:property value="content" escape="false" />
+				</div>
+				</div>
+				</div>
+			</s:if>
 		</s:iterator>
 	</div>
 </s:iterator>

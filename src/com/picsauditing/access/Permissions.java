@@ -412,7 +412,7 @@ public class Permissions implements Serializable {
 	public boolean isOperator() {
 		return "Operator".equals(this.accountType);
 	}
-	
+
 	public boolean isAssessment() {
 		return "Assessment".equals(this.accountType);
 	}
@@ -460,6 +460,11 @@ public class Permissions implements Serializable {
 		if (isAdmin())
 			return false;
 		return this.hasGroup(11);
+	}
+
+	public boolean isInsuranceOnlyContractorUser() {
+		return (isContractor() && hasPermission(OpPerms.ContractorInsurance) && !hasPermission(OpPerms.ContractorAdmin)
+				&& !hasPermission(OpPerms.ContractorBilling) && !hasPermission(OpPerms.ContractorSafety));
 	}
 
 	public Set<UserAccess> getPermissions() {

@@ -16,11 +16,20 @@
 <s:if test="showHeader">
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<li>
-		<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" 
-			onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Account Details</a>
-	</li>
-	<s:if test="!permissions.operator">
+	<s:if test="!permissions.insuranceOnlyContractorUser">
+		<li>
+			<a class="dropdown" href="ContractorView.action?id=<s:property value="id" />" 
+				onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Account Details</a>
+		</li>
+	</s:if>
+	<s:else>
+		<li>
+			<a class="dropdown" href="Home.action"
+				onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">Account Details</a>
+		</li>
+	</s:else>
+
+	<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
 		<li><a
 			href="ContractorFacilities.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>Facilities</a></li>
@@ -214,9 +223,10 @@
 
 <div id="contractorSubMenu" class="auditSubMenu">
 <ul>
-	<li><a href="ContractorView.action?id=<s:property value="id" />"
-		<s:if test="requestURI.contains('con_dashboard')">class="current"</s:if>><span>Account Summary</span></a></li>
-	
+	<s:if test="!permissions.insuranceOnlyContractorUser">
+		<li><a href="ContractorView.action?id=<s:property value="id" />"
+			<s:if test="requestURI.contains('con_dashboard')">class="current"</s:if>><span>Account Summary</span></a></li>
+	</s:if>
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
 			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
