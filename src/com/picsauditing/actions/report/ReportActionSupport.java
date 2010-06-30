@@ -185,12 +185,12 @@ public class ReportActionSupport extends PicsActionSupport {
 				Map<String, Object> map = ServletActionContext.getContext().getParameters();
 				for (String key : map.keySet()) {
 					if (key.startsWith("filter.")) {
-						String filter = key.replaceAll("^filter.", "");
+						String filterName = key.replaceAll("^filter.", "");
 
 						// Is this in the blacklist?
-						if (ignoreProp == null || !ignoreProp.getValue().contains(filter)) {
+						if (ignoreProp == null || !ignoreProp.getValue().contains(filterName)) {
 							Object value = map.get(key);
-							String ignore = ignoreList.get(filter);
+							String ignore = ignoreList.get(filterName);
 
 							if (value != null) {
 								Object[] val;
@@ -203,7 +203,7 @@ public class ReportActionSupport extends PicsActionSupport {
 								for (Object o : val) {
 									if (!Strings.isEmpty(o.toString()) && (ignore == null || !ignore.equals(o))
 											&& !((String) o).trim().matches("^-[^-]*-$")) {
-										params.add(filter);
+										params.add(filterName);
 										break;
 									}
 								}
@@ -215,7 +215,7 @@ public class ReportActionSupport extends PicsActionSupport {
 				if (params.size() > 0) {
 					params.add("total");
 
-					String name = ServletActionContext.getContext().getName();
+					String name = ServletActionContext.getContext().getName().replaceFirst("Ajax$", "");
 					// Update all the used parameters
 					Database db = new Database();
 					int count = db
