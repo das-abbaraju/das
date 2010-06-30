@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -54,10 +55,6 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 		if (caoID > 0)
 			this.cao = caoDAO.find(caoID);
 
-		int certID = this.getParameter("certID");
-		if (certID > 0)
-			certificate = certificateDao.find(certID);
-
 	}
 
 	@Override
@@ -94,7 +91,7 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					if (cao.getOperator().isAutoApproveInsurance()) {
 						if(cao.getFlag() == null) {
 							caoDAO.save(cao);
-							String redirectURL = "PolicySaveAjax.action?cao.id="+cao.getId()+"%26button=Verify";
+							String redirectURL = URLEncoder.encode(String.format("PolicySaveAjax.action?cao.id=%d&button=Verify&certID=%d", cao.getId(), certID), "UTF-8");
 							return redirect("ContractorCronAjax.action?conID=" + contractor.getId() + 
 							"&opID=0&steps=ContractorETL&steps=Flag&steps=Policies&redirectUrl="+redirectURL);
 						}
@@ -107,10 +104,9 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 					statusChanged = true;
 					button = "Save";
 
-					addActionMessage("The <strong>"
-							+ cao.getAudit().getAuditType().getAuditName()
-							+ "</strong> Policy has been verified for <strong>"
-							+ cao.getOperator().getName() + "</strong>.");
+					addActionMessage(String.format("The <strong>%s</strong> Policy has been %s for <strong>%s</strong>.",
+							cao.getAudit().getAuditType().getAuditName(), 
+							cao.getStatus(),cao.getOperator().getName()));
 				}
 
 				if ("Reject".equals(button)) {
@@ -185,10 +181,11 @@ public class PolicySave extends AuditActionSupport implements Preparable {
 
 				if ("Save".equals(button)) {
 					if (cao != null) {
-						if (certificate == null || certificate.getId() == 0)
-							cao.setCertificate(null);
+						
+						if (certID > 0)
+							cao.setCertificate(certificateDao.find(certID));
 						else
-							cao.setCertificate(certificate);
+							cao.setCertificate(null);
 
 						if (Strings.isEmpty(cao.getReason()))
 							cao.setReason(null);
