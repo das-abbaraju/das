@@ -24,10 +24,10 @@ public class ReportPolicyList extends ReportInsuranceSupport {
 		super.buildQuery();
 
 		if (permissions.hasPermission(OpPerms.AllContractors)) {
-			if (getFilter().getOperator() != null && getFilter().getOperator().length > 0) {
+			if (getFilter().getOperatorSingle() > 0) {
 				sql.addField("cao.status as caoStatus");
 				sql.addJoin("JOIN operators o ON o.inheritInsuranceCriteria = cao.opID AND o.id = "
-						+ getFilter().getOperator()[0]);
+						+ getFilter().getOperatorSingle());
 			} else {
 				sql.addGroupBy("ca.id");
 			}

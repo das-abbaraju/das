@@ -114,12 +114,15 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	// TODO make this method final
 	/**
-	 * Do not override this method!<br><br>
+	 * Do not override this method!<br>
+	 * <br>
 	 * 
-	 * 1) This method checks the user is logged in and has the appropriate permissions.<br>
+	 * 1) This method checks the user is logged in and has the appropriate
+	 * permissions.<br>
 	 * 2) Next it determines if the report should run by default.<br>
 	 * 3) It builds the Query and runs the report<br>
 	 * 4) Finally, it returns the results
+	 * 
 	 * @see checkPermissions()
 	 * @see runReport
 	 * @see buildQuery()
@@ -198,8 +201,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = '" + 
-					accountName + "'", accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = '" + accountName
+					+ "'", accountName));
 			sql.addField("a.dbaName");
 		}
 
@@ -271,7 +274,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String list = Strings.implode(f.getOperator(), ",");
 			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID IN (" + list + ") )");
 			setFiltered(true);
+		}
 
+		if (f.getOperatorSingle() > 0) {
+			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID = " + f.getOperatorSingle() + ")");
 		}
 
 		if (filterOn(f.getStateLicensedIn())) {

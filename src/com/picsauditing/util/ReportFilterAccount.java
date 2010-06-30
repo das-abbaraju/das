@@ -206,11 +206,6 @@ public class ReportFilterAccount extends ReportFilter {
 		this.status = status;
 	}
 
-	public void setStatus(AccountStatus status) {
-		if (status != null)
-			this.status = new AccountStatus[] { status };
-	}
-
 	public AccountStatus[] getStatusList() {
 		return AccountStatus.values();
 	}

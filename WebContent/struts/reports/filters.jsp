@@ -385,7 +385,7 @@
 		<br clear="all" />
 		<div class="filterOption"><s:if test="filter.showOperatorSingle">
 			<s:select list="filter.operatorList" cssClass="forms"
-				name="filter.operator" listKey="id" listValue="name" headerKey=""
+				name="filter.operatorSingle" listKey="id" listValue="name" headerKey="0"
 				headerValue="- Operator -" />
 		</s:if> <s:else>
 			<a href="#" onclick="toggleBox('form1_operator'); return false;">Operators</a> =

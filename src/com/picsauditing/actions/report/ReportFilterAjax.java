@@ -33,7 +33,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 			if (listType.equals(ListType.Contractor)) {
 				ReportFilterContractor filter = wizardSession.getContractorFilter();
 				filter.setDestinationAction("ContractorList");
-				filter.setStatus(AccountStatus.Active); // default to only active contractors
+				filter.setStatus(new AccountStatus[] {AccountStatus.Active}); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Contractor);
 				filter.setShowInvoiceDueDate(true);
@@ -44,7 +44,7 @@ public class ReportFilterAjax extends PicsActionSupport {
 			if (listType.equals(ListType.Audit)) {
 				ReportFilterAudit filter = wizardSession.getAuditFilter();
 				filter.setDestinationAction("ReportAuditList");
-				filter.setStatus(AccountStatus.Active); // default to only active contractors
+				filter.setStatus(new AccountStatus[] {AccountStatus.Active}); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Audit);
 				filter.setShowAuditFor(true);

@@ -59,6 +59,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String performedBy;
 	protected int[] trade;
 	protected int[] operator;
+	protected int operatorSingle;
 	protected int[] stateLicensedIn;
 	protected int[] worksIn;
 	protected String taxID = DEFAULT_TAX_ID;
@@ -301,9 +302,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.operator = operator;
 	}
 
-	public void setOperator(Integer operator) {
-		if (operator != null && operator > 0)
-			this.operator = new int[] { operator.intValue() };
+	public int getOperatorSingle() {
+		return operatorSingle;
+	}
+
+	public void setOperatorSingle(int operatorSingle) {
+		this.operatorSingle = operatorSingle;
 	}
 
 	public int[] getStateLicensedIn() {
