@@ -77,6 +77,10 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
 	private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 
+	public static int MC_CLOSING_ID = 1029;
+	public static int DD_CLOSING_ID = 9615;
+	public static int JM_CLOSING_ID = 11503;
+	
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
@@ -209,6 +213,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
+		setClosingAuditor(auditor);
 	}
 
 	@ManyToOne
@@ -219,6 +224,14 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 
 	public void setClosingAuditor(User closingAuditor) {
 		this.closingAuditor = closingAuditor;
+		if(closingAuditor != null){
+			if(closingAuditor.getId() == 10600) // Mike Casey
+				this.closingAuditor = new User(MC_CLOSING_ID);
+			else if(closingAuditor.getId() == 910) // Dennis Dooley
+				this.closingAuditor = new User(DD_CLOSING_ID);
+			else if(closingAuditor.getId() == 902) // John McCaughey
+				this.closingAuditor = new User(JM_CLOSING_ID);
+		}
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
