@@ -1,7 +1,7 @@
--- Ashley Prather
+-- Ashley Prather (Added(AL))
 update contractor_info c, accounts a set welcomeAuditor_id = 22223
 where c.id = a.id
-and a.state in ('AK','AZ','HI','ID','MT','NM','NV','OR','UT','WY') 
+and a.state in ('AL','AK','AZ','HI','ID','MT','NM','NV','OR','UT','WY') 
 AND a.country = 'US';
 
 -- Derrick Piper
@@ -9,33 +9,33 @@ update contractor_info c, accounts a set welcomeAuditor_id = 23542
 where c.id = a.id
 and (a.state in ('TX') OR a.country = 'CA');
 
--- Estevan Orozco
+-- Estevan Orozco (Added(FL))
 update contractor_info c, accounts a set welcomeAuditor_id = 940
 where c.id = a.id
-and (a.state in ('CA','GU','PR','WA') OR a.country not in ('US','CA'));
+and (a.state in ('FL','CA','GU','PR','WA') OR a.country not in ('US','CA'));
 
--- Kaitlyn O'Malley
+-- Kaitlyn O'Malley (Added(KY,GA))
 update contractor_info c, accounts a set welcomeAuditor_id = 11067
 where c.id = a.id
-and a.state in ('AR','CO','IA','KS','LA','MO','ND','NE','OK','SD','WI')
+and a.state in ('KY','GA','AR','CO','IA','KS','LA','MO','ND','NE','OK','SD','WI')
 AND a.country = 'US';
 
--- Neal Chawla
-update contractor_info c, accounts a set welcomeAuditor_id =  23550
-where c.id = a.id
-and a.state in ('AL','FL','GA','KY','OH','TN')
-AND a.country = 'US';
+-- Neal Chawla (WAITING FOR CHRIS JIMENEZ TO REASSIGN)
+-- update contractor_info c, accounts a set welcomeAuditor_id =  23550
+-- where c.id = a.id
+-- and a.state in ('AL','FL','GA','KY','OH','TN')
+-- AND a.country = 'US';
 
--- Tiffany Roberson
+-- Tiffany Roberson (Added(TN))
 update contractor_info c, accounts a set welcomeAuditor_id = 22222
 where c.id = a.id
-and a.state in ('IL','IN','MI','MN','MS')
+and a.state in ('TN','IL','IN','MI','MN','MS')
 AND a.country = 'US';
 
--- Valeree Claudio
+-- Valeree Claudio (Added(OH))
 update contractor_info c, accounts a set welcomeAuditor_id = 8397
 where c.id = a.id
-and a.state in ('CT','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
+and a.state in ('OH','CT','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
 AND a.country = 'US';
 
 
