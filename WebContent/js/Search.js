@@ -180,9 +180,6 @@ function insuranceLimitsTextQuery(name) {
 		queryText += 'EX-EO: $' + field5.val(); 
 	}
 	
-	if (queryText == '') {
-		queryText = '= ALL';
-	}
 	result.html(queryText);
 }
 

@@ -212,28 +212,26 @@ public class ReportActionSupport extends PicsActionSupport {
 					}
 				}
 
-				if (params.size() > 0) {
-					params.add("total");
+				params.add("total");
 
-					String name = ServletActionContext.getContext().getName().replaceFirst("Ajax$", "");
-					// Update all the used parameters
-					Database db = new Database();
-					int count = db
-							.executeUpdate("UPDATE app_filter_stats SET requestCount = requestCount + 1 WHERE searchPage = '"
-									+ name + "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")");
+				String name = ServletActionContext.getContext().getName().replaceFirst("Ajax$", "");
+				// Update all the used parameters
+				Database db = new Database();
+				int count = db
+						.executeUpdate("UPDATE app_filter_stats SET requestCount = requestCount + 1 WHERE searchPage = '"
+								+ name + "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")");
 
-					if (count < params.size()) {
-						List<BasicDynaBean> filterNames = db.select(
-								"SELECT filterName FROM app_filter_stats WHERE searchPage = '" + name
-										+ "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")", false);
+				if (count < params.size()) {
+					List<BasicDynaBean> filterNames = db.select(
+							"SELECT filterName FROM app_filter_stats WHERE searchPage = '" + name
+									+ "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")", false);
 
-						for (BasicDynaBean bean : filterNames)
-							params.remove(bean.get("filterName"));
+					for (BasicDynaBean bean : filterNames)
+						params.remove(bean.get("filterName"));
 
-						for (String param : params) {
-							db.executeInsert("INSERT INTO app_filter_stats (searchPage, filterName, requestCount) "
-									+ "VALUES ('" + name + "', '" + param + "', 1)");
-						}
+					for (String param : params) {
+						db.executeInsert("INSERT INTO app_filter_stats (searchPage, filterName, requestCount) "
+								+ "VALUES ('" + name + "', '" + param + "', 1)");
 					}
 				}
 			}
