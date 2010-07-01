@@ -96,15 +96,14 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				where += ")";
 				sql.addWhere(where);
 				sql.addWhere("cr.handledBy = 'PICS'");
-			} else { // Account Managers
+			} else { // Account Managers and Sales Reps
 				filter.setShowConAuditor(true);
 				filter.setShowState(true);
 				filter.setShowCountry(true);
 				
-				if (isAccountManager()) {
-					sql.addJoin("LEFT JOIN account_user au ON au.userID = " + permissions.getUserId() 
-							+ " AND au.accountID = cr.requestedByID");
-					sql.addWhere("au.role = 'PICSAccountRep'");
+				if (isAMSales()) {
+					sql.addWhere("cr.requestedByID IN (SELECT DISTINCT accountID FROM account_user " +
+							"WHERE userID = " + permissions.getUserId() + ")");
 				}
 			}
 		}
@@ -265,8 +264,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
 	}
 	
-	public boolean isAccountManager() {
+	public boolean isAMSales() {
 		AccountUserDAO auDAO = (AccountUserDAO) SpringUtils.getBean("AccountUserDAO");
-		return auDAO.findByUser(permissions.getUserId()).size() > 0;
+		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 }

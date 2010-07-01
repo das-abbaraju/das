@@ -49,4 +49,12 @@ public class AccountUserDAO extends PicsDAO {
 		query.setParameter("today", calendar.getTime());
 		return query.getResultList();
 	}
+	
+	public List<AccountUser> findByUserSalesAM(int id) {
+		Query query =  em.createQuery("SELECT au FROM AccountUser au where au.user.id = :id AND :today BETWEEN au.startDate AND au.endDate");
+		query.setParameter("id", id);
+		Calendar calendar = Calendar.getInstance();
+		query.setParameter("today", calendar.getTime());
+		return query.getResultList();
+	}
 }
