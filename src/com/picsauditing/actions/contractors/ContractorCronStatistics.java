@@ -48,7 +48,7 @@ public class ContractorCronStatistics extends PicsActionSupport {
 
 		if (emailsPendingAndCreatedMoreThanFiveMinutesAgo == 0) {
 			// leave default values
-		} else if (emailsSentInLastFiveMinutes < 20) {
+		} else if (emailsSentInLastFiveMinutes < 15) {
 			emailCronError = true;
 		} else if (emailsWithErrorsInLastWeek > 10) {
 			emailCronError = true;
