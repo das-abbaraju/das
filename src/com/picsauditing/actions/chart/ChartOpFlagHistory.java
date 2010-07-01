@@ -55,6 +55,7 @@ public class ChartOpFlagHistory extends ChartMSAction {
 		sql.addField("count(*) as value");
 		sql.addGroupBy("series, label");
 		sql.addWhere("opID = " + permissions.getAccountId());
+		sql.addWhere("flag != 'Clear'");
 		Date creationDate = DateBean.addDays(new Date(), daysAgo * -1);
 		try {
 			sql.addWhere("creationDate = '" + DateBean.toDBFormat(creationDate) + "'");
