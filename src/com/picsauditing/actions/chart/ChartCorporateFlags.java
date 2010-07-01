@@ -109,6 +109,7 @@ public class ChartCorporateFlags extends ChartMSAction {
 				+ ")");
 		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
 		sql.addWhere("op.status IN ('Active','Demo')");
+		sql.addWhere("gc.flag != 'Clear'");
 		sql.addField("gc.flag as series");
 		sql.addGroupBy("gc.flag");
 		return sql;
