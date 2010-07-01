@@ -101,7 +101,7 @@ $(function(){
 			<div>
 				<ul id="list">
 				<s:iterator value="auditType.categories">
-				    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category"/> </a></li>
+				    <li id="item_<s:property value="id"/>" title="Drag and drop to change order"><s:property value="number"/>. <a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="category.trim().length() == 0 ? 'empty' : category"/> </a></li>
 				</s:iterator>
 				</ul>
 				
