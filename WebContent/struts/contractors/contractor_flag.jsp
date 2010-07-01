@@ -230,7 +230,7 @@ function checkReason(id) {
 													<a href="Audit.action?auditID=<s:property value="#audit.id" />"><s:property value="#audit.auditType.auditName" /></a>
 													<s:property value="status"/><br/>
 												</s:if>
-											</s:if>
+											</s:if> 
 										</s:iterator>
 									</s:if>
 									<s:else>

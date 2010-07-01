@@ -1641,6 +1641,19 @@
 			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
 		</action>
 		
+		<action name="EmployeePhotoUploadAjax"
+			class="com.picsauditing.actions.employees.UploadEmployeePhoto">
+			<result>struts/employees/empPhoto.jsp</result>
+		</action>
+		
+		<action name="EmployeePhotoStream"
+			class="com.picsauditing.actions.employees.EmpImg">
+			<param name="button">photo</param>
+			<result name="photo" type="stream">								
+			</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+		
 		<action name="EmployeeDetail"
 			class="com.picsauditing.actions.employees.EmployeeDetail">
 			<result>struts/employees/employee_detail.jsp</result>

@@ -20,6 +20,9 @@
 <link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css" media="screen"/>
 <script  type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
 
+<script type="text/javascript" src="js/jquery/jcrop/js/jquery.Jcrop.js"></script>
+<link rel="stylesheet" type="text/css" href="js/jquery/jcrop/css/jquery.Jcrop.css" media="screen"/>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 	    if($.browser.mozilla) 

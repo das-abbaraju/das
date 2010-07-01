@@ -54,6 +54,13 @@ function editAssignedSites(id) {
 			 orientation: $('#oDate_'+id).val(), monthsToExp: $('#expires_'+id).val(),
 			 'employee.id': employeeID, childID: id});
 }
+function showUpload(){
+	url = 'EmployeePhotoUploadAjax.action?employeeID='+employeeID;
+	title = 'Upload Photo';
+	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	photoUpload = window.open(url,title,pars);
+	photoUpload.focus();
+}
 
 $(function() {
 	$.mask.definitions['S']='[X0-9]';
@@ -136,6 +143,18 @@ div.dataTables_length { width: 35%; }
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
 							<ol>
+								<s:if test="employee.photo.length() > 0">
+									<li><label>Photo:</label>
+										<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" />
+										<br />
+										<a href="#" onclick="showUpload(); return false;" class="edit">Edit Employee Profile Photo</a>
+									</li>
+								</s:if>
+								<s:else>
+									<li><label>Upload Photo:</label>
+										<a href="#" onclick="showUpload(); return false;" class="add">Add Employee Profile Photo</a>
+									</li>
+								</s:else>
 								<li><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
 								</li>

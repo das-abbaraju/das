@@ -1,5 +1,10 @@
 package com.picsauditing.actions.employees;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,6 +22,7 @@ import org.json.simple.JSONArray;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
@@ -36,6 +42,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -248,6 +255,10 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		return SUCCESS;
 	}
+
+	public String getFileName(int eID) {
+		return PICSFileType.emp + "_" + eID;
+	}
 	
 	public void setMonthsToExp(int monthsToExp) {
 		this.monthsToExp = monthsToExp;
@@ -375,6 +386,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			}
 		}
 	}
+	
+	public String getEmpPhoto(){
+		return getFileName(employee.getId())+employee.getPhoto();
+	}
+		
 
 	public class OperatorSite implements Comparable<OperatorSite> {
 

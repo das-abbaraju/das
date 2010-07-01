@@ -245,7 +245,7 @@ table.report tr.hurdle td {
 								You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>
 							</s:if>
 							<s:else>
-								<a href="#" onclick="startWatch(); return false;">Watch This Contractor</a>
+								<a class="watch" href="#" onclick="startWatch(); return false;">Watch This Contractor</a>
 							</s:else>
 						</p>
 					</pics:permission>

@@ -460,6 +460,11 @@ a.insurance span {
 	zoom: 1;
 }
 
+a.watch {
+	background: url('../images/binoculars.png') no-repeat left center;
+	padding-left:17px;
+}
+
 label.tooltipped {
 	background: url('../images/icon_text_alert.png') no-repeat left center;
 	zoom: 1;
