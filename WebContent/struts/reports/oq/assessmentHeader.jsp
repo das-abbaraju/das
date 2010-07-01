@@ -30,10 +30,14 @@
 		<s:if test="requestURI.contains('manage_import_data')">class="current"</s:if>>Imported Data</a></li>
 	<li><a href="ManageAssessmentTests.action?id=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('manage_assessment_tests')">class="current"</s:if>>Assessment Tests</a></li>
+	<li><a href="ManageUnmappedTests.action?id=<s:property value="center.id"/>"
+		<s:if test="requestURI.contains('manage_unmapped_tests')">class="current"</s:if>>Test Mapping</a></li>
 	<li><a href="ManageAssessmentResults.action?id=<s:property value="center.id"/>"
 		<s:if test="requestURI.contains('manage_assessment_results')">class="current"</s:if>>Assessment Results</a></li>
+	<li><a href="ManageMappedCompanies.action?id=<s:property value="center.id"/>"
+		<s:if test="requestURI.contains('manage_mapped_companies')">class="current"</s:if>>Companies</a></li>
 	<li><a href="ManageUnmappedCompanies.action?id=<s:property value="center.id"/>"
-		<s:if test="requestURI.contains('manage_unmapped_companies')">class="current"</s:if>>Unmapped Companies</a></li>
+		<s:if test="requestURI.contains('manage_unmapped_companies')">class="current"</s:if>>Company Mapping</a></li>
 </ul>
 </div>
 

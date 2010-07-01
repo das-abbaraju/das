@@ -38,7 +38,8 @@ function edit(row) {
 
 	$('tr#' + row + ' .hidden').show();
 	$('tr#' + row + ' .edit').hide();
-	$('tr#' + row + ' #company_' + row).val('- Company -');
+	$('tr#' + row + ' #company_' + row).val($('tr#' + row + ' span.edit').text());
+	$('#companyName').val($('tr#' + row + ' span.name').text());
 }
 
 function cancel() {
@@ -61,27 +62,32 @@ function cancel() {
 	<table class="report">
 		<thead>
 			<tr>
-				<th>Imported Company</th>
+				<th>Mapped Company</th>
 				<th># of Records</th>
-				<th>Match with PICS</th>
+				<th>PICS Company</th>
+				<th>Edit</th>
 			</tr>
 		</thead>
 		<tbody>	
 			<s:iterator value="data">
 				<tr id="<s:property value="get('id')" />">
-					<td><s:property value="get('companyName')" /></td>
+					<td><span class="name"><s:property value="get('companyName')" /></span></td>
 					<td class="right"><s:property value="get('records')" /></td>
+					<td>
+						<span class="edit"><s:property value="get('name')" /></span>
+						<input type="text" value="<s:property value="get('name')" />" onclick="this.value='';" 
+							id="company_<s:property value="get('id')" />" class="hidden" />
+					</td>
 					<td class="center">
 						<a href="#" onclick="edit(<s:property value="get('id')" />); return false;" class="edit"></a>
-						<input type="text" id="company_<s:property value="get('id')" />" class="hidden" 
-							onclick="this.value=''; $('#companyName').val(''); $('#accountID').val(0);" />
 						<input type="submit" value="Save" name="button" class="picsbutton positive hidden" />
+						<input type="submit" value="Remove" name="button" class="picsbutton negative hidden" />
 						<input type="button" value="Cancel" class="picsbutton hidden" onclick="cancel();" />
 					</td>
 				</tr>
 			</s:iterator>
 			<s:if test="data.size() == 0">
-				<tr><td colspan="3">No records found</td></tr>
+				<tr><td colspan="4">No records found</td></tr>
 			</s:if>
 		</tbody>
 	</table>

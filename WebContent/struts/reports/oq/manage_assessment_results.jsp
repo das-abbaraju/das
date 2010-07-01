@@ -113,6 +113,11 @@ function sort(a, b, sortBy) {
 
 <s:include value="assessmentHeader.jsp" />
 
+<div class="info">
+	The table below shows assessment results mapped with an employee. If results are missing,
+	the record may need to be mapped with a company, an assessment test, or an employee.
+</div>
+
 <s:if test="results.size() > 0">
 <table class="report">
 	<thead>

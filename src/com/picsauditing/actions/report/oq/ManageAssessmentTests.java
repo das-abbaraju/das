@@ -65,15 +65,23 @@ public class ManageAssessmentTests extends PicsActionSupport {
 			if (button.equals("Save")) {
 				if (stageID > 0) {
 					// Unmapped test being saved as a new test?
-					List<AssessmentResultStage> staged = testDAO.findStagedWhere(id, "a.id = " + stageID);
+					AssessmentResultStage result = null;
+					List<AssessmentResultStage> staged = testDAO.findStaged(id);
 					
-					if (staged.size() == 1) {
+					for (AssessmentResultStage stage : staged) {
+						if (stage.getId() == stageID) {
+							result = stage;
+							break;
+						}
+					}
+					
+					if (result != null) {
 						test = new AssessmentTest();
 						test.setAuditColumns(permissions);
 						test.setAssessmentCenter(center);
-						test.setDescription(staged.get(0).getDescription());
-						test.setQualificationMethod(staged.get(0).getQualificationMethod());
-						test.setQualificationType(staged.get(0).getQualificationType());
+						test.setDescription(result.getDescription());
+						test.setQualificationMethod(result.getQualificationMethod());
+						test.setQualificationType(result.getQualificationType());
 					} else
 						addActionError("Could not create new assessment test from unmapped test.");
 				} else {

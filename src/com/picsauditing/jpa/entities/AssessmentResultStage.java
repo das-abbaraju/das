@@ -23,8 +23,8 @@ public class AssessmentResultStage extends BaseTable {
 	private int companyID;
 	private String companyName;
 	private Date qualificationDate;
-	private int picsAccountID;
-	private int picsEmployeeID;
+	private Account picsAccount;
+	private Employee picsEmployee;
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "centerID", nullable = false)
@@ -123,19 +123,23 @@ public class AssessmentResultStage extends BaseTable {
 		this.qualificationDate = qualificationDate;
 	}
 	
-	public int getPicsAccountID() {
-		return picsAccountID;
+	@ManyToOne
+	@JoinColumn(name = "picsAccountID")
+	public Account getPicsAccount() {
+		return picsAccount;
 	}
 	
-	public void setPicsAccountID(int picsAccountID) {
-		this.picsAccountID = picsAccountID;
+	public void setPicsAccount(Account picsAccount) {
+		this.picsAccount = picsAccount;
 	}
 	
-	public int getPicsEmployeeID() {
-		return picsEmployeeID;
+	@ManyToOne
+	@JoinColumn(name = "picsEmployeeID")
+	public Employee getPicsEmployee() {
+		return picsEmployee;
 	}
 	
-	public void setPicsEmployeeID(int picsEmployeeID) {
-		this.picsEmployeeID = picsEmployeeID;
+	public void setPicsEmployee(Employee picsEmployee) {
+		this.picsEmployee = picsEmployee;
 	}
 }

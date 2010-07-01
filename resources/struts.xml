@@ -1634,6 +1634,11 @@
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employees.jsp</result>
 		</action>
+		
+		<action name="ManageUnmappedEmployees"
+			class="com.picsauditing.actions.employees.ManageUnmappedEmployees">
+			<result>struts/employees/manage_unmapped_employees.jsp</result>
+		</action>
 
 		<action name="ManageEmployeesAjax"
 			class="com.picsauditing.actions.employees.ManageEmployees">
@@ -1752,6 +1757,11 @@
 			<result>struts/reports/oq/manage_assessment_tests_form.jsp</result>
 		</action>
 		
+		<action name="ManageUnmappedTests"
+			class="com.picsauditing.actions.report.oq.ManageUnmappedTests">
+			<result>struts/reports/oq/manage_unmapped_tests.jsp</result>
+		</action>
+		
 		<action name="ManageAssessmentResults"
 			class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
 			<result>struts/reports/oq/manage_assessment_results.jsp</result>
@@ -1766,6 +1776,11 @@
 		<action name="ManageUnmappedCompanies"
 			class="com.picsauditing.actions.report.oq.ManageUnmappedCompanies">
 			<result>struts/reports/oq/manage_unmapped_companies.jsp</result>
+		</action>
+		
+		<action name="ManageMappedCompanies"
+			class="com.picsauditing.actions.report.oq.ManageMappedCompanies">
+			<result>struts/reports/oq/manage_mapped_companies.jsp</result>
 		</action>
 		
 		<!-- Competencies -->

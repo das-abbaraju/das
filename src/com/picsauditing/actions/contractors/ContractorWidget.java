@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,14 +10,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.ibm.icu.text.DateFormat;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -41,6 +41,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ContractorWidget extends ContractorActionSupport {
 	private AppPropertyDAO appPropDAO;
+	private AssessmentTestDAO testDAO;
 
 	protected boolean reminderTask = false;
 	
@@ -48,9 +49,11 @@ public class ContractorWidget extends ContractorActionSupport {
 
 	protected boolean openReq = false;
 
-	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDAO) {
+	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
+			AppPropertyDAO appPropDAO, AssessmentTestDAO testDAO) {
 		super(accountDao, auditDao);
 		this.appPropDAO = appPropDAO;
+		this.testDAO = testDAO;
 	}
 
 	public String execute() throws Exception {
@@ -284,14 +287,30 @@ public class ContractorWidget extends ContractorActionSupport {
 								+ "&mode=Edit#node_57\"> update your 2008 NAICS code</a>");
 				}
 
-				if (contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
+				if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
 					openTasks.add("Your webcam has been shipped. "
 							+ "<a href=\"http://www.fedex.com/Tracking?tracknumber_list="
 							+ contractor.getWebcam().getTrackingNumber() + "\" target=\"_blank\">"
 							+ "Click here to track your webcam." + "</a>");
 				}
 			}
-
+			
+			// OQ: Add unmapped employees
+			List<AssessmentResultStage> staged = testDAO.findStagedByAccount(contractor.getId());
+			if (staged.size() > 0) {
+				boolean unmapped = false;
+				
+				for (AssessmentResultStage stage : staged) {
+					if (stage.getPicsEmployee() == null) {
+						unmapped = true;
+						break;
+					}
+				}
+				
+				if (unmapped)
+					openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">" +
+							"assessment results that need to be matched with employees</a>");
+			}
 		}
 		return openTasks;
 	}

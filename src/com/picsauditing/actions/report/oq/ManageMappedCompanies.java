@@ -12,7 +12,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageUnmappedCompanies extends ReportActionSupport {
+public class ManageMappedCompanies extends ReportActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentTestDAO testDAO;
 	
@@ -21,20 +21,22 @@ public class ManageUnmappedCompanies extends ReportActionSupport {
 	private Account center;
 	private SelectSQL sql = new SelectSQL();
 	private String companyName;
-	private String subHeading = "Company Mapping";
+	private String subHeading = "Companies";
 	
-	public ManageUnmappedCompanies(AccountDAO accountDAO, AssessmentTestDAO testDAO) {
+	public ManageMappedCompanies(AccountDAO accountDAO, AssessmentTestDAO testDAO) {
 		this.accountDAO = accountDAO;
 		this.testDAO = testDAO;
 	}
 	
 	private void buildQuery() {
 		sql.setFromTable("assessment_result_stage a");
+		sql.addJoin("JOIN accounts c ON c.id = a.picsAccountID");
 		sql.addField("a.companyName");
 		sql.addField("COUNT(*) AS records");
 		sql.addField("a.id");
+		sql.addField("c.name");
+		sql.addWhere("a.picsAccountID > 0");
 		sql.addWhere("a.centerID = " + id);
-		sql.addWhere("a.picsAccountID IS NULL OR a.picsAccountID = 0");
 		sql.addGroupBy("a.companyName");
 		sql.addOrderBy("COUNT(*) DESC");
 	}
@@ -54,23 +56,25 @@ public class ManageUnmappedCompanies extends ReportActionSupport {
 			center = accountDAO.find(id);
 		
 		if (button != null) {
-			if ("Save".equals(button)) {
-				if (!Strings.isEmpty(companyName) && accountID > 0) {
+			if ("Save".equals(button) || "Remove".equals(button)) {
+				if (!Strings.isEmpty(companyName)) {
 					List<AssessmentResultStage> staged = testDAO.findStaged(id);
+					Account account = new Account();
+					account.setId(accountID);
+					
+					if ("Remove".equals(button))
+						account = null;
 					
 					for (AssessmentResultStage stage : staged) {
 						if (stage.getCompanyName().equals(companyName)) {
-							Account account = new Account();
-							account.setId(accountID);
 							stage.setPicsAccount(account);
-							
 							testDAO.save(stage);
 						}
 					}
 				}
 			}
 			
-			return redirect("ManageUnmappedCompanies.action" + (permissions.isAssessment() ? "" : "?id=" + id));
+			return redirect("ManageMappedCompanies.action" + (permissions.isAssessment() ? "" : "?id=" + id));
 		}
 		
 		buildQuery();

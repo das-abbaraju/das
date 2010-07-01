@@ -95,8 +95,10 @@ public class PicsMenu {
 			subMenu = menu.addChild("Management");
 			subMenu.addChild("Imported Data", "ManageImportData.action");
 			subMenu.addChild("Assessment Tests", "ManageAssessmentTests.action");
+			subMenu.addChild("Test Mapping", "ManageAssessmentTests.action");
 			subMenu.addChild("Assessment Results", "ManageAssessmentResults.action");
-			subMenu.addChild("Unmapped Companies", "ManageUnmappedCompanies.action");
+			subMenu.addChild("Companies", "ManageMappedCompanies.action");
+			subMenu.addChild("Company Mapping", "ManageUnmappedCompanies.action");
 
 			subMenu = menu.addChild("Edit");
 			subMenu.addChild("Account", "AssessmentCenterEdit.action");

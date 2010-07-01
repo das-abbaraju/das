@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="https://export.oqverify.com/ExportServices" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="https://export.oqverify.com/ExportServices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="https://export.oqverify.com/ExportServices">
+      <s:element name="AuthenticateUser">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AuthenticateUserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AuthenticateUserResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompanies">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCompaniesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCompaniesResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="KS_GetNewRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KS_GetNewRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="KS_GetNewRecordsResult" type="tns:ArrayOfRecord" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfRecord">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Record" nillable="true" type="tns:Record" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Record">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="QualID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Covered_Task_Number" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Covered_Task_Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Covered_Task_Version" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Qualification_Type" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="User_Last_Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="User_First_Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="User_Middle_Initial" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Company_Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Employee_ID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Qualification_Date" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assessment_Result" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Administrator_Last_Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Administrator_First_Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Administrator_Middle_Initial" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Validation" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="KS_GetDateRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="startDate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="endDate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KS_GetDateRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="KS_GetDateRecordsResult" type="tns:ArrayOfRecord" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KS_GetLastExportDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="KS_GetLastExportDateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="KS_GetLastExportDateResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="T_GetNewRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="T_GetNewRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="T_GetNewRecordsResult" type="tns:ArrayOfRecord" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="T_GetDateRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="startDate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="endDate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="T_GetDateRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="T_GetDateRecordsResult" type="tns:ArrayOfRecord" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="T_GetLastExportDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="T_GetLastExportDateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="T_GetLastExportDateResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetLastExportDates">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UN" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="aDate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetLastExportDatesResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="AuthenticateUserSoapIn">
+    <wsdl:part name="parameters" element="tns:AuthenticateUser" />
+  </wsdl:message>
+  <wsdl:message name="AuthenticateUserSoapOut">
+    <wsdl:part name="parameters" element="tns:AuthenticateUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCompaniesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCompanies" />
+  </wsdl:message>
+  <wsdl:message name="GetCompaniesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCompaniesResponse" />
+  </wsdl:message>
+  <wsdl:message name="KS_GetNewRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:KS_GetNewRecords" />
+  </wsdl:message>
+  <wsdl:message name="KS_GetNewRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:KS_GetNewRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="KS_GetDateRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:KS_GetDateRecords" />
+  </wsdl:message>
+  <wsdl:message name="KS_GetDateRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:KS_GetDateRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="KS_GetLastExportDateSoapIn">
+    <wsdl:part name="parameters" element="tns:KS_GetLastExportDate" />
+  </wsdl:message>
+  <wsdl:message name="KS_GetLastExportDateSoapOut">
+    <wsdl:part name="parameters" element="tns:KS_GetLastExportDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="T_GetNewRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:T_GetNewRecords" />
+  </wsdl:message>
+  <wsdl:message name="T_GetNewRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:T_GetNewRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="T_GetDateRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:T_GetDateRecords" />
+  </wsdl:message>
+  <wsdl:message name="T_GetDateRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:T_GetDateRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="T_GetLastExportDateSoapIn">
+    <wsdl:part name="parameters" element="tns:T_GetLastExportDate" />
+  </wsdl:message>
+  <wsdl:message name="T_GetLastExportDateSoapOut">
+    <wsdl:part name="parameters" element="tns:T_GetLastExportDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetLastExportDatesSoapIn">
+    <wsdl:part name="parameters" element="tns:SetLastExportDates" />
+  </wsdl:message>
+  <wsdl:message name="SetLastExportDatesSoapOut">
+    <wsdl:part name="parameters" element="tns:SetLastExportDatesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ExportServicesSoap">
+    <wsdl:operation name="AuthenticateUser">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Validates credentials.  Used for troubleshooting authentication.  (Boolean)</wsdl:documentation>
+      <wsdl:input message="tns:AuthenticateUserSoapIn" />
+      <wsdl:output message="tns:AuthenticateUserSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanies">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the list of Companies associated with the Authenticated Credentials. (ArrayOfString)</wsdl:documentation>
+      <wsdl:input message="tns:GetCompaniesSoapIn" />
+      <wsdl:output message="tns:GetCompaniesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetNewRecords">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns Knowledge/Skills records added/modified since the LastExportDate and sets KS_LastExportDate to now. (Table)</wsdl:documentation>
+      <wsdl:input message="tns:KS_GetNewRecordsSoapIn" />
+      <wsdl:output message="tns:KS_GetNewRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetDateRecords">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns Knowledge/Skills records added/modified between a date range (MM/DD/YYYY). (Table)</wsdl:documentation>
+      <wsdl:input message="tns:KS_GetDateRecordsSoapIn" />
+      <wsdl:output message="tns:KS_GetDateRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetLastExportDate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the last date an Knowledge/Skills export was performed. (String)</wsdl:documentation>
+      <wsdl:input message="tns:KS_GetLastExportDateSoapIn" />
+      <wsdl:output message="tns:KS_GetLastExportDateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="T_GetNewRecords">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns Training records added/modified since the LastExportDate and sets T_LastExportDate to now. (Table)</wsdl:documentation>
+      <wsdl:input message="tns:T_GetNewRecordsSoapIn" />
+      <wsdl:output message="tns:T_GetNewRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="T_GetDateRecords">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns Training records added/modified between a date range (MM/DD/YYYY). (Table)</wsdl:documentation>
+      <wsdl:input message="tns:T_GetDateRecordsSoapIn" />
+      <wsdl:output message="tns:T_GetDateRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="T_GetLastExportDate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the last date an Training export was performed. (String)</wsdl:documentation>
+      <wsdl:input message="tns:T_GetLastExportDateSoapIn" />
+      <wsdl:output message="tns:T_GetLastExportDateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetLastExportDates">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Sets KS_LastExportDate and T_LastExportDate to a specified date (default: '1/1/1990 00:00:00'). Used for restarting GetNew methods during development.</wsdl:documentation>
+      <wsdl:input message="tns:SetLastExportDatesSoapIn" />
+      <wsdl:output message="tns:SetLastExportDatesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ExportServicesSoap" type="tns:ExportServicesSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AuthenticateUser">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/AuthenticateUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanies">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/GetCompanies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetNewRecords">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/KS_GetNewRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetDateRecords">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/KS_GetDateRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetLastExportDate">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/KS_GetLastExportDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="T_GetNewRecords">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/T_GetNewRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="T_GetDateRecords">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/T_GetDateRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="T_GetLastExportDate">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/T_GetLastExportDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetLastExportDates">
+      <soap:operation soapAction="https://export.oqverify.com/ExportServices/SetLastExportDates" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ExportServicesSoap12" type="tns:ExportServicesSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AuthenticateUser">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/AuthenticateUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanies">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/GetCompanies" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetNewRecords">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/KS_GetNewRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetDateRecords">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/KS_GetDateRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="KS_GetLastExportDate">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/KS_GetLastExportDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="T_GetNewRecords">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/T_GetNewRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="T_GetDateRecords">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/T_GetDateRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="T_GetLastExportDate">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/T_GetLastExportDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetLastExportDates">
+      <soap12:operation soapAction="https://export.oqverify.com/ExportServices/SetLastExportDates" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ExportServices">
+    <wsdl:port name="ExportServicesSoap" binding="tns:ExportServicesSoap">
+      <soap:address location="https://export.oqverify.com/exportservices.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ExportServicesSoap12" binding="tns:ExportServicesSoap12">
+      <soap12:address location="https://export.oqverify.com/exportservices.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -6,8 +6,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title><s:property value="subHeading" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../reportHeader.jsp" />
 <script type="text/javascript">
+$().ready(function() {
+	$('.datepicker').datepicker();
+});
+
 function sortTable(sortBy) {
 	var tbody = $('table.report').find('tbody');
 	var rows = $(tbody).children();
@@ -54,12 +59,21 @@ function showUpload() {
 	fileUpload = window.open(url,title,pars);
 	fileUpload.focus();
 }
+
+function loadStage(stageID) {
+	var data = {
+		button: 'Load'
+	};
+}
 </script>
 </head>
 <body>
 
 <s:include value="assessmentHeader.jsp" />
-
+<div class="info">
+	The table below shows imported data that are currently not mapped with a PICS Company or
+	an assessment test.
+</div>
 <table class="report">
 	<thead>
 		<tr>
@@ -74,7 +88,6 @@ function showUpload() {
 			<th><a href="#" onclick="sortTable('company,qtype,qmethod'); return false;">Company</a></th>
 			<th>Company ID</th>
 			<th><a href="#" onclick="sortTable('%date,name'); return false;">Qualification Date</a></th>
-			<th>Remove</th>
 		</tr>
 	</thead>
 	<tbody>	
@@ -92,19 +105,40 @@ function showUpload() {
 				<td class="company"><s:property value="companyName" /></td>
 				<td class="right"><s:property value="companyID" /></td>
 				<td class="center date"><s:date name="qualificationDate" format="MM/dd/yyyy" /></td>
-				<td class="center"><a href="?id=<s:property value="center.id" />&button=Remove&stageID=<s:property value="id" />" class="remove"
-					onclick="return confirm('Are you sure you want to remove this test result?');"></a></td>
 			</tr>
 		</s:iterator>
 		<s:if test="staged.size() == 0">
 			<tr>
-				<td colspan="13">No results found</td>
+				<td colspan="13">No records found</td>
 			</tr>
 		</s:if>
 	</tbody>
 </table>
 
-<a href="#" onclick="showUpload(); return false;" class="add">Upload Assessment Results</a>
+<a href="#" onclick="showUpload(); return false;" class="add">Upload Assessment Results</a><br />
+<s:if test="id == 11071 || permissions.accountID == 11071">
+	<a href="#" onclick="$('#oqsgImportLink').hide(); $('#oqsgImportDiv').show(); return false;" 
+		class="add" id="oqsgImportLink">OQSG Webservice Import</a><br />
+	<s:form id="oqsgImportDiv" cssStyle="display: none;">
+		<s:hidden name="id" />
+		<input type="submit" value="Import New Records" name="button" class="picsbutton" />
+		<fieldset class="form" style="margin-top: 10px">
+			<legend><span>Import by Date</span></legend>
+			<ol>
+				<li><label>Start:</label>
+					<input type="text" name="start" class="datepicker" value="<s:date name="start" format="MM/dd/yyyy" />" />
+				</li>
+				<li><label>End:</label>
+					<input type="text" name="end" class="datepicker" value="<s:date name="end" format="MM/dd/yyyy" />" />
+				</li>
+			</ol>
+			<div style="margin: 10px;">
+				<input type="submit" value="Import By Date" name="button" class="picsbutton" /></div>
+		</fieldset>
+		<input type="button" value="Cancel" class="picsbutton" 
+			onclick="$('#oqsgImportDiv').hide(); $('#oqsgImportLink').show();" />
+	</s:form>
+</s:if>
 
 </body>
 </html>
