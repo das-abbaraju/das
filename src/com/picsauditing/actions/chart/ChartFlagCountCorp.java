@@ -31,7 +31,7 @@ public class ChartFlagCountCorp extends ChartMSAction {
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("op.status IN ('Active','Demo')"); 
 		sql.addWhere("gc.genID IN (SELECT fac.opID from facilities fac where fac.corporateID = "+ permissions.getAccountId()+ ")");
-		
+		sql.addWhere("gc.flag != 'Clear'");
 		
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
