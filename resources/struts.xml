@@ -1630,6 +1630,18 @@
 		</action>
 		
 		<!-- Operator Qualifications -->
+		<action name="EmployeeList"
+			class="com.picsauditing.actions.report.ReportEmployeeList">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">EmployeeList</param>
+			<result>struts/reports/employee_list.jsp</result>
+		</action>
+		
+		<action name="EmployeeListAjax"
+			class="com.picsauditing.actions.report.ReportEmployeeList">
+			<result>struts/reports/employee_list_data.jsp</result>
+		</action>
+		
 		<action name="ManageEmployees"
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employees.jsp</result>

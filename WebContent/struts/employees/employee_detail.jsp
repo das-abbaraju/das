@@ -161,50 +161,36 @@
 					</s:elseif>
 				</td>
 				<td>
-					<div class="cell">
-						<table>
-							<s:if test="isNotEmpty(employee.phone)">
-								<tr>
-									<th>Phone:</th>
-									<td><s:property value="employee.phone" /></td>
-								</tr>
-							</s:if>
-							<s:if test="isNotEmpty(employee.email)">
-								<tr>
-									<th>Email:</th>
-									<td><s:property value="employee.email" /></td>
-								</tr>
-							</s:if>
-							<s:if test="isNotEmpty(employee.location)">
-								<tr>
-									<th>Location:</th>
-									<td><s:property value="employee.location" /></td>
-								</tr>
-							</s:if>
-							<s:if test="employee.twicExpiration != null">
-								<tr>
-									<th>TWIC Card Expiration:</th>
-									<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
-								</tr>
-							</s:if>
-						</table>
-					</div>
-					<!-- Maybe something we don't need
-					<div class="cell">
-						<table>
-							<tr>
-								<td colspan="2"><h3><s:property value="employee.account.name" /></h3></td>
-							</tr>
-							<tr>
-								<th>Address:</th>
-								<td>
-									<s:property value="employee.account.address" /><br />
-									<s:property value="employee.account.city" />, <s:property value="employee.account.state.isoCode" /> <s:property value="employee.account.zip" /> 
-								</td>
-							</tr>
-						</table>
-					</div>
-					-->
+					<s:if test="employee.phone.length() > 0 || employee.email.length() > 0 || employee.location.length() > 0 || employee.twicExpiration != null">
+						<div class="cell">
+							<table>
+								<s:if test="employee.phone.length() > 0">
+									<tr>
+										<th>Phone:</th>
+										<td><s:property value="employee.phone" /></td>
+									</tr>
+								</s:if>
+								<s:if test="employee.email.length() > 0">
+									<tr>
+										<th>Email:</th>
+										<td><s:property value="employee.email" /></td>
+									</tr>
+								</s:if>
+								<s:if test="employee.location.length() > 0">
+									<tr>
+										<th>Location:</th>
+										<td><s:property value="employee.location" /></td>
+									</tr>
+								</s:if>
+								<s:if test="employee.twicExpiration != null">
+									<tr>
+										<th>TWIC Card Expiration:</th>
+										<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
+									</tr>
+								</s:if>
+							</table>
+						</div>
+					</s:if>
 					<s:if test="employee.employeeQualifications.size() > 0">
 						<table class="report">
 							<thead>
