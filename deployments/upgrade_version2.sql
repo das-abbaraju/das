@@ -25,6 +25,13 @@ update generalcontractors set forcedBy = 11429 where id in (34391, 35382, 36494,
 update generalcontractors set forcedBy = 10569 where id = 35912;
 -- PICS-727: END --
 
+-- PICS-678: Begin --
+update contractor_audit ca set ca.closingAuditorID = ca.auditorID where ca.closingAuditorID is null and ca.auditorID not in (10600,910,902);
+update contractor_audit ca set ca.closingAuditorID = 1029 where ca.closingAuditorID is null and ca.auditorID = 10600;
+update contractor_audit ca set ca.closingAuditorID = 9615 where ca.closingAuditorID is null and ca.auditorID = 910;
+update contractor_audit ca set ca.closingAuditorID = 11503 where ca.closingAuditorID is null and ca.auditorID = 902;
+-- PICS-678: END --
+
 /* Deactive unused assessment centers except for OQSG, and set NACE and NCCER to pending */
 update accounts set status = 'Deactivated' where type = 'Assessment' and name !='OQSG';
 
