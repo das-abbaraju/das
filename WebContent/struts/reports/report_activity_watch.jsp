@@ -47,36 +47,30 @@ $(function() {
 		<button id="searchfilter" type="submit" name="button" value="Search" class="picsbutton positive">Search</button>
 	</div>
 	<div class="filterOption">
-		<s:textfield name="filter.accountName" cssClass="forms" size="10" onfocus="clearText(this)" />
+		<s:textfield name="filter.accountName" cssClass="forms" size="17" onfocus="clearText(this)" />
 	</div>
 	<br clear="all" />
 	<div class="filterOption">
-		<s:checkbox value="auditExpiration" name="auditExpiration" id="auditExpiration"></s:checkbox>
-		<label for="auditExpiration">Expired Audits</label>
+		<s:checkbox value="audits" name="audits" id="audits"></s:checkbox>
+		<label for="audits">PQFs, Annual Updates, & Audits</label>
 	</div>
-	<div class="filterOption">
-		<s:checkbox value="auditSubmitted" name="auditSubmitted" id="auditSubmitted"></s:checkbox>
-		<label for="auditSubmitted">Submitted Audits</label>
-	</div>
-	<div class="filterOption">
-		<s:checkbox value="auditActivated" name="auditActivated" id="auditActivated"></s:checkbox>
-		<label for="auditActivated">Activated Audits</label>
-	</div>
+	<s:if test="operatorAccount.insureguardSubscriber">
+		<div class="filterOption">
+			<s:checkbox value="policies" name="policies" id="policies"></s:checkbox>
+			<label for="policies">Policies</label>
+		</div>
+	</s:if>
 	<div class="filterOption">
 		<s:checkbox value="flagColorChange" name="flagColorChange" id="flagColorChange"></s:checkbox>
-		<label for="flagColorChange">Flag Color Changed</label>
+		<label for="flagColorChange">Flag Changes</label>
 	</div>
 	<div class="filterOption">
 		<s:checkbox value="login" name="login" id="login"></s:checkbox>
-		<label for="login">Last Logged In</label>
+		<label for="login">User Logins</label>
 	</div>
 	<div class="filterOption">
-		<s:checkbox value="note" name="note" id="note"></s:checkbox>
-		<label for="note">Notes Posted</label>
-	</div>
-	<div class="filterOption">
-		<s:checkbox value="email" name="email" id="email"></s:checkbox>
-		<label for="email">Emails Sent</label>
+		<s:checkbox value="notesAndEmail" name="notesAndEmail" id="notesAndEmail"></s:checkbox>
+		<label for="notesAndEmail">Notes & Emails</label>
 	</div>
 	<br clear="all" />
 </s:form></div>
