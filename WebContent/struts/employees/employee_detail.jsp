@@ -55,8 +55,10 @@
 					<table style="margin: 0px auto;">
 						<tr>
 							<td style="vertical-align: middle; padding: 0px 5px;">
+								<s:if test="employee.photo.length() > 0">
 								<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>"
 									alt="<s:property value="employee.displayName"/>" title="Profile Photo for <s:property value="employee.displayName"/>"/>
+								</s:if>
 							</td>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>

@@ -36,7 +36,8 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 	private String fileFileName = null;
 	private String extension;
 	private boolean validPhoto = false;
-	private int step;
+	// Step ranges from [1,3]
+	private int step = 1;
 	private int x1, y1, width, height;
 	private final int XSIZE = 150, YSIZE = 150;
 
@@ -52,6 +53,11 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 	}
 
 	public String execute() {
+		if(employee.getPhoto()!=null){ //  set to step 3, finished
+			step = 3;
+		} else if(showSavePhoto()){ // set to step 2, crop
+			step = 2;
+		} // else leave as step 1, upload
 
 		if ("Upload".equals(button)) {
 			employee = employeeDAO.find(employeeID);
@@ -129,6 +135,8 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 						+ getFileName(employee.getId())
 						+ "</b> file"
 						+ "<br/> Please crop the image in order to use it as a profile picture");
+				//Move to crop step
+				step = 2;
 			}
 		}
 		if ("Save".equals(button)) {
@@ -160,6 +168,8 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 					bImg.flush();
 				}
 			}
+			// move to finish stage
+			step = 3;
 		}
 
 		return SUCCESS;

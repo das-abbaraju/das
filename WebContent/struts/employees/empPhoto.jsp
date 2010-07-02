@@ -10,19 +10,20 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
+var api;
 function closePage() {
 	window.opener.location.reload();
 	self.close();
 }
 jQuery(document).ready(function(){
-
 	jQuery('#cropPhoto').Jcrop({
 		onChange: showCoords,
 		onSelect: showCoords,
 		aspectRatio: 1
 	});
-	setStep();
-
+	stepID =<s:property value="step"/> 
+	setStep(stepID);
+	
 });
 function showCoords(c)
 {
@@ -40,13 +41,36 @@ function checkPhoto(){
 		return false;
 	}	
 }
-function setStep(){
-	var step = <s:property value="showSavePhoto()"/>;
-	if(step){
-		$('#step2').addClass('current');
-	} else {
-		$('#step1').addClass('current');
+function setStep(id){
+	for(i=1; i<=3; i++){
+		$('#step'+i).removeClass('current');
 	}
+	$('#stepLocation').html(id);
+	$('#step'+id).addClass('current');
+	switch(id){
+		case 3:
+			$('.uploadStep').hide();
+			$('.cropStep').hide();
+			break;
+		case 2:
+			$('.uploadStep').hide();
+			$('.cropStep').show();
+			break;
+		default:
+			$('.uploadStep').show();
+			$('.cropStep').hide();
+	}	
+}
+function jDisable(){
+	api.disable();
+}
+function jEnable(){
+	/*jQuery('#cropPhoto').Jcrop({
+		onChange: showCoords,
+		onSelect: showCoords,
+		aspectRatio: 1
+	});	*/
+	api.enable();
 }
 
 </script>
@@ -62,34 +86,38 @@ function setStep(){
 			</h1>
 			<div id="internalnavcontainer">
 				<ul id="navlist">
-					<li><a id="step1" href="">Step 1: Upload</a></li>
-					<li><a id="step2" href="">Step 2: Crop</a></li>
+					<li><a id="step1" href="#" onclick="setStep(1); return false;">Step 1: Upload</a></li>
+					<li><a id="step2" href="#" onclick="setStep(2); return false;">Step 2: Crop</a></li>
+					<li><a id="step3" href="#" onclick="setStep(3); return false;">Step 3: Finished</a></li>
 				</ul>
 			</div>
+			<h2>Step <span id="stepLocation">1</span></h2> 
 			<s:include value="../actionMessages.jsp" />
+			<div id="info">Hey moo</div>
 			<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
-			<s:if test="employee.photo.length() > 0">
-				Photo is saved and ready to use!
-			</s:if>
 			
 		<form onsubmit="return false;">
 		</form>
 			<s:form enctype="multipart/form-data" method="POST">
 				<div style="background-color: #F9F9F9;">
 					<div class="question">
-							<input type="hidden" id="x1" name="x1" value="0" />
-							<input type="hidden" id="y1" name="y1" value="0" />
-							<input type="hidden" id="x2" name="x2" value="0" />
-							<input type="hidden" id="y2" name="y2" value="0" />
-							<input type="hidden" id="width" name="width" value="0" />
-							<input type="hidden" id="height" name="height" value="0" />
-						<label>Photo:</label>
-						<input type="hidden" name="employeeID" value="<s:property value="employeeID"/>"/>
-						<div id="photoError"></div>
-						<s:file id="file" name="file" value="%{file}" size="50"></s:file><br /><br />
-						<button class="picsbutton positive" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
+						<input type="hidden" id="x1" name="x1" value="0" />
+						<input type="hidden" id="y1" name="y1" value="0" />
+						<input type="hidden" id="x2" name="x2" value="0" />
+						<input type="hidden" id="y2" name="y2" value="0" />
+						<input type="hidden" id="width" name="width" value="0" />
+						<input type="hidden" id="height" name="height" value="0" />
+						
+						<div class="uploadStep" >
+							<label>Photo:</label>
+							<input type="hidden" name="employeeID" value="<s:property value="employeeID"/>"/>
+							<s:file id="file" name="file" value="%{file}" size="50"></s:file>
+						</div>
+						<br /><br />
+						
+						<button class="picsbutton positive uploadStep" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
 						<button class="picsbutton" onclick="closePage(); return false;" title="Cancel and return to previous page">Close Page</button>
-						<s:if test="showSavePhoto()"><button class="picsbutton positive" name="button" type="submit" value="Save">Save Profile Photo</button></s:if>
+						<s:if test="showSavePhoto()"><button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Save Profile Photo</button></s:if>
 					</div>
 				</div>
 			</s:form>
