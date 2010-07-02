@@ -36,9 +36,8 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 	private String fileFileName = null;
 	private String extension;
 	private boolean validPhoto = false;
-
+	private int step;
 	private int x1, y1, width, height;
-
 	private final int XSIZE = 150, YSIZE = 150;
 
 	public UploadEmployeePhoto(EmployeeDAO employeeDAO) {
@@ -332,6 +331,14 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			return true;
 		}
 		return false;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public int getStep() {
+		return step;
 	}
 
 }

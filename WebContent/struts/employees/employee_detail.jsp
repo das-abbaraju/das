@@ -55,15 +55,15 @@
 					<table style="margin: 0px auto;">
 						<tr>
 							<td style="vertical-align: middle; padding: 0px 5px;">
-								<img src="images/employee/<s:property value="employee.id % 5" />.jpg"
-									alt="Picture of <s:property value="employee.displayName" />" />
+								<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>"
+									alt="<s:property value="employee.displayName"/>" title="Profile Photo for <s:property value="employee.displayName"/>"/>
 							</td>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
 								<s:property value="employee.title" /><br />
 								<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 							</td>
-							<s:if test="employee.account.logoFile != 'No'">
+							<s:if test="!employee.account.logoFile.empty()">
 								<td style="vertical-align: middle; padding: 0px 5px;">
 									<img src="ContractorLogo.action?id=<s:property value="employee.account.id"/>"
 										alt="Logo" />

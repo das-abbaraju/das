@@ -127,8 +127,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (employee.getAccount() == null) {
 				employee.setAccount(account);
 			}
-			
-			System.out.println("test date: "+employee.getBirthDate());
 
 			if (ssn != null) {
 				if (ssn.length() == 9)
@@ -140,6 +138,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			employee.setAuditColumns(permissions);
 
 			employeeDAO.save(employee);
+			
+			redirect("ManageEmployees.action?employee.id="+employee.getId());
 		}
 
 		if ("Delete".equals(button)) {

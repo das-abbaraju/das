@@ -29,3 +29,6 @@ update generalcontractors set forcedBy = 10569 where id = 35912;
 update accounts set status = 'Deactivated' where type = 'Assessment' and name !='OQSG';
 
 update accounts set status = 'Pending' where id = 11069 or id = 11087;
+
+/* Set Contractor logo to null where it is blank or No */
+update contractor_info set logo_file = NULL where logo_file = '' or logo_file = 'No';

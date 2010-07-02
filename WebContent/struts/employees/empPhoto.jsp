@@ -41,7 +41,7 @@ function checkPhoto(){
 	}	
 }
 function setStep(){
-	var step = "<s:property value="showSavePhoto()"/>";
+	var step = <s:property value="showSavePhoto()"/>;
 	if(step){
 		$('#step2').addClass('current');
 	} else {
