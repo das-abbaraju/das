@@ -19,8 +19,9 @@ jQuery(document).ready(function(){
 	jQuery('#cropPhoto').Jcrop({
 		onChange: showCoords,
 		onSelect: showCoords,
-		maxSize:  [175, 250]
+		aspectRatio: 1
 	});
+	setStep();
 
 });
 function showCoords(c)
@@ -39,6 +40,15 @@ function checkPhoto(){
 		return false;
 	}	
 }
+function setStep(){
+	var step = "<s:property value="showSavePhoto()"/>";
+	if(step){
+		$('#step2').addClass('current');
+	} else {
+		$('#step1').addClass('current');
+	}
+}
+
 </script>
 
 </head>
@@ -47,10 +57,20 @@ function checkPhoto(){
 <div id="main">
 	<div id="bodyholder">
 		<div id="content">
-			<h1>Upload Employee Photo <s:property value="employeeID"/></h1>
+			<h1>Upload Photo
+			<span class="sub"><s:property value="employee.displayName"/></span>
+			</h1>
+			<div id="internalnavcontainer">
+				<ul id="navlist">
+					<li><a id="step1" href="">Step 1: Upload</a></li>
+					<li><a id="step2" href="">Step 2: Crop</a></li>
+				</ul>
+			</div>
 			<s:include value="../actionMessages.jsp" />
-			<div>
-				<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
+			<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
+			<s:if test="employee.photo.length() > 0">
+				Photo is saved and ready to use!
+			</s:if>
 			
 		<form onsubmit="return false;">
 		</form>
@@ -73,7 +93,6 @@ function checkPhoto(){
 					</div>
 				</div>
 			</s:form>
-			</div>
 			<br clear="all" />
 		</div>
 	</div>

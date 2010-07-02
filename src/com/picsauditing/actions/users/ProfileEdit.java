@@ -37,6 +37,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
+	
+	private boolean goEmailSub = false;
 
 	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
 			EmailSubscriptionDAO emailSubscriptionDAO) {
@@ -191,6 +193,14 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public void setGoEmailSub(boolean goEmailSub) {
+		this.goEmailSub = goEmailSub;
+	}
+
+	public boolean isGoEmailSub() {
+		return goEmailSub;
 	}
 
 }

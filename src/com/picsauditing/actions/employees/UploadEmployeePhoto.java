@@ -23,22 +23,25 @@ import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.FileUtils;
 
 @SuppressWarnings("serial")
-public class UploadEmployeePhoto extends AccountActionSupport implements Preparable {
-	
+public class UploadEmployeePhoto extends AccountActionSupport implements
+		Preparable {
+
 	private EmployeeDAO employeeDAO;
-	
+
 	protected Employee employee;
-	
-	private int employeeID;	
+
+	private int employeeID;
 	private File file;
 	private String fileContentType = null;
 	private String fileFileName = null;
 	private String extension;
 	private boolean validPhoto = false;
-	
+
 	private int x1, y1, width, height;
-	
-	public UploadEmployeePhoto(EmployeeDAO employeeDAO){
+
+	private final int XSIZE = 150, YSIZE = 150;
+
+	public UploadEmployeePhoto(EmployeeDAO employeeDAO) {
 		this.employeeDAO = employeeDAO;
 	}
 
@@ -48,17 +51,17 @@ public class UploadEmployeePhoto extends AccountActionSupport implements Prepara
 		if (eID > 0)
 			employee = employeeDAO.find(eID);
 	}
-	
-	public String execute(){
-		
-		if("Upload".equals(button)){
+
+	public String execute() {
+
+		if ("Upload".equals(button)) {
 			employee = employeeDAO.find(employeeID);
-			if(employee==null){
+			if (employee == null) {
 				addActionError("Invalid Employee");
 				return BLANK;
 			}
-			String[] validImgExt = {"jpg", "gif", "png"};
-			if(file==null){
+			String[] validImgExt = { "jpg", "gif", "png" };
+			if (file == null) {
 				addActionError("No Photo Selected");
 				return SUCCESS;
 			}
@@ -68,135 +71,167 @@ public class UploadEmployeePhoto extends AccountActionSupport implements Prepara
 				addActionError("Bad File Extension");
 				return SUCCESS;
 			}
-			if (file != null && file.length() > 0) {				
+			if (file != null && file.length() > 0) {
 				BufferedImage bImg = null;
-				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
-				FileImageOutputStream outStream = null;				
+				BufferedImage resizedImg = null;
+				Iterator<ImageWriter> iter = ImageIO
+						.getImageWritersByFormatName("jpeg");
+				FileImageOutputStream outStream = null;
 				File f = new File("tmp.jpg");
 				ImageWriter writer = null;
-				if(iter.hasNext()){
+				if (iter.hasNext()) {
 					writer = iter.next();
 				}
-				try{
+				try {
 					bImg = ImageIO.read(file);
-					
-					if(bImg.getHeight()>800||bImg.getWidth()>800){
-						Graphics2D g = bImg.createGraphics();
-						float w = bImg.getWidth();
-						float h = bImg.getHeight();
-						float bigSide;
-						float ratio;
-						int newW = 0, newH = 0;
-						if(w>h){
-							ratio = h/w;
-							bigSide = w;
-						}else{
-							ratio = w/h;
-							bigSide = h;
-						}
-						ratio = (float)((int)(ratio*100))/100;
-						float diff = bigSide - 800;
-						diff = diff*ratio;
-						if(bigSide==w){
-							newW = 800;
-							newH = (int)(h-diff);
-						} else{
-							newH = 800;
-							newW = (int)(w-diff);
-						}
-				        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-	                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-				        g.drawImage(bImg, 0, 0, newW, newH, null);
-				        bImg = bImg.getSubimage(0, 0, newW, newH);
-				        g.dispose();
 
+					if (bImg.getHeight() > 800 || bImg.getWidth() > 800) {
+						resizedImg = photoResize(bImg, 800, 800, true);
 					}
-					
+
 					ImageWriteParam iwp = writer.getDefaultWriteParam();
-					
+
 					iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 					iwp.setCompressionQuality(.75f);
 					outStream = new FileImageOutputStream(f);
 					writer.setOutput(outStream);
-					
-					IIOImage image = new IIOImage(bImg, null, null);
-					writer.write(null, image, iwp);	
-					outStream.flush();					
-				} catch(IOException e){
+
+					IIOImage image = new IIOImage(resizedImg, null, null);
+					writer.write(null, image, iwp);
+					outStream.flush();
+				} catch (IOException e) {
 					// File could not be created or opened or saved
 					System.out.println("Could not handle image");
 					addActionError("Error with file");
-				} finally{				
+				} finally {
+					bImg.flush();
+					resizedImg.flush();
 					writer.dispose();
-					close(outStream);				
+					close(outStream);
 				}
-				
-												
+
 				try {
-					FileUtils.moveFile(f, getFtpDir(), "files/" + FileUtils.thousandize(employee.getId()),
+					FileUtils.moveFile(f, getFtpDir(), "files/"
+							+ FileUtils.thousandize(employee.getId()),
 							getFileName(employee.getId()), "jpg", true);
 				} catch (Exception e) {
-					System.out.println("Error moving "+f);
+					System.out.println("Error moving " + f);
 				}
-				if(getActionErrors().size()>0){
+				if (getActionErrors().size() > 0) {
 					return SUCCESS;
 				}
-				if(bImg.getWidth()<=175 && bImg.getHeight() <=250){
+				if (bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE) {
 					employee.setPhoto(extension);
-				} else{
-					employee.setPhoto(null);					
+				} else {
+					employee.setPhoto(null);
 				}
 				employeeDAO.save(employee);
-				addActionMessage("Successfully uploaded <b>" + getFileName(employee.getId()) + "</b> file" +
-						"<br/> Please crop the image in order to use it as a profile picture");
+				addActionMessage("Successfully uploaded <b>"
+						+ getFileName(employee.getId())
+						+ "</b> file"
+						+ "<br/> Please crop the image in order to use it as a profile picture");
 			}
 		}
-		if("Save".equals(button)){
-			if(employeeID==0){
+		if ("Save".equals(button)) {
+			if (employeeID == 0) {
 				addActionError("Invalid Employee");
 				return BLANK;
 			}
 			employee = employeeDAO.find(employeeID);
-			if(width>175 || height>250){
-				// Too Big
-				addActionError("Your cropped image is too big, please try again");
-				return SUCCESS;				
-			}
-			//do img manipulation
-			File f = new File(getFtpDir()+"/files/"+FileUtils.thousandize(employeeID)+getFileName(employeeID)+".jpg");
-			if(f!=null){
-				f.setReadable(true);
+			// do img manipulation
+			File f = new File(getFtpDir() + "/files/"
+					+ FileUtils.thousandize(employeeID)
+					+ getFileName(employeeID) + ".jpg");
+			if (f != null) {
 				BufferedImage bImg = null;
 				try {
 					bImg = ImageIO.read(f);
-					bImg = bImg.getSubimage(x1, y1, width, height);		
+					// bImg = bImg.getSubimage(x1, y1, width, height);
+					if (!(bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE)) {
+						bImg = photoCrop(bImg, x1, y1, width, height, XSIZE,
+								YSIZE);
+					}
 					ImageIO.write(bImg, "jpg", f);
 					employee.setPhoto(FileUtils.getExtension(f.getName()));
 					employeeDAO.save(employee);
 				} catch (IOException e) {
 					System.out.println("Could not crop image");
 					addActionError("Error with cropping image");
-				} finally{
+				} finally {
 					bImg.flush();
 				}
 			}
 		}
-		
+
 		return SUCCESS;
-		
+
 	}
 
-	public void close(FileImageOutputStream outStream){
-		if(outStream == null)
+	public void close(FileImageOutputStream outStream) {
+		if (outStream == null)
 			return;
-		try{
+		try {
 			outStream.close();
-		} catch(IOException e){
-			System.out.println("Error closing "+outStream.getClass());
+		} catch (IOException e) {
+			System.out.println("Error closing " + outStream.getClass());
 			addActionError("Error with file");
 		}
 	}
-	
+
+	public BufferedImage photoResize(BufferedImage image, int width,
+			int height, boolean maintainRatio) {
+		BufferedImage resizedImg = null;
+
+		float w = image.getWidth();
+		float h = image.getHeight();
+		float bigSide;
+		float ratio, diff;
+		int newW = 0, newH = 0;
+		if (maintainRatio) {
+			if (w > h) {
+				ratio = h / w;
+				bigSide = w;
+			} else {
+				ratio = w / h;
+				bigSide = h;
+			}
+			ratio = (float) ((int) (ratio * 100)) / 100;
+			if (ratio == 1) {
+				newW = width;
+				newH = height;
+			} else {
+				diff = bigSide - Math.max(width, height);
+				diff = diff * ratio;
+				if (bigSide == w) {
+					newW = width;
+					newH = (int) (h - diff);
+				} else {
+					newH = height;
+					newW = (int) (w - diff);
+				}
+			}
+		} else {
+			newW = width;
+			newH = height;
+		}
+		resizedImg = new BufferedImage(newW, newH, image.getType());
+		Graphics2D g = resizedImg.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.drawImage(image, 0, 0, newW, newH, null);
+		g.dispose();
+
+		return resizedImg;
+	}
+
+	public BufferedImage photoCrop(BufferedImage image, int x, int y,
+			int width, int height, int cropX, int cropY) {
+		image = image.getSubimage(x, y, width, height);
+		image = photoResize(image, cropX, cropY, true);
+
+		return image;
+	}
+
 	public int getEmployeeID() {
 		return employeeID;
 	}
@@ -227,7 +262,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements Prepara
 
 	public void setFileFileName(String fileFileName) {
 		this.fileFileName = fileFileName;
-	}	
+	}
 
 	public String getFileName(int eID) {
 		return PICSFileType.emp + "_" + eID;
@@ -288,10 +323,12 @@ public class UploadEmployeePhoto extends AccountActionSupport implements Prepara
 	public void setValidPhoto(boolean validPhoto) {
 		this.validPhoto = validPhoto;
 	}
-	public boolean showSavePhoto(){
+
+	public boolean showSavePhoto() {
 		int eID = employee.getId();
-		File f = new File(getFtpDir()+"/files/"+FileUtils.thousandize(eID)+getFileName(eID)+".jpg");
-		if(f.exists()){
+		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(eID)
+				+ getFileName(eID) + ".jpg");
+		if (f.exists()) {
 			return true;
 		}
 		return false;

@@ -576,6 +576,19 @@ ul#navlist {
 	font-weight: bold;
 }
 
+#navlist .current {
+	color: #fff;
+	background-color: rgb(168, 77, 16);
+	text-decoration: none;
+}
+
+#navlist .inactive {
+	color: #FFFFFF;
+	background-color: #C0C0C0;
+	text-decoration: none;
+	font-weight: bold;
+}
+
 .accountDemo,table.report td a.accountDemo {
 	font-style: italic;
 }

@@ -13,37 +13,39 @@ import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.FileUtils;
 
-public class EmpImg extends PicsActionSupport{
-	
+public class EmpImg extends PicsActionSupport {
+
 	private EmployeeDAO employeeDAO;
-	
+
 	protected InputStream inputStream;
 	protected Employee employee;
-	
-	private int employeeID;	
 
-	public EmpImg(EmployeeDAO employeeDAO){
+	private int employeeID;
+
+	public EmpImg(EmployeeDAO employeeDAO) {
 		this.employeeDAO = employeeDAO;
 	}
-	
-	public String execute(){
-		
-		if(button!=null){
-			if(button.equals("photo")){
-				try{
-					File photo = new File(getFtpDir() + "/files/"+FileUtils.thousandize(employeeID)+getFileName(employeeID)+".jpg");
-					if(photo.exists()){
-							inputStream = new FileInputStream(photo);
-							return "photo";		
-					} else 
-						return BLANK;					
-				}catch(Exception e){
+
+	public String execute() {
+
+		if (button != null) {
+			if (button.equals("photo")) {
+				try {
+					File photo = new File(getFtpDir() + "/files/"
+							+ FileUtils.thousandize(employeeID)
+							+ getFileName(employeeID) + ".jpg");
+					if (photo.exists()) {
+						inputStream = new FileInputStream(photo);
+						return "photo";
+					} else
+						return BLANK;
+				} catch (Exception e) {
 					addActionError("Failed to load img");
 					return BLANK;
 				}
 			}
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -53,8 +55,8 @@ public class EmpImg extends PicsActionSupport{
 
 	public void setEmployeeID(int employeeID) {
 		this.employeeID = employeeID;
-	}	
-	
+	}
+
 	public String getFileName(int eID) {
 		return PICSFileType.emp + "_" + eID;
 	}

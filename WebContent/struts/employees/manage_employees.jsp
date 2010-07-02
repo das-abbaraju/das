@@ -143,18 +143,6 @@ div.dataTables_length { width: 35%; }
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
 							<ol>
-								<s:if test="employee.photo.length() > 0">
-									<li><label>Photo:</label>
-										<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" />
-										<br />
-										<a href="#" onclick="showUpload(); return false;" class="edit">Edit Employee Profile Photo</a>
-									</li>
-								</s:if>
-								<s:else>
-									<li><label>Upload Photo:</label>
-										<a href="#" onclick="showUpload(); return false;" class="add">Add Employee Profile Photo</a>
-									</li>
-								</s:else>
 								<li><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
 								</li>
@@ -184,6 +172,17 @@ div.dataTables_length { width: 35%; }
 								<li><label>Termination Date:</label>
 									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="date"/>
 								</li>
+								<s:if test="employee.photo.length() > 0">
+									<li><label>Photo:</label>
+										<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" style="width: 25px; height: 25px;" />
+										<a href="#" onclick="showUpload(); return false;" class="edit">Edit Employee Profile Photo</a>
+									</li>
+								</s:if>
+								<s:else>
+									<li><label>Upload Photo:</label>
+										<a href="#" onclick="showUpload(); return false;" class="add">Add Employee Profile Photo</a>
+									</li>
+								</s:else>
 								<li><label>Location:</label>
 									<s:textfield name="employee.location"/>
 								</li>
