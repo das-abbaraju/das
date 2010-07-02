@@ -70,7 +70,7 @@
 
 	<s:if test="filter.showOfficeIn">
 		<div class="filterOption"><a href="#"
-			onclick="toggleBox('form1_officeIn'); return false;">State/Provice</a> =
+			onclick="toggleBox('form1_officeIn'); return false;">State/Province</a> =
 		<span id="form1_officeIn_query">ALL</span><br />
 		<span id="form1_officeIn_select" style="display: none"
 			class="clearLink"> <s:select id="form1_officeIn"
