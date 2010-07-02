@@ -467,4 +467,9 @@ public class OperatorAccount extends Account {
 		}
 		return topAccount;
 	}
+	
+	@Transient
+	public boolean isInsureguardSubscriber(){
+		return canSeeInsurance.equals(YesNo.Yes);
+	}
 }
