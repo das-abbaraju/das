@@ -6,7 +6,11 @@ import java.util.List;
 
 import javax.naming.NoPermissionException;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+
+import com.ibm.icu.util.Calendar;
 import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -14,10 +18,13 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -69,29 +76,115 @@ public class ContractorFacilities extends ContractorActionSupport {
 		}
 		if (button != null) {
 			if (button.equals("search")) {
+				if (!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state)) {
+					String where = "";
 
-				String where = "";
-
-				if (state != null && state.length() > 0) {
-					where += "state = '" + Utilities.escapeQuotes(state) + "'";
-				}
-
-				if (operator != null && !Strings.isEmpty(operator.getName())) {
-					if (where.length() > 0)
-						where += " AND ";
-					where += "name LIKE '%" + Utilities.escapeQuotes(operator.getName()) + "%'";
-				}
-
-				searchResults = new ArrayList<OperatorAccount>();
-				currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
-				for (OperatorAccount opToAdd : operatorDao.findWhere(false, where, permissions)) {
-					boolean linked = false;
-					for (ContractorOperator co : currentOperators) {
-						if (co.getOperatorAccount().equals(opToAdd))
-							linked = true;
+					if (state != null && state.length() > 0) {
+						where += "state = '" + Utilities.escapeQuotes(state) + "'";
 					}
-					if (!linked)
-						searchResults.add(opToAdd);
+
+					if (operator != null && !Strings.isEmpty(operator.getName())) {
+						if (where.length() > 0)
+							where += " AND ";
+						where += "name LIKE '%" + Utilities.escapeQuotes(operator.getName()) + "%'";
+					}
+
+					searchResults = new ArrayList<OperatorAccount>();
+					currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+					for (OperatorAccount opToAdd : operatorDao.findWhere(false, where, permissions)) {
+						boolean linked = false;
+						for (ContractorOperator co : currentOperators) {
+							if (co.getOperatorAccount().equals(opToAdd))
+								linked = true;
+						}
+						if (!linked)
+							searchResults.add(opToAdd);
+					}
+				} else if (contractor.getOperators().size() == 0) {
+					Calendar lastMonth = Calendar.getInstance();
+					lastMonth.add(Calendar.MONTH, -2);
+
+					SelectSQL inner1 = new SelectSQL("contractor_info c");
+					inner1.addJoin("JOIN accounts o ON c.requestedByID = o.id");
+					inner1.addJoin("JOIN accounts a ON c.id = a.id ");
+					inner1.addWhere(String.format("a.creationDate > '%s'", DateBean.toDBFormat(lastMonth.getTime())));
+					inner1.addWhere("a.status IN ('Active', 'Pending')");
+					inner1.addGroupBy("o.id");
+					inner1.addField("o.id opID");
+					inner1.addField("o.name");
+					inner1.addField("o.status");
+					inner1.addField("count(*) total");
+
+					SelectSQL inner2 = new SelectSQL("contractor_info c");
+					inner2.addJoin("JOIN accounts o ON c.requestedByID = o.id");
+					inner2.addJoin("JOIN accounts a ON c.id = a.id ");
+					inner2.addWhere(String.format("a.creationDate > '%s'", DateBean.toDBFormat(lastMonth.getTime())));
+					inner2.addWhere("a.status IN ('Active', 'Pending')");
+					inner2.addGroupBy("o.id");
+					inner2.addField("o.id opID");
+					inner2.addField("o.name");
+					inner2.addField("o.status");
+					inner2.addField("count(*)*10 total");
+					inner2.addWhere("a.zip LIKE '" + contractor.getZip().charAt(0) + "%'");
+
+					SelectSQL sql = new SelectSQL("(" + inner1.toString() + " UNION " + inner2.toString() + ") t");
+					sql.addField("opID");
+					sql.addField("name");
+					sql.addField("status");
+					sql.addField("SUM(total) total");
+					sql.addGroupBy("opID");
+					sql.addOrderBy("total DESC");
+					sql.setLimit(10);
+
+					Database db = new Database();
+					List<BasicDynaBean> data = db.select(sql.toString(), false);
+
+					searchResults = new ArrayList<OperatorAccount>();
+					for (BasicDynaBean d : data) {
+						OperatorAccount o = new OperatorAccount();
+						o.setId(Integer.parseInt(d.get("opID").toString()));
+						o.setName(d.get("name").toString());
+						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+						searchResults.add(o);
+					}
+
+					addActionMessage("This list of operators was generated based on your location. "
+							+ "To find a specific operator, use the search filters above");
+				} else {
+					SelectSQL ops = new SelectSQL("generalcontractors");
+					ops.addField("genID");
+					ops.addWhere("subID = " + contractor.getId());
+
+					SelectSQL sql = new SelectSQL("stats_gco_count s");
+					sql.addJoin("JOIN accounts a ON s.opID2 = a.id");
+					sql.addJoin("JOIN stats_gco_count s2 ON s2.opID = s.opID2 AND s2.opID2 IS NULL");
+					sql.addWhere("s.opID IN (" + ops.toString() + ")");
+					sql.addWhere("s.opID2 NOT IN (" + ops.toString() + ")");
+					sql.addGroupBy("a.id");
+					sql.addOrderBy("score DESC");
+					sql.addField("(s.total*AVG(s.total)/s2.total) score");
+					sql.addField("a.name");
+					sql.addField("a.id opID");
+					sql.addField("ROUND(100*AVG(s.total)/s2.total)");
+					sql.addField("SUM(s.total)");
+					sql.addField("COUNT(*)");
+					sql.addField("a.status");
+					sql.setLimit(10);
+
+					Database db = new Database();
+					List<BasicDynaBean> data = db.select(sql.toString(), false);
+
+					searchResults = new ArrayList<OperatorAccount>();
+					for (BasicDynaBean d : data) {
+						OperatorAccount o = new OperatorAccount();
+						o.setId(Integer.parseInt(d.get("opID").toString()));
+						o.setName(d.get("name").toString());
+						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
+						searchResults.add(o);
+					}
+
+					addActionMessage("This list of operators is generated based on the operators you currently have selected."
+							+ "To find a specific operator, use the search filters above");
 				}
 
 				return "search";

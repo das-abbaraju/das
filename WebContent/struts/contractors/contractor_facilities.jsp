@@ -33,8 +33,8 @@
 			data: data, 
 			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
-				$('#results_' + opId).fadeOut();
 				reloadOperators( conId );
+				runSearch();
 				refreshNoteCategory(conId, 'OperatorChanges');
 			}
 		});
@@ -102,6 +102,12 @@
 	}	
 </script>
 
+<style>
+#results {
+	padding-top: 10px;
+}
+</style>
+
 </head>
 <body onload="runSearch();">
 <s:if test="permissions.contractor && !contractor.status.activeDemo">
@@ -124,7 +130,7 @@
 
 <table width="100%">
 <tr>
-	<td style="width: 45%; vertical-align: top;">
+	<td style="width: 44%; vertical-align: top;">
 	<h3>Selected Facilities</h3>
 		<div id="thinkingDiv"></div>
 
@@ -138,7 +144,8 @@
 			</div>
 		</pics:permission>
 	</td>
-	<td style="width: 45%; vertical-align: top;">
+	<td style="width: 2%"></td>
+	<td style="width: 44%; vertical-align: top;">
 	<h3>Add Facilities</h3>
 		<s:if test="permissions.contractor || permissions.admin">
 			<div class="info">Please specify all facilities at which you work.<br/>
@@ -153,7 +160,7 @@
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
-					<nobr>Name: <s:textfield cssClass="forms" name="operator.name"/></nobr>
+					<nobr>Name: <s:textfield cssClass="forms" name="operator.name" onchange="runSearch()"/></nobr>
 					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state" headerKey="" headerValue="- State -"></s:select></nobr>
 				</div>
 			</div>

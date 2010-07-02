@@ -23,4 +23,7 @@
 	</s:iterator>
 	</tbody>
 </table>
+
+<s:include value="../actionMessages.jsp"/>
+
 </s:else>
