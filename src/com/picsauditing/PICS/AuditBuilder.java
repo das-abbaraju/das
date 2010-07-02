@@ -237,7 +237,7 @@ public class AuditBuilder {
 							insertNow = false;
 						break;
 					case AuditType.BPIISNCASEMGMT:
-						if (!BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
+						if (BpIisnSpecific != null && !BpIisnSpecific.getAuditStatus().isActiveResubmittedExempt())
 							insertNow = false;
 						break;
 					case 100:
