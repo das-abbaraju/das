@@ -118,9 +118,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							paymentDAO.save(payment);
 							invoice.updateAmountApplied();
 							contractor.syncBalance();
-							
+
 							// Activate the contractor
-							BillingCalculatorSingle.activateContractor(contractor, invoice);
+							BillingCalculatorSingle.activateContractor(contractor, invoice, accountDao);
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for $"
@@ -247,10 +247,10 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			contractor.setRenew(true);
 			accountDao.save(contractor);
 		}
-		
-		// Reload permissions for this user so they view just their country 
+
+		// Reload permissions for this user so they view just their country
 		// specific questions.
-		if(complete) {
+		if (complete) {
 			permissions.setAccountPerms(getUser());
 		}
 		return SUCCESS;

@@ -102,7 +102,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			// (this will occur on the redirect)
 			if (contractor.getStatus().isPendingDeactivated()) {
 				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
-					if (BillingCalculatorSingle.activateContractor(contractor, ip.getInvoice())) {
+					if (BillingCalculatorSingle.activateContractor(contractor, ip.getInvoice(), accountDao)) {
 						accountDao.save(contractor);
 						break;
 					}

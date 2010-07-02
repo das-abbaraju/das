@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditOperator;
@@ -302,13 +303,14 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
-	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
+	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice, ContractorAccountDAO accountDao) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().getFeeClass().equals("Activation")
 						|| item.getInvoiceFee().getId() == InvoiceFee.BIDONLY) {
 					contractor.setStatus(AccountStatus.Active);
 					contractor.setAuditColumns(new User(User.SYSTEM));
+					accountDao.save(contractor);
 					return true;
 				}
 			}
