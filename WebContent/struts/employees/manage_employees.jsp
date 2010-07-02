@@ -13,6 +13,9 @@
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
+<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+
 <script type="text/javascript">
 var employeeID = 0;
 <s:if test="employee != null">
@@ -95,6 +98,15 @@ $(function() {
 				return nRow;
 			}
 		});
+	
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
+	$('#locationSuggest').autocomplete('ManageEmployeesAjax.action?id=<s:property value="account.id" />&button=suggest');
 });
 </script>
 
@@ -136,7 +148,12 @@ div.dataTables_length { width: 35%; }
 			</s:if>
 			<s:if test="employee != null">
 				<td style="vertical-align:top;">
-				<s:if test="employee.id > 0"><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile Page</a></s:if>
+				<s:if test="employee.id > 0"><a href="EmployeeDetail.action?employee.id=<s:property value="employee.id" />">View Profile Page</a>
+					<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip1" title="View Profile Page"></a>
+					<div id="cluetip1">
+						Each Employee has a Profile Page visible to other employees and operators.
+					</div>
+				</s:if>
 					<s:form id="employeeForm">
 						<s:hidden name="id"/>
 						<s:hidden name="employee.id"/>
@@ -186,7 +203,10 @@ div.dataTables_length { width: 35%; }
 									</s:else>
 								</s:if>
 								<li><label>Location:</label>
-									<s:textfield name="employee.location"/>
+									<s:textfield name="employee.location" id="locationSuggest"/><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="Location"></a>
+									<div id="cluetip2">
+										Current work location. This may be a client site.
+									</div>
 								</li>
 								<li><label>Email:</label>
 									<s:textfield name="employee.email"/>

@@ -74,8 +74,6 @@ pre {
 
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
-<link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
 
 <script type="text/javascript">
 $(document).ready(function() {

@@ -252,6 +252,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			
 			return "sites";
 		}
+		
+		if ("suggest".equals(button))
+			return "suggest";
 
 		return SUCCESS;
 	}
@@ -390,7 +393,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String getEmpPhoto(){
 		return getFileName(employee.getId())+employee.getPhoto();
 	}
-		
+	
+	public List<Employee> getPreviousLocations() {
+		return employeeDAO.findWhere("e.account.id = " + account.getId() + 
+				" AND location NOT LIKE '' GROUP BY location HAVING COUNT(*) > 1 " +
+				"ORDER BY COUNT(*) DESC");
+	}
 
 	public class OperatorSite implements Comparable<OperatorSite> {
 

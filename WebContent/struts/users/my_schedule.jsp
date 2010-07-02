@@ -12,9 +12,6 @@
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
 <script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
 
-<script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
-<link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
-
 <script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
 <link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
 

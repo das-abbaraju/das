@@ -7,8 +7,6 @@
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
-<script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.cluetip').cluetip({

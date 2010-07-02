@@ -9,8 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"></s:include>
-<script src="js/jquery/cluetip/jquery.cluetip.js" type="text/javascript"></script>
-<link href="js/jquery/cluetip/jquery.cluetip.css" media="screen" type="text/css" rel="stylesheet">
 
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 <script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>

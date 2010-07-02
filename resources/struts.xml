@@ -1647,15 +1647,16 @@
 			<result>struts/employees/manage_employees.jsp</result>
 		</action>
 		
-		<action name="ManageUnmappedEmployees"
-			class="com.picsauditing.actions.employees.ManageUnmappedEmployees">
-			<result>struts/employees/manage_unmapped_employees.jsp</result>
-		</action>
-
 		<action name="ManageEmployeesAjax"
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employee_roles.jsp</result>
 			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
+			<result name="suggest">struts/employees/manage_employee_suggest.jsp</result>
+		</action>
+		
+		<action name="ManageUnmappedEmployees"
+			class="com.picsauditing.actions.employees.ManageUnmappedEmployees">
+			<result>struts/employees/manage_unmapped_employees.jsp</result>
 		</action>
 		
 		<action name="EmployeePhotoUploadAjax"

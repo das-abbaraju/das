@@ -332,6 +332,8 @@ public class PicsMenu {
 			subMenu.addChild("User Multi-Login", "MultiLoginUser.action");
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			subMenu.addChild("User Search", "UserList.action");
+		if (permissions.hasPermission(OpPerms.EmployeeList))
+			subMenu.addChild("Employee List", "EmployeeList.action");
 
 		if (permissions.isRequiresCompetencyReview()) {
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
