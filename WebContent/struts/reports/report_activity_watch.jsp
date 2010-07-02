@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Contractor Activity Watch</title>
@@ -54,12 +55,12 @@ $(function() {
 		<s:checkbox value="audits" name="audits" id="audits"></s:checkbox>
 		<label for="audits">PQFs, Annual Updates, & Audits</label>
 	</div>
-	<s:if test="operatorAccount.insureguardSubscriber">
+	<pics:permission perm="InsuranceCerts">
 		<div class="filterOption">
 			<s:checkbox value="policies" name="policies" id="policies"></s:checkbox>
 			<label for="policies">Policies</label>
 		</div>
-	</s:if>
+	</pics:permission>
 	<div class="filterOption">
 		<s:checkbox value="flagColorChange" name="flagColorChange" id="flagColorChange"></s:checkbox>
 		<label for="flagColorChange">Flag Changes</label>
