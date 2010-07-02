@@ -116,6 +116,7 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 
 /** Employees Form **/
 
+
 #employeeForm fieldset.form ol {
 	margin:50px 0 0 30px;
 	padding-left: 10px;
@@ -164,14 +165,13 @@ background-image: none;
 #employeeForm fieldset.form legend span {
 	position: absolute;
 	margin:10px 0 10px 0;
-	left: 10px;
+	left: 0;
 	top: 0;
+	padding-top:-1px;
 	font-size: 135%;
-	padding:3px 0 3px 8px;
 	background-color:#EDEDE7;
 	display:block;
-	width:400px;
-	height:30px;
+	width:100%;
 }
 #employeeForm .negative {
 	float:right;
