@@ -112,3 +112,68 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	cursor:move;
 	line-height: 1em;
 }
+
+
+/** Employees Form **/
+
+#employeeForm fieldset.form ol {
+	margin:50px 0 0 30px;
+	padding-left: 10px;
+	list-style: none;
+	}
+	
+#employeeForm fieldset.form ol li {
+	padding-bottom: 1.3em;
+	padding-top: 0;
+	font-size: 15px;
+}
+
+
+#employeeForm fieldset.form label {
+	float: none;
+	width: 100%;
+	display:block;
+	margin:0 0 5px 0;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+	color: #003768;
+	line-height: 15px;
+}
+
+#employeeForm fieldset.form input[type=text] {
+	width: 320px;
+}
+#employeeForm fieldset.form select {
+	width:320px; }
+
+#employeeForm fieldset.submit {
+padding:1em 3em 4em 3em;
+margin-bottom: 5px;
+float: none;
+width: auto;
+background-color: white;
+background-image: none;
+}
+
+#employeeForm fieldset.form legend {
+	color: #A84D10;
+	font-weight: bold;
+	padding: 0;
+}
+#employeeForm fieldset.form legend span {
+	position: absolute;
+	margin:10px 0 10px 0;
+	left: 10px;
+	top: 0;
+	font-size: 135%;
+	padding:3px 0 3px 8px;
+	background-color:#EDEDE7;
+	display:block;
+	width:400px;
+	height:30px;
+}
+#employeeForm .negative {
+	float:right;
+	}
+
