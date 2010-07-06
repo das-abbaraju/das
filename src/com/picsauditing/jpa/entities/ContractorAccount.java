@@ -814,6 +814,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
 	 * in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
+	 * <b>Past Due</b> Inovice is open and not paid by due date
 	 * 
 	 * @return A String of the current Billing Status
 	 */
@@ -873,8 +874,23 @@ public class ContractorAccount extends Account implements JSONable {
 			return "Renewal Overdue";
 		if (daysUntilRenewal < 45)
 			return "Renewal";
+		
+		if(hasPastDueInvoice())
+			return "Past Due";
 
 		return "Current";
+	}
+	
+	@Transient
+	public Boolean hasPastDueInvoice(){
+		for(Invoice in : invoices){
+			if(in.getStatus().equals(TransactionStatus.Unpaid)){
+				if(in.getDueDate().before(new Date())){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Transient

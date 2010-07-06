@@ -372,10 +372,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 		int eID = employee.getId();
 		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(eID)
 				+ getFileName(eID) + ".jpg");
-		if (f.exists()) {
-			return true;
-		}
-		return false;
+		return f.exists();
 	}
 
 	public void setStep(int step) {
