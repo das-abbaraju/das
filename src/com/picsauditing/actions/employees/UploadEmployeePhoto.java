@@ -1,6 +1,7 @@
 package com.picsauditing.actions.employees;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
@@ -36,10 +37,11 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 	private String fileFileName = null;
 	private String extension;
 	private boolean validPhoto = false;
-	// Step ranges from [1,3]
-	private int step = 1;
+	// Step ranges from [1,2]
+	private int step = 0;
 	private int x1, y1, width, height;
 	private final int XSIZE = 150, YSIZE = 150;
+	private final int XRESIZE = 800, YRESIZE = 800;
 
 	public UploadEmployeePhoto(EmployeeDAO employeeDAO) {
 		this.employeeDAO = employeeDAO;
@@ -53,11 +55,11 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 	}
 
 	public String execute() {
-		if(employee.getPhoto()!=null){ //  set to step 3, finished
-			step = 3;
-		} else if(showSavePhoto()){ // set to step 2, crop
-			step = 2;
-		} // else leave as step 1, upload
+		if(step==0){
+			if(showSavePhoto()){ // set to step 2, crop
+				step = 2;
+			} else step = 1;			
+		}
 
 		if ("Upload".equals(button)) {
 			employee = employeeDAO.find(employeeID);
@@ -90,9 +92,9 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 				try {
 					bImg = ImageIO.read(file);
 
-					if (bImg.getHeight() > 800 || bImg.getWidth() > 800) {
+					if (bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE) {
 						resizedImg = photoResize(bImg, 800, 800, true);
-					}
+					} else resizedImg = bImg;
 
 					ImageWriteParam iwp = writer.getDefaultWriteParam();
 
@@ -110,7 +112,9 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 					addActionError("Error with file");
 				} finally {
 					bImg.flush();
-					resizedImg.flush();
+					if(resizedImg!=null){
+						resizedImg.flush();						
+					}
 					writer.dispose();
 					close(outStream);
 				}
@@ -127,18 +131,19 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 				}
 				if (bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE) {
 					employee.setPhoto(extension);
+					// Finished!
+					step = 2;
+					addActionMessage("Photo for"+employee.getDisplayName()+" has been saved and is now in use!");
 				} else {
 					employee.setPhoto(null);
+					//Move to crop step
+					step = 2;
+					//addActionMessage();
 				}
 				employeeDAO.save(employee);
-				addActionMessage("Successfully uploaded <b>"
-						+ getFileName(employee.getId())
-						+ "</b> file"
-						+ "<br/> Please crop the image in order to use it as a profile picture");
-				//Move to crop step
-				step = 2;
 			}
 		}
+		
 		if ("Save".equals(button)) {
 			if (employeeID == 0) {
 				addActionError("Invalid Employee");
@@ -169,7 +174,32 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 				}
 			}
 			// move to finish stage
-			step = 3;
+			step = 2;
+		}
+		
+		if("Delete".equals(button)){
+			if(employeeID==0){
+				addActionError("Invalid Employee");
+				return BLANK;
+			}
+			employee = employeeDAO.find(employeeID);
+			
+			File f = new File(getFtpDir() + "/files/"
+					+ FileUtils.thousandize(employeeID)
+					+ getFileName(employeeID) + ".jpg");
+			if(f!=null){
+				if(f.delete()){
+					addActionMessage("Photo deleted successfully");
+					employee.setPhoto(null);
+					employeeDAO.save(employee);
+					step = 0;
+					return SUCCESS;
+				} else{
+					addActionError("Error deleting photo");
+					return SUCCESS;
+				}
+			}
+			
 		}
 
 		return SUCCESS;
@@ -185,6 +215,11 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			System.out.println("Error closing " + outStream.getClass());
 			addActionError("Error with file");
 		}
+	}
+	
+	public File writeImage(Image img, String format){
+		
+		return null;		
 	}
 
 	public BufferedImage photoResize(BufferedImage image, int width,

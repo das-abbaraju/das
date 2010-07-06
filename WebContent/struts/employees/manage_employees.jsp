@@ -22,6 +22,16 @@ var employeeID = 0;
 employeeID = <s:property value="employee.id"/>;
 </s:if>
 
+$(function() {
+	$('.datepicker').datepicker({ minDate: new Date() });
+	<s:if test="employee.active == 1">
+		$('#termDate').show();
+	</s:if>
+	<s:else>
+		$('#termDate').hide();
+	</s:else>
+});
+
 function show(id) {
 	$.getJSON('ManageEmployeesAjax.action',
 			{employeeID: id, button: 'load'},
@@ -60,7 +70,7 @@ function editAssignedSites(id) {
 function showUpload(){
 	url = 'EmployeePhotoUploadAjax.action?employeeID='+employeeID;
 	title = 'Upload Photo';
-	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
 	photoUpload = window.open(url,title,pars);
 	photoUpload.focus();
 }
@@ -181,24 +191,24 @@ div.dataTables_length { width: 35%; }
 										listValue="description" />
 								</li>
 								<li><label>Active</label>
-									<s:checkbox name="employee.active"/>
+									<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
 								</li>
 								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="date"/>
+									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="date datepicker"/>
 								</li>
-								<li><label>Termination Date:</label>
-									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="date"/>
+								<li id="termDate"><label>Termination Date:</label>
+									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="date datepicker"/>
 								</li>
 								<s:if test="employee.id > 0">
 									<s:if test="employee.photo.length() > 0">
 										<li><label>Photo:</label>
 											<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" style="width: 25px; height: 25px; vertical-align: bottom;" />
-											<a href="#" onclick="showUpload(); return false;" class="edit">Edit Employee Profile Photo</a>
+											<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="edit">Change</a> <a href="EmployeePhotoUpload.action?button=Delete&employeeID=<s:property value="employee.id"/>" class="remove">Delete</a>
 										</li>
 									</s:if>
 									<s:else>
 										<li><label>Upload Photo:</label>
-											<a href="#" onclick="showUpload(); return false;" class="add">Add Employee Profile Photo</a>
+											<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="add">Add </a>
 										</li>
 									</s:else>
 								</s:if>

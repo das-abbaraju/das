@@ -1646,7 +1646,7 @@
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employees.jsp</result>
 		</action>
-		
+
 		<action name="ManageEmployeesAjax"
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employee_roles.jsp</result>
@@ -1659,7 +1659,7 @@
 			<result>struts/employees/manage_unmapped_employees.jsp</result>
 		</action>
 		
-		<action name="EmployeePhotoUploadAjax"
+		<action name="EmployeePhotoUpload"
 			class="com.picsauditing.actions.employees.UploadEmployeePhoto">
 			<result>struts/employees/empPhoto.jsp</result>
 		</action>

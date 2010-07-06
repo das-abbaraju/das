@@ -145,6 +145,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if ("Delete".equals(button)) {
 			employeeDAO.remove(employee);
 			addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
+			File f = new File(getFtpDir() + "/files/"
+					+ FileUtils.thousandize(employee.getId())
+					+ "emp_"+employee.getId() + ".jpg");
+			if(f!=null){
+				f.delete();
+			}
 			employee = null;
 		}
 
