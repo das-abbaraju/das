@@ -200,7 +200,7 @@
 			onclick="toggleBox('form1_trade'); return false;">Trade</a> = <span
 			id="form1_trade_query">ALL</span> <s:select
 			list="filter.tradePerformedByList" cssClass="forms"
-			name="filter.performedBy" /> <br />
+			name="filter.performedBy" value="filter.defaultSelectPerformedBy" /> <br />
 		<span id="form1_trade_select" style="display: none" class="clearLink">
 		<s:select id="form1_trade" list="filter.tradeList" listKey="id"
 			listValue="question" cssClass="forms" name="filter.trade"

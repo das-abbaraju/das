@@ -25,6 +25,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public static final String DEFAULT_TAX_ID = "- Tax ID -";
 	public static final String DEFAULT_CERTS = "- Ins. Certs -";
 	public static final String DEFAULT_PERFORMED_BY = "- No Preference -";
+	public static final String DEFAULT_SELECT_PERFORMED_BY = "Self Performed";
 	public static final String[] DEACTIVATION_REASON = { "ChargeBack", "Did not Complete PICS process",
 			"Does not work for operator", "Duplicate/Merged Account", "Operator Exemption", "Payments not Current",
 			"Bid Only Account" };
@@ -641,5 +642,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setExEachOccurrence(String exEachOccurence) {
 		this.exEachOccurrence = exEachOccurence.replaceAll("[^0-9]", "");
+	}
+
+	public static String getDefaultSelectPerformedBy() {
+		return DEFAULT_SELECT_PERFORMED_BY;
 	}
 }
