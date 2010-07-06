@@ -44,14 +44,14 @@ function setStep(id){
 	
 	$('#step'+id).addClass('current');
 	if(id==2){
-		$('.uploadStep').hide();
+		$('.uploadStep').fadeOut();
 		$('.cropStep').show();
 	} else if(id==1){
 		$('.uploadStep').show();
-		$('.cropStep').hide();
+		$('.cropStep').fadeOut();
 	} else{
-		$('.uploadStep').hide();
-		$('.cropStep').hide();		
+		$('.uploadStep').fadeOut();
+		$('.cropStep').fadeOut();		
 	}
 }
 
@@ -83,7 +83,9 @@ function setStep(id){
 		The profile photo for this employee has been successfully cropped and uploaded!
 	</div>	
 </s:if>
-<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
+<s:if test="showSavePhoto()">
+	<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
+</s:if>
 <s:form enctype="multipart/form-data" method="POST">
 		<input type="hidden" name="step" value="<s:property value="step"/>" />
 		<input type="hidden" id="x1" name="x1" value="0" />

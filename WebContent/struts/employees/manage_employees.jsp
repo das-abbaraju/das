@@ -23,7 +23,7 @@ employeeID = <s:property value="employee.id"/>;
 </s:if>
 
 $(function() {
-	$('.datepicker').datepicker({ minDate: new Date() });
+	$('.datepicker').datepicker();
 	<s:if test="employee.id != 0">
 		<s:if test="employee.active == 1">
 			$('#termDate').show();
