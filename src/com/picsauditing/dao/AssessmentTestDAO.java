@@ -27,13 +27,13 @@ public class AssessmentTestDAO extends PicsDAO {
 	}
 
 	public List<AssessmentTest> findByAssessmentCenter(int centerID) {
-	 	Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE assessmentCenterID = ? " +
-	 			"ORDER BY qualificationType, qualificationMethod");
-	 	query.setParameter(1, centerID);
-	 	
-	 	return query.getResultList();
+		Query query = em.createQuery("SELECT a FROM AssessmentTest a WHERE assessmentCenterID = ? "
+				+ "ORDER BY qualificationType, qualificationMethod");
+		query.setParameter(1, centerID);
+
+		return query.getResultList();
 	}
-	
+
 	public List<AssessmentTest> findRandom(int limit) {
 		Query query = em.createQuery("SELECT a FROM AssessmentTest a ORDER BY RAND()");
 		query.setMaxResults(limit);
@@ -61,52 +61,47 @@ public class AssessmentTestDAO extends PicsDAO {
 				+ " AND effectiveDate <= NOW()" + where);
 		return query.getResultList();
 	}
-	
+
 	public List<AssessmentResultStage> findStaged(int centerID) {
 		Query query = em.createQuery("SELECT a FROM AssessmentResultStage a WHERE a.center.id = ?");
 		query.setParameter(1, centerID);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public List<AssessmentResultStage> findStagedByAccount(int accountID) {
-		Query query = em.createQuery("SELECT a FROM AssessmentResultStage a WHERE a.picsAccountID = ?");
+		Query query = em.createQuery("SELECT a FROM AssessmentResultStage a WHERE a.picsAccount.id = ?");
 		query.setParameter(1, accountID);
-		
+
 		return query.getResultList();
 	}
-	
+
 	public List<AssessmentResultStage> findUnmappedTests(int centerID) {
-		String queryString = "SELECT a.* FROM assessment_result_stage a " +
-				"LEFT JOIN assessment_test t " +
-				"USING (qualificationType, qualificationMethod, description) " +
-				"WHERE a.centerID = " + centerID + " " +
-				"AND t.qualificationType IS NULL " +
-				"AND t.qualificationMethod IS NULL " +
-				"AND t.description IS NULL " +
-				"GROUP BY a.qualificationType, a.qualificationMethod, a.description " +
-				"ORDER BY a.qualificationType, a.qualificationMethod, a.description";
-		
-		Query query = em.createNativeQuery(queryString, AssessmentResultStage.class);	
+		String queryString = "SELECT a.* FROM assessment_result_stage a " + "LEFT JOIN assessment_test t "
+				+ "USING (qualificationType, qualificationMethod, description) " + "WHERE a.centerID = " + centerID
+				+ " " + "AND t.qualificationType IS NULL " + "AND t.qualificationMethod IS NULL "
+				+ "AND t.description IS NULL " + "GROUP BY a.qualificationType, a.qualificationMethod, a.description "
+				+ "ORDER BY a.qualificationType, a.qualificationMethod, a.description";
+
+		Query query = em.createNativeQuery(queryString, AssessmentResultStage.class);
 		return query.getResultList();
 	}
-	
+
 	/**
-	 * Returns a list of AssessmentResultStage where the picsAccountID is 0 or the 
-	 * assessment test doesn't exist.
+	 * Returns a list of AssessmentResultStage where the picsAccountID is 0 or
+	 * the assessment test doesn't exist.
 	 */
 	public List<AssessmentResultStage> findUnmatched(int centerID) {
 		// There's no group by like there was in findUnmappedTests();
-		String queryString = "(SELECT a.* FROM assessment_result_stage a " +
-				"LEFT JOIN assessment_test t USING (qualificationType, qualificationMethod, description) " +
-				"WHERE a.centerID = " + centerID + " AND t.qualificationType IS NULL " +
-				"AND t.qualificationMethod IS NULL AND t.description IS NULL " +
-				"ORDER BY a.qualificationType, a.qualificationMethod, a.description) " +
-				"UNION " +
-				"(SELECT * FROM assessment_result_stage WHERE picsAccountID IS NULL OR picsAccountID = 0) " +
-				"ORDER BY creationDate";
-		
-		Query query = em.createNativeQuery(queryString, AssessmentResultStage.class);	
+		String queryString = "(SELECT a.* FROM assessment_result_stage a "
+				+ "LEFT JOIN assessment_test t USING (qualificationType, qualificationMethod, description) "
+				+ "WHERE a.centerID = " + centerID + " AND t.qualificationType IS NULL "
+				+ "AND t.qualificationMethod IS NULL AND t.description IS NULL "
+				+ "ORDER BY a.qualificationType, a.qualificationMethod, a.description) " + "UNION "
+				+ "(SELECT * FROM assessment_result_stage WHERE picsAccountID IS NULL OR picsAccountID = 0) "
+				+ "ORDER BY creationDate";
+
+		Query query = em.createNativeQuery(queryString, AssessmentResultStage.class);
 		return query.getResultList();
 	}
 }
