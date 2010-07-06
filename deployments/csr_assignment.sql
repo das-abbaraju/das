@@ -1,43 +1,47 @@
--- Ashley Prather (Added(AL))
+-- Ashley Prather
 update contractor_info c, accounts a set welcomeAuditor_id = 22223
 where c.id = a.id
-and a.state in ('AL','AK','AZ','HI','ID','MT','NM','NV','OR','UT','WY') 
+and a.state in ('AK','AZ','HI','ID','MT','NM','NV','OR','UT','WY') 
 AND a.country = 'US';
 
 -- Derrick Piper
 update contractor_info c, accounts a set welcomeAuditor_id = 23542
 where c.id = a.id
-and (a.state in ('TX') OR a.country = 'CA');
+and (a.state in ('TX'));
 
--- Estevan Orozco (Added(FL))
+-- Estevan Orozco
 update contractor_info c, accounts a set welcomeAuditor_id = 940
 where c.id = a.id
-and (a.state in ('FL','CA','GU','PR','WA') OR a.country not in ('US','CA'));
+and (a.state in ('CA','GU','PR','WA') OR a.country not in ('US','CA'));
 
--- Kaitlyn O'Malley (Added(KY,GA))
+-- Kaitlyn O'Malley
 update contractor_info c, accounts a set welcomeAuditor_id = 11067
 where c.id = a.id
-and a.state in ('KY','GA','AR','CO','IA','KS','LA','MO','ND','NE','OK','SD','WI')
+and a.state in ('AR','CO','IA','KS','LA','MO','ND','NE','OK','SD','WI')
 AND a.country = 'US';
 
--- Neal Chawla (WAITING FOR CHRIS JIMENEZ TO REASSIGN)
--- update contractor_info c, accounts a set welcomeAuditor_id =  23550
--- where c.id = a.id
--- and a.state in ('AL','FL','GA','KY','OH','TN')
--- AND a.country = 'US';
+-- Chris Jimenez
+update contractor_info c, accounts a set welcomeAuditor_id =  24798
+where c.id = a.id
+and a.state in ('AL','FL','GA','KY','OH','TN')
+AND a.country = 'US';
 
--- Tiffany Roberson (Added(TN))
+-- Tiffany Roberson
 update contractor_info c, accounts a set welcomeAuditor_id = 22222
 where c.id = a.id
-and a.state in ('TN','IL','IN','MI','MN','MS')
+and a.state in ('IL','IN','MI','MN','MS')
 AND a.country = 'US';
 
--- Valeree Claudio (Added(OH))
+-- Valeree Claudio
 update contractor_info c, accounts a set welcomeAuditor_id = 8397
 where c.id = a.id
-and a.state in ('OH','CT','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
+and a.state in ('CT','DE','MA','MD','ME','NC','NH','NJ','NY','PA','RI','SC','VA','VT','WV')
 AND a.country = 'US';
 
+-- Gary Abenaim
+update contractor_info c, accounts a set welcomeAuditor_id = 24143
+where c.id = a.id
+and (a.country = 'CA');
 
 -- update auditor with CSR for these contractors for PQF and Annual Update
 update contractor_audit ca, contractor_info c set ca.auditorid =
