@@ -34,6 +34,7 @@
 			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
 				reloadOperators( conId );
+				$('#facilitySearch .clearable').val('');
 				runSearch();
 				refreshNoteCategory(conId, 'OperatorChanges');
 			}
@@ -44,11 +45,12 @@
 		startThinking( {div: 'thinkingDiv', message: 'Unlinking contractor and operator' } );
 		var data= {id: conId, button: 'removeOperator', 'operator.id': opId};
 		$.ajax({
-			url: 'ContractorFacilityAjax.action', 
+			url: 'ContractorFacilityAjax.action',
 			data: data, 
 			complete: function() {
 				stopThinking( {div: 'thinkingDiv' } );
 				$('#operator_' + opId).fadeOut();
+				$('#facilitySearch .clearable').val('');
 				runSearch();
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
@@ -160,8 +162,8 @@
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
-					<nobr>Name: <s:textfield cssClass="forms" name="operator.name" onchange="runSearch()"/></nobr>
-					<nobr>Location: <s:select cssClass="forms" list="stateList" onchange="runSearch()" name="state" headerKey="" headerValue="- State -"></s:select></nobr>
+					<nobr>Name: <s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/></nobr>
+					<nobr>Location: <s:select cssClass="forms clearable" list="stateList" onchange="runSearch()" name="state" listKey="isoCode" listValue="english" headerKey="" headerValue="- State -"></s:select></nobr>
 				</div>
 			</div>
 		</form>

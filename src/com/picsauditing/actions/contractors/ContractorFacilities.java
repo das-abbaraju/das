@@ -101,31 +101,69 @@ public class ContractorFacilities extends ContractorActionSupport {
 							searchResults.add(opToAdd);
 					}
 				} else if (contractor.getOperators().size() == 0) {
-					Calendar lastMonth = Calendar.getInstance();
-					lastMonth.add(Calendar.MONTH, -2);
+					Calendar changedSince = Calendar.getInstance();
+					changedSince.add(Calendar.MONTH, -2);
 
-					SelectSQL inner1 = new SelectSQL("contractor_info c");
-					inner1.addJoin("JOIN accounts o ON c.requestedByID = o.id");
-					inner1.addJoin("JOIN accounts a ON c.id = a.id ");
-					inner1.addWhere(String.format("a.creationDate > '%s'", DateBean.toDBFormat(lastMonth.getTime())));
-					inner1.addWhere("a.status IN ('Active', 'Pending')");
+					SelectSQL inner1 = new SelectSQL("accounts o");
+					inner1.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
+					inner1.addJoin("JOIN accounts c ON gc.subID = c.id");
+					inner1.addWhere(String
+							.format("gc.creationDate > '%s'", DateBean.toDBFormat(changedSince.getTime())));
+					inner1.addWhere("c.status IN ('Active', 'Pending')");
+					inner1.addWhere("o.type = 'Operator'");
+					if (contractor.isDemo())
+						inner1.addWhere("o.status in ('Active', 'Demo')");
+					else
+						inner1.addWhere("o.status = 'Active'");
 					inner1.addGroupBy("o.id");
 					inner1.addField("o.id opID");
 					inner1.addField("o.name");
 					inner1.addField("o.status");
-					inner1.addField("count(*) total");
+					inner1.addField("COUNT(*) total");
 
-					SelectSQL inner2 = new SelectSQL("contractor_info c");
-					inner2.addJoin("JOIN accounts o ON c.requestedByID = o.id");
-					inner2.addJoin("JOIN accounts a ON c.id = a.id ");
-					inner2.addWhere(String.format("a.creationDate > '%s'", DateBean.toDBFormat(lastMonth.getTime())));
-					inner2.addWhere("a.status IN ('Active', 'Pending')");
+					SelectSQL inner2 = new SelectSQL("accounts o");
+					inner2.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
+					inner2.addJoin("JOIN accounts c ON gc.subID = c.id");
+					inner2.addWhere(String
+							.format("gc.creationDate > '%s'", DateBean.toDBFormat(changedSince.getTime())));
+					inner2.addWhere("c.status IN ('Active', 'Pending')");
+					inner2.addWhere("o.type = 'Operator'");
+					if (contractor.isDemo())
+						inner2.addWhere("o.status in ('Active', 'Demo')");
+					else
+						inner2.addWhere("o.status = 'Active'");
 					inner2.addGroupBy("o.id");
 					inner2.addField("o.id opID");
 					inner2.addField("o.name");
 					inner2.addField("o.status");
-					inner2.addField("count(*)*10 total");
-					inner2.addWhere("a.zip LIKE '" + contractor.getZip().charAt(0) + "%'");
+					inner2.addField("COUNT(*)*10 total");
+
+					int count = 0;
+					Database db = new Database();
+					int len = contractor.getZip().length() + 1;
+
+					while (count < 50 && len > 0) {
+						// Determine Accuracy
+						len--;
+						SelectSQL accuracyTest = new SelectSQL("accounts o");
+						accuracyTest.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
+						accuracyTest.addJoin("JOIN accounts c ON gc.subID = c.id");
+						accuracyTest.addWhere(String.format("gc.creationDate > '%s'", DateBean.toDBFormat(changedSince
+								.getTime())));
+						accuracyTest.addWhere("o.type = 'Operator'");
+						accuracyTest.addWhere("c.status IN ('Active', 'Pending')");
+						if (contractor.isDemo())
+							accuracyTest.addWhere("o.status in ('Active', 'Demo')");
+						else
+							accuracyTest.addWhere("o.status = 'Active'");
+						accuracyTest.addField("COUNT(*) c");
+						accuracyTest.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, len) + "%'");
+
+						List<BasicDynaBean> data = db.select(accuracyTest.toString(), false);
+						count = Database.toInt(data.get(0), "c");
+					}
+
+					inner2.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, len) + "%'");
 
 					SelectSQL sql = new SelectSQL("(" + inner1.toString() + " UNION " + inner2.toString() + ") t");
 					sql.addField("opID");
@@ -136,7 +174,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 					sql.addOrderBy("total DESC");
 					sql.setLimit(10);
 
-					Database db = new Database();
 					List<BasicDynaBean> data = db.select(sql.toString(), false);
 
 					searchResults = new ArrayList<OperatorAccount>();
