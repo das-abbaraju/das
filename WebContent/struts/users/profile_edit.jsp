@@ -19,7 +19,8 @@
 	    var data = {
     	    'eu.id': id, 
     	    'eu.subscription': subscription,
-    	    'addSubscription': $('#add'+subscription).is(':checked')
+    	    'addSubscription': $('#add'+subscription).is(':checked'),
+    	    goEmailSub: false
    	    };
 
 		if(timeperiod != null) {
@@ -189,7 +190,13 @@
 </table>
 </div>
 </s:if>
-
+<s:if test="goEmailSub">
+<script type="text/javascript">
+$(function() {
+	showTab('tab_subscriptions');
+ });
+</script>
+</s:if>
 <s:if test="!permissions.contractor">
 <div id="tab_subscriptions" style="display: none;">
 	<s:iterator value="eList" status="stat">

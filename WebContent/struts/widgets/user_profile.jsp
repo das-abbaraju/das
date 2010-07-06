@@ -24,5 +24,8 @@
 </s:if>
 <p><label>TimeZone:</label> <s:property value="u.timezone" /></p>
 <a href="ProfileEdit.action">Edit Profile</a>
+<s:if test="eList.size > 0">
+	<br/><a href="ProfileEdit.action?goEmailSub=true">Edit my Email Subscriptions</a>
+</s:if>
 </body>
 </html>
