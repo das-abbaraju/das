@@ -14,7 +14,6 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
 
-import org.apache.catalina.connector.ClientAbortException;
 import org.apache.struts2.ServletActionContext;
 
 import com.lowagie.text.Anchor;
@@ -93,8 +92,8 @@ public class AuditPdfConverter extends ContractorActionSupport {
 			showOshaLogs(document, pdfWriter);
 
 			document.close();
-		} catch (ClientAbortException cae) {
-			// user canceled download
+		} catch (IOException ioe) {
+			// assuming user canceled download
 		}
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
