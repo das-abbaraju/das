@@ -271,6 +271,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
+	
+	public ArrayList<String> getUnusedFlagColors(int id){
+		FlagData flagData = flagDataDAO.find(id);
+		ArrayList<String> fColor = FlagColor.getValuesWithDefault();
+		if(flagData!=null)
+			fColor.remove(flagData.getFlag().name());
+		fColor.remove(FlagColor.Clear.name());
+		return fColor;		
+	}
 
 	public String getAction() {
 		return action;
