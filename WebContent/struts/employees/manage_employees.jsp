@@ -238,12 +238,8 @@ div.dataTables_length { width: 35%; }
 										Current work location. This may be a client site.
 									</div>
 								</li>
-								<li class="highlight-test"><label>Email:</label>
+								<li><label>Email:</label>
 									<s:textfield name="employee.email"/>
-									<div class="fieldhelp">
-									<h3>Email</h3>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
-									</div>
 								</li>
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>

@@ -135,12 +135,13 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	margin-bottom:1.3em;
 	font-size: 15px;
 	background-color:#fbf2c9;
+	display:inline-block;
 }
 
 #employeeForm fieldset.form ol li.highlight-test .fieldhelp {
-position:relative;
-top:-45px;
-left:350px;
+position:absolute;
+top:55px;
+left:390px;
 width:250px;
 padding:10px;
 background-color:#fbf2c9;
