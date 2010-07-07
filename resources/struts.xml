@@ -1714,6 +1714,11 @@
 			<result>/struts/employees/employee_qualification_report.jsp</result>
 		</action>
 
+		<action name="ReportOQChanges"
+			class="com.picsauditing.actions.report.oq.ReportOQChanges">
+			<result>/struts/reports/report_oq_changes.jsp</result>
+		</action>
+
 		<action name="ReportCompetencyByEmployee"
 			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
 			<result>/struts/reports/report_competency_employee.jsp</result>

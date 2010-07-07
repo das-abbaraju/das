@@ -37,6 +37,7 @@ public class JobTask extends BaseTable {
 	private String name;
 	private boolean active;
 	private String taskType;
+	private int displayOrder;
 
 	private List<JobTaskCriteria> jobTaskCriteria = new ArrayList<JobTaskCriteria>();
 
@@ -81,6 +82,14 @@ public class JobTask extends BaseTable {
 
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
+	}
+
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -160,7 +169,7 @@ public class JobTask extends BaseTable {
 		for (Date date : markers) {
 			Boolean qualified = isQualified(date, testResults);
 			if ((previousValue == null && qualified != null)
-			 || (previousValue != null && !previousValue.equals(qualified))) {
+					|| (previousValue != null && !previousValue.equals(qualified))) {
 				series.put(date, qualified);
 			}
 			previousValue = qualified;
@@ -204,7 +213,7 @@ public class JobTask extends BaseTable {
 		// No criteria groups we completely met
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return label + " (" + id + ")";
