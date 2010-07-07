@@ -53,8 +53,7 @@ in (9,11)))
 and auditStatus in ('Pending','Submitted','Incomplete');
 
 -- update auditor with CSR for these contractors for Policies
-update contractor_audit ca, contractor_info c, contractor_audit_operator cao set ca.auditorid =
-c.welcomeAuditor_id
+update contractor_audit ca, contractor_info c, contractor_audit_operator cao set ca.auditorid = c.welcomeAuditor_id
 where ca.conid = c.id
 and audittypeid in
 (select id from audit_type where (classtype in ('Policy')))
