@@ -84,7 +84,7 @@ public class SmartFacilitySuggest {
 		return db.select(sql.toString(), false);
 	}
 
-	static public List<BasicDynaBean> getSimilarOperators(ContractorAccount contractor) throws SQLException {
+	static public List<BasicDynaBean> getSimilarOperators(ContractorAccount contractor, int limit) throws SQLException {
 		SelectSQL ops = new SelectSQL("generalcontractors");
 		ops.addField("genID");
 		ops.addWhere("subID = " + contractor.getId());
@@ -103,7 +103,7 @@ public class SmartFacilitySuggest {
 		sql.addField("SUM(s.total)");
 		sql.addField("COUNT(*)");
 		sql.addField("a.status");
-		sql.setLimit(10);
+		sql.setLimit(limit);
 
 		Database db = new Database();
 		return db.select(sql.toString(), false);

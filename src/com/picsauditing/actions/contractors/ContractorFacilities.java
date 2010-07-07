@@ -112,7 +112,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					addActionMessage("This list of operators was generated based on your location. "
 							+ "To find a specific operator, use the search filters above");
 				} else {
-					List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor);
+					List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, 10);
 
 					searchResults = new ArrayList<OperatorAccount>();
 					for (BasicDynaBean d : data) {

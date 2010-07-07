@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -44,13 +47,13 @@ public class ContractorWidget extends ContractorActionSupport {
 	private AssessmentTestDAO testDAO;
 
 	protected boolean reminderTask = false;
-	
+
 	protected boolean showAgreement = false;
 
 	protected boolean openReq = false;
 
-	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, 
-			AppPropertyDAO appPropDAO, AssessmentTestDAO testDAO) {
+	public ContractorWidget(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AppPropertyDAO appPropDAO,
+			AssessmentTestDAO testDAO) {
 		super(accountDao, auditDao);
 		this.appPropDAO = appPropDAO;
 		this.testDAO = testDAO;
@@ -63,12 +66,12 @@ public class ContractorWidget extends ContractorActionSupport {
 		findContractor();
 		return SUCCESS;
 	}
-	
+
 	public void setShowAgreement(boolean showAgreement) {
 		this.showAgreement = showAgreement;
 	}
-	
-	public boolean getShowAgreement(){
+
+	public boolean getShowAgreement() {
 		return showAgreement;
 	}
 
@@ -85,10 +88,12 @@ public class ContractorWidget extends ContractorActionSupport {
 					&& !contractor.isAgreementInEffect()
 					&& (permissions.hasPermission(OpPerms.ContractorBilling)
 							|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
-							.hasPermission(OpPerms.ContractorSafety))){
+							.hasPermission(OpPerms.ContractorSafety))) {
 				showAgreement = true;
 				openTasks
-						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"ContractorPaymentOptions.action?id="+contractor.getId()+"\" >"
+						.add("Please <a title=\"Click here to view the PICS Contractor Agreement\" href=\"ContractorPaymentOptions.action?id="
+								+ contractor.getId()
+								+ "\" >"
 								+ "review the terms of our <strong>updated</strong> Contractor User Agreement and click 'I Agree'</a> to accept the terms of the Agreement.");
 			}
 
@@ -167,18 +172,18 @@ public class ContractorWidget extends ContractorActionSupport {
 								auditName = conAudit.getAuditType().getAuditName();
 							if (conAudit.getAuditStatus().isPending() || conAudit.getAuditStatus().isIncomplete()) {
 								String auditFor = "";
-								if(conAudit.getAuditFor()!=null){
-									auditFor = " for "+ conAudit.getAuditFor();
+								if (conAudit.getAuditFor() != null) {
+									auditFor = " for " + conAudit.getAuditFor();
 								}
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
 										+ "\">complete and submit your " + auditName + auditFor + "</a>");
 							} else if (conAudit.getAuditStatus().isActiveSubmitted() && conAudit.isAboutToExpire()) {
 								String auditFor = "";
-								if(conAudit.getAuditFor()!=null){
-									auditFor = " for "+ conAudit.getAuditFor();
+								if (conAudit.getAuditFor() != null) {
+									auditFor = " for " + conAudit.getAuditFor();
 								}
 								openTasks.add("Please <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">review and re-submit your " + auditName + auditFor  + "</a>");
+										+ "\">review and re-submit your " + auditName + auditFor + "</a>");
 							}
 						}
 						if (conAudit.getAuditType().isAnnualAddendum()
@@ -196,8 +201,8 @@ public class ContractorWidget extends ContractorActionSupport {
 						if (conAudit.getAuditType().isHasRequirements() && conAudit.getAuditStatus().isSubmitted()
 								&& conAudit.getPercentVerified() < 100) {
 							String auditFor = "";
-							if(conAudit.getAuditFor()!=null){
-								auditFor = " for "+ conAudit.getAuditFor();
+							if (conAudit.getAuditFor() != null) {
+								auditFor = " for " + conAudit.getAuditFor();
 							}
 							String text = "You have <a href=\"ContractorAuditFileUpload.action?auditID="
 									+ conAudit.getId() + "\">open requirements from your recent "
@@ -214,17 +219,17 @@ public class ContractorWidget extends ContractorActionSupport {
 								&& !conAudit.getAuditType().isCanContractorEdit()
 								&& conAudit.getAuditType().isHasAuditor()) {
 							String auditFor = "";
-							if(conAudit.getAuditFor()!=null){
-								auditFor = " for "+ conAudit.getAuditFor();
+							if (conAudit.getAuditFor() != null) {
+								auditFor = " for " + conAudit.getAuditFor();
 							}
 							String text;
 							if (conAudit.getAuditType().getId() == AuditType.OFFICE
 									&& conAudit.getScheduledDate() == null) {
 								text = "Please <a href='ScheduleAudit.action?auditID=" + conAudit.getId()
-										+ "'>click here to schedule your Implementation Audit"+ auditFor +"</a>";
+										+ "'>click here to schedule your Implementation Audit" + auditFor + "</a>";
 							} else {
 								text = "Prepare for an <a href=\"Audit.action?auditID=" + conAudit.getId()
-										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + auditFor +"</a>";
+										+ "\">upcoming " + conAudit.getAuditType().getAuditName() + auditFor + "</a>";
 								if (conAudit.getScheduledDate() != null) {
 									try {
 										text += " on " + DateBean.toShowFormat(conAudit.getScheduledDate());
@@ -294,22 +299,50 @@ public class ContractorWidget extends ContractorActionSupport {
 							+ "Click here to track your webcam." + "</a>");
 				}
 			}
-			
+
 			// OQ: Add unmapped employees
 			List<AssessmentResultStage> staged = testDAO.findStagedByAccount(contractor.getId());
 			if (staged.size() > 0) {
 				boolean unmapped = false;
-				
+
 				for (AssessmentResultStage stage : staged) {
 					if (stage.getPicsEmployee() == null) {
 						unmapped = true;
 						break;
 					}
 				}
-				
+
 				if (unmapped)
-					openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">" +
-							"assessment results that need to be matched with employees</a>");
+					openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">"
+							+ "assessment results that need to be matched with employees</a>");
+			}
+
+			// Suggest Operators
+			Calendar threeMonthsAgo = Calendar.getInstance();
+			threeMonthsAgo.add(Calendar.MONTH, -3);
+			if (contractor.getViewedFacilities() == null
+					|| contractor.getViewedFacilities().before(threeMonthsAgo.getTime())) {
+				String operators = "";
+				try {
+					List<BasicDynaBean> opBeans = new ArrayList<BasicDynaBean>();
+					opBeans = SmartFacilitySuggest.getSimilarOperators(contractor, 5);
+					if (opBeans.size() > 0) {
+						for (int i = 0; i < opBeans.size() - 2; i++)
+							operators += createOperatorLink(opBeans.get(i).get("name").toString()) + ", ";
+
+						if (!Strings.isEmpty(operators))
+							operators += "and ";
+
+						operators += createOperatorLink(opBeans.get(opBeans.size() - 1).get("name").toString());
+					}
+				} catch (Exception e) {
+				}
+
+				String content = "You haven't viewed your facilities in 3 months or more. Please view this page.";
+				if (!Strings.isEmpty(operators))
+					content += " Here are 5 operators that we suggest you look at: " + operators;
+
+				openTasks.add(content);
 			}
 		}
 		return openTasks;
@@ -354,30 +387,30 @@ public class ContractorWidget extends ContractorActionSupport {
 		}
 		return null;
 	}
-	
-	public boolean getHasUnpaidInvoices(){
-		for(Invoice invoice : contractor.getInvoices()){
-			if(invoice.getStatus().isUnpaid())
+
+	public boolean getHasUnpaidInvoices() {
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (invoice.getStatus().isUnpaid())
 				return true;
 		}
 		return false;
 	}
-	
-	// Will return the earliest unpaid invoice with the assumption that 
+
+	// Will return the earliest unpaid invoice with the assumption that
 	// is the one we want to display on con_stats.jsp
-	public String getChargedOn(){
+	public String getChargedOn() {
 		String result = "";
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 			Date d = format.parse("12/31/4000");
 			for (Invoice invoice : contractor.getInvoices()) {
 				if (invoice.getStatus().isUnpaid()) {
-						Date d1 = invoice.getDueDate();
-						if(d1.before(d))
-							d  = d1;
+					Date d1 = invoice.getDueDate();
+					if (d1.before(d))
+						d = d1;
 				}
 			}
-			result = format.format(d);	
+			result = format.format(d);
 		} catch (Exception ignoreFormattingErrors) {
 		}
 		return result;
@@ -395,5 +428,10 @@ public class ContractorWidget extends ContractorActionSupport {
 			}
 		}
 		return creditCard;
+	}
+
+	private String createOperatorLink(String op) {
+		return String.format("<a href=\"ContractorFacilities.action?id=%d&operator.name=%s\">%s</a>", contractor
+				.getId(), op, op);
 	}
 }
