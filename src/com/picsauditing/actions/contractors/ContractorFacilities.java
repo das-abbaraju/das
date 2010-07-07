@@ -15,10 +15,12 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -27,6 +29,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
+	private int requestID;
 
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private OperatorAccountDAO operatorDao = null;
@@ -58,6 +61,23 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		limitedView = true;
 		findContractor();
+		
+		if (requestID > 0) {
+			ContractorRegistrationRequestDAO crrDAO = 
+				(ContractorRegistrationRequestDAO) SpringUtils.getBean("ContractorRegistrationRequestDAO");
+			ContractorRegistrationRequest crr = crrDAO.find(requestID);
+			contractor.setRequestedBy(crr.getRequestedBy());
+			
+			facilityChanger.setContractor(contractor);
+			facilityChanger.setOperator(crr.getRequestedBy().getId());
+			facilityChanger.setPermissions(permissions);
+			facilityChanger.add();
+			
+			InvoiceFee fee = BillingCalculatorSingle.calculateAnnualFee(contractor);
+			contractor.setNewMembershipLevel(fee);
+			
+			accountDao.save(contractor);
+		}
 
 		if (permissions.isOperator())
 			throw new NoPermissionException("Operators can't view this page");
@@ -186,6 +206,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 
 		return SUCCESS;
+	}
+	
+	public int getRequestID() {
+		return requestID;
+	}
+	
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
 	}
 
 	public String getState() {

@@ -30,7 +30,6 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
@@ -216,20 +215,9 @@ public class ContractorRegistration extends ContractorActionSupport {
 				crr.setOpen(false);
 				crr.setAuditColumns();
 				crr.setHandledBy(WaitingOn.Operator);
+				crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName() + 
+						" - Account created through completing a Registration Request\n\n" + crr.getNotes());
 				requestDAO.save(crr);
-
-				OperatorAccount operator = crr.getRequestedBy();
-				// Check to see if operator is just an operator,
-				// don't add contractors to corporate accounts
-				if (operator.isOperator()) {
-					contractor.setRequestedBy(crr.getRequestedBy());
-					facilityChanger.setContractor(contractor);
-					facilityChanger.setOperator(operator);
-					facilityChanger.setPermissions(permissions);
-
-					facilityChanger.add();
-					contractor.setNewMembershipLevel(new InvoiceFee(InvoiceFee.FREE));
-				}
 
 				note = new Note();
 				note.setAccount(contractor);
@@ -242,7 +230,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 				noteDAO.save(note);
 			}
 
-			redirect("ContractorRegistrationServices.action?id=" + contractor.getId());
+			redirect("ContractorRegistrationServices.action?id=" + contractor.getId() + 
+					(requestID > 0 ? "&requestID=" + requestID : ""));
 			return BLANK;
 		}
 

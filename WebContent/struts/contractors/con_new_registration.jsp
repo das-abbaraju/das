@@ -108,6 +108,9 @@ $(function() {
 				(d.getDate() < 10 ? "0" : "") + (d.getDate()) + "/" + d.getFullYear();
 		$('#addHere').html(dateString + " - <s:property value="permissions.name" /> - " + 
 				$(this).val() + "\n\n");
+
+		if ($('#addToNotes').val() == '')
+			$('#addHere').text('');
 	});
 });
 

@@ -24,6 +24,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	private int auditID = 0;
 	private int catDataID = 0;
+	private int requestID = 0;
 	private List<AuditQuestion> infoQuestions;
 	private List<AuditQuestion> serviceQuestions;
 	private Map<Integer, AuditData> answerMap;
@@ -113,7 +114,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					contractor.setRiskLevel(riskLevel);
 					contractor.setAuditColumns(permissions);
 					accountDao.save(contractor);
-					redirect("ContractorFacilities.action?id=" + contractor.getId());
+					redirect("ContractorFacilities.action?id=" + contractor.getId() + 
+							(requestID > 0 ? "&requestID=" + requestID : ""));
 					return BLANK;
 				}
 			}
@@ -127,6 +129,14 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public int getCatDataID() {
 		return catDataID;
+	}
+	
+	public int getRequestID() {
+		return requestID;
+	}
+	
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
 	}
 
 	public List<AuditQuestion> getInfoQuestions() {

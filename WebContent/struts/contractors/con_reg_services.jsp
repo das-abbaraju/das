@@ -55,7 +55,7 @@ Please select the services your company performs<br>
 
 
 <div class="buttons">
-	<a id="next_link" class="picsbutton positive" href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=calculateRisk">Next &gt;&gt;</a>
+	<a id="next_link" class="picsbutton positive" href="ContractorRegistrationServices.action?id=<s:property value="id"/>&button=calculateRisk<s:if test="requestID > 0">&requestID=<s:property value="requestID" /></s:if>">Next &gt;&gt;</a>
 </div>
 </body>
 </html>
