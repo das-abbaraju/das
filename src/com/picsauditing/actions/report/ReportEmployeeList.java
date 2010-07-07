@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
+import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -83,6 +84,20 @@ public class ReportEmployeeList extends ReportAccount {
 		
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%'", f.getStartsWith()));
+		
+		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+			String accountName = f.getAccountName().trim();
+			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + accountName + "%' OR a.id = '" + accountName
+					+ "'", accountName));
+			sql.addField("a.dbaName");
+		}
+		
+		String types = Strings.implodeForDB(f.getType(), ",");
+		if (filterOn(types)) {
+			sql.addWhere("a.type IN (" + types + ")");
+			setFiltered(true);
+		}
 
 		if (filterOn(f.getOperator())) {
 			String list = Strings.implode(f.getOperator(), ",");

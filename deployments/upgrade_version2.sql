@@ -45,3 +45,8 @@ insert into useraccess
 (accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
 values (NULL, 10, 'EmployeeList', 1, 1, 1, 1, NOW(), 941);
 --, (NULL, 1553, 'EmployeeList', 1, 0, 0, 1, NOW(), 941);
+
+-- Add TRIR Reports to all PICS Admins
+insert into useraccess
+(accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
+values (NULL, 10, 'TRIRReport', 1, null, null, 1, NOW(), 941);

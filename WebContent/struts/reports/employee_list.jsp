@@ -34,8 +34,8 @@
 			onclick="toggleBox('form1_type'); return false;">Type</a> = <span
 			id="form1_type_query">ALL</span><br /><span id="form1_type_select"
 			style="display: none" class="clearLink"><s:select
-			list="filter.typeList" multiple="true" cssClass="forms"
-			name="filter.type" id="form1_type" /><br />
+			list="#{'Corporate':'Corporate','Operator':'Operator','Contractor':'Contractor'}" 
+			multiple="true" cssClass="forms" name="filter.type" id="form1_type" /><br />
 		<script type="text/javascript">updateQuery('form1_type');</script> <a
 			class="clearLink" href="#"
 			onclick="clearSelected('form1_type'); return false;">Clear</a> </span></div>
