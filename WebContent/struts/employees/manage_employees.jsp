@@ -23,7 +23,17 @@ employeeID = <s:property value="employee.id"/>;
 </s:if>
 
 $(function() {
-	$('.datepicker').datepicker();
+	$('.datepicker').datepicker({
+			changeMonth: true,
+			changeYear:true,
+			yearRange: '1940:2010',
+			showOn: 'button',
+			buttonImage: 'images/icon_calendar.gif',
+			buttonImageOnly: true,
+			buttonText: 'Choose a date...',
+			constrainInput: true,
+			showAnim: 'fadeIn'
+		});
 	<s:if test="employee.id != 0">
 		<s:if test="employee.active == 1">
 			$('#termDate').show();
@@ -94,6 +104,7 @@ $(function() {
 		            null
 				],
 			aaSorting: [[1, 'asc']],
+			bJQueryUi: true,
 			aaData: <s:property value="employeeData" escape="false"/>,
 			bStateSave: true,
 			oLanguage: {
@@ -188,7 +199,7 @@ div.dataTables_length { width: 35%; }
 									<s:textfield name="employee.title"/>
 								</li>
 								<li><label>Birth Date:</label>
-									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="date"/>
+									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker"/>
 								</li>
 								<li><label>Classification:</label>
 									<s:select name="employee.classification" 
@@ -199,10 +210,10 @@ div.dataTables_length { width: 35%; }
 									<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
 								</li>
 								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="date datepicker"/>
+									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker"/>
 								</li>
 								<li id="termDate"><label>Termination Date:</label>
-									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="date datepicker"/>
+									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker"/>
 								</li>
 								<s:if test="employee.id > 0">
 									<s:if test="employee.photo.length() > 0">
