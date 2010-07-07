@@ -129,6 +129,33 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	font-size: 15px;
 }
 
+#employeeForm fieldset.form ol li.highlight-test {
+	padding:0 15px 10px 15px;
+	margin-left:-15px;
+	margin-bottom:1.3em;
+	font-size: 15px;
+	background-color:#fbf2c9;
+}
+
+#employeeForm fieldset.form ol li.highlight-test .fieldhelp {
+position:relative;
+top:-45px;
+left:350px;
+width:250px;
+padding:10px;
+background-color:#fbf2c9;
+display:block;
+font-size:12px;
+line-height:20px;
+-moz-box-shadow: 3px 3px 4px #666;
+-webkit-box-shadow: 3px 3px 4px #666;
+box-shadow: 3px 3px 4px #666;
+/* For IE 8 */
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')";
+/* For IE 5.5 - 7 */
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666');
+}
+
 
 #employeeForm fieldset.form label {
 	float: none;

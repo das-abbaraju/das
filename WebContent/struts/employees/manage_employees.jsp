@@ -186,8 +186,12 @@ div.dataTables_length { width: 35%; }
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
 							<ol>
-								<li><label>First Name:</label>
+								<li class="highlight-test"><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
+									<div class="fieldhelp">
+									<h3>First Name</h3>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
+									</div>
 								</li>
 								<li><label>Last Name:</label>
 									<s:textfield name="employee.lastName"/>
@@ -234,8 +238,12 @@ div.dataTables_length { width: 35%; }
 										Current work location. This may be a client site.
 									</div>
 								</li>
-								<li><label>Email:</label>
+								<li class="highlight-test"><label>Email:</label>
 									<s:textfield name="employee.email"/>
+									<div class="fieldhelp">
+									<h3>Email</h3>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
+									</div>
 								</li>
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone"/>

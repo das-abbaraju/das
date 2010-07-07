@@ -159,9 +159,9 @@ function checkReason(id) {
 						<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
 					</div>
 				</s:form>
-				<a href="#" onclick="$('#override_link').show(); $('#override').hide(); return false;">Nevermind</a>
+				<a href="#" onclick="$('#override_link').slideDown(); $('#override').slideUp(); return false;">Nevermind</a>
 				</div>
-				<a id="override_link" href="#" onclick="$('#override').show(); $('#override_link').hide(); return false;">Manually Force Flag Color</a><br />
+				<a id="override_link" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;">Manually Force Flag Color</a><br />
 			</s:else>
 		</pics:permission>		
 	</div>	
