@@ -35,7 +35,7 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 					Employee employee = employeeDAO.find(employeeID);
 					calculate(employee);
 				} else {
-					String where = "e.account.id = 4004";
+					String where = "";
 					List<Employee> employeesToRecalculate = employeeDAO.findWhere(where, 10);
 
 					for (Employee employee : employeesToRecalculate) {
