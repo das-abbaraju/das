@@ -92,9 +92,9 @@ public class OshaOrganizer {
 		case LastYearOnly:
 			return yearIndex.get(0).isVerified();
 		case TwoYearsAgo:
-			return (yearIndex.size() > 1) ? yearIndex.get(yearIndex.size() - 2).isVerified() : false;
+			return (yearIndex.size() > 1) ? yearIndex.get(1).isVerified() : false;
 		case ThreeYearsAgo:
-			return (yearIndex.size() > 2) ? yearIndex.get(yearIndex.size() - 1).isVerified() : false;
+			return (yearIndex.size() > 2) ? yearIndex.get(2).isVerified() : false;
 		case ThreeYearAverage:
 			for (OshaAudit osha : data.get(type)) {
 				if (osha != null && !osha.isVerified())
@@ -116,11 +116,11 @@ public class OshaOrganizer {
 		case LastYearOnly:
 			return (yearIndex.get(0) != null) ? yearIndex.get(0).getRate(rateType) : null;
 		case TwoYearsAgo:
-			return (yearIndex.size() > 1 && yearIndex.get(yearIndex.size() - 2) != null) ? yearIndex
-					.get(yearIndex.size() - 2).getRate(rateType) : null;
+			return (yearIndex.size() > 1 && yearIndex.get(1) != null) ? yearIndex
+					.get(1).getRate(rateType) : null;
 		case ThreeYearsAgo:
-			return (yearIndex.size() > 2 && yearIndex.get(yearIndex.size() - 1) != null) ? yearIndex
-					.get(yearIndex.size() - 1).getRate(rateType) : null;
+			return (yearIndex.size() > 2 && yearIndex.get(2) != null) ? yearIndex
+					.get(2).getRate(rateType) : null;
 		case ThreeYearAverage:
 			int avgCount = 0;
 			Float rate = 0f;
@@ -150,10 +150,10 @@ public class OshaOrganizer {
 		case LastYearOnly:
 			return "Year: " + yearIndex.get(0).getConAudit().getAuditFor();
 		case TwoYearsAgo:
-			return (yearIndex.size() > 1) ? "Year: " + yearIndex.get(yearIndex.size() - 2).getConAudit().getAuditFor()
+			return (yearIndex.size() > 1) ? "Year: " + yearIndex.get(1).getConAudit().getAuditFor()
 					: "";
 		case ThreeYearsAgo:
-			return (yearIndex.size() > 2) ? "Year: " + yearIndex.get(yearIndex.size() - 1).getConAudit().getAuditFor()
+			return (yearIndex.size() > 2) ? "Year: " + yearIndex.get(2).getConAudit().getAuditFor()
 					: "";
 		case ThreeYearAverage:
 			String yearResult = "";
@@ -178,9 +178,9 @@ public class OshaOrganizer {
 		case LastYearOnly:
 			return yearIndex.get(0);
 		case TwoYearsAgo:
-			return (yearIndex.size() > 1) ? yearIndex.get(yearIndex.size() - 2) : null;
+			return (yearIndex.size() > 1) ? yearIndex.get(1) : null;
 		case ThreeYearsAgo:
-			return (yearIndex.size() > 2) ? yearIndex.get(yearIndex.size() - 1) : null;
+			return (yearIndex.size() > 2) ? yearIndex.get(2) : null;
 		case ThreeYearAverage:
 			OshaAudit straightAvg = new OshaAudit();
 
