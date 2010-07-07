@@ -343,3 +343,6 @@ table.report tbody .Green td {color:#272;}
 #content div.panel .bigFlagIcon {display:block;margin:10px;float:left;}
 #content div.panel .FlagCriteriaContent {display:block;margin:10px;float:left;}
 
+#content div.clear {float: none;clear: both;height: 0px;margin: 0px;padding: 0px;}
+
+
