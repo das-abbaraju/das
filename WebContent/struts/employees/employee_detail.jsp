@@ -63,7 +63,12 @@
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
 								<s:property value="employee.title" /><br />
-								<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
+								<s:if test="permissions.admin || (permissions.operatorCorporate && canViewContractor(employee.account.id)) || permissions.accountIdString == employee.account.id">
+									<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
+								</s:if>
+								<s:else>
+									<s:property value="employee.account.name" />
+								</s:else>
 							</td>
 							<s:if test="!employee.account.logoFile.empty()">
 								<td style="vertical-align: middle; padding: 0px 5px;">

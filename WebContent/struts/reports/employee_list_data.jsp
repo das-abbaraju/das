@@ -27,14 +27,17 @@
 			<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />">
 				<s:property value="get('firstName')" /> <s:property value="get('lastName')" /></a></td>
 			<td>
-				<s:if test="get('type') == 'Contractor'">
+				<s:if test="get('type') == 'Contractor' && (permissions.admin || canViewContractor(get('id')))">
 					<a href="ContractorView.action?id=<s:property value="get('id')" />">
 						<s:property value="get('name')" /></a>
 				</s:if>
-				<s:elseif test="get('type') == 'Operator' && (permissions.corporate || permissions.admin || permissions.accountID == get('id'))">
+				<s:elseif test="get('type') == 'Operator' && (permissions.corporate || permissions.admin || permissions.accountIdString == get('id'))">
 					<a href="FacilitiesEdit.action?id=<s:property value="get('id')" />">
 						<s:property value="get('name')" /></a>
 				</s:elseif>
+				<s:else>
+					<s:property value="get('name')" />
+				</s:else>
 				<s:if test="get('dbaName').length() > 0"><br />DBA Name: <s:property value="get('dbaName')" /></s:if>
 			</td>
 			<td><s:property value="get('type')" /></td>

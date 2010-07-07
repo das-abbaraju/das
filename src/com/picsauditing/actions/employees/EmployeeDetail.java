@@ -10,11 +10,13 @@ import java.util.TreeSet;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.EmployeeQualification;
@@ -23,6 +25,7 @@ import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class EmployeeDetail extends AccountActionSupport implements Preparable {
@@ -113,6 +116,16 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 		}
 		
 		return opComps;
+	}
+	
+	public boolean canViewContractor(int conID) {
+		ContractorOperatorDAO coDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
+		ContractorOperator co = coDAO.find(conID, permissions.getAccountId());
+		
+		if (co != null)
+			return true;
+		
+		return false;
 	}
 	
 	public List<EmployeeCompetency> getCompetencies() {

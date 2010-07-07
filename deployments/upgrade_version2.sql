@@ -39,3 +39,9 @@ update accounts set status = 'Pending' where id = 11069 or id = 11087;
 
 /* Set Contractor logo to null where it is blank or No */
 update contractor_info set logo_file = NULL where logo_file = '' or logo_file = 'No';
+
+-- Add employee list to all PICS Admins (Operator Admins?)
+insert into useraccess 
+(accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
+values (NULL, 10, 'EmployeeList', 1, 1, 1, 1, NOW(), 941);
+--, (NULL, 1553, 'EmployeeList', 1, 0, 0, 1, NOW(), 941);
