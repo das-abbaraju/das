@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -316,35 +317,8 @@ public class ContractorWidget extends ContractorActionSupport {
 					openTasks.add("You have <a href=\"ManageUnmappedEmployees.action\">"
 							+ "assessment results that need to be matched with employees</a>");
 			}
-
-			// Suggest Operators
-			Calendar threeMonthsAgo = Calendar.getInstance();
-			threeMonthsAgo.add(Calendar.MONTH, -3);
-			if (contractor.getViewedFacilities() == null
-					|| contractor.getViewedFacilities().before(threeMonthsAgo.getTime())) {
-				String operators = "";
-				try {
-					List<BasicDynaBean> opBeans = new ArrayList<BasicDynaBean>();
-					opBeans = SmartFacilitySuggest.getSimilarOperators(contractor, 5);
-					if (opBeans.size() > 0) {
-						for (int i = 0; i < opBeans.size() - 2; i++)
-							operators += createOperatorLink(opBeans.get(i).get("name").toString()) + ", ";
-
-						if (!Strings.isEmpty(operators))
-							operators += "and ";
-
-						operators += createOperatorLink(opBeans.get(opBeans.size() - 1).get("name").toString());
-					}
-				} catch (Exception e) {
-				}
-
-				String content = "You haven't viewed your facilities in 3 months or more. Please view this page.";
-				if (!Strings.isEmpty(operators))
-					content += " Here are 5 operators that we suggest you look at: " + operators;
-
-				openTasks.add(content);
-			}
 		}
+
 		return openTasks;
 	}
 
@@ -430,8 +404,11 @@ public class ContractorWidget extends ContractorActionSupport {
 		return creditCard;
 	}
 
-	private String createOperatorLink(String op) {
-		return String.format("<a href=\"ContractorFacilities.action?id=%d&operator.name=%s\">%s</a>", contractor
-				.getId(), op, op);
+	public List<BasicDynaBean> getSuggestedOperators() {
+		try {
+			return SmartFacilitySuggest.getSimilarOperators(contractor, 5);
+		} catch (SQLException e) {
+			return null;
+		}
 	}
 }

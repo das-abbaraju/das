@@ -19,7 +19,13 @@
 </s:iterator>
 </ol>
 <s:if test="reminderTask">
-	<label>Reminder : </label>Please <a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">update your facility list</a>
+	<label>Reminder : </label>
+	You haven't updated your facilities in more than 90 days.
+	<s:if test="suggestedOperators.size() > 0">
+	Here are five operators that we suggest you look at:
+	<s:iterator value="suggestedOperators" status="stat"><a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>&operator.name=<s:property value="get('name')"/>"><s:property value="get('name')"/></a><s:if test="!#stat.last">, </s:if></s:iterator>, or 
+	</s:if>
+ 	<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click here to update your facility list</a>
 </s:if>
 <s:if test="showAgreement">
 <script type="text/javascript">
