@@ -120,7 +120,7 @@
 							<s:if test="contractor.paymentMethod.creditCard">
 								<s:if test="contractor.mustPayB">
 									<div class="info">
-										Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be mailed to you.
+										Please only click the button once. Your card will be charged $<s:property value="invoice.totalAmount" /> immediately and a receipt will be e-mailed to you.
 									</div>
 								</s:if>
 								<s:else>
