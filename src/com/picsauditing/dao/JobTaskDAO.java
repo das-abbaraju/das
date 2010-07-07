@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.JobTask;
 @Transactional
 @SuppressWarnings("unchecked")
 public class JobTaskDAO extends PicsDAO {
+
 	public JobTask find(int id) {
 		return em.find(JobTask.class, id);
 	}
@@ -32,8 +33,10 @@ public class JobTaskDAO extends PicsDAO {
 	}
 
 	public List<JobTask> findByEmployee(int employeeID) {
-		Query query = em.createQuery("SELECT DISTINCT jst.task FROM JobSiteTask jst WHERE jst.job IN (SELECT jobSite FROM EmployeeSite WHERE employee.id = :employeeID)");
+		Query query = em.createQuery("SELECT DISTINCT jst.task FROM JobSiteTask jst "
+				+ "WHERE jst.job IN (SELECT jobSite FROM EmployeeSite WHERE employee.id = :employeeID)");
 		query.setParameter("employeeID", employeeID);
 		return query.getResultList();
 	}
+
 }
