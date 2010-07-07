@@ -78,12 +78,19 @@ function checkReason(id) {
 </div>
 </s:if>
 
-<table style="text-align: center;">
+<table>
 	<tr>
-		<td rowspan="2" style="vertical-align: middle;"><s:property	value="co.flagColor.bigIcon" escape="false" /></td>
-		<td rowspan="2" style="width: 10px;">&nbsp;</td>
-		<td style="vertical-align: middle;">
-			<b>Flag Status<br />at
+		<td style="vertical-align:top; width: 48%">
+		<div class="panel_placeholder">
+		<div class="panel">
+			<div class="panel_header">
+				Flag Status
+			</div>
+			<div class="panel_content">
+			<div class="bigFlagIcon">
+			<s:property	value="co.flagColor.bigIcon" escape="false" /></div>
+			<div class="FlagCriteriaContent">
+			<b>
 			<pics:permission perm="EditFlagCriteria">
 				<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />" title="View Flag Criteria"><s:property value="co.operatorAccount.name"/></a>		
 			</pics:permission>
@@ -91,9 +98,14 @@ function checkReason(id) {
 				<s:property value="co.operatorAccount.name"/>
 			</pics:permission>
 			</b>
-		</td>
-	</tr>
-	<tr><td colspan="3">Currently waiting on <b><s:property value="co.waitingOn"/></b></td></tr>
+			<br />
+	Currently waiting on <b><s:property value="co.waitingOn"/></b></div>
+	<div class="clear"></div>
+	
+	</div></div></div>
+	</td></tr>
+	</table>
+	<table style="text-align: center;">
 	<tr><td colspan="3">
 		<s:if test="co.flagColor.clear" >
 			This <s:property value="co.contractorAccount.status"/> 
@@ -176,6 +188,7 @@ function checkReason(id) {
 			<td>Flag</td>
 			<td>Description</td>
 			<td>Value</td>
+			<td>Override</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -184,26 +197,8 @@ function checkReason(id) {
 			<s:if test="#data.flag.toString() == 'Red' || #data.flag.toString() == 'Amber' || isFlagDataOverride(#data)">
 			<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>
 				<tr class="<s:property value="#data.flag" />">
-					<td>
+					<td class="center">
 						<s:property value="#data.flag.smallIcon" escape="false" />
-						<s:if test="#flagoverride != null">
-							<span title="By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>">
-								Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
-								<a href="ContractorNotes.action?id=<s:property value="contractor.id"/>&filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&filter.category=Flags&filter.keyword=Forced">View Notes</a>
-							</span>
-						</s:if>
-						<pics:permission perm="EditForcedFlags">
-							<br/>
-							<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
-								onclick="$('#'+<s:property value="%{#data.id}" />+'_override').toggle(); return false;">
-								<s:if test="canForceDataFlag(#flagoverride)">
-									Override
-								</s:if>
-								<s:else>
-									Flag has been forced
-								</s:else>
-							</a>
-						</pics:permission>
 					</td>
 					<td>
 						<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
@@ -218,7 +213,12 @@ function checkReason(id) {
 								</s:else>
 							</s:if>
 						</s:iterator>
-					</td>
+					</td><s:if test="#flagoverride != null">
+							<span title='By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>'>
+								Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+								<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>View Notes</a>
+							</span>
+						</s:if>
 					<td>
 						<s:if test="#data.criteria.auditType != null">
 							<s:iterator id="audit" value="contractor.audits">
@@ -251,6 +251,20 @@ function checkReason(id) {
 								</s:if>
 							</s:iterator>
 						</s:else>
+					</td>
+					<td>
+						<pics:permission perm="EditForcedFlags">
+							<br/>
+							<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
+								onclick="$('#'+<s:property value="%{#data.id}" />+'_override').toggle(); return false;">
+								<s:if test="canForceDataFlag(#flagoverride)">
+									Override
+								</s:if>
+								<s:else>
+									Flag has been forced
+								</s:else>
+							</a>
+						</pics:permission>
 					</td>
 				</tr>
 				<pics:permission perm="EditForcedFlags">

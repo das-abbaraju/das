@@ -309,3 +309,37 @@ td.or, tr.or {
 	font-family:monospace;
 	font-weight:bold;
 }
+
+
+/******************** Flag Status Report Page  ************************/
+
+table.report tbody .Red td {color:#900;}
+table.report tbody .Amber td {color:#770;}
+table.report tbody .Green td {color:#272;}
+
+
+#content div.panel_placeholder {
+	background:#ECECEC none repeat scroll 0%;
+	margin-bottom:5px;
+	padding:4px;
+}
+#content div.panel {
+	border: 1px solid #BBB;
+	margin:0px;
+	padding:0px;
+}
+#content div.panel_header {
+	height: 22px;
+	font-size:10pt;
+	color: #A84D10;
+	font-weight: bold;
+	overflow: hidden;
+	border-bottom:1px solid #B3B3B3;
+	padding:2px;
+	padding-left: 5px;
+	margin:0px;
+}
+
+#content div.panel .bigFlagIcon {display:block;margin:10px;float:left;}
+#content div.panel .FlagCriteriaContent {display:block;margin:10px;float:left;}
+
