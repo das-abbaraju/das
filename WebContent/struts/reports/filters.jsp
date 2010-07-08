@@ -394,7 +394,7 @@
 			<span id="form1_operator_select" style="display: none"
 				class="clearLink"> <s:select id="form1_operator"
 				list="filter.operatorList" cssClass="forms" name="filter.operator"
-				listKey="id" listValue="name" multiple="true" size="10" /> <script
+				listKey="id" listValue="name" multiple="true" size="%{filter.operatorList.size() < 25? filter.operatorList.size() : 25}" /> <script
 				type="text/javascript">updateQuery('form1_operator');</script> <br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_operator'); return false;">Clear</a> </span>
