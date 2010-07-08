@@ -14,12 +14,19 @@
 		<li><a href="AuditOperator.action?oID=<s:property value="operator.id"/>">Audits</a></li>
 	</s:if>
 	<li><a href="UsersManage.action?accountId=<s:property value="operator.id"/>">Users</a></li>
+	<pics:permission perm="ManageEmployees">
+		<li><a href="ManageEmployees.action?id=<s:property value="operator.id"/>">Employees</a></li>
+	</pics:permission>
 	<li><a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('op_manage_flag_criteria') && !insurance">class="current"</s:if>>Flag Criteria</a></li>
 	<s:if test="operator.canSeeInsurance.toString() == 'Yes'">
 		<li><a href="ManageInsuranceCriteriaOperator.action?id=<s:property value="operator.id"/>"
 			<s:if test="requestURI.contains('op_manage_flag_criteria') && insurance">class="current"</s:if>>Insurance Criteria</a></li>
 	</s:if>
+	<pics:permission perm="ManageProjects">
+		<li><a href="ManageProjects.action?id=<s:property value="operator.id"/>"
+			<s:if test="requestURI.contains('op_job_sites')">class="current"</s:if>>Projects</a></li>
+	</pics:permission>
 	<pics:permission perm="ContractorTags">
 		<li><a href="OperatorTags.action?id=<s:property value="operator.id"/>"
 			<s:if test="requestURI.contains('operator_tags')">class="current"</s:if>>Tags</a></li>
