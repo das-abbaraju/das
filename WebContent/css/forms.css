@@ -118,18 +118,18 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 
 
 #employeeForm fieldset.form ol {
-	margin:50px 0 0 30px;
+	margin:50px 0 0 20px;
 	padding-left: 10px;
 	list-style: none;
 	}
 	
 #employeeForm fieldset.form ol li {
-	padding-bottom: 1.3em;
-	padding-top: 0;
+	padding: 5px 10px 15px 10px;
 	font-size: 15px;
 }
 
 #employeeForm fieldset.form ol li.fieldhelp-focused {
+	position:relative;
 	background-color:#fbf2c9;
 	display:inline-block;
 }

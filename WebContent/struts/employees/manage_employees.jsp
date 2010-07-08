@@ -136,10 +136,10 @@ $(function() {
 });
 
 $(function() {
-	$('input.fieldhelp-input').focus(function() {
+	$('ol.fieldhelp-list :input').focus(function() {
 		var parent = $(this).parent();
 		parent.addClass('fieldhelp-focused');
-		parent.find('.fieldhelp').offset({top: parent.offset().top, left: parent.width()+parent.offset().left+20});
+		parent.find('.fieldhelp').offset({top: parent.offset().top, left: parent.width()+parent.offset().left+30});
 	}).blur(function() {
 		$(this).parent().removeClass('fieldhelp-focused');
 	});
@@ -195,23 +195,23 @@ div.dataTables_length { width: 35%; }
 						<s:hidden name="employee.id"/>
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
-							<ol>
+							<ol class="fieldhelp-list">
 								<li><label>First Name:</label>
-									<s:textfield name="employee.firstName" cssClass="fieldhelp-input"/>
+									<s:textfield name="employee.firstName"/>
 									<div class="fieldhelp">
 									<h3>First Name</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
 									</div>
 								</li>
 								<li><label>Last Name:</label>
-									<s:textfield name="employee.lastName" cssClass="fieldhelp-input"/>
+									<s:textfield name="employee.lastName"/>
 									<div class="fieldhelp">
 									<h3>Last Name</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
 									</div>
 								</li>
 								<li><label>SSN:</label>
-									<s:textfield name="ssn" cssClass="ssn fieldhelp-input"/>
+									<s:textfield name="ssn" cssClass="ssn"/>
 									<div class="fieldhelp">
 									<h3>Social Security Number (SSN)</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
@@ -251,7 +251,7 @@ div.dataTables_length { width: 35%; }
 									</s:else>
 								</s:if>
 								<li><label>Location:</label>
-									<s:textfield name="employee.location" id="locationSuggest" cssClass="fieldhelp-input"/><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="Location"></a>
+									<s:textfield name="employee.location" id="locationSuggest"/><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="Location"></a>
 									<div id="cluetip2">
 										Current work location. This may be a client site.
 									</div>
