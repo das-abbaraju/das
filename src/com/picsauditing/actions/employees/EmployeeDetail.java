@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -142,6 +144,17 @@ public class EmployeeDetail extends AccountActionSupport implements Preparable {
 	public List<EmployeeQualification> getJobTasks() {
 		List<EmployeeQualification> tasks = 
 			new ArrayList<EmployeeQualification>(employee.getEmployeeQualifications());
+		
+		Iterator<EmployeeQualification> iterator = tasks.iterator();
+		while (iterator.hasNext()) {
+			EmployeeQualification e = iterator.next();
+			
+			if (e.getEffectiveDate() != null && e.getExpirationDate() != null && 
+					(e.getEffectiveDate().after(new Date()) || e.getExpirationDate().before(new Date()))) {
+				iterator.remove();
+			}
+		}
+		
 		Collections.sort(tasks, new SortTaskByLabel());
 		
 		return tasks;

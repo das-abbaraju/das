@@ -4,6 +4,7 @@
 <head>
 	<title>Employee Details</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 	<style type="text/css">
 		table tr td {
@@ -20,23 +21,18 @@
 			text-align: center;
 		}
 		
-		.cell {
-			border: 1px solid black;
+		.panel_placeholder {
+			margin: 5px;
 		}
 		
-		.cell, .report {
-			padding: 10px;
-			margin: 10px;
-		}
-		
-		.cell td {
-			padding: 0px 5px;
-		}
-		
-		.cell th {
-			padding: 0px 5px;
+		.panel_content th {
+			padding: 0.5ex 5px;
 			text-align: right;
 			font-weight: bold;
+		}
+		
+		.panel_content td {
+			padding: 0.5ex 0;
 		}
 		
 		#profile img {
@@ -54,12 +50,12 @@
 				<td colspan="2">
 					<table style="margin: 0px auto;">
 						<tr>
-							<td style="vertical-align: middle; padding: 0px 5px;">
-								<s:if test="employee.photo.length() > 0">
-								<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>"
-									alt="<s:property value="employee.displayName"/>" title="Profile Photo for <s:property value="employee.displayName"/>"/>
-								</s:if>
-							</td>
+							<s:if test="employee.photo.length() > 0">
+								<td style="vertical-align: middle; padding: 0px 5px;">
+									<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>"
+										alt="<s:property value="employee.displayName"/>" title="Profile Photo for <s:property value="employee.displayName"/>"/>
+								</td>
+							</s:if>
 							<td style="vertical-align: middle; padding: 0px 5px;">
 								<h2><s:property value="employee.displayName" /></h2>
 								<s:property value="employee.title" /><br />
@@ -69,6 +65,11 @@
 								<s:else>
 									<s:property value="employee.account.name" />
 								</s:else>
+								<s:if test="permissions.admin || permissions.accountID == employee.account.id">
+									<pics:permission perm="ManageEmployees">
+										<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />">Manage Employee</a>
+									</pics:permission>
+								</s:if>
 							</td>
 							<s:if test="!employee.account.logoFile.empty()">
 								<td style="vertical-align: middle; padding: 0px 5px;">
@@ -82,54 +83,35 @@
 			</tr>
 			<tr>
 				<td>
-					<s:if test="employee.employeeSites.size() > 0 || employee.employeeRoles.size() > 0">
-						<div class="cell">
-							<table>
-								<s:if test="employee.employeeSites.size() > 0">
-									<tr>
-										<th>Works at:</th>
-										<td>
-											<s:iterator value="employee.employeeSites" id="sites" status="stat">
-												<s:if test="#sites.current">
-													<s:if test="permissions.operatorCorporate">
-														<s:if test="canOperatorViewSite(permissions.accountId)">
-															<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >: <s:property value="#sites.jobSite.name" /></s:if><br />
-															<span style="font-size: 12px; padding-left: 5px;" >
-																Since: <s:property value="#sites.effectiveDate" />
-																<s:if test="#sites.orientationDate!=null" >
-																	<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span>
-																</s:if>
-																<br />
-															</span>
-														</s:if>
-													</s:if>
-													<s:else>
-														<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >: <s:property value="#sites.jobSite.name" /></s:if><br />
-														<span style="font-size: 12px; padding-left: 5px;" >
+					<s:if test="employee.employeeSites.size() > 0">
+						<div class="panel_placeholder">
+							<div class="panel">
+								<div class="panel_header">
+									Works At
+								</div>
+								<div class="panel_content">
+									<table>
+										<s:iterator value="employee.employeeSites" id="sites" status="stat">
+											<s:if test="#sites.current">
+												<tr>
+													<th>
+														<s:property value="#sites.operator.name" /><s:if test="#sites.jobSite.name != null" >:
+													</th>
+													<td>
+														<s:property value="#sites.jobSite.name" /></s:if><br />
+														<span style="font-size: 12px;" >
 															Since: <s:property value="#sites.effectiveDate" />
 															<s:if test="#sites.orientationDate!=null" >
-																<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span>
+																<span style="padding-left: 8px;" >Orientation: <s:property value="#sites.orientationDate" /></span><br />
 															</s:if>
-															<br />
 														</span>
-													
-													</s:else>													
-												</s:if>
-											</s:iterator>
-										</td>
-									</tr>
-								</s:if>
-								<s:if test="employee.employeeRoles.size() > 0">
-									<tr>
-										<th>Job Role<s:if test="employee.employeeRoles.size() > 0">s</s:if>:</th>
-										<td>
-											<s:iterator value="employee.employeeRoles" id="role" status="stat">
-												<s:property value="jobRole.name" /><s:if test="!#stat.last">, </s:if>
-											</s:iterator>
-										</td>
-									</tr>
-								</s:if>
-							</table>
+													</td>
+												</tr>
+											</s:if>
+										</s:iterator>
+									</table>
+								</div>
+							</div>
 						</div>
 					</s:if>
 					<s:if test="employee.employeeRoles.size() > 0">
@@ -169,33 +151,40 @@
 				</td>
 				<td>
 					<s:if test="employee.phone.length() > 0 || employee.email.length() > 0 || employee.location.length() > 0 || employee.twicExpiration != null">
-						<div class="cell">
-							<table>
-								<s:if test="employee.phone.length() > 0">
-									<tr>
-										<th>Phone:</th>
-										<td><s:property value="employee.phone" /></td>
-									</tr>
-								</s:if>
-								<s:if test="employee.email.length() > 0">
-									<tr>
-										<th>Email:</th>
-										<td><s:property value="employee.email" /></td>
-									</tr>
-								</s:if>
-								<s:if test="employee.location.length() > 0">
-									<tr>
-										<th>Location:</th>
-										<td><s:property value="employee.location" /></td>
-									</tr>
-								</s:if>
-								<s:if test="employee.twicExpiration != null">
-									<tr>
-										<th>TWIC Card Expiration:</th>
-										<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
-									</tr>
-								</s:if>
-							</table>
+						<div class="panel_placeholder">
+							<div class="panel">
+								<div class="panel_header">
+									Information
+								</div>
+								<div class="panel_content">
+									<table>
+										<s:if test="employee.phone.length() > 0">
+											<tr>
+												<th>Phone:</th>
+												<td><s:property value="employee.phone" /></td>
+											</tr>
+										</s:if>
+										<s:if test="employee.email.length() > 0">
+											<tr>
+												<th>Email:</th>
+												<td><s:property value="employee.email" /></td>
+											</tr>
+										</s:if>
+										<s:if test="employee.location.length() > 0">
+											<tr>
+												<th>Location:</th>
+												<td><s:property value="employee.location" /></td>
+											</tr>
+										</s:if>
+										<s:if test="employee.twicExpiration != null">
+											<tr>
+												<th>TWIC Card Expiration:</th>
+												<td><s:date name="employee.twicExpiration" format="MM/dd/yyyy" /></td>
+											</tr>
+										</s:if>
+									</table>
+								</div>
+							</div>
 						</div>
 					</s:if>
 					<s:if test="employee.employeeQualifications.size() > 0">
