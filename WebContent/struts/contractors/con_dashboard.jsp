@@ -233,6 +233,13 @@ table.report tr.hurdle td {
 							<s:property value="co.waitingOn"/>
 						</p>
 					</s:if>
+					<p>Operator Qualification:						
+						<s:if test="contractor.requiresOQ">Enabled</s:if>
+						<s:else>Disabled</s:else>
+					</p>
+					<p>HSE Competency Review:
+						<s:if test="contractor.requiresCompetencyReview">Enabled</s:if><s:else>Disabled</s:else>
+					</p>
 					<p>Last Login:
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>

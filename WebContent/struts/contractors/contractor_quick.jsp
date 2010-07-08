@@ -31,6 +31,12 @@
 		<label>PICS #:</label>
 		<s:property value="contractor.id" />
 		<br />
+		<label>Operator Qualification:</label>
+		<s:if test="contractor.requiresOQ">Enabled</s:if><s:else>Disabled</s:else>
+		<br />
+		<label>HSE Competency Review:</label>
+		<s:if test="contractor.requiresCompetencyReview">Enabled</s:if><s:else>Disabled</s:else>
+		<br />
 		<label>Industry/Trade:</label>
 		<s:property value="contractor.industry.description" />/<s:property value="contractor.mainTrade" />
 		<br />
