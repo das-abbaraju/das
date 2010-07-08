@@ -139,7 +139,8 @@ $(function() {
 	$('ol.fieldhelp-list :input').focus(function() {
 		var parent = $(this).parent();
 		parent.addClass('fieldhelp-focused');
-		parent.find('.fieldhelp').offset({top: parent.offset().top, left: parent.width()+parent.offset().left+30});
+		var offset = parent.position();
+		parent.find('.fieldhelp').css({top: offset.top + 'px', left: (parent.width()+offset.left+30) +'px'});
 	}).blur(function() {
 		$(this).parent().removeClass('fieldhelp-focused');
 	});
