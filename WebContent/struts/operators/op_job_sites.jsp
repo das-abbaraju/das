@@ -126,7 +126,7 @@ $(function() {
 					<thead>
 						<tr><th></th>
 							<th>Label</th>
-							<th>Site Name</th>
+							<th>Name</th>
 							<s:if test="canEdit">
 								<th>Tasks</th>
 								<th>Edit</th>
