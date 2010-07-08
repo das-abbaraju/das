@@ -69,7 +69,7 @@ function setStep(id){
 		<li><a id="step2"<s:if test="step==1">class="inactive"</s:if> <s:if test="step>=2">href="#" onclick="setStep(2); return false;"</s:if>>Step 2: Finish</a></li>
 	</ul>
 </div>
-<a class="picsbutton" href="ManageEmployees.action?id=<s:property value="employee.account.id"/>">&lt;&lt; Back to Manage Employee</a>
+<a class="picsbutton" href="ManageEmployees.action?employee.id=<s:property value="employee.id"/>">&lt;&lt; Back to Manage Employee</a>
 <s:include value="../actionMessages.jsp" />
 <s:if test="step==2 & employee.photo == null">
 	<div id="alert" class="cropStep">
