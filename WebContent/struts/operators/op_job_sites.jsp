@@ -96,7 +96,8 @@ function removeTask(siteID, siteTaskID) {
 
 function editSite(siteID) {
 	startThinking({div: 'editProject', message: 'Loading project'});
-	$('#editProject').load('ManageProjectsAjax.action', { button: 'EditSite', siteID: siteID });
+	$('#editProject').load('ManageProjectsAjax.action',
+			{ button: 'EditSite', siteID: siteID, id: <s:property value="operator.id" /> });
 }
 
 function getStates(country) {
