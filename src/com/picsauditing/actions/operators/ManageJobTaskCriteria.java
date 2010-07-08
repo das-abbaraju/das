@@ -1,7 +1,7 @@
 package com.picsauditing.actions.operators;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -82,9 +82,16 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 
 			if ("Remove".equalsIgnoreCase(button)) {
 				newJobTaskCriteria = jobTaskCriteriaDAO.find(jobTaskCriteriaID);
+				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 				assessmentTest = newJobTaskCriteria.getAssessmentTest();
-				newJobTaskCriteria.expire();
-				jobTaskCriteriaDAO.save(newJobTaskCriteria);
+				
+				// If deleting something created today, just remove
+				if (sdf.format(newJobTaskCriteria.getCreationDate()).equals(sdf.format(new Date())))
+					jobTaskCriteriaDAO.remove(newJobTaskCriteria);
+				else {
+					newJobTaskCriteria.expire();
+					jobTaskCriteriaDAO.save(newJobTaskCriteria);
+				}
 				
 				addActionMessage("Successfully removed "+assessmentTest.getName()+" from group "+groupNumber);
 			}
@@ -222,7 +229,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 			return jobTask.getJobTaskCriteriaMap(date);
 	}
 	
-	private void setupNewJobTaskCriteria() {
+	private void setupNewJobTaskCriteria() throws Exception {
 		if (assessmentTest == null)
 			assessmentTest = assessmentTestDAO.find(assessmentTestID);
 		
@@ -233,11 +240,9 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		newJobTaskCriteria.setTask(jobTask);
 		newJobTaskCriteria.setAuditColumns(permissions);
 		newJobTaskCriteria.defaultDates();
+		newJobTaskCriteria.setEffectiveDate(new Date());
 		
-		Calendar exp = Calendar.getInstance();
-		exp.setTime(newJobTaskCriteria.getEffectiveDate());
-		exp.add(Calendar.MONTH, assessmentTest.getMonthsToExpire());
-		
-		newJobTaskCriteria.setExpirationDate(exp.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		newJobTaskCriteria.setExpirationDate(sdf.parse("4000-01-01"));
 	}
 }

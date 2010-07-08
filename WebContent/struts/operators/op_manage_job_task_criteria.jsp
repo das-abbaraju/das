@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="exception_handler.jsp"%>
+<%@ page language="java" errorPage="../../exception_handler.jsp"%>
 <html>
 <head>
 <title>Manage Job Task Criteria</title>
@@ -8,16 +8,66 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
+
+<s:include value="../jquery.jsp" />
+
+<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
+
 <style type="text/css">
 .newValue {
 	display: none;
 }
 
-table.report tbody td {
+table.jobReport tbody td {
 	border: none;
 }
 </style>
-<s:include value="../jquery.jsp"/>
+<script type="text/javascript">
+$(function() {
+	$('#tests').dataTable({
+		aoColumns: [
+	            null,
+	            null,
+	            null,
+	            null,
+	            null
+			],
+		aaSorting: [[2, 'asc']],
+		bJQueryUi: true,
+		bStateSave: true,
+		oLanguage: {
+			sSearch:"Search",
+			sLengthMenu: '_MENU_', 
+			sInfo:"_START_ to _END_ of _TOTAL_",
+			sInfoEmpty:"",
+			sInfoFiltered:"(filtered from _MAX_)" },
+		iDisplayLength: 25
+	});
+
+	<s:iterator value="criteriaMap.keySet()" id="groupNumber">
+		$('#addTest_<s:property value="#groupNumber" />').dataTable({
+			aoColumns: [
+		            null,
+		            null,
+		            null,
+		            null,
+		            null
+				],
+			aaSorting: [[2, 'asc']],
+			bJQueryUi: true,
+			bStateSave: true,
+			oLanguage: {
+				sSearch:"Search",
+				sLengthMenu: '_MENU_', 
+				sInfo:"_START_ to _END_ of _TOTAL_",
+				sInfoEmpty:"",
+				sInfoFiltered:"(filtered from _MAX_)" },
+			iDisplayLength: 10
+		});
+	</s:iterator>
+});
+</script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
@@ -26,13 +76,6 @@ table.report tbody td {
 	<tr>
 		<td>
 			<s:if test="criterias.size() > 0 && criteriaMap.size() > 0">
-				<s:if test="history != null">
-					<s:form id="historyForm">
-						<s:hidden name="id" />
-						<s:hidden name="jobTaskID" />
-						Effective: <s:select list="history" name="date" value="%{maskDateFormat(date)}" onchange="$('#historyForm').submit();"></s:select>
-					</s:form>
-				</s:if>
 				<div>
 					<table class="report jobReport">
 						<thead>
@@ -77,30 +120,30 @@ table.report tbody td {
 										<s:if test="getUsedAssessmentsByGroup(#groupNumber).size > 0">
 											<a onclick="$('#addJobTaskCriteria_<s:property value="#groupNumber"/>').show(); $('#addLink_<s:property value="#groupNumber"/>').hide(); return false;"
 												href="#" id="addLink_<s:property value="#groupNumber"/>" class="add">Add New Assessment</a>
-											<div id="addJobTaskCriteria_<s:property value="#groupNumber"/>" style="display: none; clear: both;">
-												<s:form id="newJobTaskCriteria" method="POST" enctype="multipart/form-data">
-													<s:hidden name="jobTaskID" />
-													<s:hidden name="id" />
-													<s:hidden name="groupNumber" value="%{#groupNumber}"/>
-													<fieldset class="form bottom">
-														<legend><span>Add New Assessment</span></legend>
-														<ol>
-															<li><label>Assessments:</label>
-																<s:select 
-																	list="getUsedAssessmentsByGroup(#groupNumber)"
-																	name="assessmentTestID"
-																	listKey="id"
-																	listValue="name">
-																</s:select>
-															</li>
-														</ol>
-														<div style="text-align: center; margin: 0px auto;">
-															<input type="submit" value="Save" class="picsbutton positive" name="button" />
-															<button onclick="$('#addLink_<s:property value="#groupNumber"/>').show(); $('#addJobTaskCriteria_<s:property value="#groupNumber"/>').hide(); return false;"
-																class="picsbutton negative">Cancel</button>
-														</div>
-													</fieldset>
-												</s:form>
+											<div id="addJobTaskCriteria_<s:property value="#groupNumber"/>" style="display: none; clear: both; text-align: left; background-color: #eee;">
+												<a href="#" onclick="$('#addJobTaskCriteria_<s:property value="#groupNumber"/>').hide(); $('#addLink_<s:property value="#groupNumber"/>').show(); return false;" class="remove">Cancel</a>
+												<table class="report" id="addTest_<s:property value="#groupNumber"/>">
+													<thead>
+														<tr>
+															<th>Add</th>
+															<th><a href="#" onclick="return false;">Assessment Center</a></th>
+															<th><a href="#" onclick="return false;">Qualification Type</a></th>
+															<th><a href="#" onclick="return false;">Qualification Method</a></th>
+															<th><a href="#" onclick="return false;">Description</a></th>
+														</tr>
+													</thead>
+													<tbody>
+														<s:iterator value="getUsedAssessmentsByGroup(#groupNumber)">
+															<tr>
+																<td class="center"><a href="?id=<s:property value="operator.id" />&button=Save&jobTaskID=<s:property value="jobTaskID" />&assessmentTestID=<s:property value="id" />&groupNumber=<s:property value="#groupNumber" />" class="add"></td>
+																<td><s:property value="assessmentCenter.name" /></td>
+																<td><s:property value="qualificationType" /></td>
+																<td><s:property value="qualificationMethod" /></td>
+																<td><s:property value="description" /></td>
+															</tr>
+														</s:iterator>
+													</tbody>
+												</table>
 											</div>
 										</s:if>
 										<s:else>
@@ -126,24 +169,28 @@ table.report tbody td {
 				<a onclick="$('#addJobTaskGroup').show(); $('#addLinkGroup').hide(); return false;"
 					href="#" id="addLinkGroup" class="add">Add New Group</a>
 				<div id="addJobTaskGroup" style="display: none; clear: both;">
-					<s:form id="newJobTaskGroup" method="POST" enctype="multipart/form-data">
-						<s:hidden name="jobTaskID" />
-						<s:hidden name="id" />
-						<fieldset class="form bottom">
-							<legend><span>First Assessment in Group</span></legend>
-							<ol>
-								<li><label>Assessments:</label>
-									<s:select list="allAssessments"	name="assessmentTestID"	listKey="id"
-										listValue="name"></s:select>
-								</li>
-							</ol>
-							<div style="text-align: center; margin: 0px auto;">
-								<input type="submit" value="Create" class="picsbutton positive" name="button" />
-								<button onclick="$('#addLinkGroup').show(); $('#addJobTaskGroup').hide(); return false;"
-									class="picsbutton negative">Cancel</button>
-							</div>
-						</fieldset>
-					</s:form>
+					<table class="report" id="tests">
+						<thead>
+							<tr>
+								<th>Add</th>
+								<th><a href="#" onclick="return false;">Assessment Center</a></th>
+								<th><a href="#" onclick="return false;">Qualification Type</a></th>
+								<th><a href="#" onclick="return false;">Qualification Method</a></th>
+								<th><a href="#" onclick="return false;">Description</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="allAssessments">
+								<tr>
+									<td class="center"><a href="?id=<s:property value="operator.id" />&button=Create&jobTaskID=<s:property value="jobTaskID" />&assessmentTestID=<s:property value="id" />" class="add"></td>
+									<td><s:property value="assessmentCenter.name" /></td>
+									<td><s:property value="qualificationType" /></td>
+									<td><s:property value="qualificationMethod" /></td>
+									<td><s:property value="description" /></td>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
 				</div>
 			</s:if>
 		</td>

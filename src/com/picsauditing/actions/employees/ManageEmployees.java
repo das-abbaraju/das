@@ -1,22 +1,13 @@
 package com.picsauditing.actions.employees;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.json.simple.JSONArray;
 

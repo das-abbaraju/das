@@ -212,11 +212,12 @@ public class PicsMenu {
 			subMenu.addChild("Users", "UsersManage.action");
 			subMenu.addChild("User Permissions Matrix", "ReportUserPermissionMatrix.action");
 		}
-
+		
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
 				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
-
+			if (permissions.hasPermission(OpPerms.ManageEmployees))
+				subMenu.addChild("Employees", "ManageEmployee.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageProjects))
 				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))

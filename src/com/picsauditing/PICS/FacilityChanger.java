@@ -5,20 +5,25 @@ import java.util.Iterator;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
@@ -35,6 +40,7 @@ public class FacilityChanger {
 	private OperatorAccountDAO operatorAccountDAO;
 	private NoteDAO noteDAO;
 	private AuditBuilder auditBuilder;
+	private AuditDataDAO auditDataDAO;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -42,12 +48,14 @@ public class FacilityChanger {
 	private User user;
 
 	public FacilityChanger(ContractorAccountDAO contractorAccountDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder, FlagDataDAO flagDataDAO) {
+			ContractorOperatorDAO contractorOperatorDAO, NoteDAO noteDAO, AuditBuilder auditBuilder, 
+			FlagDataDAO flagDataDAO, AuditDataDAO auditDataDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.operatorAccountDAO = operatorAccountDAO;
 		this.noteDAO = noteDAO;
 		this.auditBuilder = auditBuilder;
+		this.auditDataDAO = auditDataDAO;
 	}
 
 	public void add() throws Exception {
@@ -111,9 +119,9 @@ public class FacilityChanger {
 		}
 
 		contractor.setLastUpgradeDate(new Date());
-
+		checkOQ();
 		contractor.incrementRecalculation();
-
+		
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -138,6 +146,7 @@ public class FacilityChanger {
 					addNote("Unlinked " + co.getContractorAccount().getName() + " from "
 							+ co.getOperatorAccount().getName() + "'s db");
 
+					checkOQ();
 					contractor.incrementRecalculation();
 
 					contractorAccountDAO.save(contractor);
@@ -204,5 +213,30 @@ public class FacilityChanger {
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		user = new User(permissions.getUserId());
+	}
+	
+	private void checkOQ() {
+		boolean requiresOQ = false;
+		boolean requiresCompetency = false;
+		for (ContractorOperator co1 : contractor.getOperators()) {
+			if (co1.getOperatorAccount().isRequiresOQ())
+				requiresOQ = true;
+			if (co1.getOperatorAccount().isRequiresCompetencyReview())
+				requiresCompetency = true;
+		}
+		
+		contractor.setRequiresOQ(false);
+		if (requiresOQ) {
+			AuditData oqAuditData = auditDataDAO.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
+			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null || oqAuditData.getAnswer().equals("Yes"));
+		}
+		
+		contractor.setRequiresCompetencyReview(false);
+		if (requiresCompetency) {
+			for (ContractorTag tag : contractor.getOperatorTags()) {
+				if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW)
+					contractor.setRequiresCompetencyReview(true);
+			}
+		}
 	}
 }
