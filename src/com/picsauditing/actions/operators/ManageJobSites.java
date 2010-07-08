@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.State;
+import com.picsauditing.quickbooks.qbxml.JobsAndEstimatesPreferences;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -51,6 +52,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	private List<JobSite> allSites;
 	protected List<JobSite> activeSites;
 	protected List<JobSite> inactiveSites;
+	protected List<JobSite> futureSites;
 	protected List<JobSiteTask> tasks;
 
 	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO, JobSiteTaskDAO siteTaskDAO,
@@ -398,6 +400,17 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 		
 		return inactiveSites;
+	}
+	
+	public List<JobSite> getFutureSites(){
+		if(futureSites == null){
+			futureSites = new ArrayList<JobSite>();
+			for(JobSite site : allSites){
+				if(site.getProjectStart()!= null && site.getProjectStart().after(date))
+					futureSites.add(site);
+			}
+		}
+		return futureSites;		
 	}
 
 	public List<JobSiteTask> getTasks(int job) {

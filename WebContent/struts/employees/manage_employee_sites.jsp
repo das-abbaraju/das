@@ -4,8 +4,22 @@
 <s:include value="../actionMessages.jsp" />
 
 <div id="thinking_sites" class="right"></div>
-
-<table class="report"">
+<script>
+$(function() {
+	$('.datepicker').datepicker({
+			changeMonth: true,
+			changeYear:true,
+			yearRange: '1940:2010',
+			showOn: 'button',
+			buttonImage: 'images/icon_calendar.gif',
+			buttonImageOnly: true,
+			buttonText: 'Choose a date...',
+			constrainInput: true,
+			showAnim: 'fadeIn'
+		});
+});
+</script>
+<table class="report" style="width: 500px;">
 	<thead>
 		<tr>
 			<th>Assigned Site</th>
@@ -28,22 +42,22 @@
 					<s:property value="orientationDate"/>
 				</td>
 				<td><a href="#"
-					onclick="$('#'+<s:property value="%{#stat.count}" />+'_under').toggle(); return false;"
+					onclick="$('._under').hide(); $('#'+<s:property value="%{#stat.count}" />+'_under').toggle(); return false;"
 					class="edit"></a>
 				</td>
 			</tr>
-			<tr id="<s:property value="#stat.count" />_under" style="display: none;">
+			<tr id="<s:property value="#stat.count" />_under" class="_under" style="display: none;">
 				<td colspan="5">
 				<div id="siteEditBox">
 					<form id="siteForm_<s:property value="#site.id" />" >
 						<input type="hidden" value="<s:property value="#site.id" />" name="childID" />
 						<div style="float:left; width: 50%;">
-							Start Date: <s:textfield id="sDate_%{#site.id}" name="effectiveDate" value="%{maskDateFormat(effectiveDate)}" size="10" /><br />
-							End Date: <s:textfield id="eDate_%{#site.id}" name="expirationDate" value="%{maskDateFormat(expirationDate)}" size="10" /><br />
+							Start Date: <s:textfield id="sDate_%{#site.id}" cssClass="datepicker" name="effectiveDate" value="%{maskDateFormat(effectiveDate)}" size="10" /><br />
+							End Date: <s:textfield id="eDate_%{#site.id}" cssClass="datepicker" name="expirationDate" value="%{maskDateFormat(expirationDate)}" size="10" /><br />
 							<input type="submit" value="Save" onclick="editAssignedSites(<s:property value="#site.id" />); return false;" class="picsbutton positive"/>
 						</div>
 						<div style="float:right; width: 50%;">
-							Site Orientation: <s:textfield id="oDate_%{#site.id}" name="orientationDate" value="%{maskDateFormat(orientationDate)}" size="10" /><br />
+							Site Orientation: <s:textfield id="oDate_%{#site.id}" cssClass="datepicker" name="orientationDate" value="%{maskDateFormat(orientationDate)}" size="10" /><br />
 							Expires in: <s:select label="Expires" id="expires_%{#site.id}"
 											list="#{0:36, 1:24, 2:12, 3:6, 4:' '}"
 											value="monthsToExp" /> months<br />

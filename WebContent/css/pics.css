@@ -603,6 +603,11 @@ table.report td a.inactive,table.report td a.accountDeactivated,table.report td 
 	text-decoration: line-through;
 }
 
+table.report tr.future{
+	background-color: #FFA;
+	color: #4C4D4D;
+}
+
 /************* Search *************/
 #search {
 	display: block;

@@ -391,7 +391,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			returnList.add(new OperatorSite(operator));
 		else {
 			for (JobSite site : operator.getJobSites()) {
-				returnList.add(new OperatorSite(site));
+				if(!site.getProjectStop().before(new Date()))
+					returnList.add(new OperatorSite(site));
 			}
 		}
 	}

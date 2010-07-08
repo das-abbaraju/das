@@ -129,6 +129,8 @@ $(function() {
 							<th>Name</th>
 							<s:if test="canEdit">
 								<th>Tasks</th>
+								<th>Start Date</th>
+								<th>End Date</th>
 								<th>Edit</th>
 								<th>Expire</th>
 							</s:if>
@@ -155,6 +157,8 @@ $(function() {
 									<td class="center">
 										<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
 									</td>
+									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
 									<td class="center">
 										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
 									</td>
@@ -172,6 +176,41 @@ $(function() {
 								</s:else>
 							</tr>
 						</s:iterator>
+						<!--  -->
+						<s:if test="futureSites.size() > 0">
+							<s:iterator value="futureSites" status="stat" id="site">
+								<tr class="future" id="<s:property value="#site.id" />">
+									<td><s:property value="#stat.count + activeSites.size()" /></td>
+									<td>
+										<s:property value="#site.label" />
+									</td>
+									<td>
+										<s:property value="#site.name" />
+									</td>
+									<s:if test="canEdit">
+										<td class="center">
+											<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+										</td>
+										<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+										<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+										<td class="center">
+											<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+										</td>
+										<td class="center">
+											<a href="ManageProjects.action?id=<s:property value="operator.id" />&button=Remove&siteID=<s:property value="#site.id" />"
+												onclick="return confirm('Are you sure you want to expire this project?');" class="remove"></a>
+										</td>
+									</s:if>
+									<s:else>
+										<td><s:property value="#site.city" /></td>
+										<td><s:property value="#site.state.english" /></td>
+										<td><s:property value="#site.country.isoCode" /></td>
+										<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+										<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+									</s:else>
+								</tr>
+							</s:iterator>
+						</s:if>
 					</tbody>
 				</table>
 			</s:if>
