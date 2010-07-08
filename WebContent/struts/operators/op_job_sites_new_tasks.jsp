@@ -32,3 +32,5 @@
 <s:else>
 	No (additional) tasks are available to add.
 </s:else>
+
+<a id="closeAssignTasks" href="#" onclick="$('#addSiteTasks:visible').slideUp(); $('#addTaskLink:hidden').fadeIn(); return false;" class="remove">Close Tasks</a>

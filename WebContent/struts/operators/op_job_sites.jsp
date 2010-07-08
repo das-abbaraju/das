@@ -30,16 +30,19 @@ fieldset.form {
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function getTasks(siteID) {
+	$('#jobSiteTasks:hidden').slideDown();
+	$('#editProject:visible').slideUp();
 	var data = {
 		button: 'Tasks',
 		siteID: siteID,
 		id: <s:property value="operator.id" />
 	};
 
-	startThinking({div: 'jobSiteTasks', message: 'Loading tasks'});
+	startThinking({div: 'jobSiteTasks', message: 'Loading tasks', type: 'large'});
 	$('#jobSiteTasks').load('ManageProjectsAjax.action', data,
 		function() {
 			$('#addSiteTasks').empty();
+			$('#jobSiteTasks').slideDown();
 		}
 	);
 }
@@ -51,8 +54,8 @@ function getNewSiteTasks(siteID) {
 		id: <s:property value="operator.id" />
 	};
 
-	$('#addTaskLink').hide();
-	startThinking({div: 'addSiteTasks', message: 'Loading new tasks'});
+	$('#addTaskLink').fadeOut();
+	startThinking({div: 'addSiteTasks', message: 'Loading new tasks', type: 'large'});
 	$('#addSiteTasks').load('ManageProjectsAjax.action', data);
 }
 
@@ -95,6 +98,9 @@ function removeTask(siteID, siteTaskID) {
 }
 
 function editSite(siteID) {
+	$('#addJobSite:visible').slideUp();
+	$('#addLink:hidden').fadeIn();
+	$('#editProject:hidden').slideDown();
 	startThinking({div: 'editProject', message: 'Loading project'});
 	$('#editProject').load('ManageProjectsAjax.action',
 			{ button: 'EditSite', siteID: siteID, id: <s:property value="operator.id" /> });
@@ -114,39 +120,72 @@ $(function() {
 <s:if test="history != null">
 	<s:form id="historyForm">
 		<s:hidden name="id"></s:hidden>
-		View history: <s:select list="history" name="date" value="%{maskDateFormat(date)}" onchange="$('#historyForm').submit();"></s:select><br />
+		<div style="display: none">
+			View history: <s:select list="history" name="date" value="%{maskDateFormat(date)}" onchange="$('#historyForm').submit();" />
+			<br />
+		</div>
 	</s:form>
 </s:if>
 <table id="sitesTable">
 	<tr>
 		<td>
-			<s:if test="activeSites.size() > 0">
-				<h3>Active Projects</h3>
-				<table class="report">
-					<thead>
-						<tr><th></th>
-							<th>Label</th>
-							<th>Name</th>
+			<h3>Active Projects</h3>
+			<table class="report">
+				<thead>
+					<tr><th></th>
+						<th>Label</th>
+						<th>Name</th>
+						<s:if test="canEdit">
+							<th>Edit</th>
+							<th>Tasks</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+						</s:if>
+						<s:else>
+							<th>City</th>
+							<th>State</th>
+							<th>Country</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+						</s:else>
+					</tr>
+				</thead>
+				<tbody>
+				<s:if test="activeSites.size() > 0">
+					<s:iterator value="activeSites" status="stat" id="site">
+						<tr id="<s:property value="#site.id" />">
+							<td><s:property value="#stat.count" /></td>
+							<td>
+								<s:property value="#site.label" />
+							</td>
+							<td>
+								<s:property value="#site.name" />
+							</td>
 							<s:if test="canEdit">
-								<th>Tasks</th>
-								<th>Start Date</th>
-								<th>End Date</th>
-								<th>Edit</th>
-								<th>Expire</th>
+								<td class="center">
+									<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+								</td>
+								<td class="center">
+									<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
+								</td>
+								<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+								<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
 							</s:if>
 							<s:else>
-								<th>City</th>
-								<th>State</th>
-								<th>Country</th>
-								<th>Start Date</th>
-								<th>End Date</th>
+								<td><s:property value="#site.city" /></td>
+								<td><s:property value="#site.state.english" /></td>
+								<td><s:property value="#site.country.isoCode" /></td>
+								<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
+								<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
 							</s:else>
 						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="activeSites" status="stat" id="site">
-							<tr id="<s:property value="#site.id" />">
-								<td><s:property value="#stat.count" /></td>
+					</s:iterator>
+					</s:if>
+					<!--  -->
+					<s:if test="futureSites.size() > 0">
+						<s:iterator value="futureSites" status="stat" id="site">
+							<tr class="future" id="<s:property value="#site.id" />">
+								<td><s:property value="#stat.count + activeSites.size()" /></td>
 								<td>
 									<s:property value="#site.label" />
 								</td>
@@ -155,17 +194,13 @@ $(function() {
 								</td>
 								<s:if test="canEdit">
 									<td class="center">
+										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
+									</td>
+									<td class="center">
 										<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
 									</td>
 									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
 									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
-									<td class="center">
-										<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
-									</td>
-									<td class="center">
-										<a href="ManageProjects.action?id=<s:property value="operator.id" />&button=Remove&siteID=<s:property value="#site.id" />"
-											onclick="return confirm('Are you sure you want to expire this project?');" class="remove"></a>
-									</td>
 								</s:if>
 								<s:else>
 									<td><s:property value="#site.city" /></td>
@@ -176,47 +211,12 @@ $(function() {
 								</s:else>
 							</tr>
 						</s:iterator>
-						<!--  -->
-						<s:if test="futureSites.size() > 0">
-							<s:iterator value="futureSites" status="stat" id="site">
-								<tr class="future" id="<s:property value="#site.id" />">
-									<td><s:property value="#stat.count + activeSites.size()" /></td>
-									<td>
-										<s:property value="#site.label" />
-									</td>
-									<td>
-										<s:property value="#site.name" />
-									</td>
-									<s:if test="canEdit">
-										<td class="center">
-											<a href="#" onclick="getTasks(<s:property value="#site.id" />); return false;">View</a>
-										</td>
-										<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-										<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
-										<td class="center">
-											<a href="#" onclick="editSite(<s:property value="#site.id" />); return false;"><img src="images/edit_pencil.png" alt="Edit project" /></a>
-										</td>
-										<td class="center">
-											<a href="ManageProjects.action?id=<s:property value="operator.id" />&button=Remove&siteID=<s:property value="#site.id" />"
-												onclick="return confirm('Are you sure you want to expire this project?');" class="remove"></a>
-										</td>
-									</s:if>
-									<s:else>
-										<td><s:property value="#site.city" /></td>
-										<td><s:property value="#site.state.english" /></td>
-										<td><s:property value="#site.country.isoCode" /></td>
-										<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-										<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
-									</s:else>
-								</tr>
-							</s:iterator>
-						</s:if>
-					</tbody>
-				</table>
-			</s:if>
+					</s:if>
+				</tbody>
+			</table>
 			<s:if test="canEdit">
 				<div id="editProject"></div>
-				<a onclick="$('#addJobSite').show(); $('#addLink').hide(); return false;"
+				<a onclick="$('#editProject:visible').hide(); $('#addJobSite').show(); $('#addLink').hide(); return false;"
 					href="#" id="addLink" class="add">Add New Project</a>
 				<div id="addJobSite" style="display: none; clear: both;">
 					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
@@ -225,13 +225,13 @@ $(function() {
 							<legend><span>Add New Project</span></legend>
 							<ol>
 								<li><label>Label<span class="redMain">*</span>:</label>
-									<s:textfield name="siteLabel" size="20" />
+									<s:textfield name="siteLabel" size="20" maxlength="15" />
 								</li>
 								<li><label>Name<span class="redMain">*</span>:</label>
-									<s:textfield name="siteName" size="20" />
+									<s:textfield name="siteName" size="20" maxlength="255" />
 								</li>
 								<li><label>City:</label>
-									<s:textfield name="siteCity" size="20" />
+									<s:textfield name="siteCity" size="20" maxlength="30" />
 								</li>
 								<li><label>Country:</label>
 									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"

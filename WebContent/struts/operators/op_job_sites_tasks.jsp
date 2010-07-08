@@ -31,4 +31,5 @@
 	No tasks associated with this site.<br />
 </s:else>
 
-<a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); return false;" class="add">Add New Task</a>
+<a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); $('#addSiteTasks:hidden').slideDown(); return false;" class="add">Add New Task</a>
+<a id="closeTasks" href="#" onclick="$('#jobSiteTasks:visible').slideUp(); $('#addSiteTasks:visible').slideUp(); return false;" class="remove">Close Tasks</a>

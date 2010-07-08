@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.JobSiteDAO;
@@ -29,12 +30,12 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected JobSiteTaskDAO siteTaskDAO;
 	protected JobTaskDAO taskDAO;
 	protected NoteDAO noteDAO;
-	
+
 	protected int siteID;
 	protected int siteTaskID;
 	protected int taskID;
 	protected int controlSpan;
-	
+
 	protected String siteName;
 	protected String siteLabel;
 	protected String siteCity;
@@ -43,7 +44,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected Date siteStart;
 	protected Date siteEnd;
 	protected Date date = new Date();
-	
+
 	protected JobSite newSite = new JobSite();
 	protected JobSiteTask siteTask = new JobSiteTask();
 	protected JobTask newTask = new JobTask();
@@ -55,8 +56,8 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected List<JobSite> futureSites;
 	protected List<JobSiteTask> tasks;
 
-	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO, JobSiteTaskDAO siteTaskDAO,
-			JobTaskDAO taskDAO, NoteDAO noteDAO) {
+	public ManageJobSites(OperatorAccountDAO operatorDao, JobSiteDAO siteDAO,
+			JobSiteTaskDAO siteTaskDAO, JobTaskDAO taskDAO, NoteDAO noteDAO) {
 		super(operatorDao);
 		this.siteDAO = siteDAO;
 		this.siteTaskDAO = siteTaskDAO;
@@ -74,9 +75,9 @@ public class ManageJobSites extends OperatorActionSupport {
 		findOperator();
 		// Check for basic view capabilities
 		tryPermissions(OpPerms.ManageProjects);
-		
+
 		allSites = siteDAO.findByOperator(operator.getId());
-		
+
 		if (siteID > 0)
 			newSite = siteDAO.find(siteID);
 
@@ -94,7 +95,7 @@ public class ManageJobSites extends OperatorActionSupport {
 				} else
 					addActionError("Missing project");
 			}
-			
+
 			if ("EditSite".equalsIgnoreCase(button)) {
 				if (siteID > 0) {
 					return "editSite";
@@ -111,7 +112,8 @@ public class ManageJobSites extends OperatorActionSupport {
 			Note note = new Note();
 
 			// project Tasks
-			if ("AddTask".equalsIgnoreCase(button) || "RemoveTask".equalsIgnoreCase(button)) {
+			if ("AddTask".equalsIgnoreCase(button)
+					|| "RemoveTask".equalsIgnoreCase(button)) {
 				if ("AddTask".equalsIgnoreCase(button)) {
 					if (siteID > 0 && taskID > 0) {
 						newTask = taskDAO.find(taskID);
@@ -119,10 +121,13 @@ public class ManageJobSites extends OperatorActionSupport {
 						siteTask.setJob(newSite);
 						siteTask.setControlSpan(controlSpan);
 						siteTask.setAuditColumns(permissions);
+						siteTask.setEffectiveDate(new Date());
+						siteTask.setExpirationDate(DateBean.getEndOfTime());
 						siteTaskDAO.save(siteTask);
 
-						note.setSummary("Added new task: " + siteTask.getTask().getLabel() + " to project: "
-								+ newSite.getLabel());
+						note.setSummary("Added new task: "
+								+ siteTask.getTask().getLabel()
+								+ " to project: " + newSite.getLabel());
 					} else
 						addActionError("Missing either project or new task");
 				}
@@ -132,8 +137,9 @@ public class ManageJobSites extends OperatorActionSupport {
 						siteTask = siteTaskDAO.find(siteTaskID);
 						siteTaskDAO.remove(siteTask);
 
-						note.setSummary("Removed task: " + siteTask.getTask().getLabel() + " from project: "
-								+ newSite.getLabel());
+						note.setSummary("Removed task: "
+								+ siteTask.getTask().getLabel()
+								+ " from project: " + newSite.getLabel());
 					} else
 						addActionError("Missing either project or project task");
 				}
@@ -148,12 +154,13 @@ public class ManageJobSites extends OperatorActionSupport {
 				note.setViewableBy(operator);
 				note.setCanContractorView(true);
 				// Until we're ready for notes
-				//noteDAO.save(note);
+				// noteDAO.save(note);
 
 				return SUCCESS;
 			}
-			
-			String summary = " project with label: " + newSite.getLabel() + " and site name: " + newSite.getName();
+
+			String summary = " project with label: " + newSite.getLabel()
+					+ " and site name: " + newSite.getName();
 
 			if ("Save".equalsIgnoreCase(button)) {
 				// Labels are required
@@ -167,38 +174,42 @@ public class ManageJobSites extends OperatorActionSupport {
 					newSite.setName(siteName);
 					newSite.setProjectStart(siteStart);
 					newSite.setProjectStop(siteEnd);
-					
+
 					if (!Strings.isEmpty(siteCity))
 						newSite.setCity(siteCity);
 					if (!siteCountry.getIsoCode().equals("")) {
 						newSite.setCountry(siteCountry);
-						
-						if (siteCountry.getIsoCode().equals("US") || siteCountry.getIsoCode().equals("CA"))
+
+						if (siteCountry.getIsoCode().equals("US")
+								|| siteCountry.getIsoCode().equals("CA"))
 							newSite.setState(state);
 					}
-					
+
 					summary = "Added new" + summary;
 				} else
 					addActionError("Please add both label and name to this project.");
 			}
-			
+
 			if ("Update".equalsIgnoreCase(button)) {
-				if (siteID > 0 && !Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName)) {
+				if (siteID > 0 && !Strings.isEmpty(siteLabel)
+						&& !Strings.isEmpty(siteName)) {
 					newSite.setLabel(siteLabel);
 					newSite.setName(siteName);
 					newSite.setProjectStart(siteStart);
 					newSite.setProjectStop(siteEnd);
-					
+
 					if (!Strings.isEmpty(siteCity))
-						newSite.setCity(siteCity);					
+						newSite.setCity(siteCity);
 					if (!siteCountry.getIsoCode().equals("")) {
 						newSite.setCountry(siteCountry);
-						
-						if (siteCountry.getIsoCode().equals("US") || siteCountry.getIsoCode().equals("CA"))
+
+						if (siteCountry.getIsoCode().equals("US")
+								|| siteCountry.getIsoCode().equals("CA"))
 							newSite.setState(state);
 					}
-					
-					summary = "Renamed" + summary + " to label: " + newSite.getLabel() + " and project name: "
+
+					summary = "Renamed" + summary + " to label: "
+							+ newSite.getLabel() + " and project name: "
 							+ newSite.getName();
 				} else
 					addActionError("Please add both label and name to this project.");
@@ -215,12 +226,12 @@ public class ManageJobSites extends OperatorActionSupport {
 			if ("Reactivate".equalsIgnoreCase(button)) {
 				if (siteID > 0) {
 					newSite.setProjectStart(new Date());
-					
+
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(newSite.getProjectStart());
 					cal.add(Calendar.YEAR, 3);
 					newSite.setProjectStop(cal.getTime());
-					
+
 					summary = "Reactivated";
 				} else
 					addActionError("Missing project");
@@ -238,10 +249,10 @@ public class ManageJobSites extends OperatorActionSupport {
 			note.setPriority(LowMedHigh.Med);
 			note.setViewableBy(operator);
 			note.setCanContractorView(true);
-			
+
 			if (!summary.startsWith(" "))
 				note.setSummary(summary);
-			
+
 			noteDAO.save(note);
 
 			if (permissions.isOperator())
@@ -252,12 +263,14 @@ public class ManageJobSites extends OperatorActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	public boolean isCanEdit() {
-		if ((date == null ||  maskDateFormat(date).equals(maskDateFormat(new Date())))
-				&& permissions.hasPermission(OpPerms.ManageProjects, OpType.Edit))
+		if ((date == null || maskDateFormat(date).equals(
+				maskDateFormat(new Date())))
+				&& permissions.hasPermission(OpPerms.ManageProjects,
+						OpType.Edit))
 			return true;
-		
+
 		return false;
 	}
 
@@ -284,31 +297,31 @@ public class ManageJobSites extends OperatorActionSupport {
 	public void setTaskID(int taskID) {
 		this.taskID = taskID;
 	}
-	
+
 	public int getControlSpan() {
 		return controlSpan;
 	}
-	
+
 	public void setControlSpan(int controlSpan) {
 		this.controlSpan = controlSpan;
 	}
-	
+
 	public String getSiteLabel() {
 		return siteLabel;
 	}
-	
+
 	public void setSiteLabel(String siteLabel) {
 		this.siteLabel = siteLabel;
 	}
-	
+
 	public String getSiteName() {
 		return siteName;
 	}
-	
+
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
 	}
-	
+
 	public String getSiteCity() {
 		return siteCity;
 	}
@@ -320,7 +333,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	public State getState() {
 		return state;
 	}
-	
+
 	public void setState(State state) {
 		this.state = state;
 	}
@@ -348,15 +361,15 @@ public class ManageJobSites extends OperatorActionSupport {
 	public void setSiteEnd(Date siteEnd) {
 		this.siteEnd = siteEnd;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public void setDate(String date) {
 		this.date = parseDate(date);
 	}
@@ -381,7 +394,7 @@ public class ManageJobSites extends OperatorActionSupport {
 					activeSites.add(site);
 			}
 		}
-		
+
 		return activeSites;
 	}
 
@@ -390,33 +403,35 @@ public class ManageJobSites extends OperatorActionSupport {
 			inactiveSites = new ArrayList<JobSite>();
 			for (JobSite site : allSites) {
 				if (!site.isActive(date)) {
-					if (site.getProjectStart() != null && site.getProjectStart().before(date))
+					if (site.getProjectStart() != null
+							&& site.getProjectStart().before(date))
 						inactiveSites.add(site);
-					else if (site.getProjectStart() == null 
+					else if (site.getProjectStart() == null
 							&& site.getProjectStop().equals(date))
 						inactiveSites.add(site);
 				}
 			}
 		}
-		
+
 		return inactiveSites;
 	}
-	
-	public List<JobSite> getFutureSites(){
-		if(futureSites == null){
+
+	public List<JobSite> getFutureSites() {
+		if (futureSites == null) {
 			futureSites = new ArrayList<JobSite>();
-			for(JobSite site : allSites){
-				if(site.getProjectStart()!= null && site.getProjectStart().after(date))
+			for (JobSite site : allSites) {
+				if (site.getProjectStart() != null
+						&& site.getProjectStart().after(date))
 					futureSites.add(site);
 			}
 		}
-		return futureSites;		
+		return futureSites;
 	}
 
 	public List<JobSiteTask> getTasks(int job) {
 		if (tasks == null)
 			tasks = siteTaskDAO.findByJob(job);
-		
+
 		return tasks;
 	}
 
@@ -425,36 +440,40 @@ public class ManageJobSites extends OperatorActionSupport {
 			List<JobSiteTask> siteTasks = getTasks(siteID);
 			// Skip tasks that have all ready been associated with this site
 			List<Integer> skip = new ArrayList<Integer>();
-	
+
 			for (JobSiteTask jst : siteTasks) {
 				skip.add(jst.getTask().getId());
 			}
-	
+
 			String ids = "";
 			if (skip.size() > 0)
-				ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",") + ")";
-			
-			addable = taskDAO.findWhere("opID = " + operator.getId() + ids + " ORDER BY label");
+				ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",")
+						+ ")";
+
+			addable = taskDAO.findWhere("opID = " + operator.getId() + ids
+					+ " ORDER BY label");
 		}
-		
+
 		return addable;
 	}
-	
+
 	public List<String> getHistory() {
 		if (history == null) {
-			List<Date> dates = siteDAO.findHistory("opID = " + operator.getId() + " AND projectStart IS NOT NULL");
+			List<Date> dates = siteDAO.findHistory("opID = " + operator.getId()
+					+ " AND projectStart IS NOT NULL");
 			history = new ArrayList<String>();
-			
-			if (!maskDateFormat(dates.get(0)).equals(maskDateFormat(new Date())))
+
+			if (!maskDateFormat(dates.get(0))
+					.equals(maskDateFormat(new Date())))
 				history.add(maskDateFormat(new Date()));
-			
+
 			for (Date d : dates)
 				history.add(maskDateFormat(d));
 		}
-		
+
 		if (history.size() > 1)
 			return history;
-		
+
 		return null;
 	}
 }

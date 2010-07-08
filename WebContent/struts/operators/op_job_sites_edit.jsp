@@ -41,6 +41,9 @@ $('.datepicker').datepicker();
 			<input type="submit" value="Update" class="picsbutton positive" name="button" />
 			<button onclick=" $('#editJobSite').hide(); return false;"
 				class="picsbutton negative">Cancel</button>
+			<s:if test="siteID!=0">
+				<input type="submit" value="Remove" class="picsbutton negative" name="button" />
+			</s:if>
 		</div>
 	</fieldset>
 </s:form>
