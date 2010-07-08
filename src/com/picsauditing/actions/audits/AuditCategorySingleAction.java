@@ -182,7 +182,7 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 				emailBuilder.setTemplate(81); // Audit Completed
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+				emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
 				EmailSender.send(email);
