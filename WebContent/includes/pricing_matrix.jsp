@@ -1,5 +1,5 @@
 <h2>PICS Annual Membership Price</h2>
-<table class="report"> 
+<table class="report center" style="margin-left: auto; margin-right: auto;"> 
 	<thead> 
 		<tr> 
 			<td>Operators</td> 
