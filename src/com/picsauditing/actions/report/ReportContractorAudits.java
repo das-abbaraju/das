@@ -57,6 +57,12 @@ public class ReportContractorAudits extends ReportAccount {
 			if (auditTypeClass == AuditTypeClass.Policy && permissions.isOperator()) {
 				sql.addField("cao.notes");
 			}
+			
+			if (permissions.isAdmin()) { // Only for admins?
+				sql.addGroupBy("ca.conID");
+				sql.addField("GROUP_CONCAT(atype.auditName ORDER BY atype.auditName ASC SEPARATOR ', ') " +
+						"AS groupAuditName");
+			}
 		}
 
 		addFilterToSQL();
@@ -102,7 +108,6 @@ public class ReportContractorAudits extends ReportAccount {
 			getFilter().setShowClosingAuditor(true);
 		
 		getFilter().setShowAuditFor(true);
-
 	}
 
 	@Override
@@ -115,7 +120,12 @@ public class ReportContractorAudits extends ReportAccount {
 		excelSheet.removeColumn("phone");
 
 		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
+		
+		if (permissions.isAdmin())
+			excelSheet.addColumn(new ExcelColumn("groupAuditName", "Audit Name"));
+		else
+			excelSheet.addColumn(new ExcelColumn("auditName", "Audit Name"));
+		
 		excelSheet.addColumn(new ExcelColumn("auditStatus", "Audit Status"));
 		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("completedDate", "Completed Date", ExcelCellType.Date));
