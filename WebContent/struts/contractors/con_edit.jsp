@@ -53,7 +53,7 @@ $(function() {
 </div>
 <br clear="all" />
 <s:hidden name="id" />
-	<table>
+	<table width="100%">
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
@@ -156,6 +156,20 @@ $(function() {
 					</li>	
 				</ol>
 				</fieldset>
+				<fieldset class="form submit">
+					<s:if test="permissions.contractor">
+						<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+					</s:if>
+					<s:else>
+						<pics:permission perm="ContractorAccounts" type="Edit">
+							<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+						</pics:permission>
+					</s:else>
+					<pics:permission perm="RemoveContractors">
+						<input type="submit" class="picsbutton negative" name="button" value="Delete" 
+							onClick="return confirm('Are you sure you want to delete this account?');"/>
+					</pics:permission>
+				</fieldset>				
 			</td>
 		<s:if test="permissions.admin">
 			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
@@ -193,7 +207,7 @@ $(function() {
 				</ol>
 				</fieldset>
 				<pics:permission perm="EmailOperators">
-					<fieldset class="form">
+					<fieldset class="form bottom">
 					<legend><span>De-activation Email</span></legend>
 					<ol>
 						<li>
@@ -209,21 +223,6 @@ $(function() {
 		</s:if>
 		</tr>
 	</table>
-<br clear="all">
-	<div>
-		<s:if test="permissions.contractor">
-			<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-		</s:if>
-		<s:else>
-			<pics:permission perm="ContractorAccounts" type="Edit">
-				<input type="submit" class="picsbutton positive" name="button" value="Save"/>
-			</pics:permission>
-		</s:else>
-		<pics:permission perm="RemoveContractors">
-			<input type="submit" class="picsbutton negative" name="button" value="Delete" 
-				onClick="return confirm('Are you sure you want to delete this account?');"/>
-		</pics:permission>
-	</div>
 </s:form>
 </body>
 </html>

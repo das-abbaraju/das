@@ -92,6 +92,7 @@ fieldset.form label.input {
 	font-size: inherit;
 	font-weight: inherit;
 	color: inherit;
+	display: inherit;
 }
 
 fieldset.form input[type=text],fieldset.form input[type=password],fieldset.form select
