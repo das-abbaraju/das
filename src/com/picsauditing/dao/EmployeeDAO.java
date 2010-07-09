@@ -56,7 +56,7 @@ public class EmployeeDAO extends PicsDAO {
 		query.setParameter("account", account);
 		return query.getResultList();
 	}
-	
+
 	public List<Employee> findByJobRole(int jobRoleID, int accountID) {
 		Query query = em.createQuery("SELECT e FROM Employee e"
 				+ " WHERE e.id IN (SELECT er.employee.id FROM EmployeeRole er WHERE er.jobRole.id = ?)"
@@ -65,14 +65,24 @@ public class EmployeeDAO extends PicsDAO {
 		query.setParameter(2, accountID);
 		return query.getResultList();
 	}
-	
+
 	public List<Employee> findByCompetencies(int[] competencyIDs, int accountID) {
 		Query query = em.createQuery("SELECT e FROM Employee e WHERE e.id IN "
 				+ "(SELECT ec.employee.id FROM EmployeeCompetency ec WHERE ec.competency.id IN ("
 				+ Strings.implode(competencyIDs) + ")) AND e.account.id = ? ORDER BY e.lastName");
-		
+
 		query.setParameter(1, accountID);
-		
+
+		return query.getResultList();
+	}
+
+	public List<String> findCommonLocations(int accountID) {
+		Query query = em.createQuery("SELECT DISTINCT e.location FROM Employee e "
+				+ "WHERE e.account.id = :accountID AND e.location NOT LIKE '' "
+				+ "GROUP BY location HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC");
+
+		query.setParameter("accountID", accountID);
+
 		return query.getResultList();
 	}
 }

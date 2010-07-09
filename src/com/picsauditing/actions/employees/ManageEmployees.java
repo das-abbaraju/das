@@ -49,7 +49,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected Employee employee;
 	protected String ssn;
-	
+
 	private String effective;
 	private String expiration;
 	private String orientation;
@@ -129,17 +129,16 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			employee.setAuditColumns(permissions);
 
 			employeeDAO.save(employee);
-			
-			redirect("ManageEmployees.action?employee.id="+employee.getId());
+
+			redirect("ManageEmployees.action?employee.id=" + employee.getId());
 		}
 
 		if ("Delete".equals(button)) {
 			employeeDAO.remove(employee);
 			addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
-			File f = new File(getFtpDir() + "/files/"
-					+ FileUtils.thousandize(employee.getId())
-					+ "emp_"+employee.getId() + ".jpg");
-			if(f!=null){
+			File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) + "emp_"
+					+ employee.getId() + ".jpg");
+			if (f != null) {
 				f.delete();
 			}
 			employee = null;
@@ -217,41 +216,38 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			if (employee != null && childID != 0) {
 				EmployeeSite es = employeeSiteDAO.find(childID);
 				Date effDate = DateBean.parseDate(effective);
-				if(effDate == null){
+				if (effDate == null) {
 					addActionMessage(effective + " is not a valid start date. Use the format 'MM/DD/YYYY'");
 					return "sites";
-				}	
+				}
 				Date expDate = DateBean.parseDate(expiration);
-				if(expDate == null){
+				if (expDate == null) {
 					addActionError(expiration + " is not a valid end date. Use the format 'MM/DD/YYYY'");
 					return "sites";
-				}	
+				}
 				Date orDate = DateBean.parseDate(orientation);
 				// if field is blank, there is no orientation date to update
-				if(!orientation.equals("") && orDate == null){
+				if (!orientation.equals("") && orDate == null) {
 					addActionError(orientation + " is not a valid orientation date. Use the format 'MM/DD/YYYY'");
 					return "sites";
 				}
 				es.setEffectiveDate(effDate);
 				es.setExpirationDate(expDate);
-				if(es.getOrientationDate()==null)
+				if (es.getOrientationDate() == null)
 					monthsToExp = 0;
 				es.setOrientationDate(orDate);
-				if(orDate!=null){
+				if (orDate != null) {
 					es.setMonthsToExp(monthsToExp);
 					es.setOrientationExpiration();
-				} else{
+				} else {
 					es.setOrientationDate(null);
 					es.setOrientationExpiration(null);
 				}
 				employeeSiteDAO.save(es);
 			}
-			
+
 			return "sites";
 		}
-		
-		if ("suggest".equals(button))
-			return "suggest";
 
 		return SUCCESS;
 	}
@@ -259,23 +255,24 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String getFileName(int eID) {
 		return PICSFileType.emp + "_" + eID;
 	}
-	
+
 	public void setMonthsToExp(int monthsToExp) {
 		this.monthsToExp = monthsToExp;
 	}
-	
+
 	public void setOrientation(String orientation) {
 		this.orientation = orientation;
 	}
-	
+
 	public String getOrientation() {
 		return orientation;
 	}
-	
-	public void setEffective(String effective){
+
+	public void setEffective(String effective) {
 		this.effective = effective;
-		
+
 	}
+
 	public void setExpiration(String expiration) {
 		this.expiration = expiration;
 	}
@@ -297,7 +294,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (ssn.length() <= 9)
 			this.ssn = ssn;
 	}
-	
+
 	public int getChildID() {
 		return childID;
 	}
@@ -387,15 +384,16 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			}
 		}
 	}
-	
-	public String getEmpPhoto(){
-		return getFileName(employee.getId())+employee.getPhoto();
+
+	public String getEmpPhoto() {
+		return getFileName(employee.getId()) + employee.getPhoto();
 	}
-	
-	public List<Employee> getPreviousLocations() {
-		return employeeDAO.findWhere("e.account.id = " + account.getId() + 
-				" AND location NOT LIKE '' GROUP BY location HAVING COUNT(*) > 1 " +
-				"ORDER BY COUNT(*) DESC");
+
+	@SuppressWarnings("unchecked")
+	public JSONArray getPreviousLocationsJSON() {
+		JSONArray a = new JSONArray();
+		a.addAll(employeeDAO.findCommonLocations(account.getId()));
+		return a;
 	}
 
 	public class OperatorSite implements Comparable<OperatorSite> {

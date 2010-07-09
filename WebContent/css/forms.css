@@ -121,16 +121,16 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	margin:50px 0 0 20px;
 	padding-left: 10px;
 	list-style: none;
-	}
+}
 	
 #employeeForm fieldset.form ol li {
 	padding: 5px 10px 15px 10px;
 	font-size: 15px;
+	width: 350px;
 }
 
 #employeeForm fieldset.form ol li.fieldhelp-focused {
 	background-color:#fbf2c9;
-	display:inline-block;
 }
 
 #employeeForm fieldset.form ol li.fieldhelp-focused .fieldhelp {
@@ -188,12 +188,11 @@ background-image: none;
 }
 #employeeForm fieldset.form legend span {
 	position: absolute;
-	margin:10px 0 10px 0;
+	margin:10px 0 10px 10px;
 	left: 0;
 	top: 0;
 	padding-top:-1px;
 	font-size: 135%;
-	background-color:#EDEDE7;
 	display:block;
 	width:100%;
 }

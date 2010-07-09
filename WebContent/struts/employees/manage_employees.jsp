@@ -124,7 +124,6 @@ $(function() {
 				return nRow;
 			}
 		});
-	
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -132,7 +131,7 @@ $(function() {
 		local: true,
 		clickThrough: false
 	});
-	$('#locationSuggest').autocomplete('ManageEmployeesAjax.action?id=<s:property value="account.id" />&button=suggest');
+	$('#locationSuggest').autocomplete(<s:property value="previousLocationsJSON" escape="false"/>);
 });
 
 $(function() {
@@ -140,7 +139,7 @@ $(function() {
 		var parent = $(this).parent();
 		parent.addClass('fieldhelp-focused');
 		var offset = parent.position();
-		parent.find('.fieldhelp').css({top: offset.top + 'px', left: (parent.width()+offset.left+30) +'px'});
+		parent.find('.fieldhelp').css({top: offset.top + 'px', left: (parent.width()+offset.left+40) +'px'});
 	}).blur(function() {
 		$(this).parent().removeClass('fieldhelp-focused');
 	});
@@ -252,10 +251,7 @@ div.dataTables_length { width: 35%; }
 									</s:else>
 								</s:if>
 								<li><label>Location:</label>
-									<s:textfield name="employee.location" id="locationSuggest"/><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="Location"></a>
-									<div id="cluetip2">
-										Current work location. This may be a client site.
-									</div>
+									<s:textfield name="employee.location" id="locationSuggest"/>
 									<div class="fieldhelp">
 									<h3>Location</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
@@ -268,7 +264,7 @@ div.dataTables_length { width: 35%; }
 									<s:textfield name="employee.phone"/>
 								</li>
 								<li><label>TWIC Card Expiration:</label>
-									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="date"/>
+									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
 								</li>
 							</ol>
 						</fieldset>

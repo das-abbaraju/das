@@ -1651,7 +1651,6 @@
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employee_roles.jsp</result>
 			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
-			<result name="suggest">struts/employees/manage_employee_suggest.jsp</result>
 		</action>
 		
 		<action name="ManageUnmappedEmployees"
