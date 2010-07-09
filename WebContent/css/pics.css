@@ -764,6 +764,7 @@ a.picsbutton {
 /* NEGATIVE */
 .negative,a.negative:visited,a.negative:link {
 	color: #d12f19;
+	float: right;
 }
 
 .negative:hover,a.negative:hover {

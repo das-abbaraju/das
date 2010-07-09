@@ -1,10 +1,9 @@
 /******************** New Primary class="forms"  ************************/
-
 fieldset.form {
 	margin: 0 0 0 0;
 	padding: 0 0 10px 0;
 	border-style: none;
-	border-top: 2px solid #C3C3C3;
+	border-top: 2px solid #003768;
 	background-color: #F6F6F0;
 	width: 100%;
 	float: left;
@@ -12,58 +11,68 @@ fieldset.form {
 	position: relative;
 	color: #404245;
 }
+
 fieldset.alt {
 	background-color: #F0F0F0;
 }
+
 fieldset.form legend {
-	color: #A84D10;
+	color: white;
 	font-weight: bold;
 	padding: 0;
 }
+
 fieldset.form legend span {
 	position: absolute;
-	margin-top: 5px;
-	left: 10px;
+	margin: 0;
+	left: 0;
 	top: 0;
-	font-size: 135%;
-	padding-bottom: 3px;
+	font-size: 125%;
+	padding: 0.2em 2%;
+	background-color: #003768;
+	display: block;
+	width: 96%;
 }
+
 fieldset.form ol {
-	margin-top: 30px;
-	padding-left: 10px;
+	margin: 35px 0 0;
+	padding-left: 5px;
 	list-style: none;
 }
-fieldset.form li {
-	padding-bottom: 0.75em;
-	padding-top: 0;
+
+fieldset.form ol li {
 	font-size: 15px;
+	padding: 4px 5px 12px 10px;
+	width: 350px;
 }
+
 fieldset.submit {
-	padding-top: 1em;
-	padding-bottom: 1em;
-	padding-left: 10em;
-	margin-bottom:5px;
-	float: none;
-	width: auto;
-	background-color: white;
-	background-image: none;
-}
-fieldset.bottom {
-	border-bottom: 2px solid #C3C3C3;
+	padding: 1em 5em;
+	border-bottom: 2px solid #003768;
 	margin-bottom: 10px;
 	float: none;
 	width: auto;
 }
+
+fieldset.bottom {
+	border-bottom: 2px solid #003768;
+	margin-bottom: 10px;
+	float: none;
+	width: auto;
+}
+
 fieldset.form label {
-	float: left;
-	width: 10em;
-	margin-right: 1em;
-	text-align: right;
+	float: none;
+	width: 100%;
+	display: block;
+	margin: 0 0 5px 0;
+	text-align: left;
 	font-size: 15px;
 	font-weight: bold;
 	color: #003768;
 	line-height: 15px;
 }
+
 fieldset.form label.checkbox {
 	float: none;
 	width: auto;
@@ -74,6 +83,7 @@ fieldset.form label.checkbox {
 	color: inherit;
 	line-height: inherit;
 }
+
 fieldset.form label.input {
 	float: none;
 	width: inherit;
@@ -83,105 +93,54 @@ fieldset.form label.input {
 	font-weight: inherit;
 	color: inherit;
 }
-fieldset.form input[type=text], fieldset.form input[type=password] {
-	font-size: 14px;
-	padding: 2px;
-}
-fieldset.form select {
+
+fieldset.form input[type=text],fieldset.form input[type=password],fieldset.form select
+	{
+	width: 320px;
 	font-size: 14px;
 	padding: 2px;
 }
 
 /** Sortable list items **/
 #list {
-	margin:0px;
-	padding:0px;
+	margin: 0px;
+	padding: 0px;
 	list-style-type: none;
 }
+
 #list li {
-	margin:5px;
-	padding:10px;
-	border:1px solid #888;
-	cursor:move;
+	margin: 5px;
+	padding: 10px;
+	border: 1px solid #888;
+	cursor: move;
 	line-height: 1em;
 }
 
-/** Employees Form **/
+/** Field Help **/
+fieldset.form ol li.fieldhelp-focused {
+	background-color: #FBF2C9;
+}
 
-#employeeForm fieldset.form ol {
-	margin:50px 0 0 20px;
-	padding-left: 10px;
-	width: 375px;
-}
-#employeeForm fieldset.form ol li {
-	padding: 5px 10px 15px 10px;
-	font-size: 15px;
-}
-#employeeForm fieldset.form ol li.fieldhelp-focused {
-	background-color:#fbf2c9;
-}
-#employeeForm fieldset.form ol li.fieldhelp-focused .fieldhelp {
-	position:absolute;
-	width:250px;
-	padding:10px;
-	background-color:#fbf2c9;
-	display:block;
-	font-size:12px;
-	line-height:20px;
+fieldset.form ol li.fieldhelp-focused .fieldhelp {
+	position: absolute;
+	width: 250px;
+	padding: 10px;
+	background-color: #FBF2C9;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
 	-moz-box-shadow: 3px 3px 4px #666;
 	-webkit-box-shadow: 3px 3px 4px #666;
 	box-shadow: 3px 3px 4px #666;
 	/* For IE 8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')";
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')"
+		;
 	/* For IE 5.5 - 7 */
-	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666');
+	filter: progid :   DXImageTransform.Microsoft.Shadow (   Strength =   4,
+		Direction =   135, Color =   '#666666' );
 }
-#employeeForm .fieldhelp {
+
+.fieldhelp {
 	display: none;
-}
-#employeeForm fieldset.form label {
-	float: none;
-	width: 100%;
-	display:block;
-	margin:0 0 5px 0;
-	text-align: left;
-	font-size: 15px;
-	font-weight: bold;
-	color: #003768;
-	line-height: 15px;
-}
-#employeeForm fieldset.form input[type=text] {
-	width: 320px;
-}
-#employeeForm fieldset.form select {
-	width: 320px;
-}
-#employeeForm fieldset.form .field-input {
-	width: 320px;
-}
-#employeeForm fieldset.submit {
-	padding:1em 3em 4em 3em;
-	margin-bottom: 5px;
-	float: none;
-	width: auto;
-	background-color: white;
-	background-image: none;
-}
-#employeeForm fieldset.form legend {
-	color: #A84D10;
-	font-weight: bold;
-	padding: 0;
-}
-#employeeForm fieldset.form legend span {
-	position: absolute;
-	margin:10px 0 10px 10px;
-	left: 0;
-	top: 0;
-	padding-top:-1px;
-	font-size: 135%;
-	display:block;
-	width:100%;
-}
-#employeeForm .negative {
-	float:right;
 }
