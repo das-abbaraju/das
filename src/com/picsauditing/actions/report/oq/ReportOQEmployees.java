@@ -47,7 +47,7 @@ public class ReportOQEmployees extends PicsActionSupport {
 			where += " AND e IN (SELECT employee FROM EmployeeSite WHERE operator.id = " + permissions.getAccountId()
 					+ ")";
 
-		employees = employeeDAO.findWhere(where);
+		employees = employeeDAO.findWhere(where + " ORDER BY e.lastName, e.firstName");
 		jobSiteTasks = siteTaskDAO.findByJob(jobSiteID);
 
 		qualifications = qualificationDAO.find(employees, jobSiteTasks);

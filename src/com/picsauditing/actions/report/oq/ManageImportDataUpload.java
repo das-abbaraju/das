@@ -1,10 +1,10 @@
 package com.picsauditing.actions.report.oq;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -99,7 +99,6 @@ public class ManageImportDataUpload extends PicsActionSupport {
 	private void importData(File file) {
 		List<AssessmentResultStage> imported = new ArrayList<AssessmentResultStage>();
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 			String all = FileUtils.readFile(file.getAbsolutePath());
 			String[] lines =  all.split("\n");
 			int start = 0;
@@ -120,7 +119,7 @@ public class ManageImportDataUpload extends PicsActionSupport {
 				stage.setFirstName(data[6] + (data[7].length() > 0 ? " " + data[7]+ "." : ""));
 				stage.setCompanyName(data[8]);
 				stage.setEmployeeID(data[9]);
-				stage.setQualificationDate(sdf.parse(data[10]));
+				stage.setQualificationDate(DateBean.parseDate(data[10]));
 				stage.setCenter(center);
 				stage.setAuditColumns(permissions);
 				

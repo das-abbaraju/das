@@ -48,7 +48,8 @@ public class EmployeeQualificationDAO extends PicsDAO {
 			taskIDs += "," + jobSiteTask.getTask().getId();
 		}
 		Query query = em.createQuery("SELECT e FROM EmployeeQualification e WHERE task.id IN (" + taskIDs
-				+ ") AND employee.id IN (" + employeeIDs + ")");
+				+ ") AND employee.id IN (" + employeeIDs + ") AND effectiveDate < NOW()"
+				+ " AND expirationDate > NOW()");
 		List<EmployeeQualification> resultList = query.getResultList();
 		DoubleMap<Employee, JobTask, EmployeeQualification> map = new DoubleMap<Employee, JobTask, EmployeeQualification>();
 		for (EmployeeQualification eq : resultList) {

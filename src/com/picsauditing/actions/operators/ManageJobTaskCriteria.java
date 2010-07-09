@@ -1,6 +1,5 @@
 package com.picsauditing.actions.operators;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AssessmentTestDAO;
@@ -82,11 +82,11 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 
 			if ("Remove".equalsIgnoreCase(button)) {
 				newJobTaskCriteria = jobTaskCriteriaDAO.find(jobTaskCriteriaID);
-				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 				assessmentTest = newJobTaskCriteria.getAssessmentTest();
 				
 				// If deleting something created today, just remove
-				if (sdf.format(newJobTaskCriteria.getCreationDate()).equals(sdf.format(new Date())))
+				if (DateBean.format(newJobTaskCriteria.getCreationDate(), "yyyy-MM-dd")
+						.equals(DateBean.format(new Date(), "yyyy-MM-dd")))
 					jobTaskCriteriaDAO.remove(newJobTaskCriteria);
 				else {
 					newJobTaskCriteria.expire();
@@ -241,8 +241,6 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		newJobTaskCriteria.setAuditColumns(permissions);
 		newJobTaskCriteria.defaultDates();
 		newJobTaskCriteria.setEffectiveDate(new Date());
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		newJobTaskCriteria.setExpirationDate(sdf.parse("4000-01-01"));
+		newJobTaskCriteria.setExpirationDate(DateBean.getEndOfTime());
 	}
 }

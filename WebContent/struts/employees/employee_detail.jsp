@@ -146,7 +146,16 @@
 						</table>
 					</s:if>
 					<s:elseif test="permissions.requiresCompetencyReview">
-						<div class="cell"><s:property value="employee.displayName" /> has no job roles.</div>
+						<div class="panel_placeholder">
+							<div class="panel">
+								<div class="panel_header">
+									Job Roles
+								</div>
+								<div class="panel_content">
+									<s:property value="employee.displayName" /> has no job roles.
+								</div>
+							</div>
+						</div>
 					</s:elseif>
 				</td>
 				<td>

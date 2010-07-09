@@ -1,13 +1,11 @@
 package com.picsauditing.actions.report.oq;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.jboss.util.Strings;
-
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub;
@@ -24,6 +22,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageImportData extends PicsActionSupport {
@@ -93,15 +92,14 @@ public class ManageImportData extends PicsActionSupport {
 			if ("Import By Date".equals(button)) {
 				try {
 					oqsgService = new ExportServicesStub();
-					SimpleDateFormat oqsgOut = new SimpleDateFormat("MM/dd/yyyy");
 					List<Record> all = new ArrayList<Record>();
 					
 					// Knowledge and Skills
 					KS_GetDateRecords ks = new KS_GetDateRecords();
 					ks.setUN(oqsgUser);
 					ks.setPW(oqsgPass);
-					ks.setStartDate(oqsgOut.format(start));
-					ks.setEndDate(oqsgOut.format(end));
+					ks.setStartDate(DateBean.format(start, "MM/dd/yyyy"));
+					ks.setEndDate(DateBean.format(end, "MM/dd/yyyy"));
 					
 					KS_GetDateRecordsResponse ksR = oqsgService.KS_GetDateRecords(ks);
 					all.addAll(Arrays.asList(ksR.getKS_GetDateRecordsResult().getRecord()));
@@ -110,8 +108,8 @@ public class ManageImportData extends PicsActionSupport {
 					T_GetDateRecords t = new T_GetDateRecords();
 					t.setUN(oqsgUser);
 					t.setPW(oqsgPass);
-					t.setStartDate(oqsgOut.format(start));
-					t.setEndDate(oqsgOut.format(end));
+					t.setStartDate(DateBean.format(start, "MM/dd/yyyy"));
+					t.setEndDate(DateBean.format(end, "MM/dd/yyyy"));
 					
 					T_GetDateRecordsResponse tR = oqsgService.T_GetDateRecords(t);
 					all.addAll(Arrays.asList(tR.getT_GetDateRecordsResult().getRecord()));
@@ -185,7 +183,6 @@ public class ManageImportData extends PicsActionSupport {
 	
 	// Private methods
 	private void addOQSGImport(List<Record> records) throws Exception {
-		SimpleDateFormat oqsgIn = new SimpleDateFormat("M/d/yyyy");
 		AssessmentResultStage ars;
 		
 		for (Record record : records) {
@@ -199,7 +196,7 @@ public class ManageImportData extends PicsActionSupport {
 					(Strings.isEmpty(record.getUser_Middle_Initial()) ? 
 							"" : " " + record.getUser_Middle_Initial() + "."));
 			ars.setLastName(record.getUser_Last_Name());
-			ars.setQualificationDate(oqsgIn.parse(record.getQualification_Date()));
+			ars.setQualificationDate(DateBean.parseDate(record.getQualification_Date()));
 			ars.setQualificationMethod(record.getCovered_Task_Number());
 			ars.setQualificationType(record.getQualification_Type());
 			ars.setResultID(record.getQualID() + "");

@@ -42,6 +42,8 @@ public class Employee extends BaseTable {
 	private Date birthDate;
 	private String photo;
 	private Date twicExpiration;
+	private int needsRecalculation;
+	private Date lastRecalculation;
 
 	List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
 	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
@@ -222,6 +224,22 @@ public class Employee extends BaseTable {
 	
 	public void setTwicExpiration(Date twicExpiration) {
 		this.twicExpiration = twicExpiration;
+	}
+	
+	public int getNeedsRecalculation() {
+		return needsRecalculation;
+	}
+	
+	public void setNeedsRecalculation(int needsRecalculation) {
+		this.needsRecalculation = needsRecalculation;
+	}
+	
+	public Date getLastRecalculation() {
+		return lastRecalculation;
+	}
+	
+	public void setLastRecalculation(Date lastRecalculation) {
+		this.lastRecalculation = lastRecalculation;
 	}
 
 	@SuppressWarnings("unchecked")

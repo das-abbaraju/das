@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.JobTaskDAO;
@@ -35,8 +36,11 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 					Employee employee = employeeDAO.find(employeeID);
 					calculate(employee);
 				} else {
-					String where = "";
-					List<Employee> employeesToRecalculate = employeeDAO.findWhere(where, 10);
+					String yesterday = DateBean.toDBFormat(DateBean.addDays(new Date(), -1));
+					String where = "needsRecalculation > 0 OR lastRecalculation < '" + yesterday + 
+						"' OR lastRecalculation IS NULL ORDER BY needsRecalculation DESC, lastRecalculation ASC";
+					
+					List<Employee> employeesToRecalculate = employeeDAO.findWhere(where, 50);
 
 					for (Employee employee : employeesToRecalculate) {
 						calculate(employee);
@@ -81,6 +85,9 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 				}
 			}
 		}
+		
+		employee.setNeedsRecalculation(0);
+		employee.setLastRecalculation(new Date());
 		employeeDAO.save(employee);
 	}
 

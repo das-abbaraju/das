@@ -1,12 +1,12 @@
 package com.picsauditing.actions.employees;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentResultDAO;
@@ -29,7 +29,6 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	protected ContractorAccount contractor = null;
 	protected Date effectiveDate;
 	protected Employee employee = null;
-	protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	protected String date;
 	protected List<Date> history;
 	protected List<AssessmentResult> effective;
@@ -103,7 +102,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	
 	public boolean isCanEdit() {
 		if ((permissions.isContractor() || permissions.isAdmin()) 
-				&& (date == null || date.equals(sdf.format(new Date()))))
+				&& (date == null || date.equals(DateBean.format(new Date(), "yyyy-MM-dd"))))
 			return true;
 
 		return false;
@@ -145,7 +144,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	public Date getEffectiveDate() {
 		if (date != null) {
 			try {
-				effectiveDate = sdf.parse(date);
+				effectiveDate = DateBean.parseDate(date);
 			} catch (Exception e) {
 			}
 		}
