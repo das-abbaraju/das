@@ -443,7 +443,7 @@ function openOverride(id){
 		<div id="notesList" class="details""><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 	</div>
 	<div id="tabs-4">
-		<div class="info" style="width: 25%;">
+		<div class="info">
 			<s:form>
 				<s:hidden name="id" />
 				<s:hidden name="opID" />
