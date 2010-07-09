@@ -95,8 +95,20 @@ fieldset.form label.input {
 	display: inherit;
 }
 
-fieldset.form input[type=text],fieldset.form input[type=password],fieldset.form select
-	{
+fieldset.form input[type=text],fieldset.form input[type=password] {
+	width: 320px;
+	font-size: 14px;
+	padding: 2px;
+}
+/**
+* We have to separate these because IE 6 can't see the rules with input[type=text]
+**/
+fieldset.form select {
+	width: 320px;
+	font-size: 14px;
+	padding: 2px;	
+}
+fieldset.form input.input-edit-field {
 	width: 320px;
 	font-size: 14px;
 	padding: 2px;
