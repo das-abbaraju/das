@@ -1,6 +1,5 @@
 /******************** New Primary class="forms"  ************************/
 
-
 fieldset.form {
 	margin: 0 0 0 0;
 	padding: 0 0 10px 0;
@@ -84,7 +83,11 @@ fieldset.form label.input {
 	font-weight: inherit;
 	color: inherit;
 }
-fieldset.form input[type=text], fieldset.form input[type=password], fieldset.form select {
+fieldset.form input[type=text], fieldset.form input[type=password] {
+	font-size: 14px;
+	padding: 2px;
+}
+fieldset.form select {
 	font-size: 14px;
 	padding: 2px;
 }
@@ -108,12 +111,11 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 #employeeForm fieldset.form ol {
 	margin:50px 0 0 20px;
 	padding-left: 10px;
-	list-style: none;
+	width: 375px;
 }
 #employeeForm fieldset.form ol li {
 	padding: 5px 10px 15px 10px;
 	font-size: 15px;
-	width: 350px;
 }
 #employeeForm fieldset.form ol li.fieldhelp-focused {
 	background-color:#fbf2c9;
@@ -152,7 +154,10 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	width: 320px;
 }
 #employeeForm fieldset.form select {
-	width:320px;
+	width: 320px;
+}
+#employeeForm fieldset.form .field-input {
+	width: 320px;
 }
 #employeeForm fieldset.submit {
 	padding:1em 3em 4em 3em;
@@ -180,4 +185,3 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 #employeeForm .negative {
 	float:right;
 }
-

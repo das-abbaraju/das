@@ -197,31 +197,31 @@ div.dataTables_length { width: 35%; }
 							<legend><span>Employee Details</span></legend>
 							<ol class="fieldhelp-list">
 								<li><label>First Name:</label>
-									<s:textfield name="employee.firstName"/>
+									<s:textfield name="employee.firstName" cssClass="field-input"/>
 									<div class="fieldhelp">
 									<h3>First Name</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
 									</div>
 								</li>
 								<li><label>Last Name:</label>
-									<s:textfield name="employee.lastName"/>
+									<s:textfield name="employee.lastName" cssClass="field-input"/>
 									<div class="fieldhelp">
 									<h3>Last Name</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
 									</div>
 								</li>
 								<li><label>SSN:</label>
-									<s:textfield name="ssn" cssClass="ssn"/>
+									<s:textfield name="ssn" cssClass="ssn" cssClass="field-input"/>
 									<div class="fieldhelp">
 									<h3>Social Security Number (SSN)</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
 									</div>
 								</li>
 								<li><label>Title:</label>
-									<s:textfield name="employee.title"/>
+									<s:textfield name="employee.title" cssClass="field-input"/>
 								</li>
 								<li><label>Birth Date:</label>
-									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker"/>
+									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker field-input"/>
 								</li>
 								<li><label>Classification:</label>
 									<s:select name="employee.classification" 
@@ -232,10 +232,10 @@ div.dataTables_length { width: 35%; }
 									<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
 								</li>
 								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker"/>
+									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker field-input"/>
 								</li>
 								<li id="termDate"><label>Termination Date:</label>
-									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker"/>
+									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker field-input"/>
 								</li>
 								<s:if test="employee.id > 0">
 									<s:if test="employee.photo.length() > 0">
@@ -251,20 +251,20 @@ div.dataTables_length { width: 35%; }
 									</s:else>
 								</s:if>
 								<li><label>Location:</label>
-									<s:textfield name="employee.location" id="locationSuggest"/>
+									<s:textfield name="employee.location" cssClass="field-input" id="locationSuggest"/>
 									<div class="fieldhelp">
 									<h3>Location</h3>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
 									</div>
 								</li>
 								<li><label>Email:</label>
-									<s:textfield name="employee.email"/>
+									<s:textfield name="employee.email" cssClass="field-input"/>
 								</li>
 								<li><label>Phone #:</label>
-									<s:textfield name="employee.phone"/>
+									<s:textfield name="employee.phone" cssClass="field-input"/>
 								</li>
 								<li><label>TWIC Card Expiration:</label>
-									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
+									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker field-input"/>
 								</li>
 							</ol>
 						</fieldset>
