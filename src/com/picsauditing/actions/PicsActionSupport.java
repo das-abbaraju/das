@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,6 +38,7 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 	protected static String BLANK = "blank";
 	protected static String JSON = "json";
 	protected static String CHART_XML = "chartXML";
+	protected Collection<String> alertMessages;
 
 	protected String requestURL = null;
 
@@ -354,5 +358,24 @@ public class PicsActionSupport extends ActionSupport implements RequestAware {
 
 	public boolean isDebugging() {
 		return "1".equals(System.getProperty("pics.debug"));
+	}
+	
+	public Collection<String> internalGetAlertMessages(){
+		if(alertMessages==null){
+			alertMessages = new ArrayList<String>();
+		}
+		return alertMessages;
+	}
+	
+	public synchronized void addAlertMessage(String anAlertMessage){
+		internalGetAlertMessages().add(anAlertMessage);
+	}
+	
+	public synchronized boolean hasAlertMessages(){
+		return (alertMessages!=null) && !alertMessages.isEmpty();
+	}
+
+	public synchronized Collection<String> getAlertMessages() {
+		return alertMessages;
 	}
 }
