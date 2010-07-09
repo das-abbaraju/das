@@ -18,6 +18,8 @@ import javax.imageio.stream.FileImageOutputStream;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
@@ -55,6 +57,23 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 	}
 
 	public String execute() {
+		if (!forceLogin())
+			return LOGIN;
+		
+		if(!permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit)){
+			// can't edit photos
+			addActionError("You do not have permissions to Edit Employee Photos");
+			return BLANK;
+		}
+		if(employeeID > 0){
+			employee = employeeDAO.find(employeeID);
+			if(!permissions.isPicsEmployee() && (permissions.getAccountId()!=employee.getAccount().getId())){
+				// not same contractor
+				addActionError("You can not edit Photos for "+employee.getAccount().getName());
+				return BLANK;
+			}
+		}
+		
 		if(step==0){
 			if(showSavePhoto()){ // set to step 2, crop
 				step = 2;
@@ -62,7 +81,6 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 		}
 
 		if ("Upload".equals(button)) {
-			employee = employeeDAO.find(employeeID);
 			if (employee == null) {
 				addActionError("Invalid Employee");
 				return BLANK;
@@ -126,7 +144,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 				} catch (Exception e) {
 					System.out.println("Error moving " + f);
 				}
-				if (getActionErrors().size() > 0) {
+				if (hasActionErrors()) {
 					return SUCCESS;
 				}
 				if (bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE) {
@@ -139,17 +157,23 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 					//Move to crop step
 					step = 2;
 					//addActionMessage();
+					addAlertMessage("Your Photo has been Uploaded!\nPlease click on the photo below and drag to crop your image." +
+					"When you are happy with your selection click the 'Crop Photo' Button below to crop and save this photo for the profile page");
 				}
 				employeeDAO.save(employee);
 			}
 		}
 		
 		if ("Save".equals(button)) {
-			if (employeeID == 0) {
+			if (employee == null) {
 				addActionError("Invalid Employee");
 				return BLANK;
 			}
-			employee = employeeDAO.find(employeeID);
+			if(width < XSIZE || height < YSIZE){
+				addActionError("Invalid Selection");
+				return SUCCESS;
+				
+			}
 			// do img manipulation
 			File f = new File(getFtpDir() + "/files/"
 					+ FileUtils.thousandize(employeeID)
@@ -175,14 +199,14 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			}
 			// move to finish stage
 			step = 2;
+			addAlertMessage("The profile photo for this employee has been successfully cropped and uploaded! ");
 		}
 		
 		if("Delete".equals(button)){
-			if(employeeID==0){
+			if(employee == null){
 				addActionError("Invalid Employee");
 				return BLANK;
 			}
-			employee = employeeDAO.find(employeeID);
 			
 			File f = new File(getFtpDir() + "/files/"
 					+ FileUtils.thousandize(employeeID)

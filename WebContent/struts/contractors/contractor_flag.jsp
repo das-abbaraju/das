@@ -204,7 +204,7 @@ function openOverride(id){
 						<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
 					</div>
 					<s:if test="permissions.corporate">
-						<s:checkbox name="overrideAll"/><label>Check to Force the Flag Color for all your Facilities in your database</label>
+						<s:checkbox id="overRAll_main" name="overrideAll"/><label for="overRAll_main">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>
 					</s:if><br />
 				</s:form>
 				<a href="#" onclick="$('#override_link').slideDown(); $('#override').slideUp(); return false;">Nevermind</a>
@@ -362,8 +362,7 @@ function openOverride(id){
 													<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
 														onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
 													<s:if test="permissions.corporate">
-															<s:checkbox id="overRAll" name="overrideAll"/><label for="overRAll">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>
-														
+															<s:checkbox id="overRAll_%{#data.id}" name="overrideAll"/><label for="overRAll_<s:property value="%{#data.id}"/>">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>														
 													</s:if>
 												</div>
 											</div>

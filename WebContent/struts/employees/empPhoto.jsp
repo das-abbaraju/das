@@ -51,7 +51,7 @@ function setStep(id){
 		$('.cropStep').fadeOut();
 	} else{
 		$('.uploadStep').fadeOut();
-		$('.cropStep').fadeOut();		
+		$('.cropStep').fadeOut();	
 	}
 }
 
@@ -72,17 +72,8 @@ function setStep(id){
 <a class="picsbutton" href="ManageEmployees.action?employee.id=<s:property value="employee.id"/>">&lt;&lt; Back to Manage Employee</a>
 <s:include value="../actionMessages.jsp" />
 <s:if test="step==2 & employee.photo == null">
-	<div id="alert" class="cropStep">
-		Your Photo has been Uploaded!<br/>
-		Please click on the photo below and drag to crop your image.
-		When you are happy with your selection click the 'Crop Photo' Button below to crop and save this photo for the profile page
-	</div>	
 </s:if>
-<s:if test="employee.photo.length() > 0">
-	<div id="alert" class="cropStep">
-		The profile photo for this employee has been successfully cropped and uploaded!
-	</div>	
-</s:if>
+<br />
 <s:if test="showSavePhoto()">
 	<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
 </s:if>
@@ -104,7 +95,6 @@ function setStep(id){
 		
 		<button class="picsbutton positive uploadStep" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
 		<s:if test="showSavePhoto()">
-			<s:if test="employee.photo.length() > 0"></s:if>
 			<button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Crop Photo</button>
 			<button class="picsbutton negative cropStep" name="button" type="submit" value="Delete">Delete Photo</button>
 		</s:if>
