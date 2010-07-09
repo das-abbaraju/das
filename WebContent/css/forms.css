@@ -13,11 +13,9 @@ fieldset.form {
 	position: relative;
 	color: #404245;
 }
-
 fieldset.alt {
 	background-color: #F0F0F0;
 }
-
 fieldset.form legend {
 	color: #A84D10;
 	font-weight: bold;
@@ -31,19 +29,16 @@ fieldset.form legend span {
 	font-size: 135%;
 	padding-bottom: 3px;
 }
-
 fieldset.form ol {
 	margin-top: 30px;
 	padding-left: 10px;
 	list-style: none;
 }
-
 fieldset.form li {
 	padding-bottom: 0.75em;
 	padding-top: 0;
 	font-size: 15px;
 }
-
 fieldset.submit {
 	padding-top: 1em;
 	padding-bottom: 1em;
@@ -54,14 +49,12 @@ fieldset.submit {
 	background-color: white;
 	background-image: none;
 }
-
 fieldset.bottom {
 	border-bottom: 2px solid #C3C3C3;
 	margin-bottom: 10px;
 	float: none;
 	width: auto;
 }
-
 fieldset.form label {
 	float: left;
 	width: 10em;
@@ -72,7 +65,6 @@ fieldset.form label {
 	color: #003768;
 	line-height: 15px;
 }
-
 fieldset.form label.checkbox {
 	float: none;
 	width: auto;
@@ -83,7 +75,6 @@ fieldset.form label.checkbox {
 	color: inherit;
 	line-height: inherit;
 }
-
 fieldset.form label.input {
 	float: none;
 	width: inherit;
@@ -93,7 +84,6 @@ fieldset.form label.input {
 	font-weight: inherit;
 	color: inherit;
 }
-
 fieldset.form input[type=text], fieldset.form input[type=password], fieldset.form select {
 	font-size: 14px;
 	padding: 2px;
@@ -113,47 +103,40 @@ fieldset.form input[type=text], fieldset.form input[type=password], fieldset.for
 	line-height: 1em;
 }
 
-
 /** Employees Form **/
-
 
 #employeeForm fieldset.form ol {
 	margin:50px 0 0 20px;
 	padding-left: 10px;
 	list-style: none;
 }
-	
 #employeeForm fieldset.form ol li {
 	padding: 5px 10px 15px 10px;
 	font-size: 15px;
 	width: 350px;
 }
-
 #employeeForm fieldset.form ol li.fieldhelp-focused {
 	background-color:#fbf2c9;
 }
-
 #employeeForm fieldset.form ol li.fieldhelp-focused .fieldhelp {
-position:absolute;
-width:250px;
-padding:10px;
-background-color:#fbf2c9;
-display:block;
-font-size:12px;
-line-height:20px;
--moz-box-shadow: 3px 3px 4px #666;
--webkit-box-shadow: 3px 3px 4px #666;
-box-shadow: 3px 3px 4px #666;
-/* For IE 8 */
--ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')";
-/* For IE 5.5 - 7 */
-filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666');
+	position:absolute;
+	width:250px;
+	padding:10px;
+	background-color:#fbf2c9;
+	display:block;
+	font-size:12px;
+	line-height:20px;
+	-moz-box-shadow: 3px 3px 4px #666;
+	-webkit-box-shadow: 3px 3px 4px #666;
+	box-shadow: 3px 3px 4px #666;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666');
 }
-
-.fieldhelp {
+#employeeForm .fieldhelp {
 	display: none;
 }
-
 #employeeForm fieldset.form label {
 	float: none;
 	width: 100%;
@@ -165,22 +148,20 @@ filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Colo
 	color: #003768;
 	line-height: 15px;
 }
-
 #employeeForm fieldset.form input[type=text] {
 	width: 320px;
 }
 #employeeForm fieldset.form select {
-	width:320px; }
-
-#employeeForm fieldset.submit {
-padding:1em 3em 4em 3em;
-margin-bottom: 5px;
-float: none;
-width: auto;
-background-color: white;
-background-image: none;
+	width:320px;
 }
-
+#employeeForm fieldset.submit {
+	padding:1em 3em 4em 3em;
+	margin-bottom: 5px;
+	float: none;
+	width: auto;
+	background-color: white;
+	background-image: none;
+}
 #employeeForm fieldset.form legend {
 	color: #A84D10;
 	font-weight: bold;
@@ -198,5 +179,5 @@ background-image: none;
 }
 #employeeForm .negative {
 	float:right;
-	}
+}
 
