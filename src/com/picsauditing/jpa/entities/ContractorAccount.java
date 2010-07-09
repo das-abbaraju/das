@@ -507,6 +507,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@ManyToOne
 	@JoinColumn(name = "welcomeAuditor_id")
+	/**
+	 * The CSR
+	 */
 	public User getAuditor() {
 		return auditor;
 	}
