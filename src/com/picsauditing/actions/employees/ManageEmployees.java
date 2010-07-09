@@ -49,7 +49,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected Employee employee;
 	protected String ssn;
-
+	
 	private String effective;
 	private String expiration;
 	private String orientation;
@@ -270,7 +270,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public void setEffective(String effective) {
 		this.effective = effective;
-
 	}
 
 	public void setExpiration(String expiration) {
@@ -306,7 +305,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	@SuppressWarnings("unchecked")
 	public JSONArray getEmployeeData() {
 		return new JSONArray() {
-
 			{
 				for (Employee e : account.getEmployees()) {
 					add(e.toTableJSON());
@@ -393,6 +391,13 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public JSONArray getPreviousLocationsJSON() {
 		JSONArray a = new JSONArray();
 		a.addAll(employeeDAO.findCommonLocations(account.getId()));
+		return a;
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONArray getPreviousTitlesJSON(){
+		JSONArray a = new JSONArray();
+		a.addAll(employeeDAO.findCommonTitles());
 		return a;
 	}
 

@@ -85,4 +85,18 @@ public class EmployeeDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+	
+	public List<String> findCommonTitles(){
+		/*
+		 *  select title, count(*) from employee
+			where accountID in (select id from accounts where status in ('Active','Pending'))
+			group by title
+			having count(*) > 1
+			order by title
+		 */
+		Query query = em.createQuery("SELECT e.title FROM Employee e " +
+				"WHERE e.account.id IN (SELECT a.id FROM Account a WHERE a.status IN ('Active', 'Pending'))" +
+				"GROUP BY e.title HAVING COUNT(*) > 1 ORDER BY e.title");
+		return query.getResultList();
+	}
 }

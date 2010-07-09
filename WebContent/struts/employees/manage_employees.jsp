@@ -132,6 +132,7 @@ $(function() {
 		clickThrough: false
 	});
 	$('#locationSuggest').autocomplete(<s:property value="previousLocationsJSON" escape="false"/>);
+	$('#titleSuggest').autocomplete(<s:property value="previousTitlesJSON" escape="false"/>);
 });
 
 $(function() {
@@ -218,7 +219,7 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Title:</label>
-									<s:textfield name="employee.title" cssClass="field-input"/>
+									<s:textfield id="titleSuggest" name="employee.title" cssClass="field-input"/>
 								</li>
 								<li><label>Birth Date:</label>
 									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker field-input"/>
