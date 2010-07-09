@@ -3,6 +3,7 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 var api;
@@ -93,12 +94,14 @@ function setStep(id){
 		</div>
 		<br /><br />
 		
-		<button class="picsbutton positive uploadStep" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
-		<s:if test="showSavePhoto()">
-			<button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Crop Photo</button>
-			<button class="picsbutton negative cropStep" name="button" type="submit" value="Delete">Delete Photo</button>
-		</s:if>
+		<fieldset class="form submit">
+			<button class="picsbutton positive uploadStep" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
+			<s:if test="showSavePhoto()">
+				<button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Crop Photo</button>
+				<button class="picsbutton negative cropStep" name="button" type="submit" value="Delete"
+					onclick="return confirm('Are you sure you want to delete this photo? This action cannot be undone.');">Delete Photo</button>
+			</s:if>
+		</fieldset>
 </s:form>
-<br clear="all" />
 </body>
 </html>

@@ -150,10 +150,16 @@ fieldset.form ol li.fieldhelp-focused .fieldhelp {
 		"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')"
 		;
 	/* For IE 5.5 - 7 */
-	filter: progid :   DXImageTransform.Microsoft.Shadow (   Strength =   4,
-		Direction =   135, Color =   '#666666' );
+	filter: progid :     DXImageTransform.Microsoft.Shadow (     Strength =
+		    4, Direction =     135, Color =     '#666666' );
 }
 
 .fieldhelp {
 	display: none;
+}
+
+fieldset.form div.fieldhelp ul li {
+	font-size: inherit;
+	padding: 0;
+	width: auto;
 }

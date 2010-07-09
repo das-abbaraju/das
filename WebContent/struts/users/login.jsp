@@ -36,11 +36,6 @@ $(function() {
 		<li>
 			<label>Username:</label>
 			<s:textfield name="username" cssClass="login" />
-			<div class="fieldhelp">
-				<h3>Help</h3>
-				<p>Forget your login information? <a href="AccountRecovery.action">Click here to recover it</a></p>
-				<p>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></p>
-			</div>
 		</li>
 		<li><label>Password:</label> <s:password name="password" cssClass="login" /></li>
 	</ol>
@@ -48,6 +43,11 @@ $(function() {
 	<fieldset class="form submit">
 		<input type="submit" class="picsbutton positive" name="button" value="Login" />
 	</fieldset>
+
+	<div class="info">
+		<p>Forget your login information? <a href="AccountRecovery.action">Click here to recover it</a></p>
+		<p>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></p>
+	</div>
 </s:form>
 
 </body>

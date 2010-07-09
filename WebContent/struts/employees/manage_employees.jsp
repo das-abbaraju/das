@@ -35,11 +35,11 @@ $(function() {
 			showAnim: 'fadeIn'
 		});
 	<s:if test="employee.id != 0">
-		<s:if test="employee.active == 1">
-			$('#termDate').show();
+		<s:if test="employee.active">
+			$('#termDate').hide();
 		</s:if>
 		<s:else>
-			$('#termDate').hide();
+			$('#termDate').show();
 		</s:else>
 	</s:if>
 	<s:else>
@@ -201,28 +201,50 @@ div.dataTables_length { width: 35%; }
 									<s:textfield name="employee.firstName" cssClass="field-input"/>
 									<div class="fieldhelp">
 									<h3>First Name</h3>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
+									The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.
+									<h5>Examples:</h5>
+									<ul>
+										<li>John</li>
+										<li>John Q.</li>
+										<li>John Quincy</li>
+									</ul>
 									</div>
 								</li>
 								<li><label>Last Name:</label>
 									<s:textfield name="employee.lastName" cssClass="field-input"/>
 									<div class="fieldhelp">
 									<h3>Last Name</h3>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
+									The last name (aka family name) of the employee.
 									</div>
 								</li>
 								<li><label>SSN:</label>
 									<s:textfield name="ssn" cssClass="ssn" cssClass="field-input"/>
 									<div class="fieldhelp">
-									<h3>Social Security Number (SSN)</h3>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
+									<h3>Social Security Number</h3>
+									The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
+									This field is NOT used directly by PICS. However some third party data providers require this number. You can always add it later if needed.
 									</div>
 								</li>
 								<li><label>Title:</label>
 									<s:textfield id="titleSuggest" name="employee.title" cssClass="field-input"/>
+									<div class="fieldhelp">
+									<h3>Title</h3>
+									The optional title of the employee.
+									<h5>Examples:</h5>
+									<ul>
+										<li>President</li>
+										<li>Senior Engineer</li>
+										<li>Apprentice</li>
+									</ul>
+									Suggestions are based on common titles from all companies located in PICS Organizer.
+									</div>
 								</li>
 								<li><label>Birth Date:</label>
 									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker field-input"/>
+									<div class="fieldhelp">
+									<h3>Birth Date</h3>
+									Optional date of birth field. Included for future use.
+									</div>
 								</li>
 								<li><label>Classification:</label>
 									<s:select name="employee.classification" 
@@ -231,9 +253,17 @@ div.dataTables_length { width: 35%; }
 								</li>
 								<li><label>Active</label>
 									<s:checkbox name="employee.active" onclick="$('#termDate').toggle();"/>
+									<div class="fieldhelp">
+									<h3>Active</h3>
+									Unchecking this box will remove this employee from most reports. Uncheck this once the person no longer works for your company.
+									</div>
 								</li>
 								<li><label>Hire Date:</label>
 									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker field-input"/>
+									<div class="fieldhelp">
+									<h3>Hire Date</h3>
+									The date (or best approximation) the employee first started working for this company.
+									</div>
 								</li>
 								<li id="termDate"><label>Termination Date:</label>
 									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker field-input"/>
@@ -241,8 +271,9 @@ div.dataTables_length { width: 35%; }
 								<s:if test="employee.id > 0">
 									<s:if test="employee.photo.length() > 0">
 										<li><label>Photo:</label>
-											<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" style="width: 25px; height: 25px; vertical-align: bottom;" />
-											<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="edit">Change</a> <a href="EmployeePhotoUpload.action?button=Delete&employeeID=<s:property value="employee.id"/>" class="remove">Delete</a>
+											<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="edit"><img 
+												id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" 
+												style="width: 25px; height: 25px; vertical-align: bottom;" /></a>
 										</li>
 									</s:if>
 									<s:else>
@@ -255,17 +286,37 @@ div.dataTables_length { width: 35%; }
 									<s:textfield name="employee.location" cssClass="field-input" id="locationSuggest"/>
 									<div class="fieldhelp">
 									<h3>Location</h3>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, mi in imperdiet rhoncus, purus augue condimentum justo, in ornare libero dolor quis dui.
+									The employee's primary work location. This could one of your own work locations or the location of one of your clients.
+									<h5>Examples:</h5>
+									<ul>
+										<li>Dallas</li>
+										<li>Building C</li>
+										<li>BP Whiting</li>
+									</ul>
+									Suggestions based on common locations of other employees will appear after you start to type.
 									</div>
 								</li>
 								<li><label>Email:</label>
 									<s:textfield name="employee.email" cssClass="field-input"/>
+									<div class="fieldhelp">
+									<h3>Email</h3>
+									The employee's primary work email address. This optional field is included for future use.
+									PICS will not SPAM email addresses or share this address without your permission.
+									</div>
 								</li>
 								<li><label>Phone #:</label>
 									<s:textfield name="employee.phone" cssClass="field-input"/>
+									<div class="fieldhelp">
+									<h3>Phone</h3>
+									The employee's primary work phone. This field is optional.
+									</div>
 								</li>
 								<li><label>TWIC Card Expiration:</label>
 									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker field-input"/>
+									<div class="fieldhelp">
+									<h3>TWIC</h3>
+									The expiration date of the employee's TWIC Card if available. Some operators may require this information.
+									</div>
 								</li>
 							</ol>
 						</fieldset>

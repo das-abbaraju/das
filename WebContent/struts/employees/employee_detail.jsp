@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-	<title>Employee Details</title>
+	<title>Profile of <s:property value="employee.firstName" /> <s:property value="employee.lastName" /></title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -45,9 +45,9 @@
 <body>
 	<s:include value="../actionMessages.jsp"/>
 	<div id="profile">
-		<table>
+		<table width="100%">
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 					<table style="margin: 0px auto;">
 						<tr>
 							<s:if test="employee.photo.length() > 0">
@@ -65,11 +65,6 @@
 								<s:else>
 									<s:property value="employee.account.name" />
 								</s:else>
-								<s:if test="permissions.admin || permissions.accountID == employee.account.id">
-									<pics:permission perm="ManageEmployees">
-										<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />">Manage Employee</a>
-									</pics:permission>
-								</s:if>
 							</td>
 							<s:if test="!employee.account.logoFile.empty()">
 								<td style="vertical-align: middle; padding: 0px 5px;">
@@ -91,6 +86,12 @@
 								</div>
 								<div class="panel_content">
 									<table>
+										<s:if test="employee.location.length() > 0">
+											<tr>
+												<th>Location:</th>
+												<td><s:property value="employee.location" /></td>
+											</tr>
+										</s:if>
 										<s:iterator value="employee.employeeSites" id="sites" status="stat">
 											<s:if test="#sites.current">
 												<tr>
@@ -158,6 +159,7 @@
 						</div>
 					</s:elseif>
 				</td>
+				<td width="20px;">&nbsp;</td>
 				<td>
 					<s:if test="employee.phone.length() > 0 || employee.email.length() > 0 || employee.location.length() > 0 || employee.twicExpiration != null">
 						<div class="panel_placeholder">
@@ -179,12 +181,6 @@
 												<td><s:property value="employee.email" /></td>
 											</tr>
 										</s:if>
-										<s:if test="employee.location.length() > 0">
-											<tr>
-												<th>Location:</th>
-												<td><s:property value="employee.location" /></td>
-											</tr>
-										</s:if>
 										<s:if test="employee.twicExpiration != null">
 											<tr>
 												<th>TWIC Card Expiration:</th>
@@ -192,6 +188,11 @@
 											</tr>
 										</s:if>
 									</table>
+									<s:if test="permissions.admin || permissions.accountID == employee.account.id">
+										<pics:permission perm="ManageEmployees">
+											<a href="ManageEmployees.action?employee.id=<s:property value="employee.id" />" class="edit">Edit Profile</a>
+										</pics:permission>
+									</s:if> 
 								</div>
 							</div>
 						</div>
