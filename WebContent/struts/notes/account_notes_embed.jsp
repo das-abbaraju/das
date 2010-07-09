@@ -3,7 +3,7 @@
 
 <div class="clear"></div>
 <div id="thinking_notesList"></div>
-<table class="notes">
+<table class="notes" style="margin-left: auto; margin-right: auto;">
 	<thead>
 		<tr><th colspan="3">Notes (<s:property value="noteCategory"/>)</th>
 		</tr>

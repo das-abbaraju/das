@@ -280,6 +280,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		fColor.remove(FlagColor.Clear.name());
 		return fColor;		
 	}
+	
+	public ArrayList<String> getUnusedCoFlag(){
+		FlagColor fc = co.getFlagColor();
+		ArrayList<String> fColor = FlagColor.getValuesWithDefault();
+		if(fc!=null)
+			fColor.remove(fc.name());
+		fColor.remove(FlagColor.Clear.name());
+		return fColor;		
+	}
 
 	public String getAction() {
 		return action;
