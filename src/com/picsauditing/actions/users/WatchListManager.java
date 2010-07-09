@@ -6,15 +6,19 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorWatch;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class WatchListManager extends PicsActionSupport {
 	private ContractorAccountDAO conDAO;
+	private ContractorOperatorDAO coDAO;
 	private UserDAO userDAO;
 	
 	private int userID;
@@ -23,9 +27,10 @@ public class WatchListManager extends PicsActionSupport {
 	private String userName;
 	private String contractorName;
 	
-	public WatchListManager(ContractorAccountDAO conDAO, UserDAO userDAO) {
+	public WatchListManager(ContractorAccountDAO conDAO, UserDAO userDAO, ContractorOperatorDAO coDAO) {
 		this.conDAO = conDAO;
 		this.userDAO = userDAO;
+		this.coDAO = coDAO;
 	}
 
 	public String execute() throws Exception {
@@ -153,5 +158,10 @@ public class WatchListManager extends PicsActionSupport {
 				"%' OR u.username LIKE '%" + userInfo + "%') AND u.isGroup = 'No'";
 		
 		return userDAO.findWhere(where);
+	}
+	
+	public FlagColor getCoFlag(int conID, int opID){
+		ContractorOperator co = coDAO.find(conID, opID);
+		return co.getFlagColor();
 	}
 }

@@ -72,6 +72,7 @@ $(function() {
 			<th></th>
 			<th><a href="#" onclick="sortTable('user,contractor'); return false;">User</a></th>
 			<th><a href="#" onclick="sortTable('contractor,user'); return false;">Contractor</a></th>
+			<th>Flag</a></th>
 			<pics:permission perm="WatchListManager" type="Delete">
 				<th>Remove</th>
 			</pics:permission>
@@ -84,6 +85,7 @@ $(function() {
 					<td class="id"><s:property value="#stat.count" /></td>
 					<td class="user"><a href="UsersManage.action?accountId=<s:property value="user.account.id" />&user.id=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
 					<td class="contractor"><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
+					<td class="flagColor"><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="user.account.id" />"><s:property value="%{getCoFlag(contractor.id,user.account.id).smallIcon}" escape="false"/></a></td>
 					<pics:permission perm="WatchListManager" type="Delete">
 						<td class="center"><a href="?button=Remove&userID=<s:property value="user.id" />&conID=<s:property value="contractor.id" />" onclick="return confirm('Are you sure you want to remove this contractor watch for this user?');" class="remove"></a></td>
 					</pics:permission>
