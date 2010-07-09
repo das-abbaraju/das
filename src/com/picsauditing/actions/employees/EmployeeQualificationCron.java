@@ -40,7 +40,7 @@ public class EmployeeQualificationCron extends PicsActionSupport {
 					String where = "needsRecalculation > 0 OR lastRecalculation < '" + yesterday + 
 						"' OR lastRecalculation IS NULL ORDER BY needsRecalculation DESC, lastRecalculation ASC";
 					
-					List<Employee> employeesToRecalculate = employeeDAO.findWhere(where, 50);
+					List<Employee> employeesToRecalculate = employeeDAO.findWhere(where, 10);
 
 					for (Employee employee : employeesToRecalculate) {
 						calculate(employee);

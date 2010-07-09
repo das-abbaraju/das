@@ -15,7 +15,6 @@ import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 
 @SuppressWarnings("serial")
@@ -26,7 +25,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 	protected EmployeeDAO employeeDAO;
 	
 	protected Account assessmentCenter = null;
-	protected ContractorAccount contractor = null;
+	protected Account account = null;
 	protected Date effectiveDate;
 	protected Employee employee = null;
 	protected String date;
@@ -64,12 +63,12 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 			employee = employeeDAO.find(employeeID);
 		
 		if (employee != null) {
-			contractor = (ContractorAccount) employee.getAccount();
+			account = employee.getAccount();
 			subHeading += " for " + employee.getDisplayName();
 		}
 		else {
 			int conID = id > 0 ? id : permissions.getAccountId();
-			contractor = (ContractorAccount) accountDAO.find(conID);
+			account = accountDAO.find(conID);
 		}
 		
 		if (centerID > 0) {
@@ -116,8 +115,8 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 		return employee;
 	}
 	
-	public ContractorAccount getContractor() {
-		return contractor;
+	public Account getAccount() {
+		return account;
 	}
 	
 	public List<Date> getHistory() {
@@ -127,7 +126,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 			else if (permissions.isAdmin())
 				history = resultDAO.findHistory(null);
 			else
-				history = resultDAO.findHistory("a.employee.account.id = " + contractor.getId());
+				history = resultDAO.findHistory("a.employee.account.id = " + account.getId());
 		}
 			
 		return history;
@@ -194,7 +193,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 		int count = 0;
 		
 		if (employee == null) {
-			Map<Employee, List<AssessmentResult>> map = resultDAO.findByAccount(contractor);
+			Map<Employee, List<AssessmentResult>> map = resultDAO.findByAccount(account);
 			
 			for (Employee employee : map.keySet()) {
 				List<AssessmentTest> existingTests = new ArrayList<AssessmentTest>();
@@ -245,7 +244,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 			if (getEmployeeID() > 0)
 				effective = resultDAO.findInEffect("a.employee.id = " + getEmployeeID(), date);
 			else
-				effective = resultDAO.findInEffect("a.employee.account.id = " + contractor.getId(), date);
+				effective = resultDAO.findInEffect("a.employee.account.id = " + account.getId(), date);
 			
 			if (centerID > 0) {
 				List<AssessmentResult> list = new ArrayList<AssessmentResult>();
@@ -268,7 +267,7 @@ public class EmployeeAssessmentResults extends AccountActionSupport {
 			if (getEmployeeID() > 0)
 				expired = resultDAO.findExpired("a.employee.id = " + getEmployeeID(), date);
 			else
-				expired = resultDAO.findExpired("a.employee.account.id = " + contractor.getId(), date);
+				expired = resultDAO.findExpired("a.employee.account.id = " + account.getId(), date);
 			
 			if (centerID > 0) {
 				List<AssessmentResult> list = new ArrayList<AssessmentResult>();
