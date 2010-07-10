@@ -4,21 +4,6 @@
 <s:include value="../actionMessages.jsp" />
 
 <div id="thinking_sites" class="right"></div>
-<script>
-$(function() {
-	$('.datepicker').datepicker({
-			changeMonth: true,
-			changeYear:true,
-			yearRange: '1940:2010',
-			showOn: 'button',
-			buttonImage: 'images/icon_calendar.gif',
-			buttonImageOnly: true,
-			buttonText: 'Choose a date...',
-			constrainInput: true,
-			showAnim: 'fadeIn'
-		});
-});
-</script>
 <table class="report" style="width: 500px;">
 	<thead>
 		<tr>

@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp"/>
-
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min"></script>
 
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
@@ -134,17 +134,6 @@ $(function() {
 	$('#locationSuggest').autocomplete(<s:property value="previousLocationsJSON" escape="false"/>);
 	$('#titleSuggest').autocomplete(<s:property value="previousTitlesJSON" escape="false"/>);
 });
-
-$(function() {
-	$('ol.fieldhelp-list :input').focus(function() {
-		var parent = $(this).parent();
-		parent.addClass('fieldhelp-focused');
-		var offset = parent.position();
-		parent.find('.fieldhelp').css({top: offset.top + 'px', left: (parent.width()+offset.left+40) +'px'});
-	}).blur(function() {
-		$(this).parent().removeClass('fieldhelp-focused');
-	});
-});
 </script>
 
 <style>
@@ -196,9 +185,9 @@ div.dataTables_length { width: 35%; }
 						<s:hidden name="employee.id"/>
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
-							<ol class="fieldhelp-list">
+							<ol>
 								<li><label>First Name:</label>
-									<s:textfield name="employee.firstName" cssClass="field-input"/>
+									<s:textfield name="employee.firstName"/>
 									<div class="fieldhelp">
 									<h3>First Name</h3>
 									The first given name of the employee. This can include a middle initial or middle name if needed to differentiate between employees.
@@ -211,14 +200,14 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Last Name:</label>
-									<s:textfield name="employee.lastName" cssClass="field-input"/>
+									<s:textfield name="employee.lastName"/>
 									<div class="fieldhelp">
 									<h3>Last Name</h3>
 									The last name (aka family name) of the employee.
 									</div>
 								</li>
 								<li><label>SSN:</label>
-									<s:textfield name="ssn" cssClass="ssn" cssClass="field-input"/>
+									<s:textfield name="ssn" cssClass="ssn"/>
 									<div class="fieldhelp">
 									<h3>Social Security Number</h3>
 									The employee's Social Security Number issued by the United States. Leave blank if employee does not work in the USA.
@@ -226,7 +215,7 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Title:</label>
-									<s:textfield id="titleSuggest" name="employee.title" cssClass="field-input"/>
+									<s:textfield id="titleSuggest" name="employee.title"/>
 									<div class="fieldhelp">
 									<h3>Title</h3>
 									The optional title of the employee.
@@ -240,7 +229,7 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Birth Date:</label>
-									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker field-input"/>
+									<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}" cssClass="datepicker"/>
 									<div class="fieldhelp">
 									<h3>Birth Date</h3>
 									Optional date of birth field. Included for future use.
@@ -259,14 +248,14 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Hire Date:</label>
-									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker field-input"/>
+									<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}" cssClass="datepicker"/>
 									<div class="fieldhelp">
 									<h3>Hire Date</h3>
 									The date (or best approximation) the employee first started working for this company.
 									</div>
 								</li>
 								<li id="termDate"><label>Termination Date:</label>
-									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker field-input"/>
+									<s:textfield name="employee.fireDate" value="%{maskDateFormat(employee.fireDate)}" cssClass="datepicker"/>
 								</li>
 								<s:if test="employee.id > 0">
 									<s:if test="employee.photo.length() > 0">
@@ -283,7 +272,7 @@ div.dataTables_length { width: 35%; }
 									</s:else>
 								</s:if>
 								<li><label>Location:</label>
-									<s:textfield name="employee.location" cssClass="field-input" id="locationSuggest"/>
+									<s:textfield name="employee.location" id="locationSuggest"/>
 									<div class="fieldhelp">
 									<h3>Location</h3>
 									The employee's primary work location. This could one of your own work locations or the location of one of your clients.
@@ -297,7 +286,7 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Email:</label>
-									<s:textfield name="employee.email" cssClass="field-input"/>
+									<s:textfield name="employee.email"/>
 									<div class="fieldhelp">
 									<h3>Email</h3>
 									The employee's primary work email address. This optional field is included for future use.
@@ -305,14 +294,14 @@ div.dataTables_length { width: 35%; }
 									</div>
 								</li>
 								<li><label>Phone #:</label>
-									<s:textfield name="employee.phone" cssClass="field-input"/>
+									<s:textfield name="employee.phone"/>
 									<div class="fieldhelp">
 									<h3>Phone</h3>
 									The employee's primary work phone. This field is optional.
 									</div>
 								</li>
 								<li><label>TWIC Card Expiration:</label>
-									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker field-input"/>
+									<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" cssClass="datepicker"/>
 									<div class="fieldhelp">
 									<h3>TWIC</h3>
 									The expiration date of the employee's TWIC Card if available. Some operators may require this information.

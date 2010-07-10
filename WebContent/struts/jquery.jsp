@@ -50,7 +50,7 @@
 			$('.clickable').live('mouseover mouseout', function(event) {
 				$(this).toggleClass('tr-hover-clickable');
 			});
-			$('fieldset.form ol :input').not(':checkbox').addClass('input-edit-field');
+			$('fieldset.form ol :input:not(:checkbox):not(:button):not([type=hidden]):not(:radio):not(:submit)').addClass('input-edit-field');
         }
 	});
 </script>
