@@ -76,7 +76,8 @@ function setStep(id){
 </s:if>
 <br />
 <s:if test="showSavePhoto()">
-	<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" />
+	
+	<span style="margin-top: 10px;"><img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" /></span>
 </s:if>
 <s:form enctype="multipart/form-data" method="POST">
 		<input type="hidden" name="step" value="<s:property value="step"/>" />
@@ -87,7 +88,7 @@ function setStep(id){
 		<input type="hidden" id="width" name="width" value="0" />
 		<input type="hidden" id="height" name="height" value="0" />
 		
-		<div class="uploadStep" >
+		<div class="uploadStep" style="margin-top: 10px;" >
 			<label>Photo:</label>
 			<input type="hidden" name="employeeID" value="<s:property value="employeeID"/>"/>
 			<s:file id="file" name="file" value="%{file}" size="50"></s:file>

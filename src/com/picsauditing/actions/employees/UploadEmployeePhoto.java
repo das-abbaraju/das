@@ -4,11 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -24,6 +22,7 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.ImageUtil;
 
 @SuppressWarnings("serial")
 public class UploadEmployeePhoto extends AccountActionSupport implements
@@ -98,51 +97,19 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			}
 			if (file != null && file.length() > 0) {
 				BufferedImage bImg = null;
-				BufferedImage resizedImg = null;
-				Iterator<ImageWriter> iter = ImageIO
-						.getImageWritersByFormatName("jpeg");
-				FileImageOutputStream outStream = null;
-				File f = new File("tmp.jpg");
-				ImageWriter writer = null;
-				if (iter.hasNext()) {
-					writer = iter.next();
-				}
-				try {
-					bImg = ImageIO.read(file);
-
-					if (bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE) {
-						resizedImg = photoResize(bImg, 800, 800, true);
-					} else resizedImg = bImg;
-
-					ImageWriteParam iwp = writer.getDefaultWriteParam();
-
-					iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-					iwp.setCompressionQuality(.75f);
-					outStream = new FileImageOutputStream(f);
-					writer.setOutput(outStream);
-
-					IIOImage image = new IIOImage(resizedImg, null, null);
-					writer.write(null, image, iwp);
-					outStream.flush();
-				} catch (IOException e) {
-					// File could not be created or opened or saved
-					System.out.println("Could not handle image");
-					addActionError("Error with file");
-				} finally {
-					bImg.flush();
-					if(resizedImg!=null){
-						resizedImg.flush();						
-					}
-					writer.dispose();
-					close(outStream);
-				}
+				bImg = ImageUtil.createBufferedImage(file);
+				
+				if(bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE)
+					bImg = ImageUtil.resize(bImg, XRESIZE, YRESIZE, true);
+				
+				File imgFile = ImageUtil.writeImageWithQuality(bImg, "jpg", .75f);
 
 				try {
-					FileUtils.moveFile(f, getFtpDir(), "files/"
+					FileUtils.moveFile(imgFile, getFtpDir(), "files/"
 							+ FileUtils.thousandize(employee.getId()),
 							getFileName(employee.getId()), "jpg", true);
 				} catch (Exception e) {
-					System.out.println("Error moving " + f);
+					System.out.println("Error moving " + imgFile);
 				}
 				if (hasActionErrors()) {
 					return SUCCESS;
@@ -157,7 +124,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 					//Move to crop step
 					step = 2;
 					//addActionMessage();
-					addAlertMessage("Your Photo has been Uploaded!\nPlease click on the photo below and drag to crop your image." +
+					addAlertMessage("Your Photo has been Uploaded!  Please click on the photo below and drag to crop your image." +
 					"When you are happy with your selection click the 'Crop Photo' Button below to crop and save this photo for the profile page");
 				}
 				employeeDAO.save(employee);
@@ -181,11 +148,9 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			if (f != null) {
 				BufferedImage bImg = null;
 				try {
-					bImg = ImageIO.read(f);
-					// bImg = bImg.getSubimage(x1, y1, width, height);
+					bImg = ImageUtil.createBufferedImage(f);
 					if (!(bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE)) {
-						bImg = photoCrop(bImg, x1, y1, width, height, XSIZE,
-								YSIZE);
+						bImg = ImageUtil.cropResize(bImg, x1, y1, width, height, XSIZE, YSIZE);
 					}
 					ImageIO.write(bImg, "jpg", f);
 					employee.setPhoto(FileUtils.getExtension(f.getName()));
@@ -199,7 +164,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 			}
 			// move to finish stage
 			step = 2;
-			addAlertMessage("The profile photo for this employee has been successfully cropped and uploaded! ");
+			addActionMessage("The profile photo for this employee has been successfully cropped and uploaded! ");
 		}
 		
 		if("Delete".equals(button)){
@@ -216,7 +181,7 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 					addActionMessage("Photo deleted successfully");
 					employee.setPhoto(null);
 					employeeDAO.save(employee);
-					step = 0;
+					step = 1;
 					return SUCCESS;
 				} else{
 					addActionError("Error deleting photo");
@@ -228,76 +193,6 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 
 		return SUCCESS;
 
-	}
-
-	public void close(FileImageOutputStream outStream) {
-		if (outStream == null)
-			return;
-		try {
-			outStream.close();
-		} catch (IOException e) {
-			System.out.println("Error closing " + outStream.getClass());
-			addActionError("Error with file");
-		}
-	}
-	
-	public File writeImage(Image img, String format){
-		
-		return null;		
-	}
-
-	public BufferedImage photoResize(BufferedImage image, int width,
-			int height, boolean maintainRatio) {
-		BufferedImage resizedImg = null;
-
-		float w = image.getWidth();
-		float h = image.getHeight();
-		float bigSide;
-		float ratio, diff;
-		int newW = 0, newH = 0;
-		if (maintainRatio) {
-			if (w > h) {
-				ratio = h / w;
-				bigSide = w;
-			} else {
-				ratio = w / h;
-				bigSide = h;
-			}
-			ratio = (float) ((int) (ratio * 100)) / 100;
-			if (ratio == 1) {
-				newW = width;
-				newH = height;
-			} else {
-				diff = bigSide - Math.max(width, height);
-				diff = diff * ratio;
-				if (bigSide == w) {
-					newW = width;
-					newH = (int) (h - diff);
-				} else {
-					newH = height;
-					newW = (int) (w - diff);
-				}
-			}
-		} else {
-			newW = width;
-			newH = height;
-		}
-		resizedImg = new BufferedImage(newW, newH, image.getType());
-		Graphics2D g = resizedImg.createGraphics();
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g.drawImage(image, 0, 0, newW, newH, null);
-		g.dispose();
-
-		return resizedImg;
-	}
-
-	public BufferedImage photoCrop(BufferedImage image, int x, int y,
-			int width, int height, int cropX, int cropY) {
-		image = image.getSubimage(x, y, width, height);
-		image = photoResize(image, cropX, cropY, true);
-
-		return image;
 	}
 
 	public int getEmployeeID() {
