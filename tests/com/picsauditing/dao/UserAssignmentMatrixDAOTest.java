@@ -1,5 +1,7 @@
 package com.picsauditing.dao;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -21,10 +23,18 @@ import com.picsauditing.jpa.entities.UserAssignmentMatrix;
 public class UserAssignmentMatrixDAOTest extends TestCase {
 	@Autowired
 	private UserAssignmentMatrixDAO dao;
+	@Autowired
+	private ContractorAccountDAO conDAO;
 
 	@Test
 	public final void testFind() throws Exception {
 		List<UserAssignmentMatrix> uams = dao.findAll();
+		assertTrue(uams.size() > 0);
+	}
+
+	@Test
+	public void testFindByContractor() throws Exception {
+		List<UserAssignmentMatrix> uams = dao.findByContractor(conDAO.find(3));
 		assertTrue(uams.size() > 0);
 	}
 }
