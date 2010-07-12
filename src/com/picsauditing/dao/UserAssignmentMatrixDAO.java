@@ -31,7 +31,8 @@ public class UserAssignmentMatrixDAO extends PicsDAO {
 
 	public List<UserAssignmentMatrix> findByContractor(ContractorAccount contractor) {
 		Query q = em.createQuery("FROM UserAssignmentMatrix WHERE (state = :state AND country = :country) "
-				+ "OR (state IS null AND country = :country) OR :postal BETWEEN postalStart AND postalEnd");
+				+ "OR (state IS null AND country = :country) " + "OR (postalEnd IS null AND postalStart = :postal) "
+				+ "OR :postal BETWEEN postalStart AND postalEnd");
 
 		q.setParameter("state", contractor.getState());
 		q.setParameter("country", contractor.getCountry());

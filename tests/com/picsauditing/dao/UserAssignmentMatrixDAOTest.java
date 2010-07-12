@@ -34,7 +34,7 @@ public class UserAssignmentMatrixDAOTest extends TestCase {
 
 	@Test
 	public void testFindByContractor() throws Exception {
-		List<UserAssignmentMatrix> uams = dao.findByContractor(conDAO.find(3));
+		List<UserAssignmentMatrix> uams = dao.findByContractor(conDAO.find(6240));
 		assertTrue(uams.size() > 0);
 	}
 }
