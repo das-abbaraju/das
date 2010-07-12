@@ -29,6 +29,7 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.dao.UserAssignmentMatrixDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOperator;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -50,6 +51,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAssignmentMatrix;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.SendMail;
@@ -73,6 +75,7 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
 	private AppPropertyDAO appPropertyDAO;
+	private UserAssignmentMatrixDAO userAssignmentMatrixDAO;
 
 	private int conID = 0;
 	private int opID = 0;
@@ -84,8 +87,9 @@ public class ContractorCron extends PicsActionSupport {
 
 	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
 			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL, ContractorOperatorDAO contractorOperatorDAO,
-			AppPropertyDAO appPropertyDAO, FlagDataOverrideDAO flagDataOverrideDAO) {
+			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL,
+			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
+			FlagDataOverrideDAO flagDataOverrideDAO, UserAssignmentMatrixDAO userAssignmentMatrixDAO) {
 		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
@@ -96,6 +100,7 @@ public class ContractorCron extends PicsActionSupport {
 		this.contractorOperatorDAO = contractorOperatorDAO;
 		this.appPropertyDAO = appPropertyDAO;
 		this.flagDataOverrideDAO = flagDataOverrideDAO;
+		this.userAssignmentMatrixDAO = userAssignmentMatrixDAO;
 	}
 
 	public String execute() throws Exception {
@@ -118,13 +123,18 @@ public class ContractorCron extends PicsActionSupport {
 					addActionError("Server Load is too high (" + serverLoad + ")");
 				} else {
 					long totalQueueSize = contractorDAO.findNumberOfContractorsNeedingRecalculation();
-					
-					double limitDefault = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.default").getValue());
-					double limitQueue = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.queue").getValue());
-					double limitServerLoad = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.serverload").getValue());
-					
-					// This is a formula based on a multiple regression analysis of what we want. Not sure if it will work
-					limit = (int) Math.round(limitDefault + (totalQueueSize / limitQueue) - (serverLoad * limitServerLoad));
+
+					double limitDefault = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.default")
+							.getValue());
+					double limitQueue = Double
+							.parseDouble(appPropertyDAO.find("ContractorCron.limit.queue").getValue());
+					double limitServerLoad = Double.parseDouble(appPropertyDAO.find("ContractorCron.limit.serverload")
+							.getValue());
+
+					// This is a formula based on a multiple regression analysis
+					// of what we want. Not sure if it will work
+					limit = (int) Math.round(limitDefault + (totalQueueSize / limitQueue)
+							- (serverLoad * limitServerLoad));
 
 					if (limit > 0) {
 						Set<Integer> contractorsToIgnore = new HashSet<Integer>();
@@ -132,7 +142,7 @@ public class ContractorCron extends PicsActionSupport {
 							if (!cron.equals(this))
 								contractorsToIgnore.addAll(cron.getQueue());
 						}
-						queue = contractorDAO.findContractorsNeedingRecalculation(limit, contractorsToIgnore );
+						queue = contractorDAO.findContractorsNeedingRecalculation(limit, contractorsToIgnore);
 
 						for (Integer conID : queue) {
 							run(conID, opID);
@@ -149,8 +159,8 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		PicsLogger.stop();
-		
-		if(!Strings.isEmpty(redirectUrl)) {
+
+		if (!Strings.isEmpty(redirectUrl)) {
 			return redirect(redirectUrl);
 		}
 
@@ -167,6 +177,7 @@ public class ContractorCron extends PicsActionSupport {
 			runAuditBuilder(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+			runCSRAssignment(contractor);
 
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 
@@ -300,7 +311,7 @@ public class ContractorCron extends PicsActionSupport {
 		}
 		contractor.setTradesSelf(Strings.implode(selfPerform, ";"));
 		contractor.setTradesSub(Strings.implode(subContract, ";"));
-		
+
 		boolean requiresOQ = false;
 		boolean requiresCompetency = false;
 		for (ContractorOperator co : contractor.getOperators()) {
@@ -309,13 +320,15 @@ public class ContractorCron extends PicsActionSupport {
 			if (co.getOperatorAccount().isRequiresCompetencyReview())
 				requiresCompetency = true;
 		}
-		
+
 		contractor.setRequiresOQ(false);
 		if (requiresOQ) {
-			AuditData oqAuditData = auditDataDAO.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
-			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null || oqAuditData.getAnswer().equals("Yes"));
+			AuditData oqAuditData = auditDataDAO
+					.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
+			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null
+					|| oqAuditData.getAnswer().equals("Yes"));
 		}
-		
+
 		contractor.setRequiresCompetencyReview(false);
 		if (requiresCompetency) {
 			for (ContractorTag tag : contractor.getOperatorTags()) {
@@ -337,29 +350,29 @@ public class ContractorCron extends PicsActionSupport {
 
 		flagDataCalculator.setOperator(co.getOperatorAccount());
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
-		flagDataCalculator.setOverrides(flagDataOverrideDAO.findByContractorAndOperator(co.getContractorAccount(), co.getOperatorAccount()));
+		flagDataCalculator.setOverrides(flagDataOverrideDAO.findByContractorAndOperator(co.getContractorAccount(), co
+				.getOperatorAccount()));
 		List<FlagData> changes = flagDataCalculator.calculate();
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
-		if(co.getContractorAccount().isAcceptsBids()){
+		if (co.getContractorAccount().isAcceptsBids()) {
 			overallColor = FlagColor.Clear;
-		}else if(co.getContractorAccount().getStatus().isPending()){
-			overallColor = FlagColor.Clear;			
-		}else if(co.getContractorAccount().getStatus().isDeleted()){
-			overallColor = FlagColor.Clear;			
+		} else if (co.getContractorAccount().getStatus().isPending()) {
+			overallColor = FlagColor.Clear;
+		} else if (co.getContractorAccount().getStatus().isDeleted()) {
+			overallColor = FlagColor.Clear;
 		}
 		for (FlagData change : changes) {
 			if (!change.getCriteria().isInsurance())
 				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
 		}
-		
+
 		ContractorOperator conOperator = co.getForceOverallFlag();
 		if (conOperator != null) { // operator has a forced flag
 			co.setFlagColor(conOperator.getForceFlag());
 			co.setFlagLastUpdated(new Date());
-		}	
-		else if (!overallColor.equals(co.getFlagColor())) {
+		} else if (!overallColor.equals(co.getFlagColor())) {
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);
@@ -555,6 +568,20 @@ public class ContractorCron extends PicsActionSupport {
 		contractorDAO.save(contractor);
 	}
 
+	public void runCSRAssignment(ContractorAccount contractor) {
+		if (!runStep(ContractorCronStep.CSRAssignment))
+			return;
+
+		List<UserAssignmentMatrix> assignments = userAssignmentMatrixDAO.findByContractor(contractor);
+
+		if (assignments.size() == 1) {
+			contractor.setAuditor(assignments.get(0).getUser());
+			contractorDAO.save(contractor);
+		} else if (assignments.size() > 1) {
+			// Manage Conflicts
+		}
+	}
+
 	public int getConID() {
 		return conID;
 	}
@@ -611,9 +638,10 @@ public class ContractorCron extends PicsActionSupport {
 	public List<Integer> getQueue() {
 		return queue;
 	}
-	
+
 	public void setRequestID(String requestID) {
-		// We aren't actually using this. This solves a weird bug with duplicate requests not being processed in parallel
+		// We aren't actually using this. This solves a weird bug with duplicate
+		// requests not being processed in parallel
 	}
 
 	public String getRedirectUrl() {
