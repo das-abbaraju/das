@@ -50,3 +50,13 @@ values (NULL, 10, 'EmployeeList', 1, 1, 1, 1, NOW(), 941);
 insert into useraccess
 (accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
 values (NULL, 10, 'TRIRReport', 1, null, null, 1, NOW(), 941);
+
+-- PICS-775 --
+insert into token(tokenName, listType, velocityCode) values('ClosingAuditorName', 'Audit', '${audit.closingAuditor.name}');
+insert into token(tokenName, listType, velocityCode) values('ClosingAuditorPhone', 'Audit', '${audit.closingAuditor.phone}');
+insert into token(tokenName, listType, velocityCode) values('ClosingAuditorFax', 'Audit', '${audit.closingAuditor.fax}');
+insert into token(tokenName, listType, velocityCode) values('ClosingAuditorEmail', 'Audit', '${audit.closingAuditor.email}');
+
+insert into token(tokenName, listType, velocityCode) values('AuditorPhone', 'Audit', '${audit.auditor.phone}');
+insert into token(tokenName, listType, velocityCode) values('AuditorFax', 'Audit', '${audit.auditor.fax}');
+insert into token(tokenName, listType, velocityCode) values('AuditorEmail', 'Audit', '${audit.auditor.email}');
