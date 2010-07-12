@@ -77,6 +77,7 @@
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
+	<bean id="UserAssignmentMatrixDAO" class="com.picsauditing.dao.UserAssignmentMatrixDAO"/>
 	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO"/>
 	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
 	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>

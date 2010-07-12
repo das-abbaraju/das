@@ -63,6 +63,7 @@
 		<class>com.picsauditing.jpa.entities.Token</class>
 		<class>com.picsauditing.jpa.entities.User</class>
 		<class>com.picsauditing.jpa.entities.UserAccess</class>
+		<class>com.picsauditing.jpa.entities.UserAssignmentMatrix</class>
 		<class>com.picsauditing.jpa.entities.UserGroup</class>
 		<class>com.picsauditing.jpa.entities.UserLoginLog</class>
 		<class>com.picsauditing.jpa.entities.WaitingOn</class>
