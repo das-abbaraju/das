@@ -42,7 +42,6 @@
 
 #notesPreview, #addHere {
 	background-color: transparent;
-	margin-left: 11em;
 }
 
 pre {
@@ -60,9 +59,6 @@ pre {
 
 #addToNotes {
 	margin-bottom: 10px;
-	<s:if test="permissions.admin">
-	margin-left: 165px;
-	</s:if>
 }
 
 <s:if test="newContractor.city == null ||newContractor.city.length == 0">
@@ -224,7 +220,7 @@ function getMatches(requestID) {
 
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
-	<table id="requestTable">
+	<table id="requestTable" style="width: 100%;">
 		<tr>
 			<td>
 				<fieldset class="form"><legend><span>Company Information</span></legend>

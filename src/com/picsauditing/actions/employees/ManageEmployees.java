@@ -94,7 +94,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		else
-			permissions.tryPermission(OpPerms.EditUsers);
+			permissions.tryPermission(OpPerms.ManageEmployees);
 
 		if (employee == null && account == null) {
 			account = accountDAO.find(permissions.getAccountId());

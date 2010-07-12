@@ -217,7 +217,7 @@ public class PicsMenu {
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
 				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageEmployees))
-				subMenu.addChild("Employees", "ManageEmployee.action?id=" + permissions.getAccountId());
+				subMenu.addChild("Employees", "ManageEmployees.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageProjects))
 				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
@@ -346,6 +346,9 @@ public class PicsMenu {
 			subMenu.addChild("OQ by Contractor/Site", "ReportOQ.action");
 			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
 		}
+		
+		if (permissions.isOperatorCorporate() || permissions.isAdmin())
+			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
 
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);

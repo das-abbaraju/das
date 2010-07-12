@@ -6,9 +6,7 @@ import java.util.Set;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterAccount;
@@ -28,45 +26,24 @@ public class ReportEmployeeList extends ReportAccount {
 	@Override
 	protected void buildQuery() {
 		sql = new SelectAccount();
+		sql.addJoin("JOIN employee e ON e.accountID = a.id");
 		
 		if (permissions.isOperatorCorporate()) {
-			// Add own employees 
-			String joinString = "JOIN\n(SELECT e.id, e.accountID, e.firstName, e.lastName, e.title, e.location " +
-					"\nFROM employee e\nWHERE e.accountID = " + permissions.getAccountId();
+			// Is there a better way to do this?
 			
-			// Add own contractor's employees
-			joinString += "\nUNION\nSELECT e.id, e.accountID, e.firstName, e.lastName, e.title, e.location" +
-					"\nFROM employee e\nJOIN generalcontractors gc ON gc.subID = e.accountID" +
-					"\nAND gc.genID = " + permissions.getAccountId();
+			if (permissions.isOperator())
+				sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID IN " +
+						"(SELECT id FROM operators WHERE parentID = " +
+						"(SELECT parentID FROM operators WHERE id = " + permissions.getAccountId() + "))) " +
+						"OR a.id = " + permissions.getAccountId());
+			else
+				sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID IN " +
+						"(SELECT id FROM operators WHERE parentID = " + permissions.getAccountId() + ")) " +
+						"OR a.id = " + permissions.getAccountId());
 			
-			if (permissions.isOperator()) {
-				OperatorAccountDAO opDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-				OperatorAccount op = opDAO.find(permissions.getAccountId());
-				
-				// Get siblings
-				joinString += "\nUNION\nSELECT e.id, e.accountID, e.firstName, e.lastName, e.title, e.location" +
-						"\nFROM employee e" +
-						"\nJOIN generalcontractors gc ON gc.subID = e.accountID AND gc.genID IN" +
-						"\n(SELECT o.id FROM operators o WHERE o.parentID = " + op.getParent().getId() + ")";
-				// Get parent
-				joinString += "\nUNION\nSELECT e.id, e.accountID, e.firstName, e.lastName, e.title, e.location" +
-						"\nFROM employee e\nJOIN generalcontractors gc ON gc.subID = e.accountID AND gc.genID = " +
-						op.getParent().getId();
-			} else { // is Corporate
-				joinString += "\nUNION\nSELECT e.id, e.accountID, e.firstName, e.lastName, e.title, e.location" +
-						"\nFROM employee e\nJOIN generalcontractors gc ON gc.subID = e.accountID AND gc.genID IN" +
-						"\n(SELECT id FROM operators WHERE parentID = " + permissions.getAccountId() + ")";
-				getFilter().setShowOperator(true);
-			}
-			
-			joinString += ") e ON e.accountID = a.id";
-			
-			sql.addJoin(joinString);
 			sql.addGroupBy("a.id, e.id");
-		} else { // PICS Administrator - See ALL employees
-			sql.addJoin("JOIN employee e ON e.accountID = a.id");
+		} else // PICS Administrator - See ALL employees
 			getFilter().setShowOperator(true);
-		}
 
 		sql.addField("e.id AS employeeID");
 		sql.addField("e.firstName");

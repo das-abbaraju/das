@@ -15,7 +15,9 @@
 		<th></th>
 		<th><a href="?orderBy=firstName,lastName">Employee</a></th>
 		<th><a href="?orderBy=name">Account Name</a></th>
-		<th>Account Type</th>
+		<s:if test="permissions.admin || permissions.corporate">	
+			<th>Account Type</th>
+		</s:if>
 		<th>Title</th>
 		<th>Location</th>
 	</tr>
@@ -40,7 +42,9 @@
 				</s:else>
 				<s:if test="get('dbaName').length() > 0"><br />DBA Name: <s:property value="get('dbaName')" /></s:if>
 			</td>
-			<td><s:property value="get('type')" /></td>
+			<s:if test="permissions.admin || permissions.corporate">
+				<td><s:property value="get('type')" /></td>
+			</s:if>
 			<td><s:property value="get('title')" /></td>
 			<td><s:property value="get('location')" /></td>
 		</tr>

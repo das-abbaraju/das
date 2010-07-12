@@ -1742,10 +1742,16 @@
 			class="com.picsauditing.actions.report.ReportCompetencyDetail">
 			<result>/struts/reports/report_competency_detail.jsp</result>
 		</action>
+		
 		<action name="ReportCompetencyDetailCSV"
 			class="com.picsauditing.actions.report.ReportCompetencyDetail">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="ReportAssessmentTests"
+			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
+			<result>/struts/reports/oq/report_assessment_tests.jsp</result>
 		</action>
 		
 		<!-- Assessment Center/Assessment Management -->
