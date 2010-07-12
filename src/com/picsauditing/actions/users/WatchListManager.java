@@ -13,7 +13,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class WatchListManager extends PicsActionSupport {
@@ -24,8 +23,6 @@ public class WatchListManager extends PicsActionSupport {
 	private int userID;
 	private int conID;
 	private String userInfo = "";
-	private String userName;
-	private String contractorName;
 	
 	public WatchListManager(ContractorAccountDAO conDAO, UserDAO userDAO, ContractorOperatorDAO coDAO) {
 		this.conDAO = conDAO;
@@ -54,36 +51,23 @@ public class WatchListManager extends PicsActionSupport {
 			}
 			
 			if ("Save".equals(button)) {
-				if (!Strings.isEmpty(userName) && !Strings.isEmpty(contractorName)) {
-					if ((permissions.isAdmin() || permissions.isCorporate()) && userName.contains("("))
-						userName = userName.substring(0, userName.indexOf("(")).trim();
-					
-					String restriction = "";
-					
-					if (permissions.isCorporate())
-						restriction = " AND (u.account IN (SELECT o FROM OperatorAccount o WHERE o.parent.id = " + 
-							permissions.getAccountId() + ") OR u.account.id = " + permissions.getAccountId() + ")";
-					if (permissions.isOperator())
-						restriction = " AND u.account.id = " + permissions.getAccountId();
-					
-					List<User> users = userDAO.findWhere("(u.name LIKE '%" + userName + 
-							"%' OR u.username LIKE '%" + userName + "%' OR u.email LIKE '%" + userName + 
-							"%') AND u.isGroup = 'No' " + restriction);
-					ContractorAccount contractor = conDAO.findConID(contractorName);
+				if (userID > 0 && conID > 0) {
+					User user = userDAO.find(userID);
+					ContractorAccount contractor = conDAO.find(conID);
 					ContractorWatch watch = new ContractorWatch();
 					
-					if (contractor != null) {
+					if (contractor != null && user != null) {
 						watch.setContractor(contractor);
+						watch.setUser(user);
 						watch.setAuditColumns(permissions);
-					}
-					
-					if (users.size() == 1) {
-						watch.setUser(users.get(0));
+						
 						userDAO.save(watch);
-					} else if (users.size() == 0) {
-						addActionError("No user with that name, email or username exists.");
-					} else
-						addActionError("Please select a specific user.");
+					} else {
+						if (contractor == null)
+							addActionError("Contractor is missing or could not be found");
+						if (user == null)
+							addActionError("User is missing or could not be found");
+					}
 				} else
 					addActionError("Please enter both user name and contractor name");
 			}
@@ -114,22 +98,6 @@ public class WatchListManager extends PicsActionSupport {
 	
 	public void setUserInfo(String userInfo) {
 		this.userInfo = userInfo;
-	}
-	
-	public String getUserName() {
-		return userName;
-	}
-	
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	
-	public String getContractorName() {
-		return contractorName;
-	}
-	
-	public void setContractorName(String contractorName) {
-		this.contractorName = contractorName;
 	}
 	
 	public List<ContractorWatch> getWatchLists() {

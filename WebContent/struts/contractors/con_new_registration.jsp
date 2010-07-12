@@ -89,9 +89,17 @@ $(function() {
 	$('#matchedContractor').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,
-			extraParams: {'filter.accountName': function() {return $('#matchedContractor').val();} }
-		}
-	);
+			extraParams: {'filter.accountName': function() {return $('#matchedContractor').val();}},
+			formatResult: function(data,i,count) { return data[0]; }
+	}).result(function(event, data){
+		$('input#conID').val(data[1]);
+	});
+
+	$('#matchedContractor').blur(function() {
+		if ($('#matchedContractor').val() == '')
+			$('input#conID').val(0);
+	});
+	
 	$('.show-address').keyup(function() {
 		if (!$(this).blank())
 			$('.address-zip').show();
@@ -220,6 +228,7 @@ function getMatches(requestID) {
 
 <s:form id="saveContractorForm">
 	<s:hidden name="requestID"/>
+	<s:hidden name="conID" id="conID" />
 	<table id="requestTable" style="width: 100%;">
 		<tr>
 			<td>
@@ -356,8 +365,9 @@ function getMatches(requestID) {
 							</s:else>
 						</li>
 						<li><label>PICS Contractor:</label>
+							<nobr>
 							<s:if test="permissions.admin">
-								<s:textfield name="conName" value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
+								<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
 								<a href="#" class="cluetip help" title="Return To Operator" rel="#watchtip2"></a>
 								<div id="watchtip2">
 									After you enter in a contractor and save, this request will be automatically returned to the operator.  
@@ -367,7 +377,7 @@ function getMatches(requestID) {
 								<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
 								<s:property value="newContractor.contractor.name"/></a>
 							</s:if>
-							&nbsp;
+							</nobr>
 						</li>
 					</s:if>
 					<li><label>Notes:</label>

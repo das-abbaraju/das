@@ -65,7 +65,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected int requestedUser = 0;
 	protected String emailSubject;
 	protected String emailBody;
-	protected String conName;
 	protected String addToNotes;
 	protected String[] filenames = null;
 	protected Country country;
@@ -183,9 +182,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					if (!Strings.isEmpty(newContractor.getRequestedByUserOther()))
 						newContractor.setRequestedByUser(null);
 				}
-				if (!Strings.isEmpty(conName) && 
-						(newContractor.getContractor() == null || conName != newContractor.getContractor().getName())) {
-					ContractorAccount con = contractorAccountDAO.findConID(conName);
+				if (conID > 0 && (newContractor.getContractor() == null || 
+						conID != newContractor.getContractor().getId())) {
+					ContractorAccount con = contractorAccountDAO.find(conID);
 					
 					if (con != null) {
 						newContractor.setContractor(con);
@@ -212,7 +211,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 						}
 					} else
 						addActionError("PICS Contractor not found");
-				} else if (Strings.isEmpty(conName))
+				} else if (conID == 0)
 					newContractor.setContractor(null);
 				
 				// Add notes, if it's been filled out
@@ -427,14 +426,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setConID(int conID) {
 		this.conID = conID;
-	}
-	
-	public String getConName() {
-		return conName;
-	}
-	
-	public void setConName(String conName) {
-		this.conName = conName;
 	}
 	
 	public int getOpID() {

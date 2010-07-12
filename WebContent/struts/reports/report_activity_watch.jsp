@@ -23,6 +23,14 @@ table.report {
 fieldset.form ol li label {
 	width: auto;
 }
+
+.leftSide {
+	min-width: 400px; 
+}
+
+* html .leftSide {
+	width: 400px;
+}
 </style>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
@@ -78,7 +86,7 @@ $(function() {
 
 <table>
 	<tr>
-		<td>
+		<td class="leftSide">
 			<s:if test="watched.size() > 0">
 				<table class="report">
 					<thead>
@@ -104,13 +112,14 @@ $(function() {
 			<s:form id="addWatch">
 				<input type="hidden" id="findConID" name="conID" value="0" />
 				<fieldset class="form">
+					<legend><span>Add New Contractor</span></legend>
 					<ol>
 						<li>
 							<label>Contractor Name:</label>
 							<s:textfield id="newContractor" />
 						</li>
 					</ol>
-					<div style="text-align: center;">
+					<div>
 						<input type="submit" value="Add" name="button" class="picsbutton positive" />
 						<input type="button" onclick="$('#addWatch').hide(); $('#addLink').show(); return false;" value="Cancel" class="picsbutton negative" />
 					</div>

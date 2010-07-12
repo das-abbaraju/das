@@ -48,16 +48,32 @@ $(function() {
 	$('#addUser').autocomplete('UserSelectAjax.action', 
 		{
 			minChars: 3,
-			extraParams: {'userInfo': function() {return $('#addUser').val();} }
+			extraParams: {'userInfo': function() {return $('#addUser').val();} },
+			formatResult: function(data,i,count) { return data[0]; }
 		}
-	);
+	).result(function(event, data){
+		$('input#userID').val(data[1]);
+	});
 
 	$('#addContractor').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,
-			extraParams: {'filter.accountName': function() {return $('#addContractor').val();} }
+			extraParams: {'filter.accountName': function() {return $('#addContractor').val();} },
+			formatResult: function(data,i,count) { return data[0]; }
 		}
-	);
+	).result(function(event, data){
+		$('input#conID').val(data[1]);
+	});
+
+	$('#addUser').blur(function() {
+		if ($('#addUser').val() == '')
+			$('input#userID').val(0);
+	});
+
+	$('#addContractor').blur(function() {
+		if ($('#addContractor').val() == '')
+			$('input#conID').val(0);
+	});
 });
 </script>
 </head>
@@ -105,16 +121,18 @@ $(function() {
 <pics:permission perm="WatchListManager" type="Edit">
 	<a href="#" id="addNewLink" onclick="$('#addNewForm').show(); $(this).hide(); return false;" class="add">Add New Contractor Watch</a>
 	<s:form id="addNewForm">
+		<s:hidden name="userID" id="userID" />
+		<s:hidden name="conID" id="conID" />
 		<fieldset class="form bottom">
 			<legend><span>Add New Contractor Watch</span></legend>
 			<ol>
 				<li>
 					<label>User:</label>
-					<input type="text" id="addUser" name="userName" />
+					<input type="text" id="addUser" />
 				</li>
 				<li>
 					<label>Contractor:</label>
-					<input type="text" id="addContractor" name="contractorName" />
+					<input type="text" id="addContractor" />
 				</li>
 			</ol>
 			<div align="center">
