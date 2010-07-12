@@ -22,7 +22,6 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -85,7 +84,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addField("a.acceptsBids");
 		sql.addField("c.riskLevel");
 		sql.addField("fcc.answer");
-		sql.addField("fcc.verified");
+		sql.addField("CASE WHEN fcc.verified = 1 THEN 'true' ELSE 'false' END AS verified");
 		sql.addField("fdo.forceFlag");
 		sql.addOrderBy("a.name");
 
