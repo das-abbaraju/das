@@ -84,7 +84,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		sql.addField("a.acceptsBids");
 		sql.addField("c.riskLevel");
 		sql.addField("fcc.answer");
-		sql.addField("CASE WHEN fcc.verified = 1 THEN 'true' ELSE 'false' END AS verified");
+		sql.addField("fcc.verified");
 		sql.addField("fdo.forceFlag");
 		sql.addOrderBy("a.name");
 

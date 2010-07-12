@@ -78,6 +78,10 @@ public class Database {
 
 	public static boolean toBoolean(BasicDynaBean row, String columnName) {
 		Object value = row.get(columnName);
+		
+		if (value.toString().equals("1"))
+			return true;
+		
 		return Boolean.parseBoolean(value.toString());
 	}
 
