@@ -146,7 +146,7 @@ public class ImageUtil {
 		}
 		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(type);
 		FileImageOutputStream outStream = null;
-		File f = new File("tmp.tmp");
+		File f = new File(image.hashCode()+".tmp");
 		ImageWriter writer = null;
 		if (iter.hasNext()) {
 			writer = iter.next();

@@ -106,9 +106,10 @@ public class UploadEmployeePhoto extends AccountActionSupport implements
 
 				try {
 					FileUtils.moveFile(imgFile, getFtpDir(), "files/"
-							+ FileUtils.thousandize(employee.getId()),
-							getFileName(employee.getId()), "jpg", true);
+						+ FileUtils.thousandize(employee.getId()),
+						getFileName(employee.getId()), "jpg", true);		
 				} catch (Exception e) {
+					e.printStackTrace();
 					System.out.println("Error moving " + imgFile);
 				}
 				if (hasActionErrors()) {
