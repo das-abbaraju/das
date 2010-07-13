@@ -30,6 +30,7 @@
 			<td>Year</td>
 		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');">Average</a></th>
 			<td>Verified</td>
+			<td>TRIR Industry Average</td>
 			<s:if test="showContact">
 				<td>Primary Contact</td>
 				<td>Phone</td>
@@ -75,6 +76,7 @@
 			<td><s:if test="get('verifiedDate') != null">
 		    	<span class="verified" style="font-size: 16px;"></span></s:if>
 		    </td>
+		    <td><s:property value="[0].get('trir')" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>
 				<td><s:property value="get('contactphone')"/></td>

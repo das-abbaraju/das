@@ -22,6 +22,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		getFilter().setShowCohsStats(true);
 
 		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
+		sql.addJoin("JOIN naics n ON n.code = a.naics");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours > " + getFilter().getIncidenceRate() + ")");
 		sql.addField("os.location");
 		sql.addField("os.description");
@@ -31,6 +32,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addField("os.verifiedDate");
 		sql.addField("os.cad7");
 		sql.addField("os.neer");
+		sql.addField("n.trir");
 		
 		setVerifiedAnnualUpdateFilter("verifiedDate");
 		
