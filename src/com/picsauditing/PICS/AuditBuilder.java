@@ -55,7 +55,8 @@ public class AuditBuilder {
 	private AuditTypeDAO auditTypeDAO;
 
 	public AuditBuilder(ContractorAuditDAO cAuditDAO, AuditDataDAO auditDataDAO, AuditCategoryDAO auditCategoryDAO,
-			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO, AuditTypeDAO auditTypeDAO) {
+			ContractorAuditOperatorDAO contractorAuditOperatorDAO, AuditCategoryDataDAO auditCategoryDataDAO,
+			AuditTypeDAO auditTypeDAO) {
 		this.cAuditDAO = cAuditDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.auditCategoryDAO = auditCategoryDAO;
@@ -69,15 +70,15 @@ public class AuditBuilder {
 		PicsLogger.start("BuildAudits", " conID=" + contractor.getId());
 		List<ContractorAudit> currentAudits = contractor.getAudits();
 
-		if(contractor.isAcceptsBids()) {
+		if (contractor.isAcceptsBids()) {
 			int year = DateBean.getCurrentYear();
 			AuditType auditType = auditTypeDAO.find(AuditType.ANNUALADDENDUM);
-			addAnnualAddendum(currentAudits, year-1, auditType);
-			addAnnualAddendum(currentAudits, year-2, auditType);
-			addAnnualAddendum(currentAudits, year-3, auditType);
+			addAnnualAddendum(currentAudits, year - 1, auditType);
+			addAnnualAddendum(currentAudits, year - 2, auditType);
+			addAnnualAddendum(currentAudits, year - 3, auditType);
 			return;
 		}
-		
+
 		List<AuditStatus> okStatuses = new ArrayList<AuditStatus>();
 		okStatuses.add(AuditStatus.Active);
 		okStatuses.add(AuditStatus.Pending);
@@ -127,10 +128,10 @@ public class AuditBuilder {
 			currentAudits.add(pqfAudit);
 		}
 
-		//Get the answer for DOT employees from Pqfdata
+		// Get the answer for DOT employees from Pqfdata
 		AuditData oqEmployees = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), AuditQuestion.OQ_EMPLOYEES);
 		AuditData hasCOR = auditDataDAO.findAnswerToQuestion(pqfAudit.getId(), 2954);
-		
+
 		/** Add other Audits and Policy Types **/
 		// Get a distinct list of AuditTypes that attached operators require
 		// Note: this is a lot of iterating over JPA Entities, my assumption
@@ -152,23 +153,24 @@ public class AuditBuilder {
 				}
 			}
 		}
-		
-		// Checking to see if the supplement COR or BPIISNCaseMgmt should be required for this contractor 
+
+		// Checking to see if the supplement COR or BPIISNCaseMgmt should be
+		// required for this contractor
 		ContractorAudit corAudit = null;
 		ContractorAudit BpIisnSpecific = null;
 		ContractorAudit HSECompetency = null;
-		for(ContractorAudit audit : currentAudits) {
-			if(auditTypeList.contains(audit.getAuditType())) {
-				if(audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
+		for (ContractorAudit audit : currentAudits) {
+			if (auditTypeList.contains(audit.getAuditType())) {
+				if (audit.getAuditType().getId() == AuditType.BPIISNSPECIFIC)
 					BpIisnSpecific = audit;
-				else if(audit.getAuditType().getId() == 99)
+				else if (audit.getAuditType().getId() == 99)
 					HSECompetency = audit;
-				else if(audit.getAuditType().getId() == AuditType.COR 
-						&& hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
+				else if (audit.getAuditType().getId() == AuditType.COR && hasCOR != null
+						&& "Yes".equals(hasCOR.getAnswer()))
 					corAudit = audit;
-			}		
-		}	
-					 
+			}
+		}
+
 		int year = DateBean.getCurrentYear();
 		for (AuditType auditType : auditTypeList) {
 			if (auditType.isAnnualAddendum()) {
@@ -185,7 +187,8 @@ public class AuditBuilder {
 						// We found a matching audit for this requirement
 						// Now determine if it will be good enough
 						if (auditType.isRenewable()) {
-							// This audit should not be renewed but we already have one
+							// This audit should not be renewed but we already
+							// have one
 							found = true;
 							if (conAudit.getAuditStatus().equals(AuditStatus.Expired)) {
 								// This should never happen...but just in case
@@ -194,7 +197,8 @@ public class AuditBuilder {
 							}
 						} else {
 							if (okStatuses.contains(conAudit.getAuditStatus()) && !conAudit.willExpireSoon())
-								// The audit is still valid for at least another 60 days
+								// The audit is still valid for at least another
+								// 60 days
 								found = true;
 						}
 					}
@@ -210,9 +214,10 @@ public class AuditBuilder {
 							insertNow = false;
 							break;
 						}
-						// If the contractor has answered Yes to the COR question 
-						//don't create a Desktop Audit 
-						if(hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
+						// If the contractor has answered Yes to the COR
+						// question
+						// don't create a Desktop Audit
+						if (hasCOR != null && "Yes".equals(hasCOR.getAnswer()))
 							insertNow = false;
 						break;
 					case AuditType.OFFICE:
@@ -220,20 +225,18 @@ public class AuditBuilder {
 							insertNow = false;
 						break;
 					case AuditType.DA:
-						if(!pqfAudit.getAuditStatus().isActiveSubmitted()
-								|| oqEmployees == null 
+						if (!pqfAudit.getAuditStatus().isActiveSubmitted() || oqEmployees == null
 								|| !"Yes".equals(oqEmployees.getAnswer()))
 							insertNow = false;
 						break;
 					case AuditType.COR:
-						if(hasCOR == null 
-								|| !"Yes".equals(hasCOR.getAnswer()))
+						if (hasCOR == null || !"Yes".equals(hasCOR.getAnswer()))
 							insertNow = false;
 						break;
 					case AuditType.SUPPLEMENTCOR:
-						if(corAudit == null)
+						if (corAudit == null)
 							insertNow = false;
-						else if(!corAudit.getAuditStatus().isActive())
+						else if (!corAudit.getAuditStatus().isActive())
 							insertNow = false;
 						break;
 					case AuditType.BPIISNCASEMGMT:
@@ -455,10 +458,9 @@ public class AuditBuilder {
 	 */
 	public void fillAuditCategories(ContractorAudit conAudit, boolean forceRecalculation) {
 		// If Bidding Contractor recalculate only for Annual Update
-		if(!conAudit.getAuditType().isAnnualAddendum() 
-				&& conAudit.getContractorAccount().isAcceptsBids()) { 
+		if (!conAudit.getAuditType().isAnnualAddendum() && conAudit.getContractorAccount().isAcceptsBids()) {
 			return;
-		}	
+		}
 
 		if (!forceRecalculation) {
 			if (conAudit.getAuditType().isPqf()) {
@@ -528,11 +530,14 @@ public class AuditBuilder {
 					else {
 
 						if (answer.getQuestion().getId() == 2033) {
-
-							if ("No".equals(answer.getAnswer()) && cat.getId() == AuditCategory.LOSS_RUN) {
-								include = true;
-							} else if ("Yes".equals(answer.getAnswer()) && cat.getId() == AuditCategory.EMR) {
-								include = true;
+							if (conAudit.getContractorAccount().getCountry().getIsoCode().equals("US")) {
+								if ("No".equals(answer.getAnswer()) && cat.getId() == AuditCategory.LOSS_RUN) {
+									include = true;
+								} else if ("Yes".equals(answer.getAnswer()) && cat.getId() == AuditCategory.EMR) {
+									include = true;
+								}
+							} else {
+								include = false;
 							}
 						} else {
 							if ("Yes".equals(answer.getAnswer())) {
@@ -569,12 +574,11 @@ public class AuditBuilder {
 		else if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
 			int pqfAuditID = 0;
 			for (ContractorAudit audits : conAudit.getContractorAccount().getAudits()) {
-				if (audits.getAuditType().isPqf()
-						&& audits.getAuditStatus().isActiveSubmitted()) {
-						pqfAuditID = audits.getId();
+				if (audits.getAuditType().isPqf() && audits.getAuditStatus().isActiveSubmitted()) {
+					pqfAuditID = audits.getId();
 				}
 			}
-			
+
 			if (pqfAuditID > 0) {
 				List<AuditCategory> desktopCategories = auditCategoryDAO.findDesktopCategories(pqfAuditID);
 				categories.addAll(desktopCategories);
@@ -681,8 +685,7 @@ public class AuditBuilder {
 	public void addAnnualAddendum(List<ContractorAudit> currentAudits, int year, AuditType auditType) {
 		boolean found = false;
 		for (ContractorAudit cAudit : currentAudits) {
-			if (cAudit.getAuditType().isAnnualAddendum()
-					&& year == Integer.parseInt(cAudit.getAuditFor())) {
+			if (cAudit.getAuditType().isAnnualAddendum() && year == Integer.parseInt(cAudit.getAuditFor())) {
 				if (cAudit.getAuditStatus().equals(AuditStatus.Expired))
 					// this should never happen actually...but just incase
 					cAudit.changeStatus(AuditStatus.Pending, user);
