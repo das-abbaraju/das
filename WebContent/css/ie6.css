@@ -23,3 +23,5 @@ div.caoGroup {
 #search_button {
 	padding: 0px !important;
 }
+
+fieldset.form h2.formLegend {width: 100%;}

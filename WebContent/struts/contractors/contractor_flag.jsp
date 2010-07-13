@@ -36,18 +36,31 @@ div.info {
 
 .ffTo {
 	padding: 2px 0 4px 4px;
+	display:block;
+	float:left;
 }
+
+#form_override .ffTo {}
+
 
 .ffDate {
 	padding: 2px 0 4px 4px;
+	display:block;
+	float:left;
+	margin-left:20px;
 }
+
+.ffLeft .ffDate .ui-datepicker-trigger {}
 
 .ffReason {
 	padding: 2px 15px 4px 4px;
+	margin-left:20px;
 }
 
-ffCorporate {
+#form_override .ffReason {margin-left:20px;padding: 2px 0 4px 4px;display:block;float:left;}
 
+ffCorporate {
+clear:left;
 }
 .ffLeft {
 	float: left;
@@ -55,6 +68,25 @@ ffCorporate {
 .ffRight {
 	float: right;
 }
+
+.ffDate input, .ffDate textarea, .ffReason textarea {border:1px solid #ccc;}
+.ffDate input:focus, .ffDate textarea:focus, .ffReason textarea:focus {border:1px solid #999;}
+
+.label-txt {
+	float: none;
+	width: 100%;
+	display: block;
+	margin: 0 0 5px 0;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+	color: #003768;
+	line-height: 15px;
+}
+
+span.redMain {}
+
+
 </style>
 <s:include value="../jquery.jsp" />
 <script type="text/javascript">
@@ -191,15 +223,19 @@ function openOverride(id){
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
 					<div class="ffTo">
-						Force Flag to: <s:radio id="forceFlag" list="unusedCoFlag" name="forceFlag" />
-					</div> 
-					<div class="ffDate"> 
-						Until: <input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker" />
-						<span style="padding: 2px 0px 4px 10px;">
-							Reason: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
-						</span>
+						<span class="label-txt">Force Flag to:</span>
+						<s:radio id="forceFlag" list="unusedCoFlag" name="forceFlag" />
 					</div>
-					<span class="redMain">* All Fields are required</span>					
+					<div class="ffDate"> 
+						<span class="label-txt">Until:</span> 
+						<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker" />
+					</div>
+					<div class="ffReason">
+						<span class="label-txt">Reason:</span> 
+						<s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
+						<span class="redMain">* All Fields are required</span><br /><br />
+					</div>	
+					
 					<div>
 						<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
 					</div>
@@ -318,7 +354,6 @@ function openOverride(id){
 							<!-- Override -->
 							<pics:permission perm="EditForcedFlags">
 								<td>
-									<br/>
 									<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
 										onclick="openOverride(<s:property value="%{#data.id}"/>); return false;">
 										<s:if test="canForceDataFlag(#flagoverride)">
@@ -353,11 +388,22 @@ function openOverride(id){
 										<s:if test="canForceDataFlag(#flagoverride)">
 											<div class="ffLeft">							
 												<div class="ffTo">
-													Force Flag to: <s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" />
+													<span class="label-txt">Force Flag to:</span>
+													<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" />
 												</div> 
 												<div class="ffDate"> 
-													Until: <input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
+													<span class="label-txt">Until:</span> 
+													<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
 												</div>																		
+											</div>
+											<div class="ffLeft">
+												<div class="ffReason">
+													<span class="label-txt">Reason for Forcing:</span>
+													<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
+												<br/>
+												</div>
+											</div>	
+											<div class="ffRight">
 												<div class="ffCorporate">
 													<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
 														onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
@@ -366,12 +412,6 @@ function openOverride(id){
 													</s:if>
 												</div>
 											</div>
-											<div class="ffRight">
-												<div class="ffReason">
-													Reason for Forcing: <s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
-												<br/>
-												</div>
-											</div>	
 										</s:if>
 										<s:else>
 											<s:if test="#flagoverride.operator.type == 'Corporate'">

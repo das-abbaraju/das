@@ -185,6 +185,7 @@ div.dataTables_length { width: 35%; }
 						<s:hidden name="employee.id"/>
 						<fieldset class="form">
 							<legend><span>Employee Details</span></legend>
+							<h2 class="formLegend">Employee Details</h2>
 							<ol>
 								<li><label>First Name:</label>
 									<s:textfield name="employee.firstName"/>
