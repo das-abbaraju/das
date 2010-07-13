@@ -14,7 +14,7 @@
 <s:form action="ConAuditMaintain" cssStyle="width: 400px">
 	<s:hidden name="auditID" />
 <fieldset class="form">
-	<legend><span>System Edit</span></legend>
+	<h2 class="formLegend">System Edit</h2>
 	<ol>
 		<li><label>Audit Status:</label>
 			<s:select name="conAudit.auditStatus" list="@com.picsauditing.jpa.entities.AuditStatus@values()"/></li>
@@ -31,7 +31,7 @@
 	</ol>
 </fieldset>
 <fieldset class="form">
-	<legend><span>Audit Dates</span></legend>
+	<h2 class="formLegend">Audit Dates</h2>
 	<ol>
 		<li><label>Created Date:</label>
 			<s:textfield name="conAudit.creationDate" value="%{conAudit.creationDate && getText('dates', {conAudit.creationDate})}"/></li>

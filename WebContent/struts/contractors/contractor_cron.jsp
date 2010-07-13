@@ -8,8 +8,8 @@
 
 <h1>Contractor Cron</h1>
 <s:form method="GET">
-	<fieldset class="form"><legend><span>Custom
-	Options</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Custom Options</h2>
 	<ol>
 		<li><label>Contractor ID:</label> <s:textfield name="conID" /></li>
 		<li><label>Steps:</label> <s:select name="steps"

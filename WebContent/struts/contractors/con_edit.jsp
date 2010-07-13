@@ -57,7 +57,7 @@ $(function() {
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
-				<legend><span>Details</span></legend>
+				<h2 class="formLegend">Details</h2>
 				<ol>
 					<li><label>Name:</label>
 						<s:textfield name="contractor.name" size="35" />
@@ -71,7 +71,7 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<legend><span>Primary Address</span></legend>
+				<h2 class="formLegend">Primary Address</h2>
 				<ol>
 					<li><label>Address:</label>
 						<s:textfield name="contractor.address" size="35" />
@@ -112,7 +112,7 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<legend><span>Industry Details</span></legend>
+				<h2 class="formLegend">Industry Details</h2>
 				<ol>
 					<li><label>Tax ID:</label>
 						<s:property value="contractor.taxId"/>
@@ -135,7 +135,7 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<legend><span>Company Identification</span></legend>
+				<h2 class="formLegend">Company Identification</h2>
 				<ol>
 					<li><label>Web URL:</label> 
 						<s:textfield name="contractor.webUrl" size="35" /></li>
@@ -174,7 +174,7 @@ $(function() {
 		<s:if test="permissions.admin">
 			<td style="vertical-align: top; width: 50%; padding-left: 10px;">
 				<fieldset class="form">
-				<legend><span>PICS Admin Fields</span></legend>
+				<h2 class="formLegend">PICS Admin Fields</h2>
 				<ol>
 					<li><label>Status:</label>
 						<s:select list="statusList" name="contractor.status" value="%{contractor.status}" />
@@ -208,7 +208,7 @@ $(function() {
 				</fieldset>
 				<pics:permission perm="EmailOperators">
 					<fieldset class="form bottom">
-					<legend><span>De-activation Email</span></legend>
+					<h2 class="formLegend">De-activation Email</h2>
 					<ol>
 						<li>
 							<input type="submit" class="picsbutton positive" name="button" value="SendDeactivationEmail"/>

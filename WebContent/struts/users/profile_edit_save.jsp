@@ -3,7 +3,8 @@
 <s:form id="saveProfileForm">
 	<s:hidden name="url"/>
 	<s:hidden name="u.id" />
-	<fieldset class="form"><legend><span>Profile</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Profile</h2>
 	<ol>
 		<li><label>Assigned to account:</label> <s:property value="u.account.name" /></li>
 		<li><label for="u.name">Display name:</label> <s:textfield name="u.name" /></li>
@@ -15,7 +16,8 @@
 		<li><label>Profile Created:</label> <s:property value="formatDate(u.creationDate)" /></li>
 	</ol>
 	</fieldset>
-	<fieldset class="form"><legend><span>Username &amp; Password</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Username &amp; Password</h2>
 	<ol>
 		<li><label for="u.username">Username:</label> <s:textfield name="u.username"
 			onchange="checkUsername(this.value);" />

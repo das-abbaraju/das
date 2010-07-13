@@ -151,7 +151,7 @@
 <% } else { %>
 	<form id="response_form" method="post" action="" style="width:450px;">
 		<fieldset class="form" >
-			<legend><span>Please help us by reporting this error</span></legend>
+			<h2 class="formLegend">Please help us by reporting this error</h2>
 			<div>
 				<s:if test="!permissions.loggedIn">
 					<div style="padding-top:40px;">

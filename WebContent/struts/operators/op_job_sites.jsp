@@ -222,7 +222,7 @@ $(function() {
 					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 						<s:hidden name="id" />
 						<fieldset class="form bottom">
-							<legend><span>Add New Project</span></legend>
+							<h2 class="formLegend">Add New Project</h2>
 							<ol>
 								<li><label>Label<span class="redMain">*</span>:</label>
 									<s:textfield name="siteLabel" size="20" maxlength="15" />

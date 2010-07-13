@@ -66,7 +66,7 @@ $(function(){
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
-					<legend><span>Company Details</span></legend>
+					<h2 class="formLegend">Company Details</h2>
 					<ol>
 						<li><label>Company Name:</label>
 							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/><span class="redMain">*</span>
@@ -96,7 +96,7 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<legend><span>Primary Address</span></legend>
+					<h2 class="formLegend">Primary Address</h2>
 					<ol>
 						<li><label>Address:</label>
 							<s:textfield name="contractor.address" size="35" /><span class="redMain">*</span></li>
@@ -117,7 +117,7 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<legend><span>Industry Details</span></legend>
+					<h2 class="formLegend">Industry Details</h2>
 					<ol>
 						<li><label>Industry:</label> <s:select list="industryList"
 							name="contractor.industry" /></li>
@@ -128,7 +128,7 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<legend><span>Company Identification</span></legend>
+					<h2 class="formLegend">Company Identification</h2>
 					<ol>
 						<li><label>Description:</label>
 							<s:textarea name="contractor.description" cols="60" rows="15" />
@@ -140,7 +140,7 @@ $(function(){
 					</ol>
 				</fieldset>
 				<fieldset class="form">
-					<legend><span>Primary Contact</span></legend>
+					<h2 class="formLegend">Primary Contact</h2>
 					<ol>
 						<li><label>Name:</label>
 							<s:textfield name="user.name" size="20" /><span class="redMain">*</span></li>

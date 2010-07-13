@@ -15,7 +15,8 @@
 	</fieldset>
 
 	<s:if test="webcam.id > 0">
-		<fieldset class="form"><legend><span>Shipping Info</span></legend>
+		<fieldset class="form">
+		<h2 class="formLegend">Shipping Info</h2>
 		<ol>
 			<s:if test="webcam.contractor == null">
 				<li><label>Received By:</label> <s:property value="webcam.receivedBy.name" /></li>

@@ -39,7 +39,8 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
 	<s:hidden name="button" value="address"/>
-	<fieldset class="form"><legend><span>Contact Person</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Contact Person</h2>
 	<ol>
 		<s:if test="permissions.admin">
 			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
@@ -49,7 +50,8 @@ var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 		<li><label>Phone:</label> <s:textfield name="conAudit.phone" value="%{conAudit.contractorAccount.primaryContact.phone}"/></li>
 	</ol>
 	</fieldset>
-	<fieldset class="form"><legend><span>Enter the Audit Location</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Enter the Audit Location</h2>
 	<ol>
 		<li><label>Address:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> No PO Boxes</li>
 		<li><label>Address 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> Suite/Apartment</li>

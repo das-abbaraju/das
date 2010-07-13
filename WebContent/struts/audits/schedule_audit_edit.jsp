@@ -85,7 +85,8 @@ $(function(){
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
-	<fieldset class="form"><legend><span>Date &amp; Time</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Date &amp; Time</h2>
 	<ol>
 		<li><label>Audit Date:</label> <s:textfield name="scheduledDateDay"
 			value="%{formatDate(conAudit.scheduledDate, 'MM/dd/yyyy')}" /> <s:date name="conAudit.scheduledDate" nice="true" /> </li>
@@ -103,7 +104,8 @@ $(function(){
 		</s:else>
 	</ol>
 	</fieldset>
-	<fieldset class="form"><legend><span>Location</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Location</h2>
 	<ol style="float: left;">
 		<li>Please enter the address at which this audit will be conducted.</li>
 		<li><label></label><input type="button" value="Use Contractor Contact Info" onclick="useContractor()"/></li>
@@ -122,7 +124,8 @@ $(function(){
 	</ol>
 	<div id="mappreview"></div>
 	</fieldset>
-	<fieldset class="form"><legend><span>Contact Person</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Contact Person</h2>
 	<ol>
 		<li>Please enter the primary representative for this audit.</li>
 		<li><label>Name:</label> <s:textfield name="conAudit.contractorContact" /></li>

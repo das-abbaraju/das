@@ -98,7 +98,8 @@ $(function() {
 			<td style="vertical-align: top" id="roleCell"><s:form>
 				<s:hidden name="id" />
 				<s:hidden name="role.id" />
-				<fieldset class="form bottom"><legend><span>Define Role</span></legend>
+				<fieldset class="form bottom">
+				<h2 class="formLegend">Define Role</h2>
 				<ol>
 					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
 					<li><label>Active:</label> <s:checkbox name="role.active" value="role.active" /> </li>

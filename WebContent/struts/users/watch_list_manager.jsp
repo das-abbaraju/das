@@ -124,7 +124,7 @@ $(function() {
 		<s:hidden name="userID" id="userID" />
 		<s:hidden name="conID" id="conID" />
 		<fieldset class="form bottom">
-			<legend><span>Add New Contractor Watch</span></legend>
+			<h2 class="formLegend">Add New Contractor Watch</h2>
 			<ol>
 				<li>
 					<label>User:</label>

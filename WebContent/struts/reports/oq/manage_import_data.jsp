@@ -123,7 +123,7 @@ function loadStage(stageID) {
 		<s:hidden name="id" />
 		<input type="submit" value="Import New Records" name="button" class="picsbutton" />
 		<fieldset class="form" style="margin-top: 10px">
-			<legend><span>Import by Date</span></legend>
+			<h2 class="formLegend">Import by Date</h2>
 			<ol>
 				<li><label>Start:</label>
 					<input type="text" name="start" class="datepicker" value="<s:date name="start" format="MM/dd/yyyy" />" />

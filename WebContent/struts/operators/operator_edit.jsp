@@ -58,7 +58,8 @@ $(function() {
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
-			<fieldset class="form"><legend><span>Details</span></legend>
+			<fieldset class="form">
+			<h2 class="formLegend">Details</h2>
 			<ol>
 				<li><label>Name:</label> <s:textfield name="operator.name"
 					size="35" /></li>
@@ -83,8 +84,8 @@ $(function() {
 				</s:if>
 			</ol>
 			</fieldset>
-			<fieldset class="form"><legend><span>Primary
-			Address</span></legend>
+			<fieldset class="form">
+			<h2 class="formLegend">Primary Address</h2>
 			<ol>
 				<li><label>Address:</label> <s:textfield
 					name="operator.address" size="35" /></li>
@@ -111,16 +112,16 @@ $(function() {
 					size="30" /></li>
 			</ol>
 			</fieldset>
-			<fieldset class="form"><legend><span>Company
-			Identification</span></legend>
+			<fieldset class="form">
+			<h2 class="formLegend">Company Identification</h2>
 			<ol>
 				<li><label>Description:</label> <s:textarea
 					name="operator.description" cols="40" rows="15" /></li>
 			</ol>
 			</fieldset>
 			<s:if test="permissions.admin">
-				<fieldset class="form"><legend><span>Visible
-				Audits</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Visible Audits</h2>
 				<ol>
 					<s:iterator value="operator.visibleAudits">
 						<li><label><s:property value="auditType.auditName" />:</label>
@@ -140,8 +141,8 @@ $(function() {
 
 			<s:if test="permissions.admin">
 				<td style="vertical-align: top; width: 50%; padding-left: 10px;">
-				<fieldset class="form"><legend><span>Admin
-				Fields</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Admin Fields</h2>
 				<ol>
 					<li><label>Status:</label> 
 						<s:select list="statusList" name="operator.status" /></li>
@@ -181,8 +182,8 @@ $(function() {
 						name="operator.requiresCompetencyReview" /></li>
 				</ol>
 				</fieldset>
-				<fieldset class="form"><legend><span>Linked
-				Accounts</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Linked Accounts</h2>
 				<ol>
 					<s:if test="operator.corporate">
 						<li><label>Facilities:</label> <s:select list="operatorList"
@@ -236,8 +237,8 @@ $(function() {
 				</fieldset>
 				<s:if test="operator.id > 0">
 					<pics:permission perm="UserRolePicsOperator" type="Edit">
-						<fieldset class="form"><legend><span>Manage
-						Representatives</span></legend>
+						<fieldset class="form">
+						<h2 class="formLegend">Manage Representatives</h2>
 						<ol>
 							<li><nobr><label>Sales Representatives :</label></nobr></li>
 							<table class="report">

@@ -61,7 +61,8 @@ li#li_availability a:hover {
 <s:include value="../contractors/conHeader.jsp" />
 
 <s:form>
-	<fieldset class="form bottom"><legend><span>Choose an Audit Time</span></legend>
+	<fieldset class="form bottom">
+	<h2 class="formLegend">Choose an Audit Time</h2>
 	<ol>
 		<s:if test="permissions.admin">
 			<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>

@@ -109,7 +109,7 @@ function changeState(state) {
 			</ol>
 		</fieldset>
 		<fieldset class="form">
-			<legend><span>Webcam</span></legend>
+			<h2 class="formLegend">Webcam</h2>
 			<ol>
 				<li>
 					<label>Webcam:</label>

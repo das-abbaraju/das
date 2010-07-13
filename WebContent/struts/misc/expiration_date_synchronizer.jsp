@@ -7,7 +7,8 @@
 </head>
 <body>
 
-<fieldset class="form"><legend><span>Expiration Date Synchronizer</span></legend>
+<fieldset class="form">
+<h2 class="formLegend">Expiration Date Synchronizer</h2>
 	<s:form enctype="multipart/form-data" method="POST">
 	<ol>
 		<li>

@@ -232,7 +232,8 @@ function getMatches(requestID) {
 	<table id="requestTable" style="width: 100%;">
 		<tr>
 			<td>
-				<fieldset class="form"><legend><span>Company Information</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Company Information</h2>
 				<ol>
 					<li><label>Company Name:</label>
 						<s:textfield name="newContractor.name" size="35" /></li>
@@ -292,7 +293,8 @@ function getMatches(requestID) {
 					</s:if>	
 				</ol>
 				</fieldset>
-				<fieldset class="form"><legend><span>Primary Address</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Primary Address</h2>
 				<ol>
 					 <li><label for="newContractorCountry">Country:</label>
 						<s:select
@@ -309,7 +311,8 @@ function getMatches(requestID) {
 				</fieldset>
 			</td>
 			<td style="padding-left: 10px">
-				<fieldset class="form"><legend><span>Request Summary</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Request Summary</h2>
 				<ol>
 					<li><label>Requested By Account:</label>
 						<s:select list="operatorsList" headerKey="0" headerValue="- Select a Operator -"
@@ -340,7 +343,8 @@ function getMatches(requestID) {
 					</li>
 				</ol>
 				</fieldset>
-				<fieldset class="form"><legend><span>Contact Summary</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Contact Summary</h2>
 				<ol>
 					<s:if test="newContractor.id > 0">
 						<li><label>Last Contacted By:</label>

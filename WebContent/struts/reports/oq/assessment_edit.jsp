@@ -37,7 +37,8 @@ $(function() {
 	<table>
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
-			<fieldset class="form"><legend><span>Details</span></legend>
+			<fieldset class="form">
+			<h2 class="formLegend">Details</h2>
 				<ol>
 					<li><label>Name:</label> <s:textfield name="center.name" size="35" /></li>
 					<s:if test="id > 0">
@@ -51,7 +52,7 @@ $(function() {
 				</ol>
 			</fieldset>
 			<fieldset class="form">
-				<legend><span>Primary Address</span></legend>
+				<h2 class="formLegend">Primary Address</h2>
 				<ol>
 					<li><label>Address:</label> <s:textfield name="center.address" size="35" /></li>
 					<li><label>City:</label> <s:textfield name="center.city"
@@ -67,7 +68,8 @@ $(function() {
 					<li><label>Web URL:</label> <s:textfield name="center.webUrl" size="30" /></li>
 				</ol>
 			</fieldset>
-			<fieldset class="form"><legend><span>Company Identification</span></legend>
+			<fieldset class="form">
+			<h2 class="formLegend">Company Identification</h2>
 			<ol>
 				<li><label>Description:</label>
 					<s:textarea name="center.description" cols="40" rows="15" /></li>
@@ -77,7 +79,8 @@ $(function() {
 
 			<s:if test="permissions.admin">
 				<td style="vertical-align: top; width: 50%; padding-left: 10px;">
-				<fieldset class="form"><legend><span>Admin Fields</span></legend>
+				<fieldset class="form">
+				<h2 class="formLegend">Admin Fields</h2>
 				<ol>
 					<li><label>Status:</label><s:select list="statusList" name="center.status" /></li>
 					<li><label>Reason:</label> <s:textarea name="center.reason" rows="3" cols="25" /></li>

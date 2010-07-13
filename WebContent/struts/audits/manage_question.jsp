@@ -97,7 +97,7 @@ function showText(qID, textid) {
 		</div>
 	</fieldset>
 	<fieldset class="form">
-	<legend><span>Question</span></legend>
+	<h2 class="formLegend">Question</h2>
 	<ol>
 		<li><label>ID:</label>
 			<s:if test="question.id > 0">
@@ -234,7 +234,7 @@ function showText(qID, textid) {
 	</fieldset>
 <!--
 	<fieldset class="form">
-	<legend><span>Question Texts</span></legend>
+	<h2 class="formLegend">Question Texts</h2>
 	<ol>
 		<s:iterator value="question.questionTexts" status="stat">
 			<li><label>Locale:</label>
@@ -253,7 +253,7 @@ function showText(qID, textid) {
 -->
  
 	<fieldset class="form">
-	<legend><span>Useful Links</span></legend>
+	<h2 class="formLegend">Useful Links</h2>
 	<ol>
 		<li><label>URL 1:</label>
 			<s:textfield name="question.linkUrl1" size="65"/>

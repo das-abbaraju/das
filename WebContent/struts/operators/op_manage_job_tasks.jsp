@@ -149,7 +149,7 @@ function sort(a, b, sortBy) {
 					<s:form id="newJobTask" method="POST" enctype="multipart/form-data">
 						<s:hidden name="id" />
 						<fieldset class="form bottom" >
-							<legend><span>Add New Job Task</span></legend>
+							<h2 class="formLegend">Add New Job Task</h2>
 							<ol>
 								<li><label>Label:</label>
 									<s:textfield name="newTask.label" size="10" />

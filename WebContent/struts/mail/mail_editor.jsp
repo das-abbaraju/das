@@ -3,7 +3,7 @@
 <h3><s:property value="templateName"/></h3>
 <div id="div_saveEmail" style="display: none;">
 	<fieldset class="form bottom">
-	<legend><span>Save Template Form</span></legend>
+	<h2 class="formLegend">Save Template Form</h2>
 	<ol>
 		<li><label>Template name:</label>
 			<s:textfield name="templateName" id="templateName" size="30" cssClass="forms" maxlength="50" />

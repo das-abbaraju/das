@@ -23,7 +23,8 @@
 <table width="100%">
 	<tr>
 		<td style="vertical-align: top; width: 48%;">
-		<fieldset class="form"><legend><span>Info</span></legend>
+		<fieldset class="form">
+		<h2 class="formLegend">Info</h2>
 		<ol>
 			<li><label>Active:</label> <s:property value="contractor.status"/></li>
 			<li><label title="The Date the Account was Created.">Registration Date:</label> <s:date
@@ -37,7 +38,8 @@
 		</ol>
 		</fieldset>
 
-		<fieldset class="form"><legend><span>Facilities</span></legend>
+		<fieldset class="form">
+		<h2 class="formLegend">Facilities</h2>
 		<ol>
 			<li><label>Requested By:</label> <s:property value="requestedBy.name" /></li>
 			<li><label>Risk Level:</label> <s:property value="contractor.riskLevel" /></li>
@@ -70,7 +72,8 @@
 		</td>
 		<td style="width: 5px;"></td>
 		<td style="vertical-align: top; width: 48%;">
-		<fieldset class="form"><legend><span>Invoicing</span></legend>
+		<fieldset class="form">
+		<h2 class="formLegend">Invoicing</h2>
 		<ol>
 			<li><label>Current Balance:</label> <s:property value="contractor.balance" /> <s:property value="contractor.currency"/> <s:if
 				test="contractor.balance > 0">
@@ -91,7 +94,8 @@
 		</fieldset>
 
 		<s:if test="permissions.admin">
-			<fieldset class="form"><legend><span>Create Invoice</span></legend> <s:form id="save" method="POST"
+			<fieldset class="form">
+			<h2 class="formLegend">Create Invoice</h2> <s:form id="save" method="POST"
 				enctype="multipart/form-data">
 				<s:hidden name="id" />
 				<ol>
@@ -115,7 +119,8 @@
 				</s:form>
 			</s:if></fieldset>
 		</s:if>
-		<fieldset class="form bottom"><legend><span>Transaction History</span></legend>
+		<fieldset class="form bottom">
+		<h2 class="formLegend">Transaction History</h2>
 		<ol>
 			<li>
 			<table class="report">

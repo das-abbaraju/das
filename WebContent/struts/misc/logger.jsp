@@ -12,7 +12,8 @@
 
 <div>[<a href="?button=clear">Clear All</a>]</div>
 
-<fieldset class="form"><legend><span>Currently Logging</span></legend>
+<fieldset class="form">
+<h2 class="formLegend">Currently Logging</h2>
 <ol>
 	<s:iterator value="rules">
 		<li><a class="remove" href="?button=delete&rule.name=<s:property value="name" />"><s:property value="name" /></a></li>
@@ -20,7 +21,8 @@
 </ol>
 </fieldset>
 
-<fieldset class="form"><legend><span>Logging Options</span></legend>
+<fieldset class="form">
+<h2 class="formLegend">Logging Options</h2>
 <ol>
 	<!-- List All System Logging Options here -->
 

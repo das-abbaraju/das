@@ -112,7 +112,7 @@ $(function() {
 			<s:form id="addWatch">
 				<input type="hidden" id="findConID" name="conID" value="0" />
 				<fieldset class="form">
-					<legend><span>Add New Contractor</span></legend>
+					<h2 class="formLegend">Add New Contractor</h2>
 					<ol>
 						<li>
 							<label>Contractor Name:</label>

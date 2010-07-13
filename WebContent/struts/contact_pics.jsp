@@ -9,7 +9,8 @@
 </head>
 <body>
 <form action="Contact">
-	<fieldset class="form"><legend><span>PICS Info</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">PICS Info</h2>
 	<ol>
 		<li><label>Mailing Address: </label> 
 				P.O. Box 51387, Irvine, CA 92619-1387</li>
@@ -25,7 +26,7 @@
 	<s:if test="permissions.loggedIn && !permissions.picsEmployee">
 		<fieldset class="form">
 			<s:if test="permissions.contractor">
-				<legend><span>Customer Service</span></legend>
+				<h2 class="formLegend">Customer Service</h2>
 				<ol>
 					<li><label>Name:</label><s:property value="contractorAccount.auditor.name"/></li>
 					<li><label>Phone:</label><s:property value="contractorAccount.auditor.phone"/></li>
@@ -34,7 +35,7 @@
 				</ol>
 			</s:if>
 			<s:elseif test="permissions.operatorCorporate">
-				<legend><span>Account Representative</span></legend>
+				<h2 class="formLegend">Account Representative</h2>
 				<ol>
 					<li><label>Name:</label><s:property value="accountRep.user.name"/></li>
 					<li><label>Phone:</label><s:property value="accountRep.user.phone"/></li>
@@ -45,7 +46,7 @@
 		</fieldset>
 	</s:if>
 		<fieldset class="form">
-			<legend><span>Support Links</span></legend>
+			<h2 class="formLegend">Support Links</h2>
 				<ol>
 					<li><label>Help Center:</label>
 						<s:if test="permissions.loggedIn && !permissions.picsEmployee">

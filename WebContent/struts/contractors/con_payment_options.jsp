@@ -77,7 +77,7 @@ function updateExpDate() {
 <s:form id="save" method="POST">
 	<s:hidden name="id" />
 <fieldset class="form">
-<legend><span>Membership Details</span></legend>
+<h2 class="formLegend">Membership Details</h2>
 <ol>
 <s:if test="contractor.newMembershipLevel.amount > 0">
 	<li>
@@ -206,7 +206,7 @@ function updateExpDate() {
 	
 		<s:if test="cc != null">
 		<fieldset class="form">
-		<legend><span>Existing Card</span></legend>
+		<h2 class="formLegend">Existing Card</h2>
 		<ol>
 			<li><label>Type:</label>
 				<s:property value="cc.cardType"/><s:if test="!contractor.ccOnFile && contractor.ccExpiration != null"><span style="color:red;" >&nbsp;&nbsp;( Invalid )</span></s:if>

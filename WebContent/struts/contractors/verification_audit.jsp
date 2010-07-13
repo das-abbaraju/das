@@ -17,7 +17,7 @@
 <br/>
 <s:if test="conAudit.auditType.pqf">
 	<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
-	<legend><span>PQF Questions</span></legend>
+	<h2 class="formLegend">PQF Questions</h2>
 	<s:iterator value="pqfQuestions">
 		<ol>
 			<li><s:property value="question.subCategory.subCategory"/><br />
@@ -79,8 +79,8 @@
 	</fieldset>
 </s:if>
 <s:else>
-	<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;"><legend><span>Audit
-	Questions</span></legend>
+	<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
+	<h2 class="formLegend">Audit Questions</h2>
 		<s:sort comparator="dataComparator" source="conAudit.data">
 	 <s:iterator>
 		<s:if test="isShowQuestionToVerify(question, answered)">
@@ -149,7 +149,8 @@
 	</s:sort>
 	</fieldset>
 	<s:if test="osha != null">
-		<fieldset class="form" style="clear: none; float: left; width: 40%; margin: 0.5em;"><legend><span>OSHA</span></legend>
+		<fieldset class="form" style="clear: none; float: left; width: 40%; margin: 0.5em;">
+			<h2 class="formLegend">OSHA</h2>
 			<s:div id="oid_%{osha.id}">
 				<ol>
 				<s:if test="!osha.verified">

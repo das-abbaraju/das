@@ -33,7 +33,7 @@ $(function(){
 		<s:hidden name="id"></s:hidden>
 			<div>
 				<fieldset class="form">
-				<legend><span>Audit Type</span></legend>
+				<h2 class="formLegend">Audit Type</h2>
 					<ol>
 						<li><label>ID:</label>
 							<s:if test="auditType.id > 0"><s:property value="auditType.id" /></s:if>

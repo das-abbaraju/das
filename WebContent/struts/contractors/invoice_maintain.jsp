@@ -15,7 +15,7 @@
 	<s:hidden name="invoiceId" />
 	<s:hidden name="id"/>
 <fieldset class="form">
-	<legend><span>Invoice Edit</span></legend>
+	<h2 class="formLegend">Invoice Edit</h2>
 	<ol>
 		<li><label>Amount:</label>
 			<s:textfield name="invoice.totalAmount" value="%{invoice.totalAmount}"/></li>
@@ -30,7 +30,7 @@
 	</ol>
 </fieldset>
 <fieldset class="form">
-	<legend><span>Quick Books</span></legend>
+	<h2 class="formLegend">Quick Books</h2>
 	<ol>
 		<li><label>PO Number:</label>
 			<s:textfield name="invoice.poNumber"/></li>

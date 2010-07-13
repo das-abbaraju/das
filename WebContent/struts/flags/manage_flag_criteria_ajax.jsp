@@ -12,7 +12,7 @@
 	<tr>
 	<td style="vertical-align: top">
 	<fieldset class="form">
-		<legend><span>General</span></legend>
+		<h2 class="formLegend">General</h2>
 		<ol>
 			<li>
 				<label>ID:</label>
@@ -41,7 +41,7 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form">
-		<legend><span>Value</span></legend>
+		<h2 class="formLegend">Value</h2>
 		<ol>
 			<li>
 				<label>Data Type:</label>
@@ -72,7 +72,7 @@
 	<td style="width: 20px;"></td>
 	<td style="vertical-align: top">
 	<fieldset class="form">
-		<legend><span>Audit | Question</span></legend>
+		<h2 class="formLegend">Audit | Question</h2>
 		<ol>
 			<li>
 				<label>Audit Type:</label>
@@ -93,7 +93,7 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form">
-		<legend><span>OSHA</span></legend>
+		<h2 class="formLegend">OSHA</h2>
 		<ol>
 			<li>
 				<label>Osha Type:</label>

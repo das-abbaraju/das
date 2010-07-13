@@ -25,7 +25,7 @@ $().ready(function() {
 		<input type="hidden" name="companyID" value="<s:property value="companyID" />" id="companyID" />
 		
 		<s:if test="result.id == 0">
-			<legend><span>Add New Assessment Result</span></legend>
+			<h2 class="formLegend">Add New Assessment Result</h2>
 		</s:if>
 		<ol>
 			<li><label for="company">Company:</label>

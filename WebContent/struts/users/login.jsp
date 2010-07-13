@@ -31,7 +31,8 @@ $(function() {
 <s:include value="../actionMessages.jsp"></s:include>
 
 <s:form id="login" cssStyle="width: 500px;">
-	<fieldset class="form"><legend><span>Login to PICS Organizer</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Login to PICS Organizer</h2>
 	<ol class="fieldhelp-list">
 		<li>
 			<label>Username:</label>

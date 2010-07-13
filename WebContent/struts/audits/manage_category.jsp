@@ -29,7 +29,7 @@ $(function(){
 	<s:hidden name="parentID" value="%{category.auditType.id}" />
 	<s:hidden name="category.auditType.id" />
 	<fieldset class="form">
-	<legend><span>Category</span></legend>
+	<h2 class="formLegend">Category</h2>
 		<ol>
 			<li><label>ID:</label>
 				<s:if test="category.id > 0">

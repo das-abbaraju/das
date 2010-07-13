@@ -22,7 +22,8 @@ will be made.</div>
 	<s:hidden name="auditID" />
 	<s:hidden name="availabilitySelectedID" />
 	<s:hidden name="button" value="confirm"/>
-	<fieldset class="form"><legend><span>Audit Confirmation</span></legend>
+	<fieldset class="form">
+	<h2 class="formLegend">Audit Confirmation</h2>
 	<ol>
 		<li>Please confirm the information below:</li>
 		<li><label>Audit Date:</label> <s:property

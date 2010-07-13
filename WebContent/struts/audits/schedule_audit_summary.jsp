@@ -14,7 +14,8 @@
 <div class="noprint">
 	<button class="picsbutton" type="button" onclick="window.print();">Print</button>
 </div>
-<fieldset class="form"><legend><span>Audit Time &amp; Location</span></legend>
+<fieldset class="form">
+<h2 class="formLegend">Audit Time &amp; Location</h2>
 <ol>
 	<s:if test="permissions.admin">
 		<li><a class="picsbutton" href="?button=edit&auditID=<s:property value="auditID"/>">Edit Schedule Manually</a></li>
@@ -36,7 +37,8 @@
 	<li><div class="alert">Any changes to the above schedule must be done 2 business days before this audit begins (<s:property value="formatDate(lastCancellationTime)" />) to avoid a $150 rescheduling fee.</div></li>
 </ol>
 </fieldset>
-<fieldset class="form"><legend><span>PICS Safety Professional</span></legend>
+<fieldset class="form">
+<h2 class="formLegend">PICS Safety Professional</h2>
 <ol>
 		<li><label>Name:</label> <s:property value="conAudit.auditor.name" /></li>
 		<li><label>Email:</label> <s:property value="conAudit.auditor.email" /></li>
@@ -45,7 +47,8 @@
 		<li>If you have any questions or concerns about your up coming audit, feel free to contact <s:property value="conAudit.auditor.name" /> directly.</li>
 </ol>
 </fieldset>
-<fieldset class="form bottom"><legend><span>Primary Contact</span></legend>
+<fieldset class="form bottom">
+<h2 class="formLegend">Primary Contact</h2>
 <ol>
 	<li><label>Name:</label> <s:property value="conAudit.contractorContact" /></li>
 	<li><label>Email:</label> <s:property value="conAudit.phone2" /></li>

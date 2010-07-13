@@ -6,7 +6,7 @@ $('.datepicker').datepicker();
 	<s:hidden name="id" />
 	<s:hidden name="siteID" />
 	<fieldset class="form bottom">
-		<legend><span>Edit Project</span></legend>
+		<h2 class="formLegend">Edit Project</h2>
 		<ol>
 			<li><label>Label<span class="redMain">*</span>:</label>
 				<input type="text" name="siteLabel" value="<s:property value="newSite.label" />" size="20" maxlength="15" />

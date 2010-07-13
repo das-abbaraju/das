@@ -9,7 +9,8 @@
 
 <h1>Page Logging</h1>
 
-<fieldset class="form"><legend><span>Logging Status</span></legend>
+<fieldset class="form">
+<h2 class="formLegend">Logging Status</h2>
 <ol>
 	<li>
 	<div id="loggingstatus">

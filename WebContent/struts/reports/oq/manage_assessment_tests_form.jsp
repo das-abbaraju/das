@@ -13,7 +13,7 @@ $().ready(function() {
 <input type="hidden" name="testID" value="<s:property value="test.id" />" />
 	<fieldset class="form">
 		<s:if test="test.id == 0">
-			<legend><span>Add New Assessment Test</span></legend>
+			<h2 class="formLegend">Add New Assessment Test</h2>
 		</s:if>
 		<ol>
 			<li><label for="qualType">Qualification Type:</label>
