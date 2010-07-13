@@ -43,7 +43,8 @@ fieldset.form ol {
 fieldset.form ol li {
 	font-size: 15px;
 	padding: 4px 5px 12px 10px;
-	width: 350px;
+	float: left;
+	clear: left;
 }
 
 fieldset.submit {
@@ -52,6 +53,13 @@ fieldset.submit {
 	margin-bottom: 10px;
 	float: none;
 	width: auto;
+}
+
+fieldset.submit .picsbutton.positive{
+	float: left;	
+}
+fieldset.submit .picsbutton.negative {
+	float: right;	
 }
 
 fieldset.bottom {
@@ -71,6 +79,7 @@ fieldset.form label {
 	font-weight: bold;
 	color: #003768;
 	line-height: 15px;
+	white-space: nowrap;
 }
 
 fieldset.form label.checkbox {
