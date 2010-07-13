@@ -528,7 +528,6 @@ public class AuditBuilder {
 					if (answer == null)
 						include = false;
 					else {
-
 						if (answer.getQuestion().getId() == 2033) {
 							if (conAudit.getContractorAccount().getCountry().getIsoCode().equals("US")) {
 								if ("No".equals(answer.getAnswer()) && cat.getId() == AuditCategory.LOSS_RUN) {
