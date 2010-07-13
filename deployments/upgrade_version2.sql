@@ -32,6 +32,13 @@ update contractor_audit ca set ca.closingAuditorID = 9615 where ca.closingAudito
 update contractor_audit ca set ca.closingAuditorID = 11503 where ca.closingAuditorID is null and ca.auditorID = 902;
 -- PICS-678: END --
 
+-- PICS-789: Begin --
+delete pqd.* from pqfcatdata pqd
+join contractor_audit ca on pqd.auditID = ca.id
+join accounts a on ca.conID = a.id
+where catID = 159 and a.country like 'CA' and ca.auditStatus not in ('Active','Expired');
+-- PICS-789: END --
+
 /* Deactive unused assessment centers except for OQSG, and set NACE and NCCER to pending */
 update accounts set status = 'Deactivated' where type = 'Assessment' and name !='OQSG';
 
