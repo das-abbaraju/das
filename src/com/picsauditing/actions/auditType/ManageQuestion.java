@@ -19,6 +19,7 @@ import com.picsauditing.dao.AuditQuestionTextDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionText;
@@ -37,10 +38,11 @@ public class ManageQuestion extends ManageSubCategory {
 	protected String defaultQuestion;
 	protected String defaultRequirement;
 
-	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
-			CountryDAO countryDAO, AuditQuestionTextDAO questionTextDAO) {
-		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao, auditQuestionDao, countryDAO);
+	public ManageQuestion(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
+			AuditCategoryDAO auditCategoryDao, AuditSubCategoryDAO auditSubCategoryDao,
+			AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO, CountryDAO countryDAO,
+			AuditQuestionTextDAO questionTextDAO) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditSubCategoryDao, auditQuestionDao, countryDAO);
 		this.auditQuestionDao = auditQuestionDao;
 		this.auditDataDAO = auditDataDAO;
 		this.questionTextDAO = questionTextDAO;

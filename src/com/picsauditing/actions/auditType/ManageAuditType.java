@@ -8,12 +8,14 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.Strings;
 
@@ -26,12 +28,15 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected AuditSubCategory subCategory = null;
 	protected AuditQuestion question = null;
 	protected String operatorID;
+	protected Integer emailTemplateID;
 
 	private List<AuditType> auditTypes = null;
 
 	protected AuditTypeDAO auditTypeDao = null;
+	protected EmailTemplateDAO emailTemplateDAO;
 
-	public ManageAuditType(AuditTypeDAO auditTypeDAO) {
+	public ManageAuditType(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDAO) {
+		this.emailTemplateDAO = emailTemplateDAO;
 		this.auditTypeDao = auditTypeDAO;
 	}
 
@@ -54,15 +59,15 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				if (delete()) {
 					addActionMessage("Successfully removed"); // default message
-					new AuditTypeCache();					 
+					new AuditTypeCache();
 					return "deleted";
 				}
 			}
-			if(button.equalsIgnoreCase("updateAllAudits")) {
+			if (button.equalsIgnoreCase("updateAllAudits")) {
 				auditTypeDao.updateAllAudits(id);
 				return "saved";
 			}
-			if(button.equalsIgnoreCase("updateAllAuditsCategories")) {
+			if (button.equalsIgnoreCase("updateAllAuditsCategories")) {
 				auditTypeDao.updateAllCategories(auditType.getId(), id);
 				return "saved";
 			}
@@ -91,6 +96,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	protected void load(AuditType newType) {
 		this.auditType = newType;
+		if (this.auditType.getTemplate() != null)
+			emailTemplateID = this.auditType.getTemplate().getId();
 	}
 
 	@Override
@@ -122,13 +129,18 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				addActionError("Audit name is required");
 				return false;
 			}
-			if(!Strings.isEmpty(operatorID)) {
+			if (!Strings.isEmpty(operatorID)) {
 				auditType.setAccount(new Account());
 				auditType.getAccount().setId(Integer.parseInt(operatorID));
-			}
-			else
+			} else
 				auditType.setAccount(null);
-			
+
+			if (emailTemplateID == null) {
+				auditType.setTemplate(null);
+			} else if (auditType.getTemplate() == null || auditType.getTemplate().getId() != emailTemplateID) {
+				auditType.setTemplate(emailTemplateDAO.find(emailTemplateID));
+			}
+
 			auditType.setAuditColumns(permissions);
 			auditType = auditTypeDao.save(auditType);
 			id = auditType.getId();
@@ -179,7 +191,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	public AuditType getAuditType() {
 		return auditType;
 	}
-	
+
 	public AuditTypeClass[] getClassList() {
 		return AuditTypeClass.values();
 	}
@@ -222,5 +234,17 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 	public void setOperatorID(String operatorID) {
 		this.operatorID = operatorID;
+	}
+
+	public Integer getEmailTemplateID() {
+		return emailTemplateID;
+	}
+
+	public void setEmailTemplateID(Integer emailTemplateID) {
+		this.emailTemplateID = emailTemplateID;
+	}
+
+	public List<EmailTemplate> getTemplateList() {
+		return emailTemplateDAO.findAll();
 	}
 }

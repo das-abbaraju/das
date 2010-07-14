@@ -35,7 +35,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int SUPPLEMENTCOR = 84;
 	public static final int BPIISNSPECIFIC = 87;
 	public static final int BPIISNCASEMGMT = 96;
-	
+
 	public static String DEFAULT_AUDITTYPE = "- Audit -";
 
 	public AuditType() {
@@ -63,6 +63,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean mustVerify;
 	protected boolean renewable = true;
 	protected Account account;
+	protected EmailTemplate template;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -101,6 +102,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	/**
 	 * More than one audit of this type can be active for a contractor at a time
+	 * 
 	 * @return
 	 */
 	public boolean isHasMultiple() {
@@ -167,11 +169,12 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public void setMustVerify(boolean mustVerify) {
 		this.mustVerify = mustVerify;
 	}
-	
+
 	/**
-	 * Can the existing audit be renewed (aka extended aka resubmitted)?
-	 * <br>Examples of true: PQF, Site Specific Audits
-	 * <br>Examples of false: Desktop, Office, Field, Policies
+	 * Can the existing audit be renewed (aka extended aka resubmitted)? <br>
+	 * Examples of true: PQF, Site Specific Audits <br>
+	 * Examples of false: Desktop, Office, Field, Policies
+	 * 
 	 * @return
 	 */
 	public boolean isRenewable() {
@@ -190,6 +193,16 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "emailTemplateID")
+	public EmailTemplate getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(EmailTemplate template) {
+		this.template = template;
 	}
 
 	@OneToMany(mappedBy = "auditType")
@@ -227,7 +240,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 			return true;
 		if (this.id == DESKTOP)
 			return true;
-		if(this.id == BPIISNCASEMGMT)
+		if (this.id == BPIISNCASEMGMT)
 			return true;
 		return false;
 	}
@@ -255,17 +268,17 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 			return true;
 		return false;
 	}
-	
+
 	@Override
 	public int compareTo(AuditType o) {
-		if(!this.getClassType().equals(o.getClassType())) {
+		if (!this.getClassType().equals(o.getClassType())) {
 			return getClassType().ordinal() - o.getClassType().ordinal();
 		}
-		
+
 		int i = new Integer(this.getDisplayOrder()).compareTo(new Integer(o.getDisplayOrder()));
 		if (i == 0)
 			return new Integer(this.getId()).compareTo(new Integer(o.getId()));
-		
+
 		return i;
 	}
 

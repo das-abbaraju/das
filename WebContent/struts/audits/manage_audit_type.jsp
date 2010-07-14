@@ -82,6 +82,11 @@ $(function(){
 						<li><label>Order:</label>
 							<s:textfield name="auditType.displayOrder" />
 						</li>
+						<li><label>Email Template:</label>
+							<s:select list="templateList" name="emailTemplateID" 
+								headerKey="" headerValue="- Email Template -"
+								listKey="id" listValue="templateName" />
+						</li>
 					</ol>
 				</fieldset>
 				<br clear="all">

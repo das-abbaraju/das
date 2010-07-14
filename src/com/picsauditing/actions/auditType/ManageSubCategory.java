@@ -8,6 +8,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.AuditSubCategory;
 import com.picsauditing.jpa.entities.Country;
 
@@ -19,9 +20,10 @@ public class ManageSubCategory extends ManageCategory {
 	protected String countries;
 	protected boolean exclude = false;
 
-	public ManageSubCategory(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, CountryDAO countryDAO) {
-		super(auditTypeDao, auditCategoryDao, auditQuestionDao);
+	public ManageSubCategory(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
+			AuditCategoryDAO auditCategoryDao, AuditSubCategoryDAO auditSubCategoryDao,
+			AuditQuestionDAO auditQuestionDao, CountryDAO countryDAO) {
+		super(emailTemplateDAO, auditTypeDao, auditCategoryDao, auditQuestionDao);
 		this.auditSubCategoryDao = auditSubCategoryDao;
 		this.countryDAO = countryDAO;
 	}

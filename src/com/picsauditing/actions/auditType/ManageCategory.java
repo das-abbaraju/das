@@ -3,6 +3,7 @@ package com.picsauditing.actions.auditType;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 
 public class ManageCategory extends ManageAuditType {
@@ -12,9 +13,9 @@ public class ManageCategory extends ManageAuditType {
 
 	protected Integer applyOnQuestionID;
 
-	public ManageCategory(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditQuestionDAO auditQuestionDao) {
-		super(auditTypeDao);
+	public ManageCategory(EmailTemplateDAO emailTemplateDAO, AuditTypeDAO auditTypeDao,
+			AuditCategoryDAO auditCategoryDao, AuditQuestionDAO auditQuestionDao) {
+		super(emailTemplateDAO, auditTypeDao);
 		this.auditCategoryDao = auditCategoryDao;
 		this.auditQuestionDao = auditQuestionDao;
 	}

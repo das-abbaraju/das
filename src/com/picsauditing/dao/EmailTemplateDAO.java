@@ -51,4 +51,9 @@ public class EmailTemplateDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<EmailTemplate> findAll() {
+		return (List<EmailTemplate>) super.findAll(EmailTemplate.class);
+	}
+
 }
