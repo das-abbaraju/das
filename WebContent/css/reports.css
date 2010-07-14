@@ -345,4 +345,14 @@ table.report tbody .Green td {color:#272;}
 
 #content div.clear {float: none;clear: both;height: 0px;margin: 0px;padding: 0px;}
 
+.override_wrench {
+	background-image: url(../images/wrench-screwdriver.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 20px;
+	padding-top:2px;
+	padding-bottom:2px;
+	height:20px;
+}
+
 

@@ -54,9 +54,19 @@ fieldset.form ol li.required {
 	background: url(../images/required.png) no-repeat right center;	
 }
 
-fieldset.submit {
+/*fieldset.submit {
 	padding: 1em 5em;
 	border-bottom: 2px solid #012142;
+	margin-bottom: 10px;
+	float: none;
+	width: auto;
+}*/
+
+fieldset.submit {
+	padding: 1em 5em;
+	border-bottom: 2px solid #4686bf;
+	border-top:2px solid #4686bf;
+	background-color:#F2F2F2;
 	margin-bottom: 10px;
 	float: none;
 	width: auto;
@@ -149,7 +159,7 @@ fieldset.form input.input-edit-field {
 
 /** Field Help **/
 fieldset.form ol li.fieldhelp-focused {
-	background-color: #ffff95;
+	background-color: #ffff99;
 }
 
 fieldset.form ol li.fieldhelp-focused .fieldhelp {
@@ -157,7 +167,7 @@ fieldset.form ol li.fieldhelp-focused .fieldhelp {
 	z-index: 1000;
 	width: 250px;
 	padding: 10px;
-	background-color: #ffff95;
+	background-color: #ffff99;
 	display: block;
 	font-size: 12px;
 	line-height: 20px;

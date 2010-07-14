@@ -85,9 +85,7 @@ fieldset.form {
 	white-space: nowrap;
 }
 
-fieldset.form ol li.fieldhelp-focused .fieldhelp {position:absolute;z-index:5000;}
-
-
+#tabs ul, #tabs ul li {list-style:none;}
 
 #info-box {float:right;display:block;width:40%;}
 
@@ -250,7 +248,7 @@ function openOverride(id){
 						<span class="label-txt">Until:</span> 
 						<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker" />
 					</li>
-					<li>
+					<li class="required">
 						<span class="label-txt">Reason:</span> 
 						<s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
 						<div class="fieldhelp">
@@ -270,7 +268,7 @@ function openOverride(id){
 				</s:form>
 				<a href="#" onclick="$('#override_link').slideDown(); $('#override').slideUp(); return false;">Nevermind</a>
 				</div>
-				<a id="override_link" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;">Force Overall Flag Color</a><br />
+				<a id="override_link" class="override_wrench" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;">Force Overall Flag Color</a><br />
 			</s:else>
 		</pics:permission>		
 	</div>	
@@ -380,11 +378,11 @@ function openOverride(id){
 									<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
 										onclick="openOverride(<s:property value="%{#data.id}"/>); return false;">
 										<s:if test="canForceDataFlag(#flagoverride)">
-											<div class="override_link_show" id="<s:property value="%{#data.id}" />_override_link_text">Force Line</div>
+											<div class="override_link_show" id="<s:property value="%{#data.id}" />_override_link_text"><span class="override_wrench">Force Line</span></div>
 											<div class="override_link_hide"  style="display: none;" id="<s:property value="%{#data.id}" />_override_link_hide">Hide</div>
 										</s:if>
 										<s:else>
-											<div class="override_link_show" id="<s:property value="%{#data.id}" />_override_link_text">Flag has been forced</div>
+											<div class="override_link_show" id="<s:property value="%{#data.id}" />_override_link_text"><span class="override_wrench">Flag has been forced</span></div>
 											<div class="override_link_hide" style="display: none;" id="<s:property value="%{#data.id}" />_override_link_hide">Hide</div>
 										</s:else>
 									</a>
@@ -419,7 +417,7 @@ function openOverride(id){
 													<label>Until:</label> 
 													<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
 											</li>
-											<li>
+											<li class="required">
 													<label>Reason for Forcing:</label>
 													<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
 													<div class="fieldhelp">
