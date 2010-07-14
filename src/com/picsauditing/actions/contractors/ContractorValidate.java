@@ -38,8 +38,6 @@ public class ContractorValidate extends ContractorActionSupport {
 
 			if (matches.size() > 0)
 				addActionError(companyName + " is already in use. Please contact a PICS representative.");
-			else
-				addActionMessage(companyName + " is available.");
 
 			return BLANK;
 		}
