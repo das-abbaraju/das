@@ -101,7 +101,7 @@ $(function() {
 					listKey="isoCode"
 					listValue="name" 
 					headerKey="" headerValue="- Country -"
-					value="locale.country"
+					value="operator.country.isoCode"
 					onchange="countryChanged(this.value)" /></li>
 				<li id="state_li"></li>
 				<li><label>Zip:</label> <s:textfield name="operator.zip"
