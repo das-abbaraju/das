@@ -312,10 +312,10 @@
 		
 		<action name="ConPqfList"
 			class="com.picsauditing.actions.contractors.ConAuditList">
-			<param name="auditClass">Audit</param>
+			<param name="auditClass">PQF</param>
 			<result>struts/contractors/contractor_audits.jsp</result>
 			<result name="saved" type="redirectAction">
-				<param name="actionName">ConAuditList</param>
+				<param name="actionName">ConPqfList</param>
 				<param name="id">${id}</param>
 			</result>
 		</action>
