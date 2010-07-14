@@ -23,11 +23,6 @@ public class ChartFlagCount extends ChartSSAction {
 		chart.setShowValues(true);
 
 		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addField("flag as label");
-		sql.addField("count(*) as value");
-		sql.addGroupBy("label");
-		sql.addOrderBy("label");
-
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("gc.flag != 'Clear'");
@@ -37,12 +32,26 @@ public class ChartFlagCount extends ChartSSAction {
 			if (permissions.isApprovesRelationships()) {
 				sql.addWhere("gc.workStatus = 'Y'");
 			}
+			
+			sql.addField("flag as label");
+			sql.addField("count(*) as value");
+			sql.addGroupBy("label");
+			sql.addOrderBy("label");
 		}
 		else if(permissions.hasGroup(User.GROUP_CSR)) {
 			sql.addJoin("JOIN contractor_info c ON a.id = c.id");
-			sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
 			sql.addJoin("JOIN accounts oper ON oper.id = gc.genID");
+			sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
 			sql.addWhere("oper.type = 'Operator'");
+			
+			sql.addField("gc.flag");
+			sql.addGroupBy("gc.flag, a.name");
+			
+			String derived = sql.toString();
+			sql = new SelectSQL("(" + derived + ") t");
+			sql.addField("t.flag AS label");
+			sql.addField("COUNT(*) AS value");
+			sql.addGroupBy("t.flag");
 		}
 
 		ChartDAO db = new ChartDAO();

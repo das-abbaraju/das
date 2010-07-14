@@ -44,7 +44,14 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 
 		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
 		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
-		sql.addField("operator.name AS opName");
+		
+		if (permissions.isAdmin()) {
+			sql.addField("GROUP_CONCAT(operator.name ORDER BY operator.name ASC SEPARATOR ', ') AS opName");
+			sql.addGroupBy("a.name, flag");
+		}
+		else
+			sql.addField("operator.name AS opName");
+		
 		sql.addField("operator.id AS opId");
 		sql.addField("gc.flag");
 		sql.addField("lower(gc.flag) AS lflag");
@@ -57,9 +64,12 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-		excelSheet.addColumn(new ExcelColumn("opName", "Operator Name",
-				ExcelCellType.String), 30);
-		excelSheet.addColumn(new ExcelColumn("flag", "Flag",
-				ExcelCellType.String), 40);
+		
+		if (permissions.isAdmin())
+			excelSheet.addColumn(new ExcelColumn("opName", "Operators", ExcelCellType.String), 30);
+		else
+			excelSheet.addColumn(new ExcelColumn("opName", "Operator Name", ExcelCellType.String), 30);
+		
+		excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.String), 40);
 	}
 }
