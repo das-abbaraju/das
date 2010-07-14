@@ -5,10 +5,9 @@
 <head>
 <title><s:property value="subHeading" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-<s:include value="../../jquery.jsp" />
+<s:include value="../reportHeader.jsp" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 function add() {	
@@ -68,45 +67,6 @@ function getEmployee(div, companyID, resultID) {
 	startThinking({div: div, message: 'Loading employee list'});
 	$('#' + div).load('ManageAssessmentResultsAjax.action', data);
 }
-
-function sortTable(sortBy) {
-	var tbody = $('table.report').find('tbody');
-	var rows = $(tbody).children();
-	$(tbody).empty();
-
-	var sortBys = sortBy.split(',');
-	rows.sort(function(a, b) {
-		var sort1 = sort(a, b, sortBys[0]);
-		var count = 0;
-
-		while (sort1 == 0 && count < sortBys.length) {
-			sort1 = sort(a, b, sortBys[count]);
-			count++;
-		}
-
-		return sort1;
-	});
-
-	$.each(rows, function (index, row) { $(row).find('.index').text(index + 1); $(tbody).append(row); });
-}
-
-function sort(a, b, sortBy) {
-	var a1;
-	var b1;
-	
-	if (sortBy.indexOf("#") >= 0) {
-		a1 = new Number($(a).find('.' + sortBy.substr(1)).text());
-		b1 = new Number($(b).find('.' + sortBy.substr(1)).text());
-	} else if (sortBy.indexOf("%") >= 0) {
-		a1 = new Date($(a).find('.' + sortBy.substr(1)).text());
-		b1 = new Date($(b).find('.' + sortBy.substr(1)).text());
-	} else {
-		a1 = $(a).find('.' + sortBy).text().toUpperCase();
-		b1 = $(b).find('.' + sortBy).text().toUpperCase();
-	}
-
-	return a1 > b1 ? 1 : a1 < b1 ? -1 : 0;
-}
 </script>
 </head>
 <body>
@@ -118,30 +78,38 @@ function sort(a, b, sortBy) {
 	the record may need to be mapped with a company, an assessment test, or an employee.
 </div>
 
-<s:if test="results.size() > 0">
+<s:form id="form1">
+<s:hidden name="filter.ajax" value="false" />
+<s:hidden name="filter.destinationAction" value="ManageAssessmentResults" />
+<s:hidden name="showPage" value="1" />
+<s:hidden name="orderBy" />
+<s:hidden name="id" />
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <table class="report">
 	<thead>
 		<tr>
 			<th></th>
-			<th><a href="#" onclick="sortTable('company,employee,test,%date'); return false;">Company</a></th>
-			<th><a href="#" onclick="sortTable('employee,company,test,%date'); return false;">Employee</a></th>
-			<th><a href="#" onclick="sortTable('%date,company,company,test'); return false;">Assessment Date</a></th>
-			<th><a href="#" onclick="sortTable('test,company,employee,%date'); return false;">Assessment Test</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=a.name">Company</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=e.firstName,e.lastName">Employee</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=r.effectiveDate">Assessment Date</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=qualificationMethod,qualificationType">Assessment Test</a></th>
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator value="results" status="stat">
-			<tr class="clickable" onclick="edit(<s:property value="id" />, <s:property value="employee.account.id" />); return false;">
-				<td class="index"><s:property value="#stat.count" /></td>
-				<td class="company"><s:property value="employee.account.name" /></td>
-				<td class="employee"><s:property value="employee.displayName" /></td>
-				<td class="center date"><s:date name="effectiveDate" format="MM/dd/yyyy" /></td>
-				<td class="test"><s:property value="assessmentTest.qualificationMethod" /> - <s:property value="assessmentTest.qualificationType" /></td>
+		<s:iterator value="data" status="stat">
+			<tr class="clickable" onclick="edit(<s:property value="get('id')" />, <s:property value="get('accountID')" />); return false;">
+				<td><s:property value="#stat.index + report.firstRowNumber" /></td>
+				<td><s:property value="get('name')" /></td>
+				<td><s:property value="get('firstName')" /> <s:property value="get('lastName')" /></td>
+				<td class="center"><s:property value="get('effectiveDate')" /></td>
+				<td><s:property value="get('qualificationMethod')" /> - <s:property value="get('qualificationType')" /></td>
 			</tr>
 		</s:iterator>
 	</tbody>
 </table>
-</s:if>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
+</s:form>
+
 <a href="#" onclick="add(); $(this).hide(); return false;" id="addLink" 
 	class="add">Add New Assessment Result</a>
 <div id="assessmentResult"></div>

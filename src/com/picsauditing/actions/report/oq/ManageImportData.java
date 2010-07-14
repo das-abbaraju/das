@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub;
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub.KS_GetDateRecords;
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub.KS_GetDateRecordsResponse;
@@ -18,14 +17,17 @@ import com.picsauditing.actions.imports.oqsg.ExportServicesStub.T_GetDateRecords
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub.T_GetDateRecordsResponse;
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub.T_GetNewRecords;
 import com.picsauditing.actions.imports.oqsg.ExportServicesStub.T_GetNewRecordsResponse;
+import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageImportData extends PicsActionSupport {
+public class ManageImportData extends ReportActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentTestDAO testDAO;
 	
@@ -35,6 +37,8 @@ public class ManageImportData extends PicsActionSupport {
 	private AssessmentResultStage stage;
 	private Date start;
 	private Date end = new Date();
+	private ReportFilter filter = new ReportFilter();
+	private SelectSQL sql = new SelectSQL("assessment_result_stage s");
 	private String subHeading = "Imported Data";
 	
 	// OQSG Web service
@@ -45,6 +49,27 @@ public class ManageImportData extends PicsActionSupport {
 	public ManageImportData(AccountDAO accountDAO, AssessmentTestDAO testDAO) {
 		this.accountDAO = accountDAO;
 		this.testDAO = testDAO;
+		
+		orderByDefault = "resultID, qualificationType, qualificationMethod";
+	}
+	
+	protected void buildQuery() {
+		sql.addField("s.id");
+		sql.addField("s.resultID");
+		sql.addField("s.qualificationType");
+		sql.addField("s.qualificationMethod");
+		sql.addField("s.description");
+		sql.addField("s.testID");
+		sql.addField("s.firstName");
+		sql.addField("s.lastName");
+		sql.addField("s.employeeID");
+		sql.addField("s.companyName");
+		sql.addField("s.companyID");
+		sql.addField("DATE_FORMAT(s.qualificationDate, '%m/%d/%Y') AS qualificationDate");
+		sql.addWhere("s.picsAccountID IS NULL OR s.picsAccountID = 0");
+		sql.addWhere("s.picsEmployeeID IS NULL OR s.picsEmployeeID = 0");
+		sql.addWhere("s.centerID = " + id);
+		sql.addOrderBy(getOrderBy());
 	}
 	
 	@Override
@@ -124,6 +149,9 @@ public class ManageImportData extends PicsActionSupport {
 			return redirect("ManageImportData.action" + (permissions.isAssessment() ? "" : "?id=" + id));
 		}
 		
+		buildQuery();
+		run(sql);
+		
 		return SUCCESS;
 	}
 	
@@ -176,9 +204,12 @@ public class ManageImportData extends PicsActionSupport {
 		return subHeading;
 	}
 	
-	// DAO access
-	public List<AssessmentResultStage> getStaged() {
-		return testDAO.findUnmatched(id);
+	public ReportFilter getFilter() {
+		return filter;
+	}
+	
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
 	}
 	
 	// Private methods

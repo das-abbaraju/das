@@ -17,7 +17,7 @@
 	<s:iterator value="employee.employeeSites" id="site" status="stat">
 		<s:if test="#site.current">
 			<tr>
-				<td title=""><s:property value="operator.name" /></td>
+				<td><s:property value="operator.name" /></td>
 				<td>
 					<s:if test="jobSite.id > 0"><s:property value="#site.jobSite.label" /></s:if>
 					<s:else>Unspecified</s:else> 					
@@ -78,7 +78,7 @@
 		<s:iterator value="employee.employeeSites" id="site" status="stat">
 			<s:if test="!#site.current"> 
 				<tr>
-					<td title=""><s:property value="operator.name" /></td>
+					<td><s:property value="operator.name" /></td>
 					<td>
 						<s:if test="jobSite.id > 0"><s:property value="#site.jobSite.label" /></s:if>
 						<s:else>Unspecified</s:else> 					

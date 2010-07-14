@@ -3,7 +3,7 @@ package com.picsauditing.actions.report.oq;
 import java.util.List;
 
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
@@ -12,9 +12,11 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 
 @SuppressWarnings("serial")
-public class ManageAssessmentResults extends PicsActionSupport {
+public class ManageAssessmentResults extends ReportActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentResultDAO resultDAO;
 	private AssessmentTestDAO testDAO;
@@ -27,6 +29,8 @@ public class ManageAssessmentResults extends PicsActionSupport {
 	private int testID;
 	private Account center;
 	private AssessmentResult result;
+	private ReportFilter filter = new ReportFilter();
+	private SelectSQL sql = new SelectSQL("assessment_result r");
 	private String company;
 	private String subHeading = "Manage Assessment Results";
 	
@@ -36,6 +40,24 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		this.resultDAO = resultDAO;
 		this.testDAO = testDAO;
 		this.employeeDAO = employeeDAO;
+		
+		orderByDefault = "a.name, e.firstName, t.qualificationType, t.qualificationMethod";
+	}
+	
+	protected void buildQuery() {
+		sql.addJoin("JOIN employee e ON e.id = r.employeeID");
+		sql.addJoin("JOIN accounts a ON a.id = e.accountID");
+		sql.addJoin("JOIN assessment_test t ON t.id = r.assessmentTestID");
+		sql.addField("r.id");
+		sql.addField("a.id AS accountID");
+		sql.addField("a.name");
+		sql.addField("e.firstName");
+		sql.addField("e.lastName");
+		sql.addField("t.qualificationType");
+		sql.addField("t.qualificationMethod");
+		sql.addField("DATE_FORMAT(r.effectiveDate, '%m/%d/%Y') AS effectiveDate");
+		sql.addWhere("t.assessmentCenterID = " + id);
+		sql.addOrderBy(getOrderBy());
 	}
 	
 	@Override
@@ -120,6 +142,9 @@ public class ManageAssessmentResults extends PicsActionSupport {
 			}
 		}
 		
+		buildQuery();
+		run(sql);
+		
 		return SUCCESS;
 	}
 	
@@ -187,11 +212,15 @@ public class ManageAssessmentResults extends PicsActionSupport {
 		return subHeading;
 	}
 	
-	// LISTS
-	public List<AssessmentResult> getResults() {
-		return resultDAO.findByAssessmentCenter(id);
+	public ReportFilter getFilter() {
+		return filter;
 	}
 	
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
+	}
+	
+	// LISTS
 	public List<AssessmentTest> getTests() {
 		return testDAO.findByAssessmentCenter(id);
 	}

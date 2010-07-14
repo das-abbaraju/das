@@ -13,19 +13,27 @@
 
 <s:include value="assessmentHeader.jsp" />
 
-<s:form>
+<s:form id="form1">
+	<s:hidden name="filter.ajax" value="false" />
+	<s:hidden name="filter.destinationAction" value="ManageUnmappedTests" />
+	<s:hidden name="showPage" value="1" />
+	<s:hidden name="orderBy" />
+	<s:hidden name="id" />
+	
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<table class="report">
 		<thead>
 			<tr>
+				<th></th>
 				<th>Imported Test</th>
 				<th># of Records</th>
 				<th>Add</th>
 			</tr>
 		</thead>
 		<tbody>	
-			<s:iterator value="data">
+			<s:iterator value="data" status="stat">
 				<tr>
+					<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 					<td>
 						<s:property value="get('qualificationType')" /> - 
 						<s:property value="get('qualificationMethod')" /> -
@@ -38,7 +46,7 @@
 				</tr>
 			</s:iterator>
 			<s:if test="data.size() == 0">
-				<tr><td colspan="3">No records found</td></tr>
+				<tr><td colspan="4">No records found</td></tr>
 			</s:if>
 		</tbody>
 	</table>

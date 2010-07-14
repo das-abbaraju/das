@@ -53,7 +53,10 @@ function cancel() {
 
 <s:include value="assessmentHeader.jsp" />
 
-<s:form>
+<s:form id="form1">
+	<s:hidden name="filter.ajax" value="false" />
+	<s:hidden name="filter.destinationAction" value="ManageUnmappedCompanies" />
+	<s:hidden name="showPage" value="1" />
 	<s:hidden name="id" />
 	<input type="hidden" name="accountID" value="0" id="accountID" />
 	<input type="hidden" name="companyName" value="0" id="companyName" />

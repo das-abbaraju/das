@@ -53,6 +53,14 @@ function wireClueTips() {
 		width : 400,
 		cluetipClass : 'jtip'
 	});
+
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
 }
 
 $(function() {
@@ -104,14 +112,14 @@ $(function() {
 					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
 					<li><label>Active:</label> <s:checkbox name="role.active" value="role.active" /> </li>
 				</ol>
-				<div style="text-align: center; margin: 0px auto;">
+				</fieldset>
+				<fieldset class="form submit">
 					<input type="submit" value="Save" class="picsbutton positive" name="button" />
 					<input type="button" onclick="$('#roleCell').empty(); return false;" class="picsbutton" value="Cancel"/>
 					<s:if test="role.id != 0">
 						<input type="submit" name="button" value="Delete" class="picsbutton negative"
 							onclick="return confirm('Press ok to remove this job role. This action cannot be undone.');" />
 					</s:if>
-				</div>
 				</fieldset>
 			</s:form>
 			<div id="jobCompetencyList">

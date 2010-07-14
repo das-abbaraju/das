@@ -17,6 +17,13 @@ $(function(){
 			);
 		}
 	});
+	$('.cluetip').cluetip({
+		closeText: "<img src='images/cross.png' width='16' height='16'>",
+		arrows: true,
+		cluetipClass: 'jtip',
+		local: true,
+		clickThrough: false
+	});
 });
 </script>
 </head>
@@ -72,8 +79,15 @@ $(function(){
 						<li><label>Contractor Can Edit:</label>
 							<s:checkbox name="auditType.canContractorEdit" />
 						</li>
-						<li><label title="Add the operator or corporateID only if requested by 1 account.">
-							Required By Operator:</label>
+						<li>
+							<label>
+								Required By Operator:
+								<a href="#" onclick="return false;" rel="#cluetip1" class="help cluetip" 
+									title="Required By Operator"></a>
+								<div id="cluetip1">
+									Add the operator or corporateID only if requested by 1 account.
+								</div>
+							</label>
 							<s:textfield name="operatorID" value="%{auditType.account.id}" /> 
 						</li>
 						<li><label>Months to Expire:</label>

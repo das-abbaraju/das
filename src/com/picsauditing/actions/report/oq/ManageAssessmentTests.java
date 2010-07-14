@@ -4,16 +4,18 @@ import java.util.List;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageAssessmentTests extends PicsActionSupport {
+public class ManageAssessmentTests extends ReportActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentTestDAO testDAO;
 
@@ -22,12 +24,28 @@ public class ManageAssessmentTests extends PicsActionSupport {
 	private int testID;
 	private Account center;
 	private AssessmentTest test;
+	private ReportFilter filter = new ReportFilter();
+	private SelectSQL sql = new SelectSQL("assessment_test t");
 	private String subHeading = "Manage Assessment Tests";
 
-	public ManageAssessmentTests(AccountDAO accountDAO,
-			AssessmentTestDAO testDAO) {
+	public ManageAssessmentTests(AccountDAO accountDAO, AssessmentTestDAO testDAO) {
 		this.accountDAO = accountDAO;
 		this.testDAO = testDAO;
+		
+		orderByDefault = "t.qualificationType, t.qualificationMethod";
+	}
+	
+	protected void buildQuery() {
+		sql.addField("t.id");
+		sql.addField("t.qualificationType");
+		sql.addField("t.qualificationMethod");
+		sql.addField("t.description");
+		sql.addField("DATE_FORMAT(t.effectiveDate, '%m/%d/%Y') AS effectiveDate");
+		sql.addField("t.verifiable");
+		sql.addField("t.monthsToExpire");
+		
+		sql.addWhere("t.assessmentCenterID = " + id);
+		sql.addOrderBy(getOrderBy());
 	}
 
 	@Override
@@ -117,6 +135,9 @@ public class ManageAssessmentTests extends PicsActionSupport {
 						(permissions.isAssessment() ? "" : "?id=" + id));
 			}
 		}
+		
+		buildQuery();
+		run(sql);
 
 		return SUCCESS;
 	}
@@ -160,12 +181,16 @@ public class ManageAssessmentTests extends PicsActionSupport {
 	public String getSubHeading() {
 		return subHeading;
 	}
-
-	// LISTS
-	public List<AssessmentTest> getTests() {
-		return testDAO.findByAssessmentCenter(id);
+	
+	public ReportFilter getFilter() {
+		return filter;
 	}
 	
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
+	}
+
+	// LISTS	
 	public List<AssessmentResultStage> getUnmapped() {
 		return testDAO.findUnmappedTests(id);
 	}

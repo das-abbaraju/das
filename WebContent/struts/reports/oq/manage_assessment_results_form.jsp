@@ -3,7 +3,11 @@
 <%@page language="java" errorPage="../../exception_handler.jsp"%>
 <script type="text/javascript">
 $().ready(function() {
-	$('.datepicker').datepicker();
+	$('.datepicker').datepicker({
+		showOn: 'both',
+		buttonImage: 'images/icon_calendar.gif',
+		buttonImageOnly: true
+	});
 	$('#company_add').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,

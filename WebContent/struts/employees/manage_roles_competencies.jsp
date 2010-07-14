@@ -39,7 +39,10 @@
 			<thead>
 				<tr>
 					<td colspan="2">Potential HSE Competencies</td>
-					<td><span title="Number of times this competency is used for <s:property value="role.name"/>">% Used</span></td>
+					<td style="white-space: nowrap;">
+						% Used<a href="#" onclick="return false;" class="help cluetip" rel="#cluetip1" title="% Used"></a>
+						<div id="cluetip1">Number of times this competency is used for <s:property value="role.name"/></div>
+					</td>
 					<td></td>
 				</tr>
 			</thead>

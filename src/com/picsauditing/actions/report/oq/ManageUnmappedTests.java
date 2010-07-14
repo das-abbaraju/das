@@ -10,11 +10,13 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 
 @SuppressWarnings("serial")
 public class ManageUnmappedTests extends ReportActionSupport {
 	private AccountDAO accountDAO;
 	private AssessmentTestDAO testDAO;
+	private ReportFilter filter;
 	
 	private int id;
 	private int stageID;
@@ -108,5 +110,13 @@ public class ManageUnmappedTests extends ReportActionSupport {
 	
 	public String getSubHeading() {
 		return subHeading;
+	}
+	
+	public ReportFilter getFilter() {
+		return filter;
+	}
+	
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
 	}
 }

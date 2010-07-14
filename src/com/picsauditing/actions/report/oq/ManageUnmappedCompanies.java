@@ -9,6 +9,7 @@ import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -19,6 +20,7 @@ public class ManageUnmappedCompanies extends ReportActionSupport {
 	private int id;
 	private int accountID;
 	private Account center;
+	private ReportFilter filter = new ReportFilter();
 	private SelectSQL sql = new SelectSQL();
 	private String companyName;
 	private String subHeading = "Company Mapping";
@@ -110,5 +112,13 @@ public class ManageUnmappedCompanies extends ReportActionSupport {
 	
 	public String getSubHeading() {
 		return subHeading;
+	}
+	
+	public ReportFilter getFilter() {
+		return filter;
+	}
+	
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
 	}
 }

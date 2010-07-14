@@ -13,45 +13,6 @@ $().ready(function() {
 	$('.datepicker').datepicker();
 });
 
-function sortTable(sortBy) {
-	var tbody = $('table.report').find('tbody');
-	var rows = $(tbody).children();
-	$(tbody).empty();
-
-	var sortBys = sortBy.split(',');
-	rows.sort(function(a, b) {
-		var sort1 = sort(a, b, sortBys[0]);
-		var count = 0;
-
-		while (sort1 == 0 && count < sortBys.length) {
-			sort1 = sort(a, b, sortBys[count]);
-			count++;
-		}
-
-		return sort1;
-	});
-
-	$.each(rows, function (index, row) { $(row).find('.index').text(index + 1); $(tbody).append(row); });
-}
-
-function sort(a, b, sortBy) {
-	var a1;
-	var b1;
-	
-	if (sortBy.indexOf("#") >= 0) {
-		a1 = new Number($(a).find('.' + sortBy.substr(1)).text());
-		b1 = new Number($(b).find('.' + sortBy.substr(1)).text());
-	} else if (sortBy.indexOf("%") >= 0) {
-		a1 = new Date($(a).find('.' + sortBy.substr(1)).text());
-		b1 = new Date($(b).find('.' + sortBy.substr(1)).text());
-	} else {
-		a1 = $(a).find('.' + sortBy).text().toUpperCase();
-		b1 = $(b).find('.' + sortBy).text().toUpperCase();
-	}
-
-	return a1 > b1 ? 1 : a1 < b1 ? -1 : 0;
-}
-
 function showUpload() {
 	url = 'ManageImportDataUploadAjax.action?id=<s:property value="center.id" />';
 	title = 'Upload';
@@ -74,46 +35,56 @@ function loadStage(stageID) {
 	The table below shows imported data that are currently not mapped with a PICS Company or
 	an assessment test.
 </div>
+
+<s:form id="form1">
+<s:hidden name="filter.ajax" value="false" />
+<s:hidden name="filter.destinationAction" value="ManageImportData" />
+<s:hidden name="showPage" value="1" />
+<s:hidden name="orderBy" />
+<s:hidden name="id" />
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <table class="report">
 	<thead>
 		<tr>
 			<th></th>
 			<th>Result ID</th>
-			<th><a href="#" onclick="sortTable('qtype,qmethod'); return false;">Qualification Type</a></th>
-			<th><a href="#" onclick="sortTable('qmethod,qtype'); return false;">Qualification Method</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=qualificationType,qualificationMethod">Qualification Type</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=qualificationMethod,qualificationType">Qualification Method</a></th>
 			<th>Description</th>
-			<th><a href="#" onclick="sortTable('#test'); return false;">Test ID</a></th>
-			<th colspan="2"><a href="#" onclick="sortTable('name,qtype,qmethod'); return false;">Employee</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=testID">Test ID</a></th>
+			<th colspan="2"><a href="?orderBy=firstName,lastName">Employee</a></th>
 			<th>Employee ID</th>
-			<th><a href="#" onclick="sortTable('company,qtype,qmethod'); return false;">Company</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=companyName">Company</a></th>
 			<th>Company ID</th>
-			<th><a href="#" onclick="sortTable('%date,name'); return false;">Qualification Date</a></th>
+			<th><a href="?id=<s:property value="id" />&orderBy=s.qualificationDate">Qualification Date</a></th>
 		</tr>
 	</thead>
 	<tbody>	
-		<s:iterator value="staged" status="stat">
+		<s:iterator value="data" status="stat">
 			<tr>
-				<td class="right index"><s:property value="#stat.count" /></td>
-				<td><s:property value="resultID" /></td>
-				<td class="qtype"><s:property value="qualificationType" /></td>
-				<td class="qmethod"><s:property value="qualificationMethod" /></td>
-				<td><s:property value="description" /></td>
-				<td class="right test"><s:property value="testID" /></td>
-				<td><s:property value="firstName" /></td>
-				<td class="name"><s:property value="lastName" /></td>
-				<td><s:property value="employeeID" /></td>
-				<td class="company"><s:property value="companyName" /></td>
-				<td class="right"><s:property value="companyID" /></td>
-				<td class="center date"><s:date name="qualificationDate" format="MM/dd/yyyy" /></td>
+				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+				<td><s:property value="get('resultID')" /></td>
+				<td><s:property value="get('qualificationType')" /></td>
+				<td><s:property value="get('qualificationMethod')" /></td>
+				<td><s:property value="get('description')" /></td>
+				<td class="right"><s:property value="get('testID')" /></td>
+				<td><s:property value="get('firstName')" /></td>
+				<td><s:property value="get('lastName')" /></td>
+				<td><s:property value="get('employeeID')" /></td>
+				<td><s:property value="get('companyName')" /></td>
+				<td class="right"><s:property value="get('companyID')" /></td>
+				<td class="center"><s:property value="get('qualificationDate')" /></td>
 			</tr>
 		</s:iterator>
-		<s:if test="staged.size() == 0">
+		<s:if test="data.size() == 0">
 			<tr>
 				<td colspan="13">No records found</td>
 			</tr>
 		</s:if>
 	</tbody>
 </table>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
+</s:form>
 
 <a href="#" onclick="showUpload(); return false;" class="add">Upload Assessment Results</a><br />
 <s:if test="id == 11071 || permissions.accountID == 11071">
@@ -121,7 +92,6 @@ function loadStage(stageID) {
 		class="add" id="oqsgImportLink">OQSG Webservice Import</a><br />
 	<s:form id="oqsgImportDiv" cssStyle="display: none;">
 		<s:hidden name="id" />
-		<input type="submit" value="Import New Records" name="button" class="picsbutton" />
 		<fieldset class="form" style="margin-top: 10px">
 			<h2 class="formLegend">Import by Date</h2>
 			<ol>
@@ -132,11 +102,13 @@ function loadStage(stageID) {
 					<input type="text" name="end" class="datepicker" value="<s:date name="end" format="MM/dd/yyyy" />" />
 				</li>
 			</ol>
-			<div style="margin: 10px;">
-				<input type="submit" value="Import By Date" name="button" class="picsbutton" /></div>
 		</fieldset>
-		<input type="button" value="Cancel" class="picsbutton" 
-			onclick="$('#oqsgImportDiv').hide(); $('#oqsgImportLink').show();" />
+		<fieldset class="form submit">
+			<input type="submit" value="Import By Date" name="button" class="picsbutton positive" />
+			<input type="submit" value="Import New Records" name="button" class="picsbutton" />
+			<input type="button" value="Cancel" class="picsbutton" 
+				onclick="$('#oqsgImportDiv').hide(); $('#oqsgImportLink').show();" />
+		</fieldset>
 	</s:form>
 </s:if>
 

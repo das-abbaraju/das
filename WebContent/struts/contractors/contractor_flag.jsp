@@ -324,9 +324,8 @@ function openOverride(id){
 								<s:iterator id="opCriteria" value="co.operatorAccount.flagCriteriaInherited">
 									<s:if test="#opCriteria.criteria.id == #data.criteria.id && (#opCriteria.flag == #data.flag || (#flagoverride != null && #opCriteria.flag.toString() == 'Red'))">
 										<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
-											<span title="The statistics provided must have a status other than pending to be calculated.">
-												<s:property value="#opCriteria.replaceHurdle" />
-											</span>
+											<s:property value="#opCriteria.replaceHurdle" /><a href="#" onclick="return false;" class="help cluetip" rel="#cluetip1" title="Statistics"></a>
+											<div id="cluetip1">The statistics provided must have a status other than pending to be calculated.</div>
 										</s:if>
 										<s:else>
 											<s:property value="#opCriteria.replaceHurdle" />
