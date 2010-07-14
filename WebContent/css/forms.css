@@ -179,7 +179,22 @@ fieldset.form ol li.fieldhelp-focused .fieldhelp {
 	display: none;
 }
 
-fieldset.form div.fieldhelp ul li {
+
+fieldset.form div.fieldhelp {
+	list-style-type: disc;
+	margin-left: 10px;
+	list-style-position: inside;
+	float:none;
+	clear:both;
+}
+
+fieldset.form div.fieldhelp li {
+	list-style-type: disc;
+	margin-left: 0;
+	margin-bottom:5px;
+	line-height:16px;
+	text-indent:none;
+	list-style-position: inside;
 	font-size: inherit;
 	padding: 0;
 	width: auto;

@@ -333,18 +333,9 @@ b,strong {
 ul {
 	list-style-type: disc;
 	margin-left: 10px;
-	list-style-position: inside;
-	float:none;
-	clear:both;
 }
 
 ul li {
-	list-style-type: disc;
-	margin-left: 0;
-	margin-bottom:5px;
-	line-height:16px;
-	text-indent:none;
-	list-style-position: inside;
 }
 
 .sub { /* used as a sub-header title */
@@ -1042,7 +1033,7 @@ div.autocomplete ul li {
 }
 
 table.report tr.clickable:hover,table.notes tr.clickable:hover, .tr-hover-clickable {
-	background-color: #ffff99;
+	background-color: #FFC;
 	color: black;
 	cursor: pointer;
 }

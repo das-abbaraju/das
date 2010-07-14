@@ -73,8 +73,8 @@ table.noshade tr:hover {
 	background: #f9f9f9;
 }
 
-table.report tr.highlight {
-	background: #FFC;
+table.report tr.highlight, table.report tr.highlight:hover, table.notes tr.highlight:hover, .tr-hover-highlight {
+	background: #ffff99;
 	color: #000;
 }
 
