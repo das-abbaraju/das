@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditSubCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -19,8 +20,8 @@ public class ManageSubCategory extends ManageCategory {
 	protected boolean exclude = false;
 
 	public ManageSubCategory(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
-			AuditSubCategoryDAO auditSubCategoryDao, CountryDAO countryDAO) {
-		super(auditTypeDao, auditCategoryDao);
+			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, CountryDAO countryDAO) {
+		super(auditTypeDao, auditCategoryDao, auditQuestionDao);
 		this.auditSubCategoryDao = auditSubCategoryDao;
 		this.countryDAO = countryDAO;
 	}

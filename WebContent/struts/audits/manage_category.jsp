@@ -46,12 +46,12 @@ $(function(){
 			<li><label># Required:</label>
 				<s:property value="category.numRequired"/>
 			</li>
-			<li><label>Apply when QuestionID:</label>
-				<s:textfield name="dependsOnQuestionID" />
-				<s:if test="dependsOnQuestionID > 0"><a href="?id=<s:property value="dependsOnQuestionID" />">Show</a></s:if>
+			<li><label>Apply on Question:</label>
+				<s:textfield name="applyOnQuestionID" />
+				<s:if test="applyOnQuestionID > 0"><a href="ManageQuestion.action?id=<s:property value="applyOnQuestionID" />">Show</a></s:if>
 			</li>
-			<li><label>Apply on Answer:</label>
-				<s:textfield name="question.dependsOnAnswer" />
+			<li><label>When Answer is:</label>
+				<s:textfield name="category.applyOnAnswer" />
 			</li>
 		</ol>
 	</fieldset>

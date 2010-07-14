@@ -29,7 +29,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageSubCategory {
 
-	protected AuditQuestionDAO auditQuestionDao;
 	protected AuditDataDAO auditDataDAO;
 	protected AuditQuestionTextDAO questionTextDAO;
 	private int dependsOnQuestionID = 0;
@@ -41,7 +40,7 @@ public class ManageQuestion extends ManageSubCategory {
 	public ManageQuestion(AuditTypeDAO auditTypeDao, AuditCategoryDAO auditCategoryDao,
 			AuditSubCategoryDAO auditSubCategoryDao, AuditQuestionDAO auditQuestionDao, AuditDataDAO auditDataDAO,
 			CountryDAO countryDAO, AuditQuestionTextDAO questionTextDAO) {
-		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao, countryDAO);
+		super(auditTypeDao, auditCategoryDao, auditSubCategoryDao, auditQuestionDao, countryDAO);
 		this.auditQuestionDao = auditQuestionDao;
 		this.auditDataDAO = auditDataDAO;
 		this.questionTextDAO = questionTextDAO;
