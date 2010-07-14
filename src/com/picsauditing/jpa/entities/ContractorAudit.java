@@ -28,7 +28,6 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
@@ -373,15 +372,6 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		return 100;
 	}
 
-	@Transient
-	// I think we should move this to AuditActionSupport instead (Trevor 5/7/08)
-	public boolean isCanView(Permissions permissions) {
-		if (permissions.isContractor() && (getAuditType().isCanContractorView() == false))
-			return false;
-		else
-			return true;
-	}
-
 	/**
 	 * 
 	 * 
@@ -659,7 +649,7 @@ public class ContractorAudit extends BaseTable implements java.io.Serializable {
 		String statusDescription = "";
 		if (auditStatus.isActive())
 			if (auditType.isMustVerify())
-				if (auditType.isPqf() || auditType.isAnnualAddendum())
+				if (auditType.isPqf() || auditType.getClassType().isAnnualUpdate())
 					statusDescription = "Annual requirements have been verified. " + this.getAuditType().getClassType()
 							+ " is closed.";
 				else

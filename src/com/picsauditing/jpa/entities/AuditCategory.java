@@ -168,6 +168,17 @@ public class AuditCategory extends BaseTable implements java.io.Serializable, Co
 		this.countries = countries;
 	}
 
+	@Transient
+	public boolean isSha() {
+		if (id == OSHA_AUDIT)
+			return true;
+		if (id == MSHA)
+			return true;
+		if (id == CANADIAN_STATISTICS)
+			return true;
+		return false;
+	}
+
 	@Override
 	public int compareTo(AuditCategory other) {
 		if (other == null) {

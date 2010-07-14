@@ -255,8 +255,14 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		return (id == DESKTOP);
 	}
 
+	@Deprecated
 	@Transient
 	public boolean isAnnualAddendum() {
+		return (id == ANNUALADDENDUM);
+	}
+
+	@Transient
+	public boolean isUsAnnualUpdate() {
 		return (id == ANNUALADDENDUM);
 	}
 

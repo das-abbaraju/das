@@ -151,7 +151,7 @@ public class AuditPercentCalculator {
 				int percentCompleted = (int) Math.floor((100 * requiredAnsweredCount) / requiredCount);
 				if (percentCompleted >= 100)
 					percentCompleted = 100;
-				if (catData.getAudit().getAuditType().isAnnualAddendum()
+				if (catData.getAudit().getAuditType().isUsAnnualUpdate()
 						&& catData.getCategory().getId() == AuditCategory.GENERAL_INFORMATION
 						&& catData.getNumRequired() > 2) {
 					requiredCount = requiredCount - 2;
@@ -245,17 +245,14 @@ public class AuditPercentCalculator {
 
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
-
-			if (!conAudit.getAuditType().isAnnualAddendum()) {
-				updatePercentageCompleted(data);
-			} else {
+			if (conAudit.getAuditType().getClassType().isAnnualUpdate()) {
 				for (OshaAudit osha : conAudit.getOshas()) {
 					if (osha.isCorporate()) {
 						percentOshaComplete(osha, data);
 					}
 				}
-				updatePercentageCompleted(data);
 			}
+			updatePercentageCompleted(data);
 		}
 	}
 

@@ -141,38 +141,22 @@ public class AuditCategorySingleAction extends AuditActionSupport {
 		}
 
 		if (auditStatus.equals(AuditStatus.Submitted)) {
-			String notes = "";
-			if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isAnnualAddendum()) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(13); // Audits Thank You
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setConAudit(conAudit);
-				EmailSender.send(emailBuilder.build());
-				notes = " Submitted " + conAudit.getAuditType().getAuditName();
-				notes += " and email sent to " + emailBuilder.getSentTo();
-			}
-			int typeID = conAudit.getAuditType().getId();
-			if (typeID == AuditType.DESKTOP || typeID == AuditType.DA) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-
-				// TODO combine these 2 templates
-				if (typeID == AuditType.DESKTOP)
-					emailBuilder.setTemplate(7); // Desktop Submission
-				else
-					emailBuilder.setTemplate(8); // D&A Submission
-
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setConAudit(conAudit);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-				EmailSender.send(emailBuilder.build());
-
-				notes = conAudit.getAuditType().getAuditName() + " Submission email sent for outstanding requirements.";
-			} else {
-				notes = conAudit.getAuditType().getAuditName() + " Submitted";
-			}
-
+			String notes = conAudit.getAuditType().getAuditName() + " Submitted";
 			if (!Strings.isEmpty(conAudit.getAuditFor()))
 				notes += " for " + conAudit.getAuditFor();
+			
+			if (conAudit.getAuditType().getTemplate() != null) {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(conAudit.getAuditType().getTemplate());
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setConAudit(conAudit);
+				if (conAudit.getAuditType().getClassType().isAudit())
+					emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+				EmailSender.send(emailBuilder.build());
+				
+				notes += " and email sent to " + emailBuilder.getSentTo();
+			}
+
 			addNote(conAudit.getContractorAccount(), notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 		}
 

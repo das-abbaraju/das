@@ -161,8 +161,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().isAnnualAddendum()) {
-					String linkText = audit.getAuditFor() + " Update";
+				if (audit.getAuditType().getClassType().isAnnualUpdate()) {
+					String linkText = audit.getAuditFor() + " " + audit.getAuditType().getAuditName().replace("Annual Update", "").trim();
 					MenuComponent childMenu = createMenuItem(subMenu, audit);
 					childMenu.setName(linkText);
 					childMenu.setSortField(linkText);

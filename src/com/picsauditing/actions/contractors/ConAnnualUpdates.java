@@ -23,7 +23,7 @@ public class ConAnnualUpdates extends ContractorActionSupport {
 		findContractor();
 
 		for (ContractorAudit contractorAudit : getAudits()) {
-			if (contractorAudit.getAuditType().isAnnualAddendum()) {
+			if (contractorAudit.getAuditType().getClassType().isAnnualUpdate()) {
 				annualAddendums.add(contractorAudit);
 			}
 		}

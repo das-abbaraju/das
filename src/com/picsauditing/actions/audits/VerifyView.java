@@ -33,6 +33,7 @@ import com.picsauditing.mail.EmailSender;
 
 @SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
+
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
 	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
@@ -45,9 +46,8 @@ public class VerifyView extends ContractorActionSupport {
 	protected EmailQueue previewEmail;
 	protected NoteDAO noteDAO;
 
-	public VerifyView(ContractorAccountDAO accountDao,
-			ContractorAuditDAO contractorAuditDAO, AuditDataDAO auditDataDAO,
-			NoteDAO noteDAO) {
+	public VerifyView(ContractorAccountDAO accountDao, ContractorAuditDAO contractorAuditDAO,
+			AuditDataDAO auditDataDAO, NoteDAO noteDAO) {
 		super(accountDao, contractorAuditDAO);
 		this.auditDataDAO = auditDataDAO;
 		this.noteDAO = noteDAO;
@@ -64,20 +64,16 @@ public class VerifyView extends ContractorActionSupport {
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isPqf()) {
-				List<AuditData> temp = auditDataDAO
-						.findCustomPQFVerifications(conAudit.getId());
+				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 				for (AuditData ad : temp) {
 					pqfQuestions.put(ad.getQuestion().getId(), ad);
 				}
 			}
-			if (conAudit.getAuditType().isAnnualAddendum()) {
-				AuditData auditData = auditDataDAO.findAnswerToQuestion(
-						conAudit.getId(), 2064);
+			if (conAudit.getAuditType().isUsAnnualUpdate()) {
+				AuditData auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (auditData != null
-							&& "Yes".equals(auditData.getAnswer())
-							&& oshaAudit.isCorporate()
+					if (auditData != null && "Yes".equals(auditData.getAnswer()) && oshaAudit.isCorporate()
 							&& oshaAudit.getType().equals(OshaType.OSHA)) {
 						oshas.add(oshaAudit);
 					}
@@ -86,21 +82,17 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isAnnualAddendum()) {
+			if (conAudit.getAuditType().isUsAnnualUpdate()) {
 				for (AuditData auditData : conAudit.getData()) {
-					int categoryID = auditData.getQuestion().getSubCategory()
-							.getCategory().getId();
+					int categoryID = auditData.getQuestion().getSubCategory().getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
-							|| (categoryID == AuditCategory.CITATIONS && (auditData
-									.getQuestion().getIsRequired()
-									.equals("Yes")) 
+							|| (categoryID == AuditCategory.CITATIONS
+									&& (auditData.getQuestion().getIsRequired().equals("Yes"))
 									|| (auditData.getQuestion().getId() == 3565 && auditData.isAnswered())
 									|| (auditData.getQuestion().getId() == 3566 && auditData.isAnswered())
-									|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered())
-									|| (auditData.getQuestion().getId() == 3568 && auditData.isAnswered())
-							)) {
-						Map<String, AuditData> inner = emrs.get(auditData
-								.getQuestion());
+									|| (auditData.getQuestion().getId() == 3567 && auditData.isAnswered()) || (auditData
+									.getQuestion().getId() == 3568 && auditData.isAnswered()))) {
+						Map<String, AuditData> inner = emrs.get(auditData.getQuestion());
 
 						if (inner == null) {
 							inner = new TreeMap<String, AuditData>();
@@ -114,9 +106,8 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(),
-				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124,
-						125));
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer> asList(69, 71, 1616,
+				57, 103, 104, 123, 124, 125));
 		return SUCCESS;
 	}
 
@@ -124,32 +115,27 @@ public class VerifyView extends ContractorActionSupport {
 		StringBuffer sb = new StringBuffer("");
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isAnnualAddendum()) {
+			if (conAudit.getAuditType().isUsAnnualUpdate()) {
 				sb.append("\n\n");
 				sb.append(conAudit.getAuditFor() + " Annual Update");
 				sb.append("\n");
 				sb.append("-------------------------------");
 				sb.append("\n");
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.getType().equals(OshaType.OSHA)
-							&& oshaAudit.isCorporate()
-							&& !oshaAudit.isVerified()) {
+					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()) {
 						sb.append("OSHA : ");
 						sb.append(oshaAudit.getComment());
 						sb.append("\n");
 					}
 				}
 				for (AuditData auditData : conAudit.getData()) {
-					if (auditData.getQuestion().getId() != 2447
-							&& auditData.getQuestion().getId() != 2448) {
-						int categoryID = auditData.getQuestion()
-								.getSubCategory().getCategory().getId();
+					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
+						int categoryID = auditData.getQuestion().getSubCategory().getCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
-								|| (categoryID == AuditCategory.CITATIONS 
-										&& auditData.getQuestion().getIsRequired().equals("Yes"))) {
+								|| (categoryID == AuditCategory.CITATIONS && auditData.getQuestion().getIsRequired()
+										.equals("Yes"))) {
 							if (!auditData.isVerified()) {
-								sb.append(auditData.getQuestion()
-										.getColumnHeaderOrQuestion());
+								sb.append(auditData.getQuestion().getColumnHeaderOrQuestion());
 								sb.append(" : " + auditData.getComment());
 								sb.append("\n");
 							}
@@ -158,18 +144,12 @@ public class VerifyView extends ContractorActionSupport {
 				}
 			}
 			if (conAudit.getAuditType().isPqf()) {
-				List<AuditData> temp = auditDataDAO
-						.findCustomPQFVerifications(conAudit.getId());
+				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData ad : temp) {
 					if (!ad.isVerified()) {
-						sb.append(ad.getQuestion().getSubCategory()
-								.getCategory().getNumber()
-								+ "."
-								+ ad.getQuestion().getSubCategory().getNumber()
-								+ "." + ad.getQuestion().getNumber());
-						sb.append(":"
-								+ ad.getQuestion().getSubCategory()
-										.getSubCategory() + "/"
+						sb.append(ad.getQuestion().getSubCategory().getCategory().getNumber() + "."
+								+ ad.getQuestion().getSubCategory().getNumber() + "." + ad.getQuestion().getNumber());
+						sb.append(":" + ad.getQuestion().getSubCategory().getSubCategory() + "/"
 								+ ad.getQuestion().getColumnHeaderOrQuestion());
 						sb.append("\n");
 						sb.append("Comment : " + ad.getComment());
@@ -185,8 +165,8 @@ public class VerifyView extends ContractorActionSupport {
 		this.findContractor();
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(11); // PQF Verification
-		emailBuilder.setFromAddress(contractor.getAuditor().getName() + " <"
-				+ contractor.getAuditor().getEmail() + ">");
+		emailBuilder
+				.setFromAddress(contractor.getAuditor().getName() + " <" + contractor.getAuditor().getEmail() + ">");
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		emailBuilder.addToken("missing_items", addMissingItemsToEmail());
@@ -204,24 +184,21 @@ public class VerifyView extends ContractorActionSupport {
 		if (emailBody == null && emailSubject == null) {
 			emailBuilder.setTemplate(11);
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
-			emailBuilder.setFromAddress("\""
-					+ contractor.getAuditor().getName() + "\"<"
+			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
 					+ contractor.getAuditor().getEmail() + ">");
 		} else {
 			EmailTemplate emailTemplate = new EmailTemplate();
 			emailTemplate.setId(11);
 			emailTemplate.setBody(emailBody);
 			emailTemplate.setSubject(emailSubject);
-			emailBuilder.setFromAddress("\""
-					+ contractor.getAuditor().getName() + "\"<"
+			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
 					+ contractor.getAuditor().getEmail() + ">");
 			emailBuilder.setTemplate(emailTemplate);
 		}
 		EmailQueue email = emailBuilder.build();
 		email.setViewableById(Account.EVERYONE);
 		EmailSender.send(email);
-		String note = "PQF Verification email sent to "
-				+ emailBuilder.getSentTo();
+		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
 		addNote(contractor, note, NoteCategory.Audits);
 
 		output = "The email was sent and the contractor notes were stamped";
@@ -276,16 +253,17 @@ public class VerifyView extends ContractorActionSupport {
 	public List<ContractorAudit> getVerificationAudits() {
 		if (verificationAudits == null) {
 			verificationAudits = new Grepper<ContractorAudit>() {
+
 				@Override
 				public boolean check(ContractorAudit t) {
-					return (t.getAuditStatus().isPendingSubmittedResubmitted() || t
-							.getAuditStatus().isIncomplete())
-							&& (t.getAuditType().isAnnualAddendum() || t
-									.getAuditType().isPqf());
+					return (t.getAuditStatus().isPendingSubmittedResubmitted() || t.getAuditStatus().isIncomplete())
+							&& (t.getAuditType().isMustVerify() && !t.getAuditType().getClassType().isPolicy());
 				}
 			}.grep(getActiveAudits());
 		}
+		
 		Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
+
 			@Override
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
 				if (o1.getAuditFor() == null)

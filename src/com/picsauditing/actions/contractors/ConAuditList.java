@@ -49,31 +49,26 @@ public class ConAuditList extends ContractorActionSupport {
 
 		for (ContractorAudit contractorAudit : getAudits()) {
 			// Only show Insurance policies or all of them
-			if (contractorAudit.getAuditType().getClassType().equals(auditClass)
-					|| (auditClass.equals(AuditTypeClass.Audit) && contractorAudit.getAuditType().getClassType()
-							.isPqf())) {
-				if (!contractorAudit.getAuditType().isAnnualAddendum()) {
+			if (contractorAudit.getAuditType().getClassType().equals(auditClass)) {
+				if (contractorAudit.getAuditStatus().isPendingSubmitted()
+						|| contractorAudit.getAuditStatus().isIncomplete())
+					upComingAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
+					currentAudits.add(contractorAudit);
+				else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
+					expiredAudits.add(contractorAudit);
+				else {
+					// There shouldn't be any others
+				}
 
-					if (contractorAudit.getAuditStatus().isPendingSubmitted()
-							|| contractorAudit.getAuditStatus().isIncomplete())
-						upComingAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().isActiveResubmittedExempt())
-						currentAudits.add(contractorAudit);
-					else if (contractorAudit.getAuditStatus().equals(AuditStatus.Expired))
-						expiredAudits.add(contractorAudit);
-					else {
-						// There shouldn't be any others
+				if (auditClass == AuditTypeClass.IM) {
+					List<ContractorAudit> imAudits = allIMAudits.get(contractorAudit.getAuditType().getAuditName());
+
+					if (imAudits == null) {
+						imAudits = new Vector<ContractorAudit>();
+						allIMAudits.put(contractorAudit.getAuditType().getAuditName(), imAudits);
 					}
-
-					if (auditClass == AuditTypeClass.IM) {
-						List<ContractorAudit> imAudits = allIMAudits.get(contractorAudit.getAuditType().getAuditName());
-
-						if (imAudits == null) {
-							imAudits = new Vector<ContractorAudit>();
-							allIMAudits.put(contractorAudit.getAuditType().getAuditName(), imAudits);
-						}
-						imAudits.add(contractorAudit);
-					}
+					imAudits.add(contractorAudit);
 				}
 			}
 		}

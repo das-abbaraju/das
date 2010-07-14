@@ -89,34 +89,25 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 			}
 		}
 
-		if (conAudit.getAuditType().isAnnualAddendum() && conAudit.getAuditStatus().isSubmitted()) {
-			Set<Integer> catIds = new HashSet<Integer>();
+		if (conAudit.getAuditType().getClassType().isAnnualUpdate() && conAudit.getAuditStatus().isSubmitted()) {
 			for (AuditCatData auditCatData : conAudit.getCategories()) {
-				if (auditCatData.isAppliesB()) {
-					catIds.add(auditCatData.getCategory().getId());
+				if (!auditCatData.isAppliesB()) {
+					if (auditCatData.getCategory().isSha()) {
+						switch (auditCatData.getCategory().getId()) {
+						case AuditCategory.OSHA_AUDIT:
+							oshaAuditDAO.removeByType(conAudit.getId(), OshaType.OSHA);
+							break;
+						case AuditCategory.MSHA:
+							oshaAuditDAO.removeByType(conAudit.getId(), OshaType.MSHA);
+							break;
+						case AuditCategory.CANADIAN_STATISTICS:
+							oshaAuditDAO.removeByType(conAudit.getId(), OshaType.COHS);
+							break;
+						}
+					} else {
+						auditDataDao.removeDataByCategory(conAudit.getId(), auditCatData.getCategory().getId());
+					}
 				}
-			}
-
-			if (!catIds.contains(AuditCategory.OSHA_AUDIT)) {
-				removeShaData(OshaType.OSHA, conAudit.getId());
-			}
-			if (!catIds.contains(AuditCategory.MSHA)) {
-				removeShaData(OshaType.MSHA, conAudit.getId());
-			}
-			if (!catIds.contains(AuditCategory.CANADIAN_STATISTICS)) {
-				removeShaData(OshaType.COHS, conAudit.getId());
-			}
-			if (!catIds.contains(AuditCategory.EMR)) {
-				removeData(AuditCategory.EMR, conAudit.getId());
-			}
-			if (!catIds.contains(AuditCategory.LOSS_RUN)) {
-				removeData(AuditCategory.LOSS_RUN, conAudit.getId());
-			}
-			if (!catIds.contains(AuditCategory.WCB)) {
-				removeData(AuditCategory.WCB, conAudit.getId());
-			}
-			if (!catIds.contains(AuditCategory.CITATIONS)) {
-				removeData(AuditCategory.CITATIONS, conAudit.getId());
 			}
 		}
 
@@ -188,17 +179,4 @@ public class ContractorAuditAction extends AuditCategorySingleAction {
 		return null;
 	}
 
-	private void removeShaData(OshaType oshaType, int auditID) {
-		oshaAuditDAO.removeByType(auditID, oshaType);
-	}
-
-	private void removeData(int categoryID, int auditID) {
-		List<AuditData> data = auditDataDao.findDataByCategory(auditID, categoryID);
-		Iterator<AuditData> aIterator = data.iterator();
-		while (aIterator.hasNext()) {
-			AuditData auditData = aIterator.next();
-			aIterator.remove();
-			auditDataDao.remove(auditData.getId());
-		}
-	}
 }

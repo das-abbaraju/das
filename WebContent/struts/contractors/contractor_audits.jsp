@@ -63,9 +63,9 @@
 			</s:else></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
+				<td><s:if test="!auditType.classType.annualUpdate && !auditType.classType.toString().equals('Policy')">
 						<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
-					</s:if>					
+					</s:if>
 				</td>
 			</pics:permission>
 		</tr>
@@ -141,7 +141,7 @@
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
+				<td><s:if test="!auditType.classType.annualUpdate && !auditType.classType.toString().equals('Policy')">
 					<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
 				</s:if></td>
 			</pics:permission>
@@ -189,7 +189,7 @@
 			<td><s:date name="expiresDate" format="M/d/yy" /></td>
 			<td><a href="Audit.action?auditID=<s:property value="id" />">View</a></td>
 			<pics:permission perm="AuditCopy">
-				<td><s:if test="!auditType.annualAddendum && !auditType.classType.toString().equals('Policy')">
+				<td><s:if test="!auditType.classType.annualUpdate && !auditType.classType.toString().equals('Policy')">
 					<a href="ConAuditCopy.action?auditID=<s:property value="id" />">Copy</a>
 				</s:if></td>
 			</pics:permission>

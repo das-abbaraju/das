@@ -209,15 +209,16 @@ public class AuditDataSave extends AuditActionSupport {
 
 					auditDao.save(tempAudit);
 				}
-				if (tempAudit.getAuditType().isAnnualAddendum()) {
+				if (tempAudit.getAuditType().isUsAnnualUpdate()) {
 					if (auditData.getQuestion().getSubCategory().getCategory().getId() == AuditCategory.GENERAL_INFORMATION) {
 						auditBuilder.fillAuditCategories(tempAudit, true);
 					}
-					if (tempAudit.getAuditStatus().isActive()) {
-						tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
-						auditDao.save(tempAudit);
-					}
 				}
+				if (tempAudit.getAuditType().getClassType().isAnnualUpdate() && tempAudit.getAuditStatus().isActive()) {
+					tempAudit.changeStatus(AuditStatus.Resubmitted, getUser());
+					auditDao.save(tempAudit);
+				}
+
 				if (tempAudit.getAuditType().getId() == AuditType.COR) {
 					if (auditData.getQuestion().getId() == 2950) {
 						tempAudit.setAuditFor(auditData.getAnswer());

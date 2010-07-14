@@ -318,7 +318,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		Set<String> auditTypeList = new HashSet<String>();
 		for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
 			for (AuditOperator aOperator : cOperator.getOperatorAccount().getVisibleAudits()) {
-				if (aOperator.isRequiredFor(contractor) && !aOperator.getAuditType().isAnnualAddendum()) {
+				if (aOperator.isRequiredFor(contractor) && !aOperator.getAuditType().getClassType().isAnnualUpdate()) {
 					auditTypeList.add(aOperator.getAuditType().getAuditName());
 				}
 			}

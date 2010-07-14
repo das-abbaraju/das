@@ -52,6 +52,14 @@ public class AuditDataDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+	
+	public int removeDataByCategory(int auditID, int categoryID) {
+		Query query = em.createQuery("DELETE FROM AuditData d "
+				+ "WHERE d.audit.id = :auditID AND d.question.subCategory.category.id = :category ");
+		query.setParameter("auditID", auditID);
+		query.setParameter("category", categoryID);
+		return query.executeUpdate();
+	}
 
 	/**
 	 * Find all answers for given questions for this contractor Questions can

@@ -118,7 +118,7 @@ public class FlagDataCalculator {
 			if (!worksForOperator || conCriteria.getContractor().isAcceptsBids()) {
 				// This is a check for if the contractor doesn't
 				// work for the operator (Search for new), or is a bid only
-				if (!criteria.getAuditType().isPqf() && !criteria.getAuditType().isAnnualAddendum())
+				if (!criteria.getAuditType().isPqf() && !criteria.getAuditType().getClassType().isAnnualUpdate())
 					// Ignore all audit requirements other than PQF and AU
 					return null;
 			}
@@ -294,8 +294,7 @@ public class FlagDataCalculator {
 							if (!key.isValidationRequired())
 								requiredStatus = AuditStatus.Submitted;
 							if (!auditStatus.isComplete(requiredStatus)) {
-								if (conAudit.getAuditType().getClassType().isPqf()
-										|| conAudit.getAuditType().isAnnualAddendum()) {
+								if (conAudit.getAuditType().isCanContractorEdit()) {
 									if (auditStatus.isPending() || auditStatus.isIncomplete())
 										// The contractor still needs to submit
 										// their PQF

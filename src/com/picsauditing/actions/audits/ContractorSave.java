@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorSave extends PicsActionSupport implements Preparable {
@@ -34,19 +35,14 @@ public class ContractorSave extends PicsActionSupport implements Preparable {
 		}
 
 		if (auditorId > 0) {
-			ca.setAuditor(new User());
-			ca.getAuditor().setId(auditorId);
+			ca.setAuditor(new User(auditorId));
 			auditBuilder.buildAudits(ca);
 
 			for (ContractorAudit conAudit : ca.getAudits()) {
-				System.out.println(" found " + conAudit.getAuditType().getAuditName());
-				if (conAudit.getAuditType().getClassType().isPqf() 
-						|| conAudit.getAuditType().isAnnualAddendum()
-						|| conAudit.getAuditType().getId() == AuditType.WELCOME
-						|| conAudit.getAuditType().getClassType().isPolicy()) {
-					conAudit.setAuditor(new User(auditorId));
+				if (!conAudit.getAuditType().getClassType().isAudit()) {
+					conAudit.setAuditor(ca.getAuditor());
 					conAudit.setAssignedDate(new Date());
-					System.out.println(" updated auditorID to " + auditorId);
+					PicsLogger.log(" assigning auditorID " + auditorId + " to " + conAudit.getAuditType().getAuditName());
 				}
 			}
 		}

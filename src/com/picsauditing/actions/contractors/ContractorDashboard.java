@@ -231,7 +231,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (permissions.canSeeAudit(audit.getAuditType())) {
 				if (audit.getAuditType().getClassType().isPolicy())
 					insureGUARD.add(audit);
-				else if (audit.getAuditType().getClassType().isPqf() || audit.getAuditType().isAnnualAddendum())
+				else if (audit.getAuditType().getClassType().isPqf() || audit.getAuditType().getClassType().isAnnualUpdate())
 					docuGUARD.add(audit);
 				else
 					auditGUARD.add(audit);

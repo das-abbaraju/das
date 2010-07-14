@@ -234,9 +234,8 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				currentCategory.getCategory().setCountries(permissions.getAccountCountries());
 		}
 
-		if (conAudit.getAuditType().isAnnualAddendum()) {
+		if (conAudit.getAuditType().getClassType().isAnnualUpdate()) {
 
-			ContractorAudit twoYearsAgo = null;
 			String auditFor = conAudit.getAuditFor();
 
 			if (auditFor != null && auditFor.length() > 0) {
@@ -250,7 +249,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 				if (auditYear != 0) {
 					for (ContractorAudit ca : getActiveAudits()) {
 
-						if (ca.getAuditType().getId() == conAudit.getAuditType().getId()) {
+						if (ca.getAuditType().equals(conAudit.getAuditType())) {
 
 							String caAuditFor = ca.getAuditFor();
 							int caAuditYear = 0;
@@ -258,9 +257,6 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 							try {
 								caAuditYear = Integer.parseInt(caAuditFor);
 
-								if (caAuditYear == auditYear - 2) {
-									twoYearsAgo = ca;
-								}
 								if (caAuditYear == auditYear - 1) {
 									previousAudit = ca;
 								}
@@ -413,6 +409,7 @@ public class AuditCategoryAction extends AuditCategorySingleAction {
 
 	public Comparator<ContractorAuditOperator> getCaoComparator() {
 		return new Comparator<ContractorAuditOperator>() {
+
 			@Override
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
 				return o1.getOperator().getName().compareTo(o2.getOperator().getName());

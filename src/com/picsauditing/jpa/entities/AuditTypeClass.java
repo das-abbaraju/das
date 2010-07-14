@@ -19,4 +19,8 @@ public enum AuditTypeClass {
 		return AnnualUpdate == this;
 	}
 
+	public boolean isAudit() {
+		return Audit == this;
+	}
+
 }

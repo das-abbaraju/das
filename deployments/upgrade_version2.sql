@@ -60,3 +60,9 @@ insert into token(tokenName, listType, velocityCode) values('ClosingAuditorEmail
 insert into token(tokenName, listType, velocityCode) values('AuditorPhone', 'Audit', '${audit.auditor.phone}');
 insert into token(tokenName, listType, velocityCode) values('AuditorFax', 'Audit', '${audit.auditor.fax}');
 insert into token(tokenName, listType, velocityCode) values('AuditorEmail', 'Audit', '${audit.auditor.email}');
+
+update pqfcategories set applyOnQID = 2064, applyOnAnswer = 'Yes' where id = 151; -- Osha Audit
+update pqfcategories set applyOnQID = 2065, applyOnAnswer = 'Yes' where id = 157; -- MSHA
+update pqfcategories set applyOnQID = 2033, applyOnAnswer = 'Yes' where id = 152; -- EMR
+update pqfcategories set applyOnQID = 2033, applyOnAnswer = 'No' where id = 159; -- Loss Run
+update pqfcategories set applyOnQID = 3546, applyOnAnswer = 'Yes' where id = 278; -- Citations
