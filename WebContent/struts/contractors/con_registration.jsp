@@ -59,7 +59,7 @@ $(function(){
 </head>
 <body>
 <s:include value="registrationHeader.jsp"></s:include>
-<span class="redMain"><img src="images/required.png" /> - Indicates required information</span>
+<span class="redMain"><img src="images/required.png" /> Indicates required information</span>
 <s:form method="POST">
 <s:hidden name="requestID" />
 	<br clear="all" />
@@ -154,7 +154,7 @@ $(function(){
 							<div class="fieldhelp">
 								<h3>Description</h3>
 								<p>Include up to 2000 words to describe your company.</p>
-								<h4>Suggestion:</h4>
+								<h5>Suggestion:</h5>
 								<p>Copy and paste text from the &quot;About&quot; section on your web site or company brochure.</p>
 							</div>
 						</li>
@@ -178,7 +178,6 @@ $(function(){
 						</li>
 						<li><label>Fax:</label>
 							<s:textfield name="user.fax" size="20" />
-							<span>(optional)</span>
 						</li>
 						<li class="required"><label>Username:</label>
 					 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
