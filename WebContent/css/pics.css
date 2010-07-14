@@ -555,6 +555,9 @@ ul#navlist {
 	text-decoration: none;
 }
 
+
+
+
 #navlist a.dropdown,#navlist a.dropdown:active,#navlist a.dropdown:visited,#navlist a.dropdown:hover
 	{
 	background-image: url('../images/down.gif');
@@ -574,7 +577,10 @@ ul#navlist {
 	background-color: #C0C0C0;
 	text-decoration: none;
 	font-weight: bold;
+	padding-top:6px;
 }
+
+#navlist a.inactive:hover, #navlist a.inactive:active {padding: 8px 10px;}
 
 #navlist .current {
 	color: #fff;

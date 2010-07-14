@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
-
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 
 <style type="text/css">
 table.report a {
@@ -30,18 +30,11 @@ small {
 	vertical-align: top;
 }
 
-div.info {
-	text-align: center;
-}
-
 .ffTo {
 	padding: 2px 0 4px 4px;
 	display:block;
 	float:left;
 }
-
-#form_override .ffTo {}
-
 
 .ffDate {
 	padding: 2px 0 4px 4px;
@@ -50,14 +43,10 @@ div.info {
 	margin-left:20px;
 }
 
-.ffLeft .ffDate .ui-datepicker-trigger {}
-
 .ffReason {
 	padding: 2px 15px 4px 4px;
 	margin-left:20px;
 }
-
-#form_override .ffReason {margin-left:20px;padding: 2px 0 4px 4px;display:block;float:left;}
 
 ffCorporate {
 clear:left;
@@ -69,8 +58,19 @@ clear:left;
 	float: right;
 }
 
-.ffDate input, .ffDate textarea, .ffReason textarea {border:1px solid #ccc;}
-.ffDate input:focus, .ffDate textarea:focus, .ffReason textarea:focus {border:1px solid #999;}
+fieldset.form {
+	margin: 0 0 0 0;
+	padding: 0 0 10px 0;
+	border-style: none;
+	border-top: none;
+	background-color: transparent;
+	width: 100%;
+	float: none;
+	clear: both;
+	position: relative;
+	color: #404245;
+}
+
 
 .label-txt {
 	float: none;
@@ -82,13 +82,18 @@ clear:left;
 	font-weight: bold;
 	color: #003768;
 	line-height: 15px;
+	white-space: nowrap;
 }
 
-span.redMain {}
+
+
+#info-box {float:right;display:block;width:40%;}
 
 
 </style>
 <s:include value="../jquery.jsp" />
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
+
 <script type="text/javascript">
 $(function() {
 	$('.datepicker').datepicker({
@@ -156,6 +161,17 @@ function openOverride(id){
 </div>
 </s:if>
 
+		<div id="info-box">
+		<div class="info">
+			<s:form>
+				<s:hidden name="id" />
+				<s:hidden name="opID" />
+				<s:if test="contractor.lastRecalculation != null"><s:if test="permissions.admin || permissions.operatorCorporate">Contractor's flag</s:if><s:else>Flag</s:else> last calculated <s:date name="contractor.lastRecalculation" nice="true" />.<br /></s:if>
+				<s:else>Contractor's flag has not been calculated.<br /></s:else>
+				<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
+			</s:form>
+		</div></div>
+
 <table>
 	<tr>
 		<td style="vertical-align:top;">
@@ -222,30 +238,37 @@ function openOverride(id){
 				<s:form id="form_override">
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
-					<div class="ffTo">
+					<fieldset class="form">
+					<ol>
+					<li>
 						<span class="label-txt">Force Flag to:</span>
-						<s:radio id="forceFlag" list="unusedCoFlag" name="forceFlag" />
-					</div>
-					<div class="ffDate"> 
+						<s:radio id="forceFlag" list="unusedCoFlag" name="forceFlag" theme="pics" />
+					</li>
+					<li> 
 						<span class="label-txt">Until:</span> 
 						<input id="forceEnd" name="forceEnd" size="8" type="text" class="datepicker" />
-					</div>
-					<div class="ffReason">
+					</li>
+					<li>
 						<span class="label-txt">Reason:</span> 
 						<s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
-						<span class="redMain">* All Fields are required</span><br /><br />
-					</div>	
-					
-					<div>
-						<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
+						<div class="fieldhelp">
+						<h3>Reason</h3>
+                     <p class="redMain">* All Fields are required</p>									
 					</div>
+					</li>	
+					
+					<li>
+						<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
+					</li>
 					<s:if test="permissions.corporate">
 						<s:checkbox id="overRAll_main" name="overrideAll"/><label for="overRAll_main">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>
-					</s:if><br />
+					</s:if>
+					</ol>
+					</fieldset>
 				</s:form>
 				<a href="#" onclick="$('#override_link').slideDown(); $('#override').slideUp(); return false;">Nevermind</a>
 				</div>
-				<a id="override_link" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;">Manually Force Flag Color</a><br />
+				<a id="override_link" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;">Force Overall Flag Color</a><br />
 			</s:else>
 		</pics:permission>		
 	</div>	
@@ -266,10 +289,9 @@ function openOverride(id){
 <!-- Putting Tabs Here -->
 <div id="tabs">
 	<ul>
-		<li><a href="#tabs-1">Overrides</a></li>
-		<li><a href="#tabs-2">Flags</a></li>
-		<li><a href="#tabs-3">Notes(Flags)</a></li>
-		<li><a href="#tabs-4">Recalculate</a></li>
+		<li><a href="#tabs-1">Problems</a></li>
+		<li><a href="#tabs-2">Flagable Data</a></li>
+		<li><a href="#tabs-3">Notes</a></li>
 	</ul>
 	<div id="tabs-1">
 		<!-- OVERRIDES -->
@@ -353,11 +375,11 @@ function openOverride(id){
 							</td>
 							<!-- Override -->
 							<pics:permission perm="EditForcedFlags">
-								<td>
+								<td class="center">
 									<a id="override_link_flagdata_<s:property value="%{#data.id}" />" href="#" 
 										onclick="openOverride(<s:property value="%{#data.id}"/>); return false;">
 										<s:if test="canForceDataFlag(#flagoverride)">
-											<div class="override_link_show" id="<s:property value="%{#data.id}" />_override_link_text">Override</div>
+											<div class="override_link_show" id="<s:property value="%{#data.id}" />_override_link_text">Force Line</div>
 											<div class="override_link_hide"  style="display: none;" id="<s:property value="%{#data.id}" />_override_link_hide">Hide</div>
 										</s:if>
 										<s:else>
@@ -386,32 +408,33 @@ function openOverride(id){
 									<form method="post">
 										<s:hidden value="%{#data.id}" name="dataID" />
 										<s:if test="canForceDataFlag(#flagoverride)">
-											<div class="ffLeft">							
-												<div class="ffTo">
-													<span class="label-txt">Force Flag to:</span>
-													<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" />
-												</div> 
-												<div class="ffDate"> 
-													<span class="label-txt">Until:</span> 
+										<fieldset class="form">
+											<ol>							
+												<li>
+													<label>Force Flag to:</label>
+													<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" theme="pics" />
+												</li> 
+												<li> 
+													<label>Until:</label> 
 													<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="8" type="text" class="datepicker" />
-												</div>																		
-											</div>
-											<div class="ffLeft">
-												<div class="ffReason">
-													<span class="label-txt">Reason for Forcing:</span>
+											</li>
+											<li>
+													<label>Reason for Forcing:</label>
 													<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
-												<br/>
-												</div>
-											</div>	
-											<div class="ffRight">
-												<div class="ffCorporate">
+													<div class="fieldhelp">
+														<h3>Reason</h3>
+                     								<p class="redMain">* All Fields are required</p>									
+													</div>
+											</li>	
+											<li>
 													<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
 														onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
 													<s:if test="permissions.corporate">
 															<s:checkbox id="overRAll_%{#data.id}" name="overrideAll"/><label for="overRAll_<s:property value="%{#data.id}"/>">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>														
 													</s:if>
-												</div>
-											</div>
+													</li>
+											</ol>
+											</fieldset>
 										</s:if>
 										<s:else>
 											<s:if test="#flagoverride.operator.type == 'Corporate'">
@@ -480,17 +503,6 @@ function openOverride(id){
 		</s:if>
 		
 		<div id="notesList" class="details""><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
-	</div>
-	<div id="tabs-4">
-		<div class="info">
-			<s:form>
-				<s:hidden name="id" />
-				<s:hidden name="opID" />
-				<s:if test="contractor.lastRecalculation != null"><s:if test="permissions.admin || permissions.operatorCorporate">Contractor's flag</s:if><s:else>Flag</s:else> last calculated <s:date name="contractor.lastRecalculation" nice="true" />.<br /></s:if>
-				<s:else>Contractor's flag has not been calculated.<br /></s:else>
-				<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
-			</s:form>
-		</div>
 	</div>	
 </div>
 

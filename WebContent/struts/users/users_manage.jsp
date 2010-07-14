@@ -14,6 +14,8 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/user_manage.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
+
 <script type="text/javascript">
 var accountID = <s:property value="accountId"/>;
 var currentUserID = 0;
