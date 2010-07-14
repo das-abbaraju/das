@@ -82,7 +82,7 @@
 			: permissions.getName() %></span>
 	| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>">PICS Home</a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout">Logout</a>
 	<% } else { %>
-	<span id="name">Welcome</span> | <a href="Login.action">Login</a>
+	<span id="name">Welcome</span> | <a href="Login.action">Login</a> | <a href="ContractorRegistration.action">Register</a>
 	<% } %>
 	</p>
 </td>
