@@ -18,7 +18,6 @@ fieldset.alt {
 
 fieldset.form h2.formLegend {color: white;font-weight:bold;font-size:125%;display:block;background-color:#003768;padding:0.2em 5px;}
 
-
 fieldset.form legend {
 	color: white;
 	font-weight: bold;
@@ -48,6 +47,11 @@ fieldset.form ol li {
 	padding: 4px 5px 12px 10px;
 	float: left;
 	clear: left;
+}
+
+fieldset.form ol li.required {
+	padding-right: 18px;
+	background: url(../images/required.png) no-repeat right center;	
 }
 
 fieldset.submit {
@@ -83,6 +87,7 @@ fieldset.form label {
 	color: #003768;
 	line-height: 15px;
 	white-space: nowrap;
+	width: auto;
 }
 
 fieldset.form label.checkbox {
@@ -115,7 +120,6 @@ fieldset.form input[type=text],fieldset.form input[type=password] {
 }
 
 fieldset.form input:focus, fieldset.form textarea:focus, fieldset.form select:focus {border:1px solid #ccc;}
-
 
 /**
 * We have to separate these because IE 6 can't see the rules with input[type=text]
@@ -180,4 +184,8 @@ fieldset.form div.fieldhelp ul li {
 	font-size: inherit;
 	padding: 0;
 	width: auto;
+}
+
+fieldset.form div.fieldhelp p {
+	clear : both;
 }

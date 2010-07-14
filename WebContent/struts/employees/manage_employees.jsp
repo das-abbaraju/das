@@ -225,7 +225,7 @@ div.dataTables_length { width: 35%; }
 										<li>Senior Engineer</li>
 										<li>Apprentice</li>
 									</ul>
-									Suggestions are based on common titles from all companies located in PICS Organizer.
+									<p>Suggestions are based on common titles from all companies located in PICS Organizer.</p>
 									</div>
 								</li>
 								<li><label>Birth Date:</label>

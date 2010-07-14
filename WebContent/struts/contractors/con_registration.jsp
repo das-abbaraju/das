@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />	
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript">	
 function checkUsername(username) {
 	$('#username_status').text('checking availability of username...');
@@ -58,7 +59,7 @@ $(function(){
 </head>
 <body>
 <s:include value="registrationHeader.jsp"></s:include>
-<span class="redMain">* - Indicates required information</span>
+<span class="redMain"><img src="images/required.png" /> - Indicates required information</span>
 <s:form method="POST">
 <s:hidden name="requestID" />
 	<br clear="all" />
@@ -68,63 +69,81 @@ $(function(){
 				<fieldset class="form">
 					<h2 class="formLegend">Company Details</h2>
 					<ol>
-						<li><label>Company Name:</label>
-							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/><span class="redMain">*</span>
-							<div id="name_status"></div></li>
+						<li class="required"><label>Company Name:</label>
+							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
+							<div id="name_status"></div>
+						</li>
 						<li><label>DBA Name: </label>
 							<s:textfield name="contractor.dbaName" size="35" />
 						</li>
-						<li><label>Country:</label>
+						<li class="required"><label>Country:</label>
 							<s:select list="countryList" id="contractorCountry"
-							name="contractor.country.isoCode"
-							onchange="changeCountry(this.value);"
-							value="locale.country"
-							headerKey="" headerValue="- Country -"
-							listKey="isoCode" listValue="name"
-							/><span class="redMain">*</span></li>
-						<li><label id="taxIdLabel">Tax ID:</label> <s:textfield name="contractor.taxId" id="contractorTaxId"
-							size="9" maxLength="9" onchange="checkTaxId(this.value);" />
-							<span class="redMain">* Only digits 0-9, no dashes</span>
+								name="contractor.country.isoCode"
+								onchange="changeCountry(this.value);"
+								value="locale.country" headerKey="" headerValue="- Country -"
+								listKey="isoCode" listValue="name" />
+						</li>
+						<li class="required"><label id="taxIdLabel">Tax ID:</label>
+							<s:textfield name="contractor.taxId" id="contractorTaxId"
+								size="9" maxLength="9" onchange="checkTaxId(this.value);" />
+							<div class="fieldhelp">
+								<h3>Tax ID</h3>
+								Only digits 0-9, no dashes
+							</div>
 							<span id="taxId_status"></span>
-							</li>
+						</li>
 						<li><label>Web URL:</label> 
-							<s:textfield name="contractor.webUrl" size="35" />Example: www.site.com</li>
-						<li><label>Company Phone:</label>
-							<s:textfield id="contractorPhone" name="contractor.phone" size="20" /><span class="redMain">*</span></li>
+							<s:textfield name="contractor.webUrl" size="35" />
+							<div class="fieldhelp">
+								<h3>Web URL</h3>
+								Example: www.site.com
+							</div>
+						</li>
+						<li class="required"><label>Company Phone:</label>
+							<s:textfield id="contractorPhone" name="contractor.phone" size="20" />
+						</li>
 						<li><label>Company Fax:</label>
-							<s:textfield name="contractor.fax" size="20" /></li>
+							<s:textfield name="contractor.fax" size="20" />
+						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
 					<h2 class="formLegend">Primary Address</h2>
 					<ol>
-						<li><label>Address:</label>
-							<s:textfield name="contractor.address" size="35" /><span class="redMain">*</span></li>
-						<li><label>City:</label> 
-							<s:textfield name="contractor.city" size="35" /><span class="redMain">*</span></li>
-						<li><label>Country:</label> <input type="text" disabled="disabled" id="country_display"/></li>
+						<li class="required"><label>Address:</label>
+							<s:textfield name="contractor.address" size="35" />
+						</li>
+						<li class="required"><label>City:</label> 
+							<s:textfield name="contractor.city" size="35" />
+						</li>
+						<li><label>Country:</label>
+							<input type="text" disabled="disabled" id="country_display"/>
+						</li>
 						<s:if test="contractor == null || contractor.state == null"><li id="state_li"></li></s:if>
 						<s:else>
-							<li><label>State:</label>
+							<li class="required"><label>State:</label>
 								<s:select list="stateList" id="state_sel"
-								name="contractor.state.isoCode"
-								headerKey="" headerValue="- State -"
-								listKey="isoCode" listValue="name"
-								/><span class="redMain">*</span></li>
+									name="contractor.state.isoCode"
+									headerKey="" headerValue="- State -"
+									listKey="isoCode" listValue="name" />
+							</li>
 						</s:else>
-						<li><label>Zip/Postal Code:</label>
-							<s:textfield name="contractor.zip" size="10" /><span class="redMain">*</span></li>
+						<li class="required"><label>Zip/Postal Code:</label>
+							<s:textfield name="contractor.zip" size="10" />
+						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
 					<h2 class="formLegend">Industry Details</h2>
 					<ol>
-						<li><label>Industry:</label> <s:select list="industryList"
-							name="contractor.industry" /></li>
-						<li><label>Main Trade:</label> <s:select list="tradeList"
-							name="contractor.mainTrade" headerKey=""
-							headerValue="- Choose a trade -" listKey="question"
-							listValue="question" /><span class="redMain">*</span></li>
+						<li><label>Industry:</label>
+							<s:select list="industryList" name="contractor.industry" />
+						</li>
+						<li class="required"><label>Main Trade:</label>
+							<s:select list="tradeList"
+								name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 
+								listKey="question" listValue="question" />
+						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
@@ -132,31 +151,50 @@ $(function(){
 					<ol>
 						<li><label>Description:</label>
 							<s:textarea name="contractor.description" cols="60" rows="15" />
-							<br/>Include up to 2000 words to describe your company. 
-                       		<br>
-                       		<span class="blueMain">Suggestion:</span> Copy and paste text from the &quot;About&quot; section 
-                     			on your web site or company brochure.
+							<div class="fieldhelp">
+								<h3>Description</h3>
+								<p>Include up to 2000 words to describe your company.</p>
+								<h4>Suggestion:</h4>
+								<p>Copy and paste text from the &quot;About&quot; section on your web site or company brochure.</p>
+							</div>
 						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form">
 					<h2 class="formLegend">Primary Contact</h2>
 					<ol>
-						<li><label>Name:</label>
-							<s:textfield name="user.name" size="20" /><span class="redMain">*</span></li>
-						<li><label>Email:</label>
-							<s:textfield name="user.email" size="20" /><span class="redMain">* We send vital information to this email</span></li>
+						<li class="required"><label>Name:</label>
+							<s:textfield name="user.name" size="20" />
+						</li>
+						<li class="required"><label>Email:</label>
+							<s:textfield name="user.email" size="20" /> 
+							<div class="fieldhelp">
+								<h3>Email</h3>
+								We send vital information to this email
+							</div>
+						</li>
 						<li><label>Phone:</label>
-							<s:textfield name="user.phone" size="20" /></li>
+							<s:textfield name="user.phone" size="20" />
+						</li>
 						<li><label>Fax:</label>
-							<s:textfield name="user.fax" size="20" /><span>(optional)</span></li>
-						<li><label>Username:</label>
+							<s:textfield name="user.fax" size="20" />
+							<span>(optional)</span>
+						</li>
+						<li class="required"><label>Username:</label>
 					 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
-					 		<span id="username_status"></span><span class="redMain">* Please type in your desired user name</span>
+					 		<span id="username_status"></span>
+					 		<div class="fieldhelp">
+					 			<h3>Username</h3>
+					 			Please type in your desired user name
+					 		</div>
 					 	</li>
-						<li><label>Password:</label> 
+						<li class="required"><label>Password:</label> 
 							<s:password name="password"/>
-							<span class="redMain">* At least 5 characters long and different from your username</span></li>
+							<div class="fieldhelp">
+								<h3>Password</h3>
+								At least 5 characters long and different from your username
+							</div>
+						</li>
 						<li><label>Confirm Password:</label> 
 							<s:password name="confirmPassword"/>
 						</li>

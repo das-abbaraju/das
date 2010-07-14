@@ -17,9 +17,9 @@
 })(jQuery)
 
 jQuery(function(){
-	$('fieldset.form ol :input').fieldfocus();
+	$('fieldset.form ol :input:not(:button)').fieldfocus();
 	
 	$('fieldset.form ol li').live('click', function() {
-		$(this).find(':input').focus();
-	})
+		$(this).find(':input').trigger('focus');
+	});
 });
