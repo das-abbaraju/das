@@ -165,7 +165,7 @@ div.auditSubMenu a, div.auditSubMenu a:link, div.auditSubMenu a:visited {
 	display: block;
 	border: 1px solid white;
 	color: #FFFFFF;
-	background-color: #003768;
+	background-color: #012142;
 	text-decoration: none;
 	font-size: 13px;
 	line-height: 28px;
@@ -242,7 +242,7 @@ div.auditSubMenu a.current {
 	text-decoration: none;
 	background-color: #C4D5E3;
 	font-weight: bold;
-	color: #003768;
+	color: #012142;
 	border-color: white;
 }
 

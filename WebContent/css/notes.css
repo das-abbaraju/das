@@ -2,7 +2,7 @@
 
 table.notes {
 	border-collapse: collapse;
-	border: 2px solid #003768;
+	border: 2px solid #012142;
 	color: #4C4D4D;
 	background: #f9f9f9;
 	clear: both;
@@ -51,7 +51,7 @@ table.notes tr:hover {
 table.notes th {
 	text-align: center;
 	color: white;
-	background: #003768;
+	background: #012142;
 	padding: 6px;
 	font-size:15px;
 	font-weight: bold;
@@ -97,11 +97,11 @@ ul.paging li {
 ul.paging li a {
 	margin:1px;
 	padding:2px;
-	border: 1px solid #003768;
+	border: 1px solid #012142;
 	font-size:14px;
 	font-weight: bold;
 	text-decoration: none;
-	color: #003768;
+	color: #012142;
 }
 ul.paging li a:hover {
 	margin:1px;

@@ -1,7 +1,7 @@
 /******************** Primary Table class="report"  ************************/
 table.report {
 	border-collapse: collapse;
-	border: 2px solid #003768;
+	border: 2px solid #012142;
 	color: #4C4D4D;
 	background: #f9f9f9;
 	clear: both;
@@ -27,7 +27,7 @@ table.report thead th,table.report thead td {
 	border: 1px solid #e0e0e0;
 	text-align: center;
 	font-weight: bold;
-	background: #003768;
+	background: #012142;
 	color: #FFF;
 }
 
@@ -178,11 +178,11 @@ ul.alpha li,ul.paging li {
 ul.alpha li a,ul.paging li a {
 	margin: 1px;
 	padding: 2px;
-	border: 1px solid #003768;
+	border: 1px solid #012142;
 	font-size: 14px;
 	font-weight: bold;
 	text-decoration: none;
-	color: #003768;
+	color: #012142;
 }
 
 ul.alpha li a:hover,ul.paging li a:hover {
@@ -265,7 +265,7 @@ table.jobReport td.icon {
 table.jobReport thead th,table.jobReport thead td {
 	text-align: center;
 	font-weight: bold;
-	background: #003768;
+	background: #012142;
 	color: #FFF;
 }
 

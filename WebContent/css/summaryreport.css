@@ -2,7 +2,7 @@
 
 table.summary {
 	border-collapse: collapse;
-	border: 2px solid #003768;
+	border: 2px solid #012142;
 	color: #4C4D4D;
 	background: #f9f9f9;
 	clear: both;
@@ -18,7 +18,7 @@ table.summary thead th, table.summary thead td {
 	border: 1px solid #e0e0e0;
 	text-align: center;
 	font-weight: bold;
-	background: #003768;
+	background: #012142;
 	color: #FFF;
 }
 
