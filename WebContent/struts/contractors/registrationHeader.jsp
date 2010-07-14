@@ -26,22 +26,22 @@
 					<s:if test="requestURI.contains('finish')">class="current"</s:if>>5) Confirm</a></li>
 			</s:if>
 			<s:else>
-				<li><a class="inactive">5) Confirm</a></li>
+				<li><span class="inactive">5) Confirm</span></li>
 			</s:else>
 		</s:if>
 		<s:else>
-			<li><a class="inactive">3) Add Facilities</a></li>
-			<li><a class="inactive">4) Add Payment Options</a></li>
-			<li><a class="inactive">5) Confirm</a></li>
+			<li><span class="inactive">3) Add Facilities</span></li>
+			<li><span class="inactive">4) Add Payment Options</span></li>
+			<li><span class="inactive">5) Confirm</span></li>
 		</s:else>
 	</s:if>
 	<s:else>
 		<li><a id="conRegisterLink" href="ContractorRegistration.action"
 			<s:if test="requestURI.contains('con_registration')">class="current"</s:if>>1) Register</a></li>
-		<li><a class="inactive">2) Services Performed</a></li>
-		<li><a class="inactive">3) Add Facilities</a></li>
-		<li><a class="inactive">4) Add Payment Options</a></li>
-		<li><a class="inactive">5) Confirm</a></li>
+		<li><span class="inactive">2) Services Performed</span></li>
+		<li><span class="inactive">3) Add Facilities</span></li>
+		<li><span class="inactive">4) Add Payment Options</span></li>
+		<li><span class="inactive">5) Confirm</span></li>
 	</s:else>
 </ul>
 </div>

@@ -3,7 +3,7 @@ fieldset.form {
 	margin: 0 0 0 0;
 	padding: 0 0 10px 0;
 	border-style: none;
-	border-top: 2px solid #012142;
+	border-top: 2px solid #81b2da;
 	background-color: #F6F6F0;
 	width: 100%;
 	float: left;
@@ -16,7 +16,7 @@ fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-fieldset.form h2.formLegend {color: white;font-weight:bold;font-size:125%;display:block;background-color:#012142;padding:0.2em 5px;}
+fieldset.form h2.formLegend {color: white;font-weight:bold;font-size:125%;display:block;background-color:#81b2da;padding:0.2em 5px;}
 
 fieldset.form legend {
 	color: white;
@@ -50,17 +50,9 @@ fieldset.form ol li {
 }
 
 fieldset.form ol li.required {
-	padding-right: 18px;
-	background: url(../images/required.png) no-repeat right center;	
+	padding-right: 20px;
+	background: url(../images/required.png) no-repeat right 28px;	
 }
-
-/*fieldset.submit {
-	padding: 1em 5em;
-	border-bottom: 2px solid #012142;
-	margin-bottom: 10px;
-	float: none;
-	width: auto;
-}*/
 
 fieldset.submit {
 	padding: 1em 5em;
