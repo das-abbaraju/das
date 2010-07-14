@@ -191,7 +191,7 @@ fieldset.form div.fieldhelp {
 fieldset.form div.fieldhelp li {
 	list-style-type: disc;
 	margin-left: 0;
-	margin-bottom:5px;
+	margin-bottom:2px;
 	line-height:16px;
 	text-indent:none;
 	list-style-position: inside;
