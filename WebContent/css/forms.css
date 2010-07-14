@@ -112,14 +112,11 @@ fieldset.form label.input {
 	display: inherit;
 }
 
-fieldset.form input[type=text],fieldset.form input[type=password] {
+fieldset.form input[type=text],fieldset.form input[type=password], fieldset.form textarea {
 	width: 320px;
 	font-size: 14px;
 	padding: 2px;
-	border:1px solid #ccc;
 }
-
-fieldset.form input:focus, fieldset.form textarea:focus, fieldset.form select:focus {border:1px solid #ccc;}
 
 /**
 * We have to separate these because IE 6 can't see the rules with input[type=text]
@@ -152,7 +149,7 @@ fieldset.form input.input-edit-field {
 
 /** Field Help **/
 fieldset.form ol li.fieldhelp-focused {
-	background-color: #FBF2C9;
+	background-color: #ffff95;
 }
 
 fieldset.form ol li.fieldhelp-focused .fieldhelp {
@@ -160,7 +157,7 @@ fieldset.form ol li.fieldhelp-focused .fieldhelp {
 	z-index: 1000;
 	width: 250px;
 	padding: 10px;
-	background-color: #FBF2C9;
+	background-color: #ffff95;
 	display: block;
 	font-size: 12px;
 	line-height: 20px;
@@ -188,4 +185,5 @@ fieldset.form div.fieldhelp ul li {
 
 fieldset.form div.fieldhelp p {
 	clear : both;
+	line-height:16px;
 }

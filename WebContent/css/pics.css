@@ -62,6 +62,16 @@ p {
 	padding-top: 1px;
 }
 
+.head-phone {
+	color: #80b3da;
+	background-image: url(../images/phone-icon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	height:26px;
+	padding-left: 20px;
+	padding-bottom:6px;
+	}
+
 #name {
 	margin-right: 5px;
 	font-size: 12px;
@@ -322,7 +332,19 @@ b,strong {
 
 ul {
 	list-style-type: disc;
-	margin-left: 15px;
+	margin-left: 10px;
+	list-style-position: inside;
+	float:none;
+	clear:both;
+}
+
+ul li {
+	list-style-type: disc;
+	margin-left: 0;
+	margin-bottom:5px;
+	line-height:16px;
+	text-indent:none;
+	list-style-position: inside;
 }
 
 .sub { /* used as a sub-header title */

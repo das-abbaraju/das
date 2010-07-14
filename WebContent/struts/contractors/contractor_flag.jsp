@@ -85,6 +85,8 @@ fieldset.form {
 	white-space: nowrap;
 }
 
+fieldset.form ol li.fieldhelp-focused .fieldhelp {position:absolute;z-index:5000;}
+
 
 
 #info-box {float:right;display:block;width:40%;}
@@ -176,7 +178,7 @@ function openOverride(id){
 	<tr>
 		<td style="vertical-align:top;">
 		<div class="panel_placeholder">
-		<div class="panel" style="min-width:450px;">
+		<div class="panel" style="min-width:680px;">
 			<div class="panel_header">
 				Flag Status
 			</div>

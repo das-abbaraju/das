@@ -75,7 +75,7 @@
 	</td>
 <% } %>
 <td id="sidebox">
-	<p><b style="color: #80b3da"><img src="images/phone-icon.png" alt="image" width="20" height="20" style="padding-right:5px"/>1-800-506-PICS (7427)</b>&emsp;&emsp;
+	<p><b class="head-phone">1-800-506-PICS (7427)</b>&emsp;&emsp;
 	<% if (permissions.isLoggedIn()) { %>
 		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
 			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
