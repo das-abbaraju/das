@@ -120,9 +120,17 @@ $(function(){
 						</li>
 						<li class="required"><label>Company Phone:</label>
 							<s:textfield id="contractorPhone" name="contractor.phone" size="20" />
+							<div class="fieldhelp">
+								<h3>Company Phone</h3>
+								Your company's primary telephone line.
+							</div>
 						</li>
 						<li><label>Company Fax:</label>
 							<s:textfield name="contractor.fax" size="20" />
+							<div class="fieldhelp">
+								<h3>Company Fax</h3>
+								Your company's primary fax line if any.
+							</div>
 						</li>
 					</ol>
 				</fieldset>
@@ -131,6 +139,12 @@ $(function(){
 					<ol>
 						<li class="required"><label>Address:</label>
 							<s:textfield name="contractor.address" size="35" />
+							<div class="fieldhelp">
+								<h3>Primary Address</h3>
+								Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.
+								<h5>Example:</h5>
+								123 Main Street, Suite 100
+							</div>
 						</li>
 						<li class="required"><label>City:</label> 
 							<s:textfield name="contractor.city" size="35" />
@@ -157,11 +171,19 @@ $(function(){
 					<ol>
 						<li><label>Industry:</label>
 							<s:select list="industryList" name="contractor.industry" />
+							<div class="fieldhelp">
+								<h3>Industry</h3>
+								The main industry your company works in. If your industry is not listed, then choose General.
+							</div>
 						</li>
 						<li class="required"><label>Main Trade:</label>
 							<s:select list="tradeList"
 								name="contractor.mainTrade" headerKey="" headerValue="- Choose a trade -" 
 								listKey="question" listValue="question" />
+							<div class="fieldhelp">
+								<h3>Trade</h3>
+								This is your company's primary trade. You will have the opportunity to select additional trades later on.
+							</div>
 						</li>
 					</ol>
 				</fieldset>
@@ -184,12 +206,19 @@ $(function(){
 					<ol>
 						<li class="required"><label>Name:</label>
 							<s:textfield name="user.name" size="20" />
+							<div class="fieldhelp">
+								<h3>Name</h3>
+								This your name. We use the information in this section to create the first administrator user.
+								You'll have the opportunity to create more users later with varying levels of permissions or change the primary contact to another user.
+								<h5>Example</h5>
+								John Doe
+							</div>
 						</li>
 						<li class="required"><label>Email:</label>
 							<s:textfield name="user.email" size="20" /> 
 							<div class="fieldhelp">
 								<h3>Email</h3>
-								We send vital information to this email
+								Your email address. We send vital information to this address, so it needs to be correct. Your customers that use PICS will be able to see primary contact(s) and their phone and email address.
 							</div>
 						</li>
 						<li><label>Phone:</label>
@@ -200,28 +229,33 @@ $(function(){
 						</li>
 						<li class="required"><label>Username:</label>
 					 		<s:textfield name="user.username" onchange="checkUsername(this.value);"/>
-					 		<span id="username_status"></span>
 					 		<div class="fieldhelp">
 					 			<h3>Username</h3>
-					 			Please type in your desired user name
+					 			<p>Please type in your desired user name. We'll let you know if it's available.</p>
+					 			<ul>
+					 				<li>Must be at least 3 characters long</li>
+					 				<li>Don't use spaces in your name</li>
+					 				<li>Your email address is recommended because it's easy to remember.</li>
+					 			</ul>
 					 		</div>
+					 		<br />
+					 		<div id="username_status"></div>
 					 	</li>
 						<li class="required"><label>Password:</label> 
 							<s:password name="password"/>
 							<div class="fieldhelp">
 								<h3>Password</h3>
-								At least 5 characters long and different from your username
+								Must be at least 5 characters long and different from your username
 							</div>
 						</li>
 						<li><label>Confirm Password:</label> 
 							<s:password name="confirmPassword"/>
 						</li>
-						<li>You'll have the opportunity to create more users later.</li>
 						<li><b>
-							By clicking the "Create Account" button below, I certify that I agree to the 
-							terms and conditions of the  
-							<a href="#" onClick="window.open('contractor_agreement.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=700,height=700'); return false;">
-							PICS Contractor Agreement</a>.</b>
+							By clicking <span style="color: #529214; font-family: 'Lucida Grande', Tahoma, Arial">[Create Account]</span> below, I certify that I agree to the 
+							terms and conditions of the <a href="#"
+								onClick="window.open('contractor_agreement.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=700,height=700'); return false;"
+								class="ext">PICS Contractor Agreement</a>.</b>
 						</li>
 					</ol>
 				</fieldset>

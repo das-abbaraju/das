@@ -154,10 +154,10 @@ function updateExpDate() {
 	</s:if>
 </s:if>
 <li><label>&nbsp;</label>
-	<a href="#" onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
-	Privacy Policy </a> |
-	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;">
-	Refund Policy </a> 	|
+	<a onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
+		 href="#" class="ext">Privacy Policy</a> |
+	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
+		 href="#" class="ext">Refund Policy</a> |
 	<a title="Click here to view the PICS Contractor Agreement" href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">
 	Contractor Agreement </a>
 </li>
