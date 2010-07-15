@@ -654,8 +654,8 @@ ol {
 
 /********************** Special Styles ******************************/
 div#info,div#alert,div#error,div.info,div.alert,div.error {
-	padding: 1em 1em 1em 4em !important;
-	margin: 10px 0 !important;
+	padding: 1em 1em 1em 4em;
+	margin: 10px 0;
 	width: 86%;
 	clear: left;
 }
