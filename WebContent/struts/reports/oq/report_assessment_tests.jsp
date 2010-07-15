@@ -33,6 +33,7 @@
 		<th>Task Active</th>
 		<th><a href="?orderBy=employee,q.qualified DESC,test,task">Employee</a></th>
 		<th>Qualified</th>
+		<th><a href="?orderBy=q.effectiveDate,test,task,employee">Qualification Date</a></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -55,18 +56,8 @@
 			<td class="center"><s:property value="get('taskActive')" /></td>
 			<td><a href="EmployeeDetail.action?employee.id=<s:property value="get('employeeID')" />">
 				<s:property value="get('employee')" /></a></td>
-			<td class="center">
-				<nobr>
-					<s:property value="get('qualified')" />
-					<a href="#" onclick="return false;" class="help cluetip"
-						title="Employee Qualification" 
-						rel="#qualified_<s:property value="#stat.index + report.firstRowNumber" />"></a>
-					<div id="qualified_<s:property value="#stat.index + report.firstRowNumber" />">
-						Effective: <s:property value="get('qualEff')" /><br />
-						Expiration: <s:property value="get('qualExp')" />
-					</div>
-				</nobr>
-			</td>
+			<td class="center"><s:property value="get('qualified')" /></td>
+			<td class="center"><s:property value="get('qualEff')" /></td>
 		</tr>
 	</s:iterator>
 	</tbody>

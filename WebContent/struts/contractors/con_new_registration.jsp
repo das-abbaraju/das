@@ -69,6 +69,7 @@ pre {
 </style>
 
 <s:include value="../jquery.jsp"/>
+<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 
 <script type="text/javascript">
@@ -85,7 +86,14 @@ $(document).ready(function() {
 
 $(function() {
 	changeState($("#newContractorCountry").val());
-	$('.datepicker').datepicker({ minDate: new Date() });
+	$('.datepicker').datepicker({
+		showOn: 'button',
+		buttonImage: 'images/icon_calendar.gif',
+		buttonImageOnly: true,
+		buttonText: 'Choose a date...',
+		showAnim: 'fadeIn',
+		minDate: new Date()
+	});
 	$('#matchedContractor').autocomplete('ContractorSelectAjax.action', 
 		{
 			minChars: 3,
@@ -289,7 +297,7 @@ function getMatches(requestID) {
 					</li>
 					<s:if test="assignedCSR != null">
 						<li><label>Assigned PICS CSR:</label>
-							<s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/>
+							<nobr><s:property value="assignedCSR.name" /> / <s:property value="assignedCSR.phone"/></nobr>
 						</li>
 					</s:if>	
 				</ol>
@@ -329,8 +337,8 @@ function getMatches(requestID) {
 					<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
 						<li><label>Add to Watchlist:</label>
 							<s:checkbox name="newContractor.watch" />
-							<a href="#" class="cluetip help" title="Add to Watchlist" rel="#watchtip"></a>
-							<div id="watchtip">
+							<div class="fieldhelp">
+								<h3>Add To Watchlist</h3>
 								When a contractor in the PICS database is associated with this request, <s:property value="newContractor.requestedByUser.name" /> will be able to watch <s:property value="newContractor.name" /> on their watchlist.
 							</div>
 							<s:if test="!contractorWatch && newContractor.watch">
@@ -370,19 +378,17 @@ function getMatches(requestID) {
 							</s:else>
 						</li>
 						<li><label>PICS Contractor:</label>
-							<nobr>
 							<s:if test="permissions.admin">
 								<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
-								<a href="#" class="cluetip help" title="Return To Operator" rel="#watchtip2"></a>
-								<div id="watchtip2">
-									After you enter in a contractor and save, this request will be automatically returned to the operator.  
+								<div class="fieldhelp">
+									<h3>Return To Operator</h3>
+									After you enter in a contractor and save, this request will be automatically returned to the operator.
 								</div>
 							</s:if>
 							<s:if test="newContractor.contractor != null">
 								<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
 								<s:property value="newContractor.contractor.name"/></a>
 							</s:if>
-							</nobr>
 						</li>
 					</s:if>
 					<li><label>Notes:</label>
