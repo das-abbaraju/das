@@ -16,7 +16,7 @@ fieldset.alt {
 	background-color: #F0F0F0;
 }
 
-fieldset.form h2.formLegend {color: white;font-weight:bold;font-size:125%;display:block;background-color:#81b2da;padding:0.2em 5px;}
+fieldset.form h2.formLegend {color: white;font-weight:bold;font-size:125%;display:block;background-color:#81b2da;padding:0.2em 0;text-indent: 5px;}
 
 fieldset.form legend {
 	color: white;
@@ -54,21 +54,26 @@ fieldset.form ol li.required {
 	background: url(../images/required.png) no-repeat right 28px;	
 }
 
+fieldset.form ol li.required.hasdata {
+	background-image: none;
+}
+
 fieldset.submit {
-	padding: 1em 5em;
+	padding: 1em 0;
 	border-bottom: 2px solid #4686bf;
 	border-top:2px solid #4686bf;
 	background-color:#F2F2F2;
 	margin-bottom: 10px;
 	float: none;
-	width: auto;
 }
 
 fieldset.submit .picsbutton.positive{
-	float: left;	
+	float: left;
+	margin-left: 5em;
 }
 fieldset.submit .picsbutton.negative {
-	float: right;	
+	float: right;
+	margin-right: 5em;
 }
 
 fieldset.bottom {
