@@ -33,37 +33,52 @@ public class GraphTrirRates extends ChartMSAction {
 		chart.setXAxisName("TRIR Rate");
 		chart.setYAxisName("Contractors");
 		
-		SelectSQL sql = new SelectSQL("flag_criteria_contractor fcc");
-		sql.addJoin("JOIN accounts a ON a.id = fcc.conID");
-		sql.addJoin("JOIN flag_criteria fc ON fc.id = fcc.criteriaID");
-		sql.addField("fc.oshaType AS series");
-		sql.addField("FLOOR(fcc.answer*10)/10 AS label");
-		sql.addField("count(*) AS value");
-		sql.addWhere("FLOOR(fcc.answer*10)/10 > 0");
-		sql.addWhere("fc.multiYearScope = 'ThreeYearAverage'");
-		sql.addWhere("fc.oshaRateType = 'TrirAbsolute'");
-		sql.addGroupBy("fc.oshaType, FLOOR(fcc.answer*10)/10");
-		sql.addOrderBy("fc.oshaType DESC, FLOOR(fcc.answer*10)/10");
+		SelectSQL sql = new SelectSQL();
+		sql.setFullClause("SELECT series, label, value FROM\n" +
+				"(SELECT fc.oshaType AS series, FLOOR(fcc.answer*2)/2 AS label, COUNT(*) AS value\n" +
+				"FROM flag_criteria_contractor fcc\n" +
+				"JOIN accounts a ON a.id = fcc.conID\n" +
+				"JOIN flag_criteria fc ON fc.id = fcc.criteriaID\n" +
+				(permissions.isOperatorCorporate() ? 
+						"JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + 
+						permissions.getAccountId() + "\n" : "") +
+				"WHERE 1 AND (FLOOR(fcc.answer*2)/2 >= 0)\n" +
+				"AND (FLOOR(fcc.answer*2)/2 <= 5.0)\n" +
+				"AND (fc.multiYearScope = 'ThreeYearAverage')\n" +
+				"AND (fc.oshaRateType = 'TrirAbsolute')\n" +
+				"GROUP BY fc.oshaType, FLOOR(fcc.answer*2)/2\n" +
+				"UNION SELECT fc.oshaType AS series, '5.5' AS label, COUNT(*) AS value\n" +
+				"FROM flag_criteria_contractor fcc\n" +
+				"JOIN accounts a ON a.id = fcc.conID\n" +
+				"JOIN flag_criteria fc ON fc.id = fcc.criteriaID\n" +
+				(permissions.isOperatorCorporate() ? 
+						"JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + 
+						permissions.getAccountId() + "\n" : "") +
+				"WHERE 1 AND (FLOOR(fcc.answer*2)/2 > 5.0)\n" +
+				"AND (fc.multiYearScope = 'ThreeYearAverage')\n" +
+				"AND (fc.oshaRateType = 'TrirAbsolute')\n" +
+				"GROUP BY fc.oshaType) t\n" + 
+				(shaType != null ? "WHERE t.series = '" + shaType + "'\n" : "") +
+				"ORDER BY series, label;");
 		
-		if (shaType != null)
-			sql.addWhere("fc.oshaType = '" + shaType + "'");
-			
-		if (permissions.isOperatorCorporate())
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID = " + permissions.getAccountId());
-
 		ChartDAO db = new ChartDAO();
 		List<DataRow> data = db.select(sql.toString());
 		for (DataRow row : data) {
-			float labelEnd = Float.parseFloat(row.getLabel()) + 0.1F;
+			float labelEnd = 0f;
+			if (!row.getLabel().equals("5.5"))
+				labelEnd = Float.parseFloat(row.getLabel()) + 0.5F;
+			else
+				labelEnd = 210000f;
+			
 			row.setLink("ReportTrirRates.action?filter.shaTypeFlagCriteria=" + row.getSeries() + 
 					"%26amp;filter.minTRIR=" + row.getLabel() + "%26amp;filter.maxTRIR=" + labelEnd);
 		}
 		
 		MultiSeriesConverterHistogram converter = new MultiSeriesConverterHistogram();
 
-		converter.setMaxCategory(2);
+		converter.setMaxCategory(5.5f);
 		converter.setMinCategory(0);
-		converter.setCategoryDifference(0.1F);
+		converter.setCategoryDifference(0.5F);
 		converter.setChart(chart);
 
 		converter.addData(data);

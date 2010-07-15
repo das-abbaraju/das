@@ -11,7 +11,7 @@
 	    <th></th>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></th>
 	    <th>Type</th>
-	    <th><a href="javascript: changeOrderBy('form1','fcc.answer');">Rate</a></th>
+	    <th><a href="javascript: changeOrderBy('form1','fcc.answer+0');">Rate</a></th>
 		<s:if test="showContact">
 			<td>Primary Contact</td>
 			<td>Phone</td>

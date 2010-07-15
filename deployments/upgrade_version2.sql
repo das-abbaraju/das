@@ -77,3 +77,10 @@ insert into widget_user
 (id, widgetID, userID, expanded, widget_user.column, sortOrder, customConfig)
 values
 (null, 33, 959, 1, 2, 37, null);
+
+-- PICS-788, Operator Admin and Operator Basic users
+insert into useraccess 
+(accessID, userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, lastUpdate, grantedByID)
+values
+(null, 1553, 'TRIRReport', 1, null, null, 1, now(), 941),
+(null, 1554, 'TRIRReport', 1, null, null, 1, now(), 941);
