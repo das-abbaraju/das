@@ -75,7 +75,16 @@
 	</td>
 <% } %>
 <td id="sidebox">
-	<p><b class="head-phone">1-800-506-PICS (7427)</b>&emsp;&emsp;
+	<p>
+	<%
+	String phone = "1-800-506-PICS (7427)";
+	if (permissions.isLoggedIn()) {
+		String countryCode = permissions.getCountry();
+		if (countryCode != null && !countryCode.equals("US") && !countryCode.equals("CA"))
+			phone = "1-949-387-1940";
+	}
+	%>
+		<b class="head-phone"><%=phone%></b>&emsp;&emsp;
 	<% if (permissions.isLoggedIn()) { %>
 		<span id="name">Welcome, <%= permissions.hasPermission(OpPerms.EditProfile) ? 
 			"<a href='ProfileEdit.action' title='" + permissions.getAccountName().replaceAll("'", "\'") + "'>"+permissions.getName()+"</a>"
