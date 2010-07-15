@@ -97,6 +97,10 @@
 			class="com.picsauditing.util.ExpirationDateSynchronizer">
 			<result>struts/misc/expiration_date_synchronizer.jsp</result>
 		</action>
+		
+		<!-- <action name="error404" class="com.picsauditing.actions.Error404">
+			<result>struts/errors/404error.jsp</result>
+		</action> -->
 
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
