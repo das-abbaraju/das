@@ -63,7 +63,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		this.noteDAO = noteDAO;
 		this.userDAO = userDAO;
 		this.requestDAO = requestDAO;
-		this.subHeading = "New Contractor Information";
+		//this.subHeading = "New Contractor Information";
 		this.facilityChanger = facilityChanger;
 	}
 

@@ -236,9 +236,10 @@ function getMatches(requestID) {
 				<h2 class="formLegend">Company Information</h2>
 				<ol>
 					<li><label>Company Name:</label>
-						<s:textfield name="newContractor.name" size="35" /></li>
-					<li><label>Contact
-						Name:</label> <s:textfield name="newContractor.contact" />
+						<s:textfield name="newContractor.name" size="35" />
+					</li>
+					<li><label>Contact Name:</label>
+						<s:textfield name="newContractor.contact" />
 						<br />
 					</li>
 					<s:if test="newContractor.phone == null && newContractor.email == null">

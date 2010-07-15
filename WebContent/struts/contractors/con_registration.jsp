@@ -71,10 +71,18 @@ $(function(){
 					<ol>
 						<li class="required"><label>Company Name:</label>
 							<s:textfield name="contractor.name" size="35" onchange="checkName(this.value);"/>
+							<div class="fieldhelp">
+								<h3>Company Name</h3>
+								<p>The name of your company. We'll check this name against our database to see if you or one of your colleagues has already registered your company.</p>
+							</div>
 							<div id="name_status"></div>
 						</li>
 						<li><label>DBA Name: </label>
 							<s:textfield name="contractor.dbaName" size="35" />
+							<div class="fieldhelp">
+								<h3>DBA Name</h3>
+								<p>An alternative (also known as Doing Business As) name of your company. This is optional but may help your customers search for you if they only know you by your DBA name.</p>
+							</div>
 						</li>
 						<li class="required"><label>Country:</label>
 							<s:select list="countryList" id="contractorCountry"
@@ -82,13 +90,22 @@ $(function(){
 								onchange="changeCountry(this.value);"
 								value="locale.country" headerKey="" headerValue="- Country -"
 								listKey="isoCode" listValue="name" />
+							<div class="fieldhelp">
+								<h3>Country</h3>
+								<p>The global corporate headquarters of your company.</p>
+							</div>
 						</li>
 						<li class="required"><label id="taxIdLabel">Tax ID:</label>
 							<s:textfield name="contractor.taxId" id="contractorTaxId"
 								size="9" maxLength="9" onchange="checkTaxId(this.value);" />
 							<div class="fieldhelp">
-								<h3>Tax ID</h3>
-								Only digits 0-9, no dashes
+								<h3>Tax ID or Business Number</h3>
+								<p>The number your government uses to uniquely identify your company. We use this to see if your company has already registered.</p>
+								<h5>United States</h5>
+								9-digit number with no dashes
+								<h5>Canada</h5>
+								the first 9-digits of your 15 character Business Number
+								
 							</div>
 							<span id="taxId_status"></span>
 						</li>
@@ -96,7 +113,9 @@ $(function(){
 							<s:textfield name="contractor.webUrl" size="35" />
 							<div class="fieldhelp">
 								<h3>Web URL</h3>
-								Example: www.site.com
+								The web site your customers can go to to learn more about your products and services.
+								<h5>Example:</h5>
+								www.yourcompany.com
 							</div>
 						</li>
 						<li class="required"><label>Company Phone:</label>
