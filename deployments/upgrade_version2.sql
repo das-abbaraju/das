@@ -66,3 +66,14 @@ update pqfcategories set applyOnQID = 2065, applyOnAnswer = 'Yes' where id = 157
 update pqfcategories set applyOnQID = 2033, applyOnAnswer = 'Yes' where id = 152; -- EMR
 update pqfcategories set applyOnQID = 2033, applyOnAnswer = 'No' where id = 159; -- Loss Run
 update pqfcategories set applyOnQID = 3546, applyOnAnswer = 'Yes' where id = 278; -- Citations
+
+-- PICS-595: Waiting On
+insert into widget
+(widgetID, caption, widgetType, synchronous, url, requiredPermission, chartType)
+values
+(null, 'Waiting On PICS', 'Html', 0, 'WaitingOnAjax.action', null, null);
+
+insert into widget_user
+(id, widgetID, userID, expanded, widget_user.column, sortOrder, customConfig)
+values
+(null, 33, 959, 1, 2, 37, null);

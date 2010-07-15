@@ -220,6 +220,11 @@
 			class="com.picsauditing.actions.audits.RejectedPoliciesWidget">
 			<result>struts/widgets/outstanding_rejected_policies.jsp</result>
 		</action>
+		
+		<action name="WaitingOnAjax"
+			class="com.picsauditing.actions.contractors.WaitingOnWidget">
+			<result>struts/widgets/waiting_on.jsp</result>
+		</action>
 
 		<!-- Contractor Information -->
 		<action name="ConHeader"
