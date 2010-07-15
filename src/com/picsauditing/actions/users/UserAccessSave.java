@@ -9,6 +9,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -19,8 +20,8 @@ public class UserAccessSave extends UsersManage {
 	protected int accessId;
 
 	public UserAccessSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO) {
-		super(accountDao, operatorDao, userDAO, userAccessDAO);
+			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
+		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO);
 	}
 
 	@SuppressWarnings("unchecked")

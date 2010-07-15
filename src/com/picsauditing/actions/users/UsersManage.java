@@ -1,17 +1,21 @@
 package com.picsauditing.actions.users;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
@@ -22,6 +26,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -30,7 +35,10 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.search.Database;
 import com.picsauditing.search.Report;
+import com.picsauditing.search.SelectAccount;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -50,6 +58,8 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected List<OperatorAccount> facilities = null;
 	protected Report search = null;
 	protected List<User> userList = null;
+	
+	protected String moveToAccount = null;
 
 	protected String isGroup = "";
 	protected String isActive = "Yes";
@@ -65,13 +75,15 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 	protected OperatorAccountDAO operatorDao;
 	protected UserDAO userDAO;
 	protected UserAccessDAO userAccessDAO;
+	protected UserGroupDAO userGroupDAO;
 
 	public UsersManage(AccountDAO accountDAO, OperatorAccountDAO operatorDao, UserDAO userDAO,
-			UserAccessDAO userAccessDAO) {
+			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO) {
 		this.accountDAO = accountDAO;
 		this.operatorDao = operatorDao;
 		this.userDAO = userDAO;
 		this.userAccessDAO = userAccessDAO;
+		this.userGroupDAO = userGroupDAO;
 	}
 
 	@Override
@@ -164,6 +176,42 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			userDAO.save(user);
 		}
 		
+		if("Move".equals(button)){
+			if(user==null){
+				addActionError("You have selected an invalid user, please try again.");
+				return SUCCESS;
+			}
+			if(account.getName()!=moveToAccount){
+				// accounts are different so we are moving to a new account
+				//user.setOwnedPermissions(null);
+				List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
+				Iterator<UserAccess> uaIter = userAccessList.iterator();
+				while(uaIter.hasNext()){
+					UserAccess next = uaIter.next();
+					user.getOwnedPermissions().remove(next);
+					uaIter.remove();
+					userAccessList.remove(next);
+					userAccessDAO.remove(next);
+				}
+				//user.setGroups(null);
+				List<UserGroup> userGroupList = userGroupDAO.findByUser(user.getId());
+				Iterator<UserGroup> ugIter = userGroupList.iterator();
+				while(ugIter.hasNext()){
+					UserGroup next = ugIter.next();
+					user.getGroups().remove(next);
+					ugIter.remove();
+					userAccessList.remove(next);
+					userAccessDAO.remove(next);
+				}
+				//get new account
+				account = accountDAO.findWhere("a.name = '"+moveToAccount+"'").get(0);
+				user.setAccount(account);
+				userDAO.save(user);
+			}
+			redirect("UsersManage.action?accountID="+user.getAccount().getId()+"&user.id="+user.getId()+"&msg=You have sucessfully moved " +
+					user.getName()+" to "+user.getAccount().getName());
+		}
+		
 		if ("Save".equalsIgnoreCase(button)) {
 			if (!isOK()) {
 				userDAO.clear();
@@ -195,6 +243,7 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 					user.setEncryptedPassword(password2);
 					user.setForcePasswordReset(false);
 				}
+				
 			} else {
 				// We want to save a new user
 				final String randomPassword = Long.toString(new Random().nextLong());
@@ -375,6 +424,10 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 			addActionMessage("Successfully removed "
 					+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
 			user = null;
+		}
+		
+		if("Suggest".equalsIgnoreCase(button)){
+			return "suggest";
 		}
 
 		return SUCCESS;
@@ -651,5 +704,33 @@ public class UsersManage extends PicsActionSupport implements Preparable {
 				
 		}
 		return false;
+	}
+
+	public List<BasicDynaBean> getAccountList() throws SQLException {
+		int id = getParameter("user.id");
+		if (id > 0) {
+			user = userDAO.find(id);
+		}
+		if(user!=null){
+			if(permissions.isAdmin()){
+				String like = (String) ((String[])ActionContext.getContext().getParameters().get("q"))[0];
+				
+				// don't use hibernate to pull up accounts
+				SelectAccount sql = new SelectAccount();				
+				sql.addWhere("status IN ('Active', 'Deactivated', 'Pending') AND name LIKE '%"+like+"%'");
+				sql.addOrderBy("a.name");
+				Database db = new Database();
+				return db.select(sql.toString(), true);
+			}
+		}
+		return null;
+	}
+
+	public String getMoveToAccount() {
+		return moveToAccount;
+	}
+
+	public void setMoveToAccount(String moveToAccount) {
+		this.moveToAccount = moveToAccount;
 	}
 }

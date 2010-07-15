@@ -20,7 +20,7 @@ public class UserGroupSave extends UsersManage {
 
 	public UserGroupSave(AccountDAO accountDao, OperatorAccountDAO operatorDao, UserDAO userDAO,
 			UserAccessDAO userAccessDAO, UserGroupDAO userGroupDAO, UserSwitchDAO userSwitchDAO) {
-		super(accountDao, operatorDao, userDAO, userAccessDAO);
+		super(accountDao, operatorDao, userDAO, userAccessDAO, userGroupDAO);
 		this.userGroupDAO = userGroupDAO;
 		this.userSwitchDAO = userSwitchDAO;
 	}

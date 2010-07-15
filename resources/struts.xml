@@ -1232,6 +1232,11 @@
 			class="com.picsauditing.actions.users.UsersManage">
 			<result>struts/users/users_manage.jsp</result>
 		</action>
+		
+		<action name="UsersManageAjax"
+			class="com.picsauditing.actions.users.UsersManage">
+			<result name="suggest">struts/users/users_manage_move_suggest.jsp</result>
+		</action>
 
 		<action name="UserAccessSaveAjax"
 			class="com.picsauditing.actions.users.UserAccessSave">

@@ -25,6 +25,9 @@ var permTypes = new Array();
 <s:iterator value="permissions.permissions">
 	<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
 </s:iterator>
+$(function(){
+	$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user.id=<s:property value="user.id"/>&button=Suggest');
+});
 </script>
 <style type="text/css">
 .user-password, .addableGroup, .addableMember {
@@ -203,8 +206,8 @@ div.autocomplete ul li {
 		<s:if test="user.isGroup.toString() == 'Yes'">
 			<s:hidden name="user.isActive" />
 		</s:if>
-		<fieldset class="form bottom"><legend><span><s:if test="user.group">Group</s:if> <s:else>User</s:else>
-		Details</span></legend>
+		<fieldset class="form">
+			<h2 class="formLegend"><span><s:if test="user.group">Group</s:if> <s:else>User</s:else> Details</span></h2>
 		<ol>
 			<s:if test="account.users.size() > 1">
 				<s:if test="user.id > 0">
@@ -276,12 +279,29 @@ div.autocomplete ul li {
 			<s:if test="user.id > 0">
 				<li><label>Active</label> <s:radio theme="pics"
 					list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio></li>
+				<!-- Move User to Account -->
+				<s:if test="permissions.isAdmin()">
+					<li><label>Move User to Account:</label>
+						<s:textfield id="accountMoveSuggest" name="moveToAccount" /><br/>
+					</li>
+					<li>
+						<button type="submit" name="button" class="picsbutton utility" value="Move" 
+							onclick="return confirm('Are you sure you want to move this user?');">Move User</button>
+					</li>
+				</s:if>
 			</s:if>
 			<s:else>
 				<s:hidden name="user.isActive" value="true" />
 			</s:else>
 		</ol>
-		<div style="margin-left:10px;">
+		<s:if test="user.id > 0 && !user.group">
+			<pics:permission perm="SwitchUser">
+				<a class="picsbutton"
+					href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
+				to this User</a>
+			</pics:permission>
+		</s:if>
+		<fieldset class="form submit">
 		<button id="SaveButton" class="picsbutton positive" type="submit"
 			name="button" value="Save">Save</button>
 		<pics:permission perm="EditUsers" type="Delete">
@@ -291,15 +311,7 @@ div.autocomplete ul li {
 					onclick="return confirm('Are you sure you want to delete this user/group?');">Delete</button>
 			</s:if>
 		</pics:permission>
-		<s:if test="user.id > 0 && !user.group">
-			<pics:permission perm="SwitchUser">
-				<a class="picsbutton"
-					href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">Switch
-				to this User</a>
-			</pics:permission>
-		</s:if>
-	
-	</div>
+		</fieldset>
 		</fieldset>
 
 	</s:form>

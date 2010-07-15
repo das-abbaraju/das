@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -27,6 +28,13 @@ public class UserAccessDAO extends PicsDAO {
 		if (row != null) {
 			PicsLogger.log("Removing UserAccess=" + row.getOpPerm() + " for userID=" + row.getUser().getId());
 			em.remove(row);
+		}
+	}
+	
+	public void remove(UserAccess ua){
+		if(ua!=null){
+			PicsLogger.log("Removing UserAccess=" + ua.getOpPerm() + " for userID=" + ua.getUser().getId());
+			em.remove(ua);
 		}
 	}
 

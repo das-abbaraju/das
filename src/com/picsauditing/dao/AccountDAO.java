@@ -94,5 +94,5 @@ public class AccountDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Account a " + where + " ORDER BY a.id");
 		query.setMaxResults(limit);
 		return query.getResultList();
-	}
+	}	
 }
