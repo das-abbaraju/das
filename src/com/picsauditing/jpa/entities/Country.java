@@ -108,6 +108,15 @@ public class Country implements Serializable {
 	public void setCsr(User csr) {
 		this.csr = csr;
 	}
+	
+	@Transient
+	public boolean isHasStates() {
+		if (isoCode.equals("US"))
+			return true;
+		if (isoCode.equals("CA"))
+			return true;
+		return false;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -44,7 +44,13 @@
 		<s:property value="contractor.riskLevel" />
 		<br />
 		<label>Location:</label>
-		<s:property value="contractor.city" />, <s:property value="contractor.state" />
+		<s:property value="contractor.city" />,
+		<s:if test="contractor.country.hasStates">
+			<s:property value="contractor.state.name" />
+		</s:if>
+		<s:if test="permissions.country != contractor.country.isoCode || !contractor.country.hasStates">
+			<s:property value="contractor.country.name" />
+		</s:if>
 		<br />
 		<label>Primary Contact:</label>
 		<s:property value="contractor.primaryContact.name" />
