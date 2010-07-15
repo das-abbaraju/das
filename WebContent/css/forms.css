@@ -154,11 +154,10 @@ fieldset.form ol li.fieldhelp-focused {
 	background-color: #ffff99;
 }
 
-fieldset.form ol li.fieldhelp-focused .fieldhelp {
-	position: absolute;
+.fieldhelp {
 	z-index: 1000;
 	max-width: 250px;
-	width: expression(this.width > 250 ? 250 : true);
+	width: 250px;
 	padding: 10px;
 	background-color: #ffff99;
 	display: block;
@@ -168,18 +167,24 @@ fieldset.form ol li.fieldhelp-focused .fieldhelp {
 	-webkit-box-shadow: 3px 3px 4px #666;
 	box-shadow: 3px 3px 4px #666;
 	/* For IE 8 */
-	-ms-filter:
-		"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')"
-		;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#666666')";
 	/* For IE 5.5 - 7 */
-	filter: progid :     DXImageTransform.Microsoft.Shadow (     Strength =
-		    4, Direction =     135, Color =     '#666666' );
+	filter: progid: DXImageTransform.Microsoft.Shadow (Strength = 4, Direction = 135, Color = '#666666');
 }
 
-.fieldhelp {
+fieldset.form ol li .fieldhelp {
 	display: none;
 }
 
+fieldset.form ol li.fieldhelp-focused .fieldhelp {
+	position: absolute;
+	display: block
+}
+
+fieldset.form ol li .fieldhelp.hover, fieldset.form ol li .fieldhelp.mousedown {
+	position: absolute;
+	display: block;	
+}
 
 fieldset.form div.fieldhelp {
 	list-style-type: disc;

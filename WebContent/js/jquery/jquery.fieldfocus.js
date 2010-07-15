@@ -14,10 +14,28 @@
 			$(this).parent().removeClass('fieldhelp-focused');
 		});
 	}
+	
+	$.fn.helpstay = function() {
+		return $(this).live('mouseover', function() {
+			$(this).addClass('hover');
+		}).live('mouseout', function(e) {
+			$(this).removeClass('hover');
+		}).live('mousedown', function() {
+			$(this).addClass('mousedown');
+			var target = $(this);
+			var handler;
+			handler = function() {
+				target.removeClass('mousedown');
+				$('body').unbind('mouseup', handler);
+			}
+			$('body').bind('mouseup', handler);
+		});
+	}
 })(jQuery)
 
 jQuery(function(){
 	$('fieldset.form ol :input:not(:button)').fieldfocus();
+	$('fieldset.form ol .fieldhelp').helpstay();
 	
 	$('fieldset.form ol li').live('click', function() {
 		$(this).find(':input').trigger('focus');
