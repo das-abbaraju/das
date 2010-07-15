@@ -32,7 +32,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
-	static final public String GOOGLE_API_KEY = "ABQIAAAAgozVvI8r_S5nN6njMJJ7aBTo4w3vXkjMqCEUz4-xpKEfhElFUxRwXE2trWXRBXZPHCY8N1AgoRkSBw";
+	static final public String GOOGLE_API_KEY = "ABQIAAAAgozVvI8r_S5nN6njMJJ7aBTTvY0m40rW8_sKxH-4kQuUdYdvuxQdivgdKinXBN5YPCA6h_z5hoeBaA";
 	static final public String DATE_FORMAT = "yyyyMMddHHmm";
 
 	private AvailableSet availableSet = new AvailableSet();
