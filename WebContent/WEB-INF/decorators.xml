@@ -8,6 +8,7 @@
 		<pattern>/privacy_policy.jsp</pattern>
 		<pattern>/refund_policy.jsp</pattern>
 		<pattern>/ContractorAgreement.action</pattern>
+		<pattern>/contractor_agreement.jsp</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>
