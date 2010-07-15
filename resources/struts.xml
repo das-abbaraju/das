@@ -1128,7 +1128,6 @@
 			</result>
 			<result name="deleted" type="redirectAction">
 				<param name="actionName">ManageAuditType</param>
-				<param name="id">${id}</param>
 			</result>
 		</action>
 
