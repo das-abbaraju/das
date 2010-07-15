@@ -157,7 +157,8 @@ fieldset.form ol li.fieldhelp-focused {
 fieldset.form ol li.fieldhelp-focused .fieldhelp {
 	position: absolute;
 	z-index: 1000;
-	width: 250px;
+	max-width: 250px;
+	width: expression(this.width > 250 ? 250 : true);
 	padding: 10px;
 	background-color: #ffff99;
 	display: block;
