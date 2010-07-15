@@ -92,7 +92,7 @@
 	function stopWatch() {
 		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Removing Contractor Watch...');
 		$.get('ContractorViewAjax.action', {button: 'Stop Watch', id: <s:property value="contractor.id" />}, function (output) {
-			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;">Watch This Contractor</a>')
+			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;" class="watch">Watch This Contractor</a>')
 				.effect('highlight', {color: '#FFFF11'}, 1000);
 		});
 	}
